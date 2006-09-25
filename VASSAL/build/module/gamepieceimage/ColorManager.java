@@ -1,0 +1,259 @@
+package VASSAL.build.module.gamepieceimage;
+
+import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.SingleChildInstance;
+
+/*
+ * $Id$
+ *
+ * Copyright (c) 2005 by Rodney Kinney, Brent Easton
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
+/**
+ * Container for definitions of Generic Color Definitions
+ */
+public class ColorManager extends AbstractConfigurable {
+
+  /**
+   * Statics - Standard Colors
+   */
+  protected static ColorManager instance;
+
+  public static ColorManager getColorManager() {
+    return instance;
+  }
+  
+  public static final Color DEFAULT_COLOR = Color.WHITE;
+  public static final String SELECT_COLOR = "Select...";
+  
+  protected static Color[] standardColors = new Color[] {
+      Color.WHITE,
+      Color.GRAY,
+      Color.BLACK,
+      null,
+      Color.RED,
+      Color.GREEN,
+      Color.BLUE,
+      Color.ORANGE,
+      Color.PINK,
+      Color.CYAN,
+      Color.MAGENTA,
+      Color.YELLOW,      
+      Color.LIGHT_GRAY,
+      Color.DARK_GRAY,
+  };
+  
+  protected static String[] standardColorNames = new String[] {
+      "WHITE",
+      "GRAY",
+      "BLACK",
+      "CLEAR",
+      "RED",
+      "GREEN",
+      "BLUE",
+      "ORANGE",
+      "PINK",
+      "CYAN",
+      "MAGENTA",
+      "YELLOW",
+      "LIGHT GRAY",
+      "DARK GRAY"
+  };
+  
+  protected static String getStandardColorName(Color c) {
+    for (int i = 0; i < standardColors.length; i++) {
+      if (standardColors[i].equals(c)) {
+        return standardColorNames[i];
+      }
+    }
+    return null;
+  }
+  
+  protected static Color getStandardColor(String name) {
+    for (int i = 0; i < standardColors.length; i++) {
+      if (standardColorNames[i].equals(name)) {
+        return standardColors[i];
+      }
+    }
+    return null;
+  }
+  
+  /**
+   * User defined Colors
+   */
+  protected HashMap userColors = new HashMap();
+  
+  public ColorManager() {
+    instance = this;
+  }
+  
+  public ColorSwatch getColorSwatch(String name) {
+    ColorSwatch c = (ColorSwatch) userColors.get(name);
+    if (c == null) {
+      c = new ColorSwatch(name, getStandardColor(name));
+    }
+    return c;
+  }
+
+  public ColorSwatch getColorSwatch(Color color) {
+    ColorSwatch swatch = null;
+    
+    if (color == null) {
+      return new ColorSwatch("CLEAR", null);
+    }
+    
+    Iterator i = userColors.values().iterator();
+    while (i.hasNext() && swatch == null) {
+      ColorSwatch cs = (ColorSwatch) i.next();
+      if (cs.getColor().equals(color)) {
+        swatch = cs;
+      }
+    }
+    
+    if (swatch == null) {
+      for (int j = 0; j < standardColors.length && swatch == null; j++) {
+        if (standardColors[j] != null && standardColors[j].equals(color)) {
+          swatch = new ColorSwatch(standardColorNames[j], standardColors[j]);
+        }
+      }
+    }
+    
+    if (swatch == null) {
+      swatch = new ColorSwatch(SELECT_COLOR, color);
+    }
+    
+    return swatch;
+  }
+  
+  public String[] getAttributeDescriptions() {
+    return new String[0];
+  }
+
+  public Class[] getAttributeTypes() {
+    return new Class[0];
+  }
+
+  public String[] getAttributeNames() {
+    return new String[0];
+  }
+
+  public String getAttributeValueString(String key) {
+    return null;
+  }
+
+  public void setAttribute(String key, Object value) {
+  }
+
+  public Configurer getConfigurer() {
+    return null;
+  }
+
+  public void addTo(Buildable parent) {
+    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
+  }
+
+  public Class[] getAllowableConfigureComponents() {
+    return new Class[] { ColorSwatch.class };
+  }
+
+  public static String getConfigureTypeName() {
+    return "Named Colors";
+  }
+
+  public void add(Buildable b) {
+    super.add(b);
+    if (b instanceof ColorSwatch) {
+      ColorSwatch def = (ColorSwatch) b;
+      userColors.put(def.getConfigureName(), def);
+      def.addPropertyChangeListener(new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+            userColors.remove(evt.getOldValue());
+            userColors.put(evt.getNewValue(), evt.getSource());
+          }
+        }
+      });
+    }
+  }
+
+  public void remove(Buildable b) {
+    super.remove(b);
+    if (b instanceof ColorSwatch) {
+      userColors.remove(((ColorSwatch) b).getConfigureName());
+    }
+  }
+
+  public HelpFile getHelpFile() {
+    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
+    dir = new File(dir, "ReferenceManual");
+    try {
+      return new HelpFile(null, new File(dir, "GamePieceImageDefinitions.htm"),"#NamedColors");
+    }
+    catch (MalformedURLException ex) {
+      return null;
+    }
+  }
+
+  public void removeFrom(Buildable parent) {
+  }
+
+  public Color getColorByName(String colorName) {
+
+    ColorSwatch gcolor = getColorSwatch(colorName);
+    if (gcolor != null) {
+      Color color = gcolor.getColor();
+      //if (color != null) {
+        return color;
+      //}
+    }
+    return DEFAULT_COLOR;
+  }
+  
+  public String[] getColorNames() {
+
+    String[] names = new String[userColors.size() + standardColors.length];
+    ArrayList a = new ArrayList();
+    Iterator i = userColors.values().iterator();
+    while (i.hasNext()) {
+      a.add ((ColorSwatch) i.next());
+    }
+    Collections.sort(a);
+    i = a.iterator();
+    int j = 0;
+    while (i.hasNext()) {
+      names[j++] = ((ColorSwatch) i.next()).getConfigureName();
+    }
+    for (int k = 0; k < standardColorNames.length; k++) {
+      names[j++] = standardColorNames[k];
+    }
+    return names;
+  }
+}
