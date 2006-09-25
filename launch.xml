@@ -1,0 +1,7 @@
+<project name="VASSAL" default="update">
+  <target name="update">
+    <get src="http://www.vasl.org/vassal/lib/Vengine.jar" dest="Vengine.jar"/>
+    <get src="http://www.vasl.org/vassal/lib/VASSAL.jar" dest="VASSAL.jar"/>
+    <get src="http://www.vasl.org/vassal/lib/docs.jar" dest="docs.jar"/>
+  </target>
+</project>
