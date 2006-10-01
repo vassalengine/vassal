@@ -18,6 +18,7 @@
  */
 package VASSAL.tools;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.KeyStroke;
@@ -30,7 +31,7 @@ import javax.swing.KeyStroke;
 public class KeyStrokeListener {
   private ActionListener l;
   private KeyStroke key;
-  private java.util.Vector sources = new java.util.Vector();
+  private java.util.List sources = new java.util.ArrayList();
 
   public KeyStrokeListener(ActionListener l, KeyStroke key) {
     this.l = l;
@@ -47,23 +48,29 @@ public class KeyStrokeListener {
     }
     if (key != null) {
       for (int i = 0; i < sources.size(); ++i) {
-        ((KeyStrokeSource) sources.elementAt(i))
+        ((KeyStrokeSource) sources.get(i))
           .getComponent().unregisterKeyboardAction(key);
       }
     }
     key = newKey;
     for (int i = 0; i < sources.size(); ++i) {
-      addKeyStrokeSource((KeyStrokeSource) sources.elementAt(i));
+      addKeyStrokeSource((KeyStrokeSource) sources.get(i));
     }
   }
 
   public KeyStroke getKeyStroke() {
     return key;
   }
+  
+  public void keyPressed(KeyStroke stroke) {
+  	if (stroke != null && stroke.equals(key)) {
+  		l.actionPerformed(new ActionEvent(this,0,"Direct Invocation"));
+  	}
+  }
 
   public void addKeyStrokeSource(KeyStrokeSource src) {
     if (!sources.contains(src)) {
-      sources.addElement(src);
+      sources.add(src);
     }
     if (key != null) {
       src.getComponent().registerKeyboardAction(l, key, src.getMode());

@@ -30,9 +30,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
-
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -41,8 +41,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
-
 import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.ChartWindow;
@@ -55,6 +55,7 @@ import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Inventory;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.ModuleExtension;
+import VASSAL.build.module.MultiActionButton;
 import VASSAL.build.module.NotesWindow;
 import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.PlayerHand;
@@ -260,7 +261,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public Class[] getAllowableConfigureComponents() {
-    Class[] c = {Map.class, PieceWindow.class, PrototypesContainer.class, ToolbarMenu.class, DiceButton.class, GlobalKeyCommand.class, Inventory.class, /*InternetDiceButton.class,*/
+    Class[] c = {Map.class, PieceWindow.class, PrototypesContainer.class, ToolbarMenu.class, MultiActionButton.class, DiceButton.class, GlobalKeyCommand.class, Inventory.class, /*InternetDiceButton.class,*/
                  RandomTextButton.class, SpecialDiceButton.class, PredefinedSetup.class, ChartWindow.class, PrivateMap.class, PlayerHand.class, NotesWindow.class};
     return c;
   }
@@ -293,6 +294,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       l.addKeyStrokeSource
           ((KeyStrokeSource) keyStrokeSources.elementAt(i));
     }
+  }
+  
+  public void fireKeyStroke(KeyStroke stroke) {
+  	if (stroke != null) {
+  		for (Iterator it = keyStrokeListeners.iterator(); it.hasNext();) {
+				KeyStrokeListener l = (KeyStrokeListener) it.next();
+				l.keyPressed(stroke);
+			}
+  	}
   }
 
   /**

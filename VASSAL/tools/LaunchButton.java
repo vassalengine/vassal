@@ -20,6 +20,8 @@ package VASSAL.tools;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 
 import javax.swing.JButton;
 import javax.swing.KeyStroke;
@@ -91,8 +93,8 @@ public class LaunchButton extends JButton {
   public String getIconAttribute() {
     return iconAtt;
   }
-
-  public String getAttributeValueString(String key) {
+  
+	public String getAttributeValueString(String key) {
     if (key.equals(nameAtt)) {
       return getText();
     }
@@ -114,6 +116,7 @@ public class LaunchButton extends JButton {
     if (key != null) {
       if (key.equals(nameAtt)) {
         setText((String) value);
+        checkVisibility();
       }
       else if (key.equals(keyAtt)) {
         if (value instanceof String) {
@@ -131,6 +134,7 @@ public class LaunchButton extends JButton {
           iconConfig.setValue((String) value);
           setIcon(iconConfig.getIconValue());
         }
+        checkVisibility();
       }
     }
   }
@@ -158,4 +162,8 @@ public class LaunchButton extends JButton {
     }
     return keyConfig;
   }
+
+	protected void checkVisibility() {
+		setVisible((getText() != null && getText().length() > 0) || getIcon() != null);
+	}
 }

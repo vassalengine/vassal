@@ -20,7 +20,6 @@ package VASSAL.build.module;
 
 import java.awt.Point;
 import java.util.HashMap;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
@@ -45,6 +44,7 @@ import VASSAL.counters.Embellishment;
 import VASSAL.counters.Footprint;
 import VASSAL.counters.FreeRotator;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.GlobalHotKey;
 import VASSAL.counters.Hideable;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.Labeler;
@@ -257,6 +257,11 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     decoratorFactories.put(ActionButton.ID, new DecoratorFactory() {
       public Decorator createDecorator(String type, GamePiece inner) {
         return new ActionButton(type, inner);
+      }
+    });
+    decoratorFactories.put(GlobalHotKey.ID, new DecoratorFactory() {
+      public Decorator createDecorator(String type, GamePiece inner) {
+        return new GlobalHotKey(type, inner);
       }
     });
   }

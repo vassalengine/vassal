@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
 import VASSAL.tools.SequenceEncoder;
@@ -111,6 +112,7 @@ public class StringArrayConfigurer extends Configurer {
       list = new JList(model);
       list.setPrototypeCellValue("MMMMMMMM");
       list.setVisibleRowCount(2);
+      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       final JTextField tf = new JTextField(8);
       tf.setMaximumSize(new Dimension(Integer.MAX_VALUE, tf.getPreferredSize().height));
 
