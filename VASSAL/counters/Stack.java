@@ -98,7 +98,7 @@ public class Stack implements GamePiece, StateMergeable {
     }
   }
 
-  private void removePieceAt(int index) {
+  protected void removePieceAt(int index) {
     if (index >= 0 && index < pieceCount) {
       pieceCount--;
       for (int i = index; i < pieceCount; ++i) {

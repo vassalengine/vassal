@@ -28,6 +28,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -35,7 +36,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
-
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -47,7 +47,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
@@ -122,8 +121,38 @@ public class Deck extends Stack {
   public Deck(String type) {
     mySetType(type);
   }
+  
+  /**
+   * Set the <deckName>_numPieces property in the containing Map
+   * @param oldPieceCount
+   */
+  protected void fireNumCardsProperty() {
+  	if (getMap() != null) {
+  		getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_numPieces",null,String.valueOf(pieceCount)));
+  	}
+  }
+  
+  protected void insertPieceAt(GamePiece p, int index) {
+		super.insertPieceAt(p, index);
+		fireNumCardsProperty();
+	}
+  
+	protected void removePieceAt(int index) {
+		super.removePieceAt(index);
+		fireNumCardsProperty();
+	}
 
-  protected void mySetType(String type) {
+	public void removeAll() {
+		super.removeAll();
+		fireNumCardsProperty();
+	}
+	
+	public void setMap(Map map) {
+		super.setMap(map);
+		fireNumCardsProperty();
+	}
+
+	protected void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     drawOutline = st.nextBoolean(true);

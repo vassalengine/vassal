@@ -145,8 +145,8 @@ import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 
 /**
- * The Map is the main component for displaying and containing {@link GamePiece}s during play. Pieces are displayed on a
- * Map and moved by clicking and dragging. Keyboard events are forwarded to selected pieces. Multiple map windows are
+ * The Map is the main component for displaying and containing {@link GamePiece}s during play. Pieces are displayed on
+ * a Map and moved by clicking and dragging. Keyboard events are forwarded to selected pieces. Multiple map windows are
  * supported in a single game, with dragging between windows allowed.
  * 
  * A Map may contain many different {@link Buildable} subcomponents. Components which are added directly to a Map are
@@ -193,6 +193,7 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	private String changeFormat = "$" + MESSAGE + "$";
 	protected KeyStroke moveKey;
 	protected JPanel root;
+	private PropertyChangeListener globalPropertyListener;
 
 	public Map() {
 		getView();
@@ -504,12 +505,15 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	}
 
 	public PropertyChangeListener getPropertyListener() {
-		return new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				globalProperties.put(evt.getPropertyName(), evt.getNewValue());
-				repaint();
-			}
-		};
+		if (globalPropertyListener == null) {
+			globalPropertyListener = new PropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent evt) {
+					globalProperties.put(evt.getPropertyName(), evt.getNewValue());
+					repaint();
+				}
+			};
+		}
+		return globalPropertyListener;
 	}
 
 	/**

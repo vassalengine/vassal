@@ -620,6 +620,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   private static String userId = null;
+	private PropertyChangeListener globalPropertyListener;
 
   /**
    * @return a String that uniquely identifies the user
@@ -753,16 +754,19 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
   
   public PropertyChangeListener getPropertyListener() {
-    return new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        globalProperties.put(evt.getPropertyName(),evt.getNewValue());
-        Enumeration maps = GameModule.getGameModule().getComponents(Map.class);
-        while (maps.hasMoreElements()) {
-          Map map = (Map) maps.nextElement();
-          map.repaint();
-        }
-      }
-    };
+  	if (globalPropertyListener == null) {
+  		globalPropertyListener = new PropertyChangeListener() {
+  			public void propertyChange(PropertyChangeEvent evt) {
+  				globalProperties.put(evt.getPropertyName(),evt.getNewValue());
+  				Enumeration maps = GameModule.getGameModule().getComponents(Map.class);
+  				while (maps.hasMoreElements()) {
+  					Map map = (Map) maps.nextElement();
+  					map.repaint();
+  				}
+  			}
+  		};
+  	}
+		return globalPropertyListener;
   }
   
 }

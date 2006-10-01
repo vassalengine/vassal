@@ -20,11 +20,10 @@ package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.net.MalformedURLException;
-
 import javax.swing.KeyStroke;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -151,6 +150,7 @@ public class DiceButton extends AbstractConfigurable {
 
     String report = formatResult(val);
     GameModule.getGameModule().getChatter().send(report);
+    GameModule.getGameModule().getPropertyListener().propertyChange(new PropertyChangeEvent(this,getConfigureName()+"_result",null,val));
   }
 
   /**

@@ -20,12 +20,8 @@ package VASSAL.tools;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
-
 import javax.swing.JButton;
 import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.HotKeyConfigurer;
