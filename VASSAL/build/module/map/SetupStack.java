@@ -341,7 +341,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         }
       });
     }
-    configureButton.setEnabled(getConfigureBoard() != null);
+    configureButton.setEnabled(getConfigureBoard() != null && buildComponents.size() > 0);
   }
 
   protected void configureStack() {
@@ -691,7 +691,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       public void paint(Graphics g) {
         myBoard.draw(g, 0, 0, 1.0, this);
         Rectangle bounds = new Rectangle(new Point(),myBoard.bounds().getSize());
-        myGrid.draw(g,bounds,bounds,1.0,false);
+        if (myGrid != null) {
+          myGrid.draw(g,bounds,bounds,1.0,false);
+        }
         int x = myStack.pos.x;
         int y = myStack.pos.y;
         myStack.stackConfigurer.drawImage(g, x, y, this, 1.0);
