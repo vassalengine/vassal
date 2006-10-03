@@ -389,6 +389,10 @@ public class Translate extends Decorator implements EditablePiece {
         Command c = move.map.apply(dispatch);
         if (c == null) {
           c = move.map.placeAt(move.piece, move.pos);
+          // Apply Auto-move key
+          if (move.map.getMoveKey() != null) {
+            c.append(Decorator.getOutermost(move.piece).keyEvent(move.map.getMoveKey()));
+          }
         }
         comm.append(c);
         move.map.ensureVisible(move.map.selectionBoundsOf(move.piece));

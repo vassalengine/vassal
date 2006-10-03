@@ -1,12 +1,59 @@
 package VASSAL.build.module.map;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.datatransfer.StringSelection;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DragSourceMotionListener;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
+import java.awt.dnd.InvalidDnDOperationException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -17,8 +64,11 @@ import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.NewGameIndicator;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
+import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.counters.GamePiece;
@@ -63,7 +113,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected String owningBoardName;
   protected String id;
   public static final String NAME = "name";
-  private static NewGameIndicator indicator;
+  protected static NewGameIndicator indicator;
+  
+  protected StackConfigurer stackConfigurer;
+  protected JButton configureButton;
 
   public void setup(boolean gameStarting) {
     if (gameStarting && indicator.isNewGame() && isOwningBoardActive()) {
@@ -136,6 +189,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       else {
         owningBoardName = (String) value;
       }
+      updateConfigureButton();
     }
     else if (X_POSITION.equals(key)) {
       if (value instanceof String) {
@@ -151,6 +205,11 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
   }
 
+  public void add(Buildable child) {
+    super.add(child);
+    updateConfigureButton();
+  }
+  
   public void addTo(Buildable parent) {
     if (indicator == null) {
       indicator = new NewGameIndicator(COMMAND_PREFIX);
@@ -223,11 +282,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return id;
   }
 
-  public Configurer getConfigurer() {
-    config = null; // Don't cache the Configurer so that the list of available boards won't go stale
-    return super.getConfigurer();
-  }
-
   public static class OwningBoardPrompt extends StringEnum {
     public static final String ANY = "<any>";
 
@@ -257,4 +311,658 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       return values;
     }
   }
-}
+  
+  /*
+   *  GUI Stack Placement Configurer
+   */  
+  protected Configurer xConfig, yConfig;
+  
+  public Configurer getConfigurer() {
+    config = null; // Don't cache the Configurer so that the list of available boards won't go stale
+    Configurer c = super.getConfigurer();
+    xConfig = ((AutoConfigurer) c).getConfigurer(X_POSITION);
+    yConfig = ((AutoConfigurer) c).getConfigurer(Y_POSITION);
+    updateConfigureButton();
+    ((Container) c.getControls()).add(configureButton);
+    
+    return c;
+  }
+  
+  /*
+   * We can only configure stacks that have at least one component and there is
+   * at least one board defined to configure them on.
+   */
+  protected void updateConfigureButton() {
+    if (configureButton == null) {
+      configureButton = new JButton("Reposition Stack");
+      configureButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          configureStack();
+        }
+      });
+    }
+    configureButton.setEnabled(getConfigureBoard() != null);
+  }
+
+  protected void configureStack() {
+    stackConfigurer = new StackConfigurer(this);
+    stackConfigurer.init();
+    stackConfigurer.setVisible(true);
+  }
+ 
+  /* 
+   * Return a board to configure the stack on.
+   */
+  protected Board getConfigureBoard() {
+    
+    Board board = null;
+
+    if (map != null && !OwningBoardPrompt.ANY.equals(owningBoardName)) {
+      board = map.getBoardPicker().getBoard(owningBoardName);
+    }
+      
+    if (board == null && map != null) {
+      String[] allBoards = map.getBoardPicker().getAllowableBoardNames();
+      if (allBoards.length > 0) {
+        board = map.getBoardPicker().getBoard(allBoards[0]);
+      }
+    }
+    
+    return board;
+  }
+
+  protected static final Dimension DEFAULT_SIZE = new Dimension(800, 600);
+  protected static final int DELTA = 1;
+  protected static final int FAST = 10;
+  protected static final int FASTER = 5;
+  protected static final int DUMMY_SIZE = 50;
+  
+  public class StackConfigurer extends JFrame implements ActionListener, KeyListener, MouseListener {
+
+    private static final long serialVersionUID = 1L;
+
+    protected Board board;
+    protected View view;
+    protected JScrollPane scroll;  
+    protected SetupStack myStack;
+    protected PieceSlot mySlot;
+    protected GamePiece myPiece;
+    protected Point savePosition;
+
+    public StackConfigurer(SetupStack stack) {
+      super("Adjust At-Start Stack");
+      myStack = stack;
+      mySlot = (PieceSlot) myStack.buildComponents.get(0);
+      myPiece = mySlot.getPiece();
+      savePosition = new Point(myStack.pos);
+      addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+          cancel();
+        }
+      });
+    }
+
+    // Main Entry Point
+    protected void init() {
+
+      board = getConfigureBoard();
+      
+      view = new View(board, myStack);
+      
+      view.addKeyListener(this);
+      view.addMouseListener(this);
+      view.setFocusable(true);
+    
+      
+      scroll =
+          new JScrollPane(
+              view,
+              JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+              JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+      scroll.setPreferredSize(DEFAULT_SIZE);
+
+      getContentPane().add(scroll, BorderLayout.CENTER);
+
+      Box textPanel = Box.createVerticalBox();
+      textPanel.add(new JLabel("Arrow Keys - Move Stack"));
+      textPanel.add(new JLabel("Ctrl/Shift Keys - Move Stack Faster  "));
+      
+      Box displayPanel = Box.createHorizontalBox();
+      
+      Box buttonPanel = Box.createHorizontalBox();
+      JButton snapButton = new JButton("Snap to grid");
+      snapButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          snap();
+          view.grabFocus();
+        }
+      });
+      buttonPanel.add(snapButton);    
+      
+      JButton okButton = new JButton("Ok");
+      okButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          StackConfigurer.this.setVisible(false);
+          // Update the Component configurer to reflect the change
+          xConfig.setValue(String.valueOf(myStack.pos.x));
+          yConfig.setValue(String.valueOf(myStack.pos.y));
+        }
+      });
+      JPanel okPanel = new JPanel();
+      okPanel.add(okButton);
+      
+      JButton canButton = new JButton("Cancel");
+      canButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          cancel();
+          StackConfigurer.this.setVisible(false);
+        }
+      });
+      okPanel.add(canButton);
+   
+      Box controlPanel = Box.createHorizontalBox();
+      controlPanel.add(textPanel);
+      controlPanel.add(displayPanel);
+      controlPanel.add(buttonPanel);
+      
+      Box mainPanel = Box.createVerticalBox();
+      mainPanel.add(controlPanel);
+      mainPanel.add(okPanel);
+      
+      getContentPane().add(mainPanel, BorderLayout.SOUTH);
+
+      board.fixImage(view);
+      scroll.revalidate();
+      updateDisplay();
+      pack();
+      repaint();
+    }
+
+    protected void cancel() {
+      myStack.pos.x = savePosition.x;
+      myStack.pos.y = savePosition.y;
+    }
+    
+    public void updateDisplay() {
+      if (!view.getVisibleRect().contains(myStack.pos)) {
+        view.center(new Point(myStack.pos.x, myStack.pos.y));
+      }
+    }
+    
+    protected void snap() {
+      MapGrid grid = board.getGrid();
+      if (grid != null) {
+        Point snapTo = grid.snapTo(pos);
+        pos.x = snapTo.x;
+        pos.y = snapTo.y;
+        updateDisplay();
+        repaint();
+      }
+    }
+    
+    public JScrollPane getScroll() {
+      return scroll;
+    }
+    
+    /* 
+     * If the piece to be displayed does not have an Image, then we
+     * need to supply a dummy one.
+     */
+    public BufferedImage getDummyImage() {
+      BufferedImage dummyImage = new BufferedImage(DUMMY_SIZE*2, DUMMY_SIZE*2, BufferedImage.TYPE_INT_ARGB);
+      Graphics g = dummyImage.getGraphics();
+      g.setColor(Color.white);
+      g.fillRect(0, 0, DUMMY_SIZE, DUMMY_SIZE);
+      g.setColor(Color.black);
+      g.drawRect(0, 0, DUMMY_SIZE, DUMMY_SIZE);
+      return dummyImage;
+    }
+    
+    public void drawDummyImage(Graphics g, int x, int y) {
+      drawDummyImage(g, x-DUMMY_SIZE/2, y-DUMMY_SIZE/2, null, 1.0);
+    }
+    
+    public void drawDummyImage(Graphics g, int x, int y, Component obs, double zoom) {
+      g.drawImage(getDummyImage(), x, y, obs);
+    }
+    
+    public void drawImage(Graphics g, int x, int y, Component obs, double zoom) {
+      Rectangle r = myPiece.boundingBox();
+      if (r.width == 0 || r.height == 0) {
+        drawDummyImage(g, x, y);
+      }
+      else {
+        myPiece.draw(g, x, y, obs, zoom);
+      }
+        
+    }
+    
+    public Rectangle getPieceBoundingBox() {
+      Rectangle r = myPiece.getShape().getBounds();
+      if (r.width == 0 || r.height == 0) {
+        r.x = 0 - DUMMY_SIZE/2;
+        r.y = r.x;
+        r.width = DUMMY_SIZE;
+        r.height = DUMMY_SIZE;
+      }
+      return r;
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+      
+    }
+
+    public void keyPressed(KeyEvent e) {
+      
+      switch (e.getKeyCode()) {
+      case KeyEvent.VK_UP:
+        adjustY(-1, e);
+        break;
+      case KeyEvent.VK_DOWN:
+        adjustY(1, e);
+        break;
+      case KeyEvent.VK_LEFT:
+        adjustX(-1, e);
+        break;
+      case KeyEvent.VK_RIGHT:
+        adjustX(1, e);
+        break;
+      default :
+        myPiece.keyEvent(KeyStroke.getKeyStrokeForEvent(e));
+        break;
+      }
+      updateDisplay();
+      repaint();
+      e.consume();
+    }
+
+    protected void adjustX(int direction, KeyEvent e) {
+      int delta = direction * DELTA;
+      if (e.isShiftDown()) {
+        delta *= FAST;
+      }
+      if (e.isControlDown()) {
+        delta *= FASTER;
+      }
+      int newX = myStack.pos.x + delta;
+      if (newX < 0) newX = 0;
+      if (newX >= board.getSize().getWidth()) newX = (int) board.getSize().getWidth() - 1;
+      myStack.pos.x = newX;
+      
+    }
+    
+    protected void adjustY(int direction, KeyEvent e) {
+      int delta = direction * DELTA;
+      if (e.isShiftDown()) {
+        delta *= FAST;
+      }
+      if (e.isControlDown()) {
+        delta *= FASTER;
+      }
+      int newY = myStack.pos.y + delta;
+      if (newY < 0) newY = 0;
+      if (newY >= board.getSize().getHeight()) newY = (int) board.getSize().getHeight() - 1;
+      myStack.pos.y = newY;
+    }
+    
+    public void keyReleased(KeyEvent e) {
+      
+    }
+
+    public void keyTyped(KeyEvent e) {
+      
+    }
+
+    public void mouseClicked(MouseEvent e) {
+      
+    }
+
+    public void mouseEntered(MouseEvent e) {
+      
+    }
+
+    public void mouseExited(MouseEvent e) {
+      
+    }
+
+    public void mousePressed(MouseEvent e) {
+      Rectangle r = getPieceBoundingBox();
+      r.translate(pos.x, pos.y);
+      if (e.isMetaDown() && r.contains(e.getPoint())) {
+        JPopupMenu popup = MenuDisplayer.createPopup(myPiece);
+        popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+          public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            view.repaint();
+          }
+          public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+            view.repaint();
+          }
+          public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+          }
+        });
+        popup.show(view, e.getX(), e.getY());
+      }
+    }
+
+    public void mouseReleased(MouseEvent e) {
+
+
+    }
+
+  }
+    
+    public static class View extends JPanel implements DropTargetListener, DragGestureListener, DragSourceListener, DragSourceMotionListener {
+      
+      private static final long serialVersionUID = 1L;
+      final int CURSOR_ALPHA = 127;
+      final int EXTRA_BORDER = 4;
+      protected Board myBoard;
+      protected MapGrid myGrid;
+      protected SetupStack myStack;
+      protected GamePiece myPiece;
+      protected PieceSlot slot;
+      protected DragSource ds = DragSource.getDefaultDragSource();
+      protected boolean isDragging = false;
+      protected JLabel dragCursor; 
+      protected JLayeredPane drawWin;
+      protected Point drawOffset = new Point();
+      protected Rectangle boundingBox;
+      protected int currentPieceOffsetX;
+      protected int currentPieceOffsetY;
+      protected int originalPieceOffsetX;
+      protected int originalPieceOffsetY;
+      protected Point lastDragLocation = new Point();
+      
+
+
+      public View(Board b, SetupStack s) {
+        myBoard = b;
+        myGrid = b.getGrid();
+        myStack = s;
+        slot = (PieceSlot) myStack.buildComponents.get(0);
+        myPiece = slot.getPiece();
+        new DropTarget(this, DnDConstants.ACTION_MOVE, this);
+        ds.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_MOVE, this);
+        
+
+      }
+
+      public void paint(Graphics g) {
+        myBoard.draw(g, 0, 0, 1.0, this);
+        Rectangle bounds = new Rectangle(new Point(),myBoard.bounds().getSize());
+        myGrid.draw(g,bounds,bounds,1.0,false);
+        int x = myStack.pos.x;
+        int y = myStack.pos.y;
+        myStack.stackConfigurer.drawImage(g, x, y, this, 1.0);
+      }
+      
+      public void update(Graphics g) {
+        // To avoid flicker, don't clear the display first *
+        paint(g);
+      }
+
+      public boolean isManagingFocus() {
+        return true;
+      }
+
+      public Dimension getPreferredSize() {
+        return new Dimension(
+            myBoard.bounds().width,
+            myBoard.bounds().height);
+      }
+      
+      public void center(Point p) {
+        Rectangle r = this.getVisibleRect();
+        if (r.width == 0) {
+          r.width = DEFAULT_SIZE.width;
+          r.height = DEFAULT_SIZE.height;
+        }
+        int x = p.x-r.width/2;
+        int y = p.y-r.height/2;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
+      }
+
+      public void dragEnter(DropTargetDragEvent arg0) {
+        return;
+        
+      }
+
+      public void dragOver(DropTargetDragEvent e) {
+        scrollAtEdge(e.getLocation(), 15);
+      }
+
+      public void scrollAtEdge(Point evtPt, int dist) {
+        JScrollPane scroll = myStack.stackConfigurer.getScroll();
+        
+        Point p = new Point(evtPt.x - scroll.getViewport().getViewPosition().x,
+            evtPt.y - scroll.getViewport().getViewPosition().y);
+        int dx = 0, dy = 0;
+        if (p.x < dist && p.x >= 0)
+          dx = -1;
+        if (p.x >= scroll.getViewport().getSize().width - dist
+            && p.x < scroll.getViewport().getSize().width)
+          dx = 1;
+        if (p.y < dist && p.y >= 0)
+          dy = -1;
+        if (p.y >= scroll.getViewport().getSize().height - dist
+            && p.y < scroll.getViewport().getSize().height)
+          dy = 1;
+
+        if (dx != 0 || dy != 0) {
+          Rectangle r = new Rectangle(scroll.getViewport().getViewRect());
+          r.translate(2 * dist * dx, 2 * dist * dy);
+          r = r.intersection(new Rectangle(new Point(0, 0), getPreferredSize()));
+          scrollRectToVisible(r);
+        }
+      }
+      
+      public void dropActionChanged(DropTargetDragEvent arg0) {
+        return;
+        
+      }
+
+      public void drop(DropTargetDropEvent event) {
+        removeDragCursor();
+        Point pos = event.getLocation();
+        pos.translate(currentPieceOffsetX, currentPieceOffsetY);
+        myStack.pos.x = pos.x;
+        myStack.pos.y = pos.y;
+        myStack.stackConfigurer.updateDisplay();
+        repaint();
+        return;
+        
+      }
+
+      public void dragExit(DropTargetEvent arg0) {
+        return;
+        
+      }
+
+      public void dragEnter(DragSourceDragEvent arg0) {
+        return;
+        
+      }
+
+      public void dragOver(DragSourceDragEvent arg0) {
+        return;
+        
+      }
+
+      public void dropActionChanged(DragSourceDragEvent arg0) {
+        return;
+        
+      }
+
+      public void dragDropEnd(DragSourceDropEvent arg0) {
+        removeDragCursor();
+        return;
+        
+      }
+
+      public void dragExit(DragSourceEvent arg0) {
+        return;
+        
+      }
+
+      public void dragGestureRecognized(DragGestureEvent dge) {
+        
+        Point mousePosition = dge.getDragOrigin();
+        Point piecePosition = new Point(myStack.pos);
+        
+        // Check drag starts inside piece
+        Rectangle r = myStack.stackConfigurer.getPieceBoundingBox();  
+        r.translate(piecePosition.x, piecePosition.y);
+        if (!r.contains(mousePosition)) {
+          return;
+        }
+
+        originalPieceOffsetX = piecePosition.x - mousePosition.x;
+        originalPieceOffsetY = piecePosition.y - mousePosition.y;
+          
+        drawWin = null;
+        
+        makeDragCursor();
+        setDragCursor();
+        
+        SwingUtilities.convertPointToScreen(mousePosition, drawWin);
+        moveDragCursor(mousePosition.x, mousePosition.y);
+
+        // begin dragging
+        try {
+          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR), new StringSelection(""), this); // DEBUG
+          dge.getDragSource().addDragSourceMotionListener(this);
+        }
+        catch (InvalidDnDOperationException e) {
+          e.printStackTrace();
+        }
+        
+        return;
+        
+      }
+
+      protected void setDragCursor() {
+          JRootPane rootWin = SwingUtilities.getRootPane(this);
+          if (rootWin != null) {
+            // remove cursor from old window
+            if (dragCursor.getParent() != null) {
+              dragCursor.getParent().remove(dragCursor);
+            }
+            drawWin = rootWin.getLayeredPane();
+
+            calcDrawOffset();
+            dragCursor.setVisible(true);
+            drawWin.add(dragCursor, JLayeredPane.DRAG_LAYER);
+          }
+      }
+      
+      /** Moves the drag cursor on the current draw window */
+      protected void moveDragCursor(int dragX, int dragY) {
+        if (drawWin != null) {
+          dragCursor.setLocation(dragX - drawOffset.x, dragY - drawOffset.y);
+        }
+      }
+      
+      private void removeDragCursor() {
+        if (drawWin != null) {
+          if (dragCursor != null) {
+            dragCursor.setVisible(false);
+            drawWin.remove(dragCursor);
+          }
+          drawWin = null;
+        }
+      }
+      
+      /** calculates the offset between cursor dragCursor positions */
+      private void calcDrawOffset() {
+        if (drawWin != null) {
+          // drawOffset is the offset between the mouse location during a drag
+          // and the upper-left corner of the cursor
+          // accounts for difference betwen event point (screen coords)
+          // and Layered Pane position, boundingBox and off-center drag
+          drawOffset.x = -boundingBox.x - currentPieceOffsetX + EXTRA_BORDER;
+          drawOffset.y = -boundingBox.y - currentPieceOffsetY + EXTRA_BORDER;
+          SwingUtilities.convertPointToScreen(drawOffset, drawWin);
+        }
+      }
+      
+      private void makeDragCursor() {
+        //double zoom = 1.0;
+        // create the cursor if necessary
+        if (dragCursor == null) {
+          dragCursor = new JLabel();
+          dragCursor.setVisible(false);
+        }
+
+        //dragCursorZoom = zoom;
+        currentPieceOffsetX = originalPieceOffsetX;
+        currentPieceOffsetY = originalPieceOffsetY;
+
+
+        // Record sizing info and resize our cursor
+        boundingBox =  myStack.stackConfigurer.getPieceBoundingBox();
+        calcDrawOffset();
+
+        int width = boundingBox.width + EXTRA_BORDER * 2;
+        int height = boundingBox.height + EXTRA_BORDER * 2;
+
+        BufferedImage cursorImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics2D graphics = cursorImage.createGraphics();
+ 
+        myStack.stackConfigurer.drawImage(graphics, EXTRA_BORDER - boundingBox.x, EXTRA_BORDER - boundingBox.y, dragCursor, 1.0);
+        dragCursor.setSize(width, height);
+
+        // Make bitmap 50% transparent
+        WritableRaster alphaRaster = cursorImage.getAlphaRaster();
+        int size = width * height;
+        int[] alphaArray = new int[size];
+        alphaArray = alphaRaster.getPixels(0, 0, width, height, alphaArray);
+        for (int i = 0; i < size; ++i) {
+          if (alphaArray[i] == 255)
+            alphaArray[i] = CURSOR_ALPHA;
+        }
+
+        // ... feather the cursor, since traits can extend arbitraily far out from
+        // bounds
+        final int FEATHER_WIDTH = EXTRA_BORDER;
+        for (int f = 0; f < FEATHER_WIDTH; ++f) {
+          int alpha = CURSOR_ALPHA * (f + 1) / FEATHER_WIDTH;
+          int limRow = (f + 1) * width - f; // for horizontal runs
+          for (int i = f * (width + 1); i < limRow; ++i) {
+            if (alphaArray[i] > 0) // North
+              alphaArray[i] = alpha;
+            if (alphaArray[size - i - 1] > 0) // South
+              alphaArray[size - i - 1] = alpha;
+          }
+          int limVert = size - (f + 1) * width; // for vertical runs
+          for (int i = (f + 1) * width + f; i < limVert; i += width) {
+            if (alphaArray[i] > 0) // West
+              alphaArray[i] = alpha;
+            if (alphaArray[size - i - 1] > 0) // East
+              alphaArray[size - i - 1] = alpha;
+          }
+        }
+        // ... apply the alpha to the image
+        alphaRaster.setPixels(0, 0, width, height, alphaArray);
+
+        // store the bitmap in the cursor
+        dragCursor.setIcon(new ImageIcon(cursorImage));
+      }
+      
+
+      public void dragMouseMoved(DragSourceDragEvent event) {
+        if (!event.getLocation().equals(lastDragLocation)) {
+          lastDragLocation = event.getLocation();
+          moveDragCursor(event.getX(), event.getY());
+          if (dragCursor != null && !dragCursor.isVisible()) {
+            dragCursor.setVisible(true);
+          }
+        }
+      }
+    }
+
+  }
+
+

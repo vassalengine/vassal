@@ -441,6 +441,22 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     HashMap mergeTargets = new HashMap();
     while (it.hasMoreElements()) {
       dragging = it.nextPiece();
+      /*
+       * Take a copy of the pieces in dragging. If it is a stack, it is
+       * cleared by the merging process
+       */
+      GamePiece[] draggedPieces;
+      if (dragging instanceof Stack) {
+        int size = ((Stack) dragging).getPieceCount();
+        draggedPieces = new GamePiece[size];
+        for (int i = 0; i < size; i++) {
+          draggedPieces[i] = ((Stack) dragging).getPieceAt(i);
+        }
+      }
+      else {
+        draggedPieces = new GamePiece[] {dragging};
+      }
+      
       if (offset != null) {
         p = new Point(dragging.getPosition().x + offset.x, dragging.getPosition().y + offset.y);
       }
@@ -487,9 +503,10 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
         comm = comm.append(movedPiece(dragging, mergeWith.getPosition()));
         comm = comm.append(map.getStackMetrics().merge(mergeWith, dragging));
       }
-    }
-    if (map.getMoveKey() != null) {
-      applyKeyAfterMove(dragging, comm, map.getMoveKey());
+    
+      if (map.getMoveKey() != null) {
+        applyKeyAfterMove(draggedPieces, comm, map.getMoveKey());
+      }
     }
     if (GlobalOptions.getInstance().autoReportEnabled()) {
       Command report = createMovementReporter(comm).getReportCommand();
@@ -499,13 +516,9 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     return comm;
   }
 
-  protected void applyKeyAfterMove(GamePiece piece, Command comm, KeyStroke key) {
-    if (piece instanceof Stack) {
-      for (int i = 0; i < ((Stack) piece).getPieceCount(); i++) {
-        applyKeyAfterMove(((Stack) piece).getPieceAt(i), comm, key);
-      }
-    }
-    else {
+  protected void applyKeyAfterMove(GamePiece[] pieces, Command comm, KeyStroke key) {
+    for (int i = 0; i < pieces.length; i++) {
+      GamePiece piece = pieces[i];
       if (piece.getProperty(Properties.SNAPSHOT) == null) {
         piece.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(piece));
       }

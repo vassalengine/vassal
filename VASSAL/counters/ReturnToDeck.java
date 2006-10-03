@@ -36,6 +36,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.command.Command;
@@ -105,6 +106,11 @@ public class ReturnToDeck extends Decorator implements EditablePiece {
         findDeck();
       }
       comm = deck.addToContents(Decorator.getOutermost(this));
+      // Apply Auto-move key
+      Map m = deck.getMap();
+      if (m != null && m.getMoveKey() != null) {
+        comm.append(Decorator.getOutermost(this).keyEvent(m.getMoveKey()));
+      }
       deck.getMap().repaint();
     }
     return comm;

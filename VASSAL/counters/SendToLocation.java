@@ -187,8 +187,14 @@ public class SendToLocation extends Decorator implements EditablePiece {
         }
         setProperty(BACK_MAP, getMap());
         setProperty(BACK_POINT, getPosition());
-        dest = m.snapTo(dest);
+        if (!Boolean.TRUE.equals(Decorator.getOutermost(this).getProperty(Properties.IGNORE_GRID))) {
+          dest = m.snapTo(dest);
+        }
         c = m.placeOrMerge(Decorator.getOutermost(this), dest);
+        // Apply Auto-move key
+        if (m.getMoveKey() != null) {
+          c.append(Decorator.getOutermost(this).keyEvent(m.getMoveKey()));
+        }
       }
     }
     else if(backCommand.matches(stroke)) {
@@ -196,6 +202,10 @@ public class SendToLocation extends Decorator implements EditablePiece {
       Point backPoint = (Point) getProperty(BACK_POINT);
       if (backMap != null && backPoint != null) {
          c = backMap.placeOrMerge(Decorator.getOutermost(this), backPoint);
+         // Apply Auto-move key
+         if (backMap.getMoveKey() != null) {
+           c.append(Decorator.getOutermost(this).keyEvent(backMap.getMoveKey()));
+         }         
       }
       setProperty(BACK_MAP, null);
       setProperty(BACK_POINT, null);
