@@ -79,6 +79,7 @@ public class BasicPiece implements EditablePiece, StateMergeable {
   public static final String CURRENT_ZONE = "CurrentZone";
   public static final String BASIC_NAME = "BasicName";
   public static final String PIECE_NAME = "PieceName";
+  public static final String DECK_NAME = "DeckName";
 
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
   protected Image image;
@@ -147,6 +148,9 @@ public class BasicPiece implements EditablePiece, StateMergeable {
     }
     else if (CURRENT_MAP.equals(key)) {
       return getMap() == null ? "" : getMap().getConfigureName();
+    }
+    else if (DECK_NAME.equals(key)) {
+      return getParent() instanceof Deck ? ((Deck)getParent()).getDeckName() : "";
     }
     else if (CURRENT_BOARD.equals(key)) {
       if (getMap() != null) {

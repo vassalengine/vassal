@@ -960,4 +960,19 @@ public class Deck extends Stack {
     }
   }
 
+	/**
+	 * Return the number of cards to be returned by next call to {@link #drawCards()}
+	 */
+	public int getDragCount() {
+		return dragCount;
+	}
+
+	/**
+	 * Set the number of cards to be returned by next call to {@link #drawCards()}
+	 * @param dragCount
+	 */
+	public void setDragCount(int dragCount) {
+		this.dragCount = dragCount;
+	}
+
 }

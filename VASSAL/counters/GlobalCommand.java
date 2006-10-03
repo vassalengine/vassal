@@ -33,9 +33,10 @@ import VASSAL.tools.FormattedString;
  * Applies a given keyboard command to all counters on a map
  */
 public class GlobalCommand {
-  private KeyStroke keyStroke;
-  private boolean reportSingle;
-  private FormattedString reportFormat = new FormattedString();
+	protected KeyStroke keyStroke;
+  protected boolean reportSingle;
+  protected int selectFromDeck = -1;
+  protected FormattedString reportFormat = new FormattedString();
 
   public void setKeyStroke(KeyStroke keyStroke) {
     this.keyStroke = keyStroke;
@@ -87,7 +88,7 @@ public class GlobalCommand {
         m[mapI].setAttribute(Map.CHANGE_FORMAT, "");
       }
       Visitor visitor = new Visitor(c, filter, keyStroke);
-      PieceVisitorDispatcher dispatcher = new PieceVisitorDispatcher(visitor);
+      DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
       GamePiece[] p = m[mapI].getPieces();
       for (int i = 0; i < p.length; ++i) {
         dispatcher.accept(p[i]);
@@ -101,11 +102,7 @@ public class GlobalCommand {
     return c;
   }
 
-  /*
-   * We don't treat {@link Deck}s any differently than {@link Stack}s, so no
-   * need to implement {@link DeckVisitor 
-   */
-  private static class Visitor implements PieceVisitor {
+  private class Visitor implements DeckVisitor {
     private Command command;
     private BoundsTracker tracker;
     private PieceFilter filter;
@@ -117,6 +114,20 @@ public class GlobalCommand {
       this.filter = filter;
       this.stroke = stroke;
     }
+
+		public Object visitDeck(Deck d) {
+			Object target = null;
+			if (selectFromDeck < 0) {
+				target = visitStack(d);
+			}
+			else if (selectFromDeck > 0) {
+				d.setDragCount(selectFromDeck);
+	      for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
+	        apply(it.nextPiece());
+	      }
+			}
+			return target;
+		}
 
     public Object visitStack(Stack s) {
       for (Enumeration e = s.getPieces(); e.hasMoreElements();) {
@@ -148,4 +159,16 @@ public class GlobalCommand {
     }
 
   }
+
+	public int getSelectFromDeck() {
+		return selectFromDeck;
+	}
+
+	/**
+	 * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
+	 * @param selectFromDeck
+	 */
+	public void setSelectFromDeck(int selectFromDeck) {
+		this.selectFromDeck = selectFromDeck;
+	}
 }

@@ -26,23 +26,30 @@
  */
 package VASSAL.build.module.map;
 
+import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.MalformedURLException;
-
+import javax.swing.Box;
+import javax.swing.JLabel;
 import javax.swing.KeyStroke;
-
+import javax.swing.SwingUtilities;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
@@ -56,8 +63,9 @@ import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 
-/** Adds a button to a map window toolbar.  Hitting the button applies a particular key command to all pieces
- * on that map with a given name.
+/**
+ * Adds a button to a map window toolbar. Hitting the button applies a particular key command to all pieces on that map
+ * with a given name.
  */
 public class MassKeyCommand extends AbstractConfigurable {
   public static final String DEPRECATED_NAME = "text";
@@ -72,12 +80,12 @@ public class MassKeyCommand extends AbstractConfigurable {
   public static final String REPORT_SINGLE = "reportSingle";
   public static final String REPORT_FORMAT = "reportFormat";
   public static final String CONDITION = "condition";
+  public static final String DECK_COUNT = "deckCount";
   private static final String IF_ACTIVE = "If layer is active";
   private static final String IF_INACTIVE = "If layer is inactive";
   private static final String ALWAYS = "Always";
   public static final String CHECK_PROPERTY = "property";
   public static final String CHECK_VALUE = "propValue";
-
   private LaunchButton launch;
   private KeyStroke stroke = KeyStroke.getKeyStroke(0, 0);
   private String[] names = new String[0];
@@ -109,7 +117,7 @@ public class MassKeyCommand extends AbstractConfigurable {
   }
 
   public void apply(Map m) {
-    GameModule.getGameModule().sendAndLog(globalCommand.apply(m,filter));
+    GameModule.getGameModule().sendAndLog(globalCommand.apply(m, filter));
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -118,21 +126,20 @@ public class MassKeyCommand extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     if (condition == null) {
-      return new String[]{"Description", "Key Command", "Matching properties", "Tooltip text", "Button text", "Button Icon", "Hotkey",
-                          "Suppress individual reports", "Report Format"};
+      return new String[]{"Description", "Key Command", "Matching properties", "Apply to contents of Decks", "Tooltip text", "Button text", "Button Icon",
+                          "Hotkey", "Suppress individual reports", "Report Format"};
     }
     else {
-      return new String[]{"Description", "Key Command", "Matching properties", "Tooltip text", "Button text", "Button Icon", "Hotkey",
-                          "Suppress individual reports", "Report Format", "Apply Command"};
-
+      // Backward compatibility
+      return new String[]{"Description", "Key Command", "Matching properties", "Apply to contents of Decks", "Tooltip text", "Button text", "Button Icon",
+                          "Hotkey", "Suppress individual reports", "Report Format", "Apply Command"};
     }
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, KEY_COMMAND, PROPERTIES_FILTER, TOOLTIP, BUTTON_TEXT, ICON, HOTKEY,
-                        REPORT_SINGLE, REPORT_FORMAT, CONDITION, CHECK_VALUE, CHECK_PROPERTY, AFFECTED_PIECE_NAMES};
+    return new String[]{NAME, KEY_COMMAND, PROPERTIES_FILTER, DECK_COUNT, TOOLTIP, BUTTON_TEXT, ICON, HOTKEY, REPORT_SINGLE, REPORT_FORMAT, CONDITION,
+                        CHECK_VALUE, CHECK_PROPERTY, AFFECTED_PIECE_NAMES};
   }
-
   public static class Prompt extends StringEnum {
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALWAYS, IF_ACTIVE, IF_INACTIVE};
@@ -141,24 +148,119 @@ public class MassKeyCommand extends AbstractConfigurable {
 
   public Class[] getAttributeTypes() {
     if (condition == null) {
-      return new Class[]{String.class, KeyStroke.class, String.class, String.class, String.class, IconConfig.class, KeyStroke.class,
+      return new Class[]{String.class, KeyStroke.class, String.class, DeckPolicyConfig.class, String.class, String.class, IconConfig.class, KeyStroke.class,
                          Boolean.class, ReportFormatConfig.class};
     }
     else {
-      return new Class[]{String.class, KeyStroke.class, String.class, String.class, String.class, IconConfig.class, KeyStroke.class,
+      // Backward compatibility
+      return new Class[]{String.class, KeyStroke.class, String.class, DeckPolicyConfig.class, String.class, String.class, IconConfig.class, KeyStroke.class,
                          Boolean.class, ReportFormatConfig.class, Prompt.class};
     }
   }
-
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/keyCommand.gif");
     }
   }
-
   public static class ReportFormatConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[0]);
+    }
+  }
+  public static class DeckPolicyConfig extends Configurer implements ConfigurerFactory {
+    private static final String FIXED = "Fixed number of pieces";
+    private static final String NONE = "No pieces";
+    private static final String ALL = "All pieces";
+    private IntConfigurer intConfig;
+    private StringEnumConfigurer typeConfig;
+    private Box controls;
+
+    public DeckPolicyConfig() {
+      super(null, "");
+      typeConfig = new StringEnumConfigurer(null, "", new String[]{ALL, NONE, FIXED});
+      intConfig = new IntConfigurer(null, "");
+      controls = Box.createHorizontalBox();
+      controls.add(new JLabel("Within a Deck, apply to:  "));
+      controls.add(typeConfig.getControls());
+      controls.add(intConfig.getControls());
+      PropertyChangeListener l = new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
+          Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
+          if (w != null) {
+            w.pack();
+          }
+        }
+      };
+      PropertyChangeListener l2 = new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          setValue(new Integer(getIntValue()));
+        }
+      };
+      typeConfig.addPropertyChangeListener(l);
+      typeConfig.addPropertyChangeListener(l2);
+      intConfig.addPropertyChangeListener(l2);
+    }
+
+    public Component getControls() {
+      return controls;
+    }
+
+    public String getValueString() {
+      return String.valueOf(getIntValue());
+    }
+
+    public int getIntValue() {
+      String type = typeConfig.getValueString();
+      if (ALL.equals(type)) {
+        return -1;
+      }
+      else if (NONE.equals(type)) {
+        return 0;
+      }
+      else {
+        return intConfig.getIntValue(1);
+      }
+    }
+
+    public void setValue(Object o) {
+      if (typeConfig != null) {
+        typeConfig.setFrozen(true);
+        intConfig.setFrozen(true);
+        if (o instanceof Integer) {
+          Integer i = (Integer) o;
+          switch ((i).intValue()) {
+          case 0:
+            typeConfig.setValue(NONE);
+            intConfig.setValue(new Integer(1));
+            break;
+          case -1:
+            typeConfig.setValue(ALL);
+            intConfig.setValue(new Integer(1));
+            break;
+          default:
+            typeConfig.setValue(FIXED);
+            intConfig.setValue(i);
+          }
+        }
+      }
+      super.setValue(o);
+      if (typeConfig != null) {
+        typeConfig.setFrozen(false);
+        intConfig.setFrozen(false);
+      }
+    }
+
+    public void setValue(String s) {
+      if (s != null) {
+        setValue(new Integer(s));
+      }
+    }
+
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      setName(name);
+      this.key = key;
+      return this;
     }
   }
 
@@ -186,6 +288,9 @@ public class MassKeyCommand extends AbstractConfigurable {
     }
     else if (REPORT_SINGLE.equals(key)) {
       return String.valueOf(globalCommand.isReportSingle());
+    }
+    else if (DECK_COUNT.equals(key)) {
+      return String.valueOf(globalCommand.getSelectFromDeck());
     }
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
@@ -229,8 +334,7 @@ public class MassKeyCommand extends AbstractConfigurable {
     if (propertiesFilter != null) {
       filter = PropertiesPieceFilter.parse(propertiesFilter);
     }
-    if (filter != null
-        && condition != null) {
+    if (filter != null && condition != null) {
       filter = new BooleanAndPieceFilter(filter, new PieceFilter() {
         public boolean accept(GamePiece piece) {
           boolean valid = false;
@@ -309,6 +413,12 @@ public class MassKeyCommand extends AbstractConfigurable {
         value = new Boolean((String) value);
       }
       globalCommand.setReportSingle(((Boolean) value).booleanValue());
+    }
+    else if (DECK_COUNT.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      globalCommand.setSelectFromDeck(((Integer) value).intValue());
     }
     else if (REPORT_FORMAT.equals(key)) {
       reportFormat.setFormat((String) value);
