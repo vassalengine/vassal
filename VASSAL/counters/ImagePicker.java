@@ -39,7 +39,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.ImageFileFilter;
 
 public class ImagePicker extends javax.swing.JPanel implements MouseListener, ItemListener {
   private static final long serialVersionUID = 1L;
@@ -150,15 +149,13 @@ public class ImagePicker extends javax.swing.JPanel implements MouseListener, It
 
   public void pickImage() {
     javax.swing.JFileChooser fc = GameModule.getGameModule().getFileChooser();
-    fc.setFileFilter(new ImageFileFilter());
-    
-    if (fc.showOpenDialog(null) == javax.swing.JFileChooser.APPROVE_OPTION
-         && fc.getSelectedFile().exists()) {
+    if (fc.showOpenDialog(null)
+      == javax.swing.JFileChooser.APPROVE_OPTION
+      && fc.getSelectedFile().exists()) {
       String name = fc.getName(fc.getSelectedFile());
       GameModule.getGameModule().getArchiveWriter()
         .addImage(fc.getSelectedFile().getPath(), name);
-      select.setModel(new DefaultComboBoxModel(
-         GameModule.getGameModule().getDataArchive().getImageNames()));
+      select.setModel(new DefaultComboBoxModel(GameModule.getGameModule().getDataArchive().getImageNames()));
       setImageName(name);
     }
     else {

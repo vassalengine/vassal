@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -87,24 +86,8 @@ public class ArchiveWriter extends DataArchive {
    *          the name under which to store the image in the archive
    */
   public void addImage(String path, String name) {
-    // check SVG for external references and pull them in
-    if (name.toLowerCase().endsWith(".svg")) {
-      if (svgManager == null) svgManager = new SVGManager(this);
-
-      for (Iterator i = svgManager.getExternalReferences(path).iterator();
-       i.hasNext();) {
-         File f = new File((String) i.next());
-         String n = f.getName();
-         unCacheImage(n);
-         images.put(IMAGE_DIR + n, f.getPath());
-      }
-    }
-    // otherwise just add what we were given
-    else {
-       unCacheImage(name);
-       images.put(IMAGE_DIR + name, path);
-    }
-
+    unCacheImage(name);
+    images.put(IMAGE_DIR + name, path);
     imageNames = null;
   }
 
@@ -209,8 +192,7 @@ public class ArchiveWriter extends DataArchive {
    */
   public void write() throws IOException {
     if (archiveName == null) {
-      javax.swing.JFileChooser fc =
-         new javax.swing.JFileChooser(Documentation.getDocumentationBaseDir());
+      javax.swing.JFileChooser fc = new javax.swing.JFileChooser(Documentation.getDocumentationBaseDir());
       if (fc.showSaveDialog(null) == javax.swing.JFileChooser.CANCEL_OPTION)
         return;
       archiveName = fc.getSelectedFile().getPath();
@@ -231,13 +213,10 @@ public class ArchiveWriter extends DataArchive {
     if (archive != null) {
       /* Copy old non-overwritten entries into temp file */
       ZipEntry entry = null;
-      ZipInputStream zis =
-         new ZipInputStream(new FileInputStream(archive.getName()));
+      ZipInputStream zis = new ZipInputStream(new FileInputStream(archive.getName()));
 
       while ((entry = zis.getNextEntry()) != null) {
-        if (!images.containsKey(entry.getName()) &&
-            !sounds.containsKey(entry.getName()) &&
-            !files.containsKey(entry.getName())) {
+        if (!images.containsKey(entry.getName()) && !sounds.containsKey(entry.getName()) && !files.containsKey(entry.getName())) {
           /* System.err.println("Copying "+entry.getName()); */
           ByteArrayOutputStream outStream = new ByteArrayOutputStream();
           while ((count = zis.read(buffer, 0, 1024)) >= 0) {
@@ -268,21 +247,17 @@ public class ArchiveWriter extends DataArchive {
     File original = new File(archiveName);
     if (original.exists()) {
       if (!original.delete()) {
-        throw new IOException("Unable to overwrite " + archiveName +
-                              "\nData stored in " + temp);
+        throw new IOException("Unable to overwrite " + archiveName + "\nData stored in " + temp);
       }
     }
     File f = new File(temp);
     if (!f.renameTo(original)) {
-      throw new IOException("Unable to write to " + archiveName +
-                            "\nData stored in " + temp);
+      throw new IOException("Unable to write to " + archiveName + "\nData stored in " + temp);
     }
     archive = new ZipFile(archiveName);
   }
 
-  private void writeEntries(Hashtable h, int method, ZipOutputStream out)
-    throws IOException {
-
+  private static void writeEntries(Hashtable h, int method, ZipOutputStream out) throws IOException {
     byte[] contents;
     ZipEntry entry;
 
@@ -290,11 +265,8 @@ public class ArchiveWriter extends DataArchive {
       String name = (String) e.nextElement();
       Object o = h.get(name);
       if (o instanceof String) {
-        if (name.toLowerCase().endsWith(".svg")) {
-          if (svgManager == null) svgManager = new SVGManager(this);
-          contents = svgManager.relativizeExternalReferences((String) o);   
-        }
-        else contents = getBytes(new FileInputStream((String) o));
+        String path = (String) o;
+        contents = getBytes(new FileInputStream(path));
       }
       else if (o instanceof byte[]) {
         contents = (byte[]) o;

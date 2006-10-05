@@ -318,8 +318,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
       return;
     try {
       try {
-        boardImage =
-          GameModule.getGameModule().getDataArchive().getImage(imageFile);
+        boardImage = DataArchive.getImage
+            (GameModule.getGameModule().getDataArchive().getFileStream
+             ("images/" + imageFile));
       }
       catch (IOException e) {
         boardImage = null;

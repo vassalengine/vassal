@@ -115,13 +115,12 @@ public class MassPieceDefiner extends PieceDefiner {
     }
   }
 
-  protected boolean edit(int index) {
-    boolean result = super.edit(index);
+  protected void edit(int index) {
+    super.edit(index);
     for (Enumeration e = definers.elements();
          e.hasMoreElements();) {
       ((Entry) e.nextElement()).definer.edit(index);
     }
-    return result;
   }
 
   public void save() {
@@ -143,10 +142,10 @@ public class MassPieceDefiner extends PieceDefiner {
   }
 
   private class Def extends PieceDefiner {
-    protected boolean edit(int index) {
+    protected void edit(int index) {
       Object o = MassPieceDefiner.this.inUseModel.elementAt(index);
       if (!(o instanceof EditablePiece)) {
-        return false;
+        return;
       }
       PieceEditor template = ((EditablePiece) o).getEditor();
       EditablePiece myPiece = (EditablePiece) this.inUseModel.elementAt(index);
@@ -157,7 +156,6 @@ public class MassPieceDefiner extends PieceDefiner {
       else {
         myPiece.setState(template.getState());
       }
-      return true;
     }
   }
 }
