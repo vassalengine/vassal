@@ -513,6 +513,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return fileChooser;
   }
 
+
+  /**
+   * @deprecated Use {@link #getFileChooser} instead.
+   */
   public FileDialog getFileDialog() {
     if (fileDialog == null) {
       getPrefs().addOption(null, new DirectoryConfigurer(SAVE_DIR, null));
@@ -545,7 +549,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   /**
    * Append the string to the title of the controls window and all Map windows
-   * @param s If null, set the title to the defaul
+   * @param s If null, set the title to the default.
    */
   public void appendToTitle(String s) {
     if (s == null) {

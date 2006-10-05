@@ -241,8 +241,13 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
           if (inUseModel.getSize() > 0) {
             Decorator c = (Decorator) selected;
             addTrait(c);
-            if (inUseModel.lastElement().getClass() == c.getClass()) { // Add was successful
-              edit(inUseModel.size() - 1);
+            if (inUseModel.lastElement().getClass() == c.getClass()) {
+              if (edit(inUseModel.size() - 1)) {   // Add was successful
+              }
+              else {                               // Add was cancelled
+                if (!inUseModel.isEmpty())
+                  removeTrait(inUseModel.size() - 1);
+              }
             }
           }
         }
@@ -252,7 +257,11 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
             GamePiece p = (GamePiece) selected.getClass().newInstance();
             setPiece(p);
             if (inUseModel.getSize() > 0) {
-              edit(0);
+              if (edit(0)) {  // Add was successful
+              }
+              else {          // Add was cancelled
+                removeTrait(0);
+              }
             }
           }
           catch (Exception e) {
@@ -446,10 +455,10 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
     }
   }
 
-  protected void edit(int index) {
+  protected boolean edit(int index) {
     Object o = inUseModel.elementAt(index);
     if (!(o instanceof EditablePiece)) {
-      return;
+      return false;
     }
     EditablePiece p = (EditablePiece) o;
     if (p.getEditor() != null) {
@@ -475,8 +484,10 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
           p.setState(c.getState());
         }
         refresh();
+        return true;
       }
     }
+    return false;
   }
 
   /** A Dialog for editing an EditablePiece's properties */

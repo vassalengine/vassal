@@ -22,6 +22,8 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * Utility class for decoding URL-encoded strings
+ *
+ * @deprecated Use java.net.URLDecoder instead. 
  */
 public class Decoder {
 

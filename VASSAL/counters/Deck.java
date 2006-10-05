@@ -21,7 +21,6 @@ package VASSAL.counters;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -36,17 +35,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
@@ -776,31 +778,28 @@ public class Deck extends Stack {
 
   private File getSaveFileName() {
     File outputFile = null;
-    FileDialog fd = GameModule.getGameModule().getFileDialog();
-    String name = fd.getFile();
+    JFileChooser fc = GameModule.getGameModule().getFileChooser();
+    String name = fc.getSelectedFile().getPath();
     if (name != null) {
       int index = name.lastIndexOf('.');
       if (index > 0) {
         name = name.substring(0, index) + ".sav";
-        fd.setFile(name);
+        fc.setSelectedFile(new File(name));
       }
     }
-    fd.setMode(FileDialog.SAVE);
-    fd.setVisible(true);
-    if (fd.getFile() != null) {
-      if (fd.getDirectory() != null) {
-        outputFile = new File(new File(fd.getDirectory()), fd.getFile());
-      }
-      else {
-        outputFile = new File(fd.getFile());
-      }
-      if (outputFile.exists()
-          && shouldConfirmOverwrite()
-          && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(), "Overwrite " + outputFile.getName() + "?",
-              "File Exists", JOptionPane.YES_NO_OPTION)) {
+
+    if (fc.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return null;
+    
+    outputFile = fc.getSelectedFile();
+    if (outputFile.exists() &&
+        shouldConfirmOverwrite() &&
+        JOptionPane.NO_OPTION ==
+         JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(),
+          "Overwrite " + outputFile.getName() + "?", "File Exists",
+          JOptionPane.YES_NO_OPTION)) {
         outputFile = null;
-      }
-    }
+    } 
+
     return outputFile;
   }
 
@@ -843,27 +842,19 @@ public class Deck extends Stack {
   }
 
   private File getLoadFileName() {
-    File inputFile = null;
-    FileDialog fd = GameModule.getGameModule().getFileDialog();
-    String name = fd.getFile();
+    JFileChooser fc = GameModule.getGameModule().getFileChooser();
+
+    String name = fc.getSelectedFile().getPath();
     if (name != null) {
       int index = name.lastIndexOf('.');
       if (index > 0) {
         name = name.substring(0, index) + ".sav";
-        fd.setFile(name);
+        fc.setSelectedFile(new File(name));
       }
     }
-    fd.setMode(FileDialog.LOAD);
-    fd.setVisible(true);
-    if (fd.getFile() != null) {
-      if (fd.getDirectory() != null) {
-        inputFile = new File(new File(fd.getDirectory()), fd.getFile());
-      }
-      else {
-        inputFile = new File(fd.getFile());
-      }
-    }
-    return inputFile;
+
+    if (fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) return null;
+    return fc.getSelectedFile();
   }
 
   private Command loadDeck() {

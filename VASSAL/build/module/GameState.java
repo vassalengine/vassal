@@ -18,7 +18,6 @@
  */
 package VASSAL.build.module;
 
-import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -27,6 +26,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
@@ -178,38 +178,30 @@ public abstract class GameState {
    * {@link Command}, which is then executed.  The command read from the
    * file should be that returned by {@link #getRestoreCommand} */
   public void loadGame() {
-    FileDialog fd = GameModule.getGameModule().getFileDialog();
-    fd.setMode(FileDialog.LOAD);
-    fd.setVisible(true);
-    if (fd.getFile() != null) {
-      File f;
-      if (fd.getDirectory() != null) {
-        f = new File(new File(fd.getDirectory()), fd.getFile());
-      }
-      else {
-        f = new File(fd.getFile());
-      }
-      if (f.exists()) {
-        try {
-          if (gameStarted) {
-            loadContinuation(f);
-          }
-          else {
-            loadGame(f);
-          }
+    JFileChooser fc = GameModule.getGameModule().getFileChooser();
+    if (fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) return;
+
+    File f = fc.getSelectedFile();
+    if (f.exists()) {
+      try {
+        if (gameStarted) {
+          loadContinuation(f);
         }
-        catch (IOException e) {
-          String msg = "Unable to load " + f.getName();
-          if (e.getMessage() != null) {
-            msg += "\n" + e.getMessage();
-          }
-          JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(),
-                                        msg, "Load Error", JOptionPane.ERROR_MESSAGE);
+        else {
+          loadGame(f);
         }
       }
-      else {
-        GameModule.getGameModule().warn("Unable to find " + f.getPath());
+      catch (IOException e) {
+        String msg = "Unable to load " + f.getName();
+        if (e.getMessage() != null) {
+          msg += "\n" + e.getMessage();
+        }
+        JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(),
+                               msg, "Load Error", JOptionPane.ERROR_MESSAGE);
       }
+    }
+    else {
+      GameModule.getGameModule().warn("Unable to find " + f.getPath());
     }
   }
 
@@ -250,35 +242,30 @@ public abstract class GameState {
     }
   }
 
-
   private File getSaveFile() {
     File outputFile = null;
-    FileDialog fd = GameModule.getGameModule().getFileDialog();
-    String name = fd.getFile();
+    JFileChooser fc = GameModule.getGameModule().getFileChooser();
+    String name = fc.getSelectedFile().getPath();
     if (name != null) {
       int index = name.lastIndexOf('.');
       if (index > 0) {
         name = name.substring(0, index) + ".sav";
-        fd.setFile(name);
+        fc.setSelectedFile(new File(name));
       }
     }
-    fd.setMode(FileDialog.SAVE);
-    fd.setVisible(true);
-    if (fd.getFile() != null) {
-      if (fd.getDirectory() != null) {
-        outputFile = new File(new File(fd.getDirectory()), fd.getFile());
-      }
-      else {
-        outputFile = new File(fd.getFile());
-      }
-      if (outputFile.exists()
-          && shouldConfirmOverwrite()
-          && JOptionPane.NO_OPTION
-          == JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(),
-                                           "Overwrite " + outputFile.getName() + "?", "File Exists", JOptionPane.YES_NO_OPTION)) {
+
+    if (fc.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return null;
+
+    outputFile = fc.getSelectedFile();
+    if (outputFile.exists() &&
+        shouldConfirmOverwrite() &&
+        JOptionPane.NO_OPTION ==
+         JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(),
+          "Overwrite " + outputFile.getName() + "?", "File Exists",
+          JOptionPane.YES_NO_OPTION)) {
         outputFile = null;
-      }
-    }
+    } 
+
     return outputFile;
   }
 
