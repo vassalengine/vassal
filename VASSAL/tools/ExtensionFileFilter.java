@@ -28,8 +28,9 @@ public class ExtensionFileFilter extends FileFilter {
    public boolean accept(File f) {
       if (f.isDirectory()) return true;
       String name = f.getName().toLowerCase();
-      for (String ext : types)
-         if (name.endsWith(ext)) return true;
+      for (int i = 0; i < types.length; i++) {
+        if (name.endsWith(types[i])) return true;
+      }
       return false;
    }
  
