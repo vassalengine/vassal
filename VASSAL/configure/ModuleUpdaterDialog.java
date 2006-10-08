@@ -18,7 +18,6 @@
  */
 package VASSAL.configure;
 
-import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -33,6 +32,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
@@ -60,23 +60,24 @@ public class ModuleUpdaterDialog extends JDialog {
     });
     saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        FileDialog fd = GameModule.getGameModule().getFileDialog();
-        fd.setMode(FileDialog.SAVE);
-        fd.setVisible(true);
-        if (fd.getFile() != null) {
-          File output = new File(fd.getDirectory(), fd.getFile());
-          ZipUpdater updater = null;
-          try {
-            updater = new ZipUpdater((File) fileConfig.getValue());
-            updater.createUpdater(new File(GameModule.getGameModule().getArchiveWriter().getArchive().getName()), output);
+        JFileChooser fc = GameModule.getGameModule().getFileChooser();
+        if (fc.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return; 
+        
+        File output = fc.getSelectedFile();
+        ZipUpdater updater = null;
+        try {
+          updater = new ZipUpdater((File) fileConfig.getValue());
+          updater.createUpdater(
+            new File(GameModule.getGameModule()
+              .getArchiveWriter().getArchive().getName()), output);
+        }
+        catch (IOException e1) {
+          String msg = e1.getMessage();
+          if (msg == null) {
+            msg = "Unable to create updater.";
           }
-          catch (IOException e1) {
-            String msg = e1.getMessage();
-            if (msg == null) {
-              msg = "Unable to create updater.";
-            }
-            JOptionPane.showMessageDialog(ModuleUpdaterDialog.this, msg, "Error writing updater", JOptionPane.ERROR_MESSAGE);
-          }
+          JOptionPane.showMessageDialog(ModuleUpdaterDialog.this, msg,
+            "Error writing updater", JOptionPane.ERROR_MESSAGE);
         }
       }
     });

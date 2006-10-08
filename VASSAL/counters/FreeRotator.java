@@ -70,7 +70,10 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   public static final String ID = "rotate;";
   
   public static final String FACING = "_Facing";
+
   public static final String DEGREES = "_Degrees";
+
+  public static final double PI_180 = Math.PI / 180.0;
 
   protected KeyCommand setAngleCommand;
   protected KeyCommand rotateCWCommand;
@@ -122,12 +125,24 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     super.setInner(p);
   }
 
+  private double centerX() {
+    // The center is not on a vertex for pieces with odd widths.
+    return (piece.boundingBox().getWidth() % 2) / 2.0;
+  }
+
+  private double centerY() {
+    // The center is not on vertex for pieces with odd heights.
+    return (piece.boundingBox().getHeight() % 2) / 2.0;
+  }
+
   public Rectangle boundingBox() {
     if (getAngle() == 0.0) {
       return piece.boundingBox();
     }
     else {
-      return AffineTransform.getRotateInstance(-Math.PI * getAngle() / 180.0).createTransformedShape(piece.boundingBox()).getBounds();
+      return AffineTransform
+         .getRotateInstance(-PI_180 * getAngle(), centerX(), centerY())
+         .createTransformedShape(piece.boundingBox()).getBounds();
     }
   }
 
@@ -168,11 +183,13 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     if (getAngle() == 0.0) {
       return piece.getShape();
     }
-    return AffineTransform.getRotateInstance(getAngleInRadians()).createTransformedShape(piece.getShape());
+    return AffineTransform
+      .getRotateInstance(getAngleInRadians(), centerX(), centerY()) 
+      .createTransformedShape(piece.getShape());
   }
 
   public double getAngleInRadians() {
-    return -Math.PI * getAngle() / 180.0;
+    return -PI_180 * getAngle();
   }
 
   public void mySetType(String type) {
@@ -219,10 +236,16 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       Point p = map.componentCoordinates(getGhostPosition());
       Graphics2D g2d = (Graphics2D) g;
       AffineTransform t = g2d.getTransform();
-      g2d.transform(AffineTransform.getRotateInstance(-Math.PI * tempAngle / 180., p.x, p.y));
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
-      g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      g2d.transform(
+         AffineTransform.getRotateInstance(-PI_180 * tempAngle,
+                                           p.x + centerX(),
+                                           p.y + centerY()));
+      g2d.setComposite(
+         AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
+      g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
       piece.draw(g, p.x, p.y, map.getView(), map.getZoom());
       g2d.setTransform(t);
     }
@@ -233,10 +256,14 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   }
 
   private Point getGhostPosition() {
-    AffineTransform t = AffineTransform.getRotateInstance(-Math.PI * tempAngle / 180. - getAngleInRadians(), pivot.x, pivot.y);
+    AffineTransform t = 
+      AffineTransform.getRotateInstance(-PI_180 * (tempAngle - getAngle()),
+                                        pivot.x + centerX(),
+                                        pivot.y + centerY());
     Point2D newPos2D = new Point2D.Float(getPosition().x, getPosition().y);
     t.transform(newPos2D, newPos2D);
-    return new Point((int) Math.round(newPos2D.getX()), (int) Math.round(newPos2D.getY()));
+    return new Point((int) Math.round(newPos2D.getX()),
+                     (int) Math.round(newPos2D.getY()));
   }
 
   public String myGetType() {
@@ -433,7 +460,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     if (drawGhost) {
       Point mousePos = getMap().mapCoordinates(e.getPoint());
       double myAngle = getRelativeAngle(mousePos, pivot);
-      tempAngle = getAngle() + -180. * (myAngle - startAngle) / Math.PI;
+      tempAngle = getAngle() - (myAngle - startAngle)/PI_180;
     }
     getMap().repaint();
   }
@@ -474,21 +501,30 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       Rectangle unrotatedBounds = piece.boundingBox();
       rotatedBounds = boundingBox();
       if (rotatedBounds.width > 0 && rotatedBounds.height > 0) {
-        rotated = new BufferedImage(rotatedBounds.width, rotatedBounds.height, BufferedImage.TYPE_4BYTE_ABGR);
-        ((BufferedImage) rotated).setRGB(0, 0, rotatedBounds.width, rotatedBounds.height, new int[rotatedBounds.width * rotatedBounds.height], 0,
-            rotatedBounds.width);
+        rotated = new BufferedImage(rotatedBounds.width,
+                                    rotatedBounds.height,
+                                    BufferedImage.TYPE_4BYTE_ABGR);
+        ((BufferedImage) rotated).setRGB(0, 0,
+                                         rotatedBounds.width,
+                                         rotatedBounds.height,
+            new int[rotatedBounds.width * rotatedBounds.height], 0,
+                                         rotatedBounds.width);
         Graphics2D g2d = ((BufferedImage) rotated).createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        AffineTransform t = AffineTransform.getTranslateInstance(-rotatedBounds.x, -rotatedBounds.y);
-        t.rotate(-Math.PI * angle / 180.0);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                             RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        AffineTransform t = AffineTransform
+            .getTranslateInstance(-rotatedBounds.x, -rotatedBounds.y);
+        t.rotate(-PI_180 * angle, centerX(), centerY()); 
         t.translate(unrotatedBounds.x, unrotatedBounds.y);
+
         g2d.drawImage(unrotated.getImage(obs), t, obs);
       }
       else {
         RotateFilter filter = new RotateFilter(angle);
         rotatedBounds = piece.boundingBox();
         filter.transformSpace(rotatedBounds);
-        ImageProducer producer = new FilteredImageSource(unrotated.getImage(obs).getSource(), filter);
+        ImageProducer producer =
+          new FilteredImageSource(unrotated.getImage(obs).getSource(), filter);
         rotated = obs.createImage(producer);
       }
       images.put(new Double(angle), rotated);

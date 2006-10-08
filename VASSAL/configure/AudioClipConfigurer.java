@@ -18,10 +18,13 @@
  */
 package VASSAL.configure;
 
+import java.io.File;
+
 import javax.swing.JFileChooser;
 
 import VASSAL.build.module.Documentation;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.ExtensionFileFilter.AudioFileFilter;
 
 /**
  * Class for selecting an AudioClip while editing a module and adding it to
@@ -31,35 +34,22 @@ import VASSAL.tools.ArchiveWriter;
  * 
  */
 public class AudioClipConfigurer extends FileConfigurer {
-  private static final JFileChooser fc = new Chooser();
+  private static final JFileChooser fc;
+
+  static {
+    fc = new JFileChooser(Documentation.getDocumentationBaseDir());
+    fc.setFileFilter(new AudioFileFilter());
+  }
 
   public AudioClipConfigurer(String key, String name, ArchiveWriter archive) {
     super(key, name);
     this.archive = archive;
   }
 
-  protected void addToArchive(java.io.File f) {
-    archive.addSound(f.getPath(), f.getName());
-  }
-
-  private static class Chooser extends JFileChooser {
-    private Chooser() {
-      super(Documentation.getDocumentationBaseDir());
-      setFileFilter(new javax.swing.filechooser.FileFilter() {
-        public boolean accept(java.io.File f) {
-          String name = f.getName();
-          return name.endsWith(".au") || name.endsWith(".AU") || name.endsWith(".wav") || name.endsWith(".WAV") || name.endsWith(".aiff")
-              || name.endsWith(".AIFF") || f.isDirectory();
-        }
-
-        public String getDescription() {
-          return "Audio files";
-        }
-      });
-    }
-  }
-
   protected JFileChooser initFileChooser() {
     return fc;
+  }
+  protected void addToArchive(java.io.File f) {
+    archive.addSound(f.getPath(), f.getName());
   }
 }

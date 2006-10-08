@@ -779,14 +779,17 @@ public class Deck extends Stack {
   private File getSaveFileName() {
     File outputFile = null;
     JFileChooser fc = GameModule.getGameModule().getFileChooser();
-    String name = fc.getSelectedFile().getPath();
-    if (name != null) {
-      int index = name.lastIndexOf('.');
-      if (index > 0) {
-        name = name.substring(0, index) + ".sav";
-        fc.setSelectedFile(new File(name));
+    File sf = fc.getSelectedFile();
+    if (sf != null) {
+      String name = sf.getPath();
+      if (name != null) {
+        int index = name.lastIndexOf('.');
+        if (index > 0) {
+          name = name.substring(0, index) + ".sav";
+          fc.setSelectedFile(new File(name));
+        }
       }
-    }
+    } 
 
     if (fc.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return null;
     
