@@ -98,6 +98,7 @@ import VASSAL.build.module.map.PieceCollection;
 import VASSAL.build.module.map.PieceMover;
 import VASSAL.build.module.map.PieceRecenterer;
 import VASSAL.build.module.map.Scroller;
+import VASSAL.build.module.map.SelectionHighlighters;
 import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.StackExpander;
 import VASSAL.build.module.map.StackMetrics;
@@ -411,6 +412,9 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		if (!getComponents(GlobalProperties.class).hasMoreElements()) {
 			addChild(new GlobalProperties());
 		}
+    if (!getComponents(SelectionHighlighters.class).hasMoreElements()) {
+      addChild(new SelectionHighlighters());
+    }
 		setup(false);
 	}
 
