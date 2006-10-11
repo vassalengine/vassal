@@ -173,6 +173,10 @@ public class Pivot extends Decorator implements EditablePiece {
                          getPosition().y + (int) Math.round(pivot2D.getY()));
       }
     }
+    // Apply map auto-move key
+    if (c != null && getMap() != null && getMap().getMoveKey()!= null) {
+      c.append(Decorator.getOutermost(this).keyEvent(getMap().getMoveKey()));
+    }
     return c;
   }
 

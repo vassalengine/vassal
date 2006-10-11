@@ -229,18 +229,18 @@ public class Zone extends AbstractConfigurable implements GridContainer {
   }
 
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
-    Graphics2D g2d = (Graphics2D) g;
-    Shape oldClip = g2d.getClip();
-    Area newClip = new Area(visibleRect);
-    AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
-    transform.translate(bounds.x, bounds.y);
-    Shape s = transform.createTransformedShape(myPolygon);
-    newClip.intersect(new Area(s));
-    g2d.setClip(newClip);
-    if (getGrid() != null) {
+    if (getGrid() != null && getGrid().isVisible()) {
+      Graphics2D g2d = (Graphics2D) g;
+      Shape oldClip = g2d.getClip();
+      Area newClip = new Area(visibleRect);
+      AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+      transform.translate(bounds.x, bounds.y);
+      Shape s = transform.createTransformedShape(myPolygon);
+      newClip.intersect(new Area(s));
+      g2d.setClip(newClip);
       getGrid().draw(g, bounds, visibleRect, scale, reversed);
+      g2d.setClip(oldClip);
     }
-    g2d.setClip(oldClip);
   }
 
   public static class Editor extends Configurer {

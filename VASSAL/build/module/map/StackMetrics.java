@@ -98,7 +98,6 @@ public class StackMetrics extends AbstractConfigurable {
       else if (value != null) {
         exSepX = ((Integer) value).intValue();
       }
-      //	    exSepX = new Double((String)value).doubleValue();
     }
     else if (EXSEP_Y.equals(name)) {
       if (value instanceof String) {
@@ -111,7 +110,6 @@ public class StackMetrics extends AbstractConfigurable {
       else if (value != null) {
         exSepY = ((Integer) value).intValue();
       }
-      //	    exSepY = new Double((String)value).doubleValue();
     }
     else if (UNEXSEP_X.equals(name)) {
       if (value instanceof String) {
@@ -124,7 +122,6 @@ public class StackMetrics extends AbstractConfigurable {
       else if (value != null) {
         unexSepX = ((Integer) value).intValue();
       }
-      //	    unexSepX = new Double((String)value).doubleValue();
     }
     else if (UNEXSEP_Y.equals(name)) {
       if (value instanceof String) {
@@ -137,7 +134,6 @@ public class StackMetrics extends AbstractConfigurable {
       else if (value != null) {
         unexSepY = ((Integer) value).intValue();
       }
-      //	    unexSepY = new Double((String)value).doubleValue();
     }
     else if (DISABLED.equals(name)) {
       if (value instanceof String) {
