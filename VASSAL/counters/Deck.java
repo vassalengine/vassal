@@ -46,6 +46,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
@@ -60,6 +61,7 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -86,8 +88,10 @@ public class Deck extends Stack {
   protected String reshuffleCommand = "";
   protected String reshuffleTarget;
   protected String reshuffleMsgFormat;
+  protected KeyStroke reshuffleKey;
   protected String reverseMsgFormat;
   protected String shuffleMsgFormat;
+  protected KeyStroke shuffleKey;
   protected String faceDownMsgFormat;
   protected boolean drawFaceUp;
   protected boolean persistable;
@@ -174,6 +178,8 @@ public class Deck extends Stack {
     faceDownMsgFormat = st.nextToken("");
     drawFaceUp = st.nextBoolean(false);
     persistable = st.nextBoolean(false);
+    shuffleKey = st.nextKeyStroke(null);
+    reshuffleKey = st.nextKeyStroke(null);
   }
 
   public String getFaceDownOption() {
@@ -240,6 +246,14 @@ public class Deck extends Stack {
     this.shuffleMsgFormat = shuffleMsgFormat;
   }
 
+  public KeyStroke getShuffleKey() {
+    return shuffleKey;
+  }
+  
+  public void setShuffleKey(KeyStroke shuffleKey) {
+    this.shuffleKey = shuffleKey;
+  }
+  
   public void setShuffle(boolean shuffle) {
     this.shuffle = shuffle;
   }
@@ -289,6 +303,15 @@ public class Deck extends Stack {
   public void setReshuffleCommand(String reshuffleCommand) {
     this.reshuffleCommand = reshuffleCommand;
   }
+  
+  public KeyStroke getReshuffleKey() {
+    return reshuffleKey;
+  }
+  
+  public void setReshuffleKey(KeyStroke reshuffleKey) {
+    this.reshuffleKey = reshuffleKey;
+  }
+  
 
   /**
    * The name of the {@link VASSAL.build.module.map.DrawPile} to which the
@@ -321,7 +344,7 @@ public class Deck extends Stack {
     se.append(drawOutline).append(ColorConfigurer.colorToString(outlineColor)).append(String.valueOf(size.width)).append(String.valueOf(size.height)).append(
         faceDownOption).append(shuffleOption).append(String.valueOf(allowMultipleDraw)).append(String.valueOf(allowSelectDraw)).append(
         String.valueOf(reversible)).append(reshuffleCommand).append(reshuffleTarget).append(reshuffleMsgFormat).append(deckName).append(shuffleMsgFormat)
-        .append(reverseMsgFormat).append(faceDownMsgFormat).append(drawFaceUp).append(persistable);
+        .append(reverseMsgFormat).append(faceDownMsgFormat).append(drawFaceUp).append(persistable).append(shuffleKey).append(reshuffleKey);
     return ID + se.getValue();
   }
 
@@ -573,21 +596,37 @@ public class Deck extends Stack {
       ArrayList l = new ArrayList();
       KeyCommand c = null;
       if (USE_MENU.equals(shuffleOption)) {
-        c = new KeyCommand("Shuffle", null, this) {
+        c = new KeyCommand("Shuffle", getShuffleKey(), this) {
           public void actionPerformed(ActionEvent e) {
             GameModule.getGameModule().sendAndLog(shuffle());
             map.repaint();
           }
         };
+        KeyStrokeListener keyListener = new KeyStrokeListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            GameModule.getGameModule().sendAndLog(shuffle());
+            map.repaint();
+          }
+        });
+        keyListener.setKeyStroke(getShuffleKey());
+        GameModule.getGameModule().addKeyStrokeListener(keyListener);
         l.add(c);
       }
       if (reshuffleCommand.length() > 0) {
-        c = new KeyCommand(reshuffleCommand, null, this) {
+        c = new KeyCommand(reshuffleCommand, getReshuffleKey(), this) {
           public void actionPerformed(ActionEvent evt) {
             GameModule.getGameModule().sendAndLog(sendToDeck());
             map.repaint();
           }
         };
+        KeyStrokeListener keyListener = new KeyStrokeListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            GameModule.getGameModule().sendAndLog(sendToDeck());
+            map.repaint();
+          }
+        });
+        keyListener.setKeyStroke(getReshuffleKey());
+        GameModule.getGameModule().addKeyStrokeListener(keyListener);
         l.add(c);
       }
       if (USE_MENU.equals(faceDownOption)) {

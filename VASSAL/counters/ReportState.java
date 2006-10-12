@@ -70,6 +70,7 @@ public class ReportState extends Decorator implements EditablePiece {
   protected KeyStroke[] cycleDownKeys;
   protected int cycleIndex = -1;
   protected Map oldMap;
+  protected String description;
 
   public ReportState() {
     this(ID, null);
@@ -102,7 +103,8 @@ public class ReportState extends Decorator implements EditablePiece {
 
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
-    se.append(KeyStrokeArrayConfigurer.encode(keys)).append(reportFormat).append(KeyStrokeArrayConfigurer.encode(cycleDownKeys)).append(StringArrayConfigurer.arrayToString(cycleReportFormat));
+    se.append(KeyStrokeArrayConfigurer.encode(keys)).append(reportFormat).append(KeyStrokeArrayConfigurer.encode(cycleDownKeys)).append(StringArrayConfigurer.arrayToString(cycleReportFormat))
+    .append(description);
     return ID + se.getValue();
   }
 
@@ -238,7 +240,11 @@ public class ReportState extends Decorator implements EditablePiece {
   }
 
   public String getDescription() {
-    return "Report Action";
+    String d =  "Report Action";
+    if (description.length() > 0) {
+      d += " - " + description;
+    }
+    return d;
   }
 
   public HelpFile getHelpFile() {
@@ -277,6 +283,7 @@ public class ReportState extends Decorator implements EditablePiece {
       }
     }
     cycleReportFormat = StringArrayConfigurer.stringToArray(st.nextToken(""));
+    description = st.nextToken("");
   }
 
   public PieceEditor getEditor() {
@@ -298,12 +305,15 @@ public class ReportState extends Decorator implements EditablePiece {
     private JCheckBox cycle;
     private StringArrayConfigurer cycleFormat;
     private KeyStrokeArrayConfigurer cycleDownKeys;
+    protected StringConfigurer descInput;
     private JPanel box;
 
     public Ed(ReportState piece) {
 
       box = new JPanel();
       box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+      descInput = new StringConfigurer(null, "Description:  ", piece.description);
+      box.add(descInput.getControls());
       keys = new KeyStrokeArrayConfigurer(null, "Report on these keystrokes:", piece.keys);
       box.add(keys.getControls());
       cycle = new JCheckBox("Cycle through different messages");
@@ -353,6 +363,7 @@ public class ReportState extends Decorator implements EditablePiece {
       else {
         se.append(keys.getValueString()).append(format.getValueString()).append("").append("");
       }
+      se.append(descInput.getValueString());
       return ID + se.getValue();
     }
   }

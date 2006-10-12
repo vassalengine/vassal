@@ -82,7 +82,12 @@ public class PlaySound extends Decorator implements EditablePiece {
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       command = new KeyCommand(menuText, stroke, Decorator.getOutermost(this));
-      commands = new KeyCommand[] {command};
+      if (menuText.length() > 0) {
+        commands = new KeyCommand[] {command};
+      }
+      else {
+        commands = new KeyCommand[0];
+      }
     }
     return commands;
   }

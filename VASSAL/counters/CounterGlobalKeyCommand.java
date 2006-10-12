@@ -63,6 +63,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
   protected int range;
   protected String rangeProperty = "";
   private KeyCommand myCommand;
+  protected String description;
 
   public CounterGlobalKeyCommand() {
     this(ID, null);
@@ -86,6 +87,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
     globalCommand.setKeyStroke(globalKey);
     fixedRange = st.nextBoolean(true);
     rangeProperty = st.nextToken("");
+    description = st.nextToken("");
     command = null;
   }
 
@@ -99,7 +101,8 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
         .append(range)
         .append(globalCommand.isReportSingle())
     	.append(fixedRange)
-    	.append(rangeProperty);
+    	.append(rangeProperty)
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -156,7 +159,11 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
   }
 
   public String getDescription() {
-    return "Global Key Command";
+    String d = "Global Key Command";
+    if (description.length() > 0) {
+      d += " - " + description;
+    }
+    return d;
   }
 
   public HelpFile getHelpFile() {
@@ -202,6 +209,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
     protected BooleanConfigurer fixedRange;
     protected IntConfigurer range;
     protected StringConfigurer rangeProperty;
+    protected StringConfigurer descInput;
     protected JPanel controls;
 
     public Ed(CounterGlobalKeyCommand p) {
@@ -226,6 +234,9 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
+      descInput = new StringConfigurer(null, "Description:  ", p.description);
+      controls.add(descInput.getControls());
+      
       nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
       controls.add(nameInput.getControls());
 
@@ -272,7 +283,8 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
           .append(range.getValueString())
           .append(suppress.booleanValue().booleanValue())
     	  .append(fixedRange.booleanValue().booleanValue())
-    	  .append(rangeProperty.getValueString());
+    	  .append(rangeProperty.getValueString())
+        .append(descInput.getValueString());
       return ID + se.getValue();
     }
 

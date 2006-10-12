@@ -68,6 +68,7 @@ public class Translate extends Decorator implements EditablePiece {
   protected FormattedString yDist = new FormattedString("");
   protected FormattedString yIndex = new FormattedString("");
   protected FormattedString yOffset = new FormattedString("");
+  protected String description;
   protected boolean moveStack;
   protected KeyCommand moveCommand;
   protected static MoveExecuter mover;
@@ -82,7 +83,11 @@ public class Translate extends Decorator implements EditablePiece {
   }
 
   public String getDescription() {
-    return "Move fixed distance";
+    String d = "Move fixed distance";
+    if (description.length() > 0) {
+      d += " - " + description;
+    }
+    return d;
   }
 
   public void mySetType(String type) {
@@ -97,6 +102,7 @@ public class Translate extends Decorator implements EditablePiece {
     yIndex.setFormat(st.nextToken("0"));
     xOffset.setFormat(st.nextToken("0"));
     yOffset.setFormat(st.nextToken("0"));
+    description = st.nextToken("");
     commands = null;
   }
 
@@ -128,7 +134,8 @@ public class Translate extends Decorator implements EditablePiece {
       .append(xIndex.getFormat())
       .append(yIndex.getFormat())
       .append(xOffset.getFormat())
-      .append(yOffset.getFormat());
+      .append(yOffset.getFormat())
+      .append(description);
     return ID + se.getValue();
   }
 
@@ -270,10 +277,13 @@ public class Translate extends Decorator implements EditablePiece {
     protected StringConfigurer xOffsetInput;
     protected StringConfigurer yIndexInput;
     protected StringConfigurer yOffsetInput;
+    protected StringConfigurer descInput;
 
     public Editor(Translate t) {
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      descInput = new StringConfigurer(null, "Description:  ", t.description);
+      controls.add(descInput.getControls());
       name = new StringConfigurer(null, "Command Name:  ", t.commandName);
       controls.add(name.getControls());
       key = new HotKeyConfigurer(null, "Keyboard shortcut:  ", t.keyCommand);
@@ -339,7 +349,8 @@ public class Translate extends Decorator implements EditablePiece {
         .append(xIndexInput.getValueString())
         .append(yIndexInput.getValueString())
         .append(xOffsetInput.getValueString())
-        .append(yOffsetInput.getValueString());
+        .append(yOffsetInput.getValueString())
+        .append(descInput.getValueString());
       return ID + se.getValue();
     }
   }

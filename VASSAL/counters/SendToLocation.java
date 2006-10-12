@@ -78,6 +78,7 @@ public class SendToLocation extends Decorator implements EditablePiece {
   protected FormattedString yOffset = new FormattedString("");
   protected KeyCommand sendCommand;
   protected KeyCommand backCommand;
+  protected String description;
 
   public SendToLocation() {
     this(ID + ";;;;0;0;;", null);
@@ -103,6 +104,7 @@ public class SendToLocation extends Decorator implements EditablePiece {
     yIndex.setFormat(st.nextToken("0"));
     xOffset.setFormat(st.nextToken("0"));
     yOffset.setFormat(st.nextToken("0"));
+    description = st.nextToken("");
   }
 
   public String myGetType() {
@@ -118,7 +120,8 @@ public class SendToLocation extends Decorator implements EditablePiece {
         .append(xIndex.getFormat())
         .append(yIndex.getFormat())
         .append(xOffset.getFormat())
-        .append(yOffset.getFormat());
+        .append(yOffset.getFormat())
+        .append(description);
     return ID + se.getValue();
   }
 
@@ -260,7 +263,11 @@ public class SendToLocation extends Decorator implements EditablePiece {
   }
 
   public String getDescription() {
-    return "Send to Location";
+    String d = "Send to Location";
+    if (description.length() > 0) {
+      d += " - " + description;
+    }
+    return d;
   }
 
   public HelpFile getHelpFile() {
@@ -288,6 +295,7 @@ public class SendToLocation extends Decorator implements EditablePiece {
     protected StringConfigurer xOffsetInput;
     protected StringConfigurer yIndexInput;
     protected StringConfigurer yOffsetInput;
+    protected StringConfigurer descInput;
     private Map map;
     private JPanel controls;
 
@@ -295,6 +303,9 @@ public class SendToLocation extends Decorator implements EditablePiece {
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
+      descInput = new StringConfigurer(null, "Description:  ", p.description);
+      controls.add(descInput.getControls());
+      
       nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
       controls.add(nameInput.getControls());
 
@@ -440,7 +451,8 @@ public class SendToLocation extends Decorator implements EditablePiece {
           .append(xIndexInput.getValueString())
           .append(yIndexInput.getValueString())
           .append(xOffsetInput.getValueString())
-          .append(yOffsetInput.getValueString());
+          .append(yOffsetInput.getValueString())
+          .append(descInput.getValueString());
       return ID + se.getValue();
     }
 
