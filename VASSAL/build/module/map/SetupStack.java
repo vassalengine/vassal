@@ -683,9 +683,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         slot = (PieceSlot) myStack.buildComponents.get(0);
         myPiece = slot.getPiece();
         new DropTarget(this, DnDConstants.ACTION_MOVE, this);
-        ds.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_MOVE, this);
-        
-
+        ds.createDefaultDragGestureRecognizer(this,
+          DnDConstants.ACTION_MOVE, this);
+        setFocusTraversalKeysEnabled(false);
       }
 
       public void paint(Graphics g) {
@@ -702,10 +702,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       public void update(Graphics g) {
         // To avoid flicker, don't clear the display first *
         paint(g);
-      }
-
-      public boolean isManagingFocus() {
-        return true;
       }
 
       public Dimension getPreferredSize() {

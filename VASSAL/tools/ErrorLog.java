@@ -81,7 +81,7 @@ public class ErrorLog {
       });
       Runnable runnable = new Runnable() {
         public void run() {
-          dialog.show();
+          dialog.setVisible(true);
           disabled = Boolean.TRUE.equals(pane.getValue());
         }
       };

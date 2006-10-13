@@ -432,6 +432,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     public GridPanel() {
       super();
+      setFocusTraversalKeysEnabled(false);
     }
     
     public GridPanel(Board b) {
@@ -473,10 +474,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         g.fillOval(p.x-(int) (r1/2), p.y-(int) (r1/2), r1, r1);
         g.drawOval(p.x-(int) (r2/2), p.y-(int) (r2/2), r2, r2);
       }
-    }
-
-    public boolean isManagingFocus() {
-      return true;
     }
     
     public boolean isFocusable() {

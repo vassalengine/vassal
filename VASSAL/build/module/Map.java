@@ -2029,6 +2029,7 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		protected Map map;
 
 		public View(Map m) {
+      setFocusTraversalKeysEnabled(false);
 			map = m;
 		}
 
@@ -2041,10 +2042,6 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		public void update(Graphics g) {
 			// To avoid flicker, don't clear the display first *
 			paint(g);
-		}
-
-		public boolean isManagingFocus() {
-			return true;
 		}
 
 		public Dimension getPreferredSize() {

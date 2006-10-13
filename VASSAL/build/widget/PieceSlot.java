@@ -81,6 +81,11 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   private class Panel extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
 
+    public Panel() {
+      super();
+      setFocusTraversalKeysEnabled(false); 
+    }
+
     public void paint(Graphics g) {
       PieceSlot.this.paint(g);
 
@@ -88,10 +93,6 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     public Dimension getPreferredSize() {
       return PieceSlot.this.getPreferredSize();
-    }
-
-    public boolean isManagingFocus() {
-      return true;
     }
   }
 

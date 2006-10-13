@@ -90,11 +90,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
       }
     });
-    input = new JTextField(60) {
-      public boolean isManagingFocus() {
-        return true;
-      }
-    };
+    input = new JTextField(60); 
+    input.setFocusTraversalKeysEnabled(false);
     input.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         send(formatChat(e.getActionCommand()));

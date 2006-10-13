@@ -54,6 +54,6 @@ public class ShowHelpAction extends AbstractAction {
     if (contents != null) {
       helpWindow.update(contents);
     }
-    helpWindow.show();
+    helpWindow.setVisible(true);
   }
 }

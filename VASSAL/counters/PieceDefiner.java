@@ -447,7 +447,7 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
       HelpFile h = ((EditablePiece) o).getHelpFile();
       if (helpWindow != null) {
         helpWindow.update(h.getContents());
-        helpWindow.show();
+        helpWindow.setVisible(true);
       }
       else {
         h.showWindow();
