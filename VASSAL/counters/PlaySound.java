@@ -164,9 +164,9 @@ public class PlaySound extends Decorator implements EditablePiece {
     private JPanel panel;
 
     public Ed(PlaySound p) {
-      menuConfig = new StringConfigurer(null, "Menu Text", p.menuText);
-      keyConfig = new HotKeyConfigurer(null, "Keyboard Command", p.stroke);
-      soundConfig = new AudioClipConfigurer(null, "Sound Clip", GameModule.getGameModule().getArchiveWriter());
+      menuConfig = new StringConfigurer(null, "Menu Text:  ", p.menuText);
+      keyConfig = new HotKeyConfigurer(null, "Keyboard Command:  ", p.stroke);
+      soundConfig = new AudioClipConfigurer(null, "Sound Clip:  ", GameModule.getGameModule().getArchiveWriter());
       soundConfig.setValue(p.format.getFormat());
       soundConfig.setEditable(true);
       sendConfig = new BooleanConfigurer(null, "Send sound to other players", p.sendToOthers);

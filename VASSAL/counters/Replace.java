@@ -60,7 +60,11 @@ public class Replace extends PlaceMarker {
   }
 
   public String getDescription() {
-    return "Replace with Other";
+    String d = "Replace with Other";
+    if (description.length() > 0) {
+      d += " - " + description;
+    }
+    return d;
   }
 
   public HelpFile getHelpFile() {

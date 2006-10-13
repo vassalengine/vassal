@@ -502,7 +502,7 @@ public class Obscurable extends Decorator implements EditablePiece {
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
       Box box = Box.createHorizontalBox();
-      obscureCommandInput = new StringConfigurer(null, "Mask Command", p.hideCommand);
+      obscureCommandInput = new StringConfigurer(null, "Mask Command:  ", p.hideCommand);
       box.add(obscureCommandInput.getControls());
       obscureKeyInput = new HotKeyConfigurer(null,"Keyboard Command:  ",p.keyCommand);
       box.add(obscureKeyInput.getControls());
@@ -519,12 +519,12 @@ public class Obscurable extends Decorator implements EditablePiece {
       controls.add(box);
 
       box = Box.createHorizontalBox();
-      maskNameInput = new StringConfigurer(null, "Name when masked", p.maskName);
+      maskNameInput = new StringConfigurer(null, "Name when masked:  ", p.maskName);
       box.add(maskNameInput.getControls());
       controls.add(box);
 
       box = Box.createHorizontalBox();
-      displayOption = new StringEnumConfigurer(null, "Display style", optionNames);
+      displayOption = new StringEnumConfigurer(null, "Display style:  ", optionNames);
       for (int i = 0; i < optionNames.length; ++i) {
         if (p.displayStyle == optionChars[i]) {
           displayOption.setValue(optionNames[i]);

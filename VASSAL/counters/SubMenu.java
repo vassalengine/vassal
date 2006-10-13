@@ -137,7 +137,7 @@ public class SubMenu extends Decorator implements EditablePiece {
     private StringArrayConfigurer commandsConfig;
     private Box box;
     public Editor(SubMenu p) {
-      nameConfig = new StringConfigurer(null,"Menu name",p.getMenuName());
+      nameConfig = new StringConfigurer(null,"Menu name:  ",p.getMenuName());
       commandsConfig = new StringArrayConfigurer(null,"Sub-commands",p.getSubcommands());
       box = Box.createVerticalBox();
       box.add(nameConfig.getControls());

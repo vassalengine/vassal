@@ -148,7 +148,14 @@ public class ReturnToDeck extends Decorator implements EditablePiece {
   }
 
   public String getDescription() {
-    return "Return to Deck";
+    String d = "Return to Deck";
+    if (deck != null) {
+      findDeck();
+      if (deck != null) {
+        d += " - " + deck.getConfigureName();
+      }
+    }
+    return d;
   }
 
   public HelpFile getHelpFile() {
@@ -172,7 +179,7 @@ public class ReturnToDeck extends Decorator implements EditablePiece {
     public Ed(ReturnToDeck p) {
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      menuName = new StringConfigurer(null, "Menu Text", p.returnCommand);
+      menuName = new StringConfigurer(null, "Menu Text:  ", p.returnCommand);
       controls.add(menuName.getControls());
       menuKey = new HotKeyConfigurer(null,"Keyboard Command:  ",p.returnKey);
       deckId = p.deckId;

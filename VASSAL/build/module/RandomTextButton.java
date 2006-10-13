@@ -39,6 +39,7 @@ import VASSAL.tools.LaunchButton;
  * This component places a button into the controls window toolbar.
  * Pressing the button generates random numbers or strings and displays the
  * result in the Chatter */
+// TODO Expose result as a property
 public class RandomTextButton extends DiceButton {
   private String[] m_faces;               // array with dice faces
   private boolean isNumeric;

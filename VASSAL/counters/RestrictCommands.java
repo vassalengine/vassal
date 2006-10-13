@@ -218,7 +218,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
       box = new JPanel();
       box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
 
-      name = new StringConfigurer(null, "Name:  ", piece.name);
+      name = new StringConfigurer(null, "Description:  ", piece.name);
       box.add(name.getControls());
 
       actionOption = new JComboBox();

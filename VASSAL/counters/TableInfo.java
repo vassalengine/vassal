@@ -210,9 +210,9 @@ public class TableInfo extends Decorator implements EditablePiece {
   }
 
   private static class Ed implements PieceEditor {
-    private IntConfigurer rowConfig = new IntConfigurer(null, "Number of rows: ");
-    private IntConfigurer colConfig = new IntConfigurer(null, "Number of columns: ");
-    private StringConfigurer commandConfig = new StringConfigurer(null, "Menu Command");
+    private IntConfigurer rowConfig = new IntConfigurer(null, "Number of rows:  ");
+    private IntConfigurer colConfig = new IntConfigurer(null, "Number of columns:  ");
+    private StringConfigurer commandConfig = new StringConfigurer(null, "Menu Command:  ");
     private HotKeyConfigurer keyConfig;
     private JPanel panel;
 

@@ -20,7 +20,7 @@ import VASSAL.tools.SequenceEncoder;
  * 
  */
 public class GlobalHotKey extends Decorator implements EditablePiece {
-	public static final String ID="globalkey;";
+	public static final String ID="globalhotkey;";
 	
 	protected KeyStroke commandKey;
 	

@@ -88,9 +88,11 @@ public class Deck extends Stack {
   protected String reshuffleCommand = "";
   protected String reshuffleTarget;
   protected String reshuffleMsgFormat;
+  protected KeyStrokeListener reshuffleListener;
   protected KeyStroke reshuffleKey;
   protected String reverseMsgFormat;
   protected String shuffleMsgFormat;
+  protected KeyStrokeListener shuffleListener;
   protected KeyStroke shuffleKey;
   protected String faceDownMsgFormat;
   protected boolean drawFaceUp;
@@ -180,6 +182,28 @@ public class Deck extends Stack {
     persistable = st.nextBoolean(false);
     shuffleKey = st.nextKeyStroke(null);
     reshuffleKey = st.nextKeyStroke(null);
+    
+    if (shuffleListener == null) {
+      shuffleListener = new KeyStrokeListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          GameModule.getGameModule().sendAndLog(shuffle());
+          map.repaint();
+        }
+      });
+      GameModule.getGameModule().addKeyStrokeListener(shuffleListener);
+    }
+    shuffleListener.setKeyStroke(getShuffleKey());
+
+    if (reshuffleListener == null) {
+      reshuffleListener = new KeyStrokeListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          GameModule.getGameModule().sendAndLog(sendToDeck());
+          map.repaint();
+        }
+      });
+      GameModule.getGameModule().addKeyStrokeListener(reshuffleListener);
+    }
+    reshuffleListener.setKeyStroke(getReshuffleKey());
   }
 
   public String getFaceDownOption() {
@@ -602,14 +626,6 @@ public class Deck extends Stack {
             map.repaint();
           }
         };
-        KeyStrokeListener keyListener = new KeyStrokeListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            GameModule.getGameModule().sendAndLog(shuffle());
-            map.repaint();
-          }
-        });
-        keyListener.setKeyStroke(getShuffleKey());
-        GameModule.getGameModule().addKeyStrokeListener(keyListener);
         l.add(c);
       }
       if (reshuffleCommand.length() > 0) {
@@ -619,14 +635,6 @@ public class Deck extends Stack {
             map.repaint();
           }
         };
-        KeyStrokeListener keyListener = new KeyStrokeListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            GameModule.getGameModule().sendAndLog(sendToDeck());
-            map.repaint();
-          }
-        });
-        keyListener.setKeyStroke(getReshuffleKey());
-        GameModule.getGameModule().addKeyStrokeListener(keyListener);
         l.add(c);
       }
       if (USE_MENU.equals(faceDownOption)) {

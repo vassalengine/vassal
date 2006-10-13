@@ -246,7 +246,7 @@ public class Pivot extends Decorator implements EditablePiece {
       fixedAngle = new BooleanConfigurer(null, "Pivot through fixed angle", new Boolean(p.fixedAngle));
       controls.add(fixedAngle.getControls());
 
-      angle = new DoubleConfigurer(null, "Angle: ", new Double(p.angle));
+      angle = new DoubleConfigurer(null, "Angle:  ", new Double(p.angle));
       controls.add(angle.getControls());
 
       angle.getControls().setVisible(p.fixedAngle);

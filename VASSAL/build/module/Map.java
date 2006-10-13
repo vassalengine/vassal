@@ -1558,6 +1558,7 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 			}
 		}
 		launchButton.setEnabled(show);
+    launchButton.setVisible(useLaunchButton);
 	}
 
 	public void appendToTitle(String s) {

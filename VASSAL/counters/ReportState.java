@@ -314,7 +314,7 @@ public class ReportState extends Decorator implements EditablePiece {
       box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
       descInput = new StringConfigurer(null, "Description:  ", piece.description);
       box.add(descInput.getControls());
-      keys = new KeyStrokeArrayConfigurer(null, "Report on these keystrokes:", piece.keys);
+      keys = new KeyStrokeArrayConfigurer(null, "Report on these keystrokes:  ", piece.keys);
       box.add(keys.getControls());
       cycle = new JCheckBox("Cycle through different messages");
       box.add(cycle);

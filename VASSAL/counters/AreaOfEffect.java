@@ -89,6 +89,7 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
   protected KeyCommand keyCommand;
   protected boolean fixedRadius = true;
   protected String radiusMarker = "";
+  protected String description = "";
 
   public AreaOfEffect() {
     this(ID + ColorConfigurer.colorToString(defaultTransparencyColor), null);
@@ -100,7 +101,11 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
   }
 
   public String getDescription() {
-    return "Area Of Effect";
+    String d = "Area Of Effect";
+    if (description.length() > 0) {
+      d += " - " + description;
+    }
+    return d;
   }
 
   public String myGetType() {
@@ -114,6 +119,7 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
     se.append(mapShaderName == null ? "" : mapShaderName);
     se.append(fixedRadius);
     se.append(radiusMarker);
+    se.append(description);
 
     return ID + se.getValue();
   }
@@ -134,6 +140,7 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
     }
     fixedRadius = st.nextBoolean(true);
     radiusMarker = st.nextToken("");
+    description = st.nextToken("");
     shader = null;
     commands = null;
   }
@@ -305,6 +312,7 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
     protected BooleanConfigurer useMapShader;
     protected BooleanConfigurer fixedRadius;
     protected StringConfigurer radiusMarker;
+    protected StringConfigurer descConfig;
     protected Box selectShader;
     protected String mapShaderId;
 
@@ -316,6 +324,9 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
       panel.add(new JSeparator());
       panel.add(new JLabel(" "));
 
+      descConfig = new StringConfigurer(null, "Description:  ", trait.description);
+      panel.add(descConfig.getControls());
+      
       useMapShader = new BooleanConfigurer(null, "Use Map Shading", trait.mapShaderName != null);
       mapShaderId = trait.mapShaderName;
       panel.add(useMapShader.getControls());
@@ -443,6 +454,7 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
       }
       se.append(fixedRadius.getValueString());
       se.append(radiusMarker.getValueString());
+      se.append(descConfig.getValueString());
 
       return AreaOfEffect.ID + se.getValue();
     }

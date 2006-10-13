@@ -266,10 +266,10 @@ public class Hideable extends Decorator implements EditablePiece {
       b.add(hideCommandInput);
       controls.add(b);
 
-      colorConfig = new ColorConfigurer(null, "Background color", p.bgColor);
+      colorConfig = new ColorConfigurer(null, "Background color:  ", p.bgColor);
       controls.add(colorConfig.getControls());
 
-      accessConfig = new PieceAccessConfigurer(null, "Can by hidden by ", p.access);
+      accessConfig = new PieceAccessConfigurer(null, "Can by hidden by:  ", p.access);
       controls.add(accessConfig.getControls());
     }
 

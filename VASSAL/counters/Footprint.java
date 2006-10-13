@@ -621,7 +621,7 @@ public class Footprint extends MovementMarkable {
       trailKeyInput = new HotKeyConfigurer(null, "Key Command:  ", p.trailKey);
       controls.add(trailKeyInput.getControls());
 
-      mc = new StringConfigurer(null, "Menu Command", p.menuCommand);
+      mc = new StringConfigurer(null, "Menu Command:  ", p.menuCommand);
       controls.add(mc.getControls());
 
       iv = new BooleanConfigurer(null, "Trails start visible?", new Boolean(p.initiallyVisible));
@@ -630,22 +630,22 @@ public class Footprint extends MovementMarkable {
       gv = new BooleanConfigurer(null, "Trails are visible to all players?", new Boolean(p.globallyVisible));
       controls.add(gv.getControls());
 
-      cr = new IntConfigurer(null, "Circle Radius", new Integer(p.circleRadius));
+      cr = new IntConfigurer(null, "Circle Radius:  ", new Integer(p.circleRadius));
       controls.add(cr.getControls());
 
-      fc = new ColorConfigurer(null, "Circle Fill Color", p.fillColor);
+      fc = new ColorConfigurer(null, "Circle Fill Color:  ", p.fillColor);
       controls.add(fc.getControls());
 
-      lc = new ColorConfigurer(null, "Line Color", p.lineColor);
+      lc = new ColorConfigurer(null, "Line Color:  ", p.lineColor);
       controls.add(lc.getControls());
 
-      lw = new DoubleConfigurer(null,"Line thickness",new Double(p.lineWidth));
+      lw = new DoubleConfigurer(null,"Line thickness:  ",new Double(p.lineWidth));
       controls.add(lw.getControls());
 
-      st = new IntConfigurer(null, "Selected Unit Trail Transparency (0-100)", new Integer(p.selectedTransparency));
+      st = new IntConfigurer(null, "Selected Unit Trail Transparency (0-100):  ", new Integer(p.selectedTransparency));
       controls.add(st.getControls());
 
-      ut = new IntConfigurer(null, "Unselected Unit Trail Transparency (0-100)", new Integer(p.unSelectedTransparency));
+      ut = new IntConfigurer(null, "Unselected Unit Trail Transparency (0-100):  ", new Integer(p.unSelectedTransparency));
       controls.add(ut.getControls());
 
       b = Box.createHorizontalBox();

@@ -256,7 +256,7 @@ public class TriggerAction extends Decorator implements EditablePiece {
       box = new JPanel();
       box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
 
-      name = new StringConfigurer(null, "Trigger Name:  ", piece.name);
+      name = new StringConfigurer(null, "Description:  ", piece.name);
       box.add(name.getControls());
 
       propertyMatch = new StringConfigurer(null, "Trigger when properties match:  ", piece.propertyMatch);

@@ -592,7 +592,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     private JPanel panel;
 
     public Ed(FreeRotator p) {
-      nameConfig = new StringConfigurer(null, "Name:  ", p.name);
+      nameConfig = new StringConfigurer(null, "Description:  ", p.name);
       cwKeyConfig = new HotKeyConfigurer(null, "Command to rotate clockwise:  ", p.rotateCWKey);
       ccwKeyConfig = new HotKeyConfigurer(null, "Command to rotate counterclockwise:  ", p.rotateCCWKey);
       // random rotate
@@ -600,7 +600,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       // end random rotate
       anyConfig = new BooleanConfigurer(null, "Allow arbitrary rotations", new Boolean(p.validAngles.length == 1));
       anyKeyConfig = new HotKeyConfigurer(null, "Command to rotate:  ", p.setAngleKey);
-      facingsConfig = new IntConfigurer(null, "Number of allowed facings :", new Integer(p.validAngles.length == 1 ? 6 : p.validAngles.length));
+      facingsConfig = new IntConfigurer(null, "Number of allowed facings:  ", new Integer(p.validAngles.length == 1 ? 6 : p.validAngles.length));
 
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -609,7 +609,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       panel.add(facingsConfig.getControls());
       cwControls = Box.createHorizontalBox();
       cwControls.add(cwKeyConfig.getControls());
-      cwControls.add(new JLabel("Menu text:"));
+      cwControls.add(new JLabel(" Menu text:  "));
       cwCommand = new JTextField(12);
       cwCommand.setMaximumSize(cwCommand.getPreferredSize());
       cwCommand.setText(p.rotateCWText);
@@ -618,7 +618,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
 
       ccwControls = Box.createHorizontalBox();
       ccwControls.add(ccwKeyConfig.getControls());
-      ccwControls.add(new JLabel("Menu text:"));
+      ccwControls.add(new JLabel(" Menu text:  "));
       ccwCommand = new JTextField(12);
       ccwCommand.setMaximumSize(ccwCommand.getPreferredSize());
       ccwCommand.setText(p.rotateCCWText);
@@ -628,7 +628,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       panel.add(anyConfig.getControls());
       anyControls = Box.createHorizontalBox();
       anyControls.add(anyKeyConfig.getControls());
-      anyControls.add(new JLabel("Menu text:"));
+      anyControls.add(new JLabel(" Menu text:  "));
       anyCommand = new JTextField(12);
       anyCommand.setMaximumSize(anyCommand.getPreferredSize());
       anyCommand.setText(p.setAngleText);
@@ -638,7 +638,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       // random rotate
       rndControls = Box.createHorizontalBox();
       rndControls.add(rndKeyConfig.getControls());
-      rndControls.add(new JLabel("Menu text:"));
+      rndControls.add(new JLabel(" Menu text:  "));
       rndCommand = new JTextField(12);
       rndCommand.setMaximumSize(rndCommand.getPreferredSize());
       rndCommand.setText(p.rotateRNDText);

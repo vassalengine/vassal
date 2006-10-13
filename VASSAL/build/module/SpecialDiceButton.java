@@ -63,6 +63,7 @@ import VASSAL.tools.UniqueIdManager;
 /**
  * ...
  */
+// TODO Expose result as property
 public class SpecialDiceButton extends AbstractConfigurable implements CommandEncoder, UniqueIdManager.Identifyable {
   private static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton");
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t";

@@ -78,6 +78,7 @@ public class PlaceMarker extends Decorator implements EditablePiece {
   protected boolean matchRotation=false;
   protected KeyCommand[] commands;
   protected KeyStroke afterBurnerKey;
+  protected String description = "";
 
   public PlaceMarker() {
     this(ID + "Place Marker;M;null;null;null", null);
@@ -119,6 +120,7 @@ public class PlaceMarker extends Decorator implements EditablePiece {
     se.append(xOffset).append(yOffset);
     se.append(matchRotation);
     se.append(afterBurnerKey);
+    se.append(description);
     return ID + se.getValue();
   }
 
@@ -227,7 +229,11 @@ public class PlaceMarker extends Decorator implements EditablePiece {
   }
 
   public String getDescription() {
-    return "Place Marker";
+    String d = "Place Marker";
+    if (description.length() > 0) {
+      d += " - " + description;
+    }
+    return d;
   }
 
   public HelpFile getHelpFile() {
@@ -265,6 +271,7 @@ public class PlaceMarker extends Decorator implements EditablePiece {
     yOffset = st.nextInt(0);
     matchRotation = st.nextBoolean(false);
     afterBurnerKey = st.nextKeyStroke(null);
+    description = st.nextToken("");
   }
 
   public PieceEditor getEditor() {
@@ -279,15 +286,17 @@ public class PlaceMarker extends Decorator implements EditablePiece {
     private String markerSlotPath;
     protected JButton defineButton = new JButton("Define Marker");
     protected JButton selectButton = new JButton("Select");
-    protected IntConfigurer xOffsetConfig = new IntConfigurer(null,"Horizontal offset");
-    protected IntConfigurer yOffsetConfig = new IntConfigurer(null,"Vertical offset");
+    protected IntConfigurer xOffsetConfig = new IntConfigurer(null,"Horizontal offset:  ");
+    protected IntConfigurer yOffsetConfig = new IntConfigurer(null,"Vertical offset:  ");
     protected BooleanConfigurer matchRotationConfig;
     protected HotKeyConfigurer afterBurner;
+    protected StringConfigurer descConfig;
 
     protected Ed(PlaceMarker piece) {
       matchRotationConfig = createMatchRotationConfig();
+      descConfig = new StringConfigurer(null, "Description:  ", piece.description);
       keyInput = new HotKeyConfigurer(null,"Keyboard Command:  ",piece.key);
-      afterBurner = new HotKeyConfigurer(null, "Keystroke to apply after placement", piece.afterBurnerKey);
+      afterBurner = new HotKeyConfigurer(null, "Keystroke to apply after placement:  ", piece.afterBurnerKey);
       commandInput = new StringConfigurer(null, "Command: ", piece.command.getName());
       GamePiece marker = piece.createBaseMarker();
       pieceInput = new PieceSlot(marker);
@@ -296,6 +305,7 @@ public class PlaceMarker extends Decorator implements EditablePiece {
 
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+      p.add(descConfig.getControls());
       p.add(commandInput.getControls());
       p.add(keyInput.getControls());
       Box b = Box.createHorizontalBox();
@@ -364,6 +374,7 @@ public class PlaceMarker extends Decorator implements EditablePiece {
       se.append(yOffsetConfig.getValueString());
       se.append(matchRotationConfig.getValueString());
       se.append((KeyStroke)afterBurner.getValue());
+      se.append(descConfig.getValueString());
       return ID + se.getValue();
     }
 

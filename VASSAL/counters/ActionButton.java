@@ -40,6 +40,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -54,6 +55,7 @@ public class ActionButton extends Decorator implements EditablePiece {
   protected KeyStroke stroke;
   protected Rectangle bounds = new Rectangle();
   protected ButtonPusher pusher;
+  protected String description = "";
   protected static ButtonPusher globalPusher = new ButtonPusher();
 
   public ActionButton() {
@@ -75,7 +77,7 @@ public class ActionButton extends Decorator implements EditablePiece {
 
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
-    se.append(stroke).append(bounds.x).append(bounds.y).append(bounds.width).append(bounds.height);
+    se.append(stroke).append(bounds.x).append(bounds.y).append(bounds.width).append(bounds.height).append(description);
     return ID + se.getValue();
   }
 
@@ -110,7 +112,7 @@ public class ActionButton extends Decorator implements EditablePiece {
   }
 
   public String getDescription() {
-    return stroke == null ? "Action Button" : "Action Button - " + HotKeyConfigurer.getString(stroke);
+    return description.length() == 0 ? "Action Button" : "Action Button - " + description;
   }
 
   public void mySetType(String type) {
@@ -121,6 +123,7 @@ public class ActionButton extends Decorator implements EditablePiece {
     bounds.y = st.nextInt(-20);
     bounds.width = st.nextInt(40);
     bounds.height = st.nextInt(40);
+    description = st.nextToken("");
   }
 
   public HelpFile getHelpFile() {
@@ -145,18 +148,21 @@ public class ActionButton extends Decorator implements EditablePiece {
     private IntConfigurer widthConfig;
     private IntConfigurer heightConfig;
     private HotKeyConfigurer strokeConfig;
+    protected StringConfigurer descConfig;
 
     public Ed(ActionButton p) {
       box = Box.createVerticalBox();
+      descConfig = new StringConfigurer(null, "Description:  ", p.description);
+      box.add(descConfig.getControls());
       strokeConfig = new HotKeyConfigurer(null, "Invoke Key Command:  ", p.stroke);
       box.add(strokeConfig.getControls());
-      xConfig = new IntConfigurer(null, "Button X-offset ", new Integer(p.bounds.x));
+      xConfig = new IntConfigurer(null, "Button X-offset:  ", new Integer(p.bounds.x));
       box.add(xConfig.getControls());
-      yConfig = new IntConfigurer(null, "Button Y-offset", new Integer(p.bounds.y));
+      yConfig = new IntConfigurer(null, "Button Y-offset:  ", new Integer(p.bounds.y));
       box.add(yConfig.getControls());
-      widthConfig = new IntConfigurer(null, "Button Width", new Integer(p.bounds.width));
+      widthConfig = new IntConfigurer(null, "Button Width:  ", new Integer(p.bounds.width));
       box.add(widthConfig.getControls());
-      heightConfig = new IntConfigurer(null, "Button Height", new Integer(p.bounds.height));
+      heightConfig = new IntConfigurer(null, "Button Height:  ", new Integer(p.bounds.height));
       box.add(heightConfig.getControls());
     }
 
@@ -167,7 +173,7 @@ public class ActionButton extends Decorator implements EditablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(strokeConfig.getValueString()).append(xConfig.getValueString()).append(yConfig.getValueString()).append(widthConfig.getValueString()).append(
-          heightConfig.getValueString());
+          heightConfig.getValueString()).append(descConfig.getValueString());
       return ID + se.getValue();
     }
 
