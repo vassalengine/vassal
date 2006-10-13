@@ -223,20 +223,22 @@ public class Inventory extends AbstractConfigurable implements GameComponent {
           if (path != null) {
             if (path.getLastPathComponent() instanceof CounterNode) {
               final CounterNode node = (CounterNode) path.getLastPathComponent();
-              final GamePiece p = node.getCounter().getPiece();
-              JPopupMenu menu = MenuDisplayer.createPopup(p);
-              menu.addPropertyChangeListener("visible", new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent evt) {
-                  if (Boolean.FALSE.equals(evt.getNewValue())) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                      public void run() {
-                        refresh();
-                      }
-                    });
+              final GamePiece piece = node.getCounter().getPiece();
+              if (piece != null) {
+                JPopupMenu menu = MenuDisplayer.createPopup(piece);
+                menu.addPropertyChangeListener("visible", new PropertyChangeListener() {
+                  public void propertyChange(PropertyChangeEvent evt) {
+                    if (Boolean.FALSE.equals(evt.getNewValue())) {
+                      SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                          refresh();
+                        }
+                      });
+                    }
                   }
-                }
-              });
-              menu.show(tree, e.getX(), e.getY());
+                });
+                menu.show(tree, e.getX(), e.getY());
+              }
             }
           }
         }
