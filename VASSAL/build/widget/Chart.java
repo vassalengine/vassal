@@ -34,6 +34,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.AdjustableSpeedScrollPane;
 
 /**
  * A Chart is used for displaying charts and tables for the module.  The
@@ -64,7 +65,7 @@ public class Chart extends Widget {
       }
       Dimension d = label.getPreferredSize();
       if (d.width > 300 || d.height > 300) {
-        JScrollPane scroll = new JScrollPane(label);
+        JScrollPane scroll = new AdjustableSpeedScrollPane(label);
         scroll.getViewport().setPreferredSize(label.getPreferredSize());
         scroll.getViewport().setAlignmentY(0.0F);
         chart = scroll;

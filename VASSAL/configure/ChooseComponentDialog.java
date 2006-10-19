@@ -27,7 +27,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JScrollPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -35,6 +34,7 @@ import javax.swing.tree.TreePath;
 
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.tools.ScrollPane;
 
 /**
  * Dialog that prompts the user to select a component from the {@link ConfigureTree}
@@ -55,7 +55,7 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
       }
     };
     tree.addTreeSelectionListener(this);
-    getContentPane().add(new JScrollPane(tree));
+    getContentPane().add(new ScrollPane(tree));
     Box b = Box.createHorizontalBox();
     okButton = new JButton("Ok");
     okButton.setEnabled(false);

@@ -25,10 +25,10 @@ import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
+import VASSAL.tools.ScrollPane;
 
 /**
  * Editing window for a module extension
@@ -45,7 +45,10 @@ public class ExtensionEditWindow extends VASSAL.configure.ModuleEditWindow {
   }
 
   private void initExtensionComponents() {
-    super.initComponents(new JScrollPane(new VASSAL.configure.ExtensionTree(GameModule.getGameModule(),helpWindow, extension)));
+    super.initComponents(
+      new ScrollPane(
+         new VASSAL.configure.ExtensionTree(GameModule.getGameModule(),
+                                            helpWindow, extension)));
     toolbar.addSeparator();
     toolbar.add(extension.getEditAction(new JDialog(this)));
   }

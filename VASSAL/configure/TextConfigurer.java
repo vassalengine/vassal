@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 import VASSAL.build.AutoConfigurable;
+import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -143,7 +144,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
         }
       });
       textArea.setText((String) getValue());
-      JScrollPane scroll = new JScrollPane(textArea);
+      JScrollPane scroll = new ScrollPane(textArea);
       if (name != null) {
         scroll.setBorder(new TitledBorder(name));
       }

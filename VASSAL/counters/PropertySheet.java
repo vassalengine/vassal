@@ -55,7 +55,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -76,6 +75,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
+import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -432,7 +432,7 @@ public class PropertySheet extends Decorator implements EditablePiece {
               field = new JTextArea(stateDecoder.nextToken("").replace(LINE_DELIMINATOR, '\n'));
               ((JTextComponent) field).getDocument().addDocumentListener(changeListener);
               m_fields.add(field);
-              field = new JScrollPane(field);
+              field = new ScrollPane(field);
               break;
             case TICKS:
             case TICKS_VAL:
@@ -717,7 +717,7 @@ public class PropertySheet extends Decorator implements EditablePiece {
       c.weighty = 1.0;
       c.fill = GridBagConstraints.BOTH;
       final SmartTable table = new SmartTable(tableModel);
-      add(new JScrollPane(table), c);
+      add(new ScrollPane(table), c);
 
       c.gridwidth = 1;
 

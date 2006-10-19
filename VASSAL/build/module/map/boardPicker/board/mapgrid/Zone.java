@@ -41,7 +41,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -57,6 +56,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.AdjustableSpeedScrollPane;
 
 public class Zone extends AbstractConfigurable implements GridContainer {
   public static final String NAME = "name";
@@ -299,7 +299,7 @@ public class Zone extends AbstractConfigurable implements GridContainer {
       });
       direct.setAlignmentX(0.0f);
       frame.getContentPane().add(direct);
-      frame.getContentPane().add(new JScrollPane(editor));
+      frame.getContentPane().add(new AdjustableSpeedScrollPane(editor));
       JPanel buttonPanel = new JPanel();
       JButton closeButton = new JButton("Ok");
       closeButton.addActionListener(new ActionListener() {

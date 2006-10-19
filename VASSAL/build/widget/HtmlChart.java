@@ -47,6 +47,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.tools.ScrollPane;
 
 /**
  * An HtmlChart is used for displaying html information for the module. The
@@ -120,7 +121,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
       setFile(fileName);
 
-      scroller = new JScrollPane(htmlWin);
+      scroller = new ScrollPane(htmlWin);
       scroller.getViewport().setPreferredSize(htmlWin.getPreferredSize());
       scroller.getViewport().setAlignmentY(0.0F);
     }

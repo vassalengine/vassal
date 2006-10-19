@@ -29,9 +29,9 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.ScrollPane;
 
 /**
  * Dialog for reporting the results of validating a GameModule
@@ -64,7 +64,7 @@ public class ValidationReportDialog extends JDialog {
         reportBox.add(new JLabel("If not fixed, they could cause bugs during game play."));
         JList list = new JList(warnings.toArray());
         list.setVisibleRowCount(Math.min(list.getVisibleRowCount(),warnings.size()));
-        reportBox.add(new JScrollPane(list));
+        reportBox.add(new ScrollPane(list));
         buttonPanel.add(createOkButton());
         buttonPanel.add(createCancelButton());
     }

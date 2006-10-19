@@ -34,7 +34,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
@@ -42,6 +41,7 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.tools.ScrollPane;
 
 /**
  * The editing window for a module
@@ -62,7 +62,9 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
         }
       }
     });
-    initComponents(new JScrollPane(new ConfigureTree(GameModule.getGameModule(), helpWindow)));
+    initComponents(
+      new ScrollPane(
+         new ConfigureTree(GameModule.getGameModule(), helpWindow)));
   }
 
   protected void initComponents(Component view) {

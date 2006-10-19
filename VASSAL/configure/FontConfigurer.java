@@ -28,8 +28,9 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import VASSAL.tools.ScrollPane;
 
 /**
  * A Configurer for {@link Font} values
@@ -111,7 +112,7 @@ public class FontConfigurer extends Configurer {
     f.getContentPane().add(c.getControls());
     final JTextArea tf = new JTextArea();
     tf.setText("The quick brown fox jumps over the lazy dog.");
-    f.getContentPane().add(new JScrollPane(tf));
+    f.getContentPane().add(new ScrollPane(tf));
     c.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
       public void propertyChange(java.beans.PropertyChangeEvent evt) {
         Font font = (Font) evt.getNewValue();

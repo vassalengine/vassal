@@ -39,6 +39,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -159,7 +160,7 @@ public class TableInfo extends Decorator implements EditablePiece {
         table = new JTable(nRows, nCols);
         setValues(values);
         table.setTableHeader(null);
-        JScrollPane scroll = new JScrollPane(table);
+        JScrollPane scroll = new ScrollPane(table);
         scroll.getViewport().setPreferredSize(table.getPreferredSize());
         frame.getContentPane().add(scroll);
         Point p = GameModule.getGameModule().getFrame().getLocation();

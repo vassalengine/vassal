@@ -42,12 +42,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
+import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -169,7 +169,7 @@ public class StringArrayConfigurer extends Configurer {
       leftBox.add(buttonBox);
       JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
       pane.setLeftComponent(leftBox);
-      pane.setRightComponent(new JScrollPane(list));
+      pane.setRightComponent(new ScrollPane(list));
       panel.add(pane);
       panel.setBorder(new TitledBorder(name));
     }

@@ -56,6 +56,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FontConfigurer;
+import VASSAL.tools.ScrollPane;
 import VASSAL.tools.KeyStrokeSource;
 
 /**
@@ -67,8 +68,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   protected JTextArea conversation;
   protected JTextField input;
-  protected JScrollPane scroll = new JScrollPane
-      (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+  protected JScrollPane scroll = new ScrollPane(
+       JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   protected static final String MY_CHAT_COLOR = "myChatColor";
   protected static final String OTHER_CHAT_COLOR = "otherChatColor";

@@ -42,6 +42,7 @@ import javax.swing.table.AbstractTableModel;
 
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.tools.ScrollPane;
 
 /**
  * Controls for configuring an individual ItemInstance  
@@ -96,7 +97,7 @@ public class InstanceConfigurer extends Configurer {
       visBox = Box.createHorizontalBox();
       visBox.setAlignmentX(Box.CENTER_ALIGNMENT);
       visualizer = new Visualizer(defn);
-      visBox.add(new JScrollPane(visualizer));
+      visBox.add(new ScrollPane(visualizer));
       panel.add(visBox);
 
       filler = Box.createHorizontalBox();
@@ -202,12 +203,12 @@ public class InstanceConfigurer extends Configurer {
         }
       });
       
-      scrollPane = new JScrollPane(table);
+      scrollPane = new ScrollPane(table);
       table.setPreferredScrollableViewportSize(new Dimension(300, 100));
       mainPanel.add(scrollPane);
       
       detailPanel = new JPanel();
-      mainPanel.add(new JScrollPane(detailPanel));
+      mainPanel.add(new ScrollPane(detailPanel));
 
       add(mainPanel);
       

@@ -27,7 +27,7 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.RegularGridNumbering;
-
+import VASSAL.tools.AdjustableSpeedScrollPane;
 
 /*
  * $Id$
@@ -104,11 +104,10 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     view.addKeyListener(this);
     view.setFocusable(true);
 
-    scroll =
-        new JScrollPane(
-            view,
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+    scroll = new AdjustableSpeedScrollPane(
+      view,
+      JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+      JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
     scroll.setPreferredSize(new Dimension(800, 600));
     getContentPane().add(scroll, BorderLayout.CENTER);

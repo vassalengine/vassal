@@ -31,6 +31,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionListener;
 
+import VASSAL.tools.ScrollPane;
+
 public class MultiImagePicker extends JPanel {
   private JList imageList;
   private DefaultListModel imageListElements = new DefaultListModel();
@@ -60,7 +62,7 @@ public class MultiImagePicker extends JPanel {
     multiPanel.setLayout(cl);
 
     add(multiPanel);
-    JScrollPane scroll = new JScrollPane(imageList);
+    JScrollPane scroll = new ScrollPane(imageList);
     scroll.getViewport().setMinimumSize(imageList.getPreferredSize());
     add(scroll);
 

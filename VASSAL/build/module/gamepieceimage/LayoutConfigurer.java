@@ -43,6 +43,7 @@ import javax.swing.table.AbstractTableModel;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.tools.ScrollPane;
 
 public class LayoutConfigurer extends Configurer {
 
@@ -108,7 +109,7 @@ public class LayoutConfigurer extends Configurer {
       visBox = Box.createHorizontalBox();
       visBox.setAlignmentX(Box.CENTER_ALIGNMENT);
       visualizer = new Visualizer(layout);
-      visBox.add(new JScrollPane(visualizer));
+      visBox.add(new ScrollPane(visualizer));
       panel.add(visBox);
 
       filler = Box.createHorizontalBox();
@@ -188,7 +189,7 @@ public class LayoutConfigurer extends Configurer {
         }
       });
 
-      scrollPane = new JScrollPane(table);
+      scrollPane = new ScrollPane(table);
       table.setPreferredScrollableViewportSize(new Dimension(300, 100));
       mainPanel.add(scrollPane);
 
@@ -237,7 +238,7 @@ public class LayoutConfigurer extends Configurer {
 
       itemConfigPanel = new JPanel();
       itemConfigPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-      add(new JScrollPane(itemConfigPanel));
+      add(new ScrollPane(itemConfigPanel));
 
       showItem(0);
 

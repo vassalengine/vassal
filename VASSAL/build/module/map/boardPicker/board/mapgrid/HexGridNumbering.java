@@ -50,12 +50,12 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.counters.Labeler;
+import VASSAL.tools.ScrollPane;
 
 public class HexGridNumbering extends RegularGridNumbering {
   private HexGrid grid;
@@ -393,7 +393,7 @@ public class HexGridNumbering extends RegularGridNumbering {
         };
         Dimension d = new Dimension(4000, 4000);
         p.setPreferredSize(d);
-        add(BorderLayout.CENTER, new JScrollPane(p));
+        add(BorderLayout.CENTER, new ScrollPane(p));
       }
     }
     JFrame f = new JFrame();

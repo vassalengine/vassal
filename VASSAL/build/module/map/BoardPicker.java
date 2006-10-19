@@ -37,7 +37,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
@@ -65,6 +64,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.ScrollPane;
 
 /**
  * This class is responsible for maintaining the {@link Board}s on a
@@ -141,7 +141,7 @@ public class BoardPicker extends JDialog
     JPanel pp = new JPanel();
     pp.add(controls);
     getContentPane().add("West", pp);
-    getContentPane().add("Center", new JScrollPane(slotPanel));
+    getContentPane().add("Center", new ScrollPane(slotPanel));
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
     reset();

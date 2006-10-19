@@ -75,6 +75,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
+import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.UniqueIdManager;
 
 /*
@@ -415,7 +416,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     
       
       scroll =
-          new JScrollPane(
+          new AdjustableSpeedScrollPane(
               view,
               JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
               JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);

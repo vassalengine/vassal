@@ -91,6 +91,7 @@ import VASSAL.counters.Stack;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.ScrollPane;
 
 public class Inventory extends AbstractConfigurable implements GameComponent {
   protected LaunchButton launch;
@@ -246,7 +247,9 @@ public class Inventory extends AbstractConfigurable implements GameComponent {
     });
     tree.addKeyListener(new HotKeySender());
 
-    JScrollPane scrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    JScrollPane scrollPane = new ScrollPane(tree,
+      JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+      JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     return scrollPane;
   }
 
@@ -615,7 +618,9 @@ public class Inventory extends AbstractConfigurable implements GameComponent {
       JTextArea textArea = new JTextArea(text);
       textArea.setEditable(false);
 
-      JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      JScrollPane scrollPane = new ScrollPane(textArea,
+         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
       JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), scrollPane, getConfigureName(), JOptionPane.PLAIN_MESSAGE);
     }

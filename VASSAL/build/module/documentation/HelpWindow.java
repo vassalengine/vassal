@@ -32,6 +32,7 @@ import javax.swing.event.HyperlinkListener;
 
 import VASSAL.build.widget.HtmlChart;
 import VASSAL.build.widget.HtmlChart.XTMLEditorKit;
+import VASSAL.tools.ScrollPane;
 
 /**
  * A Window that displays HTML content, with navigation
@@ -54,7 +55,7 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
     XTMLEditorKit myHTMLEditorKit = (new HtmlChart()).new XTMLEditorKit();
     pane.setEditorKit(myHTMLEditorKit);
     
-    JScrollPane scroll = new JScrollPane(pane);
+    JScrollPane scroll = new ScrollPane(pane);
     getContentPane().add(scroll);
     update(contents);
     pack();

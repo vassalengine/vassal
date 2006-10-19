@@ -64,6 +64,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.ScrollPane;
 
 /**
  * This is scaled version of a {@link Map}that gives an overview. Users can
@@ -96,7 +97,7 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
     view = new View();
     view.addMouseListener(view);
 
-    scroll = new JScrollPane(view);
+    scroll = new ScrollPane(view);
     borderPanel = new JPanel(new BorderLayout());
     borderPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
     borderPanel.add(scroll, BorderLayout.CENTER);

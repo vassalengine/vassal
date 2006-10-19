@@ -44,6 +44,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
+import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /*
@@ -252,7 +253,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         }
       });
 
-      JScrollPane secretScroll = new JScrollPane(table);
+      JScrollPane secretScroll = new ScrollPane(table);
       table.setPreferredScrollableViewportSize(new Dimension(500, 100));
 
       add(secretScroll);
@@ -281,7 +282,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
       text = new JTextArea(6, 20);
       text.setEditable(false);
-      JScrollPane scroll = new JScrollPane(text);
+      JScrollPane scroll = new ScrollPane(text);
       scroll.setBorder(new TitledBorder("Text"));
       add(scroll);
     }

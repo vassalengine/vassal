@@ -42,7 +42,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -50,6 +49,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.tools.SavedGameUpdater;
+import VASSAL.tools.ScrollPane;
 
 public class SavedGameUpdaterDialog extends JDialog {
   private HelpWindow helpWindow;
@@ -124,7 +124,7 @@ public class SavedGameUpdaterDialog extends JDialog {
         return this;
       }
     });
-    savedGamesBox.add(new JScrollPane(savedGamesList));
+    savedGamesBox.add(new ScrollPane(savedGamesList));
     getContentPane().add(savedGamesBox);
 
     Box buttonsBox = Box.createHorizontalBox();

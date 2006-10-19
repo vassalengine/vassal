@@ -54,6 +54,7 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.EditPropertiesAction;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.AdjustableSpeedScrollPane;
 
 public class RegionGrid extends AbstractConfigurable implements MapGrid {
 
@@ -393,7 +394,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid {
       view.setFocusable(true);
 
       scroll =
-          new JScrollPane(
+          new AdjustableSpeedScrollPane(
               view,
               JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
               JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);

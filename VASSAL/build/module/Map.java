@@ -142,6 +142,7 @@ import VASSAL.preferences.PositionOption;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 
@@ -1970,9 +1971,14 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	public JComponent getView() {
 		if (theMap == null) {
 			theMap = new View(this);
-			scroll = new JScrollPane(theMap, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-			scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
-			scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0));
+			scroll = new AdjustableSpeedScrollPane(
+            theMap,
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(
+            KeyEvent.VK_PAGE_DOWN, 0));
+			scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(
+            KeyEvent.VK_PAGE_UP, 0));
 		}
 		return theMap;
 	}

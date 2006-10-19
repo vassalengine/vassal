@@ -40,6 +40,7 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.ExtensionFileFilter.ImageFileFilter;
+import VASSAL.tools.ScrollPane;
 
 public class ImagePicker extends javax.swing.JPanel implements MouseListener, ItemListener {
   private static final long serialVersionUID = 1L;
@@ -65,7 +66,10 @@ public class ImagePicker extends javax.swing.JPanel implements MouseListener, It
     imageView.addMouseListener(this);
     
     imageViewer = new JPanel(new BorderLayout());
-    imageScroller = new JScrollPane(imageView, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    imageScroller = new ScrollPane(
+      imageView,
+      JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+      JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     imageViewer.add(imageScroller, BorderLayout.CENTER);
   
     select = new JComboBox(GameModule.getGameModule().getDataArchive().getImageNames());

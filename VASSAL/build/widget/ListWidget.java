@@ -27,7 +27,6 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -35,6 +34,7 @@ import javax.swing.event.ListSelectionListener;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.Widget;
+import VASSAL.tools.ScrollPane;
 
 /**
  * A Widget that corresponds to a panel with a {@link JList} sitting
@@ -87,7 +87,7 @@ public class ListWidget extends Widget
       list.setFixedCellWidth(80);
       list.setVisibleRowCount(3);
       split.setLeftComponent(multiPanel);
-      split.setRightComponent(new JScrollPane(list));
+      split.setRightComponent(new ScrollPane(list));
     }
     return split;
   }

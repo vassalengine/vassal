@@ -37,7 +37,6 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -47,6 +46,7 @@ import javax.swing.WindowConstants;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import VASSAL.Info;
+import VASSAL.tools.ScrollPane;
 
 /**
  * Provides support for hidden panels.
@@ -545,7 +545,7 @@ public class ComponentSplitter {
 
     JPanel text = new JPanel();
     text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
-    text.add(new JScrollPane(new JTextArea(15, 60)));
+    text.add(new ScrollPane(new JTextArea(15, 60)));
     JTextField input = new JTextField(60);
     input.setMaximumSize
         (new Dimension(input.getMaximumSize().width,
@@ -555,7 +555,9 @@ public class ComponentSplitter {
     ComponentSplitter splitter = new ComponentSplitter();
     final SplitPane splitRight = splitter.splitRight(main, smallRight, false);
     final SplitPane splitLeft = splitter.splitLeft(main, smallLeft, false);
-    final SplitPane splitBottom = splitter.splitBottom(splitter.getSplitAncestor(main, -1), new JScrollPane(large), true);
+    final SplitPane splitBottom =
+      splitter.splitBottom(splitter.getSplitAncestor(main, -1),
+                           new ScrollPane(large), true);
     splitBottom.setResizeWeight(0.0);
 
     main.add(text, BorderLayout.CENTER);
