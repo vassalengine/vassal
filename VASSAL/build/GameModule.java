@@ -762,11 +762,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   		globalPropertyListener = new PropertyChangeListener() {
   			public void propertyChange(PropertyChangeEvent evt) {
   				globalProperties.put(evt.getPropertyName(),evt.getNewValue());
-  				Enumeration maps = GameModule.getGameModule().getComponents(Map.class);
-  				while (maps.hasMoreElements()) {
-  					Map map = (Map) maps.nextElement();
-  					map.repaint();
-  				}
+          for (Iterator maps = Map.getAllMaps(); maps.hasNext(); ) {
+            Map map = (Map) maps.next();
+            map.repaint();            
+          }
   			}
   		};
   	}
