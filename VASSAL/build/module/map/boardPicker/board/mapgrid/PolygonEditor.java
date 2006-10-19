@@ -141,7 +141,7 @@ public class PolygonEditor extends JPanel {
 
       g2d.setComposite(AlphaComposite.SrcAtop);
       g2d.setColor(Color.black);
-      g2d.setStroke(new BasicStroke(5.0F));
+      g2d.setStroke(new BasicStroke(2.0F));
       g2d.drawPolygon(polygon);
     }
   }

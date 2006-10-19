@@ -27,7 +27,9 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ToolBarComponent;
@@ -39,7 +41,7 @@ import VASSAL.tools.ToolBarComponent;
  * @author rkinney
  * 
  */
-public class ToolbarMenu extends AbstractConfigurable implements ContainerListener, PropertyChangeListener {
+public class ToolbarMenu extends AbstractConfigurable implements ContainerListener, PropertyChangeListener, GameComponent {
   public static final String BUTTON_TEXT = "text";
   public static final String BUTTON_ICON = "icon";
   public static final String BUTTON_HOTKEY = "hotkey";
@@ -61,6 +63,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
     });
     menu = new JPopupMenu();
     launch.putClientProperty(MENU_PROPERTY, menu);
+    GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
   public void launch() {
@@ -234,5 +237,14 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
         mi.setIcon(b.getIcon());
       }
     }
+  }
+
+  public void setup(boolean gameStarting) {
+    // Prevent our Toolbar buttons from becoming visible on Game close/reopen
+    scheduleBuildMenu();   
+  }
+
+  public Command getRestoreCommand() {
+    return null;
   }
 }
