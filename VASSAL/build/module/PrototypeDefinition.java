@@ -5,17 +5,16 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.net.MalformedURLException;
-
+import java.util.HashMap;
 import javax.swing.Box;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.AddPiece;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringConfigurer;
@@ -27,6 +26,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PieceEditor;
 import VASSAL.counters.Properties;
+import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
 
 /*
@@ -47,14 +47,11 @@ import VASSAL.tools.UniqueIdManager;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-
-
 public class PrototypeDefinition implements Configurable, UniqueIdManager.Identifyable, ValidityChecker {
   private String name = "Prototype";
-  private GamePiece piece;
+  private java.util.Map pieces = new HashMap();
   private String pieceDefinition;
   private static UniqueIdManager idMgr = new UniqueIdManager("prototype-");
-
   private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
 
   public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -112,7 +109,7 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
   }
 
   public void validate(Buildable target, ValidationReport report) {
-    idMgr.validate(this,report);
+    idMgr.validate(this, report);
   }
 
   public void addTo(Buildable parent) {
@@ -120,12 +117,27 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
   }
 
   public GamePiece getPiece() {
-    if (piece == null
-        && pieceDefinition != null) {
-      AddPiece comm = (AddPiece) GameModule.getGameModule().decode(pieceDefinition);
+    return getPiece(pieceDefinition);
+  }
+
+  /**
+   * For the case when the piece definition is a Message Format, expand the definition using the given properties
+   * 
+   * @param props
+   * @return
+   */
+  public GamePiece getPiece(PropertySource props) {
+    String def = props == null ? pieceDefinition : new FormattedString(pieceDefinition).getText(props);
+    return getPiece(def);
+  }
+
+  protected GamePiece getPiece(String def) {
+    GamePiece piece = (GamePiece) pieces.get(def);
+    if (piece == null && def != null) {
+      AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
       if (comm == null) {
-        System.err.println("Couldn't build piece " + pieceDefinition);
-        pieceDefinition = null;
+        System.err.println("Couldn't build piece " + def);
+        def = null;
       }
       else {
         piece = comm.getTarget();
@@ -136,9 +148,8 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
   }
 
   public void setPiece(GamePiece p) {
-    pieceDefinition = p == null ? null
-        : GameModule.getGameModule().encode(new AddPiece(p));
-    piece = null;
+    pieceDefinition = p == null ? null : GameModule.getGameModule().encode(new AddPiece(p));
+    pieces.clear();
   }
 
   public void build(Element e) {
@@ -151,14 +162,13 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
   public Element getBuildElement(Document doc) {
     Element el = doc.createElement(getClass().getName());
     el.setAttribute(NAME_PROPERTY, name);
-    el.appendChild(doc.createTextNode(piece == null ? pieceDefinition : GameModule.getGameModule().encode(new AddPiece(piece))));
+    el.appendChild(doc.createTextNode(pieceDefinition));
     return el;
   }
 
   public static String getConfigureTypeName() {
     return "Definition";
   }
-
   public static class Config extends Configurer {
     private Box box;
     private PieceDefiner pieceDefiner;
@@ -194,7 +204,6 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
 
     public void setValue(String s) {
     }
-
     public static class Definer extends PieceDefiner {
       public void setPiece(GamePiece piece) {
         if (piece != null) {
@@ -219,7 +228,6 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
           super.removeTrait(index);
         }
       }
-
       private static class Plain extends BasicPiece {
         public Plain() {
           super(ID + ";;;;");

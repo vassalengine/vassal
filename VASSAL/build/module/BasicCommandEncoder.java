@@ -329,6 +329,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
 
     if (innerType != null) {
       GamePiece inner = createPiece(innerType);
+      if (inner == null) {
+        System.err.println("Could not create piece with type "+innerType);
+      }
       Decorator d = createDecorator(type, inner);
       return d != null ? d : inner;
     }

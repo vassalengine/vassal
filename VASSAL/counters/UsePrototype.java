@@ -24,32 +24,32 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.io.File;
 import java.net.MalformedURLException;
-
 import javax.swing.KeyStroke;
-
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.tools.SequenceEncoder;
 
 /**
- * This trait is a placeholder for a pre-defined series of traits specified
- * in a {@link VASSAL.build.module.PrototypeDefinition} object.  When a piece
- * that uses a prototype is defined in a module, it is simply assigned the name
- * of a particular prototype definition.  When that piece is during a game,
- * the UsePrototype trait is substituted for the list of traits in the prototype
- * definition.  From that point on, the piece has no record that those traits
- * were defined in a prototype instead of assigned to piece directly.  This is
- * necessary so that subsequent changes to a prototype definition don't invalidate
- * games that were saved using previous versions of the module.
- *
+ * This trait is a placeholder for a pre-defined series of traits specified in a
+ * {@link VASSAL.build.module.PrototypeDefinition} object. When a piece that uses a prototype is defined in a module, it
+ * is simply assigned the name of a particular prototype definition. When that piece is during a game, the UsePrototype
+ * trait is substituted for the list of traits in the prototype definition. From that point on, the piece has no record
+ * that those traits were defined in a prototype instead of assigned to piece directly. This is necessary so that
+ * subsequent changes to a prototype definition don't invalidate games that were saved using previous versions of the
+ * module.
+ * 
  */
 public class UsePrototype extends Decorator implements EditablePiece {
   public static final String ID = "prototype;";
   private String prototypeName;
   private String lastCachedPrototype;
   private GamePiece prototype;
+  private PropertySource properties;
+  private String type;
 
   public UsePrototype() {
     this(ID, null);
@@ -61,7 +61,7 @@ public class UsePrototype extends Decorator implements EditablePiece {
   }
 
   public String getDescription() {
-    return prototypeName != null && prototypeName.length() > 0 ? "Prototype - "+prototypeName : "Prototype";
+    return prototypeName != null && prototypeName.length() > 0 ? "Prototype - " + prototypeName : "Prototype";
   }
 
   public HelpFile getHelpFile() {
@@ -76,7 +76,28 @@ public class UsePrototype extends Decorator implements EditablePiece {
   }
 
   public void mySetType(String type) {
-    prototypeName = type.substring(ID.length());
+    this.type = type;
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type.substring(ID.length()), ';');
+    prototypeName = st.nextToken("");
+    if (st.hasMoreTokens()) {
+      final java.util.Properties p = new java.util.Properties();
+      SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), ',');
+      while (st2.hasMoreTokens()) {
+        SequenceEncoder.Decoder st3 = new SequenceEncoder.Decoder(st2.nextToken(), '=');
+        if (st3.hasMoreTokens()) {
+          String key = st3.nextToken();
+          if (st3.hasMoreTokens()) {
+            String value = st3.nextToken();
+            p.setProperty(key, value);
+          }
+        } 
+      }
+      properties = new PropertySource() {
+        public Object getProperty(Object key) {
+          return p.getProperty(String.valueOf(key));
+        }
+      };
+    }
     lastCachedPrototype = null;
   }
 
@@ -96,11 +117,12 @@ public class UsePrototype extends Decorator implements EditablePiece {
   protected void buildPrototype() {
     PrototypeDefinition def = PrototypesContainer.getPrototype(prototypeName);
     if (def != null) {
-      String type = def.getPiece().getType(); // Check to see if prototype definition has changed
+      GamePiece expandedPrototype = def.getPiece(properties);
+      String type = expandedPrototype.getType(); // Check to see if prototype definition has changed
       if (!type.equals(lastCachedPrototype)) {
         lastCachedPrototype = type;
-        prototype = PieceCloner.getInstance().clonePiece(def.getPiece());
-        Decorator outer = (Decorator)Decorator.getInnermost(prototype).getProperty(Properties.OUTER);
+        prototype = PieceCloner.getInstance().clonePiece(expandedPrototype);
+        Decorator outer = (Decorator) Decorator.getInnermost(prototype).getProperty(Properties.OUTER);
         if (outer != null) { // Will be null for an empty prototype
           outer.setInner(piece);
           prototype.setProperty(Properties.OUTER, this);
@@ -116,9 +138,10 @@ public class UsePrototype extends Decorator implements EditablePiece {
   }
 
   /**
-   * Build a new GamePiece instance based on the traits in the referenced {@link PrototypeDefinition}.
-   * Substitute the new instance for {@link #getInner} and return it.
-   * If the referenced definition does not exist, return the default inner piece.
+   * Build a new GamePiece instance based on the traits in the referenced {@link PrototypeDefinition}. Substitute the
+   * new instance for {@link #getInner} and return it. If the referenced definition does not exist, return the default
+   * inner piece.
+   * 
    * @return the new instance
    */
   public GamePiece getExpandedInner() {
@@ -131,7 +154,7 @@ public class UsePrototype extends Decorator implements EditablePiece {
   }
 
   public String myGetType() {
-    return ID+prototypeName;
+    return type;
   }
 
   public Command keyEvent(KeyStroke stroke) {
@@ -150,7 +173,7 @@ public class UsePrototype extends Decorator implements EditablePiece {
   }
 
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    getExpandedInner().draw(g,x,y,obs,zoom);
+    getExpandedInner().draw(g, x, y, obs, zoom);
   }
 
   public String getName() {
@@ -168,12 +191,11 @@ public class UsePrototype extends Decorator implements EditablePiece {
   public PieceEditor getEditor() {
     return new Editor(this);
   }
-
   public static class Editor implements PieceEditor {
     private StringConfigurer nameConfig;
 
     public Editor(UsePrototype up) {
-      nameConfig = new StringConfigurer(null,"Prototype name:  ",up.prototypeName);
+      nameConfig = new StringConfigurer(null, "Prototype name:  ", up.type.substring(ID.length()));
     }
 
     public Component getControls() {
@@ -185,7 +207,7 @@ public class UsePrototype extends Decorator implements EditablePiece {
     }
 
     public String getType() {
-      return ID+nameConfig.getValueString();
+      return ID + nameConfig.getValueString();
     }
   }
 }
