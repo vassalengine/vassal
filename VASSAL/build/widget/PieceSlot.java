@@ -31,11 +31,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.net.MalformedURLException;
-
 import javax.swing.JPopupMenu;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -307,14 +303,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GamePiece.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GamePiece.htm");
   }
 
   public String[] getAttributeNames() {

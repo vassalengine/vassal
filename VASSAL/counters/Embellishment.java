@@ -32,13 +32,10 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -49,7 +46,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionListener;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -547,14 +543,7 @@ public class Embellishment extends Decorator implements EditablePiece {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "Layer.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("Layer.htm");
   }
 
   public PieceEditor getEditor() {

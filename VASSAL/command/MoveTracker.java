@@ -1,7 +1,6 @@
 package VASSAL.command;
 
 import java.awt.Point;
-
 import VASSAL.build.GameModule;
 import VASSAL.counters.GamePiece;
 

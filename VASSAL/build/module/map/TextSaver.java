@@ -20,15 +20,11 @@ package VASSAL.build.module.map;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
-
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -139,14 +135,7 @@ public class TextSaver extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "Map.htm"), "#TextCapture");
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("Map.htm", "TextCapture");
   }
 
   public static String getConfigureTypeName() {

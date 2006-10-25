@@ -21,9 +21,7 @@ package VASSAL.tools;
 import java.awt.Color;
 import java.awt.event.InputEvent;
 import java.util.NoSuchElementException;
-
 import javax.swing.KeyStroke;
-
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;

@@ -30,7 +30,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -49,15 +48,14 @@ import javax.swing.text.TabExpander;
 import javax.swing.text.Utilities;
 import javax.swing.text.View;
 import javax.swing.text.WrappedPlainView;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FontConfigurer;
-import VASSAL.tools.ScrollPane;
 import VASSAL.tools.KeyStrokeSource;
+import VASSAL.tools.ScrollPane;
 
 /**
  * The chat window component.  Displays text messages and

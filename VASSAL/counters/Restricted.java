@@ -30,11 +30,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.io.File;
-import java.net.MalformedURLException;
-
 import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.documentation.HelpFile;
@@ -62,14 +58,7 @@ public class Restricted extends Decorator implements EditablePiece {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir,"ReferenceManual");
-    try {
-      return new HelpFile(null,new File(dir,"RestrictedAccess.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("RestrictedAccess.htm");
   }
 
   public void mySetType(String type) {

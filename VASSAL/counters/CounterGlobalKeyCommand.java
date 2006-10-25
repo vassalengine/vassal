@@ -7,15 +7,11 @@ import java.awt.Shape;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.Iterator;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -167,14 +163,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GlobalKeyCommand.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GlobalKeyCommand.htm");
   }
 
   public void apply() {

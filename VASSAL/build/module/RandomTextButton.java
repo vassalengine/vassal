@@ -20,11 +20,8 @@ package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.AutoConfigurer;
@@ -207,14 +204,7 @@ public class RandomTextButton extends DiceButton {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GameModule.htm"), "#RandomTextButton");
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GameModule.htm", "RandomTextButton");
   }
 
 

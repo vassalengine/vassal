@@ -22,16 +22,12 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.net.MalformedURLException;
-
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangePiece;
@@ -196,14 +192,7 @@ public class TableInfo extends Decorator implements EditablePiece {
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir,"ReferenceManual");
-    try {
-      return new HelpFile(null,new File(dir,"Spreadsheet.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("Spreadsheet.htm");
   }
 
   public PieceEditor getEditor() {

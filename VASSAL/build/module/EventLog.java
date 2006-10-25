@@ -20,7 +20,6 @@ package VASSAL.build.module;
 
 import java.util.Enumeration;
 import java.util.Vector;
-
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;

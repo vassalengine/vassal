@@ -2,12 +2,8 @@ package VASSAL.build.module.map;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.net.MalformedURLException;
-
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -209,14 +205,7 @@ public class LayerControl extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GamePieceLayers.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GamePieceLayers.htm");
   }
 
   public static String getConfigureTypeName() {

@@ -20,7 +20,6 @@ package VASSAL.counters;
 
 import java.util.Collections;
 import java.util.List;
-
 import VASSAL.build.module.PlayerRoster;
 
 /**

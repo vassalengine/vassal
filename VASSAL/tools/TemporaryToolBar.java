@@ -1,7 +1,6 @@
 package VASSAL.tools;
 
 import java.awt.Component;
-
 import javax.swing.JToolBar;
 
 /**

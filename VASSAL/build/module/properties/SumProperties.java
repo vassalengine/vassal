@@ -2,7 +2,6 @@ package VASSAL.build.module.properties;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import VASSAL.counters.GamePiece;
 
 /**

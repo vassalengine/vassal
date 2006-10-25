@@ -19,7 +19,6 @@
 package VASSAL.command;
 
 import java.io.IOException;
-
 import VASSAL.build.GameModule;
 
 public class PlayAudioClipCommand extends Command {

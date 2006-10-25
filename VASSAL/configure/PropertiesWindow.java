@@ -23,15 +23,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpWindow;

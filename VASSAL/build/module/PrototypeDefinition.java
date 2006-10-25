@@ -3,8 +3,6 @@ package VASSAL.build.module;
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import javax.swing.Box;
 import org.w3c.dom.Document;
@@ -81,14 +79,7 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GameModule.htm"), "#Definition");
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GameModule.htm", "Definition");
   }
 
   public void remove(Buildable child) {

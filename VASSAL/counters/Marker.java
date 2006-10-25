@@ -20,14 +20,10 @@ package VASSAL.counters;
 
 import java.awt.Component;
 import java.awt.Shape;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.StringConfigurer;
@@ -149,14 +145,7 @@ public class Marker extends Decorator implements EditablePiece {
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "PropertyMarker.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("PropertyMarker.htm");
   }
 
   public PieceEditor getEditor() {

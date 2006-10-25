@@ -23,7 +23,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
 import VASSAL.counters.GamePiece;

@@ -52,9 +52,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
 import javax.swing.ImageIcon;
-
 import sun.applet.AppletAudioClip;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;

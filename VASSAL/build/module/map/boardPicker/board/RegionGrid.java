@@ -31,11 +31,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,7 +41,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
@@ -148,14 +144,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid {
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "IrregularGrid.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("IrregularGrid.htm");
   }
 
   public String getAttributeValueString(String key) {

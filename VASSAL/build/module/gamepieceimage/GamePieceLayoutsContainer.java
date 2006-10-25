@@ -2,11 +2,8 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -105,14 +102,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
   }
   
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GamePieceLayouts.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GamePieceLayouts.htm");
   }
 
   public void removeFrom(Buildable parent) {

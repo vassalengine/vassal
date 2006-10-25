@@ -34,14 +34,12 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.StringTokenizer;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -55,8 +53,8 @@ import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.tools.FormattedString;
 import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.FormattedString;
 
 public class Zone extends AbstractConfigurable implements GridContainer {
   public static final String NAME = "name";

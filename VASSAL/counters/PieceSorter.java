@@ -19,7 +19,6 @@
 package VASSAL.counters;
 
 import java.util.Comparator;
-
 import VASSAL.tools.Sort;
 
 /**

@@ -1,7 +1,6 @@
 package VASSAL.build.module.properties;
 
 import java.awt.Component;
-
 import javax.swing.JOptionPane;
 
 /**

@@ -23,9 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Hashtable;
-
 import javax.swing.AbstractAction;
-
 import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpWindow;
 

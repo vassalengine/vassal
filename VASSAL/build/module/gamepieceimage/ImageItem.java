@@ -30,7 +30,6 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.GameModule;
 import VASSAL.configure.StringEnum;

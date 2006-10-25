@@ -25,11 +25,9 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.counters.GamePiece;

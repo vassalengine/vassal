@@ -19,9 +19,7 @@
 package VASSAL.counters;
 
 import java.util.Enumeration;
-
 import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;

@@ -20,7 +20,6 @@ package VASSAL.counters;
 
 import java.util.Enumeration;
 import java.util.Vector;
-
 import VASSAL.build.Configurable;
 import VASSAL.build.widget.PieceSlot;
 

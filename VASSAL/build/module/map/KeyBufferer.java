@@ -25,10 +25,8 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
 import VASSAL.counters.ColoredBorder;

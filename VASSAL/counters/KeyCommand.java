@@ -20,7 +20,6 @@ package VASSAL.counters;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
-
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;

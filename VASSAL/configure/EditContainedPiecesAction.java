@@ -19,9 +19,7 @@
 package VASSAL.configure;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
-
 import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.counters.MassPieceDefiner;

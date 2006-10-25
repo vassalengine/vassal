@@ -21,14 +21,10 @@ package VASSAL.build.module.map;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
-
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -502,14 +498,7 @@ public class DrawPile extends SetupStack {
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "Deck.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("Deck.htm");
   }
 
   public static String getConfigureTypeName() {

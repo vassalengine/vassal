@@ -23,18 +23,15 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.DataArchive;
 
 /**
  * A Chart is used for displaying charts and tables for the module.  The
@@ -88,14 +85,7 @@ public class Chart extends Widget {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "ChartWindow.htm"), "#Chart");
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("ChartWindow.htm", "Chart");
   }
 
   public void setAttribute(String key, Object val) {

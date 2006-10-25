@@ -24,9 +24,6 @@
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Font;
-import java.io.File;
-import java.net.MalformedURLException;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -113,14 +110,7 @@ public class FontStyle extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GamePieceLayout.htm"),"#NamedColors");
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GamePieceLayout.htm","NamedColors");
   }
 
   public Class[] getAllowableConfigureComponents() {

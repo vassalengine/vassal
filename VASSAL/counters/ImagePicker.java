@@ -27,7 +27,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -37,10 +36,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-
 import VASSAL.build.GameModule;
-import VASSAL.tools.ExtensionFileFilter.ImageFileFilter;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.ExtensionFileFilter.ImageFileFilter;
 
 public class ImagePicker extends javax.swing.JPanel implements MouseListener, ItemListener {
   private static final long serialVersionUID = 1L;

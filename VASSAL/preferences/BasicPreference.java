@@ -21,11 +21,7 @@ package VASSAL.preferences;
 
 import java.awt.Component;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.net.MalformedURLException;
-
 import javax.swing.JLabel;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -144,14 +140,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GlobalOptions.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GlobalOptions.htm");
   }
 
   public Class[] getAllowableConfigureComponents() {

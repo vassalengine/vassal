@@ -25,12 +25,10 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.Widget;

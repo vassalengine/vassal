@@ -22,14 +22,12 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.URL;
-
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-
 import VASSAL.build.widget.HtmlChart;
 import VASSAL.build.widget.HtmlChart.XTMLEditorKit;
 import VASSAL.tools.ScrollPane;

@@ -20,7 +20,6 @@ package VASSAL.counters;
 
 import java.util.HashSet;
 import java.util.Iterator;
-
 import VASSAL.build.module.Map;
 
 /**

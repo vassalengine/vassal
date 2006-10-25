@@ -20,11 +20,9 @@ package VASSAL.configure;
 
 import java.awt.event.ActionEvent;
 import java.net.URL;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
-
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 

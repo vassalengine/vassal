@@ -19,16 +19,12 @@
 package VASSAL.build.module;
 
 /*
- *
+ * 
  * @author Brent Easton
- *
+ * 
  * Enhanced Dice Button includes access to Internet Die Servers via the DieManager.
- *
+ * 
  */
-
-import java.io.File;
-import java.net.MalformedURLException;
-
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -39,15 +35,12 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedStringConfigurer;
 
 /**
- * This component places a button into the controls window toolbar.
- * Pressing the button generates random numbers and displays the
- * result in the Chatter */
-
+ * This component places a button into the controls window toolbar. Pressing the button generates random numbers and
+ * displays the result in the Chatter
+ */
 public class InternetDiceButton extends DiceButton implements GameComponent, CommandEncoder {
-
   protected static DieManager dieManager;
   private static final String COMMAND_PREFIX = "SEMAIL\t";
-
   /** Report format variale */
   public static final String DETAILS = "rollDetails";
 
@@ -61,21 +54,19 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
 
   public Class[] getAttributeTypes() {
     Class[] c = super.getAttributeTypes();
-    for (int i=0;i<c.length;++i) {
+    for (int i = 0; i < c.length; ++i) {
       if (c[i] == ReportFormatConfig.class) {
         c[i] = InternetReportFormatConfig.class;
       }
     }
     return c;
   }
-
-
   public static class InternetReportFormatConfig extends ReportFormatConfig {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       FormattedStringConfigurer config = (FormattedStringConfigurer) super.getConfigurer(c, key, name);
       String[] options = config.getOptions();
-      String[] newOptions = new String[options.length+1];
-      System.arraycopy(options,0,newOptions,0,options.length);
+      String[] newOptions = new String[options.length + 1];
+      System.arraycopy(options, 0, newOptions, 0, options.length);
       newOptions[options.length] = DETAILS;
       config.setOptions(newOptions);
       return config;
@@ -108,7 +99,6 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
     }
   }
 
-
   public void removeFrom(Buildable b) {
     dieManager.removeDieButton(this);
     GameModule.getGameModule().removeCommandEncoder(this);
@@ -139,7 +129,6 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
     }
     return s;
   }
-
   private class SetSecondaryEmail extends Command {
     private String msg;
 
@@ -157,17 +146,6 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(
-          null,
-          new File(dir, "GameModule.htm"),
-          "#InternetDiceButton");
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GameModule.htm", "InternetDiceButton");
   }
 }
-

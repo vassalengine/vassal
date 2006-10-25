@@ -25,9 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.swing.JMenuItem;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -236,5 +234,21 @@ public class HelpFile extends AbstractConfigurable {
   public void addTo(Buildable b) {
     ((Documentation) b).getHelpMenu().add(launch);
   }
+  
+  public static HelpFile getReferenceManualPage(String page) {
+    return getReferenceManualPage(page,null);
+  }
+  
+  public static HelpFile getReferenceManualPage(String page, String anchor) {
+    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
+    dir = new File(dir, "ReferenceManual");
+    try {
+      return anchor == null ? new HelpFile(null,new File(dir,page)) : new HelpFile(null, new File(dir, page), "#"+anchor);
+    }
+    catch (MalformedURLException ex) {
+      return null;
+    }
+  }
+
 }
 

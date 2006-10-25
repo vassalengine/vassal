@@ -21,7 +21,6 @@ package VASSAL.build;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.VisibilityCondition;
 

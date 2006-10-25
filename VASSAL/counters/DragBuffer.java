@@ -26,9 +26,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Enumeration;
 import java.util.Vector;
-
 import javax.swing.JFrame;
-
 import VASSAL.build.module.Map;
 import VASSAL.tools.Sort;
 

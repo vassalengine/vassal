@@ -21,10 +21,8 @@ package VASSAL.build.module.noteswindow;
 import java.awt.Component;
 import java.util.HashSet;
 import java.util.Iterator;
-
 import javax.swing.Box;
 import javax.swing.JLabel;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
 import VASSAL.command.Command;

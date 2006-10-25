@@ -20,7 +20,6 @@ package VASSAL.build.module.map;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;

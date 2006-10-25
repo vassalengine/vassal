@@ -1,11 +1,7 @@
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
-import java.io.File;
-import java.net.MalformedURLException;
-
 import org.w3c.dom.Element;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -138,14 +134,7 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
   }
   
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GamePieceImageDefinitions.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm");
   }
 
   public void removeFrom(Buildable parent) {

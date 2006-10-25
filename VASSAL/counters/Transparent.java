@@ -23,7 +23,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.FilteredImageSource;
-
 import VASSAL.build.GameModule;
 import VASSAL.tools.TransparentFilter;
 

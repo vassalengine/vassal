@@ -1,7 +1,6 @@
 package VASSAL.build.module.noteswindow;
 
 import java.util.Date;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.PlayerRoster;
 

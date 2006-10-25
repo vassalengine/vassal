@@ -20,12 +20,10 @@ package VASSAL.build.widget;
 
 import java.beans.PropertyChangeListener;
 import java.util.Vector;
-
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.Widget;

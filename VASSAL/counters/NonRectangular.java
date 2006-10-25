@@ -19,13 +19,11 @@ import java.awt.image.PixelGrabber;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;

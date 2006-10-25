@@ -3,13 +3,9 @@ package VASSAL.build.module.properties;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import javax.swing.JToolBar;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
@@ -62,14 +58,7 @@ public class GlobalProperties extends AbstractConfigurable implements GlobalProp
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GlobalProperties.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GlobalProperties.htm");
   }
 
   public Class[] getAllowableConfigureComponents() {

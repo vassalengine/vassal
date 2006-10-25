@@ -21,10 +21,8 @@ package VASSAL.tools;
 import java.awt.Component;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JViewport;
 
 /**
  ScrollPane extends JScrollPane to have complete mouse-wheel functionality.

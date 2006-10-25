@@ -20,7 +20,6 @@ package VASSAL.configure;
 
 import java.awt.Color;
 import java.awt.Font;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;

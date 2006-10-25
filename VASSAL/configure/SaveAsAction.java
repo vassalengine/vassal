@@ -19,7 +19,6 @@
 package VASSAL.configure;
 
 import java.net.URL;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;

@@ -19,9 +19,7 @@
 package VASSAL.counters;
 
 import java.awt.Point;
-
 import javax.swing.KeyStroke;
-
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
 import VASSAL.tools.SequenceEncoder;

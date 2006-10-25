@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
-
 import VASSAL.configure.Configurer;
 
 /**

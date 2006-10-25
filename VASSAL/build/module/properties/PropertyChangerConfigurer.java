@@ -5,10 +5,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-
 import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringArrayConfigurer;

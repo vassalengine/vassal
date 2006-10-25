@@ -20,9 +20,7 @@ package VASSAL.build.module;
 
 import java.io.File;
 import java.net.MalformedURLException;
-
 import org.w3c.dom.Element;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;

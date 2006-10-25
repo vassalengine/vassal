@@ -18,11 +18,7 @@
  */
 package VASSAL.counters;
 
-import java.io.File;
-import java.net.MalformedURLException;
-
 import javax.swing.KeyStroke;
-
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
@@ -68,14 +64,7 @@ public class Replace extends PlaceMarker {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "Replace.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("Replace.htm");
   }
 
   public String myGetType() {

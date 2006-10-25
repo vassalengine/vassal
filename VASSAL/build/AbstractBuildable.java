@@ -23,11 +23,9 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
 

@@ -20,7 +20,6 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;

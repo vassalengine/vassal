@@ -28,7 +28,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Enumeration;
 import java.util.Vector;
-
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -44,9 +43,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
-
 import VASSAL.Info;
-import VASSAL.tools.ScrollPane;
 
 /**
  * Provides support for hidden panels.

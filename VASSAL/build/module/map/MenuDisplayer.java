@@ -26,16 +26,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
 import VASSAL.counters.Deck;

@@ -1,11 +1,7 @@
 package VASSAL.build.module.properties;
 
 import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.net.MalformedURLException;
-
 import javax.swing.JToolBar;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -141,14 +137,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "GlobalProperties.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("GlobalProperties.htm");
   }
 
   public Class[] getAllowableConfigureComponents() {

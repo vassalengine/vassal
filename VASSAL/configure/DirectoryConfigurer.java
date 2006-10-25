@@ -19,9 +19,7 @@
 package VASSAL.configure;
 
 import java.io.File;
-
 import javax.swing.JFileChooser;
-
 import VASSAL.build.module.Documentation;
 
 /**

@@ -19,7 +19,6 @@
 package VASSAL.configure;
 
 import java.util.Enumeration;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 

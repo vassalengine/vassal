@@ -19,7 +19,6 @@
 package VASSAL.configure;
 
 import java.beans.PropertyChangeListener;
-
 import VASSAL.build.Configurable;
 
 /**

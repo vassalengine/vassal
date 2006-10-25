@@ -22,7 +22,6 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -30,7 +29,6 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.Widget;

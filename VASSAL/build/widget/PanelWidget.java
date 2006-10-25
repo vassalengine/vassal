@@ -23,11 +23,9 @@ import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.util.Vector;
-
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.Widget;
 import VASSAL.configure.VisibilityCondition;

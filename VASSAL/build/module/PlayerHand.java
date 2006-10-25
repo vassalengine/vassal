@@ -28,10 +28,7 @@ package VASSAL.build.module;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.Enumeration;
-
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.HandMetrics;
@@ -63,14 +60,7 @@ public class PlayerHand extends PrivateMap {
   }
 
   public HelpFile getHelpFile() {
-    File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
-    try {
-      return new HelpFile(null, new File(dir, "PlayerHand.htm"));
-    }
-    catch (MalformedURLException ex) {
-      return null;
-    }
+    return HelpFile.getReferenceManualPage("PlayerHand.htm");
   }
 
   public StackMetrics getStackMetrics() {

@@ -9,7 +9,6 @@ package VASSAL.tools;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.GamePiece;

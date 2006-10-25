@@ -51,8 +51,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -139,10 +137,10 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.ReportState;
 import VASSAL.counters.Stack;
 import VASSAL.preferences.PositionOption;
+import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 
@@ -1772,14 +1770,7 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	}
 
 	public HelpFile getHelpFile() {
-		File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-		dir = new File(dir, "ReferenceManual");
-		try {
-			return new HelpFile(null, new File(dir, "Map.htm"));
-		}
-		catch (MalformedURLException ex) {
-			return null;
-		}
+    return HelpFile.getReferenceManualPage("Map.htm");
 	}
 
 	public String[] getAttributeDescriptions() {
