@@ -4,6 +4,7 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
 import VASSAL.counters.ColoredBorder;
 
 /*
@@ -64,5 +65,9 @@ public class SelectionHighlighters extends AbstractConfigurable {
     if (map.getHighlighter() instanceof ColoredBorder) {
       ((ColoredBorder) map.getHighlighter()).addHighlighter(highlighter);
     }
+  }
+
+  public Configurer getConfigurer() {
+    return null;
   }
 }

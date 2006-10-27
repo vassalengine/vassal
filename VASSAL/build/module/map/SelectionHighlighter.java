@@ -254,7 +254,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   }
 
   public HelpFile getHelpFile() {
-    return null;
+    return HelpFile.getReferenceManualPage("Map.htm","SelectionHighlighter");
   }
 
   public Class[] getAllowableConfigureComponents() {

@@ -412,7 +412,7 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		if (!getComponents(GlobalProperties.class).hasMoreElements()) {
 			addChild(new GlobalProperties());
 		}
-    if (!getComponents(GlobalProperties.class).hasMoreElements()) {
+    if (!getComponents(SelectionHighlighters.class).hasMoreElements()) {
       addChild(new SelectionHighlighters());
     }
 		setup(false);
