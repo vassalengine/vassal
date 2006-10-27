@@ -89,7 +89,7 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ScrollPane;
 
-public class Inventory extends AbstractConfigurable implements GameComponent {
+public class Inventory extends AbstractConfigurable implements GameComponent,PlayerRoster.SideChangeListener {
   protected LaunchButton launch;
   protected CounterInventory results;
   protected JTree tree;
@@ -180,6 +180,8 @@ public class Inventory extends AbstractConfigurable implements GameComponent {
   }
 
   public void addTo(Buildable b) {
+	// Support for players changing sides
+	PlayerRoster.addSideChangeListener(this);
     launch.setAlignmentY(0.0F);
     GameModule.getGameModule().getToolBar().add(getComponent());
     GameModule.getGameModule().getGameState().addGameComponent(this);
@@ -574,7 +576,20 @@ public class Inventory extends AbstractConfigurable implements GameComponent {
 
   public void setup(boolean gameStarting) {
     launch.setEnabled(gameStarting && enabledForPlayersSide());
+	  if (gameStarting) 
+		  setupLaunch();
+  }
+  
+  protected void setupLaunch() {
+    launch.setEnabled(enabledForPlayersSide());
     launch.setVisible(launch.isEnabled());
+  }
+  
+  /**
+   * Update inventory according to change of side.
+   */
+  public void sideChanged(String oldSide, String newSide) {
+	  setupLaunch();
   }
 
   protected boolean enabledForPlayersSide() {
@@ -1163,4 +1178,5 @@ public class Inventory extends AbstractConfigurable implements GameComponent {
 
     }
   }
+
 }
