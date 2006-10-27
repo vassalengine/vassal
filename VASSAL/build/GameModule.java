@@ -500,6 +500,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       }
     }
     else {
+      fileChooser.resetChoosableFileFilters();
       fileChooser.rescanCurrentDirectory();
     }
     return fileChooser;

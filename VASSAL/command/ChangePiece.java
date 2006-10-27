@@ -127,7 +127,7 @@ public class ChangePiece extends Command {
   }
 
   public boolean isNull() {
-    return newState.equals(oldState) && hasNullSubcommands();
+    return newState.equals(oldState) && isAtomic();
   }
   
   public String getDetails() {

@@ -31,6 +31,6 @@ public class NullCommand extends Command {
     }
 
     public boolean isNull() {
-        return hasNullSubcommands();
+        return isAtomic();
     }
 }

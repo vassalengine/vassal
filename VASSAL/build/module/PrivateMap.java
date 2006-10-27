@@ -28,18 +28,14 @@ package VASSAL.build.module;
 
 import java.awt.Window;
 import java.awt.dnd.DropTarget;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import VASSAL.Info;
 import VASSAL.build.Buildable;
@@ -205,19 +201,6 @@ public class PrivateMap extends Map {
       edgeBuffer = surrogate.getEdgeBuffer();
     }
     super.setBoards(boardList);
-  }
-
-  public JComponent getView() {
-    if (theMap == null) {
-      theMap = new View(this);
-      scroll =
-          new JScrollPane(theMap,
-                          JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                          JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-      scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
-      scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0));
-    }
-    return theMap;
   }
 
   public static String getConfigureTypeName() {
