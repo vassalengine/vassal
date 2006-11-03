@@ -69,7 +69,7 @@ public class DynamicProperty extends Decorator implements EditablePiece, Propert
   protected DynamicKeyCommand[] keyCommands;
   protected DynamicKeyCommand[] menuCommands;
 
-  private ListConfigurer keyCommandListConfig;
+  protected ListConfigurer keyCommandListConfig;
 
   public DynamicProperty() {
     this(ID, null);
@@ -357,7 +357,7 @@ public class DynamicProperty extends Decorator implements EditablePiece, Propert
           new PropertyPrompt(target, "Change value of " + target.getKey())));
       commandConfig = new StringConfigurer(null, " Menu Command:  ", "Change value");
       keyConfig = new HotKeyConfigurer(null, " Key Command:  ", KeyStroke.getKeyStroke('V', InputEvent.CTRL_MASK));
-      propChangeConfig = new PropertyChangerConfigurer(null, "A ction:  ", target);
+      propChangeConfig = new PropertyChangerConfigurer(null, "Action:  ", target);
       propChangeConfig.setValue(new PropertyPrompt(target, " Change value of " + target.getKey()));
 
       PropertyChangeListener pl = new PropertyChangeListener() {

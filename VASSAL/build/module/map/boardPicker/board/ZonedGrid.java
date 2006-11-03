@@ -29,22 +29,28 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.w3c.dom.Element;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.ZoneHighlight;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.ZonedGridHighlighter;
 import VASSAL.configure.Configurer;
 
 /**
  * Map Grid that contains any number of {@link VASSAL.build.module.map.boardPicker.board.mapgrid.Zone}s against a background {@link MapGrid}
  */
 public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, GridContainer {
-  private ArrayList zones = new ArrayList();
-  private MapGrid background;
-  private GridContainer container;
+  protected ArrayList zones = new ArrayList();
+  protected MapGrid background;
+  protected GridContainer container;
+  protected ZonedGridHighlighter zoneHighlighters;
 
   public String[] getAttributeDescriptions() {
     return new String[0];
@@ -90,6 +96,10 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   public Board getBoard() {
     return container != null ? container.getBoard() : null;
+  }
+  
+  public Map getMap() {
+    return getBoard() == null ? null : getBoard().getMap();
   }
 
   public void setGrid(MapGrid grid) {
@@ -206,15 +216,23 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   public Zone findZone(Point p) {
-    Zone z = null;
     for (Iterator it = zones.iterator(); it.hasNext();) {
       Zone zone = (Zone) it.next();
       if (zone.contains(p)) {
-        z = zone;
-        break;
+        return zone;
       }
     }
-    return z;
+    return null;
+  }
+  
+  public Zone findZone(String name) {
+    for (Iterator it = zones.iterator(); it.hasNext();) {
+      Zone zone = (Zone) it.next();
+      if (zone.getName().equals(name)) {
+        return zone;
+      }
+    }
+    return null;
   }
 
   public Point snapTo(Point p) {
@@ -257,5 +275,28 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   public void setBackgroundGrid(MapGrid background) {
     this.background = background;
+  }
+  
+  public void build(Element e) {
+    super.build(e);
+    if (!getComponents(ZonedGridHighlighter.class).hasMoreElements()) {
+      addChild(new ZonedGridHighlighter());
+    }
+  }
+  
+  private void addChild(Buildable b) {
+    add(b);
+    b.addTo(this);
+  }
+  
+  public void setZoneHighlighter(ZonedGridHighlighter zh) {
+    zoneHighlighters = zh;
+  }
+  
+  public ZoneHighlight getZoneHighlight(String name) {
+    if (zoneHighlighters != null) {
+      return zoneHighlighters.getZoneHighlightByName(name);
+    } 
+    return null;
   }
 }

@@ -67,7 +67,9 @@ import VASSAL.build.module.ServerConnection;
 import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.GlobalPropertiesContainer;
+import VASSAL.build.module.properties.GlobalProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
@@ -765,4 +767,17 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 		return globalPropertyListener;
   }
   
+  public GlobalProperty getGlobalProperty(String name) {
+    GlobalProperty property = null;
+    Enumeration e = getComponents(GlobalProperties.class);
+    if (e != null) {
+      for (Enumeration en = ((GlobalProperties) e.nextElement()).getComponents(GlobalProperty.class) ;e.hasMoreElements() && property == null;) {
+        GlobalProperty prop = (GlobalProperty) en.nextElement();
+        if (prop.getConfigureName().equals(name)) {
+          property = prop;
+        }
+      }
+    }
+    return property;
+  }
 }

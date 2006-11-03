@@ -240,10 +240,13 @@ public class HelpFile extends AbstractConfigurable {
   }
   
   public static HelpFile getReferenceManualPage(String page, String anchor) {
+    if (!anchor.startsWith("#")) {
+      anchor = "#"+anchor;
+    }
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual");
     try {
-      return anchor == null ? new HelpFile(null,new File(dir,page)) : new HelpFile(null, new File(dir, page), "#"+anchor);
+      return anchor == null ? new HelpFile(null,new File(dir,page)) : new HelpFile(null, new File(dir, page), anchor);
     }
     catch (MalformedURLException ex) {
       return null;

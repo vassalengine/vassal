@@ -53,8 +53,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
     String oldValue = (String) property.getPropertyValue();
     String newValue = getNewValue();
     if (newValue != null && !newValue.equals(oldValue)) {
-      Command c = new GlobalProperty.SetGlobalProperty(property, oldValue, newValue);
-      property.setPropertyValue(newValue);
+      Command c = property.setPropertyValue(newValue);
       if (report.getFormat().length() > 0) {
         report.setProperty(OLD_VALUE_FORMAT, oldValue);
         report.setProperty(NEW_VALUE_FORMAT, property.getPropertyValue());

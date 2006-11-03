@@ -108,6 +108,7 @@ import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.GlobalPropertiesContainer;
+import VASSAL.build.module.properties.GlobalProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.widget.MapWidget;
 import VASSAL.command.AddPiece;
@@ -519,7 +520,7 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		}
 		return globalPropertyListener;
 	}
-
+  
 	/**
    * Add a {@link Drawable} component to this map
    * 
@@ -638,6 +639,21 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		}
 		return null;
 	}
+  
+  /**
+   * Search on all board for a Zone with the given name
+   * @param name
+   * @return
+   */
+  public Zone findZone(String name) {
+    for (Iterator it = boards.iterator(); it.hasNext();) {
+      Board b = (Board) it.next();
+      if (b.getGrid() instanceof ZonedGrid) {
+        return ((ZonedGrid)b.getGrid()).findZone(name);
+      }
+    }
+    return null;
+  }
 
 	/**
    * Return the board with the given name
@@ -1938,6 +1954,23 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		return l.iterator();
 	}
 
+  /**
+   * Find a contained Global Variable by name
+   */
+  public GlobalProperty getGlobalProperty(String name) {
+    GlobalProperty property = null;
+    Enumeration e = getComponents(GlobalProperties.class);
+    if (e != null) {
+      for (Enumeration en = ((GlobalProperties) e.nextElement()).getComponents(GlobalProperty.class) ;en.hasMoreElements() && property == null;) {
+        GlobalProperty prop = (GlobalProperty) en.nextElement();
+        if (prop.getConfigureName().equals(name)) {
+          property = prop;
+        }
+      }
+    }
+    return property;
+  }
+  
 	/**
    * Each Map must have a unique String id
    * 

@@ -9,4 +9,5 @@ import java.beans.PropertyChangeListener;
  */
 public interface GlobalPropertiesContainer {
   PropertyChangeListener getPropertyListener();
+  GlobalProperty getGlobalProperty(String propertyName);
 }

@@ -27,6 +27,7 @@
 package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -75,7 +76,9 @@ public class StringEnumConfigurer extends Configurer {
   }
   
   public JComboBox getComboBox() {
-    return new JComboBox(validValues);
+    JComboBox b = new JComboBox(validValues);
+    b.setMaximumSize(new Dimension(b.getMaximumSize().width,b.getPreferredSize().height));
+    return b;
   }
 
   public boolean isValidValue(Object o) {

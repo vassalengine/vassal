@@ -1,6 +1,9 @@
 package VASSAL.build.module.properties;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JToolBar;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -17,12 +20,12 @@ import VASSAL.tools.ToolBarComponent;
 
 /**
  * Adds a global property to a Map or Module
+ * 
  * @author rkinney
- *
+ * 
  */
 public class GlobalProperty extends AbstractConfigurable implements ToolBarComponent, GameComponent, CommandEncoder, PropertySource {
   protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
   public static final String NAME = "name";
   public static final String INITIAL_VALUE = "initialValue";
   public static final String DESCRIPTION = "description";
@@ -30,8 +33,6 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   public static final String MIN_VALUE = "min";
   public static final String MAX_VALUE = "max";
   public static final String WRAP = "wrap";
-  
-
   protected static final String COMMAND_PREFIX = "GlobalProperty\t";
   protected TemporaryToolBar tempToolbar = new TemporaryToolBar();
   protected String propertyValue;
@@ -43,9 +44,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   protected boolean wrap;
   protected VisibilityCondition numericVisibility;
   protected FormattedString format = new FormattedString();
-
   protected PropertySource propertySource;
-  
 
   public GlobalProperty() {
     numericVisibility = new VisibilityCondition() {
@@ -56,26 +55,29 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Name", "Initial value", "Description","Is Numeric","Minimum value","Maximum value","Wrap around"};
+    return new String[]{"Name", "Initial value:  ", "Description:  ", "Is Numeric", "Minimum value:  ", "Maximum value:  ", "Wrap around"};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, String.class, Boolean.class, String.class,String.class, Boolean.class};
+    return new Class[]{String.class, String.class, String.class, Boolean.class, String.class, String.class, Boolean.class};
   }
 
   public String[] getAttributeNames() {
-    return new String[] {NAME, INITIAL_VALUE, DESCRIPTION,NUMERIC,MIN_VALUE,MAX_VALUE,WRAP};
+    return new String[]{NAME, INITIAL_VALUE, DESCRIPTION, NUMERIC, MIN_VALUE, MAX_VALUE, WRAP};
   }
 
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       String oldName = getConfigureName();
-      propertyChangeSupport.firePropertyChange(oldName,propertyValue,null); // Clear the value under the old key
+      propertyChangeSupport.firePropertyChange(oldName, propertyValue, null); // Clear the value under the old key
       setConfigureName((String) value);
-      propertyChangeSupport.firePropertyChange(getConfigureName(),null,propertyValue);
+      propertyChangeSupport.firePropertyChange(getConfigureName(), null, propertyValue);
     }
     else if (INITIAL_VALUE.equals(key)) {
       initialValue = (String) value;
+      if (initialValue == null) {
+        initialValue = "";
+      }
       setPropertyValue(initialValue);
     }
     else if (DESCRIPTION.equals(key)) {
@@ -85,10 +87,10 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       numeric = Boolean.TRUE.equals(value) || "true".equals(value);
     }
     else if (MIN_VALUE.equals(key)) {
-      minValue = (String)value;
+      minValue = (String) value;
     }
     else if (MAX_VALUE.equals(key)) {
-      maxValue = (String)value;
+      maxValue = (String) value;
     }
     else if (WRAP.equals(key)) {
       wrap = Boolean.TRUE.equals(value) || "true".equals(value);
@@ -119,7 +121,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     }
     return null;
   }
-  
+
   public VisibilityCondition getAttributeVisibility(String name) {
     if (MIN_VALUE.equals(name) || MAX_VALUE.equals(name) || WRAP.equals(name)) {
       return numericVisibility;
@@ -130,8 +132,8 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public void removeFrom(Buildable parent) {
-    propertyChangeSupport.firePropertyChange(getConfigureName(),propertyValue,null);
-    propertyChangeSupport.removePropertyChangeListener(((GlobalPropertiesContainer)parent).getPropertyListener());
+    propertyChangeSupport.firePropertyChange(getConfigureName(), propertyValue, null);
+    propertyChangeSupport.removePropertyChangeListener(((GlobalPropertiesContainer) parent).getPropertyListener());
     GameModule.getGameModule().removeCommandEncoder(this);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
@@ -146,28 +148,37 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   public void addTo(Buildable parent) {
     // Initialize property with current values
-    propertyChangeSupport.addPropertyChangeListener(((GlobalPropertiesContainer)parent).getPropertyListener());
-    propertyChangeSupport.firePropertyChange(getConfigureName(),null,propertyValue);
-    tempToolbar.setDelegate((ToolBarComponent)parent);
+    propertyChangeSupport.addPropertyChangeListener(((GlobalPropertiesContainer) parent).getPropertyListener());
+    propertyChangeSupport.firePropertyChange(getConfigureName(), null, propertyValue);
+    tempToolbar.setDelegate((ToolBarComponent) parent);
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     propertySource = (PropertySource) parent;
   }
-  
+
   public String getPropertyValue() {
     return propertyValue;
   }
-  
-  public void setPropertyValue(String value) {
+
+  public Command setPropertyValue(String value) {
     String oldValue = propertyValue;
     propertyValue = value;
-    propertyChangeSupport.firePropertyChange(getConfigureName(),oldValue,propertyValue);
+    propertyChangeSupport.firePropertyChange(getConfigureName(), oldValue, propertyValue);
+    return new GlobalProperty.SetGlobalProperty(this, oldValue, value);
+  }
+
+  public void addPropertyChangeListener(PropertyChangeListener listener) {
+    propertyChangeSupport.addPropertyChangeListener(listener);
+  }
+
+  public void removePropertyChangeListener(PropertyChangeListener listener) {
+    propertyChangeSupport.removePropertyChangeListener(listener);
   }
 
   public JToolBar getToolBar() {
     return tempToolbar.getToolBar();
   }
-  
+
   public void setup(boolean gameStarting) {
     return;
   }
@@ -178,24 +189,31 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   public Command decode(String command) {
     Command comm = null;
-
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, ';');
     String prefix = sd.nextToken("");
     if (prefix.equals(COMMAND_PREFIX)) {
-      String marker = sd.nextToken("");
-      if (marker.equals(getConfigureName())) {
+      String propertyId = sd.nextToken("");
+      if (propertyId.equals(getPropertyId())) {
         comm = new SetGlobalProperty(this, getPropertyValue(), sd.nextToken(""));
       }
     }
     return comm;
   }
+  
+  /**
+   * A String that identifies this property by name in an encoded Commadn
+   * @return
+   */
+  protected String getPropertyId() {
+    return getConfigureName();
+  }
 
   public String encode(Command c) {
     String s = null;
-    if (c instanceof SetGlobalProperty ) {
+    if (c instanceof SetGlobalProperty) {
       if (((SetGlobalProperty) c).getTargetName().equals(getConfigureName())) {
         SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, ';');
-        se.append(getConfigureName());
+        se.append(getPropertyId());
         se.append(((SetGlobalProperty) c).newValue);
         s = se.getValue();
       }
@@ -203,18 +221,15 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     return s;
   }
   /**
-   * Command to pass a new Global property value to other players or into the
-   * logfile.
+   * Command to pass a new Global property value to other players or into the logfile.
    */
-  protected static class SetGlobalProperty extends Command {
-
+  public static class SetGlobalProperty extends Command {
     protected String newValue;
     protected String oldValue;
     protected GlobalProperty target;
     protected String targetName;
 
-    protected SetGlobalProperty(GlobalProperty target, String oldV, String newV) {
-
+    public SetGlobalProperty(GlobalProperty target, String oldV, String newV) {
       oldValue = oldV;
       newValue = newV;
       this.target = target;
@@ -223,7 +238,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     public String getTargetName() {
       return target == null ? "" : target.getConfigureName();
     }
-    
+
     protected void executeCommand() {
       target.setPropertyValue(newValue);
     }
@@ -232,6 +247,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       return new SetGlobalProperty(target, newValue, oldValue);
     }
   }
+
   public int getMaxValue() {
     int max = 100;
     if (maxValue != null) {
@@ -278,5 +294,19 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     return "Global Property";
   }
 
-
+  /**
+   * Look for a GlobalProperty in the list of GlobalPropertyContainers. Return the first one found, searching the lists
+   * in order. The list may contain null references, which are skipped
+   * 
+   * @param propertyContainers
+   * @return
+   */
+  public static GlobalProperty findGlobalProperty(String propertyName, List propertyContainers) {
+    GlobalProperty p = null;
+    for (Iterator it = propertyContainers.iterator(); it.hasNext() && p == null;) {
+      GlobalPropertiesContainer c = (GlobalPropertiesContainer) it.next();
+      p = (c == null ? null : c.getGlobalProperty(propertyName));
+    }
+    return p;
+  }
 }

@@ -63,6 +63,8 @@ public class BasicPiece implements EditablePiece, StateMergeable {
    * Return information about the current location of the piece through getProperty():
    *
    * LocationName - Current Location Name of piece as displayed in Chat Window
+   * CurrentX     - Current X position
+   * CurrentY     - Current Y position
    * CurrentMap   - Current Map name or "" if not on a map
    * CurrentBoard - Current Board name or "" if not on a map
    * CurrentZone  - If the current map has a multi-zoned grid, then
@@ -73,6 +75,8 @@ public class BasicPiece implements EditablePiece, StateMergeable {
   public static final String CURRENT_MAP = "CurrentMap";
   public static final String CURRENT_BOARD = "CurrentBoard";
   public static final String CURRENT_ZONE = "CurrentZone";
+  public static final String CURRENT_X = "CurrentX";
+  public static final String CURRENT_Y = "CurrentY";
   public static final String BASIC_NAME = "BasicName";
   public static final String PIECE_NAME = "PieceName";
   public static final String DECK_NAME = "DeckName";
@@ -166,13 +170,23 @@ public class BasicPiece implements EditablePiece, StateMergeable {
       }
       return "";
     }
+    else if (CURRENT_X.equals(key)) {
+      return String.valueOf(getPosition().x);
+    }
+    else if (CURRENT_Y.equals(key)) {
+      return String.valueOf(getPosition().y);      
+    }
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return "";
     }
     Object prop = props == null ? null : props.get(key);
     if (prop == null) {
       Map map = getMap();
-      if (map != null) {
+      Zone zone = (map == null ? null : map.findZone(getPosition()));
+      if (zone != null) {
+        prop = zone.getProperty(key);
+      }
+      else if (map != null) {
         prop = map.getProperty(key);
       }
       else {

@@ -91,6 +91,12 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
     changeSupport.addPropertyChangeListener(l);
   }
 
+  public void removePropertyChangeListener(PropertyChangeListener l) {
+    if (changeSupport != null) {
+      changeSupport.removePropertyChangeListener(l);
+    }
+  }
+  
   public Configurable[] getConfigureComponents() {
     Vector v = new Vector();
     for (Enumeration e = getBuildComponents();

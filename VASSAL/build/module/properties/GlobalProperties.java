@@ -3,6 +3,7 @@ package VASSAL.build.module.properties;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.JToolBar;
@@ -101,4 +102,14 @@ public class GlobalProperties extends AbstractConfigurable implements GlobalProp
     return propertySource == null ? null : propertySource.getProperty(key);
   }
 
+  public GlobalProperty getGlobalProperty(String name) {
+    GlobalProperty property = null;
+    for (Enumeration e = getComponents(GlobalProperty.class);e.hasMoreElements() && property == null;) {
+      GlobalProperty prop = (GlobalProperty) e.nextElement();
+      if (prop.getConfigureName().equals(name)) {
+        property = prop;
+      }
+    }
+    return property;
+  }
 }
