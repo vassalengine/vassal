@@ -23,7 +23,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -89,6 +91,19 @@ public class PolygonEditor extends JPanel {
     repaint();
   }
 
+  public void center(Point p) {
+    Rectangle r = this.getVisibleRect();
+    if (r.width == 0) {
+      r.width = 600;
+      r.height = 600;
+    }
+    int x = p.x-r.width/2;
+    int y = p.y-r.height/2;
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
+    scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
+  }
+  
   public static void reset(Polygon p, String path) {
     p.reset();
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(path, ';');

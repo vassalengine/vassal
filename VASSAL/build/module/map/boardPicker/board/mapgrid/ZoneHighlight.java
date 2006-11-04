@@ -303,7 +303,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
   
   public class PercentageConfigurer extends Configurer {
 
-    protected int percentage;
+    protected int percentage = 50;
     
     public PercentageConfigurer(String key, String name, Object val) {
       super(key, name, val);
@@ -320,7 +320,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
 
     public Component getControls() {
 
-      JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,50);
+      JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,percentage);
 
       Hashtable labelTable = new Hashtable();
       labelTable.put( new Integer(0), new JLabel("Transparent") );

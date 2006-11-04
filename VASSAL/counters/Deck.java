@@ -410,7 +410,7 @@ public class Deck extends Stack {
         for (int i = 0; i < getPieceCount(); ++i) {
           indices.add(new Integer(i));
         }
-        while (count-- > 0) {
+        while (count-- > 0 && indices.size() > 0) {
           int i = GameModule.getGameModule().getRNG().nextInt(indices.size());
           int index = ((Integer) indices.get(i)).intValue();
           indices.remove(i);

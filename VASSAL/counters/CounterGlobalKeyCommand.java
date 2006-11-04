@@ -14,6 +14,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -84,6 +85,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
     fixedRange = st.nextBoolean(true);
     rangeProperty = st.nextToken("");
     description = st.nextToken("");
+    globalCommand.setSelectFromDeck(st.nextInt(-1));
     command = null;
   }
 
@@ -98,7 +100,8 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
         .append(globalCommand.isReportSingle())
     	.append(fixedRange)
     	.append(rangeProperty)
-      .append(description);
+      .append(description)
+      .append(globalCommand.getSelectFromDeck());
     return ID + se.getValue();
   }
 
@@ -193,6 +196,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
     protected HotKeyConfigurer keyInput;
     protected HotKeyConfigurer globalKey;
     protected StringConfigurer propertyMatch;
+    protected MassKeyCommand.DeckPolicyConfig deckPolicy;
     protected BooleanConfigurer suppress;
     protected BooleanConfigurer restrictRange;
     protected BooleanConfigurer fixedRange;
@@ -237,6 +241,10 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
 
       propertyMatch = new StringConfigurer(null, "Matching Properties:  ", p.propertiesFilter);
       controls.add(propertyMatch.getControls());
+      
+      deckPolicy = new MassKeyCommand.DeckPolicyConfig();
+      deckPolicy.setValue(new Integer(p.globalCommand.getSelectFromDeck()));
+      controls.add(deckPolicy.getControls());
 
       restrictRange = new BooleanConfigurer(null, "Restrict Range?", p.restrictRange);
       controls.add(restrictRange.getControls());
@@ -273,7 +281,8 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
           .append(suppress.booleanValue().booleanValue())
     	  .append(fixedRange.booleanValue().booleanValue())
     	  .append(rangeProperty.getValueString())
-        .append(descInput.getValueString());
+        .append(descInput.getValueString())
+        .append(deckPolicy.getIntValue());
       return ID + se.getValue();
     }
 

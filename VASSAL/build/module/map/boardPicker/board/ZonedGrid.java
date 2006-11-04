@@ -123,30 +123,77 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     ((GridContainer) parent).removeGrid(this);
   }
 
+  /*
+   * Zones that do not use the background grid must clip out the portion of the background 
+   * grid that they cover. Cache as much of the work as possible to prevent bogging down
+   * with large numbers of zones.
+   */
+  protected Area scaledZones = null;
+  protected Area translatedZones = null;
+  protected AffineTransform scaleTransform;
+  protected AffineTransform translateTransform;
+  protected double lastScale = 0.0;
+  protected int lastX = -1;
+  protected int lastY = -1;
+  
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
-    Area allZones = null;
-    AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
-    transform.translate(bounds.x, bounds.y);
-    for (Iterator it = zones.iterator(); it.hasNext();) {
-      Zone zone = (Zone) it.next();
-      if (allZones == null) {
-        allZones = new Area(transform.createTransformedShape(zone.getShape()));
+
+    /* 
+     * Skip clipping if there is no background grid, or it isn't visible
+     */
+    if (background != null && background.isVisible()) {
+      
+      /*
+       * Calculate and cache scaled shape consisting of all zones that do not use the parent grid.
+       * (There may be none!)
+       */
+      if (lastScale != scale || scaleTransform == null) {
+        scaleTransform = AffineTransform.getScaleInstance(scale, scale);
+        scaledZones = null;
+        for (Iterator it = zones.iterator(); it.hasNext();) {
+          Zone zone = (Zone) it.next();
+          if (!zone.isUseParentGrid()) {
+            if (scaledZones == null) {
+              scaledZones = new Area(scaleTransform.createTransformedShape(zone.getShape()));
+            }
+            else {
+              scaledZones.add(new Area(scaleTransform.createTransformedShape(zone.getShape())));
+            }
+          }
+        }
+        lastScale = scale;
+        translateTransform = null;  // Force translatedZones to be regenerated
       }
-      else {
-        allZones.add(new Area(transform.createTransformedShape(zone.getShape())));
+      
+      /*
+       * Translate and cache the combined zone shape
+       */
+      if (lastX != bounds.x || lastY != bounds.y || translateTransform == null) {
+        translateTransform = AffineTransform.getTranslateInstance(bounds.x, bounds.y);
+        translatedZones = null;
+        if (scaledZones != null) {
+          translatedZones = new Area(translateTransform.createTransformedShape(scaledZones));
+        }
+        lastX = bounds.x;
+        lastY = bounds.y;
       }
-    }
-    if (background != null) {
+      
+      /*
+       * Clip out the area covered by the Zones not using the background grid and draw it.
+       */
       Graphics2D g2d = (Graphics2D) g;
       Shape oldClip = g2d.getClip();
-      if (allZones != null && oldClip != null) {
+      if (translatedZones != null && oldClip != null) {
         Area clipArea = new Area(oldClip);
-        clipArea.subtract(allZones);
+        clipArea.subtract(translatedZones);
         g2d.setClip(clipArea);
       }
       background.draw(g, bounds, visibleRect, scale, reversed);
       g2d.setClip(oldClip);
     }
+    /*
+     * Draw each Zone
+     */
     for (Iterator it = zones.iterator(); it.hasNext();) {
       Zone zone = (Zone) it.next();
       zone.draw(g, bounds, visibleRect, scale, reversed);

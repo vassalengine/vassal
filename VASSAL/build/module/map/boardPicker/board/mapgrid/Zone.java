@@ -77,6 +77,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
   public static final String GRID_LOCATION = "gridLocation";
   public static final String USE_HIGHLIGHT = "useHighlight";
   public static final String HIGHLIGHT_PROPERTY = "highlightProperty";
+  protected static final Dimension DEFAULT_SIZE = new Dimension(600, 600);
   protected String locationFormat = "$" + NAME + "$";
   protected FormattedString format = new FormattedString();
   protected Polygon myPolygon;
@@ -291,6 +292,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
     return grid;
   }
 
+  public boolean isUseParentGrid() {
+    return useParentGrid;
+  }
+  
   public Shape getShape() {
     return myPolygon;
   }
@@ -502,7 +507,13 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
       if (board != null) {
         board.fixImage(editor);
       }
-      editor.setPreferredSize(board != null ? board.getSize() : new Dimension(600, 600));
+      editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);
+      Rectangle polyBounds = editor.getPolygon().getBoundingBox();
+      Point polyCenter = new Point(polyBounds.x + polyBounds.width/2,
+          polyBounds.y + polyBounds.height/2);
+      if (!editor.getVisibleRect().contains(polyCenter)) {
+        editor.center(polyCenter);
+      }
       frame.pack();
       Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       frame.setSize(Math.min(frame.getWidth(), d.width * 2 / 3), Math.min(frame.getHeight(), d.height * 2 / 3));
