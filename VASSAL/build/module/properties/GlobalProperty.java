@@ -201,7 +201,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
   
   /**
-   * A String that identifies this property by name in an encoded Commadn
+   * A String that identifies this property in an encoded Commadn
    * @return
    */
   protected String getPropertyId() {
@@ -211,7 +211,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   public String encode(Command c) {
     String s = null;
     if (c instanceof SetGlobalProperty) {
-      if (((SetGlobalProperty) c).getTargetName().equals(getConfigureName())) {
+      if (((SetGlobalProperty) c).getTargetName().equals(getPropertyId())) {
         SequenceEncoder se = new SequenceEncoder(COMMAND_PREFIX, ';');
         se.append(getPropertyId());
         se.append(((SetGlobalProperty) c).newValue);
@@ -236,7 +236,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     }
 
     public String getTargetName() {
-      return target == null ? "" : target.getConfigureName();
+      return target == null ? "" : target.getPropertyId();
     }
 
     protected void executeCommand() {

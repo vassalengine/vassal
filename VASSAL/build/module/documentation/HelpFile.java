@@ -240,7 +240,7 @@ public class HelpFile extends AbstractConfigurable {
   }
   
   public static HelpFile getReferenceManualPage(String page, String anchor) {
-    if (!anchor.startsWith("#")) {
+    if (anchor != null && !anchor.startsWith("#")) {
       anchor = "#"+anchor;
     }
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();

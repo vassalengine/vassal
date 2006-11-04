@@ -191,13 +191,11 @@ public class SetGlobalProperty extends DynamicProperty {
          * update
          */
         if (prop == null) {
-          String s = "- Set Global Property (" + description + "): Unable to locate Global Property named " + propertyName;
+          String s = "Set Global Property (" + description + "): Unable to locate Global Property named " + propertyName;
           if (!propertyLevel.equals(CURRENT_ZONE)) {
             s += " in " + propertyLevel + " " + searchName;
           }
-          comm = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), s);
-          comm.execute();
-          GameModule.getGameModule().sendAndLog(comm);
+          GameModule.getGameModule().warn(s);
         }
         else {
           String oldValue = prop.getPropertyValue();
@@ -205,7 +203,6 @@ public class SetGlobalProperty extends DynamicProperty {
           format.setFormat(newValue);
           newValue = format.getText(Decorator.getOutermost(this));
           comm = prop.setPropertyValue(newValue);
-          GameModule.getGameModule().sendAndLog(comm);
         }
       }
     }

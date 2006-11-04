@@ -381,17 +381,14 @@ public class BoardPicker extends JDialog
   }
 
   /**
-   * @return a Board with the given name.  Duplicate boards with the same
-   * name are clones.
+   * @return a Board with the given name.
    */
   public Board getBoard(String boardName) {
     for (Enumeration e = possibleBoards.elements();
          e.hasMoreElements();) {
       Board b = (Board) e.nextElement();
       if (b.getName().equals(boardName)) {
-        Board clone = new Board();
-        clone.build(b.getBuildElement(Builder.createNewDocument()));
-        return clone;
+        return b;
       }
     }
     warn("Board " + boardName + " not found");
