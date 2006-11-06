@@ -115,11 +115,8 @@ public class GlobalCommand {
 
 		public Object visitDeck(Deck d) {
 			Object target = null;
-			if (selectFromDeck < 0) {
-				target = visitStack(d);
-			}
-			else if (selectFromDeck > 0) {
-				d.setDragCount(selectFromDeck);
+			if (selectFromDeck != 0) {
+				d.setDragCount(selectFromDeck < 0 ? d.getPieceCount() : selectFromDeck);
 	      for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
 	        apply(it.nextPiece());
 	      }

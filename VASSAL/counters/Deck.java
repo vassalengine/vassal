@@ -215,7 +215,7 @@ public class Deck extends Stack {
   public boolean isDrawFaceUp() {
     return drawFaceUp;
   }
-
+  
   public void setDrawFaceUp(boolean drawFaceUp) {
     this.drawFaceUp = drawFaceUp;
   }
