@@ -181,12 +181,9 @@ public class PrivateMap extends Map {
 
   public void sideChanged(String oldSide, String newSide) {
     super.sideChanged(oldSide, newSide);
-    setup(true);
+    ((View)getView()).disableListeners();
     if (isAccessibleTo(newSide)) {
       ((View)getView()).enableListeners();
-    }
-    else {
-      ((View)getView()).disableListeners();
     }
   }
 

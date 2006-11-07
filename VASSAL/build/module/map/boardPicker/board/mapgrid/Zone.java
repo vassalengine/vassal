@@ -508,7 +508,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
         board.fixImage(editor);
       }
       editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);
-      Rectangle polyBounds = editor.getPolygon().getBoundingBox();
+      Rectangle polyBounds = editor.getPolygon().getBounds();
       Point polyCenter = new Point(polyBounds.x + polyBounds.width/2,
           polyBounds.y + polyBounds.height/2);
       if (!editor.getVisibleRect().contains(polyCenter)) {

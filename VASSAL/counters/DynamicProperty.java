@@ -140,7 +140,9 @@ public class DynamicProperty extends Decorator implements EditablePiece, Propert
     if (key.equals(getKey())) {
       setValue((String) value);
     }
-    super.setProperty(key, value);
+    else {
+      super.setProperty(key, value);
+    }
   }
 
   public String myGetState() {

@@ -240,6 +240,7 @@ public class MassKeyCommand extends AbstractConfigurable {
             typeConfig.setValue(FIXED);
             intConfig.setValue(i);
           }
+          intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
         }
       }
       super.setValue(o);

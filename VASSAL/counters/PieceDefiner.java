@@ -391,10 +391,10 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
     if (selp2 != null) {
       selp2.setInner(sel);
     }
+    ((GamePiece) inUseModel.lastElement()).setProperty(Properties.OUTER, null);
     inUseModel.setElementAt(selp1, index);
     inUseModel.setElementAt(sel, index + 1);
     inUseList.setSelectedIndex(index + 1);
-    ((GamePiece) inUseModel.lastElement()).setProperty(Properties.OUTER, null);
     refresh();
   }
 
