@@ -106,6 +106,15 @@ public class Stack implements GamePiece, StateMergeable {
       expanded = expanded && pieceCount > 1;
     }
   }
+  
+  /**
+   * Perform some action on a GamePiece that has just been removed this Stack
+   * @param p
+   * @return a {@link Command} that performs the equivalent action when executed
+   */
+  public Command pieceRemoved(GamePiece p) {
+    return null;
+  }
 
   protected void insertPieceAt(GamePiece p, int index) {
     if (pieceCount >= contents.length) {
@@ -200,6 +209,15 @@ public class Stack implements GamePiece, StateMergeable {
     else {
       insertChild(p, pos);
     }
+  }
+  
+  /**
+   * Perform some action on a GamePiece that has just been added to this Stack
+   * @param p
+   * @return a {@link Command} that performs the equivalent action when executed
+   */
+  public Command pieceAdded(GamePiece p) {
+    return null;
   }
 
   /**

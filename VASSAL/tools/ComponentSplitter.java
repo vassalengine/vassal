@@ -46,19 +46,21 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 import VASSAL.Info;
 
 /**
- * Provides support for hidden panels.
- * Use the split methods to create an instance of {@link SplitPane},
- * which can then be manipulated to show and hide the panel
+ * Provides support for hidden panels. Use the split methods to create an instance of {@link SplitPane}, which can then
+ * be manipulated to show and hide the panel
  */
 public class ComponentSplitter {
-
   /**
-   * Create a new hideable panel to the right of the base component.  The base component is replaced
-   * by a {@link SplitPane}
-   * @param base the base component
-   * @param hideableComponent the hideable component
-   * @param resizeOnVisibilityChange If true, the containing window will expand or shrink to an appropriate size
-   * when the hideable component is shown or hidden
+   * Create a new hideable panel to the right of the base component. The base component is replaced by a
+   * {@link SplitPane}
+   * 
+   * @param base
+   *          the base component
+   * @param hideableComponent
+   *          the hideable component
+   * @param resizeOnVisibilityChange
+   *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
+   *          shown or hidden
    * @return the {@link SplitPane} containing the two components
    */
   public SplitPane splitRight(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
@@ -66,12 +68,16 @@ public class ComponentSplitter {
   }
 
   /**
-   * Create a new hideable panel to the left of the base component.  The base component is replaced
-   * by a {@link SplitPane}
-   * @param base the base component
-   * @param hideableComponent the hideable component
-   * @param resizeOnVisibilityChange If true, the containing window will expand or shrink to an appropriate size
-   * when the hideable component is shown or hidden
+   * Create a new hideable panel to the left of the base component. The base component is replaced by a
+   * {@link SplitPane}
+   * 
+   * @param base
+   *          the base component
+   * @param hideableComponent
+   *          the hideable component
+   * @param resizeOnVisibilityChange
+   *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
+   *          shown or hidden
    * @return the {@link SplitPane} containing the two components
    */
   public SplitPane splitLeft(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
@@ -79,12 +85,16 @@ public class ComponentSplitter {
   }
 
   /**
-   * Create a new hideable panel to the bottom of the base component.  The base component is replaced
-   * by a {@link SplitPane}
-   * @param base the base component
-   * @param hideableComponent the hideable component
-   * @param resizeOnVisibilityChange If true, the containing window will expand or shrink to an appropriate size
-   * when the hideable component is shown or hidden
+   * Create a new hideable panel to the bottom of the base component. The base component is replaced by a
+   * {@link SplitPane}
+   * 
+   * @param base
+   *          the base component
+   * @param hideableComponent
+   *          the hideable component
+   * @param resizeOnVisibilityChange
+   *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
+   *          shown or hidden
    * @return the {@link SplitPane} containing the two components
    */
   public SplitPane splitBottom(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
@@ -92,12 +102,15 @@ public class ComponentSplitter {
   }
 
   /**
-   * Create a new hideable panel to the top of the base component.  The base component is replaced
-   * by a {@link SplitPane}
-   * @param base the base component
-   * @param hideableComponent the hideable component
-   * @param resizeOnVisibilityChange If true, the containing window will expand or shrink to an appropriate size
-   * when the hideable component is shown or hidden
+   * Create a new hideable panel to the top of the base component. The base component is replaced by a {@link SplitPane}
+   * 
+   * @param base
+   *          the base component
+   * @param hideableComponent
+   *          the hideable component
+   * @param resizeOnVisibilityChange
+   *          If true, the containing window will expand or shrink to an appropriate size when the hideable component is
+   *          shown or hidden
    * @return the {@link SplitPane} containing the two components
    */
   public SplitPane splitTop(Component base, Component hideableComponent, boolean resizeOnVisibilityChange) {
@@ -106,15 +119,17 @@ public class ComponentSplitter {
 
   /**
    * Search the containment hierarchy for the index-th {@link SplitPane} ancestor of a target component
-   * @param c the target component
-   * @param index If -1, return the last {@link SplitPane} ancestor
+   * 
+   * @param c
+   *          the target component
+   * @param index
+   *          If -1, return the last {@link SplitPane} ancestor
    * @return the {@link SplitPane} ancestor, or the original component if none is found
    */
   public Component getSplitAncestor(Component c, int index) {
     Component next = SwingUtilities.getAncestorOfClass(SplitPane.class, c);
     int count = -1;
-    while (next != null
-        && (index < 0 || count++ < index)) {
+    while (next != null && (index < 0 || count++ < index)) {
       c = next;
       next = SwingUtilities.getAncestorOfClass(SplitPane.class, c);
     }
@@ -125,7 +140,7 @@ public class ComponentSplitter {
     int index = -1;
     Container parent = base.getParent();
     if (base.getParent() != null) {
-      for (int i = 0,n = base.getParent().getComponentCount(); i < n; ++i) {
+      for (int i = 0, n = base.getParent().getComponentCount(); i < n; ++i) {
         if (base == base.getParent().getComponent(i)) {
           index = i;
           break;
@@ -138,11 +153,10 @@ public class ComponentSplitter {
     }
     return split;
   }
-
   /**
-   * Contains methods to automatically show/hide one of its components (the "hideable" component) while the other
-   * (the "base" component) remains always visible.  Can optionally change the size of its top level ancestorExtension
-   * when the component is shown/hidden.  The hideable component is initially hidden
+   * Contains methods to automatically show/hide one of its components (the "hideable" component) while the other (the
+   * "base" component) remains always visible. Can optionally change the size of its top level ancestorExtension when
+   * the component is shown/hidden. The hideable component is initially hidden
    */
   public static class SplitPane extends JSplitPane {
     private boolean resizeOnVisibilityChange;
@@ -156,10 +170,13 @@ public class ComponentSplitter {
 
     /**
      * Initialize the SplitPane with the two component
+     * 
      * @param hideableComponent
      * @param baseComponent
-     * @param hideablePosition one of {@link #HIDE_TOP}, {@link #HIDE_BOTTOM}, {@link #HIDE_LEFT} or {@link #HIDE_RIGHT}
-     * @param resizeOnVisibilityChange If true, resize the top-level ancestor when the hideable component is shown/hidden
+     * @param hideablePosition
+     *          one of {@link #HIDE_TOP}, {@link #HIDE_BOTTOM}, {@link #HIDE_LEFT} or {@link #HIDE_RIGHT}
+     * @param resizeOnVisibilityChange
+     *          If true, resize the top-level ancestor when the hideable component is shown/hidden
      */
     public SplitPane(Component hideableComponent, Component baseComponent, int hideablePosition, boolean resizeOnVisibilityChange) {
       super(HIDE_TOP == hideablePosition || HIDE_BOTTOM == hideablePosition ? VERTICAL_SPLIT : HORIZONTAL_SPLIT);
@@ -169,21 +186,21 @@ public class ComponentSplitter {
         ((JComponent) hideableComponent).setMinimumSize(new Dimension(0, 0));
       }
       switch (hideablePosition) {
-        case HIDE_LEFT:
-          setLeftComponent(hideableComponent);
-          setRightComponent(baseComponent);
-          break;
-        case HIDE_RIGHT:
-          setRightComponent(hideableComponent);
-          setLeftComponent(baseComponent);
-          break;
-        case HIDE_TOP:
-          setTopComponent(hideableComponent);
-          setBottomComponent(baseComponent);
-          break;
-        case HIDE_BOTTOM:
-          setBottomComponent(hideableComponent);
-          setTopComponent(baseComponent);
+      case HIDE_LEFT:
+        setLeftComponent(hideableComponent);
+        setRightComponent(baseComponent);
+        break;
+      case HIDE_RIGHT:
+        setRightComponent(hideableComponent);
+        setLeftComponent(baseComponent);
+        break;
+      case HIDE_TOP:
+        setTopComponent(hideableComponent);
+        setBottomComponent(baseComponent);
+        break;
+      case HIDE_BOTTOM:
+        setBottomComponent(hideableComponent);
+        setTopComponent(baseComponent);
       }
       setBorder(null);
       setResizeWeight(HIDE_LEFT == hideablePosition || HIDE_TOP == hideablePosition ? 0.0 : 1.0);
@@ -206,17 +223,17 @@ public class ComponentSplitter {
     public Component getHideableComponent() {
       Component c = null;
       switch (hideablePosition) {
-        case HIDE_LEFT:
-          c = getLeftComponent();
-          break;
-        case HIDE_RIGHT:
-          c = getRightComponent();
-          break;
-        case HIDE_TOP:
-          c = getTopComponent();
-          break;
-        case HIDE_BOTTOM:
-          c = getBottomComponent();
+      case HIDE_LEFT:
+        c = getLeftComponent();
+        break;
+      case HIDE_RIGHT:
+        c = getRightComponent();
+        break;
+      case HIDE_TOP:
+        c = getTopComponent();
+        break;
+      case HIDE_BOTTOM:
+        c = getBottomComponent();
       }
       return c;
     }
@@ -227,17 +244,17 @@ public class ComponentSplitter {
     public Component getBaseComponent() {
       Component c = null;
       switch (hideablePosition) {
-        case HIDE_LEFT:
-          c = getRightComponent();
-          break;
-        case HIDE_RIGHT:
-          c = getLeftComponent();
-          break;
-        case HIDE_TOP:
-          c = getBottomComponent();
-          break;
-        case HIDE_BOTTOM:
-          c = getTopComponent();
+      case HIDE_LEFT:
+        c = getRightComponent();
+        break;
+      case HIDE_RIGHT:
+        c = getLeftComponent();
+        break;
+      case HIDE_TOP:
+        c = getBottomComponent();
+        break;
+      case HIDE_BOTTOM:
+        c = getTopComponent();
       }
       return c;
     }
@@ -248,27 +265,27 @@ public class ComponentSplitter {
     protected int getBaseComponentSize() {
       int size = -1;
       switch (getOrientation()) {
-        case VERTICAL_SPLIT:
-          size = getBaseComponent().getSize().height;
-          break;
-        case HORIZONTAL_SPLIT:
-          size = getBaseComponent().getSize().width;
+      case VERTICAL_SPLIT:
+        size = getBaseComponent().getSize().height;
+        break;
+      case HORIZONTAL_SPLIT:
+        size = getBaseComponent().getSize().width;
       }
       return size;
     }
 
     /**
-     *
+     * 
      * @return the size of the hideable component along the axis of orientation
      */
     protected int getHideableComponentSize() {
       int size = -1;
       switch (getOrientation()) {
-        case VERTICAL_SPLIT:
-          size = getHideableComponent().getSize().height;
-          break;
-        case HORIZONTAL_SPLIT:
-          size = getHideableComponent().getSize().width;
+      case VERTICAL_SPLIT:
+        size = getHideableComponent().getSize().height;
+        break;
+      case HORIZONTAL_SPLIT:
+        size = getHideableComponent().getSize().width;
       }
       return size;
     }
@@ -280,14 +297,14 @@ public class ComponentSplitter {
           Container ancestor = getTopLevelAncestor();
           if (ancestor != null) {
             switch (hideablePosition) {
-              case HIDE_LEFT:
-              case HIDE_RIGHT:
-                ancestor.setSize(new Dimension(ancestor.getSize().width - getHideableComponent().getSize().width, ancestor.getSize().height - getDividerSize()));
-                break;
-              case HIDE_TOP:
-              case HIDE_BOTTOM:
-                ancestor.setSize(new Dimension(ancestor.getSize().width, ancestor.getSize().height - getHideableComponent().getSize().height - getDividerSize()));
-                break;
+            case HIDE_LEFT:
+            case HIDE_RIGHT:
+              ancestor.setSize(new Dimension(ancestor.getSize().width - getHideableComponent().getSize().width, ancestor.getSize().height - getDividerSize()));
+              break;
+            case HIDE_TOP:
+            case HIDE_BOTTOM:
+              ancestor.setSize(new Dimension(ancestor.getSize().width, ancestor.getSize().height - getHideableComponent().getSize().height - getDividerSize()));
+              break;
             }
             ancestor.validate();
           }
@@ -297,13 +314,13 @@ public class ComponentSplitter {
             ((BasicSplitPaneUI) getUI()).getDivider().setVisible(false);
             getHideableComponent().setVisible(false);
             switch (hideablePosition) {
-              case HIDE_LEFT:
-              case HIDE_TOP:
-                setDividerLocation(0.0);
-                break;
-              case HIDE_RIGHT:
-              case HIDE_BOTTOM:
-                setDividerLocation(1.0);
+            case HIDE_LEFT:
+            case HIDE_TOP:
+              setDividerLocation(0.0);
+              break;
+            case HIDE_RIGHT:
+            case HIDE_BOTTOM:
+              setDividerLocation(1.0);
             }
           }
         };
@@ -316,8 +333,9 @@ public class ComponentSplitter {
     }
 
     /**
-     * Set the divider location and/or the top-level ancestor size to be large enough
-     * to display the argument {@link SplitPane}'s hideable component
+     * Set the divider location and/or the top-level ancestor size to be large enough to display the argument
+     * {@link SplitPane}'s hideable component
+     * 
      * @param split
      */
     protected void showTransverseComponent(SplitPane split) {
@@ -329,26 +347,24 @@ public class ComponentSplitter {
     }
 
     /**
-     * Set the base component size to be large enough to accomodate all descendant SplitPane's
-     * showing components
+     * Set the base component size to be large enough to accomodate all descendant SplitPane's showing components
      */
     protected void resizeBaseComponent() {
       if (getHideableComponent().isVisible()) {
         switch (hideablePosition) {
-          case HIDE_BOTTOM:
-          case HIDE_RIGHT:
-            setDividerLocation(getPreferredBaseComponentSize());
-            break;
-          case HIDE_TOP:
-            setDividerLocation(getSize().height - getPreferredBaseComponentSize());
-            break;
-          case HIDE_LEFT:
-            setDividerLocation(getSize().width - getPreferredBaseComponentSize());
-            break;
+        case HIDE_BOTTOM:
+        case HIDE_RIGHT:
+          setDividerLocation(getPreferredBaseComponentSize());
+          break;
+        case HIDE_TOP:
+          setDividerLocation(getSize().height - getPreferredBaseComponentSize());
+          break;
+        case HIDE_LEFT:
+          setDividerLocation(getSize().width - getPreferredBaseComponentSize());
+          break;
         }
       }
-      else if (resizeOnVisibilityChange
-          && getTopLevelAncestor() != null) {
+      else if (resizeOnVisibilityChange && getTopLevelAncestor() != null) {
         getTopLevelAncestor().setSize(getTransverseSize());
         getTopLevelAncestor().validate();
       }
@@ -362,19 +378,19 @@ public class ComponentSplitter {
       for (Enumeration e = showingTransverseComponents.elements(); e.hasMoreElements();) {
         SplitPane split = (SplitPane) e.nextElement();
         switch (getOrientation()) {
-          case VERTICAL_SPLIT:
-            size = Math.max(size, split.getHideableComponent().getPreferredSize().height);
-            break;
-          case HORIZONTAL_SPLIT:
-            size = Math.max(size, split.getHideableComponent().getPreferredSize().width);
+        case VERTICAL_SPLIT:
+          size = Math.max(size, split.getHideableComponent().getPreferredSize().height);
+          break;
+        case HORIZONTAL_SPLIT:
+          size = Math.max(size, split.getHideableComponent().getPreferredSize().width);
         }
       }
       return size;
     }
 
     /**
-     * Set the divider location and/or the top-level ancestor size to the preferred
-     * transverse size.
+     * Set the divider location and/or the top-level ancestor size to the preferred transverse size.
+     * 
      * @param split
      */
     protected void hideTransverseComponent(SplitPane split) {
@@ -383,18 +399,17 @@ public class ComponentSplitter {
     }
 
     /**
-     * Return the preferred size of the top-level container in the direction transverse to
-     * this SplitPane's orientation.  Depends on which ancestors have been shown using
-     * {@link #showTransverseComponent}.
+     * Return the preferred size of the top-level container in the direction transverse to this SplitPane's orientation.
+     * Depends on which ancestors have been shown using {@link #showTransverseComponent}.
      */
     protected Dimension getTransverseSize() {
       Dimension newSize = getTopLevelAncestor().getSize();
       switch (getOrientation()) {
-        case VERTICAL_SPLIT:
-          newSize.height += getPreferredBaseComponentSize() - getBaseComponentSize();
-          break;
-        case HORIZONTAL_SPLIT:
-          newSize.width += getPreferredBaseComponentSize() - getBaseComponentSize();
+      case VERTICAL_SPLIT:
+        newSize.height += getPreferredBaseComponentSize() - getBaseComponentSize();
+        break;
+      case HORIZONTAL_SPLIT:
+        newSize.width += getPreferredBaseComponentSize() - getBaseComponentSize();
       }
       return newSize;
     }
@@ -410,22 +425,27 @@ public class ComponentSplitter {
             int newLoc = 0;
             Rectangle screenBounds = Info.getScreenBounds(ancestor);
             switch (getOrientation()) {
-              case JSplitPane.HORIZONTAL_SPLIT:
-                ancestor.setSize(Math.min(ancestor.getSize().width + getHideableComponent().getPreferredSize().width,
-                                          screenBounds.width - ancestor.getLocation().x), ancestor.getSize().height);
-                newLoc = getBaseComponent().getSize().width;
-                break;
-              case JSplitPane.VERTICAL_SPLIT:
-                ancestor.setSize(ancestor.getSize().width,
-                                 Math.min(ancestor.getSize().height + getHideableComponent().getPreferredSize().height,
-                                          screenBounds.height - ancestor.getLocation().y));
-                newLoc = getBaseComponent().getSize().height;
-                break;
+            case JSplitPane.HORIZONTAL_SPLIT:
+              ancestor.setSize(Math.min(ancestor.getSize().width + getHideableComponent().getPreferredSize().width, screenBounds.width
+                  - ancestor.getLocation().x), ancestor.getSize().height);
+              newLoc = Math.min(getBaseComponent().getSize().width, (int) screenBounds.getWidth() * 2 / 3);
+              break;
+            case JSplitPane.VERTICAL_SPLIT:
+              ancestor.setSize(ancestor.getSize().width, Math.min(ancestor.getSize().height + getHideableComponent().getPreferredSize().height,
+                  screenBounds.height - ancestor.getLocation().y));
+              newLoc = Math.min(getBaseComponent().getSize().height, (int) screenBounds.getHeight() * 2 / 3);
+              break;
             }
             ancestor.validate();
             getHideableComponent().setVisible(true);
             ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
-            setDividerLocation(newLoc);
+            final int divLoc = newLoc;
+            Runnable r = new Runnable() {
+              public void run() {
+                setDividerLocation(divLoc);
+              }
+            };
+            SwingUtilities.invokeLater(r);
           }
         }
         else {
@@ -451,23 +471,24 @@ public class ComponentSplitter {
     protected int getPreferredDividerLocation() {
       int loc = 0;
       switch (hideablePosition) {
-        case HIDE_LEFT:
-          loc = getInsets().left + getLeftComponent().getPreferredSize().width;
-          break;
-        case HIDE_RIGHT:
-          loc = getSize().width - getInsets().right - getDividerSize() - getRightComponent().getPreferredSize().width;
-          break;
-        case HIDE_TOP:
-          loc = getInsets().top + getLeftComponent().getPreferredSize().height;
-          break;
-        case HIDE_BOTTOM:
-          loc = getSize().height - getInsets().bottom - getDividerSize() - getRightComponent().getPreferredSize().height;
+      case HIDE_LEFT:
+        loc = getInsets().left + getLeftComponent().getPreferredSize().width;
+        break;
+      case HIDE_RIGHT:
+        loc = getSize().width - getInsets().right - getDividerSize() - getRightComponent().getPreferredSize().width;
+        break;
+      case HIDE_TOP:
+        loc = getInsets().top + getLeftComponent().getPreferredSize().height;
+        break;
+      case HIDE_BOTTOM:
+        loc = getSize().height - getInsets().bottom - getDividerSize() - getRightComponent().getPreferredSize().height;
       }
       return loc;
     }
 
     /**
      * Return the first SplitPane ancestor with a different orientation from this SplitPane
+     * 
      * @return
      */
     public SplitPane getTransverseSplit() {
@@ -475,8 +496,7 @@ public class ComponentSplitter {
       for (Component c = getParent(); c != null; c = c.getParent()) {
         if (c instanceof SplitPane) {
           SplitPane p = (SplitPane) c;
-          if (p.getOrientation() != getOrientation()
-              && SwingUtilities.isDescendingFrom(this, p.getBaseComponent())) {
+          if (p.getOrientation() != getOrientation() && SwingUtilities.isDescendingFrom(this, p.getBaseComponent())) {
             split = p;
             break;
           }
@@ -490,23 +510,22 @@ public class ComponentSplitter {
      */
     public Dimension getPreferredSize() {
       Dimension d = null;
-      if (getHideableComponent() == null
-          || getHideableComponent().isVisible()) {
+      if (getHideableComponent() == null || getHideableComponent().isVisible()) {
         d = super.getPreferredSize();
       }
       else {
         switch (hideablePosition) {
-          case HIDE_LEFT:
-            d = getRightComponent().getPreferredSize();
-            break;
-          case HIDE_RIGHT:
-            d = getLeftComponent().getPreferredSize();
-            break;
-          case HIDE_TOP:
-            d = getBottomComponent().getPreferredSize();
-            break;
-          case HIDE_BOTTOM:
-            d = getTopComponent().getPreferredSize();
+        case HIDE_LEFT:
+          d = getRightComponent().getPreferredSize();
+          break;
+        case HIDE_RIGHT:
+          d = getLeftComponent().getPreferredSize();
+          break;
+        case HIDE_TOP:
+          d = getBottomComponent().getPreferredSize();
+          break;
+        case HIDE_BOTTOM:
+          d = getTopComponent().getPreferredSize();
         }
       }
       return d;
@@ -521,7 +540,6 @@ public class ComponentSplitter {
         System.exit(0);
       }
     });
-
     JTextField status = new JTextField("status");
     status.setEditable(false);
     f.getContentPane().setLayout(new BorderLayout());
@@ -533,32 +551,22 @@ public class ComponentSplitter {
     toolbar.setFloatable(false);
     toolbar.setAlignmentX(0.0F);
     box.add(toolbar);
-
     f.getContentPane().add(box, BorderLayout.NORTH);
-
     final JLabel smallLeft = new JLabel(new ImageIcon("small.gif"));
     final JLabel smallRight = new JLabel(new ImageIcon("smallRight.gif"));
     final JLabel large = new JLabel(new ImageIcon("large.jpg"));
-
     JPanel text = new JPanel();
     text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
     text.add(new ScrollPane(new JTextArea(15, 60)));
     JTextField input = new JTextField(60);
-    input.setMaximumSize
-        (new Dimension(input.getMaximumSize().width,
-                       input.getPreferredSize().height));
+    input.setMaximumSize(new Dimension(input.getMaximumSize().width, input.getPreferredSize().height));
     text.add(input);
-
     ComponentSplitter splitter = new ComponentSplitter();
     final SplitPane splitRight = splitter.splitRight(main, smallRight, false);
     final SplitPane splitLeft = splitter.splitLeft(main, smallLeft, false);
-    final SplitPane splitBottom =
-      splitter.splitBottom(splitter.getSplitAncestor(main, -1),
-                           new ScrollPane(large), true);
+    final SplitPane splitBottom = splitter.splitBottom(splitter.getSplitAncestor(main, -1), new ScrollPane(large), true);
     splitBottom.setResizeWeight(0.0);
-
     main.add(text, BorderLayout.CENTER);
-
     toolbar.add(new AbstractAction("Left") {
       public void actionPerformed(ActionEvent e) {
         splitLeft.toggleVisibility();

@@ -535,6 +535,16 @@ public class Deck extends Stack {
   public boolean isFaceDown() {
     return faceDown;
   }
+  
+  public Command pieceAdded(GamePiece p) {
+    return null;
+  }
+
+  public Command pieceRemoved(GamePiece p) {
+    ChangeTracker tracker = new ChangeTracker(p);
+    p.setProperty(Properties.OBSCURED_BY, isFaceDown() && !isDrawFaceUp() ? GameModule.getUserId() : null);
+    return tracker.getChangeCommand();
+  }
 
   public void setFaceDown(boolean faceDown) {
     this.faceDown = faceDown;

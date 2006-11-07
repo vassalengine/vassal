@@ -30,6 +30,8 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.widget.BoxWidget;
+import VASSAL.build.widget.ListWidget;
 import VASSAL.build.widget.MapWidget;
 import VASSAL.build.widget.PanelWidget;
 import VASSAL.build.widget.TabWidget;
@@ -147,6 +149,8 @@ public class ChartWindow extends Widget {
                        VASSAL.build.widget.HtmlChart.class,
                        TabWidget.class,
                        PanelWidget.class,
+                       BoxWidget.class,
+                       ListWidget.class,
                        MapWidget.class};
   }
 
