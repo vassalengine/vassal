@@ -148,6 +148,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   public void addTo(Buildable parent) {
     // Initialize property with current values
+    setPropertyValue(initialValue);
     propertyChangeSupport.addPropertyChangeListener(((GlobalPropertiesContainer) parent).getPropertyListener());
     propertyChangeSupport.firePropertyChange(getConfigureName(), null, propertyValue);
     tempToolbar.setDelegate((ToolBarComponent) parent);
@@ -180,6 +181,9 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public void setup(boolean gameStarting) {
+    if (!gameStarting) {
+      setPropertyValue(initialValue); // Set value back to default for next New Game
+    }
     return;
   }
 

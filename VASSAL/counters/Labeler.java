@@ -26,6 +26,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
@@ -215,6 +216,7 @@ public class Labeler extends Decorator implements EditablePiece {
       g.drawRect(x0, y0, width, height);
     }
     g.setColor(fgColor);
+    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
     g.drawString(" " + text + " ", x0, y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
   }
 
@@ -338,6 +340,7 @@ public class Labeler extends Decorator implements EditablePiece {
     int height = lbl.getHeight();
     BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
     Graphics g = im.createGraphics();
+    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
     if (textBg != null) {
       g.setColor(textBg);
       g.fillRect(0, 0, width, height);
