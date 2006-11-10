@@ -355,6 +355,7 @@ public class Translate extends Decorator implements EditablePiece {
     private java.util.List innerPieces = new ArrayList();
 
     public void run() {
+      mover = null;
       Command comm = new NullCommand();
       for (Iterator it = moves.iterator(); it.hasNext();) {
         final Move move = (Move) it.next();
@@ -413,7 +414,6 @@ public class Translate extends Decorator implements EditablePiece {
         }
       }
       GameModule.getGameModule().sendAndLog(comm);
-      mover = null;
     }
 
     public void add(Map map, GamePiece piece, Point pos) {
