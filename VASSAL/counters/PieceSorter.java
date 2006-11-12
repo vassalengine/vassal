@@ -19,7 +19,6 @@
 package VASSAL.counters;
 
 import java.util.Comparator;
-import VASSAL.tools.Sort;
 
 /**
  * Sorts GamePieces according to their position:
@@ -31,7 +30,6 @@ public class PieceSorter implements Comparator {
   public int compare(Object o1, Object o2) {
     GamePiece p1 = (GamePiece) o1;
     GamePiece p2 = (GamePiece) o2;
-    int result = 0;
     if (p1.getMap() == null && p2.getMap() == null) {
       return 0;
     }
@@ -41,8 +39,10 @@ public class PieceSorter implements Comparator {
     else if (p2.getMap() == null) {
       return -1;
     }
+
+    int result = 0;
     if (p1.getMap() != p2.getMap()) {
-      result = new Sort.Alpha().compare(p1.getMap().getId(), p2.getMap().getId());
+      result = p1.getMap().getId().compareTo(p2.getMap().getId());
     }
     else {
       Stack s1 = p1 instanceof Stack ? (Stack) p1 : p1.getParent();

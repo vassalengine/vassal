@@ -30,6 +30,7 @@ import java.util.Vector;
 
 /**
  * Quicksort implementation so we can sort using JRE 1.1
+ * @deprecated Use {@link java.util.Collections.sort} instead.
  */
 public class Sort {
     private static void swap(Vector v, int i, int j) {
@@ -122,12 +123,17 @@ public class Sort {
         quicksort(v, 0, v.size() - 1, comp);
     }
 
+    /**
+     * @deprecated Use {@link java.util.Comparator} instead.
+     */
     public static interface Comparator {
         public int compare(Object o1, Object o2);
     }
 
     /**
      * Compares two String objects
+     * @deprecated Use the natural ordering on Strings instead.
+     * @see java.lang.String.compareTo(String)
      */
     public static class Alpha implements Comparator {
         public int compare(Object o1, Object o2) {
