@@ -93,6 +93,9 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     }
     else {
       Board b = picker.getBoard((String) boards.getSelectedItem());
+      if (picker.getBoardsFromControls().contains(b)) {
+        b = b.copy();
+      }
       setBoard(b);
     }
   }

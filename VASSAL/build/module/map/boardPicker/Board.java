@@ -35,6 +35,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
@@ -306,6 +307,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   public MapGrid getGrid() {
     return grid;
+  }
+  
+  public Board copy() {
+    Board b = new Board();
+    b.build(getBuildElement(Builder.createNewDocument()));
+    return b;
   }
 
   public void fixImage(Component map) {
