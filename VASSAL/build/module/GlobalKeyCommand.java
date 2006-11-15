@@ -21,7 +21,6 @@ package VASSAL.build.module;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.map.MassKeyCommand;
 
@@ -30,21 +29,14 @@ import VASSAL.build.module.map.MassKeyCommand;
  * {@link VASSAL.build.GameModule} and applies to all maps
  */
 public class GlobalKeyCommand extends MassKeyCommand {
-	public void addTo(Buildable parent) {
-		((GameModule) parent).getToolBar().add(getLaunchButton());
-	}
 
-	public void removeFrom(Buildable parent) {
-		((GameModule) parent).getToolBar().remove(getLaunchButton());
-	}
-
-	public void apply() {
+  public void apply() {
 		List l = new ArrayList();
 		for (Iterator it = Map.getAllMaps(); it.hasNext();) {
 			l.add(it.next());
 		}
 		GameModule.getGameModule().sendAndLog(
 				globalCommand.apply((Map[]) l.toArray(new Map[l.size()]),
-						filter));
+						getFilter()));
 	}
 }

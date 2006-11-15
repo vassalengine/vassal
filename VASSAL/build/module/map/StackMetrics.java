@@ -464,7 +464,7 @@ public class StackMetrics extends AbstractConfigurable {
     if (index < 0) {
       throw new RuntimeException(c.getId() + " is not contained in " + parent.getId());
     }
-    Point[] pos = new Point[index + 1];
+    Point[] pos = new Point[parent.getPieceCount()];
     getContents(parent, pos, null, null, 0, 0);
     return pos[index];
   }

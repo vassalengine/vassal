@@ -43,6 +43,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
+import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.HotKeyConfigurer;
@@ -60,6 +61,7 @@ import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.ToolBarComponent;
 
 /**
  * Adds a button to a map window toolbar. Hitting the button applies a particular key command to all pieces on that map
@@ -91,6 +93,8 @@ public class MassKeyCommand extends AbstractConfigurable {
   protected String checkProperty;
   protected String checkValue;
   protected String propertiesFilter;
+  protected PropertySource propertySource;
+  protected boolean filterIsDynamic;
   protected PieceFilter filter;
   private Map map;
   protected GlobalCommand globalCommand = new GlobalCommand();
@@ -106,8 +110,15 @@ public class MassKeyCommand extends AbstractConfigurable {
   }
 
   public void addTo(Buildable parent) {
-    map = (Map) parent;
-    map.getToolBar().add(launch);
+    if (parent instanceof Map) {
+      map = (Map) parent;
+    }
+    if (parent instanceof ToolBarComponent) {
+      ((ToolBarComponent)parent).getToolBar().add(launch);
+    }
+    if (parent instanceof PropertySource) {
+      propertySource = (PropertySource) parent;
+    }
   }
 
   public void apply() {
@@ -115,7 +126,7 @@ public class MassKeyCommand extends AbstractConfigurable {
   }
 
   public void apply(Map m) {
-    GameModule.getGameModule().sendAndLog(globalCommand.apply(m, filter));
+    GameModule.getGameModule().sendAndLog(globalCommand.apply(m, getFilter()));
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -316,7 +327,16 @@ public class MassKeyCommand extends AbstractConfigurable {
   }
 
   public void removeFrom(Buildable parent) {
-    map.getToolBar().remove(launch);
+    if (parent instanceof ToolBarComponent) {
+      ((ToolBarComponent)parent).getToolBar().remove(launch);
+    }
+  }
+
+  public PieceFilter getFilter() {
+    if (filterIsDynamic) {
+      buildFilter();
+    }
+    return filter;
   }
 
   private void buildFilter() {
@@ -324,7 +344,7 @@ public class MassKeyCommand extends AbstractConfigurable {
       propertiesFilter = checkProperty + "=" + checkValue;
     }
     if (propertiesFilter != null) {
-      filter = PropertiesPieceFilter.parse(propertiesFilter);
+      filter = PropertiesPieceFilter.parse(new FormattedString(propertiesFilter).getText(propertySource));
     }
     if (filter != null && condition != null) {
       filter = new BooleanAndPieceFilter(filter, new PieceFilter() {
@@ -394,6 +414,7 @@ public class MassKeyCommand extends AbstractConfigurable {
     }
     else if (PROPERTIES_FILTER.equals(key)) {
       propertiesFilter = (String) value;
+      filterIsDynamic = propertiesFilter != null && propertiesFilter.indexOf('$') >= 0;
       buildFilter();
     }
     else if (CONDITION.equals(key)) {
@@ -420,4 +441,5 @@ public class MassKeyCommand extends AbstractConfigurable {
       launch.setAttribute(key, value);
     }
   }
+
 }

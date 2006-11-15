@@ -119,7 +119,6 @@ public class PolygonEditor extends JPanel {
           }
         }
         catch (NumberFormatException e) {
-          e.printStackTrace();
         }
       }
     }
