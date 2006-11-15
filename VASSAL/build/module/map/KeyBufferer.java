@@ -18,10 +18,13 @@
  */
 package VASSAL.build.module.map;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -41,8 +44,11 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 
 /**
- * This component listens for mouse clicks on a map.
- * If the user clicks on a {@link GamePiece}, that piece is added to the {@link KeyBuffer}
+ * This component listens for mouse clicks on a map and draws the selection
+ * rectangle.
+ * If the user clicks on a {@link GamePiece}, that piece is added to the
+ * {@link KeyBuffer}. {@link #draw(Graphics, Map)} is responsible for
+ * drawing the mouse selection rectangle.
  *
  * @see Map#addLocalMouseListener
  */
@@ -177,10 +183,12 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
   public void draw(Graphics g, Map map) {
     if (selection != null) {
-      g.setColor(color);
-      for (int i = 0; i < thickness; ++i) {
-        g.drawRect(selection.x + i, selection.y + i, selection.width, selection.height);
-      }
+      Graphics2D g2d = (Graphics2D) g;
+      Stroke str = g2d.getStroke();
+      g2d.setStroke(new BasicStroke(thickness));
+      g2d.setColor(color);
+      g2d.drawRect(selection.x, selection.y, selection.width, selection.height);
+      g2d.setStroke(str);
     }
   }
 
