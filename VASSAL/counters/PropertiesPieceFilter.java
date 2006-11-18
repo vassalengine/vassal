@@ -32,7 +32,8 @@ public class PropertiesPieceFilter {
                                                             Pattern.compile(">"),
                                                             Pattern.compile("<"),
                                                             Pattern.compile("=~"),
-                                                            Pattern.compile("=")};
+                                                            Pattern.compile("="),
+                                                            Pattern.compile("!~")};
 
   private static final Pattern AND = Pattern.compile("&&");
   private static final Pattern OR = Pattern.compile("\\|\\|");
@@ -102,6 +103,8 @@ public class PropertiesPieceFilter {
                 case 6:
                   f = new EQ(name, value);
                   break;
+                case 7:
+                  f = new NOT_MATCH(name,value);
               }
             }
             break;
@@ -220,6 +223,16 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       String property = String.valueOf(piece.getProperty(name));
       return Pattern.matches(value, property);
+    }
+  }
+  
+  private static class NOT_MATCH extends MATCH {
+    public NOT_MATCH(String name, String value) {
+      super(name, value);
+    }
+
+    public boolean accept(GamePiece piece) {
+      return !super.accept(piece);
     }
   }
 }

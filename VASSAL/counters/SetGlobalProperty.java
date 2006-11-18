@@ -61,8 +61,8 @@ public class SetGlobalProperty extends DynamicProperty {
   public static final String NAMED_ZONE = "Named Zone";
   public static final String NAMED_MAP = "Named Map";
   protected String description;
-  protected String propertyLevel = CURRENT_ZONE;
-  protected String searchName = "";
+  protected String propertyLevel;
+  protected String searchName;
   protected Decorator dec;
 
   public SetGlobalProperty() {
