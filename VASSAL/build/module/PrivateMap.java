@@ -185,6 +185,7 @@ public class PrivateMap extends Map {
     if (isAccessibleTo(newSide)) {
       ((View)getView()).enableListeners();
     }
+    launchButton.setEnabled(isAccessibleTo(PlayerRoster.getMySide()));
   }
 
   public boolean shouldDockIntoMainWindow() {
@@ -211,6 +212,7 @@ public class PrivateMap extends Map {
     else if (isAccessibleTo(PlayerRoster.getMySide())) {
       ((View) theMap).enableListeners();
     }
+    launchButton.setEnabled(isAccessibleTo(PlayerRoster.getMySide()));
   }
 
   public void setBoards(Enumeration boardList) {

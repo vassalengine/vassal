@@ -35,13 +35,16 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 import VASSAL.tools.SequenceEncoder;
 
 public class PolygonEditor extends JPanel {
   private Polygon polygon;
   private int selected = -1;
+  protected JScrollPane myScroll;
 
   public PolygonEditor(Polygon p) {
     polygon = p;
@@ -62,6 +65,10 @@ public class PolygonEditor extends JPanel {
     this.polygon = polygon;
   }
 
+  public void setScroll(JScrollPane scroll) {
+    myScroll = scroll;
+  }
+  
   private void setupForCreate() {
     DefineRectangle dr = new DefineRectangle();
     addMouseListener(dr);
@@ -166,6 +173,9 @@ public class PolygonEditor extends JPanel {
     // implements java.awt.event.MouseMotionListener
     public void mouseDragged(MouseEvent e) {
       moveSelectedPoint(e);
+      if (SwingUtilities.isLeftMouseButton(e)) {
+        scrollAtEdge(e.getPoint(), 15);
+      }
       repaint();
     }
 
@@ -203,6 +213,30 @@ public class PolygonEditor extends JPanel {
           polygon.xpoints[selected] = e.getX();
           polygon.ypoints[selected] = e.getY();
         }
+      }
+    }
+
+    public void scrollAtEdge(Point evtPt, int dist) {
+      
+      Point p = new Point(evtPt.x - myScroll.getViewport().getViewPosition().x,
+          evtPt.y - myScroll.getViewport().getViewPosition().y);
+      int dx = 0, dy = 0;
+      if (p.x < dist && p.x >= 0)
+        dx = -1;
+      if (p.x >= myScroll.getViewport().getSize().width - dist
+          && p.x < myScroll.getViewport().getSize().width)
+        dx = 1;
+      if (p.y < dist && p.y >= 0)
+        dy = -1;
+      if (p.y >= myScroll.getViewport().getSize().height - dist
+          && p.y < myScroll.getViewport().getSize().height)
+        dy = 1;
+
+      if (dx != 0 || dy != 0) {
+        Rectangle r = new Rectangle(myScroll.getViewport().getViewRect());
+        r.translate(2 * dist * dx, 2 * dist * dy);
+        r = r.intersection(new Rectangle(new Point(0, 0), getPreferredSize()));
+        scrollRectToVisible(r);
       }
     }
   }

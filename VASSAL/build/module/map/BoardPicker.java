@@ -172,6 +172,9 @@ public class BoardPicker extends JDialog
   public void addTo(Buildable b) {
     map = (Map) b;
     map.setBoardPicker(this);
+    for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
+      ((Board) e.nextElement()).setMap(map);
+    }
   }
 
   public void build(Element e) {

@@ -437,6 +437,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
     private PolygonEditor editor;
     private Board board;
     private JDialog frame;
+    protected AdjustableSpeedScrollPane scroll;
 
     public Editor(final Zone zone) {
       super(PATH, null);
@@ -488,7 +489,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
       });
       direct.setAlignmentX(0.0f);
       frame.getContentPane().add(direct);
-      frame.getContentPane().add(new AdjustableSpeedScrollPane(editor));
+      scroll = new AdjustableSpeedScrollPane(editor);
+      editor.setScroll(scroll);
+      frame.getContentPane().add(scroll);
       JPanel buttonPanel = new JPanel();
       JButton closeButton = new JButton("Ok");
       closeButton.addActionListener(new ActionListener() {
