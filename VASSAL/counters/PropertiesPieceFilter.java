@@ -158,6 +158,11 @@ public class PropertiesPieceFilter {
       }
       return retVal;
     }
+
+    public String toString() {
+      return "PropertiesPieceFilter["+name+"=="+value+"]";
+    }
+    
   }
 
   private static class NE extends ComparisonFilter {
@@ -173,6 +178,9 @@ public class PropertiesPieceFilter {
       }
       return retVal;
     }
+    public String toString() {
+      return "PropertiesPieceFilter["+name+"!="+value+"]";
+    }
   }
 
   private static class LT extends ComparisonFilter {
@@ -182,6 +190,9 @@ public class PropertiesPieceFilter {
 
     public boolean accept(GamePiece piece) {
       return compareTo(piece) < 0;
+    }
+    public String toString() {
+      return "PropertiesPieceFilter["+name+"<"+value+"]";
     }
   }
 
@@ -193,6 +204,9 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return compareTo(piece) <= 0;
     }
+    public String toString() {
+      return "PropertiesPieceFilter["+name+"<="+value+"]";
+    }
   }
 
   private static class GT extends ComparisonFilter {
@@ -203,6 +217,9 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return compareTo(piece) > 0;
     }
+    public String toString() {
+      return "PropertiesPieceFilter["+name+">"+value+"]";
+    }
   }
 
   private static class GE extends ComparisonFilter {
@@ -212,6 +229,9 @@ public class PropertiesPieceFilter {
 
     public boolean accept(GamePiece piece) {
       return compareTo(piece) >= 0;
+    }
+    public String toString() {
+      return "PropertiesPieceFilter["+name+">="+value+"]";
     }
   }
 
@@ -224,6 +244,9 @@ public class PropertiesPieceFilter {
       String property = String.valueOf(piece.getProperty(name));
       return Pattern.matches(value, property);
     }
+    public String toString() {
+      return "PropertiesPieceFilter["+name+"~"+value+"]";
+    }
   }
   
   private static class NOT_MATCH extends MATCH {
@@ -233,6 +256,9 @@ public class PropertiesPieceFilter {
 
     public boolean accept(GamePiece piece) {
       return !super.accept(piece);
+    }
+    public String toString() {
+      return "PropertiesPieceFilter["+name+"!~"+value+"]";
     }
   }
 }

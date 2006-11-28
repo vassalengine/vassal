@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -202,6 +203,8 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		theMap.addMouseListener(this);
 		theMap.addMouseMotionListener(this);
 		theMap.addFocusListener(this);
+    toolBar.setLayout(new VASSAL.tools.WrapLayout(FlowLayout.LEFT, 0, 0));
+    toolBar.setAlignmentX(0.0F);
 		toolBar.setFloatable(false);
 	}
 	public static final String NAME = "mapName";

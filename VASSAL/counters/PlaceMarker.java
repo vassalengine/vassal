@@ -157,8 +157,10 @@ public class PlaceMarker extends Decorator implements EditablePiece {
         marker.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(marker));
         c.append(marker.keyEvent(afterBurnerKey));
       }
-      KeyBuffer.getBuffer().remove(outer);
-      KeyBuffer.getBuffer().add(marker);
+      if (marker.getProperty(Properties.SELECT_EVENT_FILTER) == null) {
+        KeyBuffer.getBuffer().remove(outer);
+        KeyBuffer.getBuffer().add(marker);
+      }
       if (markerText != null && getMap() != null) {
         if (!Boolean.TRUE.equals(outer.getProperty(Properties.OBSCURED_TO_OTHERS))
             && !Boolean.TRUE.equals(outer.getProperty(Properties.OBSCURED_TO_ME))
