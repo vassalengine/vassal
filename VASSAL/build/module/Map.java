@@ -1071,6 +1071,7 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		if (dtde.getDropTargetContext().getComponent() == theMap) {
 			MouseEvent evt = new MouseEvent(theMap, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, dtde.getLocation().x, dtde.getLocation().y, 1, false);
 			theMap.dispatchEvent(evt);
+			dtde.dropComplete(true);
 		}
 	}
 

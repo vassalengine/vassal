@@ -30,6 +30,7 @@ import java.awt.Rectangle;
 import java.awt.datatransfer.StringSelection;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
@@ -630,6 +631,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     static private DragHandler theDragHandler = null; // singleton pattern
     private JLabel dragCursor; // An image label. Lives on current DropTarget's
     // LayeredPane.
+    private BufferedImage dragImage; // An image label. Lives on current DropTarget's LayeredPane.
     private Point drawOffset = new Point(); // translates event coords to local
     // drawing coords
     private Rectangle boundingBox; // image bounds
@@ -745,6 +747,83 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
           setDrawWin(rootWin.getLayeredPane());
         }
       }
+    }
+
+    /**
+     * Creates the image to use when dragging based on the zoom factor passed in.
+     * 
+     * INPUT: DragBuffer.getBuffer zoom OUTPUT: dragImage
+     */
+    private BufferedImage makeDragImage(double zoom) {
+      dragCursorZoom = zoom;
+      currentPieceOffsetX = (int) (originalPieceOffsetX / dragPieceOffCenterZoom * zoom + 0.5);
+      currentPieceOffsetY = (int) (originalPieceOffsetY / dragPieceOffCenterZoom * zoom + 0.5);
+      // get the piece(s) our cursor will be based on
+      PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
+      List relativePositions = new ArrayList();
+      GamePiece firstPiece = dragContents.nextPiece();
+      // Record sizing info and resize our cursor
+      boundingBox = firstPiece.getShape().getBounds();
+      boundingBox.width *= zoom;
+      boundingBox.height *= zoom;
+      boundingBox.x *= zoom;
+      boundingBox.y *= zoom;
+      relativePositions.add(new Point(0, 0));
+      while (dragContents.hasMoreElements()) {
+        GamePiece nextPiece = dragContents.nextPiece();
+        Rectangle r = nextPiece.getShape().getBounds();
+        r.width *= zoom;
+        r.height *= zoom;
+        r.x *= zoom;
+        r.y *= zoom;
+        Point p = new Point((int) Math.round(zoom * (nextPiece.getPosition().x - firstPiece.getPosition().x)), (int) Math.round(zoom
+            * (nextPiece.getPosition().y - firstPiece.getPosition().y)));
+        r.translate(p.x, p.y);
+        boundingBox.add(r);
+        relativePositions.add(p);
+      }
+      int width = boundingBox.width + EXTRA_BORDER * 2;
+      int height = boundingBox.height + EXTRA_BORDER * 2;
+      dragImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+      Graphics2D graphics = dragImage.createGraphics();
+      int index = 0;
+      for (dragContents = DragBuffer.getBuffer().getIterator(); dragContents.hasMoreElements();) {
+        GamePiece piece = dragContents.nextPiece();
+        Point pos = (Point) relativePositions.get(index++);
+        piece.draw(graphics, EXTRA_BORDER - boundingBox.x + pos.x, EXTRA_BORDER - boundingBox.y + pos.y, null, zoom);
+      }
+      // Make bitmap 50% transparent
+      WritableRaster alphaRaster = dragImage.getAlphaRaster();
+      int size = width * height;
+      int[] alphaArray = new int[size];
+      alphaArray = alphaRaster.getPixels(0, 0, width, height, alphaArray);
+      for (int i = 0; i < size; ++i) {
+        if (alphaArray[i] == 255)
+          alphaArray[i] = CURSOR_ALPHA;
+      }
+      // ... feather the cursor, since traits can extend arbitraily far out from bounds
+      final int FEATHER_WIDTH = EXTRA_BORDER;
+      for (int f = 0; f < FEATHER_WIDTH; ++f) {
+        int alpha = CURSOR_ALPHA * (f + 1) / FEATHER_WIDTH;
+        int limRow = (f + 1) * width - f; // for horizontal runs
+        for (int i = f * (width + 1); i < limRow; ++i) {
+          if (alphaArray[i] > 0) // North
+            alphaArray[i] = alpha;
+          if (alphaArray[size - i - 1] > 0) // South
+            alphaArray[size - i - 1] = alpha;
+        }
+        int limVert = size - (f + 1) * width; // for vertical runs
+        for (int i = (f + 1) * width + f; i < limVert; i += width) {
+          if (alphaArray[i] > 0) // West
+            alphaArray[i] = alpha;
+          if (alphaArray[size - i - 1] > 0) // East
+            alphaArray[size - i - 1] = alpha;
+        }
+      }
+      // ... apply the alpha to the image
+      alphaRaster.setPixels(0, 0, width, height, alphaArray);
+      // return the image
+      return dragImage;
     }
 
     /**
@@ -867,13 +946,19 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
         dragWin = dge.getComponent();
         drawWin = null;
         dropWin = null;
-        makeDragCursor(dragPieceOffCenterZoom);
-        setDrawWinToOwnerOf(dragWin);
-        SwingUtilities.convertPointToScreen(mousePosition, drawWin);
-        moveDragCursor(mousePosition.x, mousePosition.y);
+        if (!DragSource.isDragImageSupported()) {
+          makeDragCursor(dragPieceOffCenterZoom);
+          setDrawWinToOwnerOf(dragWin);
+          SwingUtilities.convertPointToScreen(mousePosition, drawWin);
+          moveDragCursor(mousePosition.x, mousePosition.y);
+        }
+        BufferedImage dragImage = makeDragImage(dragPieceOffCenterZoom);
         // begin dragging
         try {
-          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR), new StringSelection(""), this); // DEBUG
+          drawOffset.x = -boundingBox.x - currentPieceOffsetX + EXTRA_BORDER;
+          drawOffset.y = -boundingBox.y - currentPieceOffsetY + EXTRA_BORDER;
+          Point dragPointOffset = new Point(-drawOffset.x, -drawOffset.y);
+          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR), dragImage, dragPointOffset, new StringSelection(""), this); // DEBUG
           dge.getDragSource().addDragSourceMotionListener(this);
         }
         catch (InvalidDnDOperationException e) {
@@ -887,7 +972,9 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     //
     // ///////////////////////////////////////////////////////////////////////////////////
     public void dragDropEnd(DragSourceDropEvent e) {
-      removeDragCursor();
+      if (!DragSource.isDragImageSupported()) {
+        removeDragCursor();
+      }
     }
 
     public void dragEnter(DragSourceDragEvent e) {
@@ -914,11 +1001,13 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
 
     /** Moves cursor after mouse */
     public void dragMouseMoved(DragSourceDragEvent event) {
-      if (!event.getLocation().equals(lastDragLocation)) {
-        lastDragLocation = event.getLocation();
-        moveDragCursor(event.getX(), event.getY());
-        if (dragCursor != null && !dragCursor.isVisible()) {
-          dragCursor.setVisible(true);
+      if (!DragSource.isDragImageSupported()) {
+        if (!event.getLocation().equals(lastDragLocation)) {
+          lastDragLocation = event.getLocation();
+          moveDragCursor(event.getX(), event.getY());
+          if (dragCursor != null && !dragCursor.isVisible()) {
+            dragCursor.setVisible(true);
+          }
         }
       }
     }
@@ -930,14 +1019,16 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     // ///////////////////////////////////////////////////////////////////////////////////
     /** switches current drawWin when mouse enters a new DropTarget */
     public void dragEnter(DropTargetDragEvent event) {
-      Component newDropWin = event.getDropTargetContext().getComponent();
-      if (newDropWin != dropWin) {
-        double newZoom = newDropWin instanceof Map.View ? ((Map.View) newDropWin).getMap().getZoom() : 1.0;
-        if (Math.abs(newZoom - dragCursorZoom) > 0.01) {
-          makeDragCursor(newZoom);
+      if (!DragSource.isDragImageSupported()) {
+        Component newDropWin = event.getDropTargetContext().getComponent();
+        if (newDropWin != dropWin) {
+          double newZoom = newDropWin instanceof Map.View ? ((Map.View) newDropWin).getMap().getZoom() : 1.0;
+          if (Math.abs(newZoom - dragCursorZoom) > 0.01) {
+            makeDragCursor(newZoom);
+          }
+          setDrawWinToOwnerOf(event.getDropTargetContext().getComponent());
+          dropWin = newDropWin;
         }
-        setDrawWinToOwnerOf(event.getDropTargetContext().getComponent());
-        dropWin = newDropWin;
       }
       DropTargetListener forward = getListener(event);
       if (forward != null)
@@ -949,7 +1040,9 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
      * event along listener chain.
      */
     public void drop(DropTargetDropEvent event) {
-      removeDragCursor();
+      if (!DragSource.isDragImageSupported()) {
+        removeDragCursor();
+      }
       // EVENT uses UNSCALED, DROP-TARGET coordinate system
       event.getLocation().translate(currentPieceOffsetX, currentPieceOffsetY);
       DropTargetListener forward = getListener(event);
