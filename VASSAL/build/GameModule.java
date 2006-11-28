@@ -83,6 +83,7 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
+import VASSAL.tools.MTRandom;
 import VASSAL.tools.ToolBarComponent;
 
 /**
@@ -410,7 +411,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public Random getRNG() {
     if (RNG == null) {
-      RNG = new Random();
+      RNG = new MTRandom();
     }
     return RNG;
   }
