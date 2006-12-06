@@ -30,6 +30,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -94,7 +95,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   protected CounterInventory results;
   protected JTree tree;
 
-  public static final String VERSION = "2.0";
+  public static final String VERSION = "2.1";
   public static final String HOTKEY = "hotkey";
   public static final String BUTTON_TEXT = "text";
   public static final String NAME = "name";
@@ -157,6 +158,12 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
   public static final String FOLDERS_ONLY = "foldersOnly";
   protected boolean foldersOnly = false;
+  
+  public static final String SORT_PIECES = "sortPieces";
+  protected boolean sortPieces = true;
+
+  public static final String SORT_FORMAT = "sortFormat";
+  protected String sortFormat = "$PieceName$";
 
   protected JDialog frame;
 
@@ -339,7 +346,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     ArrayList path = new ArrayList();
     for (int i = 0; i < groupBy.length; i++)
       path.add(groupBy[i]);
-    results = new CounterInventory(new Counter(this.getConfigureName()), path);
+    results = new CounterInventory(new Counter(this.getConfigureName()), path, sortPieces);
 
     PieceIterator pi = new PieceIterator(GameModule.getGameModule().getGameState().getPieces(), new Selector(piecePropertiesFilter));
 
@@ -360,7 +367,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
         count = getTotalValue(p);
 
       Counter c;
-      c = new Counter(p, groups, count, pieceFormat);
+      c = new Counter(p, groups, count, pieceFormat, sortFormat);
       // Store
       results.insert(c);
     }
@@ -389,18 +396,18 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
   public String[] getAttributeDescriptions() {
     return new String[] {"Name", "Button text", "Button icon", "Hotkey", "Tooltip", "Show only pieces matching these properties", "Sort and Group By Properties",
-        "Label for folders", "Show only folders", "Label for pieces", "Center on selected piece", "Forward key strokes to selected piece",
+        "Label for folders", "Show only folders", "Label for pieces",  "Sort", "Label for sort", "Center on selected piece", "Forward key strokes to selected piece",
         "Show right-click menu of piece", "Draw piece images", "Zoom factor", "Available to these sides"};
   }
 
   public Class[] getAttributeTypes() {
     return new Class[] {String.class, String.class, IconConfig.class, KeyStroke.class, String.class, String.class, String[].class, String.class, Boolean.class,
-        PieceFormatConfig.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class, Double.class, String[].class};
+        PieceFormatConfig.class, Boolean.class, PieceFormatConfig.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class, Double.class, String[].class};
   }
 
   public String[] getAttributeNames() {
-    return new String[] {NAME, BUTTON_TEXT, ICON, HOTKEY, TOOLTIP, FILTER, GROUP_BY, NON_LEAF_FORMAT, FOLDERS_ONLY, LEAF_FORMAT, CENTERONPIECE,
-        FORWARD_KEYSTROKE, SHOW_MENU, DRAW_PIECES, PIECE_ZOOM, SIDES};
+    return new String[] {NAME, BUTTON_TEXT, ICON, HOTKEY, TOOLTIP, FILTER, GROUP_BY, NON_LEAF_FORMAT, FOLDERS_ONLY, LEAF_FORMAT,
+    		SORT_PIECES, SORT_FORMAT, CENTERONPIECE, FORWARD_KEYSTROKE, SHOW_MENU, DRAW_PIECES, PIECE_ZOOM, SIDES};
   }
 
   public static class IconConfig implements ConfigurerFactory {
@@ -480,6 +487,12 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       else {
         cutAboveLeaves = ((Integer) o).intValue();
       }
+    }
+    else if (SORT_PIECES.equals(key)) {
+        sortPieces = getBooleanValue(o);
+    }
+    else if (SORT_FORMAT.equals(key)) {
+    	sortFormat = (String) o;
     }
 
     else {
@@ -564,6 +577,12 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     }
     else if (CUTABOVELEAVES.equals(key)) {
       return cutAboveLeaves + "";
+    }
+    else if (SORT_PIECES.equals(key)) {
+        return sortPieces + "";
+    }
+    else if (SORT_FORMAT.equals(key)) {
+    	return sortFormat;
     }
     else {
       return launch.getAttributeValueString(key);
@@ -758,18 +777,20 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     // Only used when no piece is defined
     protected String localName;
     protected FormattedString format;
+    protected FormattedString sortingFormat;
     protected CounterNode node;
 
     public Counter(String name) {
-      this(null, null, 0, nonLeafFormat);
+      this(null, null, 0, nonLeafFormat, sortFormat);
       this.localName = name;
     }
 
-    public Counter(GamePiece piece, ArrayList groups, int value, String format) {
+    public Counter(GamePiece piece, ArrayList groups, int value, String format, String sortFormat) {
       this.piece = piece;
       this.value = value;
       this.groups = groups;
       this.format = new FormattedString(format);
+      this.sortingFormat = new FormattedString(sortFormat);
     }
 
     // piece can be null, so provide a alternate name
@@ -785,6 +806,9 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
     public String toString() {
       return format.getText(this);
+    }
+    public String toSortString() {
+      return sortingFormat.getText(this);
     }
 
     public String[] getPath() {
@@ -900,7 +924,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
    * @author spindler
    * 
    */
-  public class CounterNode {
+  public class CounterNode implements Comparable {
     protected final String entry;
     protected final Counter counter;
     protected List children;
@@ -908,7 +932,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
     // protected int depth;
 
-    public CounterNode(final String entry, final Counter counter, final int level) {
+    public CounterNode(final String entry, final Counter counter, final int level) { 
       this(entry, counter);
       this.level = level;
     }
@@ -966,12 +990,19 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       return counter;
     }
 
-    public void addChild(final CounterNode counterNode) {
+    public void addChild(final CounterNode counterNode, boolean sort) {
       children.add(counterNode);
+      if (sort)
+    	  sortChildren();
     }
 
-    public void addChild(final int i, final CounterNode counterNode) {
+    public void addChild(final int i, final CounterNode counterNode, boolean sort) {
       children.add(i, counterNode);
+      if (sort)
+    	  sortChildren();
+    }
+    protected void sortChildren() {
+    	Collections.sort(children);
     }
 
     public void removeChild(CounterNode child) {
@@ -1049,11 +1080,29 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       }
     }
 
+    /**
+     * Delegate comparism to specific method sortKey
+     */
+	public int compareTo(Object node) {
+		CounterNode other = (CounterNode) node;
+		return this.toSortString().compareTo(other.toSortString());
+	}
+
+	/**
+	 * TODO think about adding different sort strategies
+	 * @return String representation for the moment
+	 */
+	protected String toSortString() {
+		if (counter != null)
+			return counter.toSortString();
+		return getEntry();
+	}
+
   }
 
   public class CounterInventory implements TreeModel {
     // Needed for TreeModel
-    private Vector treeModelListeners = new Vector();
+    protected Vector treeModelListeners = new Vector();
     // This contains shortcuts to the nodes of the tree
     protected Map inventory;
     // The start of the tree
@@ -1064,11 +1113,14 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     protected ArrayList path;
     // Small speed up, only update values in tree when something has changed
     protected boolean changed;
+    // Sort the tree
+    protected boolean sort;
 
-    public CounterInventory(Counter c, ArrayList path) {
+    public CounterInventory(Counter c, ArrayList path, boolean sort) {
       this.root = new CounterNode(c.getName(), c);
       this.path = path;
       this.inventory = new HashMap();
+      this.sort = sort;
       changed = true;
     }
 
@@ -1088,12 +1140,12 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
         if (inventory.get(hash.toString()) == null) {
           newNode = new CounterNode(path[j], new Counter(path[j]), insertNode.getLevel() + 1);
           inventory.put(hash.toString(), newNode);
-          insertNode.addChild(newNode);
+          insertNode.addChild(newNode, sort);
         }
         insertNode = (CounterNode) inventory.get(hash.toString());
       }
       newNode = new CounterNode(counter.toString(), counter, insertNode.getLevel() + 1);
-      insertNode.addChild(newNode);
+      insertNode.addChild(newNode, sort);
       changed = true;
     }
 
@@ -1160,7 +1212,6 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       for (Enumeration en = treeModelListeners.elements(); en.hasMoreElements();) {
         ((TreeModelListener) en.nextElement()).treeNodesRemoved(e);
       }
-
     }
 
     public Object getChild(Object parent, int index) {
