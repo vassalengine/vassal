@@ -18,10 +18,10 @@
  */
 package VASSAL.configure;
 
-import javax.swing.JFileChooser;
 import VASSAL.build.module.Documentation;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.ExtensionFileFilter.AudioFileFilter;
+import VASSAL.tools.AudioFileFilter;
+import VASSAL.tools.FileChooser;
 
 /**
  * Class for selecting an AudioClip while editing a module and adding it to
@@ -31,10 +31,11 @@ import VASSAL.tools.ExtensionFileFilter.AudioFileFilter;
  * 
  */
 public class AudioClipConfigurer extends FileConfigurer {
-  private static final JFileChooser fc;
+  private static final FileChooser fc;
 
   static {
-    fc = new JFileChooser(Documentation.getDocumentationBaseDir());
+    fc = FileChooser.createFileChooser(null);
+    fc.setCurrentDirectory(Documentation.getDocumentationBaseDir());
     fc.setFileFilter(new AudioFileFilter());
   }
 
@@ -43,9 +44,10 @@ public class AudioClipConfigurer extends FileConfigurer {
     this.archive = archive;
   }
 
-  protected JFileChooser initFileChooser() {
+  protected FileChooser initFileChooser() {
     return fc;
   }
+
   protected void addToArchive(java.io.File f) {
     archive.addSound(f.getPath(), f.getName());
   }

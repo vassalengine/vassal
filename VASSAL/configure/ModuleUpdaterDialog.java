@@ -31,11 +31,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.tools.FileChooser;
 import VASSAL.tools.ZipUpdater;
 
 public class ModuleUpdaterDialog extends JDialog {
@@ -58,8 +58,9 @@ public class ModuleUpdaterDialog extends JDialog {
     });
     saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        JFileChooser fc = GameModule.getGameModule().getFileChooser();
-        if (fc.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return; 
+        FileChooser fc = GameModule.getGameModule().getFileChooser();
+        if (fc.showSaveDialog(getOwner()) != FileChooser.APPROVE_OPTION)
+          return; 
         
         File output = fc.getSelectedFile();
         ZipUpdater updater = null;
@@ -102,5 +103,4 @@ public class ModuleUpdaterDialog extends JDialog {
     pack();
     setLocationRelativeTo(getOwner());
   }
-
 }

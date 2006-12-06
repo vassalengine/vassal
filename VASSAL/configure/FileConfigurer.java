@@ -21,24 +21,24 @@ package VASSAL.configure;
 import java.io.File;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import VASSAL.build.module.Documentation;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.FileChooser;
 
 /**
  * A Configurer for java.io.File values
  */
 public class FileConfigurer extends Configurer {
-  private JFileChooser globalFileChooser;
+  private FileChooser globalFileChooser;
   protected VASSAL.tools.ArchiveWriter archive;
 
   protected JPanel p;
   protected JTextField tf;
-  protected JFileChooser fc;
+  protected FileChooser fc;
   protected boolean editable;
 
   public FileConfigurer(String key, String name) {
@@ -48,9 +48,11 @@ public class FileConfigurer extends Configurer {
     editable = true;
   }
 
-  protected JFileChooser initFileChooser() {
+  protected FileChooser initFileChooser() {
     if (globalFileChooser == null) {
-      globalFileChooser = new JFileChooser(Documentation.getDocumentationBaseDir());
+      globalFileChooser = FileChooser.createFileChooser(null);
+      globalFileChooser.setCurrentDirectory(
+         Documentation.getDocumentationBaseDir());
     }
     return globalFileChooser;
   }
@@ -141,7 +143,7 @@ public class FileConfigurer extends Configurer {
   }
 
   public void chooseNewValue() {
-    if (fc.showOpenDialog(null) == JFileChooser.CANCEL_OPTION) {
+    if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {
       setValue((Object) null);
     }
     else {

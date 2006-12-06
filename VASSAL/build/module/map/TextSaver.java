@@ -35,6 +35,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.counters.GamePiece;
+import VASSAL.tools.FileChooser;
 import VASSAL.tools.LaunchButton;
 
 public class TextSaver extends AbstractConfigurable {
@@ -112,11 +113,9 @@ public class TextSaver extends AbstractConfigurable {
   }
 
   protected void writeMapAsText() {
-    javax.swing.JFileChooser fc
-        = GameModule.getGameModule().getFileChooser();
-    if (fc.showSaveDialog(null) == javax.swing.JFileChooser.CANCEL_OPTION) {
-      return;
-    }
+    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    if (fc.showSaveDialog(map.getView()) != FileChooser.APPROVE_OPTION) return;
+
     try {
       PrintWriter p = new PrintWriter
           (new FileOutputStream(fc.getSelectedFile().getPath()));

@@ -78,6 +78,8 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
   public static final String SIDEWAYS = "sideways";
   public static final String COLOR = "color";
 
+  protected static final double sqrt3_2 = Math.sqrt(3) / 2.;
+
   public String[] getAttributeNames() {
     String s[] = {SIDEWAYS, X0, Y0, DY, DX, EDGES, CORNERS, VISIBLE, DOTS_VISIBLE, COLOR};
     return s;
@@ -132,7 +134,7 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
       public void propertyChange(java.beans.PropertyChangeEvent evt) {
         if (evt.getNewValue() != null) {
           double hgt = ((Double) evt.getNewValue()).doubleValue();
-          dxConfig.setValue(new Double(Math.sqrt(3) * hgt / 2.).toString());
+          dxConfig.setValue(new Double(sqrt3_2 * hgt).toString());
         }
       }
     });
@@ -160,7 +162,7 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
   }
 
   public HexGrid(double size, boolean alt) {
-    this(size, Math.sqrt(3) * size / 2., alt);
+    this(size, sqrt3_2 * size, alt);
   }
 
   public HexGrid() {
@@ -201,7 +203,7 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
 
   public void setHexSize(double size) {
     dy = size;
-    dx = Math.sqrt(3) * size / 2.;
+    dx = sqrt3_2 * size;
     shapeCache.clear();
   }
 
@@ -316,8 +318,8 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
         val = new Double((String) val);
       }
       dy = ((Double) val).doubleValue();
-      if (dx == Math.sqrt(3) * 64.0 / 2.) {
-        dx = Math.sqrt(3) * dy / 2.;
+      if (dx == sqrt3_2 * 64.0) {
+        dx = sqrt3_2 * dy;
       }
     }
     else if (DX.equals(key)) {
@@ -572,7 +574,7 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
     theta = Math.PI / 6. - theta;
     double r = Math.sqrt((double) (x * x + y * y));
     r *= Math.cos(theta);
-    return (int) (r / (dy * Math.sqrt(3) / 2.) + 0.5);
+    return (int) (r / (dy * sqrt3_2) + 0.5);
   }
 
   protected int hexX(int x, int y) {

@@ -117,7 +117,7 @@ public class Chart extends Widget {
       listenTo(config[0]);
 
       config[1] = new ImageConfigurer
-      (FILE,"GIF Image",
+      (FILE,"Image",
       GameModule.getGameModule().getArchiveWriter());
       config[1].setValue(fileName);
       listenTo(config[1]);
@@ -142,7 +142,7 @@ public class Chart extends Widget {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name", "GIF Image"};
+    return new String[]{"Name", "Image"};
   }
 
   public Class[] getAttributeTypes() {

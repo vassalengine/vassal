@@ -12,10 +12,11 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import VASSAL.build.GameModule;
+import VASSAL.tools.FileChooser;
+import VASSAL.tools.ImageFileFilter;
 
 /*
  * $Id$
@@ -113,15 +114,17 @@ public class IconConfigurer extends Configurer {
   }
 
   private void selectImage() {
-    JFileChooser fc = GameModule.getGameModule().getFileChooser();
-    if (fc.showOpenDialog(controls) == JFileChooser.CANCEL_OPTION) {
+    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    fc.setFileFilter(new ImageFileFilter());
+
+    if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {
       setValue(null);
     }
     else {
       File f = fc.getSelectedFile();
-      if (f != null
-        && f.exists()) {
-        GameModule.getGameModule().getArchiveWriter().addImage(f.getPath(),f.getName());
+      if (f != null && f.exists()) {
+        GameModule.getGameModule().getArchiveWriter()
+                                  .addImage(f.getPath(),f.getName());
         setValue(f.getName());
       }
     }

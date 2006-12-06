@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -81,6 +80,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.FileChooser;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
@@ -109,7 +109,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected String vassalVersionCreated = "0.0";
   protected String gameName = DEFAULT_NAME;
   protected String lastSavedConfiguration;
-  protected JFileChooser fileChooser;
+  protected FileChooser fileChooser;
   protected FileDialog fileDialog;
   protected java.util.Map globalProperties = new HashMap();
 
@@ -493,10 +493,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @return a common FileChooser so that recent file locations
    * can be remembered
    */
-  public JFileChooser getFileChooser() {
+  public FileChooser getFileChooser() {
     if (fileChooser == null) {
       getPrefs().addOption(null, new DirectoryConfigurer(SAVE_DIR, null));
-      fileChooser = new JFileChooser();
+      fileChooser = FileChooser.createFileChooser(getFrame());
       File f = (File) getPrefs().getValue(SAVE_DIR);
       if (f != null) {
         fileChooser.setCurrentDirectory(f);
@@ -506,9 +506,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       fileChooser.resetChoosableFileFilters();
       fileChooser.rescanCurrentDirectory();
     }
-    return fileChooser;
-  }
 
+    return fileChooser;
+  } 
 
   /**
    * @deprecated Use {@link #getFileChooser} instead.
@@ -568,12 +568,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       getGameState().setup(false);
       cancelled = getGameState().isGameStarted();
       if (!cancelled) {
-        if (fileDialog != null
-            && fileDialog.getDirectory() != null) {
-          getPrefs().getOption(SAVE_DIR).setValue(fileDialog.getDirectory());
-        }
-        else if (fileChooser != null) {
-          getPrefs().getOption(SAVE_DIR).setValue(fileChooser.getCurrentDirectory());
+        if (fileChooser != null) {
+          getPrefs().getOption(SAVE_DIR)
+                    .setValue(fileChooser.getCurrentDirectory());
         }
         getPrefs().write();
         if (getDataArchive() instanceof ArchiveWriter

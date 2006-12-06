@@ -42,6 +42,7 @@ import java.security.AllPermission;
 import java.security.CodeSource;
 import java.security.PermissionCollection;
 import java.security.SecureClassLoader;
+import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,6 +55,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import javax.swing.ImageIcon;
 import sun.applet.AppletAudioClip;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
@@ -74,9 +76,10 @@ public class DataArchive extends SecureClassLoader {
   public static final String SOUNDS_DIR = "sounds/";
   private BooleanConfigurer smoothPrefs;
   private CodeSource cs;
-  private static Image NULL_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR); // empty image for images scaled to zero size
 
-//  protected SVGManager svgManager;
+  // empty image for images scaled to zero size
+  private static final Image NULL_IMAGE =
+   new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR);
 
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
@@ -95,6 +98,9 @@ public class DataArchive extends SecureClassLoader {
     return archive;
   }
 
+  /**
+   * @deprecated Use {@link getImage} instead.
+   */
   public static Image findImage(File zip, String file) throws IOException {
     return getImage(getFileStream(zip, file));
   }
@@ -109,7 +115,10 @@ public class DataArchive extends SecureClassLoader {
                             + ": " + e.getMessage());
     }
   }
-
+ 
+  /**
+   * @deprecated Use {@link getImage} instead.
+   */
   public static Image findImage(File dir, String zip, String file)
       throws IOException {
     /*
@@ -144,23 +153,19 @@ public class DataArchive extends SecureClassLoader {
     else if ((image = (Image)imageCache.get(gifPath)) != null) {
       return image;
     }
-    else if ((src = (ImageSource)imageSources.get(name)) != null) {
-      image = src.getImage();
+    else {
+      if ((src = (ImageSource)imageSources.get(name)) != null) {
+         image = src.getImage();
+      }
+      else {
+         image = getImage(name);
+      }   
+   
       imageCache.put(path,image);
       return image;
     }
-    else {
-      try {
-        image = getImage(getFileStream(path));
-      }
-      catch (IOException e) {
-        image = getImage(getFileStream(gifPath));
-      }
-      imageCache.put(path, image);
-      return image;
-    }
   }
-  
+
   public AudioClip getCachedAudioClip(String name) throws IOException {
     String path = SOUNDS_DIR + name;
     AudioClip clip = (AudioClip)soundCache.get(path);
@@ -171,21 +176,6 @@ public class DataArchive extends SecureClassLoader {
     return clip;
   }
 
-/*
-  public Image getSVGImage(String file) {
-    if (svgManager == null) {
-      svgManager = new SVGManager();
-    }
-    Image im = null;
-    try {
-      im = svgManager.loadSVGImage(file, getFileStream(file));
-    }
-    catch (Exception e) {
-
-    }
-    return im;
-  }
-*/
   /**
    * Return a scaled instance of the image.
    * The image will be retrieved from cache if available, cached otherwise
@@ -356,6 +346,20 @@ public class DataArchive extends SecureClassLoader {
     }
   }
 
+  public Image getImage(String name) throws IOException {
+    String path = IMAGE_DIR + name;
+    String gifPath = path + ".gif";
+    Image image = null;
+
+    try {
+       image = getImage(getFileStream(path));
+    }
+    catch (IOException e) {
+      image = getImage(getFileStream(gifPath));
+    }
+    return image;
+  }
+  
   public static Image getImage(InputStream in) throws IOException {
     return Toolkit.getDefaultToolkit().createImage(getBytes(in));
   }
@@ -428,6 +432,7 @@ public class DataArchive extends SecureClassLoader {
         }
       }
     }
+
     if (stream == null) {
       throw new IOException("\'" + file + "\' not found in " + archive.getName());
     }
@@ -533,7 +538,7 @@ public class DataArchive extends SecureClassLoader {
 
   protected Class findClass(String name) throws ClassNotFoundException {
     if (cs == null) {
-      cs = new CodeSource(null, null);
+      cs = new CodeSource((URL) null, (Certificate[]) null);
     }
     try {
       String slashname = name.replace('.', '/');

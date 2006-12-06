@@ -69,9 +69,12 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   public void launch() {
+    if (image == null) return;
+
     if (window == null) {
       initComponents();
     }
+
     window.setVisible(true);
     window.toFront();
   }
@@ -135,7 +138,7 @@ public class AboutScreen extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[]{"Menu Entry",
-                        "GIF Image"};
+                        "Image"};
   }
 
   public Class[] getAttributeTypes() {
@@ -180,7 +183,7 @@ public class AboutScreen extends AbstractConfigurable {
       listenTo(config[0]);
 
       config[1] = new ImageConfigurer
-      (FILE,"GIF Image",
+      (FILE,"Image",
       GameModule.getGameModule().getArchiveWriter());
       config[1].setValue(fileName);
       listenTo(config[1]);

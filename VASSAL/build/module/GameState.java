@@ -25,12 +25,12 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.counters.GamePiece;
+import VASSAL.tools.FileChooser;
 
 /**
  * The GameState represents the state of the game currently being played.  Only one game can be open at once.
@@ -176,8 +176,8 @@ public abstract class GameState {
    * {@link Command}, which is then executed.  The command read from the
    * file should be that returned by {@link #getRestoreCommand} */
   public void loadGame() {
-    JFileChooser fc = GameModule.getGameModule().getFileChooser();
-    if (fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) return;
+    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
 
     File f = fc.getSelectedFile();
     if (f.exists()) {
@@ -241,23 +241,11 @@ public abstract class GameState {
   }
 
   private File getSaveFile() {
-    File outputFile = null;
-    JFileChooser fc = GameModule.getGameModule().getFileChooser();
-    File sf = fc.getSelectedFile();
-    if (sf != null) {
-      String name = sf.getPath();
-      if (name != null) {
-        int index = name.lastIndexOf('.');
-        if (index > 0) {
-          name = name.substring(0, index) + ".sav";
-          fc.setSelectedFile(new File(name));
-        }
-      }
-    }
+    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    fc.selectDotSavFile();
+    if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
-    if (fc.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return null;
-
-    outputFile = fc.getSelectedFile();
+    File outputFile = fc.getSelectedFile();
     if (outputFile.exists() &&
         shouldConfirmOverwrite() &&
         JOptionPane.NO_OPTION ==

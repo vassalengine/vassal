@@ -450,6 +450,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
       editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
         protected void paintBackground(Graphics g) {
           if (board != null) {
+            Rectangle b = getVisibleRect();
+            g.clearRect(b.x, b.y, b.width, b.height);
             board.draw(g, 0, 0, 1.0, editor);
           }
           else {

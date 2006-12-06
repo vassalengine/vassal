@@ -19,20 +19,21 @@
 package VASSAL.configure;
 
 import java.io.File;
-import javax.swing.JFileChooser;
 import VASSAL.build.module.Documentation;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.ExtensionFileFilter.ImageFileFilter;
+import VASSAL.tools.FileChooser;
+import VASSAL.tools.ImageFileFilter;
 
 /**
  * A Configurer for {@link java.awt.Image} values. Allows the user to select an
  * image file and writes it to a {@link ArchiveWriter}.
  */
 public class ImageConfigurer extends FileConfigurer {
-   private static final JFileChooser fc;
+   private static final FileChooser fc;
 
    static {
-      fc = new JFileChooser(Documentation.getDocumentationBaseDir());
+      fc = FileChooser.createFileChooser(null);
+      fc.setCurrentDirectory(Documentation.getDocumentationBaseDir());
       fc.setFileFilter(new ImageFileFilter());
    }
 
@@ -42,7 +43,7 @@ public class ImageConfigurer extends FileConfigurer {
       editable = false;
    }
   
-  protected JFileChooser initFileChooser() {
+  protected FileChooser initFileChooser() {
       return fc;
   }
 

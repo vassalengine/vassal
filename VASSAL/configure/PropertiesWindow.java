@@ -21,6 +21,8 @@ package VASSAL.configure;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.Box;
@@ -48,7 +50,6 @@ public class PropertiesWindow extends JDialog {
   }
 
   protected void initialize(final Configurable target, HelpWindow helpWindow) {
-    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     this.target = target;
     originalState = target.getBuildElement(Builder.createNewDocument());
     Node child = originalState.getFirstChild();
@@ -98,6 +99,13 @@ public class PropertiesWindow extends JDialog {
     getContentPane().add(buttonBox);
     pack();
     setLocationRelativeTo(getParent());
+
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent we) {
+         cancel();
+      }
+    });
   }
 
   public void cancel() {

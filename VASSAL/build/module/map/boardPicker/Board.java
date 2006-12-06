@@ -228,11 +228,19 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   public void draw(java.awt.Graphics g,
                    int x, int y, double zoom, Component obs) {
-    drawRegion(g, new Point(x, y), new Rectangle(x, y, Math.round((float) zoom * boundaries.width), Math.round((float) zoom * boundaries.height)), zoom, obs);
+    if (boardImage == null) fixImage(obs);
+    drawRegion(g, new Point(x, y),
+      new Rectangle(x, y, Math.round((float) zoom * boundaries.width),
+                          Math.round((float) zoom * boundaries.height)),
+      zoom, obs);
   }
 
-  public void drawRegion(final Graphics g, final Point location, Rectangle visibleRect, final double zoom, final Component obs) {
-    Rectangle bounds = new Rectangle(location.x, location.y, Math.round(boundaries.width * (float) zoom), Math.round(boundaries.height * (float) zoom));
+  public void drawRegion(final Graphics g, final Point location,
+   Rectangle visibleRect, final double zoom, final Component obs) {
+    if (boardImage == null) fixImage(obs);
+    Rectangle bounds = new Rectangle(location.x, location.y,
+      Math.round(boundaries.width  * (float) zoom),
+      Math.round(boundaries.height * (float) zoom));
     if (visibleRect.intersects(bounds)) {
       visibleRect = visibleRect.intersection(bounds);
       if (boardImage != null) {
@@ -242,10 +250,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
       else {
         if (color != null) {
           g.setColor(color);
-          g.fillRect(visibleRect.x, visibleRect.y, visibleRect.width, visibleRect.height);
+          g.fillRect(visibleRect.x, visibleRect.y,
+                     visibleRect.width, visibleRect.height);
         }
         else {
-          g.clearRect(visibleRect.x, visibleRect.y, visibleRect.width, visibleRect.height);
+          g.clearRect(visibleRect.x, visibleRect.y,
+                      visibleRect.width, visibleRect.height);
         }
       }
       if (grid != null) {
@@ -255,7 +265,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   public synchronized Image getScaledImage(double zoom, Component obs) {
-    return GameModule.getGameModule().getDataArchive().getScaledImage(boardImage, zoom, reversed, false);
+    if (boardImage == null) fixImage(obs);
+    return GameModule.getGameModule().getDataArchive()
+      .getScaledImage(boardImage, zoom, reversed, false);
   }
 
   public void setReversed(boolean val) {
@@ -322,9 +334,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
       return;
     try {
       try {
-        boardImage = DataArchive.getImage
-            (GameModule.getGameModule().getDataArchive().getFileStream
-             ("images/" + imageFile));
+        boardImage =
+          GameModule.getGameModule().getDataArchive().getImage(imageFile);
       }
       catch (IOException e) {
         boardImage = null;

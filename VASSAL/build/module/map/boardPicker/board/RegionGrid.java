@@ -464,6 +464,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid {
       }
 
       public void paint(Graphics g) {
+        Rectangle b = getVisibleRect();
+        g.clearRect(b.x, b.y, b.width, b.height);
         myBoard.draw(g, 0, 0, 1.0, this);
         Rectangle bounds = new Rectangle(new Point(),myBoard.bounds().getSize());
         grid.forceDraw(g,bounds,bounds,1.0,false);

@@ -41,7 +41,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -58,6 +57,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.ScrollPane;
@@ -836,8 +836,7 @@ public class Deck extends Stack {
   }
 
   private File getSaveFileName() {
-    File outputFile = null;
-    JFileChooser fc = GameModule.getGameModule().getFileChooser();
+    FileChooser fc = GameModule.getGameModule().getFileChooser();
     File sf = fc.getSelectedFile();
     if (sf != null) {
       String name = sf.getPath();
@@ -850,9 +849,10 @@ public class Deck extends Stack {
       }
     } 
 
-    if (fc.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) return null;
+    if (fc.showSaveDialog(map.getView()) != FileChooser.APPROVE_OPTION)
+      return null;
     
-    outputFile = fc.getSelectedFile();
+    File outputFile = fc.getSelectedFile();
     if (outputFile.exists() &&
         shouldConfirmOverwrite() &&
         JOptionPane.NO_OPTION ==
@@ -904,21 +904,10 @@ public class Deck extends Stack {
   }
 
   private File getLoadFileName() {
-    JFileChooser fc = GameModule.getGameModule().getFileChooser();
-
-    File sf = fc.getSelectedFile();
-    if (sf != null) {
-      String name = sf.getName();
-      if (name != null) {
-        int index = name.lastIndexOf('.');
-        if (index > 0) {
-          name = name.substring(0, index) + ".sav";
-          fc.setSelectedFile(new File(name));
-        }
-      }
-    }
-
-    if (fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) return null;
+    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    fc.selectDotSavFile();
+    if (fc.showOpenDialog(map.getView()) != FileChooser.APPROVE_OPTION)
+      return null;
     return fc.getSelectedFile();
   }
 

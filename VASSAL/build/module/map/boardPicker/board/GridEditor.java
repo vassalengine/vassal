@@ -6,12 +6,15 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -95,6 +98,11 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   
   protected void initComponents() {
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent we) {
+         cancel();
+      }
+    });
 
     view = new GridPanel(board);
 
@@ -130,11 +138,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     JButton canButton = new JButton(CANCEL);
     canButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        cancelSetMode();
-        grid.setDx(saveDx);
-        grid.setDy(saveDy);
-        grid.setOrigin(saveOrigin);
-        setVisible(false);
+        cancel();
       }
     });
     buttonPanel.add(canButton);
@@ -179,7 +183,15 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     pack();
     repaint();
   }
-  
+ 
+  protected void cancel() {
+    cancelSetMode();
+    grid.setDx(saveDx);
+    grid.setDy(saveDy);
+    grid.setOrigin(saveOrigin);
+    setVisible(false);
+  }
+ 
   protected void cancelSetMode() {
     canSetButton.setVisible(false);
     setButton.setVisible(true);
@@ -450,6 +462,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     public void paint(Graphics g) {
       if (board != null) {
+        Rectangle b = getVisibleRect();
+        g.clearRect(b.x, b.y, b.width, b.height);
         board.draw(g, 0, 0, 1.0, this);
         if (setMode) {
           highlight(g, hp1);

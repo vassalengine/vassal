@@ -19,24 +19,31 @@
 package VASSAL.configure;
 
 import java.io.File;
-import javax.swing.JFileChooser;
 import VASSAL.build.module.Documentation;
+import VASSAL.tools.FileChooser;
+import VASSAL.tools.DirectoryFileFilter;
 
 /**
  * A Configurer for picking file directories
  */
 public class DirectoryConfigurer extends FileConfigurer {
-  private static final JFileChooser fc = new Pan();
+  private static final FileChooser fc;
+
+  static {
+    fc = FileChooser.createFileChooser(null);
+    fc.setFileFilter(new DirectoryFileFilter());
+    fc.setFileSelectionMode(FileChooser.DIRECTORIES_ONLY);
+  }
 
   public DirectoryConfigurer(String key, String name) {
     super(key, name);
     setValue(new File(System.getProperty("user.home")));
+    fc.setCurrentDirectory(Documentation.getDocumentationBaseDir());
   }
 
   public void setValue(Object o) {
     File f = (File) o;
-    if (f != null
-      && !f.isDirectory()) {
+    if (f != null && !f.isDirectory()) {
       f = null;
     }
     super.setValue(f);
@@ -50,26 +57,8 @@ public class DirectoryConfigurer extends FileConfigurer {
     if (getValue() != null) {
       fc.setCurrentDirectory((File) getValue());
     }
-    if (fc.showOpenDialog(null) != JFileChooser.CANCEL_OPTION) {
+    if (fc.showOpenDialog(getControls()) == FileChooser.APPROVE_OPTION) {
       setValue(fc.getSelectedFile());
     }
   }
-
-  private static class Pan extends JFileChooser {
-    private Pan() {
-      setCurrentDirectory(Documentation.getDocumentationBaseDir());
-      setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-      setFileFilter(new javax.swing.filechooser.FileFilter() {
-        public boolean accept(File f) {
-          return f.isDirectory();
-        }
-
-        public String getDescription() {
-          return "Directory";
-        }
-      });
-    }
-  }
 }
-
-
