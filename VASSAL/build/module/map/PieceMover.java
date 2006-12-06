@@ -955,10 +955,10 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
         BufferedImage dragImage = makeDragImage(dragPieceOffCenterZoom);
         // begin dragging
         try {
-          drawOffset.x = -boundingBox.x - currentPieceOffsetX + EXTRA_BORDER;
-          drawOffset.y = -boundingBox.y - currentPieceOffsetY + EXTRA_BORDER;
-          Point dragPointOffset = new Point(-drawOffset.x, -drawOffset.y);
-          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR), dragImage, dragPointOffset, new StringSelection(""), this); // DEBUG
+        	Point dragPointOffset = new Point (0,0);
+        	dragPointOffset.x = boundingBox.x + currentPieceOffsetX - EXTRA_BORDER;
+        	dragPointOffset.y = boundingBox.y + currentPieceOffsetY - EXTRA_BORDER;
+        	dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR), dragImage, dragPointOffset, new StringSelection(""), this);
           dge.getDragSource().addDragSourceMotionListener(this);
         }
         catch (InvalidDnDOperationException e) {

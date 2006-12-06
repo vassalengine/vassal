@@ -21,6 +21,7 @@ package VASSAL.build.module;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +33,7 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.SequenceEncoder;
 
-public class ExtensionsLoader implements CommandEncoder {
+public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
   // Preferences key for the list of extensions to load
   private static final String SPECIFY_DIR_IN_PREFS = "specifyExtensionDirInPrefs";
   private static final String EXTENSION_DIR = "extensionDIR";
@@ -108,17 +109,36 @@ public class ExtensionsLoader implements CommandEncoder {
     return s;
   }
 
+  /**
+   * Tests if the specified file should be accepted as an module extension file.
+   * Currently we disallow any files that are hidden or "files" that are directories.
+   *
+   * @param   dir    the directory in which the file was found.
+   * @param   name   the name of the file.
+   * @return  <code>true</code> if and only if the name should be
+   * included in the file list; <code>false</code> otherwise.
+   */
+  public boolean accept(File dir, String name) {
+	  File fileCandidate = new File(dir, name);
+	  
+	  return !fileCandidate.isHidden() && !fileCandidate.isDirectory();
+  }
+  
   private String[] getExtensionNames() {
-    String dirName = getExtensionDirectory();
-    File dir = new File(dirName);
-    String[] s = dir.list();
-    if (s == null) {
-      s = new String[0];
+    String extensionDirectoryPath = getExtensionDirectory();
+    File dir = new File(extensionDirectoryPath);
+    
+    File[] extensionFiles = dir.listFiles(this);
+    if (extensionFiles == null) {
+    	extensionFiles = new File[0];
     }
-    for (int i = 0; i < s.length; ++i) {
-      s[i] = new File(dir, s[i]).getPath();
+    
+    String[] extensionFilenames = new String[extensionFiles.length];
+    
+    for (int i = 0; i < extensionFiles.length; i++) {
+    	extensionFilenames[i] = extensionFiles[i].getPath();
     }
-    return s;
+    return extensionFilenames;
   }
 
   public static String getExtensionDirectory() {
