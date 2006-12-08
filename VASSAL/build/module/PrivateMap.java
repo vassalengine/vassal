@@ -35,14 +35,12 @@ import java.awt.event.MouseMotionListener;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
-
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
-import VASSAL.Info;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
@@ -301,9 +299,7 @@ public class PrivateMap extends Map {
       for (Enumeration e = mouseMotionListeners.elements(); e.hasMoreElements();) {
         super.addMouseMotionListener((MouseMotionListener) e.nextElement());
       }
-      if (Info.isDndEnabled()) {
-        super.setDropTarget(dropTarget);
-      }
+      super.setDropTarget(dropTarget);
     }
   }
 }
