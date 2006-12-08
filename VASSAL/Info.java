@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "2.9.5";
+  private static final String VERSION = "2.9.6";
   private static Boolean is2dEnabled;
   private static Boolean isDndEnabled;
   /** This class should not be instantiated */
