@@ -246,7 +246,8 @@ public abstract class GameState {
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
     File outputFile = fc.getSelectedFile();
-    if (outputFile.exists() &&
+    if (outputFile != null &&
+        outputFile.exists() &&
         shouldConfirmOverwrite() &&
         JOptionPane.NO_OPTION ==
          JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(),

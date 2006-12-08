@@ -853,7 +853,8 @@ public class Deck extends Stack {
       return null;
     
     File outputFile = fc.getSelectedFile();
-    if (outputFile.exists() &&
+    if (outputFile != null &&
+        outputFile.exists() &&
         shouldConfirmOverwrite() &&
         JOptionPane.NO_OPTION ==
          JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(),

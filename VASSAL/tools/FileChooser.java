@@ -202,9 +202,7 @@ public abstract class FileChooser {
       }
 
       public File getCurrentDirectory() {
-         if (cur == null) return null;
-         else if (cur.isDirectory()) return cur;
-         else return cur.getParentFile();
+         return cur == null ? null : cur.getParentFile();
       }
 
       public void setCurrentDirectory(File dir) {
@@ -215,7 +213,7 @@ public abstract class FileChooser {
       }
 
       public File getSelectedFile() {
-         return cur != null && cur.isFile() ? cur : null;
+         return cur;
       }
 
       public void setSelectedFile(File file) {
