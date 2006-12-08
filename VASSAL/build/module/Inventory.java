@@ -1,8 +1,8 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2005 by Rodney Kinney, Brent Easton, Torsten Spindler
- *
+ * Copyright (c) 2005-2006 by Rodney Kinney, Brent Easton, Torsten Spindler, 
+ * and Scot McConnachie
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License (LGPL) as published by the Free Software Foundation.
@@ -29,8 +29,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,6 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -47,7 +54,6 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -60,6 +66,7 @@ import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -75,7 +82,7 @@ import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.StringEnum;
+import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.BoundsTracker;
 import VASSAL.counters.GamePiece;
@@ -86,6 +93,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.counters.Stack;
 import VASSAL.preferences.PositionOption;
+import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ScrollPane;
@@ -101,21 +109,22 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   public static final String NAME = "name";
   public static final String ICON = "icon";
   public static final String TOOLTIP = "tooltip";
-  public static final String DEST = "destination";
+  // public static final String DEST = "destination";
 
   /*
    * For use in formatted text output.
    */
-  final protected String mapSeparator = "\n";
-  final protected String groupSeparator = "   ";
+  protected String mapSeparator = "\n";
+  protected String groupSeparator = "   ";
 
   /*
    * Options Destination - Chat, Dialog, File.
    */
-  public static final String DEST_CHAT = "Chat Window";
-  public static final String DEST_DIALOG = "Dialog Window";
-  public static final String DEST_TREE = "Tree Window";
-  protected String destination = DEST_TREE;
+//  public static final String DEST_CHAT = "Chat Window";
+//  public static final String DEST_DIALOG = "Dialog Window";
+//  public static final String DEST_TREE = "Tree Window";
+//  public static final String[] DEST_OPTIONS = { DEST_CHAT, DEST_DIALOG, DEST_TREE }; 
+//  protected String destination = DEST_TREE;
 
   public static final String FILTER = "include";
   protected String piecePropertiesFilter = "";
@@ -165,6 +174,15 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   public static final String SORT_FORMAT = "sortFormat";
   protected String sortFormat = "$PieceName$";
 
+  public static final String ALPHA = "alpha";
+  public static final String LENGTHALPHA = "length";
+  public static final String NUMERIC = "numeric";
+  public static final String[] SORT_OPTIONS = { ALPHA, LENGTHALPHA, NUMERIC };
+
+  protected String sortStrategy = ALPHA;
+  
+  public static final String SORTING = "sorting";
+  
   protected JDialog frame;
 
   public Inventory() {
@@ -199,7 +217,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
     frame.getContentPane().add(initTree());
     frame.getContentPane().add(initButtons());
-    frame.setSize(150, 350);
+    frame.setSize(250, 350);
   }
 
   /**
@@ -255,47 +273,58 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     JScrollPane scrollPane = new ScrollPane(tree,
       JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    refresh();
     return scrollPane;
   }
 
   protected TreeCellRenderer initTreeCellRenderer() {
     return new DefaultTreeCellRenderer() {
 
-      public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf && !foldersOnly, row, hasFocus);
-        if (value instanceof CounterNode) {
-          final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
-          if (piece != null) {
-            final Rectangle r = piece.getShape().getBounds();
-            r.x = (int) Math.round(r.x * pieceZoom);
-            r.y = (int) Math.round(r.y * pieceZoom);
-            r.width = (int) Math.round(r.width * pieceZoom);
-            r.height = (int) Math.round(r.height * pieceZoom);
-            setIcon(new Icon() {
+    	private static final long serialVersionUID = -250332615261355856L;
 
-              public int getIconHeight() {
-                return r.height;
-              }
+    	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+    		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf && !foldersOnly, row, hasFocus);
+    		if (value instanceof CounterNode) {
+    			final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
+    			if (piece != null) {
+    				final Rectangle r = piece.getShape().getBounds();
+    				r.x = (int) Math.round(r.x * pieceZoom);
+    				r.y = (int) Math.round(r.y * pieceZoom);
+    				r.width = (int) Math.round(r.width * pieceZoom);
+    				r.height = (int) Math.round(r.height * pieceZoom);
+    				setIcon(new Icon() {
 
-              public int getIconWidth() {
-                return r.width;
-              }
+    					public int getIconHeight() {
+    						return r.height;
+    					}
 
-              public void paintIcon(Component c, Graphics g, int x, int y) {
-                piece.draw(g, -r.x, -r.y, c, pieceZoom);
-              }
+    					public int getIconWidth() {
+    						return r.width;
+    					}
 
-            });
-          }
-        }
-        return this;
-      }
+    					public void paintIcon(Component c, Graphics g, int x, int y) {
+    						piece.draw(g, -r.x, -r.y, c, pieceZoom);
+    					}
+
+    				});
+    			}
+    		}
+    		return this;
+    	}
 
     };
   }
 
   protected Component initButtons() {
     Box buttonBox = Box.createHorizontalBox();
+    // Written by Scot McConnachie.
+    JButton writeButton = new JButton("Save");
+    writeButton.addActionListener(new ActionListener() {
+    	public void actionPerformed(ActionEvent e) {
+    		inventoryToText();
+    	}
+    });
+    buttonBox.add(writeButton);
     JButton refreshButton = new JButton("Refresh");
     refreshButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -311,6 +340,42 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     });
     buttonBox.add(closeButton);
     return buttonBox;
+  }
+
+  /**
+   * @author Scot McConnachie. 
+   * Writes the inventory text data to a user selected file.
+   * This allows a module designer to use Inventory to create customized text 
+   * reports from the game.
+   * @author spindler
+   * Changed FileChooser to use the new Vassal.tool.FileChooser
+   * Changed Separator before getResultString call
+   * TODO add check for existing file
+   * TODO rework text display of Inventory
+   */
+  protected void inventoryToText() {
+	  StringBuffer output = new StringBuffer("");
+	  FileChooser fc = GameModule.getGameModule().getFileChooser();
+	  if (fc.showSaveDialog(null) == FileChooser.CANCEL_OPTION) {
+		  return;
+	  }
+	  // TODO replace this hack
+	  mapSeparator = System.getProperty("line.separator");
+	  // groupSeparator = mapSeparator + "  ";
+	  // groupSeparator = " ";
+	  output.append(results.getResultString()); 
+	  // .substring(1).replaceAll(
+	//		  mapSeparator, System.getProperty("line.separator"));
+	  try {
+		  PrintWriter p = new PrintWriter(new FileOutputStream(fc
+				  .getSelectedFile().getPath()));
+		  p.print(output);
+		  p.close();
+	      Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "Wrote " + fc.getSelectedFile().getName());
+	      c.execute();
+	  } catch (IOException e) {
+		  JOptionPane.showMessageDialog(null, e.getMessage());
+	  }
   }
 
   public GamePiece getSelectedCounter() {
@@ -343,47 +408,55 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   }
 
   private void buildTreeModel() {
-    ArrayList path = new ArrayList();
-    for (int i = 0; i < groupBy.length; i++)
-      path.add(groupBy[i]);
-    results = new CounterInventory(new Counter(this.getConfigureName()), path, sortPieces);
+	  // Initialize all pieces with CurrentBoard correctly.
+	  for (Iterator i = VASSAL.build.module.Map.getAllMaps(); i.hasNext();) {
+		  VASSAL.build.module.Map m = (VASSAL.build.module.Map) i.next();
+		  m.getPieces();
+	  }
+	  
+	  ArrayList path = new ArrayList();
+	  for (int i = 0; i < groupBy.length; i++)
+		  path.add(groupBy[i]);
+	  results = new CounterInventory(new Counter(this.getConfigureName()), path, sortPieces);
 
-    PieceIterator pi = new PieceIterator(GameModule.getGameModule().getGameState().getPieces(), new Selector(piecePropertiesFilter));
+	  PieceIterator pi = new PieceIterator(GameModule.getGameModule().getGameState().getPieces(), new Selector(piecePropertiesFilter));
 
-    while (pi.hasMoreElements()) {
-      ArrayList groups = new ArrayList();
-      GamePiece p = pi.nextPiece();
+	  while (pi.hasMoreElements()) {
+		  ArrayList groups = new ArrayList();
+		  GamePiece p = pi.nextPiece();
 
-      for (int i = 0; i < groupBy.length; i++) {
-        if (groupBy[i].length() > 0) {
-          String prop = (String) p.getProperty(groupBy[i]);
-          if (prop != null)
-            groups.add(p.getProperty(groupBy[i]));
-        }
-      }
+		  for (int i = 0; i < groupBy.length; i++) {
+			  if (groupBy[i].length() > 0) {
+				  String prop = (String) p.getProperty(groupBy[i]);
+				  if (prop != null)
+					  groups.add(p.getProperty(groupBy[i]));
+			  }
+		  }
 
-      int count = 1;
-      if (nonLeafFormat.length() > 0)
-        count = getTotalValue(p);
+		  int count = 1;
+		  if (nonLeafFormat.length() > 0)
+			  count = getTotalValue(p);
 
-      Counter c;
-      c = new Counter(p, groups, count, pieceFormat, sortFormat);
-      // Store
-      results.insert(c);
-    }
+		  Counter c;
+		  c = new Counter(p, groups, count, pieceFormat, sortFormat);
+		  // Store
+		  results.insert(c);
+	  }
   }
 
-  protected int getTotalValue(GamePiece p) {
-    String s = (String) p.getProperty(nonLeafFormat);
-    int count = 1;
-    try {
-      count = Integer.parseInt(s);
-    }
-    catch (Exception e) {
-      count = 1;
-    }
+  
 
-    return count;
+  protected int getTotalValue(GamePiece p) {
+	  String s = (String) p.getProperty(nonLeafFormat);
+	  int count = 1;
+	  try {
+		  count = Integer.parseInt(s);
+	  }
+	  catch (Exception e) {
+		  count = 1;
+	  }
+
+	  return count;
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
@@ -395,19 +468,26 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Name", "Button text", "Button icon", "Hotkey", "Tooltip", "Show only pieces matching these properties", "Sort and Group By Properties",
-        "Label for folders", "Show only folders", "Label for pieces",  "Sort", "Label for sort", "Center on selected piece", "Forward key strokes to selected piece",
-        "Show right-click menu of piece", "Draw piece images", "Zoom factor", "Available to these sides"};
+	  return new String[] {"Name", "Button text", "Button icon", "Hotkey", "Tooltip", // "Display", 
+			  "Show only pieces matching these properties", "Sort and Group By Properties",
+			  "Label for folders", "Show only folders", "Label for pieces",  "Sort", "Label for sort", 
+			  "Sorting method", "Center on selected piece", 
+			  "Forward key strokes to selected piece", "Show right-click menu of piece", "Draw piece images", "Zoom factor", "Available to these sides"};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, IconConfig.class, KeyStroke.class, String.class, String.class, String[].class, String.class, Boolean.class,
-        PieceFormatConfig.class, Boolean.class, PieceFormatConfig.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class, Double.class, String[].class};
+	  return new Class[] {String.class, String.class, IconConfig.class, KeyStroke.class, String.class, // DestConfig.class, 
+			  String.class, String[].class, String.class, Boolean.class,
+			  PieceFormatConfig.class, Boolean.class, PieceFormatConfig.class, 
+			  SortConfig.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class, 
+			  Double.class, String[].class};
   }
 
   public String[] getAttributeNames() {
-    return new String[] {NAME, BUTTON_TEXT, ICON, HOTKEY, TOOLTIP, FILTER, GROUP_BY, NON_LEAF_FORMAT, FOLDERS_ONLY, LEAF_FORMAT,
-    		SORT_PIECES, SORT_FORMAT, CENTERONPIECE, FORWARD_KEYSTROKE, SHOW_MENU, DRAW_PIECES, PIECE_ZOOM, SIDES};
+	  return new String[] {NAME, BUTTON_TEXT, ICON, HOTKEY, TOOLTIP, // DEST, 
+			  FILTER, GROUP_BY, NON_LEAF_FORMAT, FOLDERS_ONLY, LEAF_FORMAT,
+			  SORT_PIECES, SORT_FORMAT,  
+			  SORTING, CENTERONPIECE, FORWARD_KEYSTROKE, SHOW_MENU, DRAW_PIECES, PIECE_ZOOM, SIDES};
   }
 
   public static class IconConfig implements ConfigurerFactory {
@@ -419,6 +499,16 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new GamePieceFormattedStringConfigurer(key, name);
     }
+  }
+//  public static class DestConfig implements ConfigurerFactory {
+//	  public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+//		  return new StringEnumConfigurer(key, name, DEST_OPTIONS);
+//	  }
+//  }
+  public static class SortConfig implements ConfigurerFactory {
+	  public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+		  return new StringEnumConfigurer(key,name,SORT_OPTIONS);
+	  }
   }
 
   public void setAttribute(String key, Object o) {
@@ -494,6 +584,12 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     else if (SORT_FORMAT.equals(key)) {
     	sortFormat = (String) o;
     }
+    else if (SORTING.equals(key)) {
+    	sortStrategy = (String) o;
+    }
+//    else if (DEST.equals(key)) {
+//    	destination = (String) o;
+//    }
 
     else {
       launch.setAttribute(key, o);
@@ -584,6 +680,13 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     else if (SORT_FORMAT.equals(key)) {
     	return sortFormat;
     }
+    else if (SORTING.equals(key)) {
+    	return sortStrategy;
+    }
+//    else if (DEST.equals(key)) {
+//    	return destination;
+//    }
+
     else {
       return launch.getAttributeValueString(key);
     }
@@ -621,36 +724,36 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     return false;
   }
 
-  protected void executeCommand() {
-    if (destination.equals(DEST_CHAT)) {
-      Command c = new NullCommand();
-      String res[] = results.getResultStringArray();
-
-      for (int i = 0; i < res.length; i++) {
-        c.append(new Chatter.DisplayText(GameModule.getGameModule().getChatter(), res[i]));
-      }
-      c.execute();
-      GameModule.getGameModule().sendAndLog(c);
-    }
-    else if (destination.equals(DEST_DIALOG)) {
-      String res[] = results.getResultStringArray();
-      String text = "";
-      for (int i = 0; i < res.length; i++) {
-        text += res[i] + "\n";
-      }
-      JTextArea textArea = new JTextArea(text);
-      textArea.setEditable(false);
-
-      JScrollPane scrollPane = new ScrollPane(textArea,
-         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-      JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), scrollPane, getConfigureName(), JOptionPane.PLAIN_MESSAGE);
-    }
-    else if (destination.equals(DEST_TREE)) {
-      initTree();
-    }
-  }
+//  protected void executeCommand() {
+//    if (destination.equals(DEST_CHAT)) {
+//      Command c = new NullCommand();
+//      String res[] = results.getResultStringArray();
+//
+//      for (int i = 0; i < res.length; i++) {
+//        c.append(new Chatter.DisplayText(GameModule.getGameModule().getChatter(), res[i]));
+//      }
+//      c.execute();
+//      GameModule.getGameModule().sendAndLog(c);
+//    }
+//    else if (destination.equals(DEST_DIALOG)) {
+//      String res[] = results.getResultStringArray();
+//      String text = "";
+//      for (int i = 0; i < res.length; i++) {
+//        text += res[i] + "\n";
+//      }
+//      JTextArea textArea = new JTextArea(text);
+//      textArea.setEditable(false);
+//
+//      JScrollPane scrollPane = new ScrollPane(textArea,
+//         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+//         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//
+//      JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), scrollPane, getConfigureName(), JOptionPane.PLAIN_MESSAGE);
+//    }
+//    else if (destination.equals(DEST_TREE)) {
+//      initTree();
+//    }
+//  }
 
   /**
    * @return Command which only has some text in. The actual processing is done
@@ -754,11 +857,17 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     }
 
   }
-  public static class Dest extends StringEnum {
-    public String[] getValidValues(AutoConfigurable target) {
-      return new String[] {DEST_CHAT, DEST_DIALOG, DEST_TREE};
-    }
-  }
+  
+//  public static class Dest extends StringEnum {
+//    public String[] getValidValues(AutoConfigurable target) {
+//      return new String[] {DEST_CHAT, DEST_DIALOG, DEST_TREE};
+//    }
+//  }
+//  public static class SortStrategy extends StringEnum {
+//	  public String[] getValidValues(AutoConfigurable target) {
+//		  return new String[] {ALPHA, LENGTHALPHA, NUMERIC};
+//	  }
+//  }
 
   /**
    * Holds static information of and a reference to a gamepiece. Pay attention
@@ -795,7 +904,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
     // piece can be null, so provide a alternate name
     public String getName() {
-      if (piece != null)
+    	if (piece != null)
         return piece.getName();
       return localName;
     }
@@ -807,7 +916,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     public String toString() {
       return format.getText(this);
     }
-    public String toSortString() {
+    public String toSortKey() {
       return sortingFormat.getText(this);
     }
 
@@ -952,16 +1061,18 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       return getEntry();
     }
 
+    /**
+     * Places a separator between elements.
+     * The separator consists of an indent and a linebreak.
+     * @return
+     */
     protected String separator() {
       StringBuffer sep = new StringBuffer();
-      if (children.isEmpty()) {
-        sep.append(groupSeparator);
-      }
-      else {
+
+      if (getLevel() > 0)
         sep.append(mapSeparator);
-        for (int i = 0; i < getLevel(); i++)
-          sep.append(groupSeparator);
-      }
+      for (int i = 0; i < getLevel(); i++)
+    	  sep.append(groupSeparator);
       return sep.toString();
     }
 
@@ -1002,7 +1113,16 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     	  sortChildren();
     }
     protected void sortChildren() {
-    	Collections.sort(children);
+    	
+    	if (sortStrategy.equals(ALPHA)) 
+    		Collections.sort(children);
+    	else if (sortStrategy.equals(LENGTHALPHA))
+    		Collections.sort(children, new LengthAlpha());
+    	else if (sortStrategy.equals(NUMERIC))
+    		Collections.sort(children, new Numerical());
+    	else 
+    		Collections.sort(children);
+    	
     }
 
     public void removeChild(CounterNode child) {
@@ -1081,21 +1201,160 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     }
 
     /**
-     * Delegate comparism to specific method sortKey
+     * Compare this CounterNode to another one based on the respective SortKeys.
      */
 	public int compareTo(Object node) {
 		CounterNode other = (CounterNode) node;
-		return this.toSortString().compareTo(other.toSortString());
+		return this.toSortKey().compareTo(other.toSortKey());
 	}
 
 	/**
-	 * TODO think about adding different sort strategies
-	 * @return String representation for the moment
+	 * Sort this CounterNode by the counters key, if no counter use the label. If no children, use the
+	 * name of the counterNode, probably could be $PropertyValue$ as well?
+	 * @return key as String
 	 */
-	protected String toSortString() {
+	protected String toSortKey() {
+		String sortKey = getEntry();
 		if (counter != null)
-			return counter.toSortString();
-		return getEntry();
+			sortKey = counter.toSortKey();
+		if (!children.isEmpty())
+			sortKey = toString();
+		return sortKey;
+	}
+
+	/**
+	 * Base class for comparing two CounterNodes. Contains methods for sanity checking of
+	 * arguments and comparing non-sane arguments.
+	 * @author spindler
+	 *
+	 */
+	protected class CompareCounterNodes {
+		/**
+		 * Sanity check for arguments.
+		 * @param arg0
+		 * @param arg1
+		 * @return true if arguments looks processable, false else
+		 */
+		protected boolean argsOK(Object arg0, Object arg1) {
+			return (arg0 != null && 
+					arg1 != null && 
+					arg0 instanceof CounterNode && 
+					arg1 instanceof CounterNode);
+		}
+		
+		protected int compareStrangeArgs(Object arg0, Object arg1) {
+			if (arg1.equals(arg1))
+				return 0;
+
+			if (arg0 == null)
+				return 1;
+			if (arg1 == null)
+				return -1;
+			if (arg0 instanceof CounterNode && !(arg1 instanceof CounterNode))
+				return -1;
+			if (arg1 instanceof CounterNode && !(arg0 instanceof CounterNode))
+				return 1;
+		
+			throw new RuntimeException("These CounterNodes are not strange!");
+		}
+	}
+	
+	/**
+	 * Compare two CounterNodes based on the alphanumerical order of their SortKeys.
+	 * @author spindler
+	 *
+	 */
+	protected class Alpha extends CompareCounterNodes implements Comparator {
+
+		public int compare(Object arg0, Object arg1) {
+			if (!argsOK(arg0, arg1))
+				return compareStrangeArgs(arg0, arg1);
+			CounterNode left = (CounterNode) arg0;
+			CounterNode right = (CounterNode) arg1;
+
+			return left.compareTo(right);
+		}
+		
+	}
+
+	/**
+	 * Compare two CounterNodes based on the first integer value found in their SortKeys.
+	 * If a CounterNodes SortKey does not contain an integer at all it is assigned the lowest
+	 * available integer. 
+	 * @author spindler
+	 *
+	 */
+	protected class Numerical extends CompareCounterNodes implements Comparator {
+
+		protected final String regex =  "\\d+";
+		protected final Pattern p = Pattern.compile(regex);
+
+		/**
+		 * Get first integer in key, if any. Otherwise return lowest possible integer. 
+		 * @param key is a string that may or may not contain an integer value
+		 * @return the value of the integer found, min(Integer) otherwise
+		 * 
+		 */
+		protected int getInt(String key) {
+			int found = Integer.MIN_VALUE;
+			Matcher match = p.matcher(key);
+
+			if (!match.find()) {
+				// return minimum value
+				return found;
+			}
+			int start = match.start();
+			found = Integer.parseInt(key.substring(start, match.end()));
+ 
+			// Check for sign
+			if ( (start > 0) && (key.charAt(start-1) == '-') ) {
+				// negative integer found
+				// Is this a safe operation? What happens when MAX_VALUE * -1 < MIN_VALUE?
+				found *= -1;
+			}
+			return found;
+		}
+		/**
+		 * Compare two CounterNodes based on the first integer found in their SortKeys.
+		 */
+		public int compare(Object arg0, Object arg1) {
+			if (!argsOK(arg0, arg1))
+				return compareStrangeArgs(arg0, arg1);
+			CounterNode left = (CounterNode) arg0;
+			CounterNode right = (CounterNode) arg1;
+
+ 			int l = getInt(left.toSortKey());
+ 			int r = getInt(right.toSortKey());
+
+			if (l < r)
+				return -1;
+			if (l > r)
+				return 1;
+
+			return 0;
+		}
+	}
+	/**
+	 * Compare two CounterNodes based on the length of their SortKeys and alphanumerical sorting.
+	 * @author spindler
+	 *
+	 */
+	protected class LengthAlpha extends CompareCounterNodes implements Comparator {
+		public int compare(Object arg0, Object arg1) {
+			if (!argsOK(arg0, arg1))
+				return compareStrangeArgs(arg0, arg1);
+			CounterNode left = (CounterNode) arg0;
+			CounterNode right = (CounterNode) arg1;
+			
+			int leftLength = left.toSortKey().length();
+			int rightLength = right.toSortKey().length();
+			if (leftLength < rightLength)
+				return -1;
+			if (leftLength > rightLength)
+				return 1;
+			// Native comparism
+			return (left.compareTo(right));
+		}
 	}
 
   }
