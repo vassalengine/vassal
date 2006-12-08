@@ -149,6 +149,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
         startSetMode();
       }
     });
+    setButton.setRequestFocusEnabled(false);
     buttonPanel.add(setButton);
 
     canSetButton = new JButton(CANCEL_SET);
@@ -158,6 +159,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       }
     });
     canSetButton.setVisible(false);
+    canSetButton.setRequestFocusEnabled(false);
     buttonPanel.add(canSetButton);
 
 
@@ -170,6 +172,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     });
     numberingButton.setEnabled(grid.getGridNumbering() != null);
     numberingButton.setVisible(true);
+    numberingButton.setRequestFocusEnabled(false);
     buttonPanel.add(numberingButton);
     
     Box controlPanel = Box.createVerticalBox();

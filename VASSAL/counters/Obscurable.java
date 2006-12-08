@@ -343,34 +343,33 @@ public class Obscurable extends Decorator implements EditablePiece {
   }
 
   public KeyCommand[] myGetKeyCommands() {
-    if (commandsWithPeek == null) {
       
-      List l = new ArrayList();
-      GamePiece outer = Decorator.getOutermost(this);
+    List l = new ArrayList();
+    GamePiece outer = Decorator.getOutermost(this);
       
-      // Hide Command
-      if (keyCommand == null) { // Backwards compatibility with VASL classes
-        keyCommand = KeyStroke.getKeyStroke(obscureKey, InputEvent.CTRL_MASK);
-      }
-      
-      hide = new KeyCommand(hideCommand, keyCommand, outer);
-      if (hideCommand.length() > 0) {
-        l.add(hide);
-        commandsWithoutPeek = new KeyCommand[] {hide};
-      }
-      else {
-        commandsWithoutPeek = new KeyCommand[0];
-      }
-      
-      // Peek Command
-      peek = new KeyCommand("Peek", peekKey, outer);
-      if (displayStyle == PEEK && peekKey != null) {
-        l.add(peek);
-      }
-      
-      commandsWithPeek = (KeyCommand[]) l.toArray(new KeyCommand[l.size()]);
+    // Hide Command
+    if (keyCommand == null) { // Backwards compatibility with VASL classes
+      keyCommand = KeyStroke.getKeyStroke(obscureKey, InputEvent.CTRL_MASK);
     }
-    if (obscuredToOthers() && displayStyle == PEEK && peekKey != null) {
+      
+    hide = new KeyCommand(hideCommand, keyCommand, outer);
+    if (hideCommand.length() > 0 && isMaskable()) {
+      l.add(hide);
+      commandsWithoutPeek = new KeyCommand[] {hide};        
+    }
+    else {
+      commandsWithoutPeek = new KeyCommand[0];
+    }
+      
+    // Peek Command
+    peek = new KeyCommand("Peek", peekKey, outer);
+    if (displayStyle == PEEK && peekKey != null) {
+      l.add(peek);
+    }
+      
+    commandsWithPeek = (KeyCommand[]) l.toArray(new KeyCommand[l.size()]);
+
+    if (obscuredToOthers() && isMaskable() && displayStyle == PEEK && peekKey != null) {
       return commandsWithPeek;
     }
     else {
