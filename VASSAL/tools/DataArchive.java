@@ -422,19 +422,25 @@ public class DataArchive extends SecureClassLoader {
       stream = archive.getInputStream(entry);
     }
     else {
-      for (int i = 0; i < extensions.size() && stream == null; ++i) {
-        DataArchive ext = (DataArchive) extensions.get(i);
-        try {
-          stream = ext.getFileStream(file);
-        }
-        catch (IOException e) {
-          // Not found in this extension.  Try the next.
-        }
-      }
+      stream = getFileStreamFromExtension(file);
     }
 
     if (stream == null) {
       throw new IOException("\'" + file + "\' not found in " + archive.getName());
+    }
+    return stream;
+  }
+
+  protected InputStream getFileStreamFromExtension(String file) {
+    InputStream stream = null;;
+    for (int i = 0; i < extensions.size() && stream == null; ++i) {
+      DataArchive ext = (DataArchive) extensions.get(i);
+      try {
+        stream = ext.getFileStream(file);
+      }
+      catch (IOException e) {
+        // Not found in this extension.  Try the next.
+      }
     }
     return stream;
   }
@@ -450,18 +456,24 @@ public class DataArchive extends SecureClassLoader {
       url = new URL("jar:" + archiveURL + "!/" + fileName);
     }
     else {
-      for (int i = 0; i < extensions.size() && url == null; ++i) {
-        DataArchive ext = (DataArchive) extensions.get(i);
-        try {
-          url = ext.getURL(fileName);
-        }
-        catch (IOException e) {
-          // Not found in this extension.  Try the next.
-        }
-      }
+      url = getURLFromExtension(fileName);
     }
     if (url == null) {
       throw new IOException("\'" + fileName + "\' not found in " + archive.getName());
+    }
+    return url;
+  }
+
+  protected URL getURLFromExtension(String fileName) {
+    URL url = null;
+    for (int i = 0; i < extensions.size() && url == null; ++i) {
+      DataArchive ext = (DataArchive) extensions.get(i);
+      try {
+        url = ext.getURL(fileName);
+      }
+      catch (IOException e) {
+        // Not found in this extension.  Try the next.
+      }
     }
     return url;
   }
