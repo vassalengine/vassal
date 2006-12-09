@@ -510,7 +510,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
     private void init(Zone zone) {
       board = zone.getBoard();
       if (board != null) {
-        board.fixImage(editor);
+        board.fixImage();
       }
       editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);
       Rectangle polyBounds = editor.getPolygon().getBounds();

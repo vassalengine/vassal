@@ -181,7 +181,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     
     getContentPane().add(controlPanel, BorderLayout.SOUTH);
 
-    board.fixImage(view);
+    board.fixImage();
     scroll.revalidate();
     pack();
     repaint();
@@ -454,7 +454,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     public void setBoard(Board b) {
       board = b;
-      board.fixImage(null);
+      board.fixImage();
       setSize(board.getSize());
       setPreferredSize(board.getSize());
     }

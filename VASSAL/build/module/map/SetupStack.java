@@ -462,7 +462,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       
       getContentPane().add(mainPanel, BorderLayout.SOUTH);
 
-      board.fixImage(view);
+      board.fixImage();
       scroll.revalidate();
       updateDisplay();
       pack();

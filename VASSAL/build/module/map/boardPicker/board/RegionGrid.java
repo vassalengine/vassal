@@ -403,7 +403,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid {
       p.add(okButton);
       getContentPane().add(p, BorderLayout.SOUTH);
 
-      board.fixImage(view);
+      board.fixImage();
       scroll.revalidate();
       pack();
       repaint();

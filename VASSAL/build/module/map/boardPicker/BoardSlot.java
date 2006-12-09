@@ -129,7 +129,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
       new BackgroundTask() {
         public void doFirst() {
           if (board != null) {
-            board.fixImage(BoardSlot.this);
+            board.fixImage();
           }
         }
 

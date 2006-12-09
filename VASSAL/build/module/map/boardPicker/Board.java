@@ -50,12 +50,10 @@ import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.DataArchive;
 
 public class Board extends AbstractConfigurable implements GridContainer {
   /**
-   * A Board is a piece of a Map.  A Map can cantain a set of boards
-   * layed out in a rectangular grid.
+   * A Board is a piece of a Map. A Map can cantain a set of boards layed out in a rectangular grid.
    */
   public static final String NAME = "name";
   public static final String IMAGE = "image";
@@ -63,23 +61,17 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public static final String HEIGHT = "height";
   public static final String COLOR = "color";
   public static final String REVERSIBLE = "reversible";
-
   protected Image boardImage;
-
   /** @deprecated */
   protected Hashtable scaledCache = new Hashtable();
-
   protected Point pos = new Point(0, 0);
   protected Rectangle boundaries = new Rectangle(0, 0, 500, 500);
   protected String imageFile;
   protected String boardName = "Board 1";
   protected boolean reversible = false;
   protected boolean reversed = false;
-
   private Color color = null;
-
   private MapGrid grid = null;
-
   private Map map;
 
   /** Until a game is started that is using this board, the map will be null */
@@ -112,21 +104,11 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Board name",
-                        "Board image",
-                        "Reversible",
-                        "Board width",
-                        "Board height",
-                        "Background color"};
+    return new String[]{"Board name", "Board image", "Reversible", "Board width", "Board height", "Background color"};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class,
-                       Image.class,
-                       Boolean.class,
-                       Integer.class,
-                       Integer.class,
-                       Color.class};
+    return new Class[]{String.class, Image.class, Boolean.class, Integer.class, Integer.class, Color.class};
   }
 
   public String getConfigureName() {
@@ -141,9 +123,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         }
       };
     }
-    else if (WIDTH.equals(name)
-        || HEIGHT.equals(name)
-        || COLOR.equals(name)) {
+    else if (WIDTH.equals(name) || HEIGHT.equals(name) || COLOR.equals(name)) {
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
           return imageFile == null;
@@ -193,8 +173,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         val = new Integer((String) val);
       }
       if (val != null) {
-        boundaries.setSize(((Integer) val).intValue(),
-                           boundaries.height);
+        boundaries.setSize(((Integer) val).intValue(), boundaries.height);
       }
     }
     else if (HEIGHT.equals(key)) {
@@ -202,8 +181,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         val = new Integer((String) val);
       }
       if (val != null) {
-        boundaries.setSize(boundaries.width,
-                           ((Integer) val).intValue());
+        boundaries.setSize(boundaries.width, ((Integer) val).intValue());
       }
     }
     else if (COLOR.equals(key)) {
@@ -220,27 +198,19 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
-
   public Class[] getAllowableConfigureComponents() {
     Class[] c = {HexGrid.class, SquareGrid.class, RegionGrid.class, ZonedGrid.class};
     return c;
   }
 
-  public void draw(java.awt.Graphics g,
-                   int x, int y, double zoom, Component obs) {
-    if (boardImage == null) fixImage(obs);
-    drawRegion(g, new Point(x, y),
-      new Rectangle(x, y, Math.round((float) zoom * boundaries.width),
-                          Math.round((float) zoom * boundaries.height)),
-      zoom, obs);
+  public void draw(java.awt.Graphics g, int x, int y, double zoom, Component obs) {
+    fixImage();
+    drawRegion(g, new Point(x, y), new Rectangle(x, y, Math.round((float) zoom * boundaries.width), Math.round((float) zoom * boundaries.height)), zoom, obs);
   }
 
-  public void drawRegion(final Graphics g, final Point location,
-   Rectangle visibleRect, final double zoom, final Component obs) {
-    if (boardImage == null) fixImage(obs);
-    Rectangle bounds = new Rectangle(location.x, location.y,
-      Math.round(boundaries.width  * (float) zoom),
-      Math.round(boundaries.height * (float) zoom));
+  public void drawRegion(final Graphics g, final Point location, Rectangle visibleRect, final double zoom, final Component obs) {
+    fixImage();
+    Rectangle bounds = new Rectangle(location.x, location.y, Math.round(boundaries.width * (float) zoom), Math.round(boundaries.height * (float) zoom));
     if (visibleRect.intersects(bounds)) {
       visibleRect = visibleRect.intersection(bounds);
       if (boardImage != null) {
@@ -250,12 +220,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
       else {
         if (color != null) {
           g.setColor(color);
-          g.fillRect(visibleRect.x, visibleRect.y,
-                     visibleRect.width, visibleRect.height);
+          g.fillRect(visibleRect.x, visibleRect.y, visibleRect.width, visibleRect.height);
         }
         else {
-          g.clearRect(visibleRect.x, visibleRect.y,
-                      visibleRect.width, visibleRect.height);
+          g.clearRect(visibleRect.x, visibleRect.y, visibleRect.width, visibleRect.height);
         }
       }
       if (grid != null) {
@@ -265,9 +233,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   public synchronized Image getScaledImage(double zoom, Component obs) {
-    if (boardImage == null) fixImage(obs);
-    return GameModule.getGameModule().getDataArchive()
-      .getScaledImage(boardImage, zoom, reversed, false);
+    fixImage();
+    return GameModule.getGameModule().getDataArchive().getScaledImage(boardImage, zoom, reversed, false);
   }
 
   public void setReversed(boolean val) {
@@ -281,8 +248,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   /**
-   * If this board is reversed, return the location
-   * in un-reversed coordinates
+   * If this board is reversed, return the location in un-reversed coordinates
    */
   public Point localCoordinates(Point p) {
     if (reversed) {
@@ -292,8 +258,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   /**
-   * If this board is reversed, return the location in
-   * reversed coordinates
+   * If this board is reversed, return the location in reversed coordinates
    */
   public Point globalCoordinates(Point p) {
     return localCoordinates(p);
@@ -320,48 +285,38 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public MapGrid getGrid() {
     return grid;
   }
-  
+
   public Board copy() {
     Board b = new Board();
     b.build(getBuildElement(Builder.createNewDocument()));
     return b;
   }
 
+  /** @deprecated */
   public void fixImage(Component map) {
-    Cleanup.init();
-    Cleanup.getInstance().addBoard(this);
-    if (imageFile == null)
-      return;
-    try {
+    fixImage();
+  }
+  
+  public void fixImage() {
+    if (imageFile != null && boardImage == null) {
       try {
-        boardImage =
-          GameModule.getGameModule().getDataArchive().getImage(imageFile);
+        Cleanup.init();
+        Cleanup.getInstance().addBoard(this);
+        try {
+          boardImage = GameModule.getGameModule().getDataArchive().getImage(imageFile);
+          Icon icon = new ImageIcon(boardImage);
+          boundaries.setSize(icon.getIconWidth(), icon.getIconHeight());
+        }
+        catch (IOException e) {
+          JOptionPane.showMessageDialog(null, "Error reading board image " + imageFile + " in " + GameModule.getGameModule().getDataArchive().getName(),
+              "Not Found", JOptionPane.ERROR_MESSAGE);
+          return;
+        }
       }
-      catch (IOException e) {
-        boardImage = null;
+      catch (OutOfMemoryError err) {
+        JOptionPane.showMessageDialog(null, "Insufficient memory to load board " + getName() + "\nTry setting your display to use fewer colors",
+            "Out of memory", JOptionPane.ERROR_MESSAGE);
       }
-
-      if (boardImage == null && imageFile != null) {
-        JOptionPane.showMessageDialog
-            (null,
-             "Error reading board image " + imageFile + " in "
-             + GameModule.getGameModule().getDataArchive().getName(),
-             "Not Found",
-             JOptionPane.ERROR_MESSAGE);
-        return;
-      }
-
-      Icon icon = new ImageIcon(boardImage);
-      boundaries.setSize(icon.getIconWidth(),
-                         icon.getIconHeight());
-    }
-    catch (OutOfMemoryError err) {
-      JOptionPane.showMessageDialog
-          (null,
-           "Insufficient memory to load board " + getName()
-           + "\nTry setting your display to use fewer colors",
-           "Out of memory",
-           JOptionPane.ERROR_MESSAGE);
     }
   }
 
@@ -374,8 +329,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   /**
-   * @return true if the given point may not be a local location.
-   * I.e., if this grid will attempt to snap it to the nearest grid location */
+   * @return true if the given point may not be a local location. I.e., if this grid will attempt to snap it to the
+   *         nearest grid location
+   */
   public boolean isLocationRestricted(Point p) {
     return grid == null ? false : grid.isLocationRestricted(localCoordinates(p));
   }
@@ -385,8 +341,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   /**
-   * @return Position of this board relative to the other boards
-   * (0,0) is the upper left, (0,1) is to the right, etc.
+   * @return Position of this board relative to the other boards (0,0) is the upper left, (0,1) is to the right, etc.
    */
   public Point relativePosition() {
     return pos;
@@ -396,17 +351,22 @@ public class Board extends AbstractConfigurable implements GridContainer {
    * @return The (read-only) boundaries of this Board within the overall Map
    */
   public Rectangle bounds() {
+    fixImage();
     return new Rectangle(boundaries);
   }
 
-  /** Translate the location of the board by the given number of pixels
+  /**
+   * Translate the location of the board by the given number of pixels
+   * 
    * @see #bounds()
    */
   public void translate(int x, int y) {
     boundaries.translate(x, y);
   }
 
-  /** Set the location of this board
+  /**
+   * Set the location of this board
+   * 
    * @see #bounds()
    */
   public void setLocation(int x, int y) {
@@ -429,15 +389,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
       boardImage = null;
     }
   }
-
   /**
    * Cleans up {@link Board}s (by invoking {@link Board#cleanUp}) when a game is closed
    */
   public static class Cleanup implements GameComponent {
     private static Cleanup instance;
-
     private HashSet toClean = new HashSet();
-
     private boolean gameStarted = false;
 
     public static void init() {
@@ -456,6 +413,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
     /**
      * Mark this board as needing to be cleaned up when the game is closed
+     * 
      * @param b
      */
     public void addBoard(Board b) {
