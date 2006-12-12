@@ -44,6 +44,4 @@ public interface ChatServerConnection extends ServerConnection {
   /** Return the interface for querying the overall status of the server */
   ServerStatus getStatusServer();
   
-  /** Register a PropertyChangeListener.  Changes to the occupied room, connection status, etc, all trigger PropertyChangeEvents */
-  void addPropertyChangeListener(java.beans.PropertyChangeListener l);
 }
