@@ -19,16 +19,20 @@ import VASSAL.chat.Room;
 import VASSAL.chat.SimpleRoom;
 
 /**
- * Adds mouse listeners to the RoomTree components:  double-click to join a room, etc.
- * Builds a popup when right-clicking on a player or room
+ * Adds mouse listeners to the RoomTree components: double-click to join a room, etc. Builds a popup when right-clicking
+ * on a player or room
+ * 
  * @author rkinney
- *
+ * 
  */
 public class RoomInteractionControlsInitializer implements ChatControlsInitializer {
   public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10);
   private List playerActionFactories = new ArrayList();
   private List roomActionFactories = new ArrayList();
   private ChatServerConnection client;
+  private MouseAdapter currentRoomPopupBuilder;
+  private MouseAdapter roomPopupBuilder;
+  private ActionListener roomCreator;
 
   public RoomInteractionControlsInitializer(ChatServerConnection client) {
     super();
@@ -36,7 +40,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
   }
 
   public void initializeControls(final ChatServerControls controls) {
-    controls.getCurrentRoom().addMouseListener(new MouseAdapter() {
+    currentRoomPopupBuilder = new MouseAdapter() {
       public void mouseReleased(MouseEvent evt) {
         JTree tree = (JTree) evt.getSource();
         if (evt.isMetaDown()) {
@@ -55,8 +59,9 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
           }
         }
       }
-    });
-    controls.getRoomTree().addMouseListener(new MouseAdapter() {
+    };
+    controls.getCurrentRoom().addMouseListener(currentRoomPopupBuilder);
+    roomPopupBuilder = new MouseAdapter() {
       public void mouseReleased(MouseEvent evt) {
         JTree tree = (JTree) evt.getSource();
         TreePath path = tree.getPathForLocation(evt.getX(), evt.getY());
@@ -92,17 +97,17 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
           }
         }
       }
-
-    });
-    controls.getNewRoom().addActionListener(new ActionListener() {
+    };
+    controls.getRoomTree().addMouseListener(roomPopupBuilder);
+    roomCreator = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         createRoom(controls.getNewRoom().getText());
         controls.getNewRoom().setText("");
       }
-    });
-
+    };
+    controls.getNewRoom().addActionListener(roomCreator);
   }
-  
+
   protected void createRoom(String name) {
     client.setRoom(new SimpleRoom(name));
   }
@@ -113,7 +118,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
       RoomActionFactory f = (RoomActionFactory) it.next();
       popup.add(f.getAction(room, tree));
     }
-//    popup.add(new JoinRoomAction(target, source.getSvrConnection()));
+    // popup.add(new JoinRoomAction(target, source.getSvrConnection()));
     return popup.getComponentCount() == 0 ? null : popup;
   }
 
@@ -126,36 +131,26 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
   public void addPlayerActionFactory(PlayerActionFactory f) {
     playerActionFactories.add(f);
   }
-  
+
   public void addRoomActionFactory(RoomActionFactory f) {
     roomActionFactories.add(f);
   }
-  
+
   public JPopupMenu buildPopupForPlayer(Player target, JTree tree) {
     JPopupMenu popup = new JPopupMenu();
     for (Iterator it = playerActionFactories.iterator(); it.hasNext();) {
       PlayerActionFactory f = (PlayerActionFactory) it.next();
       popup.add(f.getAction(target, tree));
     }
-//    popup.add(new ShowProfileAction(target, (Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree)));
-//    popup.add(new PrivateMessageAction(target, source.getSvrConnection(), source.getPrivateChatManager()));
-//    popup.add(new SendSoundAction("Send Wake-up", source.getSvrConnection(), WAKE_UP_SOUND, target));
+    // popup.add(new ShowProfileAction(target, (Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree)));
+    // popup.add(new PrivateMessageAction(target, source.getSvrConnection(), source.getPrivateChatManager()));
+    // popup.add(new SendSoundAction("Send Wake-up", source.getSvrConnection(), WAKE_UP_SOUND, target));
     return popup.getComponentCount() == 0 ? null : popup;
   }
 
   public void uninitializeControls(ChatServerControls controls) {
-    MouseListener[] l = controls.getRoomTree().getMouseListeners();
-    for (int i = 0; i < l.length; i++) {
-      controls.getRoomTree().removeMouseListener(l[i]);
-    }
-    l = controls.getCurrentRoom().getMouseListeners();
-    for (int i = 0; i < l.length; i++) {
-      controls.getRoomTree().removeMouseListener(l[i]);
-    }
-    ActionListener[] al = controls.getNewRoom().getActionListeners();
-    for (int i = 0; i < al.length; i++) {
-      controls.getNewRoom().removeActionListener(al[i]);
-    }
+    controls.getRoomTree().removeMouseListener(roomPopupBuilder);
+    controls.getCurrentRoom().removeMouseListener(currentRoomPopupBuilder);
+    controls.getNewRoom().removeActionListener(roomCreator);
   }
-
 }

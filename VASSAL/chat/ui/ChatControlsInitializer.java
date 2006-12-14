@@ -9,6 +9,6 @@ package VASSAL.chat.ui;
 public interface ChatControlsInitializer {
   /** Register all event listeners */
   void initializeControls(ChatServerControls controls);
-  /** Remove all previously-registerd event listeners */
+  /** Remove all previously-registered event listeners */
   void uninitializeControls(ChatServerControls controls);
 }

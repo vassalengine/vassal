@@ -7,6 +7,7 @@ import java.net.URL;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import VASSAL.build.module.ServerConnection;
@@ -17,6 +18,9 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
   private Action connectAction;
   private Action disconnectAction;
   private ChatServerConnection client;
+  private JButton connectButton;
+  private JButton disconnectButton;
+  private PropertyChangeListener connectionListener;
 
   public BasicChatControlsInitializer(ChatServerConnection client) {
     super();
@@ -49,33 +53,31 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
       disconnectAction.putValue(Action.SMALL_ICON, new ImageIcon(imageURL));
     }
     disconnectAction.setEnabled(false);
-    toolbar.add(connectAction);
-    toolbar.add(disconnectAction);
-
-    PropertyChangeListener l3 = new PropertyChangeListener() {
-      public void propertyChange(final PropertyChangeEvent evt) {
-        Runnable runnable = new Runnable() {
-          public void run() {
-              boolean connected = Boolean.TRUE.equals(evt.getNewValue());
-              connectAction.setEnabled(!connected);
-              disconnectAction.setEnabled(connected);
-              if (!connected) {
-                controls.getRoomTree().setRooms(new VASSAL.chat.Room[0]);
-                controls.getCurrentRoom().setRooms(new VASSAL.chat.Room[0]);
+    connectButton = toolbar.add(connectAction);
+    disconnectButton = toolbar.add(disconnectAction);
+    connectionListener = new PropertyChangeListener() {
+          public void propertyChange(final PropertyChangeEvent evt) {
+            Runnable runnable = new Runnable() {
+              public void run() {
+                  boolean connected = Boolean.TRUE.equals(evt.getNewValue());
+                  connectAction.setEnabled(!connected);
+                  disconnectAction.setEnabled(connected);
+                  if (!connected) {
+                    controls.getRoomTree().setRooms(new VASSAL.chat.Room[0]);
+                    controls.getCurrentRoom().setRooms(new VASSAL.chat.Room[0]);
+                  }
               }
+            };
+            SwingUtilities.invokeLater(runnable);
           }
         };
-        SwingUtilities.invokeLater(runnable);
-      }
-    };
-    client.addPropertyChangeListener(ServerConnection.CONNECTED, l3);
+    client.addPropertyChangeListener(ServerConnection.CONNECTED, connectionListener);
 
   }
 
   public void uninitializeControls(ChatServerControls controls) {
-    while (controls.getToolbar().getComponentCount() > 0) {
-      controls.getToolbar().remove(0);
-    }
+    controls.getToolbar().remove(connectButton);
+    controls.getToolbar().remove(disconnectButton);
   }
   
 }
