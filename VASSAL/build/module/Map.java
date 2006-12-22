@@ -2001,8 +2001,8 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 			theMap = new View(this);
 			scroll = new AdjustableSpeedScrollPane(
             theMap,
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(
             KeyEvent.VK_PAGE_DOWN, 0));
 			scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(

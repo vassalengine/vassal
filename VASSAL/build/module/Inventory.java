@@ -356,7 +356,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   protected void inventoryToText() {
 	  StringBuffer output = new StringBuffer("");
 	  FileChooser fc = GameModule.getGameModule().getFileChooser();
-	  if (fc.showSaveDialog(null) == FileChooser.CANCEL_OPTION) {
+	  if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) {
 		  return;
 	  }
 	  // TODO replace this hack

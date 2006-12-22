@@ -33,6 +33,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.tools.FileChooser;
 
@@ -192,7 +193,8 @@ public class ArchiveWriter extends DataArchive {
    */
   public void write() throws IOException {
     if (archiveName == null) {
-      FileChooser fc = FileChooser.createFileChooser(null);
+      FileChooser fc = FileChooser.createFileChooser(
+        GameModule.getGameModule().getFrame());
       fc.setCurrentDirectory(Documentation.getDocumentationBaseDir());
       if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;
       archiveName = fc.getSelectedFile().getPath();
