@@ -246,21 +246,7 @@ public abstract class GameState {
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
     File outputFile = fc.getSelectedFile();
-    if (outputFile != null &&
-        outputFile.exists() &&
-        shouldConfirmOverwrite() &&
-        JOptionPane.NO_OPTION ==
-         JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(),
-          "Overwrite " + outputFile.getName() + "?", "File Exists",
-          JOptionPane.YES_NO_OPTION)) {
-        outputFile = null;
-    } 
-
     return outputFile;
-  }
-
-  private boolean shouldConfirmOverwrite() {
-    return System.getProperty("os.name").trim().equalsIgnoreCase("linux");
   }
 
   /**

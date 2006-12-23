@@ -23,9 +23,8 @@ import java.awt.FileDialog;
 import java.awt.Frame;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-
-import VASSAL.tools.FileFilter;
 
 /**
  *  FileChooser provides a wrapper for {@link javax.swing.JFileChooser}
@@ -167,7 +166,16 @@ public abstract class FileChooser {
       }
 
       public int showSaveDialog(Component parent) {
-         return fc.showSaveDialog(parent);
+         int value = fc.showSaveDialog(parent);
+         if (value == APPROVE_OPTION
+             && getSelectedFile().exists() && 
+             JOptionPane.NO_OPTION ==
+               JOptionPane.showConfirmDialog(parent,
+                   "Overwrite " + getSelectedFile().getName() + "?", "File Exists",
+                   JOptionPane.YES_NO_OPTION)) {
+           value = CANCEL_OPTION;
+         }
+         return value;
       }
    
       public FileFilter getFileFilter() {

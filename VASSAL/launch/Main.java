@@ -174,13 +174,13 @@ public class Main {
   }
 
   protected void newModule() throws IOException {
-    GameModule.init(new DefaultModule(new ArchiveWriter((String) null), globalPrefs));
+    GameModule.init(new BasicModule(new ArchiveWriter((String) null), globalPrefs));
     new VASSAL.configure.ModuleEditWindow().setVisible(true);
   }
 
   protected void edit(File moduleFile) throws IOException {
     ArchiveWriter archive = new ArchiveWriter(new ZipFile(moduleFile.getPath()));
-    DefaultModule mod = new DefaultModule(archive, globalPrefs);
+    BasicModule mod = new BasicModule(archive, globalPrefs);
     mod.setGlobalPrefs(globalPrefs);
     GameModule.init(mod);
     new VASSAL.configure.ModuleEditWindow().setVisible(true);
@@ -436,7 +436,7 @@ public class Main {
       public void actionPerformed(ActionEvent evt) {
         f.dispose();
         try {
-          GameModule.init(new DefaultModule(initArchive(tourMod), globalPrefs));
+          GameModule.init(new BasicModule(initArchive(tourMod), globalPrefs));
           GameModule.getGameModule().getGameState().loadGame(tourLog);
         }
         catch (Exception e) {
@@ -464,7 +464,7 @@ public class Main {
   }
 
   protected void loadModule(DataArchive archive, final boolean includeExtensions, Properties properties) throws IOException {
-    GameModule.init(new DefaultModule(archive, globalPrefs));
+    GameModule.init(new BasicModule(archive, globalPrefs));
     if (includeExtensions) {
       String extensionList = properties.getProperty(EXTENSION_LIST);
       if (extensionList != null) {
