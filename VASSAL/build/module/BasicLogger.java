@@ -8,8 +8,10 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.KeyStrokeListener;
+import VASSAL.tools.Obfuscator;
 
 public abstract class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
   public static final String BEGIN = "begin_log";
@@ -179,14 +182,19 @@ public abstract class BasicLogger implements Logger, Buildable, GameComponent, C
       }
       String s = GameModule.getGameModule().encode(log);
       ArchiveWriter saver = new ArchiveWriter(outputFile.getPath());
-      saver.addFile("savedGame", new ByteArrayInputStream(s.getBytes("UTF-8")));
+      byte[] contents = s.getBytes("UTF-8"); 
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      new Obfuscator(contents).write(out);
+      out.close();
+      contents = out.toByteArray();
+      saver.addFile("savedGame", new ByteArrayInputStream(contents));
       saver.write();
       GameModule.getGameModule().getGameState().setModified(false);
       undoAction.setEnabled(false);
       endLogAction.setEnabled(false);
     }
   }
-
+  
   protected void beginOutput() {
     FileChooser fd = GameModule.getGameModule().getFileChooser();
     String name = fd.getSelectedFile().getName();
