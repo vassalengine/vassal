@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 /** Converts an file created with {@link Obfuscator} back into plain text */
 public class Deobfuscator {
   private byte[] plain;
+
   public Deobfuscator(InputStream in) throws IOException {
     byte[] buffer = new byte[10000];
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -35,20 +36,21 @@ public class Deobfuscator {
     String s;
     plain = out.toByteArray();
     try {
-      s = new String(plain,"UTF-8");
+      s = new String(plain, "UTF-8");
     }
     catch (UnsupportedEncodingException e) {
       throw new Error("UTF-8 not supported");
     }
     int offset = Obfuscator.HEADER.length();
-    if (s.startsWith(Obfuscator.HEADER) && s.length() > offset) {
-      byte key = (byte) Integer.parseInt(s.substring(offset,offset+2),16);
+    if (s.startsWith(Obfuscator.HEADER) && s.length() > offset+1) {
+      byte key = (byte) Integer.parseInt(s.substring(offset, offset + 2), 16);
       offset += 2;
-      plain = new byte[(s.length()-offset)/2];
-      for (int i=0;i<plain.length;++i) {
-        plain[i] = (byte) (Integer.parseInt(s.substring(offset+2*i,offset+2*i+2), 16) ^ key);
+      plain = new byte[(s.length() - offset) / 2];
+      for (int i = 0; i < plain.length; ++i) {
+        plain[i] = (byte) (Integer.parseInt(s.substring(offset + 2 * i, offset + 2 * i + 2), 16) ^ key);
       }
     }
+    in.close();
   }
 
   public byte[] getPlainText() {

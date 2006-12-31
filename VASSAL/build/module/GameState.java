@@ -20,22 +20,40 @@ package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import VASSAL.build.GameModule;
+import VASSAL.command.AddPiece;
+import VASSAL.command.AlertCommand;
 import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
+import VASSAL.command.CommandFilter;
+import VASSAL.command.ConditionalCommand;
+import VASSAL.command.NullCommand;
 import VASSAL.counters.GamePiece;
+import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.BackgroundTask;
+import VASSAL.tools.DataArchive;
+import VASSAL.tools.Deobfuscator;
 import VASSAL.tools.FileChooser;
+import VASSAL.tools.Obfuscator;
 
 /**
  * The GameState represents the state of the game currently being played.  Only one game can be open at once.
  * @see GameModule#getGameState */
-public abstract class GameState {
+public class GameState implements CommandEncoder {
   protected Hashtable pieces = new Hashtable();
   protected Vector gameComponents = new Vector();
   protected JMenuItem loadGame, saveGame, newGame, closeGame;
@@ -207,11 +225,6 @@ public abstract class GameState {
     return GameModule.getGameModule().encode(getRestoreCommand());
   }
 
-  /**
-   * Return a {@link Command} that, when executed, will restore the
-   * game to its current state.  Invokes {@link GameComponent#getRestoreCommand}
-   * on each registered {@link GameComponent} */
-  public abstract Command getRestoreCommand();
 
   /** Prompts the user for a file into which to save the game */
   public void saveGame() {
@@ -293,12 +306,19 @@ public abstract class GameState {
     return id;
   }
 
-  public abstract void loadGame(File f) throws IOException;
-
-  public abstract void saveGame(File f) throws IOException;
-
-  public abstract void loadContinuation(File f) throws IOException;
-
+  public void loadContinuation(File f) throws IOException {
+    byte[] b = new Deobfuscator(getSaveFileInputStream(f.getPath())).getPlainText();
+    Command c = GameModule.getGameModule().decode(new String(b, "UTF-8").trim());
+    CommandFilter filter = new CommandFilter() {
+      protected boolean accept(Command c) {
+        return c instanceof BasicLogger.LogCommand;
+      }
+    };
+    c = filter.apply(c);
+    if (c != null) {
+      c.execute();
+    }
+  }
 
   /**     * @return an Enumeration of all {@link GamePiece}s in the game.     */
   public Enumeration getPieces() {
@@ -324,4 +344,148 @@ public abstract class GameState {
       return null;
     }
   }
+  
+  public static final String SAVEFILE_ZIP_ENTRY = "savedGame";
+
+  /**
+   * Return a {@link Command} that, when executed, will restore the
+   * game to its current state.  Invokes {@link GameComponent#getRestoreCommand}
+   * on each registered {@link GameComponent} */
+  public Command getRestoreCommand() {
+    if (!saveGame.isEnabled()) {
+      return null;
+    }
+    Command c = new SetupCommand(false);
+    c.append(checkVersionCommand());
+    c.append(getRestorePiecesCommand());
+    for (Enumeration e = gameComponents.elements(); e.hasMoreElements();) {
+      c.append(((GameComponent) e.nextElement()).getRestoreCommand());
+    }
+    c.append(new SetupCommand(true));
+    return c;
+  }
+
+  private Command checkVersionCommand() {
+    String runningVersion = GameModule.getGameModule().getAttributeValueString(GameModule.VASSAL_VERSION_RUNNING);
+    ConditionalCommand.Condition cond = new ConditionalCommand.Lt(GameModule.VASSAL_VERSION_RUNNING, runningVersion);
+    Command c = new ConditionalCommand(new ConditionalCommand.Condition[]{cond}, new AlertCommand("Version mismatch.\nGame saved using VASSAL version "
+        + runningVersion + "."));
+    String moduleName = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_NAME);
+    String moduleVersion = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_VERSION);
+    cond = new ConditionalCommand.Lt(GameModule.MODULE_VERSION, moduleVersion);
+    c.append(new ConditionalCommand(new ConditionalCommand.Condition[]{cond}, new AlertCommand("Version mismatch.\nGame saved using " + moduleName
+        + " version " + moduleVersion + ".")));
+    return c;
+  }
+
+  /**
+   * A GameState recognizes instances of {@link SetupCommand}
+   */
+  public String encode(Command c) {
+    if (c instanceof SetupCommand) {
+      return ((SetupCommand) c).isGameStarting() ? END_SAVE : BEGIN_SAVE;
+    }
+    else {
+      return null;
+    }
+  }
+
+  /**
+   * A GameState recognizes instances of {@link SetupCommand}
+   */
+  public Command decode(String theCommand) {
+    if (BEGIN_SAVE.equals(theCommand)) {
+      return new SetupCommand(false);
+    }
+    else if (END_SAVE.equals(theCommand)) {
+      return new SetupCommand(true);
+    }
+    else {
+      return null;
+    }
+  }
+  public static final String BEGIN_SAVE = "begin_save";
+  public static final String END_SAVE = "end_save";
+
+  public void saveGame(File f) throws IOException {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    String save = saveString();
+    new Obfuscator(save.getBytes("UTF-8")).write(out);
+    out.close();
+    lastSave = save;
+    ArchiveWriter saver = new ArchiveWriter(f.getPath());
+    saver.addFile(SAVEFILE_ZIP_ENTRY, new ByteArrayInputStream(out.toByteArray()));
+    saver.write();
+    if (saver.getArchive() != null) {
+      saver.getArchive().close();
+    }
+  }
+
+  public void loadGame(File f) throws IOException {
+    final String name = f.getPath();
+    final String shortName = f.getName();
+    GameModule.getGameModule().warn("Loading " + shortName + " ...");
+    new BackgroundTask() {
+      private String msg;
+      private Command loadCommand;
+
+      public void doFirst() {
+        try {
+          byte b[] = new Deobfuscator(getSaveFileInputStream(name)).getPlainText();
+          loadCommand = GameModule.getGameModule().decode(new String(b, "UTF-8").trim());
+          if (loadCommand != null) {
+            msg = "Loaded " + shortName;
+          }
+          else {
+            msg = "Invalid savefile " + shortName;
+          }
+        }
+        catch (Exception ex) {
+          ex.printStackTrace();
+          msg = "Error loading " + shortName;
+        }
+      }
+
+      public void doLater() {
+        if (loadCommand != null) {
+          loadCommand.execute();
+        }
+        GameModule.getGameModule().warn(msg);
+      }
+    }.start();
+  }
+
+  private InputStream getSaveFileInputStream(final String name) throws IOException {
+    InputStream in;
+    try {
+      in = DataArchive.getFileStream(new File(name), SAVEFILE_ZIP_ENTRY);
+    }
+    catch (IOException e) {
+      in = new FileInputStream(name);
+    }
+    return in;
+  }
+
+  /**
+   * @return a Command that, when executed, will add all pieces currently in the game. Used when saving a game.
+   */
+  public Command getRestorePiecesCommand() {
+    List pieceList = new ArrayList();
+    for (Enumeration e = pieces.elements(); e.hasMoreElements();) {
+      GamePiece p = (GamePiece) e.nextElement();
+      int index = 0;
+      if (p.getParent() == null) {
+        index = pieceList.size();
+      }
+      // TODO remove stacks that were empty when the game was loaded and are still empty now 
+      pieceList.add(index, p);
+    }
+    Command c = new NullCommand();
+    for (Iterator it = pieceList.iterator(); it.hasNext();) {
+      GamePiece p = (GamePiece) it.next();
+      c.append(new AddPiece(p));
+    }
+    return c;
+  }
+
 }

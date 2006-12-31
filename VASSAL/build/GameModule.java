@@ -322,6 +322,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @return the preferences for this module
    */
   public Prefs getPrefs() {
+    if (preferences == null) {
+      setPrefs(new Prefs(globalPrefs.getEditor(), gameName));
+    }
     return preferences;
   }
 

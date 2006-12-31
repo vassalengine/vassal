@@ -19,7 +19,6 @@ package VASSAL.tools;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 /**
@@ -30,23 +29,21 @@ import java.util.Random;
  * 
  */
 public class Obfuscator {
-  public static final String HEADER = "!VCS";
-  
+  public static final String HEADER = "!VCSK";
   private static final Random rand = new Random();
-
   private String encrypted;
   private byte key;
-  
+
   public Obfuscator(byte[] contents) {
     key = (byte) rand.nextInt(256);
     StringBuffer buffer = new StringBuffer(HEADER);
     buffer.append(Integer.toHexString(key));
-    for (int i=0;i<contents.length;++i) {
+    for (int i = 0; i < contents.length; ++i) {
       buffer.append(Integer.toHexString(contents[i]));
     }
     encrypted = buffer.toString();
   }
-  
+
   public void write(OutputStream out) throws IOException {
     out.write(encrypted.getBytes("UTF-8"));
   }

@@ -11,7 +11,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ import VASSAL.tools.FileChooser;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.Obfuscator;
 
-public abstract class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
+public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
   public static final String BEGIN = "begin_log";
   public static final String END = "end_log";
   public static final String LOG = "LOG\t";
