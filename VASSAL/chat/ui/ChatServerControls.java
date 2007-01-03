@@ -38,7 +38,7 @@ import VASSAL.preferences.VisibilityOption;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.KeyStrokeListener;
 
-public abstract class ChatServerControls extends AbstractBuildable {
+public class ChatServerControls extends AbstractBuildable {
 
   protected RoomTree currentRoom;
   protected JTextField newRoom;
