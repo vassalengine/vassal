@@ -125,6 +125,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected Logger logger;
   protected Chatter chat;
   protected Random RNG;
+  protected ServerConnection server;
 
   protected JFrame frame = new JFrame();
 
@@ -639,7 +640,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * @return the object reponsible for sending messages to the server
    */
-  public abstract ServerConnection getServer();
+  public ServerConnection getServer() {
+    return server;
+  }
 
   /**
    * Set the singleton GameModule and invoke {@link #build} on it
@@ -781,4 +784,5 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     return property;
   }
+
 }

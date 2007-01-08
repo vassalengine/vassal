@@ -21,9 +21,9 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.PrototypesContainer;
-import VASSAL.build.module.ServerConnection;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
 import VASSAL.build.module.properties.GlobalProperties;
+import VASSAL.chat.DummyClient;
 import VASSAL.command.Command;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
@@ -35,6 +35,7 @@ public class BasicModule extends GameModule {
 
   protected BasicModule(DataArchive archive, Prefs globalPrefs) {
     super(archive);
+    setGlobalPrefs(globalPrefs);
   }
 
   protected void build() throws IOException {
@@ -70,9 +71,33 @@ public class BasicModule extends GameModule {
     q.setMnemonic('Q');
     getFileMenu().add(q);
   }
+  
+  public void build(org.w3c.dom.Element e) {
+    /*
+     * This makes sure that Prefs reads the right entry in the preferences zipfile
+     */
+    if (e != null) {
+      gameName = e.getAttribute(MODULE_NAME);
+      if (e.getAttribute(VASSAL_VERSION_CREATED).length() > 0) {
+        vassalVersionCreated = e.getAttribute(VASSAL_VERSION_CREATED);
+      }
+    }
+    initGameState();
+    initLogger();
+    initServer();
+    if (e != null) {
+      super.build(e);
+      ensureComponent(GamePieceImageDefinitions.class);
+      ensureComponent(GlobalProperties.class);
+    }
+    else {
+      buildDefaultComponents();
+    }
+    initFrame();
+  }
 
-  // TODO server initialization
   protected void initServer() {
+    server = new DummyClient();
   }
 
   protected void initLogger() {
@@ -142,11 +167,6 @@ public class BasicModule extends GameModule {
       s = commandEncoders[i].encode(c);
     }
     return s;
-  }
-
-  public ServerConnection getServer() {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   protected void buildDefaultComponents() {

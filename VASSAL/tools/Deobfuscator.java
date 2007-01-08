@@ -18,8 +18,11 @@
 package VASSAL.tools;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 /** Converts an file created with {@link Obfuscator} back into plain text */
@@ -47,7 +50,7 @@ public class Deobfuscator {
       offset += 2;
       plain = new byte[(s.length() - offset) / 2];
       for (int i = 0; i < plain.length; ++i) {
-        plain[i] = (byte) (Integer.parseInt(s.substring(offset + 2 * i, offset + 2 * i + 2), 16) ^ key);
+        plain[i] = (byte) (Integer.parseInt(s.substring(offset++, ++offset), 16) ^ key);
       }
     }
     in.close();
@@ -55,5 +58,16 @@ public class Deobfuscator {
 
   public byte[] getPlainText() {
     return plain;
+  }
+  
+  // Convert an obfuscated file into a plain-text file
+  public static void main(String[] args) throws Exception {
+    System.out.println("Decoding "+args[0]);
+    Deobfuscator d = new Deobfuscator(new FileInputStream(args[0]));
+    OutputStream out = new FileOutputStream(args[0]);
+    out.write(d.getPlainText());
+    out.close();
+    System.out.println("Done!");
+    System.exit(0);
   }
 }
