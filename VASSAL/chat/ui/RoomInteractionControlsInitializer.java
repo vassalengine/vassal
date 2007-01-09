@@ -29,7 +29,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
   public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10);
   private List playerActionFactories = new ArrayList();
   private List roomActionFactories = new ArrayList();
-  private ChatServerConnection client;
+  protected ChatServerConnection client;
   private MouseAdapter currentRoomPopupBuilder;
   private MouseAdapter roomPopupBuilder;
   private ActionListener roomCreator;
