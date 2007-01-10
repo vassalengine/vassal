@@ -28,14 +28,24 @@ import VASSAL.chat.Compressor;
 import VASSAL.chat.MainRoomChecker;
 import VASSAL.chat.Player;
 import VASSAL.chat.PlayerEncoder;
+import VASSAL.chat.PrivateChatManager;
 import VASSAL.chat.ServerStatus;
 import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.WelcomeMessageServer;
 import VASSAL.chat.messageboard.Message;
 import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
+import VASSAL.chat.ui.BasicChatControlsInitializer;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
+import VASSAL.chat.ui.MessageBoardControlsInitializer;
+import VASSAL.chat.ui.PrivateMessageAction;
+import VASSAL.chat.ui.RoomInteractionControlsInitializer;
+import VASSAL.chat.ui.SendSoundAction;
+import VASSAL.chat.ui.ServerStatusControlsInitializer;
+import VASSAL.chat.ui.ShowProfileAction;
+import VASSAL.chat.ui.SimpleStatusControlsInitializer;
+import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.tools.PropertiesEncoder;
@@ -44,7 +54,7 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * @author rkinney
  */
-public abstract class NodeClient  implements ChatServerConnection, PlayerEncoder, ChatControlsInitializer {
+public abstract class NodeClient implements ChatServerConnection, PlayerEncoder, ChatControlsInitializer {
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected NodePlayer me;
   protected SimpleRoom currentRoom;
@@ -57,17 +67,28 @@ public abstract class NodeClient  implements ChatServerConnection, PlayerEncoder
   protected MainRoomChecker checker = new MainRoomChecker();
   protected int compressionLimit = 1000;
   protected CommandEncoder encoder;
-  public static final String ZIP_HEADER="!ZIP!";
+  protected MessageBoardControlsInitializer messageBoardControls;
+  protected BasicChatControlsInitializer basicControls;
+  protected RoomInteractionControlsInitializer roomControls;
+  protected ServerStatusControlsInitializer serverStatusControls;
+  protected SimpleStatusControlsInitializer playerStatusControls;
+  public static final String ZIP_HEADER = "!ZIP!";
 
-
-  public NodeClient(CommandEncoder encoder, PeerPoolInfo info, 
-                    MessageBoard msgSvr,
-                    WelcomeMessageServer welcomer) {
+  public NodeClient(CommandEncoder encoder, PeerPoolInfo info, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
     this.encoder = encoder;
     this.info = info;
     this.msgSvr = msgSvr;
     this.welcomer = welcomer;
     me = new NodePlayer(info.getUserName());
+    messageBoardControls = new MessageBoardControlsInitializer("Messages", msgSvr);
+    basicControls = new BasicChatControlsInitializer(this);
+    roomControls = new RoomInteractionControlsInitializer(this);
+    roomControls.addPlayerActionFactory(ShowProfileAction.factory());
+    roomControls.addPlayerActionFactory(SynchAction.factory(this));
+    roomControls.addPlayerActionFactory(PrivateMessageAction.factory(this, new PrivateChatManager(this)));
+    roomControls.addPlayerActionFactory(SendSoundAction.factory(this, "Send Wake-up", "wakeUpSound", "phone1.wav"));
+    serverStatusControls = new ServerStatusControlsInitializer(this);
+    playerStatusControls = new SimpleStatusControlsInitializer(this);
   }
 
   public void setConnected(boolean connect) {
@@ -113,7 +134,7 @@ public abstract class NodeClient  implements ChatServerConnection, PlayerEncoder
   protected abstract void closeConnection();
 
   protected abstract void initializeConnection() throws IOException;
-  
+
   public abstract void send(String command);
 
   public void setDefaultRoomName(String defaultRoomName) {
@@ -138,13 +159,11 @@ public abstract class NodeClient  implements ChatServerConnection, PlayerEncoder
   }
 
   public void forward(String receipientPath, String msg) {
-    if (isConnected()
-      && currentRoom != null
-      && msg != null) {
-      msg = checker.filter(msg,defaultRoomName, currentRoom.getName());
+    if (isConnected() && currentRoom != null && msg != null) {
+      msg = checker.filter(msg, defaultRoomName, currentRoom.getName());
       if (msg.length() > compressionLimit) {
         try {
-          msg = ZIP_HEADER + Base64.encodeBytes(Compressor.compress(msg.getBytes("UTF-8")),false);
+          msg = ZIP_HEADER + Base64.encodeBytes(Compressor.compress(msg.getBytes("UTF-8")), false);
         }
         catch (IOException e) {
           e.printStackTrace();
@@ -205,7 +224,7 @@ public abstract class NodeClient  implements ChatServerConnection, PlayerEncoder
   }
 
   public void sendRoomInfo(NodeRoom r) {
-    Node dummy = new Node(null,r.getName(),new PropertiesEncoder(r.getInfo()).getStringValue());
+    Node dummy = new Node(null, r.getName(), new PropertiesEncoder(r.getInfo()).getStringValue());
     if (isConnected()) {
       String msg = Protocol.encodeRoomsInfo(new Node[]{dummy});
       send(msg);
@@ -231,10 +250,9 @@ public abstract class NodeClient  implements ChatServerConnection, PlayerEncoder
       }
     }
     else if ((p = Protocol.decodeRoomsInfo(msg)) != null) {
-      for (int i=0;i<allRooms.length;++i) {
+      for (int i = 0; i < allRooms.length; ++i) {
         String infoString = p.getProperty(allRooms[i].getName());
-        if (infoString != null
-          && infoString.length() > 0) {
+        if (infoString != null && infoString.length() > 0) {
           try {
             Properties info = new PropertiesEncoder(infoString).getProperties();
             allRooms[i].setInfo(info);
@@ -253,7 +271,7 @@ public abstract class NodeClient  implements ChatServerConnection, PlayerEncoder
     else {
       if (msg.startsWith(ZIP_HEADER)) {
         try {
-          msg = new String(Compressor.decompress(Base64.decode(msg.substring(ZIP_HEADER.length()))),"UTF-8");
+          msg = new String(Compressor.decompress(Base64.decode(msg.substring(ZIP_HEADER.length()))), "UTF-8");
         }
         catch (IOException e) {
           e.printStackTrace();
@@ -341,7 +359,7 @@ public abstract class NodeClient  implements ChatServerConnection, PlayerEncoder
   }
 
   public String playerToString(Player p) {
-    Properties props = ((NodePlayer)p).toProperties();
+    Properties props = ((NodePlayer) p).toProperties();
     return new PropertiesEncoder(props).getStringValue();
   }
 
@@ -354,12 +372,18 @@ public abstract class NodeClient  implements ChatServerConnection, PlayerEncoder
   }
 
   public void initializeControls(ChatServerControls controls) {
-    throw new IllegalArgumentException("not implemented");
+    messageBoardControls.initializeControls(controls);
+    basicControls.initializeControls(controls);
+    roomControls.initializeControls(controls);
+    serverStatusControls.initializeControls(controls);
+    playerStatusControls.initializeControls(controls);
   }
 
   public void uninitializeControls(ChatServerControls controls) {
-    throw new IllegalArgumentException("not implemented");
+    messageBoardControls.uninitializeControls(controls);
+    basicControls.uninitializeControls(controls);
+    roomControls.uninitializeControls(controls);
+    serverStatusControls.uninitializeControls(controls);
+    playerStatusControls.uninitializeControls(controls);
   }
-  
-  
 }

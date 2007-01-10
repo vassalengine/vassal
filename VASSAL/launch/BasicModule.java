@@ -3,10 +3,13 @@ package VASSAL.launch;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 import org.w3c.dom.Document;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -23,7 +26,17 @@ import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
 import VASSAL.build.module.properties.GlobalProperties;
-import VASSAL.chat.DummyClient;
+import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.HttpMessageServer;
+import VASSAL.chat.PlayerEncoder;
+import VASSAL.chat.PrivateChatEncoder;
+import VASSAL.chat.PrivateChatManager;
+import VASSAL.chat.SoundEncoder;
+import VASSAL.chat.SynchEncoder;
+import VASSAL.chat.node.NodeServerInfo;
+import VASSAL.chat.node.SocketNodeClient;
+import VASSAL.chat.peer2peer.PeerPoolInfo;
+import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
@@ -71,7 +84,7 @@ public class BasicModule extends GameModule {
     q.setMnemonic('Q');
     getFileMenu().add(q);
   }
-  
+
   public void build(org.w3c.dom.Element e) {
     /*
      * This makes sure that Prefs reads the right entry in the preferences zipfile
@@ -97,7 +110,58 @@ public class BasicModule extends GameModule {
   }
 
   protected void initServer() {
-    server = new DummyClient();
+    PeerPoolInfo info = new PeerPoolInfo() {
+      public String getModuleName() {
+        return GameModule.getGameModule() == null ? "<unknown module>" : GameModule.getGameModule().getGameName();
+      }
+
+      public String getUserName() {
+        return GameModule.getUserId();
+      }
+    };
+    HttpMessageServer httpMessageServer = new HttpMessageServer("http://www.vassalengine.org/util/getMessages", "http://www.vassalengine.org/util/postMessage",
+        "http://www.vassalengine.org/util/motd", info);
+    NodeServerInfo nodeServerInfo = new NodeServerInfo() {
+          public String getHostName() {
+            return "63.144.41.13";
+          }
+    
+          public int getPort() {
+            return 5050;
+          }
+        };
+    server = new SocketNodeClient(GameModule.getGameModule(), info, nodeServerInfo, httpMessageServer, httpMessageServer);
+    getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
+    getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
+    PrivateChatManager pChatMgr = new PrivateChatManager((ChatServerConnection) server);
+    server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        if (getChatter() != null) {
+          getChatter().show((String) evt.getNewValue());
+        }
+      }
+    });
+    server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new PropertyChangeListener() {
+      public void propertyChange(final PropertyChangeEvent evt) {
+        final Command c = decode((String) evt.getNewValue());
+        if (c != null) {
+          Runnable runnable = new Runnable() {
+            public void run() {
+              c.execute();
+              GameModule.getGameModule().getLogger().log(c);
+            }
+          };
+          SwingUtilities.invokeLater(runnable);
+        }
+      }
+    });
+    if (server instanceof PlayerEncoder) {
+      addCommandEncoder(new SynchEncoder((PlayerEncoder) server,(ChatServerConnection) server));
+      addCommandEncoder(new PrivateChatEncoder((PlayerEncoder) server, pChatMgr));
+    }
+    addCommandEncoder(new SoundEncoder());
+    ChatServerControls c = new ChatServerControls();
+    c.addTo(this);
   }
 
   protected void initLogger() {
