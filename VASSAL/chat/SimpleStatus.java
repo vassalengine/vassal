@@ -11,6 +11,16 @@ public class SimpleStatus implements PlayerStatus {
   private boolean away;
   private String profile;
 
+  public SimpleStatus() {
+    this(false, false, "");
+  }
+
+  public SimpleStatus(boolean looking, boolean away, String profile) {
+    this.looking = looking;
+    this.away = away;
+    this.profile = profile;
+  }
+
   public boolean isAway() {
     return away;
   }
@@ -23,10 +33,4 @@ public class SimpleStatus implements PlayerStatus {
     return profile;
   }
 
-  public SimpleStatus(boolean looking, boolean away, String profile) {
-    super();
-    this.looking = looking;
-    this.away = away;
-    this.profile = profile;
-  }
 }

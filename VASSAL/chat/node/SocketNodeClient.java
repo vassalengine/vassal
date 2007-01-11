@@ -6,21 +6,20 @@ import java.net.UnknownHostException;
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.WelcomeMessageServer;
 import VASSAL.chat.messageboard.MessageBoard;
-import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.command.CommandEncoder;
 
 public class SocketNodeClient extends NodeClient implements SocketWatcher {
   private SocketHandler sender;
   protected NodeServerInfo serverInfo;
 
-  public SocketNodeClient(CommandEncoder encoder, PeerPoolInfo info, NodeServerInfo serverInfo, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
-    super(encoder, info, msgSvr, welcomer);
+  public SocketNodeClient(String moduleName, String playerId, CommandEncoder encoder, NodeServerInfo serverInfo, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
+    super(moduleName, playerId, encoder, msgSvr, welcomer);
     this.serverInfo = serverInfo;
     serverStatus = new CgiServerStatus();
   }
 
-  public SocketNodeClient(CommandEncoder encoder, PeerPoolInfo info, final String host, final int port, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
-    this(encoder, info, new NodeServerInfo() {
+  public SocketNodeClient(String moduleName, String playerId, CommandEncoder encoder, final String host, final int port, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
+    this(moduleName, playerId, encoder, new NodeServerInfo() {
 
       public String getHostName() {
         return host;

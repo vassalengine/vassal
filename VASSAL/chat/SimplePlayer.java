@@ -33,8 +33,7 @@ public class SimplePlayer implements VASSAL.chat.Player {
   }
 
   public SimplePlayer(String name) {
-    this.id = name;
-    this.name = name;
+    this(name,name,new SimpleStatus());
   }
 
   public SimplePlayer() {

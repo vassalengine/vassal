@@ -17,6 +17,7 @@
  */
 package VASSAL.chat.node;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -28,13 +29,17 @@ import VASSAL.chat.Compressor;
 import VASSAL.chat.MainRoomChecker;
 import VASSAL.chat.Player;
 import VASSAL.chat.PlayerEncoder;
+import VASSAL.chat.PrivateChatEncoder;
 import VASSAL.chat.PrivateChatManager;
 import VASSAL.chat.ServerStatus;
+import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleRoom;
+import VASSAL.chat.SimpleStatus;
+import VASSAL.chat.SoundEncoder;
+import VASSAL.chat.SynchEncoder;
 import VASSAL.chat.WelcomeMessageServer;
 import VASSAL.chat.messageboard.Message;
 import VASSAL.chat.messageboard.MessageBoard;
-import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.chat.ui.BasicChatControlsInitializer;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
@@ -55,6 +60,7 @@ import VASSAL.tools.SequenceEncoder;
  * @author rkinney
  */
 public abstract class NodeClient implements ChatServerConnection, PlayerEncoder, ChatControlsInitializer {
+  public static final String ZIP_HEADER = "!ZIP!";
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected NodePlayer me;
   protected SimpleRoom currentRoom;
@@ -63,7 +69,8 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
   protected MessageBoard msgSvr;
   protected WelcomeMessageServer welcomer;
   protected ServerStatus serverStatus;
-  protected PeerPoolInfo info;
+  protected String moduleName;
+  protected String playerId;
   protected MainRoomChecker checker = new MainRoomChecker();
   protected int compressionLimit = 1000;
   protected CommandEncoder encoder;
@@ -72,14 +79,17 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
   protected RoomInteractionControlsInitializer roomControls;
   protected ServerStatusControlsInitializer serverStatusControls;
   protected SimpleStatusControlsInitializer playerStatusControls;
-  public static final String ZIP_HEADER = "!ZIP!";
+  protected SoundEncoder soundEncoder;
+  protected PrivateChatEncoder privateChatEncoder;
+  protected SynchEncoder synchEncoder;
+  protected PropertyChangeListener nameChangeListener;
+  protected PropertyChangeListener profileChangeListener;
 
-  public NodeClient(CommandEncoder encoder, PeerPoolInfo info, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
+  public NodeClient(String moduleName, String playerId, CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
     this.encoder = encoder;
-    this.info = info;
     this.msgSvr = msgSvr;
     this.welcomer = welcomer;
-    me = new NodePlayer(info.getUserName());
+    me = new NodePlayer(playerId);
     messageBoardControls = new MessageBoardControlsInitializer("Messages", msgSvr);
     basicControls = new BasicChatControlsInitializer(this);
     roomControls = new RoomInteractionControlsInitializer(this);
@@ -89,6 +99,25 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     roomControls.addPlayerActionFactory(SendSoundAction.factory(this, "Send Wake-up", "wakeUpSound", "phone1.wav"));
     serverStatusControls = new ServerStatusControlsInitializer(this);
     playerStatusControls = new SimpleStatusControlsInitializer(this);
+    synchEncoder = new SynchEncoder(this, this);
+    privateChatEncoder = new PrivateChatEncoder(this, new PrivateChatManager(this));
+    soundEncoder = new SoundEncoder();
+    nameChangeListener = new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        SimplePlayer p = (SimplePlayer) getUserInfo();
+        p.setName((String) evt.getNewValue());
+        setUserInfo(p);
+      }
+    };
+    profileChangeListener = new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        SimplePlayer p = (SimplePlayer) getUserInfo();
+        SimpleStatus s = (SimpleStatus) p.getStatus();
+        s = new SimpleStatus(s.isLooking(), s.isAway(), (String) evt.getNewValue());
+        p.setStatus(s);
+        setUserInfo(p);
+      }
+    };
   }
 
   public void setConnected(boolean connect) {
@@ -96,7 +125,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
       if (!isConnected()) {
         try {
           NodePlayer oldPlayer = me;
-          me = new NodePlayer(info.getUserName() + "." + System.currentTimeMillis());
+          me = new NodePlayer(playerId);
           setUserInfo(oldPlayer);
           initializeConnection();
           Command welcomeMessage = welcomer.getWelcomeMessage();
@@ -121,7 +150,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
   }
 
   protected void registerNewConnection() {
-    String path = new SequenceEncoder(info.getModuleName(), '/').append(defaultRoomName).getValue();
+    String path = new SequenceEncoder(moduleName, '/').append(defaultRoomName).getValue();
     send(Protocol.encodeRegisterCommand(me.getId(), path, new PropertiesEncoder(me.toProperties()).getStringValue()));
     if (GameModule.getGameModule() != null) {
       String username = (String) GameModule.getGameModule().getPrefs().getValue("Login");
@@ -153,7 +182,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
 
   public void sendToAll(String msg) {
     if (currentRoom != null) {
-      String path = new SequenceEncoder(info.getModuleName(), '/').append(currentRoom.getName()).getValue();
+      String path = new SequenceEncoder(moduleName, '/').append(currentRoom.getName()).getValue();
       forward(path, msg);
     }
   }
@@ -175,13 +204,13 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
 
   public void sendToOthers(String msg) {
     if (currentRoom != null) {
-      String path = new SequenceEncoder(info.getModuleName(), '/').append(currentRoom.getName()).append("~" + me.getId()).getValue();
+      String path = new SequenceEncoder(moduleName, '/').append(currentRoom.getName()).append("~" + me.getId()).getValue();
       forward(path, msg);
     }
   }
 
   public void sendTo(Player recipient, Command c) {
-    String path = new SequenceEncoder(info.getModuleName(), '/').append("*").append(((NodePlayer) recipient).getId()).getValue();
+    String path = new SequenceEncoder(moduleName, '/').append("*").append(((NodePlayer) recipient).getId()).getValue();
     forward(path, encoder.encode(c));
   }
 
@@ -234,7 +263,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
   public void setRoom(VASSAL.chat.Room r) {
     if (isConnected()) {
       String newRoom = r.getName();
-      String newPath = new SequenceEncoder(info.getModuleName(), '/').append(newRoom).getValue();
+      String newPath = new SequenceEncoder(moduleName, '/').append(newRoom).getValue();
       String msg = Protocol.encodeJoinCommand(newPath);
       send(msg);
     }
@@ -244,7 +273,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     Node n;
     Properties p;
     if ((n = Protocol.decodeListCommand(msg)) != null) {
-      Node mod = n.getChild(info.getModuleName());
+      Node mod = n.getChild(moduleName);
       if (mod != null) {
         updateRooms(mod);
       }
@@ -372,11 +401,17 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
   }
 
   public void initializeControls(ChatServerControls controls) {
-    messageBoardControls.initializeControls(controls);
     basicControls.initializeControls(controls);
+    playerStatusControls.initializeControls(controls);
+    messageBoardControls.initializeControls(controls);
     roomControls.initializeControls(controls);
     serverStatusControls.initializeControls(controls);
-    playerStatusControls.initializeControls(controls);
+    GameModule.getGameModule().addCommandEncoder(synchEncoder);
+    GameModule.getGameModule().addCommandEncoder(privateChatEncoder);
+    GameModule.getGameModule().addCommandEncoder(soundEncoder);
+    GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).addPropertyChangeListener(nameChangeListener);
+    GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).addPropertyChangeListener(profileChangeListener);
+
   }
 
   public void uninitializeControls(ChatServerControls controls) {
@@ -385,5 +420,10 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     roomControls.uninitializeControls(controls);
     serverStatusControls.uninitializeControls(controls);
     playerStatusControls.uninitializeControls(controls);
+    GameModule.getGameModule().removeCommandEncoder(synchEncoder);
+    GameModule.getGameModule().removeCommandEncoder(privateChatEncoder);
+    GameModule.getGameModule().removeCommandEncoder(soundEncoder);
+    GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).removePropertyChangeListener(nameChangeListener);
+    GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).removePropertyChangeListener(profileChangeListener);
   }
 }
