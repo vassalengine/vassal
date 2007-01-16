@@ -1,30 +1,26 @@
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Sep 16, 2002
- * Time: 11:07:55 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.chat;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeListenerProxy;
 import java.beans.PropertyChangeSupport;
+import VASSAL.chat.ui.ChatControlsInitializer;
+import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 
 /**
  * Delegates calls to another SvrConnection instance, which can be changed programmatically
+ * 
  * @author rkinney
- *
+ * 
  */
-public class HybridClient implements ChatServerConnection, PlayerEncoder {
+public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatControlsInitializer {
   protected ChatServerConnection delegate;
   protected String defaultRoom = "Main Room";
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected PropertyChangeListener propForwarder;
-  
+  protected ChatServerControls controls;
+
   public HybridClient() {
     propForwarder = new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
@@ -35,15 +31,11 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder {
   }
 
   public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
-    propSupport.addPropertyChangeListener(propertyName,l);
-  }
-  
-  public Room[] getAvailableRooms() {
-    return delegate.getAvailableRooms();
+    propSupport.addPropertyChangeListener(propertyName, l);
   }
 
-  public ServerStatus getStatusServer() {
-    return delegate.getStatusServer();
+  public Room[] getAvailableRooms() {
+    return delegate.getAvailableRooms();
   }
 
   public Room getRoom() {
@@ -59,11 +51,11 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder {
   }
 
   public void sendTo(Player recipient, Command c) {
-      delegate.sendTo(recipient, c);
+    delegate.sendTo(recipient, c);
   }
 
   public void sendToOthers(Command c) {
-      delegate.sendToOthers(c);
+    delegate.sendToOthers(c);
   }
 
   public void setConnected(boolean connect) {
@@ -75,11 +67,11 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder {
   }
 
   public void setRoom(Room r) {
-      delegate.setRoom(r);
+    delegate.setRoom(r);
   }
 
   public void setUserInfo(Player p) {
-      delegate.setUserInfo(p);
+    delegate.setUserInfo(p);
   }
 
   public Player stringToPlayer(String s) {
@@ -100,18 +92,29 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder {
     propSupport.firePropertyChange(new PropertyChangeEvent(this, STATUS, null, msg));
   }
 
-  public void setDelegate(ChatServerConnection svr) {
+  public void setDelegate(ChatServerConnection newDelegate) {
     if (delegate.isConnected()) {
       throw new IllegalStateException("Cannot change server implementation while connected");
     }
     ChatServerConnection oldDelegate = delegate;
-    svr.setUserInfo(oldDelegate.getUserInfo());
-    ServerStatus oldStatus = getStatusServer();
+    newDelegate.setUserInfo(oldDelegate.getUserInfo());
     PropertyChangeListener[] listeners = propSupport.getPropertyChangeListeners();
     for (int i = 0; i < listeners.length; i++) {
-      svr.addPropertyChangeListener(((PropertyChangeListenerProxy)listeners[i]).getPropertyName(), listeners[i]);
+      newDelegate.addPropertyChangeListener(((PropertyChangeListenerProxy) listeners[i]).getPropertyName(), listeners[i]);
     }
-    delegate = svr;
-    propSupport.firePropertyChange(new PropertyChangeEvent(this, STATUS_SERVER, oldStatus, getStatusServer()));
+    if (delegate instanceof ChatControlsInitializer) {
+      ((ChatControlsInitializer) delegate).uninitializeControls(controls);
+    }
+    if (newDelegate instanceof ChatControlsInitializer) {
+      ((ChatControlsInitializer) newDelegate).initializeControls(controls);
+    }
+    delegate = newDelegate;
+  }
+
+  public void initializeControls(ChatServerControls controls) {
+    this.controls = controls;
+  }
+
+  public void uninitializeControls(ChatServerControls controls) {
   }
 }

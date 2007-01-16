@@ -41,7 +41,4 @@ public interface ChatServerConnection extends ServerConnection {
   /** Send a Command to a particular player */
   void sendTo(Player recipient, Command c);
 
-  /** Return the interface for querying the overall status of the server */
-  ServerStatus getStatusServer();
-  
 }

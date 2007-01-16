@@ -36,20 +36,6 @@ public class ShowServerStatusAction extends AbstractAction {
     putValue(SHORT_DESCRIPTION, "Display server connections for all modules");
   }
   
-  public ShowServerStatusAction(ChatServerConnection svr, URL iconURL) {
-    this(svr.getStatusServer(), iconURL);
-    svr.addPropertyChangeListener(ChatServerConnection.STATUS_SERVER, new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        ServerStatus status = (ServerStatus) evt.getNewValue();
-        frame.view.setStatusServer(status);
-        if (frame.isVisible() && status == null) {
-          frame.setVisible(false);
-        }
-        setEnabled(status != null);
-      }
-    });
-  }
-
   public void actionPerformed(ActionEvent e) {
     frame.refresh();
   }

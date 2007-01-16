@@ -78,10 +78,12 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
           else if (target instanceof SimpleRoom) {
             if (evt.isMetaDown()) {
               JPopupMenu popup = buildPopupForRoom((VASSAL.chat.Room) target, tree);
-              for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
-                popup.getComponent(i).setFont(POPUP_MENU_FONT);
+              if (popup != null) {
+                for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
+                  popup.getComponent(i).setFont(POPUP_MENU_FONT);
+                }
+                popup.show(tree, evt.getX(), evt.getY());
               }
-              popup.show(tree, evt.getX(), evt.getY());
             }
             else if (evt.getClickCount() == 2) {
               int row = tree.getRowForLocation(evt.getX(), evt.getY());

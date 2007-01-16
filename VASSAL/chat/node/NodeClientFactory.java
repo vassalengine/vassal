@@ -76,7 +76,7 @@ public class NodeClientFactory extends ChatServerFactory {
     };
     HttpMessageServer httpMessageServer = new HttpMessageServer("http://www.vassalengine.org/util/getMessages", "http://www.vassalengine.org/util/postMessage",
         "http://www.vassalengine.org/util/motd", publicInfo);
-    SocketNodeClient server = new SocketNodeClient(null, null, GameModule.getGameModule(), nodeServerInfo, httpMessageServer, httpMessageServer);
+    SocketNodeClient server = new SocketNodeClient(GameModule.getGameModule().getGameName(), GameModule.getUserId()+"."+System.currentTimeMillis(), GameModule.getGameModule(), nodeServerInfo, httpMessageServer, httpMessageServer);
     GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
     GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {

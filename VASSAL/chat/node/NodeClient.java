@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Properties;
 import VASSAL.build.GameModule;
 import VASSAL.chat.Base64;
+import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Compressor;
 import VASSAL.chat.MainRoomChecker;
@@ -43,6 +44,8 @@ import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.ui.BasicChatControlsInitializer;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
+import VASSAL.chat.ui.LockableRoomControls;
+import VASSAL.chat.ui.LockableRoomTreeRenderer;
 import VASSAL.chat.ui.MessageBoardControlsInitializer;
 import VASSAL.chat.ui.PrivateMessageAction;
 import VASSAL.chat.ui.RoomInteractionControlsInitializer;
@@ -89,15 +92,18 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     this.encoder = encoder;
     this.msgSvr = msgSvr;
     this.welcomer = welcomer;
+    this.playerId = playerId;
+    this.moduleName = moduleName;
+    serverStatus = new CgiServerStatus();
     me = new NodePlayer(playerId);
     messageBoardControls = new MessageBoardControlsInitializer("Messages", msgSvr);
     basicControls = new BasicChatControlsInitializer(this);
-    roomControls = new RoomInteractionControlsInitializer(this);
+    roomControls = new LockableRoomControls(this);
     roomControls.addPlayerActionFactory(ShowProfileAction.factory());
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
     roomControls.addPlayerActionFactory(PrivateMessageAction.factory(this, new PrivateChatManager(this)));
     roomControls.addPlayerActionFactory(SendSoundAction.factory(this, "Send Wake-up", "wakeUpSound", "phone1.wav"));
-    serverStatusControls = new ServerStatusControlsInitializer(this);
+    serverStatusControls = new ServerStatusControlsInitializer(serverStatus);
     playerStatusControls = new SimpleStatusControlsInitializer(this);
     synchEncoder = new SynchEncoder(this, this);
     privateChatEncoder = new PrivateChatEncoder(this, new PrivateChatManager(this));
@@ -392,14 +398,6 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     return new PropertiesEncoder(props).getStringValue();
   }
 
-  public ServerStatus getStatusServer() {
-    return serverStatus;
-  }
-
-  public void setServerStatus(ServerStatus serverStatus) {
-    this.serverStatus = serverStatus;
-  }
-
   public void initializeControls(ChatServerControls controls) {
     basicControls.initializeControls(controls);
     playerStatusControls.initializeControls(controls);
@@ -409,9 +407,13 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     GameModule.getGameModule().addCommandEncoder(synchEncoder);
     GameModule.getGameModule().addCommandEncoder(privateChatEncoder);
     GameModule.getGameModule().addCommandEncoder(soundEncoder);
+    me.setName((String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
     GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).addPropertyChangeListener(nameChangeListener);
+    SimpleStatus s = (SimpleStatus) me.getStatus();
+    s = new SimpleStatus(s.isLooking(), s.isAway(), (String) GameModule.getGameModule().getPrefs().getValue(GameModule.PERSONAL_INFO));
+    me.setStatus(s);
     GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).addPropertyChangeListener(profileChangeListener);
-
+    controls.getRoomTree().setCellRenderer(new LockableRoomTreeRenderer());
   }
 
   public void uninitializeControls(ChatServerControls controls) {

@@ -17,7 +17,7 @@ public class DynamicClient extends HybridClient {
   private String serverConfigURL;
 
   public DynamicClient() {
-    this("http://www.vassalengine.org/util/getServerProperties");
+    this("http://www.vassalengine.org/util/getServerImpl");
   }
 
   public DynamicClient(String serverConfigURL) {

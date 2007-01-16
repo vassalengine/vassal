@@ -1,19 +1,19 @@
 package VASSAL.chat.ui;
 
 import javax.swing.JButton;
-import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.ServerStatus;
 
 public class ServerStatusControlsInitializer implements ChatControlsInitializer {
   private JButton showStatusButton;
-  private ChatServerConnection client;
+  private ServerStatus status;
 
-  public ServerStatusControlsInitializer(ChatServerConnection client) {
+  public ServerStatusControlsInitializer(ServerStatus status) {
     super();
-    this.client = client;
+    this.status = status;
   }
 
   public void initializeControls(ChatServerControls controls) {
-    showStatusButton = controls.getToolbar().add(new ShowServerStatusAction(client, getClass().getResource("/images/status.gif")));
+    showStatusButton = controls.getToolbar().add(new ShowServerStatusAction(status, getClass().getResource("/images/status.gif")));
   }
 
   public void uninitializeControls(ChatServerControls controls) {

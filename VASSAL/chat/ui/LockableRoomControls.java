@@ -21,7 +21,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
-import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.HybridClient;
 import VASSAL.chat.LockableRoom;
 import VASSAL.chat.Room;
@@ -34,7 +33,7 @@ import VASSAL.chat.node.NodeRoom;
  */
 public class LockableRoomControls extends RoomInteractionControlsInitializer {
 
-  public LockableRoomControls(ChatServerConnection client) {
+  public LockableRoomControls(NodeClient client) {
     super(client);
   }
 
