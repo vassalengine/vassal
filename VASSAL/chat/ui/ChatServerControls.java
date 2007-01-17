@@ -49,7 +49,8 @@ public class ChatServerControls extends AbstractBuildable {
   protected ChatServerConnection client;
   protected JPanel controlPanel;
   protected ComponentSplitter.SplitPane splitter;
-  protected ChatControlsInitializer controlsInit;
+  protected ChatControlsInitializer oldClient;
+  protected BasicChatControlsInitializer basicControls;
 
   public ChatServerControls() {
     JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -170,11 +171,16 @@ public class ChatServerControls extends AbstractBuildable {
   public void setClient(ChatServerConnection c) {
     client = c;
     if (c instanceof ChatControlsInitializer) {
-      if (controlsInit != null) {
-        controlsInit.uninitializeControls(this);
+      if (basicControls != null) {
+        basicControls.uninitializeControls(this);
       }
+      if (oldClient != null) {
+        oldClient.uninitializeControls(this);
+      }
+      basicControls = new BasicChatControlsInitializer(c);
+      basicControls.initializeControls(this);
       ((ChatControlsInitializer)c).initializeControls(this);
-      controlsInit = (ChatControlsInitializer) c;
+      oldClient = (ChatControlsInitializer) c;
     }
     PropertyChangeListener roomUpdater = new PropertyChangeListener() {
       public void propertyChange(final PropertyChangeEvent evt) {

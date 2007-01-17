@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 import VASSAL.build.GameModule;
+import VASSAL.chat.ui.BasicChatControlsInitializer;
+import VASSAL.chat.ui.ChatControlsInitializer;
+import VASSAL.chat.ui.ChatServerControls;
 
 /**
- * Determines server implementation at run-time by downloading properties from the vassalengine.org site.
- * Refreshes every time the user attempts to connect
+ * Determines server implementation at run-time by downloading properties from the vassalengine.org site. Refreshes
+ * every time the user attempts to connect
  * 
  * @author rkinney
  * 
@@ -60,5 +63,8 @@ public class DynamicClient extends HybridClient {
       setDelegate(buildDelegate());
     }
     super.setConnected(connect);
+    if (!connect && !isConnected()) {
+      setDelegate(new DummyClient());
+    }
   }
 }

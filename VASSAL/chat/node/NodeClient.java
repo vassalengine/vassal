@@ -78,7 +78,6 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
   protected int compressionLimit = 1000;
   protected CommandEncoder encoder;
   protected MessageBoardControlsInitializer messageBoardControls;
-  protected BasicChatControlsInitializer basicControls;
   protected RoomInteractionControlsInitializer roomControls;
   protected ServerStatusControlsInitializer serverStatusControls;
   protected SimpleStatusControlsInitializer playerStatusControls;
@@ -97,7 +96,6 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     serverStatus = new CgiServerStatus();
     me = new NodePlayer(playerId);
     messageBoardControls = new MessageBoardControlsInitializer("Messages", msgSvr);
-    basicControls = new BasicChatControlsInitializer(this);
     roomControls = new LockableRoomControls(this);
     roomControls.addPlayerActionFactory(ShowProfileAction.factory());
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
@@ -399,7 +397,6 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
   }
 
   public void initializeControls(ChatServerControls controls) {
-    basicControls.initializeControls(controls);
     playerStatusControls.initializeControls(controls);
     messageBoardControls.initializeControls(controls);
     roomControls.initializeControls(controls);
@@ -418,7 +415,6 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
 
   public void uninitializeControls(ChatServerControls controls) {
     messageBoardControls.uninitializeControls(controls);
-    basicControls.uninitializeControls(controls);
     roomControls.uninitializeControls(controls);
     serverStatusControls.uninitializeControls(controls);
     playerStatusControls.uninitializeControls(controls);

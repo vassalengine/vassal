@@ -18,5 +18,6 @@ public class ServerStatusControlsInitializer implements ChatControlsInitializer 
 
   public void uninitializeControls(ChatServerControls controls) {
     controls.getToolbar().remove(showStatusButton);
+    controls.getToolbar().repaint();
   }
 }

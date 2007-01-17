@@ -365,8 +365,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         CommandEncoder[] oldValue = commandEncoders;
         commandEncoders = new CommandEncoder[oldValue.length - 1];
         System.arraycopy(oldValue, 0, commandEncoders, 0, i);
-        if (i < commandEncoders.length - 1) {
-          System.arraycopy(oldValue, i + 1, commandEncoders, i, oldValue.length - i - 1);
+        if (i < commandEncoders.length) {
+          System.arraycopy(oldValue, i + 1, commandEncoders, i, commandEncoders.length - i);
         }
         break;
       }

@@ -25,5 +25,6 @@ public class MessageBoardControlsInitializer implements ChatControlsInitializer 
   public void uninitializeControls(ChatServerControls controls) {
     controls.getToolbar().remove(checkMsgButton);
     controls.getToolbar().remove(postMsgButton);
+    controls.getToolbar().repaint();
   }
 }

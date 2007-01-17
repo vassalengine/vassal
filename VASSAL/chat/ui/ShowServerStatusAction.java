@@ -76,6 +76,7 @@ public class ShowServerStatusAction extends AbstractAction {
       String name = null;
       if (evt.getNewValue() instanceof ServerStatus.ModuleSummary) {
         final String moduleName = ((ServerStatus.ModuleSummary) evt.getNewValue()).getModuleName();
+        // TODO Message board access from server status window
         throw new IllegalStateException("Not implemented:  update message board");
 //        name = moduleName;
 //        server = new CgiPeerPool(new PeerPoolInfo() {

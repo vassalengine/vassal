@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 import javax.swing.JMenuItem;
 import org.w3c.dom.Document;
 import VASSAL.build.Buildable;
@@ -25,6 +24,7 @@ import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.chat.ChatServerFactory;
+import VASSAL.chat.DynamicClient;
 import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
@@ -102,7 +102,7 @@ public class BasicModule extends GameModule {
   protected void initServer() {
     ChatServerFactory.register(ChatServerFactory.DEFAULT, NodeClientFactory.getInstance());
     ChatServerFactory.register(NodeClientFactory.NODE_TYPE, NodeClientFactory.getInstance());
-    server = ChatServerFactory.build(new Properties());
+    server = new DynamicClient();
     ChatServerControls c = new ChatServerControls();
     c.addTo(this);
   }

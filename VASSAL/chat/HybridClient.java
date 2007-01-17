@@ -27,7 +27,7 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
         propSupport.firePropertyChange(evt);
       }
     };
-    this.delegate = new DummyClient();
+    setDelegate(new DummyClient());
   }
 
   public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
@@ -93,26 +93,33 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
   }
 
   public void setDelegate(ChatServerConnection newDelegate) {
-    if (delegate.isConnected()) {
+    if (delegate != null && delegate.isConnected()) {
       throw new IllegalStateException("Cannot change server implementation while connected");
     }
     ChatServerConnection oldDelegate = delegate;
-    newDelegate.setUserInfo(oldDelegate.getUserInfo());
+    if (oldDelegate != null) {
+      newDelegate.setUserInfo(oldDelegate.getUserInfo());
+    }
     PropertyChangeListener[] listeners = propSupport.getPropertyChangeListeners();
     for (int i = 0; i < listeners.length; i++) {
       newDelegate.addPropertyChangeListener(((PropertyChangeListenerProxy) listeners[i]).getPropertyName(), listeners[i]);
     }
-    if (delegate instanceof ChatControlsInitializer) {
-      ((ChatControlsInitializer) delegate).uninitializeControls(controls);
-    }
-    if (newDelegate instanceof ChatControlsInitializer) {
-      ((ChatControlsInitializer) newDelegate).initializeControls(controls);
+    if (controls != null) {
+      if (delegate instanceof ChatControlsInitializer) {
+        ((ChatControlsInitializer) delegate).uninitializeControls(controls);
+      }
+      if (newDelegate instanceof ChatControlsInitializer) {
+        ((ChatControlsInitializer) newDelegate).initializeControls(controls);
+      }
     }
     delegate = newDelegate;
   }
 
   public void initializeControls(ChatServerControls controls) {
     this.controls = controls;
+    if (delegate instanceof ChatControlsInitializer) {
+      ((ChatControlsInitializer) delegate).initializeControls(controls);
+    }
   }
 
   public void uninitializeControls(ChatServerControls controls) {
