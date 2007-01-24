@@ -31,8 +31,7 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
         return GameModule.getGameModule() == null ? "<anonymous>" : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
       }
     };
-    httpMessageServer = new HttpMessageServer("http://www.vassalengine.org/util/getMessages", "http://www.vassalengine.org/util/postMessage",
-            "http://www.vassalengine.org/util/motd", publicInfo);
+    httpMessageServer = new HttpMessageServer(publicInfo);
     msgControls = new MessageBoardControlsInitializer("Messages",httpMessageServer);
     statusControls = new ServerStatusControlsInitializer(new CgiServerStatus());
   }

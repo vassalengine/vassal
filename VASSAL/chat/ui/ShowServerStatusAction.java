@@ -11,10 +11,13 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
+import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.HttpMessageServer;
 import VASSAL.chat.ServerStatus;
 import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.messageboard.MessageBoardControls;
+import VASSAL.chat.peer2peer.PeerPoolInfo;
 
 /**
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
@@ -76,18 +79,16 @@ public class ShowServerStatusAction extends AbstractAction {
       String name = null;
       if (evt.getNewValue() instanceof ServerStatus.ModuleSummary) {
         final String moduleName = ((ServerStatus.ModuleSummary) evt.getNewValue()).getModuleName();
-        // TODO Message board access from server status window
-        throw new IllegalStateException("Not implemented:  update message board");
-//        name = moduleName;
-//        server = new CgiPeerPool(new PeerPoolInfo() {
-//          public String getModuleName() {
-//            return moduleName;
-//          }
-//
-//          public String getUserName() {
-//            return Module.getSvr().getUserInfo().getName();
-//          }
-//        }, "http://www.vassalengine.org/util/");
+        name = moduleName;
+        server = new HttpMessageServer(new PeerPoolInfo() {
+          public String getModuleName() {
+            return moduleName;
+          }
+
+          public String getUserName() {
+            return ((ChatServerConnection) GameModule.getGameModule().getServer()).getUserInfo().getName();
+          }
+        });
       }
       messageMgr.setServer(server, name);
     }
