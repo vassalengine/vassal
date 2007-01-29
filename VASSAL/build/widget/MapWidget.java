@@ -3,15 +3,19 @@ package VASSAL.build.widget;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import org.w3c.dom.Element;
 import VASSAL.build.Buildable;
 import VASSAL.build.Widget;
@@ -87,6 +91,18 @@ public class MapWidget extends Widget {
       mapScroll = map.getScroll();
       panel.add(mapScroll, BorderLayout.CENTER);
       panel.add(map.getToolBar(), BorderLayout.NORTH);
+      // Fix for bug 1630993: toolbar buttons not appearing
+      map.getToolBar().addHierarchyListener(new HierarchyListener() {
+        public void hierarchyChanged(HierarchyEvent e) {
+          Window w;
+          if ((w = SwingUtilities.getWindowAncestor(map.getToolBar())) != null) {
+            w.validate();
+          }
+          if (map.getToolBar().getSize().width > 0) {
+            map.getToolBar().removeHierarchyListener(this);
+          }
+        }
+      });
       panel.revalidate();
     }
     super.add(b);

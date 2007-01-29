@@ -5,8 +5,7 @@ import javax.swing.JScrollPane;
 import VASSAL.build.module.Map;
 import VASSAL.configure.VisibilityCondition;
 
-public class WidgetMap extends Map implements Runnable {
-
+public class WidgetMap extends Map {
   public WidgetMap() {
     super();
   }
@@ -53,5 +52,4 @@ public class WidgetMap extends Map implements Runnable {
   public JScrollPane getScroll() {
     return scroll;
   }
-
 }
