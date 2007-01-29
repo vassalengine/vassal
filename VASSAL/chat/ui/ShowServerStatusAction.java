@@ -79,7 +79,6 @@ public class ShowServerStatusAction extends AbstractAction {
       String name = null;
       if (evt.getNewValue() instanceof ServerStatus.ModuleSummary) {
         final String moduleName = ((ServerStatus.ModuleSummary) evt.getNewValue()).getModuleName();
-        name = moduleName;
         server = new HttpMessageServer(new PeerPoolInfo() {
           public String getModuleName() {
             return moduleName;

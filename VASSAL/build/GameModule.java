@@ -775,7 +775,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     GlobalProperty property = null;
     Enumeration e = getComponents(GlobalProperties.class);
     if (e != null) {
-      for (Enumeration en = ((GlobalProperties) e.nextElement()).getComponents(GlobalProperty.class) ;e.hasMoreElements() && property == null;) {
+      for (Enumeration en = ((GlobalProperties) e.nextElement()).getComponents(GlobalProperty.class) ;en.hasMoreElements() && property == null;) {
         GlobalProperty prop = (GlobalProperty) en.nextElement();
         if (prop.getConfigureName().equals(name)) {
           property = prop;

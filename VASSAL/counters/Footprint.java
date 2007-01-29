@@ -203,11 +203,22 @@ public class Footprint extends MovementMarkable {
     }
   }
 
+  /*
+   * Ensure the MOVED property is reported by a real MovementMarkable trait,
+   * not the super implementation of Footprint
+   */
+  public Object getProperty(Object key) {
+    if (Properties.MOVED.equals(key)) {
+      return piece.getProperty(key);    
+    }
+    return super.getProperty(key);
+  }
+  
   /**
    * setMoved is called with an argument of true each time the piece is moved.
    * The argument is false when the unit is marked as not moved.
    */
-  // 
+  
   public void setMoved(boolean justMoved) {
 
     if (justMoved) {

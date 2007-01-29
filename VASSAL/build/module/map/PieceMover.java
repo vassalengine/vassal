@@ -70,10 +70,12 @@ import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
 import VASSAL.counters.DeckVisitorDispatcher;
@@ -355,6 +357,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
 
   /** Invoked just before a piece is moved */
   protected Command movedPiece(GamePiece p, Point loc) {
+    setOldLocation(p);
     Command c = null;
     if (!loc.equals(p.getPosition())) {
       c = markMoved(p, true);
@@ -364,6 +367,45 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
       c = c == null ? removedCommand : c.append(removedCommand);
     }
     return c;
+  }
+
+  protected void setOldLocation(GamePiece p) {
+    if (p instanceof Stack) {
+      for (int i = 0; i < ((Stack) p).getPieceCount(); i++) {
+        setOld(((Stack) p).getPieceAt(i));
+      }
+    }
+    else setOld(p);
+  }
+  
+  private void setOld(GamePiece p) {
+    String mapName = "";
+    String boardName = "";
+    String zoneName = "";
+    String locationName = "";
+    Map m = p.getMap();
+    Point pos = p.getPosition();
+    
+    if (m != null) {
+      mapName = m.getConfigureName();
+      Board b = m.findBoard(pos);
+      if (b != null) {
+        boardName = b.getName();
+      }
+      Zone z = m.findZone(pos);
+      if (z != null) {
+        zoneName = z.getName();
+      }
+      locationName = m.locationName(pos);
+    }
+    
+    p.setProperty(BasicPiece.OLD_X, pos.x+"");
+    p.setProperty(BasicPiece.OLD_Y, pos.y+"");
+    p.setProperty(BasicPiece.OLD_MAP, mapName);
+    p.setProperty(BasicPiece.OLD_BOARD, boardName);
+    p.setProperty(BasicPiece.OLD_ZONE, zoneName);
+    p.setProperty(BasicPiece.OLD_LOCATION_NAME, locationName);
+    
   }
 
   public Command markMoved(GamePiece p, boolean hasMoved) {

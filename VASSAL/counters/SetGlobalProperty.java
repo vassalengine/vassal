@@ -169,12 +169,15 @@ public class SetGlobalProperty extends DynamicProperty {
         String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
         
         List propertyContainers = new ArrayList();
+        propertyContainers.add(0, GameModule.getGameModule());
         Map map = getMap();
         if (NAMED_MAP.equals(propertyLevel)) {
           String mapName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
           map = Map.getMapById(mapName);
         }
-        propertyContainers.add(0, map);
+        if (map != null) {
+          propertyContainers.add(0, map);
+        }
         Zone z = null;
         if (CURRENT_ZONE.equals(propertyLevel) && getMap() != null) {
           z = getMap().findZone(getPosition());
@@ -183,7 +186,9 @@ public class SetGlobalProperty extends DynamicProperty {
           String zoneName = (new FormattedString(searchName)).getText(Decorator.getOutermost(this));
           z = getMap().findZone(zoneName);
         }
-        propertyContainers.add(0, z);
+        if (z != null) {
+          propertyContainers.add(0, z);
+        }
         prop = GlobalProperty.findGlobalProperty(propertyName, propertyContainers);
         /*
          * Debugging could be painful, so print a useful message in the Chat Window if no property can be found to

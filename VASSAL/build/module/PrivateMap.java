@@ -183,7 +183,7 @@ public class PrivateMap extends Map {
     if (isAccessibleTo(newSide)) {
       ((View)getView()).enableListeners();
     }
-    launchButton.setEnabled(isAccessibleTo(PlayerRoster.getMySide()));
+    launchButton.setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
 
   public boolean shouldDockIntoMainWindow() {
@@ -202,6 +202,10 @@ public class PrivateMap extends Map {
     return false;
   }
 
+  public boolean isVisibleTo(String playerSide) {
+    return (visibleToAll || isAccessibleTo(playerSide));
+  }
+  
   public void setup(boolean show) {
     super.setup(show);
     if (!show) {
@@ -210,7 +214,7 @@ public class PrivateMap extends Map {
     else if (isAccessibleTo(PlayerRoster.getMySide())) {
       ((View) theMap).enableListeners();
     }
-    launchButton.setEnabled(isAccessibleTo(PlayerRoster.getMySide()));
+    launchButton.setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
 
   public void setBoards(Enumeration boardList) {

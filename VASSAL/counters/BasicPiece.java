@@ -77,7 +77,12 @@ public class BasicPiece implements EditablePiece, StateMergeable {
   public static final String CURRENT_ZONE = "CurrentZone";
   public static final String CURRENT_X = "CurrentX";
   public static final String CURRENT_Y = "CurrentY";
-  public static final String BASIC_NAME = "BasicName";
+  public static final String OLD_LOCATION_NAME = "OldLocationName";
+  public static final String OLD_MAP = "OldMap";
+  public static final String OLD_BOARD = "OldBoard";
+  public static final String OLD_ZONE = "OldZone";
+  public static final String OLD_X = "OldX";
+  public static final String OLD_Y = "OldY";  public static final String BASIC_NAME = "BasicName";
   public static final String PIECE_NAME = "PieceName";
   public static final String DECK_NAME = "DeckName";
 
