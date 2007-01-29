@@ -50,6 +50,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.DataArchive;
 
 public class Board extends AbstractConfigurable implements GridContainer {
   /**
@@ -70,6 +71,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected String boardName = "Board 1";
   protected boolean reversible = false;
   protected boolean reversed = false;
+  protected boolean fixedBoundaries = false;
   private Color color = null;
   private MapGrid grid = null;
   private Map map;
@@ -292,11 +294,13 @@ public class Board extends AbstractConfigurable implements GridContainer {
     return b;
   }
 
-  /** @deprecated */
+  /**
+   * @deprecated Use {@link #fixImage()} instead.
+   */
   public void fixImage(Component map) {
     fixImage();
   }
-  
+
   public void fixImage() {
     if (imageFile != null && boardImage == null) {
       try {
@@ -306,6 +310,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
           boardImage = GameModule.getGameModule().getDataArchive().getImage(imageFile);
           Icon icon = new ImageIcon(boardImage);
           boundaries.setSize(icon.getIconWidth(), icon.getIconHeight());
+          fixedBoundaries = true;
         }
         catch (IOException e) {
           JOptionPane.showMessageDialog(null, "Error reading board image " + imageFile + " in " + GameModule.getGameModule().getDataArchive().getName(),
@@ -351,8 +356,21 @@ public class Board extends AbstractConfigurable implements GridContainer {
    * @return The (read-only) boundaries of this Board within the overall Map
    */
   public Rectangle bounds() {
-    fixImage();
+    fixBounds();
     return new Rectangle(boundaries);
+  }
+
+  protected void fixBounds() {
+    if (imageFile != null && boardImage == null && !fixedBoundaries) {
+      try {
+        boundaries.setSize(GameModule.getGameModule().getDataArchive().getImageSize(imageFile));
+        fixedBoundaries = true;
+      }
+      catch (IOException e) {
+        JOptionPane.showMessageDialog(null, "Error reading board image " + imageFile + " in " + GameModule.getGameModule().getDataArchive().getName(),
+            "Not Found", JOptionPane.ERROR_MESSAGE);
+      }
+    }
   }
 
   /**

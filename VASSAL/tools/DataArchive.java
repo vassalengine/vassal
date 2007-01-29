@@ -53,6 +53,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.swing.ImageIcon;
 import sun.applet.AppletAudioClip;
 
@@ -282,6 +285,26 @@ public class DataArchive extends SecureClassLoader {
     prod = new FilteredImageSource(img.getSource(), filter);
     return Toolkit.getDefaultToolkit().createImage(prod);
   }
+
+  public Dimension getImageSize(String name) throws IOException {
+    String path = IMAGE_DIR + name;
+    String gifPath = path + ".gif";
+
+      String ext = name.substring(name.lastIndexOf('.') + 1);
+      ImageReader reader =
+         (ImageReader) ImageIO.getImageReadersBySuffix(ext).next();
+
+      try {
+         reader.setInput(new MemoryCacheImageInputStream(getFileStream(path)));
+      }
+      catch (IOException e) {
+         reader.setInput(
+            new MemoryCacheImageInputStream(getFileStream(gifPath)));
+      }
+
+      return new Dimension(reader.getWidth(0), reader.getHeight(0));
+  }
+
 
 /*
   private Shape getImageShape(String imageName) {
