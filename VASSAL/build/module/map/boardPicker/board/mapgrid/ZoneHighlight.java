@@ -164,6 +164,10 @@ public class ZoneHighlight extends AbstractConfigurable  {
     return color;
   }
   
+  public void setOpacity(int o) {
+    opacity = o;
+  }
+  
   public String[] getAttributeNames() {
     String s[] = {NAME, COLOR, COVERAGE, WIDTH, STYLE, IMAGE, OPACITY};
     return s;
@@ -303,28 +307,25 @@ public class ZoneHighlight extends AbstractConfigurable  {
   
   public class PercentageConfigurer extends Configurer {
 
-    protected int percentage = 50;
-    
     public PercentageConfigurer(String key, String name, Object val) {
       super(key, name, val);
-      percentage = ((Integer) val).intValue();
+      opacity = ((Integer) val).intValue();
     }
     
     public String getValueString() {
-      return String.valueOf(percentage);
+      return String.valueOf(opacity);
     }
 
     public void setValue(String s) {
-      percentage = (new Integer(s)).intValue();      
+      opacity = (new Integer(s)).intValue();   
     }
 
     public Component getControls() {
 
-      JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,percentage);
+      JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,opacity);
 
       Hashtable labelTable = new Hashtable();
       labelTable.put( new Integer(0), new JLabel("Transparent") );
-      labelTable.put( new Integer(50), new JLabel("50%") );
       labelTable.put( new Integer(100), new JLabel("Opaque") );
 
       slider.setMajorTickSpacing(10);
@@ -336,7 +337,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
         public void stateChanged(ChangeEvent e) {
           JSlider source = (JSlider)e.getSource();
           if (!source.getValueIsAdjusting()) {    
-            percentage = source.getValue();
+            opacity = source.getValue();
           }
         }});
 

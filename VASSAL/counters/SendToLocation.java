@@ -168,6 +168,8 @@ public class SendToLocation extends Decorator implements EditablePiece {
     Command c = null;
     myGetKeyCommands();
     if (sendCommand.matches(stroke)) {
+      GamePiece outer = Decorator.getOutermost(this);
+      Stack parent = outer.getParent();
       Map m = Map.getMapById(mapId);
       if (m == null) {
         m = getMap();
@@ -186,29 +188,32 @@ public class SendToLocation extends Decorator implements EditablePiece {
         }
         setProperty(BACK_MAP, getMap());
         setProperty(BACK_POINT, getPosition());
-        if (!Boolean.TRUE.equals(Decorator.getOutermost(this).getProperty(Properties.IGNORE_GRID))) {
+        if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
           dest = m.snapTo(dest);
         }
-        c = m.placeOrMerge(Decorator.getOutermost(this), dest);
+        c = m.placeOrMerge(outer, dest);
         // Apply Auto-move key
         if (m.getMoveKey() != null) {
-          c.append(Decorator.getOutermost(this).keyEvent(m.getMoveKey()));
+          c.append(outer.keyEvent(m.getMoveKey()));
+        }
+        if (parent != null) {
+          c.append(parent.pieceRemoved(outer));
         }
       }
     }
-    else if(backCommand.matches(stroke)) {
+    else if (backCommand.matches(stroke)) {
+      GamePiece outer = Decorator.getOutermost(this);
       Map backMap = (Map) getProperty(BACK_MAP);
       Point backPoint = (Point) getProperty(BACK_POINT);
       if (backMap != null && backPoint != null) {
-         c = backMap.placeOrMerge(Decorator.getOutermost(this), backPoint);
+         c = backMap.placeOrMerge(outer, backPoint);
          // Apply Auto-move key
          if (backMap.getMoveKey() != null) {
-           c.append(Decorator.getOutermost(this).keyEvent(backMap.getMoveKey()));
+           c.append(outer.keyEvent(backMap.getMoveKey()));
          }         
       }
       setProperty(BACK_MAP, null);
       setProperty(BACK_POINT, null);
-      
     }
     return c;
   }

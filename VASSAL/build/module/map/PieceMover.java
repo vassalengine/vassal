@@ -76,6 +76,7 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.counters.BasicPiece;
+import VASSAL.counters.BoundsTracker;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
 import VASSAL.counters.DeckVisitorDispatcher;
@@ -458,11 +459,13 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     }
     Point offset = null;
     Command comm = new NullCommand();
+    BoundsTracker tracker = new BoundsTracker();
     // Map of Point->List<GamePiece> of pieces to merge with at a given location
     // There is potentially one piece for each Game Piece Layer
     HashMap mergeTargets = new HashMap();
     while (it.hasMoreElements()) {
       dragging = it.nextPiece();
+      tracker.addPiece(dragging);
       /*
        * Take a copy of the pieces in dragging. If it is a stack, it is cleared by the merging process
        */
@@ -526,12 +529,14 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
       if (map.getMoveKey() != null) {
         applyKeyAfterMove(draggedPieces, comm, map.getMoveKey());
       }
+      tracker.addPiece(dragging);
     }
     if (GlobalOptions.getInstance().autoReportEnabled()) {
       Command report = createMovementReporter(comm).getReportCommand();
       report.execute();
       comm = comm.append(report);
     }
+    tracker.repaint();
     return comm;
   }
 
@@ -767,6 +772,9 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
         // remove cursor from old window
         if (dragCursor.getParent() != null) {
           dragCursor.getParent().remove(dragCursor);
+        }
+        if (drawWin != null) {
+          drawWin.repaint(dragCursor.getBounds());
         }
         drawWin = newDrawWin;
         calcDrawOffset();
