@@ -18,7 +18,6 @@
  */
 package VASSAL.build.module.map;
 
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -70,25 +69,19 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * This class is responsible for maintaining the {@link Board}s on a
- * {@link Map}.  As a {@link CommandEncoder}, it recognizes {@link
- * Command}s that specify the set of boards to be used on a map.  As a
- * {@link GameComponent} it reacts to the start of a game by prompting
- * the player to select boards if none have been specified */
-public class BoardPicker extends JDialog
-  implements ActionListener, GameComponent, Configurable, CommandEncoder, ValidityChecker {
+ * This class is responsible for maintaining the {@link Board}s on a {@link Map}. As a {@link CommandEncoder}, it
+ * recognizes {@link Command}s that specify the set of boards to be used on a map. As a {@link GameComponent} it reacts
+ * to the start of a game by prompting the player to select boards if none have been specified
+ */
+public class BoardPicker extends JDialog implements ActionListener, GameComponent, Configurable, CommandEncoder, ValidityChecker {
   public static final String ID = "BoardPicker";
-
   protected Vector possibleBoards = new Vector();
   protected Vector currentBoards = null;
   private Dimension psize = new Dimension(350, 125);
-
   private double slotScale = 0.2;
   protected JTextField status;
   protected JButton cancelButton;
-
   protected Map map;
-
   protected JPanel slotPanel;
   protected String version = "0.0";
   protected int nx = 1, ny = 1;
@@ -123,10 +116,8 @@ public class BoardPicker extends JDialog
   protected void initComponents() {
     multipleButtons = new Vector();
     setTitle(title);
-
     status = new JTextField("");
     status.setEditable(false);
-
     slotPanel = new JPanel();
     controls = new JToolBar();
     controls.setFloatable(false);
@@ -145,19 +136,15 @@ public class BoardPicker extends JDialog
     pp.add(controls);
     getContentPane().add("West", pp);
     getContentPane().add("Center", new ScrollPane(slotPanel));
-
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent we) {
-         cancel();
+        cancel();
       }
     });
-
     reset();
-    setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2
-                - getSize().width / 2,
-                Toolkit.getDefaultToolkit().getScreenSize().height / 2
-                - getSize().height / 2);
+    setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 - getSize().width / 2, Toolkit.getDefaultToolkit().getScreenSize().height / 2
+        - getSize().height / 2);
   }
 
   public Dimension getDefaultSlotSize() {
@@ -205,9 +192,7 @@ public class BoardPicker extends JDialog
         Builder.build(e, this);
       }
       try {
-        psize = new Dimension
-          (Integer.parseInt(e.getAttribute(SLOT_WIDTH)),
-           Integer.parseInt(e.getAttribute(SLOT_HEIGHT)));
+        psize = new Dimension(Integer.parseInt(e.getAttribute(SLOT_WIDTH)), Integer.parseInt(e.getAttribute(SLOT_HEIGHT)));
       }
       catch (Exception ex) {
       }
@@ -243,7 +228,7 @@ public class BoardPicker extends JDialog
 
   public void validate(Buildable target, ValidationReport report) {
     if (possibleBoards.size() == 0) {
-      report.addWarning("Must define at least one board in "+ConfigureTree.getConfigureName(map));
+      report.addWarning("Must define at least one board in " + ConfigureTree.getConfigureName(map));
     }
     Set names = new HashSet();
     for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
@@ -251,7 +236,7 @@ public class BoardPicker extends JDialog
       if (o instanceof Board) {
         Board b = (Board) o;
         if (names.contains(b.getName())) {
-          report.addWarning("More than one board named '"+b.getName()+"' in "+ConfigureTree.getConfigureName(map));
+          report.addWarning("More than one board named '" + b.getName() + "' in " + ConfigureTree.getConfigureName(map));
         }
         names.add(b.getName());
         b.validate(b, report);
@@ -261,10 +246,8 @@ public class BoardPicker extends JDialog
 
   private String getDefaultSetup() {
     String s = defaultSetup;
-    if (defaultSetup == null
-      || defaultSetup.length() == 0) {
-      if (possibleBoards.size() == 1
-        && possibleBoards.firstElement() instanceof Board) {
+    if (defaultSetup == null || defaultSetup.length() == 0) {
+      if (possibleBoards.size() == 1 && possibleBoards.firstElement() instanceof Board) {
         Board b = (Board) possibleBoards.firstElement();
         if (!"true".equals(b.getAttributeValueString(Board.REVERSIBLE))) {
           Vector v = new Vector();
@@ -351,9 +334,9 @@ public class BoardPicker extends JDialog
   public void pack() {
     super.pack();
     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-    int maxWidth = d.width-getLocation().x;
-    int maxHeight = d.height-getLocation().y;
-    setSize(Math.min(getSize().width,maxWidth),Math.min(getSize().height,maxHeight));
+    int maxWidth = d.width - getLocation().x;
+    int maxHeight = d.height - getLocation().y;
+    setSize(Math.min(getSize().width, maxWidth), Math.min(getSize().height, maxHeight));
   }
 
   protected void selectBoards() {
@@ -366,8 +349,7 @@ public class BoardPicker extends JDialog
     cancelButton.setVisible(false);
     setVisible(true);
     cancelButton.setVisible(true);
-    if (currentBoards != null
-      && currentBoards.size() > 0) {
+    if (currentBoards != null && currentBoards.size() > 0) {
       defaultSetup = encode(new SetBoards(this, currentBoards));
     }
     else {
@@ -376,17 +358,16 @@ public class BoardPicker extends JDialog
   }
 
   /**
-   * @return an Enumeration of boards that have been selected either by
-   * the user via the dialog or from reading a savefile
+   * @return an Enumeration of boards that have been selected either by the user via the dialog or from reading a
+   *         savefile
    */
   public Enumeration getCurrentBoards() {
-    return currentBoards == null ? Collections.enumeration(Collections.EMPTY_LIST)
-      : currentBoards.elements();
+    return currentBoards == null ? Collections.enumeration(Collections.EMPTY_LIST) : currentBoards.elements();
   }
 
   /**
-   * @return an array of the names of all boards from which the user
-   * may choose */
+   * @return an array of the names of all boards from which the user may choose
+   */
   public String[] getAllowableBoardNames() {
     String s[] = new String[possibleBoards.size()];
     for (int i = 0; i < s.length; ++i) {
@@ -399,8 +380,7 @@ public class BoardPicker extends JDialog
    * @return a Board with the given name.
    */
   public Board getBoard(String boardName) {
-    for (Enumeration e = possibleBoards.elements();
-         e.hasMoreElements();) {
+    for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
       Board b = (Board) e.nextElement();
       if (b.getName().equals(boardName)) {
         return b;
@@ -411,10 +391,9 @@ public class BoardPicker extends JDialog
   }
 
   /**
-   * When starting a game, check to see if any boards have been
-   * specified (via an encoded {@link Command}.  If not, show a
-   * dialog to prompt the user for boards.  When ending a game,
-   * clear the selected boards */
+   * When starting a game, check to see if any boards have been specified (via an encoded {@link Command}. If not, show
+   * a dialog to prompt the user for boards. When ending a game, clear the selected boards
+   */
   public void setup(boolean show) {
     if (show) {
       if (currentBoards == null) {
@@ -425,9 +404,7 @@ public class BoardPicker extends JDialog
             c.execute();
           }
         }
-        if ((currentBoards == null
-          || currentBoards.size() == 0)
-          && possibleBoards.size() > 0) {
+        if ((currentBoards == null || currentBoards.size() == 0) && possibleBoards.size() > 0) {
           reset();
           setVisible(true);
         }
@@ -440,8 +417,9 @@ public class BoardPicker extends JDialog
   }
 
   /**
-   * The restore command of a BoardPicker, when executed, sets the
-   * boards of its {@link Map} to {@link #getCurrentBoards} */
+   * The restore command of a BoardPicker, when executed, sets the boards of its {@link Map} to
+   * {@link #getCurrentBoards}
+   */
   public Command getRestoreCommand() {
     return new SetBoards(this, currentBoards);
   }
@@ -511,9 +489,10 @@ public class BoardPicker extends JDialog
   public Vector pickBoards() {
     return new Vector(getBoardsFromControls());
   }
-  
+
   /**
    * Return the list of boards as specified in the current controls
+   * 
    * @return
    */
   public List getBoardsFromControls() {
@@ -522,10 +501,13 @@ public class BoardPicker extends JDialog
       // Adjust the bounds of each board according to its relative position
       for (int i = 0; i < nx; ++i) {
         for (int j = 0; j < ny; ++j) {
-          Board b = getSlot(i + nx * j).getBoard();
-          if (b != null) {
-            b.relativePosition().move(i, j);
-            boardList.add(b);
+          BoardSlot slot = getSlot(i + nx * j);
+          if (slot != null) {
+            Board b = slot.getBoard();
+            if (b != null) {
+              b.relativePosition().move(i, j);
+              boardList.add(b);
+            }
           }
         }
       }
@@ -554,7 +536,7 @@ public class BoardPicker extends JDialog
   }
 
   public BoardSlot getNeighbor(BoardSlot slot, int dx, int dy) {
-    int x = -1,y = -1;
+    int x = -1, y = -1;
     for (int i = 0; i < nx; ++i) {
       for (int j = 0; j < ny; ++j) {
         if (getSlot(i + j * nx) == slot) {
@@ -569,20 +551,18 @@ public class BoardPicker extends JDialog
     }
     x += dx;
     y += dy;
-    if (x < 0 || x >= nx
-      || y < 0 || y >= ny) {
+    if (x < 0 || x >= nx || y < 0 || y >= ny) {
       return null;
     }
     int index = x + y * nx;
-    if (index < 0
-      || index >= nx * ny) {
+    if (index < 0 || index >= nx * ny) {
       return null;
     }
     return getSlot(index);
   }
 
   public BoardSlot getSlot(int i) {
-    return i >=0 && i < slotPanel.getComponentCount() ? (BoardSlot)slotPanel.getComponent(i) : null;
+    return i >= 0 && i < slotPanel.getComponentCount() ? (BoardSlot) slotPanel.getComponent(i) : null;
   }
 
   public void repaintAll() {
@@ -594,8 +574,8 @@ public class BoardPicker extends JDialog
   }
 
   protected void removeAllBoards() {
-    //        for(int n=slotPanel.getComponentCount()-1;n>=0;--n)
-    //        slotPanel.remove(slotPanel.getComponent(n));
+    // for(int n=slotPanel.getComponentCount()-1;n>=0;--n)
+    // slotPanel.remove(slotPanel.getComponent(n));
     slotPanel.removeAll();
     slotPanel.setLayout(new GridLayout(1, 1));
     nx = ny = 1;
@@ -611,8 +591,7 @@ public class BoardPicker extends JDialog
   public void setAllowMultiple(boolean val) {
     allowMultiple = val;
     if (multipleButtons != null) {
-      for (Enumeration e = multipleButtons.elements();
-           e.hasMoreElements();) {
+      for (Enumeration e = multipleButtons.elements(); e.hasMoreElements();) {
         ((JButton) e.nextElement()).setVisible(allowMultiple);
       }
     }
@@ -623,7 +602,7 @@ public class BoardPicker extends JDialog
     el.setAttribute(SLOT_WIDTH, String.valueOf(psize.width));
     el.setAttribute(SLOT_HEIGHT, String.valueOf(psize.height));
     el.setAttribute(SCALE, String.valueOf(getSlotScale()));
-    el.setAttribute(DIALOG_TITLE,title);
+    el.setAttribute(DIALOG_TITLE, title);
     el.setAttribute(ADD_ROW_BUTTON_TEXT, addRowButtonText);
     el.setAttribute(ADD_COLUMN_BUTTON_TEXT, addColumnButtonText);
     el.setAttribute(BOARD_PROMPT, boardPrompt);
@@ -635,8 +614,7 @@ public class BoardPicker extends JDialog
       setupEl.appendChild(doc.createTextNode(defaultSetup));
       el.appendChild(setupEl);
     }
-    for (Enumeration e = possibleBoards.elements();
-         e.hasMoreElements();) {
+    for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
       Board b = (Board) e.nextElement();
       el.appendChild(b.getBuildElement(doc));
     }
@@ -644,20 +622,18 @@ public class BoardPicker extends JDialog
   }
 
   public Command decode(String command) {
-    if (command.startsWith(map.getId() + ID)
-      || command.startsWith(map.getConfigureName()+ID)) {
+    if (command.startsWith(map.getId() + ID) || command.startsWith(map.getConfigureName() + ID)) {
       Vector bds = new Vector();
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
       st.nextToken();
       while (st.hasMoreTokens()) {
-        SequenceEncoder.Decoder st2 =
-          new SequenceEncoder.Decoder(st.nextToken(), '/');
+        SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '/');
         String name = st2.nextToken();
         boolean reversed = false;
         if (st2.hasMoreTokens()) {
           reversed = "rev".equals(st2.nextToken());
         }
-        Point p = new Point(st.nextInt(0),st.nextInt(0));
+        Point p = new Point(st.nextInt(0), st.nextInt(0));
         Board b = getBoard(name);
         if (b != null) {
           if (bds.contains(b)) {
@@ -676,14 +652,11 @@ public class BoardPicker extends JDialog
   }
 
   public String encode(Command c) {
-    if (c instanceof SetBoards
-      && map != null
-      && ((SetBoards)c).target == this) {
+    if (c instanceof SetBoards && map != null && ((SetBoards) c).target == this) {
       SequenceEncoder se = new SequenceEncoder(map.getIdentifier() + ID, '\t');
       Vector bds = ((SetBoards) c).bds;
       if (bds != null) {
-        for (Enumeration e = bds.elements();
-             e.hasMoreElements();) {
+        for (Enumeration e = bds.elements(); e.hasMoreElements();) {
           Board b = (Board) e.nextElement();
           SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
           if (b.isReversed()) {
@@ -699,7 +672,6 @@ public class BoardPicker extends JDialog
       return null;
     }
   }
-
   public static class SetBoards extends Command {
     private Vector bds;
     private BoardPicker target;
@@ -721,7 +693,6 @@ public class BoardPicker extends JDialog
       return null;
     }
   }
-
   private class Config extends Configurer {
     private JPanel controls;
     private JButton selectButton;
@@ -734,13 +705,12 @@ public class BoardPicker extends JDialog
     public Config() {
       super(null, null);
       controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls,BoxLayout.Y_AXIS));
-
-      title = new StringConfigurer(null,"Dialog Title:  ", BoardPicker.this.title);
+      controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
+      title = new StringConfigurer(null, "Dialog Title:  ", BoardPicker.this.title);
       title.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
-            BoardPicker.this.title = (String)evt.getNewValue();
+            BoardPicker.this.title = (String) evt.getNewValue();
             if (controls != null) {
               setTitle(BoardPicker.this.title);
             }
@@ -748,47 +718,42 @@ public class BoardPicker extends JDialog
         }
       });
       controls.add(title.getControls());
-
-      prompt = new StringConfigurer(null,"\"Select Boards\" prompt:  ", BoardPicker.this.boardPrompt);
+      prompt = new StringConfigurer(null, "\"Select Boards\" prompt:  ", BoardPicker.this.boardPrompt);
       prompt.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
-            BoardPicker.this.boardPrompt = (String)evt.getNewValue();
+            BoardPicker.this.boardPrompt = (String) evt.getNewValue();
           }
         }
       });
       controls.add(prompt.getControls());
-
-      scale = new DoubleConfigurer(null,"Cell scale factor:  ", new Double(slotScale));
+      scale = new DoubleConfigurer(null, "Cell scale factor:  ", new Double(slotScale));
       scale.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
-            slotScale = ((Double)evt.getNewValue()).doubleValue();
+            slotScale = ((Double) evt.getNewValue()).doubleValue();
           }
         }
       });
       controls.add(scale.getControls());
-
-      width = new IntConfigurer(null,"Cell width:  ", new Integer(psize.width));
+      width = new IntConfigurer(null, "Cell width:  ", new Integer(psize.width));
       width.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
-            psize.width = ((Integer)evt.getNewValue()).intValue();
+            psize.width = ((Integer) evt.getNewValue()).intValue();
           }
         }
       });
       controls.add(width.getControls());
-
-      height = new IntConfigurer(null,"Cell height:  ", new Integer(psize.height));
+      height = new IntConfigurer(null, "Cell height:  ", new Integer(psize.height));
       height.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
-            psize.height = ((Integer)evt.getNewValue()).intValue();
+            psize.height = ((Integer) evt.getNewValue()).intValue();
           }
         }
       });
       controls.add(height.getControls());
-
       selectButton = new JButton("Select Default Board Setup");
       selectButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -809,8 +774,4 @@ public class BoardPicker extends JDialog
     public void setValue(String s) {
     }
   }
-
 }
-
-
-
