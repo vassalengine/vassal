@@ -1,3 +1,20 @@
+/*
+ *
+ * Copyright (c) 2000-2007 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.chat.peer2peer;
 
 import java.awt.Frame;
@@ -17,16 +34,26 @@ import org.litesoft.p2pchat.PeerInfo;
 import org.litesoft.p2pchat.PendingPeerManager;
 import VASSAL.build.GameModule;
 import VASSAL.chat.HttpRequestWrapper;
+import VASSAL.chat.ui.ChatControlsInitializer;
+import VASSAL.chat.ui.ChatServerControls;
 
 /**
  * Date: Mar 12, 2003
  */
-public class DirectPeerPool implements PeerPool {
+public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   private AcceptPeerThread acceptThread;
+  private JButton inviteButton;
   private JDialog frame;
   private String myIp;
 
   public DirectPeerPool() {
+    inviteButton = new JButton("Invite Players");
+    inviteButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        frame.setVisible(true);
+      }
+    });
+    inviteButton.setEnabled(false);
   }
 
   public void initialize(P2PPlayer myInfo, PendingPeerManager ppm) throws IOException {
@@ -41,8 +68,8 @@ public class DirectPeerPool implements PeerPool {
     acceptThread.start();
     if (frame == null) {
       initComponents(myInfo, ppm);
+      inviteButton.setEnabled(true);
     }
-    frame.setVisible(true);
   }
 
   private String discoverMyIpAddressFromRemote() throws IOException {
@@ -62,6 +89,7 @@ public class DirectPeerPool implements PeerPool {
     if (frame != null) {
       frame.dispose();
       frame = null;
+      inviteButton.setEnabled(false);
     }
     if (acceptThread != null) {
       acceptThread.halt();
@@ -84,7 +112,6 @@ public class DirectPeerPool implements PeerPool {
     frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
     frame.getContentPane().add(createLabel("Your IP address is " + myIp + ":" + me.getInfo().getPort()));
     frame.getContentPane().add(createLabel("Enter another player's address below and hit the \"Invite\" button."));
-    frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     Box b = Box.createHorizontalBox();
     b.setAlignmentX(0.0f);
     JButton invite = new JButton("Invite");
@@ -114,5 +141,13 @@ public class DirectPeerPool implements PeerPool {
     JLabel l = new JLabel(text);
     l.setAlignmentX(0.0f);
     return l;
+  }
+
+  public void initializeControls(ChatServerControls controls) {
+    controls.getToolbar().add(inviteButton);
+  }
+
+  public void uninitializeControls(ChatServerControls controls) {
+    controls.getToolbar().remove(inviteButton);
   }
 }

@@ -24,8 +24,12 @@ import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.chat.ChatServerFactory;
-import VASSAL.chat.DynamicClient;
+import VASSAL.chat.DynamicClientFactory;
+import VASSAL.chat.HybridClient;
+import VASSAL.chat.ServerConfigurer;
+import VASSAL.chat.jabber.JabberClientFactory;
 import VASSAL.chat.node.NodeClientFactory;
+import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.preferences.PositionOption;
@@ -77,7 +81,7 @@ public class BasicModule extends GameModule {
 
   public void build(org.w3c.dom.Element e) {
     /*
-     * This makes sure that Prefs reads the right entry in the preferences zipfile
+     * We determine the name of the module at the very beginning, so we know which preferences to read
      */
     if (e != null) {
       gameName = e.getAttribute(MODULE_NAME);
@@ -100,9 +104,15 @@ public class BasicModule extends GameModule {
   }
 
   protected void initServer() {
-    ChatServerFactory.register(ChatServerFactory.DEFAULT, NodeClientFactory.getInstance());
+    DynamicClientFactory dynamicClientFactory = new DynamicClientFactory();
+    ChatServerFactory.register(ChatServerFactory.DEFAULT_TYPE, dynamicClientFactory);
     ChatServerFactory.register(NodeClientFactory.NODE_TYPE, NodeClientFactory.getInstance());
-    server = new DynamicClient();
+    ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, dynamicClientFactory);
+    ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
+    ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
+    server = new HybridClient();
+    ServerConfigurer config = new ServerConfigurer("ServerImpl", "Server", (HybridClient) server);
+    GameModule.getGameModule().getGlobalPrefs().addOption("Server", config);
     ChatServerControls c = new ChatServerControls();
     c.addTo(this);
   }

@@ -51,7 +51,6 @@ public class AcceptPeerThread extends Thread {
         ppm.addNewPeer(socket.accept());
       }
       catch (Exception ex) {
-        ex.printStackTrace();
         halt();
       }
     }

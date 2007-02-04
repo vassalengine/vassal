@@ -26,8 +26,8 @@ import java.util.Properties;
  * @author rkinney
  */
 public abstract class ChatServerFactory {
-  public static final String TYPE = "type";
-  public static final String DEFAULT = "default";
+  public static final String TYPE_KEY = "type";
+  public static final String DEFAULT_TYPE = "default";
   private static HashMap factories = new HashMap();
 
   public abstract ChatServerConnection buildServer(Properties param);
@@ -37,7 +37,7 @@ public abstract class ChatServerFactory {
   }
 
   public static ChatServerConnection build(Properties param) {
-    String type = param.getProperty(TYPE, DEFAULT);
+    String type = param.getProperty(TYPE_KEY, DEFAULT_TYPE);
     ChatServerFactory factory = (ChatServerFactory) factories.get(type);
     return factory.buildServer(param);
   }

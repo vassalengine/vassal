@@ -35,20 +35,17 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
   protected ChatServerConnection delegate;
   protected String defaultRoom = "Main Room";
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
-  protected PropertyChangeListener propForwarder;
   protected ChatServerControls controls;
 
   public HybridClient() {
-    propForwarder = new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        propSupport.firePropertyChange(evt);
-      }
-    };
     setDelegate(new DummyClient());
   }
 
   public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
     propSupport.addPropertyChangeListener(propertyName, l);
+    if (delegate != null) {
+      delegate.addPropertyChangeListener(propertyName, l);
+    }
   }
 
   public Room[] getAvailableRooms() {
@@ -140,5 +137,8 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
   }
 
   public void uninitializeControls(ChatServerControls controls) {
+    if (delegate instanceof ChatControlsInitializer) {
+      ((ChatControlsInitializer) delegate).uninitializeControls(controls);
+    }
   }
 }

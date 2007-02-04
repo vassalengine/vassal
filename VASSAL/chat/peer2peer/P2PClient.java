@@ -1,3 +1,20 @@
+/*
+ *
+ * Copyright (c) 2000-2007 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.chat.peer2peer;
 
 import java.beans.PropertyChangeListener;
@@ -19,10 +36,12 @@ import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.WelcomeMessageServer;
 import VASSAL.chat.messageboard.Message;
 import VASSAL.chat.messageboard.MessageBoard;
+import VASSAL.chat.ui.ChatControlsInitializer;
+import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 
-public class P2PClient implements ChatServerConnection, UserDialog {
+public class P2PClient implements ChatServerConnection, ChatControlsInitializer, UserDialog {
   private Player me;
   private PendingPeerManager ppm;
   protected ActivePeerManager peerMgr;
@@ -31,8 +50,6 @@ public class P2PClient implements ChatServerConnection, UserDialog {
   private WelcomeMessageServer welcomeMessageServer;
   private RoomManager roomMgr;
   private RoomTracker tracker;
-  // TODO filter commands in the Main Room
-//  private MainRoomChecker filter;
   private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   private CommandEncoder encoder;
   private boolean connected = false;
@@ -46,7 +63,6 @@ public class P2PClient implements ChatServerConnection, UserDialog {
     ppm = new PendingPeerManager(this);
     roomMgr = new RoomManager();
     tracker = new RoomTracker();
-//    filter = new MainRoomChecker();
     me = new SimplePlayer("???");
   }
 
@@ -60,7 +76,6 @@ public class P2PClient implements ChatServerConnection, UserDialog {
 
   public void sendToAll(String msg) {
     if (isConnected()) {
-//      msg = filter.filter(msg, roomMgr.getDefaultRoom().getName(), getRoom().getName());
       sendToOthers(msg);
       showCHAT(((P2PPlayer) me).getInfo(), msg);
     }
@@ -69,7 +84,6 @@ public class P2PClient implements ChatServerConnection, UserDialog {
   public void sendToOthers(String msg) {
     if (isConnected()) {
       Room myRoom = getRoom();
-//      msg = filter.filter(msg, roomMgr.getDefaultRoom().getName(), getRoom().getName());
       Player[] p = (Player[]) myRoom.getPlayerList().toArray();
       for (int i = 0; i < p.length; ++i) {
         if (!p[i].equals(me)) {
@@ -250,6 +264,18 @@ public class P2PClient implements ChatServerConnection, UserDialog {
   public synchronized void showHELO(PeerInfo pPeerInfo) {
     propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.update(pPeerInfo));
     propSupport.firePropertyChange(ROOM, null, getRoom());
+  }
+
+  public void initializeControls(ChatServerControls controls) {
+    if (pool instanceof ChatControlsInitializer) {
+      ((ChatControlsInitializer)pool).initializeControls(controls);
+    }
+  }
+
+  public void uninitializeControls(ChatServerControls controls) {
+    if (pool instanceof ChatControlsInitializer) {
+      ((ChatControlsInitializer)pool).uninitializeControls(controls);
+    }
   }
 
 /*    final String moduleName = args.length > 0 ? args[0] : "test";
