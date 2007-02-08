@@ -17,9 +17,13 @@
  */
 package VASSAL.launch;
 
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -31,11 +35,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -62,31 +68,36 @@ import org.xml.sax.SAXException;
  */
 public class InstallWizard {
   private File installDir;
-  private String installFileName;
+  private File installFile;
   private String jnlpURL;
   private String maxHeap;
   private Installer installer;
+  private Wizard wiz;
 
-  public void startWizard() {
-    chooseVersion();
+  public void start() {
+    wiz = new Wizard();
+    chooseInstaller();
+    wiz.setVisible(true);
+  }
+  
+  public void chooseInstaller() {
+    wiz.setScreen(new InstallerScreen());
   }
 
   public void chooseVersion() {
     jnlpURL = "http://www.vassalengine.org/ws/vassal.jnlp";
-    installFileName = "vassal.jnlp";
-    installer = new LocalInstaller();
     chooseHeapSize();
   }
 
   public void chooseHeapSize() {
     maxHeap = "256m";
-    new ChooseDirScreen();
+    wiz.setScreen(new ChooseDirScreen());
   }
 
   public void tryInstall() {
     try {
       installer.doInstall();
-      JOptionPane.showMessageDialog(null, "Installation successful.\nTo get started, double-click on " + new File(installDir, installFileName));
+      JOptionPane.showMessageDialog(null, "Installation successful.\nTo get started, double-click on " + installFile);
       System.exit(0);
     }
     catch (IOException e) {
@@ -103,32 +114,57 @@ public class InstallWizard {
 
   public static void main(String[] args) {
     InstallWizard wiz = new InstallWizard();
-    wiz.startWizard();
+    wiz.start();
   }
-  private abstract static class Screen extends JDialog {
-    public Screen() throws HeadlessException {
+  
+  private static class Wizard extends JDialog {
+    private Screen screen;
+    private Box screenBox = Box.createHorizontalBox();
+    public Wizard() throws HeadlessException {
       super();
+      setModal(false);
+      setTitle("Install VASSAL");
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-      Box box = Box.createHorizontalBox();
+      addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+          System.exit(0);
+        }
+      });
+      Box buttonBox = Box.createHorizontalBox();
       JButton b = new JButton("Next");
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          next();
+          screen.next();
         }
       });
-      box.add(Box.createHorizontalGlue());
-      box.add(b);
-      getContentPane().add("South", box);
+      buttonBox.add(Box.createHorizontalGlue());
+      buttonBox.add(b);
+      getContentPane().add("South", buttonBox);
+      getContentPane().add(screenBox);
+      setSize(600,400);
+      setLocationRelativeTo(null);
     }
-
+    public void setScreen(Screen screen) {
+      screenBox.removeAll();
+      screenBox.add(Box.createVerticalGlue());
+      screenBox.add(screen.getControls());
+      screenBox.add(Box.createVerticalGlue());
+      this.screen = screen;
+      validate();
+      repaint();
+    }
+    
+  }
+  public abstract class Screen {
+    public abstract Component getControls();
     public abstract void next();
   }
   private class ChooseDirScreen extends Screen {
     private JTextField tf = new JTextField(36);
     private JButton select = new JButton("Select");
+    private Box controls;
 
-    public ChooseDirScreen() throws HeadlessException {
-      super();
+    public ChooseDirScreen() {
       Box hBox = Box.createHorizontalBox();
       hBox.add(tf);
       tf.addActionListener(new ActionListener() {
@@ -136,6 +172,8 @@ public class InstallWizard {
           next();
         }
       });
+      tf.setText(new File(System.getProperty("user.home"),"VASSAL").getPath());
+      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,tf.getPreferredSize().height));
       hBox.add(select);
       select.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -155,17 +193,16 @@ public class InstallWizard {
           }
         }
       });
-      Box vBox = Box.createVerticalBox();
-      vBox.add(new JLabel("Select the installation directory"));
-      vBox.add(hBox);
-      getContentPane().add("Center", vBox);
-      pack();
-      setLocationRelativeTo(null);
-      setVisible(true);
+      controls = Box.createVerticalBox();
+      controls.add(new JLabel("Select the installation directory"));
+      controls.add(hBox);
+    }
+
+    public Component getControls() {
+      return controls;
     }
 
     public void next() {
-      dispose();
       installDir = new File(tf.getText());
       tryInstall();
     }
@@ -178,7 +215,7 @@ public class InstallWizard {
       checkParameters();
       Document doc = getJNLPDoc(new URL(jnlpURL));
       modifyDocument(doc);
-      writeDocument(doc, new File(installDir, installFileName));
+      writeDocument(doc, installFile);
     }
 
     protected void writeDocument(Document doc, File file) throws IOException {
@@ -220,9 +257,10 @@ public class InstallWizard {
       if (!installDir.exists() && !installDir.mkdir()) {
         throw new IOException("Unable to create " + installDir);
       }
-      if (installFileName == null) {
-        throw new IOException("No installation file specified");
+      if (jnlpURL == null) {
+        throw new IOException("No version specified");
       }
+      installFile = new File(installDir,new URL(jnlpURL).getFile());
     }
 
     public Document getJNLPDoc(URL url) throws IOException {
@@ -305,5 +343,34 @@ public class InstallWizard {
     }
   }
   private class AutoUpdateInstaller extends JnlpInstaller {
+  }
+  private class InstallerScreen extends Screen {
+    private Box b = Box.createVerticalBox();
+    private JRadioButton auto = new JRadioButton("Networked installation (updates automatically)");
+    private JRadioButton local = new JRadioButton("Local installation");
+    public InstallerScreen() {
+      super();
+      ButtonGroup g = new ButtonGroup();
+      g.add(auto);
+      g.add(local);
+      auto.setSelected(true);
+      b.add(new JLabel("Choose type of installation:"));
+      b.add(auto);
+      b.add(local);
+    }
+
+    public Component getControls() {
+      return b;
+    }
+
+    public void next() {
+      if (auto.isSelected()) {
+        installer = new AutoUpdateInstaller();
+      }
+      else {
+        installer = new LocalInstaller();
+      }
+      chooseVersion();
+    }
   }
 }
