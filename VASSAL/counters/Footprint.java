@@ -203,13 +203,13 @@ public class Footprint extends MovementMarkable {
     }
   }
 
-  /*
-   * Ensure the MOVED property is reported by a real MovementMarkable trait,
-   * not the super implementation of Footprint
-   */
   public Object getProperty(Object key) {
+    /* If this piece has a real MovementMarkable trait,
+     * use it to store the MOVED status
+     */
     if (Properties.MOVED.equals(key)) {
-      return piece.getProperty(key);    
+      Object value = piece.getProperty(key);
+      return value == null ? super.getProperty(key) : value;    
     }
     return super.getProperty(key);
   }
@@ -220,7 +220,6 @@ public class Footprint extends MovementMarkable {
    */
   
   public void setMoved(boolean justMoved) {
-
     if (justMoved) {
       recordCurrentPosition();
       startMapId = getMap().getId();

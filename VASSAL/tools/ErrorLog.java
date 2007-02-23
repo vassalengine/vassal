@@ -54,7 +54,12 @@ public class ErrorLog {
           + msg + "\n"
           + "Please send a report to support@vassalengine.org and attach the log file.\n" + logFile;
       if (t instanceof OutOfMemoryError) {
-        text = "The application has run out of memory.\nTo decrease memory usage, try reducing the number of colors in your display.";
+        String s = t.getMessage();
+        text = "The application has run out of memory.\n";
+        if (s != null) {
+          text += s+"\n";
+        }
+        text += "To decrease memory usage, try reducing the number of colors in your display.";
       }
       final JOptionPane pane = new JOptionPane
           (text,

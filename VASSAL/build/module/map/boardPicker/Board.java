@@ -32,7 +32,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -50,7 +49,6 @@ import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.DataArchive;
 
 public class Board extends AbstractConfigurable implements GridContainer {
   /**
@@ -313,14 +311,17 @@ public class Board extends AbstractConfigurable implements GridContainer {
           fixedBoundaries = true;
         }
         catch (IOException e) {
-          JOptionPane.showMessageDialog(null, "Error reading board image " + imageFile + " in " + GameModule.getGameModule().getDataArchive().getName(),
-              "Not Found", JOptionPane.ERROR_MESSAGE);
-          return;
+          e.printStackTrace();
+          String msg = "Error reading board image " + imageFile + " in " + GameModule.getGameModule().getDataArchive().getName();
+          if (e.getMessage() != null) {
+            msg += ":\n"+e.getMessage(); 
+          }
+          throw new IllegalStateException(msg);
         }
       }
       catch (OutOfMemoryError err) {
-        JOptionPane.showMessageDialog(null, "Insufficient memory to load board " + getName() + "\nTry setting your display to use fewer colors",
-            "Out of memory", JOptionPane.ERROR_MESSAGE);
+        err.printStackTrace();
+        throw new OutOfMemoryError("Insufficient memory to load board " + getName());
       }
     }
   }
@@ -367,8 +368,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
         fixedBoundaries = true;
       }
       catch (IOException e) {
-        JOptionPane.showMessageDialog(null, "Error reading board image " + imageFile + " in " + GameModule.getGameModule().getDataArchive().getName(),
-            "Not Found", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+        String msg = "Error reading board image " + imageFile + " in " + GameModule.getGameModule().getDataArchive().getName();
+        if (e.getMessage() != null) {
+          msg += ":\n"+e.getMessage();
+        }
+        throw new IllegalStateException(msg);
       }
     }
   }

@@ -32,18 +32,24 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -57,8 +63,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import VASSAL.chat.HttpRequestWrapper;
 
 /**
  * Walks the user through a wizard interface. The user may choose between an auto-updating (networked jnlp) or purely
@@ -68,6 +76,7 @@ import org.xml.sax.SAXException;
  */
 public class InstallWizard {
   private File installDir;
+  private File installLibDir;
   private File installFile;
   private String jnlpURL;
   private String maxHeap;
@@ -81,35 +90,38 @@ public class InstallWizard {
   }
   
   public void chooseInstaller() {
-    wiz.setScreen(new InstallerScreen());
+//    wiz.setScreen(new InstallerScreen());
+    installer = new LocalInstaller();
+    chooseVersion();
   }
 
   public void chooseVersion() {
-    jnlpURL = "http://www.vassalengine.org/ws/vassal.jnlp";
-    chooseHeapSize();
+    wiz.setScreen(new ChooseVersionScreen());
   }
 
   public void chooseHeapSize() {
-    maxHeap = "256m";
-    wiz.setScreen(new ChooseDirScreen());
+    wiz.setScreen(new ChooseHeapSizeScreen());
   }
 
   public void tryInstall() {
-    try {
-      installer.doInstall();
-      JOptionPane.showMessageDialog(null, "Installation successful.\nTo get started, double-click on " + installFile);
-      System.exit(0);
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-      JOptionPane.showMessageDialog(null, "Installation failed:  " + e.getMessage());
-      System.exit(1);
-    }
-    catch (RuntimeException e) {
-      e.printStackTrace();
-      JOptionPane.showMessageDialog(null, "Installation failed:  " + e.getMessage());
-      System.exit(1);
-    }
+    final InstallProgressScreen screen = new InstallProgressScreen();
+    wiz.setScreen(screen);
+    new Thread() {
+      public void run() {
+        try {
+          installer.doInstall(screen);
+          wiz.setScreen(new SuccessScreen("<html>Installation successful.<br>To get started, double-click on " + installFile+"</html>"));
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+          wiz.setScreen(new FailureScreen("Installation failed:  " + e.getMessage()));
+        }
+        catch (RuntimeException e) {
+          e.printStackTrace();
+          wiz.setScreen(new FailureScreen("Installation failed:  " + e.getMessage()));
+        }
+      }
+    }.start();    
   }
 
   public static void main(String[] args) {
@@ -174,6 +186,7 @@ public class InstallWizard {
       });
       tf.setText(new File(System.getProperty("user.home"),"VASSAL").getPath());
       tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,tf.getPreferredSize().height));
+      tf.select(0, tf.getText().length());
       hBox.add(select);
       select.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -199,6 +212,10 @@ public class InstallWizard {
     }
 
     public Component getControls() {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          tf.requestFocus();
+        }});
       return controls;
     }
 
@@ -207,11 +224,38 @@ public class InstallWizard {
       tryInstall();
     }
   }
+  private class InstallProgressScreen extends Screen {
+
+    private Box controls;
+    private JLabel status;
+    private JProgressBar progress;
+    public InstallProgressScreen() {
+      super();
+      controls = Box.createVerticalBox();
+      status = new JLabel("Downloading files");
+      progress = new JProgressBar();
+      progress.setIndeterminate(true);
+      controls.add(status);
+      controls.add(progress);
+    }
+    public Component getControls() {
+      return controls;
+    }
+
+    public void next() {
+    }
+    public void setStatus(String msg) {
+      status.setText(msg);
+    }
+    
+  }
   private static interface Installer {
-    public void doInstall() throws IOException;
+    public void doInstall(InstallProgressScreen screen) throws IOException;
   }
   private class JnlpInstaller implements Installer {
-    public void doInstall() throws IOException {
+    protected InstallProgressScreen progress;
+    public void doInstall(InstallProgressScreen screen) throws IOException {
+      this.progress = screen;
       checkParameters();
       Document doc = getJNLPDoc(new URL(jnlpURL));
       modifyDocument(doc);
@@ -227,7 +271,7 @@ public class InstallWizard {
         // Write the DOM document to the file
         Transformer xformer = TransformerFactory.newInstance().newTransformer();
         xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         xformer.transform(source, result);
       }
       catch (TransformerException e) {
@@ -240,7 +284,21 @@ public class InstallWizard {
     }
 
     protected void modifyDocument(Document doc) throws IOException {
-      NodeList l = doc.getElementsByTagName("j2se");
+      NodeList l = doc.getElementsByTagName("*");
+      for (int i=0,n=l.getLength();i<n;++i) {
+        Node node = l.item(i);
+        Node child = node.getFirstChild();
+        while (child != null) {
+          Node next = child.getNextSibling();
+          if (child.getNodeType() == Node.TEXT_NODE 
+              && child.getNodeValue() != null
+              && child.getNodeValue().trim().length() == 0) {
+            node.removeChild(child);
+          }
+          child = next;
+        }
+      }
+      l = doc.getElementsByTagName("j2se");
       if (l.getLength() == 1) {
         Element el = (Element) l.item(0);
         el.setAttribute("max-heap-size", maxHeap);
@@ -257,16 +315,24 @@ public class InstallWizard {
       if (!installDir.exists() && !installDir.mkdir()) {
         throw new IOException("Unable to create " + installDir);
       }
+      installLibDir = new File(installDir,"lib");
+      if (!installLibDir.exists() && !installLibDir.mkdir()) {
+        throw new IOException("Unable to create " + installLibDir);
+      }
       if (jnlpURL == null) {
         throw new IOException("No version specified");
       }
-      installFile = new File(installDir,new URL(jnlpURL).getFile());
+      String file = new URL(jnlpURL).getPath();
+      file = file.substring(file.lastIndexOf('/')+1);
+      installFile = new File(installDir,file);
     }
 
     public Document getJNLPDoc(URL url) throws IOException {
       Document d;
       try {
-        d = javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(url.openStream());
+        DocumentBuilderFactory f = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+        f.setIgnoringElementContentWhitespace(true);
+        d = f.newDocumentBuilder().parse(url.openStream());
       }
       catch (SAXException e) {
         throw new IOException("SAXException:  " + e.getMessage());
@@ -302,28 +368,45 @@ public class InstallWizard {
       for (int i = 0, n = jars.getLength(); i < n; ++i) {
         Element el = (Element) jars.item(i);
         String version = el.getAttribute("version");
-        String url = version == null || version.length() == 0 ? el.getAttribute("href") : el.getAttribute("href") + "?version-id=" + version;
+        String href = el.getAttribute("href");
+        String url = version == null || version.length() == 0 ? href : href + "?version-id=" + version;
         URL resource = base == null ? new URL(url) : new URL(base, url);
-        el.setAttribute("version", "");
+        el.removeAttribute("version");
+        el.setAttribute("href", "lib/"+href);
+        resources.add(resource);
+      }
+      NodeList icons = doc.getElementsByTagName("icon");
+      for (int i = 0, n = icons.getLength(); i < n; ++i) {
+        Element el = (Element) icons.item(i);
+        String href = el.getAttribute("href");
+        URL resource = base == null ? new URL(href) : new URL(base, href);
+        el.setAttribute("href", "lib/"+href);
         resources.add(resource);
       }
       NodeList l = doc.getElementsByTagName("extension");
       for (int i = 0, n = l.getLength(); i < n; ++i) {
         Element el = (Element) l.item(i);
-        String url = el.getAttribute("href");
-        URL extURL = base == null ? new URL(url) : new URL(base, url);
-        Document extensionDoc = getJNLPDoc(extURL);
+        String href = el.getAttribute("href");
+        URL url = base == null ? new URL(href) : new URL(base, href);
+        Document extensionDoc = getJNLPDoc(url);
         modifyDocument(extensionDoc);
-        String path = extURL.getPath();
-        path = path.substring(path.lastIndexOf('/') + 1);
-        writeDocument(extensionDoc, new File(installDir, path));
+        String path = getFileName(url);
+        el.setAttribute("href", "lib/"+href);
+        super.writeDocument(extensionDoc, new File(installLibDir, path));
       }
+    }
+
+    public String getFileName(URL url) {
+      String path = url.getPath();
+      path = path.substring(path.lastIndexOf('/') + 1);
+      return path;
     }
 
     protected void writeDocument(Document doc, File file) throws IOException {
       super.writeDocument(doc, file);
       for (Iterator it = resources.iterator(); it.hasNext();) {
         URL resource = (URL) it.next();
+        progress.setStatus("Downloading files: "+getFileName(resource));
         downloadResource(resource);
       }
     }
@@ -331,9 +414,8 @@ public class InstallWizard {
     private void downloadResource(URL resource) throws IOException {
       byte[] buffer = new byte[100000];
       int readCount = 0;
-      String path = resource.getPath();
-      path = path.substring(path.lastIndexOf('/') + 1);
-      File local = new File(installDir, path);
+      String path = getFileName(resource);
+      File local = new File(new File(installDir,"lib"), path);
       FileOutputStream out = new FileOutputStream(local);
       InputStream in = resource.openStream();
       while ((readCount = in.read(buffer)) > 0) {
@@ -366,11 +448,116 @@ public class InstallWizard {
     public void next() {
       if (auto.isSelected()) {
         installer = new AutoUpdateInstaller();
+        jnlpURL = "http://www.vassalengine.org/ws/vassal.jnlp";
+        chooseHeapSize();
       }
       else {
         installer = new LocalInstaller();
+        chooseVersion();
       }
-      chooseVersion();
+    }
+  }
+  private class SuccessScreen extends Screen {
+    private JLabel label;
+    private SuccessScreen(String msg) {
+      label = new JLabel(msg);
+    }
+    public Component getControls() {
+      return label;
+    }
+    public void next() {
+      System.exit(0);
+    }
+  }
+  private class FailureScreen extends SuccessScreen {
+    public FailureScreen(String msg) {
+      super(msg);
+    }
+    public void next() {
+      System.exit(1);
+    }
+  }
+  private class ChooseVersionScreen extends Screen {
+    private JComboBox choice = new JComboBox();
+    private JTextField alternateChoice;
+    private Box controls;
+    public ChooseVersionScreen() {
+      controls = Box.createHorizontalBox();
+      controls.add(new JLabel("Select the version to install:  "));
+      HttpRequestWrapper req = new HttpRequestWrapper("http://www.vassalengine.org/util/getAllVersionNumbers");
+      try {
+      DefaultComboBoxModel m = new DefaultComboBoxModel(); 
+        for (Enumeration e = req.doGet(null);e.hasMoreElements();) {
+          m.insertElementAt(e.nextElement(),0);
+        }
+        choice.setModel(m);
+        controls.add(choice);
+        choice.setMaximumSize(new Dimension(choice.getPreferredSize().width,choice.getPreferredSize().height));
+        choice.setSelectedIndex(0);
+      }
+      catch (IOException e) {
+        alternateChoice = new JTextField(6);
+        controls.add(alternateChoice);
+      }
+      
+    }
+    public Component getControls() {
+      return controls;
+    }
+    public void next() {
+      if (alternateChoice != null) {
+        jnlpURL = "http://www.vassalengine.org/ws/vassal-"+alternateChoice.getText()+".jnlp";
+      }
+      else {
+        jnlpURL = "http://www.vassalengine.org/ws/vassal-"+choice.getSelectedItem()+".jnlp";
+      }
+      chooseHeapSize();
+    }
+    
+  }
+  protected class ChooseHeapSizeScreen extends Screen {
+    private static final String HEAP_SIZE = "heapSize";
+    private Box controls = Box.createVerticalBox();
+    private JRadioButton b128M = new JRadioButton("128 MB");
+    private JRadioButton b256M = new JRadioButton("256 MB");
+    private JRadioButton b512M = new JRadioButton("512 MB");
+    private JRadioButton b1000M = new JRadioButton("1 GB");
+    private JRadioButton b1500M = new JRadioButton("1.5 GB");
+    private ButtonGroup group = new ButtonGroup();
+    
+    public ChooseHeapSizeScreen() {
+      controls.add(new JLabel("Select memory allocation for the program"));
+      b128M.putClientProperty(HEAP_SIZE, "128m");
+      group.add(b128M);
+      controls.add(b128M);
+      b256M.putClientProperty(HEAP_SIZE, "256m");
+      group.add(b256M);
+      controls.add(b256M);
+      b512M.putClientProperty(HEAP_SIZE, "512m");
+      group.add(b512M);
+      controls.add(b512M);
+      b1000M.putClientProperty(HEAP_SIZE, "1000M");
+      group.add(b1000M);
+      controls.add(b1000M);
+      b1500M.putClientProperty(HEAP_SIZE, "1500M");
+      group.add(b1500M);
+      b256M.setSelected(true);
+      controls.add(b1500M);
+    }
+
+    public Component getControls() {
+      return controls;
+    }
+
+    public void next() {
+      for (Enumeration e = group.getElements();e.hasMoreElements();) {
+        AbstractButton b = (AbstractButton) e.nextElement();
+        if (b.isSelected()) {
+          maxHeap = (String) b.getClientProperty(HEAP_SIZE);
+          break;
+        }
+      }
+      wiz.setScreen(new ChooseDirScreen());
     }
   }
 }
