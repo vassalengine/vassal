@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -25,6 +26,7 @@ import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.tools.ArchiveWriter;
@@ -36,6 +38,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public static final String BEGIN = "begin_log";
   public static final String END = "end_log";
   public static final String LOG = "LOG\t";
+  public static final String PROMPT_NEW_LOG = "PromptNewLog";
   protected static final String STEP_ICON = "/images/StepForward16.gif";
   protected static final String UNDO_ICON = "/images/Undo16.gif";
   protected List logInput;
@@ -111,6 +114,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         stepKeyConfig.fireUpdate();
       }
     });
+    BooleanConfigurer logOption = new BooleanConfigurer(PROMPT_NEW_LOG, "Auto-prompt to start new Log Files?", Boolean.TRUE);
+    GameModule.getGameModule().getPrefs().addOption("General", logOption);
   }
 
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
@@ -167,6 +172,23 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     c.execute();
     GameModule.getGameModule().sendAndLog(c);
     stepAction.setEnabled(nextInput < logInput.size());
+    if (!(nextInput < logInput.size())) {
+      queryNewLogFile("Replay Ended. ");
+    }
+  }
+
+  /*
+   * Check if user would like to create a new logfile
+   */
+  public void queryNewLogFile(String message) {
+    if (((Boolean) GameModule.getGameModule().getPrefs().getValue(PROMPT_NEW_LOG)).booleanValue()) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog
+          (GameModule.getGameModule().getFrame(), 
+              message + "Start new logfile?",
+              "", JOptionPane.YES_NO_OPTION)) {
+         beginOutput();
+      }
+    }
   }
 
   /**
@@ -246,6 +268,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
     }
     undoAction.setEnabled(nextUndo >= 0);
+  }
+  
+  /**
+   * Are there Input Steps yet to be replayed?
+   */
+  public boolean hasMoreCommands() {
+    return nextInput < logInput.size();
   }
 
   /**

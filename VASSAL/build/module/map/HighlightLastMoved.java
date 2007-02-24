@@ -37,24 +37,32 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 
 public class HighlightLastMoved extends AbstractConfigurable implements Drawable, MouseListener, GameComponent {
+  public static final String ENABLED = "enabled";
   public static final String COLOR = "color";
   public static final String THICKNESS = "thickness";
 
-  protected ColoredBorder highlighter = new ColoredBorder(Color.RED, 2);
+  protected ColoredBorder highlighter;
   protected GamePiece lastMoved;
   protected static java.util.Map instances = new HashMap();
-  private boolean enabled;
+  
+  protected boolean enabled;
+  protected boolean currentlyEnabled;
 
+  public HighlightLastMoved() {
+    highlighter = new ColoredBorder(Color.RED, 2);
+    enabled = true;
+  }
+  
   public String[] getAttributeDescriptions() {
-    return new String[]{"Color", "Thickness"};
+    return new String[]{"Enabled?", "Color", "Thickness"};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{Color.class, Integer.class};
+    return new Class[]{Boolean.class, Color.class, Integer.class};
   }
 
   public String[] getAttributeNames() {
-    return new String[]{COLOR, THICKNESS};
+    return new String[]{ENABLED, COLOR, THICKNESS};
   }
 
   public void setAttribute(String key, Object value) {
@@ -70,6 +78,12 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
       }
       highlighter.setThickness(((Integer) value).intValue());
     }
+    else if (ENABLED.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      enabled = ((Boolean) value).booleanValue();
+    }
   }
 
   public String getAttributeValueString(String key) {
@@ -78,6 +92,9 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     }
     else if (THICKNESS.equals(key)) {
       return String.valueOf(highlighter.getThickness());
+    }
+    else if (ENABLED.equals(key)) {
+      return String.valueOf(enabled);
     }
     else {
       return null;
@@ -102,7 +119,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
   }
 
   public void draw(Graphics g, Map map) {
-    if (lastMoved != null) {
+    if (lastMoved != null && enabled) {
       if (lastMoved.getMap() == map) {
         highlighter.draw(lastMoved, g, (int) (lastMoved.getPosition().x * map.getZoom()), 
             (int) (lastMoved.getPosition().y * map.getZoom()), map.getView(), map.getZoom());
@@ -114,7 +131,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
   }
 
   public void setup(boolean gameStarting) {
-    enabled = gameStarting;
+    currentlyEnabled = gameStarting && enabled;
     lastMoved = null;
   }
 
@@ -130,7 +147,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
   }
 
   public void setLastMovedPiece(GamePiece p) {
-    if (enabled) {
+    if (currentlyEnabled) {
       if (p.getParent() instanceof Stack) {
         lastMoved = p.getParent();
       }

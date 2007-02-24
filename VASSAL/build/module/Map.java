@@ -105,6 +105,8 @@ import VASSAL.build.module.map.TextSaver;
 import VASSAL.build.module.map.Zoomer;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
+import VASSAL.build.module.map.boardPicker.board.Region;
+import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.GlobalProperties;
@@ -115,6 +117,7 @@ import VASSAL.build.widget.MapWidget;
 import VASSAL.command.AddPiece;
 import VASSAL.command.Command;
 import VASSAL.command.MoveTracker;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.Configurer;
@@ -197,6 +200,7 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	protected KeyStroke moveKey;
 	protected JPanel root;
 	private PropertyChangeListener globalPropertyListener;
+  public static final String MOVING_STACKS_PICKUP_UNITS = "movingStacksPickupUnits";
 
 	public Map() {
 		getView();
@@ -419,6 +423,9 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
     if (!getComponents(SelectionHighlighters.class).hasMoreElements()) {
       addChild(new SelectionHighlighters());
     }
+    if (!getComponents(HighlightLastMoved.class).hasMoreElements()) {
+      addChild(new HighlightLastMoved());
+    }
 		setup(false);
 	}
 
@@ -577,6 +584,10 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 			GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_IN_FOCUSED_WINDOW));
 		}
 		PlayerRoster.addSideChangeListener(this);
+    GameModule.getGameModule().getPrefs().addOption("General",
+        new IntConfigurer(PREFERRED_EDGE_DELAY, "Delay scrolling when dragging at map edge (ms)", new Integer(PREFERRED_EDGE_SCROLL_DELAY)));
+    GameModule.getGameModule().getPrefs().addOption("General",
+        new BooleanConfigurer(MOVING_STACKS_PICKUP_UNITS, "Moving stacks pickup units?", Boolean.FALSE));
 	}
 
 	public void removeFrom(Buildable b) {
@@ -646,20 +657,38 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	}
   
   /**
-   * Search on all board for a Zone with the given name
-   * @param name
-   * @return
+   * Search on all boards for a Zone with the given name
+   * @param Zone name
+   * @return Located zone
    */
   public Zone findZone(String name) {
-    for (Iterator it = boards.iterator(); it.hasNext();) {
+    Zone z = null;
+    for (Iterator it = boards.iterator(); it.hasNext() && z==null;) {
       Board b = (Board) it.next();
-      if (b.getGrid() instanceof ZonedGrid) {
-        return ((ZonedGrid)b.getGrid()).findZone(name);
+      for (Enumeration e = b.getAllDescendantComponents(ZonedGrid.class); e.hasMoreElements() && z==null; ) {
+        ZonedGrid zg = (ZonedGrid) e.nextElement();
+        z = zg.findZone(name);
       }
     }
-    return null;
+    return z;
   }
 
+  /**
+   * Search on all boards for a Region with the given name
+   * @param Region name
+   * @return Located region
+   */
+  public Region findRegion(String name) {
+    Region r = null;
+    for (Iterator it = boards.iterator(); it.hasNext() && r==null;) {
+      Board b = (Board) it.next();
+      for (Enumeration e = b.getAllDescendantComponents(RegionGrid.class); e.hasMoreElements() && r==null; ) {
+        RegionGrid rg = (RegionGrid) e.nextElement();
+        r = rg.findRegion(name);
+      }
+    }
+    return r;
+  }
 	/**
    * Return the board with the given name
    * 
@@ -928,11 +957,16 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	/**
    * Because MouseEvents are received in component coordinates, it is inconvenient for MouseListeners on the map to have
    * to translate to map coordinates. MouseListeners added with this method will receive mouse events with points
-   * already translated into map coordinates
+   * already translated into map coordinates.
+   * addLocalMouseListenerFirst inserts the new listener at the start of the chain.
    */
 	public void addLocalMouseListener(MouseListener l) {
 		multicaster = AWTEventMulticaster.add(multicaster, l);
 	}
+  
+  public void addLocalMouseListenerFirst(MouseListener l) {
+    multicaster = AWTEventMulticaster.add(l, multicaster); 
+  }
 
 	public void removeLocalMouseListener(MouseListener l) {
 		multicaster = AWTEventMulticaster.remove(multicaster, l);
@@ -1099,8 +1133,10 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	/*
    * Delay before starting scroll at edge
    */
+  public static final int PREFERRED_EDGE_SCROLL_DELAY = 200;
+  public static final String PREFERRED_EDGE_DELAY = "PreferredEdgeDelay";
+  
 	protected Thread scrollDelayThread;
-	protected int scrollDelay = 200;
 	protected long scrollExpirationTime;
 	protected int scroll_dist;
 	protected int scroll_dx;
@@ -1137,7 +1173,8 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	}
 
 	protected void restartDelay() {
-		scrollExpirationTime = System.currentTimeMillis() + scrollDelay;
+		scrollExpirationTime = System.currentTimeMillis() + 
+      ((Integer) GameModule.getGameModule().getPrefs().getValue(PREFERRED_EDGE_DELAY)).intValue();
 	}
 
 	public void run() {

@@ -122,6 +122,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     map.addLocalMouseListener(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     map.setDragGestureListener(DragHandler.getTheDragHandler());
+
   }
 
   protected MovementReporter createMovementReporter(Command c) {
@@ -204,7 +205,26 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
 
       public Object visitStack(Stack s) {
         DragBuffer.getBuffer().clear();
-        DragBuffer.getBuffer().add(s);
+        // RFE 1629255 - Only add selected pieces within the stack to the DragBuffer
+        // Add whole stack if all pieces are selected - better drag cursor
+        int selectedCount = 0;
+        for (int i = 0; i < s.getPieceCount(); i++) {
+          if (Boolean.TRUE.equals(s.getPieceAt(i).getProperty(Properties.SELECTED))) {
+            selectedCount++;
+          }
+        }
+        if (((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS)).booleanValue() || s.getPieceCount() == 1 || s.getPieceCount() == selectedCount) {
+          DragBuffer.getBuffer().add(s);
+        }
+        else {
+          for (int i = 0; i < s.getPieceCount(); i++) {
+            GamePiece p = s.getPieceAt(i);
+            if (Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+              DragBuffer.getBuffer().add(p);
+            }
+          }
+        }
+        // End RFE 1629255
         if (KeyBuffer.getBuffer().containsChild(s)) {
           // If clicking on a stack with a selected piece, put all selected
           // pieces in other stacks into the drag buffer
@@ -967,7 +987,21 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     // ///////////////////////////////////////////////////////////////////////////////////
     /** Fires after user begins moving the mouse several pixels over a map. */
     public void dragGestureRecognized(DragGestureEvent dge) {
-      if (DragBuffer.getBuffer().getIterator().hasMoreElements()) {
+      /* 
+       * Ensure the user has dragged on a counter before starting the drag. 
+       */
+      Point dragOrigin = dge.getDragOrigin();
+      boolean isDragOnPiece = false;
+      for (PieceIterator i = DragBuffer.getBuffer().getIterator(); i.hasMoreElements() && !isDragOnPiece; ) {
+        GamePiece piece = i.nextPiece();
+        Rectangle r = piece.boundingBox();
+        Point o = piece.getPosition();
+        r.translate(o.x, o.y);
+        if (r.contains(dragOrigin)) {
+          isDragOnPiece = true;
+        }
+      }
+      if (isDragOnPiece && DragBuffer.getBuffer().getIterator().hasMoreElements()) {
         Map map = dge.getComponent() instanceof Map.View ? ((Map.View) dge.getComponent()).getMap() : null;
         GamePiece piece = DragBuffer.getBuffer().getIterator().nextPiece();
         Point mousePosition = map == null ? dge.getDragOrigin() : map.componentCoordinates(dge.getDragOrigin());

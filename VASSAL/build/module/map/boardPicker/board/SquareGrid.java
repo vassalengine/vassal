@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JButton;
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
@@ -42,20 +43,22 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.SquareGridNumbering;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 
 public class SquareGrid extends AbstractConfigurable implements GeometricGrid, GridEditor.EditableGrid {
-  private double dx = 48.0;
-  private double dy = 48.0;
-  private Point origin = new Point(24, 24);
-  private boolean visible = false;
-  private boolean edgesLegal = false;
-  private boolean cornersLegal = false;
-  private boolean dotsVisible = false;
-  private Color color;
+  protected double dx = 48.0;
+  protected double dy = 48.0;
+  protected Point origin = new Point(24, 24);
+  protected boolean visible = false;
+  protected boolean edgesLegal = false;
+  protected boolean cornersLegal = false;
+  protected boolean dotsVisible = false;
+  protected Color color;
   protected GridContainer container;
   protected Map shapeCache = new HashMap();
   protected SquareGridEditor gridEditor;
+  protected String rangeOption = RANGE_METRIC;
 
   private GridNumbering gridNumbering;
 
@@ -116,17 +119,27 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   public static final String EDGES = "edgesLegal";
   public static final String COLOR = "color";
   public static final String DOTS_VISIBLE = "dotsVisible";
-
+  public static final String RANGE = "range";
+  public static final String RANGE_MANHATTAN = "Manhattan";
+  public static final String RANGE_METRIC = "Metric";
+  
+  public static class RangeOptions extends StringEnum {
+    public String[] getValidValues(AutoConfigurable target) {
+      return new String[]{RANGE_METRIC, RANGE_MANHATTAN};
+    }
+  }
+  
   public String[] getAttributeNames() {
-    String s[] = {X0, Y0, DX, DY, EDGES, CORNERS, VISIBLE, DOTS_VISIBLE, COLOR};
+    String s[] = {X0, Y0, DX, DY, RANGE, EDGES, CORNERS, VISIBLE, DOTS_VISIBLE, COLOR};
     return s;
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"X offset",
-                        "Y offset",
-                        "Cell Width",
-                        "Cell Height",
+    return new String[]{"X offset:  ",
+                        "Y offset:  ",
+                        "Cell Width:  ",
+                        "Cell Height:  ",
+                        "Range Calculation Method:  ",
                         "Edges are legal locations",
                         "Corners are legal locations",
                         "Show Grid",
@@ -139,6 +152,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
                        Integer.class,
                        Double.class,
                        Double.class,
+                       RangeOptions.class,
                        Boolean.class,
                        Boolean.class,
                        Boolean.class,
@@ -198,6 +212,9 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     else if (DX.equals(key)) {
       return "" + dx;
     }
+    else if (RANGE.equals(key)) {
+      return rangeOption;
+    }
     else if (CORNERS.equals(key)) {
       return "" + cornersLegal;
     }
@@ -243,6 +260,9 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       }
       dx = ((Double) val).doubleValue();
     }
+    else if (RANGE.equals(key)) {
+      rangeOption = (String) val;
+    }
     else if (CORNERS.equals(key)) {
       if (val instanceof String) {
         val = new Boolean((String) val);
@@ -285,9 +305,16 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public int range(Point p1, Point p2) {
-    return Math.max(Math.abs((int) Math.floor((p2.x - p1.x) / dx + 0.5))
-                    , Math.abs((int) Math.floor((p2.y - p1.y) / dy + 0.5)));
+    if (rangeOption.equals(RANGE_METRIC)) {
+      return Math.max(Math.abs((int) Math.floor((p2.x - p1.x) / dx + 0.5))
+                      , Math.abs((int) Math.floor((p2.y - p1.y) / dy + 0.5)));
+    }
+    else {
+      return Math.abs((int) Math.floor((p2.x - p1.x) / dx + 0.5))
+          + Math.abs((int) Math.floor((p2.y - p1.y) / dy + 0.5));
+    }
   }
+  
 
   public Area getGridShape(Point center, int range) {
     Area shape = (Area) shapeCache.get(new Integer(range));

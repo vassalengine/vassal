@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -21,14 +22,19 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.Region;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ChooseComponentDialog;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -52,20 +58,32 @@ import VASSAL.tools.SequenceEncoder;
  */
 
 /**
- * This traitadds a command that sends a piece to a particular location ona particular
- * board of a particular Map.
+ * This trait adds a command that sends a piece to another location. Options for the
+ * target location are:
+ *   1. Specified x,y co-ords on a named map/board
+ *   2. The centre of a named Zone on a named map
+ *   3. A named Region on a named map
+ *   4. The location of another counter selected by a Propert Match String
+ * Once the target locaiton is identified, it can be further offset in the X and Y directions
+ * by a set of multipliers.
+ * All Input Fields may use $...$ variable names 
  */
 public class SendToLocation extends Decorator implements EditablePiece {
   public static final String ID = "sendto;";
   public static final String BACK_MAP = "backMap";
   public static final String BACK_POINT = "backPoint";
+  protected static final String DEST_LOCATION = "Location on selected Map";
+  protected static final String DEST_ZONE = "Zone on selected Map";
+  protected static final String DEST_REGION = "Region on selected Map";
+  protected static final String DEST_COUNTER = "Another counter, selected by properties";
+  protected static final String[] DEST_OPTIONS = new String[] {DEST_LOCATION, DEST_ZONE, DEST_REGION, DEST_COUNTER};
   protected KeyCommand[] command;
   protected String commandName;
   protected String backCommandName;
   protected KeyStroke key;
   protected KeyStroke backKey;
-  protected String mapId;
-  protected String boardName;
+  protected FormattedString mapId = new FormattedString("");
+  protected FormattedString boardName = new FormattedString("");
   protected FormattedString x = new FormattedString("");
   protected FormattedString xIndex = new FormattedString("");
   protected FormattedString xOffset = new FormattedString("");
@@ -75,6 +93,10 @@ public class SendToLocation extends Decorator implements EditablePiece {
   protected KeyCommand sendCommand;
   protected KeyCommand backCommand;
   protected String description;
+  protected String destination;
+  protected FormattedString zone = new FormattedString("");
+  protected FormattedString region = new FormattedString("");
+  protected FormattedString propertyFilter = new FormattedString("");
 
   public SendToLocation() {
     this(ID + ";;;;0;0;;", null);
@@ -88,10 +110,10 @@ public class SendToLocation extends Decorator implements EditablePiece {
   public void mySetType(String type) {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
-    commandName = st.nextToken();
+    commandName = st.nextToken("");
     key = st.nextKeyStroke(null);
-    mapId = st.nextToken();
-    boardName = st.nextToken();
+    mapId.setFormat(st.nextToken(""));
+    boardName.setFormat(st.nextToken(""));
     x.setFormat(st.nextToken("0"));
     y.setFormat(st.nextToken("0"));
     backCommandName = st.nextToken("");
@@ -101,14 +123,18 @@ public class SendToLocation extends Decorator implements EditablePiece {
     xOffset.setFormat(st.nextToken("0"));
     yOffset.setFormat(st.nextToken("0"));
     description = st.nextToken("");
+    destination = st.nextToken("");
+    zone.setFormat(st.nextToken(""));
+    region.setFormat(st.nextToken(""));
+    propertyFilter.setFormat(st.nextToken(""));
   }
 
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(commandName)
         .append(key)
-        .append(mapId)
-        .append(boardName)
+        .append(mapId.getFormat())
+        .append(boardName.getFormat())
         .append(x.getFormat())
         .append(y.getFormat())
         .append(backCommandName)
@@ -117,7 +143,11 @@ public class SendToLocation extends Decorator implements EditablePiece {
         .append(yIndex.getFormat())
         .append(xOffset.getFormat())
         .append(yOffset.getFormat())
-        .append(description);
+        .append(description)
+        .append(destination)
+        .append(zone.getFormat())
+        .append(region.getFormat())
+        .append(propertyFilter.getFormat());
     return ID + se.getValue();
   }
 
@@ -170,31 +200,94 @@ public class SendToLocation extends Decorator implements EditablePiece {
     if (sendCommand.matches(stroke)) {
       GamePiece outer = Decorator.getOutermost(this);
       Stack parent = outer.getParent();
-      Map m = Map.getMapById(mapId);
-      if (m == null) {
-        m = getMap();
+      Map map = null;
+      Point dest = null;
+      
+      // Home in on a counter
+      if (destination.equals(DEST_COUNTER.substring(0, 1))) {
+        PieceFilter filter = PropertiesPieceFilter.parse(propertyFilter.getText(outer));
+        GamePiece target = null;
+        // Find first counter matching the properties
+        for (Enumeration e = GameModule.getGameModule().getGameState().getPieces(); e.hasMoreElements() && target==null; ) {
+          GamePiece piece = (GamePiece) e.nextElement();
+          if (piece instanceof Stack) {
+            Stack s = (Stack) piece;
+            for (int i=0; i < s.getPieceCount() && target == null; i++) {
+              if (filter.accept(s.getPieceAt(i))) {
+                target = s.getPieceAt(i);
+              }
+            }
+          }
+          else {
+            if (filter.accept(piece)) {
+              target = piece;
+            }
+          }
+        }
+        // Determine target's position
+        if (target != null) {
+          map = target.getMap();
+          if (map != null) {
+            dest = target.getPosition();
+          }
+        }
       }
-      if (m != null) {
-        Point dest;
-        try {
-          dest = getDestination();
+      // Location/Zone/Region processing all use specified map
+      else {
+        map = Map.getMapById(mapId.getText(outer));
+        if (map == null) {
+          map = getMap();
         }
-        catch (Exception e) {
-          return null;
+        if (map != null) {
+          switch (destination.charAt(0)) {
+          case 'L':
+            try {
+              dest = offsetDestination(Integer.parseInt(x.getText(outer)), Integer.parseInt(y.getText(outer)), outer);
+            }
+            catch (Exception e) {
+              ;
+            }
+            Board b = map.getBoardByName(boardName.getText(outer));
+            if (b != null && dest != null) {
+              dest.translate(b.bounds().x, b.bounds().y);
+            }
+            break;
+            
+          case 'Z':
+            Zone z = map.findZone(zone.getText(outer));
+            if (z != null) {
+              Rectangle r = z.getBounds();
+              Rectangle r2 = z.getBoard().bounds();
+              dest = new Point(r2.x + r.x + r.width/2, r2.y + r.y + r.height/2);
+             }
+            break;
+            
+          case 'R':
+            Region r = map.findRegion(region.getText(outer));
+            Rectangle r2 = r.getBoard().bounds();
+            if (r != null) {
+              dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
+            }
+            break;
+          }
         }
-        Board b = m.getBoardByName(boardName);
-        if (b != null) {
-          dest.translate(b.bounds().x, b.bounds().y);
-        }
+      }
+
+      // Offset destination by Advanced Options offsets
+      if (dest != null) {
+        dest = offsetDestination(dest.x, dest.y, outer);
+      }
+      
+      if (map != null && dest != null) {
         setProperty(BACK_MAP, getMap());
         setProperty(BACK_POINT, getPosition());
         if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
-          dest = m.snapTo(dest);
+          dest = map.snapTo(dest);
         }
-        c = m.placeOrMerge(outer, dest);
+        c = map.placeOrMerge(outer, dest);
         // Apply Auto-move key
-        if (m.getMoveKey() != null) {
-          c.append(outer.keyEvent(m.getMoveKey()));
+        if (map.getMoveKey() != null) {
+          c.append(outer.keyEvent(map.getMoveKey()));
         }
         if (parent != null) {
           c.append(parent.pieceRemoved(outer));
@@ -217,14 +310,16 @@ public class SendToLocation extends Decorator implements EditablePiece {
     }
     return c;
   }
-  
-  protected Point getDestination() {
-    GamePiece outer = Decorator.getOutermost(this);
-    int xPos = Integer.parseInt(x.getText(outer)) + Integer.parseInt(xIndex.getText(outer)) * Integer.parseInt(xOffset.getText(outer));
-    int yPos = Integer.parseInt(y.getText(outer)) + Integer.parseInt(yIndex.getText(outer)) * Integer.parseInt(yOffset.getText(outer));
+   
+  /*
+   * Offset the destination by the Advanced Options offset 
+   */
+  protected Point offsetDestination(int x, int y, GamePiece outer) {
+    int xPos = x + Integer.parseInt(xIndex.getText(outer)) * Integer.parseInt(xOffset.getText(outer));
+    int yPos = y + Integer.parseInt(yIndex.getText(outer)) * Integer.parseInt(yOffset.getText(outer));
     return new Point(xPos, yPos);
   }
-
+  
   public void mySetState(String newState) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(newState,';');
     String mapId = st.nextToken("");
@@ -276,22 +371,29 @@ public class SendToLocation extends Decorator implements EditablePiece {
   }
   
   public static class Ed implements PieceEditor {
-    private StringConfigurer nameInput;
-    private StringConfigurer backNameInput;
-    private HotKeyConfigurer keyInput;
-    private HotKeyConfigurer backKeyInput;
-    private JTextField mapIdInput;
-    private JTextField boardNameInput;
-    private StringConfigurer xInput;
-    private StringConfigurer yInput;
+    protected StringConfigurer nameInput;
+    protected StringConfigurer backNameInput;
+    protected HotKeyConfigurer keyInput;
+    protected HotKeyConfigurer backKeyInput;
+    protected JTextField mapIdInput;
+    protected JTextField boardNameInput;
+    protected StringConfigurer xInput;
+    protected StringConfigurer yInput;
     protected BooleanConfigurer advancedInput;
     protected StringConfigurer xIndexInput;
     protected StringConfigurer xOffsetInput;
     protected StringConfigurer yIndexInput;
     protected StringConfigurer yOffsetInput;
     protected StringConfigurer descInput;
-    private Map map;
-    private JPanel controls;
+    protected StringEnumConfigurer destInput;
+    protected StringConfigurer propertyInput;
+    protected StringConfigurer zoneInput;
+    protected StringConfigurer regionInput;
+    //protected Map map;
+    protected JPanel controls;
+    protected Box mapControls;
+    protected Box boardControls;
+    protected Box advancedControls;
 
     public Ed(SendToLocation p) {
       controls = new JPanel();
@@ -312,37 +414,51 @@ public class SendToLocation extends Decorator implements EditablePiece {
       backKeyInput = new HotKeyConfigurer(null,"Send Back Keyboard Command:  ",p.backKey);
       controls.add(backKeyInput.getControls());
       
-      Box b = Box.createHorizontalBox();
-      mapIdInput = new JTextField(12);
-      map = Map.getMapById(p.mapId);
-      if (map != null) {
-        mapIdInput.setText(map.getMapName());
+      destInput = new StringEnumConfigurer(null, "Destination:  ", DEST_OPTIONS);
+      destInput.setValue(DEST_LOCATION);
+      for (int i=0; i < DEST_OPTIONS.length; i++) {
+        if (DEST_OPTIONS[i].substring(0,1).equals(p.destination)) {
+          destInput.setValue(DEST_OPTIONS[i]);
+        }
       }
-      mapIdInput.setEditable(false);
-      b.add(new JLabel("Map:  "));
-      b.add(mapIdInput);
+      destInput.addPropertyChangeListener(new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent arg0) {
+          updateVisibility();
+        }});
+      controls.add(destInput.getControls());
+      
+      mapControls = Box.createHorizontalBox();
+      mapIdInput = new JTextField(12);
+      mapIdInput.setText(p.mapId.getFormat());
+      //map = Map.getMapById(p.mapId.getFormat());
+      //if (map != null) {
+      //  mapIdInput.setText(map.getMapName());
+      //}
+      mapIdInput.setEditable(true);
+      mapControls.add(new JLabel("Map:  "));
+      mapControls.add(mapIdInput);
       JButton select = new JButton("Select");
       select.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           selectMap();
         }
       });
-      b.add(select);
+      mapControls.add(select);
       JButton clear = new JButton("Clear");
       clear.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           clearMap();
         }
       });
-      b.add(clear);
-      controls.add(b);
+      mapControls.add(clear);
+      controls.add(mapControls);
 
-      b = Box.createHorizontalBox();
+      boardControls = Box.createHorizontalBox();
       boardNameInput = new JTextField(12);
-      boardNameInput.setText(p.boardName);
-      boardNameInput.setEditable(false);
-      b.add(new JLabel("Board:  "));
-      b.add(boardNameInput);
+      boardNameInput.setText(p.boardName.getFormat());
+      boardNameInput.setEditable(true);
+      boardControls.add(new JLabel("Board:  "));
+      boardControls.add(boardNameInput);
       select = new JButton("Select");
       select.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -355,9 +471,10 @@ public class SendToLocation extends Decorator implements EditablePiece {
           clearBoard();
         }
       });
-      b.add(select);
-      b.add(clear);
-      controls.add(b);
+      boardControls.add(select);
+      boardControls.add(clear);
+      controls.add(boardControls);
+      
       
       xInput = new StringConfigurer(null, "X Position:  ", p.x.getFormat());
       controls.add(xInput.getControls());
@@ -365,36 +482,55 @@ public class SendToLocation extends Decorator implements EditablePiece {
       yInput = new StringConfigurer(null, "Y Position:  ", p.y.getFormat());
       controls.add(yInput.getControls());
       
+      zoneInput = new StringConfigurer(null, "Zone Name:  ", p.zone.getFormat());
+      controls.add(zoneInput.getControls());
+
+      regionInput = new StringConfigurer(null, "Region Name:  ", p.region.getFormat());
+      controls.add(regionInput.getControls());
+      
+      propertyInput = new StringConfigurer(null, "Property Match:  ", p.propertyFilter.getFormat());
+      controls.add(propertyInput.getControls());
+      
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);
       advancedInput.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent arg0) {
-          updateAdvancedVisibility();
+          updateVisibility();
         }});
       controls.add(advancedInput.getControls());
       
-      b = Box.createHorizontalBox();
+      advancedControls = Box.createHorizontalBox();
       xIndexInput = new StringConfigurer(null, "Additional X offset:  ", p.xIndex.getFormat());
-      b.add(xIndexInput.getControls());
+      advancedControls.add(xIndexInput.getControls());
       xOffsetInput = new StringConfigurer(null, " times ", p.xOffset.getFormat());
-      b.add(xOffsetInput.getControls());
-      controls.add(b);
+      advancedControls.add(xOffsetInput.getControls());
+      controls.add(advancedControls);
       
-      b = Box.createHorizontalBox();
+      advancedControls = Box.createHorizontalBox();
       yIndexInput = new StringConfigurer(null, "Additional Y offset:  ", p.yIndex.getFormat());
-      b.add(yIndexInput.getControls());
+      advancedControls.add(yIndexInput.getControls());
       yOffsetInput = new StringConfigurer(null, " times ", p.yOffset.getFormat());
-      b.add(yOffsetInput.getControls());
-      controls.add(b);
+      advancedControls.add(yOffsetInput.getControls());
+      controls.add(advancedControls);
       
-      updateAdvancedVisibility();
+      updateVisibility();
     }
     
-    private void updateAdvancedVisibility() {
-      boolean visible = advancedInput.booleanValue().booleanValue();
-      xIndexInput.getControls().setVisible(visible);
-      xOffsetInput.getControls().setVisible(visible);
-      yIndexInput.getControls().setVisible(visible);
-      yOffsetInput.getControls().setVisible(visible);
+    private void updateVisibility() {
+      boolean advancedVisible = advancedInput.booleanValue().booleanValue();
+      xIndexInput.getControls().setVisible(advancedVisible);
+      xOffsetInput.getControls().setVisible(advancedVisible);
+      yIndexInput.getControls().setVisible(advancedVisible);
+      yOffsetInput.getControls().setVisible(advancedVisible);
+      
+      String destOption = destInput.getValueString();
+      xInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
+      yInput.getControls().setVisible(destOption.equals(DEST_LOCATION));
+      mapControls.setVisible(!destOption.equals(DEST_COUNTER));
+      boardControls.setVisible(destOption.equals(DEST_LOCATION));
+      zoneInput.getControls().setVisible(destOption.equals(DEST_ZONE));
+      regionInput.getControls().setVisible(destOption.equals(DEST_REGION));
+      propertyInput.getControls().setVisible(destOption.equals(DEST_COUNTER));
+      
       Window w = SwingUtilities.getWindowAncestor(controls);
       if (w != null) {
         w.pack();
@@ -406,7 +542,7 @@ public class SendToLocation extends Decorator implements EditablePiece {
     }
 
     private void clearMap() {
-      map = null;
+      //map = null;
       mapIdInput.setText("");
     }
 
@@ -423,7 +559,7 @@ public class SendToLocation extends Decorator implements EditablePiece {
       ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), Map.class);
       d.setVisible(true);
       if (d.getTarget() != null) {
-        map = (Map) d.getTarget();
+        Map map = (Map) d.getTarget();
         mapIdInput.setText(map.getMapName());
       }
     }
@@ -436,7 +572,8 @@ public class SendToLocation extends Decorator implements EditablePiece {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
           .append((KeyStroke)keyInput.getValue())
-          .append(map == null ? "" : map.getIdentifier())
+          //.append(map == null ? "" : map.getIdentifier())
+          .append(mapIdInput.getText())
           .append(boardNameInput.getText())
           .append(xInput.getValueString())
           .append(yInput.getValueString())
@@ -446,7 +583,11 @@ public class SendToLocation extends Decorator implements EditablePiece {
           .append(yIndexInput.getValueString())
           .append(xOffsetInput.getValueString())
           .append(yOffsetInput.getValueString())
-          .append(descInput.getValueString());
+          .append(descInput.getValueString())
+          .append(destInput.getValueString().charAt(0))
+          .append(zoneInput.getValueString())
+          .append(regionInput.getValueString())
+          .append(propertyInput.getValueString());
       return ID + se.getValue();
     }
 

@@ -31,6 +31,7 @@ import java.awt.event.MouseMotionListener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.counters.ColoredBorder;
 import VASSAL.counters.Deck;
@@ -61,7 +62,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
   public void addTo(Buildable b) {
     map = (Map) b;
-    map.addLocalMouseListener(this);
+    map.addLocalMouseListenerFirst(this);
     map.getView().addMouseMotionListener(this);
     map.addDrawComponent(this);
   }
@@ -93,7 +94,19 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         if (!e.isShiftDown()) {
           KeyBuffer.getBuffer().clear();
         }
-        KeyBuffer.getBuffer().add(p);
+        // RFE 1629255 - If the top piece of an unexpanded stack is left-clicked
+        // while not selected, then select all of the pieces in the stack
+        if (((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS)).booleanValue() || p.getParent() == null || p.getParent().isExpanded() || e.isMetaDown() ||
+              Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+          KeyBuffer.getBuffer().add(p);
+        }
+        else {
+          Stack s = p.getParent();
+          for (int i=0; i < s.getPieceCount(); i++) {
+            KeyBuffer.getBuffer().add(s.getPieceAt(i));
+          }
+        }
+        // End RFE 1629255
       }
       if (p.getParent() != null) {
         map.getPieceCollection().moveToFront(p.getParent());
@@ -103,7 +116,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       }
     }
     else {
-      KeyBuffer.getBuffer().clear();
+      if (!e.isShiftDown()) {   // No deselect if shift key down
+        KeyBuffer.getBuffer().clear();
+      }
       anchor = map.componentCoordinates(e.getPoint());
       selection = new Rectangle(anchor.x, anchor.y, 0, 0);
       if (map.getHighlighter() instanceof ColoredBorder) {
@@ -120,7 +135,9 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       selection.width /= map.getZoom();
       selection.height /= map.getZoom();
       PieceVisitorDispatcher d = createDragSelector();
-      KeyBuffer.getBuffer().clear();
+      if (!evt.isShiftDown()) {   // No deselect if shift key down
+        KeyBuffer.getBuffer().clear();
+      }
       map.apply(d);
     }
     selection = null;

@@ -232,11 +232,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (bounds.y < minY)
         bounds.y = minY;
 
-      g.setColor(bgColor);
-      g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
-      g.setColor(fgColor);
-      g.drawRect(bounds.x - 1, bounds.y - 1, bounds.width + 1, bounds.height + 1);
-      g.drawRect(bounds.x - 2, bounds.y - 2, bounds.width + 3, bounds.height + 3);
+      if (bgColor != null) {
+        g.setColor(bgColor);
+        g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+      }
+      if (fgColor != null) {
+        g.setColor(fgColor);
+        g.drawRect(bounds.x - 1, bounds.y - 1, bounds.width + 1, bounds.height + 1);
+        g.drawRect(bounds.x - 2, bounds.y - 2, bounds.width + 3, bounds.height + 3);
+      }
       Shape oldClip = g.getClip();
 
       int borderOffset = borderWidth;
@@ -327,9 +331,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected void drawLabel(Graphics g, Point pt, String label, int hAlign, int vAlign) {
 
     if (label != null) {
+      Color labelFgColor = fgColor == null ? Color.black : fgColor;
       Graphics2D g2d = ((Graphics2D) g);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-      Labeler.drawLabel(g, label, pt.x, pt.y, new Font("Dialog", Font.PLAIN, fontSize), hAlign, vAlign, fgColor, bgColor, fgColor);
+      Labeler.drawLabel(g, label, pt.x, pt.y, new Font("Dialog", Font.PLAIN, fontSize), hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     }
   }
@@ -901,17 +906,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (value instanceof String) {
         value = ColorConfigurer.stringToColor((String) value);
       }
-      if (value != null) {
-        fgColor = (Color) value;
-      }
+      fgColor = (Color) value;
     }
     else if (BG_COLOR.equals(name)) {
       if (value instanceof String) {
         value = ColorConfigurer.stringToColor((String) value);
       }
-      if (value != null) {
-        bgColor = (Color) value;
-      }
+      bgColor = (Color) value;
     }
     else if (FONT_SIZE.equals(name)) {
       if (value instanceof String) {

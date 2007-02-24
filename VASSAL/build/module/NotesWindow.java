@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -56,18 +57,21 @@ import VASSAL.tools.LaunchButton;
 public class NotesWindow extends AbstractConfigurable
     implements GameComponent, CommandEncoder {
 
-  private JDialog frame;
-  private LaunchButton launch;
-  private TextConfigurer notes;
-  private PrivateNotesController privateNotes;
-  private SecretNotesController secretNotes;
-  private static final String COMMAND_PREFIX = "NOTES\t";
+  protected JDialog frame;
+  protected LaunchButton launch;
+  protected TextConfigurer scenarioNotes;
+  protected TextConfigurer publicNotes;
+  protected PrivateNotesController privateNotes;
+  protected SecretNotesController secretNotes;
+  protected static final String SCENARIO_NOTE_COMMAND_PREFIX = "NOTES\t";
+  protected static final String PUBLIC_NOTE_COMMAND_PREFIX = "PNOTES\t";
 
   public static final String HOT_KEY = "hotkey";
   public static final String ICON = "icon";
   public static final String BUTTON_TEXT = "buttonText";
 
-  private String lastSavedNotes;
+  protected String lastSavedScenarioNotes;
+  protected String lastSavedPublicNotes;
 
   public NotesWindow() {
     privateNotes = new PrivateNotesController();
@@ -91,7 +95,8 @@ public class NotesWindow extends AbstractConfigurable
    * Capture this object's state, to be restored if the user hits "Cancel"
    */
   protected void captureState() {
-    lastSavedNotes = (String) notes.getValue();
+    lastSavedScenarioNotes = (String) scenarioNotes.getValue();
+    lastSavedPublicNotes = (String) publicNotes.getValue();
     privateNotes.captureState();
     secretNotes.captureState();
   }
@@ -103,27 +108,34 @@ public class NotesWindow extends AbstractConfigurable
   }
 
   protected void restoreState() {
-    notes.setValue(lastSavedNotes);
+    scenarioNotes.setValue(lastSavedScenarioNotes);
+    publicNotes.setValue(lastSavedPublicNotes);
   }
 
   protected void save() {
     Command c = new NullCommand();
-    if (!lastSavedNotes.equals(notes.getValue())) {
-      c.append(new SetNote(notes.getValueString()));
+    if (!lastSavedScenarioNotes.equals(scenarioNotes.getValue())) {
+      c.append(new SetScenarioNote(scenarioNotes.getValueString()));
+    }
+    if (!lastSavedPublicNotes.equals(publicNotes.getValue())) {
+      c.append(new SetPublicNote(publicNotes.getValueString()));
     }
     c.append(privateNotes.save());
     c.append(secretNotes.save());
     GameModule.getGameModule().sendAndLog(c);
   }
 
-  private class NotesDialog extends JDialog {
-    private NotesDialog() {
+  protected class NotesDialog extends JDialog {
+
+    private static final long serialVersionUID = 1L;
+    
+    protected NotesDialog() {
       super(GameModule.getGameModule().getFrame());
       initComponents();
       setLocationRelativeTo(getOwner());
     }
 
-    private void initComponents() {
+    protected void initComponents() {
       getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       addWindowListener(new WindowAdapter() {
@@ -133,13 +145,19 @@ public class NotesWindow extends AbstractConfigurable
         }
       });
 
-      notes = new TextConfigurer(null, null);
+      scenarioNotes = new TextConfigurer(null, null);
+      publicNotes = new TextConfigurer(null, null);
       JTabbedPane tab = new JTabbedPane();
       getContentPane().add(tab);
 
       Box b = Box.createVerticalBox();
       b.add(new JLabel("Visible to all"));
-      b.add(notes.getControls());
+      b.add(scenarioNotes.getControls());
+      tab.addTab("Scenario", b);
+
+      b = Box.createVerticalBox();
+      b.add(new JLabel("Visible to all"));
+      b.add(publicNotes.getControls());
       tab.addTab("Public", b);
 
       tab.addTab("Private", privateNotes.getControls());
@@ -186,8 +204,11 @@ public class NotesWindow extends AbstractConfigurable
 
   public String encode(Command c) {
     String s = null;
-    if (c instanceof SetNote) {
-      s = COMMAND_PREFIX + ((SetNote) c).msg;
+    if (c instanceof SetScenarioNote) {
+      s = SCENARIO_NOTE_COMMAND_PREFIX + ((SetScenarioNote) c).msg;
+    }
+    else if (c instanceof SetPublicNote) {
+      s = PUBLIC_NOTE_COMMAND_PREFIX + ((SetPublicNote) c).msg;
     }
     else {
       s = privateNotes.encode(c);
@@ -200,8 +221,11 @@ public class NotesWindow extends AbstractConfigurable
 
   public Command decode(String command) {
     Command comm;
-    if (command.startsWith(COMMAND_PREFIX)) {
-      comm = new SetNote(command.substring(COMMAND_PREFIX.length()));
+    if (command.startsWith(SCENARIO_NOTE_COMMAND_PREFIX)) {
+      comm = new SetScenarioNote(command.substring(SCENARIO_NOTE_COMMAND_PREFIX.length()));
+    }
+    else if (command.startsWith(PUBLIC_NOTE_COMMAND_PREFIX)) {
+      comm = new SetPublicNote(command.substring(PUBLIC_NOTE_COMMAND_PREFIX.length()));
     }
     else {
       comm = privateNotes.decode(command);
@@ -266,26 +290,44 @@ public class NotesWindow extends AbstractConfigurable
   public void setup(boolean show) {
     launch.setEnabled(show);
     if (!show) {
-      notes.setValue("");
+      scenarioNotes.setValue("");
+      publicNotes.setValue("");
     }
   }
 
   public Command getRestoreCommand() {
-    Command c = new SetNote(notes.getValueString());
+    Command c = new SetScenarioNote(scenarioNotes.getValueString());
+    c.append(new SetPublicNote(publicNotes.getValueString()));
     c.append(privateNotes.getRestoreCommand());
     c.append(secretNotes.getRestoreCommand());
     return c;
   }
 
-  private class SetNote extends Command {
-    private String msg;
+  protected class SetScenarioNote extends Command {
+    protected String msg;
 
-    private SetNote(String s) {
+    protected SetScenarioNote(String s) {
       msg = s;
     }
 
     protected void executeCommand() {
-      notes.setValue(msg);
+      scenarioNotes.setValue(msg);
+    }
+
+    protected Command myUndoCommand() {
+      return null;
+    }
+  }
+  
+  protected class SetPublicNote extends Command {
+    protected String msg;
+
+    protected SetPublicNote(String s) {
+      msg = s;
+    }
+
+    protected void executeCommand() {
+      publicNotes.setValue(msg);
     }
 
     protected Command myUndoCommand() {

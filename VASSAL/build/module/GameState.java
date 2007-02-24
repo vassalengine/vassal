@@ -41,6 +41,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.CommandFilter;
 import VASSAL.command.ConditionalCommand;
+import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
 import VASSAL.counters.GamePiece;
 import VASSAL.tools.ArchiveWriter;
@@ -88,6 +89,10 @@ public class GameState implements CommandEncoder {
       public void actionPerformed(ActionEvent e) {
         setup(false);
         setup(true);
+        Logger logger = GameModule.getGameModule().getLogger();
+        if (logger instanceof BasicLogger) {
+          ((BasicLogger) logger).queryNewLogFile("New game started. ");
+        }
       }
     });
     newGame.setMnemonic('N');
@@ -451,6 +456,12 @@ public class GameState implements CommandEncoder {
           loadCommand.execute();
         }
         GameModule.getGameModule().warn(msg);
+        Logger logger = GameModule.getGameModule().getLogger();
+        if (logger instanceof BasicLogger) {
+          if (!((BasicLogger) logger).hasMoreCommands()) {
+            ((BasicLogger) logger).queryNewLogFile("Game loaded with no steps. ");              
+          }            
+        }
       }
     }.start();
   }

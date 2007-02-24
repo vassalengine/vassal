@@ -28,6 +28,7 @@ import java.awt.geom.Area;
 import javax.swing.JComponent;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.counters.Labeler;
 
 
@@ -170,6 +171,9 @@ public class Region extends AbstractConfigurable {
     selected = s;
   }
 
+  public Board getBoard() {
+    return myGrid.getBoard();
+  }
   /*
    * Move the region. Ensure the selectable region remains within
    * the panel

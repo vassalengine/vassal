@@ -32,6 +32,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -46,13 +48,18 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionListener;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.KeyModifiersConfigurer;
+import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
 // for random layers
@@ -76,10 +83,14 @@ public class Embellishment extends Decorator implements EditablePiece {
   protected int activateModifiers, upModifiers, downModifiers;
   protected String upCommand, downCommand, activateCommand;
   protected String resetCommand;
-  protected int resetLevel;
+  protected FormattedString resetLevel = new FormattedString("1");
   protected boolean loopLevels;
   protected KeyStroke resetKey;
-
+  
+  protected boolean followProperty;
+  protected String propertyName;
+  protected int firstLevelValue;
+  
   // random layers
   // protected KeyCommand rndCommand;
   protected KeyStroke rndKey;
@@ -152,7 +163,7 @@ public class Embellishment extends Decorator implements EditablePiece {
       downKey = st.nextToken("[");
       resetCommand = st.nextToken("Reset");
       resetKey = st.nextKeyStroke('R');
-      resetLevel = st.nextInt(1);
+      resetLevel = new FormattedString(st.nextToken("1"));
       drawUnderneathWhenSelected = st.nextBoolean(false);
       xOff = st.nextInt(0);
       yOff = st.nextInt(0);
@@ -164,9 +175,13 @@ public class Embellishment extends Decorator implements EditablePiece {
       // random layers
       rndKey = st.nextKeyStroke(null);
       rndText = st.nextToken("");
-
       // end random layers
 
+      // Follow property value
+      followProperty = st.nextBoolean(false);
+      propertyName = st.nextToken("");
+      firstLevelValue = st.nextInt(1);
+      
       value = activateKey.length() > 0 ? -1 : 1;
       nValues = imageName.length;
       size = new Rectangle[imageName.length];
@@ -191,12 +206,12 @@ public class Embellishment extends Decorator implements EditablePiece {
     if (st2.hasMoreTokens()) {
       resetCommand = st2.nextToken();
       resetKey = st2.nextKeyStroke(null);
-      resetLevel = st2.nextInt(0);
+      resetLevel.setFormat(st2.nextToken("0"));
     }
     else {
       resetKey = null;
       resetCommand = "";
-      resetLevel = 0;
+      resetLevel.setFormat("0");
     }
 
     activateCommand = st.nextToken();
@@ -270,10 +285,10 @@ public class Embellishment extends Decorator implements EditablePiece {
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(activateCommand).append(activateModifiers).append(activateKey).append(upCommand).append(upModifiers).append(upKey).append(downCommand).append(
-        downModifiers).append(downKey).append(resetCommand).append(resetKey).append(resetLevel).append(drawUnderneathWhenSelected).append(xOff).append(yOff)
-        .append(imageName).append(commonName).append(loopLevels).append(name).append(rndKey)// random
-                                                                                            // layers
-        .append(rndText); // random layers
+        downModifiers).append(downKey).append(resetCommand).append(resetKey).append(resetLevel.getFormat()).append(drawUnderneathWhenSelected).append(xOff).append(yOff)
+        .append(imageName).append(commonName).append(loopLevels).append(name).append(rndKey)// random layers
+        .append(rndText) // random layers
+        .append(followProperty).append(propertyName).append(firstLevelValue);
 
     return ID + se.getValue();
   }
@@ -303,7 +318,9 @@ public class Embellishment extends Decorator implements EditablePiece {
 
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
-
+    
+    checkPropertyLevel();
+    
     if (value <= 0) {
       return;
     }
@@ -327,6 +344,31 @@ public class Embellishment extends Decorator implements EditablePiece {
     }
   }
 
+  /*
+   * Calculate the new level to display based on a property?
+   */
+  protected void checkPropertyLevel() {
+    if (!followProperty || propertyName.length() == 0) {
+      return;
+    }
+    try {
+      String val = (String) Decorator.getOutermost(this).getProperty(propertyName);
+      int v = Integer.parseInt(val) - firstLevelValue + 1;
+      if (v <= 0) v = 1;
+      if (v > nValues) v = nValues;
+      if (isActive()) {
+        value = v;
+      }
+      else {
+        value = -v;
+      }
+    }
+    catch (Exception e) {
+      
+    }
+    return;
+  }
+  
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       List l = new ArrayList();
@@ -334,20 +376,20 @@ public class Embellishment extends Decorator implements EditablePiece {
       if (activateCommand.length() > 0 && activateKey.length() > 0) {
         l.add(new KeyCommand(activateCommand, KeyStroke.getKeyStroke(activateKey.charAt(0), activateModifiers), outer));
       }
-      if (upCommand.length() > 0 && upKey.length() > 0 && nValues > 1) {
+      if (upCommand.length() > 0 && upKey.length() > 0 && nValues > 1 && !followProperty) {
 
         up = new KeyCommand(upCommand, KeyStroke.getKeyStroke(upKey.charAt(0), upModifiers), outer);
         l.add(up);
       }
-      if (downCommand.length() > 0 && downKey.length() > 0 && nValues > 1) {
+      if (downCommand.length() > 0 && downKey.length() > 0 && nValues > 1 && !followProperty) {
         down = new KeyCommand(downCommand, KeyStroke.getKeyStroke(downKey.charAt(0), downModifiers), outer);
         l.add(down);
       }
-      if (resetKey != null && resetCommand.length() > 0) {
+      if (resetKey != null && resetCommand.length() > 0 && !followProperty) {
         l.add(new KeyCommand(resetCommand, resetKey, outer));
       }
       // random layers
-      if (rndKey != null && rndText.length() > 0) {
+      if (rndKey != null && rndText.length() > 0 && !followProperty) {
         l.add(new KeyCommand(rndText, rndKey, outer));
       }
       // end random layers
@@ -383,47 +425,55 @@ public class Embellishment extends Decorator implements EditablePiece {
         value = -Math.abs(value);
       }
     }
-    for (int i = 0; i < upKey.length(); ++i) {
-      if (KeyStroke.getKeyStroke(upKey.charAt(i), upModifiers).equals(stroke)) {
+    if (!followProperty) {
+      for (int i = 0; i < upKey.length(); ++i) {
+        if (KeyStroke.getKeyStroke(upKey.charAt(i), upModifiers).equals(stroke)) {
+          if (tracker == null) {
+            tracker = new ChangeTracker(this);
+          }
+          int val = Math.abs(value);
+          if (++val > nValues) {
+            val = loopLevels ? 1 : nValues;
+          }
+          value = value > 0 ? val : -val;
+          break;
+        }
+      }
+      for (int i = 0; i < downKey.length(); ++i) {
+        if (KeyStroke.getKeyStroke(downKey.charAt(i), downModifiers).equals(stroke)) {
+          if (tracker == null) {
+            tracker = new ChangeTracker(this);
+          }
+          int val = Math.abs(value);
+          if (--val < 1) {
+            val = loopLevels ? nValues : 1;
+          }
+          value = value > 0 ? val : -val;
+          break;
+        }
+      }
+      if (resetKey != null && resetKey.equals(stroke)) {
         if (tracker == null) {
           tracker = new ChangeTracker(this);
         }
-        int val = Math.abs(value);
-        if (++val > nValues) {
-          val = loopLevels ? 1 : nValues;
+        try {
+          int level = Integer.parseInt(resetLevel.getText(Decorator.getOutermost(this)));
+          setValue(Math.abs(level) - 1);
+          setActive(level > 0);
         }
-        value = value > 0 ? val : -val;
-        break;
+        catch (Exception e) {
+
+        }
       }
-    }
-    for (int i = 0; i < downKey.length(); ++i) {
-      if (KeyStroke.getKeyStroke(downKey.charAt(i), downModifiers).equals(stroke)) {
+      // random layers
+      if (rndKey != null && rndKey.equals(stroke)) {
         if (tracker == null) {
           tracker = new ChangeTracker(this);
         }
-        int val = Math.abs(value);
-        if (--val < 1) {
-          val = loopLevels ? nValues : 1;
-        }
+        int val = 0;
+        val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
         value = value > 0 ? val : -val;
-        break;
       }
-    }
-    if (resetKey != null && resetKey.equals(stroke)) {
-      if (tracker == null) {
-        tracker = new ChangeTracker(this);
-      }
-      setValue(Math.abs(resetLevel) - 1);
-      setActive(resetLevel > 0);
-    }
-    // random layers
-    if (rndKey != null && rndKey.equals(stroke)) {
-      if (tracker == null) {
-        tracker = new ChangeTracker(this);
-      }
-      int val = 0;
-      val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
-      value = value > 0 ? val : -val;
     }
     // end random layers
     return tracker != null ? tracker.getChangeCommand() : null;
@@ -508,6 +558,7 @@ public class Embellishment extends Decorator implements EditablePiece {
 
   public Object getProperty(Object key) {
     if (key.equals(name + IMAGE)) {
+      checkPropertyLevel();
       if (value > 0) {
         return imageName[Math.abs(value) - 1];
       }
@@ -515,6 +566,7 @@ public class Embellishment extends Decorator implements EditablePiece {
         return "";
     }
     else if (key.equals(name + NAME)) {
+      checkPropertyLevel();
       if (value > 0) {
         String s = commonName[Math.abs(value) - 1];
         if (s.startsWith("+"))
@@ -527,6 +579,7 @@ public class Embellishment extends Decorator implements EditablePiece {
         return "";
     }
     else if (key.equals(name + LEVEL)) {
+      checkPropertyLevel();
       return String.valueOf(value);
     }
     else if (key.equals(name + ACTIVE)) {
@@ -581,9 +634,9 @@ public class Embellishment extends Decorator implements EditablePiece {
     private JTextField activateCommand = new JTextField("Activate");
     private KeyModifiersConfigurer activateModifiers = new KeyModifiersConfigurer(null, "key:  ");
     private JTextField upCommand = new JTextField("Increase");
-    private KeyModifiersConfigurer upModifiers = new KeyModifiersConfigurer(null, "key:  ");
+    private KeyModifiersConfigurer upModifiers = new KeyModifiersConfigurer(null, "  key: ");
     private JTextField downCommand = new JTextField("Decrease");
-    private KeyModifiersConfigurer downModifiers = new KeyModifiersConfigurer(null, "key:  ");
+    private KeyModifiersConfigurer downModifiers = new KeyModifiersConfigurer(null, "  key: ");
     // random layers
     private JTextField rndCommand = new JTextField(8);
     // random layers
@@ -597,7 +650,7 @@ public class Embellishment extends Decorator implements EditablePiece {
     private JTextField resetLevel = new JTextField(2);
     private JTextField resetCommand = new JTextField(8);
     private JCheckBox loop = new JCheckBox("Loop through levels");
-    private HotKeyConfigurer resetKey = new HotKeyConfigurer(null, "Keyboard:  ");
+    private HotKeyConfigurer resetKey = new HotKeyConfigurer(null, "  Keyboard:  ");
     private JTextField name = new JTextField(8);
 
     private JPanel controls;
@@ -608,6 +661,13 @@ public class Embellishment extends Decorator implements EditablePiece {
     private static final Integer SUFFIX = new Integer(2);
     // random layers
     private HotKeyConfigurer rndKeyConfig;
+
+    private BooleanConfigurer followConfig;
+    private StringConfigurer propertyConfig;
+    private IntConfigurer firstLevelConfig;
+
+    private Box reset1Controls, reset2Controls;
+    private Box rnd1Controls, rnd2Controls;
 
     public Ed(Embellishment e) {
       Box box;
@@ -636,26 +696,28 @@ public class Embellishment extends Decorator implements EditablePiece {
       p.add(downModifiers.getControls());
       p.add(downKeyInput);
 
-      Box resetControls = Box.createHorizontalBox();
-      resetControls.add(new JLabel("Reset to level"));
-      resetControls.add(resetLevel);
-      p.add(resetControls);
-      resetControls = Box.createHorizontalBox();
-      resetControls.add(new JLabel("Command: "));
-      resetControls.add(resetCommand);
-      p.add(resetControls);
+      reset1Controls = Box.createHorizontalBox();
+      reset1Controls.add(new JLabel("Reset to level: "));
+      reset1Controls.add(resetLevel);
+      p.add(reset1Controls);
+      reset2Controls = Box.createHorizontalBox();
+      reset2Controls.add(new JLabel("  Command: "));
+      reset2Controls.add(resetCommand);
+      p.add(reset2Controls);
       p.add(resetKey.getControls());
 
       // random layer
-      p.add(new JLabel("Randomize"));
-      Box rndControls = Box.createHorizontalBox();
-      rndControls.add(new JLabel("Command: "));
+      rnd1Controls = Box.createHorizontalBox();
+      rnd1Controls.add(new JLabel("Randomize"));
+      p.add(rnd1Controls);
+      rnd2Controls = Box.createHorizontalBox();
+      rnd2Controls.add(new JLabel("  Command: "));
       rndCommand = new JTextField(12);
       rndCommand.setMaximumSize(rndCommand.getPreferredSize());
       rndCommand.setText(e.rndText);
-      rndControls.add(rndCommand);
-      p.add(rndControls);
-      rndKeyConfig = new HotKeyConfigurer(null, "Keyboard: ", e.rndKey);
+      rnd2Controls.add(rndCommand);
+      p.add(rnd2Controls);
+      rndKeyConfig = new HotKeyConfigurer(null, "  Keyboard: ", e.rndKey);
       p.add(rndKeyConfig.getControls());
       // end random layer
 
@@ -677,7 +739,7 @@ public class Embellishment extends Decorator implements EditablePiece {
         }
       });
       JPanel checkBoxes = new JPanel();
-      checkBoxes.setLayout(new GridLayout(2, 2));
+      checkBoxes.setLayout(new GridLayout(3, 2));
       checkBoxes.add(alwaysActive);
       checkBoxes.add(drawUnderneath);
       checkBoxes.add(loop);
@@ -694,6 +756,21 @@ public class Embellishment extends Decorator implements EditablePiece {
       offsetControls.add(new JLabel(","));
       offsetControls.add(yOffInput);
       checkBoxes.add(offsetControls);
+
+      followConfig = new BooleanConfigurer(null, "Levels follow Property Value?");
+      checkBoxes.add(followConfig.getControls());
+      
+      Box levelBox = Box.createHorizontalBox();
+      propertyConfig = new StringConfigurer(null, "Property Name:  ");
+      levelBox.add(propertyConfig.getControls());
+      firstLevelConfig = new IntConfigurer(null, " Level 1 = ");
+      levelBox.add(firstLevelConfig.getControls());
+      checkBoxes.add(levelBox);
+      followConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent e) {
+          showHideFields();
+        }
+      });
 
       controls.add(box);
 
@@ -768,6 +845,28 @@ public class Embellishment extends Decorator implements EditablePiece {
       reset(e);
     }
 
+    /*
+     * Change visibility of fields depending on the Follow Property setting
+     */
+    protected void showHideFields() {
+      boolean show = !followConfig.booleanValue().booleanValue();
+      loop.setEnabled(show);
+      propertyConfig.getControls().setVisible(!show);
+      firstLevelConfig.getControls().setVisible(!show);
+      reset1Controls.setVisible(show);
+      reset2Controls.setVisible(show);
+      resetKey.getControls().setVisible(show);
+      rnd1Controls.setVisible(show);
+      rnd2Controls.setVisible(show);
+      rndKeyConfig.getControls().setVisible(show);
+      upCommand.setVisible(show);
+      upModifiers.getControls().setVisible(show);
+      upKeyInput.setVisible(show);
+      downCommand.setVisible(show);
+      downModifiers.getControls().setVisible(show);
+      downKeyInput.setVisible(show);
+    }
+
     private void updateLevelName() {
       int index = images.getList().getSelectedIndex();
       if (index < 0) {
@@ -840,13 +939,19 @@ public class Embellishment extends Decorator implements EditablePiece {
         yOffInput.setText("0");
       }
 
-      se.append(activateCommand.getText()).append(activateModifiers.getValueString()).append(activateKeyInput.getText()).append(upCommand.getText()).append(
-          upModifiers.getValueString()).append(upKeyInput.getText()).append(downCommand.getText()).append(downModifiers.getValueString()).append(
-          downKeyInput.getText()).append(resetCommand.getText()).append((KeyStroke) resetKey.getValue()).append(resetLevel.getText()).append(
-          drawUnderneath.isSelected()).append(xOffInput.getText()).append(yOffInput.getText()).append(
-          (String[]) imageNames.toArray(new String[imageNames.size()])).append((String[]) commonNames.toArray(new String[commonNames.size()])).append(
-          loop.isSelected()).append(name.getText()).append((KeyStroke) rndKeyConfig.getValue()).append(
-          rndCommand.getText() == null ? "" : rndCommand.getText().trim());
+      se.append(activateCommand.getText()).append(activateModifiers.getValueString()).append(
+          activateKeyInput.getText()).append(upCommand.getText()).append(
+          upModifiers.getValueString()).append(upKeyInput.getText()).append(downCommand.getText())
+          .append(downModifiers.getValueString()).append(downKeyInput.getText()).append(
+              resetCommand.getText()).append((KeyStroke) resetKey.getValue()).append(
+              resetLevel.getText()).append(drawUnderneath.isSelected()).append(xOffInput.getText())
+          .append(yOffInput.getText()).append(
+              (String[]) imageNames.toArray(new String[imageNames.size()])).append(
+              (String[]) commonNames.toArray(new String[commonNames.size()])).append(
+              loop.isSelected()).append(name.getText()).append((KeyStroke) rndKeyConfig.getValue())
+          .append(rndCommand.getText() == null ? "" : rndCommand.getText().trim()).append(
+              followConfig.getValueString()).append(propertyConfig.getValueString())
+              .append(firstLevelConfig.getValueString());
 
       return ID + se.getValue();
 
@@ -894,12 +999,15 @@ public class Embellishment extends Decorator implements EditablePiece {
       }
 
       SequenceEncoder se2 = new SequenceEncoder(activateKeyInput.getText(), ';');
-      se2.append(resetCommand.getText()).append((KeyStroke) resetKey.getValue()).append(resetLevel.getText());
+      se2.append(resetCommand.getText()).append((KeyStroke) resetKey.getValue()).append(
+          resetLevel.getText());
       SequenceEncoder se = new SequenceEncoder(null, ';');
-      se.append(se2.getValue()).append(command).append(upKeyInput.getText()).append(upCommand.getText()).append(downKeyInput.getText()).append(
-          downCommand.getText()).append(xOffInput.getText()).append(yOffInput.getText());
+      se.append(se2.getValue()).append(command).append(upKeyInput.getText()).append(
+          upCommand.getText()).append(downKeyInput.getText()).append(downCommand.getText()).append(
+          xOffInput.getText()).append(yOffInput.getText());
 
-      String type = ID + se.getValue() + ';' + (imageList.getValue() == null ? "" : imageList.getValue());
+      String type = ID + se.getValue() + ';'
+          + (imageList.getValue() == null ? "" : imageList.getValue());
       return type;
     }
 
@@ -953,10 +1061,13 @@ public class Embellishment extends Decorator implements EditablePiece {
       downModifiers.setValue(new Integer(e.downModifiers));
       resetKey.setValue(e.resetKey);
       resetCommand.setText(e.resetCommand);
-      resetLevel.setText(String.valueOf(e.resetLevel));
+      resetLevel.setText(e.resetLevel.getFormat());
       xOffInput.setText("" + e.xOff);
       yOffInput.setText("" + e.yOff);
       images.setImageList(e.imageName);
+
+      followConfig.setValue(new Boolean(e.followProperty));
+      propertyConfig.setValue(e.propertyName);
 
       /** Add at least one level if none defined */
       if (!images.getImageNames().hasMoreElements()) {
@@ -966,6 +1077,8 @@ public class Embellishment extends Decorator implements EditablePiece {
       }
 
       updateLevelName();
+
+      showHideFields();
     }
 
   }

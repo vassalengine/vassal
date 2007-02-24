@@ -57,15 +57,15 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid {
   // AreaList is the table of Map areas
   // pointList is a cross-reference of points to Area names
 
-  private Hashtable regionList = new Hashtable();
-  private GridContainer container;
-  private boolean visible = false;
-  private static boolean inConfig = false;
-  private int fontSize = 9; // Size square to display when configuring
-  private boolean snapTo = true;
-  private Config regionConfigurer;
+  protected Hashtable regionList = new Hashtable();
+  protected GridContainer container;
+  protected boolean visible = false;
+  protected static boolean inConfig = false;
+  protected int fontSize = 9; // Size square to display when configuring
+  protected boolean snapTo = true;
+  protected Config regionConfigurer;
 
-  private GridNumbering gridNumbering;
+  protected GridNumbering gridNumbering;
   RegionGrid me = this;
 
   public void addRegion(Region a) {
@@ -215,6 +215,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid {
     visible = b;
   }
 
+  public Board getBoard() {
+    return container.getBoard();
+  }
 
   public Class[] getAllowableConfigureComponents() {
     return new Class[]{Region.class};
@@ -308,6 +311,21 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid {
       checkRegion = (Region) e.nextElement();
       if (checkRegion.contains(p))
         return checkRegion;
+    }
+    return r;
+  }
+  
+  /**
+   * Return Region by Name
+   */
+  public Region findRegion(String name) {
+    Region checkRegion;
+    Region r = null;
+    for (Enumeration e = regionList.elements(); e.hasMoreElements() && r==null;) {
+      checkRegion = (Region) e.nextElement();
+      if (checkRegion.getConfigureName().equals(name)) {
+        r = checkRegion;
+      }
     }
     return r;
   }

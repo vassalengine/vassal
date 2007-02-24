@@ -40,6 +40,8 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
+import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
@@ -62,6 +64,8 @@ public class LOS_Thread extends AbstractConfigurable implements
     MouseListener, MouseMotionListener,
     Drawable, Configurable {
   public static final String SNAP_LOS = "snapLOS";
+  public static final String SNAP_START = "snapStart";
+  public static final String SNAP_END = "snapEnd";
   public static final String LOS_COLOR = "threadColor";
   public static final String HOTKEY = "hotkey";
   public static final String TOOLTIP = "tooltip";
@@ -96,6 +100,8 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected int hideOpacity = 0;
   protected String fixedColor;
   protected Color threadColor = Color.black, rangeFg = Color.white, rangeBg = Color.black;
+  protected boolean snapStart;
+  protected boolean snapEnd;
 
   public LOS_Thread() {
     anchor = new Point(0, 0);
@@ -171,7 +177,7 @@ public class LOS_Thread extends AbstractConfigurable implements
    * </pre>
    */
   public String[] getAttributeNames() {
-    return new String[]{TOOLTIP, LABEL, ICON_NAME, HOTKEY, DRAW_RANGE, RANGE_SCALE, RANGE_ROUNDING, HIDE_COUNTERS, HIDE_OPACITY, LOS_COLOR, RANGE_FOREGROUND, RANGE_BACKGROUND};
+    return new String[]{TOOLTIP, LABEL, ICON_NAME, HOTKEY, SNAP_START, SNAP_END, DRAW_RANGE, RANGE_SCALE, RANGE_ROUNDING, HIDE_COUNTERS, HIDE_OPACITY, LOS_COLOR, RANGE_FOREGROUND, RANGE_BACKGROUND};
   }
 
   public void setAttribute(String key, Object value) {
@@ -229,6 +235,18 @@ public class LOS_Thread extends AbstractConfigurable implements
       fixedColor = (String) value;
       threadColor = ColorConfigurer.stringToColor(fixedColor);
     }
+    else if (SNAP_START.equals(key)) {
+      if (value instanceof String) {
+        value = new Boolean((String) value);
+      }
+      snapStart = ((Boolean) value).booleanValue();
+    }
+    else if (SNAP_END.equals(key)) {
+      if (value instanceof String) {
+        value = new Boolean((String) value);
+      }
+      snapEnd = ((Boolean) value).booleanValue();
+    }
     else {
       launch.setAttribute(key, value);
     }
@@ -280,6 +298,12 @@ public class LOS_Thread extends AbstractConfigurable implements
     else if (LOS_COLOR.equals(key)) {
       return fixedColor;
     }
+    else if (SNAP_START.equals(key)) {
+      return String.valueOf(snapStart);
+    }
+    else if (SNAP_END.equals(key)) {
+      return String.valueOf(snapEnd);
+    }
     else {
       return launch.getAttributeValueString(key);
     }
@@ -303,9 +327,23 @@ public class LOS_Thread extends AbstractConfigurable implements
         int dist = (int)(rangeRounding + anchor.getLocation().distance(arrow.getLocation())/rangeScale);
         drawRange(g, dist);
       }
-      else if ((b = map.findBoard(anchor)) != null
-        && b.getGrid() != null) {
-        drawRange(g, b.getGrid().range(anchor, arrow));
+      else  { 
+        b = map.findBoard(anchor);
+        MapGrid grid = null;
+        if (b != null) {
+          grid = b.getGrid();
+        }
+        if (grid != null && grid instanceof ZonedGrid) {
+            Point bp = new Point(anchor);
+            bp.translate(-b.bounds().x, -b.bounds().y);
+            Zone z = ((ZonedGrid) b.getGrid()).findZone(bp);
+            if (z != null) {
+              grid = z.getGrid();
+            }
+        }
+        if (grid != null) {            
+          drawRange(g, grid.range(anchor, arrow));          
+        }
       }
     }
   }
@@ -344,7 +382,8 @@ public class LOS_Thread extends AbstractConfigurable implements
     if (visible) {
       Point p = e.getPoint();
       if (Boolean.TRUE.equals
-          (GameModule.getGameModule().getPrefs().getValue(SNAP_LOS))) {
+          (GameModule.getGameModule().getPrefs().getValue(SNAP_LOS))
+          || snapStart) {
         p = map.snapTo(p);
       }
       anchor = p;
@@ -377,7 +416,8 @@ public class LOS_Thread extends AbstractConfigurable implements
 
       Point p = e.getPoint();
       if (Boolean.TRUE.equals
-          (GameModule.getGameModule().getPrefs().getValue(SNAP_LOS))) {
+          (GameModule.getGameModule().getPrefs().getValue(SNAP_LOS))
+          || snapEnd) {
         p = map.componentCoordinates(map.snapTo(map.mapCoordinates(p)));
       }
       arrow = map.mapCoordinates(p);
@@ -431,29 +471,33 @@ public class LOS_Thread extends AbstractConfigurable implements
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Tooltip text",
-                        "Button text",
-                        "Button Icon",
-                        "Hotkey",
-                        "Draw Range",
-                        "Pixels per range unit",
-                        "Round fractions",
-                        "Hide Pieces while drawing",
-                        "Opacity of hidden pieces (0-100%)",
-                        "Thread color"};
+    return new String[]{"Tooltip text:  ",
+                        "Button text:  ",
+                        "Button Icon:  ",
+                        "Hotkey:  ",
+                        "Force start of thread to snap to grid?",
+                        "Force end of thread to snap to grid?",
+                        "Draw Range?",
+                        "Pixels per range unit (0 to use Grid calculation):  ",
+                        "Round fractions:  ",
+                        "Hide Pieces while drawing?",
+                        "Opacity of hidden pieces (0-100%):  ",
+                        "Thread color:  "};
   }
 
   public Class[] getAttributeTypes() {
     return new Class[]{String.class,
         			   String.class,
-                       IconConfig.class,
+                 IconConfig.class,
         			   KeyStroke.class,
-                       Boolean.class,
-                       Integer.class,
-                       RoundingOptions.class,
-                       Boolean.class,
-                       Integer.class,
-                       Color.class};
+                 Boolean.class,
+                 Boolean.class,
+                 Boolean.class,
+                 Integer.class,
+                 RoundingOptions.class,
+                 Boolean.class,
+                 Integer.class,
+                 Color.class};
   }
 
   public static class IconConfig implements ConfigurerFactory {
