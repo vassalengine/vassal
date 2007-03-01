@@ -46,12 +46,12 @@ public class ChooseDirScreen implements Screen {
       public void actionPerformed(ActionEvent e) {
         Window w = SwingUtilities.getWindowAncestor(tf);
         if (w instanceof WizardDialog) {
-          next(((WizardDialog)w).getWizard());
+          next(((WizardDialog) w).getWizard());
         }
       }
     });
-    tf.setText(new File(System.getProperty("user.home"),"VASSAL").getPath());
-    tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,tf.getPreferredSize().height));
+    tf.setText(new File(System.getProperty("user.home"), "VASSAL").getPath());
+    tf.setMaximumSize(new Dimension(tf.getMaximumSize().width, tf.getPreferredSize().height));
     tf.select(0, tf.getText().length());
     hBox.add(select);
     select.addActionListener(new ActionListener() {
@@ -81,15 +81,16 @@ public class ChooseDirScreen implements Screen {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         tf.requestFocus();
-      }});
+      }
+    });
     return controls;
   }
 
   public void next(InstallWizard wiz) {
-    wiz.put(Constants.INSTALL_DIR,tf.getText());
+    wiz.put(Constants.INSTALL_DIR, tf.getText());
     Screen s = wiz.next("ChooseDirScreen.next", InstallJnlpScreen.class);
     if (s instanceof InstallProgressScreen) {
-      ((InstallProgressScreen)s).start(wiz);
+      ((InstallProgressScreen) s).start(wiz);
     }
   }
 }
