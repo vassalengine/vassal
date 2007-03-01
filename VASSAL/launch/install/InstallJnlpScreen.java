@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
 /**
  * @author rkinney
  */
-public class InstallVassalJnlpScreen extends InstallProgressScreen implements Constants {
+public class InstallJnlpScreen extends InstallProgressScreen implements Constants {
   private List resources = new ArrayList();
   private File installFile;
   private String jnlpURL;
@@ -57,7 +57,7 @@ public class InstallVassalJnlpScreen extends InstallProgressScreen implements Co
   private String heapSize;
 
   protected void tryInstall(final InstallWizard wizard) throws IOException {
-    installDir = (File) wizard.get(INSTALL_DIR);
+    installDir = new File((String) wizard.get(INSTALL_DIR));
     jnlpURL = (String) wizard.get(JNLP_URL);
     heapSize = (String) wizard.get(Constants.HEAP_SIZE);
     doInstall();
@@ -87,8 +87,9 @@ public class InstallVassalJnlpScreen extends InstallProgressScreen implements Co
       String href = el.getAttribute("href");
       String url = version == null || version.length() == 0 ? href : href + "?version-id=" + version;
       URL resource = base == null ? new URL(url) : new URL(base, url);
+      String path = getFileName(resource);
       el.removeAttribute("version");
-      el.setAttribute("href", "lib/" + href);
+      el.setAttribute("href", "lib/" + path);
       resources.add(resource);
     }
     NodeList icons = doc.getElementsByTagName("icon");
@@ -107,7 +108,7 @@ public class InstallVassalJnlpScreen extends InstallProgressScreen implements Co
       Document extensionDoc = getJNLPDoc(url);
       modifyDocument(extensionDoc);
       String path = getFileName(url);
-      el.setAttribute("href", "lib/" + href);
+      el.setAttribute("href", "lib/" + path);
       writeXmlDocument(extensionDoc, new File(installLibDir, path));
     }
   }

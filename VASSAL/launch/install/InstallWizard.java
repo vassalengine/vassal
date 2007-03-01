@@ -19,20 +19,20 @@ package VASSAL.launch.install;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Properties;
 
 /**
  * Walks the user through a wizard interface. The user may choose between an auto-updating (networked jnlp) or purely
- * local installation (jnlp on local filesystem) installations, and can also select the particular version of VASSAL to install
+ * local installation (jnlp on local filesystem) installations, and can also select the particular version of VASSAL to
+ * install
  * 
  * @author rkinney
  */
 public class InstallWizard {
   private WizardDialog dialog;
-  private HashMap properties = new HashMap();
-  public static final String INSTALL_PROPERTIES="/installInfo";
-  public static final String INITIAL_SCREEN="initialScreen";
+  private Properties properties;
+  public static final String INSTALL_PROPERTIES = "/installInfo";
+  public static final String INITIAL_SCREEN = "initialScreen";
 
   public void start() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
     Properties p = new Properties();
@@ -40,25 +40,53 @@ public class InstallWizard {
     if (in != null) {
       p.load(in);
     }
-    properties.putAll(p);
+    properties = new Properties(p);
     dialog = new WizardDialog(this);
-    dialog.setScreen((Screen) Class.forName(p.getProperty(INITIAL_SCREEN,ChooseVersionScreen.class.getName())).newInstance());
+    dialog.setTitle(properties.getProperty("title","Install VASSAL"));
+    dialog.setScreen((Screen) Class.forName(p.getProperty(INITIAL_SCREEN, ChooseVersionScreen.class.getName())).newInstance());
     dialog.setVisible(true);
   }
-  
-  public void put(String key, Object value) {
-    properties.put(key,value);
+
+  public void put(String key, String value) {
+    properties.put(key, value);
   }
-  
-  public Object get(String key) {
-    return properties.get(key);
+
+  public String get(String key) {
+    return properties.getProperty(key);
   }
-  
+
+  /** Sets the next screen to an instance specified by the named key 
+   * @param defaultClass TODO*/
+  public Screen next(String screenKey, Class defaultClass) {
+    Screen screen;
+    try {
+      String screenClass = (String) properties.get(screenKey);
+      if (screenClass != null) {
+        screen = (Screen) Class.forName(screenClass).newInstance();
+      }
+      else {
+        if (defaultClass != null) {
+          screen = (Screen) defaultClass.newInstance();
+        }
+        else {
+          throw new NullPointerException("Screen "+screenKey+" not specified");
+        }
+      }
+      dialog.setScreen(screen);
+    }
+    catch (Exception e) {
+      screen = new FailureScreen(e);
+      e.printStackTrace();
+      dialog.setScreen(screen);
+    }
+    return screen;
+  }
+
   public static void main(String[] args) throws Exception {
     InstallWizard wiz = new InstallWizard();
     wiz.start();
   }
-  
+
   public WizardDialog getDialog() {
     return dialog;
   }

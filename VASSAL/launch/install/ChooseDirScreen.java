@@ -86,9 +86,10 @@ public class ChooseDirScreen implements Screen {
   }
 
   public void next(InstallWizard wiz) {
-    wiz.put(Constants.INSTALL_DIR,new File(tf.getText()));
-    final InstallProgressScreen screen = new InstallVassalJnlpScreen();
-    wiz.getDialog().setScreen(screen);
-    screen.start(wiz);
+    wiz.put(Constants.INSTALL_DIR,tf.getText());
+    Screen s = wiz.next("ChooseDirScreen.next", InstallJnlpScreen.class);
+    if (s instanceof InstallProgressScreen) {
+      ((InstallProgressScreen)s).start(wiz);
+    }
   }
 }

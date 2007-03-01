@@ -69,6 +69,6 @@ public class ChooseHeapSizeScreen implements Screen, Constants {
         break;
       }
     }
-    wiz.getDialog().setScreen(new ChooseDirScreen());
+    wiz.next("ChooseHeapSizeScreen.next", ChooseDirScreen.class);
   }
 }

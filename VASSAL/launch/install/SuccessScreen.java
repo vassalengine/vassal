@@ -28,6 +28,9 @@ public class SuccessScreen implements Screen {
   public SuccessScreen(String msg) {
     label = new JLabel(msg);
   }
+  public void setMessage(String msg) {
+    label.setText(msg);
+  }
   public Component getControls() {
     return label;
   }

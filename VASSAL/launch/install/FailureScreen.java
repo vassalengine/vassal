@@ -24,6 +24,17 @@ public class FailureScreen extends SuccessScreen {
   public FailureScreen(String msg) {
     super(msg);
   }
+
+  public FailureScreen(Throwable t) {
+    super(null);
+    String msg = t.getMessage();
+    if (msg == null) {
+      msg = t.getClass().getName();
+      msg = msg.substring(msg.lastIndexOf('.'));
+    }
+    setMessage("Installation failed:  "+msg);
+  }
+
   public void next() {
     System.exit(1);
   }

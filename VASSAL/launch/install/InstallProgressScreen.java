@@ -74,11 +74,11 @@ public abstract class InstallProgressScreen implements Screen {
         }
         catch (IOException e) {
           e.printStackTrace();
-          wizard.getDialog().setScreen(new FailureScreen("Installation failed:  " + e.getMessage()));
+          wizard.getDialog().setScreen(new FailureScreen(e));
         }
         catch (RuntimeException e) {
           e.printStackTrace();
-          wizard.getDialog().setScreen(new FailureScreen("Installation failed:  " + e.getMessage()));
+          wizard.getDialog().setScreen(new FailureScreen(e));
         }
       }
     }.start();    

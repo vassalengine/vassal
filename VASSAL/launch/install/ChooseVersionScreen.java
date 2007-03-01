@@ -65,7 +65,7 @@ public class ChooseVersionScreen implements Screen {
     else {
       wizard.put(Constants.JNLP_URL,"http://www.vassalengine.org/ws/vassal-"+choice.getSelectedItem()+".jnlp");
     }
-    wizard.getDialog().setScreen(new ChooseHeapSizeScreen());
+    wizard.next("ChooseVersionScreen.next", ChooseHeapSizeScreen.class);
   }
   
 }
