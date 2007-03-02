@@ -174,25 +174,23 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
 // The transparency is only draw on a Map.View component.  Only the GamePiece is drawn within
 // other windows (Counter Palette, etc.)
       if (obs instanceof Map.View) {
-        if (g instanceof Graphics2D) {
-          Graphics2D g2d = (Graphics2D) g;
+        Graphics2D g2d = (Graphics2D) g;
 
-          Color oldColor = g2d.getColor();
-          g2d.setColor(transparencyColor);
+        Color oldColor = g2d.getColor();
+        g2d.setColor(transparencyColor);
 
-          Composite oldComposite = g2d.getComposite();
-          g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparencyLevel));
+        Composite oldComposite = g2d.getComposite();
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparencyLevel));
 
-          Area a = getArea();
+        Area a = getArea();
 
-          if (zoom != 1.0) {
-            a = new Area(AffineTransform.getScaleInstance(zoom,zoom).createTransformedShape(a));
-          }
-          g2d.fill(a);
-
-          g2d.setColor(oldColor);
-          g2d.setComposite(oldComposite);
+        if (zoom != 1.0) {
+          a = new Area(AffineTransform.getScaleInstance(zoom,zoom).createTransformedShape(a));
         }
+        g2d.fill(a);
+
+        g2d.setColor(oldColor);
+        g2d.setComposite(oldComposite);
       }
     }
 

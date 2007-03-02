@@ -228,7 +228,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   }
 
   public void draw(Graphics g, Map map) {
-    if (drawGhost && g instanceof Graphics2D) {
+    if (drawGhost) {
       Point p = map.componentCoordinates(getGhostPosition());
       Graphics2D g2d = (Graphics2D) g;
       AffineTransform t = g2d.getTransform();

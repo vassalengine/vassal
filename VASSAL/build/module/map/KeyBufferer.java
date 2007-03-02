@@ -124,7 +124,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       if (map.getHighlighter() instanceof ColoredBorder) {
         ColoredBorder b = (ColoredBorder) map.getHighlighter();
         color = b.getColor();
-        thickness = Math.max(1, (int) Math.round(map.getZoom() * b.getThickness()));
+        thickness = b.getThickness();
       }
     }
   }

@@ -57,10 +57,10 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
           int x1 = x - (int) (image.getWidth(null) * zoom / 2);
           int y1 = y - (int) (image.getHeight(null) * zoom / 2);
           if (zoom == 1.0) {
-            g.drawImage(image, x1, y1, null);
+            g2d.drawImage(image, x1, y1, null);
           }
           else {
-            g.drawImage(GameModule.getGameModule().getDataArchive().getScaledImage(image, zoom), x1, y1, null);
+            g2d.drawImage(GameModule.getGameModule().getDataArchive().getScaledImage(image, zoom), x1, y1, null);
           }
         }
       }

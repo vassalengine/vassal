@@ -635,12 +635,13 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
     if (!bounds.intersects(visibleRect)) {
       return;
     }
-    if (g instanceof Graphics2D) {
-      ((Graphics2D) g).addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,
-                                                            RenderingHints.VALUE_ANTIALIAS_ON));
-    }
+   
+    Graphics2D g2d = (Graphics2D) g;
 
-    g.setColor(color == null ? Color.black : color);
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
+
+    g2d.setColor(color == null ? Color.black : color);
 
     float x1,y1, x2,y2, x3,y3, x4, y4;
 
@@ -651,11 +652,11 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
 
     Rectangle region = bounds.intersection(visibleRect);
 
-    Shape oldClip = g.getClip();
+    Shape oldClip = g2d.getClip();
     if (oldClip != null) {
       Area clipArea = new Area(oldClip);
       clipArea.intersect(new Area(region));
-      g.setClip(clipArea);
+      g2d.setClip(clipArea);
     }
 
     if (sideways) {
@@ -697,16 +698,16 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
           rotate(p3);
           rotate(p4);
         }
-        g.drawLine(p1.x, p1.y, p2.x, p2.y);
-        g.drawLine(p2.x, p2.y, p3.x, p3.y);
-        g.drawLine(p3.x, p3.y, p4.x, p4.y);
+        g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+        g2d.drawLine(p2.x, p2.y, p3.x, p3.y);
+        g2d.drawLine(p3.x, p3.y, p4.x, p4.y);
         if (dotsVisible) {
           center.setLocation(Math.round(x), Math.round(y));
           rotateIfSideways(center);
-          g.fillRect(center.x, center.y, 2, 2);
+          g2d.fillRect(center.x, center.y, 2, 2);
           center.setLocation(Math.round(x + deltaX), Math.round(y + deltaY / 2));
           rotateIfSideways(center);
-          g.fillRect(center.x, center.y, 2, 2);
+          g2d.fillRect(center.x, center.y, 2, 2);
         }
         x1 += deltaX;
         x2 += deltaX;
@@ -726,9 +727,9 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
           rotate(p3);
           rotate(p4);
         }
-        g.drawLine(p1.x, p1.y, p2.x, p2.y);
-        g.drawLine(p2.x, p2.y, p3.x, p3.y);
-        g.drawLine(p3.x, p3.y, p4.x, p4.y);
+        g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+        g2d.drawLine(p2.x, p2.y, p3.x, p3.y);
+        g2d.drawLine(p3.x, p3.y, p4.x, p4.y);
         if (x == xmin) {
           p1.setLocation(Math.round(x - r), Math.round(y));
           p2.setLocation(Math.round(x - r / 2), Math.round(y + deltaY / 2));
@@ -736,11 +737,11 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
             rotate(p1);
             rotate(p2);
           }
-          g.drawLine(p1.x, p1.y, p2.x, p2.y);
+          g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
         }
       }
     }
-    g.setClip(oldClip);
+    g2d.setClip(oldClip);
   }
 
   public void setGridNumbering(GridNumbering numbering) {
@@ -848,9 +849,9 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
       int width = r * 3 / 2;
       int height = Math.abs(p3.y - p2.y) * 2;
       
-      int Xoff = (Math.min(p1.x, p2.x)) % width + (int) (r/2);
-      int col = (int) (Math.min(p1.x, p2.x) / width);
-      int Yoff = Math.min(p1.y, p2.y) % height - ((col % 2 == 1) ? 0 : (int) (height / 2));
+      int Xoff = Math.min(p1.x, p2.x) % width + r/2;
+      int col = Math.min(p1.x, p2.x) / width;
+      int Yoff = Math.min(p1.y, p2.y) % height - (col % 2 == 1 ? 0 : height/2);
       if (Yoff < 0) Yoff += height;
 
       setMetrics(width, height, Xoff, Yoff, sideways);
@@ -867,9 +868,9 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
       int height = Math.abs(p3.x - p2.x) * 2;
       
       int xOrigin = p1.y - (p3.y < p1.y ? 0 : r);
-      int Xoff = xOrigin % width + (int) (r/2);
-      int col = (int) (xOrigin / width);
-      int Yoff = Math.min(p1.x, p2.x) % height - ((col % 2 == 1) ? 0 : (int) (height / 2));
+      int Xoff = xOrigin % width + r/2;
+      int col = xOrigin / width;
+      int Yoff = Math.min(p1.x, p2.x) % height - (col % 2 == 1 ? 0 : height/2);
       
       setMetrics(width, height, Xoff, Yoff, sideways);
     }

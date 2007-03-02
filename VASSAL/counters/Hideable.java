@@ -144,20 +144,19 @@ public class Hideable extends Decorator implements EditablePiece {
       return;
     }
     else if (invisibleToOthers()) {
+      Graphics2D g2d = (Graphics2D) g;
+
       if (bgColor != null) {
-        Graphics2D g2d = (Graphics2D) g;
         g.setColor(bgColor);
         AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
         t.translate(x / zoom, y / zoom);
         g2d.fill(t.createTransformedShape(piece.getShape()));
       }
-      if (g instanceof Graphics2D) {
-        Graphics2D g2d = (Graphics2D) g;
-        Composite oldComposite = g2d.getComposite();
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3F));
-        piece.draw(g, x, y, obs, zoom);
-        g2d.setComposite(oldComposite);
-      }
+
+      Composite oldComposite = g2d.getComposite();
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3F));
+      piece.draw(g, x, y, obs, zoom);
+      g2d.setComposite(oldComposite);
     }
     else {
       piece.draw(g, x, y, obs, zoom);

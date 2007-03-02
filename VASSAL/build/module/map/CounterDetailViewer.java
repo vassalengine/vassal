@@ -292,8 +292,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * location name above the centre of the first piece in the stack.
      */
     String report = "";
-    int x = (int) ((bounds.x - bounds.width));
-    int y = (int) (bounds.y) - 5;
+    int x = bounds.x - bounds.width;
+    int y = bounds.y - 5;
 
     if (displayablePieces.size() == 0) {
       Point mapPt = map.mapCoordinates(currentMousePosition.getPoint());

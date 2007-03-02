@@ -429,18 +429,18 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     if (!bounds.intersects(visibleRect)) {
       return;
     }
-    if (g instanceof Graphics2D) {
-      ((Graphics2D) g).addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,
-                                                            RenderingHints.VALUE_ANTIALIAS_ON));
-    }
+
+    Graphics2D g2d = (Graphics2D) g;
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
 
     Rectangle region = bounds.intersection(visibleRect);
 
-    Shape oldClip = g.getClip();
+    Shape oldClip = g2d.getClip();
     if (oldClip != null) {
       Area clipArea = new Area(oldClip);
       clipArea.intersect(new Area(region));
-      g.setClip(clipArea);
+      g2d.setClip(clipArea);
     }
 
     double deltaX = scale * dx;
@@ -455,15 +455,15 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
     Point p1 = new Point();
     Point p2 = new Point();
-    g.setColor(color == null ? Color.black : color);
+    g2d.setColor(color == null ? Color.black : color);
     // x is the location of a vertical line
     for (double x = xmin; x < xmax; x += deltaX) {
       p1.move((int) Math.round(x), region.y);
       p2.move((int) Math.round(x), region.y + region.height);
-      g.drawLine(p1.x, p1.y, p2.x, p2.y);
+      g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
     }
     for (double y = ymin; y < ymax; y += deltaY) {
-      g.drawLine(region.x, (int) Math.round(y), region.x + region.width, (int) Math.round(y));
+      g2d.drawLine(region.x, (int) Math.round(y), region.x + region.width, (int) Math.round(y));
     }
     if (dotsVisible) {
       xmin = reversed ? bounds.x + scale * origin.x + bounds.width - deltaX * Math.round((bounds.x + scale * origin.x + bounds.width - region.x) / deltaX)
@@ -473,11 +473,11 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       for (double x = xmin; x < xmax; x += deltaX) {
         for (double y = ymin; y < ymax; y += deltaY) {
           p1.move((int) Math.round(x - .5), (int) Math.round(y - .5));
-          g.fillRect(p1.x, p1.y, 2, 2);
+          g2d.fillRect(p1.x, p1.y, 2, 2);
         }
       }
     }
-    g.setClip(oldClip);
+    g2d.setClip(oldClip);
   }
   
   public Configurer getConfigurer() {
