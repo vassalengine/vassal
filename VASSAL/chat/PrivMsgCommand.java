@@ -17,6 +17,9 @@
  */
 package VASSAL.chat;
 
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
+import java.awt.Window;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import VASSAL.command.Command;
@@ -32,7 +35,7 @@ public class PrivMsgCommand extends Command {
   public PrivMsgCommand(PrivateChatManager mgr, Player sender, String msg) {
     this.mgr = mgr;
     this.msg = msg;
-    p = (Player) sender;
+    p = sender;
   }
 
   public void executeCommand() {
@@ -40,10 +43,13 @@ public class PrivMsgCommand extends Command {
     if (chat == null) {
       return;
     }
-    java.awt.Window f = SwingUtilities.getWindowAncestor(chat);
+
+    Window f = SwingUtilities.getWindowAncestor(chat);
     if (!f.isVisible()) {
       f.setVisible(true);
-      if (SwingUtilities.findFocusOwner(f) == null) {
+      Component c = KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                                        .getFocusOwner();
+      if (c == null || !SwingUtilities.isDescendingFrom(c, f)) {
         java.awt.Toolkit.getDefaultToolkit().beep();
         for (int i = 0,j = chat.getComponentCount(); i < j; ++i) {
           if (chat.getComponent(i) instanceof JTextField) {

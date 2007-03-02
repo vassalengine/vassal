@@ -50,7 +50,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   }
 
   public void launch() {
-    String oldValue = (String) property.getPropertyValue();
+    String oldValue = property.getPropertyValue();
     String newValue = getNewValue();
     if (newValue != null && !newValue.equals(oldValue)) {
       Command c = property.setPropertyValue(newValue);

@@ -70,7 +70,7 @@ public class GlobalProperties extends AbstractConfigurable implements GlobalProp
     propertyChangeSupport = new PropertyChangeSupport(this);
     propertyChangeSupport.addPropertyChangeListener(((GlobalPropertiesContainer) parent).getPropertyListener());
     for (Iterator it = initialValues.keySet().iterator(); it.hasNext();) {
-      Object key = (Object) it.next();
+      Object key = it.next();
       Object value = initialValues.get(key);
       propertyChangeSupport.firePropertyChange(key.toString(),null,value);
     }

@@ -199,7 +199,7 @@ public class GlobalOptions extends AbstractConfigurable {
         
       NodeList l = e.getChildNodes();
       for (int i=0,len=l.getLength();i<len;++i) {
-        Node node = (Node) l.item(i);
+        Node node = l.item(i);
         if (node.getNodeType() == Node.ELEMENT_NODE) {
           Element element = (Element) node;
           String name = element.getTagName();

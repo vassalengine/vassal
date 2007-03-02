@@ -201,7 +201,7 @@ public class SavedGameUpdaterDialog extends JDialog {
 
   private void exportPieceInfo() {
     fc.setMultiSelectionEnabled(false);
-    if (JFileChooser.CANCEL_OPTION != fc.showOpenDialog(this)) {
+    if (JFileChooser.CANCEL_OPTION != fc.showSaveDialog(this)) {
       Properties p = updater.getPieceSlotsMap();
       p.put(MODULE_NAME_KEY, GameModule.getGameModule().getGameName());
       p.put(VERSION_KEY, GameModule.getGameModule().getGameVersion());

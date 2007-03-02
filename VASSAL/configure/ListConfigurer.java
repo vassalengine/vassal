@@ -126,7 +126,7 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
       configControls.removeAll();
 
       for (Iterator iter = getListValue().iterator(); iter.hasNext();) {
-        Object value = (Object) iter.next();
+        Object value = iter.next();
         final Configurer c = buildChildConfigurer();
         c.addPropertyChangeListener(this);
         c.setValue(value);

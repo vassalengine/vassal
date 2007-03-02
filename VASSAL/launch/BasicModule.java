@@ -126,7 +126,7 @@ public class BasicModule extends GameModule {
   protected void initGameState() {
     theState = new GameState();
     theState.addTo(this);
-    addCommandEncoder((GameState) theState);
+    addCommandEncoder(theState);
   }
 
   public Command decode(String command) {

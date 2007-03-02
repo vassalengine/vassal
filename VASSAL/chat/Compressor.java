@@ -58,7 +58,7 @@ public abstract class Compressor {
       TextField tf = new TextField(60);
       f.add(tf);
       f.pack();
-      f.show();
+      f.setVisible(true);
       tf.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
           try {

@@ -184,7 +184,7 @@ public class Base64
                 javax.swing.JFrame jframe = new javax.swing.JFrame();
                 jframe.getContentPane().add( jlabel );
                 jframe.pack();
-                jframe.show();
+                jframe.setVisible(true);
 
                 // Write raw bytes to file
                 java.io.FileOutputStream fos = new java.io.FileOutputStream( "test.gif_out" );
@@ -211,7 +211,7 @@ public class Base64
                 jframe.setTitle( "Read from test.gif_out" );
                 jframe.getContentPane().add( jsp );
                 jframe.pack();
-                jframe.show();
+                jframe.setVisible(true);
 
                 // Write encoded bytes to file
                 fos = new java.io.FileOutputStream( "test.gif.b64_out" );
@@ -234,7 +234,7 @@ public class Base64
                 jframe = new javax.swing.JFrame();
                 jframe.getContentPane().add( jlabel );
                 jframe.pack();
-                jframe.show();
+                jframe.setVisible(true);
             }   // end: Test Input Stream
             
             
@@ -278,7 +278,7 @@ public class Base64
                 jframe.setTitle( "Read from test.gif.b64_out2" );
                 jframe.getContentPane().add( jsp );
                 jframe.pack();
-                jframe.show();
+                jframe.setVisible(true);
                
                 // Write encoded bytes to decoded raw file
                 fos = new java.io.FileOutputStream("test.gif_out2");
@@ -290,7 +290,7 @@ public class Base64
                 jframe = new javax.swing.JFrame();
                 jframe.getContentPane().add( jlabel );
                 jframe.pack();
-                jframe.show();
+                jframe.setVisible(true);
                
             }   // end: Test Output Stream
             

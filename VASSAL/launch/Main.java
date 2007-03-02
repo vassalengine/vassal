@@ -28,7 +28,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -49,6 +48,7 @@ import VASSAL.preferences.PrefsEditor;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.FileChooser;
 import VASSAL.tools.JarArchive;
 import VASSAL.tools.SplashScreen;
 
@@ -509,7 +509,7 @@ public class Main {
     protected javax.swing.JButton newButton;
     protected javax.swing.JLabel splash;
     protected java.awt.Color fgColor = java.awt.Color.black;
-    protected JFileChooser fc;
+    protected FileChooser fc;
 
     public Frame() {
       super("VASSAL");
@@ -522,7 +522,8 @@ public class Main {
       if (baseDir == null) {
         baseDir = System.getProperty("user.home");
       }
-      fc = new JFileChooser(baseDir);
+      fc = FileChooser.createFileChooser(this);
+      fc.setCurrentDirectory(new File(baseDir));
     }
 
     protected void initComponents() {
@@ -687,20 +688,16 @@ public class Main {
     }
 
     protected File chooseFile() {
-      if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-        if (!fc.getSelectedFile().exists()) {
-          JOptionPane.showMessageDialog(this, fc.getSelectedFile() + " not found");
-          return null;
-        }
-        else {
-          return fc.getSelectedFile();
-        }
+      if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return null;
+
+      if (!fc.getSelectedFile().exists()) {
+         JOptionPane.showMessageDialog(this,
+           fc.getSelectedFile() + " not found");
+         return null;
       }
       else {
-        return null;
+        return fc.getSelectedFile();
       }
     }
-
   }
-
 }
