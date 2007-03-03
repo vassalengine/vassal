@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry excluding="bin" kind="src" path=""/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/rkinney/VASSAL/lib/smack.jar"/>
-	<classpathentry sourcepath="/usr/local/smack-dev-2.2.1/source" kind="lib" path="/home/rkinney/VASSAL/lib/smackx.jar"/>
-	<classpathentry kind="lib" path="/home/rkinney/VASSAL/lib/smackx-debug.jar"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>
