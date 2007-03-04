@@ -39,6 +39,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public static final String END = "end_log";
   public static final String LOG = "LOG\t";
   public static final String PROMPT_NEW_LOG = "PromptNewLog";
+  public static final String PROMPT_NEW_LOG_START = "PromptNewLogStart";
+  public static final String PROMPT_NEW_LOG_END = "PromptNewLogEnd";
   protected static final String STEP_ICON = "/images/StepForward16.gif";
   protected static final String UNDO_ICON = "/images/Undo16.gif";
   protected List logInput;
@@ -114,9 +116,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         stepKeyConfig.fireUpdate();
       }
     });
-    BooleanConfigurer logOption = new BooleanConfigurer(PROMPT_NEW_LOG, "Auto-prompt to start new Log Files?", Boolean.TRUE);
-    GameModule.getGameModule().getPrefs().addOption("General", logOption);
-  }
+    BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, "Prompt to start new Log File before a Replay?", Boolean.FALSE);
+    GameModule.getGameModule().getPrefs().addOption("General", logOptionStart);
+    BooleanConfigurer logOptionEnd = new BooleanConfigurer(PROMPT_NEW_LOG_END, "Prompt to start new Log File after a Replay?", Boolean.TRUE);
+    GameModule.getGameModule().getPrefs().addOption("General", logOptionEnd);  }
 
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     return doc.createElement(getClass().getName());
@@ -135,6 +138,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       nextInput = 0;
       nextUndo = -1;
       beginningState = GameModule.getGameModule().getGameState().getRestoreCommand();
+      queryNewLogFile(true);
     }
     else {
       if (endLogAction.isEnabled()) {
@@ -173,20 +177,40 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     GameModule.getGameModule().sendAndLog(c);
     stepAction.setEnabled(nextInput < logInput.size());
     if (!(nextInput < logInput.size())) {
-      queryNewLogFile("Replay Ended. ");
+      queryNewLogFile(false);
     }
   }
 
   /*
    * Check if user would like to create a new logfile
    */
-  public void queryNewLogFile(String message) {
-    if (((Boolean) GameModule.getGameModule().getPrefs().getValue(PROMPT_NEW_LOG)).booleanValue()) {
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog
-          (GameModule.getGameModule().getFrame(), 
-              message + "Start new logfile?",
-              "", JOptionPane.YES_NO_OPTION)) {
+  public void queryNewLogFile(boolean atStart) {
+    String prefName;
+    String prompt;
+    if (atStart) {
+      prefName = PROMPT_NEW_LOG_START;
+      prompt = "Replay commencing";
+    }
+    else {
+      prefName = PROMPT_NEW_LOG_END;
+      prompt = "Reply completed";
+    }
+    if (((Boolean) GameModule.getGameModule().getPrefs().getValue(prefName)).booleanValue()) {
+      Object[] options = {"Yes", "No", "Don't prompt again"};
+      int result = JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(),
+          prompt + ". Start new Log File?",
+          "",
+          JOptionPane.YES_NO_CANCEL_OPTION,
+          JOptionPane.QUESTION_MESSAGE,
+          null,
+          options,
+          options[0]);
+
+      if (result == JOptionPane.YES_OPTION) {
          beginOutput();
+      }
+      else if (result == 2) { // Turn Preference Off
+        GameModule.getGameModule().getPrefs().setValue(prefName, Boolean.FALSE);
       }
     }
   }

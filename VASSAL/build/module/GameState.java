@@ -89,10 +89,6 @@ public class GameState implements CommandEncoder {
       public void actionPerformed(ActionEvent e) {
         setup(false);
         setup(true);
-        Logger logger = GameModule.getGameModule().getLogger();
-        if (logger instanceof BasicLogger) {
-          ((BasicLogger) logger).queryNewLogFile("New game started. ");
-        }
       }
     });
     newGame.setMnemonic('N');
@@ -457,11 +453,6 @@ public class GameState implements CommandEncoder {
         }
         GameModule.getGameModule().warn(msg);
         Logger logger = GameModule.getGameModule().getLogger();
-        if (logger instanceof BasicLogger) {
-          if (!((BasicLogger) logger).hasMoreCommands()) {
-            ((BasicLogger) logger).queryNewLogFile("Game loaded with no steps. ");              
-          }            
-        }
       }
     }.start();
   }
