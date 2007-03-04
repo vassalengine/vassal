@@ -27,6 +27,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ToolBarComponent;
 
@@ -50,9 +51,9 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   protected JToolBar toolbar;
   protected JPopupMenu menu;
   protected Runnable menuBuilder;
-
+  
   public ToolbarMenu() {
-    launch = new LaunchButton("Menu", BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
+    launch = new LaunchButton(Resources.getString(Resources.MENU), BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         launch();
       }
@@ -67,7 +68,8 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button text", "Button Icon", "Hotkey", "Menu Entries"};
+    return new String[] {Resources.getString(Resources.BUTTON_TEXT), Resources.getString(Resources.BUTTON_ICON), 
+                         Resources.getString(Resources.HOTKEY_LABEL),Resources.getString(Resources.TOOLBARMENU_MENU_ENTRIES)};
   }
 
   public Class[] getAttributeTypes() {
@@ -125,7 +127,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   }
 
   public static String getConfigureTypeName() {
-    return "Toolbar Menu";
+    return Resources.getString(Resources.TOOLBARMENU_COMPONENT_TYPE);
   }
 
   public void removeFrom(Buildable parent) {

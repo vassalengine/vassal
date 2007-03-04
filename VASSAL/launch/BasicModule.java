@@ -32,9 +32,11 @@ import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
 public class BasicModule extends GameModule {
@@ -53,7 +55,7 @@ public class BasicModule extends GameModule {
     }
     catch (IOException ex) {
       if (new File(getDataArchive().getName()).exists()) {
-        throw new IOException("Not a VASSAL module");
+        throw new IOException(Resources.getString(Resources.BASICMODULE_MODULE_ERROR));
       }
     }
     try {
@@ -69,7 +71,7 @@ public class BasicModule extends GameModule {
       throw new IllegalArgumentException(ex.getMessage());
     }
     getFileMenu().add(getPrefs().getEditor().getEditAction());
-    JMenuItem q = new JMenuItem("Quit");
+    JMenuItem q = new JMenuItem(Resources.getString(Resources.QUIT));
     q.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         quit();
@@ -211,8 +213,11 @@ public class BasicModule extends GameModule {
       getPrefs().addOption(new PositionOption(key, frame, r));
     }
     frame.setVisible(true);
-    warn(gameName + " version " + moduleVersion);
-    System.err.println("-- " + gameName + " version " + moduleVersion);
+    FormattedString fs = new FormattedString(Resources.getString(Resources.BASICMODULE_MODULE_MESSAGE));
+    fs.setProperty("gameName$", gameName);     
+    fs.setProperty("$moduleVersion$", moduleVersion);
+    warn(fs.getText());
+    System.err.println("-- " + fs.getText());
     frame.setTitle(gameName);
   }
 

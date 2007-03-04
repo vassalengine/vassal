@@ -23,6 +23,7 @@
  * Time: 4:10:29 AM
  * To change template for new class use
  * Code Style | Class Templates options (Tools | IDE Options).
+ * i18n
  */
 package VASSAL.configure;
 
@@ -45,6 +46,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
+
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
@@ -143,13 +146,13 @@ public class StringArrayConfigurer extends Configurer {
           }
         }
       };
-      JButton addButton = new JButton("Add");
+      JButton addButton = new JButton(Resources.getString(Resources.ADD));
       addButton.addActionListener(addAction);
       tf.addActionListener(insertAction);
       leftBox.add(tf);
       buttonBox.add(addButton);
 
-      JButton removeButton = new JButton("Remove");
+      JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
       removeButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           Object[] o = list.getSelectedValues();
@@ -160,7 +163,7 @@ public class StringArrayConfigurer extends Configurer {
       });
       buttonBox.add(removeButton);
 
-      JButton insertButton = new JButton("Insert");
+      JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
       insertButton.addActionListener(insertAction);
       buttonBox.add(insertButton);
 

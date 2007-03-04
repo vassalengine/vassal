@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -77,10 +77,13 @@ import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.VassalOptionPane;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.FileChooser;
+import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
@@ -189,12 +192,13 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        javax.swing.JOptionPane.showMessageDialog
+        FormattedString fs = new FormattedString(Resources.getString(Resources.GAMEMODULE_VERSION_ERROR));
+        fs.setProperty("currentVersion", runningVersion);
+        fs.setProperty("requiredVersion", vassalVersionCreated);
+        VassalOptionPane.showMessageDialog
             (null,
-             "This module was created using version " + value
-             + " of the VASSAL engine\nYou are using version "
-             + runningVersion + "\nIt's recommended you upgrade to the latest version of the VASSAL engine.",
-             "Older version in use",
+             fs.getText(),
+             Resources.getString(Resources.GAMEMODULE_VERSION_ERROR2),
              javax.swing.JOptionPane.ERROR_MESSAGE);
       }
     }
@@ -234,7 +238,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public static String getConfigureTypeName() {
-    return "Module";
+    return Resources.getString(Resources.GAMEMODULE_COMPONENT_TYPE);
   }
 
   public void removeFrom(Buildable parent) {
@@ -249,7 +253,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Game Name", "Version No."};
+    return new String[]{Resources.getString(Resources.GAMEMODULE_NAME_LABEL), Resources.getString(Resources.GAMEMODULE_VERSION_LABEL)};
   }
 
   public Class[] getAttributeTypes() {
@@ -553,7 +557,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public void appendToTitle(String s) {
     if (s == null) {
-      frame.setTitle(gameName + " controls");
+      FormattedString fs = new FormattedString(Resources.getString(Resources.GAMEMODULE_FRAME_TITLE));
+      fs.setProperty("gameName", gameName);
+      frame.setTitle(fs.getText());
     }
     else {
       frame.setTitle(frame.getTitle() + s);
@@ -579,8 +585,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         getPrefs().write();
         if (getDataArchive() instanceof ArchiveWriter
             && !buildString().equals(lastSavedConfiguration)) {
-          switch (JOptionPane.showConfirmDialog
-              (frame, "Save Module?",
+          switch (VassalOptionPane.showConfirmDialog
+              (frame, Resources.getString(Resources.GAMEMODULE_SAVE_STRING),
                "", JOptionPane.YES_NO_CANCEL_OPTION)) {
             case JOptionPane.YES_OPTION:
               save();
@@ -649,8 +655,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public static void init(GameModule module) throws IOException {
     if (theModule != null) {
-      throw new IOException("Module " + theModule.getDataArchive().getName()
-                            + " is already open");
+      FormattedString fs = new FormattedString(Resources.getString(Resources.GAMEMODULE_OPEN_ERROR));
+      fs.setProperty("moduleName", theModule.getDataArchive().getName());
+      throw new IOException(fs.getText());
     }
     else {
       theModule = module;
@@ -725,10 +732,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     catch (IOException err) {
       err.printStackTrace();
-      JOptionPane.showMessageDialog
+      VassalOptionPane.showMessageDialog
           (frame,
-           "Couldn't save module.\n" + err.getMessage(),
-           "Unable to save",
+           Resources.getString(Resources.GAMEMODULE_SAVE_ERROR) + "\n" + err.getMessage(),
+           Resources.getString(Resources.GAMEMODULE_SAVE_ERROR2),
            JOptionPane.ERROR_MESSAGE);
     }
   }
