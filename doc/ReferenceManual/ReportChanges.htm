@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Report Changes</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="PieceWindow.htm">Game Piece Palette</a></small> <small>&gt;<b>
+      </b><a href="GamePiece.htm">Game Piece</a></small> <small>&gt; <b>Report
+Action</b></small><br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Report Action</h2>
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+        <tbody>
+          <tr>
+            <td valign="top">A Game Piece that has this trait will
+report a configurable message to the main controls chat window when any
+of a given set of key commands are entered. <br>
+            <br>
+            <span style="font-weight: bold;">Report on these keystrokes:</span>&nbsp;
+Specifies the keys that this trait will respond to.&nbsp; Hit the <span
+ style="font-style: italic;">Add</span> button to specify more than one
+key.<br>
+            <span style="font-weight: bold;">Cycle through different
+messages:&nbsp; </span>If left unchecked, the same message will be
+reported whenever any of the above keys are pressed.&nbsp; If checked,
+the message to be reported will cycle through the list specified
+below.&nbsp; Each time one of the keys if pressed, the next message in
+the list will be reported, returning to the beginning after the end is
+reached. <br>
+            <span style="font-weight: bold;">Report Format:&nbsp; </span>The&nbsp;<a
+ href="MessageFormat.htm">Message Format</a> for reporting non-cycling
+messages:&nbsp; <span style="font-style: italic;">menuCommand</span>
+is
+the name of the piece's right-click menu command that corresponds to
+the
+control key pressed, <span style="font-style: italic;">oldPieceName</span>
+is the name of the piece before the action is applied, <span
+ style="font-style: italic;">newPieceName</span> is the name of the
+piece after the action is applied,&nbsp; <span
+ style="font-style: italic;">mapName </span>is the name of the map
+where the piece is located, <span style="font-style: italic;">oldMapName</span>
+is the name of the map before the action, <span
+ style="font-style: italic;">location</span> is the map location where
+the piece is located, <span style="font-style: italic;">oldLocation</span>
+is the location before the action is applied. <span
+ style="font-style: italic;">Note: </span> if a piece is deleted or
+replaced as the result of an action, then the value of <span
+ style="font-style: italic;">oldLocation</span> and <span
+ style="font-style: italic;">oldMapName</span> will depend on the order
+of the traits, while <span style="font-style: italic;">mapName</span>
+and <span style="font-style: italic;">location</span> will be blank.<br>
+            <br>
+            <span style="font-weight: bold;">Message Formats:</span>&nbsp;
+a list of <a href="MessageFormat.htm">Message Format</a>s for cycling
+messages.&nbsp; Available variables are the same as above.&nbsp; Any <a
+ href="Properties.htm">Properties</a> defined on the piece will be
+substituted.&nbsp; To access the value of a Property before the change,
+add <span style="font-style: italic;">old</span> to the name.&nbsp;
+For example, if a piece has a property <span
+ style="font-style: italic;">hitPoints,</span> then <span
+ style="font-style: italic;">$hitPoints$</span> gives the value after
+the key command and <span style="font-style: italic;">$oldhitPoints$</span>
+gives the value before.<span style="font-style: italic;"><span
+ style="font-weight: bold;"><span style="font-style: italic;"><span
+ style="font-style: italic;"><span style="font-style: italic;"></span></span></span></span></span><br>
+            <br>
+            <span style="font-weight: bold;">Report previous on these
+keystrokes:</span>&nbsp; When any of these keys are pressed,
+the message reported will be the one the preceeds the last reported
+message, instead of the following one.<br>
+            <br>
+            <b>EXAMPLE:</b>&nbsp; A unit named 'Infantry' has a single
+layer that is activated with a CTRL-F "Flip" command.&nbsp; By adding a
+Report Action trait with report key 'F' and message <span
+ style="font-style: italic;">$newPieceName$ flips in $location$</span>
+the chat text will echo "Infantry flips in A9" whenever a player flips
+the unit.<br>
+            <br>
+            <span style="font-weight: bold;">EXAMPLE:</span>&nbsp; If
+the unit above has the <a href="Hideable.htm">Can be Invisible</a>&nbsp;
+trait activated by CTRL-I, then an additional Report Action trait with
+report key 'I' and two cycling messages <span
+ style="font-style: italic;">$oldPieceName$ goes invisible in $location$</span>&nbsp;
+and <span style="font-style: italic;">$newPieceName$ revealed in
+$location$</span> will report when the unit becomes invisible/revealed.<br>
+            <br>
+            <span style="font-weight: bold;">EXAMPLE:</span>&nbsp; If
+the counter above has the <a href="Rotate.htm">Can Rotate</a> trait
+with
+4 facings controlled by CTRL-] and CTRL-[, then an addition Report
+Action trait with report key ']' and report-previous key '[' and
+cycling
+messages <span style="font-style: italic;">$newPieceName$ rotates to
+face North</span>, etc., will automatically report the appropriate
+facing. <br>
+            </td>
+            <td valign="top"><img alt="" src="images/ReportChanges.png"
+ style="width: 420px; height: 279px;">&nbsp;<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr size="2" width="100%"> </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

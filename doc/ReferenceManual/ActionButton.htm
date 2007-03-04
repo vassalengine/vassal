@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Action Button</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="PieceWindow.htm">Game Piece Palette</a></small> <small>&gt;<b>
+      </b><a href="GamePiece.htm">Game Piece</a></small> <small>&gt; <span
+ style="font-weight: bold;">Action Button</span><b><br>
+      </b></small></td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Action Button<br>
+      </h2>
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+        <tbody>
+          <tr>
+            <td valign="top">This trait allows you to place a virtual
+button within your piece.&nbsp; Clicking within the specified
+rectangular region on the piece will invoke an action just as if the
+corresponding key command had been typed.<br>
+            <br>
+            <span style="font-weight: bold;">Invoke Key Command:</span>
+The keyboard command to be invoked.<br>
+            <span style="font-weight: bold;">Button X-offset:</span>
+The horizontal position of the upper-left corner of the rectangle, in
+pixels from the center of the piece.&nbsp; Negative numbers are toward
+the left.<br>
+            <span style="font-weight: bold;">Button Y-offset:</span>
+The vertical position of the upper-left corner of the rectangle, in
+pixels from the center of the piece.&nbsp; Negative numbers are toward
+the top.<br>
+            <span style="font-weight: bold;"></span><span
+ style="font-weight: bold;">Button Width:</span>
+The width in pixels of the button.<br>
+            <span style="font-weight: bold;"></span><span
+ style="font-weight: bold;"></span><span style="font-weight: bold;">Button
+Height: </span>The height in pixels of the button.<br>
+            <br>
+This trait does not alter the way a piece is drawn, so the <a
+ href="BasicPiece.htm">Basic Piece</a> or a <a href="Layer.htm">Layer</a>
+should supply a visual cue to the player that the button exists.<br>
+            <br>
+To make a button that can be activated and de-activated, combine an
+Action Button with a <a href="Layer.htm">Layer</a> and a <a
+ href="TriggerAction.htm">Trigger Action</a>.&nbsp; <span
+ style="font-style: italic;"><br>
+            <br>
+Example</span>:&nbsp; A piece representing a spaceship has a
+self-destruct action that can only be activated when the energy reaches
+the minimum level.&nbsp; A Layer named <span
+ style="font-style: italic;">Energy </span>is used to represent the
+energy.&nbsp; The image for the lowest level of the layer adds an icon
+for a self-destruct button.&nbsp; An Action Button trait uses the
+boundaries of the button icon and invokes <span
+ style="font-style: italic;">CTRL-ALT-T</span>.&nbsp; A Trigger Action
+watches for <span style="font-style: italic;">CTRL-ALT-T</span> and
+invokes the keyboard command for self-destruct when the properties
+match <span style="font-style: italic;">Energy_Level = 1</span>.<br>
+            </td>
+            <td valign="top"><img alt="" src="images/ActionButton.png"
+ style="width: 285px; height: 160px;">&nbsp;<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr size="2" width="100%"> </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

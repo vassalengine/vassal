@@ -1,0 +1,1275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+  
+  
+  
+  
+  <title>Map Window</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+
+
+<body>
+
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+  <tbody>
+
+
+    <tr align="center">
+
+
+      <td valign="top">
+      
+      
+      <h1>VASSAL Reference Manual</h1>
+
+
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <b>Map Window</b></small><br>
+
+
+      <br>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top">
+      
+      
+      <hr size="2" width="100%">
+      
+      
+      <h2>Map Window</h2>
+
+
+      
+      
+      <div align="center"><img src="images/Map.png" alt="" title="" style="width: 596px; height: 398px;"> <br>
+
+
+      </div>
+
+
+The Map Window is the main interface for playing games with VASSAL.
+It displays the playing surface on which the players move game pieces
+by dragging and dropping with the mouse. It is possible to have two or
+more Map Windows; the players may drag and drop pieces between the
+different windows. A Map Window should be configured with at least one
+Map Board (in the "Map Boards" panel).<br>
+
+
+      <br>
+
+
+      <b>Map Name</b> The name of this map window<br>
+
+
+      <b>Mark pieces that move</b> If checked, then any pieces with the
+"Can be marked moved" trait will be marked whenever being moved in this
+map window.&nbsp; The module designer can also allow players to set
+this
+option in their preferences.<br>
+
+
+      <b>Vertical/Horizontal padding</b> The amount of blank space
+surrounding the boards in the window<br>
+
+
+      <b>Can Contain Multiple Boards</b> If checked, this map window
+can
+contain several boards arranged into rows and columns<br>
+
+
+      <b>Border color for selected counters</b> The color of the border
+to draw around pieces that have been selected<br>
+
+
+      <b>Border thickness for selected counters</b> The color of the
+border to draw around pieces that have been selected<br>
+
+
+      <b>Include toolbar button to show/hide</b> If checked, then this
+map window will not be automatically shown when a game begins. Instead,
+a button to show/hide this window will be added to the main controls
+toolbar<br>
+
+
+      <b>Toolbar button name</b> The name of the show/hide toolbar
+button<br>
+
+
+      <b>Toolbar button icon</b> An icon for the show/hide toolbar
+button<br>
+
+
+      <b>Hotkey</b> The hotkey for the show/hide toolbar button<br>
+
+
+      <b>Auto-report format for movement within this map</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that will be used to
+report
+movement of pieces completely within this map window:&nbsp; <span style="font-style: italic;"></span><span style="font-style: italic;">pieceName</span>
+is the name of the piece being moved,&nbsp; <span style="font-style: italic;">location</span> is the location to which
+the piece is being moved (in the format specified above), <span style="font-style: italic;">previousLocation</span> is the location
+from which the piece is being moved.<br>
+
+
+      <b>Auto-report format for movement to this map</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that will be used to
+report
+movement of pieces to this map window from another map window:&nbsp; <span style="font-style: italic;"></span><span style="font-style: italic;">pieceName</span>
+is the name of the piece being moved,&nbsp; <span style="font-style: italic;">location</span> is the location to which
+the piece is being moved (in the format specified above), <span style="font-style: italic;">previousLocation</span> is the location
+from which the piece is being moved, <span style="font-style: italic;">previousMap</span>
+is the name of the map from which the piece is being moved.<br>
+
+
+      <b>Auto-report format for units created in this map</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that will be used to
+report
+pieces that are dragged to this map window directly from a <a href="PieceWindow.htm">Game Piece Palette</a>:&nbsp;&nbsp;<span style="font-style: italic;">pieceName</span> is the name of the piece
+being moved,&nbsp; <span style="font-style: italic;">location</span>
+is
+the location to which the piece is being moved (in the format specified
+above).<br>
+
+
+      <b>Auto-report format for units modified on this map</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that will be used to
+report
+changes to pieces on this map<a href="file:///home/rkinney/VASSAL/distrib/docs/ReferenceManual/PieceWindow.htm"></a>:&nbsp;<span style="font-style: italic;">message</span> is the text message
+reported
+by the <a href="ReportChanges.htm">Report Action</a> trait of the game
+piece being modified.<br>
+
+
+      
+      
+      <hr size="2" width="100%">
+      
+      
+      <h2>Sub-Components</h2>
+
+
+      
+      
+      <h3>Map Boards</h3>
+
+
+      
+      
+      <table style="width: 100%; text-align: left;" border="0" cellpadding="2" cellspacing="2">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td style="vertical-align: top;">This component contains
+all the boards that may appear in this map
+window. &nbsp;It contain <a href="Board.htm">Board</a>
+components and defines the dialog that is used to select boards when a
+new game is started.<br>
+
+
+            <span style="font-weight: bold;">Dialog Title:&nbsp; </span>The
+title of the dialog window for choosing boards on this map.<br>
+
+
+            <span style="font-weight: bold;">"Select Boards" prompt:</span>&nbsp;
+The prompt message in the drop-down menu for selecting boards<br>
+
+
+            <span style="font-weight: bold;">Cell scale factor:</span>&nbsp;
+The relative size of the boards in the dialog compared to their final
+size during play.<br>
+
+
+            <span style="font-weight: bold;">Cell width:</span>&nbsp;
+The width of a cell when no board has been selected.<br>
+
+
+            <span style="font-weight: bold;">Cell height:</span>&nbsp;
+The height of a ceel when no board has been selected.<br>
+
+
+            <span style="font-weight: bold;">Default Board Setup:&nbsp;
+            </span><span style="font-weight: bold;"></span><span style="font-weight: bold;"></span>Hit this button to choose a default
+set of boards.&nbsp; When a default has been set, the dialog will not
+be shown to players when a new game is begun.&nbsp; Instead, the game
+will always be started with the boards you select.&nbsp; If you hit
+this button and then clear the boards, then dialog will again be shown
+at the start of each game.</td>
+
+
+            <td style="vertical-align: top;"><img alt="" src="images/BoardPicker.png" style="width: 357px; height: 187px;"></td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      <br>
+
+
+      <a name="StackingOptions">
+      
+      
+      <h3>Stacking Options</h3>
+
+
+      </a> This component controls how stacking is handled in this Map
+Window. &nbsp;It may not be removed<br>
+
+
+      <img src="images/StackingOptions.gif" alt="" height="177" width="452"> <br>
+
+
+      <br>
+
+
+      <b>Disable stacking:</b> If checked, then pieces will never form
+stacks in this window<br>
+
+
+      <b>Horizontal Separation when expanded:</b> The distance in
+pixels
+from the left edge (right edge if negative) of a piece in a stack to
+the
+edge of the piece above it when the stack is expanded.<br>
+
+
+      <b>Vertical Separation when expanded:</b> &nbsp;The distance in
+pixels from the bottom edge (top edge if negative) of a piece in a
+stack
+to the edge of the piece above it when the stack is expanded.<br>
+
+
+      <b>Horizontal Separation when not expanded:</b> The distance in
+pixels from the left edge (right edge if negative) of a piece in a
+stack
+to the edge of the piece above it when the stack is compact.<br>
+
+
+      <b>Vertical Separation when not expanded:</b> &nbsp;The distance
+in pixels from the bottom edge (top edge if negative) of a piece in a
+stack to the edge of the piece above it when the stack is compact.<br>
+
+
+      <b>Color of pieces when not expanded:</b> If set, then pieces
+below the top piece in a compact stack will be drawn as plain squares
+of
+this color and a black border. &nbsp;If not set (hit the "Select"
+button
+and cancel the color-selection dialog) then pieces will be drawn
+normally.<br>
+
+
+      <br>
+
+
+      <br>
+
+
+      <a name="OverviewWindow">
+      
+      
+      <h3>Overview Window</h3>
+
+
+      </a>
+      
+      
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td valign="top">Adds a separate window that will be
+displayed whenever the main map window is displayed.&nbsp; The
+additional window will contain a view of the entire playing area at a
+smaller scale than displayed in the main map window.&nbsp; The area of
+the map currently visible in the map window is highlighted in the
+overview map with a colored rectangle.&nbsp; A player may click on the
+Overview window to center the Map Window at the point clicked on.<br>
+
+
+            <br>
+
+
+The scale of the overview window relative to the map window can be
+specified in the "Scale Factor" property.&nbsp; You may also specify
+the
+color of the rectangle indicating the area visible in the main Map
+Window.<br>
+
+
+            <br>
+
+
+            </td>
+
+
+            <td valign="top"><img src="images/OverviewWindow.gif" alt="" height="97" width="327"> </td>
+
+
+          </tr>
+
+
+          <tr>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      <br>
+
+
+      <br>
+
+
+      <a name="LOS">
+      
+      
+      <h3>Line of Sight Thread</h3>
+
+
+      </a>
+      
+      
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td valign="top">Adds a button to the toolbar of the Map
+Window.&nbsp; Pushing the button will allow the player to drag the
+mouse
+between any two points in the window, drawing a line between those two
+points. <br>
+
+
+            <br>
+
+
+            <b>Hotkey: &nbsp;</b>Specifies a keyboard shortcut for the
+button.<br>
+
+
+            <br>
+
+
+            <b>Button text:</b> The label on the button in the Map
+Window toolbar<br>
+
+
+            <br>
+
+
+            <b>Draw Range:</b> If checked, draws the range between the
+two points, in hexes or squares, as appropriate for the board in use.<br>
+
+
+            <br>
+
+
+            <b>Pixels per range unit:</b> If drawing the range on a
+board without a grid, this determines how many pixels on the screen
+equal a single unit of range.<br>
+
+
+            <br>
+
+
+            <b>Round fractions:&nbsp; </b>For distances that are a
+fraction of a range unit, specify whether to round fractions up, down,
+or to the nearest whole number.<br>
+
+
+            <br>
+
+
+            <b>Hide Pieces while drawing:</b> If checked, then all game
+pieces in the map will be hidden (or transparent) while the thread is
+being drawn.<br>
+
+
+            <br>
+
+
+            <b>Opacity of hidden pieces:</b>Set the transparency of
+game pieces while the thread is being drawn. 0 is completely invisible,
+100 is completely opaque.<br>
+
+
+            <br>
+
+
+            <b>Thread color:</b> Specifies the color the thread on the
+screen. &nbsp;If set to null (by hitting the "Select" button and then
+the "Cancel" button in the color-choosing dialog), then a Preferences
+option will determine the color of the thread at game time.<br>
+
+
+            <br>
+
+
+            </td>
+
+
+            <td valign="top"><img src="images/LOS_Thread.png" alt=""> <br>
+
+
+&nbsp; <br>
+
+
+            </td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      
+      
+      <h3><a href="ToolbarMenu.htm">Toolbar Menu</a></h3>
+
+
+Groups buttons in the toolbar into a single drop-down menu.<br>
+
+
+      <a name="HidePieces">
+      
+      
+      <h3>Hide Pieces Button</h3>
+
+
+      </a>
+      
+      
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td valign="top">Adds a button to the toolbar of the Map
+Window.&nbsp; Pushing the button will temporarily hide all pieces on
+the
+map, until the button is pressed again.<br>
+
+
+            <br>
+
+
+            <b>Hotkey: &nbsp;</b>Specifies a keyboard shortcut for the
+button</td>
+
+
+            <td valign="top"><img src="images/HidePieces.png" alt="" style="width: 378px; height: 144px;" title=""> <br>
+
+
+&nbsp; <br>
+
+
+            </td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      <a name="Zoom">
+      
+      
+      <h3>Zoom capability</h3>
+
+
+      </a>
+      
+      
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td valign="top">Adds "Zoom in" and "Zoom out" buttons to
+the toolbar of the Map Window.&nbsp; Keyboard shortcuts can also be
+specified by filling in the "Hotkey" boxes.&nbsp; The "Zoom
+factor"specifies the magnification factor for each zoom level, and the
+"Number of zoom levels" specifies the maximum number of levels that may
+be zoomed out.&nbsp; The "Starting zoom level" is the default zoom
+level
+when a game is loaded.<br>
+
+
+            <br>
+
+
+            </td>
+
+
+            <td valign="top"><img src="images/Zoomer.png" alt="" style="width: 289px; height: 156px;" title=""> <br>
+
+
+            </td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      <br>
+
+
+      <a name="StackViewer">
+      
+      
+      <h3>Mouse-over Stack Viewer</h3>
+
+
+      </a><br>
+
+
+      <br>
+
+
+      
+      
+      <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td style="vertical-align: top;">Adds a tool that displays
+the contents of a stack when the player leaves his mouse resting over
+it, after a specified delay. <br>
+
+
+            <br>
+
+
+            <span style="font-weight: bold;">Recommended Delay before
+display:</span>&nbsp; When the mouse has been stationary for this many
+milliseconds, the viewer will appear.&nbsp; This can be overridden in
+the preferences.<br>
+
+
+            <span style="font-weight: bold;">Keyboard shortcut to
+display:</span>&nbsp; Players may display the viewer without waiting by
+typing this keyboard shortcut.&nbsp; This can be disabled in the
+preferences.<br>
+
+
+            <span style="font-weight: bold;">Background color:</span>&nbsp;
+Pieces/text are drawn against a background of this color.<br>
+
+
+            <span style="font-weight: bold;">Border/text color:</span>&nbsp;
+Color of any text drawn and the border around the overall viewer.<br>
+
+
+            <span style="font-weight: bold;">Display when at least this
+many pieces will be included:</span>&nbsp; If set to 0, then the viewer
+will display even if the location is empty.&nbsp; Otherwise, it will
+display only if 1 or 2 pieces have been included via the settings below.<br>
+
+
+            <span style="font-weight: bold;">Always display when zoom
+level is less than:</span>&nbsp; Regardless of the above "at least this
+many" setting, the viewer will also display when the map's
+magnification factor is less than this number.<br>
+
+
+            <span style="font-weight: bold;">Draw pieces:</span>&nbsp;
+If selected, then the included pieces will be draw in the viewer.<br>
+
+
+            <span style="font-weight: bold;">Draw pieces using zoom
+factor:</span>&nbsp; The magnification factor to use to draw the pieces
+in the viewer.<br>
+
+
+            <span style="font-weight: bold;">Width of gap between
+pieces:</span>&nbsp; Empty space in pixels to place between each drawn
+piece.<br>
+
+
+            <span style="font-weight: bold;">Display text:</span>&nbsp;
+If selected, then the viewer will draw some summary text and some
+individualized text for each piece.<br>
+
+
+            <span style="font-weight: bold;">Font size:&nbsp;</span>
+Size of the text to draw.<br>
+
+
+            <span style="font-weight: bold;">Summary text above pieces:</span>&nbsp;
+A <a href="MessageFormat.htm">Message Format</a> specifying the text
+to display above the drawn pieces in the viewer.&nbsp; In addition to
+standard <a href="Properties.htm">Properties</a>, you can include a
+property with the name <span style="font-style: italic;">sum(propertyName)</span>
+where <span style="font-style: italic;">propertyName</span> is a
+property defined on a Game Piece.&nbsp; The numeric values of this
+property for all included pieces will be substituted.<br>
+
+
+            <span style="font-weight: bold;">Text below each piece:</span>&nbsp;
+A <a href="MessageFormat.htm">Message Format</a> specifying the text
+to display below each included piece.<br>
+
+
+            <span style="font-weight: bold;">Text for empty location</span>:&nbsp;
+A <a href="MessageFormat.htm">Message Format</a> specifying the text
+to display when no pieces have been selected.<br>
+
+
+            <span style="font-weight: bold;">Include individual pieces:</span>&nbsp;
+Specifies how pieces are to be selected for inclusion in the
+viewer.&nbsp; You may restrict the pieces according to the <a href="GamePieceLayers.htm">Game Piece Layer</a> that they
+belong.&nbsp; Alternatively, you may specify the value of a <a href="Properties.htm">Property</a>.<br>
+
+
+            <span style="font-weight: bold;">Include non-stacking
+pieces:</span>&nbsp; If selected, then non-stacking pieces are eligible
+for inclusion in the viewer.<br>
+
+
+            <span style="font-weight: bold;">Show pieces in un-rotated state:</span>&nbsp; If selected, then pieces that can rotate are drawn in the mouse-over as they look when not rotated.<br>
+
+
+            <span style="font-weight: bold;">Include top piece in
+Deck:&nbsp;</span> If selected, then the top piece of a <a href="Deck.htm">Deck</a> is eligible for inclusion.</td>
+
+
+            <td style="vertical-align: top;"><img src="images/CounterDetailViewer.png" title="" alt=""><br>
+
+
+            </td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      <br>
+
+
+      <a name="LastMoveHighlighter">
+      
+      
+      <h3>Last Move Highlighter</h3>
+
+
+      </a>
+      
+      
+      <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td style="vertical-align: top;">Draws a colored border
+around the last piece to have been moved, added, or deleted in a
+logfile or by an opponent during live play. <span style="font-weight: bold;">Color</span> is the color of the border and
+            <span style="font-weight: bold;">Thickness</span> is the
+border thickness. The highlight is cleared by clicking on the map.</td>
+
+
+            <td style="vertical-align: top;"><img src="images/LastMoveHighlighter.png" title="" alt=""><br>
+
+
+            </td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      <a href="GamePieceLayers.htm"><br>
+
+
+      </a>
+      
+      
+      <h3><a href="GamePieceLayers.htm">Game Piece Layers<br>
+
+
+      </a> </h3>
+
+
+Allows you to restrict Game Pieces to different layers on the
+map.&nbsp; Pieces in higher Layers are always drawn on top of lower
+Layers, and pieces never combine into stacks with pieces on other
+Layers.<br>
+
+
+      <br>
+
+
+      <a name="ImageCapture">
+      
+      
+      <h3>Image Capture Tool</h3>
+
+
+      </a>
+      
+      
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td valign="top">Adds a "Camera" button to the toolbar of
+the Map Window. &nbsp;Pushing the button will dump the contents of the
+Map Window to a GIF file. &nbsp;This allows you to take a screen shot
+even if the map window is too large to fit entirely on the screen. <br>
+
+
+            </td>
+
+
+            <td valign="top"><img src="images/ImageCapture.gif" alt="" height="72" width="153"> <br>
+
+
+            </td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      <a name="TextCapture">
+      
+      
+      <h3>Text Capture Tool</h3>
+
+
+      </a>
+      
+      
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td valign="top">Adds a "Save Text" button to the Map
+Window toolbar.&nbsp; Hitting the button will write a plain text
+summary
+of the contents of the map to a file, using the names assigned to the
+counters and the appropriate numbering of the board's grid.<br>
+
+
+            <br>
+
+
+            </td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      
+      
+      <h3><a href="Deck.htm">Deck</a></h3>
+
+
+A deck of cards.<br>
+
+
+      <br>
+
+
+      
+      
+      <h3><a href="SetupStack.htm">At-Start Stack</a></h3>
+
+
+A fixed draw pile of counters.<br>
+
+
+      <br>
+
+
+      <br>
+
+
+      <a name="PieceRecenterer">
+      
+      
+      <h3>Recenter Pieces Button</h3>
+
+
+      </a> </td>
+
+
+    </tr>
+
+
+  
+  
+  </tbody>
+</table>
+
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+  <tbody>
+
+
+    <tr>
+
+
+      <td valign="top">Adds a button to the map window toolbar.&nbsp;
+Then button will shift the position of all pieces on the map such that
+they are centered around the middle of the map as much as
+possible.&nbsp; This is useful for games where there are no absolute
+terrain features, such as some air and naval games.</td>
+
+
+      <td valign="top"><img src="images/PieceRecenterer.png" alt="" style="width: 262px; height: 131px;" title=""> <br>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+    </tr>
+
+
+  
+  
+  </tbody>
+</table>
+
+
+<a name="GlobalKeyCommand">
+<h3>Global Key Command</h3>
+
+
+<br>
+
+
+</a>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+  <tbody>
+
+
+    <tr>
+
+
+      <td valign="top">Adds a button to the map window toolbar.&nbsp;
+Hitting the button will select certain pieces from the map window and
+apply the same keyboard command to all of them simultaneously.<br>
+
+
+      <br>
+
+
+      <span style="font-weight: bold;">Description:</span>&nbsp; A
+description of the action used for the button's mouse-over tooltip.<br>
+
+
+      <span style="font-style: italic;"><span style="font-weight: bold;"><span style="font-style: italic;"><span style="font-style: italic;"></span></span></span></span><span style="font-weight: bold;">Key Command:</span> The keyboard command
+that will be applied to the selected pieces.<br>
+
+
+      <span style="font-weight: bold;">Matching properties:</span>&nbsp;
+The command will apply to
+all pieces on the map that match the given <a href="Properties.htm">Property</a>
+expression.<br>
+      <span style="font-weight: bold;">Within a Deck, apply to:</span>&nbsp; Select how this command applies to pieces that are contained within a <a href="Deck.htm">Deck</a>. &nbsp;<span style="font-style: italic;">No pieces</span> means that pieces in a Deck ignore the command. &nbsp;<span style="font-style: italic;">All pieces</span> means that the command applies to the entire Deck. &nbsp;<span style="font-style: italic;">Fixed number of pieces</span> allows you to specify the number of&nbsp;pieces (drawn from the top) that the command will apply to.<br>
+
+
+      <span style="font-weight: bold;"></span><span style="font-weight: bold;">Tooltip text:</span>&nbsp; Mouse-over hint text
+for the toolbar button.<br>
+
+
+      <span style="font-weight: bold;"></span><span style="font-weight: bold;"></span><span style="font-weight: bold;">Button text:</span>&nbsp; Text
+for the toolbar button.<br>
+
+
+      <span style="font-weight: bold;">Button icon:</span>&nbsp; Icon
+for the toolbar button.<br>
+
+
+      <span style="font-style: italic;"><span style="font-weight: bold;"><span style="font-style: italic;"></span></span></span><span style="font-weight: bold;">Hotkey:&nbsp; </span>Keyboard shortcut for
+the toolbat button.<br>
+
+
+      <span style="font-weight: bold;">Suppress individual reports:</span>&nbsp;
+If selected, then any auto-reporting of the action by individual pieces
+via the <a href="ReportChanges.htm">Report Action</a> trait will be
+suppressed.<br>
+
+
+      <span style="font-weight: bold;">Report Format:</span>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that will be echoed to the
+chat area when the button is pressed.<br>
+
+
+      <br>
+
+
+      <b>Example:</b> Suppose you have configured some pieces to
+contain a Layer indicating that a piece has fired, activated by
+CTRL-F and with the name<span style="font-style: italic;"> Fired</span>.&nbsp;
+Give each piece the <a href="PropertyMarker.htm">Marker</a> trait with
+property name <span style="font-style: italic;">canFire</span> <span style="font-family: monospace;"></span>and value <span style="font-style: italic;">true</span><span style="font-family: monospace;">.</span>&nbsp; Configure the Global
+Key Command to apply to pieces whose properties match <span style="font-style: italic;">canFire = true &amp;&amp; Fired_Active =
+true</span><span style="font-family: mon;"><span style="font-style: italic;"><span style="font-style: italic;"></span></span></span><span style="font-family: monospace;"><span style="font-style: italic;"></span></span><span style="font-family: monospace; font-style: italic;"></span><span style="font-family: monospace; font-style: italic;"></span>.&nbsp;
+Specify CTRL-F as
+the key command.&nbsp; Now pushing the
+Global Key Command button will set all marked pieces on the map to not
+having fired.<br>
+
+
+      <br>
+
+
+      </td>
+
+
+      <td valign="top"><img alt="" src="images/GlobalKeyCommand.png" style="width: 325px; height: 268px;">&nbsp;<br>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+    </tr>
+
+
+  
+  
+  </tbody>
+</table>
+
+
+<a name="MapShading">
+<h3>Map Shading</h3>
+
+
+</a>
+<br>
+
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+  <tbody>
+
+
+    <tr>
+
+
+      <td valign="top">Applies a semi-transparent solid color or image
+tiling to the Map.&nbsp; In background mode, can be used to overlay a
+repeating image over solid-color boards.&nbsp; In foreground mode, the
+area is determined by the pieces on the map that name this Map Shading
+in an <a href="AreaOfEffect.htm">Area of Effect</a> trait.<br>
+
+
+      <br>
+
+
+      <span style="font-weight: bold;">Name:</span>&nbsp; A
+short name of this shading for reference by pieces with the <a href="AreaOfEffect.htm">Area of Effect</a> trait.<br>
+
+
+      <span style="font-weight: bold;">Shading Always On:</span> If
+true then the shading is always drawn.&nbsp; If false, then visibility
+is controlled by a button in the Map Window toolbar.<br>
+
+
+      <span style="font-weight: bold;">Shading Starts turned on:</span>&nbsp;
+If true, then the shading will begin visible when a game is loaded.<br>
+
+
+      <span style="font-weight: bold;"></span><span style="font-weight: bold;">Button text:</span>&nbsp; Text
+for the toolbar button.<br>
+
+
+      <span style="font-weight: bold;">Button icon:</span>&nbsp; Icon
+for the toolbar button.<br>
+
+
+      <span style="font-style: italic;"><span style="font-weight: bold;"><span style="font-style: italic;"></span></span></span><span style="font-weight: bold;">Hotkey:&nbsp; </span>Keyboard shortcut for
+the toolbat button.<br>
+
+
+      <span style="font-weight: bold;">All boards in map get Shaded:</span>&nbsp;
+Allows you to select which <a href="Board.htm">Boards</a> in the map
+to apply the shading to.<br>
+
+
+      <span style="font-weight: bold;">Type:</span>&nbsp; If set to <span style="font-style: italic;">Background</span> then the shaded area
+includes the entire board, minus the areas attached to any <a href="AreaOfEffect.htm">Area of Effect</a> traits.&nbsp; If set to
+Foreground, then the shaded area includes only the areas attached to <a href="AreaOfEffect.htm">Area of Effect</a> traits.<br>
+
+
+      <span style="font-style: italic;"><span style="font-weight: bold;"><span style="font-style: italic;"></span></span></span><span style="font-weight: bold;">Draw Shade on top of Counters:&nbsp; </span>If
+true, then the shading will be drawn over any counters on the
+map.&nbsp; Otherwise, it will be drawn underneath all counters.<br>
+
+
+      <span style="font-weight: bold;">Shade Pattern:&nbsp; </span>Choose
+between 100/75/50/25 % hatch patterns, or choose a custom image.<br>
+
+
+      <span style="font-weight: bold;">Color:&nbsp; </span>The color
+of the shading (if not using a custom image).<br>
+
+
+      <span style="font-weight: bold;">Opacity:&nbsp; </span>The
+opacity of the shading.&nbsp; 0 is invisible, 100 is completely opaque.<br>
+
+
+      <span style="font-weight: bold;">Border:&nbsp; </span>If
+selected, will draw a border around the shading area.&nbsp; You can
+specify the thickness, color, and opacity of the border.<br>
+
+
+      <br>
+
+
+      </td>
+
+
+      <td valign="top"><img alt="" src="images/MapShading.png" style="width: 416px; height: 355px;">&nbsp;<br>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+    </tr>
+
+
+  
+  
+  </tbody>
+</table>
+
+
+<br>
+
+
+<h3><a href="GlobalProperties.htm">Global Properties</a></h3>
+
+
+Allows you to define default values for <a href="Properties.htm">Properties</a><br>
+<br>
+<a name="SelectionHighlighter">
+<h3>Additional Selection Highlighters</h3>
+</a>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+  <tbody>
+
+
+    <tr>
+
+
+      <td valign="top">Allows you to define additional ways to
+highlight the selected piece on a map. &nbsp;The additional
+highlighters are drawn only if the selected piece matches the specified
+properties. &nbsp;If a piece matches the properties of more than one
+highlighter, all will be drawn, in addition to the highlighting
+color/border specified in the Map's properties.<br>
+
+
+      <br>
+
+
+      <span style="font-weight: bold;">Name:</span>&nbsp; A
+short name for reference in the editor.<br>
+
+
+      <span style="font-weight: bold;">Active if Properties Match:</span> The highlighter will be drawn for&nbsp;all pieces on the map that match the given <a href="Properties.htm">Property</a>
+expression.<br>
+
+
+      <span style="font-weight: bold;">Use Image:</span>&nbsp;
+Specify an optional image to be overlaid on top of the selected piece.
+&nbsp;The center of the image will be offset from the center of the
+piece by the given number of pixels.<br>
+
+
+      <span style="font-weight: bold;"></span><span style="font-weight: bold;">Border Color:</span>&nbsp; The color of the border to be drawn around selected pieces.<br>
+
+
+      <span style="font-weight: bold;">Border thickness:</span>&nbsp; The thickness of the border<br>
+
+
+      </td>
+
+
+      <td valign="top"><br>
+&nbsp;
+      <table style="text-align: left; width: 100%;" border="0" cellpadding="0" cellspacing="0">
+        <tbody>
+          <tr>
+            <td><img alt="" src="images/SelectionHighlighter.png" style="width: 302px; height: 182px;"></td>
+          </tr>
+          <tr>
+            <td><img style="width: 302px; height: 156px;" alt="" src="images/SelectionHighlighter2.png"></td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+    </tr>
+
+
+  
+  
+  </tbody>
+</table>
+<br>
+
+
+<br>
+
+
+<br>
+
+
+</body>
+</html>

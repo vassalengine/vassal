@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Send to Location</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table cellpadding="2" cellspacing="2" border="0" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="PieceWindow.htm">Game Piece Palette</a></small> <small>&gt;<b> </b><a
+ href="GamePiece.htm">Game Piece</a></small> <small>&gt; <span
+ style="font-weight: bold;">Send to Location</span></small></td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr width="100%" size="2">
+      <h2>Send to Location<br>
+      </h2>
+      <table cellpadding="2" cellspacing="2" border="0" width="100%">
+        <tbody>
+          <tr>
+            <td valign="top">Adds a command that moves a piece directly to another location.
+<br><b>Command Name</b> the menu text in the piece's right-click menu.
+<br><b>Keyboard command</b> the keyboard shortcut for the command
+<br><b>Send Back Command Name</b> the menu text for an "undo" command to return the piece to its original location.  
+<br><b>Send Back Keyboard Command</b> keyboard shortcut for the "undo" command
+<br><b>Map</b> The Map Window that the piece will be sent to.  If unspecified, then the piece's current map is used.
+<br><b>Board</b> The board that the piece will be sent to.  Positions below are relative to the board's position.  If no board is specified, positions are relative to the Map Window.
+<br><b>X position</b> A <a href="MessageFormat.htm">Message Format</a> specifying the horizontal position of the destination point in pixels.
+<br><b>Y position</b> A <a href="MessageFormat.htm">Message Format</a> specifying the vertical position of the destination point in pixels.
+<br><b>Y position</b> The vertical position of the destination point in pixels.
+<br><b>Additional offset</b> The value of these two <a href="MessageFormat.htm">Message Formats</a> will be multiplied together and added to the position specified above to give the final destination position for the piece.
+
+            <br>
+            <b>EXAMPLE:</b> <br>
+A game may require that damaged units are returned to a Damaged pool for repairs.  Different boxes in the pool represent the amount of time before the unit is fully repaired.&nbsp; A game piece may be given a 'Send to Location trait
+with name 'Send to Damaged Pool' and command CTRL-P and position corresponding to the first box of the pool, with an additional offset, determined by the level of a <a href="Layer.htm">Layer</a> representing the damage, to place it in the appropriate box in the pool<br>
+            </td>
+            <td valign="top"><img src="images/SendToLocation.png"
+ title="" alt="" ><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr width="100%" size="2"> </td>
+    </tr>
+	<tr>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

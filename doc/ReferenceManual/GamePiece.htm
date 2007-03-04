@@ -1,0 +1,534 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+  
+  
+  
+  
+  <title>Game Piece</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+
+
+<body>
+
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+  <tbody>
+
+
+    <tr align="center">
+
+
+      <td valign="top">
+      
+      
+      <h1>VASSAL Reference Manual</h1>
+
+
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="PieceWindow.htm">Game Piece Palette</a></small> <small>&gt;<b>
+Game
+Piece</b></small><br>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top">
+      
+      
+      <hr size="2" width="100%">
+      
+      
+      <h2>Game Piece</h2>
+
+
+      
+      
+      <div align="center"><img src="images/GamePiece.png" alt="" style="width: 554px; height: 461px;"> <br>
+
+
+      </div>
+
+
+A Game Piece is any counter, marker, or card used in a game.
+&nbsp;Game pieces in VASSAL are highly customizable and can have quite
+complex behavior. &nbsp;They are defined by adding 'traits' to a basic
+piece.&nbsp; A list of available traits appears to the left, and a list
+of traits in use by the piece you're defining appears at the
+right.&nbsp; Add a trait by selecting it in the list of available
+traits
+and pushing the 'Add' button.&nbsp; Remove a trait by selecting it and
+pushing the 'Remove' button.<br>
+
+
+      <br>
+
+
+As you define your piece, it will appear at the top of the
+window.&nbsp; You can select the piece and type commands for it or
+right-click to bring up its popup menu to test it as you go.<br>
+
+
+      <br>
+
+
+Once added to your piece, a trait's properties can be edited by
+selecting the trait and pushing the 'Properties' button, or by
+double-clicking on the trait.<br>
+
+
+      <br>
+
+
+When a piece is drawn, the traits are drawn in order, beginning with
+the basic piece and continuing downward.&nbsp; The order of traits can
+be important. &nbsp;For example the image in a Layer trait may obscure
+the Basic Piece or other Layers beneath it.<br>
+
+
+      <br>
+
+
+For highly specialized pieces, you may supply your own Java classes.
+&nbsp;The Java class must implement the GamePiece interface and most
+commonly extends the Decorator class. &nbsp;First, add the Java .class
+file to the module file using a Zip utility (remember to preserve the
+package structure). &nbsp;Then hit the "Import" button and enter the
+fully-qualified name of the class. &nbsp;The trait corresponding to
+your
+class will appear in the list of available traits and you may add it
+normally.&nbsp; See the Coding Tutorial for more details.<br>
+
+
+      
+      
+      <hr size="2" width="100%">
+      
+      
+      <h2>Piece Traits</h2>
+
+
+      
+      
+      <h3><a href="BasicPiece.htm">Basic Piece</a></h3>
+
+
+A simple piece drawn from an image.<br>
+
+
+      
+      
+      <h3>Delete<a name="Delete"></a><br>
+
+
+      </h3>
+
+
+      
+      
+      <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td style="vertical-align: top;">The ability to be deleted
+by players during a game.&nbsp; Specify the name of the corresponding
+menu item and the keyboard shortcut.<br>
+
+
+            </td>
+
+
+            <td style="vertical-align: top;"><img src="images/Delete.png" title="" alt="" style="width: 257px; height: 109px;"></td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      <br>
+
+
+      
+      
+      <h3>Clone<a name="Clone"></a></h3>
+
+
+      
+      
+      <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td style="vertical-align: top;">The ability to be
+duplicated by players during a game.&nbsp; Specify the name of the
+corresponding menu item and the keyboard shortcut.<br>
+
+
+            </td>
+
+
+            <td style="vertical-align: top;"><img src="images/Clone.png" title="" alt="" style="width: 257px; height: 109px;"></td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      
+      
+      <h3><a href="Layer.htm">Layer</a></h3>
+
+
+A sequence of images with key commands to loop through them<br>
+
+
+      
+      
+      <h3><a href="UsePrototype.htm">Prototype</a></h3>
+
+
+Insert a pre-defined set of traits defined in a <a href="Prototypes.htm#Definition">prototype</a> elsewhere.<br>
+
+
+      
+      
+      <h3><a href="Label.htm">Label</a></h3>
+
+
+A plain text label drawn somewhere on the piece.<br>
+
+
+      
+      
+      <h3><a href="Hideable.htm">Invisible</a></h3>
+
+
+The ability to be hidden to non-owning players.<br>
+
+
+      
+      
+      <h3><a href="Mask.htm">Mask</a></h3>
+
+
+The ability to show only limited information to non-owning players.
+      
+      
+      <h3><a href="SendToLocation.htm">Send to Location</a></h3>
+
+
+Defines a command to automatically send a piece to a pre-defined
+location.<br>
+
+
+      <br>
+
+
+      
+      
+      <h3><a href="GlobalKeyCommand.htm">Global Key Command</a></h3>
+
+
+Applies a command to to other pieces.<br>
+
+
+      
+      
+      <h3><a href="Translate.htm">Move Fixed Distance<br>
+
+
+      </a></h3>
+
+
+Defines a command to move a piece a fixed distance in a direction<br>
+
+
+      
+      
+      <h3><a href="ReturnToDeck.htm">Return to Deck</a></h3>
+
+
+Defines a command to automatically send a piece to a <a href="Deck.htm">Deck</a>.
+      
+      
+      <h3><a href="NonStacking.htm">Does Not Stack</a></h3>
+
+
+Prevents the piece from combining with other pieces in a stack.<br>
+
+
+      
+      
+      <h3><a href="PropertySheet.htm">Property Sheet</a></h3>
+
+
+Provides a popup window from which players may set and view auxillary
+information about a piece.&nbsp; Includes sophisticated controls for
+specifying single- and multi-line text notes and tick-mark boxes for
+depletable resources (hit points, shield levels, damage, etc.)<br>
+
+
+      <br>
+
+
+      
+      
+      <h3><a href="Spreadsheet.htm">Spreadsheet</a></h3>
+
+
+Attaches an editable informational table to a piece.&nbsp; Unlike a
+Property Sheet, it contains only plain-text fields, but can contain
+arbitrary numbers of rows and columns.<br>
+
+
+      
+      
+      <h3><a href="Marker.htm">Place Marker</a></h3>
+
+
+Defines a keyboard command that places another piece on top of this
+piece.<br>
+
+
+      <br>
+
+
+      
+      
+      <h3><a href="Replace.htm">Replace with Other<br>
+
+
+      </a></h3>
+
+
+Defines a keyboard command that replaces this piece with a different
+piece.
+      
+      
+      <h3><a href="Rotate.htm">Can Rotate</a></h3>
+
+
+Defines ability to rotate through a specified number of facings.<br>
+
+
+      
+      
+      <h3><a href="Pivot.htm">Can Pivot</a></h3>
+
+
+Defines ability to pivot a piece, i.e. rotate around a point other than
+the center.<br>
+
+
+      
+      
+      <h3><a href="NonRectangular.htm">Non-Rectangular</a></h3>
+
+
+Directs a piece to ignore image transparency for purposes of selecting
+a piece with the mouse.<br>
+
+
+      
+      
+      <h3><a href="PlaySound.htm">Play Sound<br>
+
+
+      </a></h3>
+
+
+Adds a command that plays a specified sound when invoked.<br>
+
+
+      
+      
+      <h3><a href="MarkMoved.htm">Mark When Moved</a></h3>
+
+
+Allows the piece to be automatically marked when moved in a Map Window.<br>
+
+
+      <br>
+
+
+      
+      
+      <h3><a href="MovementTrail.htm">Movement Trail<br>
+
+
+      </a></h3>
+
+
+Draws the recent movement path of the piece as a trail of points.<br>
+
+
+      
+      
+      <h3><a href="AreaOfEffect.htm">Area Of Effect</a><br>
+
+
+      </h3>
+
+
+Highlights a specified radius around a piece.<br>
+
+
+      
+      
+      <h3><a href="SubMenu.htm">Sub-Menu</a></h3>
+
+
+Creates a sub-menu in the right-click drop-down menu.<br>
+
+
+      
+      
+      <h3><a href="RestrictCommands.htm">Restrict Commands</a></h3>
+
+
+Hides or removes keyboard/menu commands when certain conditions apply.<br>
+
+
+      
+      
+      <h3><a href="RestrictedAccess.htm">Restricted Access</a></h3>
+
+
+Limit control of a piece from non-owning players.<br>
+
+
+      
+      
+      <h3><a href="ReportChanges.htm">Report Action<br>
+
+
+      </a></h3>
+
+
+Allows the piece to automatically report state changes to the chat text
+area.
+      
+      
+      <h3><a href="TriggerAction.htm">Trigger Action<br>
+
+
+      </a></h3>
+
+
+Allows you to trigger keyboard actions with other keyboard actions,
+combining multiple keystrokes into a single menu entry.<br>
+
+      
+      <h3><a href="GlobalHotKey.htm">Global Hotkey<br>
+
+
+      </a></h3>
+
+
+Allows you to trigger toolbar&nbsp;actions, via the hotkey associated with the button in the toolbar.<br>
+
+      
+      <h3><a href="ActionButton.htm">Action Button<br>
+
+
+      </a></h3>
+
+
+Allows you to specify a region of a piece that acts like a button,
+invoking an action when a player clicks wihin the region with the
+mouse.
+      
+      
+      <h3><a href="PropertyMarker.htm">Marker</a><br>
+
+
+      </h3>
+
+
+Assigns a fixed value to a named property on a piece.<br>
+
+
+      
+      
+      <h3><a href="DynamicProperty.htm">Dynamic Property</a><br>
+
+
+      </h3>
+
+
+Assigns a user-changeable value to a named property on a piece.<br>
+      <h3><a href="SetGlobalProperty.htm">Set Global Property</a><br>
+
+
+      </h3>
+Defines commands to change the value of a <a href="GlobalProperties.htm">Global Property</a>.<br>
+
+
+      <br>
+
+
+      <br>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+    </tr>
+
+
+  
+  
+  </tbody>
+</table>
+
+
+<br>
+
+
+<br>
+
+
+</body>
+</html>

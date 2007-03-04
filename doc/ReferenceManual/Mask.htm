@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Mask</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="left">
+      <td valign="top">
+      <div align="center"> </div>
+      <h1 align="center">VASSAL Reference Manual</h1>
+      <div align="center"><small><a href="index.htm">Home</a> &gt; <a
+ href="GameModule.htm">Module</a> &gt; <a href="PieceWindow.htm">Game
+Piece Palette</a></small> <small>&gt;<b> </b><a href="GamePiece.htm">Game
+Piece</a></small> <small>&gt; <b>Mask</b></small><br>
+      </div>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <div align="left"> </div>
+      <hr align="left" size="2" width="100%">
+      <div align="left"> </div>
+      <h2 align="left">Mask</h2>
+      <div align="center">
+      <div align="left">
+      <div align="center"><img src="images/Mask.png" alt=""> <br>
+      </div>
+A masked piece looks different to players other than the one who hid
+it, but remains visible to all players (unlike an invisible
+piece).&nbsp; This trait is useful for playing cards. &nbsp;Players may
+drag a card face down from their hand to the playing area. &nbsp;The
+owning player will be able to see the identity of the card, but other
+players will only see the back until it is turned face up. &nbsp;Board
+games with a concept of concealment will also use this trait.<br>
+      <br>
+Like the "Can be Invisible" trait, this trait only hides traits that
+appear before it. &nbsp;Generally, it should be before any Invisible
+trait and after all other traits of the piece.<br>
+      <br>
+A piece with the Mask trait is "owned" by the player who masks it.
+&nbsp;If
+unmasked and masked again by a different player, the second player
+becomes
+the owner. &nbsp;Menu commands of traits hidden by a masked piece are
+not
+available to non-owning players. &nbsp;A setting in the <a
+ href="GameModule.htm#GlobalOptions">Global Options</a> determines
+whether
+or not non-owning players can unmask pieces.<br>
+      <br>
+      <b> Mask Command: &nbsp;</b>The name of the right-click menu
+entry that mask/unmasks this piece<br>
+      <br>
+      <b>Keyboard Command:</b> &nbsp;The keyboard command to mask/unmask
+this piece. &nbsp;<br>
+      <br>
+      <b>Can be masked by:</b> &nbsp;Defines who may "own" this piece (i.e. mask it from other players).  <i>Any Player</i> means that any player may mask this piece, including observers.  <i>Any Side</i> means that any player who has been assigned a <a href="GameModule.htm#Definition_of_Player_Sides">side</a> in a game (not an observer) can mask this piece.  If the player resigns and another player takes the side, then the new player for that side will be the owner. <i>Any of the Specified Sides</i> allows you to enter a list of sides.  Only players assigned to one of the named sides can mask the piece, but the players of all the listed sides will be able to see and modify the piece.  This is useful for referee players or games with multi-player teams.<br>
+      <br>
+      <b>View when masked:</b> To non-owning players, the piece will be
+drawn using this image. <br>
+      <br>
+      <b>Name when masked:</b> To non-owning players, the piece will be
+given this name. <br>
+      <br>
+      <b>Display style: &nbsp;</b>Determines how a masked piece is seen
+by the owning player. &nbsp;The following options are available:<br>
+      <ul>
+        <li><i>Inset</i><b> </b>draws the regular piece with the mask
+image
+at reduced size in the upper left corner</li>
+        <li><i>Background</i> draws the mask image at full size and the
+regular
+piece at reduced size centered within it</li>
+        <li><i>Plain</i> draws only the mask image, so the piece looks
+the
+same to all players. &nbsp;A "Peek" command key may be specified.
+&nbsp;When
+the owning player selects the "Peek" command, he will see the unmasked
+piece
+so long as it remains selected (i.e. until he clicks elsewhere on the
+map).
+&nbsp;If the "Peek" command key is left blank, then the owning player
+will
+see all selected pieces in their unmasked state.</li>
+        <li><i>Use Image</i> draws the unmasked piece and then a
+specifyable
+image on top of the piece. &nbsp;The image should make use of
+transparency
+to let some of the information through.<br>
+        </li>
+      </ul>
+      <b>EXAMPLE: </b>An ordinary playing card can be implemented by
+setting
+the basic image to represent the front of the card.&nbsp; In the "Mask"<br>
+controls, specify an image for the back of the playing card.&nbsp; When
+a player types CTRL-F, that card will be known only to him (as though<br>
+held in his hand).&nbsp; Typing CTRL-F again will reveal the card to
+the other players (as when playing it on the table).<br>
+      </div>
+      <div align="left">
+      <hr style="width: 100%; height: 2px;"><a name="Properties"></a>This
+trait sets the <a href="Properties.htm">Property</a> <span
+ style="font-style: italic;">ObscuredToOthers=true</span>
+when the piece is masked.<br>
+      </div>
+      </div>
+      </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+</body>
+</html>

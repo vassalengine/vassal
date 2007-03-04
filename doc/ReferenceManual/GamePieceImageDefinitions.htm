@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Game Piece Image Definitions</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <b>Game Piece Image Definitions</b></small><br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Game Piece Image Definitions</h2>
+      <div align="center">
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">Within the Game Piece
+Image Definitions you can build your own images by combining text,
+images, and standard NATO symbols.&nbsp; Images defined in this
+component will appear in the drop-down menu for selecting images for
+any trait of any Game Piece just like an imported GIF, JPG, or PNG. <br>
+            <br>
+You can use your own images instead of the computer drawn NATO ones so
+for many games, you will be able to define the whole counter set with
+just a handful of images.&nbsp; Furthermore, you can change the size
+and layout of all the counters in your game
+easily by adjusting the layouts.</td>
+            <td style="vertical-align: top;"><img alt=""
+ src="images/GamePieceImageDefinitions.gif"
+ style="width: 364px; height: 185px;"><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="text-align: left;">
+      <p>Set up a Game Piece Image in two steps:<br>
+      </p>
+      <ol>
+        <li>Add a Game Piece Layout component to the Game Piece
+Layouts&nbsp; compont.&nbsp; In the Game Piece Layout properties, you
+specify the
+position, size and style of all items to be drawn on counter. Colors
+and actual text and symbol selections are made in step 2.</li>
+        <li>Add a Game Piece Image component to the Game Piece Layout
+component.&nbsp; This defines an individual image using that
+layout.&nbsp; In each Image Definition, specify the actual colors, text
+and
+symbols to be used for that image, using the layout. <br>
+        </li>
+      </ol>
+      </div>
+      </div>
+      <hr size="2" width="100%">
+      <h2>Sub-Components</h2>
+      <a name="NamedColors">
+      <h3>Named Colors</h3>
+      </a>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">Each color you wish to use
+in Image Definitions is predefined and given
+a name. These colors will appear in a palette for selecting
+foreground/background colors in the image. 14 Standard colors&nbsp; are
+built-in: CLEAR, WHITE, BLACK, LIGHT GRAY, DARK GRAY,
+RED, GREEN, BLUE, ORANGE, PINK, CYAN, MAGENTA, YELLOW.
+            <p> <strong>Color Name:</strong> The name of the color
+that
+will appear in drop-down menus in the Image Definitons.<br>
+            <strong>Color:</strong> Standard Color selector to select
+the color to be associated with the name </p>
+            </td>
+            <td style="vertical-align: top;"><img alt=""
+ src="images/NamedColor.png" style="width: 219px; height: 99px;"><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <a name="FontStyles">
+      <h3>Font Styles</h3>
+      </a>
+      <br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">Font Styles used in Image
+Layouts are predefined here and selected by
+name from drop-down menus. A Font Style consists of a Font Family, size
+and style (plain, bold, italic, bold-italic). A default style is always
+defined.
+            <p> <strong>Style Name:</strong> The name of the Font
+Style
+that will appear in drop-down menus in the Image Layout.<br>
+            <strong>Font Family:</strong> The Font Family to use. To
+ensure maximum
+compatibility and portablilty, only the pre-defined Java logical fonts
+are available as options.<br>
+            <strong>Size:</strong> The size of the font style in points.<br>
+            <strong>Bold:</strong> Click on to select a Bold font style.<br>
+            <strong>Italic:</strong> Click on to select an Italic font
+style.<br>
+            <strong>Sample:</strong> Display a sample of your selected
+font style.<br>
+            </p>
+            <p> </p>
+            </td>
+            <td style="vertical-align: top;"><img alt=""
+ src="images/FontStyle.png" style="width: 344px; height: 167px;"><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <h3><a href="GamePieceLayouts.htm">Game Piece Layouts<br>
+      </a></h3>
+A Game Piece Layout is like a template that defines positions, styles,
+and orientations of the components in an image, but not their actual
+values.&nbsp; This component is a container for all the layouts defined
+in the module.<br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+</body>
+</html>

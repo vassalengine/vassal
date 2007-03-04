@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+  
+  
+  
+  
+  <title>Properties</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+
+
+<body>
+
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+  <tbody>
+
+
+    <tr align="center">
+
+
+      <td valign="top">
+      
+      
+      <h1>VASSAL Reference Manual</h1>
+
+
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="PieceWindow.htm">Game Piece Palette</a></small> <small>&gt;<b>
+      </b><a href="GamePiece.htm">Game Piece</a></small> <small>&gt; <span style="font-weight: bold;">Properties</span><b></b></small><br>
+
+
+      </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+      <td valign="top">
+      
+      
+      <hr size="2" width="100%">
+      
+      
+      <h2>Properties<br>
+
+
+      </h2>
+
+
+      
+      
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
+        <tbody>
+
+
+          <tr>
+
+
+            <td valign="top">Each Game Piece has its own set of
+properties (each with a name and a value) that can be used for
+identification by various components.&nbsp; 
+            <br>
+
+            <br>
+
+Properties&nbsp;can be
+defined for a Zone, a Map or for the entire module. &nbsp;If a property is not
+defined in a Game Piece, the program looks for the value in the Map
+containing the piece, then in the module.<br>
+
+
+            <br>
+
+
+Properties can be matched using expressions like <span style="font-style: italic;">name = value</span> for an exact match, <span style="font-style: italic;">name != value</span> for a non-match, or <span style="font-style: italic;">name =~ value</span> for a <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html">regular
+expression</a> match.&nbsp;&nbsp;
+For&nbsp; properties that return a numeric value (e.g. the level in a <a href="Layer.htm#Properties">Layer)</a> you can use <span style="font-style: italic;">&lt;</span>, <span style="font-style: italic;">&lt;=</span>, <span style="font-style: italic;">&gt;</span>, and <span style="font-style: italic;">&gt;=.</span>&nbsp; You can combine
+expressions using &amp;&amp;
+for logical AND and || for a
+logical OR.<br>
+
+
+            <br>
+
+
+            <span style="font-weight: bold;">Components that use
+properties<br>
+
+
+            </span>
+            
+            
+            <ul>
+
+
+              <li>Any <a href="MessageFormat.htm">Message Format</a>
+defined in a Game Piece will substitute values for the properties
+defined on that Game Piece<br>
+
+
+              </li>
+
+
+              <li>The <a href="Map.htm#GlobalKeyCommand">Global Key
+Command</a> component uses properties to determine which pieces will
+respond to the command.</li>
+
+
+              <li>The <a href="Map.htm#GamePieceLayers">Game Piece
+Layers</a> component uses properties to determine relative ordering
+when drawing pieces on the map.</li>
+
+
+              <li>The <a href="TriggerAction.htm">Trigger Action</a>
+trait uses properties to determine when to fire a keyboard command.</li>
+
+
+              <li>The <a href="Label.htm">Text Label</a> trait
+substitutes properties when setting the text of the label.</li>
+              <li>A <a href="ZonedGrid.htm#Zone">Zone</a> uses properties to specify a <a href="ZonedGrid.htm#ZoneHighlighter">Zone Highlighter</a>.</li>
+
+
+            
+            
+            </ul>
+
+
+            <span style="font-weight: bold;">Properties defined by Game Pieces<br>
+
+
+            </span>
+            
+            
+            <ul>
+
+
+              <li><span style="font-weight: bold;"></span>The <a href="BasicPiece.htm">Basic Piece</a> defines properties related to a
+piece's name, location, side, and whether it's selected<br>
+
+
+              </li>
+
+
+              <li>The <a href="Layer.htm#Properties">Layer</a> trait
+defines
+properties related to the state of that Layer</li>
+
+
+              <li>The <a href="Rotate.htm">Rotate</a> trait defines
+properties related to the current facing of the piece.<br>
+
+
+              </li>
+
+
+              <li>The <a href="Label.htm">Text Label</a> trait returns
+the value of the label as a property</li>
+
+
+              <li>The <a href="PropertyMarker.htm">Marker</a> trait
+allows you to define your own static properties</li>
+
+
+              <li>The <a href="DynamicProperty.htm">Dynamic Property</a>
+trait allows you to define your own changeable properties.<br>
+
+
+              </li>
+
+
+              <li>The <a href="MarkMoved.htm">Mark When Moved</a>
+trait sets a property when a piece has moved</li>
+
+
+              <li>The <a href="Mask.htm#Properties">Mask</a> trait
+sets a property when the piece is masked</li>
+
+
+              <li>The <a href="Hideable.htm">Invisible</a> trait sets
+a property when the piece is invisible<br>
+
+
+              </li>
+
+
+              <li>The <a href="PropertySheet.htm">Property Sheet</a>
+trait exposes a set of user-editable properties.</li>
+
+
+            
+            
+            </ul>
+
+            <span style="font-weight: bold;">Properties defined by other components</span><br>
+
+            
+            <ul>
+
+              <li>The <a href="GlobalProperties.htm">Global Property</a> component defines properties for a <a href="ZonedGrid.htm#Zone">Zone</a>, <a href="Map.htm">Map</a> or the <a href="GameModule.htm">module</a>.</li>
+
+              <li>The <a href="GlobalOptions.htm">Global Options</a> component allows you to tie property values to preferences settings.</li>
+
+              <li>The results of a roll by a <a href="GameModule.htm#DiceButton">Dice Button</a> is exposed as a property</li>
+
+              <li>A <a href="Deck.htm">Deck</a> component exposes the number of cards remaining as a Map-level property.</li>
+
+            
+            </ul>
+
+
+            <br>
+
+
+            <span style="font-weight: bold;"></span><br>
+
+
+            </td>
+
+
+          </tr>
+
+
+        
+        
+        </tbody>
+      
+      
+      </table>
+
+
+      
+      
+      <hr size="2" width="100%"> </td>
+
+
+    </tr>
+
+
+    <tr>
+
+
+    </tr>
+
+
+  
+  
+  </tbody>
+</table>
+
+
+</body>
+</html>

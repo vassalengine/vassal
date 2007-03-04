@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Game Piece Layers</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="Map.htm">Map</a> &gt; <b>Game Piece Layers</b></small><br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%"><br>
+      <h2>Game Piece Layers<br>
+      </h2>
+      <br>
+      <table style="text-align: left; width: 100%;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">This component allows you
+to specify that certain Game Pieces will always be drawn on top of
+others.&nbsp;&nbsp; <span style="font-weight: bold;">Property name</span>
+is
+the name of the property that determines the order.&nbsp; Typically
+this will be specified with a <a href="PropertyMarker.htm">Marker</a>
+trait with the specified property name.&nbsp;&nbsp; <span
+ style="font-weight: bold;">Layer Order</span> lists the expected
+values
+for that property, in the order that they will be drawn on the
+map.&nbsp; Pieces assigned to different layers will never combine into
+a
+stack.&nbsp; Pieces with no value specified for the given property are
+placed in the topmost layer.<br>
+            <br>
+            <span style="font-weight: bold;">Example:</span>&nbsp; A
+Map has a Game Piece Layer specified with property name <span
+ style="font-style: italic;">Layer</span> and Layer Order <span
+ style="font-style: italic;">Terrain, Land, Air</span>.&nbsp; Then any
+piece with a <a href="PlaceMarker.htm">Marker</a> trait with property
+name "Layer" and value "Terrain" will be in the bottom-most
+layer.&nbsp;
+The middle layer will contain pieces with the value "Land" and the top
+layer will contain pieces with the value "Air".&nbsp; Pieces with no
+value for the "Layer" property will be in their own layer above all
+three.<br>
+            </td>
+            <td style="vertical-align: top;"><img
+ src="images/GamePieceLayers.png" title="" alt=""
+ style="width: 345px; height: 142px;"><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h2> </h2>
+      <hr size="2" width="100%">
+      <h2>Sub-Components</h2>
+      <h3>Game Piece Layer Control<br>
+      </h3>
+      <br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">This adds a button to the
+Map Window toolbar that allows you to activate/deactivate the Game
+Piece Layers for that map, and to change their relative order.&nbsp;
+Game Piece belonging to Layers that have been deactivated are be hidden
+from view until the Layer is activated again.&nbsp; Each player can
+activate/deactivate Layers independently, and layer activation is not
+saved when the game is saved.<br>
+            <br>
+Specify the button's text, icon, and keyboard shortcut.&nbsp; Specify
+the names of the layers that this button will effect, and the action of
+the button.&nbsp; <span style="font-style: italic;">Rotate Layer Order
+Up/Down</span> will change the relative order of the Layers on the map,
+moving each layer up/down by one in the order.&nbsp; I will activate or
+deactivate the specified Layers.&nbsp; <span
+ style="font-style: italic;">Switch Layer between Active and Inactive</span>
+will toggle the specified layers between active and inactive.&nbsp; <span
+ style="font-style: italic;">Reset All Layers</span> makes all Layers
+active and restores them to their default order.<br>
+            <br>
+            </td>
+            <td style="vertical-align: top;"><img alt=""
+ src="images/GamePieceLayerControl.png"
+ style="width: 334px; height: 227px;"><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<br>
+</body>
+</html>

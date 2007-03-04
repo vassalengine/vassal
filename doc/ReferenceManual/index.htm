@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>VASSAL Reference Manual</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table cellpadding="2" cellspacing="2" border="0" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><b>Home</b></small><br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr width="100%" size="2">
+      <h2>General</h2>
+This manual describes the features of the VASSAL module editor.
+&nbsp;It  is not necessary to be familiar with the contents if you are
+only using VASSAL  to play games. &nbsp;The information here is also
+available from VASSAL's  on-line help.<br>
+      <br>
+All modifications to a module are done through  the Configuration
+Window, which is a familiar file/folder type browser in  which each
+file/folder represents a module component. &nbsp;The Configuration
+Window can be used to edit either a <a href="GameModule.htm">Module</a>
+or a <a href="Extension.htm">Module Extension</a>.  It can also be used to create <a href="ModuleUpdater.htm">Module updaters</a> and to <a href="SavedGameUpdater.htm">update saved games</a><br>
+      <br>
+      <hr style="width: 100%; height: 2px;">
+      <h3>Editing Modules<br>
+      </h3>
+      <table cellpadding="2" cellspacing="2" border="0" width="100%">
+        <tbody>
+          <tr>
+            <td valign="top">Right-click on an any component to get a
+popup menu with options for that  component. &nbsp;Use the Cut, Copy,
+Paste, and Move commands to move components around within the module.<br>
+            <h4>Properties</h4>
+Brings up a dialog in which you specify the options for that
+components.  &nbsp;Double-clicking on a component also brings up its
+Properties dialog.<br>
+            <br>
+            <h4>Delete</h4>
+Delete's the component from the module.<br>
+            <br>
+            <h4>Clone</h4>
+Makes an exact copy of the component and inserts it after the existing
+component.<br>
+            <br>
+            <h4>Help</h4>
+Brings up the corresponding page in this manual.<br>
+            <br>
+            <h4>Add ...</h4>
+Adds a sub-component to this component<br>
+            <br>
+            </td>
+            <td valign="top"><img src="images/configuration_window.gif"
+ alt="" width="260" height="391"> <br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr style="width: 100%; height: 2px;">
+      <h3>Module Updaters</h3>
+Since VASSAL modules can be large in size, VASSAL provides a tool to
+build compact downloads for automatically updating a module.&nbsp; The
+updater is a file named, for example,&nbsp; <span
+ style="font-family: monospace;">updateMyModule.jar</span> for a module
+file named <span style="font-family: monospace;">MyModule.mod</span>.&nbsp;
+The user simply places the two files in the same folder and
+double-clicks on the <span style="font-family: monospace;">.jar</span>
+file to update the module.<br>
+      <br>
+To create a module updater, move a copy of the old module file and the
+new module file into your VASSAL folder.&nbsp; You will need to  leave
+the old module file with its original name and give the new module file
+a different name.&nbsp; Then go to a command prompt and type <span
+ style="font-family: monospace;"><br>
+      <br>
+java -cp lib/Vengine.jar VASSAL.tools.ZipUpdater <span
+ style="font-style: italic;">oldModuleFile newModuleFile</span></span><br>
+      <br>
+      </td>
+    </tr>
+	<tr>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<br>
+<br>
+</body>
+</html>

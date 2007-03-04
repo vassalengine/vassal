@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Game Piece Inventory Window</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <b>Game Piece Inventory Window<br>
+      </b></small></td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Game Piece Inventory Window</h2>
+      <div style="text-align: center;"><br>
+      </div>
+      <br>
+      <table style="text-align: left; width: 100%;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">Places a button in the
+main controls window toolbar.&nbsp; Pressing the button will reveal a
+window that organizes and summarizes the pieces in the game in a tree
+view (similar to browsing a file system).&nbsp; You can define exactly
+which pieces are included in the window and how they are organized.<br>
+            <br>
+            <span style="font-weight: bold;">Name:&nbsp; </span>The
+name that appears in the window title bar.<br>
+            <span style="font-weight: bold;">Button Text:&nbsp; </span>Text
+for the button in the main controls toolbar button<br>
+            <span style="font-weight: bold;">Hotkey:&nbsp; </span>Keyboard
+shortcut for the toolbar button<br>
+            <span style="font-weight: bold;">Tooltip:</span>&nbsp;
+Mouse-over tooltip for the toolbar button<br>
+            <span style="font-weight: bold;">Show only pieces matching
+these properties:&nbsp; </span>The window will only summaries pieces
+with the matching set of <a href="Properties.htm">Properties</a>&nbsp;
+(<span style="font-style: italic;">Example</span>: limit the pieces to
+a single map with the <span style="font-style: italic;">CurrentMap</span>
+property, or only select pieces with a a given value of a <a
+ href="PropertyMarker.htm">Marker</a> trait)<br>
+            <span style="font-weight: bold;">Sort and Group By
+Properties:&nbsp; </span>A list of property names.&nbsp; Pieces with
+the same value of a given property will be grouped together at the same
+level.&nbsp; (<span style="font-style: italic;">Example</span>: listing
+the <span style="font-style: italic;">CurrentBoard</span> and <span
+ style="font-style: italic;">LocationName</span> properties will give a
+top-level folder for each board and a second-level folder for each
+location that contains a piece.) <br>
+            <span style="font-weight: bold;">Label for folders:</span>&nbsp;
+A <a href="MessageFormat.htm">Message Format</a> specifying the text
+used to label each folder in the tree.&nbsp; The <span
+ style="font-style: italic;">PropertyValue</span> property gives the
+value of the property that defines its group (for example, the board
+name or location name).&nbsp; Any property of the form <span
+ style="font-style: italic;">sum_</span>XXX will be replaced with the
+sum of property XXX for all pieces within that folder.&nbsp; (<span
+ style="font-style: italic;">Example</span>:&nbsp;&nbsp; A Game Piece
+uses a <a href="Layer.htm">Layer</a> trait named <span
+ style="font-style: italic;">Manpower</span>,&nbsp; giving it an
+automatic property named <span style="font-style: italic;">Manpower_Level.</span>&nbsp;
+Using the <span style="font-style: italic;">sum_Manpower_Level</span>
+property in the folder label will report the total manpower for all
+pieces inside that folder.<br>
+            <span style="font-weight: bold;">Show only folders:</span><span
+ style="font-weight: bold;"></span>&nbsp; If selected, then individual
+pieces within a folder will not be shown in the view.<br>
+            <span style="font-weight: bold;">Label for pieces:</span><span
+ style="font-weight: bold;"></span>&nbsp; A <a href="MessageFormat.htm">Message
+Format</a> specifying the text
+used to label each piece in the tree.<br>
+            <span style="font-weight: bold;">Sort:</span><span
+ style="font-weight: bold;"></span>&nbsp; If selected, then sort
+pieces.<br>
+            <span style="font-weight: bold;">Label for sort:</span><span
+ style="font-weight: bold;"></span>&nbsp; A <a href="MessageFormat.htm">Message
+ Format</a> specifying the text by which pieces are sorted. (
+<span style="font-style: italic;">Example</span>: A piece 
+is named 3rd Bn, 4th Reg, 3rd Div; for sorting the markers $div $reg $bn are used rather than the pieces name)<br>
+            <span style="font-weight: bold;">Sorting method:</span><span
+style="font-weight: bold;"></span>&nbsp; alpha sorts the inventory
+tree alphabetically, numeric by the value of the first integer found, and length uses
+the string length first. When two entries are equal for numeric and length, alpha is 
+used for sorting. (<span style="font-style: italic;">Example</span>:
+$id$ is the Label for sort. Three gamepieces have the ids 'a', 'aa',
+and 'b'. Sorting by alpha and numeric is <span style="font-style: italic;">['a',
+	'aa', 'b']</span>. Sorting by length is <span
+	style="font-style: italic;">['a', 'b', 'aa']</span>. Three
+gamepieces have the ids 'a3', 'b2', 'c-4'. Sorting by alpha and length
+is <span style="font-style: italic;">['a3', 'b2', 'c-4']</span>.
+Sorting by numeric is <span style="font-style: italic;">['c-4', 'b2',
+	'a3']</span>.)
+<br>
+            <span style="font-weight: bold;">Center on selected piece:</span><span
+ style="font-weight: bold;"></span>&nbsp; If selected, then clicking on
+a piece in the tree will center the map on that piece.<br>
+            <span style="font-weight: bold;">Forward key strokes to
+selected piece:</span><span style="font-weight: bold;"></span>&nbsp; If
+selected, then any keystrokes types into the window will be sent as key
+commands to the selected piece.&nbsp; Selecting a folder will send the
+command to all pieces within that folder.<br>
+            <span style="font-weight: bold;">Show right-click menu of
+piece:</span><span style="font-weight: bold;"></span>&nbsp; If
+selected, then right-clicking on a piecein the tree with display its
+pop-up menu, which can be used to modify the piece.<br>
+            <span style="font-weight: bold;">Draw piece images:</span><span
+ style="font-weight: bold;"></span>&nbsp; If selected, the tree will
+draw reduced-size images of the piece at the specified zoom factor.<br>
+            <span style="font-weight: bold;">Zoom factor:</span><span
+ style="font-weight: bold;"></span>&nbsp; The magnification factor for
+drawing pieces in the tree.<br>
+            <span style="font-weight: bold;">Available to these sides:</span><span
+ style="font-weight: bold;"></span>&nbsp; The toolbar button will only
+be visible to the <a href="GameModule.htm#Definition_of_Player_Sides">player
+sides</a> listed here.&nbsp; An empty list makes the button visible to
+all players.<br>
+            <span style="font-weight: bold;"></span><br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            <img alt="" src="images/Inventory.png"
+ style="width: 412px; height: 542px;"><br>
+            <div style="text-align: center;"><img alt=""
+ src="images/InventoryWindow.png" style="width: 357px; height: 360px;"><br>
+            </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr size="2" width="100%"><br>
+      </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

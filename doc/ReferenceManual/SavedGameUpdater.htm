@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>VASSAL Reference Manual - Saved Game Updater</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <span
+ style="font-weight: bold;">Updating Saved GameS</span></small><br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Updating Saved Games</h2>
+      <table>
+        <tbody>
+          <tr>
+            <td>When a game is saved using one version of a VASSAL
+module, and then re-opened using a later version, the game pieces
+retain the original behavior, even if the piece has changed in the Game
+Piece Palette.&nbsp; This is necessary for modules to be
+backward-compatible with old saved games.&nbsp; This dialog allows you
+to update a game saved with an older version of a module to use the
+corresponding piece definitions in the current version.&nbsp; This is
+particularly useful to avoid having to recreate Predefined Setups
+from scratch.<br>
+            <br>
+To update a saved game, you must first import the GamePiece information
+from the earlier module version.&nbsp; Open the earlier version in the
+VASSAL editor, bring up this dialog and export the GamePiece
+information to a file.&nbsp; Then close VASSAL, load up the current
+module version in the VASSAL editor, and import the GamePiece
+information from the older version.&nbsp; <br>
+            <br>
+You can select any number of
+saved game files in the same folder to update at once.&nbsp; The files
+will be overwritten, so make backup copies first.<br>
+            <p>Under the covers, the updater works by matching each
+piece in a saved game to the component in the Game Piece Palette or
+Deck that it came from.&nbsp; The piece is then replaced with the piece
+defined in the corresponding component in the current version. The Text
+Labels, Layer activation, rotation, etc., of the original piece is
+preserved as well as possible, but it is generally a good idea to load
+the updated games and give them a sanity check before
+releasing.&nbsp;&nbsp;If the component that produced a piece no longer
+exists, the piece is
+untouched, so the updater won't work well if the Game Piece palette has
+been re-arranged significantly. .<br>
+            </p>
+            </td>
+            <td><img alt="" src="images/SavedGameUpdater.png"
+ style="width: 356px; height: 185px;"> </td>
+          </tr>
+        </tbody>
+      </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Property Marker</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="PieceWindow.htm">Game Piece Palette</a></small> <small>&gt;<b>
+      </b><a href="GamePiece.htm">Game Piece</a></small> <small>&gt; <b>Marker</b></small><br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Marker<br>
+      </h2>
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+        <tbody>
+          <tr>
+            <td valign="top">A Marker is used to mark a game piece as
+having a particular <a href="Properties.htm">Property.</a>&nbsp;
+Setting a property does not in
+itself give a game piece any particular behavior.&nbsp; The property
+must be recognized by some other class in the module.&nbsp; Markers are
+used by <a href="Map.htm#GlobalKeyCommand">Global Key Command</a> and <a
+ href="Map.htm#GamePieceLayers">Game Piece Layers</a> components and
+often by custom Java classes used in a module.<br>
+            <br>
+You can combine multiple name-value pairs by separating the names and
+values with a comma (','). To use a comma in a name or value, preceed
+it with a backslash ('\').<br>
+            <br>
+            <b>EXAMPLE: </b>&nbsp; A Marker with property name "owner"
+and property value "sigmund" would return "sigmund" from
+getProperty("owner"). &nbsp;Use commas to set multiple properties with
+a
+single Marker.&nbsp; A Marker with name "owner,status" and value
+"sigmund,unknown" would also return "unknown" from
+getProperty("status").<br>
+            <br>
+            </td>
+            <td valign="top"><img src="images/PropertyMarker.png" alt=""
+ style="width: 241px; height: 109px;" title=""> <br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr size="2" width="100%"> </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Rotate</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="PieceWindow.htm">Game Piece Palette</a></small> <small>&gt;<b>
+      </b><a href="GamePiece.htm">Game Piece</a></small> <small>&gt; <b>Can
+Rotate</b></small><br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Can Rotate</h2>
+      <br>
+      <div style="text-align: center;"><img src="images/Rotate.png"
+ alt="" style="width: 545px; height: 190px;"><br>
+      </div>
+      <br>
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+        <tbody>
+          <tr>
+            <td colspan="2" valign="top">This trait allows a piece to
+be rotated
+through an arbitrary number of facings. <br>
+            <br>
+You can choose the number of valid facings. &nbsp;For
+example, a hex-based game may have 6 (or possibly 12) possible
+facings, while a game with a square grid game might have 4 or 8.<br>
+            <br>
+Alternatively, you can allow any arbitrary facing.&nbsp; In this case,
+selecting the 'Rotate' command will change the cursor and let the user
+drag the cursor to select the facing of the piece interactively.<br>
+            <br>
+An optional additional command will rotate the piece to a random facing
+(in one of the valid facings, if applicable)<br>
+            <br>
+            <em>The "Can Rotate" trait will rotate only those traits
+that appear above
+it in the list of traits for a Game Piece.</em>&nbsp; Traits below the
+"Can
+Rotate" trait will be drawn on top of the rotated image.
+            <br>
+            <br>
+            <b>NOTE:</b> Since the rotations are created on the fly
+from a bitmapped
+image, the image quality of a rotated counter may be lower than the
+unrotated version.&nbsp; You may get better image quality for your
+rotations by creating separate images for each rotation in an
+external paint program (If your images are based on vector objects, you
+can rotate them without degrading quality.) and putting them into
+different levels of a <a href="Layer.htm">Layer</a>.<br>
+            <br>
+&nbsp;<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr size="2" width="100%"> </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+<br>
+<a name="Properties">A Can Rotate trait defines a
+number of </a><a href="Properties.htm">Properties</a>.&nbsp; In the
+name
+of the properties, <span style="font-style: italic;">&lt;name&gt;</span>
+is the name specified in the&nbsp;
+properties above.<br>
+<ul>
+  <li><span style="font-style: italic;">&lt;name&gt;_Facing </span>returns
+the current facing, if the number of facings is fixed<span
+ style="font-style: italic;"></span><span style="font-style: italic;"></span></li>
+  <li><span style="font-style: italic;">&lt;name&gt;_Degrees </span>returns
+the current rotation angle, if arbitrary rotations are allowed<br>
+  </li>
+</ul>
+</body>
+</html>

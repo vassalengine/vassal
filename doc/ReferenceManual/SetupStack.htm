@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>At-Start Stack</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table cellpadding="2" cellspacing="2" border="0" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="Map.htm">Map</a> &gt; <b>At-Start Stack</b></small><br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr width="100%" size="2">
+      <h2>At-Start Stack<br>
+      </h2>
+      <div align="center"><img src="images/AtStartStack.png" alt=""
+ style="width: 225px; height: 142px;" title=""> <br>
+      <br>
+      <div align="left">An At-Start Stack is an ordinary stack of
+playing pieces that is initialized at the beginning of every
+game.&nbsp; It is appropriate for any fixed pool of counters.&nbsp;
+Once the game begins, the pieces are in place just as if they had been
+dragged from the Game Piece Palette, except that no more can be created
+during the course of the game.<br>
+      <br>
+      <b>Name:</b>&nbsp; The name is not used during game play.&nbsp;
+It is just used for identification in the module editor.<br>
+      <br>
+      <b>Belongs to board:</b> &nbsp;If a name is selected, the stack
+will appear on that particular Board. &nbsp;If a game does not use that
+Board, then the stack will not appear. If "&lt;any&gt;" is selected,
+then the stack will always appear at the given position, regardless of
+the boards in use.<br>
+      <br>
+      <b>X,Y position:</b> &nbsp;The position in the Map Window of the
+center of the deck. &nbsp;If this stack belongs to a Board, the position
+is relative to the Board's position in the Map Window.<br>
+&nbsp;<br>
+      <b>EXAMPLE: </b>&nbsp; A strategic game in which a nationality 
+has a fixed force pool of Infantry, Armor, etc. counters can be modeled
+by  making a Map Window representing the force pool, with an At-Start
+Stack of Infantry counters, an At-Start Stack of Armor counters,
+etc.&nbsp; In order to guarantee that the number of each type of
+counter is fixed, the Clone and Delete functions of the Infantry  and
+Armor counters should be disabled.<br>
+      <br>
+      </div>
+      </div>
+      <hr width="100%" size="2">
+      <h2>Sub-Components</h2>
+      <h3><a href="GamePiece.htm">Single Piece</a><br>
+      </h3>
+An At-Start Stack can contain any Game Piece.</td>
+    </tr>
+	<tr>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<br>
+</body>
+</html>

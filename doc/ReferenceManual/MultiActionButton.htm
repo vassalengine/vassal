@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+  
+  
+  <title>Multi-Action Button</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+</head>
+
+
+<body>
+
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+  <tbody>
+
+    <tr align="center">
+
+      <td valign="top">
+      
+      <h1>VASSAL Reference Manual</h1>
+
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <b>Multi-Action Button</b></small><br>
+
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td valign="top">
+      
+      <hr size="2" width="100%">
+      
+      <h2>Multi-Action Button<br>
+
+      </h2>
+
+      
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+        <tbody>
+
+          <tr>
+
+            <td valign="top">The Multi-Action Button combines multiple
+buttons in a toolbar into a single button. &nbsp;The named buttons are
+removed from the toolbar and a new button is added. &nbsp;Pressing this
+button automatically&nbsp;invokes the actions of all the other buttons
+in the order given.<br>
+
+            <br>
+
+            <span style="font-weight: bold;">Button Text:&nbsp; </span>The text of the button to be added to the toolbar.&nbsp;<br>
+
+            <span style="font-weight: bold;">Button Icon:&nbsp; </span>Icon for the toolbar button.<br>
+
+            <span style="font-weight: bold;">Hotkey:&nbsp; </span>Keyboard shortcut for the toolbar button.<br>
+
+            <span style="font-weight: bold;">Buttons:&nbsp; </span>Enter
+the text of the buttons that you wish to invoke as a result of pushing
+this button. &nbsp;They will be invoked in the order listed.<br>
+            <br>
+            <span style="font-weight: bold;">EXAMPLE:</span> &nbsp;A <a href="GlobalKeyCommand.htm">Global Key Command</a>
+is defined that resets the fatigue level of all armies on the map.
+&nbsp;A second Global Key Command returns them to their home base.
+&nbsp;A Multi-Action Button can be used to combine both actions into a
+single button.<br>
+            <br>
+            <span style="font-weight: bold;">EXAMPLE:</span> &nbsp;A <a href="GameModule.htm#DiceButton">Dice Button</a> is defined that exposes its result as a property named <span style="font-style: italic;">Damage</span>. &nbsp;Some Game Pieces are defined with a <a href="TriggerAction.htm">Trigger Action</a> trait that compares the level of a <a href="Layer.htm">Layer</a> (representing armor) with the <span style="font-style: italic;">Damage</span> property and deletes the piece if the level is below the <span style="font-style: italic;">Damage</span> value. &nbsp;A <a href="GlobalKeyCommand.htm">Global Key Command</a>
+invokes the Trigger Action. &nbsp;A Multi-Action Button is defined that
+invokes the Dice Button, followed by the Global Key Command, resulting
+in the automatic deletion of any units with armor less than the random
+amount of damage.<br>
+
+            </td>
+
+            <td valign="top"><img style="width: 428px; height: 203px;" src="images/MultiActionButton.png" alt=""> <br>
+
+            </td>
+
+          </tr>
+
+          <tr>
+
+          </tr>
+
+        
+        </tbody>
+      
+      </table>
+
+      </td>
+
+    </tr>
+
+    <tr>
+
+    </tr>
+
+  
+  </tbody>
+</table>
+
+</body>
+</html>

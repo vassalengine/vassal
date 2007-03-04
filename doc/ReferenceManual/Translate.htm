@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Move Fixed Distance</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="PieceWindow.htm">Game
+Piece Palette</a></small> <small>&gt;<b> </b><a href="GamePiece.htm">Game
+Piece</a></small> <small>&gt; <span style="font-weight: bold;">Move
+Fixed Distance</span><b></b></small><br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Move Fixed Distance<br>
+      </h2>
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+        <tbody>
+          <tr>
+            <td valign="top">Defines a command to move the piece a
+fixed distance upwards and to the right.&nbsp; The distances are specified using <a href="MessageFormat.htm">Message Formats</a>. The two numbers specified in the advanced options are multipled together and added to the basic distance to get the final distance moved.  If the&nbsp; piece is
+part of a stack, and the stack is not expanded, and the <span
+ style="font-style: italic;">Move entire Stack</span> option is
+selected, then the command will move the entire stack.<br>
+<b>Example:</b> An army unit can conduct a forced march for extra movement.  The amount of additional movement depends on its supply, which is tracked by a <a href="Layer.htm">Layer</a> trait.  The Move Fixed Distance trait is given an additional offset of one hex times the value of the supply level.
+            <br>
+            <b>NOTE: </b>If this piece has a <a href="Rotate.htm">Can
+Rotate</a> trait listed <span style="font-style: italic;">before</span>
+this trait, then the resulting direction will be relative to the
+current facing of the piece.&nbsp; <span style="font-style: italic;">Example:</span>&nbsp;
+If a piece has traits <span style="font-style: italic;">Can Rotate</span>
+followed by <span style="font-style: italic;">Move Fixed Distance</span>
+60 upwards, then the move command will move the piece in whatever
+direction the top of the piece is facing.&nbsp; If a piece has traits <span
+ style="font-style: italic;">Move Fixed Distance</span> 60 upwards<span
+ style="font-style: italic;"><span style="font-style: italic;"> </span></span>followed
+by <span style="font-style: italic;">Can Rotate</span> then the move
+command will move the piece towards the top of the screen regardless of
+the facing of the piece.<br>
+            <br>
+            <br>
+            <br>
+            </td>
+            <td valign="top"><img src="images/Translate.png" alt=""
+ > <br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr size="2" width="100%"> </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

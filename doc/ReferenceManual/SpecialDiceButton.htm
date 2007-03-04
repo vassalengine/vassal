@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Symbolic Dice Button</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <b>Symbolic Dice Button</b></small></td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Symbolic Dice Button<br>
+      </h2>
+      <table style="text-align: left; width: 100%;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">A Symbolic Dice Button is
+used to define dice that use arbitrary images.&nbsp; Each button can
+roll several dice (represented by Symbolic Die components), each of
+which may have any number of faces (represented by Symbolic Die Face
+components).&nbsp; When the button is pushed, a random face is selected
+for each Symbolic Die that this component contains.&nbsp; The results
+of
+the roll can be reported as text into the chat area, or graphically in
+a separate window or in the&nbsp; button itself.<br>
+            <br>
+            <span style="font-weight: bold;">Name:&nbsp; </span>The
+name of the dice button<br>
+            <span style="font-weight: bold;">Button Text:&nbsp; </span>Text
+for the button in the main controls toolbar button<br>
+            <span style="font-weight: bold;">Hotkey:&nbsp; </span>Keyboard
+shortcut for rolling the dice<br>
+            <span style="font-weight: bold;">Report results as
+text:&nbsp; </span>If true, report results to the chat area<br>
+            <span style="font-weight: bold;">Report format:&nbsp; </span>A
+            <a href="MessageFormat.htm">Message Format</a> specifying
+the format for
+reporting text results: <span style="font-style: italic;">name</span>
+is
+the name of the button as specified above, <span
+ style="font-style: italic;">result1, result2, etc </span>is the
+result of the 1st, 2nd, etc. Symbolic Die as configured below (replace
+the '#' symbol with the desired number), <span
+ style="font-style: italic;">numericalTotal</span> is the sum of the
+numerical values of the Symbolic Die rolls.<br>
+            <span style="font-weight: bold;">Show result in window:</span>&nbsp;
+If true, show the results graphically in a standalone window.<br>
+            <span style="font-weight: bold;">Window title
+format:&nbsp;&nbsp;</span> <span style="font-weight: bold;">&nbsp; </span>A
+            <a href="MessageFormat.htm">Message Format</a> specifying
+the format for
+reporting results to the titlebar of the standalone window.<br>
+            <span style="font-weight: bold;">Show result in
+button:&nbsp; </span>If true, show the results graphically in the
+toolbar button.<br>
+            <span style="font-weight: bold;">Width:&nbsp; </span>The
+width of the area for displaying results graphically.<br>
+            <span style="font-weight: bold;">Height:&nbsp; </span>The
+height of the area for displaying results graphically.<br>
+            <span style="font-weight: bold;">Background color:&nbsp; </span>The
+background color to be used when displaying results graphically.<br>
+            <br>
+            </td>
+            <td style="vertical-align: top;"><img
+ src="images/SpecialDiceButton.png" title="" alt=""
+ style="width: 390px; height: 330px;"> </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr size="2" width="100%">
+      <h2>Sub-Components</h2>
+      <h3>Symbolic Die</h3>
+      <table style="text-align: left; width: 100%;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;"><span
+ style="font-weight: bold;">Name:</span>&nbsp; The name of the die<br>
+            <span style="font-weight: bold;">Results format:<span
+ style="font-style: italic;"></span></span>&nbsp; A <a
+ href="MessageFormat.htm">Message Format</a> specifying how to report
+the result of this die roll.&nbsp; The resulting text will be
+substituted for <span style="font-style: italic;">result1, result2,</span>
+etc in the Symbolic DiceButton's results format: <span
+ style="font-style: italic;">name</span> is the name of this die as
+specified above, <span style="font-style: italic;">result </span>is
+the text value of the Symbolic Die Face that is rolled, <span
+ style="font-style: italic;">numericalValue</span> is the numerical
+value of the Symbolic Die rolled.</td>
+            <td style="vertical-align: top;"><img
+ src="images/SpecialDie.png" title="" alt=""
+ style="width: 315px; height: 104px;"><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Symbolic Die Face</h3>
+      <table style="text-align: left; width: 100%;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">Each die face contains a
+text value, a numerical value, and an image. <br>
+            </td>
+            <td style="vertical-align: top;"><img
+ src="images/SpecialDieFace.png" title="" alt=""
+ style="width: 244px; height: 143px;"><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

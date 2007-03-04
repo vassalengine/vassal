@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Global Key Command</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; <a href="PieceWindow.htm">Game Piece Palette</a></small> <small>&gt;<b>
+      </b><a href="GamePiece.htm">Game Piece</a></small> <small>&gt; <b>Global
+Key Command</b></small><br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Global Key Command<br>
+      </h2>
+      <table border="0" cellpadding="2" cellspacing="2" width="100%">
+        <tbody>
+          <tr>
+            <td valign="top">This trait adds an action that applies a
+key command to to other pieces, similar to the <a
+ href="Map.htm#GlobalKeyCommand">Global Key Command</a> component of a
+Map Window.<br>
+            <br>
+            <span style="font-weight: bold;">Command name:&nbsp; </span>Name
+of the right-click menu item<br>
+            <span style="font-weight: bold;">Keyboard command:</span>&nbsp;
+Keyboard shortcut of the menu item that initiates the command<br>
+            <span style="font-weight: bold;">Global Key Command:</span>&nbsp;
+The key command that will be applied to other pieces<br>
+            <span style="font-weight: bold;">Matching Properties:</span>&nbsp;
+The key command will only be applied to pieces with the specified <a
+ href="Properties.htm">Properties</a>.<br>
+            <span style="font-weight: bold;">Restrict Range:</span> If
+selected, the command will only apply to pieces located within a
+specified distance of this piece.<a href="Properties.htm"></a><br>
+            <span style="font-weight: bold;">Range: &nbsp;</span> Only
+others pieces within this distance, inclusive, of this piece will have
+the command applied to them.&nbsp; If the pieces are on a board with a <a
+ href="HexGrid.htm">Hex Grid</a> or <a href="RectangularGrid.htm">Rectangular
+Grid</a>, then the distance is in units of the grid.&nbsp; Otherwise,
+the distance is measured in screen pixels.<br>
+            <span style="font-weight: bold;">Fixed Range:</span> If selected, then the range is specified as a fixed number.  If un-selected, then the range will be given by the value of the named <a href="Properties.htm">property</a>.<br>
+            <span style="font-weight: bold;"></span><span
+ style="font-weight: bold;">Suppress individual
+reports:</span>&nbsp; If selected, then any auto-reporting of the
+affected pieces will be disabled.&nbsp; Use the <a
+ href="ReportChanges.htm">Report Action</a> trait to provide a summary
+message in their place.<br>
+            <br>
+            <span style="font-weight: bold;"></span><span
+ style="font-weight: bold;">EXAMPLE:</span>&nbsp; A leader counter and
+infantry counters both have <a href="PropertyMarker.htm">Marker</a>
+traits to
+specify their nationality and type.&nbsp; A <a href="Layer.htm">Layer</a>
+trait represents the rallied state of an infantry counter, uses <span
+ style="font-style: italic;">CTRL A</span> to activate the layer, and
+uses <span style="font-style: italic;">Rally</span> as the name.&nbsp;
+A Global Key Command on the leader counter can select and rally all
+infantry counters within two hexes of the same nationality that are not
+rallied by
+specifying <span style="font-style: italic;">Range=2</span> and
+matching properties <span style="font-style: italic;">type=Infantry
+&amp;&amp; nation=$nation$ &amp;&amp; Rally_Active=false</span>.<br>
+            </td>
+            <td valign="top"><img alt=""
+ src="images/CounterGlobalKeyCommand.png"
+ >&nbsp;<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr size="2" width="100%"> </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

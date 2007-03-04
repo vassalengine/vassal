@@ -1,0 +1,365 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Game Piece Layout</title>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tbody>
+    <tr align="center">
+      <td valign="top">
+      <h1>VASSAL Reference Manual</h1>
+      <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
+&gt; </small><small><a href="GamePieceImageDefinitions.htm">Game Piece
+Image Definitions</a> &gt; </small><small><b>Game Piece Layouts</b></small><br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top">
+      <hr size="2" width="100%">
+      <h2>Game Piece Layouts</h2>
+      <div style="text-align: left;">This component contains all the
+layouts used to define a <a href="GamePieceImage.htm">Game Piece Image</a>.&nbsp;
+Right-click and select "Add Game Piece Layout" to add a
+new layout.<br>
+      <br>
+      <p>A Game Piece Layout defines the general look and layout of the
+items used in drawing an image. Specific color and text information is
+defined for individual counter images in an Image Definition.<br>
+      </p>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">
+            <p>An Image is built up by drawing in order: </p>
+            <ol>
+              <li class="level1"><span class="li">A rectangle of the
+background color.</span></li>
+              <li class="level1"><span class="li">A border.</span></li>
+              <li class="level1"><span class="li">Each defined item in
+the
+order displayed in the Item panel.</span></li>
+            </ol>
+            <strong>Name:</strong> The name of the Image Layout.<br>
+            <strong>Counter Width:</strong> The width of all counters
+created
+using this layout.<br>
+            <strong>Counter Height:</strong> The height of all counters
+created using this layout.<br>
+            <strong>Border Style: </strong> The border style for all
+counters created using this layout. Border styles currently available
+are:
+            <ul>
+              <li class="level1"><span class="li">None - No Border</span></li>
+              <li class="level1"><span class="li">Plain - Single pixel
+line
+of defined color.</span></li>
+              <li class="level1"><span class="li">Fancy - Two pixel
+shaded
+line of defined color. Mild 3D effect.</span></li>
+              <li class="level1"><span class="li">3D - A 3D-style
+shaded border. Two pixels wide, colour automatically determined from
+background color.</span></li>
+            </ul>
+            <strong>Reduce Images to 256 Colors:</strong> This option results in smaller module files and will not degrade image quality unless the counters use high-resolution photographic images<br>
+            <p> </p>
+            </td>
+            <td style="vertical-align: top; text-align: left;"><img
+ src="images/imagelayout.png" class="media" alt=""
+ style="border: 0px solid ; " align="middle">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="level2"><br>
+      <h3>Visualizer<br>
+      </h3>
+      <p> </p>
+      </div>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">
+            <p>The
+next section conatains a visualizer, showing you in actual size what
+your finished counter will look like. No colors or text have been
+defined yet, so sample text values and images placeholders are
+displayed. </p>
+            <p> </p>
+            </td>
+            <td style="vertical-align: top; text-align: left;"><img
+ src="images/imagelayoutvisualizer.png" class="media" alt=""
+ align="middle" border="0" > </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <h3>Item List<br>
+      </h3>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">
+            <p>The
+Items panel shows the list of defined items for this Layout. Layout
+items are drawn onto the counter image in the order specified. Click on
+an item in the panel to display and edit its attributes in the lower
+display panel.</p>
+            <p> </p>
+            </td>
+            <td style="vertical-align: top; text-align: left;">
+            <h3><img src="images/imagelayoutitems.png" class="media"
+ alt="" align="middle" border="0" ></h3>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <h3> Buttons<br>
+      </h3>
+      <div class="level3">
+      <p> </p>
+      </div>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">
+            <p>Use the buttons to add, remove or move Items in the
+list. </p>
+            <ul>
+              <li class="level1"><span class="li">Symbol - Add a NATO
+Unit
+Symbol.</span></li>
+              <li class="level1"><span class="li">Text - Add a Text
+label.</span></li>
+              <li class="level1"><span class="li">Image - Add an image
+from
+the module images directory.</span></li>
+              <li class="level1"><span class="li">Shape - Draw and
+color fill
+a rectangle, rounded rectangle or oval.</span></li>
+              <li class="level1"><span class="li">Remove - Remove the
+selected Item.</span></li>
+              <li class="level1"><span class="li">Up - Move the
+selected Item
+up the list (i.e. draw earlier).</span></li>
+              <li class="level1"><span class="li">Down - Move the
+selected
+Item down the list (i.e. draw later).</span></li>
+            </ul>
+            <p> </p>
+            <p> </p>
+            </td>
+            <td style="vertical-align: top; text-align: left;"><img
+ src="images/imagelayoutbuttons.png" class="media" alt="" align="middle"
+ border="0" > </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <h3>Symbol Item</h3>
+      <br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">
+            <p>A Symbol Item is a generic symbol to be drawn by the
+program.&nbsp;&nbsp; The particular symbol is chosen in the Game Piece
+Image.<br>
+            </p>
+            <p><strong><br>
+Name:</strong> The name of the Item. Items <strong>MUST</strong>
+be uniquely named within an Image Layout.<br>
+            <strong>Location:</strong> Select the location of the item
+on the
+counter.<br>
+            <strong>Symbol Set:</strong> Select the Symbol Set to use.
+Only
+Symbol set available currently is NATO Unit Symbols.<br>
+            <strong>Width:</strong> The width of the body of the symbol
+in
+pixels.<br>
+            <strong>Height:</strong> The height of the body of the
+symbol
+(not including the Size specifier) in pixels.<br>
+            <strong>Line Width:</strong> The width of the line (in
+pixels)used to
+draw the symbol. Fractional line widths can be used. The lines are
+drawn with antialiasing turned on to produce smooth looking lines of
+any width. When using a small symbol size, a line width of 1.0 will
+usually give the best results.</p>
+            <p> </p>
+            </td>
+            <td style="vertical-align: top; text-align: left;"><img
+ src="images/symbolitem.png" class="media" alt="" align="middle"
+ border="0" height="168" width="458"> </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <h3>Label Items</h3>
+      <br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">
+            <p>A Text Item is a text label drawn in a particular font
+at a particular location.&nbsp; The value of the text can be specifed
+in the individual images or in the layout, in which case all images
+using this layout share the same value.<br>
+            </p>
+            <p> <strong>Name:</strong> The name of the Item. Items <strong>MUST</strong>
+be uniquely named within an Image Layout.<br>
+            <strong>Location:</strong> Select the location of the item
+on the
+counter.&nbsp; The location also determines the text justification,
+i.e. selecting Top Left ensures that the upper left corner of the text
+is in the upper left corner of the image.&nbsp; Once the justification
+is set by the Location, you can still use the X/Y offset in the
+advanced options to place the text in a different location.<br>
+            <strong>Font Style:</strong> Select the name of the Font
+Style to
+be used for this Text Item.<br>
+            <strong></strong><strong>Text is:</strong> Select whether
+the text is specified in the layout or in the images. </p>
+            <span class="li"></span>
+            <p> </p>
+            </td>
+            <td style="vertical-align: top; text-align: left;"><img
+ alt="" src="images/imagelayouttext1.png"
+ style="width: 474px; height: 128px;"><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <h3>Text Box Items</h3>
+      <br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">
+            <p>A Text Box Item is multi-line area of text drawn in a particular font
+at a particular location.&nbsp; The value of the text can be specifed
+in the individual images or in the layout, in which case all images
+using this layout share the same value.<br>
+            </p>
+            <p> <strong>Name:</strong> The name of the Item. Items <strong>MUST</strong>
+be uniquely named within an Image Layout.<br>
+            <strong>Location:</strong> Select the location of the item
+on the
+counter.&nbsp; The location also determines the text justification,
+i.e. selecting Top Left ensures that the upper left corner of the text
+is in the upper left corner of the image.&nbsp; Once the justification
+is set by the Location, you can still use the X/Y offset in the
+advanced options to place the text in a different location.<br>
+<strong>Use HTML</strong> If selected, then the contents will be interpreted as HTML.<br>
+            <strong>Font Style:</strong> Select the name of the Font
+Style to
+be used for this Text Item.<br>
+            <strong></strong><strong>Text is:</strong> Select whether
+the text is specified in the layout or in the images. </p>
+            <span class="li"></span>
+            <p> </p>
+            </td>
+            <td style="vertical-align: top; text-align: left;"><img
+ alt="" src="images/imagelayouttextbox.png"><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <h3>Image Item</h3>
+      <br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">
+            <p>An Image item is an imported image.<br>
+            </p>
+            <p><br>
+            </p>
+            <p> <strong>Name:</strong> The name of the Item. Items <strong>MUST</strong>
+be uniquely named within an Image Layout.<br>
+            <strong>Location:</strong> Select the location of the item
+on the
+counter.<br>
+            <strong>Image is:</strong> Specify whether the image is
+specified in this layout or in the images that use this layout.&nbsp;
+Use
+the File
+Open Dialog box to locate a copy of the image you wish to use on your
+PC. When you save the module, VASSAL will attempt to copy this image
+into the <em>images</em> folder within the module zip file. You can
+also manually copy images into your images folder.<br>
+            </p>
+            <p> </p>
+            <p><br>
+            </p>
+            <p> </p>
+            </td>
+            <td style="vertical-align: top; text-align: left;"><img
+ src="images/imageitem.png" class="media" alt=""
+ style="border: 0px solid ; width: 475px; height: 103px;" align="middle">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <h3>Shape Item</h3>
+      <br>
+      <table style="width: 100%; text-align: left;" border="0"
+ cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">
+            <p>A Shape Item is a simple geometric shape.<br>
+            </p>
+            <p> <strong>Name:</strong> The name of the Item. Items <strong>MUST</strong>
+be uniquely named within an Image Layout.<br>
+            <strong>Location:</strong> Select the location of the item
+on the
+counter.<br>
+            <strong>Width: </strong>Select the width of the shape.
+            <br>
+            <strong>Height:</strong> Select the height of the shape.
+            <br>
+            <strong>Shape:</strong> Select the type of shape.
+            <br>
+            <strong>Bevel:</strong> For Rounded Rectangle shapes,
+larger bevel values mean rounder corners.<br>
+            </p>
+            <p> </p>
+            </td>
+            <td style="vertical-align: top; text-align: left;"><img
+ alt="" src="images/ShapeItem.png" style="width: 474px; height: 162px;"><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      </div>
+      <hr size="2" width="100%">
+      <h2>Sub-Components</h2>
+      <h3><a href="GamePieceImage.htm">Game Piece Image<br>
+      </a></h3>
+An image using this layout.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+</body>
+</html>
