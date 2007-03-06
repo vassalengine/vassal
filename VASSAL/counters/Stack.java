@@ -391,7 +391,7 @@ public class Stack implements GamePiece, StateMergeable {
   }
 
   public void setExpanded(boolean b) {
-    expanded = b;
+    expanded = b && getPieceCount() > 1;
   }
 
   public String getState() {
