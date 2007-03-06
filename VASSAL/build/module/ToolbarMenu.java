@@ -32,8 +32,7 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ToolBarComponent;
 
 /**
- * Takes buttons from the toolbar of a Map or the main module and places them
- * into a popup menu
+ * Takes buttons from the toolbar of a Map or the main module and places them into a popup menu
  * 
  * @author rkinney
  * 
@@ -42,6 +41,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   public static final String BUTTON_TEXT = "text";
   public static final String BUTTON_ICON = "icon";
   public static final String BUTTON_HOTKEY = "hotkey";
+  public static final String TOOLTIP = "tooltip";
   public static final String MENU_ITEMS = "menuItems";
   /** Buttons where this property contains a JPopupMenu will turn into sub-menus */
   public static final String MENU_PROPERTY = "ToolbarMenu.popup";
@@ -51,15 +51,16 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   protected JToolBar toolbar;
   protected JPopupMenu menu;
   protected Runnable menuBuilder;
-  
+
   public ToolbarMenu() {
-    launch = new LaunchButton(Resources.getString(Resources.MENU), BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
+    launch = new LaunchButton(Resources.getString(Resources.MENU), TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         launch();
       }
     });
     menu = new JPopupMenu();
     launch.putClientProperty(MENU_PROPERTY, menu);
+    launch.setToolTipText("Display Menu Options");
     GameModule.getGameModule().getGameState().addGameComponent(this);
   }
 
@@ -68,19 +69,18 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {Resources.getString(Resources.BUTTON_TEXT), Resources.getString(Resources.BUTTON_ICON), 
-                         Resources.getString(Resources.HOTKEY_LABEL),Resources.getString(Resources.TOOLBARMENU_MENU_ENTRIES)};
+    return new String[]{Resources.getString(Resources.BUTTON_TEXT), Resources.getString(Resources.TOOLTIP_TEXT), Resources.getString(Resources.BUTTON_ICON),
+                        Resources.getString(Resources.HOTKEY_LABEL), Resources.getString(Resources.TOOLBARMENU_MENU_ENTRIES)};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class, Icon.class, KeyStroke.class, String[].class};
+    return new Class[]{String.class, String.class, Icon.class, KeyStroke.class, String[].class};
   }
 
   public String[] getAttributeNames() {
-    return new String[] {BUTTON_TEXT, BUTTON_ICON, BUTTON_HOTKEY, MENU_ITEMS};
+    return new String[]{BUTTON_TEXT, TOOLTIP, BUTTON_ICON, BUTTON_HOTKEY, MENU_ITEMS};
   }
 
-  
   public String getAttributeValueString(String key) {
     if (MENU_ITEMS.equals(key)) {
       return StringArrayConfigurer.arrayToString((String[]) menuItems.toArray(new String[menuItems.size()]));
@@ -160,23 +160,23 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
         b.addPropertyChangeListener(this);
         b.setVisible(false);
         if (property instanceof JPopupMenu) {
-          // This button corresponds to another ToolbarMenu button.  Turn it into a submenu
+          // This button corresponds to another ToolbarMenu button. Turn it into a submenu
           JPopupMenu toolbarMenu = (JPopupMenu) property;
           toolbarMenu.addContainerListener(this);
           JMenu subMenu = new JMenu(b.getText());
           Component[] items = toolbarMenu.getComponents();
           for (int i = 0; i < items.length; i++) {
             final JMenuItem otherItem = (JMenuItem) items[i];
-            JMenuItem myItem = new JMenuItem(otherItem.getText(),otherItem.getIcon());
+            JMenuItem myItem = new JMenuItem(otherItem.getText(), otherItem.getIcon());
             myItem.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent e) {
                 otherItem.doClick();
               }
             });
             subMenu.add(myItem);
-            buttonsToMenuMap.put(otherItem,myItem);
+            buttonsToMenuMap.put(otherItem, myItem);
           }
-          buttonsToMenuMap.put(b,subMenu);
+          buttonsToMenuMap.put(b, subMenu);
           menu.add(subMenu);
         }
         else {
@@ -193,7 +193,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
       }
     }
   }
-  
+
   protected void scheduleBuildMenu() {
     if (menuBuilder == null) {
       menuBuilder = new Runnable() {
@@ -232,7 +232,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
 
   public void setup(boolean gameStarting) {
     // Prevent our Toolbar buttons from becoming visible on Game close/reopen
-    scheduleBuildMenu();   
+    scheduleBuildMenu();
   }
 
   public Command getRestoreCommand() {

@@ -78,6 +78,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   }
 
   public void mousePressed(MouseEvent e) {
+
     if (e.isConsumed()) {
       return;
     }
@@ -90,23 +91,38 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     }
     boolean ignoreEvent = filter != null && filter.rejectEvent(e);
     if (p != null && !ignoreEvent) {
+      boolean movingStacksPickupUnits = ((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS)).booleanValue();
       if (!KeyBuffer.getBuffer().contains(p)) {
-        if (!e.isShiftDown()) {
+        if (!e.isShiftDown() && !e.isControlDown() && !e.isMetaDown()) {
           KeyBuffer.getBuffer().clear();
         }
         // RFE 1629255 - If the top piece of an unexpanded stack is left-clicked
         // while not selected, then select all of the pieces in the stack
-        if (((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS)).booleanValue() || p.getParent() == null || p.getParent().isExpanded() || e.isMetaDown() ||
+        // RFE 1659481 - Control clicking only deselects
+        if (!e.isControlDown()) {  
+          if (movingStacksPickupUnits || p.getParent() == null || p.getParent().isExpanded() || e.isMetaDown() ||        
               Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
-          KeyBuffer.getBuffer().add(p);
-        }
-        else {
-          Stack s = p.getParent();
-          for (int i=0; i < s.getPieceCount(); i++) {
-            KeyBuffer.getBuffer().add(s.getPieceAt(i));
+            KeyBuffer.getBuffer().add(p);
+          }
+          else {
+            Stack s = p.getParent();
+            for (int i=0; i < s.getPieceCount(); i++) {
+              KeyBuffer.getBuffer().add(s.getPieceAt(i));
+            }
           }
         }
         // End RFE 1629255
+      }
+      else {
+        // RFE 1659481 Ctrl-click deselects clicked units
+        if (p.getParent() != null && !p.getParent().isExpanded() && e.isControlDown() &&
+            Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+         Stack s = p.getParent();
+         for (int i=0; i < s.getPieceCount(); i++) {
+           KeyBuffer.getBuffer().remove(s.getPieceAt(i));
+         }          
+       }
+       // End RFE 1659481
       }
       if (p.getParent() != null) {
         map.getPieceCollection().moveToFront(p.getParent());
@@ -116,7 +132,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       }
     }
     else {
-      if (!e.isShiftDown()) {   // No deselect if shift key down
+      if (!e.isShiftDown() && !e.isControlDown()) {   // No deselect if shift key down
         KeyBuffer.getBuffer().clear();
       }
       anchor = map.componentCoordinates(e.getPoint());
@@ -130,12 +146,15 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
   }
 
   public void mouseReleased(MouseEvent evt) {
+
     if (selection != null) {
       selection.setLocation(map.mapCoordinates(selection.getLocation()));
       selection.width /= map.getZoom();
       selection.height /= map.getZoom();
-      PieceVisitorDispatcher d = createDragSelector();
-      if (!evt.isShiftDown()) {   // No deselect if shift key down
+      PieceVisitorDispatcher d = createDragSelector(!evt.isControlDown());
+      // RFE 1659481 Don't clear the entire selection buffer if either shift
+      // or control is down - we select/deselect lassoed counters instead
+      if (!evt.isShiftDown() && !evt.isControlDown()) {   
         KeyBuffer.getBuffer().clear();
       }
       map.apply(d);
@@ -148,43 +167,66 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    * when the player finished dragging a rectangle to select pieces
    * @return
    */
-  protected PieceVisitorDispatcher createDragSelector() {
-    return new PieceVisitorDispatcher(new DeckVisitor() {
-      public Object visitDeck(Deck d) {
-        return null;
-      }
+  protected PieceVisitorDispatcher createDragSelector(boolean selecting) {
+    return new PieceVisitorDispatcher(new KBDeckVisitor(selecting));
+  }
 
-      public Object visitStack(Stack s) {
-        if (s.topPiece() != null) {
-          if (s.isExpanded()) {
-            Point[] pos = new Point[s.getPieceCount()];
-            map.getStackMetrics().getContents(s, pos, null, null, s.getPosition().x, s.getPosition().y);
-            for (int i = 0; i < pos.length; ++i) {
-              if (selection.contains(pos[i])) {
+  public class KBDeckVisitor implements DeckVisitor {
+    boolean selecting = false;
+    
+    public KBDeckVisitor(boolean b) {
+      selecting = b;
+    }
+    
+    public Object visitDeck(Deck d) {
+      return null;
+    }
+    
+    public Object visitStack(Stack s) {
+      if (s.topPiece() != null) {
+        if (s.isExpanded()) {
+          Point[] pos = new Point[s.getPieceCount()];
+          map.getStackMetrics().getContents(s, pos, null, null, s.getPosition().x, s.getPosition().y);
+          for (int i = 0; i < pos.length; ++i) {
+            if (selection.contains(pos[i])) {
+              if (selecting) {
                 KeyBuffer.getBuffer().add(s.getPieceAt(i));
+              }
+              else {
+                KeyBuffer.getBuffer().remove(s.getPieceAt(i));
               }
             }
           }
-          else if (selection.contains(s.getPosition())) {
-            for (int i = 0,n = s.getPieceCount(); i < n; ++i) {
+        }
+        else if (selection.contains(s.getPosition())) {
+          for (int i = 0,n = s.getPieceCount(); i < n; ++i) {
+            if (selecting) {
               KeyBuffer.getBuffer().add(s.getPieceAt(i));
+            }
+            else {
+              KeyBuffer.getBuffer().remove(s.getPieceAt(i));
             }
           }
         }
-        return null;
       }
+      return null;
+    }
 
-      public Object visitDefault(GamePiece p) {
-        if (p.getProperty(Properties.SELECT_EVENT_FILTER) == null
-            && selection.contains(p.getPosition())
-            && !Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))) {
+    public Object visitDefault(GamePiece p) {
+      if (p.getProperty(Properties.SELECT_EVENT_FILTER) == null
+          && selection.contains(p.getPosition())
+          && !Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))) {
+        if (selecting) {
           KeyBuffer.getBuffer().add(p);
         }
-        return null;
+        else {
+          KeyBuffer.getBuffer().remove(p);
+        }
       }
-    });
+      return null;
+    }
   }
-
+  
   public void mouseDragged(MouseEvent e) {
     if (selection != null) {
       selection.x = Math.min(e.getX(), anchor.x);

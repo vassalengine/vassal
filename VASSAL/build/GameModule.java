@@ -118,8 +118,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   protected JPanel controlPanel = new JPanel();
 
-  private JToolBar toolBar = new JToolBar();
-  private JMenu fileMenu = new JMenu("File");
+  protected JToolBar toolBar = new JToolBar();
+  protected JMenu fileMenu = new JMenu("File");
 
   protected GameState theState;
   protected DataArchive archive;
@@ -253,7 +253,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString(Resources.GAMEMODULE_NAME_LABEL), Resources.getString(Resources.GAMEMODULE_VERSION_LABEL)};
+    return new String[]{"Game Name:  ", "Version No.:  "};
   }
 
   public Class[] getAttributeTypes() {
