@@ -34,6 +34,7 @@ import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
@@ -42,6 +43,7 @@ import VASSAL.tools.LaunchButton;
  * This component places a button into the controls window toolbar.
  * Pressing the button generates random numbers and displays the
  * result in the Chatter */
+// I18n: Partial
 public class DiceButton extends AbstractConfigurable {
   protected java.util.Random ran;
   protected int nSides = 6, nDice = 2, plus = 0;

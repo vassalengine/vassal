@@ -30,9 +30,11 @@ import VASSAL.build.IllegalBuildException;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.SequenceEncoder;
 
+// I18n: Complete
 public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
   // Preferences key for the list of extensions to load
   private static final String SPECIFY_DIR_IN_PREFS = "specifyExtensionDirInPrefs";
@@ -43,9 +45,9 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
 
   public void addTo(GameModule mod) {
     if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) {
-      DirectoryConfigurer config = new DirectoryConfigurer(EXTENSION_DIR, "Extensions Directory");
+      DirectoryConfigurer config = new DirectoryConfigurer(EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory"));
       config.setValue((Object) null);
-      GameModule.getGameModule().getPrefs().addOption("Extensions", config);
+      GameModule.getGameModule().getPrefs().addOption(Resources.getString("ExtensionsLoader.extensions_tab"), config);
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           addExtensions();
@@ -64,7 +66,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
           try {
             ModuleExtension ext = new ModuleExtension(new DataArchive(extensions[i]));
             ext.build();
-            String msg = "Extension " + ext.getName() + " v" + ext.getVersion() + " loaded";
+            String msg = Resources.getString("ExtensionsLoader.extension_loaded", ext.getName(), ext.getVersion());
             loadedExtensions.add(extensions[i]);
             GameModule.getGameModule().warn(msg);
             System.err.println(msg);
@@ -86,7 +88,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
       msg = e.getClass().getName();
       msg = msg.substring(msg.lastIndexOf('.'));
     }
-    GameModule.getGameModule().warn("Unable to load extension " + name + ":  " + msg);
+    GameModule.getGameModule().warn(Resources.getString("ExtensionsLoader.unable_to_load", name , msg));
   }
 
   public Command decode(String command) {

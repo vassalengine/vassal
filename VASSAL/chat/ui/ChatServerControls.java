@@ -50,11 +50,13 @@ import VASSAL.build.module.ServerConnection;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.VisibilityOption;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.KeyStrokeListener;
 
+//I18n: Complete
 public class ChatServerControls extends AbstractBuildable {
 
   protected RoomTree currentRoom;
@@ -76,13 +78,13 @@ public class ChatServerControls extends AbstractBuildable {
     JPanel roomPanel = new JPanel();
     roomPanel.setLayout(new BoxLayout(roomPanel, BoxLayout.Y_AXIS));
     Box b = Box.createHorizontalBox();
-    b.add(new JLabel("New Game: "));
+    b.add(new JLabel(Resources.getString("Chat.new_game"))); 
     newRoom = new JTextField(12);
     newRoom.setMaximumSize(newRoom.getPreferredSize());
     b.add(newRoom);
     roomPanel.add(b);
     roomPanel.add(scroll);
-    roomPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), "Active Games"));
+    roomPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), Resources.getString("Chat.active_games"))); 
     split.setLeftComponent(roomPanel);
     currentRoom = new RoomTree();
     currentRoom.addTreeWillExpandListener(new javax.swing.event.TreeWillExpandListener() {
@@ -94,22 +96,22 @@ public class ChatServerControls extends AbstractBuildable {
       }
     });
     scroll = new JScrollPane(currentRoom);
-    scroll.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), "Current Game"));
+    scroll.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), Resources.getString("Chat.current_game"))); 
     split.setRightComponent(scroll);
     split.setDividerLocation(160);
     split.setPreferredSize(new java.awt.Dimension(320, 120));
     controlPanel = new JPanel();
     controlPanel.setLayout(new java.awt.BorderLayout());
-    controlPanel.add("Center", split);
+    controlPanel.add("Center", split); 
     toolbar = new JToolBar();
-    controlPanel.add("North", toolbar);
+    controlPanel.add("North", toolbar); 
     toolbar.addSeparator();
   }
   
   public void addTo(Buildable b) {
     final GameModule gm = GameModule.getGameModule();
     setClient((ChatServerConnection) gm.getServer());
-    launch = new JButton("Server");
+    launch = new JButton(Resources.getString("Chat.server")); 
     launch.setAlignmentY(0.0F);
     ActionListener al = new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -119,7 +121,7 @@ public class ChatServerControls extends AbstractBuildable {
     launch.addActionListener(al);
     final KeyStrokeListener l = new KeyStrokeListener(al);
     l.setKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
-    URL iconURL = getClass().getResource("/images/connect.gif");
+    URL iconURL = getClass().getResource("/images/connect.gif"); 
     if (iconURL != null) {
       launch.setIcon(new ImageIcon(iconURL));
       launch.setText(null);
@@ -127,8 +129,8 @@ public class ChatServerControls extends AbstractBuildable {
     GameModule.getGameModule().getFrame().addComponentListener(new ComponentAdapter() {
       public void componentShown(ComponentEvent e) {
         GameModule.getGameModule().getFrame().removeComponentListener(this);
-        final IconConfigurer iconConfig = new IconConfigurer("serverControlsIcon", "Server controls button icon", "/images/connect.gif");
-        iconConfig.setValue("/images/connect.gif");
+        final IconConfigurer iconConfig = new IconConfigurer("serverControlsIcon", Resources.getString("Chat.server_controls_button_icon"), "/images/connect.gif");
+        iconConfig.setValue("/images/connect.gif"); 
         GlobalOptions.getInstance().addOption(iconConfig);
         iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
           public void propertyChange(PropertyChangeEvent evt) {
@@ -136,12 +138,12 @@ public class ChatServerControls extends AbstractBuildable {
           }
         });
         iconConfig.fireUpdate();
-        final HotKeyConfigurer keyConfig = new HotKeyConfigurer("serverControlsHotKey", "Server controls hotkey", l.getKeyStroke());
+        final HotKeyConfigurer keyConfig = new HotKeyConfigurer("serverControlsHotKey", Resources.getString("Chat.server_controls_hotkey"), l.getKeyStroke());  
         GlobalOptions.getInstance().addOption(keyConfig);
         keyConfig.addPropertyChangeListener(new PropertyChangeListener() {
           public void propertyChange(PropertyChangeEvent evt) {
             l.setKeyStroke((KeyStroke) keyConfig.getValue());
-            launch.setToolTipText("Show/Hide the server controls [" + HotKeyConfigurer.getString(l.getKeyStroke()) + "]");
+            launch.setToolTipText(Resources.getString("Chat.server_controls_tooltip", HotKeyConfigurer.getString(l.getKeyStroke()))); 
           }
         });
         keyConfig.fireUpdate();
@@ -164,10 +166,10 @@ public class ChatServerControls extends AbstractBuildable {
         SwingUtilities.invokeLater(runnable);
       }
       else {
-        JFrame frame = new JFrame("Server");
+        JFrame frame = new JFrame(Resources.getString("Chat.server")); 
         frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.getContentPane().add(controlPanel);
-        String key = "BoundsOfClientWindow";
+        String key = "BoundsOfClientWindow"; 
         PositionOption pos = new VisibilityOption(key, frame);
         GameModule.getGameModule().getPrefs().addOption(pos);
         frame.setVisible(true);

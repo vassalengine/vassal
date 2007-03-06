@@ -37,6 +37,7 @@ import VASSAL.tools.ToolBarComponent;
  * @author rkinney
  * 
  */
+// I18n: Complete
 public class ToolbarMenu extends AbstractConfigurable implements ContainerListener, PropertyChangeListener, GameComponent {
   public static final String BUTTON_TEXT = "text";
   public static final String BUTTON_ICON = "icon";
@@ -69,16 +70,16 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString(Resources.BUTTON_TEXT), Resources.getString(Resources.TOOLTIP_TEXT), Resources.getString(Resources.BUTTON_ICON),
-                        Resources.getString(Resources.HOTKEY_LABEL), Resources.getString(Resources.TOOLBARMENU_MENU_ENTRIES)};
+    return new String[] {Resources.getString(Resources.BUTTON_TEXT), Resources.getString(Resources.TOOLTIP_TEXT), Resources.getString(Resources.BUTTON_ICON), 
+                         Resources.getString(Resources.HOTKEY_LABEL),Resources.getString("Editor.ToolbarMenu.menu_entries")};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, String.class, Icon.class, KeyStroke.class, String[].class};
+    return new Class[] {String.class, String.class, Icon.class, KeyStroke.class, String[].class};
   }
 
   public String[] getAttributeNames() {
-    return new String[]{BUTTON_TEXT, TOOLTIP, BUTTON_ICON, BUTTON_HOTKEY, MENU_ITEMS};
+    return new String[] {BUTTON_TEXT, TOOLTIP, BUTTON_ICON, BUTTON_HOTKEY, MENU_ITEMS};
   }
 
   public String getAttributeValueString(String key) {
@@ -127,7 +128,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString(Resources.TOOLBARMENU_COMPONENT_TYPE);
+    return Resources.getString("Editor.ToolbarMenu.component_type");
   }
 
   public void removeFrom(Buildable parent) {

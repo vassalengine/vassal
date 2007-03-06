@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 import VASSAL.build.GameModule;
-import VASSAL.chat.ui.BasicChatControlsInitializer;
-import VASSAL.chat.ui.ChatControlsInitializer;
-import VASSAL.chat.ui.ChatServerControls;
+import VASSAL.i18n.Resources;
 
 /**
  * Determines server implementation at run-time by downloading properties from the vassalengine.org site. Refreshes
@@ -33,6 +31,7 @@ import VASSAL.chat.ui.ChatServerControls;
  * @author rkinney
  * 
  */
+// I18n: Complete
 public class DynamicClient extends HybridClient {
   private String serverConfigURL;
 
@@ -64,7 +63,7 @@ public class DynamicClient extends HybridClient {
     p.put("vassalVersion", VASSAL.Info.getVersion());
     Enumeration e = r.doGet(p);
     if (!e.hasMoreElements()) {
-      throw new IOException("Empty response");
+      throw new IOException(Resources.getString("Server.empty_response"));
     }
     p = new Properties();
     StringBuffer buff = new StringBuffer();

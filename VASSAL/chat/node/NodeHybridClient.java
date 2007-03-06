@@ -31,11 +31,13 @@ import VASSAL.chat.peer2peer.DirectPeerPool;
 import VASSAL.chat.peer2peer.P2PClient;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.command.CommandEncoder;
+import VASSAL.i18n.Resources;
 
 /**
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
  * Date: May 29, 2003
  */
+// I18n: Complete
 public class NodeHybridClient extends DynamicClient {
   private String addressURL;
   private MessageBoard msgSvr;
@@ -68,9 +70,9 @@ public class NodeHybridClient extends DynamicClient {
     ChatServerConnection c = null;
     try {
       String address = getAddressFromURL();
-      int index = address.indexOf(":");
+      int index = address.indexOf(":"); 
       if (index < 0) {
-        fireStatus("Bad server address \'"+address + "': No port specified");
+        fireStatus(Resources.getString("Server.bad_address", address)); 
       }
       else {
         try {
@@ -79,15 +81,15 @@ public class NodeHybridClient extends DynamicClient {
           c = new SocketNodeClient(info.getModuleName(), info.getUserName(),encoder, address, port, msgSvr, welcomeMsgSvr);
         }
         catch (NumberFormatException ex) {
-          fireStatus("Bad server address '"+address + "'");
+          fireStatus(Resources.getString("Server.bad_address2", address));  
         }
       }
     }
     catch (IOException e) {
-      fireStatus("Unable to determine server address");
+      fireStatus(Resources.getString("Server.bad_address3")); 
     }
     if (c == null) {
-      fireStatus("Defaulting to peer-to-peer mode");
+      fireStatus(Resources.getString("Server.peer_to_peer")); 
       c = new P2PClient(encoder, msgSvr, welcomeMsgSvr, new DirectPeerPool());
     }
     return c;
@@ -96,11 +98,11 @@ public class NodeHybridClient extends DynamicClient {
   private String getAddressFromURL() throws IOException {
     HttpRequestWrapper r = new HttpRequestWrapper(addressURL);
     Properties p = new Properties();
-    p.put("module",info.getModuleName());
-    p.put("vassalVersion",VASSAL.Info.getVersion());
+    p.put("module",info.getModuleName()); 
+    p.put("vassalVersion",VASSAL.Info.getVersion()); 
     Enumeration e = r.doGet(p);
     if (!e.hasMoreElements()) {
-      throw new IOException("Empty response");
+      throw new IOException(Resources.getString("Server.empty_response")); 
     }
     return (String) e.nextElement();
   }

@@ -36,7 +36,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
 public class BasicModule extends GameModule {
@@ -55,7 +54,7 @@ public class BasicModule extends GameModule {
     }
     catch (IOException ex) {
       if (new File(getDataArchive().getName()).exists()) {
-        throw new IOException(Resources.getString(Resources.BASICMODULE_MODULE_ERROR));
+        throw new IOException(Resources.getString("BasicModule.not_a_module"));
       }
     }
     try {
@@ -114,7 +113,7 @@ public class BasicModule extends GameModule {
     ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
     server = new HybridClient();
     ServerConfigurer config = new ServerConfigurer("ServerImpl", "Server", (HybridClient) server);
-    GameModule.getGameModule().getGlobalPrefs().addOption("Server", config);
+    GameModule.getGameModule().getGlobalPrefs().addOption(Resources.getString("Chat.server"), config);
     ChatServerControls c = new ChatServerControls();
     c.addTo(this);
   }
@@ -213,11 +212,9 @@ public class BasicModule extends GameModule {
       getPrefs().addOption(new PositionOption(key, frame, r));
     }
     frame.setVisible(true);
-    FormattedString fs = new FormattedString(Resources.getString(Resources.BASICMODULE_MODULE_MESSAGE));
-    fs.setProperty("gameName$", gameName);     
-    fs.setProperty("$moduleVersion$", moduleVersion);
-    warn(fs.getText());
-    System.err.println("-- " + fs.getText());
+    String mess = Resources.getString("BasicModule.version_message", gameName, moduleVersion);
+    warn(mess);
+    System.err.println("-- " + mess);
     frame.setTitle(gameName);
   }
 

@@ -45,9 +45,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import VASSAL.i18n.Resources;
+
 /**
  * @author rkinney
  */
+// I18n: Complete
 public class InstallJnlpScreen extends InstallProgressScreen implements Constants {
   private List resources = new ArrayList();
   private File installFile;
@@ -61,7 +64,9 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
     jnlpURL = (String) wizard.get(JNLP_URL);
     heapSize = (String) wizard.get(Constants.HEAP_SIZE);
     doInstall();
-    wizard.getDialog().setScreen(new SuccessScreen("<html>Installation successful.<br>To get started, double-click on " + installFile + "</html>"));
+    wizard.getDialog().setScreen(new SuccessScreen(
+        "<html>" + Resources.getString("Install.install_successful") + "<br>" + 
+                   Resources.getString("Install.to_get_started", installFile.toString()) + "</html>"));
   }
 
   public void doInstall() throws IOException {
@@ -136,7 +141,7 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
     writeXmlDocument(doc, file);
     for (Iterator it = resources.iterator(); it.hasNext();) {
       URL resource = (URL) it.next();
-      setStatus("Downloading files: " + getFileName(resource));
+      setStatus(Resources.getString("Install.downloading", getFileName(resource)));
       downloadResource(resource);
     }
   }
@@ -186,20 +191,20 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
 
   protected void checkParameters() throws IOException {
     if (installDir == null) {
-      throw new IOException("Installation directory not specified");
+      throw new IOException(Resources.getString("Install.error_install_dir"));
     }
     if (installDir.exists() && !installDir.isDirectory()) {
-      throw new IOException(installDir + " is not a directory");
+      throw new IOException(Resources.getString("Install.error_not_a_directory", installDir.toString()));
     }
     if (!installDir.exists() && !installDir.mkdir()) {
-      throw new IOException("Unable to create " + installDir);
+      throw new IOException(Resources.getString("Install.error_unable_to_create", installDir.toString()));
     }
     installLibDir = new File(installDir, "lib");
     if (!installLibDir.exists() && !installLibDir.mkdir()) {
-      throw new IOException("Unable to create " + installLibDir);
+      throw new IOException(Resources.getString("Install.error_unable_to_create", installLibDir.toString()));
     }
     if (jnlpURL == null) {
-      throw new IOException("No version specified");
+      throw new IOException(Resources.getString("Install.error_no_version"));
     }
     String file = new URL(jnlpURL).getPath();
     file = file.substring(file.lastIndexOf('/') + 1);

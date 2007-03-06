@@ -27,17 +27,19 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import VASSAL.chat.HttpRequestWrapper;
+import VASSAL.i18n.Resources;
 
 /**
  * @author rkinney
  */
+// I18n: Complete
 public class ChooseVersionScreen implements Screen {
   private JComboBox choice = new JComboBox();
   private JTextField alternateChoice;
   private Box controls;
   public ChooseVersionScreen() {
     controls = Box.createHorizontalBox();
-    controls.add(new JLabel("Select the version to install:  "));
+    controls.add(new JLabel(Resources.getString("Install.select_version")));
     HttpRequestWrapper req = new HttpRequestWrapper("http://www.vassalengine.org/util/getAllVersionNumbers");
     try {
     DefaultComboBoxModel m = new DefaultComboBoxModel(); 

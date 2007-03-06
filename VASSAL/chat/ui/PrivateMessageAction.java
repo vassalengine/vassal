@@ -23,11 +23,14 @@ import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.PrivateChatManager;
 import VASSAL.chat.PrivateChatter;
+import VASSAL.i18n.Resources;
+
 import java.awt.event.ActionEvent;
 
 /**
  * When invoked, will open a private message window to another player
  */
+//I18n: Complete
 public class PrivateMessageAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
@@ -35,7 +38,7 @@ public class PrivateMessageAction extends AbstractAction {
     private PrivateChatManager mgr;
 
     public PrivateMessageAction(Player p, ChatServerConnection client, PrivateChatManager mgr) {
-	super("Private Msg");
+	super(Resources.getString("Chat.private_msg"));
 	this.p = p;
 	this.mgr = mgr;
 	setEnabled(p != null 

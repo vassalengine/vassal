@@ -22,6 +22,8 @@ import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;
 import VASSAL.chat.ServerStatus;
+import VASSAL.i18n.Resources;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.*;
@@ -34,6 +36,7 @@ import java.util.List;
 /**
  * Shows the current status of connections to the server
  */
+//I18n: Complete
 public class ServerStatusView extends JTabbedPane implements ChangeListener, TreeSelectionListener {
   private static final long serialVersionUID = 1L;
 
@@ -53,7 +56,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
     JPanel current = new JPanel(new BorderLayout());
     JToolBar toolbar = new JToolBar();
     toolbar.setFloatable(false);
-    JButton b = new JButton("Refresh");
+    JButton b = new JButton(Resources.getString("Chat.refresh"));
     b.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -70,9 +73,9 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
     treeCurrent = createTree();
     current.add(new JScrollPane(treeCurrent), BorderLayout.CENTER);
     model = (DefaultTreeModel) treeCurrent.getModel();
-    addTab("Current", current);
+    addTab(Resources.getString("Chat.current"), current);
     addChangeListener(this);
-    setBorder(new TitledBorder("Server Connections"));
+    setBorder(new TitledBorder(Resources.getString("Chat.server_connections")));
     setStatusServer(status);
   }
 
@@ -93,7 +96,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
   }
 
   private JTree createTree() {
-    DefaultMutableTreeNode root = new DefaultMutableTreeNode("VASSAL");
+    DefaultMutableTreeNode root = new DefaultMutableTreeNode(Resources.getString(Resources.VASSAL));
     DefaultTreeModel m = new DefaultTreeModel(root, true);
     JTree tree = new JTree(m);
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -170,7 +173,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
       m.removeNodeFromParent((MutableTreeNode) root.getChildAt(0));
     }
     if (modules.length == 0) {
-      DefaultMutableTreeNode n = new DefaultMutableTreeNode("No connections");
+      DefaultMutableTreeNode n = new DefaultMutableTreeNode(Resources.getString("Chat.no_connections"));
       n.setAllowsChildren(false);
     }
     else {

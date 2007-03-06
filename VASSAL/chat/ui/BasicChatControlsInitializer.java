@@ -29,8 +29,10 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import VASSAL.build.module.ServerConnection;
 import VASSAL.chat.ChatServerConnection;
+import VASSAL.i18n.Resources;
 
 /** Adds Connect/Disconnect button to the server controls toolbar */
+// I18n: Complete
 public class BasicChatControlsInitializer implements ChatControlsInitializer {
   private Action connectAction;
   private Action disconnectAction;
@@ -46,31 +48,31 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
 
   public void initializeControls(final ChatServerControls controls) {
     JToolBar toolbar = controls.getToolbar();
-    connectAction = new AbstractAction("Connect") {
+    connectAction = new AbstractAction(Resources.getString("Chat.connect")) { 
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {
         client.setConnected(true);
       }
     };
-    URL imageURL = getClass().getResource("/images/connect.gif");
+    URL imageURL = getClass().getResource("/images/connect.gif"); 
     if (imageURL != null) {
       connectAction.putValue(Action.SHORT_DESCRIPTION, connectAction.getValue(Action.NAME));
-      connectAction.putValue(Action.NAME, "");
+      connectAction.putValue(Action.NAME, ""); 
       connectAction.putValue(Action.SMALL_ICON, new ImageIcon(imageURL));
     }
     connectAction.setEnabled(true);
-    disconnectAction = new AbstractAction("Disconnect") {
+    disconnectAction = new AbstractAction(Resources.getString("Chat.disconnect")) { 
       private static final long serialVersionUID = 1L; 
 
       public void actionPerformed(ActionEvent evt) {
         client.setConnected(false);
       }
     };
-    imageURL = getClass().getResource("/images/disconnect.gif");
+    imageURL = getClass().getResource("/images/disconnect.gif"); 
     if (imageURL != null) {
       disconnectAction.putValue(Action.SHORT_DESCRIPTION, disconnectAction.getValue(Action.NAME));
-      disconnectAction.putValue(Action.NAME, "");
+      disconnectAction.putValue(Action.NAME, ""); 
       disconnectAction.putValue(Action.SMALL_ICON, new ImageIcon(imageURL));
     }
     disconnectAction.setEnabled(false);

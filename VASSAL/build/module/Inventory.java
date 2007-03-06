@@ -92,6 +92,7 @@ import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
@@ -192,9 +193,9 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       }
     };
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
-    setAttribute(NAME, "Inventory");
-    setAttribute(BUTTON_TEXT, "Inventory");
-    setAttribute(TOOLTIP, "Show inventory of all pieces");
+    setAttribute(NAME, Resources.getString("Inventory.inventory"));
+    setAttribute(BUTTON_TEXT, Resources.getString("Inventory.inventory"));
+    setAttribute(TOOLTIP, Resources.getString("Inventory.show_inventory"));
     setAttribute(ICON, "/images/inventory.gif");
     launch.setEnabled(false);
     launch.setVisible(false);
@@ -318,21 +319,21 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   protected Component initButtons() {
     Box buttonBox = Box.createHorizontalBox();
     // Written by Scot McConnachie.
-    JButton writeButton = new JButton("Save");
+    JButton writeButton = new JButton(Resources.getString(Resources.SAVE));
     writeButton.addActionListener(new ActionListener() {
     	public void actionPerformed(ActionEvent e) {
     		inventoryToText();
     	}
     });
     buttonBox.add(writeButton);
-    JButton refreshButton = new JButton("Refresh");
+    JButton refreshButton = new JButton(Resources.getString(Resources.REFRESH));
     refreshButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         refresh();
       }
     });
     buttonBox.add(refreshButton);
-    JButton closeButton = new JButton("Close");
+    JButton closeButton = new JButton(Resources.getString(Resources.CLOSE));
     closeButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         frame.setVisible(false);
@@ -371,7 +372,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 				  .getSelectedFile().getPath()));
 		  p.print(output);
 		  p.close();
-	      Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "Wrote " + fc.getSelectedFile().getName());
+	      Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString("Inventory.wrote", fc.getSelectedFile().getName()));
 	      c.execute();
 	  } catch (IOException e) {
 		  JOptionPane.showMessageDialog(null, e.getMessage());

@@ -47,12 +47,14 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
 
 /**
  * Maintains a list of players involved in the current game
  */
+// I18n: Complete
 public class PlayerRoster implements Configurable, CommandEncoder, GameComponent {
   public static final String BUTTON_ICON = "buttonIcon";
   public static final String BUTTON_TEXT = "buttonText";
@@ -69,8 +71,8 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
         launch();
       }
     };
-    retireButton = new LaunchButton("Retire", TOOL_TIP, BUTTON_TEXT, null, BUTTON_ICON, al);
-    retireButton.setToolTipText("Allow another player to take your side in this game");
+    retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, null, BUTTON_ICON, al);
+    retireButton.setToolTipText(Resources.getString("PlayerRoster.allow_another"));
     retireButton.setVisible(false);
   }
 
@@ -103,7 +105,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   }
 
   public static String getConfigureTypeName() {
-    return "Definition of Player Sides";
+    return Resources.getString("Editor.PlayerRoster.component_type");
   }
 
   public void add(Buildable child) {
@@ -167,10 +169,10 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   protected void launch() {
     String mySide = getMySide();
     if (mySide != null || sides.size() != players.size()) {
-      String[] options = sides.size() == players.size() ? new String[] {"Yes", "No"} : new String[] {"Become observer", "Join another side", "Cancel"};
+      String[] options = sides.size() == players.size() ? new String[] {Resources.getString(Resources.YES), Resources.getString(Resources.NO)} : new String[] {Resources.getString("PlayerRoster.become_observer"), Resources.getString("PlayerRoster.join_another_side"), Resources.getString(Resources.CANCEL)};
       final int CANCEL = options.length - 1;
-      int option = (JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(), "Give up your position as '" + mySide + "'?", "Retire",
-          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, "Become observer"));
+      int option = (JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(), Resources.getString("PlayerRoster.give_up_position", mySide), Resources.getString("PlayerRoster.retire"),
+          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, Resources.getString("PlayerRoster.become_observer")));
       if (option == 0) {
         String oldSide = getMySide();
         remove(GameModule.getUserId());
@@ -302,7 +304,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
     }
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, OBSERVER);
-    String newSide = (String) JOptionPane.showInputDialog(GameModule.getGameModule().getFrame(), "Join game as which side", "Choose side",
+    String newSide = (String) JOptionPane.showInputDialog(GameModule.getGameModule().getFrame(), Resources.getString("PlayerRoster.join_game_as"), Resources.getString("PlayerRoster.choose_side"),
         JOptionPane.QUESTION_MESSAGE, null, (String[]) availableSides.toArray(new String[availableSides.size()]), OBSERVER);
     if (newSide != null && !OBSERVER.equals(newSide)) {
       Entry me = new Entry(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
@@ -418,6 +420,6 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
     void sideChanged(String oldSide, String newSide);
   }
 
-  private static String OBSERVER = "<observer>";
+  private static String OBSERVER = Resources.getString("PlayerRoster.observer");
 
 }

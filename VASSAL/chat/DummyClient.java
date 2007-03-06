@@ -25,12 +25,14 @@ import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.chat.ui.MessageBoardControlsInitializer;
 import VASSAL.chat.ui.ServerStatusControlsInitializer;
 import VASSAL.command.Command;
+import VASSAL.i18n.Resources;
 
 /** 
  * Empty server
  * @author rkinney
  *
  */
+// I18n: Complete
 public class DummyClient implements ChatServerConnection, ChatControlsInitializer {
   private Player playerInfo = new SimplePlayer("<nobody>");
   private HttpMessageServer httpMessageServer;
@@ -49,7 +51,7 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
       }
     };
     httpMessageServer = new HttpMessageServer(publicInfo);
-    msgControls = new MessageBoardControlsInitializer("Messages",httpMessageServer);
+    msgControls = new MessageBoardControlsInitializer(Resources.getString("Chat.messages"),httpMessageServer);
     statusControls = new ServerStatusControlsInitializer(new CgiServerStatus());
   }
 

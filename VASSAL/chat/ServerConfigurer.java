@@ -37,6 +37,7 @@ import javax.swing.event.DocumentListener;
 import VASSAL.chat.jabber.JabberClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
 
 /**
  * Specifies the server implementation in the Preferences
@@ -44,13 +45,14 @@ import VASSAL.configure.Configurer;
  * @author rkinney
  * 
  */
+// I18n: Complete
 public class ServerConfigurer extends Configurer {
-  private static final String CONNECTED = "Please disconnect before changing the server settings";
-  private static final String DISCONNECTED = "Select type of server";
+  private static final String CONNECTED = Resources.getString("Server.please_disconnect");
+  private static final String DISCONNECTED = Resources.getString("Server.select_server_type");
   private static final String BUTTON = "Button";
-  private static final String DYNAMIC_BUTTON = "Default";
-  private static final String JABBER_BUTTON = "Jabber";
-  private static final String DIRECT_BUTTON = "Direct peer-to-peer";
+  private static final String DYNAMIC_BUTTON = Resources.getString("Server.default");
+  private static final String JABBER_BUTTON = Resources.getString("Server.jabber");
+  private static final String DIRECT_BUTTON = Resources.getString("Server.direct");
   private static final String ENCODING = "ISO-8859-1";
   private Box controls;
   private JTextField jabberHost;
@@ -106,7 +108,7 @@ public class ServerConfigurer extends Configurer {
       });
       group.add(jabberButton);
       box.add(jabberButton);
-      jabberHostPrompt = new JLabel("Host:  ");
+      jabberHostPrompt = new JLabel(Resources.getString("Server.host"));
       box.add(jabberHostPrompt);
       jabberHost = new JTextField(18);
       jabberHost.setMaximumSize(new Dimension(jabberHost.getMaximumSize().width, jabberHost.getPreferredSize().height));

@@ -78,12 +78,10 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
-import VASSAL.i18n.VassalOptionPane;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.FileChooser;
-import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
@@ -98,18 +96,19 @@ import VASSAL.tools.ToolBarComponent;
  * It is a singleton, and contains access points for many other classes,
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger},
  * and {@link Prefs} */
+//I18n: Complete
 public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, GlobalPropertiesContainer {
-  protected static final String DEFAULT_NAME = "Unnamed module";
-  public static final String MODULE_NAME = "name";
-  public static final String MODULE_VERSION = "version";
-  public static final String VASSAL_VERSION_CREATED = "VassalVersion";
+  protected static final String DEFAULT_NAME = "Unnamed module"; 
+  public static final String MODULE_NAME = "name"; 
+  public static final String MODULE_VERSION = "version"; 
+  public static final String VASSAL_VERSION_CREATED = "VassalVersion"; 
   /** The System property of this name will return a version identifier for the version of VASSAL being run */
-  public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion";
+  public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion"; 
 
   private static GameModule theModule;
 
-  protected String moduleVersion = "0.0";
-  protected String vassalVersionCreated = "0.0";
+  protected String moduleVersion = "0.0"; 
+  protected String vassalVersionCreated = "0.0"; 
   protected String gameName = DEFAULT_NAME;
   protected String lastSavedConfiguration;
   protected FileChooser fileChooser;
@@ -119,7 +118,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected JPanel controlPanel = new JPanel();
 
   protected JToolBar toolBar = new JToolBar();
-  protected JMenu fileMenu = new JMenu("File");
+  protected JMenu fileMenu = new JMenu(Resources.getString(Resources.FILE)); 
 
   protected GameState theState;
   protected DataArchive archive;
@@ -192,14 +191,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        FormattedString fs = new FormattedString(Resources.getString(Resources.GAMEMODULE_VERSION_ERROR));
-        fs.setProperty("currentVersion", runningVersion);
-        fs.setProperty("requiredVersion", vassalVersionCreated);
-        VassalOptionPane.showMessageDialog
+        JOptionPane.showMessageDialog
             (null,
-             fs.getText(),
-             Resources.getString(Resources.GAMEMODULE_VERSION_ERROR2),
-             javax.swing.JOptionPane.ERROR_MESSAGE);
+             Resources.getString("GameModule.version_error", runningVersion, vassalVersionCreated), 
+             Resources.getString("GameModule.version_error_short"), 
+             JOptionPane.ERROR_MESSAGE);
       }
     }
   }
@@ -238,14 +234,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString(Resources.GAMEMODULE_COMPONENT_TYPE);
+    return Resources.getString("Editor.GameModule.component_type"); 
   }
 
   public void removeFrom(Buildable parent) {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm");
+    return HelpFile.getReferenceManualPage("GameModule.htm"); 
   }
 
   public String[] getAttributeNames() {
@@ -253,7 +249,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Game Name:  ", "Version No.:  "};
+    return new String[]{Resources.getString("Editor.GameModule.name_label"), Resources.getString("Editor.GameModule.version_label")};
   }
 
   public Class[] getAttributeTypes() {
@@ -557,9 +553,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public void appendToTitle(String s) {
     if (s == null) {
-      FormattedString fs = new FormattedString(Resources.getString(Resources.GAMEMODULE_FRAME_TITLE));
-      fs.setProperty("gameName", gameName);
-      frame.setTitle(fs.getText());
+      frame.setTitle(Resources.getString("GameModule.frame_title", gameName)); 
     }
     else {
       frame.setTitle(frame.getTitle() + s);
@@ -585,9 +579,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         getPrefs().write();
         if (getDataArchive() instanceof ArchiveWriter
             && !buildString().equals(lastSavedConfiguration)) {
-          switch (VassalOptionPane.showConfirmDialog
-              (frame, Resources.getString(Resources.GAMEMODULE_SAVE_STRING),
-               "", JOptionPane.YES_NO_CANCEL_OPTION)) {
+          switch (JOptionPane.showConfirmDialog
+              (frame, Resources.getString("GameModule.save_module"), 
+               "", JOptionPane.YES_NO_CANCEL_OPTION)) { 
             case JOptionPane.YES_OPTION:
               save();
               break;
@@ -655,9 +649,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public static void init(GameModule module) throws IOException {
     if (theModule != null) {
-      FormattedString fs = new FormattedString(Resources.getString(Resources.GAMEMODULE_OPEN_ERROR));
-      fs.setProperty("moduleName", theModule.getDataArchive().getName());
-      throw new IOException(fs.getText());
+      throw new IOException(Resources.getString("GameModule.open_error", theModule.getDataArchive().getName())); 
     }
     else {
       theModule = module;
@@ -720,8 +712,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     try {
       String save = buildString();
       getArchiveWriter().addFile
-          ("buildFile",
-           new java.io.ByteArrayInputStream(save.getBytes("UTF-8")));
+          ("buildFile", 
+           new java.io.ByteArrayInputStream(save.getBytes("UTF-8"))); 
       if (saveAs) {
         getArchiveWriter().saveAs();
       }
@@ -732,10 +724,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     catch (IOException err) {
       err.printStackTrace();
-      VassalOptionPane.showMessageDialog
+      JOptionPane.showMessageDialog
           (frame,
-           Resources.getString(Resources.GAMEMODULE_SAVE_ERROR) + "\n" + err.getMessage(),
-           Resources.getString(Resources.GAMEMODULE_SAVE_ERROR2),
+           Resources.getString("GameModule.save_error", err.getMessage()),
+           Resources.getString("GameModule.save_error_short"), 
            JOptionPane.ERROR_MESSAGE);
     }
   }
@@ -752,7 +744,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public Object getProperty(Object key) {
     if (GlobalOptions.PLAYER_SIDE.equals(key)) {
       String mySide = PlayerRoster.getMySide();
-      return mySide == null ? "" : mySide;
+      return mySide == null ? "" : mySide; 
     }
     else if (GlobalOptions.PLAYER_NAME.equals(key)) {
       return getPrefs().getValue(GameModule.REAL_NAME);

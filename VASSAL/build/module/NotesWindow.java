@@ -46,6 +46,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.TextConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 
 /**
@@ -54,6 +55,7 @@ import VASSAL.tools.LaunchButton;
  * notes, and each player has a set of private notes visible only to
  * him
  */
+// I18n: Partial
 public class NotesWindow extends AbstractConfigurable
     implements GameComponent, CommandEncoder {
 
@@ -78,16 +80,16 @@ public class NotesWindow extends AbstractConfigurable
     privateNotes = new PrivateNotesController();
     secretNotes = new SecretNotesController();
     frame = new NotesDialog();
-    frame.setTitle("Notes");
+    frame.setTitle(Resources.getString("Notes.notes"));
     ActionListener al = new ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent e) {
         captureState();
         frame.setVisible(!frame.isShowing());
       }
     };
-    launch = new LaunchButton("Notes", TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al);
+    launch = new LaunchButton(Resources.getString("Notes.notes"), TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al);
     launch.setAttribute(ICON, "/images/notes.gif");
-    launch.setToolTipText("Notes");
+    launch.setToolTipText(Resources.getString("Notes.notes"));
     frame.pack();
     setup(false);
   }
@@ -152,21 +154,21 @@ public class NotesWindow extends AbstractConfigurable
       getContentPane().add(tab);
 
       Box b = Box.createVerticalBox();
-      b.add(new JLabel("Visible to all"));
+      b.add(new JLabel(Resources.getString("Notes.visible_to_all")));
       b.add(scenarioNotes.getControls());
-      tab.addTab("Scenario", b);
+      tab.addTab(Resources.getString("Notes.scenario"), b);
 
       b = Box.createVerticalBox();
-      b.add(new JLabel("Visible to all"));
+      b.add(new JLabel(Resources.getString("Notes.visible_to_all")));
       b.add(publicNotes.getControls());
-      tab.addTab("Public", b);
+      tab.addTab(Resources.getString("Notes.public"), b);
 
-      tab.addTab("Private", privateNotes.getControls());
+      tab.addTab(Resources.getString("Notes.private"), privateNotes.getControls());
 
-      tab.addTab("Delayed", secretNotes.getControls());
+      tab.addTab(Resources.getString("Notes.delayed"), secretNotes.getControls());
 
       JPanel p = new JPanel();
-      JButton saveButton = new JButton("Save");
+      JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
       p.add(saveButton);
       saveButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -174,7 +176,7 @@ public class NotesWindow extends AbstractConfigurable
           setVisible(false);
         }
       });
-      JButton cancelButton = new JButton("Cancel");
+      JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           cancel();

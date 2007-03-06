@@ -57,6 +57,7 @@ import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
@@ -70,6 +71,7 @@ import VASSAL.tools.UniqueIdManager;
  * {@link Map Grid}, the thread may snap to the grid and report the
  * distance between endpoints of the line
  * */
+// I18n: Partial
 public class LOS_Thread extends AbstractConfigurable implements
     MouseListener, MouseMotionListener,
     Drawable, Configurable,
@@ -198,9 +200,9 @@ public class LOS_Thread extends AbstractConfigurable implements
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getPrefs().addOption
         (getAttributeValueString(LABEL),
-         new BooleanConfigurer(SNAP_LOS, "Snap Thread to grid"));
+         new BooleanConfigurer(SNAP_LOS, Resources.getString("LOS_Thread.snap_thread_preference")));
     if (fixedColor == null) {
-      ColorConfigurer config = new ColorConfigurer(LOS_COLOR, "Thread Color");
+      ColorConfigurer config = new ColorConfigurer(LOS_COLOR, Resources.getString("LOS_Thread.thread_color_preference"));
       GameModule.getGameModule().getPrefs().addOption
           (getAttributeValueString(LABEL), config);
       threadColor = (Color) GameModule.getGameModule().getPrefs().getValue(LOS_COLOR);
@@ -693,7 +695,8 @@ public class LOS_Thread extends AbstractConfigurable implements
     if (buffer.length() == 0) {
       buffer.append("8");
     }
-    int wid = fm.stringWidth(" Range  "+buffer.toString());
+    String rangeMess = Resources.getString("LOS_Thread.range");
+    int wid = fm.stringWidth(" "+rangeMess+"  "+buffer.toString());
     int hgt = fm.getAscent() + 2;
     int w = mapArrow.x - mapAnchor.x;
     int h = mapArrow.y - mapAnchor.y;
@@ -701,7 +704,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     int y0 = mapArrow.y + (int) ((hgt / 2 + 20) * h / Math.sqrt(w * w + h * h));
     g.fillRect(x0 - wid / 2, y0 + hgt / 2 - fm.getAscent(), wid, hgt);
     g.setColor(Color.white);
-    g.drawString("Range " + range,
+    g.drawString(rangeMess + " " + range,
                  x0 - wid / 2 + fm.stringWidth(" "), y0 + hgt / 2);
     lastRangeRect = new Rectangle(x0 - wid / 2, y0 + hgt / 2 - fm.getAscent(), wid+1, hgt+1);
     Point np = map.mapCoordinates(new Point(lastRangeRect.x, lastRangeRect.y));

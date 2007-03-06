@@ -22,17 +22,19 @@ import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.HttpMessageServer;
+import VASSAL.i18n.Resources;
 
 /**
  * @author rkinney
  */
+// I18n: Complete
 public class P2PClientFactory extends ChatServerFactory {
   public static final String P2P_TYPE="peer2peer";
 
   public ChatServerConnection buildServer(Properties param) {
     HttpMessageServer httpMessageServer = new HttpMessageServer(new PeerPoolInfo() {
         public String getModuleName() {
-          return GameModule.getGameModule() == null ? "<unknown module>" : GameModule.getGameModule().getGameName();
+          return GameModule.getGameModule() == null ? Resources.getString("Chat.unknown_module") : GameModule.getGameModule().getGameName();
         }
 
         public String getUserName() {

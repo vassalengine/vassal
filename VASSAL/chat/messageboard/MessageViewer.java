@@ -30,6 +30,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import VASSAL.i18n.Resources;
+
+// I18n: Complete
 public class MessageViewer extends JPanel {
   private static final long serialVersionUID = 1L;
 
@@ -44,17 +47,17 @@ public class MessageViewer extends JPanel {
 
   public void setMessages(Enumeration msgEnum) {
     msgList.removeAllElements();
-    msgText.setText("");
+    msgText.setText(""); 
     Vector rows = new Vector();
     Vector names = new Vector();
-    names.addElement("Sender");
-    names.addElement("Date");
+    names.addElement(Resources.getString("Chat.sender")); 
+    names.addElement(Resources.getString("Chat.date")); 
     while (msgEnum.hasMoreElements()) {
       Message msg = (Message) msgEnum.nextElement();
       msgList.addElement(msg);
       Vector cols = new Vector();
       cols.addElement(msg.getSender());
-      cols.addElement(msg.getDate().toString());
+      cols.addElement(Resources.getString(Resources.DATE_DISPLAY, msg.getDate()));
       rows.addElement(cols);
     }
     model = new DefaultTableModel(rows,names);
@@ -67,7 +70,7 @@ public class MessageViewer extends JPanel {
   private void initComponents() {
     JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
-    model = new DefaultTableModel(new Object[]{"Sender","Date"},0);
+    model = new DefaultTableModel(new Object[]{Resources.getString("Chat.sender"),Resources.getString("Chat.date")},0);  
     msgTable = new JTable(model);
     msgTable.getSelectionModel().addListSelectionListener(new ShowMsgText());
     JScrollPane scroll = new JScrollPane(msgTable);
@@ -78,7 +81,7 @@ public class MessageViewer extends JPanel {
     msgText.setWrapStyleWord(true);
     msgText.setEditable(false);
     scroll = new JScrollPane(msgText);
-    scroll.setBorder(new TitledBorder("Message"));
+    scroll.setBorder(new TitledBorder(Resources.getString("Chat.message"))); 
     split.add(scroll);
 
     add(split);
@@ -92,7 +95,7 @@ public class MessageViewer extends JPanel {
         msgText.setText(msg.getText());
       }
       else {
-        msgText.setText("");
+        msgText.setText(""); 
       }
     }
   }

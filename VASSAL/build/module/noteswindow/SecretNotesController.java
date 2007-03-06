@@ -42,6 +42,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
@@ -63,7 +64,7 @@ import VASSAL.tools.SequenceEncoder;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-
+// I18n: Complete
 public class SecretNotesController implements GameComponent, CommandEncoder, AddSecretNoteCommand.Interface {
   public static final String COMMAND_PREFIX = "SNOTE\t";
 
@@ -174,7 +175,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     if (panel == null) {
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-      JLabel l = new JLabel("Visible once revealed");
+      JLabel l = new JLabel(Resources.getString("Notes.visible_once_revealed"));
       l.setAlignmentX(0.0F);
       panel.add(l);
       panel.add(controls);
@@ -198,10 +199,10 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         }
         String msg;
         if (index < 0) {
-          msg = "* " + GlobalOptions.getInstance().getPlayerId() + " has created message \'" + secretNote.getName() + "\' *";
+          msg = "* " + Resources.getString("Notes.has_created", GlobalOptions.getInstance().getPlayerId(), secretNote.getName()) + " *";
         }
         else {
-          msg = "* " + GlobalOptions.getInstance().getPlayerId() + " has revealed message \'" + secretNote.getName() + "\' *";
+          msg = "* " + Resources.getString("Notes.has_revealed", GlobalOptions.getInstance().getPlayerId(), secretNote.getName()) + " *";
         }
         c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
         c.execute();
@@ -227,7 +228,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     private JTextArea text;
     private JTable table;
     private JButton revealButton;
-    private String[] columnNames = {"Player", "Date/Time", "Note Name", "Revealed"};
+    private String[] columnNames = {Resources.getString("Notes.player"), Resources.getString("Notes.date_time"), Resources.getString("Notes.note_name"), Resources.getString("Notes.revealed")};
 
     public Controls() {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -261,7 +262,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       Box b = Box.createHorizontalBox();
       b.setAlignmentX(0.0F);
 
-      JButton newButton = new JButton("New");
+      JButton newButton = new JButton(Resources.getString(Resources.NEW));
       newButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           createNewNote();
@@ -269,7 +270,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       });
       b.add(newButton);
 
-      revealButton = new JButton("Reveal");
+      revealButton = new JButton(Resources.getString("Notes.reveal"));
       revealButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           revealSelectedNote();
@@ -283,7 +284,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       text = new JTextArea(6, 20);
       text.setEditable(false);
       JScrollPane scroll = new ScrollPane(text);
-      scroll.setBorder(new TitledBorder("Text"));
+      scroll.setBorder(new TitledBorder(Resources.getString("Notes.text")));
       add(scroll);
     }
 
@@ -390,19 +391,19 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         tmp = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, this), true);
       }
       final JDialog d = tmp;
-      d.setTitle("Delayed Note");
-      final StringConfigurer name = new StringConfigurer(null, "Name");
-      final TextConfigurer text = new TextConfigurer(null, "Text");
+      d.setTitle(Resources.getString("Notes.delayed_note"));
+      final StringConfigurer name = new StringConfigurer(null, Resources.getString("Notes.name"));
+      final TextConfigurer text = new TextConfigurer(null, Resources.getString("Notes.text"));
       d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
       d.getContentPane().add(name.getControls());
       d.getContentPane().add(text.getControls());
       Box buttonPanel = Box.createHorizontalBox();
-      final JButton okButton = new JButton("Ok");
+      final JButton okButton = new JButton(Resources.getString(Resources.OK));
       okButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           SecretNote note = new SecretNote(name.getValueString(), GameModule.getUserId(), (String) text.getValue(), true);
           if (notes.contains(note)) {
-            JOptionPane.showMessageDialog(Controls.this, "A note of this name already exists");
+            JOptionPane.showMessageDialog(Controls.this, Resources.getString("Notes.note_exists"));
           }
           else {
             notes.add(0, note);
@@ -423,7 +424,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       text.addPropertyChangeListener(l);
       okButton.setEnabled(false);
       buttonPanel.add(okButton);
-      JButton cancelButton = new JButton("Cancel");
+      JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           d.dispose();
@@ -456,7 +457,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
           revealButton.setEnabled(note.isHidden());
         }
         else {
-          text.setText(note.isHidden() ? "<message not revealed>" : note.getText());
+          text.setText(note.isHidden() ? Resources.getString("Notes.message_not_revealed") : note.getText());
         }
       }
     }

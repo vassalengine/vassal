@@ -36,10 +36,12 @@ import VASSAL.build.GameModule;
 import VASSAL.chat.HttpRequestWrapper;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
+import VASSAL.i18n.Resources;
 
 /**
  * Date: Mar 12, 2003
  */
+// I18n: Complete
 public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   private AcceptPeerThread acceptThread;
   private JButton inviteButton;
@@ -47,7 +49,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   private String myIp;
 
   public DirectPeerPool() {
-    inviteButton = new JButton("Invite Players");
+    inviteButton = new JButton(Resources.getString("Peer2Peer.invite_players"));
     inviteButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         frame.setVisible(true);
@@ -80,7 +82,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
       theIp = (String) e.nextElement();
     }
     else {
-      throw new IOException("Empty response");
+      throw new IOException(Resources.getString("Server.empty_response"));
     }
     return theIp;
   }
@@ -98,8 +100,8 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   }
 
   public void connectFailed(PeerInfo peerInfo) {
-    JOptionPane.showMessageDialog(frame, "Could not reach " + peerInfo.getAddresses() + ":" + peerInfo.getPort(),
-                                  "Invite failed", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(frame, Resources.getString("Peer2Peer.could_not_reach", peerInfo.getAddresses(), String.valueOf(peerInfo.getPort())),
+                                  Resources.getString("Peer2Peer.invite_failed"), JOptionPane.INFORMATION_MESSAGE);
   }
 
   public void initComponents(final P2PPlayer me, final PendingPeerManager ppm) {
@@ -107,16 +109,16 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     if (GameModule.getGameModule() != null) {
       owner = GameModule.getGameModule().getFrame();
     }
-    frame = new JDialog(owner,"Direct Connection");
+    frame = new JDialog(owner,Resources.getString("Peer2Peer.direct_connection"));
     frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-    frame.getContentPane().add(createLabel("Your IP address is " + myIp + ":" + me.getInfo().getPort()));
-    frame.getContentPane().add(createLabel("Enter another player's address below and hit the \"Invite\" button."));
+    frame.getContentPane().add(createLabel(Resources.getString("Peer2Peer.your_ip_address", myIp, String.valueOf(me.getInfo().getPort()))));
+    frame.getContentPane().add(createLabel(Resources.getString("Peer2Peer.other_players_address")));
     Box b = Box.createHorizontalBox();
     b.setAlignmentX(0.0f);
-    JButton invite = new JButton("Invite");
+    JButton invite = new JButton(Resources.getString("Peer2Peer.invite"));
     b.add(invite);
-    final JTextField tf = new JTextField("address:port");
+    final JTextField tf = new JTextField(Resources.getString("Peer2Peer.address_port"));
     b.add(tf);
     frame.getContentPane().add(b);
     ActionListener al = new ActionListener() {
@@ -127,7 +129,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
           tf.setText("");
         }
         else {
-          JOptionPane.showMessageDialog(frame, "Invalid format <host>:<port>");
+          JOptionPane.showMessageDialog(frame, Resources.getString("Peer2Peer.invalid_format"));
         }
       }
     };

@@ -19,12 +19,14 @@ package VASSAL.chat;
 
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
+import VASSAL.i18n.Resources;
 
 /**
  * A {@link Command} that, when executed, sends game synchronization
  * information to a given {@link VASSAL.chat.SimplePlayer}
  *
  */
+// I18n: Complete
 public class SynchCommand extends Command {
   private Player recipient;
   private ChatServerConnection client;
@@ -39,7 +41,7 @@ public class SynchCommand extends Command {
   }
 
   protected void executeCommand() {
-    GameModule.getGameModule().warn("Sending game info ... ");
+    GameModule.getGameModule().warn(Resources.getString("Server.sending_game_info"));
     Command synch = GameModule.getGameModule().getGameState().getRestoreCommand();
     if (synch != null) {
       client.sendTo(recipient, synch);

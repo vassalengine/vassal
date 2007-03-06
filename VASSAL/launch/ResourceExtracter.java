@@ -2,6 +2,7 @@ package VASSAL.launch;
 
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.PrefsEditor;
 import VASSAL.tools.ArchiveWriter;
@@ -25,24 +26,25 @@ import java.util.zip.*;
  * User: rkinney
  * Date: Dec 5, 2003
  */
+// I18n: Complete
 public class ResourceExtracter {
   private File destinationDir;
   private JProgressBar bar;
   private JWindow monitor;
   private Prefs prefs;
   private Properties props;
-  public static final String ZIP_RESOURCE_NAME = "resource";
-  public static final String RESOURCE_LIST = "extractList";
-  public static final String ASSEMBLE_TARGET = "assembleTo";
-  public static final String UPDATE_PROMPT_MSG = "prompt";
-  public static final String FIRST_TIME_PROMPT = "initialPrompt";
-  public static final String VERSION_ID = "checksum";
-  public static final String VERSION_ID_PROPERTY = "checksumKey";
-  public static final String INSTALL_DIR_PROPERTY = "installDirKey";
-  public static final String REQUIRED = "required";
-  public static final String STATUS = "status";
-  public static final String SUCCESSFUL = "successful";
-  public static final String FAILED = "failed";
+  public static final String ZIP_RESOURCE_NAME = "resource"; 
+  public static final String RESOURCE_LIST = "extractList"; 
+  public static final String ASSEMBLE_TARGET = "assembleTo"; 
+  public static final String UPDATE_PROMPT_MSG = "prompt"; 
+  public static final String FIRST_TIME_PROMPT = "initialPrompt"; 
+  public static final String VERSION_ID = "checksum"; 
+  public static final String VERSION_ID_PROPERTY = "checksumKey"; 
+  public static final String INSTALL_DIR_PROPERTY = "installDirKey"; 
+  public static final String REQUIRED = "required"; 
+  public static final String STATUS = "status"; 
+  public static final String SUCCESSFUL = "successful"; 
+  public static final String FAILED = "failed"; 
   private PropertyChangeListener listener;
   private String versionIdKey;
   private String installDirKey;
@@ -59,11 +61,11 @@ public class ResourceExtracter {
     this.props = props;
     versionIdKey = props.getProperty(VERSION_ID_PROPERTY);
     if (versionIdKey == null) {
-      throw new IllegalArgumentException("Must specify "+VERSION_ID_PROPERTY);
+      throw new IllegalArgumentException(Resources.getString("ResourceExtracter.must_specify", VERSION_ID_PROPERTY)); 
     }
     installDirKey = props.getProperty(INSTALL_DIR_PROPERTY);
     if (installDirKey == null) {
-      throw new IllegalArgumentException("Must specify "+INSTALL_DIR_PROPERTY);
+      throw new IllegalArgumentException(Resources.getString("ResourceExtracter.must_specify", INSTALL_DIR_PROPERTY)); 
     }
     prefs.addOption(null, new StringConfigurer(versionIdKey, null));
     DirectoryConfigurer config = new DirectoryConfigurer(installDirKey, null);
@@ -73,7 +75,7 @@ public class ResourceExtracter {
 
   /** Prompt user for installation directory */
   protected File chooseInstallDir() {
-    JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
+    JFileChooser chooser = new JFileChooser(System.getProperty("user.home")); 
     chooser.setSelectedFile((File) prefs.getValue(installDirKey));
     chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     boolean cancelable = !isInitialInstall();
@@ -87,7 +89,7 @@ public class ResourceExtracter {
       f = chooser.getSelectedFile();
       if (f != null) {
         if (!f.exists()) {
-          switch (JOptionPane.showConfirmDialog(null, f.getName() + " does not exist.  Create?", "Create directory", JOptionPane.YES_NO_OPTION)) {
+          switch (JOptionPane.showConfirmDialog(null, Resources.getString("ResourceExtracter.does_not_exist", f.getName()), Resources.getString("ResourceExtracter.create_directory"), JOptionPane.YES_NO_OPTION)) {  
             case JOptionPane.YES_OPTION:
               if (!f.mkdir()) {
                 f = null;
@@ -98,7 +100,7 @@ public class ResourceExtracter {
           }
         }
         else if (!f.isDirectory()) {
-          JOptionPane.showMessageDialog(null, f.getName() + " is not a directory", "Not a directory", JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(null, Resources.getString("ResourceExtracter.is_not_a_directory", f.getName()), Resources.getString("ResourceExtracter.not_a_directory"), JOptionPane.ERROR_MESSAGE);  
           f = null;
         }
       }
@@ -116,7 +118,7 @@ public class ResourceExtracter {
     while (st.hasMoreTokens()) {
       buffer.append(st.nextToken());
       if (st.hasMoreTokens()) {
-        buffer.append("\n");
+        buffer.append("\n"); 
       }
     }
     return buffer.toString();
@@ -124,7 +126,7 @@ public class ResourceExtracter {
 
   protected boolean isUpToDate() {
     boolean upToDate = false;
-    String checksum = props.getProperty(VERSION_ID, "");
+    String checksum = props.getProperty(VERSION_ID, ""); 
     if (checksum.equals(prefs.getValue(versionIdKey))) {
       File f = (File) prefs.getValue(installDirKey);
       if (f != null
@@ -142,7 +144,7 @@ public class ResourceExtracter {
 
   protected boolean isInitialInstall() {
     Object value = prefs.getValue(versionIdKey);
-    return value == null || "".equals(value);
+    return value == null || "".equals(value); 
   }
 
   /**
@@ -177,7 +179,7 @@ public class ResourceExtracter {
       JPanel panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       panel.setBackground(Color.white);
-      label = new JLabel("Installing ...");
+      label = new JLabel(Resources.getString("ResourceExtracter.installing")); 
       label.setHorizontalTextPosition(SwingConstants.LEFT);
       label.setBackground(Color.white);
       label.setForeground(Color.black);
@@ -202,7 +204,7 @@ public class ResourceExtracter {
             String msg = e.getMessage();
             if (msg == null
                 || msg.length() == 0) {
-              msg = e.getClass().getName().substring(e.getClass().getName().lastIndexOf("."));
+              msg = e.getClass().getName().substring(e.getClass().getName().lastIndexOf(".")); 
             }
             installFailed(msg);
           }
@@ -222,13 +224,13 @@ public class ResourceExtracter {
     }
     if (isInitialInstall()) {
       if (destinationDir == null) {
-        JOptionPane.showOptionDialog(null, prompt, "Install", JOptionPane.DEFAULT_OPTION
-                                     , JOptionPane.QUESTION_MESSAGE, null, new String[]{"Select"}, "Select");
+        JOptionPane.showOptionDialog(null, prompt, Resources.getString("ResourceExtracter.install"), JOptionPane.DEFAULT_OPTION 
+                                     , JOptionPane.QUESTION_MESSAGE, null, new String[]{Resources.getString("ResourceExtracter.select")}, Resources.getString("ResourceExtracter.select"));  
       }
       return true;
     }
     else {
-      return JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, prompt, "Update", JOptionPane.YES_NO_OPTION);
+      return JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, prompt, Resources.getString("ResourceExtracter.update"), JOptionPane.YES_NO_OPTION); 
     }
   }
 
@@ -244,8 +246,8 @@ public class ResourceExtracter {
         if (monitor != null) {
           monitor.dispose();
         }
-        String msg = isInitialInstall() ? "Installation Complete" : "Update complete";
-        JOptionPane.showMessageDialog(null, msg, "Success", JOptionPane.INFORMATION_MESSAGE);
+        String msg = isInitialInstall() ? Resources.getString("ResourceExtracter.install_complete") : Resources.getString("ResourceExtracter.update_complete");  
+        JOptionPane.showMessageDialog(null, msg, Resources.getString("ResourceExtracter.success"), JOptionPane.INFORMATION_MESSAGE); 
         listener.propertyChange(new PropertyChangeEvent(this, STATUS, null, SUCCESSFUL));
       }
     };
@@ -265,7 +267,7 @@ public class ResourceExtracter {
     Runnable runnable = new Runnable() {
       public void run() {
         monitor.dispose();
-        JOptionPane.showMessageDialog(null, "Unable to install.\n" + msg, "Install failed", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, Resources.getString("ResourceExtracter.unable_to_install", msg), Resources.getString("ResourceExtracter.install_failed"), JOptionPane.ERROR_MESSAGE);  
         listener.propertyChange(new PropertyChangeEvent(this, STATUS, null, FAILED));
       }
     };
@@ -288,7 +290,7 @@ public class ResourceExtracter {
 
   /** Extract a list of resources specified by {@link #getResourceList} into the destination directory */
   private void extractResourceList() throws IOException {
-    label.setText("Unpacking");
+    label.setText(Resources.getString("ResourceExtracter.unpacking")); 
     List resources = getListedResources();
     String nextResource;
     bar.setMaximum(resources.size());
@@ -302,7 +304,7 @@ public class ResourceExtracter {
       bar.setValue(++copyCount);
       File local = new File(destinationDir, nextResource);
       createDir(local.getParentFile());
-      in = getClass().getResourceAsStream("/" + nextResource);
+      in = getClass().getResourceAsStream("/" + nextResource); 
       FileOutputStream out = new FileOutputStream(local);
       while ((readCount = in.read(buffer)) > 0) {
         out.write(buffer, 0, readCount);
@@ -327,8 +329,8 @@ public class ResourceExtracter {
 
   /** Pack the resources specified in {@link #getResourceList} into a Zip file specified by {@link #getAssembleTarget} */
   private void packResourceList() throws IOException {
-    label.setText("Unpacking");
-    File tmp = File.createTempFile("Vdata", ".zip");
+    label.setText(Resources.getString("ResourceExtracter.unpacking")); 
+    File tmp = File.createTempFile("Vdata", ".zip");  
     ZipOutputStream out =
         new ZipOutputStream(new FileOutputStream(tmp));
     File target = getAssembleTarget();
@@ -338,7 +340,7 @@ public class ResourceExtracter {
     for (Iterator it = resources.iterator(); it.hasNext();) {
       String nextResource = (String) it.next();
       label.setText(nextResource);
-      byte[] contents = DataArchive.getBytes(getClass().getResourceAsStream("/" + nextResource));
+      byte[] contents = DataArchive.getBytes(getClass().getResourceAsStream("/" + nextResource)); 
       ZipEntry entry = new ZipEntry(nextResource);
       entry.setMethod(ZipEntry.STORED);
       entry.setSize(contents.length);
@@ -349,15 +351,15 @@ public class ResourceExtracter {
       out.write(contents);
       bar.setValue(++count);
     }
-    label.setText("Saving");
+    label.setText(Resources.getString("ResourceExtracter.saving")); 
     out.close();
     if (target.exists()) {
       if (!target.renameTo(getBackupAssembleTarget())) {
-        throw new IOException("Unable to back up " + target.getPath());
+        throw new IOException(Resources.getString("ResourceExtracter.unable_to_back_up", target.getPath())); 
       }
     }
     if (!tmp.renameTo(target)) {
-      throw new IOException("Unable to create " + target.getPath() + ".\nPlease copy from " + tmp.getPath());
+      throw new IOException(Resources.getString("ResourceExtracter.unable_to_create", target.getPath(), tmp.getPath()));  
     }
   }
 
@@ -370,18 +372,18 @@ public class ResourceExtracter {
     File target = getAssembleTarget();
     String currentVersion = (String) prefs.getValue(versionIdKey);
     if (currentVersion == null) {
-      currentVersion = "backup";
+      currentVersion = "backup"; 
     }
     int index = target.getName().lastIndexOf('.');
     String newName = target.getName().substring(0, index)
-        + "-" + currentVersion + target.getName().substring(index);
+        + "-" + currentVersion + target.getName().substring(index); 
     return new File(target.getParentFile(), newName);
   }
 
   /** Extract the contents of a Zip file specified by {@link #getZipResource} into the destination directory */
   private void extractZipContents() throws IOException {
-    label.setText("Unpacking");
-    File tmp = File.createTempFile("Vdata", ".zip");
+    label.setText(Resources.getString("ResourceExtracter.unpacking")); 
+    File tmp = File.createTempFile("Vdata", ".zip");  
     byte[] buffer = new byte[100000];
     InputStream in = this.getClass().getResourceAsStream(getZipResource());
     OutputStream out = new FileOutputStream(tmp);
@@ -451,13 +453,13 @@ public class ResourceExtracter {
 */
   public static void main(String[] args) throws IOException {
     final Properties p = new Properties();
-    p.load(new FileInputStream("test"));
-    final Prefs prefs = new Prefs(new PrefsEditor(new ArchiveWriter("prefs")), "VASSAL");
+    p.load(new FileInputStream("test")); 
+    final Prefs prefs = new Prefs(new PrefsEditor(new ArchiveWriter("prefs")), Resources.getString(Resources.VASSAL));  
     Runnable runnable = new Runnable() {
       public void run() {
         new ResourceExtracter(prefs, p, new PropertyChangeListener() {
           public void propertyChange(PropertyChangeEvent evt) {
-            System.out.println("" + evt.getNewValue());
+            System.out.println("" + evt.getNewValue()); 
           }
         }).install();
       }

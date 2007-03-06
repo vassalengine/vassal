@@ -21,6 +21,8 @@ package VASSAL.build;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+
+import javax.swing.JOptionPane;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -36,12 +38,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
+
+import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 
 /**
  * This class holds static convenience methods for building {@link Buildable}
  * objects
  */
+// I18n: Complete
 public abstract class Builder {
   /**
    * General building algorithm.  For each subelement of the build
@@ -74,15 +79,14 @@ public abstract class Builder {
             }
             System.err.println(child.toString());
             err.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog
+            JOptionPane.showMessageDialog
               (null,
-               "Unable to create class "
-               + ((Element) child).getTagName()
-               + " in " + GameModule.getGameModule()
-                          .getDataArchive().getName()
-               + "\n" + msg,
-               "Error",
-               javax.swing.JOptionPane.ERROR_MESSAGE);
+               Resources.getString("Builder.create_error", 
+                   new String[] {((Element) child).getTagName(),
+                                 GameModule.getGameModule().getDataArchive().getName(),
+                                 msg }), 
+               Resources.getString("Builder.error"),
+               JOptionPane.ERROR_MESSAGE);
           }
         }
       }

@@ -41,7 +41,6 @@ import VASSAL.chat.SynchEncoder;
 import VASSAL.chat.WelcomeMessageServer;
 import VASSAL.chat.messageboard.Message;
 import VASSAL.chat.messageboard.MessageBoard;
-import VASSAL.chat.ui.BasicChatControlsInitializer;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.chat.ui.LockableRoomControls;
@@ -56,18 +55,20 @@ import VASSAL.chat.ui.SimpleStatusControlsInitializer;
 import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
 
 /**
  * @author rkinney
  */
+//I18n: Complete
 public abstract class NodeClient implements ChatServerConnection, PlayerEncoder, ChatControlsInitializer {
-  public static final String ZIP_HEADER = "!ZIP!";
+  public static final String ZIP_HEADER = "!ZIP!"; 
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected NodePlayer me;
   protected SimpleRoom currentRoom;
-  protected String defaultRoomName = "Main Room";
+  protected String defaultRoomName = Resources.getString("Chat.main_room"); 
   protected NodeRoom[] allRooms = new NodeRoom[0];
   protected MessageBoard msgSvr;
   protected WelcomeMessageServer welcomer;
@@ -95,12 +96,12 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     this.moduleName = moduleName;
     serverStatus = new CgiServerStatus();
     me = new NodePlayer(playerId);
-    messageBoardControls = new MessageBoardControlsInitializer("Messages", msgSvr);
+    messageBoardControls = new MessageBoardControlsInitializer(Resources.getString("Chat.messages"), msgSvr); 
     roomControls = new LockableRoomControls(this);
     roomControls.addPlayerActionFactory(ShowProfileAction.factory());
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
     roomControls.addPlayerActionFactory(PrivateMessageAction.factory(this, new PrivateChatManager(this)));
-    roomControls.addPlayerActionFactory(SendSoundAction.factory(this, "Send Wake-up", "wakeUpSound", "phone1.wav"));
+    roomControls.addPlayerActionFactory(SendSoundAction.factory(this, Resources.getString("Chat.send_wakeup"), "wakeUpSound", "phone1.wav"));
     serverStatusControls = new ServerStatusControlsInitializer(serverStatus);
     playerStatusControls = new SimpleStatusControlsInitializer(this);
     synchEncoder = new SynchEncoder(this, this);
@@ -139,7 +140,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
           registerNewConnection();
         }
         catch (IOException e) {
-          propSupport.firePropertyChange(STATUS, null, "Unable to establish connection to server:  " + e.getMessage());
+          propSupport.firePropertyChange(STATUS, null, Resources.getString("Chat.unable_to_establish", e.getMessage())); 
         }
       }
     }
@@ -157,7 +158,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     String path = new SequenceEncoder(moduleName, '/').append(defaultRoomName).getValue();
     send(Protocol.encodeRegisterCommand(me.getId(), path, new PropertiesEncoder(me.toProperties()).getStringValue()));
     if (GameModule.getGameModule() != null) {
-      String username = (String) GameModule.getGameModule().getPrefs().getValue("Login");
+      String username = (String) GameModule.getGameModule().getPrefs().getValue("Login"); 
       if (username != null) {
         send(Protocol.encodeLoginCommand(username));
       }
@@ -196,7 +197,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
       msg = checker.filter(msg, defaultRoomName, currentRoom.getName());
       if (msg.length() > compressionLimit) {
         try {
-          msg = ZIP_HEADER + Base64.encodeBytes(Compressor.compress(msg.getBytes("UTF-8")), false);
+          msg = ZIP_HEADER + Base64.encodeBytes(Compressor.compress(msg.getBytes("UTF-8")), false); 
         }
         catch (IOException e) {
           e.printStackTrace();
@@ -208,13 +209,13 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
 
   public void sendToOthers(String msg) {
     if (currentRoom != null) {
-      String path = new SequenceEncoder(moduleName, '/').append(currentRoom.getName()).append("~" + me.getId()).getValue();
+      String path = new SequenceEncoder(moduleName, '/').append(currentRoom.getName()).append("~" + me.getId()).getValue(); 
       forward(path, msg);
     }
   }
 
   public void sendTo(Player recipient, Command c) {
-    String path = new SequenceEncoder(moduleName, '/').append("*").append(((NodePlayer) recipient).getId()).getValue();
+    String path = new SequenceEncoder(moduleName, '/').append("*").append(((NodePlayer) recipient).getId()).getValue(); 
     forward(path, encoder.encode(c));
   }
 
@@ -304,7 +305,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     else {
       if (msg.startsWith(ZIP_HEADER)) {
         try {
-          msg = new String(Compressor.decompress(Base64.decode(msg.substring(ZIP_HEADER.length()))), "UTF-8");
+          msg = new String(Compressor.decompress(Base64.decode(msg.substring(ZIP_HEADER.length()))), "UTF-8"); 
         }
         catch (IOException e) {
           e.printStackTrace();

@@ -25,6 +25,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.i18n.Resources;
 
 /**
  * This component listens to key events on a Map window and
@@ -32,6 +33,7 @@ import VASSAL.configure.BooleanConfigurer;
  * will use number keypad or arrow keys, or will offer a
  * preferences setting for the user to choose
  */
+// I18n: Partial
 public class Scroller extends AbstractBuildable implements KeyListener {
   /**
    * The attribute name for whether to use arrow keys
@@ -51,7 +53,7 @@ public class Scroller extends AbstractBuildable implements KeyListener {
     map = (Map) parent;
     map.getView().addKeyListener(this);
 
-    BooleanConfigurer c = new BooleanConfigurer(USE_ARROWS, "Use arrow keys to scroll", Boolean.FALSE);
+    BooleanConfigurer c = new BooleanConfigurer(USE_ARROWS, Resources.getString("Scroller.use_arrow_keys_preference"), Boolean.FALSE);
     if (ALWAYS.equals(usingArrows)) {
       GameModule.getGameModule().getPrefs().addOption(null, c);
       c.setValue(Boolean.TRUE);

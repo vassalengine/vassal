@@ -31,18 +31,20 @@ import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.i18n.Resources;
 
 /**
  * Represents the <code>Help</code> menu of the controls window
  */
+//I18n: Complete
 public class Documentation extends AbstractConfigurable {
   /** Preferences key for the directory where VASSAL documentation is stored */
-  public static final String DOCS_DIR = "docsDirectory";
+  public static final String DOCS_DIR = "docsDirectory"; 
 
   private javax.swing.JMenu controls;
 
   public Documentation() {
-    controls = new javax.swing.JMenu("Help");
+    controls = new javax.swing.JMenu(Resources.getString(Resources.HELP));
   }
 
   public javax.swing.JMenu getHelpMenu() {
@@ -53,8 +55,8 @@ public class Documentation extends AbstractConfigurable {
     if (el == null) {
       try {
         AboutScreen about = new AboutScreen();
-        about.setAttribute(AboutScreen.TITLE, "About VASSAL");
-        about.setAttribute(AboutScreen.FILE, "/images/Splash.gif");
+        about.setAttribute(AboutScreen.TITLE, Resources.getString("Documentation.about_vassal")); 
+        about.setAttribute(AboutScreen.FILE, "/images/Splash.gif"); 
         about.addTo(this);
         add(about);
       }
@@ -63,8 +65,8 @@ public class Documentation extends AbstractConfigurable {
       }
 
       HelpFile intro = new HelpFile();
-      intro.setAttribute(HelpFile.TITLE, "Quick Start");
-      intro.setAttribute(HelpFile.FILE, "/help/Intro.html");
+      intro.setAttribute(HelpFile.TITLE, Resources.getString("Documentation.quick_start")); 
+      intro.setAttribute(HelpFile.FILE, "/help/Intro.html"); 
       intro.setAttribute(HelpFile.TYPE, HelpFile.RESOURCE);
       intro.addTo(this);
       add(intro);
@@ -112,7 +114,7 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Help Menu";
+    return Resources.getString("Editor.Documentation.component_type"); 
   }
 
   public String getConfigureName() {
@@ -121,9 +123,9 @@ public class Documentation extends AbstractConfigurable {
 
   public HelpFile getHelpFile() {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
+    dir = new File(dir, "ReferenceManual"); 
     try {
-      return new HelpFile(null, new File(dir, "HelpMenu.htm"));
+      return new HelpFile(null, new File(dir, "HelpMenu.htm")); 
     }
     catch (MalformedURLException ex) {
       return null;

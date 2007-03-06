@@ -43,9 +43,11 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
 
+//I18n: Complete
 public class PrefsEditor {
   private JDialog dialog;
   private Vector options = new Vector();
@@ -63,7 +65,7 @@ public class PrefsEditor {
     savedValues = new Hashtable();
     this.archive = archive;
 
-    editAction = new AbstractAction("Edit Preferences") {
+    editAction = new AbstractAction(Resources.getString("Prefs.edit_preferences")) {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
@@ -78,13 +80,13 @@ public class PrefsEditor {
 
     prefs = new Vector();
 
-    save = new JButton("OK");
+    save = new JButton(Resources.getString(Resources.OK));
     save.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         save();
       }
     });
-    cancel = new JButton("Cancel");
+    cancel = new JButton(Resources.getString(Resources.CANCEL));
     cancel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         cancel();
@@ -99,7 +101,7 @@ public class PrefsEditor {
   public void initDialog(Frame parent) {
     if (dialog == null) {
       dialog = new JDialog(parent, true);
-      dialog.setTitle("Preferences");
+      dialog.setTitle(Resources.getString("Prefs.preferences"));
       dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
       //Handle window closing correctly.
@@ -128,7 +130,7 @@ public class PrefsEditor {
     if (prompt != null) {
       if (setupDialog == null) {
         setupDialog = new JDialog((Frame) null, true);
-        setupDialog.setTitle("Initial Setup");
+        setupDialog.setTitle(Resources.getString("Prefs.initial_setup"));
         setupDialog.getContentPane().setLayout
             (new BoxLayout(setupDialog.getContentPane(), BoxLayout.Y_AXIS));
         setupDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -140,7 +142,7 @@ public class PrefsEditor {
       }
       setupDialog.getContentPane().add(new JLabel(prompt));
       setupDialog.getContentPane().add(c.getControls());
-      JButton b = new JButton("Ok");
+      JButton b = new JButton(Resources.getString(Resources.OK));
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
           setupDialog.setVisible(false);
@@ -161,7 +163,7 @@ public class PrefsEditor {
 
   public void addOption(String category, Configurer c) {
     if (category == null) {
-      category = "General";
+      category = Resources.getString("Prefs.general_tab");
     }
     JPanel pan = null;
     int i = 0;
@@ -220,7 +222,7 @@ public class PrefsEditor {
       write();
     }
     catch (IOException e) {
-      JOptionPane.showMessageDialog(dialog.getOwner(), "Unable to save preferences.\n", "Save error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(dialog.getOwner(), Resources.getString("Prefs.unable_to_save"), Resources.getString("Prefs.save_error"), JOptionPane.ERROR_MESSAGE);
     }
     dialog.setVisible(false);
   }

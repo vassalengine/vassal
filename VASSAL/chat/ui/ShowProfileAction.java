@@ -26,10 +26,12 @@ import javax.swing.SwingUtilities;
 import VASSAL.chat.Player;
 import VASSAL.chat.PlayerInfoWindow;
 import VASSAL.chat.SimplePlayer;
+import VASSAL.i18n.Resources;
 
 /**
  * When invoked, will show profile information about another player
  */
+//I18n: Complete
 public class ShowProfileAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
@@ -37,7 +39,7 @@ public class ShowProfileAction extends AbstractAction {
   private java.awt.Frame f;
 
   public ShowProfileAction(SimplePlayer p, java.awt.Frame f) {
-    super("Show Profile");
+    super(Resources.getString("Chat.show_profile"));
     this.p = p;
     this.f = f;
   }

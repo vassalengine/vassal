@@ -2,115 +2,115 @@ package VASSAL.i18n;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.text.MessageFormat;
+import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.TreeMap;
+
+import javax.swing.UIManager;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.Documentation;
-import VASSAL.configure.DirectoryConfigurer;
 
 public class Resources {
 
-  protected static HashMap strings = new HashMap();
-  protected static ResourceBundle stringBundle;
-
-
-  /*
-   * Commonly used Strings
-   */
-  public static final String BUTTON_TEXT = registerString("general.button_text_label",
-      "Button text:  ");
-  public static final String TOOLTIP_TEXT = registerString("general.tooltip_text_label",
-      "Tooltip Text:  ");
-  public static final String BUTTON_ICON = registerString("general.button_icon_label",
-      "Button Icon:  ");
-  public static final String HOTKEY_LABEL = registerString("general.hotkey_label", "Hotkey:  ");
-  public static final String COLOR_LABEL = registerString("general.color_label", "Color:  ");
-  public static final String NAME_LABEL = registerString("general.name_label", "Name:  ");
-  public static final String ADD = registerString("general.add_button_text", "Add");
-  public static final String REMOVE = registerString("general.remove_button_text", "Remove");
-  public static final String INSERT = registerString("general.insert_button_text", "Insert");
-  public static final String YES = registerString("general.yes", "Yes");
-  public static final String NO = registerString("general.no", "No");
-  public static final String CANCEL = registerString("general.cancel", "Cancel");
-  public static final String SAVE = registerString("general.save", "Save");
-  public static final String OK = registerString("general.save", "OK");
-  public static final String MENU = registerString("general.menu", "Menu");
-  public static final String QUIT = registerString("general.quit", "Quit");
+  protected static ResourceBundle vassalBundle;
+  protected static ResourceBundle editorBundle;
+  
+  protected static String VASSAL_BUNDLE = "VASSAL.i18n.VASSAL";
+  protected static String EDITOR_BUNDLE = "VASSAL.i18n.Editor";
+  protected static Locale activeLocale; 
 
   /*
-   * BasicModule
+   * Commonly used keys
    */
-  public static final String BASICMODULE_MODULE_ERROR = registerString("basicmodule.not_a_module",
-      "Not a VASSAL module");
-  public static final String BASICMODULE_MODULE_MESSAGE = registerString(
-      "basicmodule.module_message", "$gameName$ version $moduleVersion$");
-  /*
-   * GameModule
-   */
-  public static final String GAMEMODULE_COMPONENT_TYPE = registerString(
-      "gamemodule.component_type", "Module");
-  public static final String GAMEMODULE_VERSION_ERROR = registerString(
-      "gamemodule.version_error",
-      "This module was created using version $requiredVersion$ of the VASSAL engine.\nYou are using version $currentVersion$\nIt's recommended you upgrade to the latest version of the VASSAL engine.");
-  public static final String GAMEMODULE_VERSION_ERROR2 = registerString(
-      "gamemodule.version_error_short", "Older version in use");
-  public static final String GAMEMODULE_NAME_LABEL = registerString("gamemodule.name_label",
-      "Game Name:  ");
-  public static final String GAMEMODULE_VERSION_LABEL = registerString("gamemodule.version_label",
-      "Version No.:  ");
-  public static final String GAMEMODULE_FRAME_TITLE = registerString("gamemodule.frame_title",
-      "$gameName$ controls");
-  public static final String GAMEMODULE_SAVE_STRING = registerString("gamemodule.save",
-      "Save Module?");
-  public static final String GAMEMODULE_OPEN_ERROR = registerString("gamemodule.open_error",
-      "Module $moduleName$ is already open");
-  public static final String GAMEMODULE_SAVE_ERROR = registerString("gamemodule.save_error",
-      "Couldn't save module.");
-  public static final String GAMEMODULE_SAVE_ERROR2 = registerString("gamemodule.save_error_short",
-      "Unable to save");
-
-  /*
-   * ToolbarMenu
-   */
-  public static final String TOOLBARMENU_COMPONENT_TYPE = registerString(
-      "toolbarmenu.component_type", "Toolbar Menu");
-  public static final String TOOLBARMENU_MENU_ENTRIES = registerString("toolbarmenu.menu_entries",
-      "Menu Entries");
-
-  /*
-   * Register a translatable string
-   */
-  public static String registerString(String key, String value) {
-    strings.put(key, value);
-    return key;
-  }
+  public static final String VASSAL = "General.VASSAL";
+  public static final String ADD = "General.add";
+  public static final String REMOVE = "General.remove";
+  public static final String INSERT = "General.insert";
+  public static final String YES = "General.yes";
+  public static final String NO = "General.no";
+  public static final String CANCEL = "General.cancel";
+  public static final String SAVE = "General.save";
+  public static final String OK = "General.ok";
+  public static final String MENU = "General.menu";
+  public static final String QUIT = "General.quit";
+  public static final String EDIT = "General.edit";
+  public static final String NEW = "General.new";
+  public static final String FILE = "General.file";
+  public static final String HELP = "General.help";
+  public static final String CLOSE = "General.close";
+  public static final String DATE_DISPLAY = "General.date_display";
+  public static final String NEXT = "General.next";
+  public static final String REFRESH = "General.refresh";
+  
+  public static final String EDITOR_PREFIX = "Editor.";
+  
+  public static final String BUTTON_TEXT = "Editor.button_text_label";
+  public static final String TOOLTIP_TEXT = "Editor.tooltip_text_label";
+  public static final String BUTTON_ICON = "Editor.button_icon_label";
+  public static final String HOTKEY_LABEL = "Editor.hotkey_label";
+  public static final String COLOR_LABEL = "Editor.color_label";
+  public static final String NAME_LABEL = "Editor.name_label";
 
   /*
    * Return the i18nized version of a String
    */
+  public static boolean initialized = false;
+  public static File homeDir;
+  
+  public static void init(File dir) {
+    homeDir = dir;
+    activeLocale = Locale.getDefault();
+    UIManager.put("OptionPane.yesButtonText", getString(YES));
+    UIManager.put("OptionPane.cancelButtonText", getString(CANCEL));
+    UIManager.put("OptionPane.noButtonText", getString(NO));
+    UIManager.put("OptionPane.okButtonText", getString(OK));
+  }
+  
+  /*
+   * Translate a VASSAL user interface String
+   */
   public static String getString(String id) {
-    if (stringBundle == null) {
-      GameModule.getGameModule().getGlobalPrefs().addOption(null, new DirectoryConfigurer(Documentation.DOCS_DIR, null));
-      stringBundle = ResourceBundle.getBundle("VASSAL.i18n.VASSAL", Locale.getDefault(), new VassalPropertyClassLoader());
+    if (id.startsWith(EDITOR_PREFIX)) {
+      return getEditorString(id);
     }
+    else {
+      return getVassalString(id);
+    }
+  }
+  public static String getVassalString(String id) {
+    if (vassalBundle == null) {
+      vassalBundle = ResourceBundle.getBundle(VASSAL_BUNDLE, activeLocale, new VassalPropertyClassLoader());
+    }
+    return getString(vassalBundle, id);
+  }
+  
+  /*
+   * Translate a Module editor String
+   */
+  public static String getEditorString(String id) {
+    if (editorBundle == null) {
+      editorBundle = ResourceBundle.getBundle(EDITOR_BUNDLE, activeLocale, new VassalPropertyClassLoader());
+   }
+   return getString(editorBundle, id);
+  }
+  
+  /*
+   * Translate a string using the supplied resource bundle
+   */
+  public static String getString(ResourceBundle bundle, String id) {
+  
     String s = null;
     
-    // 1. Try Translating
-    s = stringBundle.getString(id);    
+    try {
+      s = bundle.getString(id);
+    }
+    catch (Exception ex) {
+      GameModule.getGameModule().warn("No Translation: " + id);
+    }
     
-    // 2. Try default string
-    if (s == null) {
-      s = (String) strings.get(id);
-    }    
-
-    // 3. Worst case, return the key    
+    // 2. Worst case, return the key    
     if (s == null) {
       s = id;
     }
@@ -119,38 +119,49 @@ public class Resources {
   }
 
   /*
-   * Write the base VASSAL.properties file to disk
+   * Format a string with options. 
+   * Convenience methods for most common case of one or two parameters. 
+   * Will be heavily used, so try and minimise the number of Object arrays being created
    */
-  public static void writeProperties() {
-    File dir = (File) GameModule.getGameModule().getGlobalPrefs().getValue(Documentation.DOCS_DIR);
-    FileOutputStream out = null;
-    Map sorted = new TreeMap(strings);
-    try {
-      out = new FileOutputStream(new File(dir, "VASSAL.properties"));
-      String name;
-      String value;
-      for (Iterator i = sorted.keySet().iterator(); i.hasNext(); ) {
-        name = (String) i.next();
-        value = (String) strings.get(name);
-        I18nSupport.writeProperty(out, name, value);
-      }
-      out.close();
-    }
-    catch (Exception e) {
-      return;
-    }
+  public static MessageFormat formatter = new MessageFormat("");
+  public static Object[] object1 = new Object[1];
+  public static Object[] object2 = new Object[2];
+
+  public static String getString(String id, Date date) {
+    formatter.applyPattern(getString(id));
+    object1[0] = date; 
+    return formatter.format(object1);
   }
+  
+  public static String getString(String id, String option) {
+    formatter.applyPattern(getString(id));
+    object1[0] = option;
+    return formatter.format(object1);
+  }
+
+  public static String getString(String id, String option0, String option1) {
+    formatter.applyPattern(getString(id));
+    object2[0] = option0;
+    object2[1] = option1;
+    return formatter.format(object2);
+  }
+  
+  public static String getString (String id, String[] options) {
+    formatter.applyPattern(getString(id));
+    return formatter.format(options);
+  }
+  
   
   /**
    * Custom Class Loader for loading VASSAL property files.
-   * Check first for files in the VASSAL install (documentation) directory
+   * Check first for files in the VASSAL home directory
    *
    */
   static class VassalPropertyClassLoader extends ClassLoader {
     public URL getResource(String name) {
       URL url = null;
       String propFileName = name.substring(name.lastIndexOf('/')+1);
-      File propFile = new File(Documentation.getDocumentationBaseDir(), propFileName);
+      File propFile = new File(homeDir, propFileName);
  
       try {
         FileInputStream in = new FileInputStream(propFile);

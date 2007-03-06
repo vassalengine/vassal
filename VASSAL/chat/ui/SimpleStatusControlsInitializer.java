@@ -23,11 +23,14 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleStatus;
+import VASSAL.i18n.Resources;
 
+//I18n: Complete
 public class SimpleStatusControlsInitializer implements ChatControlsInitializer {
   private ChatServerConnection client;
   private JButton lookingBox;
@@ -39,7 +42,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
   }
 
   public void initializeControls(final ChatServerControls controls) {
-    lookingBox = new JButton("Looking for game");
+    lookingBox = new JButton(Resources.getString("Chat.looking_for_game"));
     lookingBox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         if (client != null) {
@@ -57,7 +60,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
       lookingBox.setText("");
       lookingBox.setIcon(new ImageIcon(imageURL));
     }
-    awayButton = new JButton("Away from keyboard");
+    awayButton = new JButton(Resources.getString("Chat.away_from_keyboard"));
     awayButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         if (client != null) {
@@ -65,7 +68,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
           SimpleStatus s = (SimpleStatus) p.getStatus();
           s = new SimpleStatus(s.isLooking(),true,s.getProfile());
           client.setUserInfo(new SimplePlayer(p.getId(),p.getName(),s));
-          JOptionPane.showMessageDialog(controls.getRoomTree(), "I'm back", "Away from keyboard", JOptionPane.PLAIN_MESSAGE);
+          JOptionPane.showMessageDialog(controls.getRoomTree(), Resources.getString("Chat.im_back"), Resources.getString("Chat.away_from_keyboard"), JOptionPane.PLAIN_MESSAGE);
           s = (SimpleStatus) p.getStatus();
           s = new SimpleStatus(s.isLooking(),false ,s.getProfile());
           client.setUserInfo(new SimplePlayer(p.getId(),p.getName(),s));

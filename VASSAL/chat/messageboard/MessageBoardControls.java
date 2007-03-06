@@ -32,10 +32,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
+import VASSAL.i18n.Resources;
+
 /**
  * UI controls for posting and retrieving messages from a
  * message board.
  */
+// I18n: Complete
 public class MessageBoardControls {
   private MessageBoard server;
   private String serverName;
@@ -68,21 +71,21 @@ public class MessageBoardControls {
   private void initComponents() {
     viewer = new MessageViewer();
 
-    msgFrame = new JFrame("Message Board");
+    msgFrame = new JFrame(Resources.getString("Chat.message_board")); 
     msgFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     msgFrame.getContentPane().setLayout(new BoxLayout(msgFrame.getContentPane(), BoxLayout.Y_AXIS));
     msgFrame.getContentPane().add(viewer);
 
     Box box = Box.createHorizontalBox();
-    JButton b = new JButton("Refresh");
+    JButton b = new JButton(Resources.getString("Chat.refresh")); 
     b.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
-        msgFrame.setTitle(serverName != null ? serverName+" Message Board" : "Message Board");
+        msgFrame.setTitle(serverName != null ? Resources.getString("Chat.message_board_title", serverName) : Resources.getString("Chat.message_board"));  
         showMessages(server.getMessages());
       }
     });
     box.add(b);
-    b = new JButton("Close");
+    b = new JButton(Resources.getString(Resources.CLOSE)); 
     b.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         msgFrame.setVisible(false);
@@ -93,35 +96,35 @@ public class MessageBoardControls {
 
     msgComposer = new Comp();
 
-    checkMessagesAction = new AbstractAction("Check Messages") {
+    checkMessagesAction = new AbstractAction(Resources.getString("Chat.check_messages")) { 
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {
-        msgFrame.setTitle(serverName != null ? serverName+" Message Board" : "Message Board");
+        msgFrame.setTitle(serverName != null ? Resources.getString("Chat.message_board_title", serverName) : Resources.getString("Chat.message_board"));  
         showMessages(server.getMessages());
         msgFrame.setVisible(true);
       }
     };
 
-    URL imageURL = getClass().getResource("/images/getMessages.gif");
+    URL imageURL = getClass().getResource("/images/getMessages.gif"); 
     if (imageURL != null) {
       checkMessagesAction.putValue(Action.SHORT_DESCRIPTION, checkMessagesAction.getValue(Action.NAME));
-      checkMessagesAction.putValue(Action.NAME, "");
+      checkMessagesAction.putValue(Action.NAME, ""); 
       checkMessagesAction.putValue(Action.SMALL_ICON, new ImageIcon(imageURL));
     }
 
 
-    postMessageAction = new AbstractAction("Post Message") {
+    postMessageAction = new AbstractAction(Resources.getString("Chat.post_message")) { 
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {
         msgComposer.setVisible(true);
       }
     };
-    imageURL = getClass().getResource("/images/postMessage.gif");
+    imageURL = getClass().getResource("/images/postMessage.gif"); 
     if (imageURL != null) {
       postMessageAction.putValue(Action.SHORT_DESCRIPTION, postMessageAction.getValue(Action.NAME));
-      postMessageAction.putValue(Action.NAME, "");
+      postMessageAction.putValue(Action.NAME, ""); 
       postMessageAction.putValue(Action.SMALL_ICON, new ImageIcon(imageURL));
     }
 
@@ -141,25 +144,25 @@ public class MessageBoardControls {
     private static final long serialVersionUID = 1L;
 
     private Comp() {
-      super("Message Composer");
+      super(Resources.getString("Chat.message_composer")); 
       getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       final JTextArea msgArea = new JTextArea(15, 60);
       Box b = Box.createHorizontalBox();
 
-      JButton okButton = new JButton("Send");
+      JButton okButton = new JButton(Resources.getString("Chat.send")); 
       okButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
           server.postMessage(msgArea.getText());
           setVisible(false);
-          msgArea.setText("");
+          msgArea.setText(""); 
         }
       });
-      JButton cancelButton = new JButton("Cancel");
+      JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
           setVisible(false);
-          msgArea.setText("");
+          msgArea.setText(""); 
         }
       });
 

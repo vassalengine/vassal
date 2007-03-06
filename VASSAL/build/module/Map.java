@@ -139,6 +139,7 @@ import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.ReportState;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ComponentSplitter;
@@ -155,6 +156,7 @@ import VASSAL.tools.UniqueIdManager;
  * A Map may contain many different {@link Buildable} subcomponents. Components which are added directly to a Map are
  * contained in the <code>VASSAL.build.module.map</code> package
  */
+// I18n: Partial
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
 		UniqueIdManager.Identifyable, ToolBarComponent, GlobalPropertiesContainer, PropertySource, PlayerRoster.SideChangeListener, Runnable {
   protected String mapID = "";
@@ -199,7 +201,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected String changeFormat = "$" + MESSAGE + "$";
 	protected KeyStroke moveKey;
 	protected JPanel root;
-  protected PropertyChangeListener globalPropertyListener;
+	protected PropertyChangeListener globalPropertyListener;
   protected String tooltip = "";
 
 	public Map() {
@@ -606,10 +608,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_IN_FOCUSED_WINDOW));
 		}
 		PlayerRoster.addSideChangeListener(this);
-    GameModule.getGameModule().getPrefs().addOption("General",
-        new IntConfigurer(PREFERRED_EDGE_DELAY, "Delay scrolling when dragging at map edge (ms)", new Integer(PREFERRED_EDGE_SCROLL_DELAY)));
-    GameModule.getGameModule().getPrefs().addOption("General",
-        new BooleanConfigurer(MOVING_STACKS_PICKUP_UNITS, "Moving stacks pickup units?", Boolean.FALSE));
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
+        new IntConfigurer(PREFERRED_EDGE_DELAY, Resources.getString("Map.scroll_delay_preference"), new Integer(PREFERRED_EDGE_SCROLL_DELAY)));
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
+        new BooleanConfigurer(MOVING_STACKS_PICKUP_UNITS, Resources.getString("Map.moving_stacks_preference"), Boolean.FALSE));
 	}
 
 	public void removeFrom(Buildable b) {
@@ -1384,7 +1386,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
 	public Point positionOf(GamePiece p) {
 		if (p.getMap() != this) {
-			throw new RuntimeException("Piece is not on this map");
+			throw new RuntimeException(Resources.getString("Map.piece_not_on_map"));
 		}
 		Point point = p.getPosition();
 		if (p.getParent() != null) {
@@ -2049,9 +2051,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * Make a best guess for a unique identifier for the target. Use
-   * {@link VASSAL.tools.UniqueIdManager.Identifyable#getConfigureName}
-   * if non-null, otherwise use
+   * Make a best gues for a unique identifier for the target. Use
+   * {@link VASSAL.tools.UniqueIdManager.Identifyable#getConfigureName} if non-null, otherwise use
    * {@link VASSAL.tools.UniqueIdManager.Identifyable#getId}
    * 
    * @return

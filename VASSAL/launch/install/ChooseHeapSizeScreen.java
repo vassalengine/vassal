@@ -25,20 +25,22 @@ import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 
+import VASSAL.i18n.Resources;
+
 /**
  * @author rkinney
  */
 public class ChooseHeapSizeScreen implements Screen, Constants {
   private Box controls = Box.createVerticalBox();
-  private JRadioButton b128M = new JRadioButton("128 MB");
-  private JRadioButton b256M = new JRadioButton("256 MB");
-  private JRadioButton b512M = new JRadioButton("512 MB");
-  private JRadioButton b1000M = new JRadioButton("1 GB");
-  private JRadioButton b1500M = new JRadioButton("1.5 GB");
+  private JRadioButton b128M = new JRadioButton(Resources.getString("Install.128_mb"));
+  private JRadioButton b256M = new JRadioButton(Resources.getString("Install.256_mb"));
+  private JRadioButton b512M = new JRadioButton(Resources.getString("Install.512_mb"));
+  private JRadioButton b1000M = new JRadioButton(Resources.getString("Install.1_gb"));
+  private JRadioButton b1500M = new JRadioButton(Resources.getString("Install.1.5_gb"));
   private ButtonGroup group = new ButtonGroup();
   
   public ChooseHeapSizeScreen() {
-    controls.add(new JLabel("Select memory allocation for the program"));
+    controls.add(new JLabel(Resources.getString("Install.select_memory_size")));
     b128M.putClientProperty(HEAP_SIZE, "128m");
     group.add(b128M);
     controls.add(b128M);

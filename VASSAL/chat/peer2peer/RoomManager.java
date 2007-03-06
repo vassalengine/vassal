@@ -3,13 +3,15 @@ package VASSAL.chat.peer2peer;
 import org.litesoft.p2pchat.PeerInfo;
 import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.Player;
+import VASSAL.i18n.Resources;
 
 import java.util.Enumeration;
 import java.util.Vector;
 
+// I18n: Complete
 public class RoomManager {
   private Vector rooms = new Vector();
-  private SimpleRoom defaultRoom = new SimpleRoom("Main Room");
+  private SimpleRoom defaultRoom = new SimpleRoom(Resources.getString("Chat.main_room"));
 
   public RoomManager() {
     rooms.addElement(defaultRoom);

@@ -34,6 +34,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
+
+import javax.swing.JOptionPane;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,6 +55,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringEnum;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.BooleanPreference;
 import VASSAL.preferences.DoublePreference;
 import VASSAL.preferences.EnumPreference;
@@ -60,6 +64,7 @@ import VASSAL.preferences.StringPreference;
 import VASSAL.preferences.TextPreference;
 import VASSAL.tools.FormattedString;
 
+// I18n: Partial
 public class GlobalOptions extends AbstractConfigurable {
   public static final String NON_OWNER_UNMASKABLE = "nonOwnerUnmaskable";
   public static final String PROMPT_STRING = "promptString";
@@ -96,11 +101,11 @@ public class GlobalOptions extends AbstractConfigurable {
   public void addTo(Buildable parent) {
     instance = this;
 
-    BooleanConfigurer config = new BooleanConfigurer(SINGLE_WINDOW, "Use combined application window (requires restart)", Boolean.TRUE);
+    BooleanConfigurer config = new BooleanConfigurer(SINGLE_WINDOW, Resources.getString("GlobalOptions.use_combined"), Boolean.TRUE);
     GameModule.getGameModule().getPrefs().addOption(config);
     useSingleWindow = !Boolean.FALSE.equals(config.getValue());
 
-    config = new BooleanConfigurer(SCALER_ALGORITHM, "Smooth image scaling", Boolean.TRUE);
+    config = new BooleanConfigurer(SCALER_ALGORITHM, Resources.getString("GlobalOptions.smooth_scaling"), Boolean.TRUE);
     GameModule.getGameModule().getPrefs().addOption(config);
     scalerAlgorithm = !Boolean.FALSE.equals(config.getValue());
 
@@ -220,15 +225,15 @@ public class GlobalOptions extends AbstractConfigurable {
               }
               System.err.println(b.toString());
               err.printStackTrace();
-              javax.swing.JOptionPane.showMessageDialog
+              JOptionPane.showMessageDialog
                 (null,
-                 "Unable to create class "
-                 + ((Element) b).getTagName()
-                 + " in " + GameModule.getGameModule()
-                            .getDataArchive().getName()
-                 + "\n" + msg,
-                 "Error",
-                 javax.swing.JOptionPane.ERROR_MESSAGE);
+                 Resources.getString("GlobalOptions.create_error", 
+                     new String[] {
+                           ((Element) b).getTagName(),
+                           GameModule.getGameModule().getDataArchive().getName(),
+                           msg }),
+                 Resources.getString("GlobalOptions.error"),
+                 JOptionPane.ERROR_MESSAGE);
             }
           }
         }
@@ -316,21 +321,21 @@ public class GlobalOptions extends AbstractConfigurable {
     else if (CENTER_ON_MOVE.equals(key)) {
       centerOnMoves = (String) value;
       if (PROMPT.equals(centerOnMoves)) {
-        BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, "Center on opponent's moves");
+        BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"));
         GameModule.getGameModule().getPrefs().addOption(config);
       }
     }
     else if (AUTO_REPORT.equals(key)) {
       autoReport = (String) value;
       if (PROMPT.equals(autoReport)) {
-        BooleanConfigurer config = new BooleanConfigurer(AUTO_REPORT, "Auto-report moves");
+        BooleanConfigurer config = new BooleanConfigurer(AUTO_REPORT, Resources.getString("GlobalOptions.auto_report"));
         GameModule.getGameModule().getPrefs().addOption(config);
       }
     }
     else if (MARK_MOVED.equals(key)) {
       markMoved = (String) value;
       if (PROMPT.equals(markMoved)) {
-        BooleanConfigurer config = new BooleanConfigurer(MARK_MOVED, "Mark moved pieces");
+        BooleanConfigurer config = new BooleanConfigurer(MARK_MOVED, Resources.getString("GlobalOptions.mark_moved"));
         GameModule.getGameModule().getPrefs().addOption(config);
       }
     }

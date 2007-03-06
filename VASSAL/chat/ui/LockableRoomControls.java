@@ -26,11 +26,13 @@ import VASSAL.chat.LockableRoom;
 import VASSAL.chat.Room;
 import VASSAL.chat.node.NodeClient;
 import VASSAL.chat.node.NodeRoom;
+import VASSAL.i18n.Resources;
 
 
 /**
  * @author rkinney
  */
+//I18n: Complete
 public class LockableRoomControls extends RoomInteractionControlsInitializer {
 
   public LockableRoomControls(NodeClient client) {
@@ -108,7 +110,7 @@ public class LockableRoomControls extends RoomInteractionControlsInitializer {
     private NodeRoom target;
 
     public LockRoomAction(NodeRoom target, NodeClient client) {
-      super("Lock Room");
+      super(Resources.getString("Chat.lock_room"));
       setEnabled(client.getMyInfo().getId().equals(target.getOwner()));
       this.target = target;
       this.client = client;

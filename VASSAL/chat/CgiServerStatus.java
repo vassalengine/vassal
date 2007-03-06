@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.TimeZone;
+
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -35,25 +37,26 @@ import VASSAL.tools.SequenceEncoder;
  * @author rkinney
  *
  */
+// I18n: Complete
 public class CgiServerStatus implements ServerStatus {
   private static long DAY = 24L * 3600L * 1000L;
   
-  public static final String LAST_DAY = "Last 24 hours";
-  public static final String LAST_WEEK = "Last Week";
-  public static final String LAST_MONTH = "Last Month";
+  public static final String LAST_DAY = "Server.last_24_hours";
+  public static final String LAST_WEEK = "Server.last_week";
+  public static final String LAST_MONTH = "Server.last_month";
   
   private Map timeRanges = new HashMap();
   
-  private String[] times = new String[]{LAST_DAY,LAST_WEEK,LAST_MONTH};
+  private String[] times = new String[]{Resources.getString(LAST_DAY), Resources.getString(LAST_WEEK), Resources.getString(LAST_MONTH)};
 
   private HttpRequestWrapper request;
   private List cachedQuery;
 
   public CgiServerStatus() {
     request = new HttpRequestWrapper("http://www.vassalengine.org/util/");
-    timeRanges.put(LAST_DAY,new Long(DAY));
-    timeRanges.put(LAST_WEEK,new Long(DAY * 7));
-    timeRanges.put(LAST_MONTH,new Long(DAY * 30));
+    timeRanges.put(Resources.getString(LAST_DAY),new Long(DAY));
+    timeRanges.put(Resources.getString(LAST_WEEK),new Long(DAY * 7));
+    timeRanges.put(Resources.getString(LAST_MONTH),new Long(DAY * 30));
   }
 
   public ServerStatus.ModuleSummary[] getStatus() {

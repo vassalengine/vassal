@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Vector;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+
 import VASSAL.build.GameModule;
 import VASSAL.command.AddPiece;
 import VASSAL.command.AlertCommand;
@@ -44,6 +45,7 @@ import VASSAL.command.ConditionalCommand;
 import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
 import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BackgroundTask;
 import VASSAL.tools.DataArchive;
@@ -54,6 +56,7 @@ import VASSAL.tools.Obfuscator;
 /**
  * The GameState represents the state of the game currently being played.  Only one game can be open at once.
  * @see GameModule#getGameState */
+// I18n: Complete
 public class GameState implements CommandEncoder {
   protected Hashtable pieces = new Hashtable();
   protected Vector gameComponents = new Vector();
@@ -68,7 +71,7 @@ public class GameState implements CommandEncoder {
    * <code>Load</code>, <code>Close</code>, and <code>Save</code>
    * entries to the <code>File</code> menu of the controls window */
   public void addTo(GameModule mod) {
-    loadGame = new JMenuItem("Load Game");
+    loadGame = new JMenuItem(Resources.getString("GameState.load_game")); 
     loadGame.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         loadGame();
@@ -76,7 +79,7 @@ public class GameState implements CommandEncoder {
     });
     loadGame.setMnemonic('L');
 
-    saveGame = new JMenuItem("Save Game");
+    saveGame = new JMenuItem(Resources.getString("GameState.save_game")); 
     saveGame.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         saveGame();
@@ -84,7 +87,7 @@ public class GameState implements CommandEncoder {
     });
     saveGame.setMnemonic('S');
 
-    newGame = new JMenuItem("New Game");
+    newGame = new JMenuItem(Resources.getString("GameState.new_game")); 
     newGame.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         setup(false);
@@ -93,7 +96,7 @@ public class GameState implements CommandEncoder {
     });
     newGame.setMnemonic('N');
 
-    closeGame = new JMenuItem("Close Game");
+    closeGame = new JMenuItem(Resources.getString("GameState.close_game")); 
     closeGame.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         setup(false);
@@ -150,7 +153,7 @@ public class GameState implements CommandEncoder {
   public void setup(boolean gameStarting) {
     if (!gameStarting && gameStarted && isModified()) {
       switch (JOptionPane.showConfirmDialog
-          (GameModule.getGameModule().getFrame(), "Save Game?", "Game modified", JOptionPane.YES_NO_CANCEL_OPTION)) {
+          (GameModule.getGameModule().getFrame(), Resources.getString("GameState.save_game_query"), Resources.getString("GameState.game_modified"), JOptionPane.YES_NO_CANCEL_OPTION)) { 
         case JOptionPane.YES_OPTION:
           saveGame();
           break;
@@ -165,10 +168,10 @@ public class GameState implements CommandEncoder {
     saveGame.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
     if (gameStarting) {
-      loadGame.setText("Load Continuation");
+      loadGame.setText(Resources.getString("GameState.load_continuation")); 
     }
     else {
-      loadGame.setText("Load Game");
+      loadGame.setText(Resources.getString("GameState.load_game")); 
       GameModule.getGameModule().appendToTitle(null);
     }
 
@@ -209,16 +212,16 @@ public class GameState implements CommandEncoder {
         }
       }
       catch (IOException e) {
-        String msg = "Unable to load " + f.getName();
+        String msg = Resources.getString("GameState.unable_to_load", f.getName()); 
         if (e.getMessage() != null) {
-          msg += "\n" + e.getMessage();
+          msg += "\n" + e.getMessage(); 
         }
         JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(),
-                               msg, "Load Error", JOptionPane.ERROR_MESSAGE);
+                               msg, Resources.getString("GameState.load_error"), JOptionPane.ERROR_MESSAGE); 
       }
     }
     else {
-      GameModule.getGameModule().warn("Unable to find " + f.getPath());
+      GameModule.getGameModule().warn(Resources.getString("GameState.unable_to_find", f.getPath())); 
     }
   }
 
@@ -229,19 +232,19 @@ public class GameState implements CommandEncoder {
 
   /** Prompts the user for a file into which to save the game */
   public void saveGame() {
-    GameModule.getGameModule().warn("Saving game ...");
+    GameModule.getGameModule().warn(Resources.getString("GameState.saving_game")); 
     try {
       File saveFile = getSaveFile();
       if (saveFile != null) {
         saveGame(saveFile);
-        GameModule.getGameModule().warn("Game Saved");
+        GameModule.getGameModule().warn(Resources.getString("GameState.game_saved")); 
       }
       else {
-        GameModule.getGameModule().warn("Save Canceled");
+        GameModule.getGameModule().warn(Resources.getString("GameState.save_canceled")); 
       }
     }
     catch (IOException err) {
-      GameModule.getGameModule().warn("Save Failed.  Try again.");
+      GameModule.getGameModule().warn(Resources.getString("GameState.save_failed")); 
     }
   }
 
@@ -309,7 +312,7 @@ public class GameState implements CommandEncoder {
 
   public void loadContinuation(File f) throws IOException {
     byte[] b = new Deobfuscator(getSaveFileInputStream(f.getPath())).getPlainText();
-    Command c = GameModule.getGameModule().decode(new String(b, "UTF-8").trim());
+    Command c = GameModule.getGameModule().decode(new String(b, "UTF-8").trim()); 
     CommandFilter filter = new CommandFilter() {
       protected boolean accept(Command c) {
         return c instanceof BasicLogger.LogCommand;
@@ -346,7 +349,7 @@ public class GameState implements CommandEncoder {
     }
   }
   
-  public static final String SAVEFILE_ZIP_ENTRY = "savedGame";
+  public static final String SAVEFILE_ZIP_ENTRY = "savedGame"; 
 
   /**
    * Return a {@link Command} that, when executed, will restore the
@@ -369,13 +372,11 @@ public class GameState implements CommandEncoder {
   private Command checkVersionCommand() {
     String runningVersion = GameModule.getGameModule().getAttributeValueString(GameModule.VASSAL_VERSION_RUNNING);
     ConditionalCommand.Condition cond = new ConditionalCommand.Lt(GameModule.VASSAL_VERSION_RUNNING, runningVersion);
-    Command c = new ConditionalCommand(new ConditionalCommand.Condition[]{cond}, new AlertCommand("Version mismatch.\nGame saved using VASSAL version "
-        + runningVersion + "."));
+    Command c = new ConditionalCommand(new ConditionalCommand.Condition[]{cond}, new AlertCommand(Resources.getString("GameState.version_mismatch", runningVersion))); 
     String moduleName = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_NAME);
     String moduleVersion = GameModule.getGameModule().getAttributeValueString(GameModule.MODULE_VERSION);
     cond = new ConditionalCommand.Lt(GameModule.MODULE_VERSION, moduleVersion);
-    c.append(new ConditionalCommand(new ConditionalCommand.Condition[]{cond}, new AlertCommand("Version mismatch.\nGame saved using " + moduleName
-        + " version " + moduleVersion + ".")));
+    c.append(new ConditionalCommand(new ConditionalCommand.Condition[]{cond}, new AlertCommand(Resources.getString("GameState.version_mismatch2", moduleName, moduleVersion )))); 
     return c;
   }
 
@@ -405,13 +406,13 @@ public class GameState implements CommandEncoder {
       return null;
     }
   }
-  public static final String BEGIN_SAVE = "begin_save";
-  public static final String END_SAVE = "end_save";
+  public static final String BEGIN_SAVE = "begin_save"; 
+  public static final String END_SAVE = "end_save"; 
 
   public void saveGame(File f) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     String save = saveString();
-    new Obfuscator(save.getBytes("UTF-8")).write(out);
+    new Obfuscator(save.getBytes("UTF-8")).write(out); 
     out.close();
     lastSave = save;
     ArchiveWriter saver = new ArchiveWriter(f.getPath());
@@ -425,7 +426,7 @@ public class GameState implements CommandEncoder {
   public void loadGame(File f) throws IOException {
     final String name = f.getPath();
     final String shortName = f.getName();
-    GameModule.getGameModule().warn("Loading " + shortName + " ...");
+    GameModule.getGameModule().warn(Resources.getString("GameState.loading", shortName)); 
     new BackgroundTask() {
       private String msg;
       private Command loadCommand;
@@ -433,17 +434,17 @@ public class GameState implements CommandEncoder {
       public void doFirst() {
         try {
           byte b[] = new Deobfuscator(getSaveFileInputStream(name)).getPlainText();
-          loadCommand = GameModule.getGameModule().decode(new String(b, "UTF-8").trim());
+          loadCommand = GameModule.getGameModule().decode(new String(b, "UTF-8").trim()); 
           if (loadCommand != null) {
-            msg = "Loaded " + shortName;
+            msg = Resources.getString("GameState.loaded", shortName); 
           }
           else {
-            msg = "Invalid savefile " + shortName;
+            msg = Resources.getString("GameState.invalid_savefile", shortName); 
           }
         }
         catch (Exception ex) {
           ex.printStackTrace();
-          msg = "Error loading " + shortName;
+          msg = Resources.getString("GameState.error_loading", shortName); 
         }
       }
 

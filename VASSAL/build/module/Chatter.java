@@ -54,6 +54,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FontConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.ScrollPane;
 
@@ -62,6 +63,7 @@ import VASSAL.tools.ScrollPane;
  * accepts input.  Also acts as a {@link CommandEncoder},
  * encoding/decoding commands that display message in the text area
  */
+// I18n: Complete
 public class Chatter extends JPanel implements CommandEncoder, Buildable {
   private static final long serialVersionUID = 1L;
 
@@ -166,7 +168,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 
     FontConfigurer chatFont = new FontConfigurer
-        ("ChatFont", "Chat Window Font: ");
+        ("ChatFont", Resources.getString("Chatter.chat_font_preference"));
     chatFont.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         setFont((Font) evt.getNewValue());
@@ -176,15 +178,15 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     mod.getControlPanel().add(this, BorderLayout.CENTER);
 
     chatFont.fireUpdate();
-    mod.getPrefs().addOption("Chat Window", chatFont);
-    ColorConfigurer gameMsgColor = new ColorConfigurer(GAME_MSG_COLOR, "Game messages", Color.magenta);
-    mod.getGlobalPrefs().addOption("Chat Window", gameMsgColor);
-    ColorConfigurer systemMsgColor = new ColorConfigurer(SYS_MSG_COLOR, "System messages", new Color(160, 160, 160));
-    mod.getGlobalPrefs().addOption("Chat Window", systemMsgColor);
-    ColorConfigurer myChatColor = new ColorConfigurer(MY_CHAT_COLOR, "My text messages", Color.gray);
-    mod.getGlobalPrefs().addOption("Chat Window", myChatColor);
-    ColorConfigurer otherChatColor = new ColorConfigurer(OTHER_CHAT_COLOR, "Other's text messages", Color.black);
-    mod.getGlobalPrefs().addOption("Chat Window", otherChatColor);
+    mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), chatFont);
+    ColorConfigurer gameMsgColor = new ColorConfigurer(GAME_MSG_COLOR, Resources.getString("Chatter.game_messages_preference"), Color.magenta);
+    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), gameMsgColor);
+    ColorConfigurer systemMsgColor = new ColorConfigurer(SYS_MSG_COLOR, Resources.getString("Chatter.system_message_preference"), new Color(160, 160, 160));
+    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), systemMsgColor);
+    ColorConfigurer myChatColor = new ColorConfigurer(MY_CHAT_COLOR, Resources.getString("Chatter.my_text_preference"), Color.gray);
+    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), myChatColor);
+    ColorConfigurer otherChatColor = new ColorConfigurer(OTHER_CHAT_COLOR, Resources.getString("Chatter.other_text_preference"), Color.black);
+    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), otherChatColor);
   }
 
   public void add(Buildable b) {
@@ -347,7 +349,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
 
     public Command myUndoCommand() {
-      return new DisplayText(c, "* UNDO: " + msg);
+      return new DisplayText(c, Resources.getString("Chatter.undo_message", msg));
     }
 
     public String getMessage() {

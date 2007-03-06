@@ -29,24 +29,26 @@ import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.command.Command;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
+import VASSAL.i18n.Resources;
 
 /**
  * @author rkinney
  */
+// I18n: Complete
 public class NodeClientFactory extends ChatServerFactory {
   private static NodeClientFactory instance;
-  private static final String UNNAMED_MODULE = "<unknown module>";
-  private static final String UNKNOWN_USER = "<unknown user>";
-  public static final String NODE_TYPE = "node";
-  public static final String NODE_HOST = "nodeHost";
-  public static final String NODE_PORT = "nodePort";
+  private static final String UNNAMED_MODULE = Resources.getString("Chat.unknown_module"); 
+  private static final String UNKNOWN_USER = Resources.getString("Chat.unknown_user"); 
+  public static final String NODE_TYPE = "node"; 
+  public static final String NODE_HOST = "nodeHost"; 
+  public static final String NODE_PORT = "nodePort"; 
 
   private NodeClientFactory() {
   }
 
   public ChatServerConnection buildServer(Properties param) {
-    final String host = param.getProperty(NODE_HOST,"63.144.41.13");
-    final int port = Integer.parseInt(param.getProperty(NODE_PORT, "5050"));
+    final String host = param.getProperty(NODE_HOST,"63.144.41.13"); 
+    final int port = Integer.parseInt(param.getProperty(NODE_PORT, "5050")); 
     NodeServerInfo nodeServerInfo = new NodeServerInfo() {
       public String getHostName() {
         return host;
@@ -75,7 +77,7 @@ public class NodeClientFactory extends ChatServerFactory {
       }
     };
     HttpMessageServer httpMessageServer = new HttpMessageServer(publicInfo);
-    SocketNodeClient server = new SocketNodeClient(GameModule.getGameModule().getGameName(), GameModule.getUserId()+"."+System.currentTimeMillis(), GameModule.getGameModule(), nodeServerInfo, httpMessageServer, httpMessageServer);
+    SocketNodeClient server = new SocketNodeClient(GameModule.getGameModule().getGameName(), GameModule.getUserId()+"."+System.currentTimeMillis(), GameModule.getGameModule(), nodeServerInfo, httpMessageServer, httpMessageServer); 
     GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
     GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
@@ -105,18 +107,18 @@ public class NodeClientFactory extends ChatServerFactory {
   public static NodeClientFactory getInstance() {
     if (instance == null) {
       instance = new NodeClientFactory();
-      StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, "Name: ", "newbie");
-      TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, "Personal Info:", "");
-      StringConfigurer user = new StringConfigurer("UserName", "Password", System.getProperty("user.name") + "'s password");
+      StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));  
+      TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");  
+      StringConfigurer user = new StringConfigurer("UserName", Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name")));
       user.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           GameModule.setUserId((String) evt.getNewValue());
         }
       });
       GameModule.setUserId((String) user.getValue());
-      GameModule.getGameModule().getPrefs().addOption("Personal", fullName, "Enter the name by which you would like to be known to other players");
-      GameModule.getGameModule().getPrefs().addOption("Personal", user, "Enter a password for identification purposes.");
-      GameModule.getGameModule().getPrefs().addOption("Personal", profile);
+      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName, Resources.getString("Prefs.name_prompt"));  
+      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user, Resources.getString("Prefs.password_prompt2"));  
+      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile); 
     }
     return instance;
   }

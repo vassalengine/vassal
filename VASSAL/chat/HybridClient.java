@@ -24,6 +24,7 @@ import java.beans.PropertyChangeSupport;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
+import VASSAL.i18n.Resources;
 
 /**
  * Delegates calls to another SvrConnection instance, which can be changed programmatically
@@ -31,9 +32,10 @@ import VASSAL.command.Command;
  * @author rkinney
  * 
  */
+// I18n: Complete
 public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatControlsInitializer {
   protected ChatServerConnection delegate;
-  protected String defaultRoom = "Main Room";
+  protected String defaultRoom = Resources.getString("Chat.main_room");
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected ChatServerControls controls;
 
@@ -108,7 +110,7 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
 
   public void setDelegate(ChatServerConnection newDelegate) {
     if (delegate != null && delegate.isConnected()) {
-      throw new IllegalStateException("Cannot change server implementation while connected");
+      throw new IllegalStateException(Resources.getString("Server.error1"));
     }
     ChatServerConnection oldDelegate = delegate;
     if (oldDelegate != null) {

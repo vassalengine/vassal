@@ -69,6 +69,7 @@ import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
 
 /**
@@ -78,6 +79,7 @@ import VASSAL.tools.FormattedString;
  * @author David Sullivan
  * @version 1.0
  */
+// I18n: Partial
 public class CounterDetailViewer extends AbstractConfigurable implements Drawable, MouseMotionListener, MouseListener, Runnable, KeyListener {
 
   public static final String LATEST_VERSION = "2";
@@ -162,10 +164,10 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     map = (Map) b;
     validator = new SingleChildInstance(map, getClass());
     map.addDrawComponent(this);
-    GameModule.getGameModule().getPrefs().addOption("General",
-        new BooleanConfigurer(USE_KEYBOARD, "Use " + HotKeyConfigurer.getString(hotkey) + " to view stack details", Boolean.FALSE));
-    GameModule.getGameModule().getPrefs().addOption("General",
-        new IntConfigurer(PREFERRED_DELAY, "Delay before automatic stack display (ms)", new Integer(delay)));
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
+        new BooleanConfigurer(USE_KEYBOARD, Resources.getString("CounterDetailViewer.use_prompt", HotKeyConfigurer.getString(hotkey)), Boolean.FALSE));
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
+        new IntConfigurer(PREFERRED_DELAY, Resources.getString("CounterDetailViewer.delay_prompt"), new Integer(delay)));
 
     map.getView().addMouseMotionListener(this);
     map.getView().addMouseListener(this);

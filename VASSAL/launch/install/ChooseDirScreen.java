@@ -31,12 +31,15 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
+import VASSAL.i18n.Resources;
+
 /**
  * @author rkinney
  */
+// I18n: Complete
 public class ChooseDirScreen implements Screen {
   private JTextField tf = new JTextField(36);
-  private JButton select = new JButton("Select");
+  private JButton select = new JButton(Resources.getString("Install.select"));
   private Box controls;
 
   public ChooseDirScreen() {
@@ -63,7 +66,7 @@ public class ChooseDirScreen implements Screen {
           }
 
           public String getDescription() {
-            return "Directories";
+            return Resources.getString("Install.directories");
           }
         });
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -73,7 +76,7 @@ public class ChooseDirScreen implements Screen {
       }
     });
     controls = Box.createVerticalBox();
-    controls.add(new JLabel("Select the installation directory"));
+    controls.add(new JLabel(Resources.getString("Install.select_install_directory")));
     controls.add(hBox);
   }
 

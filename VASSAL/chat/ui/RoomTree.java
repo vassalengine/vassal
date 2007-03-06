@@ -24,12 +24,14 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;
+import VASSAL.i18n.Resources;
 
 /**
  * JTree component displaying chat rooms on the server
  * @author rkinney
  *
  */
+//I18n: Complete
 public class RoomTree extends JTree {
   private static final long serialVersionUID = 1L;
 
@@ -39,7 +41,7 @@ public class RoomTree extends JTree {
   public RoomTree() {
     setRootVisible(false);
     setShowsRootHandles(true);
-    root = new DefaultMutableTreeNode("Server");
+    root = new DefaultMutableTreeNode(Resources.getString("Chat.server"));
     model = new DefaultTreeModel(root) {
       private static final long serialVersionUID = 1L;
 

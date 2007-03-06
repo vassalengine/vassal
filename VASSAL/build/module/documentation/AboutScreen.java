@@ -41,6 +41,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ModuleExtension;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 
 /**
@@ -90,16 +91,18 @@ public class AboutScreen extends AbstractConfigurable {
     JLabel l = new JLabel(icon);
     l.setAlignmentX(0.5F);
     w.getContentPane().add(l);
-    w.getContentPane().add(createLabel(GameModule.getGameModule().getGameName()
-                           + " module version "
-                           + GameModule.getGameModule().getGameVersion()));
+    w.getContentPane().add(createLabel(
+        Resources.getString("AboutScreen.module_version", 
+        GameModule.getGameModule().getGameName(),
+        GameModule.getGameModule().getGameVersion())));
     Enumeration e = GameModule.getGameModule().getComponents(ModuleExtension.class);
     while (e.hasMoreElements()){
       ModuleExtension ext = (ModuleExtension) e.nextElement();
-      w.getContentPane().add(createLabel("Extension "+ext.getName()+" version "+ext.getVersion()));
+      w.getContentPane().add(createLabel(
+          Resources.getString("AboutScreen.extension_version", ext.getName(), ext.getVersion())));
     }
-    w.getContentPane().add(createLabel("VASSAL engine version "
-                           + Info.getVersion()));
+    w.getContentPane().add(createLabel(
+        Resources.getString("AboutScreen.vassal_version", Info.getVersion())));
     w.pack();
     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
     w.setLocation(d.width / 2 - w.getSize().width / 2,

@@ -26,9 +26,12 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
+import VASSAL.i18n.Resources;
+
 /**
  * @author rkinney
  */
+// I18n: Complete
 public class WizardDialog extends JDialog {
   private Screen screen;
   private Box screenBox = Box.createHorizontalBox();
@@ -44,7 +47,7 @@ public class WizardDialog extends JDialog {
       }
     });
     Box buttonBox = Box.createHorizontalBox();
-    JButton b = new JButton("Next");
+    JButton b = new JButton(Resources.getString(Resources.NEXT));
     b.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         screen.next(wizard);

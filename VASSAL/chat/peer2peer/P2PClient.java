@@ -40,7 +40,9 @@ import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.i18n.Resources;
 
+// I18n: Complete
 public class P2PClient implements ChatServerConnection, ChatControlsInitializer, UserDialog {
   private Player me;
   private PendingPeerManager ppm;
@@ -155,7 +157,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
           peerMgr = new ActivePeerManager(info, this, ppm);
         }
         roomMgr.update(((P2PPlayer) me).getInfo());
-        propSupport.firePropertyChange(STATUS, null, "Server connection established");
+        propSupport.firePropertyChange(STATUS, null, Resources.getString("Peer2Peer.connection_established"));
         propSupport.firePropertyChange(CONNECTED, null, Boolean.TRUE);
         propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.getRooms());
         propSupport.firePropertyChange(ROOM, null, getRoom());
@@ -163,7 +165,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
         connected = true;
       }
       catch (IOException e) {
-        propSupport.firePropertyChange(STATUS, null, "Unable to establish connection: " + e.getMessage());
+        propSupport.firePropertyChange(STATUS, null, Resources.getString("Peer2Peer.connection_error", e.getMessage()));
         propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
         connected = false;
       }
@@ -230,7 +232,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
 
   public synchronized void showStreamsFailed(PeerInfo pPeerInfo) {
     P2PPlayer p = new P2PPlayer(pPeerInfo);
-    propSupport.firePropertyChange(STATUS, null, "Lost connection to to " + p.getName());
+    propSupport.firePropertyChange(STATUS, null, Resources.getString("Peer2Peer.connection_lost", p.getName()));
   }
 
   public synchronized void showConnectFailed(PeerInfo pPeerInfo) {

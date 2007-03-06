@@ -25,10 +25,12 @@ import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.SynchCommand;
+import VASSAL.i18n.Resources;
 
 /**
  * When invoked, will request synchronization info from another player
  */
+//I18n: Complete
 public class SynchAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
@@ -36,7 +38,7 @@ public class SynchAction extends AbstractAction {
   private ChatServerConnection client;
 
   public SynchAction(Player p, ChatServerConnection client) {
-    super("Synchronize");
+    super(Resources.getString("Chat.synchronize"));
     this.p = p;
     this.client = client;
     if (p != null

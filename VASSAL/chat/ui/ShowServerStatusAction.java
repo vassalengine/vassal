@@ -35,11 +35,13 @@ import VASSAL.chat.ServerStatus;
 import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.messageboard.MessageBoardControls;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
+import VASSAL.i18n.Resources;
 
 /**
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
  * Date: Jul 16, 2003
  */
+//I18n: Complete
 public class ShowServerStatusAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
@@ -50,12 +52,12 @@ public class ShowServerStatusAction extends AbstractAction {
       frame = new Window(status);
     }
     if (iconURL == null) {
-      putValue(NAME, "Server Status");
+      putValue(NAME, Resources.getString("Chat.server_status"));
     }
     else {
       putValue(SMALL_ICON, new ImageIcon(iconURL));
     }
-    putValue(SHORT_DESCRIPTION, "Display server connections for all modules");
+    putValue(SHORT_DESCRIPTION, Resources.getString("Chat.display_connections"));
   }
   
   public void actionPerformed(ActionEvent e) {
@@ -69,7 +71,7 @@ public class ShowServerStatusAction extends AbstractAction {
     private MessageBoardControls messageMgr;
 
     public Window(ServerStatus status) {
-      super("Server Status");
+      super(Resources.getString("Chat.server_status"));
       view = new ServerStatusView(status);
       view.addPropertyChangeListener(ServerStatusView.SELECTION_PROPERTY,this);
       getContentPane().add(view);

@@ -25,12 +25,14 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
 
 /**
  * A set of preferences.  Each set of preferences is identified by a name, and
  * different sets may share a common editor, which is responsible for
  * writing the preferences to disk
  */
+//I18n: Complete
 public class Prefs {
   private Hashtable options = new Hashtable();
   private Properties storedValues = new Properties();
@@ -49,7 +51,7 @@ public class Prefs {
   }
 
   public void addOption(Configurer o) {
-    addOption("General", o);
+    addOption(Resources.getString("Prefs.general_tab"), o);
   }
 
   public void addOption(String category, Configurer o) {

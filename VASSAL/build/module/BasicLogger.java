@@ -19,8 +19,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.JOptionPane;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
@@ -29,20 +29,22 @@ import VASSAL.command.Logger;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.Obfuscator;
 
+//I18n: Complete
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
-  public static final String BEGIN = "begin_log";
-  public static final String END = "end_log";
-  public static final String LOG = "LOG\t";
-  public static final String PROMPT_NEW_LOG = "PromptNewLog";
-  public static final String PROMPT_NEW_LOG_START = "PromptNewLogStart";
-  public static final String PROMPT_NEW_LOG_END = "PromptNewLogEnd";
-  protected static final String STEP_ICON = "/images/StepForward16.gif";
-  protected static final String UNDO_ICON = "/images/Undo16.gif";
+  public static final String BEGIN = "begin_log"; 
+  public static final String END = "end_log"; 
+  public static final String LOG = "LOG\t"; 
+  public static final String PROMPT_NEW_LOG = "PromptNewLog"; 
+  public static final String PROMPT_NEW_LOG_START = "PromptNewLogStart"; 
+  public static final String PROMPT_NEW_LOG_END = "PromptNewLogEnd"; 
+  protected static final String STEP_ICON = "/images/StepForward16.gif"; 
+  protected static final String UNDO_ICON = "/images/Undo16.gif"; 
   protected List logInput;
   protected List logOutput;
   protected int nextInput = 0;
@@ -74,10 +76,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     GameModule.getGameModule().getGameState().addGameComponent(this);
     GameModule.getGameModule().getFileMenu().add(newLogAction).setMnemonic('B');
     JButton button = GameModule.getGameModule().getToolBar().add(undoAction);
-    button.setToolTipText("Undo last move");
+    button.setToolTipText(Resources.getString("BasicLogger.undo_last_move")); 
     button.setAlignmentY((float) 0.0);
     button = GameModule.getGameModule().getToolBar().add(stepAction);
-    button.setToolTipText("Step forward through logfile [Page Down]");
+    button.setToolTipText(Resources.getString("BasicLogger.step_forward_tooltip")); 
     button.setAlignmentY((float) 0.0);
     GameModule.getGameModule().getFileMenu().add(endLogAction).setMnemonic('E');
     final KeyStrokeListener stepKeyListener = new KeyStrokeListener(stepAction, KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
@@ -87,7 +89,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     GameModule.getGameModule().getFrame().addComponentListener(new ComponentAdapter() {
       public void componentShown(ComponentEvent e) {
         GameModule.getGameModule().getFrame().removeComponentListener(this);
-        final IconConfigurer stepIconConfig = new IconConfigurer("stepIcon", "Step forward button icon", STEP_ICON);
+        final IconConfigurer stepIconConfig = new IconConfigurer("stepIcon", Resources.getString("BasicLogger.step_forward_button"), STEP_ICON);
         stepIconConfig.setValue(STEP_ICON);
         GlobalOptions.getInstance().addOption(stepIconConfig);
         stepIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
@@ -96,7 +98,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
           }
         });
         stepIconConfig.fireUpdate();
-        final IconConfigurer undoIconConfig = new IconConfigurer("undoIcon", "Undo button icon", UNDO_ICON);
+        final IconConfigurer undoIconConfig = new IconConfigurer("undoIcon", Resources.getString("BasicLogger.undo_icon"), UNDO_ICON); 
         undoIconConfig.setValue(UNDO_ICON);
         GlobalOptions.getInstance().addOption(undoIconConfig);
         undoIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
@@ -105,21 +107,21 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
           }
         });
         undoIconConfig.fireUpdate();
-        final HotKeyConfigurer stepKeyConfig = new HotKeyConfigurer("stepHotKey", "Step forward hotkey", stepKeyListener.getKeyStroke());
+        final HotKeyConfigurer stepKeyConfig = new HotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getKeyStroke()); 
         GlobalOptions.getInstance().addOption(stepKeyConfig);
         stepKeyConfig.addPropertyChangeListener(new PropertyChangeListener() {
           public void propertyChange(PropertyChangeEvent evt) {
             stepKeyListener.setKeyStroke((KeyStroke) stepKeyConfig.getValue());
-            stepAction.putValue(Action.SHORT_DESCRIPTION, "Step Forward through logfile [" + HotKeyConfigurer.getString(stepKeyListener.getKeyStroke()) + "]");
+            stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", HotKeyConfigurer.getString(stepKeyListener.getKeyStroke()))); 
           }
         });
         stepKeyConfig.fireUpdate();
       }
     });
-    BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, "Prompt to start new Log File before a Replay?", Boolean.FALSE);
-    GameModule.getGameModule().getPrefs().addOption("General", logOptionStart);
-    BooleanConfigurer logOptionEnd = new BooleanConfigurer(PROMPT_NEW_LOG_END, "Prompt to start new Log File after a Replay?", Boolean.TRUE);
-    GameModule.getGameModule().getPrefs().addOption("General", logOptionEnd);  }
+    BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, Resources.getString("BasicLogger.prompt_new_log_before"), Boolean.FALSE); 
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionStart);
+    BooleanConfigurer logOptionEnd = new BooleanConfigurer(PROMPT_NEW_LOG_END, Resources.getString("BasicLogger.prompt_new_log_after"), Boolean.TRUE); 
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionEnd);  }
 
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     return doc.createElement(getClass().getName());
@@ -142,17 +144,17 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
     else {
       if (endLogAction.isEnabled()) {
-        if (JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(), "You are writing a logfile.\nSave now?", "Unsaved log",
+        if (JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(), Resources.getString("BasicLogger.save_log"), Resources.getString("BasicLogger.unsaved_log"), 
             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
           try {
             write();
           }
           catch (IOException ex) {
-            String msg = "Unable to write to " + outputFile;
+            String msg = Resources.getString("BasicLogger.unable_to_write", outputFile.toString()); 
             if (ex.getMessage() != null) {
               msg += ".\n" + ex.getMessage();
             }
-            JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg, "Save failed", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg, Resources.getString("BasicLogger.save_failed"), JOptionPane.ERROR_MESSAGE); 
           }
         }
       }
@@ -189,17 +191,17 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     String prompt;
     if (atStart) {
       prefName = PROMPT_NEW_LOG_START;
-      prompt = "Replay commencing";
+      prompt = Resources.getString("BasicLogger.replay_commencing"); 
     }
     else {
       prefName = PROMPT_NEW_LOG_END;
-      prompt = "Reply completed";
+      prompt = Resources.getString("BasicLogger.replay_completed"); 
     }
     if (((Boolean) GameModule.getGameModule().getPrefs().getValue(prefName)).booleanValue()) {
-      Object[] options = {"Yes", "No", "Don't prompt again"};
+      Object[] options = {Resources.getString(Resources.YES), Resources.getString(Resources.NO), Resources.getString("BasicLogger.dont_prompt_again")}; 
       int result = JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(),
-          prompt + ". Start new Log File?",
-          "",
+          Resources.getString("BasicLogger.start_new_log_file", prompt),
+          "", 
           JOptionPane.YES_NO_CANCEL_OPTION,
           JOptionPane.QUESTION_MESSAGE,
           null,
@@ -227,12 +229,12 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
       String s = GameModule.getGameModule().encode(log);
       ArchiveWriter saver = new ArchiveWriter(outputFile.getPath());
-      byte[] contents = s.getBytes("UTF-8"); 
+      byte[] contents = s.getBytes("UTF-8");  
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       new Obfuscator(contents).write(out);
       out.close();
       contents = out.toByteArray();
-      saver.addFile("savedGame", new ByteArrayInputStream(contents));
+      saver.addFile("savedGame", new ByteArrayInputStream(contents)); 
       saver.write();
       GameModule.getGameModule().getGameState().setModified(false);
       undoAction.setEnabled(false);
@@ -246,7 +248,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     if (name != null) {
       int index = name.lastIndexOf('.');
       if (index > 0) {
-        name = name.substring(0, index) + ".log";
+        name = name.substring(0, index) + ".log"; 
         fd.setSelectedFile(new File(fd.getSelectedFile().getParentFile(), name));
       }
     }
@@ -256,7 +258,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       beginningState = GameModule.getGameModule().getGameState().getRestoreCommand();
       undoAction.setEnabled(true);
       endLogAction.setEnabled(true);
-      GameModule.getGameModule().appendToTitle(" - logging to " + outputFile.getName());
+      GameModule.getGameModule().appendToTitle(Resources.getString("BasicLogger.logging_to", outputFile.getName())); 
       newLogAction.setEnabled(false);
     }
   }
@@ -324,26 +326,26 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     return null;
   }
   protected Action undoAction = new UndoAction();
-  protected Action endLogAction = new AbstractAction("End Logfile") {
+  protected Action endLogAction = new AbstractAction(Resources.getString("BasicLogger.end_logfile")) { 
     private static final long serialVersionUID = 1L;
 
     public void actionPerformed(ActionEvent e) {
       try {
         write();
-        GameModule.getGameModule().warn("Logfile written.");
+        GameModule.getGameModule().warn(Resources.getString("BasicLogger.logfile_written")); 
         newLogAction.setEnabled(true);
         GameModule.getGameModule().appendToTitle(null);
       }
       catch (IOException ex) {
-        String msg = "Unable to write to " + outputFile;
+        String msg = Resources.getString("BasicLogger.unable_to_write", outputFile.toString()); 
         if (ex.getMessage() != null) {
           msg += ".\n" + ex.getMessage();
         }
-        JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg, "Save failed", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg, Resources.getString("BasicLogger.save_failed"), JOptionPane.ERROR_MESSAGE); 
       }
     }
   };
-  protected Action newLogAction = new AbstractAction("Begin Logfile") {
+  protected Action newLogAction = new AbstractAction(Resources.getString("BasicLogger.begin_logfile")) { 
     private static final long serialVersionUID = 1L;
 
     public void actionPerformed(ActionEvent e) {
@@ -357,7 +359,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     public LogCommand(Command c, List logInput, Action stepAction) {
       if (c instanceof LogCommand) {
-        throw new RuntimeException("Can't log a LogCommand");
+        throw new RuntimeException(Resources.getString("BasicLogger.cant_log")); 
       }
       this.logInput = logInput;
       this.stepAction = stepAction;
@@ -404,7 +406,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
       }
       else {
-        putValue(Action.NAME, "Step");
+        putValue(Action.NAME, Resources.getString("BasicLogger.step")); 
       }
     }
 
@@ -421,7 +423,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
       }
       else {
-        putValue(Action.NAME, "Undo");
+        putValue(Action.NAME, Resources.getString("BasicLogger.undo")); 
       }
     }
 

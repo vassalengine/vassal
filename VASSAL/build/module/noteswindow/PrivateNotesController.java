@@ -28,11 +28,13 @@ import VASSAL.build.module.GameComponent;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.TextConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
 /**
  * Holds {@link PrivateText} objects, only displaying the one owned by the current user
  */
+// I18n: Complete
 public class PrivateNotesController implements GameComponent, CommandEncoder, SetPrivateTextCommand.Interface {
   public static final String COMMAND_PREFIX = "PNOTE\t";
 
@@ -48,7 +50,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
   public Component getControls() {
     if (controls == null) {
       Box b = Box.createVerticalBox();
-      b.add(new JLabel("Invisible to others"));
+      b.add(new JLabel(Resources.getString("Notes.invisible")));
       text = new TextConfigurer(null, null);
       b.add(text.getControls());
       controls = b;

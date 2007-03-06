@@ -35,10 +35,12 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 
 /**
  * Provides tutorial functionality by reading in a logfile
  */
+// I18n: Partial
 public class Tutorial extends AbstractConfigurable {
   public static final String FILE_NAME = "logfile";
   public static final String NAME = "name";
@@ -49,11 +51,11 @@ public class Tutorial extends AbstractConfigurable {
   private Action launch;
   private JMenuItem item;
   private boolean launchOnFirstStartup;
-  private String welcomeMessage = "Hit the \"Step forward\" button in the toolbar to step through the tutorial";
-  private String promptMessage = "Load the tutorial?";
+  private String welcomeMessage = Resources.getString("Tutorial.instructions");
+  private String promptMessage = Resources.getString("Tutorial.load_tutorial");
 
   public Tutorial() {
-    launch = new AbstractAction("Tutorial") {
+    launch = new AbstractAction(Resources.getString("Tutorial.tutorial")) {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
@@ -89,7 +91,7 @@ public class Tutorial extends AbstractConfigurable {
     }
     catch (IOException e1) {
       e1.printStackTrace();
-      String msg = "Unable to launch tutorial " + name;
+      String msg = Resources.getString("Tutorial.unable_to_launch", name);
       if (e1.getMessage() != null) {
         msg += ":  " + e1.getMessage();
       }
@@ -174,9 +176,9 @@ public class Tutorial extends AbstractConfigurable {
         && !Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(key))) {
       Runnable runnable = new Runnable() {
         public void run() {
-          String[] options = new String[]{"Yes", "No", "Don't ask me again"};
+          String[] options = new String[]{Resources.getString(Resources.YES),Resources.getString(Resources.NO), Resources.getString("Tutorial.dont_ask")};
           switch (JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(), promptMessage, getConfigureName(),
-                                               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0])) {
+              JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0])) {
             case 0: // Yes
               launch();
             case 2: // Don't ask again

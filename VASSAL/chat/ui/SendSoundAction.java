@@ -26,10 +26,12 @@ import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.SoundEncoder;
 import VASSAL.configure.SoundConfigurer;
+import VASSAL.i18n.Resources;
 
 /**
  * Copyright (c) 2003 by Rodney Kinney. All rights reserved. Date: Jul 29, 2003
  */
+//I18n: Complete
 public class SendSoundAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
@@ -50,7 +52,7 @@ public class SendSoundAction extends AbstractAction {
 
   public static PlayerActionFactory factory(final ChatServerConnection client, final String name, final String soundKey, final String defaultSoundFile) {
     if (GameModule.getGameModule() != null) {
-      GameModule.getGameModule().getGlobalPrefs().addOption("Sounds", new SoundConfigurer(soundKey, name, defaultSoundFile));
+      GameModule.getGameModule().getGlobalPrefs().addOption(Resources.getString("Prefs.sounds_tab"), new SoundConfigurer(soundKey, name, defaultSoundFile));
     }
     return new PlayerActionFactory() {
       public Action getAction(Player p, JTree tree) {

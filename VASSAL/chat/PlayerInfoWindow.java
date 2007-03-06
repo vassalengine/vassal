@@ -19,9 +19,12 @@ package VASSAL.chat;
 
 import javax.swing.*;
 
+import VASSAL.i18n.Resources;
+
 /**
  * A window that displays information on a {@link VASSAL.chat.SimplePlayer}
  */
+// I18n: Complete
 public class PlayerInfoWindow extends JDialog {
   private static final long serialVersionUID = 1L;
 
@@ -34,21 +37,21 @@ public class PlayerInfoWindow extends JDialog {
     tf.setEditable(false);
     tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
                                              tf.getPreferredSize().height));
-    b.add(new JLabel("Real Name: "));
+    b.add(new JLabel(Resources.getString("Chat.real_name")));
     b.add(tf);
     getContentPane().add(b);
 
-    JCheckBox box = new JCheckBox("Looking for a game");
+    JCheckBox box = new JCheckBox(Resources.getString("Chat.looking_for_a_game"));
     box.setSelected(((SimpleStatus)p.getStatus()).isLooking());
     box.setEnabled(false);
     getContentPane().add(box);
 
-    box = new JCheckBox("Away from keyboard");
+    box = new JCheckBox(Resources.getString("Chat.away_from_keyboard"));
     box.setSelected(((SimpleStatus)p.getStatus()).isAway());
     box.setEnabled(false);
     getContentPane().add(box);
 
-    getContentPane().add(new JLabel("Personal Info"));
+    getContentPane().add(new JLabel(Resources.getString("Chat.personal_info")));
     JTextArea ta = new JTextArea();
     ta.setText(((SimpleStatus)p.getStatus()).getProfile());
     ta.setEditable(false);

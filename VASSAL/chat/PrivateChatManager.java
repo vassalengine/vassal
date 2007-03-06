@@ -23,9 +23,12 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import VASSAL.i18n.Resources;
+
 /**
  * Manages {@link PrivateChatter} instances
  */
+// I18n: Complete
 public class PrivateChatManager {
   private ChatServerConnection client;
 
@@ -56,7 +59,7 @@ public class PrivateChatManager {
           promptToBan(sender);
         }
       });
-      f.setTitle(sender.getName() + " private channel");
+      f.setTitle(Resources.getString("Chat.private_channel", sender.getName()));
       f.getContentPane().add(chat);
       f.pack();
       f.setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 2 - f.getSize().width / 2, 0);
@@ -68,7 +71,7 @@ public class PrivateChatManager {
     if (JOptionPane.YES_OPTION ==
       JOptionPane.showConfirmDialog
       (null,
-       "Ignore all messages from " + p.getName() + " for this session?",
+       Resources.getString("Chat.ignore_messages", p.getName()),
        null,
        JOptionPane.YES_NO_OPTION)) {
       banned.addElement(p);
