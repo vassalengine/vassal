@@ -38,6 +38,8 @@ import javax.swing.JScrollPane;
  @see VASSAL.tools.AdjustableSpeedScrollPane
  */
 public class ScrollPane extends JScrollPane {
+   private static final long serialVersionUID = 1L;
+
    /**
      Creates an empty (no viewport view) ScrollPane where both horizontal
      and vertical scrollbars appear when needed.

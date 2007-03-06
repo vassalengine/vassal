@@ -333,6 +333,8 @@ public class DynamicProperty extends Decorator implements EditablePiece, Propert
    * Dynamic property
    */
   protected static class DynamicKeyCommand extends KeyCommand {
+    private static final long serialVersionUID = 1L;
+
     protected PropertyChanger propChanger = null;
 
     public DynamicKeyCommand(String name, KeyStroke key, GamePiece target, PropertyChanger propChanger) {

@@ -28,6 +28,8 @@ import VASSAL.counters.MassPieceDefiner;
  * Action to edit all {@link VASSAL.counters.GamePiece}'s within a given component
  */
 public class EditContainedPiecesAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private Configurable target;
   private HelpWindow helpWindow;
 

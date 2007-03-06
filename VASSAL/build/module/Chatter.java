@@ -63,6 +63,7 @@ import VASSAL.tools.ScrollPane;
  * encoding/decoding commands that display message in the text area
  */
 public class Chatter extends JPanel implements CommandEncoder, Buildable {
+  private static final long serialVersionUID = 1L;
 
   protected JTextArea conversation;
   protected JTextField input;

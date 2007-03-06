@@ -32,6 +32,8 @@ import VASSAL.tools.ScrollPane;
  * Editing window for a module extension
  */
 public class ExtensionEditWindow extends VASSAL.configure.ModuleEditWindow {
+  private static final long serialVersionUID = 1L;
+
   private ModuleExtension extension;
 
   public ExtensionEditWindow(ModuleExtension extension) {

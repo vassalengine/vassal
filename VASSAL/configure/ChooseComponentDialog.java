@@ -38,6 +38,8 @@ import VASSAL.tools.ScrollPane;
  * Dialog that prompts the user to select a component from the {@link ConfigureTree}
  */
 public class ChooseComponentDialog extends JDialog implements TreeSelectionListener {
+  private static final long serialVersionUID = 1L;
+
   private Configurable target;
   private Class targetClass;
   private JButton okButton;
@@ -48,7 +50,10 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     this.targetClass = targetClass;
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-    tree = new VASSAL.configure.ConfigureTree(GameModule.getGameModule(), null) {
+    tree =
+     new VASSAL.configure.ConfigureTree(GameModule.getGameModule(), null) {
+      private static final long serialVersionUID = 1L;
+
       public void mouseReleased(MouseEvent e) {
       }
     };

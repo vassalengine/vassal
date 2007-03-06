@@ -256,6 +256,8 @@ public class HexGridNumbering extends RegularGridNumbering {
   protected JComponent getGridVisualizer() {
     if (visualizer == null) {
       visualizer = new JPanel() {
+        private static final long serialVersionUID = 1L;
+
         public void paint(Graphics g) {
           g.clearRect(0, 0, getWidth(), getHeight());
           Rectangle bounds = new Rectangle(0, 0, getWidth(), getHeight());
@@ -338,6 +340,8 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   public static void main(String[] args) {
     class TestPanel extends JPanel {
+      private static final long serialVersionUID = 1L;
+
       private boolean reversed;
       private double scale = 1.0;
       private HexGrid grid;
@@ -382,6 +386,8 @@ public class HexGridNumbering extends RegularGridNumbering {
         numbering.setAttribute(HexGridNumbering.COLOR, Color.black);
         numbering.addTo(grid);
         JPanel p = new JPanel() {
+          private static final long serialVersionUID = 1L;
+
           public void paint(Graphics g) {
             Rectangle r = new Rectangle(0, 0, getWidth(), getHeight());
             g.clearRect(r.x, r.y, r.width, r.height);

@@ -32,6 +32,8 @@ import javax.swing.event.ListSelectionListener;
 import VASSAL.tools.ScrollPane;
 
 public class MultiImagePicker extends JPanel {
+  private static final long serialVersionUID = 1L;
+
   private JList imageList;
   private DefaultListModel imageListElements = new DefaultListModel();
   private CardLayout cl = new CardLayout();

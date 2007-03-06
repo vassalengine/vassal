@@ -32,6 +32,8 @@ import VASSAL.chat.LockableRoom;
  * Renders rooms with a "locked" icon if locked
  */
 public class LockableRoomTreeRenderer extends RoomTreeRenderer {
+  private static final long serialVersionUID = 1L; 
+
   private Icon lockedIcon;
   public LockableRoomTreeRenderer() {
     java.net.URL image = getClass().getResource("/images/lockedRoom.gif");

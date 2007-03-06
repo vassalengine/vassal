@@ -64,6 +64,8 @@ public class PrefsEditor {
     this.archive = archive;
 
     editAction = new AbstractAction("Edit Preferences") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         storeValues();
         dialog.pack();

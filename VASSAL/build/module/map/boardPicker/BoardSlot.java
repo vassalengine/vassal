@@ -35,6 +35,8 @@ import VASSAL.build.module.map.BoardPicker;
 import VASSAL.tools.BackgroundTask;
 
 public class BoardSlot extends JPanel implements Icon, ActionListener {
+  private static final long serialVersionUID = 1L;
+
   private String prompt = "Select board";
 
   protected BoardPicker picker;

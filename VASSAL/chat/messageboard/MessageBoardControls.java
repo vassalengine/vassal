@@ -94,6 +94,8 @@ public class MessageBoardControls {
     msgComposer = new Comp();
 
     checkMessagesAction = new AbstractAction("Check Messages") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent evt) {
         msgFrame.setTitle(serverName != null ? serverName+" Message Board" : "Message Board");
         showMessages(server.getMessages());
@@ -110,6 +112,8 @@ public class MessageBoardControls {
 
 
     postMessageAction = new AbstractAction("Post Message") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent evt) {
         msgComposer.setVisible(true);
       }
@@ -134,6 +138,8 @@ public class MessageBoardControls {
   }
 
   private class Comp extends JFrame {
+    private static final long serialVersionUID = 1L;
+
     private Comp() {
       super("Message Composer");
       getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

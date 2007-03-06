@@ -2125,6 +2125,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * The component that represents the map itself
    */
 	public static class View extends JPanel {
+      private static final long serialVersionUID = 1L;
+
 		protected Map map;
 
 		public View(Map m) {

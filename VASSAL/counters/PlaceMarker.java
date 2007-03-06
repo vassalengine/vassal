@@ -370,6 +370,8 @@ public class PlaceMarker extends Decorator implements EditablePiece {
     }
 
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
+      private static final long serialVersionUID = 1L;
+
       public ChoosePieceDialog(Frame owner, Class targetClass) {
         super(owner, targetClass);
       }

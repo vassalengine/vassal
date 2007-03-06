@@ -74,6 +74,8 @@ import VASSAL.tools.SequenceEncoder;
  * to the start of a game by prompting the player to select boards if none have been specified
  */
 public class BoardPicker extends JDialog implements ActionListener, GameComponent, Configurable, CommandEncoder, ValidityChecker {
+  private static final long serialVersionUID = 1L;
+
   public static final String ID = "BoardPicker";
   protected Vector possibleBoards = new Vector();
   protected Vector currentBoards = null;

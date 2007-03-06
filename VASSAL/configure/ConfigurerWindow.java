@@ -31,6 +31,8 @@ import javax.swing.WindowConstants;
  * changes with the name of the Configurer
  */
 public class ConfigurerWindow extends JDialog {
+  private static final long serialVersionUID = 1L;
+
   private JButton okButton = new JButton("Ok");
 
   public ConfigurerWindow(Configurer c) {

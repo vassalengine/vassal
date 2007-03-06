@@ -31,6 +31,8 @@ import VASSAL.chat.Room;
  *
  */
 public class RoomTree extends JTree {
+  private static final long serialVersionUID = 1L;
+
   protected DefaultTreeModel model;
   protected DefaultMutableTreeNode root;
 
@@ -39,6 +41,8 @@ public class RoomTree extends JTree {
     setShowsRootHandles(true);
     root = new DefaultMutableTreeNode("Server");
     model = new DefaultTreeModel(root) {
+      private static final long serialVersionUID = 1L;
+
       public boolean isLeaf(Object node) {
         return ((DefaultMutableTreeNode) node).getUserObject() instanceof Player;
       }

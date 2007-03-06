@@ -40,6 +40,8 @@ import VASSAL.build.module.documentation.HelpWindowExtension;
  * Window for editing properties of a {@link Configurable} object
  */
 public class PropertiesWindow extends JDialog {
+  private static final long serialVersionUID = 1L;
+
   private Configurer configurer;
   private Configurable target;
   private Element originalState;

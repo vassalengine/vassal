@@ -36,6 +36,8 @@ import VASSAL.tools.ScrollPane;
  * A Window that displays HTML content, with navigation
  */
 public class HelpWindow extends JFrame implements HyperlinkListener {
+  private static final long serialVersionUID = 1L;
+
   private JEditorPane pane;
 
   public HelpWindow(String title, URL contents) {

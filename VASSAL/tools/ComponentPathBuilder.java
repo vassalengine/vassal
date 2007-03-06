@@ -143,6 +143,8 @@ public class ComponentPathBuilder {
   }
 
   public static class PathFormatException extends Exception {
+    private static final long serialVersionUID = 1L;
+
     public PathFormatException(String message) {
       super(message);
     }

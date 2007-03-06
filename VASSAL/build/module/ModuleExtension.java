@@ -283,6 +283,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
       d.pack();
       d.setLocationRelativeTo(d.getParent());
       editAction = new AbstractAction() {
+        private static final long serialVersionUID = 1L;
+
         public void actionPerformed(ActionEvent e) {
           d.setVisible(true);
         }

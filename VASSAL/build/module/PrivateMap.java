@@ -153,6 +153,8 @@ public class PrivateMap extends Map {
   protected Window createParentFrame() {
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
       JDialog d = new JDialog(GameModule.getGameModule().getFrame()) {
+        private static final long serialVersionUID = 1L;
+
         public void setVisible(boolean show) {
           super.setVisible(show && (visibleToAll
                                     || isAccessibleTo(PlayerRoster.getMySide())));
@@ -164,6 +166,8 @@ public class PrivateMap extends Map {
     }
     else {
       JFrame d = new JFrame() {
+        private static final long serialVersionUID = 1L;
+
         public void setVisible(boolean show) {
           super.setVisible(show && (visibleToAll
                                     || isAccessibleTo(PlayerRoster.getMySide())));
@@ -247,6 +251,8 @@ public class PrivateMap extends Map {
   }
 
   public static class View extends Map.View {
+    private static final long serialVersionUID = 1L;
+
     private Vector keyListeners = new Vector();
     private Vector mouseListeners = new Vector();
     private Vector mouseMotionListeners = new Vector();

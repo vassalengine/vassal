@@ -81,6 +81,8 @@ public class IconConfigurer extends Configurer {
       controls.setLayout(new BoxLayout(controls,BoxLayout.X_AXIS));
       controls.add(new JLabel(getName()));
       final JPanel p = new JPanel() {
+        private static final long serialVersionUID = 1L;
+
         public void paint(Graphics g) {
           g.clearRect(0,0,getSize().width,getSize().height);
           Icon i = getIconValue();

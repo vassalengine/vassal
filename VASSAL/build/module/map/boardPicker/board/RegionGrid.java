@@ -53,6 +53,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 
 public class RegionGrid extends AbstractConfigurable implements MapGrid {
+  private static final long serialVersionUID = 1L;
 
   // AreaList is the table of Map areas
   // pointList is a cross-reference of points to Area names
@@ -371,6 +372,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid {
   }
 
   public static class Config extends JFrame implements MouseListener, MouseMotionListener, ActionListener, KeyListener {
+    private static final long serialVersionUID = 1L;
 
     protected RegionGrid grid;
     protected Board board;
@@ -472,6 +474,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid {
      * The scrollpane client
      */
     public static class View extends JPanel {
+      private static final long serialVersionUID = 1L;
+
       protected Board myBoard;
       protected RegionGrid grid;
 

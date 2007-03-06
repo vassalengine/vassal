@@ -159,6 +159,8 @@ public class ComponentSplitter {
    * the component is shown/hidden. The hideable component is initially hidden
    */
   public static class SplitPane extends JSplitPane {
+    private static final long serialVersionUID = 1L;
+
     private boolean resizeOnVisibilityChange;
     private int hideablePosition;
     public static final int HIDE_TOP = 0;
@@ -568,16 +570,22 @@ public class ComponentSplitter {
     splitBottom.setResizeWeight(0.0);
     main.add(text, BorderLayout.CENTER);
     toolbar.add(new AbstractAction("Left") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         splitLeft.toggleVisibility();
       }
     });
     toolbar.add(new AbstractAction("Right") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         splitRight.toggleVisibility();
       }
     });
     toolbar.add(new AbstractAction("Bottom") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         splitBottom.toggleVisibility();
       }

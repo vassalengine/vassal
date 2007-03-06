@@ -779,6 +779,7 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
   }
   
   public class HexGridEditor extends GridEditor {
+    private static final long serialVersionUID = 1L; 
 
     public HexGridEditor(EditableGrid grid) {
       super(grid);

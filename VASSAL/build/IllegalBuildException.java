@@ -23,7 +23,9 @@ package VASSAL.build;
  * when building a Buildable component
  */
 public class IllegalBuildException extends RuntimeException {
-    public IllegalBuildException(String s) {
-	super(s);
-    }
+   private static final long serialVersionUID = 1L;
+
+   public IllegalBuildException(String s) {
+	   super(s);
+   }
 }

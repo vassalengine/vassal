@@ -23,6 +23,8 @@ import javax.swing.*;
  * A window that displays information on a {@link VASSAL.chat.SimplePlayer}
  */
 public class PlayerInfoWindow extends JDialog {
+  private static final long serialVersionUID = 1L;
+
   public PlayerInfoWindow(java.awt.Frame f, SimplePlayer p) {
     super(f, p.getName());
     getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

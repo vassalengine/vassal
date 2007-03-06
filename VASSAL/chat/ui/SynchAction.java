@@ -30,6 +30,8 @@ import VASSAL.chat.SynchCommand;
  * When invoked, will request synchronization info from another player
  */
 public class SynchAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private Player p;
   private ChatServerConnection client;
 

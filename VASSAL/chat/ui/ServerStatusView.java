@@ -35,6 +35,8 @@ import java.util.List;
  * Shows the current status of connections to the server
  */
 public class ServerStatusView extends JTabbedPane implements ChangeListener, TreeSelectionListener {
+  private static final long serialVersionUID = 1L;
+
   public static final String SELECTION_PROPERTY = "ServerStatusView.selection";
   private ServerStatus status;
   private DefaultTreeModel model;
@@ -197,6 +199,8 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
     return node;
   }
   public static class Render extends DefaultTreeCellRenderer {
+    private static final long serialVersionUID = 1L;
+
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
       super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
       if (leaf) {

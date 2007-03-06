@@ -34,6 +34,8 @@ import javax.swing.JWindow;
  * Displays an image centered on the screen
  */
 public class SplashScreen extends JWindow {
+  private static final long serialVersionUID = 1L;
+
   private static java.util.List instances = new ArrayList();
 
   public SplashScreen(Image im) {

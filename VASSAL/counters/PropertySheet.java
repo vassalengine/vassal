@@ -126,6 +126,7 @@ public class PropertySheet extends Decorator implements EditablePiece {
   static final char VALUE_DELIMINATOR = '/';
 
   class PropertySheetDialog extends JDialog implements ActionListener {
+    private static final long serialVersionUID = 1L;
 
     public PropertySheetDialog(Frame owner) {
       super(owner, false);
@@ -564,6 +565,8 @@ public class PropertySheet extends Decorator implements EditablePiece {
 
   /** A generic panel for editing unit traits. Not directly related to "PropertySheets" **/
   static class PropertyPanel extends JPanel implements FocusListener {
+    private static final long serialVersionUID = 1L;
+
     GridBagConstraints c = new GridBagConstraints();
 
     public PropertyPanel() {
@@ -670,6 +673,8 @@ public class PropertySheet extends Decorator implements EditablePiece {
 
 
     public class SmartTable extends JTable {
+      private static final long serialVersionUID = 1L;
+
       SmartTable(TableModel m) {
         super(m);
         setSurrendersFocusOnKeystroke(true);
@@ -917,6 +922,7 @@ public class PropertySheet extends Decorator implements EditablePiece {
 
 
   class TickPanel extends JPanel implements ActionListener, FocusListener, DocumentListener {
+    private static final long serialVersionUID = 1L;
 
     private int numTicks;
     private int maxTicks;
@@ -1107,6 +1113,7 @@ public class PropertySheet extends Decorator implements EditablePiece {
 
 
   class TickLabel extends JLabel implements MouseListener {
+    private static final long serialVersionUID = 1L;
 
     private int numTicks = 0;
     private int maxTicks = 0;
@@ -1245,6 +1252,8 @@ public class PropertySheet extends Decorator implements EditablePiece {
     }
 
     public class EditTickLabelValueDialog extends JPanel implements ActionListener, DocumentListener, FocusListener {
+      private static final long serialVersionUID = 1L;
+
       TickLabel theTickLabel;
       JLayeredPane editorParent;
       JTextField valueField;

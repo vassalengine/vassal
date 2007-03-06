@@ -37,6 +37,8 @@ import VASSAL.chat.SimpleStatus;
 
 /** Cell render component for {@link RoomTree} */
 public class RoomTreeRenderer extends DefaultTreeCellRenderer {
+  private static final long serialVersionUID = 1L;
+
   private Icon away;
   private Icon looking;
 

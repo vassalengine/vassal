@@ -30,6 +30,8 @@ import VASSAL.build.module.documentation.HelpWindow;
  * Action that displays a {@link HelpWindow}
  */
 public class ShowHelpAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private HelpWindow helpWindow;
   private URL contents;
 

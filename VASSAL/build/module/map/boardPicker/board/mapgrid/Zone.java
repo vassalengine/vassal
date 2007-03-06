@@ -448,6 +448,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
         }
       });
       editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
+        private static final long serialVersionUID = 1L;
+
         protected void paintBackground(Graphics g) {
           if (board != null) {
             Rectangle b = getVisibleRect();

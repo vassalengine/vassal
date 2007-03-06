@@ -25,6 +25,8 @@ import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
 
 public class KeyCommand extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private String name;
   private KeyStroke stroke;
   private GamePiece target;

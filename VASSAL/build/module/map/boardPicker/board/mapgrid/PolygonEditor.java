@@ -42,6 +42,8 @@ import javax.swing.event.MouseInputAdapter;
 import VASSAL.tools.SequenceEncoder;
 
 public class PolygonEditor extends JPanel {
+  private static final long serialVersionUID = 1L;
+
   private Polygon polygon;
   private int selected = -1;
   protected JScrollPane myScroll;

@@ -28,6 +28,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class KeySpecifier extends JPanel implements KeyListener {
+  private static final long serialVersionUID = 1L;
+
   private JTextField tf = new JTextField(3);
   private String key = " ";
 

@@ -22,6 +22,7 @@ package VASSAL.build.module.gamepieceimage;
 import java.awt.Font;
 
 public class OutlineFont extends Font {
+  private static final long serialVersionUID = 1L;
 
   protected boolean outline;
   

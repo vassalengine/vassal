@@ -35,6 +35,8 @@ import VASSAL.tools.ScrollPane;
  * Dialog for reporting the results of validating a GameModule
  */
 public class ValidationReportDialog extends JDialog {
+  private static final long serialVersionUID = 1L;
+
   private CallBack callback;
 
   public ValidationReportDialog(ValidationReport report, CallBack cb) {

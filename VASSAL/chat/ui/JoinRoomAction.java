@@ -26,6 +26,8 @@ import java.awt.event.ActionEvent;
  * When invoked, will join a game room on the server
  */
 public class JoinRoomAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private Room r;
   private ChatServerConnection client;
 

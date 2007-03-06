@@ -155,6 +155,8 @@ public class NonRectangular extends Decorator implements EditablePiece {
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
       final JPanel shapePanel = new JPanel() {
+        private static final long serialVersionUID = 1L;
+
         public void paint(Graphics g) {
           Graphics2D g2d = (Graphics2D) g;
           g.setColor(Color.white);
@@ -175,6 +177,8 @@ public class NonRectangular extends Decorator implements EditablePiece {
       };
       controls.add(shapePanel);
       final ImagePicker picker = new ImagePicker() {
+        private static final long serialVersionUID = 1L;
+
         public void setImageName(String name) {
           super.setImageName(name);
           try {

@@ -57,6 +57,8 @@ import VASSAL.build.module.documentation.HelpWindow;
  * child nodes are obtained via {@link VASSAL.build.Configurable#getConfigureComponents}
  */
 public class ConfigureTree extends JTree implements PropertyChangeListener, MouseListener, MouseMotionListener {
+  private static final long serialVersionUID = 1L;
+
   private Hashtable nodes = new Hashtable();
   protected DefaultMutableTreeNode copyData;
   protected DefaultMutableTreeNode cutData;
@@ -148,6 +150,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     Action a = null;
     if (getTreeNode(target).getParent() != null) {
       a = new AbstractAction("Move") {
+        private static final long serialVersionUID = 1L; 
+
         public void actionPerformed(ActionEvent e) {
           final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), true);
           d.setTitle(target.getConfigureName() == null ? "Move" : "Move " + target.getConfigureName());
@@ -195,6 +199,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     Action a = null;
     if (getTreeNode(target).getParent() != null) {
       a = new AbstractAction("Cut") {
+        private static final long serialVersionUID = 1L;
+
         public void actionPerformed(ActionEvent e) {
           cutData = getTreeNode(target);
           copyData = null;
@@ -208,6 +214,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     Action a = null;
     if (getTreeNode(target).getParent() != null) {
       a = new AbstractAction("Copy") {
+        private static final long serialVersionUID = 1L;
+
         public void actionPerformed(ActionEvent e) {
           copyData = getTreeNode(target);
           cutData = null;
@@ -219,6 +227,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected Action buildPasteAction(final Configurable target) {
     Action a = new AbstractAction("Paste") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         if (cutData != null) {
           DefaultMutableTreeNode targetNode = getTreeNode(target);
@@ -262,6 +272,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected Action buildImportAction(final Configurable target) {
     Action a = new AbstractAction("Add Imported Class") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent evt) {
         final Configurable child = importConfigurable();
         if (child != null) {
@@ -270,6 +282,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             final Configurable c = target;
             if (child.getConfigurer() != null) {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
+                private static final long serialVersionUID = 1L; 
+
                 public void save() {
                   super.save();
                   insert(c, child, getTreeNode(c).getChildCount());
@@ -312,6 +326,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected Action buildAddAction(final Configurable target, final Class newConfig) {
     AbstractAction action = new AbstractAction("Add " + getConfigureName(newConfig)) {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent evt) {
         try {
           final Configurable child = (Configurable) newConfig.newInstance();
@@ -320,6 +336,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if (child.getConfigurer() != null) {
             if (insert(target, child, getTreeNode(target).getChildCount())) {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), false, child, helpWindow) {
+                private static final long serialVersionUID = 1L;
+
                 public void save() {
                   super.save();
                 }
@@ -353,6 +371,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final DefaultMutableTreeNode targetNode = getTreeNode(target);
     if (targetNode.getParent() != null) {
       return new AbstractAction("Clone") {
+        private static final long serialVersionUID = 1L;
+
         public void actionPerformed(ActionEvent evt) {
           try {
             Configurable clone = (Configurable) target.getClass().newInstance();
@@ -386,6 +406,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         = getParent(targetNode);
     if (targetNode.getParent() != null) {
       return new AbstractAction("Delete") {
+        private static final long serialVersionUID = 1L;
+
         public void actionPerformed(ActionEvent evt) {
           remove(parent, target);
         }
@@ -499,6 +521,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   static class Renderer extends javax.swing.tree.DefaultTreeCellRenderer {
+    private static final long serialVersionUID = 1L;
+
     public Renderer() {
     }
 

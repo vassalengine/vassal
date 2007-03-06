@@ -50,6 +50,8 @@ import VASSAL.build.widget.PieceSlot;
  * the properties of a "Single Piece" in the Configuration window.
  */
 public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtension {
+  private static final long serialVersionUID = 1L;
+
   protected static DefaultListModel availableModel;
   protected DefaultListModel inUseModel;
   protected ListCellRenderer r;
@@ -491,6 +493,8 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
 
   /** A Dialog for editing an EditablePiece's properties */
   protected static class Ed extends JDialog {
+    private static final long serialVersionUID = 1L;
+
     PieceEditor ed;
 
     private Ed(Frame owner, final EditablePiece p) {
@@ -571,6 +575,8 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
   private javax.swing.JButton moveDownButton;
 
   private static class Renderer extends DefaultListCellRenderer {
+    private static final long serialVersionUID = 1L;
+
     public java.awt.Component getListCellRendererComponent
         (JList list, Object value, int index, boolean selected, boolean hasFocus) {
       super.getListCellRendererComponent(list, value, index, selected, hasFocus);

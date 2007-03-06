@@ -67,6 +67,8 @@ import VASSAL.tools.ScrollPane;
  * indicating the current viewable area in the map window
  */
 public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent, Drawable {
+  private static final long serialVersionUID = 1L;
+
   protected Map map;
   protected double scale = 0.19444444; // Zoom factor
   protected Color rectColor = Color.black;
@@ -442,6 +444,7 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
    * Map view that appears inside the Scrollpane
    */
   protected class View extends JPanel implements MouseListener {
+    private static final long serialVersionUID = 1L;
 
     public void paint(Graphics g) {
       g.clearRect(0, 0, getViewableSize().width, getViewableSize().height);

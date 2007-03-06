@@ -50,6 +50,8 @@ import VASSAL.tools.SavedGameUpdater;
 import VASSAL.tools.ScrollPane;
 
 public class SavedGameUpdaterDialog extends JDialog {
+  private static final long serialVersionUID = 1L;
+
   private HelpWindow helpWindow;
   private DefaultListModel savedGamesModel;
   private SavedGameUpdater updater = new SavedGameUpdater();
@@ -111,6 +113,8 @@ public class SavedGameUpdaterDialog extends JDialog {
     JList savedGamesList = new JList(savedGamesModel);
     savedGamesList.setVisibleRowCount(5);
     savedGamesList.setCellRenderer(new DefaultListCellRenderer() {
+      private static final long serialVersionUID = 1L;
+
       public Component getListCellRendererComponent(
           JList list,
           Object value,

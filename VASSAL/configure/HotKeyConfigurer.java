@@ -84,6 +84,7 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
       case KeyEvent.VK_DELETE:
       case KeyEvent.VK_BACK_SPACE:
         setValue(null);
+        break;
       case KeyEvent.VK_SHIFT:
       case KeyEvent.VK_CONTROL:
       case KeyEvent.VK_META:

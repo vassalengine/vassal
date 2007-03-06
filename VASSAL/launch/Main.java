@@ -334,6 +334,8 @@ public class Main {
             };
             try {
               splash = new SplashScreen(archive.getCachedImage("Splash.gif")) {
+                private static final long serialVersionUID = 1L;
+
                 protected boolean triggered = false;
   
                 public void paint(Graphics g) {
@@ -504,6 +506,8 @@ public class Main {
   }
 
   protected  class Frame extends JFrame {
+    private static final long serialVersionUID = 1L;
+
     protected javax.swing.JButton openButton;
     protected javax.swing.JButton editButton;
     protected javax.swing.JButton newButton;

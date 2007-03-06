@@ -87,6 +87,8 @@ public class ColorConfigurer extends Configurer {
   }
 
   private class Panel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     public void paint(java.awt.Graphics g) {
       if (colorValue() != null) {
         g.setColor(colorValue());

@@ -28,6 +28,8 @@ import VASSAL.build.Configurable;
  * Widget for selecting the full path of a Component in the Buildable hierarchy
  */
 public class ChooseComponentPathDialog extends ChooseComponentDialog {
+  private static final long serialVersionUID = 1L;
+
   private Configurable[] path;
 
   public ChooseComponentPathDialog(Frame owner, Class targetClass) {

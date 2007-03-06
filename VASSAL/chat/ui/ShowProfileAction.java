@@ -31,6 +31,8 @@ import VASSAL.chat.SimplePlayer;
  * When invoked, will show profile information about another player
  */
 public class ShowProfileAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private SimplePlayer p;
   private java.awt.Frame f;
 

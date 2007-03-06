@@ -42,6 +42,7 @@ public class SizeConfigurer extends StringEnumConfigurer {
   }
 
   public class SizeComboBox extends JComboBox {
+    private static final long serialVersionUID = 1L;
 
     public SizeComboBox() {
       String[] s = Symbol.NatoUnitSymbolSet.getSymbolSizes();
@@ -64,6 +65,7 @@ public class SizeConfigurer extends StringEnumConfigurer {
     }
 
     public class SizeRenderer extends JLabel implements ListCellRenderer {
+      private static final long serialVersionUID = 1L;
 
       public SizeRenderer() {
         setOpaque(true);

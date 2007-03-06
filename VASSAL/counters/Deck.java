@@ -633,6 +633,8 @@ public class Deck extends Stack {
       KeyCommand c = null;
       if (USE_MENU.equals(shuffleOption)) {
         c = new KeyCommand("Shuffle", getShuffleKey(), this) {
+          private static final long serialVersionUID = 1L;
+
           public void actionPerformed(ActionEvent e) {
             GameModule.getGameModule().sendAndLog(shuffle());
             map.repaint();
@@ -642,6 +644,8 @@ public class Deck extends Stack {
       }
       if (reshuffleCommand.length() > 0) {
         c = new KeyCommand(reshuffleCommand, getReshuffleKey(), this) {
+          private static final long serialVersionUID = 1L; 
+
           public void actionPerformed(ActionEvent evt) {
             GameModule.getGameModule().sendAndLog(sendToDeck());
             map.repaint();
@@ -651,6 +655,8 @@ public class Deck extends Stack {
       }
       if (USE_MENU.equals(faceDownOption)) {
         KeyCommand faceDownAction = new KeyCommand(faceDown ? "Face up" : "Face down", null, this) {
+          private static final long serialVersionUID = 1L;
+
           public void actionPerformed(ActionEvent e) {
             Command c = setContentsFaceDown(!faceDown);
             GameModule.getGameModule().sendAndLog(c);
@@ -661,6 +667,8 @@ public class Deck extends Stack {
       }
       if (reversible) {
         c = new KeyCommand("Reverse order", null, this) {
+          private static final long serialVersionUID = 1L;
+
           public void actionPerformed(ActionEvent e) {
             Command c = reverse();
             GameModule.getGameModule().sendAndLog(c);
@@ -671,6 +679,8 @@ public class Deck extends Stack {
       }
       if (allowMultipleDraw) {
         c = new KeyCommand("Draw multiple cards", null, this) {
+          private static final long serialVersionUID = 1L;
+
           public void actionPerformed(ActionEvent e) {
             promptForDragCount();
           }
@@ -679,6 +689,8 @@ public class Deck extends Stack {
       }
       if (allowSelectDraw) {
         c = new KeyCommand("Draw specific cards", null, this) {
+          private static final long serialVersionUID = 1L;
+
           public void actionPerformed(ActionEvent e) {
             promptForNextDraw();
             map.repaint();
@@ -688,6 +700,8 @@ public class Deck extends Stack {
       }
       if (persistable) {
         c = new KeyCommand("Save", null, this) {
+          private static final long serialVersionUID = 1L;
+
           public void actionPerformed(ActionEvent e) {
             GameModule.getGameModule().sendAndLog(saveDeck());
             map.repaint();
@@ -695,6 +709,8 @@ public class Deck extends Stack {
         };
         l.add(c);
         c = new KeyCommand("Load", null, this) {
+          private static final long serialVersionUID = 1L;
+
           public void actionPerformed(ActionEvent e) {
             GameModule.getGameModule().sendAndLog(loadDeck());
             map.repaint();

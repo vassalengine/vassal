@@ -102,6 +102,8 @@ public class LockableRoomControls extends RoomInteractionControlsInitializer {
     }
   }
   public static class LockRoomAction extends AbstractAction {
+    private static final long serialVersionUID = 1L; 
+
     private NodeClient client;
     private NodeRoom target;
 

@@ -47,6 +47,8 @@ import VASSAL.tools.LaunchButton;
  */
 public class HidePiecesButton extends JPanel implements MouseListener,
     AutoConfigurable, GameComponent, Drawable {
+  private static final long serialVersionUID = 1L;
+
   protected boolean piecesVisible = false;
   protected Map map;
   protected LaunchButton launch;

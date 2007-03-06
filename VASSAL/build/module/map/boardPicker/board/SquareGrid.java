@@ -508,6 +508,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
   
   public class SquareGridEditor extends GridEditor {
+    private static final long serialVersionUID = 1L;
 
     public SquareGridEditor(EditableGrid grid) {
       super(grid);

@@ -33,6 +33,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 public class SwatchComboBox extends JComboBox {
+  private static final long serialVersionUID = 1L;
 
   public SwatchComboBox() {
     String[] s = ColorManager.getColorManager().getColorNames();
@@ -55,6 +56,7 @@ public class SwatchComboBox extends JComboBox {
   }
   
   public class SwatchRenderer extends JLabel implements ListCellRenderer {
+    private static final long serialVersionUID = 1L;
 
     public SwatchRenderer() {
       setOpaque(true);
@@ -100,6 +102,7 @@ public class SwatchComboBox extends JComboBox {
   }
   
   class SwatchTableRenderer extends JLabel implements TableCellRenderer  {
+    private static final long serialVersionUID = 1L;
 
     public SwatchTableRenderer() {
       setOpaque(true);

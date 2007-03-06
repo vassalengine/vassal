@@ -111,6 +111,8 @@ public abstract class Widget extends AbstractConfigurable {
   }
 
   public static class MyCellRenderer extends javax.swing.DefaultListCellRenderer {
+    private static final long serialVersionUID = 1L;
+
     public java.awt.Component getListCellRendererComponent
       (javax.swing.JList list,
        Object value,

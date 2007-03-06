@@ -489,12 +489,14 @@ public class Embellishment extends Decorator implements EditablePiece {
   }
 
   protected Image getCurrentImage() throws java.io.IOException {
-    if (value > 0) {
-      return GameModule.getGameModule() == null ? null : GameModule.getGameModule().getDataArchive().getCachedImage(imageName[value - 1]);
-    }
-    else {
-      return null;
-    }
+    // nonpositive value means that layer is inactive
+    // null or empty imageName[value-1] means that this layer has no image
+    if (value <= 0 ||
+        imageName[value-1] == null ||
+        imageName[value-1].length() == 0) return null;
+    
+    return GameModule.getGameModule().getDataArchive()
+                     .getCachedImage(imageName[value - 1]);
   }
 
   public Rectangle boundingBox() {

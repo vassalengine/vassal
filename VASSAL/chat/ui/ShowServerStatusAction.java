@@ -41,6 +41,8 @@ import VASSAL.chat.peer2peer.PeerPoolInfo;
  * Date: Jul 16, 2003
  */
 public class ShowServerStatusAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private static Window frame;
 
   public ShowServerStatusAction(ServerStatus status, URL iconURL) {
@@ -61,6 +63,8 @@ public class ShowServerStatusAction extends AbstractAction {
   }
 
   private static class Window extends JFrame implements PropertyChangeListener {
+    private static final long serialVersionUID = 1L;
+
     private ServerStatusView view;
     private MessageBoardControls messageMgr;
 

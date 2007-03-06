@@ -216,6 +216,8 @@ public class RotateFilter extends ImageFilter {
     ImageProducer producer = new FilteredImageSource(unrotated.getSource(), filter);
     final Image rotated = new javax.swing.JLabel().createImage(producer);
     javax.swing.JFrame f = new javax.swing.JFrame() {
+      private static final long serialVersionUID = 1L;
+
       public void paint(Graphics g) {
         g.setColor(Color.blue);
         g.fillRect(0, 0, getSize().width, getSize().height);

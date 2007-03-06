@@ -31,6 +31,8 @@ import VASSAL.build.module.documentation.HelpWindow;
  * Action to edit the Properties of a component
  */
 public class EditPropertiesAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private Configurable target;
   private HelpWindow helpWindow;
   private static Hashtable openWindows = new Hashtable();

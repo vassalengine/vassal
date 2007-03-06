@@ -515,6 +515,8 @@ public class Obscurable extends Decorator implements EditablePiece {
       box.add(displayOption.getControls());
 
       final JPanel showDisplayOption = new JPanel() {
+        private static final long serialVersionUID = 1L;
+
         public Dimension getMinimumSize() {
           return new Dimension(60, 60);
         }

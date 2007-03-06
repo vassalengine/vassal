@@ -296,6 +296,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
 
   public class XTMLEditorKit extends HTMLEditorKit {
+    private static final long serialVersionUID = 1L;
 
     public ViewFactory getViewFactory() {
       return new XTMLFactory();

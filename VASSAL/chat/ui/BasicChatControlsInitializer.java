@@ -47,6 +47,8 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
   public void initializeControls(final ChatServerControls controls) {
     JToolBar toolbar = controls.getToolbar();
     connectAction = new AbstractAction("Connect") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent evt) {
         client.setConnected(true);
       }
@@ -59,6 +61,8 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
     }
     connectAction.setEnabled(true);
     disconnectAction = new AbstractAction("Disconnect") {
+      private static final long serialVersionUID = 1L; 
+
       public void actionPerformed(ActionEvent evt) {
         client.setConnected(false);
       }

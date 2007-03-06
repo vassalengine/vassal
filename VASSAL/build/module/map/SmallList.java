@@ -21,10 +21,12 @@ package VASSAL.build.module.map;
 import java.awt.Graphics;
 import java.awt.List;
 
+/**
+ * Bogus extension of list that takes up less space.
+ */
 public class SmallList extends List {
-/*
- ** Bogus extension of list that takes up less space.
-*/
+  private static final long serialVersionUID = 1L;
+
   public void paint(Graphics g) {
     while (getItemCount() > 0 &&
 //	   getSize().width > g.getFontMetrics().stringWidth(getItem(0))+2)

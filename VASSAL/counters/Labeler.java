@@ -592,6 +592,8 @@ public class Labeler extends Decorator implements EditablePiece {
     }
 
     private static class MyRenderer extends DefaultListCellRenderer {
+      private static final long serialVersionUID = 1L;
+
       public Component getListCellRendererComponent(JList list,
                                                     Object value,
                                                     int index,

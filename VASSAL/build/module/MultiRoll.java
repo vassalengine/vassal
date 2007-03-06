@@ -55,6 +55,7 @@ import VASSAL.preferences.Prefs;
  * For use with internet dice rollers
  */
 public class MultiRoll extends JDialog implements ActionListener {
+  private static final long serialVersionUID = 1L;
 
   private JButton rollButton = new JButton("Roll");
   private JButton canButton = new JButton("Cancel");
@@ -309,6 +310,7 @@ public class MultiRoll extends JDialog implements ActionListener {
   }
 
   class HeaderRow extends JPanel {
+    private static final long serialVersionUID = 1L;
 
     public HeaderRow() {
 
@@ -361,6 +363,7 @@ public class MultiRoll extends JDialog implements ActionListener {
   }
 
   class RollRow extends JPanel {
+    private static final long serialVersionUID = 1L;
 
     int myRow;
     boolean selected;
@@ -509,6 +512,8 @@ public class MultiRoll extends JDialog implements ActionListener {
    * An on/off button that changes state to show it's status
    */
   class StateButton extends JButton {
+    private static final long serialVersionUID = 1L;
+
     boolean state = false;
 
     StateButton(String s, boolean b) {

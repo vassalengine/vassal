@@ -31,6 +31,8 @@ import VASSAL.configure.SoundConfigurer;
  * Copyright (c) 2003 by Rodney Kinney. All rights reserved. Date: Jul 29, 2003
  */
 public class SendSoundAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private ChatServerConnection client;
   private Player target;
   private String soundKey;

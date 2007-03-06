@@ -325,6 +325,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
   protected Action undoAction = new UndoAction();
   protected Action endLogAction = new AbstractAction("End Logfile") {
+    private static final long serialVersionUID = 1L;
+
     public void actionPerformed(ActionEvent e) {
       try {
         write();
@@ -342,6 +344,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
   };
   protected Action newLogAction = new AbstractAction("Begin Logfile") {
+    private static final long serialVersionUID = 1L;
+
     public void actionPerformed(ActionEvent e) {
       beginOutput();
     }
@@ -392,6 +396,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
   }
   public class StepAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
+
     public StepAction() {
       URL iconURL = getClass().getResource(STEP_ICON);
       if (iconURL != null) {
@@ -407,6 +413,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
   }
   public class UndoAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
+
     public UndoAction() {
       URL iconURL = getClass().getResource(UNDO_ICON);
       if (iconURL != null) {

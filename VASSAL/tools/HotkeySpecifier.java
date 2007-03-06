@@ -27,6 +27,8 @@ import javax.swing.KeyStroke;
  * Text component for specifying a hot key
  */
 public class HotkeySpecifier extends JTextField implements KeyListener {
+  private static final long serialVersionUID = 1L;
+
   private int key;
   private KeyStroke stroke;
 

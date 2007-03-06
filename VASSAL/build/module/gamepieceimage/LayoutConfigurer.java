@@ -147,6 +147,7 @@ public class LayoutConfigurer extends Configurer {
   }
 
   protected class ItemPanel extends JPanel implements ActionListener {
+    private static final long serialVersionUID = 1L;
 
     protected JTable table;
     protected AbstractTableModel model;
@@ -340,6 +341,8 @@ public class LayoutConfigurer extends Configurer {
     }
 
     class MyTableModel extends AbstractTableModel {
+      private static final long serialVersionUID = 1L;
+
       private String[] columnNames = new String[] { "Name", "Type", "Position" };
 
       public int getColumnCount() {

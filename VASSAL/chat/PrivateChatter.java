@@ -25,6 +25,8 @@ import VASSAL.build.module.ServerConnection;
  * A window for private messages between the user and another player;
  */
 public class PrivateChatter extends Chatter {
+  private static final long serialVersionUID = 1L;
+
   private ChatServerConnection client;
   private Player other;
 

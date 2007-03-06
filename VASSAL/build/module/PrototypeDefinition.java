@@ -196,6 +196,8 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
     public void setValue(String s) {
     }
     public static class Definer extends PieceDefiner {
+      private static final long serialVersionUID = 1L;
+
       public void setPiece(GamePiece piece) {
         if (piece != null) {
           GamePiece inner = Decorator.getInnermost(piece);

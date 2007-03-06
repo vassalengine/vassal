@@ -34,6 +34,8 @@ import VASSAL.configure.StringConfigurer;
  * tooltip text, etc.
  */
 public class LaunchButton extends JButton {
+  private static final long serialVersionUID = 1L;
+
   protected String tooltipAtt;
   protected String nameAtt;
   protected String keyAtt;

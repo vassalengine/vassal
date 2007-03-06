@@ -222,6 +222,8 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   }
 
   private class Controls extends JPanel implements ItemListener {
+    private static final long serialVersionUID = 1L;
+
     private JTextArea text;
     private JTable table;
     private JButton revealButton;
@@ -312,6 +314,8 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     }
 
     public class MyTableModel extends AbstractTableModel {
+      private static final long serialVersionUID = 1L;
+
       public String getColumnName(int col) {
         return columnNames[col].toString();
       }

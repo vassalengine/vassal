@@ -45,6 +45,8 @@ import VASSAL.tools.ScrollPane;
  * The editing window for a module
  */
 public class ModuleEditWindow extends JFrame implements WindowListener {
+  private static final long serialVersionUID = 1L;
+
   protected HelpWindow helpWindow;
   protected JToolBar toolbar;
 
@@ -70,12 +72,16 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
     toolbar = new JToolBar();
     toolbar.setFloatable(false);
     SaveAction saveAction = new SaveAction() {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         ModuleEditWindow.this.save();
       }
     };
     toolbar.add(saveAction);
     SaveAsAction saveAsAction = new SaveAsAction() {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         ModuleEditWindow.this.saveAs();
       }

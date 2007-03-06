@@ -30,6 +30,7 @@ import javax.swing.SwingUtilities;
 
 
 public class Visualizer extends JPanel {
+  private static final long serialVersionUID = 1L;
 
   protected static final int OFFSET = 20;
   protected Visualizable observer;
@@ -45,6 +46,8 @@ public class Visualizer extends JPanel {
     setBorder(BorderFactory.createLineBorder(Color.black));
 
     visPanel = new JPanel() {
+      private static final long serialVersionUID = 1L;
+
       public void paint(Graphics g) {
         g.clearRect(0, 0, observer.getVisualizerWidth(), observer.getVisualizerHeight());
         g.drawImage(observer.getVisualizerImage(), 0, 0, this);

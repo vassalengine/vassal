@@ -54,6 +54,8 @@ public class Tutorial extends AbstractConfigurable {
 
   public Tutorial() {
     launch = new AbstractAction("Tutorial") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         launch();
       };

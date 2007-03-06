@@ -152,6 +152,7 @@ public class InstanceConfigurer extends Configurer {
   }
   
   protected class SymbolPanel extends JPanel {
+    private static final long serialVersionUID = 1L; 
 
     protected JTable table;
     protected AbstractTableModel model;
@@ -261,6 +262,7 @@ public class InstanceConfigurer extends Configurer {
     }
     
     class SymbolTableModel extends AbstractTableModel {
+      private static final long serialVersionUID = 1L;
 
       private String[] columnNames = new String[] { "Name", "Type", "Position" };
 

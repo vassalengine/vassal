@@ -38,6 +38,8 @@ import VASSAL.build.module.documentation.HelpWindow;
  * The configuration tree for editing a module extension
  */
 public class ExtensionTree extends ConfigureTree {
+  private static final long serialVersionUID = 1L;
+
   private ModuleExtension extension;
 
   public ExtensionTree(Configurable root, HelpWindow helpWindow, ModuleExtension extention) {
@@ -71,6 +73,8 @@ public class ExtensionTree extends ConfigureTree {
 
   protected Action buildAddAction(final Configurable target, final Class newConfig) {
     AbstractAction action = new AbstractAction("Add " + getConfigureName(newConfig)) {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent evt) {
         try {
           final Configurable child = (Configurable) newConfig.newInstance();
@@ -78,6 +82,8 @@ public class ExtensionTree extends ConfigureTree {
           if (child.getConfigurer() != null) {
             if (insert(target, child, getTreeNode(target).getChildCount())) {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
+                private static final long serialVersionUID = 1L;
+
                 public void save() {
                   super.save();
                   if (!isEditable(target)) {
@@ -111,6 +117,8 @@ public class ExtensionTree extends ConfigureTree {
 
   protected Action buildImportAction(final Configurable target) {
     Action a = new AbstractAction("Add Imported Class") {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent evt) {
         final Configurable child = importConfigurable();
         if (child != null) {
@@ -119,6 +127,8 @@ public class ExtensionTree extends ConfigureTree {
             final Configurable c = target;
             if (child.getConfigurer() != null) {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
+                private static final long serialVersionUID = 1L;
+
                 public void save() {
                   super.save();
                   insert(c, child, getTreeNode(c).getChildCount());
@@ -171,6 +181,8 @@ public class ExtensionTree extends ConfigureTree {
     }
     else {
       a = new AbstractAction("Paste") {
+        private static final long serialVersionUID = 1L;
+
         public void actionPerformed(ActionEvent e) {
           if (cutData != null) {
             DefaultMutableTreeNode targetNode = getTreeNode(target);
@@ -232,6 +244,8 @@ public class ExtensionTree extends ConfigureTree {
         && isEditable(targetNode)) {
       final Configurable parent = (Configurable) ((DefaultMutableTreeNode) targetNode.getParent()).getUserObject();
       action = new AbstractAction("Delete") {
+        private static final long serialVersionUID = 1L;
+
         public void actionPerformed(ActionEvent evt) {
           boolean removed = remove(parent, target);
           if (removed && !isEditable(parent)) {
@@ -257,6 +271,8 @@ public class ExtensionTree extends ConfigureTree {
     }
     if (targetNode.getParent() != null) {
       return new AbstractAction("Clone") {
+        private static final long serialVersionUID = 1L;
+
         public void actionPerformed(ActionEvent evt) {
           try {
             Configurable clone = (Configurable) target.getClass().newInstance();

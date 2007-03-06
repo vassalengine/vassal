@@ -25,6 +25,8 @@ import java.util.List;
 
 /** Represents a sub-menu in a GamePiece's right-click drop-down menu */
 public class KeyCommandSubMenu extends KeyCommand {
+  private static final long serialVersionUID = 1L;
+
   private List commands = new ArrayList();
 
   public KeyCommandSubMenu(String name, GamePiece target) {

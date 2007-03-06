@@ -39,6 +39,8 @@ import VASSAL.tools.FileChooser;
 import VASSAL.tools.ZipUpdater;
 
 public class ModuleUpdaterDialog extends JDialog {
+  private static final long serialVersionUID = 1L;
+
   private HelpWindow helpWindow;
 
   public ModuleUpdaterDialog(Frame owner, HelpWindow w) throws HeadlessException {

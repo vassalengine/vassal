@@ -43,6 +43,7 @@ public class SymbolConfigurer extends StringEnumConfigurer {
   }
 
   public class SymbolComboBox extends JComboBox {
+    private static final long serialVersionUID = 1L;
 
     static final int sample_w = 20;
     static final int sample_h = 13;
@@ -68,6 +69,7 @@ public class SymbolConfigurer extends StringEnumConfigurer {
     }
 
     public class SymbolRenderer extends JLabel implements ListCellRenderer {
+      private static final long serialVersionUID = 1L;
 
       public SymbolRenderer() {
         setOpaque(true);

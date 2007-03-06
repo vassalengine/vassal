@@ -29,6 +29,8 @@ import java.awt.event.ActionEvent;
  * When invoked, will open a private message window to another player
  */
 public class PrivateMessageAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
+
     private Player p;
     private PrivateChatManager mgr;
 
