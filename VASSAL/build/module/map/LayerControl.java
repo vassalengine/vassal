@@ -108,11 +108,11 @@ public class LayerControl extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button text", "Button Icon", "Hotkey", "Tooltip text", "Action", "Skip layers with no counters?", "Affect which layers? (Use layer names or numbers)"};
+    return new String[] {"Button text:  ", "Tooltip text:  ", "Button Icon:  ", "Hotkey:  ", "Action:  ", "Skip layers with no counters?", "Affect which layers? (Use layer names or numbers)"};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class, Icon.class, KeyStroke.class, String.class, CommandConfig.class, Boolean.class, String[].class};
+    return new Class[] {String.class, String.class, Icon.class, KeyStroke.class, CommandConfig.class, Boolean.class, String[].class};
   }
 
   public static class CommandConfig extends StringEnum {
@@ -122,7 +122,7 @@ public class LayerControl extends AbstractConfigurable {
   }
   
   public String[] getAttributeNames() {
-    return new String[] {BUTTON_TEXT, BUTTON_ICON, BUTTON_HOTKEY, TOOLTIP, COMMAND, SKIP, LAYERS};
+    return new String[] {BUTTON_TEXT, TOOLTIP, BUTTON_ICON, BUTTON_HOTKEY, COMMAND, SKIP, LAYERS};
   }
 
   public String getAttributeValueString(String key) {

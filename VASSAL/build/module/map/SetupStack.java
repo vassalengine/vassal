@@ -146,7 +146,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name", "Belongs to Board", "X position", "Y position"};
+    return new String[]{"Name:  ", "Belongs to Board:  ", "X position:  ", "Y position:  "};
   }
 
   public Class[] getAttributeTypes() {

@@ -169,7 +169,7 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
     public Config(PrototypeDefinition def) {
       super(null, null, def);
       box = Box.createVerticalBox();
-      name = new StringConfigurer(null, "Name", def.name);
+      name = new StringConfigurer(null, "Name:  ", def.name);
       box.add(name.getControls());
       pieceDefiner = new Definer();
       pieceDefiner.setPiece(def.getPiece());

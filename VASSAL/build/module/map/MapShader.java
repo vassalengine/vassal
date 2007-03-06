@@ -348,7 +348,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, ALWAYS_ON, STARTS_ON, TOOLTIP, BUTTON_TEXT, ICON, HOT_KEY,
+    return new String[]{NAME, ALWAYS_ON, STARTS_ON, BUTTON_TEXT, TOOLTIP, ICON, HOT_KEY,
                         BOARDS, BOARD_LIST, TYPE,
                         DRAW_OVER, PATTERN, COLOR, IMAGE, OPACITY,
                         BORDER, BORDER_COLOR, BORDER_WIDTH, BORDER_OPACITY};
@@ -362,7 +362,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Shading Always On?  ", "Shading Starts turned on?  ", "Tooltip Text:  ", "Button text:  ", "Button Icon:  ", "Hotkey:  ",
+    return new String[]{"Name:  ", "Shading Always On?  ", "Shading Starts turned on?  ", "Button text:  ", "Tooltip Text:  ", "Button Icon:  ", "Hotkey:  ",
                         "All boards in map get Shaded?  ", "Board List:  ", "Type:  ",
                         "Draw Shade on top of Counters?  ", "Shade Pattern:  ", "Color:  ", "Image:  ", "Opacity(%)",
                         "Border?  ", "Border Color:  ", "Border Width:  ", "Border opacity(%)"};

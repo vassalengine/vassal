@@ -261,23 +261,23 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Order",
-                        "Separator",
-                        "Horizontal numbering",
-                        "Leading zeros in horizontal",
-                        "Starting number in horizontal",
-                        "Horizontal numbering descending",
-                        "Vertical numbering",
-                        "Leading zeros in vertical",
-                        "Starting number in vertical",
-                        "Vertical numbering descending",
-                        "Location format",
-                        "Draw Numbering",
-                        "Font size",
-                        "Color",
-                        "Rotate text (Degrees)",
-                        "Text X offset",
-                        "Text Y offset"};
+    return new String[]{"Order:  ",
+                        "Separator:  ",
+                        "Horizontal numbering:  ",
+                        "Leading zeros in horizontal:  ",
+                        "Starting number in horizontal:  ",
+                        "Horizontal numbering descending?",
+                        "Vertical numbering:  ",
+                        "Leading zeros in vertical:  ",
+                        "Starting number in vertical:  ",
+                        "Vertical numbering descending?",
+                        "Location format:  ",
+                        "Draw Numbering?",
+                        "Font size:  ",
+                        "Color:  ",
+                        "Rotate text (Degrees):  ",
+                        "Text X offset:  ",
+                        "Text Y offset:  "};
   }
 
   public static class F extends StringEnum {

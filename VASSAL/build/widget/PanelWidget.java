@@ -122,10 +122,10 @@ public class PanelWidget extends Widget {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name",
-                        "Fixed cell size",
-                        "Number of columns",
-                        "Vertical layout"};
+    return new String[]{"Name:  ",
+                        "Fixed cell size?",
+                        "Number of columns:  ",
+                        "Vertical layout?"};
   }
 
   public Class[] getAttributeTypes() {

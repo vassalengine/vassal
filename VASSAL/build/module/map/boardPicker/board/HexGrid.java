@@ -86,16 +86,16 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Sideways (hexrows go horizontal)",
-                        "X offset",
-                        "Y offset",
-                        "Hex Height",
-                        "Hex Width",
-                        "Edges are legal locations",
-                        "Vertices are legal locations",
-                        "Show grid",
-                        "Draw center dots",
-                        "Color"};
+    return new String[]{"Sideways (hexrows go horizontal)?",
+                        "X offset:  ",
+                        "Y offset:  ",
+                        "Hex Height:  ",
+                        "Hex Width:  ",
+                        "Edges are legal locations?",
+                        "Vertices are legal locations?",
+                        "Show grid?",
+                        "Draw center dots?",
+                        "Color:  "};
   }
 
   public Class[] getAttributeTypes() {

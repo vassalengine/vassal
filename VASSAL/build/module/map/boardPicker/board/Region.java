@@ -80,9 +80,9 @@ public class Region extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name",
-                        "X Co-ord",
-                        "Y Co-ord"};
+    return new String[]{"Name:  ",
+                        "X Co-ord:  ",
+                        "Y Co-ord:  "};
   }
 
   public Class[] getAttributeTypes() {

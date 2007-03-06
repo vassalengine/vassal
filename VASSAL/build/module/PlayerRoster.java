@@ -365,7 +365,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
-      sidesConfig = new StringArrayConfigurer(null, "Sides available to players:  ", (String[]) sides.toArray(new String[sides.size()]));
+      sidesConfig = new StringArrayConfigurer(null, "Sides available to players", (String[]) sides.toArray(new String[sides.size()]));
       sidesConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           sides.clear();
@@ -374,7 +374,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
       });
       controls.add(sidesConfig.getControls());
 
-      textConfig = new StringConfigurer(BUTTON_TEXT, "'Retire' button text", retireButton.getAttributeValueString(BUTTON_TEXT));
+      textConfig = new StringConfigurer(BUTTON_TEXT, "'Retire' button text:  ", retireButton.getAttributeValueString(BUTTON_TEXT));
       textConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           retireButton.setAttribute(BUTTON_TEXT, textConfig.getValueString());
@@ -382,7 +382,15 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
       });
       controls.add(textConfig.getControls());
 
-      iconConfig = new IconConfigurer(BUTTON_ICON, "'Retire' button icon", null);
+      tooltipConfig = new StringConfigurer(TOOL_TIP, "'Retire' button tooltip:  ", retireButton.getAttributeValueString(TOOL_TIP));
+      tooltipConfig.addPropertyChangeListener(new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          retireButton.setAttribute(TOOL_TIP, tooltipConfig.getValueString());
+        }
+      });
+      controls.add(tooltipConfig.getControls());
+      
+      iconConfig = new IconConfigurer(BUTTON_ICON, "'Retire' button icon:  ", null);
       iconConfig.setValue(retireButton.getIcon());
       iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -391,13 +399,6 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
       });
       controls.add(iconConfig.getControls());
 
-      tooltipConfig = new StringConfigurer(TOOL_TIP, "'Retire' button tooltip", retireButton.getAttributeValueString(TOOL_TIP));
-      tooltipConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          retireButton.setAttribute(TOOL_TIP, tooltipConfig.getValueString());
-        }
-      });
-      controls.add(tooltipConfig.getControls());
     }
 
     public String getValueString() {

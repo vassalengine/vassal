@@ -74,7 +74,7 @@ public class HexGridNumbering extends RegularGridNumbering {
     String[] s = super.getAttributeDescriptions();
     String[] val = new String[s.length + 1];
     System.arraycopy(s, 0, val, 0, s.length);
-    val[s.length] = "Odd-numbered rows numbered higher";
+    val[s.length] = "Odd-numbered rows numbered higher?";
     return val;
   }
 

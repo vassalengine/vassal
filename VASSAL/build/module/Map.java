@@ -42,8 +42,6 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -157,14 +155,14 @@ import VASSAL.tools.UniqueIdManager;
  * A Map may contain many different {@link Buildable} subcomponents. Components which are added directly to a Map are
  * contained in the <code>VASSAL.build.module.map</code> package
  */
-public class Map extends AbstractConfigurable implements GameComponent, FocusListener, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
+public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
 		UniqueIdManager.Identifyable, ToolBarComponent, GlobalPropertiesContainer, PropertySource, PlayerRoster.SideChangeListener, Runnable {
-	private String mapID = "";
-	private String mapName = "";
-	private static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight";
-	private static UniqueIdManager idMgr = new UniqueIdManager("Map");
+  protected String mapID = "";
+  protected String mapName = "";
+  protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight";
+  protected static UniqueIdManager idMgr = new UniqueIdManager("Map");
 	protected JPanel theMap;
-	private Vector drawComponents = new Vector();
+  protected Vector drawComponents = new Vector();
 	protected JScrollPane scroll;
 	protected ComponentSplitter.SplitPane mainWindowDock;
 	protected BoardPicker picker;
@@ -176,37 +174,37 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	protected boolean useLaunchButton = false;
 	protected String markMovedOption = GlobalOptions.ALWAYS;
 	protected String markUnmovedIcon = "/images/unmoved.gif";
+  protected String markUnmovedText = "";
+  protected String markUnmovedTooltip = "Mark all pieces on this map as not moved";
 	protected MouseListener multicaster = null;
 	protected Vector mouseListenerStack = new Vector();
 	protected Vector boards = new Vector();
-	private int[][] boardWidths; // Cache of board widths by row/column
-	private int[][] boardHeights; // Cache of board heights by row/column
+	protected int[][] boardWidths; // Cache of board widths by row/column
+  protected int[][] boardHeights; // Cache of board heights by row/column
 	protected PieceCollection pieces = new DefaultPieceCollection();
 	protected java.util.Map globalProperties = new HashMap();
 	protected Highlighter highlighter = new ColoredBorder();
   protected ArrayList highlighters = new ArrayList();
-	private boolean clearFirst = false; // Whether to clear the display before
+  protected boolean clearFirst = false; // Whether to clear the display before
 	// drawing the map
-	private boolean hideCounters = false;// Option to hide counters to see
+  protected boolean hideCounters = false;// Option to hide counters to see
 	// map
 	protected float pieceOpacity = 1.0f;
-	private boolean allowMultiple = false;
-	private VisibilityCondition visibilityCondition;
-	private DragGestureListener dragGestureListener;
-	private String moveWithinFormat;
-	private String moveToFormat;
-	private String createFormat;
-	private String changeFormat = "$" + MESSAGE + "$";
+  protected boolean allowMultiple = false;
+  protected VisibilityCondition visibilityCondition;
+  protected DragGestureListener dragGestureListener;
+  protected String moveWithinFormat;
+  protected String moveToFormat;
+  protected String createFormat;
+  protected String changeFormat = "$" + MESSAGE + "$";
 	protected KeyStroke moveKey;
 	protected JPanel root;
-	private PropertyChangeListener globalPropertyListener;
-  public static final String MOVING_STACKS_PICKUP_UNITS = "movingStacksPickupUnits";
+  protected PropertyChangeListener globalPropertyListener;
+  protected String tooltip = "";
 
 	public Map() {
 		getView();
 		theMap.addMouseListener(this);
-		theMap.addMouseMotionListener(this);
-		theMap.addFocusListener(this);
     toolBar.setLayout(new VASSAL.tools.WrapLayout(FlowLayout.LEFT, 0, 0));
     toolBar.setAlignmentX(0.0F);
 		toolBar.setFloatable(false);
@@ -214,6 +212,8 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	public static final String NAME = "mapName";
 	public static final String MARK_MOVED = "markMoved";
 	public static final String MARK_UNMOVED_ICON = "markUnmovedIcon";
+  public static final String MARK_UNMOVED_TEXT = "markUnmovedText";
+  public static final String MARK_UNMOVED_TOOLTIP = "markUnmovedTooltip";
 	public static final String EDGE_WIDTH = "edgeWidth";
 	public static final String EDGE_HEIGHT = "edgeHeight";
 	public static final String HIGHLIGHT_COLOR = "color";
@@ -221,6 +221,7 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	public static final String ALLOW_MULTIPLE = "allowMultiple";
 	public static final String USE_LAUNCH_BUTTON = "launch";
 	public static final String BUTTON_NAME = "buttonName";
+  public static final String TOOLTIP = "tooltip";
 	public static final String ICON = "icon";
 	public static final String HOTKEY = "hotkey";
 	public static final String SUPPRESS_AUTO = "suppressAuto";
@@ -229,6 +230,8 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	public static final String CREATE_FORMAT = "createFormat";
 	public static final String CHANGE_FORMAT = "changeFormat";
 	public static final String MOVE_KEY = "moveKey";
+  public static final String MOVING_STACKS_PICKUP_UNITS = "movingStacksPickupUnits";
+
 
 	public void setAttribute(String key, Object value) {
 		if (NAME.equals(key)) {
@@ -240,6 +243,12 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		else if (MARK_UNMOVED_ICON.equals(key)) {
 			markUnmovedIcon = (String) value;
 		}
+    else if (MARK_UNMOVED_TEXT.equals(key)) {
+      markUnmovedText = (String) value;
+    }
+    else if (MARK_UNMOVED_TOOLTIP.equals(key)) {
+      markUnmovedTooltip = (String) value;
+    }
 		else if ("edge".equals(key)) { // Backward-compatible
 			String s = (String) value;
 			int i = s.indexOf(",");
@@ -325,6 +334,10 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 			}
 			moveKey = (KeyStroke) value;
 		}
+    else if (TOOLTIP.equals(key)) {
+      tooltip = (String) value;
+      launchButton.setAttribute(key, value);
+    }
 		else {
 			launchButton.setAttribute(key, value);
 		}
@@ -340,6 +353,12 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		else if (MARK_UNMOVED_ICON.equals(key)) {
 			return markUnmovedIcon;
 		}
+    else if (MARK_UNMOVED_TEXT.equals(key)) {
+      return markUnmovedText;
+    }
+    else if (MARK_UNMOVED_TOOLTIP.equals(key)) {
+      return markUnmovedTooltip;
+    }
 		else if (EDGE_WIDTH.equals(key)) {
 			return "" + edgeBuffer.width;
 		}
@@ -383,6 +402,9 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		else if (MOVE_KEY.equals(key)) {
 			return HotKeyConfigurer.encode(moveKey);
 		}
+    else if (TOOLTIP.equals(key)) {
+      return (tooltip == null || tooltip.length() == 0) ? launchButton.getAttributeValueString(name) : tooltip;
+    }
 		else {
 			return launchButton.getAttributeValueString(key);
 		}
@@ -396,7 +418,7 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 				}
 			}
 		};
-		launchButton = new LaunchButton("Map", BUTTON_NAME, HOTKEY, ICON, al);
+		launchButton = new LaunchButton("Map", TOOLTIP, BUTTON_NAME, HOTKEY, ICON, al);
 		launchButton.setEnabled(false);
 		launchButton.setVisible(false);
 		if (e != null) {
@@ -928,32 +950,6 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 		return deck;
 	}
 
-	public void focusGained(FocusEvent e) {
-	}
-
-	/**
-   * When focus is lost, deselect all selected counters on this map.
-   */
-	public void focusLost(FocusEvent fe) {
-		if (!fe.isTemporary()) {
-			boolean dirty = false;
-			java.util.List l = new ArrayList();
-			for (Enumeration e = KeyBuffer.getBuffer().getPieces(); e.hasMoreElements();) {
-				l.add(e.nextElement());
-			}
-			for (Iterator it = l.iterator(); it.hasNext();) {
-				GamePiece p = (GamePiece) it.next();
-				if (p.getMap() == this) {
-					KeyBuffer.getBuffer().remove(p);
-					dirty = true;
-				}
-			}
-			if (dirty) {
-				theMap.repaint();
-			}
-		}
-	}
-
 	/**
    * Because MouseEvents are received in component coordinates, it is inconvenient for MouseListeners on the map to have
    * to translate to map coordinates. MouseListeners added with this method will receive mouse events with points
@@ -1023,7 +1019,30 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
    * @see #popMouseListener
    * @see #addLocalMouseListener
    */
+  public static Map activeMap = null;
+  
 	public void mousePressed(MouseEvent e) {
+    
+    // Deselect any counters on the last Map with focus
+    if (!this.equals(activeMap)) {
+      boolean dirty = false;
+      java.util.List l = new ArrayList();
+      for (Enumeration en = KeyBuffer.getBuffer().getPieces(); en.hasMoreElements();) {
+        l.add(en.nextElement());
+      }
+      for (Iterator it = l.iterator(); it.hasNext();) {
+        GamePiece p = (GamePiece) it.next();
+        if (p.getMap() == activeMap) {
+          KeyBuffer.getBuffer().remove(p);
+          dirty = true;
+        }
+      }
+      if (dirty) {
+        activeMap.repaint();
+      }
+      activeMap = this;
+    }
+  
 		if (mouseListenerStack.size() > 0) {
 			Point p = mapCoordinates(e.getPoint());
 			e.translatePoint(p.x - e.getX(), p.y - e.getY());
@@ -1825,7 +1844,9 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	public void setMapName(String s) {
 		mapName = s;
 		setConfigureName(mapName);
-		launchButton.setToolTipText(s != null ? "Show/hide " + s + " window" : "Show/hide Map window");
+    if (tooltip == null || tooltip.length() == 0) {
+		  launchButton.setToolTipText(s != null ? "Show/hide " + s + " window" : "Show/hide Map window");
+    }
 	}
 
 	public HelpFile getHelpFile() {
@@ -1833,21 +1854,21 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 	}
 
 	public String[] getAttributeDescriptions() {
-		return new String[] { "Map Name", "Mark pieces that move (if they possess the proper trait)", "\"Mark unmoved\" button icon", "Horizontal Padding",
-				"Vertical Padding", "Can contain multiple boards", "Border color for selected counters", "Border thickness for selected counters",
-				"Include toolbar button to show/hide", "Toolbar button name", "Toolbar button icon", "Hotkey", "Auto-report format for movement within this map",
-				"Auto-report format for movement to this map", "Auto-report format for units created in this map", "Auto-report format for units modified on this map",
-				"Key Command to apply to all units ending movement on this map" };
+		return new String[] { "Map Name:  ", "Mark pieces that move (if they possess the proper trait):  ", "\"Mark unmoved\" button text:  ", "\"Mark unmoved\" tooltip text:  ", "\"Mark unmoved\" button icon:  ", "Horizontal Padding:  ",
+				"Vertical Padding:  ", "Can contain multiple boards?", "Border color for selected counters:  ", "Border thickness for selected counters:  ",
+				"Include toolbar button to show/hide?", "Toolbar button text:  ", "Toolbar tooltip text:  ", "Toolbar button icon:  ", "Hotkey:  ", "Auto-report format for movement within this map:  ",
+				"Auto-report format for movement to this map:  ", "Auto-report format for units created in this map:  ", "Auto-report format for units modified on this map:  ",
+				"Key Command to apply to all units ending movement on this map:  " };
 	}
 
 	public String[] getAttributeNames() {
-		return new String[] { NAME, MARK_MOVED, MARK_UNMOVED_ICON, EDGE_WIDTH, EDGE_HEIGHT, ALLOW_MULTIPLE, HIGHLIGHT_COLOR, HIGHLIGHT_THICKNESS,
-				USE_LAUNCH_BUTTON, BUTTON_NAME, ICON, HOTKEY, MOVE_WITHIN_FORMAT, MOVE_TO_FORMAT, CREATE_FORMAT, CHANGE_FORMAT, MOVE_KEY };
+		return new String[] { NAME, MARK_MOVED, MARK_UNMOVED_TEXT, MARK_UNMOVED_TOOLTIP, MARK_UNMOVED_ICON, EDGE_WIDTH, EDGE_HEIGHT, ALLOW_MULTIPLE, HIGHLIGHT_COLOR, HIGHLIGHT_THICKNESS,
+				USE_LAUNCH_BUTTON, BUTTON_NAME, TOOLTIP, ICON, HOTKEY, MOVE_WITHIN_FORMAT, MOVE_TO_FORMAT, CREATE_FORMAT, CHANGE_FORMAT, MOVE_KEY };
 	}
 
 	public Class[] getAttributeTypes() {
-		return new Class[] { String.class, GlobalOptions.Prompt.class, UnmovedIconConfig.class, Integer.class, Integer.class, Boolean.class, Color.class,
-				Integer.class, Boolean.class, String.class, IconConfig.class, KeyStroke.class, MoveWithinFormatConfig.class, MoveToFormatConfig.class,
+		return new Class[] { String.class, GlobalOptions.Prompt.class, String.class, String.class, UnmovedIconConfig.class, Integer.class, Integer.class, Boolean.class, Color.class,
+				Integer.class, Boolean.class, String.class, String.class, IconConfig.class, KeyStroke.class, MoveWithinFormatConfig.class, MoveToFormatConfig.class,
 				CreateFormatConfig.class, ChangeFormatConfig.class, KeyStroke.class };
 	}
 	public static final String LOCATION = "location";
@@ -1955,12 +1976,16 @@ public class Map extends AbstractConfigurable implements GameComponent, FocusLis
 				}
 			};
 		}
-		if (HOTKEY.equals(name)) {
+		if (HOTKEY.equals(name) || BUTTON_NAME.equals(name) || TOOLTIP.equals(name) || ICON.equals(name)) {
 			return visibilityCondition;
 		}
-		else if (BUTTON_NAME.equals(name)) {
-			return visibilityCondition;
-		}
+    else if (MARK_UNMOVED_TEXT.equals(name) || MARK_UNMOVED_ICON.equals(name) || MARK_UNMOVED_TOOLTIP.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return !GlobalOptions.NEVER.equals(markMovedOption);
+        }
+      };
+    }
 		else {
 			return super.getAttributeVisibility(name);
 		}

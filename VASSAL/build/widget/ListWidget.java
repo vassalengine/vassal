@@ -131,7 +131,7 @@ public class ListWidget extends Widget
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name"};
+    return new String[]{"Name:  "};
   }
 
   public Class[] getAttributeTypes() {

@@ -38,8 +38,8 @@ import VASSAL.tools.LaunchButton;
  * result in the Chatter */
 // TODO Expose result as a property
 public class RandomTextButton extends DiceButton {
-  private String[] m_faces;               // array with dice faces
-  private boolean isNumeric;
+  protected String[] m_faces;               // array with dice faces
+  protected boolean isNumeric;
 
   public static final String FACES = "faces";
   public static final String NUMERIC = "numeric";
@@ -55,6 +55,7 @@ public class RandomTextButton extends DiceButton {
           ConfigurerWindow w = new ConfigurerWindow(ac, true);
           ac.getConfigurer(NAME).getControls().setVisible(false);
           ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(false);
+          ac.getConfigurer(TOOLTIP).getControls().setVisible(false);
           ac.getConfigurer(ICON).getControls().setVisible(false);
           ac.getConfigurer(HOTKEY).getControls().setVisible(false);
           ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(false);
@@ -66,6 +67,7 @@ public class RandomTextButton extends DiceButton {
           w.setVisible(true);
           ac.getConfigurer(NAME).getControls().setVisible(true);
           ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(true);
+          ac.getConfigurer(TOOLTIP).getControls().setVisible(true);
           ac.getConfigurer(ICON).getControls().setVisible(true);
           ac.getConfigurer(HOTKEY).getControls().setVisible(true);
           ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(true);
@@ -81,7 +83,7 @@ public class RandomTextButton extends DiceButton {
         }
       }
     };
-    launch = new LaunchButton(null, BUTTON_TEXT, HOTKEY, ICON, ranAction);
+    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, ranAction);
   }
   
   public static String getConfigureTypeName() {
@@ -162,7 +164,7 @@ public class RandomTextButton extends DiceButton {
     ArrayList names = new ArrayList(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add("Faces");
-    l.add("Faces have numeric values");
+    l.add("Faces have numeric values?");
     return (String[]) l.toArray(new String[l.size()]);
   }
 

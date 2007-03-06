@@ -124,11 +124,11 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Tooltip text","Button text","Button icon","Hotkey"};
+    return new String[]{"Button text:  ","Tooltip text:  ","Button icon:  ","Hotkey:  "};
   }
 
   public String[] getAttributeNames() {
-    return new String[]{TOOLTIP,BUTTON_TEXT,ICON,HOTKEY};
+    return new String[]{BUTTON_TEXT,TOOLTIP,ICON,HOTKEY};
   }
 
   public Class[] getAttributeTypes() {

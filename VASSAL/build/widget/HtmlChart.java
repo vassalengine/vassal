@@ -219,7 +219,7 @@ public class HtmlChart extends Widget implements MouseListener {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name", "HTML File"};
+    return new String[]{"Name:  ", "HTML File:  "};
   }
 
   public Class[] getAttributeTypes() {

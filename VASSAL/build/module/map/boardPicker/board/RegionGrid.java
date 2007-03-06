@@ -102,8 +102,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid {
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Snap to defined point?",
-      "Draw region names",
-      "Font Size"};
+      "Draw region names?",
+      "Font Size:  "};
   }
 
   public Class[] getAttributeTypes() {

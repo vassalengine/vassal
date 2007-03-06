@@ -101,11 +101,11 @@ public class ImageSaver extends AbstractConfigurable {
   protected static final String ICON_NAME = "icon";
 
   public String[] getAttributeNames() {
-    return new String[] {TOOLTIP, BUTTON_TEXT, ICON_NAME, HOTKEY};
+    return new String[] {BUTTON_TEXT, TOOLTIP, ICON_NAME, HOTKEY};
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Tooltip Text", "Button Text", "Toolbar button icon", "Hotkey"};
+    return new String[] {"Button Text:  ", "Tooltip Text:  ", "Button icon:  ", "Hotkey:  "};
   }
 
   public Class[] getAttributeTypes() {

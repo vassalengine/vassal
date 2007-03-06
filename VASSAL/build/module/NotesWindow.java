@@ -69,6 +69,7 @@ public class NotesWindow extends AbstractConfigurable
   public static final String HOT_KEY = "hotkey";
   public static final String ICON = "icon";
   public static final String BUTTON_TEXT = "buttonText";
+  public static final String TOOLTIP = "tooltip";
 
   protected String lastSavedScenarioNotes;
   protected String lastSavedPublicNotes;
@@ -84,7 +85,7 @@ public class NotesWindow extends AbstractConfigurable
         frame.setVisible(!frame.isShowing());
       }
     };
-    launch = new LaunchButton("Notes", BUTTON_TEXT, HOT_KEY, ICON, al);
+    launch = new LaunchButton("Notes", TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al);
     launch.setAttribute(ICON, "/images/notes.gif");
     launch.setToolTipText("Notes");
     frame.pack();
@@ -191,7 +192,7 @@ public class NotesWindow extends AbstractConfigurable
   }
 
   public String[] getAttributeNames() {
-    return new String[] {BUTTON_TEXT, ICON, HOT_KEY};
+    return new String[] {BUTTON_TEXT, TOOLTIP, ICON, HOT_KEY};
   }
 
   public void setAttribute(String name, Object value) {
@@ -237,11 +238,11 @@ public class NotesWindow extends AbstractConfigurable
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button text", "Button Icon", "Hotkey"};
+    return new String[] {"Button text:  ", "Tooltip text:  ", "Button Icon:  ", "Hotkey:  "};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class, IconConfig.class, KeyStroke.class};
+    return new Class[] {String.class, String.class, IconConfig.class, KeyStroke.class};
   }
 
   public static class IconConfig implements ConfigurerFactory {

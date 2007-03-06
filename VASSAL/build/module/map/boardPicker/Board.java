@@ -70,9 +70,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected boolean reversible = false;
   protected boolean reversed = false;
   protected boolean fixedBoundaries = false;
-  private Color color = null;
-  private MapGrid grid = null;
-  private Map map;
+  protected Color color = null;
+  protected MapGrid grid = null;
+  protected Map map;
 
   /** Until a game is started that is using this board, the map will be null */
   public Map getMap() {
@@ -104,7 +104,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Board name", "Board image", "Reversible", "Board width", "Board height", "Background color"};
+    return new String[]{"Board name:  ", "Board image:  ", "Reversible:  ", "Board width:  ", "Board height:  ", "Background color:  "};
   }
 
   public Class[] getAttributeTypes() {

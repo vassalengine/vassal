@@ -53,7 +53,7 @@ public class SpecialDie extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name", "Results format"};
+    return new String[]{"Name:  ", "Results format:  "};
   }
 
   public Class[] getAttributeTypes() {

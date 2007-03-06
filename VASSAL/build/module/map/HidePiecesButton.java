@@ -124,7 +124,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   }
 
   public String[] getAttributeNames() {
-    return new String[]{TOOLTIP, BUTTON_TEXT, HOTKEY, SHOWING_ICON, HIDDEN_ICON};
+    return new String[]{BUTTON_TEXT, TOOLTIP, HOTKEY, SHOWING_ICON, HIDDEN_ICON};
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -146,7 +146,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Tooltip text", "Button Text", "Hotkey","Icon when pieces are showing","Icon when pieces are hidden"};
+    return new String[]{"Button Text:  ", "Tooltip text:  ", "Hotkey:  ", "Icon when pieces are showing:  ", "Icon when pieces are hidden:  "};
   }
 
   public Class[] getAttributeTypes() {

@@ -721,7 +721,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         "Font size:  ", "Summary text above pieces:  ", "Text below each piece:  ","Text for empty location:  ",
 
         "Include individual pieces:  ", "Listed layers",
-        "Piece selection property filter:  ","Include non-stacking pieces (if movable)?", "Show pieces in un-rotated state", "Include top piece in Deck?"};
+        "Piece selection property filter:  ","Include non-stacking pieces (if movable)?", "Show pieces in un-rotated state?", "Include top piece in Deck?"};
 
   }
 

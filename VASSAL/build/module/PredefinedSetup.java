@@ -42,14 +42,14 @@ public class PredefinedSetup extends AbstractConfigurable {
   public static final String FILE = "file";
   public static final String USE_FILE = "useFile";
   public static final String IS_MENU = "isMenu";
-  private boolean isMenu;
-  private boolean useFile=true;
-  private String fileName;
-  private JMenuItem menuItem;
-  private JMenu menu;
-  private JMenuItem originalItem;
-  private VisibilityCondition showFile;
-  private VisibilityCondition showUseFile;
+  protected boolean isMenu;
+  protected boolean useFile=true;
+  protected String fileName;
+  protected JMenuItem menuItem;
+  protected JMenu menu;
+  protected JMenuItem originalItem;
+  protected VisibilityCondition showFile;
+  protected VisibilityCondition showUseFile;
 
   public PredefinedSetup() {
     menuItem = new JMenuItem();
@@ -72,7 +72,7 @@ public class PredefinedSetup extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name", "Contains sub-menus", "Use pre-defined file", "Saved Game"};
+    return new String[]{"Name:  ", "Contains sub-menus?", "Use pre-defined file?", "Saved Game:  "};
   }
 
   public Class[] getAttributeTypes() {

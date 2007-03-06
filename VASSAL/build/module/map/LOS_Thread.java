@@ -233,7 +233,7 @@ public class LOS_Thread extends AbstractConfigurable implements
    * </pre>
    */
   public String[] getAttributeNames() {
-    return new String[]{TOOLTIP, LABEL, ICON_NAME, HOTKEY, REPORT, PERSISTENCE, PERSISTENT_ICON_NAME, GLOBAL, SNAP_START, SNAP_END, DRAW_RANGE, RANGE_SCALE, RANGE_ROUNDING, HIDE_COUNTERS, HIDE_OPACITY, LOS_COLOR, RANGE_FOREGROUND, RANGE_BACKGROUND};
+    return new String[]{LABEL, TOOLTIP, ICON_NAME, HOTKEY, REPORT, PERSISTENCE, PERSISTENT_ICON_NAME, GLOBAL, SNAP_START, SNAP_END, DRAW_RANGE, RANGE_SCALE, RANGE_ROUNDING, HIDE_COUNTERS, HIDE_OPACITY, LOS_COLOR, RANGE_FOREGROUND, RANGE_BACKGROUND};
   }
 
   public void setAttribute(String key, Object value) {
@@ -723,8 +723,8 @@ public class LOS_Thread extends AbstractConfigurable implements
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Tooltip text:  ",
-                        "Button text:  ",
+    return new String[]{"Button text:  ",
+                        "Tooltip text:  ",                        
                         "Button Icon:  ",
                         "Hotkey:  ",
                         "Report Format:  ",

@@ -55,18 +55,20 @@ import VASSAL.tools.UniqueIdManager;
  * are contained in {@link PieceSlot} components.  PieceWindow extends
  * {@link Widget}, so it may be composed of various tabs, lists, etc.  */
 public class PieceWindow extends Widget implements UniqueIdManager.Identifyable {
-  private String id;
-  private LaunchButton launch;
-  private boolean hidden;
+  protected String id;
+  protected LaunchButton launch;
+  protected boolean hidden;
   public static final String DEPRECATED_NAME = "entryName";
   public static final String NAME = "name";
   public static final String BUTTON_TEXT = "text";
+  public static final String TOOLTIP = "tooltip";
   public static final String ICON = "icon";
   public static final String HOTKEY = "hotkey";
   public static final String HIDDEN = "hidden";
-  private static UniqueIdManager idMgr = new UniqueIdManager("PieceWindow");
-  private JComponent root;
-  private ComponentSplitter.SplitPane mainWindowDock;
+  protected static UniqueIdManager idMgr = new UniqueIdManager("PieceWindow");
+  protected JComponent root;
+  protected ComponentSplitter.SplitPane mainWindowDock;
+  protected String tooltip = "";
 
   public PieceWindow() {
     root = new JPanel(new BorderLayout());
@@ -75,7 +77,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
         launchButtonPressed();
       }
     };
-    launch = new LaunchButton("Pieces", BUTTON_TEXT, HOTKEY, ICON, al);
+    launch = new LaunchButton("Pieces", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
     launch.setToolTipText("Show/Hide the Pieces window");
   }
 
@@ -209,11 +211,11 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name", "Hidden (requires restart)", "Button text", "Button icon", "Hotkey to show/hide"};
+    return new String[]{"Name:  ", "Hidden? (requires restart)", "Button text:  ", "Tooltip text:  ", "Button icon:  ", "Hotkey to show/hide:  "};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, Boolean.class, String.class, IconConfig.class, KeyStroke.class};
+    return new Class[]{String.class, Boolean.class, String.class, String.class, IconConfig.class, KeyStroke.class};
   }
 
   public static class IconConfig implements ConfigurerFactory {
@@ -223,7 +225,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, HIDDEN, BUTTON_TEXT, ICON, HOTKEY};
+    return new String[]{NAME, HIDDEN, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
   }
 
   public void setAttribute(String name, Object value) {
@@ -234,13 +236,19 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     else if (NAME.equals(name)) {
       String s = (String) value;
       setConfigureName(s);
-      launch.setToolTipText("Show/Hide the " + s + " window");
+      if (tooltip.length() == 0) {
+        launch.setToolTipText("Show/Hide the " + s + " window");
+      }
     }
     else if (HIDDEN.equals(name)) {
       if (value instanceof String) {
         value = Boolean.valueOf((String)value);
       }
       hidden = ((Boolean)value).booleanValue();
+    }
+    else if (TOOLTIP.equals(name)) {
+      tooltip = (String) value;
+      launch.setAttribute(name, value);
     }
     else {
       launch.setAttribute(name, value);
@@ -253,6 +261,9 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     }
     else if (HIDDEN.equals(name)) {
       return String.valueOf(hidden);
+    }
+    else if (TOOLTIP.equals(name)) {
+      return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;
     }
     else {
       return launch.getAttributeValueString(name);

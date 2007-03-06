@@ -140,11 +140,11 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
                         "Cell Width:  ",
                         "Cell Height:  ",
                         "Range Calculation Method:  ",
-                        "Edges are legal locations",
-                        "Corners are legal locations",
-                        "Show Grid",
-                        "Draw Center Dots",
-                        "Color"};
+                        "Edges are legal locations?",
+                        "Corners are legal locations?",
+                        "Show Grid?",
+                        "Draw Center Dots?",
+                        "Color:  "};
   }
 
   public Class[] getAttributeTypes() {

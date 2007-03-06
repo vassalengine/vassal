@@ -187,24 +187,24 @@ public class DrawPile extends SetupStack {
                         "Y position:  ",
                         "Width:  ",
                         "Height:  ",
-                        "Allow Multiple Cards to be Drawn",
-                        "Allow Specific Cards to be Drawn",
+                        "Allow Multiple Cards to be Drawn?",
+                        "Allow Specific Cards to be Drawn?",
                         "Contents are Face-down:  ",
-                        "Draw new cards face up",
-                        "Face-down Report Format",
+                        "Draw new cards face up?",
+                        "Face-down Report Format:  ",
                         "Re-shuffle:  ",
                         "Re-shuffle Report Format:  ",
                         "Re-shuffle Hot Key:  ",
-                        "Reversible",
-                        "Reverse Report Format",
-                        "Draw Outline when empty",
+                        "Reversible?",
+                        "Reverse Report Format:  ",
+                        "Draw Outline when empty?",
                         "Color:  ",
-                        "Include command to send entire deck to another deck",
+                        "Include command to send entire deck to another deck?",
                         "Send Menu text:  ",
                         "Send Report Format:  ",
                         "Send Hot Key:  ",
                         "Name of deck to send to:  ",
-                        "Can be saved-to/loaded-from a file"};
+                        "Can be saved-to/loaded-from a file?"};
   }
 
   public Class[] getAttributeTypes() {

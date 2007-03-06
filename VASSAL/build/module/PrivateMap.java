@@ -56,9 +56,9 @@ import VASSAL.tools.AdjustableSpeedScrollPane;
  * only from the player playing the assigned side
  */
 public class PrivateMap extends Map {
-  private String[] owners = new String[0];
-  private boolean visibleToAll;
-  private Map surrogate;
+  protected String[] owners = new String[0];
+  protected boolean visibleToAll;
+  protected Map surrogate;
 
   public static final String VISIBLE = "visible";
   public static final String SIDE = "side";
@@ -74,7 +74,7 @@ public class PrivateMap extends Map {
   }
 
   public String[] getAttributeDescriptions() {
-    String[] s1 = new String[]{"Belongs to side", "Visible to all players", "Use same boards as this map"};
+    String[] s1 = new String[]{"Belongs to side", "Visible to all players?", "Use same boards as this map:  "};
     String[] s2 = super.getAttributeDescriptions();
     String[] s = new String[s1.length + s2.length];
     System.arraycopy(s1, 0, s, 0, s1.length);

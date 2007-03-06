@@ -15,10 +15,11 @@ public class MultiActionButton extends ToolbarMenu {
 	public MultiActionButton() {
 		super();
 		setAttribute(BUTTON_TEXT, "Multi-Action");
+    setAttribute(TOOLTIP, "");
 	}
 	
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button text", "Button Icon", "Hotkey", "Buttons"};
+    return new String[] {"Button text:  ", "Tooltip text:  ", "Button Icon:  ", "Hotkey:  ", "Buttons"};
   }
 
 	public void launch() {

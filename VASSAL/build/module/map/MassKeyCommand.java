@@ -135,18 +135,18 @@ public class MassKeyCommand extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     if (condition == null) {
-      return new String[]{"Description", "Key Command", "Matching properties", "Apply to contents of Decks", "Tooltip text", "Button text", "Button Icon",
-                          "Hotkey", "Suppress individual reports", "Report Format"};
+      return new String[]{"Description:  ", "Key Command:  ", "Matching properties:  ", "Apply to contents of Decks:  ", "Button text:  ", "Tooltip text:  ", "Button Icon:  ",
+                          "Hotkey:  ", "Suppress individual reports?", "Report Format:  "};
     }
     else {
       // Backward compatibility
-      return new String[]{"Description", "Key Command", "Matching properties", "Apply to contents of Decks", "Tooltip text", "Button text", "Button Icon",
-                          "Hotkey", "Suppress individual reports", "Report Format", "Apply Command"};
+      return new String[]{"Description:  ", "Key Command:  ", "Matching properties:  ", "Apply to contents of Decks:  ", "Button text:  ", "Tooltip text:  ", "Button Icon:  ",
+                          "Hotkey:  ", "Suppress individual reports?", "Report Format:  ", "Apply Command:  "};
     }
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, KEY_COMMAND, PROPERTIES_FILTER, DECK_COUNT, TOOLTIP, BUTTON_TEXT, ICON, HOTKEY, REPORT_SINGLE, REPORT_FORMAT, CONDITION,
+    return new String[]{NAME, KEY_COMMAND, PROPERTIES_FILTER, DECK_COUNT, BUTTON_TEXT, TOOLTIP,  ICON, HOTKEY, REPORT_SINGLE, REPORT_FORMAT, CONDITION,
                         CHECK_VALUE, CHECK_PROPERTY, AFFECTED_PIECE_NAMES};
   }
   public static class Prompt extends StringEnum {

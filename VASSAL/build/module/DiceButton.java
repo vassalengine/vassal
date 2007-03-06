@@ -49,9 +49,11 @@ public class DiceButton extends AbstractConfigurable {
   protected boolean promptAlways = false;
   protected FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** <$" + GlobalOptions.PLAYER_NAME + "$>");
   protected LaunchButton launch;
+  protected String tooltip = "";
 
   public static final String DEPRECATED_NAME = "label";
   public static final String BUTTON_TEXT = "text";
+  public static final String TOOLTIP = "tooltip";
   public static final String NAME = "name";
   public static final String ICON = "icon";
   public static final String N_DICE = "nDice";
@@ -76,6 +78,7 @@ public class DiceButton extends AbstractConfigurable {
           ConfigurerWindow w = new ConfigurerWindow(ac, true);
           ac.getConfigurer(NAME).getControls().setVisible(false);
           ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(false);
+          ac.getConfigurer(TOOLTIP).getControls().setVisible(false);
           ac.getConfigurer(ICON).getControls().setVisible(false);
           ac.getConfigurer(HOTKEY).getControls().setVisible(false);
           ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(false);
@@ -85,6 +88,7 @@ public class DiceButton extends AbstractConfigurable {
           w.setVisible(true);
           ac.getConfigurer(NAME).getControls().setVisible(true);
           ac.getConfigurer(BUTTON_TEXT).getControls().setVisible(true);
+          ac.getConfigurer(TOOLTIP).getControls().setVisible(true);
           ac.getConfigurer(ICON).getControls().setVisible(true);
           ac.getConfigurer(HOTKEY).getControls().setVisible(true);
           ac.getConfigurer(PROMPT_ALWAYS).getControls().setVisible(true);
@@ -98,9 +102,10 @@ public class DiceButton extends AbstractConfigurable {
         }
       }
     };
-    launch = new LaunchButton(null, BUTTON_TEXT, HOTKEY, ICON, rollAction);
+    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
     setAttribute(NAME, "2d6");
     setAttribute(BUTTON_TEXT, "2d6");
+    launch.setAttribute(TOOLTIP, "2d6");
   }
 
   public static String getConfigureTypeName() {
@@ -165,21 +170,22 @@ public class DiceButton extends AbstractConfigurable {
   }
 
   public String[] getAttributeNames() {
-    String s[] = {NAME, BUTTON_TEXT, ICON, N_DICE, N_SIDES, PLUS, REPORT_TOTAL, HOTKEY, PROMPT_ALWAYS, REPORT_FORMAT};
+    String s[] = {NAME, BUTTON_TEXT, TOOLTIP, ICON, N_DICE, N_SIDES, PLUS, REPORT_TOTAL, HOTKEY, PROMPT_ALWAYS, REPORT_FORMAT};
     return s;
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name",
-                        "Button text",
-                        "Button icon",
-                        "Number of dice",
-                        "Number of sides per die",
-                        "Add to each die",
-                        "Report Total",
-                        "Hotkey",
-                        "Prompt for values when button pushed",
-                        "Report Format"};
+    return new String[]{"Name:  ",
+                        "Button text:  ",
+                        "Tooltip text:  ",
+                        "Button icon:  ",
+                        "Number of dice:  ",
+                        "Number of sides per die:  ",
+                        "Add to each die:  ",
+                        "Report Total?",
+                        "Hotkey:  ",
+                        "Prompt for values when button pushed?",
+                        "Report Format:  "};
   }
 
   public static class IconConfig implements ConfigurerFactory {
@@ -196,6 +202,7 @@ public class DiceButton extends AbstractConfigurable {
 
   public Class[] getAttributeTypes() {
     return new Class[]{String.class,
+                       String.class,
                        String.class,
                        IconConfig.class,
                        Integer.class,
@@ -293,6 +300,10 @@ public class DiceButton extends AbstractConfigurable {
     else if (REPORT_FORMAT.equals(key)) {
       reportFormat.setFormat((String) o);
     }
+    else if (TOOLTIP.equals(key)) {
+      tooltip = (String) o;
+      launch.setAttribute(key, o);
+    }
     else {
       launch.setAttribute(key, o);
     }
@@ -319,6 +330,9 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
+    }
+    else if (TOOLTIP.equals(name)) {
+      return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;
     }
     else {
       return launch.getAttributeValueString(key);

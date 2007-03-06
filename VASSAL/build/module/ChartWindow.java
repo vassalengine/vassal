@@ -50,14 +50,15 @@ public class ChartWindow extends Widget {
   public static final String DEPRECATED_NAME = "label";
   public static final String NAME = "name";
   public static final String BUTTON_TEXT = "text";
+  public static final String TOOLTIP = "tooltip";
   public static final String ICON = "icon";
   public static final String HOTKEY = "hotkey";
 
-  private LaunchButton launch;
-  private JDialog frame;
-  private Container root;
-
-  private String id;
+  protected LaunchButton launch;
+  protected JDialog frame;
+  protected Container root;
+  protected String tooltip = "";
+  protected String id;
 
   public ChartWindow() {
     root = new JPanel();
@@ -66,10 +67,11 @@ public class ChartWindow extends Widget {
         frame.setVisible(!frame.isVisible());
       }
     };
-    launch = new LaunchButton(null, BUTTON_TEXT, HOTKEY, ICON, al);
+    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
 
     setAttribute(NAME, "Charts");
     setAttribute(BUTTON_TEXT, "Charts");
+    launch.setAttribute(TOOLTIP, "Charts");
   }
 
   /**
@@ -115,10 +117,16 @@ public class ChartWindow extends Widget {
     }
     else if (NAME.equals(key)) {
       setConfigureName((String) val);
-      launch.setToolTipText((String) val);
+      if (tooltip.length() == 0) {
+        launch.setToolTipText((String) val);
+      }
       if (frame != null) {
         frame.setTitle((String) val);
       }
+    }
+    else if (TOOLTIP.equals(key)) {
+      tooltip = (String) val;
+      launch.setAttribute(key, val);
     }
     else {
       launch.setAttribute(key, val);
@@ -131,13 +139,16 @@ public class ChartWindow extends Widget {
    * <code>HOTKEY</code> for the hotkey equivalent for the button
    */
   public String[] getAttributeNames() {
-    String[] s = {NAME, BUTTON_TEXT, ICON, HOTKEY};
+    String[] s = {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
     return s;
   }
 
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();
+    }
+    else if (TOOLTIP.equals(name)) {
+      return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;
     }
     else {
       return launch.getAttributeValueString(name);
@@ -177,11 +188,11 @@ public class ChartWindow extends Widget {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name", "Button text", "Button icon", "Hotkey"};
+    return new String[]{"Name:  ", "Button text:  ", "Tooltip text:  ", "Button icon:  ", "Hotkey:  "};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, String.class, IconConfig.class, KeyStroke.class};
+    return new Class[]{String.class, String.class, String.class, IconConfig.class, KeyStroke.class};
   }
 
   public static class IconConfig implements ConfigurerFactory {

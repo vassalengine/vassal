@@ -45,7 +45,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   protected TemporaryToolBar tempToolBar;
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Property name for layer","Layer Order"};
+    return new String[]{"Property name for layer:  ","Layer Order"};
   }
 
   public Class[] getAttributeTypes() {

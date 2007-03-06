@@ -41,7 +41,7 @@ public class SpecialDieFace extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Text Value", "Numerical value", "Icon"};
+    return new String[]{"Text Value:  ", "Numerical value:  ", "Icon:  "};
   }
 
   public Class[] getAttributeTypes() {

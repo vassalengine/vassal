@@ -61,10 +61,10 @@ import VASSAL.tools.UniqueIdManager;
  */
 // TODO Expose result as property
 public class SpecialDiceButton extends AbstractConfigurable implements CommandEncoder, UniqueIdManager.Identifyable {
-  private static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton");
+  protected static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton");
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t";
 
-  private List dice = new ArrayList();
+  protected List dice = new ArrayList();
   protected java.util.Random ran;
   protected boolean reportResultAsText = true;
   protected boolean reportResultInWindow = false;
@@ -73,16 +73,18 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected String id;
   protected String sMapName;
 
-  private JDialog dialog; // Dialog to show results graphical
-  private JLabel dialogLabel;
-  private Color bgColor;
-  private ResultsIcon resultsIcon = new ResultsIcon();
+  protected JDialog dialog; // Dialog to show results graphical
+  protected JLabel dialogLabel;
+  protected Color bgColor;
+  protected ResultsIcon resultsIcon = new ResultsIcon();
 
-  private FormattedString format = new FormattedString();
-  private String chatResultFormat = "** $" + NAME + "$ = [$result1$] *** <$" + GlobalOptions.PLAYER_NAME + "$>";
-  private String windowTitleResultFormat = "$" + NAME + "$";
+  protected FormattedString format = new FormattedString();
+  protected String chatResultFormat = "** $" + NAME + "$ = [$result1$] *** <$" + GlobalOptions.PLAYER_NAME + "$>";
+  protected String windowTitleResultFormat = "$" + NAME + "$";
+  protected String tooltip = "";
 
   public static final String BUTTON_TEXT = "text";
+  public static final String TOOLTIP = "tooltip";
   public static final String NAME = "name";
   public static final String ICON = "icon";
   public static final String RESULT_CHATTER = "resultChatter";
@@ -112,9 +114,10 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         DR();
       }
     };
-    launch = new LaunchButton(null, BUTTON_TEXT, HOTKEY, ICON, rollAction);
+    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
     setAttribute(NAME, "Symbols");
     setAttribute(BUTTON_TEXT, "Sym");
+    launch.setAttribute(TOOLTIP, "Symbols");
   }
 
   public static String getConfigureTypeName() {
@@ -217,7 +220,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * <code>RESULT_BUTTON</code> if true show result graphical in button
    */
   public String[] getAttributeNames() {
-    String s[] = {NAME, BUTTON_TEXT, ICON, HOTKEY,
+    String s[] = {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY,
                   RESULT_CHATTER, CHAT_RESULT_FORMAT,
                   RESULT_WINDOW, WINDOW_TITLE_RESULT_FORMAT,
                   RESULT_BUTTON, WINDOW_X, WINDOW_Y, BACKGROUND_COLOR};
@@ -225,22 +228,24 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name",
-                        "Button text",
-                        "Button icon",
-                        "Hotkey",
-                        "Report results as text",
-                        "Report format",
-                        "Show result in window",
-                        "Window title format",
-                        "Show result in button",
-                        "Width",
-                        "Heidght",
-                        "Background color"};
+    return new String[]{"Name:  ",
+                        "Button text:  ",
+                        "Tooltip text:  ",
+                        "Button icon:  ",
+                        "Hotkey:  ",
+                        "Report results as text?",
+                        "Report format:  ",
+                        "Show result in window?",
+                        "Window title format:  ",
+                        "Show result in button?",
+                        "Width:  ",
+                        "Heidght:  ",
+                        "Background color:  "};
   }
 
   public Class[] getAttributeTypes() {
     return new Class[]{String.class,
+                       String.class,
                        String.class,
                        IconConfig.class,
                        KeyStroke.class,
@@ -418,6 +423,10 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       }
       bgColor = (Color) o;
     }
+    else if (TOOLTIP.equals(key)) {
+      tooltip = (String) o;
+      launch.setAttribute(key, o);
+    }
     else {
       launch.setAttribute(key, o);
     }
@@ -450,6 +459,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     }
     else if (BACKGROUND_COLOR.equals(key)) {
       return ColorConfigurer.colorToString(bgColor);
+    }
+    else if (TOOLTIP.equals(name)) {
+      return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;
     }
     else {
       return launch.getAttributeValueString(key);

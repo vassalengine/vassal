@@ -101,10 +101,10 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
   protected static final String OFFMAP = "offmap";
   protected Map map;
   protected Point dragBegin;
-  private GamePiece dragging;
+  protected GamePiece dragging;
   protected JButton markUnmovedButton;
   public static final String ICON_NAME = "icon";
-  private String iconName;
+  protected String iconName;
   protected PieceFinder dragTargetSelector; // Selects drag target from mouse
   // click on the Map
   protected PieceFinder dropTargetSelector; // Selects piece to merge with at
@@ -326,7 +326,8 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
           }
         }
         markUnmovedButton.setAlignmentY(0.0F);
-        markUnmovedButton.setToolTipText("Mark all pieces on this map as not moved");
+        markUnmovedButton.setText(map.getAttributeValueString(Map.MARK_UNMOVED_TEXT));
+        markUnmovedButton.setToolTipText(map.getAttributeValueString(Map.MARK_UNMOVED_TOOLTIP));
         markUnmovedButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             GamePiece[] p = map.getAllPieces();

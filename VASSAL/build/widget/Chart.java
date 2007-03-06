@@ -142,7 +142,7 @@ public class Chart extends Widget {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name", "Image"};
+    return new String[]{"Name:  ", "Image:  "};
   }
 
   public Class[] getAttributeTypes() {
