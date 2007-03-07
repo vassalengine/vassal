@@ -57,6 +57,7 @@ back
 to the Deck.<br>
       <br>
 The number of cards in the deck is exposed as a Map-level <a href="Properties.htm">Property</a> with the name &lt;name&gt;_numPieces.<br>
+The number of card types in the deck can be exposed as a Map-level <a href="Properties.htm">Property</a> with the name &lt;name&gt;_&lt;type&gt; (see Perform Counting of Piece Types below).<br>
 
       <br>
 
@@ -204,9 +205,34 @@ used to save the deck. This option is useful for collectible card
 games, in which a player may prepare a deck offline in preparation for
 a game<br>
 
-      <span style="font-weight: bold;"><br>
+      <br>
 
-      </span> <b>EXAMPLE: &nbsp;</b>An ordinary deck of playing cards
+      <b>Maximum Cards to be Displayed in Stack:</b>&nbsp;
+This defines the maximum number of cards to graphically display in the
+deck.&nbsp; The default is 10.&nbsp; For example, if set to 10, a deck
+of 52 will appear to have 10 cards, until the actual number of contents
+drops below 10.&nbsp; Then the deck will visually start to shrink as
+cards are removed.&nbsp; If set to 1, the deck will appear flat like a
+single card.<br>
+
+      <br>
+
+      <b>Perform Counting of Piece Types:</b>&nbsp;
+Enable processing of piece type counting.&nbsp; Types must be defined
+and pieces must have a "_deckpiece_type" marker.<br>
+
+      <br>
+
+      <b>Piece types to count:</b>&nbsp;
+Specify individual "types" of pieces to count within the deck.&nbsp; These
+can be whatever you like, and must match up with "_deckpiece_type" markers
+on the pieces you want to count.&nbsp; The count is exposed with a map-level
+property called "&lt;deckname&gt;_&lt;type&gt;".&nbsp; An example of how
+to do this is provided below.<br>
+
+      <br>
+
+      <b>EXAMPLE: &nbsp;</b>An ordinary deck of playing cards
 for, say, Crazy Eights would be set to: &nbsp;Allow Multiple = false,
 Allow Specific = false, Face Down = Always, Re-shuffle = Always,
 Reversible = false. &nbsp;The discard pile would be: &nbsp;Allow
@@ -232,6 +258,19 @@ false, Face Down = Never, Re-shuffle = Never, Reversible = false.
 &nbsp;In order to guarantee that the number of each type of counter is
 fixed, the Clone and Delete functions of the Infantry and Armor
 counters should be disabled.<br>
+
+      <br>
+      <b>EXAMPLE: </b>&nbsp; 
+You want to create a deck of playing cards, and display the number of red
+cards, the number of black cards, and the total number of cards in the
+deck.&nbsp; Create the deck, check "Perform Counting of Piece Types".&nbsp;
+Add the types of "red" and "black".&nbsp; When creating your cards, give
+them a Marker named "_deckpiece_type" with the value of "red" or "black".&nbsp;
+Then, you can refer to the counts with the map-level properties of
+"&lt;deckname&gt;_red" and "&lt;deckname&gt;_black".&nbsp; The total can be
+referenced by the map-level property of "&lt;deckname&gt;_numPieces".
+
+<br>
 
       <br>
 

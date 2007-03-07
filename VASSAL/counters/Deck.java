@@ -101,6 +101,9 @@ public class Deck extends Stack {
 
   protected boolean faceDown;
   protected int dragCount = 0;
+  protected int maxStack = 10;
+  protected String[] countTypes;
+  protected boolean typeCounting = false;
   protected ArrayList nextDraw;
   protected KeyCommand[] commands;
   protected CommandEncoder commandEncoder = new CommandEncoder() {
@@ -128,38 +131,111 @@ public class Deck extends Stack {
   public Deck(String type) {
     mySetType(type);
   }
+ 
+  /**
+  * Update map-level count properties for all "types" of pieces that are configured
+  * to be counted.  These are held in the String[] countTypes.
+  */
+  private void updateCountsAll() {
+    if (!doesTypeCounting() || getMap() == null) {
+      return;
+    }
+    //Clear out all of the registered count types
+    for (int index = 0; index < countTypes.length; index++) {
+      getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+countTypes[index],null,""+0));
+    }
+    //Increase all of the pieces with types specified in this deck
+    for (Enumeration e = getPieces(); e.hasMoreElements();) {
+      GamePiece p = (GamePiece) e.nextElement();
+      if (p != null) {
+        updateCounts(p,true);
+      }
+    }
+  }
+  
+  /**
+  * Update map-level count property for a piece located at index
+  * @param index, increase
+  */
+  private void updateCounts(int index, boolean increase) {
+    if (!doesTypeCounting()) {
+      return;
+    }
+    if (index >= 0 && index < contents.length) {
+      GamePiece p = getPieceAt(index);
+      if (p == null) {
+        //can't figure out the piece, do a full update
+        updateCountsAll();
+      }
+      else {
+        updateCounts(p,increase);
+      }
+    }
+    else {
+      //can't figure out the piece, do a full update
+      updateCountsAll();
+    }
+  }
+  
+  /**
+  * Update map-level count property for a piece
+  * @param piece, increase
+  */
+  private void updateCounts(GamePiece p, boolean increase) {
+    if (!doesTypeCounting() || getMap() == null) {
+      return;
+    }
+    Object pieceType = p.getProperty("_deckpiece_type");
+    if (pieceType != null) {
+      String mapProperty = (String) getMap().getProperty(deckName+"_"+pieceType);
+      if (mapProperty != null) {
+        int newValue = (Integer.decode(mapProperty)).intValue();
+        if (increase) {
+          newValue++;
+        }
+        else {
+          newValue--;
+        }
+        getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+pieceType,null,""+newValue));
+      }
+    }
+  }
   
   /**
    * Set the <deckName>_numPieces property in the containing Map
    * @param oldPieceCount
    */
   protected void fireNumCardsProperty() {
-  	if (getMap() != null) {
-  		getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_numPieces",null,String.valueOf(pieceCount)));
-  	}
+    if (getMap() != null) {
+      getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_numPieces",null,String.valueOf(pieceCount)));
+    }
   }
   
   protected void insertPieceAt(GamePiece p, int index) {
-		super.insertPieceAt(p, index);
-		fireNumCardsProperty();
-	}
-  
-	protected void removePieceAt(int index) {
-		super.removePieceAt(index);
-		fireNumCardsProperty();
-	}
+    super.insertPieceAt(p, index);
+    updateCounts(p,true);
+    fireNumCardsProperty();
+  }
 
-	public void removeAll() {
-		super.removeAll();
-		fireNumCardsProperty();
-	}
-	
-	public void setMap(Map map) {
-		super.setMap(map);
-		fireNumCardsProperty();
-	}
+  protected void removePieceAt(int index) {
+    updateCounts(index,false);
+    super.removePieceAt(index);
+    fireNumCardsProperty();
+  }
 
-	protected void mySetType(String type) {
+  public void removeAll() {
+    super.removeAll();
+    updateCountsAll();
+    fireNumCardsProperty();
+  }
+
+  public void setMap(Map map) {
+    super.setMap(map);
+    updateCountsAll();
+    fireNumCardsProperty();
+  }
+
+  protected void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     drawOutline = st.nextBoolean(true);
@@ -181,6 +257,9 @@ public class Deck extends Stack {
     persistable = st.nextBoolean(false);
     shuffleKey = st.nextKeyStroke(null);
     reshuffleKey = st.nextKeyStroke(null);
+    maxStack = st.nextInt(10);
+    countTypes = st.nextStringArray(0);
+    typeCounting = st.nextBoolean(false);
     
     if (shuffleListener == null) {
       shuffleListener = new KeyStrokeListener(new ActionListener() {
@@ -245,6 +324,18 @@ public class Deck extends Stack {
     return shuffle;
   }
 
+  public int getMaxStack() {
+    return maxStack;
+  }
+  
+  public String[] getCountTypes() {
+    return countTypes;
+  }
+  
+  public boolean doesTypeCounting() {
+    return typeCounting;
+  }
+  
   public String getFaceDownMsgFormat() {
     return faceDownMsgFormat;
   }
@@ -293,6 +384,18 @@ public class Deck extends Stack {
     return allowSelectDraw;
   }
 
+  public void setMaxStack(int maxStack) {
+    this.maxStack = maxStack;
+  }
+  
+  public void setCountTypes(String[] countTypes) {
+    this.countTypes = countTypes;
+  }
+  
+  public void setTypeCounting(boolean typeCounting) {
+    this.typeCounting = typeCounting;
+  }
+  
   public void setAllowSelectDraw(boolean allowSelectDraw) {
     this.allowSelectDraw = allowSelectDraw;
   }
@@ -367,7 +470,8 @@ public class Deck extends Stack {
     se.append(drawOutline).append(ColorConfigurer.colorToString(outlineColor)).append(String.valueOf(size.width)).append(String.valueOf(size.height)).append(
         faceDownOption).append(shuffleOption).append(String.valueOf(allowMultipleDraw)).append(String.valueOf(allowSelectDraw)).append(
         String.valueOf(reversible)).append(reshuffleCommand).append(reshuffleTarget).append(reshuffleMsgFormat).append(deckName).append(shuffleMsgFormat)
-        .append(reverseMsgFormat).append(faceDownMsgFormat).append(drawFaceUp).append(persistable).append(shuffleKey).append(reshuffleKey);
+        .append(reverseMsgFormat).append(faceDownMsgFormat).append(drawFaceUp).append(persistable).append(shuffleKey).append(reshuffleKey).append(String.valueOf(maxStack))
+        .append(countTypes).append(typeCounting);
     return ID + se.getValue();
   }
 
@@ -551,7 +655,7 @@ public class Deck extends Stack {
   }
 
   public void draw(java.awt.Graphics g, int x, int y, Component obs, double zoom) {
-    int count = Math.min(getPieceCount(), 10);
+    int count = Math.min(getPieceCount(), maxStack);
     GamePiece top = nextDraw != null ? (GamePiece) nextDraw.get(0) : topPiece();
 
     if (top != null) {
@@ -975,6 +1079,7 @@ public class Deck extends Stack {
         c.append(sub[i]);
       }
       c.append(t.getChangeCommand());
+      updateCountsAll();
     }
     else {
       GameModule.getGameModule().warn(f.getName() + " is not a saved deck file");
@@ -1022,19 +1127,18 @@ public class Deck extends Stack {
     }
   }
 
-	/**
-	 * Return the number of cards to be returned by next call to {@link #drawCards()}
-	 */
-	public int getDragCount() {
-		return dragCount;
-	}
+    /**
+     * Return the number of cards to be returned by next call to {@link #drawCards()}
+     */
+    public int getDragCount() {
+      return dragCount;
+    }
 
-	/**
-	 * Set the number of cards to be returned by next call to {@link #drawCards()}
-	 * @param dragCount
-	 */
-	public void setDragCount(int dragCount) {
-		this.dragCount = dragCount;
-	}
-
+    /**
+     * Set the number of cards to be returned by next call to {@link #drawCards()}
+     * @param dragCount
+     */
+     public void setDragCount(int dragCount) {
+       this.dragCount = dragCount;
+     }
 }
