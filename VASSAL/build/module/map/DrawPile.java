@@ -39,6 +39,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Deck;
@@ -73,6 +74,11 @@ public class DrawPile extends SetupStack {
   private VisibilityCondition shuffleFormatVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.getShuffleOption().equals(USE_MENU);
+    }
+  };
+  private VisibilityCondition typeCountingVisibleCondition = new VisibilityCondition() {
+    public boolean shouldBeVisible() {
+      return dummy.doesTypeCounting();
     }
   };
   protected static UniqueIdManager idMgr = new UniqueIdManager("Deck");
@@ -113,6 +119,9 @@ public class DrawPile extends SetupStack {
   public static final String REVERSE_REPORT_FORMAT = "reverseFormat";
   public static final String DRAW = "draw";
   public static final String COLOR = "color";
+  public static final String MAXSTACK = "maxStack";
+  public static final String TYPECOUNTING = "typeCounting";
+  public static final String COUNTTYPES = "countTypes";
   public static final String RESHUFFLABLE = "reshufflable";
   public static final String RESHUFFLE_COMMAND = "reshuffleCommand";
   public static final String RESHUFFLE_TARGET = "reshuffleTarget";
@@ -177,7 +186,8 @@ public class DrawPile extends SetupStack {
     return new String[]{NAME, OWNING_BOARD, X_POSITION, Y_POSITION, WIDTH, HEIGHT, ALLOW_MULTIPLE,
                         ALLOW_SELECT, FACE_DOWN, DRAW_FACE_UP, FACE_DOWN_REPORT_FORMAT, SHUFFLE, SHUFFLE_REPORT_FORMAT,
                         SHUFFLE_HOTKEY, REVERSIBLE, REVERSE_REPORT_FORMAT, DRAW, COLOR,
-                        RESHUFFLABLE, RESHUFFLE_COMMAND, RESHUFFLE_MESSAGE, RESHUFFLE_HOTKEY, RESHUFFLE_TARGET,CAN_SAVE};
+                        RESHUFFLABLE, RESHUFFLE_COMMAND, RESHUFFLE_MESSAGE, RESHUFFLE_HOTKEY, RESHUFFLE_TARGET,CAN_SAVE,
+                        MAXSTACK,TYPECOUNTING,COUNTTYPES};
   }
 
   public String[] getAttributeDescriptions() {
@@ -231,7 +241,10 @@ public class DrawPile extends SetupStack {
                        FormattedStringConfig.class,
                        KeyStroke.class,
                        AssignedDeckPrompt.class,
-                       Boolean.class};
+                       Boolean.class,
+                       Integer.class,
+                       Boolean.class,
+                       String[].class};
   }
 
   public static class FormattedStringConfig implements ConfigurerFactory {
@@ -271,6 +284,15 @@ public class DrawPile extends SetupStack {
     }
     else if (COLOR.equals(key)) {
       return ColorConfigurer.colorToString(dummy.getOutlineColor());
+    }
+    else if (MAXSTACK.equals(key)) {
+      return "" + dummy.getMaxStack();
+    }
+    else if (TYPECOUNTING.equals(key)) {
+      return "" + dummy.doesTypeCounting();
+    }
+    else if (COUNTTYPES.equals(key)) {
+      return StringArrayConfigurer.arrayToString(dummy.getCountTypes());
     }
     else if (RESHUFFLABLE.equals(key)) {
       return "" + (dummy.getReshuffleCommand().length() > 0);
@@ -384,6 +406,26 @@ public class DrawPile extends SetupStack {
       }
       dummy.setOutlineColor((Color) value);
     }
+    if (MAXSTACK.equals(key)) {
+      if (value instanceof String) {
+        value = new Integer((String) value);
+      }
+      dummy.setMaxStack(((Integer) value).intValue());
+    }    
+    if (TYPECOUNTING.equals(key)) {
+      if (value instanceof Boolean) {
+        dummy.setTypeCounting(Boolean.TRUE.equals(value));
+      }
+      else {
+        dummy.setTypeCounting("true".equals(value));
+      }
+    }    
+    if (COUNTTYPES.equals(key)) {
+      if (value instanceof String) {
+        value = StringArrayConfigurer.stringToArray((String) value);
+      }
+      dummy.setCountTypes((String[]) value);
+    }    
     else if (RESHUFFLABLE.equals(key)) {
       reshufflable = "true".equals(value) || Boolean.TRUE.equals(value);
       if (!reshufflable) {
@@ -448,6 +490,9 @@ public class DrawPile extends SetupStack {
     }
     else if (REVERSE_REPORT_FORMAT.equals(name)) {
       return reverseFormatVisibleCondition;
+    }
+    else if (COUNTTYPES.equals(name)) {
+      return typeCountingVisibleCondition;
     }
     else {
       return null;
