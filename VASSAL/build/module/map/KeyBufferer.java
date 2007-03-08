@@ -115,12 +115,16 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       }
       else {
         // RFE 1659481 Ctrl-click deselects clicked units
-        if (p.getParent() != null && !p.getParent().isExpanded() && e.isControlDown() &&
-            Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
+        if (e.isControlDown() && Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
          Stack s = p.getParent();
-         for (int i=0; i < s.getPieceCount(); i++) {
-           KeyBuffer.getBuffer().remove(s.getPieceAt(i));
-         }          
+         if (s == null) {
+           KeyBuffer.getBuffer().remove(p);
+         }
+         else if (!s.isExpanded()){
+           for (int i=0; i < s.getPieceCount(); i++) { 
+             KeyBuffer.getBuffer().remove(s.getPieceAt(i));
+           }
+         }
        }
        // End RFE 1659481
       }

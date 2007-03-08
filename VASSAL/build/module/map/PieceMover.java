@@ -501,6 +501,9 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
       else {
         draggedPieces = new GamePiece[]{dragging};
       }
+      for (int i = 0; i < draggedPieces.length; i++) {
+        KeyBuffer.getBuffer().add(draggedPieces[i]);
+      }
       if (offset != null) {
         p = new Point(dragging.getPosition().x + offset.x, dragging.getPosition().y + offset.y);
       }

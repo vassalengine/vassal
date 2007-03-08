@@ -37,6 +37,7 @@ import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
@@ -152,7 +153,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   public void mousePressed(MouseEvent e) {
-    KeyBuffer.getBuffer().clear();
+    KeyBuffer.getBuffer().clear(); 
+    Map.clearActiveMap(); 
     if (getPiece() != null) {
       KeyBuffer.getBuffer().add(getPiece());
     }

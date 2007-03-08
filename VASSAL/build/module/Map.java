@@ -1021,7 +1021,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @see #popMouseListener
    * @see #addLocalMouseListener
    */
+  
   public static Map activeMap = null;
+  public static void clearActiveMap() {
+    if (activeMap != null) {
+      activeMap.repaint();
+      activeMap = null;
+    }
+  }
   
 	public void mousePressed(MouseEvent e) {
     
@@ -1039,11 +1046,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
           dirty = true;
         }
       }
-      if (dirty) {
+      if (dirty && activeMap != null) {
         activeMap.repaint();
-      }
-      activeMap = this;
+      }      
     }
+    activeMap = this;
   
 		if (mouseListenerStack.size() > 0) {
 			Point p = mapCoordinates(e.getPoint());
@@ -1085,6 +1092,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		// Clicking with mouse always repaints the map
 		clearFirst = true;
 		theMap.repaint();
+    activeMap = this;
 	}
 
 	/**
