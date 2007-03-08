@@ -214,7 +214,10 @@ public class DrawPile extends SetupStack {
                         "Send Report Format:  ",
                         "Send Hot Key:  ",
                         "Name of deck to send to:  ",
-                        "Can be saved-to/loaded-from a file?"};
+                        "Can be saved-to/loaded-from a file?",
+                        "Maximum Cards to display in Stack",
+                        "Perform counting of piece types?",
+                        "Piece types to count"};
   }
 
   public Class[] getAttributeTypes() {
