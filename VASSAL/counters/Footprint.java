@@ -77,8 +77,8 @@ public class Footprint extends MovementMarkable {
   protected int unSelectedTransparency;        // Transparency of trail when unit is selected/unselected
   protected Color lineColor;                   // Color of Trail lines
   protected Color fillColor;                   // Color of Trail circle fill
-  protected int edgePointBuffer;               // How far Offmap to draw trail points (pixels)?
-  protected int edgeDisplayBuffer;             // How far Offmap to draw trail lines (pixels)?
+  protected int edgePointBuffer;               // How far Off-map to draw trail points (pixels)?
+  protected int edgeDisplayBuffer;             // How far Off-map to draw trail lines (pixels)?
 
   // Defaults for Type variables
   protected static final char DEFAULT_TRAIL_KEY = 'T';
@@ -648,13 +648,13 @@ public class Footprint extends MovementMarkable {
       controls.add(ut.getControls());
 
       b = Box.createHorizontalBox();
-      pb = new IntConfigurer(null, "Display Trail Points Offmap for ", new Integer(p.edgePointBuffer));
+      pb = new IntConfigurer(null, "Display Trail Points Off-map for ", new Integer(p.edgePointBuffer));
       b.add(pb.getControls());
       b.add(new JLabel("pixels"));
       controls.add(b);
 
       b = Box.createHorizontalBox();
-      db = new IntConfigurer(null, "Display Trails Offmap for  ", new Integer(p.edgeDisplayBuffer));
+      db = new IntConfigurer(null, "Display Trails Off-map for  ", new Integer(p.edgeDisplayBuffer));
       b.add(db.getControls());
       b.add(new JLabel("pixels"));
       controls.add(b);

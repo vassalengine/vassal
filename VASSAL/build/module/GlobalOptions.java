@@ -153,7 +153,7 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Allow non-owners to un-mask pieces:  ",
+    return new String[]{"Allow non-owners to unmask pieces:  ",
                         null,
                         "Center on opponent's moves:  ",
                         "Auto-report moves:  ",

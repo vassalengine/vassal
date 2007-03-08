@@ -670,6 +670,27 @@ public class LOS_Thread extends AbstractConfigurable implements
         r.width+= (int) r.width / map.getZoom() + 1;
         r.height+= (int) r.height / map.getZoom() + 1;
         map.repaint(r);
+      
+      String location = map.locationName(p); 
+      if (!checkList.contains(location) && !location.equals(anchorLocation)) {
+        checkList.add(location);
+        lastLocation = location;
+      }
+      
+      Point mapAnchor = map.mapCoordinates(lastAnchor);
+      Point mapArrow = map.mapCoordinates(lastArrow);
+      int fudge = (int) (1.0 / map.getZoom() * 2);
+      Rectangle r = new Rectangle(Math.min(mapAnchor.x, mapArrow.x)-fudge, 
+          Math.min(mapAnchor.y, mapArrow.y)-fudge,
+          Math.abs(mapAnchor.x - mapArrow.x)+1+fudge*2, 
+          Math.abs(mapAnchor.y - mapArrow.y)+1+fudge*2);
+      map.repaint(r);
+      
+      if (drawRange) {
+        r = new Rectangle(lastRangeRect);
+        r.width += (int)(r.width / map.getZoom()) + 1;
+        r.height += (int)(r.height / map.getZoom()) + 1;
+        map.repaint(r);
 
       }      
     }

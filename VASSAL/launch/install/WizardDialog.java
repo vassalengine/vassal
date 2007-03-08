@@ -33,6 +33,8 @@ import VASSAL.i18n.Resources;
  */
 // I18n: Complete
 public class WizardDialog extends JDialog {
+  private static final long serialVersionUID = 1L;
+
   private Screen screen;
   private Box screenBox = Box.createHorizontalBox();
   private InstallWizard wizard;

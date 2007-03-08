@@ -38,7 +38,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * Determines whether players are allowed to un-mask other players pieces.  The module designer may
+ * Determines whether players are allowed to unmask other players pieces.  The module designer may
  * set the option to always on, always off, or let the players determine it with a Preferences setting.
  */
 public class ObscurableOptions implements CommandEncoder, GameComponent {
@@ -163,7 +163,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     }
   }
 
-  /** Return true if pieces belonging to the given id are un-maskable by other players */
+  /** Return true if pieces belonging to the given id are unmaskable by other players */
   public boolean isUnmaskable(String id) {
     if (override != null) {
       return override.booleanValue();

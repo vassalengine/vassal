@@ -60,9 +60,9 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
   private String heapSize;
 
   protected void tryInstall(final InstallWizard wizard) throws IOException {
-    installDir = new File((String) wizard.get(INSTALL_DIR));
-    jnlpURL = (String) wizard.get(JNLP_URL);
-    heapSize = (String) wizard.get(Constants.HEAP_SIZE);
+    installDir = new File(wizard.get(INSTALL_DIR));
+    jnlpURL = wizard.get(JNLP_URL);
+    heapSize = wizard.get(Constants.HEAP_SIZE);
     doInstall();
     wizard.getDialog().setScreen(new SuccessScreen(
         "<html>" + Resources.getString("Install.install_successful") + "<br>" + 
@@ -186,7 +186,8 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
       Element el = (Element) l.item(0);
       el.setAttribute("max-heap-size", heapSize);
     }
-    doc.getDocumentElement().setAttribute("codebase", installDir.toURL().toString());
+    doc.getDocumentElement().setAttribute("codebase",
+      installDir.toURI().toURL().toString());
   }
 
   protected void checkParameters() throws IOException {

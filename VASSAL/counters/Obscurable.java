@@ -379,7 +379,7 @@ public class Obscurable extends Decorator implements EditablePiece {
   }
 
   /** 
-   * Return true if this piece can be masked/un-masked by the current player 
+   * Return true if this piece can be masked/unmasked by the current player 
    * @param id ignored
    * @deprecated 
    */
@@ -388,7 +388,7 @@ public class Obscurable extends Decorator implements EditablePiece {
   }
 
   /** 
-   * Return true if this piece can be masked/un-masked by the current player 
+   * Return true if this piece can be masked/unmasked by the current player 
    */
   public boolean isMaskable() {
     return access.currentPlayerCanModify(obscuredBy)
