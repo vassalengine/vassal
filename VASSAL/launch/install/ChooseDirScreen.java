@@ -36,10 +36,9 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-// I18n: Complete
 public class ChooseDirScreen implements Screen {
   private JTextField tf = new JTextField(36);
-  private JButton select = new JButton(Resources.getString("Install.select"));
+  private JButton select = new JButton(Resources.getString("Install.select")); //$NON-NLS-1$
   private Box controls;
 
   public ChooseDirScreen() {
@@ -53,7 +52,7 @@ public class ChooseDirScreen implements Screen {
         }
       }
     });
-    tf.setText(new File(System.getProperty("user.home"), "VASSAL").getPath());
+    tf.setText(new File(System.getProperty("user.home"), "VASSAL").getPath()); //$NON-NLS-1$ //$NON-NLS-2$
     tf.setMaximumSize(new Dimension(tf.getMaximumSize().width, tf.getPreferredSize().height));
     tf.select(0, tf.getText().length());
     hBox.add(select);
@@ -66,7 +65,7 @@ public class ChooseDirScreen implements Screen {
           }
 
           public String getDescription() {
-            return Resources.getString("Install.directories");
+            return Resources.getString("Install.directories"); //$NON-NLS-1$
           }
         });
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -76,7 +75,7 @@ public class ChooseDirScreen implements Screen {
       }
     });
     controls = Box.createVerticalBox();
-    controls.add(new JLabel(Resources.getString("Install.select_install_directory")));
+    controls.add(new JLabel(Resources.getString("Install.select_install_directory"))); //$NON-NLS-1$
     controls.add(hBox);
   }
 
@@ -91,7 +90,7 @@ public class ChooseDirScreen implements Screen {
 
   public void next(InstallWizard wiz) {
     wiz.put(Constants.INSTALL_DIR, tf.getText());
-    Screen s = wiz.next("ChooseDirScreen.next", InstallJnlpScreen.class);
+    Screen s = wiz.next("ChooseDirScreen.next", InstallJnlpScreen.class); //$NON-NLS-1$
     if (s instanceof InstallProgressScreen) {
       ((InstallProgressScreen) s).start(wiz);
     }

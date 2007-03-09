@@ -35,11 +35,11 @@ import VASSAL.tools.SequenceEncoder;
 
 public class TextBoxItem extends TextItem {
 
-  public static final String TYPE = "TextBox";
+  public static final String TYPE = "TextBox"; //$NON-NLS-1$
   
-  protected static final String WIDTH = "width";
-  protected static final String HEIGHT = "height";
-  protected static final String USE_HTML = "use_html";
+  protected static final String WIDTH = "width"; //$NON-NLS-1$
+  protected static final String HEIGHT = "height"; //$NON-NLS-1$
+  protected static final String USE_HTML = "use_html"; //$NON-NLS-1$
   
   protected int height = 30;
   protected int width = 40;
@@ -202,7 +202,7 @@ public class TextBoxItem extends TextItem {
     }
  
     JTextPane l = new JTextPane();
-    if (isHTML) l.setContentType("text/html");
+    if (isHTML) l.setContentType("text/html"); //$NON-NLS-1$
     l.setText(s);
     l.setSize(width-2, height-2);
     l.setBackground(bg != null ? bg : new Color(0,true));
@@ -234,7 +234,7 @@ public class TextBoxItem extends TextItem {
     TextBoxItem item = new TextBoxItem(l);
     
     SequenceEncoder.Decoder sd1 = new SequenceEncoder.Decoder(s, ',');
-    String s1 = sd1.nextToken("");
+    String s1 = sd1.nextToken(""); //$NON-NLS-1$
     
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s1, ';');
     sd.nextToken();
@@ -242,7 +242,7 @@ public class TextBoxItem extends TextItem {
     item.height = sd.nextInt(40);
     item.isHTML = sd.nextBoolean(false);
     
-    TextItem.decode(item, sd1.nextToken(""));
+    TextItem.decode(item, sd1.nextToken("")); //$NON-NLS-1$
         
     return item;
   }

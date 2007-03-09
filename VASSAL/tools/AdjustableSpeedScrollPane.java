@@ -36,10 +36,9 @@ import VASSAL.preferences.Prefs;
  *  @see VASSAL.tools.ScrollPane
  *  @see javax.swing.JScrollPane
  */
-//I18n: Complete
 public class AdjustableSpeedScrollPane extends ScrollPane {
    private static final long serialVersionUID = 1L;
-   private static final String SCROLL_SPEED = "scrollSpeed";
+   private static final String SCROLL_SPEED = "scrollSpeed"; //$NON-NLS-1$
    private static final int defaultSpeed = 50;
 
    /**
@@ -73,7 +72,7 @@ public class AdjustableSpeedScrollPane extends ScrollPane {
 
       // set configurer      
       IntConfigurer config = new IntConfigurer(SCROLL_SPEED,
-         Resources.getString("AdjustableSpeedScrollPane.scroll_increment"), new Integer(defaultSpeed));
+         Resources.getString("AdjustableSpeedScrollPane.scroll_increment"), new Integer(defaultSpeed)); //$NON-NLS-1$
       config.addPropertyChangeListener(new PropertyChangeListener() {
          public void propertyChange(PropertyChangeEvent e) {
             if (SCROLL_SPEED.equals(e.getPropertyName()))
@@ -82,7 +81,7 @@ public class AdjustableSpeedScrollPane extends ScrollPane {
       });
 
       Prefs prefs = GameModule.getGameModule().getPrefs();
-      prefs.addOption(Resources.getString("Prefs.general_tab"), config);
+      prefs.addOption(Resources.getString("Prefs.general_tab"), config); //$NON-NLS-1$
       setSpeed(((Integer) prefs.getValue(SCROLL_SPEED)).intValue());
    }
 

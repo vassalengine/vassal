@@ -392,11 +392,11 @@ class Cube {            // structure for a cube in color space
    }   
 
    public String toString() {
-       String s = "lower=" + lower + " upper=" + upper;
-       s = s + " count=" + count + " level=" + level;
-       s = s + " rmin=" + rmin + " rmax=" + rmax;
-       s = s + " gmin=" + gmin + " gmax=" + gmax;
-       s = s + " bmin=" + bmin + " bmax=" + bmax;
+       String s = "lower=" + lower + " upper=" + upper; //$NON-NLS-1$ //$NON-NLS-2$
+       s = s + " count=" + count + " level=" + level; //$NON-NLS-1$ //$NON-NLS-2$
+       s = s + " rmin=" + rmin + " rmax=" + rmax; //$NON-NLS-1$ //$NON-NLS-2$
+       s = s + " gmin=" + gmin + " gmax=" + gmax; //$NON-NLS-1$ //$NON-NLS-2$
+       s = s + " bmin=" + bmin + " bmax=" + bmax; //$NON-NLS-1$ //$NON-NLS-2$
        return s;
    }
    

@@ -29,10 +29,10 @@ import VASSAL.tools.SequenceEncoder;
 
 public class TextBoxItemInstance extends ItemInstance {
 
-  protected static final String VALUE = "value";
-  protected static final String BG_COLOR = "borderColor";
+  protected static final String VALUE = "value"; //$NON-NLS-1$
+  protected static final String BG_COLOR = "borderColor"; //$NON-NLS-1$
   
-  protected String val = "";
+  protected String val = ""; //$NON-NLS-1$
   
   public TextBoxItemInstance() {
     super();
@@ -72,12 +72,12 @@ public class TextBoxItemInstance extends ItemInstance {
 
   public void decode(String code) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
-    setType(sd.nextToken(""));
-    setName(sd.nextToken(""));
-    setLocation(sd.nextToken(""));
-    setFgColor(new ColorSwatch(sd.nextToken("")));
-    setBgColor(new ColorSwatch(sd.nextToken("")));
-    setValue(sd.nextToken(""));
+    setType(sd.nextToken("")); //$NON-NLS-1$
+    setName(sd.nextToken("")); //$NON-NLS-1$
+    setLocation(sd.nextToken("")); //$NON-NLS-1$
+    setFgColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
+    setBgColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
+    setValue(sd.nextToken("")); //$NON-NLS-1$
   }
 
   public String[] getAttributeDescriptions() {

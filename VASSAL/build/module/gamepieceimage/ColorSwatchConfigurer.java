@@ -86,7 +86,7 @@ public class ColorSwatchConfigurer extends Configurer {
       p.add(box);
 
       colorBox = Box.createHorizontalBox();
-      config = new ColorConfigurer("", "Select Color  ");
+      config = new ColorConfigurer("", "Select Color  "); //$NON-NLS-1$
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           Color c = (Color) config.getValue();

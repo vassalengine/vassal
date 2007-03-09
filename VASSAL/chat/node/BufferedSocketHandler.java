@@ -31,8 +31,8 @@ public class BufferedSocketHandler extends SocketHandler {
 
   public BufferedSocketHandler(Socket sock, SocketWatcher handler) throws IOException {
     super(sock, handler);
-    reader = new BufferedReader(new InputStreamReader(sock.getInputStream(),Charset.forName("UTF-8")));
-    writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream(),Charset.forName("UTF-8")));
+    reader = new BufferedReader(new InputStreamReader(sock.getInputStream(),Charset.forName("UTF-8"))); //$NON-NLS-1$
+    writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream(),Charset.forName("UTF-8"))); //$NON-NLS-1$
   }
 
   protected void closeStreams() throws IOException {

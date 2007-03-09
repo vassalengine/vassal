@@ -29,7 +29,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
 public class EventLog extends AbstractBuildable implements CommandEncoder, GameComponent {
-  public static final String EVENT_LIST = "Events";
+  public static final String EVENT_LIST = "Events"; //$NON-NLS-1$
 
   private Vector myEvents;
   private Vector savedEvents;
@@ -104,7 +104,7 @@ public class EventLog extends AbstractBuildable implements CommandEncoder, GameC
     while (e.hasMoreElements()) {
       Event evt = (Event) e.nextElement();
       SequenceEncoder sub = new SequenceEncoder(',');
-      sub.append("" + evt.getTime())
+      sub.append("" + evt.getTime()) //$NON-NLS-1$
           .append(evt.getUser())
           .append(evt.getAction());
       se.append(sub.getValue());

@@ -43,14 +43,14 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
       }
       catch (InterruptedException e) {
       }
-      String newRoom = "Room" + (int) (numRooms * rng.nextFloat());
+      String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
       setRoom(new SimpleRoom(newRoom));
     }
   }
 
   public void propertyChange(PropertyChangeEvent evt) {
     try {
-      log.write("----------" + (new Date()) + "---------\n");
+      log.write("----------" + (new Date()) + "---------\n"); //$NON-NLS-1$ //$NON-NLS-2$
       log.write(report((VASSAL.chat.Room[]) evt.getNewValue()));
       log.flush();
     }
@@ -62,15 +62,15 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
   public static String report(VASSAL.chat.Room[] r) {
     StringBuffer buffer = new StringBuffer();
     for (int i = 0; i < r.length; ++i) {
-      buffer.append(r[i].getName() + ": ");
+      buffer.append(r[i].getName() + ": "); //$NON-NLS-1$
       List l = r[i].getPlayerList();
       for (int j = 0; j < l.size(); ++j) {
         buffer.append(l.get(j));
         if (j < l.size() - 1) {
-          buffer.append(", ");
+          buffer.append(", "); //$NON-NLS-1$
         }
       }
-      buffer.append("\n");
+      buffer.append("\n"); //$NON-NLS-1$
     }
     return buffer.toString();
   }

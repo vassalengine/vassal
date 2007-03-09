@@ -32,10 +32,9 @@ import VASSAL.i18n.Resources;
  * @author rkinney
  * 
  */
-// I18n: Complete
 public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatControlsInitializer {
   protected ChatServerConnection delegate;
-  protected String defaultRoom = Resources.getString("Chat.main_room");
+  protected String defaultRoom = Resources.getString("Chat.main_room"); //$NON-NLS-1$
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected ChatServerControls controls;
 
@@ -110,7 +109,7 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
 
   public void setDelegate(ChatServerConnection newDelegate) {
     if (delegate != null && delegate.isConnected()) {
-      throw new IllegalStateException(Resources.getString("Server.error1"));
+      throw new IllegalStateException(Resources.getString("Server.error1")); //$NON-NLS-1$
     }
     ChatServerConnection oldDelegate = delegate;
     if (oldDelegate != null) {

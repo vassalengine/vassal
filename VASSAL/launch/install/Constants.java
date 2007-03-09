@@ -22,9 +22,9 @@ package VASSAL.launch.install;
  * @author rkinney
  */
 public interface Constants {
-  public static final String JNLP_URL="jnlpUrl";
-  public static final String HEAP_SIZE = "heapSize";
-  public static final String INSTALL_DIR = "installDir";
-  public static final String INSTALL_FILE = "installFile";
+  public static final String JNLP_URL="jnlpUrl"; //$NON-NLS-1$
+  public static final String HEAP_SIZE = "heapSize"; //$NON-NLS-1$
+  public static final String INSTALL_DIR = "installDir"; //$NON-NLS-1$
+  public static final String INSTALL_FILE = "installFile"; //$NON-NLS-1$
 
 }

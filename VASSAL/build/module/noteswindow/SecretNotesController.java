@@ -64,9 +64,8 @@ import VASSAL.tools.SequenceEncoder;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-// I18n: Complete
 public class SecretNotesController implements GameComponent, CommandEncoder, AddSecretNoteCommand.Interface {
-  public static final String COMMAND_PREFIX = "SNOTE\t";
+  public static final String COMMAND_PREFIX = "SNOTE\t"; //$NON-NLS-1$
 
   private Controls controls;
   private JPanel panel;
@@ -121,9 +120,9 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
           (command.substring(COMMAND_PREFIX.length()), '\t');
       String name = st.nextToken();
       String owner = st.nextToken();
-      boolean hidden = "true".equals(st.nextToken());
+      boolean hidden = "true".equals(st.nextToken()); //$NON-NLS-1$
       String text = TextConfigurer.restoreNewlines(st.nextToken());
-      String handle = "";
+      String handle = ""; //$NON-NLS-1$
       Date date = null;
       if (st.hasMoreTokens()) {
         try {
@@ -147,7 +146,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     if (c instanceof AddSecretNoteCommand) {
       SecretNote note = ((AddSecretNoteCommand) c).getNote();
       SequenceEncoder se = new SequenceEncoder('\t');
-      String date = note.getDate() == null ? "" : INTERNAL_DATE_FORMATTER.format(note.getDate());
+      String date = note.getDate() == null ? "" : INTERNAL_DATE_FORMATTER.format(note.getDate()); //$NON-NLS-1$
       s = COMMAND_PREFIX +
           se.append(note.getName())
           .append(note.getOwner())
@@ -175,7 +174,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     if (panel == null) {
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-      JLabel l = new JLabel(Resources.getString("Notes.visible_once_revealed"));
+      JLabel l = new JLabel(Resources.getString("Notes.visible_once_revealed")); //$NON-NLS-1$
       l.setAlignmentX(0.0F);
       panel.add(l);
       panel.add(controls);
@@ -199,10 +198,10 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         }
         String msg;
         if (index < 0) {
-          msg = "* " + Resources.getString("Notes.has_created", GlobalOptions.getInstance().getPlayerId(), secretNote.getName()) + " *";
+          msg = "* " + Resources.getString("Notes.has_created", GlobalOptions.getInstance().getPlayerId(), secretNote.getName()) + " *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         else {
-          msg = "* " + Resources.getString("Notes.has_revealed", GlobalOptions.getInstance().getPlayerId(), secretNote.getName()) + " *";
+          msg = "* " + Resources.getString("Notes.has_revealed", GlobalOptions.getInstance().getPlayerId(), secretNote.getName()) + " *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
         c.execute();
@@ -228,7 +227,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     private JTextArea text;
     private JTable table;
     private JButton revealButton;
-    private String[] columnNames = {Resources.getString("Notes.player"), Resources.getString("Notes.date_time"), Resources.getString("Notes.note_name"), Resources.getString("Notes.revealed")};
+    private String[] columnNames = {Resources.getString("Notes.player"), Resources.getString("Notes.date_time"), Resources.getString("Notes.note_name"), Resources.getString("Notes.revealed")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     public Controls() {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -270,7 +269,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       });
       b.add(newButton);
 
-      revealButton = new JButton(Resources.getString("Notes.reveal"));
+      revealButton = new JButton(Resources.getString("Notes.reveal")); //$NON-NLS-1$
       revealButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           revealSelectedNote();
@@ -284,7 +283,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       text = new JTextArea(6, 20);
       text.setEditable(false);
       JScrollPane scroll = new ScrollPane(text);
-      scroll.setBorder(new TitledBorder(Resources.getString("Notes.text")));
+      scroll.setBorder(new TitledBorder(Resources.getString("Notes.text"))); //$NON-NLS-1$
       add(scroll);
     }
 
@@ -335,7 +334,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
           case COL_HANDLE:
             return note.getHandle();
           case COL_DTM:
-            return note.getDate() == null ? "" : LOCAL_DATE_FORMATTER.format(note.getDate());
+            return note.getDate() == null ? "" : LOCAL_DATE_FORMATTER.format(note.getDate()); //$NON-NLS-1$
           case COL_NAME:
             return note.getName();
           case COL_REVEALED:
@@ -391,9 +390,9 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         tmp = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, this), true);
       }
       final JDialog d = tmp;
-      d.setTitle(Resources.getString("Notes.delayed_note"));
-      final StringConfigurer name = new StringConfigurer(null, Resources.getString("Notes.name"));
-      final TextConfigurer text = new TextConfigurer(null, Resources.getString("Notes.text"));
+      d.setTitle(Resources.getString("Notes.delayed_note")); //$NON-NLS-1$
+      final StringConfigurer name = new StringConfigurer(null, Resources.getString("Notes.name")); //$NON-NLS-1$
+      final TextConfigurer text = new TextConfigurer(null, Resources.getString("Notes.text")); //$NON-NLS-1$
       d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
       d.getContentPane().add(name.getControls());
       d.getContentPane().add(text.getControls());
@@ -403,7 +402,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         public void actionPerformed(ActionEvent e) {
           SecretNote note = new SecretNote(name.getValueString(), GameModule.getUserId(), (String) text.getValue(), true);
           if (notes.contains(note)) {
-            JOptionPane.showMessageDialog(Controls.this, Resources.getString("Notes.note_exists"));
+            JOptionPane.showMessageDialog(Controls.this, Resources.getString("Notes.note_exists")); //$NON-NLS-1$
           }
           else {
             notes.add(0, note);
@@ -442,7 +441,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
     private void displaySelected() {
       revealButton.setEnabled(false);
-      text.setText("");
+      text.setText(""); //$NON-NLS-1$
 
       int selectedRow = table.getSelectedRow();
       if (selectedRow < 0) {
@@ -457,7 +456,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
           revealButton.setEnabled(note.isHidden());
         }
         else {
-          text.setText(note.isHidden() ? Resources.getString("Notes.message_not_revealed") : note.getText());
+          text.setText(note.isHidden() ? Resources.getString("Notes.message_not_revealed") : note.getText()); //$NON-NLS-1$
         }
       }
     }

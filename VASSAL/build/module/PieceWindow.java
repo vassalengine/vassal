@@ -58,17 +58,17 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   protected String id;
   protected LaunchButton launch;
   protected boolean hidden;
-  public static final String DEPRECATED_NAME = "entryName";
-  public static final String NAME = "name";
-  public static final String BUTTON_TEXT = "text";
-  public static final String TOOLTIP = "tooltip";
-  public static final String ICON = "icon";
-  public static final String HOTKEY = "hotkey";
-  public static final String HIDDEN = "hidden";
-  protected static UniqueIdManager idMgr = new UniqueIdManager("PieceWindow");
+  public static final String DEPRECATED_NAME = "entryName"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  public static final String ICON = "icon"; //$NON-NLS-1$
+  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+  public static final String HIDDEN = "hidden"; //$NON-NLS-1$
+  protected static UniqueIdManager idMgr = new UniqueIdManager("PieceWindow"); //$NON-NLS-1$
   protected JComponent root;
   protected ComponentSplitter.SplitPane mainWindowDock;
-  protected String tooltip = "";
+  protected String tooltip = ""; //$NON-NLS-1$
 
   public PieceWindow() {
     root = new JPanel(new BorderLayout());
@@ -124,7 +124,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PieceWindow.htm");
+    return HelpFile.getReferenceManualPage("PieceWindow.htm"); //$NON-NLS-1$
   }
 
   public void build(org.w3c.dom.Element e) {
@@ -133,7 +133,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   public boolean shouldDockIntoMainWindow() {
-    return "PieceWindow0".equals(id);
+    return "PieceWindow0".equals(id); //$NON-NLS-1$
   }
 
   public java.awt.Component getComponent() {
@@ -190,7 +190,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
     if (!hidden) {
       String key = PositionOption.key + getConfigureName();
-      if ("PieceWindow0".equals(id) && GlobalOptions.getInstance().isUseSingleWindow()) {
+      if ("PieceWindow0".equals(id) && GlobalOptions.getInstance().isUseSingleWindow()) { //$NON-NLS-1$
         mainWindowDock = new ComponentSplitter().splitLeft(GameModule.getGameModule().getControlPanel(), root, false);
       }
       else {
@@ -220,7 +220,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, "/images/counter.gif");
+      return new IconConfigurer(key, name, "/images/counter.gif"); //$NON-NLS-1$
     }
   }
 

@@ -119,10 +119,10 @@ public class StringEnumConfigurer extends Configurer {
 
   public static void main(String[] args) {
     JFrame f = new JFrame();
-    StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"});
+    StringEnumConfigurer c = new StringEnumConfigurer(null, "Pick one: ", new String[]{"one", "two", "three"}); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     c.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(evt.getPropertyName() + " = " + evt.getNewValue());
+        System.err.println(evt.getPropertyName() + " = " + evt.getNewValue()); //$NON-NLS-1$
       }
     });
     f.getContentPane().add(c.getControls());

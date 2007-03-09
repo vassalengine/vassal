@@ -36,10 +36,9 @@ import VASSAL.i18n.Resources;
 /**
  * Represents the <code>Help</code> menu of the controls window
  */
-//I18n: Complete
 public class Documentation extends AbstractConfigurable {
   /** Preferences key for the directory where VASSAL documentation is stored */
-  public static final String DOCS_DIR = "docsDirectory"; 
+  public static final String DOCS_DIR = "docsDirectory";  //$NON-NLS-1$
 
   private javax.swing.JMenu controls;
 
@@ -55,8 +54,8 @@ public class Documentation extends AbstractConfigurable {
     if (el == null) {
       try {
         AboutScreen about = new AboutScreen();
-        about.setAttribute(AboutScreen.TITLE, Resources.getString("Documentation.about_vassal")); 
-        about.setAttribute(AboutScreen.FILE, "/images/Splash.gif"); 
+        about.setAttribute(AboutScreen.TITLE, Resources.getString("Documentation.about_vassal"));  //$NON-NLS-1$
+        about.setAttribute(AboutScreen.FILE, "/images/Splash.gif");  //$NON-NLS-1$
         about.addTo(this);
         add(about);
       }
@@ -65,8 +64,8 @@ public class Documentation extends AbstractConfigurable {
       }
 
       HelpFile intro = new HelpFile();
-      intro.setAttribute(HelpFile.TITLE, Resources.getString("Documentation.quick_start")); 
-      intro.setAttribute(HelpFile.FILE, "/help/Intro.html"); 
+      intro.setAttribute(HelpFile.TITLE, Resources.getString("Documentation.quick_start"));  //$NON-NLS-1$
+      intro.setAttribute(HelpFile.FILE, "/help/Intro.html");  //$NON-NLS-1$
       intro.setAttribute(HelpFile.TYPE, HelpFile.RESOURCE);
       intro.addTo(this);
       add(intro);
@@ -114,7 +113,7 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Documentation.component_type"); 
+    return Resources.getString("Editor.Documentation.component_type");  //$NON-NLS-1$
   }
 
   public String getConfigureName() {
@@ -123,9 +122,9 @@ public class Documentation extends AbstractConfigurable {
 
   public HelpFile getHelpFile() {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual"); 
+    dir = new File(dir, "ReferenceManual");  //$NON-NLS-1$
     try {
-      return new HelpFile(null, new File(dir, "HelpMenu.htm")); 
+      return new HelpFile(null, new File(dir, "HelpMenu.htm"));  //$NON-NLS-1$
     }
     catch (MalformedURLException ex) {
       return null;

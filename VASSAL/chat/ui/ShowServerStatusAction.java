@@ -41,7 +41,6 @@ import VASSAL.i18n.Resources;
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
  * Date: Jul 16, 2003
  */
-//I18n: Complete
 public class ShowServerStatusAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
@@ -52,12 +51,12 @@ public class ShowServerStatusAction extends AbstractAction {
       frame = new Window(status);
     }
     if (iconURL == null) {
-      putValue(NAME, Resources.getString("Chat.server_status"));
+      putValue(NAME, Resources.getString("Chat.server_status")); //$NON-NLS-1$
     }
     else {
       putValue(SMALL_ICON, new ImageIcon(iconURL));
     }
-    putValue(SHORT_DESCRIPTION, Resources.getString("Chat.display_connections"));
+    putValue(SHORT_DESCRIPTION, Resources.getString("Chat.display_connections")); //$NON-NLS-1$
   }
   
   public void actionPerformed(ActionEvent e) {
@@ -71,7 +70,7 @@ public class ShowServerStatusAction extends AbstractAction {
     private MessageBoardControls messageMgr;
 
     public Window(ServerStatus status) {
-      super(Resources.getString("Chat.server_status"));
+      super(Resources.getString("Chat.server_status")); //$NON-NLS-1$
       view = new ServerStatusView(status);
       view.addPropertyChangeListener(ServerStatusView.SELECTION_PROPERTY,this);
       getContentPane().add(view);

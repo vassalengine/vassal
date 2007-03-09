@@ -32,7 +32,6 @@ import VASSAL.i18n.Resources;
  * different sets may share a common editor, which is responsible for
  * writing the preferences to disk
  */
-//I18n: Complete
 public class Prefs {
   private Hashtable options = new Hashtable();
   private Properties storedValues = new Properties();
@@ -51,7 +50,7 @@ public class Prefs {
   }
 
   public void addOption(Configurer o) {
-    addOption(Resources.getString("Prefs.general_tab"), o);
+    addOption(Resources.getString("Prefs.general_tab"), o); //$NON-NLS-1$
   }
 
   public void addOption(String category, Configurer o) {

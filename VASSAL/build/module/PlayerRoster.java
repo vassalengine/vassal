@@ -54,12 +54,11 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * Maintains a list of players involved in the current game
  */
-// I18n: Complete
 public class PlayerRoster implements Configurable, CommandEncoder, GameComponent {
-  public static final String BUTTON_ICON = "buttonIcon";
-  public static final String BUTTON_TEXT = "buttonText";
-  public static final String TOOL_TIP = "buttonToolTip";
-  public static final String COMMAND_PREFIX = "PLAYER\t";
+  public static final String BUTTON_ICON = "buttonIcon"; //$NON-NLS-1$
+  public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
+  public static final String TOOL_TIP = "buttonToolTip"; //$NON-NLS-1$
+  public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   protected List players = new ArrayList();
   protected List sides = new ArrayList();
   protected LaunchButton retireButton;
@@ -71,8 +70,8 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
         launch();
       }
     };
-    retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, null, BUTTON_ICON, al);
-    retireButton.setToolTipText(Resources.getString("PlayerRoster.allow_another"));
+    retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, null, BUTTON_ICON, al); //$NON-NLS-1$
+    retireButton.setToolTipText(Resources.getString("PlayerRoster.allow_another")); //$NON-NLS-1$
     retireButton.setVisible(false);
   }
 
@@ -91,7 +90,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
         Attr att = (Attr) attributes.item(i);
         retireButton.setAttribute(att.getName(), att.getValue());
       }
-      NodeList n = e.getElementsByTagName("*");
+      NodeList n = e.getElementsByTagName("*"); //$NON-NLS-1$
       sides.clear();
       for (int i = 0; i < n.getLength(); ++i) {
         Element el = (Element) n.item(i);
@@ -105,7 +104,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.PlayerRoster.component_type");
+    return Resources.getString("Editor.PlayerRoster.component_type"); //$NON-NLS-1$
   }
 
   public void add(Buildable child) {
@@ -124,7 +123,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
 	att = retireButton.getAttributeValueString(TOOL_TIP);
     if (att != null) el.setAttribute(TOOL_TIP, att);
     for (Iterator e = sides.iterator(); e.hasNext();) {
-      Element sub = doc.createElement("entry");
+      Element sub = doc.createElement("entry"); //$NON-NLS-1$
       sub.appendChild(doc.createTextNode((String) e.next()));
       el.appendChild(sub);
     }
@@ -153,7 +152,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "Definition_of_Player_Sides");
+    return HelpFile.getReferenceManualPage("GameModule.htm", "Definition_of_Player_Sides"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -169,10 +168,10 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   protected void launch() {
     String mySide = getMySide();
     if (mySide != null || sides.size() != players.size()) {
-      String[] options = sides.size() == players.size() ? new String[] {Resources.getString(Resources.YES), Resources.getString(Resources.NO)} : new String[] {Resources.getString("PlayerRoster.become_observer"), Resources.getString("PlayerRoster.join_another_side"), Resources.getString(Resources.CANCEL)};
+      String[] options = sides.size() == players.size() ? new String[] {Resources.getString(Resources.YES), Resources.getString(Resources.NO)} : new String[] {Resources.getString("PlayerRoster.become_observer"), Resources.getString("PlayerRoster.join_another_side"), Resources.getString(Resources.CANCEL)}; //$NON-NLS-1$ //$NON-NLS-2$
       final int CANCEL = options.length - 1;
-      int option = (JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(), Resources.getString("PlayerRoster.give_up_position", mySide), Resources.getString("PlayerRoster.retire"),
-          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, Resources.getString("PlayerRoster.become_observer")));
+      int option = (JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(), Resources.getString("PlayerRoster.give_up_position", mySide), Resources.getString("PlayerRoster.retire"), //$NON-NLS-1$ //$NON-NLS-2$
+          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, Resources.getString("PlayerRoster.become_observer"))); //$NON-NLS-1$
       if (option == 0) {
         String oldSide = getMySide();
         remove(GameModule.getUserId());
@@ -304,7 +303,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
     }
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, OBSERVER);
-    String newSide = (String) JOptionPane.showInputDialog(GameModule.getGameModule().getFrame(), Resources.getString("PlayerRoster.join_game_as"), Resources.getString("PlayerRoster.choose_side"),
+    String newSide = (String) JOptionPane.showInputDialog(GameModule.getGameModule().getFrame(), Resources.getString("PlayerRoster.join_game_as"), Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$ //$NON-NLS-2$
         JOptionPane.QUESTION_MESSAGE, null, (String[]) availableSides.toArray(new String[availableSides.size()]), OBSERVER);
     if (newSide != null && !OBSERVER.equals(newSide)) {
       Entry me = new Entry(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
@@ -420,6 +419,6 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
     void sideChanged(String oldSide, String newSide);
   }
 
-  private static String OBSERVER = Resources.getString("PlayerRoster.observer");
+  private static String OBSERVER = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
 
 }

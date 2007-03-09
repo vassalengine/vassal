@@ -209,7 +209,7 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm","NamedColors");
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm","NamedColors"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public void removeFrom(Buildable parent) {

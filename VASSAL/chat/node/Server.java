@@ -39,7 +39,7 @@ public class Server extends Thread {
   public Server(AsynchronousServerNode rootNode, int port) throws IOException {
     this.rootNode = rootNode;
     socket = new ServerSocket(port);
-    System.err.println("Started server on port " + port);
+    System.err.println("Started server on port " + port); //$NON-NLS-1$
     start();
   }
 
@@ -62,17 +62,17 @@ public class Server extends Thread {
   public static void main(String[] args) throws Exception {
     Properties p = new ArgsParser(args).getProperties();
 
-    int port = Integer.parseInt(p.getProperty("port", "5050"));
-    String reportURL = p.getProperty("URL", "http://www.vassalengine.org/util/");
-    if ("null".equals(reportURL)) {
+    int port = Integer.parseInt(p.getProperty("port", "5050")); //$NON-NLS-1$ //$NON-NLS-2$
+    String reportURL = p.getProperty("URL", "http://www.vassalengine.org/util/"); //$NON-NLS-1$ //$NON-NLS-2$
+    if ("null".equals(reportURL)) { //$NON-NLS-1$
       reportURL = null;
     }
-    if (!"true".equals(p.getProperty("test"))) {
+    if (!"true".equals(p.getProperty("test"))) { //$NON-NLS-1$ //$NON-NLS-2$
       new Server(new AsynchronousServerNode(reportURL), port);
       new LockWatcher(1000L*60*30,1000L*60,port).start();
     }
-    if (p.getProperty("test") != null) {
-      Socket soc = new Socket("localHost", port);
+    if (p.getProperty("test") != null) { //$NON-NLS-1$
+      Socket soc = new Socket("localHost", port); //$NON-NLS-1$
       SocketHandler handler = new BufferedSocketHandler(soc, new SocketWatcher() {
         public void handleMessage(String msg) {
           System.err.println(msg);
@@ -82,19 +82,19 @@ public class Server extends Thread {
         }
       });
       handler.start();
-      handler.writeLine(Protocol.encodeRegisterCommand("rk", "test/Main Room", ""));
+      handler.writeLine(Protocol.encodeRegisterCommand("rk", "test/Main Room", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
       String line;
       while ((line = reader.readLine()) != null) {
-        if (line.startsWith("JOIN")) {
-          String room = line.substring("JOIN".length()).trim();
-          handler.writeLine(Protocol.encodeJoinCommand("test/" + room));
+        if (line.startsWith("JOIN")) { //$NON-NLS-1$
+          String room = line.substring("JOIN".length()).trim(); //$NON-NLS-1$
+          handler.writeLine(Protocol.encodeJoinCommand("test/" + room)); //$NON-NLS-1$
         }
-        else if (line.startsWith("BYE")) {
+        else if (line.startsWith("BYE")) { //$NON-NLS-1$
           handler.close();
         }
-        else if (line.startsWith("HELLO")) {
-          soc = new Socket("localHost", port);
+        else if (line.startsWith("HELLO")) { //$NON-NLS-1$
+          soc = new Socket("localHost", port); //$NON-NLS-1$
           handler = new BufferedSocketHandler(soc, new SocketWatcher() {
             public void handleMessage(String msg) {
               System.err.println(msg);
@@ -104,9 +104,9 @@ public class Server extends Thread {
             }
           });
           handler.start();
-          handler.writeLine(Protocol.encodeRegisterCommand("rk", "test/Main Room", ""));
+          handler.writeLine(Protocol.encodeRegisterCommand("rk", "test/Main Room", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
-        else if (line.startsWith("*")) {
+        else if (line.startsWith("*")) { //$NON-NLS-1$
           int length = Integer.parseInt(line.substring(1));
           StringBuffer buffer = new StringBuffer();
           for (int i=0;i<length;++i) {
@@ -116,7 +116,7 @@ public class Server extends Thread {
             }
             buffer.append(c);
           }
-          String msg = Protocol.encodeForwardCommand("test/*",buffer.toString());
+          String msg = Protocol.encodeForwardCommand("test/*",buffer.toString()); //$NON-NLS-1$
           handler.writeLine(msg);
         }
         else {

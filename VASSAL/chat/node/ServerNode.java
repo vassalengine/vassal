@@ -49,14 +49,14 @@ public class ServerNode extends Node {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
     while (st.hasMoreTokens()) {
       String childId = st.nextToken();
-      if ("*".equals(childId)) {
+      if ("*".equals(childId)) { //$NON-NLS-1$
         ArrayList l = new ArrayList();
         for (int i = 0; i < target.length; ++i) {
           l.addAll(Arrays.asList(target[i].getChildren()));
         }
         target = (Node[]) l.toArray(new Node[l.size()]);
       }
-      else if (childId.startsWith("~")) {
+      else if (childId.startsWith("~")) { //$NON-NLS-1$
         childId = childId.substring(1);
         ArrayList l = new ArrayList();
         for (int i = 0; i < target.length; ++i) {
@@ -111,7 +111,7 @@ public class ServerNode extends Node {
   }
 
   protected synchronized void sendContents(Node module) {
-    logger.fine("Sending contents of " + module.getId());
+    logger.fine("Sending contents of " + module.getId()); //$NON-NLS-1$
     Node[] players = module.getLeafDescendants();
     Node[] rooms = module.getChildren();
     String listCommand = Protocol.encodeListCommand(players);
@@ -177,7 +177,7 @@ public class ServerNode extends Node {
       }
       for (Iterator it = s.iterator(); it.hasNext();) {
         Node module = (Node) it.next();
-        logger.fine("Sending contents of " + module.getId());
+        logger.fine("Sending contents of " + module.getId()); //$NON-NLS-1$
         Node[] players = module.getLeafDescendants();
         Node[] rooms = module.getChildren();
         String listCommand = Protocol.encodeListCommand(players);

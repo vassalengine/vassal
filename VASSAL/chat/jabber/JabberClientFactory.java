@@ -26,13 +26,13 @@ import VASSAL.chat.ChatServerFactory;
  * @author rkinney
  */
 public class JabberClientFactory extends ChatServerFactory {
-  public static final String JABBER_SERVER_TYPE = "jabber";
-  public static final String JABBER_PWD = "jabberPassword";
-  public static final String JABBER_LOGIN = "jabberPogin";
-  public static final String JABBER_PORT = "jabberPort";
-  public static final String JABBER_HOST = "jabberHost";
-  public static final String DEFAULT_JABBER_PORT = "5222";
-  public static final String DEFAULT_JABBER_HOST = "localhost";
+  public static final String JABBER_SERVER_TYPE = "jabber"; //$NON-NLS-1$
+  public static final String JABBER_PWD = "jabberPassword"; //$NON-NLS-1$
+  public static final String JABBER_LOGIN = "jabberPogin"; //$NON-NLS-1$
+  public static final String JABBER_PORT = "jabberPort"; //$NON-NLS-1$
+  public static final String JABBER_HOST = "jabberHost"; //$NON-NLS-1$
+  public static final String DEFAULT_JABBER_PORT = "5222"; //$NON-NLS-1$
+  public static final String DEFAULT_JABBER_HOST = "localhost"; //$NON-NLS-1$
 
   public ChatServerConnection buildServer(Properties serverConfig) {
     String host = serverConfig.getProperty(JABBER_HOST, DEFAULT_JABBER_HOST);
@@ -43,7 +43,7 @@ public class JabberClientFactory extends ChatServerFactory {
     catch (NumberFormatException e) {
       e.printStackTrace();
     }
-    String login = serverConfig.getProperty(JABBER_LOGIN, "anonymous");
+    String login = serverConfig.getProperty(JABBER_LOGIN, "anonymous"); //$NON-NLS-1$
     String password = serverConfig.getProperty(JABBER_PWD);
     return new JabberClient(GameModule.getGameModule(), host, port, login, password);
   }

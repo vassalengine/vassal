@@ -32,28 +32,28 @@ import VASSAL.i18n.Resources;
  */
 public class ChooseHeapSizeScreen implements Screen, Constants {
   private Box controls = Box.createVerticalBox();
-  private JRadioButton b128M = new JRadioButton(Resources.getString("Install.128_mb"));
-  private JRadioButton b256M = new JRadioButton(Resources.getString("Install.256_mb"));
-  private JRadioButton b512M = new JRadioButton(Resources.getString("Install.512_mb"));
-  private JRadioButton b1000M = new JRadioButton(Resources.getString("Install.1_gb"));
-  private JRadioButton b1500M = new JRadioButton(Resources.getString("Install.1.5_gb"));
+  private JRadioButton b128M = new JRadioButton(Resources.getString("Install.128_mb")); //$NON-NLS-1$
+  private JRadioButton b256M = new JRadioButton(Resources.getString("Install.256_mb")); //$NON-NLS-1$
+  private JRadioButton b512M = new JRadioButton(Resources.getString("Install.512_mb")); //$NON-NLS-1$
+  private JRadioButton b1000M = new JRadioButton(Resources.getString("Install.1_gb")); //$NON-NLS-1$
+  private JRadioButton b1500M = new JRadioButton(Resources.getString("Install.1.5_gb")); //$NON-NLS-1$
   private ButtonGroup group = new ButtonGroup();
   
   public ChooseHeapSizeScreen() {
-    controls.add(new JLabel(Resources.getString("Install.select_memory_size")));
-    b128M.putClientProperty(HEAP_SIZE, "128m");
+    controls.add(new JLabel(Resources.getString("Install.select_memory_size"))); //$NON-NLS-1$
+    b128M.putClientProperty(HEAP_SIZE, "128m"); //$NON-NLS-1$
     group.add(b128M);
     controls.add(b128M);
-    b256M.putClientProperty(HEAP_SIZE, "256m");
+    b256M.putClientProperty(HEAP_SIZE, "256m"); //$NON-NLS-1$
     group.add(b256M);
     controls.add(b256M);
-    b512M.putClientProperty(HEAP_SIZE, "512m");
+    b512M.putClientProperty(HEAP_SIZE, "512m"); //$NON-NLS-1$
     group.add(b512M);
     controls.add(b512M);
-    b1000M.putClientProperty(HEAP_SIZE, "1000M");
+    b1000M.putClientProperty(HEAP_SIZE, "1000M"); //$NON-NLS-1$
     group.add(b1000M);
     controls.add(b1000M);
-    b1500M.putClientProperty(HEAP_SIZE, "1500M");
+    b1500M.putClientProperty(HEAP_SIZE, "1500M"); //$NON-NLS-1$
     group.add(b1500M);
     b256M.setSelected(true);
     controls.add(b1500M);
@@ -71,6 +71,6 @@ public class ChooseHeapSizeScreen implements Screen, Constants {
         break;
       }
     }
-    wiz.next("ChooseHeapSizeScreen.next", ChooseDirScreen.class);
+    wiz.next("ChooseHeapSizeScreen.next", ChooseDirScreen.class); //$NON-NLS-1$
   }
 }

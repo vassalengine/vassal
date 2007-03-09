@@ -29,7 +29,7 @@ import VASSAL.chat.SimpleStatus;
  * A {@link SimplePlayer} subclass used in clients of the hierarchical server
  */
 public class NodePlayer extends SimplePlayer {
-  public static final String ID = "id";
+  public static final String ID = "id"; //$NON-NLS-1$
 
   public NodePlayer(String id) {
     this.id = id;
@@ -54,15 +54,15 @@ public class NodePlayer extends SimplePlayer {
     return (id != null ? id.hashCode() : 0);
   }
 
-  public static final String NAME = "name";
-  public static final String LOOKING = "looking";
-  public static final String AWAY = "away";
-  public static final String PROFILE = "profile";
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String LOOKING = "looking"; //$NON-NLS-1$
+  public static final String AWAY = "away"; //$NON-NLS-1$
+  public static final String PROFILE = "profile"; //$NON-NLS-1$
 
   public void setInfo(Properties p) {
-    name = p.getProperty(NAME,"???");
+    name = p.getProperty(NAME,"???"); //$NON-NLS-1$
     id = p.getProperty(ID,id);
-    setStatus(new SimpleStatus("true".equals(p.getProperty(LOOKING)),"true".equals(p.getProperty(AWAY)),p.getProperty(PROFILE,"")));
+    setStatus(new SimpleStatus("true".equals(p.getProperty(LOOKING)),"true".equals(p.getProperty(AWAY)),p.getProperty(PROFILE,""))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
 
@@ -73,8 +73,8 @@ public class NodePlayer extends SimplePlayer {
       p1.put(NAME,name);
     }
     SimpleStatus status = (SimpleStatus)getStatus();
-    p1.put(LOOKING,""+status.isLooking());
-    p1.put(AWAY,""+status.isAway());
+    p1.put(LOOKING,""+status.isLooking()); //$NON-NLS-1$
+    p1.put(AWAY,""+status.isAway()); //$NON-NLS-1$
     String profile = status.getProfile();
     if (profile != null) {
       p1.put(PROFILE,profile);

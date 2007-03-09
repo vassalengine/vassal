@@ -28,7 +28,7 @@ import VASSAL.configure.Configurer;
  * the Configuration window.
  */
 public interface Configurable extends Buildable {
-    public static final String NAME_PROPERTY = "name";
+    public static final String NAME_PROPERTY = "name"; //$NON-NLS-1$
 
     /**
      * Remove this component from its parent

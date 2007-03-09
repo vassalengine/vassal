@@ -249,21 +249,21 @@ public class LayoutConfigurer extends Configurer {
       int sel = table.getSelectedRow();
 
       if (action.equals(ADD_SYMBOL)) {
-        addItem(new SymbolItem(layout, "Symbol"+pos));
+        addItem(new SymbolItem(layout, "Symbol"+pos)); //$NON-NLS-1$
       }
       else if (action.equals(ADD_TEXT)) {
-        TextItem item = new TextItem(layout, "Text"+pos);
+        TextItem item = new TextItem(layout, "Text"+pos); //$NON-NLS-1$
         addItem(item);
       }
       else if (action.equals(ADD_TEXTBOX)) {
-        TextBoxItem item = new TextBoxItem(layout, "TextBox"+pos);
+        TextBoxItem item = new TextBoxItem(layout, "TextBox"+pos); //$NON-NLS-1$
         addItem(item);
       }
       else if (action.equals(ADD_IMAGE)) {
-        addItem(new ImageItem(layout, "Image"+pos));
+        addItem(new ImageItem(layout, "Image"+pos)); //$NON-NLS-1$
       }
       else if (action.equals(ADD_SHAPE)) {
-        addItem(new ShapeItem(layout, "Shape"+pos));
+        addItem(new ShapeItem(layout, "Shape"+pos)); //$NON-NLS-1$
       }
       else if (action.equals(REMOVE)) {
         if (sel >= 0) {

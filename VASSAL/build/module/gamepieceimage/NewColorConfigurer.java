@@ -47,7 +47,7 @@ public class NewColorConfigurer extends Configurer {
   }
 
   public String getValueString() {
-    return value == null ? "" : colorToString(colorValue());
+    return value == null ? "" : colorToString(colorValue()); //$NON-NLS-1$
   }
 
   public void setValue(Object o) {
@@ -74,7 +74,7 @@ public class NewColorConfigurer extends Configurer {
       
       Box box = Box.createHorizontalBox();
       box.add(new JLabel("Use Named Colors?"));
-      bc = new BooleanConfigurer(null, "", Boolean.FALSE);
+      bc = new BooleanConfigurer(null, "", Boolean.FALSE); //$NON-NLS-1$
       box.add(bc.getControls());
       bc.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
@@ -102,12 +102,12 @@ public class NewColorConfigurer extends Configurer {
                 (java.awt.event.ActionEvent e) {
               setValue(JColorChooser.showDialog
                        (null, getName(), colorValue()));
-              csc.setValue(new ColorSwatch("", (Color) getValue()));
+              csc.setValue(new ColorSwatch("", (Color) getValue())); //$NON-NLS-1$
             }
           });
       
       swatchBox = Box.createHorizontalBox();
-      csc = new ColorSwatchConfigurer(null, "Select Color:", "WHITE");
+      csc = new ColorSwatchConfigurer(null, "Select Color:", "WHITE"); //$NON-NLS-2$
       csc.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           setValue(csc.getValueColor());
@@ -142,17 +142,17 @@ public class NewColorConfigurer extends Configurer {
 
   public static String colorToString(Color c) {
     return c == null ? null :
-        c.getRed() + ","
-        + c.getGreen() + ","
+        c.getRed() + "," //$NON-NLS-1$
+        + c.getGreen() + "," //$NON-NLS-1$
         + c.getBlue();
   }
 
   public static Color stringToColor(String s) {
     if (s == null
-        || "null".equals(s)) {
+        || "null".equals(s)) { //$NON-NLS-1$
       return null;
     }
-    java.util.StringTokenizer st = new java.util.StringTokenizer(s, ",");
+    java.util.StringTokenizer st = new java.util.StringTokenizer(s, ","); //$NON-NLS-1$
     try {
       return new Color(Integer.parseInt(st.nextToken()),
                        Integer.parseInt(st.nextToken()),

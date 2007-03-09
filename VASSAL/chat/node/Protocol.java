@@ -33,16 +33,16 @@ import java.io.IOException;
  * client to another are simply forwarded as strings without being decoded.
  */
 public class Protocol {
-  public static final String REGISTER = "REG\t";
-  public static final String REG_REQUEST = "REG_REQUEST\t";
-  public static final String JOIN = "JOIN\t";
-  public static final String FORWARD = "FWD\t";
-  public static final String STATS = "STATS\t";
-  public static final String LIST = "LIST\t";
-  public static final String CONTENTS = "SERVER_CONTENTS\t";
-  public static final String NODE_INFO = "NODE_INFO\t";
-  public static final String ROOM_INFO = "ROOM_INFO\t";
-  public static final String LOGIN = "LOGIN\t";
+  public static final String REGISTER = "REG\t"; //$NON-NLS-1$
+  public static final String REG_REQUEST = "REG_REQUEST\t"; //$NON-NLS-1$
+  public static final String JOIN = "JOIN\t"; //$NON-NLS-1$
+  public static final String FORWARD = "FWD\t"; //$NON-NLS-1$
+  public static final String STATS = "STATS\t"; //$NON-NLS-1$
+  public static final String LIST = "LIST\t"; //$NON-NLS-1$
+  public static final String CONTENTS = "SERVER_CONTENTS\t"; //$NON-NLS-1$
+  public static final String NODE_INFO = "NODE_INFO\t"; //$NON-NLS-1$
+  public static final String ROOM_INFO = "ROOM_INFO\t"; //$NON-NLS-1$
+  public static final String LOGIN = "LOGIN\t"; //$NON-NLS-1$
 
   /**
    * Contains registration information sent when a client initially connects to
@@ -153,7 +153,7 @@ public class Protocol {
   public static String encodeNodeInfoCommand(Node n) {
     String info = n.getInfo();
     if (info == null) {
-      info = "";
+      info = ""; //$NON-NLS-1$
     }
     return NODE_INFO + new SequenceEncoder(n.getPath(), '=').append(info).getValue();
   }

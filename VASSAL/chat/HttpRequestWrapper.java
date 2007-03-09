@@ -34,7 +34,7 @@ public class HttpRequestWrapper {
   }
 
   public Enumeration doGet(Properties p) throws IOException {
-    return doGet("",p);
+    return doGet("",p); //$NON-NLS-1$
   }
 
   /**
@@ -47,14 +47,14 @@ public class HttpRequestWrapper {
   public Enumeration doGet(String url, Properties props) throws IOException {
     url = baseURL + url;
     if (props != null) {
-       url += "?";
+       url += "?"; //$NON-NLS-1$
       for (Enumeration e = props.keys();
            e.hasMoreElements();) {
         String key = (String) e.nextElement();
         String value = props.getProperty(key);
-        url += key + "=" + URLEncoder.encode(value,"UTF-8");
+        url += key + "=" + URLEncoder.encode(value,"UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
         if (e.hasMoreElements()) {
-          url += "&";
+          url += "&"; //$NON-NLS-1$
         }
       }
     }
@@ -70,7 +70,7 @@ public class HttpRequestWrapper {
     }
     in.close();
     ArrayList l = new ArrayList();
-    StringTokenizer st = new StringTokenizer(new String(out.toByteArray(),"UTF-8"),"\n\r");
+    StringTokenizer st = new StringTokenizer(new String(out.toByteArray(),"UTF-8"),"\n\r"); //$NON-NLS-1$ //$NON-NLS-2$
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -78,20 +78,20 @@ public class HttpRequestWrapper {
   }
 
   public Enumeration doPost(Properties p) throws IOException {
-    return doPost("",p);
+    return doPost("",p); //$NON-NLS-1$
   }
 
   public Enumeration doPost(String url, Properties props) throws IOException {
     url = baseURL + url;
-    String content = "";
+    String content = ""; //$NON-NLS-1$
     if (props != null) {
       for (Enumeration e = props.keys();
            e.hasMoreElements();) {
         String key = (String) e.nextElement();
         String value = props.getProperty(key);
-        content += key + "=" + URLEncoder.encode(value,"UTF-8");
+        content += key + "=" + URLEncoder.encode(value,"UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
         if (e.hasMoreElements()) {
-          content += "&";
+          content += "&"; //$NON-NLS-1$
         }
       }
     }
@@ -106,7 +106,7 @@ public class HttpRequestWrapper {
     out.flush();
     out.close();
     BufferedReader input = new BufferedReader
-      (new InputStreamReader(conn.getInputStream(),"UTF-8"));
+      (new InputStreamReader(conn.getInputStream(),"UTF-8")); //$NON-NLS-1$
     Vector v = new Vector();
     for (String line = input.readLine();
          line != null; line = input.readLine()) {

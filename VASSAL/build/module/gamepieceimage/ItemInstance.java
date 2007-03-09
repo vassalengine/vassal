@@ -29,11 +29,11 @@ import VASSAL.build.module.documentation.HelpFile;
  */
 public abstract class ItemInstance extends AbstractConfigurable {
 
-  public static final String FG_COLOR = "fgColor";
-  public static final String BG_COLOR = "bgColor";
+  public static final String FG_COLOR = "fgColor"; //$NON-NLS-1$
+  public static final String BG_COLOR = "bgColor"; //$NON-NLS-1$
 
-  protected String type = "";
-  protected String location = "";
+  protected String type = ""; //$NON-NLS-1$
+  protected String location = ""; //$NON-NLS-1$
   protected ColorSwatch bgColor = ColorSwatch.getClear();
   protected ColorSwatch fgColor = ColorSwatch.getBlack();
   protected GamePieceImage defn;
@@ -47,7 +47,7 @@ public abstract class ItemInstance extends AbstractConfigurable {
   }
 
   public ItemInstance() {
-    this("", "", "");
+    this("", "", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
   public ItemInstance(GamePieceImage defn) {
@@ -183,7 +183,7 @@ public abstract class ItemInstance extends AbstractConfigurable {
   }
 
   public String getSuffix() {
-    return "";
+    return ""; //$NON-NLS-1$
   }
 
   public String formatName(String name) {

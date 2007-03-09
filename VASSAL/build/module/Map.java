@@ -156,13 +156,12 @@ import VASSAL.tools.UniqueIdManager;
  * A Map may contain many different {@link Buildable} subcomponents. Components which are added directly to a Map are
  * contained in the <code>VASSAL.build.module.map</code> package
  */
-// I18n: Partial
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
 		UniqueIdManager.Identifyable, ToolBarComponent, GlobalPropertiesContainer, PropertySource, PlayerRoster.SideChangeListener, Runnable {
-  protected String mapID = "";
-  protected String mapName = "";
-  protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight";
-  protected static UniqueIdManager idMgr = new UniqueIdManager("Map");
+  protected String mapID = ""; //$NON-NLS-1$
+  protected String mapName = ""; //$NON-NLS-1$
+  protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
+  protected static UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
 	protected JPanel theMap;
   protected Vector drawComponents = new Vector();
 	protected JScrollPane scroll;
@@ -175,9 +174,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	protected LaunchButton launchButton;
 	protected boolean useLaunchButton = false;
 	protected String markMovedOption = GlobalOptions.ALWAYS;
-	protected String markUnmovedIcon = "/images/unmoved.gif";
-  protected String markUnmovedText = "";
-  protected String markUnmovedTooltip = "Mark all pieces on this map as not moved";
+	protected String markUnmovedIcon = "/images/unmoved.gif"; //$NON-NLS-1$
+  protected String markUnmovedText = ""; //$NON-NLS-1$
+  protected String markUnmovedTooltip = Resources.getString("Map.mark_unmoved"); //$NON-NLS-1$
 	protected MouseListener multicaster = null;
 	protected Vector mouseListenerStack = new Vector();
 	protected Vector boards = new Vector();
@@ -198,11 +197,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected String moveWithinFormat;
   protected String moveToFormat;
   protected String createFormat;
-  protected String changeFormat = "$" + MESSAGE + "$";
+  protected String changeFormat = "$" + MESSAGE + "$"; //$NON-NLS-1$ //$NON-NLS-2$
 	protected KeyStroke moveKey;
 	protected JPanel root;
 	protected PropertyChangeListener globalPropertyListener;
-  protected String tooltip = "";
+  protected String tooltip = ""; //$NON-NLS-1$
 
 	public Map() {
 		getView();
@@ -211,28 +210,28 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     toolBar.setAlignmentX(0.0F);
 		toolBar.setFloatable(false);
 	}
-	public static final String NAME = "mapName";
-	public static final String MARK_MOVED = "markMoved";
-	public static final String MARK_UNMOVED_ICON = "markUnmovedIcon";
-  public static final String MARK_UNMOVED_TEXT = "markUnmovedText";
-  public static final String MARK_UNMOVED_TOOLTIP = "markUnmovedTooltip";
-	public static final String EDGE_WIDTH = "edgeWidth";
-	public static final String EDGE_HEIGHT = "edgeHeight";
-	public static final String HIGHLIGHT_COLOR = "color";
-	public static final String HIGHLIGHT_THICKNESS = "thickness";
-	public static final String ALLOW_MULTIPLE = "allowMultiple";
-	public static final String USE_LAUNCH_BUTTON = "launch";
-	public static final String BUTTON_NAME = "buttonName";
-  public static final String TOOLTIP = "tooltip";
-	public static final String ICON = "icon";
-	public static final String HOTKEY = "hotkey";
-	public static final String SUPPRESS_AUTO = "suppressAuto";
-	public static final String MOVE_WITHIN_FORMAT = "moveWithinFormat";
-	public static final String MOVE_TO_FORMAT = "moveToFormat";
-	public static final String CREATE_FORMAT = "createFormat";
-	public static final String CHANGE_FORMAT = "changeFormat";
-	public static final String MOVE_KEY = "moveKey";
-  public static final String MOVING_STACKS_PICKUP_UNITS = "movingStacksPickupUnits";
+	public static final String NAME = "mapName"; //$NON-NLS-1$
+	public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
+	public static final String MARK_UNMOVED_ICON = "markUnmovedIcon"; //$NON-NLS-1$
+  public static final String MARK_UNMOVED_TEXT = "markUnmovedText"; //$NON-NLS-1$
+  public static final String MARK_UNMOVED_TOOLTIP = "markUnmovedTooltip"; //$NON-NLS-1$
+	public static final String EDGE_WIDTH = "edgeWidth"; //$NON-NLS-1$
+	public static final String EDGE_HEIGHT = "edgeHeight"; //$NON-NLS-1$
+	public static final String HIGHLIGHT_COLOR = "color"; //$NON-NLS-1$
+	public static final String HIGHLIGHT_THICKNESS = "thickness"; //$NON-NLS-1$
+	public static final String ALLOW_MULTIPLE = "allowMultiple"; //$NON-NLS-1$
+	public static final String USE_LAUNCH_BUTTON = "launch"; //$NON-NLS-1$
+	public static final String BUTTON_NAME = "buttonName"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+	public static final String ICON = "icon"; //$NON-NLS-1$
+	public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+	public static final String SUPPRESS_AUTO = "suppressAuto"; //$NON-NLS-1$
+	public static final String MOVE_WITHIN_FORMAT = "moveWithinFormat"; //$NON-NLS-1$
+	public static final String MOVE_TO_FORMAT = "moveToFormat"; //$NON-NLS-1$
+	public static final String CREATE_FORMAT = "createFormat"; //$NON-NLS-1$
+	public static final String CHANGE_FORMAT = "changeFormat"; //$NON-NLS-1$
+	public static final String MOVE_KEY = "moveKey"; //$NON-NLS-1$
+  public static final String MOVING_STACKS_PICKUP_UNITS = "movingStacksPickupUnits"; //$NON-NLS-1$
 
 
 	public void setAttribute(String key, Object value) {
@@ -251,9 +250,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     else if (MARK_UNMOVED_TOOLTIP.equals(key)) {
       markUnmovedTooltip = (String) value;
     }
-		else if ("edge".equals(key)) { // Backward-compatible
+		else if ("edge".equals(key)) { // Backward-compatible //$NON-NLS-1$
 			String s = (String) value;
-			int i = s.indexOf(",");
+			int i = s.indexOf(","); //$NON-NLS-1$
 			if (i > 0) {
 				edgeBuffer = new Dimension(Integer.parseInt(s.substring(0, i)), Integer.parseInt(s.substring(i + 1)));
 			}
@@ -315,7 +314,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 				value = new Boolean((String) value);
 			}
 			if (Boolean.TRUE.equals(value)) {
-				moveWithinFormat = "";
+				moveWithinFormat = ""; //$NON-NLS-1$
 			}
 		}
 		else if (MOVE_WITHIN_FORMAT.equals(key)) {
@@ -362,13 +361,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return markUnmovedTooltip;
     }
 		else if (EDGE_WIDTH.equals(key)) {
-			return "" + edgeBuffer.width;
+			return "" + edgeBuffer.width; //$NON-NLS-1$
 		}
 		else if (EDGE_HEIGHT.equals(key)) {
-			return "" + edgeBuffer.height;
+			return "" + edgeBuffer.height; //$NON-NLS-1$
 		}
 		else if (ALLOW_MULTIPLE.equals(key)) {
-			return "" + picker.isAllowMultiple();
+			return "" + picker.isAllowMultiple(); //$NON-NLS-1$
 		}
 		else if (HIGHLIGHT_COLOR.equals(key)) {
 			if (highlighter instanceof ColoredBorder) {
@@ -380,7 +379,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		else if (HIGHLIGHT_THICKNESS.equals(key)) {
 			if (highlighter instanceof ColoredBorder) {
-				return "" + ((ColoredBorder) highlighter).getThickness();
+				return "" + ((ColoredBorder) highlighter).getThickness(); //$NON-NLS-1$
 			}
 			else {
 				return null;
@@ -608,10 +607,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_IN_FOCUSED_WINDOW));
 		}
 		PlayerRoster.addSideChangeListener(this);
-    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
-        new IntConfigurer(PREFERRED_EDGE_DELAY, Resources.getString("Map.scroll_delay_preference"), new Integer(PREFERRED_EDGE_SCROLL_DELAY)));
-    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
-        new BooleanConfigurer(MOVING_STACKS_PICKUP_UNITS, Resources.getString("Map.moving_stacks_preference"), Boolean.FALSE));
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
+        new IntConfigurer(PREFERRED_EDGE_DELAY, Resources.getString("Map.scroll_delay_preference"), new Integer(PREFERRED_EDGE_SCROLL_DELAY))); //$NON-NLS-1$
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
+        new BooleanConfigurer(MOVING_STACKS_PICKUP_UNITS, Resources.getString("Map.moving_stacks_preference"), Boolean.FALSE)); //$NON-NLS-1$
 	}
 
 	public void removeFrom(Buildable b) {
@@ -871,7 +870,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			}
 		}
 		if (loc == null) {
-			loc = "offboard";
+			loc = Resources.getString("Map.offboard"); //$NON-NLS-1$
 		}
 		return loc;
 	}
@@ -882,9 +881,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    *         players.
    */
 	public String getFullLocationName(Point p, boolean includeMap) {
-		String loc = "";
+		String loc = ""; //$NON-NLS-1$
 		if (includeMap && getMapName() != null && getMapName().length() > 0) {
-			loc = "[" + getMapName() + "]";
+			loc = "[" + getMapName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (isVisibleToAll() && p != null) {
 			String pos = getDeckNameContaining(p);
@@ -905,7 +904,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
 	public boolean isVisibleToAll() {
 		if (this instanceof PrivateMap) {
-			if (!getAttributeValueString(PrivateMap.VISIBLE).equals("true")) {
+			if (!getAttributeValueString(PrivateMap.VISIBLE).equals("true")) { //$NON-NLS-1$
 				return false;
 			}
 		}
@@ -1163,7 +1162,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * Delay before starting scroll at edge
    */
   public static final int PREFERRED_EDGE_SCROLL_DELAY = 200;
-  public static final String PREFERRED_EDGE_DELAY = "PreferredEdgeDelay";
+  public static final String PREFERRED_EDGE_DELAY = "PreferredEdgeDelay"; //$NON-NLS-1$
   
 	protected Thread scrollDelayThread;
 	protected long scrollExpirationTime;
@@ -1378,7 +1377,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
 	public Rectangle selectionBoundsOf(GamePiece p) {
 		if (p.getMap() != this) {
-			throw new RuntimeException("Piece is not on this map");
+			throw new RuntimeException(Resources.getString("Map.piece_not_on_map")); //$NON-NLS-1$
 		}
 		Rectangle r = p.getShape().getBounds();
 		r.translate(p.getPosition().x, p.getPosition().y);
@@ -1394,7 +1393,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
 	public Point positionOf(GamePiece p) {
 		if (p.getMap() != this) {
-			throw new RuntimeException(Resources.getString("Map.piece_not_on_map"));
+			throw new RuntimeException(Resources.getString("Map.piece_not_on_map")); //$NON-NLS-1$
 		}
 		Point point = p.getPosition();
 		if (p.getParent() != null) {
@@ -1618,8 +1617,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 							}
 						}
 					});
-					((RootPaneContainer) topWindow).getContentPane().add("North", getToolBar());
-					((RootPaneContainer) topWindow).getContentPane().add("Center", scroll);
+					((RootPaneContainer) topWindow).getContentPane().add("North", getToolBar()); //$NON-NLS-1$
+					((RootPaneContainer) topWindow).getContentPane().add("Center", scroll); //$NON-NLS-1$
 					topWindow.setSize(600, 400);
 					PositionOption option = new PositionOption(PositionOption.key + getIdentifier(), topWindow);
 					GameModule.getGameModule().getPrefs().addOption(option);
@@ -1671,7 +1670,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	protected String getDefaultWindowTitle() {
-		return getMapName().length() > 0 ? getMapName() : GameModule.getGameModule().getGameName() + " map";
+		return getMapName().length() > 0 ? getMapName() : Resources.getString("Map.window_title", GameModule.getGameModule().getGameName()); //$NON-NLS-1$
 	}
 
 	/**
@@ -1855,12 +1854,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		mapName = s;
 		setConfigureName(mapName);
     if (tooltip == null || tooltip.length() == 0) {
-		  launchButton.setToolTipText(s != null ? "Show/hide " + s + " window" : "Show/hide Map window");
+		  launchButton.setToolTipText(s != null ? Resources.getString("Map.show_hide", s) : Resources.getString("Map.show_hide", Resources.getString("Map.map"))); //$NON-NLS-1$ //$NON-NLS-2$
     }
 	}
 
 	public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm");
+    return HelpFile.getReferenceManualPage("Map.htm"); //$NON-NLS-1$
 	}
 
 	public String[] getAttributeDescriptions() {
@@ -1881,20 +1880,20 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 				Integer.class, Boolean.class, String.class, String.class, IconConfig.class, KeyStroke.class, MoveWithinFormatConfig.class, MoveToFormatConfig.class,
 				CreateFormatConfig.class, ChangeFormatConfig.class, KeyStroke.class };
 	}
-	public static final String LOCATION = "location";
-	public static final String OLD_LOCATION = "previousLocation";
-	public static final String OLD_MAP = "previousMap";
-	public static final String MAP_NAME = "mapName";
-	public static final String PIECE_NAME = "pieceName";
-	public static final String MESSAGE = "message";
+	public static final String LOCATION = "location"; //$NON-NLS-1$
+	public static final String OLD_LOCATION = "previousLocation"; //$NON-NLS-1$
+	public static final String OLD_MAP = "previousMap"; //$NON-NLS-1$
+	public static final String MAP_NAME = "mapName"; //$NON-NLS-1$
+	public static final String PIECE_NAME = "pieceName"; //$NON-NLS-1$
+	public static final String MESSAGE = "message"; //$NON-NLS-1$
 	public static class IconConfig implements ConfigurerFactory {
 		public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-			return new IconConfigurer(key, name, "/images/map.gif");
+			return new IconConfigurer(key, name, "/images/map.gif"); //$NON-NLS-1$
 		}
 	}
 	public static class UnmovedIconConfig implements ConfigurerFactory {
 		public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-			return new IconConfigurer(key, name, "/images/unmoved.gif");
+			return new IconConfigurer(key, name, "/images/unmoved.gif"); //$NON-NLS-1$
 		}
 	}
 	public static class MoveWithinFormatConfig implements ConfigurerFactory {
@@ -1924,11 +1923,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			return createFormat;
 		}
 		else {
-			String val = "$" + PIECE_NAME + "$ created in $" + LOCATION + "$";
+			String val = "$" + PIECE_NAME + "$ created in $" + LOCATION + "$"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if (boards.size() > 0) {
 				Board b = (Board) boards.firstElement();
 				if (b.getGrid() == null || b.getGrid().getGridNumbering() == null) {
-					val = "";
+					val = ""; //$NON-NLS-1$
 				}
 			}
 			return val;
@@ -1944,11 +1943,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			return moveToFormat;
 		}
 		else {
-			String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *";
+			String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 			if (boards.size() > 0) {
 				Board b = (Board) boards.firstElement();
 				if (b.getGrid() == null || b.getGrid().getGridNumbering() != null) {
-					val = "";
+					val = ""; //$NON-NLS-1$
 				}
 			}
 			return val;
@@ -1960,11 +1959,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			return moveWithinFormat;
 		}
 		else {
-			String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *";
+			String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 			if (boards.size() > 0) {
 				Board b = (Board) boards.firstElement();
 				if (b.getGrid() == null) {
-					val = "";
+					val = ""; //$NON-NLS-1$
 				}
 			}
 			return val;

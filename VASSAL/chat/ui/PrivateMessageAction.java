@@ -30,7 +30,6 @@ import java.awt.event.ActionEvent;
 /**
  * When invoked, will open a private message window to another player
  */
-//I18n: Complete
 public class PrivateMessageAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
@@ -38,7 +37,7 @@ public class PrivateMessageAction extends AbstractAction {
     private PrivateChatManager mgr;
 
     public PrivateMessageAction(Player p, ChatServerConnection client, PrivateChatManager mgr) {
-	super(Resources.getString("Chat.private_msg"));
+	super(Resources.getString("Chat.private_msg")); //$NON-NLS-1$
 	this.p = p;
 	this.mgr = mgr;
 	setEnabled(p != null 

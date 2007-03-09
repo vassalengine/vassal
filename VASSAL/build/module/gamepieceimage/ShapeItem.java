@@ -33,12 +33,12 @@ import VASSAL.tools.SequenceEncoder;
 
 public class ShapeItem extends Item {
 
-  public static final String TYPE = "Box";
+  public static final String TYPE = "Box"; //$NON-NLS-1$
   
-  protected static final String WIDTH = "width";
-  protected static final String HEIGHT = "height";
-  protected static final String SHAPE = "shape";
-  protected static final String BEVEL = "bevel";
+  protected static final String WIDTH = "width"; //$NON-NLS-1$
+  protected static final String HEIGHT = "height"; //$NON-NLS-1$
+  protected static final String SHAPE = "shape"; //$NON-NLS-1$
+  protected static final String BEVEL = "bevel"; //$NON-NLS-1$
 
   protected static final String RECT = "Rectangle";
   protected static final String RRECT = "Rounded Rectangle";
@@ -133,16 +133,16 @@ public class ShapeItem extends Item {
   public String getAttributeValueString(String key) {
     
     if (WIDTH.equals(key)) {
-      return width + "";
+      return width + ""; //$NON-NLS-1$
     }
     else if (HEIGHT.equals(key)) {
-      return height + "";
+      return height + ""; //$NON-NLS-1$
     } 
     else if (SHAPE.equals(key)) {
       return shape;
     }
     else if (BEVEL.equals(key)) {
-      return bevel + "";
+      return bevel + ""; //$NON-NLS-1$
     }
     else {
       return super.getAttributeValueString(key);

@@ -8,10 +8,9 @@ import VASSAL.i18n.Resources;
 import java.util.Enumeration;
 import java.util.Vector;
 
-// I18n: Complete
 public class RoomManager {
   private Vector rooms = new Vector();
-  private SimpleRoom defaultRoom = new SimpleRoom(Resources.getString("Chat.main_room"));
+  private SimpleRoom defaultRoom = new SimpleRoom(Resources.getString("Chat.main_room")); //$NON-NLS-1$
 
   public RoomManager() {
     rooms.addElement(defaultRoom);

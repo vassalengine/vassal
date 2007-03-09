@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import VASSAL.i18n.Resources;
+
 /**
  * Walks the user through a wizard interface. The user may choose between an auto-updating (networked jnlp) or purely
  * local installation (jnlp on local filesystem) installations, and can also select the particular version of VASSAL to
@@ -31,8 +33,8 @@ import java.util.Properties;
 public class InstallWizard {
   private WizardDialog dialog;
   private Properties properties;
-  public static final String INSTALL_PROPERTIES = "/installInfo";
-  public static final String INITIAL_SCREEN = "initialScreen";
+  public static final String INSTALL_PROPERTIES = "/installInfo"; //$NON-NLS-1$
+  public static final String INITIAL_SCREEN = "initialScreen"; //$NON-NLS-1$
 
   public void start() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
     Properties p = new Properties();
@@ -42,7 +44,7 @@ public class InstallWizard {
     }
     properties = new Properties(p);
     dialog = new WizardDialog(this);
-    dialog.setTitle(properties.getProperty("title","Install VASSAL"));
+    dialog.setTitle(properties.getProperty("title",Resources.getString("Install.install_vassal"))); //$NON-NLS-1$ //$NON-NLS-2$
     dialog.setScreen((Screen) Class.forName(p.getProperty(INITIAL_SCREEN, ChooseVersionScreen.class.getName())).newInstance());
     dialog.setVisible(true);
   }
@@ -69,7 +71,7 @@ public class InstallWizard {
           screen = (Screen) defaultClass.newInstance();
         }
         else {
-          throw new NullPointerException("Screen "+screenKey+" not specified");
+          throw new NullPointerException("Screen "+screenKey+" not specified"); //$NON-NLS-1$ //$NON-NLS-2$
         }
       }
       dialog.setScreen(screen);

@@ -41,8 +41,8 @@ public class RandomTextButton extends DiceButton {
   protected String[] m_faces;               // array with dice faces
   protected boolean isNumeric;
 
-  public static final String FACES = "faces";
-  public static final String NUMERIC = "numeric";
+  public static final String FACES = "faces"; //$NON-NLS-1$
+  public static final String NUMERIC = "numeric"; //$NON-NLS-1$
 
   public RandomTextButton() {
     super();
@@ -115,7 +115,7 @@ public class RandomTextButton extends DiceButton {
         else
           result.append(roll);
         if (i < nDice - 1)
-          result.append(",");
+          result.append(","); //$NON-NLS-1$
       }
     }
 
@@ -179,7 +179,7 @@ public class RandomTextButton extends DiceButton {
 
   public void setAttribute(String key, Object value) {
     if (NUMERIC.equals(key)) {
-      isNumeric = Boolean.TRUE.equals(value) || "true".equals(value);
+      isNumeric = Boolean.TRUE.equals(value) || "true".equals(value); //$NON-NLS-1$
     }
     else if (FACES.equals(key)) {
       if (value instanceof String) {
@@ -195,7 +195,7 @@ public class RandomTextButton extends DiceButton {
 
   public String getAttributeValueString(String key) {
     if (NUMERIC.equals(key)) {
-      return "" + isNumeric;
+      return "" + isNumeric; //$NON-NLS-1$
     }
     else if (FACES.equals(key)) {
       return StringArrayConfigurer.arrayToString(m_faces);
@@ -206,7 +206,7 @@ public class RandomTextButton extends DiceButton {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "RandomTextButton");
+    return HelpFile.getReferenceManualPage("GameModule.htm", "RandomTextButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
 

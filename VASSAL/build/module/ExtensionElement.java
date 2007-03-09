@@ -36,7 +36,7 @@ public class ExtensionElement implements Buildable {
   /**
    * An identifier for the component to be extended
    */
-  public static final String TARGET = "target";
+  public static final String TARGET = "target"; //$NON-NLS-1$
   private Buildable extension;
   private Configurable[] targetPath;
 

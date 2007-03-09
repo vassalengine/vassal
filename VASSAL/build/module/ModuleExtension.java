@@ -43,6 +43,7 @@ import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 
@@ -52,13 +53,13 @@ import VASSAL.tools.DataArchive;
  * The components described in the buildFile are appended to components in the base DataArchive
  */
 public class ModuleExtension extends AbstractBuildable implements GameComponent {
-  public static final String BASE_MODULE_NAME = "module";
-  public static final String BASE_MODULE_VERSION = "moduleVersion";
-  public static final String VERSION = "version";
-  public static final String VASSAL_VERSION_CREATED = "vassalVersion";
+  public static final String BASE_MODULE_NAME = "module"; //$NON-NLS-1$
+  public static final String BASE_MODULE_VERSION = "moduleVersion"; //$NON-NLS-1$
+  public static final String VERSION = "version"; //$NON-NLS-1$
+  public static final String VASSAL_VERSION_CREATED = "vassalVersion"; //$NON-NLS-1$
 
   private DataArchive archive;
-  private String version = "0.0";
+  private String version = "0.0"; //$NON-NLS-1$
 
   private String lastSave;
   private String vassalVersionCreated;
@@ -77,7 +78,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
   }
 
   public void build() {
-    String fileName = "buildFile";
+    String fileName = "buildFile"; //$NON-NLS-1$
 
     InputStream inStream = null;
     if (archive != null) {
@@ -127,7 +128,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
   }
 
   public void removeFrom(Buildable parent) {
-    throw new IllegalBuildException("Cannot remove Extension");
+    throw new IllegalBuildException(Resources.getString("ModuleExtension.cannot_remove")); //$NON-NLS-1$
   }
 
   public boolean confirmExit() {
@@ -135,8 +136,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
     if (archive instanceof ArchiveWriter
         && !buildString().equals(lastSave)) {
       switch (JOptionPane.showConfirmDialog
-          (GameModule.getGameModule().getFrame(), "Save Extension?",
-           "", JOptionPane.YES_NO_CANCEL_OPTION)) {
+          (GameModule.getGameModule().getFrame(), Resources.getString("ModuleExtension.save_extension"), //$NON-NLS-1$
+           "", JOptionPane.YES_NO_CANCEL_OPTION)) { //$NON-NLS-1$
         case JOptionPane.YES_OPTION:
           try {
             save();
@@ -173,24 +174,24 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
   public void setAttribute(String key, Object value) {
     if (BASE_MODULE_NAME.equals(key)) {
       if (!GameModule.getGameModule().getGameName().equals(value)) {
-        throw new IllegalBuildException("Extension \'" + getName() + "\' was built for module \'" + value + "\'");
+        throw new IllegalBuildException(Resources.getString("ModuleExtension.extension_built", getName(), (String) value)); //$NON-NLS-1$
       }
     }
     else if (BASE_MODULE_VERSION.equals(key)) {
       String version = (String) value;
       if (Info.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
-        GameModule.getGameModule().warn("Extension \'" + getName() + "\' was built for module version "
-                                      + version + ".  You are running version " + GameModule.getGameModule().getGameVersion()
-                                      + ".  It's recommended you upgrade to the latest version of " + GameModule.getGameModule().getGameName());
+        GameModule.getGameModule().warn(
+            Resources.getString("ModuleExtension.wrong_module_version", 
+                new String[] {getName(), version, GameModule.getGameModule().getGameVersion(), 
+                               GameModule.getGameModule().getGameName()}));
       }
     }
     else if (VASSAL_VERSION_CREATED.equals(key)) {
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        GameModule.getGameModule().warn("Extension "+getName()+" was created using version " + value
-             + " of the VASSAL engine\nYou are using version "
-             + runningVersion + ".  It's recommended you upgrade to the latest version of the VASSAL engine.");
+        GameModule.getGameModule().warn(Resources.getString("ModuleExtension.wrong_vassal_version", //$NON-NLS-1$ 
+            new String[] {getName(), (String) value, runningVersion} ));
       }
     }
     else if (VERSION.equals(key)) {
@@ -228,8 +229,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
     if (archive instanceof ArchiveWriter) {
       String save = buildString();
       ((ArchiveWriter) archive).addFile
-          ("buildFile",
-           new java.io.ByteArrayInputStream(save.getBytes("UTF-8")));
+          ("buildFile", //$NON-NLS-1$
+           new java.io.ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
       ((ArchiveWriter) archive).write();
       lastSave = save;
     }
@@ -243,8 +244,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
     if (archive instanceof ArchiveWriter) {
       String save = buildString();
       ((ArchiveWriter) archive).addFile
-          ("buildFile",
-           new java.io.ByteArrayInputStream(save.getBytes("UTF-8")));
+          ("buildFile", //$NON-NLS-1$
+           new java.io.ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
       ((ArchiveWriter) archive).saveAs();
       lastSave = save;
     }
@@ -289,7 +290,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
           d.setVisible(true);
         }
       };
-      URL iconURL = getClass().getResource("/images/Edit16.gif");
+      URL iconURL = getClass().getResource("/images/Edit16.gif"); //$NON-NLS-1$
       if (iconURL != null) {
         editAction.putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
       }
@@ -330,17 +331,15 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
         if (ext.getName().equals(name)) {
           containsExtension = true;
           if (Info.compareVersions(ext.getVersion(), version) < 0) {
-            msg = "Game saved with version " + version + " of extension \'" + name
-                         + "\', you are running version " + ext.getVersion() +
-                         ". Please upgrade to the latest version of this extension.";
+            msg = Resources.getString("ModuleExtension.wrong_extension_version", //$NON-NLS-1$
+                      new String[] {version, name, ext.getVersion()});
             GameModule.getGameModule().warn(msg);
           }
           break;
         }
       }
       if (!containsExtension) {
-        msg = "This game was saved with extension \'" + name + "\' loaded. You do not have this extension loaded."
-                                             + "Place the file into the \'" + ExtensionsLoader.getExtensionDirectory() + "\' folder to load it.";
+        msg = Resources.getString("ModuleExtension.load_extension", name, ExtensionsLoader.getExtensionDirectory()); //$NON-NLS-1$
         GameModule.getGameModule().warn(msg);
       }
     }

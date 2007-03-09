@@ -37,15 +37,15 @@ import VASSAL.tools.SequenceEncoder;
  */
 public abstract class Item extends AbstractConfigurable {
 
-  public static final String TYPE = "";
+  public static final String TYPE = ""; //$NON-NLS-1$
   
-  protected static final String NAME = "name";
-  protected static final String LOCATION = "location";
-  protected static final String ADVANCED = "advanced";
-  protected static final String ROTATION = "rotation";
-  protected static final String X_OFFSET = "xoffset";
-  protected static final String Y_OFFSET = "yoffset";
-  protected static final String ANTIALIAS = "antialias";
+  protected static final String NAME = "name"; //$NON-NLS-1$
+  protected static final String LOCATION = "location"; //$NON-NLS-1$
+  protected static final String ADVANCED = "advanced"; //$NON-NLS-1$
+  protected static final String ROTATION = "rotation"; //$NON-NLS-1$
+  protected static final String X_OFFSET = "xoffset"; //$NON-NLS-1$
+  protected static final String Y_OFFSET = "yoffset"; //$NON-NLS-1$
+  protected static final String ANTIALIAS = "antialias"; //$NON-NLS-1$
 
   String location = GamePieceLayout.CENTER;
   protected int xoffset, yoffset;
@@ -57,7 +57,7 @@ public abstract class Item extends AbstractConfigurable {
 
   public Item() {
     super();
-    setConfigureName("");
+    setConfigureName(""); //$NON-NLS-1$
   }
   
   public Item(GamePieceLayout l) {
@@ -83,7 +83,7 @@ public abstract class Item extends AbstractConfigurable {
 
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, "");
+      return new IconConfigurer(key, name, ""); //$NON-NLS-1$
     }
   }
 
@@ -142,22 +142,22 @@ public abstract class Item extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (LOCATION.equals(key)) {
-      return location + "";
+      return location + ""; //$NON-NLS-1$
     }
     else if (X_OFFSET.equals(key)) {
-      return xoffset + "";
+      return xoffset + ""; //$NON-NLS-1$
     }
     else if (Y_OFFSET.equals(key)) {
-      return yoffset + "";
+      return yoffset + ""; //$NON-NLS-1$
     }
     else if (ADVANCED.equals(key)) {
-      return advanced + "";
+      return advanced + ""; //$NON-NLS-1$
     }
     else if (ROTATION.equals(key)) {
-      return rotation + "";
+      return rotation + ""; //$NON-NLS-1$
     }
     else if (ANTIALIAS.equals(key)) {
-      return antialias + "";
+      return antialias + ""; //$NON-NLS-1$
     }
     else
       return null;
@@ -232,8 +232,8 @@ public abstract class Item extends AbstractConfigurable {
   
   public static Item decode(GamePieceLayout layout, String s) {
     SequenceEncoder.Decoder sd1= new SequenceEncoder.Decoder(s, '|');
-    String t1 = sd1.nextToken("");
-    String t2 = sd1.nextToken("");
+    String t1 = sd1.nextToken(""); //$NON-NLS-1$
+    String t2 = sd1.nextToken(""); //$NON-NLS-1$
     
     Item item;
     

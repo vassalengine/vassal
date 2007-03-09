@@ -57,6 +57,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
@@ -68,7 +69,7 @@ import VASSAL.tools.SequenceEncoder;
  * expanded. Can be shuffled. Can be turned face-up and face-down
  */
 public class Deck extends Stack {
-  public static final String ID = "deck;";
+  public static final String ID = "deck;"; //$NON-NLS-1$
   public static final String ALWAYS = "Always";
   public static final String NEVER = "Never";
   public static final String USE_MENU = "Via right-click Menu";
@@ -84,7 +85,7 @@ public class Deck extends Stack {
   protected boolean allowMultipleDraw = false;
   protected boolean allowSelectDraw = false;
   protected boolean reversible = false;
-  protected String reshuffleCommand = "";
+  protected String reshuffleCommand = ""; //$NON-NLS-1$
   protected String reshuffleTarget;
   protected String reshuffleMsgFormat;
   protected KeyStrokeListener reshuffleListener;
@@ -142,7 +143,7 @@ public class Deck extends Stack {
     }
     //Clear out all of the registered count types
     for (int index = 0; index < countTypes.length; index++) {
-      getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+countTypes[index],null,""+0));
+      getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+countTypes[index],null,""+0)); //$NON-NLS-1$ //$NON-NLS-2$
     }
     //Increase all of the pieces with types specified in this deck
     for (Enumeration e = getPieces(); e.hasMoreElements();) {
@@ -185,9 +186,9 @@ public class Deck extends Stack {
     if (!doesTypeCounting() || getMap() == null) {
       return;
     }
-    Object pieceType = p.getProperty("_deckpiece_type");
+    Object pieceType = p.getProperty("_deckpiece_type"); //$NON-NLS-1$
     if (pieceType != null) {
-      String mapProperty = (String) getMap().getProperty(deckName+"_"+pieceType);
+      String mapProperty = (String) getMap().getProperty(deckName+"_"+pieceType); //$NON-NLS-1$
       if (mapProperty != null) {
         int newValue = (Integer.decode(mapProperty)).intValue();
         if (increase) {
@@ -196,7 +197,7 @@ public class Deck extends Stack {
         else {
           newValue--;
         }
-        getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+pieceType,null,""+newValue));
+        getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+pieceType,null,""+newValue)); //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
   }
@@ -207,7 +208,7 @@ public class Deck extends Stack {
    */
   protected void fireNumCardsProperty() {
     if (getMap() != null) {
-      getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_numPieces",null,String.valueOf(pieceCount)));
+      getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_numPieces",null,String.valueOf(pieceCount))); //$NON-NLS-1$
     }
   }
   
@@ -239,20 +240,20 @@ public class Deck extends Stack {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     drawOutline = st.nextBoolean(true);
-    outlineColor = ColorConfigurer.stringToColor(st.nextToken("0,0,0"));
+    outlineColor = ColorConfigurer.stringToColor(st.nextToken("0,0,0")); //$NON-NLS-1$
     size.setSize(st.nextInt(40), st.nextInt(40));
-    faceDownOption = st.nextToken("Always");
-    shuffleOption = st.nextToken("Always");
+    faceDownOption = st.nextToken("Always"); //$NON-NLS-1$
+    shuffleOption = st.nextToken("Always"); //$NON-NLS-1$
     allowMultipleDraw = st.nextBoolean(true);
     allowSelectDraw = st.nextBoolean(true);
     reversible = st.nextBoolean(true);
-    reshuffleCommand = st.nextToken("");
-    reshuffleTarget = st.nextToken("");
-    reshuffleMsgFormat = st.nextToken("");
+    reshuffleCommand = st.nextToken(""); //$NON-NLS-1$
+    reshuffleTarget = st.nextToken(""); //$NON-NLS-1$
+    reshuffleMsgFormat = st.nextToken(""); //$NON-NLS-1$
     deckName = st.nextToken("Deck");
-    shuffleMsgFormat = st.nextToken("");
-    reverseMsgFormat = st.nextToken("");
-    faceDownMsgFormat = st.nextToken("");
+    shuffleMsgFormat = st.nextToken(""); //$NON-NLS-1$
+    reverseMsgFormat = st.nextToken(""); //$NON-NLS-1$
+    faceDownMsgFormat = st.nextToken(""); //$NON-NLS-1$
     drawFaceUp = st.nextBoolean(false);
     persistable = st.nextBoolean(false);
     shuffleKey = st.nextKeyStroke(null);
@@ -489,7 +490,7 @@ public class Deck extends Stack {
       indices.remove(i);
       newContents.add(getPieceAt(index));
     }
-    return setContents(newContents.iterator()).append(reportCommand(shuffleMsgFormat, "Shuffle"));
+    return setContents(newContents.iterator()).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
   }
 
   /**
@@ -557,7 +558,7 @@ public class Deck extends Stack {
 
   public String getState() {
     SequenceEncoder se = new SequenceEncoder(';');
-    se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y);
+    se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$
     se.append(faceDown);
     SequenceEncoder se2 = new SequenceEncoder(',');
     for (Enumeration e = getPieces(); e.hasMoreElements();) {
@@ -575,10 +576,10 @@ public class Deck extends Stack {
     String mapId = st.nextToken();
     setPosition(new Point(st.nextInt(0), st.nextInt(0)));
     Map m = null;
-    if (!"null".equals(mapId)) {
+    if (!"null".equals(mapId)) { //$NON-NLS-1$
       m = Map.getMapById(mapId);
       if (m == null) {
-        throw new RuntimeException("Could not find map " + mapId);
+        throw new RuntimeException(Resources.getString("Deck.could_not_find", mapId)); //$NON-NLS-1$
       }
     }
     if (m != getMap()) {
@@ -589,7 +590,7 @@ public class Deck extends Stack {
         setMap(null);
       }
     }
-    faceDown = "true".equals(st.nextToken());
+    faceDown = "true".equals(st.nextToken()); //$NON-NLS-1$
     ArrayList l = new ArrayList();
     if (st.hasMoreTokens()) {
       SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), ',');
@@ -608,7 +609,7 @@ public class Deck extends Stack {
     ChangeTracker t = new ChangeTracker(this);
     Command c = new NullCommand();
     faceDown = value;
-    return t.getChangeCommand().append(c).append(reportCommand(faceDownMsgFormat, value ? "Face Down" : "Face Up"));
+    return t.getChangeCommand().append(c).append(reportCommand(faceDownMsgFormat, value ? Resources.getString("Deck.face_down") : Resources.getString("Deck.face_up"))); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /** Reverse the order of the contents of the Deck */
@@ -617,7 +618,7 @@ public class Deck extends Stack {
     for (Enumeration e = getPiecesInReverseOrder(); e.hasMoreElements();) {
       list.add(e.nextElement());
     }
-    return setContents(list.iterator()).append(reportCommand(reverseMsgFormat, "Reverse"));
+    return setContents(list.iterator()).append(reportCommand(reverseMsgFormat, Resources.getString("Deck.reverse"))); //$NON-NLS-1$
   }
 
   public boolean isDrawOutline() {
@@ -736,7 +737,7 @@ public class Deck extends Stack {
       ArrayList l = new ArrayList();
       KeyCommand c = null;
       if (USE_MENU.equals(shuffleOption)) {
-        c = new KeyCommand("Shuffle", getShuffleKey(), this) {
+        c = new KeyCommand(Resources.getString("Deck.shuffle"), getShuffleKey(), this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
@@ -758,7 +759,7 @@ public class Deck extends Stack {
         l.add(c);
       }
       if (USE_MENU.equals(faceDownOption)) {
-        KeyCommand faceDownAction = new KeyCommand(faceDown ? "Face up" : "Face down", null, this) {
+        KeyCommand faceDownAction = new KeyCommand(faceDown ? Resources.getString("Deck.face_up") : Resources.getString("Deck.face_down"), null, this) { //$NON-NLS-1$ //$NON-NLS-2$
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
@@ -770,7 +771,7 @@ public class Deck extends Stack {
         l.add(faceDownAction);
       }
       if (reversible) {
-        c = new KeyCommand("Reverse order", null, this) {
+        c = new KeyCommand(Resources.getString("Deck.reverse_order"), null, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
@@ -782,7 +783,7 @@ public class Deck extends Stack {
         l.add(c);
       }
       if (allowMultipleDraw) {
-        c = new KeyCommand("Draw multiple cards", null, this) {
+        c = new KeyCommand(Resources.getString("Deck.draw_multiple"), null, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
@@ -792,7 +793,7 @@ public class Deck extends Stack {
         l.add(c);
       }
       if (allowSelectDraw) {
-        c = new KeyCommand("Draw specific cards", null, this) {
+        c = new KeyCommand(Resources.getString("Deck.draw_specific"), null, this) { //$NON-NLS-1$
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
@@ -803,7 +804,7 @@ public class Deck extends Stack {
         l.add(c);
       }
       if (persistable) {
-        c = new KeyCommand("Save", null, this) {
+        c = new KeyCommand(Resources.getString(Resources.SAVE), null, this) {
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
@@ -812,7 +813,7 @@ public class Deck extends Stack {
           }
         };
         l.add(c);
-        c = new KeyCommand("Load", null, this) {
+        c = new KeyCommand(Resources.getString(Resources.LOAD), null, this) {
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
@@ -825,11 +826,11 @@ public class Deck extends Stack {
       commands = (KeyCommand[]) l.toArray(new KeyCommand[l.size()]);
     }
     for (int i = 0; i < commands.length; ++i) {
-      if ("Face up".equals(commands[i].getValue(Action.NAME)) && !faceDown) {
-        commands[i].putValue(Action.NAME, "Face down");
+      if (Resources.getString("Deck.face_up").equals(commands[i].getValue(Action.NAME)) && !faceDown) { //$NON-NLS-1$
+        commands[i].putValue(Action.NAME, Resources.getString("Deck.face_down")); //$NON-NLS-1$
       }
-      else if ("Face down".equals(commands[i].getValue(Action.NAME)) && faceDown) {
-        commands[i].putValue(Action.NAME, "Face up");
+      else if (Resources.getString("Deck.face_down").equals(commands[i].getValue(Action.NAME)) && faceDown) { //$NON-NLS-1$
+        commands[i].putValue(Action.NAME, Resources.getString("Deck.face_up")); //$NON-NLS-1$
       }
     }
     return commands;
@@ -845,7 +846,7 @@ public class Deck extends Stack {
     reportFormat.setProperty(DrawPile.COMMAND_NAME, commandName);
     String rep = reportFormat.getText();
     if (rep.length() > 0) {
-      c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + rep);
+      c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + rep); //$NON-NLS-1$
       c.execute();
     }
 
@@ -854,7 +855,7 @@ public class Deck extends Stack {
 
   public void promptForDragCount() {
     while (true) {
-      String s = JOptionPane.showInputDialog("Enter number to grab.\nThen click and drag to draw that number.");
+      String s = JOptionPane.showInputDialog(Resources.getString("Deck.enter_the_number")); //$NON-NLS-1$
       if (s != null) {
         try {
           dragCount = Integer.parseInt(s);
@@ -874,7 +875,7 @@ public class Deck extends Stack {
 
   protected void promptForNextDraw() {
     final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView()), true);
-    d.setTitle("Draw");
+    d.setTitle(Resources.getString("Deck.draw")); //$NON-NLS-1$
     d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
     final String[] pieces = new String[getPieceCount()];
     for (int i = 0; i < pieces.length; ++i) {
@@ -883,10 +884,10 @@ public class Deck extends Stack {
     final JList list = new JList(pieces);
     list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     d.getContentPane().add(new ScrollPane(list));
-    d.getContentPane().add(new JLabel("Select cards to draw"));
-    d.getContentPane().add(new JLabel("Then click and drag from the deck."));
+    d.getContentPane().add(new JLabel(Resources.getString("Deck.select_cards"))); //$NON-NLS-1$
+    d.getContentPane().add(new JLabel(Resources.getString("Deck.then_click"))); //$NON-NLS-1$
     Box box = Box.createHorizontalBox();
-    JButton b = new JButton("Ok");
+    JButton b = new JButton(Resources.getString(Resources.OK));
     b.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int[] selection = list.getSelectedIndices();
@@ -903,7 +904,7 @@ public class Deck extends Stack {
       }
     });
     box.add(b);
-    b = new JButton("Cancel");
+    b = new JButton(Resources.getString(Resources.CANCEL));
     b.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         d.dispose();
@@ -963,7 +964,7 @@ public class Deck extends Stack {
       if (name != null) {
         int index = name.lastIndexOf('.');
         if (index > 0) {
-          name = name.substring(0, index) + ".sav";
+          name = name.substring(0, index) + ".sav"; //$NON-NLS-1$
           fc.setSelectedFile(new File(name));
         }
       }
@@ -978,7 +979,7 @@ public class Deck extends Stack {
         shouldConfirmOverwrite() &&
         JOptionPane.NO_OPTION ==
          JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(),
-          "Overwrite " + outputFile.getName() + "?", "File Exists",
+          Resources.getString("Deck.overwrite", outputFile.getName()), Resources.getString("Deck.file_exists"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
           JOptionPane.YES_NO_OPTION)) {
         outputFile = null;
     } 
@@ -987,24 +988,24 @@ public class Deck extends Stack {
   }
 
   private boolean shouldConfirmOverwrite() {
-    return System.getProperty("os.name").trim().equalsIgnoreCase("linux");
+    return System.getProperty("os.name").trim().equalsIgnoreCase("linux"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   private Command saveDeck() {
     Command c = new NullCommand();
-    GameModule.getGameModule().warn("Saving deck ...");
+    GameModule.getGameModule().warn(Resources.getString("Deck.saving_deck")); //$NON-NLS-1$
     try {
       File saveFile = getSaveFileName();
       if (saveFile != null) {
         saveDeck(saveFile);
-        GameModule.getGameModule().warn("deck Saved");
+        GameModule.getGameModule().warn(Resources.getString("Deck.deck_saved")); //$NON-NLS-1$
       }
       else {
-        GameModule.getGameModule().warn("Save Canceled");
+        GameModule.getGameModule().warn(Resources.getString("Deck.save_canceled")); //$NON-NLS-1$
       }
     }
     catch (IOException err) {
-      GameModule.getGameModule().warn("Save Failed.  Try again.");
+      GameModule.getGameModule().warn(Resources.getString("Deck.save_failed")); //$NON-NLS-1$
     }
     return c;
   }
@@ -1034,19 +1035,19 @@ public class Deck extends Stack {
 
   private Command loadDeck() {
     Command c = new NullCommand();
-    GameModule.getGameModule().warn("Loading deck ...");
+    GameModule.getGameModule().warn(Resources.getString("Deck.loading_deck")); //$NON-NLS-1$
     try {
       File saveFile = getLoadFileName();
       if (saveFile != null) {
         c = loadDeck(saveFile);
-        GameModule.getGameModule().warn("deck Loaded");
+        GameModule.getGameModule().warn(Resources.getString("Deck.deck_loaded")); //$NON-NLS-1$
       }
       else {
-        GameModule.getGameModule().warn("Load Canceled");
+        GameModule.getGameModule().warn(Resources.getString("Deck.load_canceled")); //$NON-NLS-1$
       }
     }
     catch (IOException err) {
-      GameModule.getGameModule().warn("Load Failed.  Try again.");
+      GameModule.getGameModule().warn(Resources.getString("Deck.load_failed")); //$NON-NLS-1$
     }
     return c;
 
@@ -1082,7 +1083,7 @@ public class Deck extends Stack {
       updateCountsAll();
     }
     else {
-      GameModule.getGameModule().warn(f.getName() + " is not a saved deck file");
+      GameModule.getGameModule().warn(Resources.getString("Deck.not_a_saved_deck", f.getName())); //$NON-NLS-1$
       c = null;
     }
     return c;
@@ -1097,7 +1098,7 @@ public class Deck extends Stack {
    * 
    */
   protected static class LoadDeckCommand extends Command {
-    public static final String PREFIX = "DECK\t";
+    public static final String PREFIX = "DECK\t"; //$NON-NLS-1$
     private Deck target;
 
     public LoadDeckCommand(Deck target) {
@@ -1119,7 +1120,7 @@ public class Deck extends Stack {
     }
 
     public String getTargetId() {
-      return target == null ? "" : target.getId();
+      return target == null ? "" : target.getId(); //$NON-NLS-1$
     }
 
     protected Command myUndoCommand() {

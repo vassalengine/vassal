@@ -34,9 +34,8 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * Holds {@link PrivateText} objects, only displaying the one owned by the current user
  */
-// I18n: Complete
 public class PrivateNotesController implements GameComponent, CommandEncoder, SetPrivateTextCommand.Interface {
-  public static final String COMMAND_PREFIX = "PNOTE\t";
+  public static final String COMMAND_PREFIX = "PNOTE\t"; //$NON-NLS-1$
 
   private HashSet notes;
   private String myLastSavedNotes;
@@ -50,7 +49,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
   public Component getControls() {
     if (controls == null) {
       Box b = Box.createVerticalBox();
-      b.add(new JLabel(Resources.getString("Notes.invisible")));
+      b.add(new JLabel(Resources.getString("Notes.invisible"))); //$NON-NLS-1$
       text = new TextConfigurer(null, null);
       b.add(text.getControls());
       controls = b;
@@ -71,7 +70,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder
           (command.substring(COMMAND_PREFIX.length()), '\t');
       String owner = st.nextToken();
-      String text = st.hasMoreTokens() ? TextConfigurer.restoreNewlines(st.nextToken()) : "";
+      String text = st.hasMoreTokens() ? TextConfigurer.restoreNewlines(st.nextToken()) : ""; //$NON-NLS-1$
       return new SetPrivateTextCommand(this, new PrivateText(owner, text));
     }
     return c;
@@ -108,7 +107,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
       notes.clear();
-      text.setValue("");
+      text.setValue(""); //$NON-NLS-1$
     }
   }
 

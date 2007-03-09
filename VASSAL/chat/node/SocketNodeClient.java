@@ -26,7 +26,6 @@ import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
 
-//I18n: Complete
 public class SocketNodeClient extends NodeClient implements SocketWatcher {
   private SocketHandler sender;
   protected NodeServerInfo serverInfo;
@@ -75,7 +74,7 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
 
   public void socketClosed(SocketHandler handler) {
     if (sender != null) {
-      propSupport.firePropertyChange(STATUS, null, Resources.getString("Server.lost_connection"));
+      propSupport.firePropertyChange(STATUS, null, Resources.getString("Server.lost_connection")); //$NON-NLS-1$
       propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
       sender = null;
     }

@@ -93,7 +93,7 @@ public class AsynchronousServerNode extends ServerNode {
       }
       while (modules.hasNext()) {
         Node module = (Node) modules.next();
-        logger.fine("Sending contents of "+module.getId());
+        logger.fine("Sending contents of "+module.getId()); //$NON-NLS-1$
         Node[] players = module.getLeafDescendants();
         Node[] rooms = module.getChildren();
         String listCommand = Protocol.encodeListCommand(players);
@@ -106,7 +106,7 @@ public class AsynchronousServerNode extends ServerNode {
     }
 
     public synchronized void markChanged(Node module) {
-      logger.fine(module+" has changed");
+      logger.fine(module+" has changed"); //$NON-NLS-1$
       changed.add(module);
       notifyAll();
     }

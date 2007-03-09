@@ -22,7 +22,7 @@ import VASSAL.chat.SimpleRoom;
 import VASSAL.command.Command;
 
 public class EchoClient implements Runnable, PropertyChangeListener {
-  public static final String NAME = "EchoBot";
+  public static final String NAME = "EchoBot"; //$NON-NLS-1$
   private static Random rng = new Random();
   private int changeRoom;
   private int numRooms;
@@ -37,20 +37,20 @@ public class EchoClient implements Runnable, PropertyChangeListener {
     client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, this);
     client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(""+evt.getNewValue());
+        System.err.println(""+evt.getNewValue()); //$NON-NLS-1$
       }
     });
     client.setConnected(true);
-    client.setRoom(new SimpleRoom("Room0"));
+    client.setRoom(new SimpleRoom("Room0")); //$NON-NLS-1$
     new Thread(this).start();
   }
 
   public synchronized void showCHAT(PeerInfo pPeerInfo, String msg) {
     Player sender = new P2PPlayer(pPeerInfo);
     if (!sender.getName().startsWith(NAME)
-      && msg.startsWith("CHAT")) {
-      msg = "<" + client.getUserInfo().getName()
-        + msg.substring(msg.indexOf("> -"));
+      && msg.startsWith("CHAT")) { //$NON-NLS-1$
+      msg = "<" + client.getUserInfo().getName() //$NON-NLS-1$
+        + msg.substring(msg.indexOf("> -")); //$NON-NLS-1$
       Command c = new Chatter.DisplayText(null,msg);
       client.sendTo(sender, c);
     }
@@ -64,7 +64,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
       }
       catch (InterruptedException e) {
       }
-      String newRoom = "Room" + (int) (numRooms * rng.nextFloat());
+      String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
       client.setRoom(new SimpleRoom(newRoom));
     }
   }
@@ -73,7 +73,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
     if (log != null
       && evt.getPropertyName().equals(ChatServerConnection.AVAILABLE_ROOMS)) {
       try {
-        log.write("----------" + (new Date()) + "---------\n");
+        log.write("----------" + (new Date()) + "---------\n"); //$NON-NLS-1$ //$NON-NLS-2$
         log.write(report((VASSAL.chat.Room[]) evt.getNewValue()));
         log.flush();
       }
@@ -86,15 +86,15 @@ public class EchoClient implements Runnable, PropertyChangeListener {
   public static String report(VASSAL.chat.Room[] r) {
     StringBuffer buffer = new StringBuffer();
     for (int i = 0; i < r.length; ++i) {
-      buffer.append(r[i].getName() + ": ");
+      buffer.append(r[i].getName() + ": "); //$NON-NLS-1$
       VASSAL.chat.Player[] l = (VASSAL.chat.Player[]) r[i].getPlayerList().toArray();
       for (int j = 0; j < l.length; ++j) {
         buffer.append(l[j]);
         if (j < l.length - 1) {
-          buffer.append(", ");
+          buffer.append(", "); //$NON-NLS-1$
         }
       }
-      buffer.append("\n");
+      buffer.append("\n"); //$NON-NLS-1$
     }
     return buffer.toString();
   }

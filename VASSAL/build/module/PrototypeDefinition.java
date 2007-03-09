@@ -46,10 +46,10 @@ import VASSAL.tools.UniqueIdManager;
  * at http://www.opensource.org.
  */
 public class PrototypeDefinition implements Configurable, UniqueIdManager.Identifyable, ValidityChecker {
-  private String name = "Prototype";
+  private String name = "Prototype"; //$NON-NLS-1$
   private java.util.Map pieces = new HashMap();
   private String pieceDefinition;
-  private static UniqueIdManager idMgr = new UniqueIdManager("prototype-");
+  private static UniqueIdManager idMgr = new UniqueIdManager("prototype-"); //$NON-NLS-1$
   private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
 
   public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -79,7 +79,7 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "Definition");
+    return HelpFile.getReferenceManualPage("GameModule.htm", "Definition"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public void remove(Buildable child) {
@@ -127,7 +127,7 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
     if (piece == null && def != null) {
       AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
       if (comm == null) {
-        System.err.println("Couldn't build piece " + def);
+        System.err.println("Couldn't build piece " + def); //$NON-NLS-1$
         def = null;
       }
       else {
@@ -223,11 +223,11 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
       }
       private static class Plain extends BasicPiece {
         public Plain() {
-          super(ID + ";;;;");
+          super(ID + ";;;;"); //$NON-NLS-1$
         }
 
         public String getDescription() {
-          return "";
+          return ""; //$NON-NLS-1$
         }
 
         public PieceEditor getEditor() {

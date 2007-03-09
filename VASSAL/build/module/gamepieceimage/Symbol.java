@@ -133,11 +133,11 @@ public class Symbol {
     //    protected static final String UNMANNED_AIR = "";
     //    protected static final String VET = "";
 
-    protected static final String INSTALLATION_SYMBOL = "m";
-    protected static final String TEAM_SYMBOL = "o";
-    protected static final String SQUAD_SYMBOL = "s";
-    protected static final String COMPANY_SYMBOL = "i";
-    protected static final String BRIGADE_SYMBOL = "x";
+    protected static final String INSTALLATION_SYMBOL = "m"; //$NON-NLS-1$
+    protected static final String TEAM_SYMBOL = "o"; //$NON-NLS-1$
+    protected static final String SQUAD_SYMBOL = "s"; //$NON-NLS-1$
+    protected static final String COMPANY_SYMBOL = "i"; //$NON-NLS-1$
+    protected static final String BRIGADE_SYMBOL = "x"; //$NON-NLS-1$
     
     protected static final String[] getSymbolNames() {
       return new String[] { 
@@ -183,7 +183,7 @@ public class Symbol {
     }
 
     protected static final SizeOption[] SIZES = new SizeOption[] {
-        new SizeOption(SZ_NONE, 0, ""),
+        new SizeOption(SZ_NONE, 0, ""), //$NON-NLS-1$
         new SizeOption(SZ_INSTALLATION, 1, INSTALLATION_SYMBOL),
         new SizeOption(SZ_TEAM, 1, TEAM_SYMBOL),
         new SizeOption(SZ_SQUAD, 1, SQUAD_SYMBOL),
@@ -402,7 +402,7 @@ public class Symbol {
      */
     protected static void drawSize(Graphics g, String size, Rectangle bounds) {
       
-      if (size.equals(SZ_NONE) || size.equals("")) {
+      if (size.equals(SZ_NONE) || size.equals("")) { //$NON-NLS-1$
         return;
       }
       

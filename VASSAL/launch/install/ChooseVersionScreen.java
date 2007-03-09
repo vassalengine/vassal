@@ -32,15 +32,14 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-// I18n: Complete
 public class ChooseVersionScreen implements Screen {
   private JComboBox choice = new JComboBox();
   private JTextField alternateChoice;
   private Box controls;
   public ChooseVersionScreen() {
     controls = Box.createHorizontalBox();
-    controls.add(new JLabel(Resources.getString("Install.select_version")));
-    HttpRequestWrapper req = new HttpRequestWrapper("http://www.vassalengine.org/util/getAllVersionNumbers");
+    controls.add(new JLabel(Resources.getString("Install.select_version"))); //$NON-NLS-1$
+    HttpRequestWrapper req = new HttpRequestWrapper("http://www.vassalengine.org/util/getAllVersionNumbers"); //$NON-NLS-1$
     try {
     DefaultComboBoxModel m = new DefaultComboBoxModel(); 
       for (Enumeration e = req.doGet(null);e.hasMoreElements();) {
@@ -62,12 +61,12 @@ public class ChooseVersionScreen implements Screen {
   }
   public void next(InstallWizard wizard) {
     if (alternateChoice != null) {
-      wizard.put(Constants.JNLP_URL,"http://www.vassalengine.org/ws/vassal-"+alternateChoice.getText()+".jnlp");
+      wizard.put(Constants.JNLP_URL,"http://www.vassalengine.org/ws/vassal-"+alternateChoice.getText()+".jnlp"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     else {
-      wizard.put(Constants.JNLP_URL,"http://www.vassalengine.org/ws/vassal-"+choice.getSelectedItem()+".jnlp");
+      wizard.put(Constants.JNLP_URL,"http://www.vassalengine.org/ws/vassal-"+choice.getSelectedItem()+".jnlp"); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    wizard.next("ChooseVersionScreen.next", ChooseHeapSizeScreen.class);
+    wizard.next("ChooseVersionScreen.next", ChooseHeapSizeScreen.class); //$NON-NLS-1$
   }
   
 }

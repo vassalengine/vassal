@@ -46,7 +46,6 @@ import VASSAL.tools.DataArchive;
  * This class holds static convenience methods for building {@link Buildable}
  * objects
  */
-// I18n: Complete
 public abstract class Builder {
   /**
    * General building algorithm.  For each subelement of the build
@@ -75,17 +74,17 @@ public abstract class Builder {
           catch (Throwable err) {
             String msg = err.getMessage();
             if (msg == null) {
-              msg = err.getClass().getName().substring(err.getClass().getName().lastIndexOf(".") + 1);
+              msg = err.getClass().getName().substring(err.getClass().getName().lastIndexOf(".") + 1); //$NON-NLS-1$
             }
             System.err.println(child.toString());
             err.printStackTrace();
             JOptionPane.showMessageDialog
               (null,
-               Resources.getString("Builder.create_error", 
+               Resources.getString("Builder.create_error",  //$NON-NLS-1$
                    new String[] {((Element) child).getTagName(),
                                  GameModule.getGameModule().getDataArchive().getName(),
                                  msg }), 
-               Resources.getString("Builder.error"),
+               Resources.getString("Builder.error"), //$NON-NLS-1$
                JOptionPane.ERROR_MESSAGE);
           }
         }
@@ -153,8 +152,8 @@ public abstract class Builder {
 
       // Write the DOM document to the file
       Transformer xformer = TransformerFactory.newInstance().newTransformer();
-      xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-      xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+      xformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+      xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
       xformer.transform(source, result);
     }
     catch (TransformerException e) {
@@ -195,14 +194,14 @@ public abstract class Builder {
     }
     catch (IOException e) {
       e.printStackTrace();
-      return "";
+      return ""; //$NON-NLS-1$
     }
   }
 
   /** @deprecated */
   public static String toString(Node n) {
     StringBuffer buffer = new StringBuffer();
-    appendToBuffer(n, "", buffer);
+    appendToBuffer(n, "", buffer); //$NON-NLS-1$
     return buffer.toString();
   }
 
@@ -211,14 +210,14 @@ public abstract class Builder {
     try {
       switch (n.getNodeType()) {
         case Node.ELEMENT_NODE:
-          buffer.append(prefix).append("<").append(((Element) n).getTagName());
+          buffer.append(prefix).append("<").append(((Element) n).getTagName()); //$NON-NLS-1$
           NamedNodeMap m = n.getAttributes();
           for (int i = 0; i < m.getLength(); ++i) {
-            appendToBuffer(m.item(i), "", buffer);
+            appendToBuffer(m.item(i), "", buffer); //$NON-NLS-1$
           }
           boolean hasText = false;
           java.util.Vector contents = new java.util.Vector();
-          prefix = prefix.concat("  ");
+          prefix = prefix.concat("  "); //$NON-NLS-1$
           for (Node child = n.getFirstChild(); child != null; child = child.getNextSibling()) {
             if (child.getNodeType() != Node.ATTRIBUTE_NODE) {
               contents.addElement(child);
@@ -226,27 +225,27 @@ public abstract class Builder {
             hasText = hasText || child.getNodeType() == Node.TEXT_NODE;
           }
           if (contents.size() == 0) {
-            buffer.append("/>\n");
+            buffer.append("/>\n"); //$NON-NLS-1$
           }
           else {
-            buffer.append(hasText ? ">" : ">\n");
+            buffer.append(hasText ? ">" : ">\n"); //$NON-NLS-1$ //$NON-NLS-2$
             for (int i = 0; i < contents.size(); ++i) {
               appendToBuffer((Node) contents.elementAt(i), prefix, buffer);
             }
             if (!hasText) {
               buffer.append(prefix.substring(2));
             }
-            buffer.append("</")
+            buffer.append("</") //$NON-NLS-1$
               .append(((Element) n).getTagName())
-              .append(">\n");
+              .append(">\n"); //$NON-NLS-1$
           }
           prefix = prefix.substring(2);
           contents = null;
           break;
         case Node.ATTRIBUTE_NODE:
           Attr att = (Attr) n;
-          buffer.append(" ").append(att.getName()).append("=\"")
-            .append(encodedText(att.getValue())).append("\"");
+          buffer.append(" ").append(att.getName()).append("=\"") //$NON-NLS-1$ //$NON-NLS-2$
+            .append(encodedText(att.getValue())).append("\""); //$NON-NLS-1$
           break;
         case Node.TEXT_NODE:
           String val = ((Text) n).getData();
@@ -255,59 +254,59 @@ public abstract class Builder {
           }
           break;
         case Node.DOCUMENT_NODE:
-          buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-          appendToBuffer(((Document) n).getDocumentElement(), "", buffer);
+          buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"); //$NON-NLS-1$
+          appendToBuffer(((Document) n).getDocumentElement(), "", buffer); //$NON-NLS-1$
           break;
         default:
-          System.err.println("Not translating " + n.getClass().getName());
+          System.err.println("Not translating " + n.getClass().getName()); //$NON-NLS-1$
       }
     }
     catch (Throwable ex) {
       ex.printStackTrace();
-      System.err.println("writing " + toString(n));
-      System.err.println("Size is " + buffer.length());
+      System.err.println("writing " + toString(n)); //$NON-NLS-1$
+      System.err.println("Size is " + buffer.length()); //$NON-NLS-1$
     }
   }
 
   /** @deprecated */
   static String encodedText(String val) {
     for (int i = val.indexOf('&'); i >= 0; i = val.indexOf('&', i + 1)) {
-      val = val.substring(0, i).concat("&amp;").concat(val.substring(i + 1));
+      val = val.substring(0, i).concat("&amp;").concat(val.substring(i + 1)); //$NON-NLS-1$
     }
     for (int i = val.indexOf('>'); i >= 0; i = val.indexOf('>')) {
-      val = val.substring(0, i).concat("&gt;").concat(val.substring(i + 1));
+      val = val.substring(0, i).concat("&gt;").concat(val.substring(i + 1)); //$NON-NLS-1$
     }
     for (int i = val.indexOf('<'); i >= 0; i = val.indexOf('<')) {
-      val = val.substring(0, i).concat("&lt;").concat(val.substring(i + 1));
+      val = val.substring(0, i).concat("&lt;").concat(val.substring(i + 1)); //$NON-NLS-1$
     }
     for (int i = val.indexOf('"'); i >= 0; i = val.indexOf('"')) {
-      val = val.substring(0, i).concat("&quot;").concat(val.substring(i + 1));
+      val = val.substring(0, i).concat("&quot;").concat(val.substring(i + 1)); //$NON-NLS-1$
     }
     return val;
   }
 
   public static void main(String args[]) {
     Document doc = createNewDocument();
-    Element e = doc.createElement("test");
-    Element e1 = doc.createElement("sub1");
+    Element e = doc.createElement("test"); //$NON-NLS-1$
+    Element e1 = doc.createElement("sub1"); //$NON-NLS-1$
     e.appendChild(e1);
-    Element e2 = doc.createElement("sub2");
-    e2.setAttribute("one", "1");
-    e2.setAttribute("two", "2");
+    Element e2 = doc.createElement("sub2"); //$NON-NLS-1$
+    e2.setAttribute("one", "1"); //$NON-NLS-1$ //$NON-NLS-2$
+    e2.setAttribute("two", "2"); //$NON-NLS-1$ //$NON-NLS-2$
     e.appendChild(e2);
-    Element e3 = doc.createElement("sub3");
-    Element e4 = doc.createElement("sub4");
-    e4.appendChild(doc.createTextNode("4 > 2"));
+    Element e3 = doc.createElement("sub3"); //$NON-NLS-1$
+    Element e4 = doc.createElement("sub4"); //$NON-NLS-1$
+    e4.appendChild(doc.createTextNode("4 > 2")); //$NON-NLS-1$
     e3.appendChild(e4);
     e.appendChild(e3);
     doc.appendChild(e);
     System.err.println(toString(doc));
-    System.err.println("StringBuffer");
+    System.err.println("StringBuffer"); //$NON-NLS-1$
     StringBuffer buf = new StringBuffer(300000);
     for (int i = 0; i < 500000; ++i) {
-      buf.append("  ");
+      buf.append("  "); //$NON-NLS-1$
       if (i % 10000 == 0) {
-        System.err.println("" + buf.length());
+        System.err.println("" + buf.length()); //$NON-NLS-1$
       }
     }
   }

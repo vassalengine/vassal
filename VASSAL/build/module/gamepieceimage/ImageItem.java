@@ -39,16 +39,16 @@ import VASSAL.tools.SequenceEncoder;
 
 public class ImageItem extends Item {
 
-  public static final String TYPE = "Image";
+  public static final String TYPE = "Image"; //$NON-NLS-1$
   
   public static final String SRC_VARIABLE = "Specified in individual images";
   public static final String SRC_FIXED = "Fixed for this layout";
   
-  protected static final String IMAGE = "image";
-  public static final String SOURCE = "source";
+  protected static final String IMAGE = "image"; //$NON-NLS-1$
+  public static final String SOURCE = "source"; //$NON-NLS-1$
 
   protected String imageSource = SRC_FIXED;
-  protected String imageName = "";
+  protected String imageName = ""; //$NON-NLS-1$
   protected Image image = null;
   protected Rectangle imageBounds = new Rectangle();
   
@@ -129,7 +129,7 @@ public class ImageItem extends Item {
       return imageName;
     }  
     else if (SOURCE.equals(key)) {
-      return imageSource + "";
+      return imageSource + ""; //$NON-NLS-1$
     }
     else {
       return super.getAttributeValueString(key);
@@ -242,7 +242,7 @@ public class ImageItem extends Item {
     ImageItem item = new ImageItem(l);
     
     sd.nextToken();
-    item.imageName = sd.nextToken("");
+    item.imageName = sd.nextToken(""); //$NON-NLS-1$
     item.imageSource = sd.nextToken(SRC_FIXED);
     
     return item;
@@ -252,8 +252,8 @@ public class ImageItem extends Item {
    
     SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
     
-    se1.append(imageName+"");
-    se1.append(imageSource+"");
+    se1.append(imageName+""); //$NON-NLS-1$
+    se1.append(imageSource+""); //$NON-NLS-1$
    
     SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());

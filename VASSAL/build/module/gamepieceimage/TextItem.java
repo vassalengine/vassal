@@ -38,24 +38,24 @@ import VASSAL.tools.SequenceEncoder;
 
 public class TextItem extends Item {
 
-  public static final String TYPE = "Text";
+  public static final String TYPE = "Text"; //$NON-NLS-1$
 
-  protected static final String FONT = "font";
-  protected static final String SOURCE = "source";
-  protected static final String TEXT = "text";
+  protected static final String FONT = "font"; //$NON-NLS-1$
+  protected static final String SOURCE = "source"; //$NON-NLS-1$
+  protected static final String TEXT = "text"; //$NON-NLS-1$
 
-  protected static final String LEFT = "left";
-  protected static final String CENTER = "center";
-  protected static final String RIGHT = "right";
-  protected static final String TOP = "top";
-  protected static final String BOTTOM = "bottom";
+  protected static final String LEFT = "left"; //$NON-NLS-1$
+  protected static final String CENTER = "center"; //$NON-NLS-1$
+  protected static final String RIGHT = "right"; //$NON-NLS-1$
+  protected static final String TOP = "top"; //$NON-NLS-1$
+  protected static final String BOTTOM = "bottom"; //$NON-NLS-1$
 
-  public static final String SRC_VARIABLE = "Specified in individual images";
-  public static final String SRC_FIXED = "Fixed for this layout";
+  public static final String SRC_VARIABLE = "Specified in individual images"; //$NON-NLS-1$
+  public static final String SRC_FIXED = "Fixed for this layout"; //$NON-NLS-1$
 
-  protected static final String PIECE_NAME = "pieceName";
-  protected static final String LABEL = "label";
-  protected static final String DEFAULT_FORMAT = "$"+PIECE_NAME+"$";
+  protected static final String PIECE_NAME = "pieceName"; //$NON-NLS-1$
+  protected static final String LABEL = "label"; //$NON-NLS-1$
+  protected static final String DEFAULT_FORMAT = "$"+PIECE_NAME+"$"; //$NON-NLS-1$ //$NON-NLS-2$
 
   public static final int AL_CENTER = 0;
   public static final int AL_RIGHT = 1;
@@ -63,14 +63,14 @@ public class TextItem extends Item {
   public static final int AL_TOP = 3;
   public static final int AL_BOTTOM = 4;
 
-  protected String fontStyleName = "Default";
+  protected String fontStyleName = "Default"; //$NON-NLS-1$
   protected String textSource = SRC_VARIABLE;
-  protected String text = "";
+  protected String text = ""; //$NON-NLS-1$
 
-  protected String changeCmd = "";
+  protected String changeCmd = ""; //$NON-NLS-1$
   protected KeyStroke changeKey;
   protected boolean lockable = false;
-  protected String lockCmd = "";
+  protected String lockCmd = ""; //$NON-NLS-1$
   protected KeyStroke lockKey;
 
   public TextItem() {
@@ -148,7 +148,7 @@ public class TextItem extends Item {
       return fontStyleName;
     }
     else if (SOURCE.equals(key)) {
-      return textSource + "";
+      return textSource + ""; //$NON-NLS-1$
     }
     else if (TEXT.equals(key)) {
       return text;
@@ -281,10 +281,10 @@ public class TextItem extends Item {
     	item.fontStyleName = FontManager.DEFAULT;
     }
     item.textSource = sd.nextToken(SRC_VARIABLE);
-    item.text = sd.nextToken("");
-    item.changeCmd = sd.nextToken("");
+    item.text = sd.nextToken(""); //$NON-NLS-1$
+    item.changeCmd = sd.nextToken(""); //$NON-NLS-1$
     item.changeKey = sd.nextKeyStroke(null);
-    item.lockCmd = sd.nextToken("");
+    item.lockCmd = sd.nextToken(""); //$NON-NLS-1$
     item.lockKey = sd.nextKeyStroke(null);
     item.lockable = sd.nextBoolean(false);
 
@@ -294,7 +294,7 @@ public class TextItem extends Item {
 
     SequenceEncoder se1 = new SequenceEncoder(TextItem.TYPE, ';');
 
-    se1.append(fontStyleName == null ? "" : fontStyleName);
+    se1.append(fontStyleName == null ? "" : fontStyleName); //$NON-NLS-1$
     se1.append(textSource);
     se1.append(text);
     se1.append(changeCmd);

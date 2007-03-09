@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 /**
  * When invoked, will join a game room on the server
  */
-//I18n: Complete
 public class JoinRoomAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
@@ -35,7 +34,7 @@ public class JoinRoomAction extends AbstractAction {
   private ChatServerConnection client;
 
   public JoinRoomAction(Room r, ChatServerConnection client) {
-    super(Resources.getString("Chat.join_room"));
+    super(Resources.getString("Chat.join_room")); //$NON-NLS-1$
     this.r = r;
     this.client = client;
     setEnabled(r != null && !r.equals(client.getRoom()));

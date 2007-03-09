@@ -64,23 +64,22 @@ import VASSAL.preferences.StringPreference;
 import VASSAL.preferences.TextPreference;
 import VASSAL.tools.FormattedString;
 
-// I18n: Partial
 public class GlobalOptions extends AbstractConfigurable {
-  public static final String NON_OWNER_UNMASKABLE = "nonOwnerUnmaskable";
-  public static final String PROMPT_STRING = "promptString";
-  public static final String CENTER_ON_MOVE = "centerOnMove";
-  public static final String MARK_MOVED = "markMoved";
-  public static final String AUTO_REPORT = "autoReport";
+  public static final String NON_OWNER_UNMASKABLE = "nonOwnerUnmaskable"; //$NON-NLS-1$
+  public static final String PROMPT_STRING = "promptString"; //$NON-NLS-1$
+  public static final String CENTER_ON_MOVE = "centerOnMove"; //$NON-NLS-1$
+  public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
+  public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
   public static final String ALWAYS = "Always";
   public static final String NEVER = "Never";
   public static final String PROMPT = "Use Preferences Setting";
-  public static final String SINGLE_WINDOW = "singleWindow";
-  public static final String SCALER_ALGORITHM = "scalerAlgorithm";
+  public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
+  public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$
 
-  public static final String PLAYER_NAME = "playerName";
-  public static final String PLAYER_SIDE = "playerSide";
-  public static final String PLAYER_ID = "playerId";
-  public static final String PLAYER_ID_FORMAT = "playerIdFormat";
+  public static final String PLAYER_NAME = "playerName"; //$NON-NLS-1$
+  public static final String PLAYER_SIDE = "playerSide"; //$NON-NLS-1$
+  public static final String PLAYER_ID = "playerId"; //$NON-NLS-1$
+  public static final String PLAYER_ID_FORMAT = "playerIdFormat"; //$NON-NLS-1$
 
   private String promptString = "Opponents can unmask my pieces";
   private String nonOwnerUnmaskable = NEVER;
@@ -92,7 +91,7 @@ public class GlobalOptions extends AbstractConfigurable {
   private java.util.Map optionConfigurers = new LinkedHashMap();
   private Properties optionInitialValues = new Properties();
 
-  private FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$");
+  private FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$"); //$NON-NLS-1$ //$NON-NLS-2$
 
   private static GlobalOptions instance;
   private boolean useSingleWindow;
@@ -101,11 +100,11 @@ public class GlobalOptions extends AbstractConfigurable {
   public void addTo(Buildable parent) {
     instance = this;
 
-    BooleanConfigurer config = new BooleanConfigurer(SINGLE_WINDOW, Resources.getString("GlobalOptions.use_combined"), Boolean.TRUE);
+    BooleanConfigurer config = new BooleanConfigurer(SINGLE_WINDOW, Resources.getString("GlobalOptions.use_combined"), Boolean.TRUE); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(config);
     useSingleWindow = !Boolean.FALSE.equals(config.getValue());
 
-    config = new BooleanConfigurer(SCALER_ALGORITHM, Resources.getString("GlobalOptions.smooth_scaling"), Boolean.TRUE);
+    config = new BooleanConfigurer(SCALER_ALGORITHM, Resources.getString("GlobalOptions.smooth_scaling"), Boolean.TRUE); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(config);
     scalerAlgorithm = !Boolean.FALSE.equals(config.getValue());
 
@@ -128,7 +127,7 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Global Options";
+    return "Global Options"; //$NON-NLS-1$
   }
 
   public static class Prompt extends StringEnum {
@@ -208,8 +207,8 @@ public class GlobalOptions extends AbstractConfigurable {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
           Element element = (Element) node;
           String name = element.getTagName();
-          if (name.equals("option")) {
-            optionInitialValues.put(element.getAttribute("name"),Builder.getText(element));
+          if (name.equals("option")) { //$NON-NLS-1$
+            optionInitialValues.put(element.getAttribute("name"),Builder.getText(element)); //$NON-NLS-1$
           }
           else {
             Buildable b = null;
@@ -221,18 +220,18 @@ public class GlobalOptions extends AbstractConfigurable {
             catch (Throwable err) {
               String msg = err.getMessage();
               if (msg == null) {
-                msg = err.getClass().getName().substring(err.getClass().getName().lastIndexOf(".") + 1);
+                msg = err.getClass().getName().substring(err.getClass().getName().lastIndexOf(".") + 1); //$NON-NLS-1$
               }
               System.err.println(b.toString());
               err.printStackTrace();
               JOptionPane.showMessageDialog
                 (null,
-                 Resources.getString("GlobalOptions.create_error", 
+                 Resources.getString("GlobalOptions.create_error",  //$NON-NLS-1$
                      new String[] {
                            ((Element) b).getTagName(),
                            GameModule.getGameModule().getDataArchive().getName(),
                            msg }),
-                 Resources.getString("GlobalOptions.error"),
+                 Resources.getString("GlobalOptions.error"), //$NON-NLS-1$
                  JOptionPane.ERROR_MESSAGE);
             }
           }
@@ -245,8 +244,8 @@ public class GlobalOptions extends AbstractConfigurable {
     Element e = super.getBuildElement(doc);
     for (Iterator it = optionConfigurers.values().iterator(); it.hasNext();) {
       Configurer configurer = (Configurer) it.next();
-      Element option = doc.createElement("option");
-      option.setAttribute("name",configurer.getKey());
+      Element option = doc.createElement("option"); //$NON-NLS-1$
+      option.setAttribute("name",configurer.getKey()); //$NON-NLS-1$
       option.appendChild(doc.createTextNode(configurer.getValueString()));
       e.appendChild(option);
     }
@@ -293,7 +292,7 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GlobalOptions.htm");
+    return HelpFile.getReferenceManualPage("GlobalOptions.htm"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {
@@ -321,21 +320,21 @@ public class GlobalOptions extends AbstractConfigurable {
     else if (CENTER_ON_MOVE.equals(key)) {
       centerOnMoves = (String) value;
       if (PROMPT.equals(centerOnMoves)) {
-        BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move"));
+        BooleanConfigurer config = new BooleanConfigurer(CENTER_ON_MOVE, Resources.getString("GlobalOptions.center_on_move")); //$NON-NLS-1$
         GameModule.getGameModule().getPrefs().addOption(config);
       }
     }
     else if (AUTO_REPORT.equals(key)) {
       autoReport = (String) value;
       if (PROMPT.equals(autoReport)) {
-        BooleanConfigurer config = new BooleanConfigurer(AUTO_REPORT, Resources.getString("GlobalOptions.auto_report"));
+        BooleanConfigurer config = new BooleanConfigurer(AUTO_REPORT, Resources.getString("GlobalOptions.auto_report")); //$NON-NLS-1$
         GameModule.getGameModule().getPrefs().addOption(config);
       }
     }
     else if (MARK_MOVED.equals(key)) {
       markMoved = (String) value;
       if (PROMPT.equals(markMoved)) {
-        BooleanConfigurer config = new BooleanConfigurer(MARK_MOVED, Resources.getString("GlobalOptions.mark_moved"));
+        BooleanConfigurer config = new BooleanConfigurer(MARK_MOVED, Resources.getString("GlobalOptions.mark_moved")); //$NON-NLS-1$
         GameModule.getGameModule().getPrefs().addOption(config);
       }
     }

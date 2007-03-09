@@ -104,7 +104,7 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Image Definitions";
+    return "Game Piece Image Definitions"; //$NON-NLS-1$
   }
 
   public void add(Buildable b) {
@@ -134,7 +134,7 @@ public class GamePieceImageDefinitions extends AbstractConfigurable {
   }
   
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm");
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {

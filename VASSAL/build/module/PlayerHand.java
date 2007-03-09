@@ -60,7 +60,7 @@ public class PlayerHand extends PrivateMap {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PlayerHand.htm");
+    return HelpFile.getReferenceManualPage("PlayerHand.htm"); //$NON-NLS-1$
   }
 
   public StackMetrics getStackMetrics() {

@@ -32,19 +32,19 @@ import VASSAL.tools.SequenceEncoder;
 
 public class ColorSwatch extends AbstractConfigurable implements Comparable {
 
-  protected static final String NAME = "name";
-  protected static final String COLOR = "color";
+  protected static final String NAME = "name"; //$NON-NLS-1$
+  protected static final String COLOR = "color"; //$NON-NLS-1$
   
-  public static final String BLACK = "BLACK";
-  public static final String WHITE = "WHITE";
-  public static final String CLEAR = "CLEAR";
-  public static final String RED = "RED";
+  public static final String BLACK = "BLACK"; //$NON-NLS-1$
+  public static final String WHITE = "WHITE"; //$NON-NLS-1$
+  public static final String CLEAR = "CLEAR"; //$NON-NLS-1$
+  public static final String RED = "RED"; //$NON-NLS-1$
   
   protected Color color;
 
   public ColorSwatch() {
     super();
-    name = "";
+    name = ""; //$NON-NLS-1$
     color = null;
   }
   
@@ -153,7 +153,7 @@ public class ColorSwatch extends AbstractConfigurable implements Comparable {
     setConfigureName(sd.nextToken());
     Color c = ColorManager.getColorManager().getColorByName(getConfigureName());
     if (c == null && !getConfigureName().equals(CLEAR)) {
-      c = ColorManager.getColorManager().getColorByName("BLACK");
+      c = ColorManager.getColorManager().getColorByName("BLACK"); //$NON-NLS-1$
     }
     setColor(c);
     //setColor(sd.nextColor(Color.BLACK));

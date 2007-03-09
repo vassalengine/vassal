@@ -28,10 +28,10 @@ import VASSAL.configure.IconConfigurer;
 
 public class SpecialDieFace extends AbstractConfigurable {
 
-  public static final String TEXT = "text";
-  public static final String NUMERICAL_VALUE = "value";
-  public static final String ICON = "icon";
-  public static final String IMAGE = "image";
+  public static final String TEXT = "text"; //$NON-NLS-1$
+  public static final String NUMERICAL_VALUE = "value"; //$NON-NLS-1$
+  public static final String ICON = "icon"; //$NON-NLS-1$
+  public static final String IMAGE = "image"; //$NON-NLS-1$
 
   private int value;
   private String imageName;
@@ -102,7 +102,7 @@ public class SpecialDieFace extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (NUMERICAL_VALUE.equals(key)) {
-      return "" + value;
+      return "" + value; //$NON-NLS-1$
     }
     else if (ICON.equals(key)) {
       return imageName;
@@ -112,7 +112,7 @@ public class SpecialDieFace extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "SpecialDiceButton");
+    return HelpFile.getReferenceManualPage("GameModule.htm", "SpecialDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public Class[] getAllowableConfigureComponents() {

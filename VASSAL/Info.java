@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "2.9.9";
+  private static final String VERSION = "2.9.9"; //$NON-NLS-1$
   private static Boolean is2dEnabled;
   private static Boolean isDndEnabled;
   /** This class should not be instantiated */
@@ -53,7 +53,7 @@ public final class Info {
   public static boolean isDndEnabled() {
     if (isDndEnabled == null) {
       try {
-        Class.forName("java.awt.dnd.DropTarget");
+        Class.forName("java.awt.dnd.DropTarget"); //$NON-NLS-1$
         isDndEnabled = Boolean.TRUE;
       }
       catch (ClassNotFoundException e) {
@@ -83,7 +83,7 @@ public final class Info {
   public static boolean is2dEnabled() {
     if (is2dEnabled == null) {
       try {
-        Class.forName("java.awt.Graphics2D");
+        Class.forName("java.awt.Graphics2D"); //$NON-NLS-1$
         is2dEnabled = Boolean.TRUE;
       }
       catch (ClassNotFoundException e) {
@@ -94,9 +94,9 @@ public final class Info {
   }
 
   public static boolean isMacOsX() {
-    String os = System.getProperty("os.name");
-    return os.toLowerCase().indexOf("mac") >= 0
-      && os.toLowerCase().indexOf("x") > 0;
+    String os = System.getProperty("os.name"); //$NON-NLS-1$
+    return os.toLowerCase().indexOf("mac") >= 0 //$NON-NLS-1$
+      && os.toLowerCase().indexOf("x") > 0; //$NON-NLS-1$
   }
 
   /**
@@ -110,8 +110,8 @@ public final class Info {
    */
   public static int compareVersions(String v1, String v2) {
     try {
-      int beta1 = v1.indexOf("b");
-      int beta2 = v2.indexOf("b");
+      int beta1 = v1.indexOf("b"); //$NON-NLS-1$
+      int beta2 = v2.indexOf("b"); //$NON-NLS-1$
       if (beta1 > 0) {
         if (beta2 > 0) {
           return compareVersions(v1.substring(0, beta1), v2.substring(0, beta2)) < 0 ?
@@ -128,8 +128,8 @@ public final class Info {
           < 0 ? -1 : 1;
       }
       else {
-        StringTokenizer s1 = new StringTokenizer(v1, ".");
-        StringTokenizer s2 = new StringTokenizer(v2, ".");
+        StringTokenizer s1 = new StringTokenizer(v1, "."); //$NON-NLS-1$
+        StringTokenizer s2 = new StringTokenizer(v2, "."); //$NON-NLS-1$
         while (s1.hasMoreTokens()
           && s2.hasMoreTokens()) {
           int comp = Integer.parseInt(s1.nextToken())
@@ -150,7 +150,7 @@ public final class Info {
       }
     }
     catch (NumberFormatException ex) {
-      System.err.println("Invalid version format :" + v1 + ", " + v2);
+      System.err.println("Invalid version format :" + v1 + ", " + v2); //$NON-NLS-1$ //$NON-NLS-2$
       return 0;
     }
   }

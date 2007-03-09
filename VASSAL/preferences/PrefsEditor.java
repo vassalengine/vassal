@@ -47,7 +47,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
 
-//I18n: Complete
 public class PrefsEditor {
   private JDialog dialog;
   private Vector options = new Vector();
@@ -65,7 +64,7 @@ public class PrefsEditor {
     savedValues = new Hashtable();
     this.archive = archive;
 
-    editAction = new AbstractAction(Resources.getString("Prefs.edit_preferences")) {
+    editAction = new AbstractAction(Resources.getString("Prefs.edit_preferences")) { //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
@@ -101,7 +100,7 @@ public class PrefsEditor {
   public void initDialog(Frame parent) {
     if (dialog == null) {
       dialog = new JDialog(parent, true);
-      dialog.setTitle(Resources.getString("Prefs.preferences"));
+      dialog.setTitle(Resources.getString("Prefs.preferences")); //$NON-NLS-1$
       dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
       //Handle window closing correctly.
@@ -130,7 +129,7 @@ public class PrefsEditor {
     if (prompt != null) {
       if (setupDialog == null) {
         setupDialog = new JDialog((Frame) null, true);
-        setupDialog.setTitle(Resources.getString("Prefs.initial_setup"));
+        setupDialog.setTitle(Resources.getString("Prefs.initial_setup")); //$NON-NLS-1$
         setupDialog.getContentPane().setLayout
             (new BoxLayout(setupDialog.getContentPane(), BoxLayout.Y_AXIS));
         setupDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -163,7 +162,7 @@ public class PrefsEditor {
 
   public void addOption(String category, Configurer c) {
     if (category == null) {
-      category = Resources.getString("Prefs.general_tab");
+      category = Resources.getString("Prefs.general_tab"); //$NON-NLS-1$
     }
     JPanel pan = null;
     int i = 0;
@@ -222,7 +221,7 @@ public class PrefsEditor {
       write();
     }
     catch (IOException e) {
-      JOptionPane.showMessageDialog(dialog.getOwner(), Resources.getString("Prefs.unable_to_save"), Resources.getString("Prefs.save_error"), JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(dialog.getOwner(), Resources.getString("Prefs.unable_to_save"), Resources.getString("Prefs.save_error"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
     }
     dialog.setVisible(false);
   }

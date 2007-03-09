@@ -27,15 +27,15 @@ import VASSAL.tools.SequenceEncoder;
 
 public class TextItemInstance extends ItemInstance {
 
-  protected static final String VALUE = "value";
-  protected static final String OUTLINE_COLOR = "outlineColor";
+  protected static final String VALUE = "value"; //$NON-NLS-1$
+  protected static final String OUTLINE_COLOR = "outlineColor"; //$NON-NLS-1$
 
-  protected String val = "";
+  protected String val = ""; //$NON-NLS-1$
   protected ColorSwatch outlineColor = ColorSwatch.getRed();
 
   public TextItemInstance() {
     super();
-    val = "Xx";
+    val = "Xx"; //$NON-NLS-1$
     outlineColor = ColorSwatch.getRed();
   }
 
@@ -44,7 +44,7 @@ public class TextItemInstance extends ItemInstance {
     if (val == null) {
       switch (nam.length()) {
         case 0:
-          setValue("Xx");
+          setValue("Xx"); //$NON-NLS-1$
           break;
         case 1:
           setValue(nam);
@@ -99,13 +99,13 @@ public class TextItemInstance extends ItemInstance {
 
   public void decode(String code) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
-    setType(sd.nextToken(""));
-    setName(sd.nextToken(""));
-    setLocation(sd.nextToken(""));
-    setFgColor(new ColorSwatch(sd.nextToken("")));
-    setBgColor(new ColorSwatch(sd.nextToken("")));
-    setValue(sd.nextToken(""));
-    setOutlineColor(new ColorSwatch(sd.nextToken("")));
+    setType(sd.nextToken("")); //$NON-NLS-1$
+    setName(sd.nextToken("")); //$NON-NLS-1$
+    setLocation(sd.nextToken("")); //$NON-NLS-1$
+    setFgColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
+    setBgColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
+    setValue(sd.nextToken("")); //$NON-NLS-1$
+    setOutlineColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
   }
 
   public String[] getAttributeDescriptions() {

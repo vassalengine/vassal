@@ -34,6 +34,7 @@ public class Resources {
   public static final String SAVE = "General.save";
   public static final String OK = "General.ok";
   public static final String MENU = "General.menu";
+  public static final String LOAD = "General.load";
   public static final String QUIT = "General.quit";
   public static final String EDIT = "General.edit";
   public static final String NEW = "General.new";

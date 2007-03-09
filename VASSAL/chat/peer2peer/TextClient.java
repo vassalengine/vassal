@@ -44,19 +44,19 @@ public class TextClient {
   }
 
   private void statusReceived(PropertyChangeEvent evt) {
-    System.out.println(""+evt.getNewValue());
+    System.out.println(""+evt.getNewValue()); //$NON-NLS-1$
   }
 
   private void incomingMessageReceived(PropertyChangeEvent evt) {
     String msg = (String) evt.getNewValue();
-    if (msg.startsWith("CHAT")) {
+    if (msg.startsWith("CHAT")) { //$NON-NLS-1$
       System.out.println(msg.substring(4));
     }
   }
 
   private void availableRoomsChanged(PropertyChangeEvent evt) {
     if (reportRooms) {
-      System.out.println("----------" + (new Date()) + "---------");
+      System.out.println("----------" + (new Date()) + "---------"); //$NON-NLS-1$ //$NON-NLS-2$
       System.out.print(report((VASSAL.chat.Room[]) evt.getNewValue()));
     }
   }
@@ -64,15 +64,15 @@ public class TextClient {
   public static String report(VASSAL.chat.Room[] r) {
     StringBuffer buffer = new StringBuffer();
     for (int i = 0; i < r.length; ++i) {
-      buffer.append(r[i].getName() + ": ");
+      buffer.append(r[i].getName() + ": "); //$NON-NLS-1$
       VASSAL.chat.Player[] p = (VASSAL.chat.Player[]) r[i].getPlayerList().toArray();
       for (int j = 0; j < p.length; ++j) {
         buffer.append(p[j]);
         if (j < p.length - 1) {
-          buffer.append(", ");
+          buffer.append(", "); //$NON-NLS-1$
         }
       }
-      buffer.append("\n");
+      buffer.append("\n"); //$NON-NLS-1$
     }
     return buffer.toString();
   }
@@ -229,7 +229,7 @@ public class TextClient {
   public static class Encoder implements CommandEncoder {
     public Command decode(String command) {
       Command c = null;
-      if (command.startsWith("CHAT")) {
+      if (command.startsWith("CHAT")) { //$NON-NLS-1$
         c = new ShowText(command.substring(4));
       }
       return c;
@@ -238,7 +238,7 @@ public class TextClient {
     public String encode(Command c) {
       String s = null;
       if (c instanceof ShowText) {
-        return "CHAT"+((ShowText)c).getMessage();
+        return "CHAT"+((ShowText)c).getMessage(); //$NON-NLS-1$
       }
       return s;
     }

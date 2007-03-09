@@ -43,8 +43,8 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class ObscurableOptions implements CommandEncoder, GameComponent {
   private static ObscurableOptions instance;
-  public static final String COMMAND_ID = "UNMASK\t";
-  public static final String PREFS_KEY = "OpponentUnmaskable";
+  public static final String COMMAND_ID = "UNMASK\t"; //$NON-NLS-1$
+  public static final String PREFS_KEY = "OpponentUnmaskable"; //$NON-NLS-1$
   private Vector allowed = new Vector();
   private Boolean override;
 

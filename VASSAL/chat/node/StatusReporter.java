@@ -71,15 +71,15 @@ public class StatusReporter implements Runnable {
         && !currentContents.equals(lastReportedContents)) {
       try {
         Properties props = new Properties();
-        props.put("STATUS", currentContents);
-        reportStatus.doPost("updateConnections", props);
+        props.put("STATUS", currentContents); //$NON-NLS-1$
+        reportStatus.doPost("updateConnections", props); //$NON-NLS-1$
         sleepInterval = MIN_SLEEP;
       }
       catch (IOException e) {
         sleepInterval = Math.min(2 * sleepInterval, MAX_SLEEP);
       }
       lastReportedContents = currentContents;
-      System.err.println("----" + new Date());
+      System.err.println("----" + new Date()); //$NON-NLS-1$
       System.err.println(currentContents);
     }
   }

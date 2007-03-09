@@ -26,10 +26,10 @@ import VASSAL.tools.SequenceEncoder;
 
 public class SymbolItemInstance extends ItemInstance {
 
-  public static final String SIZE = "size";
-  public static final String SIZE_COLOR = "sizeColor";
-  public static final String SYMBOL1 = "symbol1";
-  public static final String SYMBOL2 = "symbol2";
+  public static final String SIZE = "size"; //$NON-NLS-1$
+  public static final String SIZE_COLOR = "sizeColor"; //$NON-NLS-1$
+  public static final String SYMBOL1 = "symbol1"; //$NON-NLS-1$
+  public static final String SYMBOL2 = "symbol2"; //$NON-NLS-1$
   
   protected String size;
   protected String symbol1;
@@ -68,15 +68,15 @@ public class SymbolItemInstance extends ItemInstance {
   
   public void decode(String code) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
-    setType(sd.nextToken(""));
-    setName(sd.nextToken(""));
-    setLocation(sd.nextToken(""));
-    setFgColor(new ColorSwatch(sd.nextToken("")));
-    setBgColor(new ColorSwatch(sd.nextToken("")));
-    setSize(sd.nextToken(""));
-    setSymbol1(sd.nextToken(""));
-    setSymbol2(sd.nextToken(""));
-    setSizeColor(new ColorSwatch(sd.nextToken("")));
+    setType(sd.nextToken("")); //$NON-NLS-1$
+    setName(sd.nextToken("")); //$NON-NLS-1$
+    setLocation(sd.nextToken("")); //$NON-NLS-1$
+    setFgColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
+    setBgColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
+    setSize(sd.nextToken("")); //$NON-NLS-1$
+    setSymbol1(sd.nextToken("")); //$NON-NLS-1$
+    setSymbol2(sd.nextToken("")); //$NON-NLS-1$
+    setSizeColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
   }
   
   public void setSize(String size) {

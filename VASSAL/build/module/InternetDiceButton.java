@@ -40,9 +40,9 @@ import VASSAL.configure.FormattedStringConfigurer;
  */
 public class InternetDiceButton extends DiceButton implements GameComponent, CommandEncoder {
   protected static DieManager dieManager;
-  private static final String COMMAND_PREFIX = "SEMAIL\t";
+  private static final String COMMAND_PREFIX = "SEMAIL\t"; //$NON-NLS-1$
   /** Report format variale */
-  public static final String DETAILS = "rollDetails";
+  public static final String DETAILS = "rollDetails"; //$NON-NLS-1$
 
   public InternetDiceButton() {
     super();
@@ -146,6 +146,6 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "InternetDiceButton");
+    return HelpFile.getReferenceManualPage("GameModule.htm", "InternetDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 }

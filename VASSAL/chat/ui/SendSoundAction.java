@@ -31,7 +31,6 @@ import VASSAL.i18n.Resources;
 /**
  * Copyright (c) 2003 by Rodney Kinney. All rights reserved. Date: Jul 29, 2003
  */
-//I18n: Complete
 public class SendSoundAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
@@ -52,7 +51,7 @@ public class SendSoundAction extends AbstractAction {
 
   public static PlayerActionFactory factory(final ChatServerConnection client, final String name, final String soundKey, final String defaultSoundFile) {
     if (GameModule.getGameModule() != null) {
-      GameModule.getGameModule().getGlobalPrefs().addOption(Resources.getString("Prefs.sounds_tab"), new SoundConfigurer(soundKey, name, defaultSoundFile));
+      GameModule.getGameModule().getGlobalPrefs().addOption(Resources.getString("Prefs.sounds_tab"), new SoundConfigurer(soundKey, name, defaultSoundFile)); //$NON-NLS-1$
     }
     return new PlayerActionFactory() {
       public Action getAction(Player p, JTree tree) {

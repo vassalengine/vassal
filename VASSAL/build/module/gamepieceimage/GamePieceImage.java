@@ -42,15 +42,15 @@ import VASSAL.tools.UniqueIdManager;
  */
 public class GamePieceImage extends AbstractConfigurable implements Visualizable, Cloneable, ImageSource, UniqueIdManager.Identifyable {
 
-  protected static final String NAME = "name";
-  protected static final String PROPS = "props";
+  protected static final String NAME = "name"; //$NON-NLS-1$
+  protected static final String PROPS = "props"; //$NON-NLS-1$
 
-  public static final String PART_SIZE = "Size";
-  public static final String PART_SYMBOL1 = "Symbol1";
-  public static final String PART_SYMBOL2 = "Symbol2";
+  public static final String PART_SIZE = "Size"; //$NON-NLS-1$
+  public static final String PART_SYMBOL1 = "Symbol1"; //$NON-NLS-1$
+  public static final String PART_SYMBOL2 = "Symbol2"; //$NON-NLS-1$
 
-  public static final String BG_COLOR = "bgColor";
-  public static final String BORDER_COLOR = "borderColor";
+  public static final String BG_COLOR = "bgColor"; //$NON-NLS-1$
+  public static final String BORDER_COLOR = "borderColor"; //$NON-NLS-1$
 
   protected ArrayList instances = new ArrayList(5);
   protected InstanceConfigurer defnConfig = null;
@@ -59,14 +59,14 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   protected ColorSwatch borderColor = ColorSwatch.getBlack();
   protected String id;
 
-  protected static UniqueIdManager idMgr = new UniqueIdManager("GamePieceImage");
+  protected static UniqueIdManager idMgr = new UniqueIdManager("GamePieceImage"); //$NON-NLS-1$
   protected String nameInUse;
   
   protected static Image NULL_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR); // empty image for images scaled to zero size
 
   public GamePieceImage() {
     super();
-    setConfigureName("");
+    setConfigureName(""); //$NON-NLS-1$
   }
 
   public GamePieceImage(String s) {
@@ -104,7 +104,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Name:  ", "Background Color:  ", "Border Color:  ", ""};
+    return new String[] {"Name:  ", "Background Color:  ", "Border Color:  ", ""}; //$NON-NLS-4$
   }
 
   public Class[] getAttributeTypes() {
@@ -231,7 +231,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImage.htm");
+    return HelpFile.getReferenceManualPage("GamePieceImage.htm"); //$NON-NLS-1$
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -315,7 +315,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   public byte[] getEncodedImage(BufferedImage bufferedImage) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
-      ImageIO.write(bufferedImage,"png", out);
+      ImageIO.write(bufferedImage,"png", out); //$NON-NLS-1$
     }
     catch (IOException e) {
       e.printStackTrace();

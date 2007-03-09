@@ -34,7 +34,7 @@ public abstract class Compressor {
   public static byte[] compress(byte[] in) throws IOException {
     ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
     ZipOutputStream zipOut = new ZipOutputStream(byteOut);
-    zipOut.putNextEntry(new ZipEntry("Dummy"));
+    zipOut.putNextEntry(new ZipEntry("Dummy")); //$NON-NLS-1$
     zipOut.write(in);
     zipOut.close();
     return byteOut.toByteArray();
@@ -63,11 +63,11 @@ public abstract class Compressor {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
           try {
             String s = evt.getActionCommand();
-            System.err.println("Input (" + s.length() + ") = " + s);
+            System.err.println("Input (" + s.length() + ") = " + s); //$NON-NLS-1$ //$NON-NLS-2$
             String comp = new String(compress(s.getBytes()));
-            System.err.println("Compressed (" + comp.length() + ") = " + comp);
+            System.err.println("Compressed (" + comp.length() + ") = " + comp); //$NON-NLS-1$ //$NON-NLS-2$
             String decomp = new String(decompress(comp.getBytes()));
-            System.err.println("Decompressed (" + decomp.length() + ") = " + decomp);
+            System.err.println("Decompressed (" + decomp.length() + ") = " + decomp); //$NON-NLS-1$ //$NON-NLS-2$
           }
           catch (IOException ex) {
             ex.printStackTrace();
@@ -87,21 +87,21 @@ public abstract class Compressor {
       byte[] contents = byteOut.toByteArray();
       if (contents[0] == 'P' && contents[1] == 'K') {
         byte[] uncompressed = Compressor.decompress(contents);
-        FileOutputStream out = new FileOutputStream(args[0] + ".uncompressed");
+        FileOutputStream out = new FileOutputStream(args[0] + ".uncompressed"); //$NON-NLS-1$
         out.write(uncompressed);
         out.close();
         byte[] recompressed = Compressor.compress(uncompressed);
         if (!Arrays.equals(recompressed,contents)) {
-          throw new RuntimeException("Compression failed");
+          throw new RuntimeException("Compression failed"); //$NON-NLS-1$
         }
       }
       else {
         byte[] compressed = Compressor.compress(contents);
-        FileOutputStream out = new FileOutputStream(args[0] + ".compressed");
+        FileOutputStream out = new FileOutputStream(args[0] + ".compressed"); //$NON-NLS-1$
         out.write(compressed);
         out.close();
         if (!Arrays.equals(Compressor.decompress(compressed),contents)) {
-          throw new RuntimeException("Compression failed");
+          throw new RuntimeException("Compression failed"); //$NON-NLS-1$
         }
       }
     }

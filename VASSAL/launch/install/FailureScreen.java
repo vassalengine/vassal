@@ -22,7 +22,6 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-// I18n: Complete
 public class FailureScreen extends SuccessScreen {
   public FailureScreen(String msg) {
     super(msg);
@@ -35,7 +34,7 @@ public class FailureScreen extends SuccessScreen {
       msg = t.getClass().getName();
       msg = msg.substring(msg.lastIndexOf('.'));
     }
-    setMessage(Resources.getString("Install.installation_failed", msg));
+    setMessage(Resources.getString("Install.installation_failed", msg)); //$NON-NLS-1$
   }
 
   public void next() {

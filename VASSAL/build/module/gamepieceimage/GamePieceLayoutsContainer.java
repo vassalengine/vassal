@@ -102,7 +102,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
   }
   
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceLayouts.htm");
+    return HelpFile.getReferenceManualPage("GamePieceLayouts.htm"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {

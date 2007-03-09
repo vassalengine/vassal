@@ -69,7 +69,7 @@ public class Node implements MsgSender {
   }
 
   public void remove(Node child) {
-    logger.finer("Removing "+child+" from "+this);
+    logger.finer("Removing "+child+" from "+this); //$NON-NLS-1$ //$NON-NLS-2$
     children.remove(child);
   }
 
@@ -77,7 +77,7 @@ public class Node implements MsgSender {
     if (child.parent != null) {
       child.parent.remove(child);
     }
-    logger.finer("Adding "+child+" to "+this);
+    logger.finer("Adding "+child+" to "+this); //$NON-NLS-1$ //$NON-NLS-2$
     children.add(child);
     child.setParent(this);
   }
@@ -98,7 +98,7 @@ public class Node implements MsgSender {
   }
   
   public String toString() {
-    return super.toString()+"[id="+id+"]";
+    return super.toString()+"[id="+id+"]"; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**

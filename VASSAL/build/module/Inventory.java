@@ -104,19 +104,19 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   protected CounterInventory results;
   protected JTree tree;
 
-  public static final String VERSION = "2.1";
-  public static final String HOTKEY = "hotkey";
-  public static final String BUTTON_TEXT = "text";
-  public static final String NAME = "name";
-  public static final String ICON = "icon";
-  public static final String TOOLTIP = "tooltip";
+  public static final String VERSION = "2.1"; //$NON-NLS-1$
+  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String ICON = "icon"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
   // public static final String DEST = "destination";
 
   /*
    * For use in formatted text output.
    */
-  protected String mapSeparator = "\n";
-  protected String groupSeparator = "   ";
+  protected String mapSeparator = "\n"; //$NON-NLS-1$
+  protected String groupSeparator = "   "; //$NON-NLS-1$
 
   /*
    * Options Destination - Chat, Dialog, File.
@@ -127,62 +127,62 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 //  public static final String[] DEST_OPTIONS = { DEST_CHAT, DEST_DIALOG, DEST_TREE }; 
 //  protected String destination = DEST_TREE;
 
-  public static final String FILTER = "include";
-  protected String piecePropertiesFilter = "";
+  public static final String FILTER = "include"; //$NON-NLS-1$
+  protected String piecePropertiesFilter = ""; //$NON-NLS-1$
 
-  public static final String GROUP_BY = "groupBy";
-  protected String[] groupBy = {""};
+  public static final String GROUP_BY = "groupBy"; //$NON-NLS-1$
+  protected String[] groupBy = {""}; //$NON-NLS-1$
 
-  public static final String NON_LEAF_FORMAT = "nonLeafFormat";
-  protected String nonLeafFormat = "$PropertyValue$";
+  public static final String NON_LEAF_FORMAT = "nonLeafFormat"; //$NON-NLS-1$
+  protected String nonLeafFormat = "$PropertyValue$"; //$NON-NLS-1$
 
-  public static final String CENTERONPIECE = "centerOnPiece";
+  public static final String CENTERONPIECE = "centerOnPiece"; //$NON-NLS-1$
   protected boolean centerOnPiece = true;
 
-  public static final String FORWARD_KEYSTROKE = "forwardKeystroke";
+  public static final String FORWARD_KEYSTROKE = "forwardKeystroke"; //$NON-NLS-1$
   protected boolean forwardKeystroke = true;
 
-  public static final String SHOW_MENU = "showMenu";
+  public static final String SHOW_MENU = "showMenu"; //$NON-NLS-1$
   protected boolean showMenu = true;
 
-  public static final String SIDES = "sides";
+  public static final String SIDES = "sides"; //$NON-NLS-1$
   protected String[] sides = null;
 
-  public static final String KEYSTROKE = "keystroke";
+  public static final String KEYSTROKE = "keystroke"; //$NON-NLS-1$
   protected KeyStroke keyStroke = null;
 
-  public static final String CUTBELOWROOT = "cutRoot";
+  public static final String CUTBELOWROOT = "cutRoot"; //$NON-NLS-1$
   protected int cutBelowRoot = 0;
 
-  public static final String CUTABOVELEAVES = "cutLeaves";
+  public static final String CUTABOVELEAVES = "cutLeaves"; //$NON-NLS-1$
   protected int cutAboveLeaves = 0;
 
-  public static final String LEAF_FORMAT = "leafFormat";
-  protected String pieceFormat = "$PieceName$";
+  public static final String LEAF_FORMAT = "leafFormat"; //$NON-NLS-1$
+  protected String pieceFormat = "$PieceName$"; //$NON-NLS-1$
 
-  public static final String PIECE_ZOOM = "pieceZoom";
+  public static final String PIECE_ZOOM = "pieceZoom"; //$NON-NLS-1$
   protected double pieceZoom = .25;
 
-  public static final String DRAW_PIECES = "drawPieces";
+  public static final String DRAW_PIECES = "drawPieces"; //$NON-NLS-1$
   protected boolean drawPieces = true;
 
-  public static final String FOLDERS_ONLY = "foldersOnly";
+  public static final String FOLDERS_ONLY = "foldersOnly"; //$NON-NLS-1$
   protected boolean foldersOnly = false;
   
-  public static final String SORT_PIECES = "sortPieces";
+  public static final String SORT_PIECES = "sortPieces"; //$NON-NLS-1$
   protected boolean sortPieces = true;
 
-  public static final String SORT_FORMAT = "sortFormat";
-  protected String sortFormat = "$PieceName$";
+  public static final String SORT_FORMAT = "sortFormat"; //$NON-NLS-1$
+  protected String sortFormat = "$PieceName$"; //$NON-NLS-1$
 
-  public static final String ALPHA = "alpha";
-  public static final String LENGTHALPHA = "length";
-  public static final String NUMERIC = "numeric";
+  public static final String ALPHA = "alpha"; //$NON-NLS-1$
+  public static final String LENGTHALPHA = "length"; //$NON-NLS-1$
+  public static final String NUMERIC = "numeric"; //$NON-NLS-1$
   public static final String[] SORT_OPTIONS = { ALPHA, LENGTHALPHA, NUMERIC };
 
   protected String sortStrategy = ALPHA;
   
-  public static final String SORTING = "sorting";
+  public static final String SORTING = "sorting"; //$NON-NLS-1$
   
   protected JDialog frame;
 
@@ -193,10 +193,10 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       }
     };
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
-    setAttribute(NAME, Resources.getString("Inventory.inventory"));
-    setAttribute(BUTTON_TEXT, Resources.getString("Inventory.inventory"));
-    setAttribute(TOOLTIP, Resources.getString("Inventory.show_inventory"));
-    setAttribute(ICON, "/images/inventory.gif");
+    setAttribute(NAME, Resources.getString("Inventory.inventory")); //$NON-NLS-1$
+    setAttribute(BUTTON_TEXT, Resources.getString("Inventory.inventory")); //$NON-NLS-1$
+    setAttribute(TOOLTIP, Resources.getString("Inventory.show_inventory")); //$NON-NLS-1$
+    setAttribute(ICON, "/images/inventory.gif"); //$NON-NLS-1$
     launch.setEnabled(false);
     launch.setVisible(false);
   }
@@ -213,7 +213,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     GameModule.getGameModule().getGameState().addGameComponent(this);
     frame = new JDialog(GameModule.getGameModule().getFrame());
     frame.setTitle(getConfigureName());
-    String key = "Inventory." + getConfigureName();
+    String key = "Inventory." + getConfigureName(); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(new PositionOption(key, frame));
     frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
     frame.getContentPane().add(initTree());
@@ -251,7 +251,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
               final GamePiece piece = node.getCounter().getPiece();
               if (piece != null) {
                 JPopupMenu menu = MenuDisplayer.createPopup(piece);
-                menu.addPropertyChangeListener("visible", new PropertyChangeListener() {
+                menu.addPropertyChangeListener("visible", new PropertyChangeListener() { //$NON-NLS-1$
                   public void propertyChange(PropertyChangeEvent evt) {
                     if (Boolean.FALSE.equals(evt.getNewValue())) {
                       SwingUtilities.invokeLater(new Runnable() {
@@ -355,13 +355,13 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
    * TODO rework text display of Inventory
    */
   protected void inventoryToText() {
-	  StringBuffer output = new StringBuffer("");
+	  StringBuffer output = new StringBuffer(""); //$NON-NLS-1$
 	  FileChooser fc = GameModule.getGameModule().getFileChooser();
 	  if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) {
 		  return;
 	  }
 	  // TODO replace this hack
-	  mapSeparator = System.getProperty("line.separator");
+	  mapSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
 	  // groupSeparator = mapSeparator + "  ";
 	  // groupSeparator = " ";
 	  output.append(results.getResultString()); 
@@ -372,7 +372,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 				  .getSelectedFile().getPath()));
 		  p.print(output);
 		  p.close();
-	      Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString("Inventory.wrote", fc.getSelectedFile().getName()));
+	      Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString("Inventory.wrote", fc.getSelectedFile().getName())); //$NON-NLS-1$
 	      c.execute();
 	  } catch (IOException e) {
 		  JOptionPane.showMessageDialog(null, e.getMessage());
@@ -461,7 +461,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Inventory.htm");
+    return HelpFile.getReferenceManualPage("Inventory.htm"); //$NON-NLS-1$
   }
   
   public Class[] getAllowableConfigureComponents() {
@@ -493,7 +493,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, "/images/inventory.gif");
+      return new IconConfigurer(key, name, "/images/inventory.gif"); //$NON-NLS-1$
     }
   }
   public static class PieceFormatConfig implements ConfigurerFactory {
@@ -670,13 +670,13 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       return HotKeyConfigurer.encode(keyStroke);
     }
     else if (CUTBELOWROOT.equals(key)) {
-      return cutBelowRoot + "";
+      return cutBelowRoot + ""; //$NON-NLS-1$
     }
     else if (CUTABOVELEAVES.equals(key)) {
-      return cutAboveLeaves + "";
+      return cutAboveLeaves + ""; //$NON-NLS-1$
     }
     else if (SORT_PIECES.equals(key)) {
-        return sortPieces + "";
+        return sortPieces + ""; //$NON-NLS-1$
     }
     else if (SORT_FORMAT.equals(key)) {
     	return sortFormat;
@@ -954,7 +954,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     public Object getProperty(Object key) {
       Object value = null;
       String s = (String) key;
-      if (s.startsWith("sum_")) {
+      if (s.startsWith("sum_")) { //$NON-NLS-1$
         if (piece != null) {
           value = piece.getProperty(s.substring(4));
         }
@@ -973,7 +973,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
           value = String.valueOf(sum);
         }
       }
-      else if ("PropertyValue".equals(s)) {
+      else if ("PropertyValue".equals(s)) { //$NON-NLS-1$
         return localName;
       }
       else if (piece != null) {
@@ -1287,7 +1287,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 	 */
 	protected class Numerical extends CompareCounterNodes implements Comparator {
 
-		protected final String regex =  "\\d+";
+		protected final String regex =  "\\d+"; //$NON-NLS-1$
 		protected final Pattern p = Pattern.compile(regex);
 
 		/**

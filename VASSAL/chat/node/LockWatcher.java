@@ -55,7 +55,7 @@ public class LockWatcher extends Thread {
 
   private void pingServer() {
     try {
-      final Socket s = new Socket("localhost", port);
+      final Socket s = new Socket("localhost", port); //$NON-NLS-1$
       final Thread t = new Thread(new Timeout());
       SocketWatcher watcher = new SocketWatcher() {
         public void handleMessage(String msg) {
@@ -63,13 +63,13 @@ public class LockWatcher extends Thread {
         }
 
         public void socketClosed(SocketHandler handler) {
-          System.err.println("Server closed socket");
+          System.err.println("Server closed socket"); //$NON-NLS-1$
         }
       };
       SocketHandler sender = new BufferedSocketHandler(s, watcher);
       sender.start();
       t.start();
-      sender.writeLine(Protocol.encodeRegisterCommand("pinger", "ping/Main", ""));
+      sender.writeLine(Protocol.encodeRegisterCommand("pinger", "ping/Main", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       try {
         t.join();
       }
@@ -85,11 +85,11 @@ public class LockWatcher extends Thread {
     public void run() {
       try {
         sleep(timeout);
-        System.err.println("No response from server in "+(timeout/1000.0)+" seconds.  Terminating process");
+        System.err.println("No response from server in "+(timeout/1000.0)+" seconds.  Terminating process"); //$NON-NLS-1$ //$NON-NLS-2$
         System.exit(0);
       }
       catch (InterruptedException e) {
-        System.err.println("Ping");
+        System.err.println("Ping"); //$NON-NLS-1$
         // Interrupt means response received from server
       }
     }

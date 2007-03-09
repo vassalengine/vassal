@@ -43,32 +43,31 @@ import VASSAL.tools.LaunchButton;
  * This component places a button into the controls window toolbar.
  * Pressing the button generates random numbers and displays the
  * result in the Chatter */
-// I18n: Partial
 public class DiceButton extends AbstractConfigurable {
   protected java.util.Random ran;
   protected int nSides = 6, nDice = 2, plus = 0;
   protected boolean reportTotal = false;
   protected boolean promptAlways = false;
-  protected FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** <$" + GlobalOptions.PLAYER_NAME + "$>");
+  protected FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** <$" + GlobalOptions.PLAYER_NAME + "$>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
   protected LaunchButton launch;
-  protected String tooltip = "";
+  protected String tooltip = ""; //$NON-NLS-1$
 
-  public static final String DEPRECATED_NAME = "label";
-  public static final String BUTTON_TEXT = "text";
-  public static final String TOOLTIP = "tooltip";
-  public static final String NAME = "name";
-  public static final String ICON = "icon";
-  public static final String N_DICE = "nDice";
-  public static final String N_SIDES = "nSides";
-  public static final String PLUS = "plus";
-  public static final String HOTKEY = "hotkey";
-  public static final String REPORT_TOTAL = "reportTotal";
-  public static final String PROMPT_ALWAYS = "prompt";
-  public static final String REPORT_FORMAT = "reportFormat";
+  public static final String DEPRECATED_NAME = "label"; //$NON-NLS-1$
+  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String ICON = "icon"; //$NON-NLS-1$
+  public static final String N_DICE = "nDice"; //$NON-NLS-1$
+  public static final String N_SIDES = "nSides"; //$NON-NLS-1$
+  public static final String PLUS = "plus"; //$NON-NLS-1$
+  public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
+  public static final String REPORT_TOTAL = "reportTotal"; //$NON-NLS-1$
+  public static final String PROMPT_ALWAYS = "prompt"; //$NON-NLS-1$
+  public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
 
   /** Variable name for reporting format */
-  public static final String RESULT = "result";
-  public static final String REPORT_NAME = "name";
+  public static final String RESULT = "result"; //$NON-NLS-1$
+  public static final String REPORT_NAME = "name"; //$NON-NLS-1$
 
   public DiceButton() {
     ActionListener rollAction = new ActionListener() {
@@ -119,7 +118,7 @@ public class DiceButton extends AbstractConfigurable {
    * @deprecated
    */
   protected String getReportPrefix() {
-    return " *** " + getConfigureName() + " = ";
+    return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**
@@ -127,8 +126,8 @@ public class DiceButton extends AbstractConfigurable {
    * @deprecated
    */
   protected String getReportSuffix() {
-    return " ***  <"
-        + GameModule.getGameModule().getChatter().getHandle() + ">";
+    return " ***  <" //$NON-NLS-1$
+        + GameModule.getGameModule().getChatter().getHandle() + ">"; //$NON-NLS-1$
   }
 
   /**
@@ -136,7 +135,7 @@ public class DiceButton extends AbstractConfigurable {
    * method of the {@link Chatter} of the {@link GameModule}.  Format is
    * prefix+[comma-separated roll list]+suffix */
   protected void DR() {
-    String val = "";
+    String val = ""; //$NON-NLS-1$
     int total = 0;
     for (int i = 0; i < nDice; ++i) {
       int roll = (int) (ran.nextFloat() * nSides + 1) + plus;
@@ -146,7 +145,7 @@ public class DiceButton extends AbstractConfigurable {
       else {
         val += roll;
         if (i < nDice - 1)
-          val += ",";
+          val += ","; //$NON-NLS-1$
       }
     }
 
@@ -155,7 +154,7 @@ public class DiceButton extends AbstractConfigurable {
 
     String report = formatResult(val);
     GameModule.getGameModule().getChatter().send(report);
-    GameModule.getGameModule().getPropertyListener().propertyChange(new PropertyChangeEvent(this,getConfigureName()+"_result",null,val));
+    GameModule.getGameModule().getPropertyListener().propertyChange(new PropertyChangeEvent(this,getConfigureName()+"_result",null,val)); //$NON-NLS-1$
   }
 
   /**
@@ -167,7 +166,7 @@ public class DiceButton extends AbstractConfigurable {
     reportFormat.setProperty(REPORT_NAME, getConfigureName());
     reportFormat.setProperty(RESULT, result);
     String text = reportFormat.getText();
-    String report = text.startsWith("*") ? "*" + text : "* " + text;
+    String report = text.startsWith("*") ? "*" + text : "* " + text; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     return report;
   }
 
@@ -192,7 +191,7 @@ public class DiceButton extends AbstractConfigurable {
 
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, "/images/die.gif");
+      return new IconConfigurer(key, name, "/images/die.gif"); //$NON-NLS-1$
     }
   }
 
@@ -288,7 +287,7 @@ public class DiceButton extends AbstractConfigurable {
         reportTotal = ((Boolean) o).booleanValue();
       }
       else if (o instanceof String) {
-        reportTotal = "true".equals(o);
+        reportTotal = "true".equals(o); //$NON-NLS-1$
       }
     }
     else if (PROMPT_ALWAYS.equals(key)) {
@@ -296,7 +295,7 @@ public class DiceButton extends AbstractConfigurable {
         promptAlways = ((Boolean) o).booleanValue();
       }
       else if (o instanceof String) {
-        promptAlways = "true".equals(o);
+        promptAlways = "true".equals(o); //$NON-NLS-1$
       }
     }
     else if (REPORT_FORMAT.equals(key)) {
@@ -316,19 +315,19 @@ public class DiceButton extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (N_DICE.equals(key)) {
-      return "" + nDice;
+      return "" + nDice; //$NON-NLS-1$
     }
     else if (N_SIDES.equals(key)) {
-      return "" + nSides;
+      return "" + nSides; //$NON-NLS-1$
     }
     else if (PLUS.equals(key)) {
-      return "" + plus;
+      return "" + plus; //$NON-NLS-1$
     }
     else if (REPORT_TOTAL.equals(key)) {
-      return "" + reportTotal;
+      return "" + reportTotal; //$NON-NLS-1$
     }
     else if (PROMPT_ALWAYS.equals(key)) {
-      return "" + promptAlways;
+      return "" + promptAlways; //$NON-NLS-1$
     }
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
@@ -351,6 +350,6 @@ public class DiceButton extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm","DiceButton");
+    return HelpFile.getReferenceManualPage("GameModule.htm","DiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 }

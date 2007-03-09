@@ -23,8 +23,8 @@ import java.util.Properties;
  * @author rkinney
  */
 public class DynamicClientFactory extends ChatServerFactory {
-  public static final String DYNAMIC_TYPE = "dynamic";
-  public static final String URL = "url";
+  public static final String DYNAMIC_TYPE = "dynamic"; //$NON-NLS-1$
+  public static final String URL = "url"; //$NON-NLS-1$
 
   public ChatServerConnection buildServer(Properties param) {
     String url = param.getProperty(URL);

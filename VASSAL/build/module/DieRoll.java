@@ -27,7 +27,7 @@ package VASSAL.build.module;
  */
 public class DieRoll {
 
-  private String description = "";
+  private String description = ""; //$NON-NLS-1$
   private int numSides;
   private int plus;
   private boolean reportTotal;

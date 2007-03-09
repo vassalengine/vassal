@@ -26,7 +26,7 @@ import VASSAL.tools.SequenceEncoder;
 
 public class ShapeItemInstance extends ItemInstance {
 
-  public static final String BORDER_COLOR = "borderColor";
+  public static final String BORDER_COLOR = "borderColor"; //$NON-NLS-1$
   
   private ColorSwatch borderColor = ColorSwatch.getBlack();
   
@@ -58,11 +58,11 @@ public class ShapeItemInstance extends ItemInstance {
 
   public void decode(String code) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
-    setType(sd.nextToken(""));
-    setName(sd.nextToken(""));
-    setLocation(sd.nextToken(""));
-    setFgColor(new ColorSwatch(sd.nextToken("")));
-    setBorderColor(new ColorSwatch(sd.nextToken("")));
+    setType(sd.nextToken("")); //$NON-NLS-1$
+    setName(sd.nextToken("")); //$NON-NLS-1$
+    setLocation(sd.nextToken("")); //$NON-NLS-1$
+    setFgColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
+    setBorderColor(new ColorSwatch(sd.nextToken(""))); //$NON-NLS-1$
   }
 
   protected void setBorderColor(ColorSwatch borderColor) {

@@ -47,13 +47,13 @@ public class FontManager extends AbstractConfigurable {
     
   protected HashMap fontStyles = new HashMap();
 
-  public static final String DIALOG = "Dialog";
-  public static final String SERIF = "Serif";
-  public static final String SANS_SERIF = "SanSerif";
-  public static final String DIALOG_INPUT = "DialogInput";
-  public static final String MONOSPACED = "Monospaced";
+  public static final String DIALOG = "Dialog"; //$NON-NLS-1$
+  public static final String SERIF = "Serif"; //$NON-NLS-1$
+  public static final String SANS_SERIF = "SanSerif"; //$NON-NLS-1$
+  public static final String DIALOG_INPUT = "DialogInput"; //$NON-NLS-1$
+  public static final String MONOSPACED = "Monospaced"; //$NON-NLS-1$
   
-  public static final String DEFAULT = "Default";
+  public static final String DEFAULT = "Default"; //$NON-NLS-1$
   public static final OutlineFont DEFAULT_FONT = new OutlineFont(DIALOG, Font.PLAIN, 12, false);
   public static final FontStyle DEFAULT_STYLE = new FontStyle();
 
@@ -141,7 +141,7 @@ public class FontManager extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm","FontStyles");
+    return HelpFile.getReferenceManualPage("GamePieceImageDefinitions.htm","FontStyles"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public void removeFrom(Buildable parent) {

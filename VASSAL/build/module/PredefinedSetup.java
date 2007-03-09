@@ -32,16 +32,17 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 
 /**
  * Defines a saved game that is accessible from the File menu.
  * The game will be loaded in place of a normal New Game
  */
 public class PredefinedSetup extends AbstractConfigurable {
-  public static final String NAME = "name";
-  public static final String FILE = "file";
-  public static final String USE_FILE = "useFile";
-  public static final String IS_MENU = "isMenu";
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String FILE = "file"; //$NON-NLS-1$
+  public static final String USE_FILE = "useFile"; //$NON-NLS-1$
+  public static final String IS_MENU = "isMenu"; //$NON-NLS-1$
   protected boolean isMenu;
   protected boolean useFile=true;
   protected String fileName;
@@ -108,7 +109,7 @@ public class PredefinedSetup extends AbstractConfigurable {
       menu.setText((String) value);
     }
     else if (USE_FILE.equals(key)) {
-      useFile = "true".equals(value) || Boolean.TRUE.equals(value);
+      useFile = "true".equals(value) || Boolean.TRUE.equals(value); //$NON-NLS-1$
     }
     else if (FILE.equals(key)) {
       if (value instanceof File) {
@@ -140,9 +141,9 @@ public class PredefinedSetup extends AbstractConfigurable {
     if (useFile
       && fileName != null) {
       try {
-        int index = fileName.indexOf(".");
-        String prefix = index > 3 ? fileName.substring(0, index) : "VSL";
-        String suffix = index >= 0 ? fileName.substring(index) : ".sav";
+        int index = fileName.indexOf("."); //$NON-NLS-1$
+        String prefix = index > 3 ? fileName.substring(0, index) : "VSL"; //$NON-NLS-1$
+        String suffix = index >= 0 ? fileName.substring(index) : ".sav"; //$NON-NLS-1$
         File tmp = File.createTempFile(prefix, suffix);
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(tmp));
         BufferedInputStream in = new BufferedInputStream(GameModule.getGameModule().getDataArchive().getFileStream(fileName));
@@ -161,9 +162,9 @@ public class PredefinedSetup extends AbstractConfigurable {
       }
       catch (IOException e1) {
         e1.printStackTrace();
-        String msg = "Unable to start game";
+        String msg = Resources.getString("PredefinedSetup.unable_to_start_game"); //$NON-NLS-1$
         if (e1.getMessage() != null) {
-          msg += ":  " + e1.getMessage();
+          msg += ":  " + e1.getMessage(); //$NON-NLS-1$
         }
         GameModule.getGameModule().warn(msg);
       }
@@ -220,7 +221,7 @@ public class PredefinedSetup extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "PredefinedSetup");
+    return HelpFile.getReferenceManualPage("GameModule.htm", "PredefinedSetup"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public void removeFrom(Buildable parent) {

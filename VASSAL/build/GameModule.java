@@ -96,19 +96,18 @@ import VASSAL.tools.ToolBarComponent;
  * It is a singleton, and contains access points for many other classes,
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger},
  * and {@link Prefs} */
-//I18n: Complete
 public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, GlobalPropertiesContainer {
-  protected static final String DEFAULT_NAME = "Unnamed module"; 
-  public static final String MODULE_NAME = "name"; 
-  public static final String MODULE_VERSION = "version"; 
-  public static final String VASSAL_VERSION_CREATED = "VassalVersion"; 
+  protected static final String DEFAULT_NAME = "Unnamed module";  //$NON-NLS-1$
+  public static final String MODULE_NAME = "name";  //$NON-NLS-1$
+  public static final String MODULE_VERSION = "version";  //$NON-NLS-1$
+  public static final String VASSAL_VERSION_CREATED = "VassalVersion";  //$NON-NLS-1$
   /** The System property of this name will return a version identifier for the version of VASSAL being run */
-  public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion"; 
+  public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion";  //$NON-NLS-1$
 
   private static GameModule theModule;
 
-  protected String moduleVersion = "0.0"; 
-  protected String vassalVersionCreated = "0.0"; 
+  protected String moduleVersion = "0.0";  //$NON-NLS-1$
+  protected String vassalVersionCreated = "0.0";  //$NON-NLS-1$
   protected String gameName = DEFAULT_NAME;
   protected String lastSavedConfiguration;
   protected FileChooser fileChooser;
@@ -193,8 +192,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
         JOptionPane.showMessageDialog
             (null,
-             Resources.getString("GameModule.version_error", runningVersion, vassalVersionCreated), 
-             Resources.getString("GameModule.version_error_short"), 
+             Resources.getString("GameModule.version_error", runningVersion, vassalVersionCreated),  //$NON-NLS-1$
+             Resources.getString("GameModule.version_error_short"),  //$NON-NLS-1$
              JOptionPane.ERROR_MESSAGE);
       }
     }
@@ -234,14 +233,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.GameModule.component_type"); 
+    return Resources.getString("Editor.GameModule.component_type");  //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm"); 
+    return HelpFile.getReferenceManualPage("GameModule.htm");  //$NON-NLS-1$
   }
 
   public String[] getAttributeNames() {
@@ -249,7 +248,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.GameModule.name_label"), Resources.getString("Editor.GameModule.version_label")};
+    return new String[]{Resources.getString("Editor.GameModule.name_label"), Resources.getString("Editor.GameModule.version_label")}; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public Class[] getAttributeTypes() {
@@ -313,11 +312,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /** The {@link Prefs} key for the user's real name */
-  public static final String REAL_NAME = "RealName";
+  public static final String REAL_NAME = "RealName"; //$NON-NLS-1$
   /** The {@link Prefs} key for the user's secret name */
-  public static final String SECRET_NAME = "SecretName";
+  public static final String SECRET_NAME = "SecretName"; //$NON-NLS-1$
   /** The {@link Prefs} key for the user's personal info */
-  public static final String PERSONAL_INFO = "Profile";
+  public static final String PERSONAL_INFO = "Profile"; //$NON-NLS-1$
 
   /**
    * @return the preferences for this module
@@ -407,7 +406,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Display the given text in the control window's status line
    */
   public void warn(String s) {
-    chat.show(" - " + s);
+    chat.show(" - " + s); //$NON-NLS-1$
   }
 
   /**
@@ -468,7 +467,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         c = commandEncoders[i].decode(command);
       }
       if (c == null) {
-        System.err.println("Failed to decode " + command);
+        System.err.println("Failed to decode " + command); //$NON-NLS-1$
       }
       return c;
     }
@@ -486,12 +485,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       s = commandEncoders[i].encode(c);
     }
     if (s == null) {
-      System.err.println("Failed to encode " + c);
+      System.err.println("Failed to encode " + c); //$NON-NLS-1$
     }
     return s;
   }
 
-  private static final String SAVE_DIR = "SaveDir";
+  private static final String SAVE_DIR = "SaveDir"; //$NON-NLS-1$
 
   /**
    * @return a common FileChooser so that recent file locations
@@ -553,7 +552,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public void appendToTitle(String s) {
     if (s == null) {
-      frame.setTitle(Resources.getString("GameModule.frame_title", gameName)); 
+      frame.setTitle(Resources.getString("GameModule.frame_title", gameName));  //$NON-NLS-1$
     }
     else {
       frame.setTitle(frame.getTitle() + s);
@@ -580,8 +579,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         if (getDataArchive() instanceof ArchiveWriter
             && !buildString().equals(lastSavedConfiguration)) {
           switch (JOptionPane.showConfirmDialog
-              (frame, Resources.getString("GameModule.save_module"), 
-               "", JOptionPane.YES_NO_CANCEL_OPTION)) { 
+              (frame, Resources.getString("GameModule.save_module"),  //$NON-NLS-1$
+               "", JOptionPane.YES_NO_CANCEL_OPTION)) {  //$NON-NLS-1$
             case JOptionPane.YES_OPTION:
               save();
               break;
@@ -649,7 +648,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public static void init(GameModule module) throws IOException {
     if (theModule != null) {
-      throw new IOException(Resources.getString("GameModule.open_error", theModule.getDataArchive().getName())); 
+      throw new IOException(Resources.getString("GameModule.open_error", theModule.getDataArchive().getName()));  //$NON-NLS-1$
     }
     else {
       theModule = module;
@@ -712,8 +711,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     try {
       String save = buildString();
       getArchiveWriter().addFile
-          ("buildFile", 
-           new java.io.ByteArrayInputStream(save.getBytes("UTF-8"))); 
+          ("buildFile",  //$NON-NLS-1$
+           new java.io.ByteArrayInputStream(save.getBytes("UTF-8")));  //$NON-NLS-1$
       if (saveAs) {
         getArchiveWriter().saveAs();
       }
@@ -726,8 +725,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       err.printStackTrace();
       JOptionPane.showMessageDialog
           (frame,
-           Resources.getString("GameModule.save_error", err.getMessage()),
-           Resources.getString("GameModule.save_error_short"), 
+           Resources.getString("GameModule.save_error", err.getMessage()), //$NON-NLS-1$
+           Resources.getString("GameModule.save_error_short"),  //$NON-NLS-1$
            JOptionPane.ERROR_MESSAGE);
     }
   }
@@ -744,7 +743,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public Object getProperty(Object key) {
     if (GlobalOptions.PLAYER_SIDE.equals(key)) {
       String mySide = PlayerRoster.getMySide();
-      return mySide == null ? "" : mySide; 
+      return mySide == null ? "" : mySide;  //$NON-NLS-1$
     }
     else if (GlobalOptions.PLAYER_NAME.equals(key)) {
       return getPrefs().getValue(GameModule.REAL_NAME);

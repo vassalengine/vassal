@@ -79,7 +79,6 @@ import VASSAL.tools.FormattedString;
  * @author David Sullivan
  * @version 1.0
  */
-// I18n: Partial
 public class CounterDetailViewer extends AbstractConfigurable implements Drawable, MouseMotionListener, MouseListener, Runnable, KeyListener {
 
   public static final String LATEST_VERSION = "2";

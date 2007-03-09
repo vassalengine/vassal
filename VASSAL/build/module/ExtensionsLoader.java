@@ -34,20 +34,19 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.SequenceEncoder;
 
-// I18n: Complete
 public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
   // Preferences key for the list of extensions to load
-  private static final String SPECIFY_DIR_IN_PREFS = "specifyExtensionDirInPrefs";
-  private static final String EXTENSION_DIR = "extensionDIR";
-  public static final String COMMAND_PREFIX = "EXT\t";
+  private static final String SPECIFY_DIR_IN_PREFS = "specifyExtensionDirInPrefs"; //$NON-NLS-1$
+  private static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
+  public static final String COMMAND_PREFIX = "EXT\t"; //$NON-NLS-1$
 
   private Set loadedExtensions = new HashSet();
 
   public void addTo(GameModule mod) {
-    if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) {
-      DirectoryConfigurer config = new DirectoryConfigurer(EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory"));
+    if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
+      DirectoryConfigurer config = new DirectoryConfigurer(EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory")); //$NON-NLS-1$
       config.setValue((Object) null);
-      GameModule.getGameModule().getPrefs().addOption(Resources.getString("ExtensionsLoader.extensions_tab"), config);
+      GameModule.getGameModule().getPrefs().addOption(Resources.getString("ExtensionsLoader.extensions_tab"), config); //$NON-NLS-1$
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           addExtensions();
@@ -66,7 +65,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
           try {
             ModuleExtension ext = new ModuleExtension(new DataArchive(extensions[i]));
             ext.build();
-            String msg = Resources.getString("ExtensionsLoader.extension_loaded", ext.getName(), ext.getVersion());
+            String msg = Resources.getString("ExtensionsLoader.extension_loaded", ext.getName(), ext.getVersion()); //$NON-NLS-1$
             loadedExtensions.add(extensions[i]);
             GameModule.getGameModule().warn(msg);
             System.err.println(msg);
@@ -88,7 +87,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
       msg = e.getClass().getName();
       msg = msg.substring(msg.lastIndexOf('.'));
     }
-    GameModule.getGameModule().warn(Resources.getString("ExtensionsLoader.unable_to_load", name , msg));
+    GameModule.getGameModule().warn(Resources.getString("ExtensionsLoader.unable_to_load", name , msg)); //$NON-NLS-1$
   }
 
   public Command decode(String command) {
@@ -145,7 +144,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
 
   public static String getExtensionDirectory() {
     String dirName;
-    if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) {
+    if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
       dirName = GameModule.getGameModule().getPrefs().getOption(EXTENSION_DIR).getValueString();
     }
     else {
@@ -154,7 +153,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
       if (index > 0) {
         dirName = dirName.substring(0, index);
       }
-      dirName = dirName + "_ext";
+      dirName = dirName + "_ext"; //$NON-NLS-1$
     }
     return dirName;
   }

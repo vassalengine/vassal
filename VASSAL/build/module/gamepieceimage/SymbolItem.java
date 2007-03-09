@@ -32,14 +32,14 @@ import VASSAL.tools.SequenceEncoder;
 
 public class SymbolItem extends Item {  
 
-  public static final String TYPE = "Symbol";
+  public static final String TYPE = "Symbol"; //$NON-NLS-1$
   
-  protected static final String SET = "set";
-  protected static final String WIDTH = "width";
-  protected static final String HEIGHT = "height";
-  protected static final String LINE_WIDTH = "linewidth";
+  protected static final String SET = "set"; //$NON-NLS-1$
+  protected static final String WIDTH = "width"; //$NON-NLS-1$
+  protected static final String HEIGHT = "height"; //$NON-NLS-1$
+  protected static final String LINE_WIDTH = "linewidth"; //$NON-NLS-1$
 
-  protected String symbolSet = "";
+  protected String symbolSet = ""; //$NON-NLS-1$
   protected int height = 30;
   protected int width = 40;
   protected double lineWidth = 1.0f;
@@ -132,13 +132,13 @@ public class SymbolItem extends Item {
       return symbolSet;
     }
     else if (WIDTH.equals(key)) {
-      return width + "";
+      return width + ""; //$NON-NLS-1$
     }
     else if (HEIGHT.equals(key)) {
-      return height + "";
+      return height + ""; //$NON-NLS-1$
     }
     else if (LINE_WIDTH.equals(key)) {
-      return lineWidth + "";
+      return lineWidth + ""; //$NON-NLS-1$
     }
     else
       return super.getAttributeValueString(key);

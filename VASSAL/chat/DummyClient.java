@@ -32,9 +32,8 @@ import VASSAL.i18n.Resources;
  * @author rkinney
  *
  */
-// I18n: Complete
 public class DummyClient implements ChatServerConnection, ChatControlsInitializer {
-  private Player playerInfo = new SimplePlayer("<nobody>");
+  private Player playerInfo = new SimplePlayer("<nobody>"); //$NON-NLS-1$
   private HttpMessageServer httpMessageServer;
   private MessageBoardControlsInitializer msgControls;
   private ServerStatusControlsInitializer statusControls;
@@ -43,15 +42,15 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
   public DummyClient() {
     PeerPoolInfo publicInfo = new PeerPoolInfo() {
       public String getModuleName() {
-        return GameModule.getGameModule() == null ? "<unnamed module>" : GameModule.getGameModule().getGameName();
+        return GameModule.getGameModule() == null ? "<unnamed module>" : GameModule.getGameModule().getGameName(); //$NON-NLS-1$
       }
 
       public String getUserName() {
-        return GameModule.getGameModule() == null ? "<anonymous>" : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
+        return GameModule.getGameModule() == null ? "<anonymous>" : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME); //$NON-NLS-1$
       }
     };
     httpMessageServer = new HttpMessageServer(publicInfo);
-    msgControls = new MessageBoardControlsInitializer(Resources.getString("Chat.messages"),httpMessageServer);
+    msgControls = new MessageBoardControlsInitializer(Resources.getString("Chat.messages"),httpMessageServer); //$NON-NLS-1$
     statusControls = new ServerStatusControlsInitializer(new CgiServerStatus());
   }
 

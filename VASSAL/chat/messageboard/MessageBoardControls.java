@@ -38,7 +38,6 @@ import VASSAL.i18n.Resources;
  * UI controls for posting and retrieving messages from a
  * message board.
  */
-// I18n: Complete
 public class MessageBoardControls {
   private MessageBoard server;
   private String serverName;
@@ -71,16 +70,16 @@ public class MessageBoardControls {
   private void initComponents() {
     viewer = new MessageViewer();
 
-    msgFrame = new JFrame(Resources.getString("Chat.message_board")); 
+    msgFrame = new JFrame(Resources.getString("Chat.message_board"));  //$NON-NLS-1$
     msgFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     msgFrame.getContentPane().setLayout(new BoxLayout(msgFrame.getContentPane(), BoxLayout.Y_AXIS));
     msgFrame.getContentPane().add(viewer);
 
     Box box = Box.createHorizontalBox();
-    JButton b = new JButton(Resources.getString("Chat.refresh")); 
+    JButton b = new JButton(Resources.getString("Chat.refresh"));  //$NON-NLS-1$
     b.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
-        msgFrame.setTitle(serverName != null ? Resources.getString("Chat.message_board_title", serverName) : Resources.getString("Chat.message_board"));  
+        msgFrame.setTitle(serverName != null ? Resources.getString("Chat.message_board_title", serverName) : Resources.getString("Chat.message_board"));   //$NON-NLS-1$ //$NON-NLS-2$
         showMessages(server.getMessages());
       }
     });
@@ -96,35 +95,35 @@ public class MessageBoardControls {
 
     msgComposer = new Comp();
 
-    checkMessagesAction = new AbstractAction(Resources.getString("Chat.check_messages")) { 
+    checkMessagesAction = new AbstractAction(Resources.getString("Chat.check_messages")) {  //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {
-        msgFrame.setTitle(serverName != null ? Resources.getString("Chat.message_board_title", serverName) : Resources.getString("Chat.message_board"));  
+        msgFrame.setTitle(serverName != null ? Resources.getString("Chat.message_board_title", serverName) : Resources.getString("Chat.message_board"));   //$NON-NLS-1$ //$NON-NLS-2$
         showMessages(server.getMessages());
         msgFrame.setVisible(true);
       }
     };
 
-    URL imageURL = getClass().getResource("/images/getMessages.gif"); 
+    URL imageURL = getClass().getResource("/images/getMessages.gif");  //$NON-NLS-1$
     if (imageURL != null) {
       checkMessagesAction.putValue(Action.SHORT_DESCRIPTION, checkMessagesAction.getValue(Action.NAME));
-      checkMessagesAction.putValue(Action.NAME, ""); 
+      checkMessagesAction.putValue(Action.NAME, "");  //$NON-NLS-1$
       checkMessagesAction.putValue(Action.SMALL_ICON, new ImageIcon(imageURL));
     }
 
 
-    postMessageAction = new AbstractAction(Resources.getString("Chat.post_message")) { 
+    postMessageAction = new AbstractAction(Resources.getString("Chat.post_message")) {  //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {
         msgComposer.setVisible(true);
       }
     };
-    imageURL = getClass().getResource("/images/postMessage.gif"); 
+    imageURL = getClass().getResource("/images/postMessage.gif");  //$NON-NLS-1$
     if (imageURL != null) {
       postMessageAction.putValue(Action.SHORT_DESCRIPTION, postMessageAction.getValue(Action.NAME));
-      postMessageAction.putValue(Action.NAME, ""); 
+      postMessageAction.putValue(Action.NAME, "");  //$NON-NLS-1$
       postMessageAction.putValue(Action.SMALL_ICON, new ImageIcon(imageURL));
     }
 
@@ -144,25 +143,25 @@ public class MessageBoardControls {
     private static final long serialVersionUID = 1L;
 
     private Comp() {
-      super(Resources.getString("Chat.message_composer")); 
+      super(Resources.getString("Chat.message_composer"));  //$NON-NLS-1$
       getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       final JTextArea msgArea = new JTextArea(15, 60);
       Box b = Box.createHorizontalBox();
 
-      JButton okButton = new JButton(Resources.getString("Chat.send")); 
+      JButton okButton = new JButton(Resources.getString("Chat.send"));  //$NON-NLS-1$
       okButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
           server.postMessage(msgArea.getText());
           setVisible(false);
-          msgArea.setText(""); 
+          msgArea.setText("");  //$NON-NLS-1$
         }
       });
       JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
           setVisible(false);
-          msgArea.setText(""); 
+          msgArea.setText("");  //$NON-NLS-1$
         }
       });
 

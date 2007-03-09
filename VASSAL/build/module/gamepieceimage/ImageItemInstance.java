@@ -26,9 +26,9 @@ import VASSAL.tools.SequenceEncoder;
 
 public class ImageItemInstance extends ItemInstance {
 
-  protected static final String IMAGE = "image";
+  protected static final String IMAGE = "image"; //$NON-NLS-1$
   
-  protected String imageName = "";
+  protected String imageName = ""; //$NON-NLS-1$
   
   public ImageItemInstance() {
     super();
@@ -54,16 +54,16 @@ public class ImageItemInstance extends ItemInstance {
     se.append(getType());
     se.append(getName());
     se.append(getLocation());
-    se.append(imageName+"");
+    se.append(imageName+""); //$NON-NLS-1$
     return se.getValue();
   }
 
   public void decode(String code) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
-    setType(sd.nextToken(""));
-    setName(sd.nextToken(""));
-    setLocation(sd.nextToken(""));
-    imageName = sd.nextToken("");
+    setType(sd.nextToken("")); //$NON-NLS-1$
+    setName(sd.nextToken("")); //$NON-NLS-1$
+    setLocation(sd.nextToken("")); //$NON-NLS-1$
+    imageName = sd.nextToken(""); //$NON-NLS-1$
   }
   
   public String getImageName() {

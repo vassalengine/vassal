@@ -32,7 +32,6 @@ import javax.swing.table.DefaultTableModel;
 
 import VASSAL.i18n.Resources;
 
-// I18n: Complete
 public class MessageViewer extends JPanel {
   private static final long serialVersionUID = 1L;
 
@@ -47,11 +46,11 @@ public class MessageViewer extends JPanel {
 
   public void setMessages(Enumeration msgEnum) {
     msgList.removeAllElements();
-    msgText.setText(""); 
+    msgText.setText("");  //$NON-NLS-1$
     Vector rows = new Vector();
     Vector names = new Vector();
-    names.addElement(Resources.getString("Chat.sender")); 
-    names.addElement(Resources.getString("Chat.date")); 
+    names.addElement(Resources.getString("Chat.sender"));  //$NON-NLS-1$
+    names.addElement(Resources.getString("Chat.date"));  //$NON-NLS-1$
     while (msgEnum.hasMoreElements()) {
       Message msg = (Message) msgEnum.nextElement();
       msgList.addElement(msg);
@@ -70,7 +69,7 @@ public class MessageViewer extends JPanel {
   private void initComponents() {
     JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
-    model = new DefaultTableModel(new Object[]{Resources.getString("Chat.sender"),Resources.getString("Chat.date")},0);  
+    model = new DefaultTableModel(new Object[]{Resources.getString("Chat.sender"),Resources.getString("Chat.date")},0);   //$NON-NLS-1$ //$NON-NLS-2$
     msgTable = new JTable(model);
     msgTable.getSelectionModel().addListSelectionListener(new ShowMsgText());
     JScrollPane scroll = new JScrollPane(msgTable);
@@ -81,7 +80,7 @@ public class MessageViewer extends JPanel {
     msgText.setWrapStyleWord(true);
     msgText.setEditable(false);
     scroll = new JScrollPane(msgText);
-    scroll.setBorder(new TitledBorder(Resources.getString("Chat.message"))); 
+    scroll.setBorder(new TitledBorder(Resources.getString("Chat.message")));  //$NON-NLS-1$
     split.add(scroll);
 
     add(split);
@@ -95,7 +94,7 @@ public class MessageViewer extends JPanel {
         msgText.setText(msg.getText());
       }
       else {
-        msgText.setText(""); 
+        msgText.setText("");  //$NON-NLS-1$
       }
     }
   }

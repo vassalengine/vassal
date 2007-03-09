@@ -47,14 +47,14 @@ public class BasicModule extends GameModule {
   }
 
   protected void build() throws IOException {
-    String fileName = "buildFile";
+    String fileName = "buildFile"; //$NON-NLS-1$
     InputStream inStream = null;
     try {
       inStream = getDataArchive().getFileStream(fileName);
     }
     catch (IOException ex) {
       if (new File(getDataArchive().getName()).exists()) {
-        throw new IOException(Resources.getString("BasicModule.not_a_module"));
+        throw new IOException(Resources.getString("BasicModule.not_a_module")); //$NON-NLS-1$
       }
     }
     try {
@@ -112,8 +112,8 @@ public class BasicModule extends GameModule {
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
     ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
     server = new HybridClient();
-    ServerConfigurer config = new ServerConfigurer("ServerImpl", "Server", (HybridClient) server);
-    GameModule.getGameModule().getGlobalPrefs().addOption(Resources.getString("Chat.server"), config);
+    ServerConfigurer config = new ServerConfigurer("ServerImpl", "Server", (HybridClient) server); //$NON-NLS-1$ //$NON-NLS-2$
+    GameModule.getGameModule().getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     ChatServerControls c = new ChatServerControls();
     c.addTo(this);
   }
@@ -202,7 +202,7 @@ public class BasicModule extends GameModule {
 
   protected void initFrame() {
     Rectangle screen = VASSAL.Info.getScreenBounds(frame);
-    String key = "BoundsOfGameModule";
+    String key = "BoundsOfGameModule"; //$NON-NLS-1$
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
       frame.setLocation(screen.getLocation());
       frame.setSize(screen.width, screen.height / 3);
@@ -212,9 +212,9 @@ public class BasicModule extends GameModule {
       getPrefs().addOption(new PositionOption(key, frame, r));
     }
     frame.setVisible(true);
-    String mess = Resources.getString("BasicModule.version_message", gameName, moduleVersion);
+    String mess = Resources.getString("BasicModule.version_message", gameName, moduleVersion); //$NON-NLS-1$
     warn(mess);
-    System.err.println("-- " + mess);
+    System.err.println("-- " + mess); //$NON-NLS-1$
     frame.setTitle(gameName);
   }
 

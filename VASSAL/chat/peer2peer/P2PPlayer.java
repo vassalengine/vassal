@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class P2PPlayer extends SimplePlayer {
-  private static final String NAME = "name";
-  private static final String ID = "id";
-  private static final String ROOM = "room";
-  private static final String LOOKING = "looking";
-  private static final String AWAY = "away";
-  private static final String PROFILE = "profile";
+  private static final String NAME = "name"; //$NON-NLS-1$
+  private static final String ID = "id"; //$NON-NLS-1$
+  private static final String ROOM = "room"; //$NON-NLS-1$
+  private static final String LOOKING = "looking"; //$NON-NLS-1$
+  private static final String AWAY = "away"; //$NON-NLS-1$
+  private static final String PROFILE = "profile"; //$NON-NLS-1$
 
 
   private PeerInfo info;
@@ -47,15 +47,15 @@ public class P2PPlayer extends SimplePlayer {
 
   private void setProps() {
     props.put(NAME, getName());
-    props.put(LOOKING, "" + ((SimpleStatus)status).isLooking());
-    props.put(AWAY, "" + ((SimpleStatus)getStatus()).isAway());
+    props.put(LOOKING, "" + ((SimpleStatus)status).isLooking()); //$NON-NLS-1$
+    props.put(AWAY, "" + ((SimpleStatus)getStatus()).isAway()); //$NON-NLS-1$
     props.put(PROFILE, ((SimpleStatus)status).getProfile());
     info.setChatName(new PropertiesEncoder(props).getStringValue());
   }
 
   private void setStats() {
-    setName(props.getProperty(NAME, "???"));
-    setStatus(new SimpleStatus("true".equals(props.getProperty(LOOKING)),"true".equals(props.getProperty(AWAY)),props.getProperty(PROFILE, "")));
+    setName(props.getProperty(NAME, "???")); //$NON-NLS-1$
+    setStatus(new SimpleStatus("true".equals(props.getProperty(LOOKING)),"true".equals(props.getProperty(AWAY)),props.getProperty(PROFILE, ""))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
   public String getRoom() {
@@ -91,6 +91,6 @@ public class P2PPlayer extends SimplePlayer {
   }
 
   public String summary() {
-    return getName() + " [looking = " + ((SimpleStatus)status).isLooking() + ", away = " + ((SimpleStatus)getStatus()).isAway() + ", room = " + props.getProperty(ROOM) + ", host = " + getInfo().getAddresses() + "]";
+    return getName() + " [looking = " + ((SimpleStatus)status).isLooking() + ", away = " + ((SimpleStatus)getStatus()).isAway() + ", room = " + props.getProperty(ROOM) + ", host = " + getInfo().getAddresses() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
   }
 }

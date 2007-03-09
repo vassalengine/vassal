@@ -33,7 +33,7 @@ public class SecretNote {
   private String text;      		// Text of Note
   private boolean hidden = true;	// Is note still hidden?
   private Date date;				// Date/Time stamp
-  private String handle = "";		// Owner's handle
+  private String handle = "";		// Owner's handle //$NON-NLS-1$
 
   public SecretNote(String name, String owner, String text, boolean hidden) {
     this.name = name;

@@ -26,7 +26,6 @@ import VASSAL.i18n.Resources;
 /**
  * Limits connections to the server to one per registered username
  */
-//I18n: Complete
 public class ConnectionLimiter {
   private Map connections = new HashMap();
   public synchronized void register(String name, SocketHandler handler) {
@@ -37,7 +36,7 @@ public class ConnectionLimiter {
   }
 
   private void kickOff(SocketHandler handler) {
-    handler.writeLine(Resources.getString("Chat.too_many"));
+    handler.writeLine(Resources.getString("Chat.too_many")); //$NON-NLS-1$
     handler.close();
   }
 }

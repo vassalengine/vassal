@@ -29,7 +29,7 @@ public class SimpleStatus implements PlayerStatus {
   private String profile;
 
   public SimpleStatus() {
-    this(false, false, "");
+    this(false, false, ""); //$NON-NLS-1$
   }
 
   public SimpleStatus(boolean looking, boolean away, String profile) {

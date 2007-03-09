@@ -30,7 +30,6 @@ import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleStatus;
 import VASSAL.i18n.Resources;
 
-//I18n: Complete
 public class SimpleStatusControlsInitializer implements ChatControlsInitializer {
   private ChatServerConnection client;
   private JButton lookingBox;
@@ -42,7 +41,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
   }
 
   public void initializeControls(final ChatServerControls controls) {
-    lookingBox = new JButton(Resources.getString("Chat.looking_for_game"));
+    lookingBox = new JButton(Resources.getString("Chat.looking_for_game")); //$NON-NLS-1$
     lookingBox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         if (client != null) {
@@ -54,13 +53,13 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
       }
     });
     lookingBox.setSize(lookingBox.getMinimumSize());
-    URL imageURL = getClass().getResource("/images/playerLooking.gif");
+    URL imageURL = getClass().getResource("/images/playerLooking.gif"); //$NON-NLS-1$
     if (imageURL != null) {
       lookingBox.setToolTipText(lookingBox.getText());
-      lookingBox.setText("");
+      lookingBox.setText(""); //$NON-NLS-1$
       lookingBox.setIcon(new ImageIcon(imageURL));
     }
-    awayButton = new JButton(Resources.getString("Chat.away_from_keyboard"));
+    awayButton = new JButton(Resources.getString("Chat.away_from_keyboard")); //$NON-NLS-1$
     awayButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         if (client != null) {
@@ -68,17 +67,17 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
           SimpleStatus s = (SimpleStatus) p.getStatus();
           s = new SimpleStatus(s.isLooking(),true,s.getProfile());
           client.setUserInfo(new SimplePlayer(p.getId(),p.getName(),s));
-          JOptionPane.showMessageDialog(controls.getRoomTree(), Resources.getString("Chat.im_back"), Resources.getString("Chat.away_from_keyboard"), JOptionPane.PLAIN_MESSAGE);
+          JOptionPane.showMessageDialog(controls.getRoomTree(), Resources.getString("Chat.im_back"), Resources.getString("Chat.away_from_keyboard"), JOptionPane.PLAIN_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
           s = (SimpleStatus) p.getStatus();
           s = new SimpleStatus(s.isLooking(),false ,s.getProfile());
           client.setUserInfo(new SimplePlayer(p.getId(),p.getName(),s));
         }
       }
     });
-    imageURL = getClass().getResource("/images/playerAway.gif");
+    imageURL = getClass().getResource("/images/playerAway.gif"); //$NON-NLS-1$
     if (imageURL != null) {
       awayButton.setToolTipText(awayButton.getText());
-      awayButton.setText("");
+      awayButton.setText(""); //$NON-NLS-1$
       awayButton.setIcon(new ImageIcon(imageURL));
     }
     controls.getToolbar().add(lookingBox);

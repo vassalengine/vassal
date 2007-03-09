@@ -61,8 +61,8 @@ import VASSAL.tools.UniqueIdManager;
  */
 // TODO Expose result as property
 public class SpecialDiceButton extends AbstractConfigurable implements CommandEncoder, UniqueIdManager.Identifyable {
-  protected static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton");
-  public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t";
+  protected static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
+  public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t"; //$NON-NLS-1$
 
   protected List dice = new ArrayList();
   protected java.util.Random ran;
@@ -79,9 +79,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected ResultsIcon resultsIcon = new ResultsIcon();
 
   protected FormattedString format = new FormattedString();
-  protected String chatResultFormat = "** $" + NAME + "$ = [$result1$] *** <$" + GlobalOptions.PLAYER_NAME + "$>";
-  protected String windowTitleResultFormat = "$" + NAME + "$";
-  protected String tooltip = "";
+  protected String chatResultFormat = "** $" + NAME + "$ = [$result1$] *** <$" + GlobalOptions.PLAYER_NAME + "$>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+  protected String windowTitleResultFormat = "$" + NAME + "$"; //$NON-NLS-1$ //$NON-NLS-2$
+  protected String tooltip = ""; //$NON-NLS-1$
 
   public static final String BUTTON_TEXT = "text";
   public static final String TOOLTIP = "tooltip";
@@ -128,7 +128,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * The text reported before the results of the roll
    */
   protected String getReportPrefix() {
-    return " *** " + getConfigureName() + " = ";
+    return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /**
@@ -136,8 +136,8 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * @deprecated
    */
   protected String getReportSuffix() {
-    return " ***  <"
-        + GameModule.getGameModule().getChatter().getHandle() + ">";
+    return " ***  <" //$NON-NLS-1$
+        + GameModule.getGameModule().getChatter().getHandle() + ">"; //$NON-NLS-1$
   }
 
   /**
@@ -180,17 +180,17 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     int total = 0;
     for (int i = 0; i < dice.size(); ++i) {
       SpecialDie die = (SpecialDie) dice.get(i);
-      format.setProperty("result" + (i + 1), die.getTextValue(results[i]));
+      format.setProperty("result" + (i + 1), die.getTextValue(results[i])); //$NON-NLS-1$
       total += die.getIntValue(results[i]);
     }
-    format.setProperty(RESULT_TOTAL, "" + total);
+    format.setProperty(RESULT_TOTAL, "" + total); //$NON-NLS-1$
     format.setFormat(chatResultFormat);
     String msg = format.getText();
-    if (msg.startsWith("*")) {
-      msg = "*" + msg;
+    if (msg.startsWith("*")) { //$NON-NLS-1$
+      msg = "*" + msg; //$NON-NLS-1$
     }
     else {
-      msg = "* " + msg;
+      msg = "* " + msg; //$NON-NLS-1$
     }
     Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
     c.execute();
@@ -261,7 +261,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, "/images/die.gif");
+      return new IconConfigurer(key, name, "/images/die.gif"); //$NON-NLS-1$
     }
   }
 
@@ -374,7 +374,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return bool;
     }
     else if (o instanceof String) {
-      return "true".equals(o);
+      return "true".equals(o); //$NON-NLS-1$
     }
     else
       return false;
@@ -437,25 +437,25 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return getConfigureName();
     }
     else if (RESULT_CHATTER.equals(key)) {
-      return "" + reportResultAsText;
+      return "" + reportResultAsText; //$NON-NLS-1$
     }
     else if (CHAT_RESULT_FORMAT.equals(key)) {
       return chatResultFormat;
     }
     else if (RESULT_BUTTON.equals(key)) {
-      return "" + reportResultInButton;
+      return "" + reportResultInButton; //$NON-NLS-1$
     }
     else if (RESULT_WINDOW.equals(key)) {
-      return "" + reportResultInWindow;
+      return "" + reportResultInWindow; //$NON-NLS-1$
     }
     else if (WINDOW_TITLE_RESULT_FORMAT.equals(key)) {
       return windowTitleResultFormat;
     }
     else if (WINDOW_X.equals(key)) {
-      return "" + resultsIcon.width;
+      return "" + resultsIcon.width; //$NON-NLS-1$
     }
     else if (WINDOW_Y.equals(key)) {
-      return "" + resultsIcon.height;
+      return "" + resultsIcon.height; //$NON-NLS-1$
     }
     else if (BACKGROUND_COLOR.equals(key)) {
       return ColorConfigurer.colorToString(bgColor);
@@ -474,7 +474,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("SpecialDiceButton.htm");
+    return HelpFile.getReferenceManualPage("SpecialDiceButton.htm"); //$NON-NLS-1$
   }
 
   /**
@@ -484,7 +484,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    */
   public static String intArrayToString(int[] ia) {
     if (ia == null || ia.length == 0) {
-      return "";
+      return ""; //$NON-NLS-1$
     }
     SequenceEncoder se = new SequenceEncoder(',');
     for (int i = 0; i < ia.length; ++i) {
@@ -521,7 +521,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       ShowResults c2 = (ShowResults) c;
       SequenceEncoder se = new SequenceEncoder(c2.target.getIdentifier(), '\t');
       for (int i = 0; i < c2.rolls.length; ++i) {
-        se.append(c2.rolls[i] + "");
+        se.append(c2.rolls[i] + ""); //$NON-NLS-1$
       }
       return SHOW_RESULTS_COMMAND + se.getValue();
     }
@@ -598,7 +598,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
           icons[i] = new ImageIcon(aImage);
         }
         catch (IOException e) {
-          System.err.println("Unable to locate image " + imageName);
+          System.err.println("Unable to locate image " + imageName); //$NON-NLS-1$
         }
       }
     }

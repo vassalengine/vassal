@@ -91,7 +91,7 @@ public class PrototypesContainer extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Prototypes.htm");
+    return HelpFile.getReferenceManualPage("Prototypes.htm"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {

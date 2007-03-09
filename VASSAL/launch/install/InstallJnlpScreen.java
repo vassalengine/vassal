@@ -50,7 +50,6 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-// I18n: Complete
 public class InstallJnlpScreen extends InstallProgressScreen implements Constants {
   private List resources = new ArrayList();
   private File installFile;
@@ -65,8 +64,8 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
     heapSize = wizard.get(Constants.HEAP_SIZE);
     doInstall();
     wizard.getDialog().setScreen(new SuccessScreen(
-        "<html>" + Resources.getString("Install.install_successful") + "<br>" + 
-                   Resources.getString("Install.to_get_started", installFile.toString()) + "</html>"));
+        "<html>" + Resources.getString("Install.install_successful") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                   Resources.getString("Install.to_get_started", installFile.toString()) + "</html>")); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public void doInstall() throws IOException {
@@ -77,43 +76,43 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
   }
 
   private void extractResources(Document doc) throws IOException {
-    String codebase = doc.getDocumentElement().getAttribute("codebase");
+    String codebase = doc.getDocumentElement().getAttribute("codebase"); //$NON-NLS-1$
     URL base = null;
     if (codebase != null) {
-      if (!codebase.endsWith("/")) {
-        codebase += "/";
+      if (!codebase.endsWith("/")) { //$NON-NLS-1$
+        codebase += "/"; //$NON-NLS-1$
       }
       base = new URL(codebase);
     }
-    NodeList jars = doc.getElementsByTagName("jar");
+    NodeList jars = doc.getElementsByTagName("jar"); //$NON-NLS-1$
     for (int i = 0, n = jars.getLength(); i < n; ++i) {
       Element el = (Element) jars.item(i);
-      String version = el.getAttribute("version");
-      String href = el.getAttribute("href");
-      String url = version == null || version.length() == 0 ? href : href + "?version-id=" + version;
+      String version = el.getAttribute("version"); //$NON-NLS-1$
+      String href = el.getAttribute("href"); //$NON-NLS-1$
+      String url = version == null || version.length() == 0 ? href : href + "?version-id=" + version; //$NON-NLS-1$
       URL resource = base == null ? new URL(url) : new URL(base, url);
       String path = getFileName(resource);
-      el.removeAttribute("version");
-      el.setAttribute("href", "lib/" + path);
+      el.removeAttribute("version"); //$NON-NLS-1$
+      el.setAttribute("href", "lib/" + path); //$NON-NLS-1$ //$NON-NLS-2$
       resources.add(resource);
     }
-    NodeList icons = doc.getElementsByTagName("icon");
+    NodeList icons = doc.getElementsByTagName("icon"); //$NON-NLS-1$
     for (int i = 0, n = icons.getLength(); i < n; ++i) {
       Element el = (Element) icons.item(i);
-      String href = el.getAttribute("href");
+      String href = el.getAttribute("href"); //$NON-NLS-1$
       URL resource = base == null ? new URL(href) : new URL(base, href);
-      el.setAttribute("href", "lib/" + href);
+      el.setAttribute("href", "lib/" + href); //$NON-NLS-1$ //$NON-NLS-2$
       resources.add(resource);
     }
-    NodeList l = doc.getElementsByTagName("extension");
+    NodeList l = doc.getElementsByTagName("extension"); //$NON-NLS-1$
     for (int i = 0, n = l.getLength(); i < n; ++i) {
       Element el = (Element) l.item(i);
-      String href = el.getAttribute("href");
+      String href = el.getAttribute("href"); //$NON-NLS-1$
       URL url = base == null ? new URL(href) : new URL(base, href);
       Document extensionDoc = getJNLPDoc(url);
       modifyDocument(extensionDoc);
       String path = getFileName(url);
-      el.setAttribute("href", "lib/" + path);
+      el.setAttribute("href", "lib/" + path); //$NON-NLS-1$ //$NON-NLS-2$
       writeXmlDocument(extensionDoc, new File(installLibDir, path));
     }
   }
@@ -128,7 +127,7 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
     byte[] buffer = new byte[100000];
     int readCount = 0;
     String path = getFileName(resource);
-    File local = new File(new File(installDir, "lib"), path);
+    File local = new File(new File(installDir, "lib"), path); //$NON-NLS-1$
     FileOutputStream out = new FileOutputStream(local);
     InputStream in = resource.openStream();
     while ((readCount = in.read(buffer)) > 0) {
@@ -141,7 +140,7 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
     writeXmlDocument(doc, file);
     for (Iterator it = resources.iterator(); it.hasNext();) {
       URL resource = (URL) it.next();
-      setStatus(Resources.getString("Install.downloading", getFileName(resource)));
+      setStatus(Resources.getString("Install.downloading", getFileName(resource))); //$NON-NLS-1$
       downloadResource(resource);
     }
   }
@@ -154,8 +153,8 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
       Result result = new StreamResult(writer);
       // Write the DOM document to the file
       Transformer xformer = TransformerFactory.newInstance().newTransformer();
-      xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-      xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+      xformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+      xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2"); //$NON-NLS-1$ //$NON-NLS-2$
       xformer.transform(source, result);
     }
     catch (TransformerException e) {
@@ -169,7 +168,7 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
 
   protected void modifyDocument(Document doc) throws IOException {
     extractResources(doc);
-    NodeList l = doc.getElementsByTagName("*");
+    NodeList l = doc.getElementsByTagName("*"); //$NON-NLS-1$
     for (int i = 0, n = l.getLength(); i < n; ++i) {
       Node node = l.item(i);
       Node child = node.getFirstChild();
@@ -181,31 +180,31 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
         child = next;
       }
     }
-    l = doc.getElementsByTagName("j2se");
+    l = doc.getElementsByTagName("j2se"); //$NON-NLS-1$
     if (l.getLength() == 1) {
       Element el = (Element) l.item(0);
-      el.setAttribute("max-heap-size", heapSize);
+      el.setAttribute("max-heap-size", heapSize); //$NON-NLS-1$
     }
-    doc.getDocumentElement().setAttribute("codebase",
+    doc.getDocumentElement().setAttribute("codebase", //$NON-NLS-1$
       installDir.toURI().toURL().toString());
   }
 
   protected void checkParameters() throws IOException {
     if (installDir == null) {
-      throw new IOException(Resources.getString("Install.error_install_dir"));
+      throw new IOException(Resources.getString("Install.error_install_dir")); //$NON-NLS-1$
     }
     if (installDir.exists() && !installDir.isDirectory()) {
-      throw new IOException(Resources.getString("Install.error_not_a_directory", installDir.toString()));
+      throw new IOException(Resources.getString("Install.error_not_a_directory", installDir.toString())); //$NON-NLS-1$
     }
     if (!installDir.exists() && !installDir.mkdir()) {
-      throw new IOException(Resources.getString("Install.error_unable_to_create", installDir.toString()));
+      throw new IOException(Resources.getString("Install.error_unable_to_create", installDir.toString())); //$NON-NLS-1$
     }
-    installLibDir = new File(installDir, "lib");
+    installLibDir = new File(installDir, "lib"); //$NON-NLS-1$
     if (!installLibDir.exists() && !installLibDir.mkdir()) {
-      throw new IOException(Resources.getString("Install.error_unable_to_create", installLibDir.toString()));
+      throw new IOException(Resources.getString("Install.error_unable_to_create", installLibDir.toString())); //$NON-NLS-1$
     }
     if (jnlpURL == null) {
-      throw new IOException(Resources.getString("Install.error_no_version"));
+      throw new IOException(Resources.getString("Install.error_no_version")); //$NON-NLS-1$
     }
     String file = new URL(jnlpURL).getPath();
     file = file.substring(file.lastIndexOf('/') + 1);
@@ -220,13 +219,13 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
       d = f.newDocumentBuilder().parse(url.openStream());
     }
     catch (SAXException e) {
-      throw new IOException("SAXException:  " + e.getMessage());
+      throw new IOException("SAXException:  " + e.getMessage()); //$NON-NLS-1$
     }
     catch (ParserConfigurationException e) {
-      throw new IOException("ParserConfigurationException:  " + e.getMessage());
+      throw new IOException("ParserConfigurationException:  " + e.getMessage()); //$NON-NLS-1$
     }
     catch (FactoryConfigurationError e) {
-      throw new IOException("FactoryConfigurationError:  " + e.getMessage());
+      throw new IOException("FactoryConfigurationError:  " + e.getMessage()); //$NON-NLS-1$
     }
     return d;
   }

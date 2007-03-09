@@ -24,7 +24,7 @@ import VASSAL.command.CommandEncoder;
  * Date: Mar 16, 2003
  */
 public class SynchEncoder implements CommandEncoder {
-  public static final String COMMAND_PREFIX = "SYNC";
+  public static final String COMMAND_PREFIX = "SYNC"; //$NON-NLS-1$
   private PlayerEncoder playerEncoder;
   private ChatServerConnection client;
 

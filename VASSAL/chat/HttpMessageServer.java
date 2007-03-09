@@ -37,8 +37,8 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   private PeerPoolInfo info;
 
   public HttpMessageServer(PeerPoolInfo info) {
-    this("http://www.vassalengine.org/util/getMessages", "http://www.vassalengine.org/util/postMessage",
-        "http://www.vassalengine.org/util/motd",info);
+    this("http://www.vassalengine.org/util/getMessages", "http://www.vassalengine.org/util/postMessage", //$NON-NLS-1$ //$NON-NLS-2$
+        "http://www.vassalengine.org/util/motd",info); //$NON-NLS-1$
   }
 
   public HttpMessageServer(String getMessagesURL, String postMessageURL, String welcomeURL, PeerPoolInfo info) {
@@ -69,18 +69,18 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
       for (Enumeration e = getMessagesURL.doGet(prepareInfo());
            e.hasMoreElements();) {
         String msg = (String) e.nextElement();
-        StringTokenizer st = new StringTokenizer(msg, "&");
+        StringTokenizer st = new StringTokenizer(msg, "&"); //$NON-NLS-1$
         String s = st.nextToken();
-        String sender = s.substring(s.indexOf("=") + 1);
+        String sender = s.substring(s.indexOf("=") + 1); //$NON-NLS-1$
         String date = st.nextToken();
-        date = date.substring(date.indexOf("=") + 1);
-        s = st.nextToken("");
-        SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|');
-        String content = "";
+        date = date.substring(date.indexOf("=") + 1); //$NON-NLS-1$
+        s = st.nextToken(""); //$NON-NLS-1$
+        SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|'); //$NON-NLS-1$
+        String content = ""; //$NON-NLS-1$
         while (st2.hasMoreTokens()) {
           content += st2.nextToken();
           if (st2.hasMoreTokens()) {
-            content += "\n";
+            content += "\n"; //$NON-NLS-1$
           }
         }
         content = restorePercent(content);
@@ -106,21 +106,21 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
 
   private Properties prepareInfo() {
     Properties p = new Properties();
-    p.put("module", info.getModuleName());
+    p.put("module", info.getModuleName()); //$NON-NLS-1$
     return p;
   }
 
   private String removePercent(String input) {
     StringBuffer buff = new StringBuffer();
-    StringTokenizer st = new StringTokenizer(input, "%#", true);
+    StringTokenizer st = new StringTokenizer(input, "%#", true); //$NON-NLS-1$
     while (st.hasMoreTokens()) {
       String s = st.nextToken();
       switch (s.charAt(0)) {
         case '%':
-          buff.append("/#/");
+          buff.append("/#/"); //$NON-NLS-1$
           break;
         case '#':
-          buff.append("/##/");
+          buff.append("/##/"); //$NON-NLS-1$
           break;
         default:
           buff.append(s);
@@ -130,13 +130,13 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   }
 
   private String restorePercent(String input) {
-    for (int i = input.indexOf("/#/");
-         i >= 0; i = input.indexOf("/#/")) {
-      input = input.substring(0, i) + "%" + input.substring(i + 3);
+    for (int i = input.indexOf("/#/"); //$NON-NLS-1$
+         i >= 0; i = input.indexOf("/#/")) { //$NON-NLS-1$
+      input = input.substring(0, i) + "%" + input.substring(i + 3); //$NON-NLS-1$
     }
-    for (int i = input.indexOf("/##/");
-         i >= 0; i = input.indexOf("/##/")) {
-      input = input.substring(0, i) + "#" + input.substring(i + 4);
+    for (int i = input.indexOf("/##/"); //$NON-NLS-1$
+         i >= 0; i = input.indexOf("/##/")) { //$NON-NLS-1$
+      input = input.substring(0, i) + "#" + input.substring(i + 4); //$NON-NLS-1$
     }
     return input;
   }
@@ -148,14 +148,14 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     }
     content = removePercent(content);
     SequenceEncoder se = new SequenceEncoder('|');
-    StringTokenizer st = new StringTokenizer(content, "\n\r");
+    StringTokenizer st = new StringTokenizer(content, "\n\r"); //$NON-NLS-1$
     while (st.hasMoreTokens()) {
       se.append(st.nextToken());
     }
 
     Properties p = prepareInfo();
-    p.put("sender", info.getUserName());
-    p.put("content", se.getValue());
+    p.put("sender", info.getUserName()); //$NON-NLS-1$
+    p.put("content", se.getValue()); //$NON-NLS-1$
     try {
       postMessageURL.doPost(p);
     }

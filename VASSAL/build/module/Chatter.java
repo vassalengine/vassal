@@ -63,7 +63,6 @@ import VASSAL.tools.ScrollPane;
  * accepts input.  Also acts as a {@link CommandEncoder},
  * encoding/decoding commands that display message in the text area
  */
-// I18n: Complete
 public class Chatter extends JPanel implements CommandEncoder, Buildable {
   private static final long serialVersionUID = 1L;
 
@@ -72,16 +71,16 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected JScrollPane scroll = new ScrollPane(
        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-  protected static final String MY_CHAT_COLOR = "myChatColor";
-  protected static final String OTHER_CHAT_COLOR = "otherChatColor";
-  protected static final String GAME_MSG_COLOR = "gameMessageColor";
-  protected static final String SYS_MSG_COLOR = "systemMessageColor";
+  protected static final String MY_CHAT_COLOR = "myChatColor"; //$NON-NLS-1$
+  protected static final String OTHER_CHAT_COLOR = "otherChatColor"; //$NON-NLS-1$
+  protected static final String GAME_MSG_COLOR = "gameMessageColor"; //$NON-NLS-1$
+  protected static final String SYS_MSG_COLOR = "systemMessageColor"; //$NON-NLS-1$
 
   public Chatter() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     conversation = new JTextArea(15, 60);
     for (int i = 0; i < 15; ++i) {
-      conversation.append("\n");
+      conversation.append("\n"); //$NON-NLS-1$
     }
     conversation.setEditable(false);
     conversation.setLineWrap(true);
@@ -97,7 +96,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     input.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         send(formatChat(e.getActionCommand()));
-        input.setText("");
+        input.setText(""); //$NON-NLS-1$
       }
     });
     input.setMaximumSize
@@ -109,7 +108,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
 
   private String formatChat(String text) {
-    return "<" + GlobalOptions.getInstance().getPlayerId() + "> - " + text;
+    return "<" + GlobalOptions.getInstance().getPlayerId() + "> - " + text; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public JTextField getInputField() {
@@ -120,7 +119,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
    * Display a message in the text area
    */
   public void show(String s) {
-    conversation.append("\n" + s);
+    conversation.append("\n" + s); //$NON-NLS-1$
   }
 
   /** @deprecated use GlobalOptions.getPlayerId() */
@@ -138,9 +137,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   public void setFont(Font f) {
     if (input != null) {
       if (input.getText().length() == 0) {
-        input.setText("XXX");
+        input.setText("XXX"); //$NON-NLS-1$
         input.setFont(f);
-        input.setText("");
+        input.setText(""); //$NON-NLS-1$
       }
       else
         input.setFont(f);
@@ -168,7 +167,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     mod.addKeyStrokeSource(new KeyStrokeSource(this, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT));
 
     FontConfigurer chatFont = new FontConfigurer
-        ("ChatFont", Resources.getString("Chatter.chat_font_preference"));
+        ("ChatFont", Resources.getString("Chatter.chat_font_preference")); //$NON-NLS-1$ //$NON-NLS-2$
     chatFont.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         setFont((Font) evt.getNewValue());
@@ -178,22 +177,22 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     mod.getControlPanel().add(this, BorderLayout.CENTER);
 
     chatFont.fireUpdate();
-    mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), chatFont);
-    ColorConfigurer gameMsgColor = new ColorConfigurer(GAME_MSG_COLOR, Resources.getString("Chatter.game_messages_preference"), Color.magenta);
-    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), gameMsgColor);
-    ColorConfigurer systemMsgColor = new ColorConfigurer(SYS_MSG_COLOR, Resources.getString("Chatter.system_message_preference"), new Color(160, 160, 160));
-    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), systemMsgColor);
-    ColorConfigurer myChatColor = new ColorConfigurer(MY_CHAT_COLOR, Resources.getString("Chatter.my_text_preference"), Color.gray);
-    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), myChatColor);
-    ColorConfigurer otherChatColor = new ColorConfigurer(OTHER_CHAT_COLOR, Resources.getString("Chatter.other_text_preference"), Color.black);
-    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), otherChatColor);
+    mod.getPrefs().addOption(Resources.getString("Chatter.chat_window"), chatFont); //$NON-NLS-1$
+    ColorConfigurer gameMsgColor = new ColorConfigurer(GAME_MSG_COLOR, Resources.getString("Chatter.game_messages_preference"), Color.magenta); //$NON-NLS-1$
+    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), gameMsgColor); //$NON-NLS-1$
+    ColorConfigurer systemMsgColor = new ColorConfigurer(SYS_MSG_COLOR, Resources.getString("Chatter.system_message_preference"), new Color(160, 160, 160)); //$NON-NLS-1$
+    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), systemMsgColor); //$NON-NLS-1$
+    ColorConfigurer myChatColor = new ColorConfigurer(MY_CHAT_COLOR, Resources.getString("Chatter.my_text_preference"), Color.gray); //$NON-NLS-1$
+    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), myChatColor); //$NON-NLS-1$
+    ColorConfigurer otherChatColor = new ColorConfigurer(OTHER_CHAT_COLOR, Resources.getString("Chatter.other_text_preference"), Color.black); //$NON-NLS-1$
+    mod.getGlobalPrefs().addOption(Resources.getString("Chatter.chat_window"), otherChatColor); //$NON-NLS-1$
   }
 
   public void add(Buildable b) {
   }
 
   public Command decode(String s) {
-    if (s.startsWith("CHAT")) {
+    if (s.startsWith("CHAT")) { //$NON-NLS-1$
       return new DisplayText(this, s.substring(4));
     }
     else {
@@ -203,7 +202,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   public String encode(Command c) {
     if (c instanceof DisplayText) {
-      return "CHAT" + ((DisplayText) c).msg;
+      return "CHAT" + ((DisplayText) c).msg; //$NON-NLS-1$
     }
     else {
       return null;
@@ -237,7 +236,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         case KeyEvent.VK_ENTER:
           if (input.getText().length() > 0)
             send(formatChat(input.getText()));
-          input.setText("");
+          input.setText(""); //$NON-NLS-1$
           break;
         case KeyEvent.VK_BACK_SPACE:
         case KeyEvent.VK_DELETE:
@@ -316,7 +315,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
             col = (Color) GameModule.getGameModule().getGlobalPrefs().getValue(SYS_MSG_COLOR);
             break;
           default:
-            if (s.startsWith(formatChat(""))) {
+            if (s.startsWith(formatChat(""))) { //$NON-NLS-1$
               col = (Color) GameModule.getGameModule().getGlobalPrefs().getValue(MY_CHAT_COLOR);
             }
             else {
@@ -349,7 +348,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     }
 
     public Command myUndoCommand() {
-      return new DisplayText(c, Resources.getString("Chatter.undo_message", msg));
+      return new DisplayText(c, Resources.getString("Chatter.undo_message", msg)); //$NON-NLS-1$
     }
 
     public String getMessage() {

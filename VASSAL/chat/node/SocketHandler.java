@@ -32,7 +32,7 @@ public abstract class SocketHandler {
   private boolean isOpen = true;
   private Thread readThread;
   private Thread writeThread;
-  private static final String SIGN_OFF = "!BYE";
+  private static final String SIGN_OFF = "!BYE"; //$NON-NLS-1$
 
   public SocketHandler(Socket sock, SocketWatcher handler) throws IOException {
     this.sock = sock;
@@ -63,7 +63,7 @@ public abstract class SocketHandler {
               }
               catch (Exception e) {
                 // Handler threw an exception.  Keep reading.
-                System.err.println("Caught " + e.getClass().getName() + " handling " + line);
+                System.err.println("Caught " + e.getClass().getName() + " handling " + line); //$NON-NLS-1$ //$NON-NLS-2$
                 e.printStackTrace();
               }
             }
@@ -153,7 +153,7 @@ public abstract class SocketHandler {
         catch (InterruptedException e) {
         }
       }
-      String message = "";
+      String message = ""; //$NON-NLS-1$
       if (writeQueue.size() > 0) {
         message = (String) writeQueue.elementAt(0);
         writeQueue.removeElementAt(0);

@@ -42,7 +42,7 @@ import VASSAL.chat.SimpleRoom;
  * 
  */
 public class RoomInteractionControlsInitializer implements ChatControlsInitializer {
-  public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10);
+  public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10); //$NON-NLS-1$
   private List playerActionFactories = new ArrayList();
   private List roomActionFactories = new ArrayList();
   protected ChatServerConnection client;
@@ -120,7 +120,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
     roomCreator = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         createRoom(controls.getNewRoom().getText());
-        controls.getNewRoom().setText("");
+        controls.getNewRoom().setText(""); //$NON-NLS-1$
       }
     };
     controls.getNewRoom().addActionListener(roomCreator);

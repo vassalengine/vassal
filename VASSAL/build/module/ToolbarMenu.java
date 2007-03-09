@@ -37,15 +37,14 @@ import VASSAL.tools.ToolBarComponent;
  * @author rkinney
  * 
  */
-// I18n: Complete
 public class ToolbarMenu extends AbstractConfigurable implements ContainerListener, PropertyChangeListener, GameComponent {
-  public static final String BUTTON_TEXT = "text";
-  public static final String BUTTON_ICON = "icon";
-  public static final String BUTTON_HOTKEY = "hotkey";
-  public static final String TOOLTIP = "tooltip";
-  public static final String MENU_ITEMS = "menuItems";
+  public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
+  public static final String BUTTON_ICON = "icon"; //$NON-NLS-1$
+  public static final String BUTTON_HOTKEY = "hotkey"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
+  public static final String MENU_ITEMS = "menuItems"; //$NON-NLS-1$
   /** Buttons where this property contains a JPopupMenu will turn into sub-menus */
-  public static final String MENU_PROPERTY = "ToolbarMenu.popup";
+  public static final String MENU_PROPERTY = "ToolbarMenu.popup"; //$NON-NLS-1$
   protected List menuItems = new ArrayList();
   protected java.util.Map buttonsToMenuMap = new HashMap();
   protected LaunchButton launch;
@@ -71,7 +70,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
 
   public String[] getAttributeDescriptions() {
     return new String[] {Resources.getString(Resources.BUTTON_TEXT), Resources.getString(Resources.TOOLTIP_TEXT), Resources.getString(Resources.BUTTON_ICON), 
-                         Resources.getString(Resources.HOTKEY_LABEL),Resources.getString("Editor.ToolbarMenu.menu_entries")};
+                         Resources.getString(Resources.HOTKEY_LABEL),Resources.getString("Editor.ToolbarMenu.menu_entries")}; //$NON-NLS-1$
   }
 
   public Class[] getAttributeTypes() {
@@ -124,11 +123,11 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ToolbarMenu.htm");
+    return HelpFile.getReferenceManualPage("ToolbarMenu.htm"); //$NON-NLS-1$
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.ToolbarMenu.component_type");
+    return Resources.getString("Editor.ToolbarMenu.component_type"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {
@@ -222,7 +221,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
       if (AbstractButton.TEXT_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
         scheduleBuildMenu();
       }
-      else if ("enabled".equals(evt.getPropertyName())) {
+      else if ("enabled".equals(evt.getPropertyName())) { //$NON-NLS-1$
         mi.setEnabled(b.isEnabled());
       }
       else if (AbstractButton.ICON_CHANGED_PROPERTY.equals(evt.getPropertyName())) {

@@ -43,12 +43,12 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
   private Icon looking;
 
   public RoomTreeRenderer() {
-    java.net.URL image = getClass().getResource("/images/playerAway.gif");
+    java.net.URL image = getClass().getResource("/images/playerAway.gif"); //$NON-NLS-1$
     if (image != null) {
       away = new ImageIcon(image);
     }
 
-    image = getClass().getResource("/images/playerLooking.gif");
+    image = getClass().getResource("/images/playerLooking.gif"); //$NON-NLS-1$
     if (image != null) {
       looking = new ImageIcon(image);
     }
@@ -75,7 +75,7 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
     else if (value instanceof SimpleRoom) {
       List players = ((Room) value).getPlayerList();
       if (!expanded || players.size() == 0) {
-        setText(getText() + " [" + players.size() + "]");
+        setText(getText() + " [" + players.size() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
     return this;

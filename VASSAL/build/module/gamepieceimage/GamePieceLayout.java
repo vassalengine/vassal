@@ -43,11 +43,11 @@ import VASSAL.tools.SequenceEncoder;
 
 public class GamePieceLayout extends AbstractConfigurable implements Visualizable {
 
-  protected static final String NAME = "name";
-  protected static final String WIDTH = "width";
-  protected static final String HEIGHT = "height";
-  protected static final String BORDER = "border";
-  protected static final String ITEMS = "layout";
+  protected static final String NAME = "name"; //$NON-NLS-1$
+  protected static final String WIDTH = "width"; //$NON-NLS-1$
+  protected static final String HEIGHT = "height"; //$NON-NLS-1$
+  protected static final String BORDER = "border"; //$NON-NLS-1$
+  protected static final String ITEMS = "layout"; //$NON-NLS-1$
 
   protected static final String N = "Top";
   protected static final String S = "Bottom";
@@ -129,12 +129,12 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
 
   public GamePieceLayout() {
     super();
-    name = "";
+    name = ""; //$NON-NLS-1$
     imageDefn = new GamePieceImage(this);
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Counter Width:  ", "Counter Height:  ", "Border Style:  ", ""};
+    return new String[]{"Name:  ", "Counter Width:  ", "Counter Height:  ", "Border Style:  ", ""}; //$NON-NLS-5$
   }
 
   public Class[] getAttributeTypes() {
@@ -201,13 +201,13 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
       return getConfigureName();
     }
     else if (WIDTH.equals(key)) {
-      return getLayoutWidth() + "";
+      return getLayoutWidth() + ""; //$NON-NLS-1$
     }
     else if (HEIGHT.equals(key)) {
-      return getLayoutHeight() + "";
+      return getLayoutHeight() + ""; //$NON-NLS-1$
     }
     else if (BORDER.equals(key)) {
-      return border + "";
+      return border + ""; //$NON-NLS-1$
     }
     else if (ITEMS.equals(key)) {
       return encodeItemList();
@@ -221,7 +221,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceLayouts.htm");
+    return HelpFile.getReferenceManualPage("GamePieceLayouts.htm"); //$NON-NLS-1$
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -232,7 +232,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Layout";
+    return "Game Piece Layout"; //$NON-NLS-1$
   }
 
   public void setWidth(int width) {

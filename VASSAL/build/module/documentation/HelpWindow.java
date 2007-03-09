@@ -30,6 +30,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import VASSAL.build.widget.HtmlChart;
 import VASSAL.build.widget.HtmlChart.XTMLEditorKit;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 
 /**
@@ -51,7 +52,7 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
      * Allow <src> tag to display images from the module DataArchive 
      * where no pathname included in the image name.
      */
-    pane.setContentType("text/html");
+    pane.setContentType("text/html"); //$NON-NLS-1$
     XTMLEditorKit myHTMLEditorKit = (new HtmlChart()).new XTMLEditorKit();
     pane.setEditorKit(myHTMLEditorKit);
     
@@ -82,11 +83,11 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
         pane.setPage(contents);
       }
       catch (IOException e) {
-        pane.setText("Unable to read "+contents);
+        pane.setText(Resources.getString("HelpWindow.unable_to_read", contents.toString())); //$NON-NLS-1$
       }
     }
     else {
-      pane.setText("");
+      pane.setText(""); //$NON-NLS-1$
     }
   }
 

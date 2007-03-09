@@ -92,7 +92,7 @@ public class FontStyleConfigurer extends Configurer {
     for (int i = 0; i < s.length; i++) {
       fonts.addItem(s[i]);
     }
-    fonts.setSelectedItem(value == null ? "Default" : ((FontStyle) value).getConfigureName());
+    fonts.setSelectedItem(value == null ? "Default" : ((FontStyle) value).getConfigureName()); //$NON-NLS-1$
     fontPanel.add(fonts);
 
     ItemListener l = new ItemListener() {
@@ -116,7 +116,7 @@ public class FontStyleConfigurer extends Configurer {
 
   public static FontStyle decode(String s) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
-    return new FontStyle(sd.nextToken("Default"), FontConfigurer.decode(sd.nextToken("")));
+    return new FontStyle(sd.nextToken("Default"), FontConfigurer.decode(sd.nextToken(""))); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public static String encode(FontStyle f) {

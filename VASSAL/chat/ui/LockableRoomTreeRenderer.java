@@ -36,7 +36,7 @@ public class LockableRoomTreeRenderer extends RoomTreeRenderer {
 
   private Icon lockedIcon;
   public LockableRoomTreeRenderer() {
-    java.net.URL image = getClass().getResource("/images/lockedRoom.gif");
+    java.net.URL image = getClass().getResource("/images/lockedRoom.gif"); //$NON-NLS-1$
     if (image != null) {
       lockedIcon = new ImageIcon(image);
     }

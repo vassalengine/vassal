@@ -60,9 +60,9 @@ public class PrivateMap extends Map {
   protected boolean visibleToAll;
   protected Map surrogate;
 
-  public static final String VISIBLE = "visible";
-  public static final String SIDE = "side";
-  public static final String USE_BOARDS = "useBoards";
+  public static final String VISIBLE = "visible"; //$NON-NLS-1$
+  public static final String SIDE = "side"; //$NON-NLS-1$
+  public static final String USE_BOARDS = "useBoards"; //$NON-NLS-1$
 
   public String[] getAttributeNames() {
     String[] s1 = new String[]{SIDE, VISIBLE, USE_BOARDS};
@@ -74,7 +74,7 @@ public class PrivateMap extends Map {
   }
 
   public String[] getAttributeDescriptions() {
-    String[] s1 = new String[]{"Belongs to side", "Visible to all players?", "Use same boards as this map:  "};
+    String[] s1 = new String[]{"Belongs to side", "Visible to all players?", "Use same boards as this map:  "}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     String[] s2 = super.getAttributeDescriptions();
     String[] s = new String[s1.length + s2.length];
     System.arraycopy(s1, 0, s, 0, s1.length);
@@ -121,7 +121,7 @@ public class PrivateMap extends Map {
 
   public String getAttributeValueString(String key) {
     if (VISIBLE.equals(key)) {
-      return "" + visibleToAll;
+      return "" + visibleToAll; //$NON-NLS-1$
     }
     else if (SIDE.equals(key)) {
       return StringArrayConfigurer.arrayToString(owners);
@@ -234,7 +234,7 @@ public class PrivateMap extends Map {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("PrivateWindow.htm");
+    return HelpFile.getReferenceManualPage("PrivateWindow.htm"); //$NON-NLS-1$
   }
 
   public void build(org.w3c.dom.Element el) {

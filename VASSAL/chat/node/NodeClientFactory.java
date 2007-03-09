@@ -34,21 +34,20 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-// I18n: Complete
 public class NodeClientFactory extends ChatServerFactory {
   private static NodeClientFactory instance;
-  private static final String UNNAMED_MODULE = Resources.getString("Chat.unknown_module"); 
-  private static final String UNKNOWN_USER = Resources.getString("Chat.unknown_user"); 
-  public static final String NODE_TYPE = "node"; 
-  public static final String NODE_HOST = "nodeHost"; 
-  public static final String NODE_PORT = "nodePort"; 
+  private static final String UNNAMED_MODULE = Resources.getString("Chat.unknown_module");  //$NON-NLS-1$
+  private static final String UNKNOWN_USER = Resources.getString("Chat.unknown_user");  //$NON-NLS-1$
+  public static final String NODE_TYPE = "node";  //$NON-NLS-1$
+  public static final String NODE_HOST = "nodeHost";  //$NON-NLS-1$
+  public static final String NODE_PORT = "nodePort";  //$NON-NLS-1$
 
   private NodeClientFactory() {
   }
 
   public ChatServerConnection buildServer(Properties param) {
-    final String host = param.getProperty(NODE_HOST,"63.144.41.13"); 
-    final int port = Integer.parseInt(param.getProperty(NODE_PORT, "5050")); 
+    final String host = param.getProperty(NODE_HOST,"63.144.41.13");  //$NON-NLS-1$
+    final int port = Integer.parseInt(param.getProperty(NODE_PORT, "5050"));  //$NON-NLS-1$
     NodeServerInfo nodeServerInfo = new NodeServerInfo() {
       public String getHostName() {
         return host;
@@ -77,7 +76,7 @@ public class NodeClientFactory extends ChatServerFactory {
       }
     };
     HttpMessageServer httpMessageServer = new HttpMessageServer(publicInfo);
-    SocketNodeClient server = new SocketNodeClient(GameModule.getGameModule().getGameName(), GameModule.getUserId()+"."+System.currentTimeMillis(), GameModule.getGameModule(), nodeServerInfo, httpMessageServer, httpMessageServer); 
+    SocketNodeClient server = new SocketNodeClient(GameModule.getGameModule().getGameName(), GameModule.getUserId()+"."+System.currentTimeMillis(), GameModule.getGameModule(), nodeServerInfo, httpMessageServer, httpMessageServer);  //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).fireUpdate();
     GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
@@ -107,18 +106,18 @@ public class NodeClientFactory extends ChatServerFactory {
   public static NodeClientFactory getInstance() {
     if (instance == null) {
       instance = new NodeClientFactory();
-      StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));  
-      TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");  
-      StringConfigurer user = new StringConfigurer("UserName", Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name")));
+      StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
+      TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
+      StringConfigurer user = new StringConfigurer("UserName", Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
       user.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           GameModule.setUserId((String) evt.getNewValue());
         }
       });
       GameModule.setUserId((String) user.getValue());
-      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName, Resources.getString("Prefs.name_prompt"));  
-      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user, Resources.getString("Prefs.password_prompt2"));  
-      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile); 
+      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName, Resources.getString("Prefs.name_prompt"));   //$NON-NLS-1$ //$NON-NLS-2$
+      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user, Resources.getString("Prefs.password_prompt2"));   //$NON-NLS-1$ //$NON-NLS-2$
+      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
     }
     return instance;
   }

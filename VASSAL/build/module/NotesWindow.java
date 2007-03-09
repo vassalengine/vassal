@@ -55,7 +55,6 @@ import VASSAL.tools.LaunchButton;
  * notes, and each player has a set of private notes visible only to
  * him
  */
-// I18n: Partial
 public class NotesWindow extends AbstractConfigurable
     implements GameComponent, CommandEncoder {
 
@@ -65,13 +64,13 @@ public class NotesWindow extends AbstractConfigurable
   protected TextConfigurer publicNotes;
   protected PrivateNotesController privateNotes;
   protected SecretNotesController secretNotes;
-  protected static final String SCENARIO_NOTE_COMMAND_PREFIX = "NOTES\t";
-  protected static final String PUBLIC_NOTE_COMMAND_PREFIX = "PNOTES\t";
+  protected static final String SCENARIO_NOTE_COMMAND_PREFIX = "NOTES\t"; //$NON-NLS-1$
+  protected static final String PUBLIC_NOTE_COMMAND_PREFIX = "PNOTES\t"; //$NON-NLS-1$
 
-  public static final String HOT_KEY = "hotkey";
-  public static final String ICON = "icon";
-  public static final String BUTTON_TEXT = "buttonText";
-  public static final String TOOLTIP = "tooltip";
+  public static final String HOT_KEY = "hotkey"; //$NON-NLS-1$
+  public static final String ICON = "icon"; //$NON-NLS-1$
+  public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
+  public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
 
   protected String lastSavedScenarioNotes;
   protected String lastSavedPublicNotes;
@@ -80,16 +79,16 @@ public class NotesWindow extends AbstractConfigurable
     privateNotes = new PrivateNotesController();
     secretNotes = new SecretNotesController();
     frame = new NotesDialog();
-    frame.setTitle(Resources.getString("Notes.notes"));
+    frame.setTitle(Resources.getString("Notes.notes")); //$NON-NLS-1$
     ActionListener al = new ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent e) {
         captureState();
         frame.setVisible(!frame.isShowing());
       }
     };
-    launch = new LaunchButton(Resources.getString("Notes.notes"), TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al);
-    launch.setAttribute(ICON, "/images/notes.gif");
-    launch.setToolTipText(Resources.getString("Notes.notes"));
+    launch = new LaunchButton(Resources.getString("Notes.notes"), TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al); //$NON-NLS-1$
+    launch.setAttribute(ICON, "/images/notes.gif"); //$NON-NLS-1$
+    launch.setToolTipText(Resources.getString("Notes.notes")); //$NON-NLS-1$
     frame.pack();
     setup(false);
   }
@@ -154,18 +153,18 @@ public class NotesWindow extends AbstractConfigurable
       getContentPane().add(tab);
 
       Box b = Box.createVerticalBox();
-      b.add(new JLabel(Resources.getString("Notes.visible_to_all")));
+      b.add(new JLabel(Resources.getString("Notes.visible_to_all"))); //$NON-NLS-1$
       b.add(scenarioNotes.getControls());
-      tab.addTab(Resources.getString("Notes.scenario"), b);
+      tab.addTab(Resources.getString("Notes.scenario"), b); //$NON-NLS-1$
 
       b = Box.createVerticalBox();
-      b.add(new JLabel(Resources.getString("Notes.visible_to_all")));
+      b.add(new JLabel(Resources.getString("Notes.visible_to_all"))); //$NON-NLS-1$
       b.add(publicNotes.getControls());
-      tab.addTab(Resources.getString("Notes.public"), b);
+      tab.addTab(Resources.getString("Notes.public"), b); //$NON-NLS-1$
 
-      tab.addTab(Resources.getString("Notes.private"), privateNotes.getControls());
+      tab.addTab(Resources.getString("Notes.private"), privateNotes.getControls()); //$NON-NLS-1$
 
-      tab.addTab(Resources.getString("Notes.delayed"), secretNotes.getControls());
+      tab.addTab(Resources.getString("Notes.delayed"), secretNotes.getControls()); //$NON-NLS-1$
 
       JPanel p = new JPanel();
       JButton saveButton = new JButton(Resources.getString(Resources.SAVE));
@@ -190,7 +189,7 @@ public class NotesWindow extends AbstractConfigurable
 
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "NotesWindow");
+    return HelpFile.getReferenceManualPage("GameModule.htm", "NotesWindow"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public String[] getAttributeNames() {
@@ -293,8 +292,8 @@ public class NotesWindow extends AbstractConfigurable
   public void setup(boolean show) {
     launch.setEnabled(show);
     if (!show) {
-      scenarioNotes.setValue("");
-      publicNotes.setValue("");
+      scenarioNotes.setValue(""); //$NON-NLS-1$
+      publicNotes.setValue(""); //$NON-NLS-1$
     }
   }
 

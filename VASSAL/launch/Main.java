@@ -55,9 +55,9 @@ import VASSAL.tools.SplashScreen;
 
 public class Main {
 
-  public static final String BUILT_IN = "auto"; 
-  public static final String EXTENSION_LIST = "autoExtensions"; 
-  public static final String LOCAL_INSTALL = "localInstall"; 
+  public static final String BUILT_IN = "auto";  //$NON-NLS-1$
+  public static final String EXTENSION_LIST = "autoExtensions";  //$NON-NLS-1$
+  public static final String LOCAL_INSTALL = "localInstall";  //$NON-NLS-1$
   protected Properties properties;
   protected PrefsEditor editor;
   protected boolean isFirstTime;
@@ -65,16 +65,16 @@ public class Main {
   protected Prefs globalPrefs;
   protected File homeDir;
   public Main(final String[] args) {
-    System.setProperty("swing.aatext", "true");  
-    System.setProperty("swing.boldMetal", "false");  
+    System.setProperty("swing.aatext", "true");   //$NON-NLS-1$ //$NON-NLS-2$
+    System.setProperty("swing.boldMetal", "false");   //$NON-NLS-1$ //$NON-NLS-2$
     initHomeDir();
     initResources();
     initProperties();
-    System.err.println("-- OS " + System.getProperty("os.name"));  
-    System.err.println("-- Java version " + System.getProperty("java.version"));  
+    System.err.println("-- OS " + System.getProperty("os.name"));   //$NON-NLS-1$ //$NON-NLS-2$
+    System.err.println("-- Java version " + System.getProperty("java.version"));   //$NON-NLS-1$ //$NON-NLS-2$
     String v = getVersion();
-    System.err.println("-- VASSAL version " + v); 
-    final Thread t = new Thread(new ErrorLog.Group(), "Main Thread") { 
+    System.err.println("-- VASSAL version " + v);  //$NON-NLS-1$
+    final Thread t = new Thread(new ErrorLog.Group(), "Main Thread") {  //$NON-NLS-1$
       public void run() {
         Runnable runnable = new Runnable() {
           public void run() {
@@ -100,10 +100,10 @@ public class Main {
     }
     builtInModule = properties.get(BUILT_IN) != null;
     final File installDir = properties.get(LOCAL_INSTALL) != null
-      ? new File(System.getProperty("user.dir")) : null; 
+      ? new File(System.getProperty("user.dir")) : null;  //$NON-NLS-1$
   
     editor = new PrefsEditor(new ArchiveWriter(prefsFile.getPath()));
-    globalPrefs = new Prefs(editor, "VASSAL"); 
+    globalPrefs = new Prefs(editor, "VASSAL");  //$NON-NLS-1$
     final String[] extract = getExtractTargets(args);
     final PropertyChangeListener l = new PropertyChangeListener() {
       protected int next = 0;
@@ -128,13 +128,13 @@ public class Main {
   protected Properties parseArgs(String[] args) {
     Properties props = new Properties();
     for (int i = 0;i < args.length;++i) {
-      if (args[i].startsWith("-")) { 
+      if (args[i].startsWith("-")) {  //$NON-NLS-1$
         if (i < args.length-1
-          && !args[i+1].startsWith("-")) { 
+          && !args[i+1].startsWith("-")) {  //$NON-NLS-1$
           props.put(args[i].substring(1),args[++i]);
         }
         else {
-          props.put(args[i].substring(1),""); 
+          props.put(args[i].substring(1),"");  //$NON-NLS-1$
         }
       }
     }
@@ -142,9 +142,9 @@ public class Main {
   }
 
   protected File initPrefsFile() {
-    File prefsFile = new File(homeDir, "Preferences"); 
-    File oldFile = new File(System.getProperty("user.home") 
-                            + File.separator + ".VassalPreferences"); 
+    File prefsFile = new File(homeDir, "Preferences");  //$NON-NLS-1$
+    File oldFile = new File(System.getProperty("user.home")  //$NON-NLS-1$
+                            + File.separator + ".VassalPreferences");  //$NON-NLS-1$
     if (!prefsFile.exists()
         && oldFile.exists()) {
       oldFile.renameTo(prefsFile);
@@ -153,7 +153,7 @@ public class Main {
   }
 
   protected void initHomeDir() {
-    homeDir = new File(System.getProperty("user.home"), "VASSAL");  
+    homeDir = new File(System.getProperty("user.home"), "VASSAL");   //$NON-NLS-1$ //$NON-NLS-2$
     if (!homeDir.exists()) {
       homeDir.mkdir();
     }
@@ -207,25 +207,25 @@ public class Main {
   }
 
   protected void initProperties() {
-    if (System.getProperty("stderr") == null) { 
-      System.setProperty("stderr", System.getProperty("user.home") + File.separator + "VASSAL" + File.separator + "errorLog");
+    if (System.getProperty("stderr") == null) {  //$NON-NLS-1$
+      System.setProperty("stderr", System.getProperty("user.home") + File.separator + "VASSAL" + File.separator + "errorLog"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
-    if (!"null".equals(System.getProperty("stderr"))) {  
+    if (!"null".equals(System.getProperty("stderr"))) {   //$NON-NLS-1$ //$NON-NLS-2$
       try {
-        System.setErr(new PrintStream(new FileOutputStream(System.getProperty("stderr")))); 
+        System.setErr(new PrintStream(new FileOutputStream(System.getProperty("stderr"))));  //$NON-NLS-1$
       }
       catch (IOException ex) {
-        System.err.println("Unable to redirect stderr to " + System.getProperty("stderr"));  
+        System.err.println("Unable to redirect stderr to " + System.getProperty("stderr"));   //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
-    System.getProperties().put("sun.awt.exception.handler", "VASSAL.tools.ErrorLog");  
-    if (System.getProperty("http.proxyHost") == null 
-        && System.getProperty("proxyHost") != null) { 
-      System.setProperty("http.proxyHost", System.getProperty("proxyHost"));  
+    System.getProperties().put("sun.awt.exception.handler", "VASSAL.tools.ErrorLog");   //$NON-NLS-1$ //$NON-NLS-2$
+    if (System.getProperty("http.proxyHost") == null  //$NON-NLS-1$
+        && System.getProperty("proxyHost") != null) {  //$NON-NLS-1$
+      System.setProperty("http.proxyHost", System.getProperty("proxyHost"));   //$NON-NLS-1$ //$NON-NLS-2$
     }
-    if (System.getProperty("http.proxyPort") == null 
-        && System.getProperty("proxyPort") != null) { 
-      System.setProperty("http.proxyPort", System.getProperty("proxyPort"));  
+    if (System.getProperty("http.proxyPort") == null  //$NON-NLS-1$
+        && System.getProperty("proxyPort") != null) {  //$NON-NLS-1$
+      System.setProperty("http.proxyPort", System.getProperty("proxyPort"));   //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 
@@ -233,20 +233,20 @@ public class Main {
     try {
       final JDialog d = new JDialog((Frame) null, true);
       d.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-      d.setTitle(Resources.getString("Main.license_agreement")); 
+      d.setTitle(Resources.getString("Main.license_agreement"));  //$NON-NLS-1$
       d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
       final JTextArea text = new JTextArea(20, 40);
       text.setEditable(false);
       JScrollPane scroll = new JScrollPane(text);
       d.getContentPane().add(scroll);
       Box b = Box.createHorizontalBox();
-      JButton accept = new JButton(Resources.getString("Main.accept")); 
+      JButton accept = new JButton(Resources.getString("Main.accept"));  //$NON-NLS-1$
       accept.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           d.dispose();
         }
       });
-      JButton decline = new JButton(Resources.getString("Main.decline")); 
+      JButton decline = new JButton(Resources.getString("Main.decline"));  //$NON-NLS-1$
       decline.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           System.exit(0);
@@ -255,7 +255,7 @@ public class Main {
       b.add(accept);
       b.add(decline);
       d.getContentPane().add(b);
-      InputStream inStream = Main.class.getResourceAsStream("/LICENSE.txt"); 
+      InputStream inStream = Main.class.getResourceAsStream("/LICENSE.txt");  //$NON-NLS-1$
       if (inStream != null) {
         BufferedReader in = new BufferedReader(new InputStreamReader(inStream));
         String line = null;
@@ -295,7 +295,7 @@ public class Main {
   protected String[] getExtractTargets(String[] args) {
     ArrayList l = new ArrayList();
     for (int i = 0; i < args.length; ++i) {
-      if (args[i].startsWith("-ext") 
+      if (args[i].startsWith("-ext")  //$NON-NLS-1$
           && i < args.length - 1) {
         l.add(args[i + 1]);
       }
@@ -304,16 +304,16 @@ public class Main {
   }
 
   protected void launchVassal(Prefs prefs, String[] args) {
-    if (properties.getProperty("install") != null) { 
+    if (properties.getProperty("install") != null) {  //$NON-NLS-1$
       System.exit(0);
     }
     else {
       final File moduleFile = getModuleFile(properties, prefs, args);
       if (builtInModule
           || (moduleFile != null && moduleFile.exists())) {
-        final String saveFile = properties.getProperty("load"); 
+        final String saveFile = properties.getProperty("load");  //$NON-NLS-1$
         try {
-          if (properties.getProperty("edit") != null) { 
+          if (properties.getProperty("edit") != null) {  //$NON-NLS-1$
             edit(moduleFile);
           }
           else {
@@ -328,7 +328,7 @@ public class Main {
                   }
                 }
                 catch (IOException e) {
-                  JOptionPane.showMessageDialog(null, Resources.getString("Main.open_module_error", moduleFile.getPath())); 
+                  JOptionPane.showMessageDialog(null, Resources.getString("Main.open_module_error", moduleFile.getPath()));  //$NON-NLS-1$
                   new Frame().setVisible(true);
                 }
                 finally {
@@ -339,7 +339,7 @@ public class Main {
               }
             };
             try {
-              splash = new SplashScreen(archive.getCachedImage("Splash.gif")) { 
+              splash = new SplashScreen(archive.getCachedImage("Splash.gif")) {  //$NON-NLS-1$
                 private static final long serialVersionUID = 1L;
 
                 protected boolean triggered = false;
@@ -365,19 +365,19 @@ public class Main {
           }
         }
         catch (IOException ex) {
-          JOptionPane.showMessageDialog(null, Resources.getString("Main.open_module_error", moduleFile.getPath())); 
+          JOptionPane.showMessageDialog(null, Resources.getString("Main.open_module_error", moduleFile.getPath()));  //$NON-NLS-1$
           new Frame().setVisible(true);
         }
       }
       else {
         if (moduleFile != null) {
-          JOptionPane.showMessageDialog(null, Resources.getString("Main.not_found_error", moduleFile.getPath())); 
+          JOptionPane.showMessageDialog(null, Resources.getString("Main.not_found_error", moduleFile.getPath()));  //$NON-NLS-1$
         }
         if (isFirstTime) {
           String docsDir = prefs.getStoredValue(Documentation.DOCS_DIR);
           File base = docsDir != null ? new File(docsDir) : null;
-          File tourMod = new File(base, "tour.mod"); 
-          File tourLog = new File(base, "tour.log"); 
+          File tourMod = new File(base, "tour.mod");  //$NON-NLS-1$
+          File tourLog = new File(base, "tour.log");  //$NON-NLS-1$
           if (tourMod.exists()
               && tourLog.exists()) {
             loadTour(tourMod, tourLog);
@@ -400,19 +400,19 @@ public class Main {
       case 0:
         break;
       case 1:
-        fileName = args[0].startsWith("-") ? null : args[0]; 
+        fileName = args[0].startsWith("-") ? null : args[0];  //$NON-NLS-1$
         break;
       default:
-        fileName = p.getProperty("edit"); 
+        fileName = p.getProperty("edit");  //$NON-NLS-1$
         if (fileName == null
-            && !args[args.length - 1].startsWith("-") 
-            && !args[args.length - 2].startsWith("-")) { 
+            && !args[args.length - 1].startsWith("-")  //$NON-NLS-1$
+            && !args[args.length - 2].startsWith("-")) {  //$NON-NLS-1$
           fileName = args[args.length - 1];
         }
     }
     File f = null;
     if (fileName != null) {
-      String dir = p.getProperty("moduleDir"); 
+      String dir = p.getProperty("moduleDir");  //$NON-NLS-1$
       if (dir != null) {
         f = new File(prefs.getStoredValue(dir), fileName);
       }
@@ -427,14 +427,14 @@ public class Main {
     final JFrame f = new JFrame();
     f.getContentPane().setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
     JLabel l = new JLabel();
-    l.setFont(new Font("SansSerif", 1, 40)); 
-    l.setText(Resources.getString("Main.welcome")); 
+    l.setFont(new Font("SansSerif", 1, 40));  //$NON-NLS-1$
+    l.setText(Resources.getString("Main.welcome"));  //$NON-NLS-1$
     l.setForeground(Color.black);
     l.setAlignmentX(0.5F);
     f.getContentPane().add(l);
     Box b = Box.createHorizontalBox();
-    JButton tour = new JButton(Resources.getString("Main.tour")); 
-    JButton jump = new JButton(Resources.getString("Main.jump_right_in")); 
+    JButton tour = new JButton(Resources.getString("Main.tour"));  //$NON-NLS-1$
+    JButton jump = new JButton(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
     b.add(tour);
     b.add(jump);
     JPanel p = new JPanel();
@@ -452,7 +452,7 @@ public class Main {
           JOptionPane.showMessageDialog
               (null,
                e.getMessage(),
-               Resources.getString("Main.open_error"), 
+               Resources.getString("Main.open_error"),  //$NON-NLS-1$
                JOptionPane.ERROR_MESSAGE);
           new Frame().setVisible(true);
         }
@@ -476,7 +476,7 @@ public class Main {
     if (includeExtensions) {
       String extensionList = properties.getProperty(EXTENSION_LIST);
       if (extensionList != null) {
-        StringTokenizer st = new StringTokenizer(extensionList,","); 
+        StringTokenizer st = new StringTokenizer(extensionList,",");  //$NON-NLS-1$
         while (st.hasMoreTokens()) {
           String name = st.nextToken();
           loadExtension(name);
@@ -530,7 +530,7 @@ public class Main {
                   d.height / 2 - getSize().height / 2);
       String baseDir = globalPrefs.getStoredValue(Documentation.DOCS_DIR);
       if (baseDir == null) {
-        baseDir = System.getProperty("user.home"); 
+        baseDir = System.getProperty("user.home");  //$NON-NLS-1$
       }
       fc = FileChooser.createFileChooser(this);
       fc.setCurrentDirectory(new File(baseDir));
@@ -551,20 +551,20 @@ public class Main {
       splash = new javax.swing.JLabel();
       splash.setAlignmentX(0.5F);
       splash.setText(Resources.getString(Resources.VASSAL)); 
-      splash.setFont(new java.awt.Font("SansSerif", 1, 48)); 
-      splash.setName("splash"); 
+      splash.setFont(new java.awt.Font("SansSerif", 1, 48));  //$NON-NLS-1$
+      splash.setName("splash");  //$NON-NLS-1$
       splash.setForeground(fgColor);
       controlPanel.add(splash);
 
-      JLabel l2 = new JLabel(Resources.getString("Main.version", VASSAL.Info.getVersion())); 
+      JLabel l2 = new JLabel(Resources.getString("Main.version", VASSAL.Info.getVersion()));  //$NON-NLS-1$
       l2.setAlignmentX(0.5F);
-      l2.setFont(new java.awt.Font("SansSerif", 1, 12)); 
+      l2.setFont(new java.awt.Font("SansSerif", 1, 12));  //$NON-NLS-1$
       l2.setForeground(fgColor);
       controlPanel.add(l2);
 
       Box box = Box.createHorizontalBox();
       openButton = new javax.swing.JButton();
-      openButton.setText(Resources.getString("Main.play_module")); 
+      openButton.setText(Resources.getString("Main.play_module"));  //$NON-NLS-1$
       openButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
           try {
@@ -581,7 +581,7 @@ public class Main {
             JOptionPane.showMessageDialog
                 (Frame.this,
                  e.getMessage(),
-                 Resources.getString("Main.open_error"), 
+                 Resources.getString("Main.open_error"),  //$NON-NLS-1$
                  JOptionPane.ERROR_MESSAGE);
           }
         }
@@ -598,7 +598,7 @@ public class Main {
 
       box = Box.createHorizontalBox();
       editButton = new javax.swing.JButton();
-      editButton.setText(Resources.getString("Main.edit_module")); 
+      editButton.setText(Resources.getString("Main.edit_module"));  //$NON-NLS-1$
       editButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
           File f = chooseFile();
@@ -608,7 +608,7 @@ public class Main {
               dispose();
             }
             catch (IOException e) {
-              JOptionPane.showMessageDialog(Frame.this, e.getMessage(), Resources.getString("Main.load_error"), JOptionPane.ERROR_MESSAGE); 
+              JOptionPane.showMessageDialog(Frame.this, e.getMessage(), Resources.getString("Main.load_error"), JOptionPane.ERROR_MESSAGE);  //$NON-NLS-1$
             }
           }
         }
@@ -617,7 +617,7 @@ public class Main {
       box.add(editButton);
 
       newButton = new javax.swing.JButton();
-      newButton.setText(Resources.getString("Main.new_module")); 
+      newButton.setText(Resources.getString("Main.new_module"));  //$NON-NLS-1$
       newButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
           try {
@@ -629,19 +629,19 @@ public class Main {
             JOptionPane.showMessageDialog
                 (Frame.this,
                  e.getMessage(),
-                 Resources.getString("Main.create_error"), 
+                 Resources.getString("Main.create_error"),  //$NON-NLS-1$
                  JOptionPane.ERROR_MESSAGE);
           }
         }
       }
       );
       box.add(newButton);
-      box.setBorder(new TitledBorder(Resources.getString("Main.module_design"))); 
+      box.setBorder(new TitledBorder(Resources.getString("Main.module_design")));  //$NON-NLS-1$
       controlPanel.add(box);
 
       JPanel p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      final JButton loadModule = new JButton(Resources.getString("Main.load_module")); 
+      final JButton loadModule = new JButton(Resources.getString("Main.load_module"));  //$NON-NLS-1$
       final JButton loadExtension = new JButton(Resources.getString(Resources.EDIT)); 
       loadExtension.setEnabled(false);
       final JButton newExtension = new JButton(Resources.getString(Resources.NEW)); 
@@ -661,7 +661,7 @@ public class Main {
             JOptionPane.showMessageDialog
                 (Frame.this,
                  ex.getMessage(),
-                 Resources.getString("Main.open_error"), 
+                 Resources.getString("Main.open_error"),  //$NON-NLS-1$
                  JOptionPane.ERROR_MESSAGE);
           }
         }
@@ -676,7 +676,7 @@ public class Main {
             }
             catch (Exception ex) {
               ex.printStackTrace();
-              JOptionPane.showMessageDialog(Frame.this, Resources.getString("Main.unable_to_load", f.getName(), ex.getMessage()), Resources.getString("Main.load_failed"), JOptionPane.ERROR_MESSAGE);
+              JOptionPane.showMessageDialog(Frame.this, Resources.getString("Main.unable_to_load", f.getName(), ex.getMessage()), Resources.getString("Main.load_failed"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
             }
           }
         }
@@ -690,7 +690,7 @@ public class Main {
       p.add(loadModule);
       p.add(loadExtension);
       p.add(newExtension);
-      p.setBorder(new TitledBorder(Resources.getString("Main.extension_design"))); 
+      p.setBorder(new TitledBorder(Resources.getString("Main.extension_design")));  //$NON-NLS-1$
       controlPanel.add(p);
 
       getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -702,7 +702,7 @@ public class Main {
 
       if (!fc.getSelectedFile().exists()) {
          JOptionPane.showMessageDialog(this,
-         Resources.getString("Main.not_found_error", fc.getSelectedFile().toString())); 
+         Resources.getString("Main.not_found_error", fc.getSelectedFile().toString()));  //$NON-NLS-1$
          return null;
       }
       else {

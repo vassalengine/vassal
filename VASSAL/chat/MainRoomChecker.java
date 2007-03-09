@@ -23,7 +23,6 @@ import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.i18n.Resources;
 
-// I18n: Complete
 public class MainRoomChecker {
   private boolean warnedMain = false;
   private MainRoomFilter filter = new MainRoomFilter();
@@ -39,7 +38,7 @@ public class MainRoomChecker {
       output = GameModule.getGameModule().encode(c);
       if (!warnedMain && !input.equals(output)) {
         JOptionPane.showMessageDialog
-          (GameModule.getGameModule().getChatter(), Resources.getString("Chat.chatting_only", mainRoom));
+          (GameModule.getGameModule().getChatter(), Resources.getString("Chat.chatting_only", mainRoom)); //$NON-NLS-1$
         warnedMain = true;
       }
     }

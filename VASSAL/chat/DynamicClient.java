@@ -31,12 +31,11 @@ import VASSAL.i18n.Resources;
  * @author rkinney
  * 
  */
-// I18n: Complete
 public class DynamicClient extends HybridClient {
   private String serverConfigURL;
 
   public DynamicClient() {
-    this("http://www.vassalengine.org/util/getServerImpl");
+    this("http://www.vassalengine.org/util/getServerImpl"); //$NON-NLS-1$
   }
 
   public DynamicClient(String serverConfigURL) {
@@ -51,7 +50,7 @@ public class DynamicClient extends HybridClient {
     }
     catch (IOException e) {
       e.printStackTrace();
-      fireStatus("Unable to initiate connection to server");
+      fireStatus("Unable to initiate connection to server"); //$NON-NLS-1$
     }
     return c;
   }
@@ -59,11 +58,11 @@ public class DynamicClient extends HybridClient {
   private Properties getServerConfig() throws IOException {
     HttpRequestWrapper r = new HttpRequestWrapper(serverConfigURL);
     Properties p = new Properties();
-    p.put("module", GameModule.getGameModule() == null ? "Test" : GameModule.getGameModule().getGameName());
-    p.put("vassalVersion", VASSAL.Info.getVersion());
+    p.put("module", GameModule.getGameModule() == null ? "Test" : GameModule.getGameModule().getGameName()); //$NON-NLS-1$ //$NON-NLS-2$
+    p.put("vassalVersion", VASSAL.Info.getVersion()); //$NON-NLS-1$
     Enumeration e = r.doGet(p);
     if (!e.hasMoreElements()) {
-      throw new IOException(Resources.getString("Server.empty_response"));
+      throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$
     }
     p = new Properties();
     StringBuffer buff = new StringBuffer();

@@ -28,7 +28,6 @@ import VASSAL.i18n.Resources;
 /**
  * Manages {@link PrivateChatter} instances
  */
-// I18n: Complete
 public class PrivateChatManager {
   private ChatServerConnection client;
 
@@ -59,7 +58,7 @@ public class PrivateChatManager {
           promptToBan(sender);
         }
       });
-      f.setTitle(Resources.getString("Chat.private_channel", sender.getName()));
+      f.setTitle(Resources.getString("Chat.private_channel", sender.getName())); //$NON-NLS-1$
       f.getContentPane().add(chat);
       f.pack();
       f.setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 2 - f.getSize().width / 2, 0);
@@ -71,7 +70,7 @@ public class PrivateChatManager {
     if (JOptionPane.YES_OPTION ==
       JOptionPane.showConfirmDialog
       (null,
-       Resources.getString("Chat.ignore_messages", p.getName()),
+       Resources.getString("Chat.ignore_messages", p.getName()), //$NON-NLS-1$
        null,
        JOptionPane.YES_NO_OPTION)) {
       banned.addElement(p);

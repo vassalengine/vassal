@@ -27,14 +27,13 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-// I18n: Complete
 public class P2PClientFactory extends ChatServerFactory {
-  public static final String P2P_TYPE="peer2peer";
+  public static final String P2P_TYPE="peer2peer"; //$NON-NLS-1$
 
   public ChatServerConnection buildServer(Properties param) {
     HttpMessageServer httpMessageServer = new HttpMessageServer(new PeerPoolInfo() {
         public String getModuleName() {
-          return GameModule.getGameModule() == null ? Resources.getString("Chat.unknown_module") : GameModule.getGameModule().getGameName();
+          return GameModule.getGameModule() == null ? Resources.getString("Chat.unknown_module") : GameModule.getGameModule().getGameName(); //$NON-NLS-1$
         }
 
         public String getUserName() {

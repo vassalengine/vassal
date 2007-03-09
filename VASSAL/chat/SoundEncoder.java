@@ -28,7 +28,7 @@ import VASSAL.build.GameModule;
  * Date: Jul 29, 2003
  */
 public class SoundEncoder implements CommandEncoder {
-  public static final String COMMAND_PREFIX = "PLAY\t";
+  public static final String COMMAND_PREFIX = "PLAY\t"; //$NON-NLS-1$
 
   public Command decode(String command) {
     if (command.startsWith(COMMAND_PREFIX)) {

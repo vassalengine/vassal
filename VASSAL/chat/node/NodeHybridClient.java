@@ -37,7 +37,6 @@ import VASSAL.i18n.Resources;
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
  * Date: May 29, 2003
  */
-// I18n: Complete
 public class NodeHybridClient extends DynamicClient {
   private String addressURL;
   private MessageBoard msgSvr;
@@ -70,9 +69,9 @@ public class NodeHybridClient extends DynamicClient {
     ChatServerConnection c = null;
     try {
       String address = getAddressFromURL();
-      int index = address.indexOf(":"); 
+      int index = address.indexOf(":");  //$NON-NLS-1$
       if (index < 0) {
-        fireStatus(Resources.getString("Server.bad_address", address)); 
+        fireStatus(Resources.getString("Server.bad_address", address));  //$NON-NLS-1$
       }
       else {
         try {
@@ -81,15 +80,15 @@ public class NodeHybridClient extends DynamicClient {
           c = new SocketNodeClient(info.getModuleName(), info.getUserName(),encoder, address, port, msgSvr, welcomeMsgSvr);
         }
         catch (NumberFormatException ex) {
-          fireStatus(Resources.getString("Server.bad_address2", address));  
+          fireStatus(Resources.getString("Server.bad_address2", address));   //$NON-NLS-1$
         }
       }
     }
     catch (IOException e) {
-      fireStatus(Resources.getString("Server.bad_address3")); 
+      fireStatus(Resources.getString("Server.bad_address3"));  //$NON-NLS-1$
     }
     if (c == null) {
-      fireStatus(Resources.getString("Server.peer_to_peer")); 
+      fireStatus(Resources.getString("Server.peer_to_peer"));  //$NON-NLS-1$
       c = new P2PClient(encoder, msgSvr, welcomeMsgSvr, new DirectPeerPool());
     }
     return c;
@@ -98,11 +97,11 @@ public class NodeHybridClient extends DynamicClient {
   private String getAddressFromURL() throws IOException {
     HttpRequestWrapper r = new HttpRequestWrapper(addressURL);
     Properties p = new Properties();
-    p.put("module",info.getModuleName()); 
-    p.put("vassalVersion",VASSAL.Info.getVersion()); 
+    p.put("module",info.getModuleName());  //$NON-NLS-1$
+    p.put("vassalVersion",VASSAL.Info.getVersion());  //$NON-NLS-1$
     Enumeration e = r.doGet(p);
     if (!e.hasMoreElements()) {
-      throw new IOException(Resources.getString("Server.empty_response")); 
+      throw new IOException(Resources.getString("Server.empty_response"));  //$NON-NLS-1$
     }
     return (String) e.nextElement();
   }

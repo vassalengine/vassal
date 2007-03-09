@@ -41,7 +41,6 @@ import VASSAL.i18n.Resources;
 /**
  * Date: Mar 12, 2003
  */
-// I18n: Complete
 public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   private AcceptPeerThread acceptThread;
   private JButton inviteButton;
@@ -49,7 +48,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   private String myIp;
 
   public DirectPeerPool() {
-    inviteButton = new JButton(Resources.getString("Peer2Peer.invite_players"));
+    inviteButton = new JButton(Resources.getString("Peer2Peer.invite_players")); //$NON-NLS-1$
     inviteButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         frame.setVisible(true);
@@ -76,13 +75,13 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 
   private String discoverMyIpAddressFromRemote() throws IOException {
     String theIp = null;
-    HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress");
+    HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
     Enumeration e = r.doGet(null);
     if (e.hasMoreElements()) {
       theIp = (String) e.nextElement();
     }
     else {
-      throw new IOException(Resources.getString("Server.empty_response"));
+      throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$
     }
     return theIp;
   }
@@ -100,8 +99,8 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   }
 
   public void connectFailed(PeerInfo peerInfo) {
-    JOptionPane.showMessageDialog(frame, Resources.getString("Peer2Peer.could_not_reach", peerInfo.getAddresses(), String.valueOf(peerInfo.getPort())),
-                                  Resources.getString("Peer2Peer.invite_failed"), JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(frame, Resources.getString("Peer2Peer.could_not_reach", peerInfo.getAddresses(), String.valueOf(peerInfo.getPort())), //$NON-NLS-1$
+                                  Resources.getString("Peer2Peer.invite_failed"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
   }
 
   public void initComponents(final P2PPlayer me, final PendingPeerManager ppm) {
@@ -109,16 +108,16 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     if (GameModule.getGameModule() != null) {
       owner = GameModule.getGameModule().getFrame();
     }
-    frame = new JDialog(owner,Resources.getString("Peer2Peer.direct_connection"));
+    frame = new JDialog(owner,Resources.getString("Peer2Peer.direct_connection")); //$NON-NLS-1$
     frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
     frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-    frame.getContentPane().add(createLabel(Resources.getString("Peer2Peer.your_ip_address", myIp, String.valueOf(me.getInfo().getPort()))));
-    frame.getContentPane().add(createLabel(Resources.getString("Peer2Peer.other_players_address")));
+    frame.getContentPane().add(createLabel(Resources.getString("Peer2Peer.your_ip_address", myIp, String.valueOf(me.getInfo().getPort())))); //$NON-NLS-1$
+    frame.getContentPane().add(createLabel(Resources.getString("Peer2Peer.other_players_address"))); //$NON-NLS-1$
     Box b = Box.createHorizontalBox();
     b.setAlignmentX(0.0f);
-    JButton invite = new JButton(Resources.getString("Peer2Peer.invite"));
+    JButton invite = new JButton(Resources.getString("Peer2Peer.invite")); //$NON-NLS-1$
     b.add(invite);
-    final JTextField tf = new JTextField(Resources.getString("Peer2Peer.address_port"));
+    final JTextField tf = new JTextField(Resources.getString("Peer2Peer.address_port")); //$NON-NLS-1$
     b.add(tf);
     frame.getContentPane().add(b);
     ActionListener al = new ActionListener() {
@@ -126,10 +125,10 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
         PeerInfo info = PeerInfo.deFormat(tf.getText());
         if (info != null) {
           ppm.addNewPeer(info);
-          tf.setText("");
+          tf.setText(""); //$NON-NLS-1$
         }
         else {
-          JOptionPane.showMessageDialog(frame, Resources.getString("Peer2Peer.invalid_format"));
+          JOptionPane.showMessageDialog(frame, Resources.getString("Peer2Peer.invalid_format")); //$NON-NLS-1$
         }
       }
     };

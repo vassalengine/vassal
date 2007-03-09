@@ -25,7 +25,7 @@ import VASSAL.tools.SequenceEncoder;
  *  Date: Mar 16, 2003
  */
 public class PrivateChatEncoder implements CommandEncoder {
-  public static final String COMMAND_PREFIX = "PRIV_CHAT";
+  public static final String COMMAND_PREFIX = "PRIV_CHAT"; //$NON-NLS-1$
   private PlayerEncoder playerEncoder;
 
   private PrivateChatManager pChatMgr;

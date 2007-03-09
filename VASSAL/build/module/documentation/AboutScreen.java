@@ -92,17 +92,17 @@ public class AboutScreen extends AbstractConfigurable {
     l.setAlignmentX(0.5F);
     w.getContentPane().add(l);
     w.getContentPane().add(createLabel(
-        Resources.getString("AboutScreen.module_version", 
+        Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
         GameModule.getGameModule().getGameName(),
         GameModule.getGameModule().getGameVersion())));
     Enumeration e = GameModule.getGameModule().getComponents(ModuleExtension.class);
     while (e.hasMoreElements()){
       ModuleExtension ext = (ModuleExtension) e.nextElement();
       w.getContentPane().add(createLabel(
-          Resources.getString("AboutScreen.extension_version", ext.getName(), ext.getVersion())));
+          Resources.getString("AboutScreen.extension_version", ext.getName(), ext.getVersion()))); //$NON-NLS-1$
     }
     w.getContentPane().add(createLabel(
-        Resources.getString("AboutScreen.vassal_version", Info.getVersion())));
+        Resources.getString("AboutScreen.vassal_version", Info.getVersion()))); //$NON-NLS-1$
     w.pack();
     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
     w.setLocation(d.width / 2 - w.getSize().width / 2,
@@ -140,8 +140,8 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Menu Entry",
-                        "Image"};
+    return new String[]{"Menu Entry", //$NON-NLS-1$
+                        "Image"}; //$NON-NLS-1$
   }
 
   public Class[] getAttributeTypes() {
@@ -159,8 +159,8 @@ public class AboutScreen extends AbstractConfigurable {
     return null;
   }
 
-  public static final String TITLE = "title";
-  public static final String FILE = "fileName";
+  public static final String TITLE = "title"; //$NON-NLS-1$
+  public static final String FILE = "fileName"; //$NON-NLS-1$
 
   public void setAttribute(String key, Object val) {
     if (TITLE.equals(key)) {
@@ -210,7 +210,7 @@ public class AboutScreen extends AbstractConfigurable {
     Documentation d = (Documentation) b;
     d.getHelpMenu().add(launch);
     if (image == null && fileName != null) {
-      throw new IllegalBuildException("File " + fileName + " not found in " + GameModule.getGameModule().getDataArchive().getName());
+      throw new IllegalBuildException(Resources.getString("AboutScreen.file_not_found", fileName , GameModule.getGameModule().getDataArchive().getName())); //$NON-NLS-1$
     }
   }
 
@@ -233,12 +233,12 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("HelpMenu.htm", "AboutScreen");
+    return HelpFile.getReferenceManualPage("HelpMenu.htm", "AboutScreen"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public static void main(String args[]) {
-    Image i = Toolkit.getDefaultToolkit().getImage("/Command Bunker/VASSAL!/latest source/images/Splash.gif");
-    System.err.println("" + i);
+    Image i = Toolkit.getDefaultToolkit().getImage("/Command Bunker/VASSAL!/latest source/images/Splash.gif"); //$NON-NLS-1$
+    System.err.println("" + i); //$NON-NLS-1$
     AboutScreen as = new AboutScreen(i);
     as.launch();
   }

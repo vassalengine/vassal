@@ -32,12 +32,12 @@ import VASSAL.tools.FormattedString;
 public class SpecialDie extends AbstractConfigurable {
 
   private List dieFaceList = new ArrayList();
-  private FormattedString format = new FormattedString("$" + RESULT + "$");
+  private FormattedString format = new FormattedString("$" + RESULT + "$"); //$NON-NLS-1$ //$NON-NLS-2$
 
-  public static final String NAME = "name";
-  public static final String FORMAT = "format";
-  public static final String RESULT = "result";
-  public static final String NUMERICAL_VALUE = "numericalValue";
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String FORMAT = "format"; //$NON-NLS-1$
+  public static final String RESULT = "result"; //$NON-NLS-1$
+  public static final String NUMERICAL_VALUE = "numericalValue"; //$NON-NLS-1$
 
 
   public void addFace(SpecialDieFace f) {
@@ -93,7 +93,7 @@ public class SpecialDie extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GameModule.htm", "SpecialDiceButton");
+    return HelpFile.getReferenceManualPage("GameModule.htm", "SpecialDiceButton"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -117,7 +117,7 @@ public class SpecialDie extends AbstractConfigurable {
     SpecialDieFace aFace = (SpecialDieFace) dieFaceList.get(face);
     format.setProperty(NAME, getConfigureName());
     format.setProperty(RESULT, aFace.getTextValue());
-    format.setProperty(NUMERICAL_VALUE, aFace.getIntValue() + "");
+    format.setProperty(NUMERICAL_VALUE, aFace.getIntValue() + ""); //$NON-NLS-1$
     return format.getText();
   }
 

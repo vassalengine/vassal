@@ -37,13 +37,12 @@ import VASSAL.tools.SequenceEncoder;
  * @author rkinney
  *
  */
-// I18n: Complete
 public class CgiServerStatus implements ServerStatus {
   private static long DAY = 24L * 3600L * 1000L;
   
-  public static final String LAST_DAY = "Server.last_24_hours";
-  public static final String LAST_WEEK = "Server.last_week";
-  public static final String LAST_MONTH = "Server.last_month";
+  public static final String LAST_DAY = "Server.last_24_hours"; //$NON-NLS-1$
+  public static final String LAST_WEEK = "Server.last_week"; //$NON-NLS-1$
+  public static final String LAST_MONTH = "Server.last_month"; //$NON-NLS-1$
   
   private Map timeRanges = new HashMap();
   
@@ -53,7 +52,7 @@ public class CgiServerStatus implements ServerStatus {
   private List cachedQuery;
 
   public CgiServerStatus() {
-    request = new HttpRequestWrapper("http://www.vassalengine.org/util/");
+    request = new HttpRequestWrapper("http://www.vassalengine.org/util/"); //$NON-NLS-1$
     timeRanges.put(Resources.getString(LAST_DAY),new Long(DAY));
     timeRanges.put(Resources.getString(LAST_WEEK),new Long(DAY * 7));
     timeRanges.put(Resources.getString(LAST_MONTH),new Long(DAY * 30));
@@ -62,7 +61,7 @@ public class CgiServerStatus implements ServerStatus {
   public ServerStatus.ModuleSummary[] getStatus() {
     Map entries = new HashMap();
     try {
-      for (Enumeration e = request.doGet("getCurrentConnections", new Properties()); e.hasMoreElements();) {
+      for (Enumeration e = request.doGet("getCurrentConnections", new Properties()); e.hasMoreElements();) { //$NON-NLS-1$
         String s = (String) e.nextElement();
         SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
         try {
@@ -142,7 +141,7 @@ public class CgiServerStatus implements ServerStatus {
     if (cachedQuery == null) {
       cachedQuery = new ArrayList();
       try {
-        for (Enumeration e = request.doGet("getConnectionHistory", new Properties()); e.hasMoreElements();) {
+        for (Enumeration e = request.doGet("getConnectionHistory", new Properties()); e.hasMoreElements();) { //$NON-NLS-1$
           cachedQuery.add(e.nextElement());
         }
       }

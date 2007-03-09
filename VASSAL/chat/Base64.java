@@ -149,12 +149,12 @@ public class Base64
             {
                 byte[] bytes1 = { (byte)2,(byte)2,(byte)3,(byte)0,(byte)9 }; // My zip code
                 byte[] bytes2 = { (byte)99,(byte)2,(byte)2,(byte)3,(byte)0,(byte)9 };
-                System.out.println( "Bytes 2,2,3,0,9 as Base64: " + encodeBytes( bytes1 ) );
-                System.out.println( "Bytes 2,2,3,0,9 w/ offset: " + encodeBytes( bytes2, 1, bytes2.length-1 ) );
+                System.out.println( "Bytes 2,2,3,0,9 as Base64: " + encodeBytes( bytes1 ) ); //$NON-NLS-1$
+                System.out.println( "Bytes 2,2,3,0,9 w/ offset: " + encodeBytes( bytes2, 1, bytes2.length-1 ) ); //$NON-NLS-1$
                 byte[] dbytes = decode( encodeBytes( bytes1 ) );
-                System.out.print( encodeBytes( bytes1 ) + " decoded: " );
+                System.out.print( encodeBytes( bytes1 ) + " decoded: " ); //$NON-NLS-1$
                 for( int i = 0; i < dbytes.length; i++ )
-                    System.out.print( dbytes[i] + (i<dbytes.length-1?",":"\n") );
+                    System.out.print( dbytes[i] + (i<dbytes.length-1?",":"\n") ); //$NON-NLS-1$ //$NON-NLS-2$
             }   // end testing byte arrays
             
             
@@ -178,22 +178,22 @@ public class Base64
                 }   // end while: terribly inefficient way to read data
                 b64is.close();
                 */
-                bytes = Base64.readFile( "test.gif.b64", false );
+                bytes = Base64.readFile( "test.gif.b64", false ); //$NON-NLS-1$
                 javax.swing.ImageIcon iicon = new javax.swing.ImageIcon( bytes );
-                javax.swing.JLabel jlabel = new javax.swing.JLabel( "Read from test.gif.b64", iicon,0 );
+                javax.swing.JLabel jlabel = new javax.swing.JLabel( "Read from test.gif.b64", iicon,0 ); //$NON-NLS-1$
                 javax.swing.JFrame jframe = new javax.swing.JFrame();
                 jframe.getContentPane().add( jlabel );
                 jframe.pack();
                 jframe.setVisible(true);
 
                 // Write raw bytes to file
-                java.io.FileOutputStream fos = new java.io.FileOutputStream( "test.gif_out" );
+                java.io.FileOutputStream fos = new java.io.FileOutputStream( "test.gif_out" ); //$NON-NLS-1$
                 fos.write( bytes );
                 fos.close();
                 
                 
                 // Read raw bytes and encode
-                fis = new java.io.FileInputStream( "test.gif_out" );
+                fis = new java.io.FileInputStream( "test.gif_out" ); //$NON-NLS-1$
                 b64is = new InputStream( fis, ENCODE );
                 byte[] ebytes = new byte[0];
                 b = -1;
@@ -208,17 +208,17 @@ public class Base64
                 javax.swing.JTextArea jta = new javax.swing.JTextArea( s );
                 javax.swing.JScrollPane jsp = new javax.swing.JScrollPane( jta );
                 jframe = new javax.swing.JFrame();
-                jframe.setTitle( "Read from test.gif_out" );
+                jframe.setTitle( "Read from test.gif_out" ); //$NON-NLS-1$
                 jframe.getContentPane().add( jsp );
                 jframe.pack();
                 jframe.setVisible(true);
 
                 // Write encoded bytes to file
-                fos = new java.io.FileOutputStream( "test.gif.b64_out" );
+                fos = new java.io.FileOutputStream( "test.gif.b64_out" ); //$NON-NLS-1$
                 fos.write( ebytes );
 
                 // Read GIF stored in base64 form.
-                fis = new java.io.FileInputStream( "test.gif.b64_out" );
+                fis = new java.io.FileInputStream( "test.gif.b64_out" ); //$NON-NLS-1$
                 b64is = new InputStream( fis, DECODE );
                 byte[] edbytes = new byte[0]; 
                 b = -1;
@@ -230,7 +230,7 @@ public class Base64
                 }   // end while: terribly inefficient way to read data
                 b64is.close();
                 iicon = new javax.swing.ImageIcon( edbytes );
-                jlabel = new javax.swing.JLabel( "Read from test.gif.b64_out", iicon,0 );
+                jlabel = new javax.swing.JLabel( "Read from test.gif.b64_out", iicon,0 ); //$NON-NLS-1$
                 jframe = new javax.swing.JFrame();
                 jframe.getContentPane().add( jlabel );
                 jframe.pack();
@@ -241,7 +241,7 @@ public class Base64
             // Test Output Stream
             {
                 // Read raw bytes
-                java.io.FileInputStream fis = new java.io.FileInputStream( "test.gif_out" );
+                java.io.FileInputStream fis = new java.io.FileInputStream( "test.gif_out" ); //$NON-NLS-1$
                 byte[] rbytes = new byte[0];
                 int b = -1;
                 while( (b = fis.read()) >= 0 ){
@@ -258,10 +258,10 @@ public class Base64
                 OutputStream b64os = null;//new Base64.OutputStream( fos, ENCODE );
                 //b64os.write( rbytes );
                 //b64os.close();
-                Base64.writeFile( rbytes, "test.gif.b64", ENCODE );
+                Base64.writeFile( rbytes, "test.gif.b64", ENCODE ); //$NON-NLS-1$
                 
                 // Read raw bytes that are actually encoded (but we'll ignore that)
-                fis = new java.io.FileInputStream( "test.gif.b64_out2" );
+                fis = new java.io.FileInputStream( "test.gif.b64_out2" ); //$NON-NLS-1$
                 byte[] rebytes = new byte[0];
                 b = -1;
                 while( (b = fis.read()) >= 0 ){
@@ -275,18 +275,18 @@ public class Base64
                 javax.swing.JTextArea jta = new javax.swing.JTextArea( s );
                 javax.swing.JScrollPane jsp = new javax.swing.JScrollPane( jta );
                 javax.swing.JFrame jframe = new javax.swing.JFrame();
-                jframe.setTitle( "Read from test.gif.b64_out2" );
+                jframe.setTitle( "Read from test.gif.b64_out2" ); //$NON-NLS-1$
                 jframe.getContentPane().add( jsp );
                 jframe.pack();
                 jframe.setVisible(true);
                
                 // Write encoded bytes to decoded raw file
-                fos = new java.io.FileOutputStream("test.gif_out2");
+                fos = new java.io.FileOutputStream("test.gif_out2"); //$NON-NLS-1$
                 b64os = new OutputStream( fos, DECODE );
                 b64os.write( rebytes );
                 b64os.close();
-                javax.swing.ImageIcon iicon = new javax.swing.ImageIcon( "test.gif_out2" );
-                javax.swing.JLabel jlabel = new javax.swing.JLabel( "Read from test.gif_out2", iicon,0 );
+                javax.swing.ImageIcon iicon = new javax.swing.ImageIcon( "test.gif_out2" ); //$NON-NLS-1$
+                javax.swing.JLabel jlabel = new javax.swing.JLabel( "Read from test.gif_out2", iicon,0 ); //$NON-NLS-1$
                 jframe = new javax.swing.JFrame();
                 jframe.getContentPane().add( jlabel );
                 jframe.pack();
@@ -887,10 +887,10 @@ public class Base64
 
             return 3;
             }catch( Exception e){
-                System.out.println(""+source[srcOffset]+ ": " + ( DECODABET[ source[ srcOffset     ] ]  ) );
-                System.out.println(""+source[srcOffset+1]+  ": " + ( DECODABET[ source[ srcOffset + 1 ] ]  ) );
-                System.out.println(""+source[srcOffset+2]+  ": " + ( DECODABET[ source[ srcOffset + 2 ] ]  ) );
-                System.out.println(""+source[srcOffset+3]+  ": " + ( DECODABET[ source[ srcOffset + 3 ] ]  ) );
+                System.out.println(""+source[srcOffset]+ ": " + ( DECODABET[ source[ srcOffset     ] ]  ) ); //$NON-NLS-1$ //$NON-NLS-2$
+                System.out.println(""+source[srcOffset+1]+  ": " + ( DECODABET[ source[ srcOffset + 1 ] ]  ) ); //$NON-NLS-1$ //$NON-NLS-2$
+                System.out.println(""+source[srcOffset+2]+  ": " + ( DECODABET[ source[ srcOffset + 2 ] ]  ) ); //$NON-NLS-1$ //$NON-NLS-2$
+                System.out.println(""+source[srcOffset+3]+  ": " + ( DECODABET[ source[ srcOffset + 3 ] ]  ) ); //$NON-NLS-1$ //$NON-NLS-2$
                 return -1;
             }   //e nd catch
         }
@@ -1013,7 +1013,7 @@ public class Base64
             }   // end if: white space, equals sign or better
             else
             {
-                System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );
+                System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 return null;
             }   // end else: 
         }   // each input character
@@ -1180,7 +1180,7 @@ public class Base64
                     else
                     {
                         // Must have broken out from above.
-                        throw new java.io.IOException( "Improperly padded Base64 input." );
+                        throw new java.io.IOException( "Improperly padded Base64 input." ); //$NON-NLS-1$
                     }   // end 
                     
                 }   // end else: decode
@@ -1218,7 +1218,7 @@ public class Base64
             else
             {   
                 // When JDK1.4 is more accepted, use an assertion here.
-                throw new java.io.IOException( "Error in Base64 code reading stream." );
+                throw new java.io.IOException( "Error in Base64 code reading stream." ); //$NON-NLS-1$
             }   // end else
         }   // end read
         
@@ -1384,7 +1384,7 @@ public class Base64
                 }   // end if: meaningful base64 character
                 else if( DECODABET[ theByte & 0x7f ] != WHITE_SPACE_ENC )
                 {
-                    throw new java.io.IOException( "Invalid character in Base64 data." );
+                    throw new java.io.IOException( "Invalid character in Base64 data." ); //$NON-NLS-1$
                 }   // end else: not white space either
             }   // end else: decoding
         }   // end write
@@ -1430,7 +1430,7 @@ public class Base64
                 }   // end if: encoding
                 else
                 {   
-                    throw new java.io.IOException( "Base64 input not properly padded." );
+                    throw new java.io.IOException( "Base64 input not properly padded." ); //$NON-NLS-1$
                 }   // end else: decoding
             }   // end if: buffer partially full
             

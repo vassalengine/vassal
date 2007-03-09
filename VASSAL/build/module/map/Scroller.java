@@ -33,7 +33,6 @@ import VASSAL.i18n.Resources;
  * will use number keypad or arrow keys, or will offer a
  * preferences setting for the user to choose
  */
-// I18n: Partial
 public class Scroller extends AbstractBuildable implements KeyListener {
   /**
    * The attribute name for whether to use arrow keys

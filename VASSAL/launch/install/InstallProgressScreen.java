@@ -28,7 +28,6 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-// I18n: Complete
 public abstract class InstallProgressScreen implements Screen {
 
   protected Box controls;
@@ -37,7 +36,7 @@ public abstract class InstallProgressScreen implements Screen {
   public InstallProgressScreen() {
     super();
     controls = Box.createVerticalBox();
-    status = new JLabel(Resources.getString("Install.downloading_files"));
+    status = new JLabel(Resources.getString("Install.downloading_files")); //$NON-NLS-1$
     progress = new JProgressBar();
     progress.setIndeterminate(true);
     controls.add(status);

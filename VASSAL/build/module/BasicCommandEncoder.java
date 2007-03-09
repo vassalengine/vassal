@@ -295,7 +295,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       d = f.createDecorator(type, inner);
     }
     else {
-      System.err.println("Unknown type "+type);
+      System.err.println("Unknown type "+type); //$NON-NLS-1$
       d = new Marker(Marker.ID,inner);
     }
     return d;
@@ -336,7 +336,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     if (innerType != null) {
       GamePiece inner = createPiece(innerType);
       if (inner == null) {
-        System.err.println("Could not create piece with type "+innerType);
+        System.err.println("Could not create piece with type "+innerType); //$NON-NLS-1$
       }
       Decorator d = createDecorator(type, inner);
       return d != null ? d : inner;
@@ -362,10 +362,10 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
   }
 
   private static final char PARAM_SEPARATOR = '/';
-  public static final String ADD = "+" + PARAM_SEPARATOR;
-  public static final String REMOVE = "-" + PARAM_SEPARATOR;
-  public static final String CHANGE = "D" + PARAM_SEPARATOR;
-  public static final String MOVE = "M" + PARAM_SEPARATOR;
+  public static final String ADD = "+" + PARAM_SEPARATOR; //$NON-NLS-1$
+  public static final String REMOVE = "-" + PARAM_SEPARATOR; //$NON-NLS-1$
+  public static final String CHANGE = "D" + PARAM_SEPARATOR; //$NON-NLS-1$
+  public static final String MOVE = "M" + PARAM_SEPARATOR; //$NON-NLS-1$
 
   public Command decode(String command) {
     if (command.length() == 0) {
@@ -426,11 +426,11 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
   }
 
   private String wrapNull(String s) {
-    return s == null ? "null" : s;
+    return s == null ? "null" : s; //$NON-NLS-1$
   }
 
   private String unwrapNull(String s) {
-    return "null".equals(s) ? null : s;
+    return "null".equals(s) ? null : s; //$NON-NLS-1$
   }
 
   public String encode(Command c) {
@@ -452,13 +452,13 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     }
     else if (c instanceof MovePiece) {
       MovePiece mp = (MovePiece) c;
-      se.append(mp.getId()).append(wrapNull(mp.getNewMapId())).append(mp.getNewPosition().x + "").append(mp.getNewPosition().y + "").append(
-          wrapNull(mp.getNewUnderneathId())).append(wrapNull(mp.getOldMapId())).append(mp.getOldPosition().x + "").append(mp.getOldPosition().y + "").append(
+      se.append(mp.getId()).append(wrapNull(mp.getNewMapId())).append(mp.getNewPosition().x + "").append(mp.getNewPosition().y + "").append( //$NON-NLS-1$ //$NON-NLS-2$
+          wrapNull(mp.getNewUnderneathId())).append(wrapNull(mp.getOldMapId())).append(mp.getOldPosition().x + "").append(mp.getOldPosition().y + "").append( //$NON-NLS-1$ //$NON-NLS-2$
           wrapNull(mp.getOldUnderneathId())).append(mp.getPlayerId());
       return MOVE + se.getValue();
     }
     else if (c instanceof NullCommand) {
-      return "";
+      return ""; //$NON-NLS-1$
     }
     else if (c instanceof PlayAudioClipCommand) {
       return ((PlayAudioClipCommand)c).encode();

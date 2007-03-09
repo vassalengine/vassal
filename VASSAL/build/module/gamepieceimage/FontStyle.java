@@ -33,8 +33,8 @@ import VASSAL.configure.ConfigurerFactory;
 
 public class FontStyle extends AbstractConfigurable {
 
-  protected static final String NAME = "name";
-  protected static final String STYLE = "style";
+  protected static final String NAME = "name"; //$NON-NLS-1$
+  protected static final String STYLE = "style"; //$NON-NLS-1$
   
   protected OutlineFont font;
   
@@ -110,7 +110,7 @@ public class FontStyle extends AbstractConfigurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("GamePieceLayout.htm","NamedColors");
+    return HelpFile.getReferenceManualPage("GamePieceLayout.htm","NamedColors"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public Class[] getAllowableConfigureComponents() {

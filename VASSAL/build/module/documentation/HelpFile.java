@@ -36,14 +36,14 @@ import VASSAL.tools.DataArchive;
  * Places an entry in the <code>Help</code> menu.  Selecting the entry
  * displays a window with stored text on it. */
 public class HelpFile extends AbstractConfigurable {
-  public static final String TITLE = "title";
-  public static final String FILE = "fileName";
-  public static final String TYPE = "fileType";
-  private static final String IMAGE = "image";
+  public static final String TITLE = "title"; //$NON-NLS-1$
+  public static final String FILE = "fileName"; //$NON-NLS-1$
+  public static final String TYPE = "fileType"; //$NON-NLS-1$
+  private static final String IMAGE = "image"; //$NON-NLS-1$
 
-  public static final String ARCHIVE_ENTRY = "archive";
-  public static final String RESOURCE = "resource";
-  public static final String LOCAL_FILE = "file";
+  public static final String ARCHIVE_ENTRY = "archive"; //$NON-NLS-1$
+  public static final String RESOURCE = "resource"; //$NON-NLS-1$
+  public static final String LOCAL_FILE = "file"; //$NON-NLS-1$
 
   private HelpWindow frame;
   private URL contents;
@@ -123,8 +123,8 @@ public class HelpFile extends AbstractConfigurable {
         }
         else if (LOCAL_FILE.equals(fileType)) {
           File f = new File(fileName);
-          if (fileName.startsWith("docs/")) {
-            f = new File(Documentation.getDocumentationBaseDir(),fileName.substring("docs/".length()));
+          if (fileName.startsWith("docs/")) { //$NON-NLS-1$
+            f = new File(Documentation.getDocumentationBaseDir(),fileName.substring("docs/".length())); //$NON-NLS-1$
           }
           try {
             contents = toURL(f);
@@ -143,21 +143,21 @@ public class HelpFile extends AbstractConfigurable {
     if (File.separatorChar != '/') {
       path = path.replace(File.separatorChar, '/');
     }
-    if (!path.startsWith("/")) {
-      path = "/" + path;
+    if (!path.startsWith("/")) { //$NON-NLS-1$
+      path = "/" + path; //$NON-NLS-1$
     }
-    if (!path.endsWith("/") && f.isDirectory()) {
-      path = path + "/";
+    if (!path.endsWith("/") && f.isDirectory()) { //$NON-NLS-1$
+      path = path + "/"; //$NON-NLS-1$
     }
-    return new URL("file", "", path);
+    return new URL("file", "", path); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
 
   public HelpFile getHelpFile() {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
+    dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
-      return new HelpFile(null, new File(dir, "HelpMenu.htm"), "#HelpFile");
+      return new HelpFile(null, new File(dir, "HelpMenu.htm"), "#HelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     catch (MalformedURLException ex) {
       return null;
@@ -205,7 +205,7 @@ public class HelpFile extends AbstractConfigurable {
         fileType = ARCHIVE_ENTRY;
       }
       fileName = (String) val;
-      if ("Intro.txt".equals(key)) {
+      if ("Intro.txt".equals(key)) { //$NON-NLS-1$
         fileType = RESOURCE;
       }
     }
@@ -240,11 +240,11 @@ public class HelpFile extends AbstractConfigurable {
   }
   
   public static HelpFile getReferenceManualPage(String page, String anchor) {
-    if (anchor != null && !anchor.startsWith("#")) {
-      anchor = "#"+anchor;
+    if (anchor != null && !anchor.startsWith("#")) { //$NON-NLS-1$
+      anchor = "#"+anchor; //$NON-NLS-1$
     }
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");
+    dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
       return anchor == null ? new HelpFile(null,new File(dir,page)) : new HelpFile(null, new File(dir, page), anchor);
     }

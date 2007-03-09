@@ -45,15 +45,14 @@ import VASSAL.i18n.Resources;
  * @author rkinney
  * 
  */
-// I18n: Complete
 public class ServerConfigurer extends Configurer {
-  private static final String CONNECTED = Resources.getString("Server.please_disconnect");
-  private static final String DISCONNECTED = Resources.getString("Server.select_server_type");
-  private static final String BUTTON = "Button";
-  private static final String DYNAMIC_BUTTON = Resources.getString("Server.default");
-  private static final String JABBER_BUTTON = Resources.getString("Server.jabber");
-  private static final String DIRECT_BUTTON = Resources.getString("Server.direct");
-  private static final String ENCODING = "ISO-8859-1";
+  private static final String CONNECTED = Resources.getString("Server.please_disconnect"); //$NON-NLS-1$
+  private static final String DISCONNECTED = Resources.getString("Server.select_server_type"); //$NON-NLS-1$
+  private static final String BUTTON = "Button"; //$NON-NLS-1$
+  private static final String DYNAMIC_BUTTON = Resources.getString("Server.default"); //$NON-NLS-1$
+  private static final String JABBER_BUTTON = Resources.getString("Server.jabber"); //$NON-NLS-1$
+  private static final String DIRECT_BUTTON = Resources.getString("Server.direct"); //$NON-NLS-1$
+  private static final String ENCODING = "ISO-8859-1"; //$NON-NLS-1$
   private Box controls;
   private JTextField jabberHost;
   private HybridClient client;
@@ -108,11 +107,11 @@ public class ServerConfigurer extends Configurer {
       });
       group.add(jabberButton);
       box.add(jabberButton);
-      jabberHostPrompt = new JLabel(Resources.getString("Server.host"));
+      jabberHostPrompt = new JLabel(Resources.getString("Server.host")); //$NON-NLS-1$
       box.add(jabberHostPrompt);
       jabberHost = new JTextField(18);
       jabberHost.setMaximumSize(new Dimension(jabberHost.getMaximumSize().width, jabberHost.getPreferredSize().height));
-      jabberHost.setText(JabberClientFactory.DEFAULT_JABBER_HOST+":"+JabberClientFactory.DEFAULT_JABBER_PORT);
+      jabberHost.setText(JabberClientFactory.DEFAULT_JABBER_HOST+":"+JabberClientFactory.DEFAULT_JABBER_PORT); //$NON-NLS-1$
       jabberHost.getDocument().addDocumentListener(new DocumentListener() {
         public void changedUpdate(DocumentEvent e) {
           updateValue();
@@ -161,8 +160,8 @@ public class ServerConfigurer extends Configurer {
     Properties p = new Properties();
     p.setProperty(BUTTON, JABBER_BUTTON);
     String host = jabberHost.getText();
-    String port = "5222";
-    int idx = host.indexOf(":");
+    String port = "5222"; //$NON-NLS-1$
+    int idx = host.indexOf(":"); //$NON-NLS-1$
     if (idx > 0) {
       port = host.substring(idx + 1);
       host = host.substring(0, idx);
@@ -188,7 +187,7 @@ public class ServerConfigurer extends Configurer {
   }
 
   public String getValueString() {
-    String s = "";
+    String s = ""; //$NON-NLS-1$
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
       getServerInfo().store(out, null);
@@ -213,7 +212,7 @@ public class ServerConfigurer extends Configurer {
       }
       else if (JABBER_BUTTON.equals(type)) {
         jabberButton.setSelected(true);
-        jabberHost.setText(p.getProperty(JabberClientFactory.JABBER_HOST, JabberClientFactory.DEFAULT_JABBER_HOST) + ":"
+        jabberHost.setText(p.getProperty(JabberClientFactory.JABBER_HOST, JabberClientFactory.DEFAULT_JABBER_HOST) + ":" //$NON-NLS-1$
             + p.getProperty(JabberClientFactory.JABBER_PORT, JabberClientFactory.DEFAULT_JABBER_PORT));
       }
       else if (DIRECT_BUTTON.equals(type)) {

@@ -31,7 +31,6 @@ import VASSAL.i18n.Resources;
  * @author rkinney
  *
  */
-//I18n: Complete
 public class RoomTree extends JTree {
   private static final long serialVersionUID = 1L;
 
@@ -41,7 +40,7 @@ public class RoomTree extends JTree {
   public RoomTree() {
     setRootVisible(false);
     setShowsRootHandles(true);
-    root = new DefaultMutableTreeNode(Resources.getString("Chat.server"));
+    root = new DefaultMutableTreeNode(Resources.getString("Chat.server")); //$NON-NLS-1$
     model = new DefaultTreeModel(root) {
       private static final long serialVersionUID = 1L;
 

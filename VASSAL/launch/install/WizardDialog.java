@@ -31,7 +31,6 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-// I18n: Complete
 public class WizardDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
@@ -57,7 +56,7 @@ public class WizardDialog extends JDialog {
     });
     buttonBox.add(Box.createHorizontalGlue());
     buttonBox.add(b);
-    getContentPane().add("South", buttonBox);
+    getContentPane().add("South", buttonBox); //$NON-NLS-1$
     getContentPane().add(screenBox);
     setSize(600,400);
     setLocationRelativeTo(null);
