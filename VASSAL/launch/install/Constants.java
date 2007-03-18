@@ -26,5 +26,9 @@ public interface Constants {
   public static final String HEAP_SIZE = "heapSize"; //$NON-NLS-1$
   public static final String INSTALL_DIR = "installDir"; //$NON-NLS-1$
   public static final String INSTALL_FILE = "installFile"; //$NON-NLS-1$
-
+  public static final String INTERNAL_RESOURCES = "resources"; //$NON-NLS-1$
+  public static final String INSTALL_PROPERTIES = "installInfo";
+  public static final String INITIAL_SCREEN = "initialScreen";
+  public static final String TITLE = "title";
+  public static final String MODULE_FILE = "moduleFile";
 }

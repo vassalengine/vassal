@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -31,7 +32,7 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-public class WizardDialog extends JDialog {
+public class WizardDialog extends JDialog implements ActionListener, WindowListener {
   private static final long serialVersionUID = 1L;
 
   private Screen screen;
@@ -42,18 +43,10 @@ public class WizardDialog extends JDialog {
     this.wizard = wizard;
     setModal(false);
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-    addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent e) {
-        System.exit(0);
-      }
-    });
+    addWindowListener(this);
     Box buttonBox = Box.createHorizontalBox();
     JButton b = new JButton(Resources.getString(Resources.NEXT));
-    b.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        screen.next(wizard);
-      }
-    });
+    b.addActionListener(this);
     buttonBox.add(Box.createHorizontalGlue());
     buttonBox.add(b);
     getContentPane().add("South", buttonBox); //$NON-NLS-1$
@@ -72,6 +65,24 @@ public class WizardDialog extends JDialog {
   }
   public InstallWizard getWizard() {
     return wizard;
+  }
+  public void actionPerformed(ActionEvent e) {
+    screen.next(wizard);
+  }
+  public void windowActivated(WindowEvent e) {
+  }
+  public void windowClosed(WindowEvent e) {
+  }
+  public void windowClosing(WindowEvent e) {
+    System.exit(0);
+  }
+  public void windowDeactivated(WindowEvent e) {
+  }
+  public void windowDeiconified(WindowEvent e) {
+  }
+  public void windowIconified(WindowEvent e) {
+  }
+  public void windowOpened(WindowEvent e) {
   }
   
 }

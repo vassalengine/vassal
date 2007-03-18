@@ -36,7 +36,8 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-public class ChooseDirScreen implements Screen {
+public class ChooseDirScreen implements Screen, ActionListener, Runnable {
+  public static final String NEXT_SCREEN = "ChooseDirScreen.next";
   private JTextField tf = new JTextField(36);
   private JButton select = new JButton(Resources.getString("Install.select")); //$NON-NLS-1$
   private Box controls;
@@ -44,55 +45,56 @@ public class ChooseDirScreen implements Screen {
   public ChooseDirScreen() {
     Box hBox = Box.createHorizontalBox();
     hBox.add(tf);
-    tf.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        Window w = SwingUtilities.getWindowAncestor(tf);
-        if (w instanceof WizardDialog) {
-          next(((WizardDialog) w).getWizard());
-        }
-      }
-    });
+    tf.addActionListener(this);
     tf.setText(new File(System.getProperty("user.home"), "VASSAL").getPath()); //$NON-NLS-1$ //$NON-NLS-2$
     tf.setMaximumSize(new Dimension(tf.getMaximumSize().width, tf.getPreferredSize().height));
     tf.select(0, tf.getText().length());
     hBox.add(select);
-    select.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        JFileChooser fc = new JFileChooser();
-        fc.setFileFilter(new FileFilter() {
-          public boolean accept(File pathname) {
-            return pathname.isDirectory();
-          }
-
-          public String getDescription() {
-            return Resources.getString("Install.directories"); //$NON-NLS-1$
-          }
-        });
-        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-          tf.setText(fc.getSelectedFile().getPath());
-        }
-      }
-    });
+    select.addActionListener(this);
     controls = Box.createVerticalBox();
     controls.add(new JLabel(Resources.getString("Install.select_install_directory"))); //$NON-NLS-1$
     controls.add(hBox);
   }
 
   public Component getControls() {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        tf.requestFocus();
-      }
-    });
+    SwingUtilities.invokeLater(this);
     return controls;
   }
 
   public void next(InstallWizard wiz) {
     wiz.put(Constants.INSTALL_DIR, tf.getText());
-    Screen s = wiz.next("ChooseDirScreen.next", InstallJnlpScreen.class); //$NON-NLS-1$
+    Screen s = wiz.next(NEXT_SCREEN, InstallJnlpScreen.class); //$NON-NLS-1$
     if (s instanceof InstallProgressScreen) {
       ((InstallProgressScreen) s).start(wiz);
+    }
+  }
+
+  public void actionPerformed(ActionEvent e) {
+    if (tf.equals(e.getSource())) {
+    Window w = SwingUtilities.getWindowAncestor(tf);
+    if (w instanceof WizardDialog) {
+      next(((WizardDialog) w).getWizard());
+    }
+    }
+    else if (select.equals(e.getSource())) {
+      JFileChooser fc = new JFileChooser();
+      fc.setFileFilter(new DirectoryFilter());
+      fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        tf.setText(fc.getSelectedFile().getPath());
+      }
+    }
+  }
+  public void run() {
+    tf.requestFocus();
+  }
+  public final class DirectoryFilter extends FileFilter {
+    public boolean accept(File pathname) {
+      return pathname.isDirectory();
+    }
+
+    public String getDescription() {
+      return Resources.getString("Install.directories"); //$NON-NLS-1$
     }
   }
 }

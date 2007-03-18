@@ -28,11 +28,11 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-public abstract class InstallProgressScreen implements Screen {
-
+public abstract class InstallProgressScreen implements Screen, Runnable {
   protected Box controls;
   protected JLabel status;
   protected JProgressBar progress;
+  protected InstallWizard wizard;
   public InstallProgressScreen() {
     super();
     controls = Box.createVerticalBox();
@@ -42,22 +42,9 @@ public abstract class InstallProgressScreen implements Screen {
     controls.add(status);
     controls.add(progress);
   }
-  public void start(final InstallWizard wizard) {
-    new Thread() {
-      public void run() {
-        try {
-          tryInstall(wizard);
-        }
-        catch (IOException e) {
-          e.printStackTrace();
-          wizard.getDialog().setScreen(new FailureScreen(e));
-        }
-        catch (RuntimeException e) {
-          e.printStackTrace();
-          wizard.getDialog().setScreen(new FailureScreen(e));
-        }
-      }
-    }.start();    
+  public void start(InstallWizard wizard) {
+    this.wizard = wizard;
+    new Thread(this).start();    
   }
   public Component getControls() {
     return controls;
@@ -69,5 +56,19 @@ public abstract class InstallProgressScreen implements Screen {
     status.setText(msg);
   }
   protected abstract void tryInstall(final InstallWizard wizard) throws IOException;
+
+  public void run() {
+    try {
+      tryInstall(wizard);
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      wizard.getDialog().setScreen(new FailureScreen(e));
+    }
+    catch (RuntimeException e) {
+      e.printStackTrace();
+      wizard.getDialog().setScreen(new FailureScreen(e));
+    }
+  }
   
 }

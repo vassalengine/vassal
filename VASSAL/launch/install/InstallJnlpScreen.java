@@ -51,31 +51,61 @@ import VASSAL.i18n.Resources;
  * @author rkinney
  */
 public class InstallJnlpScreen extends InstallProgressScreen implements Constants {
-  private List resources = new ArrayList();
-  private File installFile;
-  private String jnlpURL;
-  private File installDir;
-  private File installLibDir;
-  private String heapSize;
+  protected List resources = new ArrayList();
+  protected File installFile;
+  protected String jnlpURL;
+  protected String internalResources;
+  protected File installDir;
+  protected File installLibDir;
+  protected String heapSize;
 
   protected void tryInstall(final InstallWizard wizard) throws IOException {
-    installDir = new File(wizard.get(INSTALL_DIR));
-    jnlpURL = wizard.get(JNLP_URL);
-    heapSize = wizard.get(Constants.HEAP_SIZE);
+    prepareInstall(wizard);
     doInstall();
     wizard.getDialog().setScreen(new SuccessScreen(
         "<html>" + Resources.getString("Install.install_successful") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                    Resources.getString("Install.to_get_started", installFile.toString()) + "</html>")); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  protected void prepareInstall(final InstallWizard wizard) throws IOException {
+    if (wizard.get(INSTALL_DIR) == null) {
+      throw new IOException(Resources.getString("Install.error_install_dir")); //$NON-NLS-1$
+    }
+    installDir = new File(wizard.get(INSTALL_DIR));
+    if (installDir.exists() && !installDir.isDirectory()) {
+      throw new IOException(Resources.getString("Install.error_not_a_directory", installDir.toString())); //$NON-NLS-1$
+    }
+    if (!installDir.exists() && !installDir.mkdir()) {
+      throw new IOException(Resources.getString("Install.error_unable_to_create", installDir.toString())); //$NON-NLS-1$
+    }
+    installLibDir = new File(installDir, "lib"); //$NON-NLS-1$
+    if (!installLibDir.exists() && !installLibDir.mkdir()) {
+      throw new IOException(Resources.getString("Install.error_unable_to_create", installLibDir.toString())); //$NON-NLS-1$
+    }
+    jnlpURL = wizard.get(JNLP_URL);
+    if (jnlpURL == null) {
+      throw new IOException(Resources.getString("Install.error_no_version")); //$NON-NLS-1$
+    }
+    String file = new URL(jnlpURL).getPath();
+    file = file.substring(file.lastIndexOf('/') + 1);
+    installFile = new File(installDir, file);
+    heapSize = wizard.get(Constants.HEAP_SIZE);
+    internalResources = wizard.get(INTERNAL_RESOURCES);
+  }
+
   public void doInstall() throws IOException {
-    checkParameters();
     Document doc = getJNLPDoc(new URL(jnlpURL));
     modifyDocument(doc);
+    if (internalResources != null) {
+      String[] resource = internalResources.split(",");
+      for (int i = 0; i < resource.length; i++) {
+        resources.add(getClass().getResource("/"+resource[i]));
+      }
+    }
     downloadFiles(doc, installFile);
   }
 
-  private void extractResources(Document doc) throws IOException {
+  protected void extractResources(Document doc) throws IOException {
     String codebase = doc.getDocumentElement().getAttribute("codebase"); //$NON-NLS-1$
     URL base = null;
     if (codebase != null) {
@@ -123,7 +153,7 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
     return path;
   }
 
-  private void downloadResource(URL resource) throws IOException {
+  protected void downloadResource(URL resource) throws IOException {
     byte[] buffer = new byte[100000];
     int readCount = 0;
     String path = getFileName(resource);
@@ -168,47 +198,25 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
 
   protected void modifyDocument(Document doc) throws IOException {
     extractResources(doc);
-    NodeList l = doc.getElementsByTagName("*"); //$NON-NLS-1$
-    for (int i = 0, n = l.getLength(); i < n; ++i) {
-      Node node = l.item(i);
-      Node child = node.getFirstChild();
-      while (child != null) {
-        Node next = child.getNextSibling();
-        if (child.getNodeType() == Node.TEXT_NODE && child.getNodeValue() != null && child.getNodeValue().trim().length() == 0) {
-          node.removeChild(child);
-        }
-        child = next;
-      }
-    }
-    l = doc.getElementsByTagName("j2se"); //$NON-NLS-1$
+//    NodeList l = doc.getElementsByTagName("*"); //$NON-NLS-1$
+//    for (int i = 0, n = l.getLength(); i < n; ++i) {
+//      Node node = l.item(i);
+//      Node child = node.getFirstChild();
+//      while (child != null) {
+//        Node next = child.getNextSibling();
+//        if (child.getNodeType() == Node.TEXT_NODE && child.getNodeValue() != null && child.getNodeValue().trim().length() == 0) {
+//          node.removeChild(child);
+//        }
+//        child = next;
+//      }
+//    }
+    NodeList l = doc.getElementsByTagName("j2se"); //$NON-NLS-1$
     if (l.getLength() == 1) {
       Element el = (Element) l.item(0);
       el.setAttribute("max-heap-size", heapSize); //$NON-NLS-1$
     }
     doc.getDocumentElement().setAttribute("codebase", //$NON-NLS-1$
       installDir.toURI().toURL().toString());
-  }
-
-  protected void checkParameters() throws IOException {
-    if (installDir == null) {
-      throw new IOException(Resources.getString("Install.error_install_dir")); //$NON-NLS-1$
-    }
-    if (installDir.exists() && !installDir.isDirectory()) {
-      throw new IOException(Resources.getString("Install.error_not_a_directory", installDir.toString())); //$NON-NLS-1$
-    }
-    if (!installDir.exists() && !installDir.mkdir()) {
-      throw new IOException(Resources.getString("Install.error_unable_to_create", installDir.toString())); //$NON-NLS-1$
-    }
-    installLibDir = new File(installDir, "lib"); //$NON-NLS-1$
-    if (!installLibDir.exists() && !installLibDir.mkdir()) {
-      throw new IOException(Resources.getString("Install.error_unable_to_create", installLibDir.toString())); //$NON-NLS-1$
-    }
-    if (jnlpURL == null) {
-      throw new IOException(Resources.getString("Install.error_no_version")); //$NON-NLS-1$
-    }
-    String file = new URL(jnlpURL).getPath();
-    file = file.substring(file.lastIndexOf('/') + 1);
-    installFile = new File(installDir, file);
   }
 
   public Document getJNLPDoc(URL url) throws IOException {

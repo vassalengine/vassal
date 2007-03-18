@@ -19,7 +19,6 @@ public class Resources {
   
   protected static String VASSAL_BUNDLE = "VASSAL.i18n.VASSAL";
   protected static String EDITOR_BUNDLE = "VASSAL.i18n.Editor";
-  protected static Locale activeLocale; 
 
   /*
    * Commonly used keys
@@ -62,7 +61,9 @@ public class Resources {
   
   public static void init(File dir) {
     homeDir = dir;
-    activeLocale = Locale.getDefault();
+  }
+
+  static {
     UIManager.put("OptionPane.yesButtonText", getString(YES));
     UIManager.put("OptionPane.cancelButtonText", getString(CANCEL));
     UIManager.put("OptionPane.noButtonText", getString(NO));
@@ -82,7 +83,7 @@ public class Resources {
   }
   public static String getVassalString(String id) {
     if (vassalBundle == null) {
-      vassalBundle = ResourceBundle.getBundle(VASSAL_BUNDLE, activeLocale, new VassalPropertyClassLoader());
+      vassalBundle = ResourceBundle.getBundle(VASSAL_BUNDLE, Locale.getDefault(), homeDir == null ? Resources.class.getClassLoader() : new VassalPropertyClassLoader());
     }
     return getString(vassalBundle, id);
   }
@@ -92,7 +93,7 @@ public class Resources {
    */
   public static String getEditorString(String id) {
     if (editorBundle == null) {
-      editorBundle = ResourceBundle.getBundle(EDITOR_BUNDLE, activeLocale, new VassalPropertyClassLoader());
+      editorBundle = ResourceBundle.getBundle(EDITOR_BUNDLE, Locale.getDefault(), homeDir == null ? Resources.class.getClassLoader() : new VassalPropertyClassLoader());
    }
    return getString(editorBundle, id);
   }
@@ -158,7 +159,7 @@ public class Resources {
    * Check first for files in the VASSAL home directory
    *
    */
-  static class VassalPropertyClassLoader extends ClassLoader {
+  public static class VassalPropertyClassLoader extends ClassLoader {
     public URL getResource(String name) {
       URL url = null;
       String propFileName = name.substring(name.lastIndexOf('/')+1);

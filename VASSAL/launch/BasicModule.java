@@ -41,7 +41,7 @@ import VASSAL.tools.SequenceEncoder;
 public class BasicModule extends GameModule {
   private static char COMMAND_SEPARATOR = (char) java.awt.event.KeyEvent.VK_ESCAPE;
 
-  protected BasicModule(DataArchive archive, Prefs globalPrefs) {
+  public BasicModule(DataArchive archive, Prefs globalPrefs) {
     super(archive);
     setGlobalPrefs(globalPrefs);
   }

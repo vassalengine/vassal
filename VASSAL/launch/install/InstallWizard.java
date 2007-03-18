@@ -30,21 +30,18 @@ import VASSAL.i18n.Resources;
  * 
  * @author rkinney
  */
-public class InstallWizard {
+public class InstallWizard implements Constants {
   private WizardDialog dialog;
   private Properties properties;
-  public static final String INSTALL_PROPERTIES = "/installInfo"; //$NON-NLS-1$
-  public static final String INITIAL_SCREEN = "initialScreen"; //$NON-NLS-1$
-
   public void start() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
     Properties p = new Properties();
-    InputStream in = getClass().getResourceAsStream(INSTALL_PROPERTIES);
+    InputStream in = getClass().getResourceAsStream("/"+INSTALL_PROPERTIES);
     if (in != null) {
       p.load(in);
     }
     properties = new Properties(p);
     dialog = new WizardDialog(this);
-    dialog.setTitle(properties.getProperty("title",Resources.getString("Install.install_vassal"))); //$NON-NLS-1$ //$NON-NLS-2$
+    dialog.setTitle(properties.getProperty(TITLE,Resources.getString("Install.install_vassal"))); //$NON-NLS-1$ //$NON-NLS-2$
     dialog.setScreen((Screen) Class.forName(p.getProperty(INITIAL_SCREEN, ChooseVersionScreen.class.getName())).newInstance());
     dialog.setVisible(true);
   }
@@ -62,7 +59,7 @@ public class InstallWizard {
   public Screen next(String screenKey, Class defaultClass) {
     Screen screen;
     try {
-      String screenClass = (String) properties.get(screenKey);
+      String screenClass = properties.getProperty(screenKey);
       if (screenClass != null) {
         screen = (Screen) Class.forName(screenClass).newInstance();
       }
