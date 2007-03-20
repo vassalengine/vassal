@@ -453,6 +453,9 @@ public class GameState implements CommandEncoder {
         }
         GameModule.getGameModule().warn(msg);
         Logger logger = GameModule.getGameModule().getLogger();
+        if (logger instanceof BasicLogger) {
+          ((BasicLogger)logger).queryNewLogFile(true);
+        }
       }
     }.start();
   }
