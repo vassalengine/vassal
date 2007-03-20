@@ -76,9 +76,9 @@ public class DrawPile extends SetupStack {
       return dummy.getShuffleOption().equals(USE_MENU);
     }
   };
-  private VisibilityCondition typeCountingVisibleCondition = new VisibilityCondition() {
+  private VisibilityCondition expressionCountingVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
-      return dummy.doesTypeCounting();
+      return dummy.doesExpressionCounting();
     }
   };
   protected static UniqueIdManager idMgr = new UniqueIdManager("Deck");
@@ -120,8 +120,8 @@ public class DrawPile extends SetupStack {
   public static final String DRAW = "draw";
   public static final String COLOR = "color";
   public static final String MAXSTACK = "maxStack";
-  public static final String TYPECOUNTING = "typeCounting";
-  public static final String COUNTTYPES = "countTypes";
+  public static final String EXPRESSIONCOUNTING = "expressionCounting";
+  public static final String COUNTEXPRESSIONS = "countExpressions";
   public static final String RESHUFFLABLE = "reshufflable";
   public static final String RESHUFFLE_COMMAND = "reshuffleCommand";
   public static final String RESHUFFLE_TARGET = "reshuffleTarget";
@@ -187,7 +187,7 @@ public class DrawPile extends SetupStack {
                         ALLOW_SELECT, FACE_DOWN, DRAW_FACE_UP, FACE_DOWN_REPORT_FORMAT, SHUFFLE, SHUFFLE_REPORT_FORMAT,
                         SHUFFLE_HOTKEY, REVERSIBLE, REVERSE_REPORT_FORMAT, DRAW, COLOR,
                         RESHUFFLABLE, RESHUFFLE_COMMAND, RESHUFFLE_MESSAGE, RESHUFFLE_HOTKEY, RESHUFFLE_TARGET,CAN_SAVE,
-                        MAXSTACK,TYPECOUNTING,COUNTTYPES};
+                        MAXSTACK,EXPRESSIONCOUNTING,COUNTEXPRESSIONS};
   }
 
   public String[] getAttributeDescriptions() {
@@ -215,9 +215,9 @@ public class DrawPile extends SetupStack {
                         "Send Hot Key:  ",
                         "Name of deck to send to:  ",
                         "Can be saved-to/loaded-from a file?",
-                        "Maximum Cards to display in Stack",
-                        "Perform counting of piece types?",
-                        "Piece types to count"};
+                        "Maximum Cards to display in Stack:",
+                        "Perform counting of property expressions?",
+                        "Expressions to count:"};
   }
 
   public Class[] getAttributeTypes() {
@@ -291,11 +291,11 @@ public class DrawPile extends SetupStack {
     else if (MAXSTACK.equals(key)) {
       return "" + dummy.getMaxStack();
     }
-    else if (TYPECOUNTING.equals(key)) {
-      return "" + dummy.doesTypeCounting();
+    else if (EXPRESSIONCOUNTING.equals(key)) {
+      return "" + dummy.doesExpressionCounting();
     }
-    else if (COUNTTYPES.equals(key)) {
-      return StringArrayConfigurer.arrayToString(dummy.getCountTypes());
+    else if (COUNTEXPRESSIONS.equals(key)) {
+      return StringArrayConfigurer.arrayToString(dummy.getCountExpressions());
     }
     else if (RESHUFFLABLE.equals(key)) {
       return "" + (dummy.getReshuffleCommand().length() > 0);
@@ -415,19 +415,19 @@ public class DrawPile extends SetupStack {
       }
       dummy.setMaxStack(((Integer) value).intValue());
     }    
-    if (TYPECOUNTING.equals(key)) {
+    if (EXPRESSIONCOUNTING.equals(key)) {
       if (value instanceof Boolean) {
-        dummy.setTypeCounting(Boolean.TRUE.equals(value));
+        dummy.setExpressionCounting(Boolean.TRUE.equals(value));
       }
       else {
-        dummy.setTypeCounting("true".equals(value));
+        dummy.setExpressionCounting("true".equals(value));
       }
     }    
-    if (COUNTTYPES.equals(key)) {
+    if (COUNTEXPRESSIONS.equals(key)) {
       if (value instanceof String) {
         value = StringArrayConfigurer.stringToArray((String) value);
       }
-      dummy.setCountTypes((String[]) value);
+      dummy.setCountExpressions((String[]) value);
     }    
     else if (RESHUFFLABLE.equals(key)) {
       reshufflable = "true".equals(value) || Boolean.TRUE.equals(value);
@@ -494,8 +494,8 @@ public class DrawPile extends SetupStack {
     else if (REVERSE_REPORT_FORMAT.equals(name)) {
       return reverseFormatVisibleCondition;
     }
-    else if (COUNTTYPES.equals(name)) {
-      return typeCountingVisibleCondition;
+    else if (COUNTEXPRESSIONS.equals(name)) {
+      return expressionCountingVisibleCondition;
     }
     else {
       return null;

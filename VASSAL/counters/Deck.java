@@ -51,12 +51,14 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.DrawPile;
+import VASSAL.build.module.PlayerRoster;
 import VASSAL.command.AddPiece;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
@@ -68,7 +70,7 @@ import VASSAL.tools.SequenceEncoder;
  * A collection of pieces that behaves like a deck, i.e.: Doesn't move. Can't be
  * expanded. Can be shuffled. Can be turned face-up and face-down
  */
-public class Deck extends Stack {
+public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public static final String ID = "deck;"; //$NON-NLS-1$
   public static final String ALWAYS = "Always";
   public static final String NEVER = "Never";
@@ -103,8 +105,8 @@ public class Deck extends Stack {
   protected boolean faceDown;
   protected int dragCount = 0;
   protected int maxStack = 10;
-  protected String[] countTypes;
-  protected boolean typeCounting = false;
+  protected CountExpression[] countExpressions;
+  protected boolean expressionCounting = false;
   protected ArrayList nextDraw;
   protected KeyCommand[] commands;
   protected CommandEncoder commandEncoder = new CommandEncoder() {
@@ -127,25 +129,31 @@ public class Deck extends Stack {
 
   public Deck() {
     this(ID);
+    PlayerRoster.addSideChangeListener(this);
   }
 
   public Deck(String type) {
     mySetType(type);
+    PlayerRoster.addSideChangeListener(this);
   }
- 
+  
+  public void sideChanged(String oldSide, String newSide) {
+    updateCountsAll();
+  } 
+
   /**
-  * Update map-level count properties for all "types" of pieces that are configured
-  * to be counted.  These are held in the String[] countTypes.
+  * Update map-level count properties for all "expressions" of pieces that are configured
+  * to be counted.  These are held in the String[] countExpressions.
   */
   private void updateCountsAll() {
-    if (!doesTypeCounting() || getMap() == null) {
+    if (!doesExpressionCounting() || getMap() == null) {
       return;
     }
-    //Clear out all of the registered count types
-    for (int index = 0; index < countTypes.length; index++) {
-      getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+countTypes[index],null,""+0)); //$NON-NLS-1$ //$NON-NLS-2$
+    //Clear out all of the registered count expressions
+    for (int index = 0; index < countExpressions.length; index++) {
+      getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+countExpressions[index].getName(),null,""+0)); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    //Increase all of the pieces with types specified in this deck
+    //Increase all of the pieces with expressions specified in this deck
     for (Enumeration e = getPieces(); e.hasMoreElements();) {
       GamePiece p = (GamePiece) e.nextElement();
       if (p != null) {
@@ -159,7 +167,7 @@ public class Deck extends Stack {
   * @param index, increase
   */
   private void updateCounts(int index, boolean increase) {
-    if (!doesTypeCounting()) {
+    if (!doesExpressionCounting()) {
       return;
     }
     if (index >= 0 && index < contents.length) {
@@ -183,21 +191,25 @@ public class Deck extends Stack {
   * @param piece, increase
   */
   private void updateCounts(GamePiece p, boolean increase) {
-    if (!doesTypeCounting() || getMap() == null) {
+    if (!doesExpressionCounting() || getMap() == null) {
       return;
     }
-    Object pieceType = p.getProperty("_deckpiece_type"); //$NON-NLS-1$
-    if (pieceType != null) {
-      String mapProperty = (String) getMap().getProperty(deckName+"_"+pieceType); //$NON-NLS-1$
-      if (mapProperty != null) {
-        int newValue = (Integer.decode(mapProperty)).intValue();
-        if (increase) {
-          newValue++;
-        }
-        else {
-          newValue--;
-        }
-        getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+pieceType,null,""+newValue)); //$NON-NLS-1$ //$NON-NLS-2$
+    //test all the expressions for this deck
+    for (int index = 0;index < countExpressions.length;index++){ 
+      FormattedString formatted = new FormattedString(countExpressions[index].getExpression());
+      PieceFilter f = PropertiesPieceFilter.parse(formatted.getText());
+      if (f.accept(p)) {
+        String mapProperty = (String) getMap().getProperty(deckName+"_"+countExpressions[index].getName()); //$NON-NLS-1$
+          if (mapProperty != null) {
+            int newValue = (Integer.decode(mapProperty)).intValue();
+            if (increase) {
+              newValue++;
+            }
+            else {
+              newValue--;
+            }
+            getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+countExpressions[index].getName(),null,""+newValue)); //$NON-NLS-1$  //$NON-NLS-2$
+          }
       }
     }
   }
@@ -259,8 +271,8 @@ public class Deck extends Stack {
     shuffleKey = st.nextKeyStroke(null);
     reshuffleKey = st.nextKeyStroke(null);
     maxStack = st.nextInt(10);
-    countTypes = st.nextStringArray(0);
-    typeCounting = st.nextBoolean(false);
+    setCountExpressions(st.nextStringArray(0));
+    expressionCounting = st.nextBoolean(false);
     
     if (shuffleListener == null) {
       shuffleListener = new KeyStrokeListener(new ActionListener() {
@@ -329,12 +341,16 @@ public class Deck extends Stack {
     return maxStack;
   }
   
-  public String[] getCountTypes() {
-    return countTypes;
+  public String[] getCountExpressions() {
+    String[] fullstrings = new String[countExpressions.length];
+    for (int index = 0; index < countExpressions.length;index++) {
+      fullstrings[index] = countExpressions[index].getFullString();
+    }
+    return fullstrings;
   }
   
-  public boolean doesTypeCounting() {
-    return typeCounting;
+  public boolean doesExpressionCounting() {
+    return expressionCounting;
   }
   
   public String getFaceDownMsgFormat() {
@@ -389,12 +405,21 @@ public class Deck extends Stack {
     this.maxStack = maxStack;
   }
   
-  public void setCountTypes(String[] countTypes) {
-    this.countTypes = countTypes;
+  public void setCountExpressions(String[] countExpressionsString) {
+    CountExpression[] c = new CountExpression[countExpressionsString.length];
+    int goodExpressionCount = 0;
+    for (int index = 0; index < countExpressionsString.length;index++) {
+      CountExpression n = new CountExpression(countExpressionsString[index]);
+      if (n.getName() != null) {
+        c[index] = n;
+        goodExpressionCount++;
+      }
+    }
+    this.countExpressions = (CountExpression[]) java.util.Arrays.copyOf(c, goodExpressionCount);
   }
-  
-  public void setTypeCounting(boolean typeCounting) {
-    this.typeCounting = typeCounting;
+ 
+  public void setExpressionCounting(boolean expressionCounting) {
+    this.expressionCounting = expressionCounting;
   }
   
   public void setAllowSelectDraw(boolean allowSelectDraw) {
@@ -472,7 +497,7 @@ public class Deck extends Stack {
         faceDownOption).append(shuffleOption).append(String.valueOf(allowMultipleDraw)).append(String.valueOf(allowSelectDraw)).append(
         String.valueOf(reversible)).append(reshuffleCommand).append(reshuffleTarget).append(reshuffleMsgFormat).append(deckName).append(shuffleMsgFormat)
         .append(reverseMsgFormat).append(faceDownMsgFormat).append(drawFaceUp).append(persistable).append(shuffleKey).append(reshuffleKey).append(String.valueOf(maxStack))
-        .append(countTypes).append(typeCounting);
+        .append(getCountExpressions()).append(expressionCounting);
     return ID + se.getValue();
   }
 
@@ -1125,6 +1150,35 @@ public class Deck extends Stack {
 
     protected Command myUndoCommand() {
       return null;
+    }
+  }
+
+  /**
+   * An object that parses expression strings from the config window
+   */
+  protected class CountExpression {
+    private String fullstring;
+    private String name;
+    private String expression;
+    public CountExpression(String expressionString) {
+      String[] split = expressionString.split("\\s*:\\s*",2); //$NON-NLS-1$
+      if (split.length == 2) {
+        name       = split[0];
+        expression = split[1];
+        fullstring = expressionString;
+      }
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public String getExpression() {
+      return expression;
+    }
+
+    public String getFullString() {
+      return fullstring;
     }
   }
 

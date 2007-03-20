@@ -217,18 +217,24 @@ single card.<br>
 
       <br>
 
-      <b>Perform Counting of Piece Types:</b>&nbsp;
-Enable processing of piece type counting.&nbsp; Types must be defined
-and pieces must have a "_deckpiece_type" marker.<br>
+      <b>Perform Counting of property expressions:</b>&nbsp;
+Enable processing of property expression counting.&nbsp; Expressions
+must be defined.<br>
 
       <br>
 
-      <b>Piece types to count:</b>&nbsp;
-Specify individual "types" of pieces to count within the deck.&nbsp; These
-can be whatever you like, and must match up with "_deckpiece_type" markers
-on the pieces you want to count.&nbsp; The count is exposed with a map-level
-property called "&lt;deckname&gt;_&lt;type&gt;".&nbsp; An example of how
-to do this is provided below.<br>
+      <b>Expressions to count:</b>&nbsp;
+Specify expressions to be counted within the deck.
+These can be whatever you like and must be in the format of:
+<pre>&lt;expression name&gt; : &lt;expression&gt;</pre>
+For each expression, a map-level property called 
+&lt;deckName&gt;_&lt;expression name&gt; is exposed.
+The exposed value is number of pieces for which that expression
+evaluates to true.
+An example of how to do this is provided below.  NOTE: Currently
+the only "dynamic" property which can be used in counting expressions
+is playerSide.  Other dynamic properties will most likely not update
+if they change after pieces move into a deck.<br>
 
       <br>
 
@@ -262,13 +268,17 @@ counters should be disabled.<br>
       <br>
       <b>EXAMPLE: </b>&nbsp; 
 You want to create a deck of playing cards, and display the number of red
-cards, the number of black cards, and the total number of cards in the
-deck.&nbsp; Create the deck, check "Perform Counting of Piece Types".&nbsp;
-Add the types of "red" and "black".&nbsp; When creating your cards, give
-them a Marker named "_deckpiece_type" with the value of "red" or "black".&nbsp;
+cards, the number of black cards, the number of face cards, and the total
+number of cards in the deck.&nbsp; Create the deck, check "Perform counting
+of expressions".&nbsp; Add the expressions of "red: color = red" and
+"black: color = black".&nbsp; Also add the expression "facecards: value > 10".
+When creating your cards, give them a Marker named "color" with the values
+of "red" or "black".&nbsp;  Also give your cards a Marker named "value" with
+the numeric value of the card.
 Then, you can refer to the counts with the map-level properties of
-"&lt;deckname&gt;_red" and "&lt;deckname&gt;_black".&nbsp; The total can be
-referenced by the map-level property of "&lt;deckname&gt;_numPieces".
+"&lt;deckname&gt;_red", "&lt;deckname&gt;_black", and
+"&lt;deckname&gt;_facecards".&nbsp; The total can be referenced by the
+map-level property of "&lt;deckname&gt;_numPieces".
 
 <br>
 
