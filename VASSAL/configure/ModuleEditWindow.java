@@ -88,7 +88,6 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
     };
     toolbar.add(saveAsAction);
     Action helpAction = null;
-    ;
     try {
       File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
       dir = new File(dir, "ReferenceManual");
@@ -109,6 +108,7 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
     mi = new JMenuItem("Save as ...");
     mi.addActionListener(saveAsAction);
     fileMenu.add(mi);
+    fileMenu.add(new CreateInstallerAction(this));
     mb.add(fileMenu);
     if (helpAction != null) {
       JMenu helpMenu = new JMenu("Help");

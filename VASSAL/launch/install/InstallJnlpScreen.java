@@ -198,25 +198,26 @@ public class InstallJnlpScreen extends InstallProgressScreen implements Constant
 
   protected void modifyDocument(Document doc) throws IOException {
     extractResources(doc);
-//    NodeList l = doc.getElementsByTagName("*"); //$NON-NLS-1$
-//    for (int i = 0, n = l.getLength(); i < n; ++i) {
-//      Node node = l.item(i);
-//      Node child = node.getFirstChild();
-//      while (child != null) {
-//        Node next = child.getNextSibling();
-//        if (child.getNodeType() == Node.TEXT_NODE && child.getNodeValue() != null && child.getNodeValue().trim().length() == 0) {
-//          node.removeChild(child);
-//        }
-//        child = next;
-//      }
-//    }
-    NodeList l = doc.getElementsByTagName("j2se"); //$NON-NLS-1$
+    NodeList l = doc.getElementsByTagName("*"); //$NON-NLS-1$
+    for (int i = 0, n = l.getLength(); i < n; ++i) {
+      Node node = l.item(i);
+      Node child = node.getFirstChild();
+      while (child != null) {
+        Node next = child.getNextSibling();
+        if (child.getNodeType() == Node.TEXT_NODE && child.getNodeValue() != null && child.getNodeValue().trim().length() == 0) {
+          node.removeChild(child);
+        }
+        child = next;
+      }
+    }
+    l = doc.getElementsByTagName("j2se"); //$NON-NLS-1$
     if (l.getLength() == 1) {
       Element el = (Element) l.item(0);
       el.setAttribute("max-heap-size", heapSize); //$NON-NLS-1$
     }
     doc.getDocumentElement().setAttribute("codebase", //$NON-NLS-1$
-      installDir.toURI().toURL().toString());
+        installDir.toURI().toURL().toString());
+    doc.getDocumentElement().setAttribute("href", installFile.getName());
   }
 
   public Document getJNLPDoc(URL url) throws IOException {

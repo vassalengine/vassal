@@ -31,4 +31,5 @@ public interface Constants {
   public static final String INITIAL_SCREEN = "initialScreen";
   public static final String TITLE = "title";
   public static final String MODULE_FILE = "moduleFile";
+  public static final String JNLP_TITLE = "jnlpTitle";
 }

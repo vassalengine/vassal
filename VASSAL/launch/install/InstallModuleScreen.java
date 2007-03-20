@@ -17,6 +17,7 @@
  */
 package VASSAL.launch.install;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import VASSAL.i18n.Resources;
  */
 public class InstallModuleScreen extends InstallJnlpScreen {
   protected String moduleFile;
+  protected String title;
 
   protected void modifyDocument(Document doc) throws IOException {
     super.modifyDocument(doc);
@@ -50,8 +52,17 @@ public class InstallModuleScreen extends InstallJnlpScreen {
         desc.removeChild(arg);
       }
       Element arg = doc.createElement("argument"); //$NON-NLS-1$
-      arg.appendChild(doc.createTextNode("lib/" + moduleFile)); //$NON-NLS-1$
+      File module = new File(new File(installDir,"lib"), moduleFile);
+      arg.appendChild(doc.createTextNode(module.getPath())); //$NON-NLS-1$
       desc.appendChild(arg);
+    }
+    l = doc.getElementsByTagName("title");
+    if (l.getLength() > 0) {
+      Node title = l.item(0);
+      while (title.getLastChild() != null) {
+        title.removeChild(title.getLastChild());
+      }
+      title.appendChild(doc.createTextNode(this.title));
     }
   }
 
@@ -60,6 +71,10 @@ public class InstallModuleScreen extends InstallJnlpScreen {
     if (moduleFile == null) {
       throw new IOException(Resources.getString("Install.module_not_specified")); //$NON-NLS-1$
     }
+    title = wizard.get(JNLP_TITLE);
     super.prepareInstall(wizard);
+    int index = moduleFile.lastIndexOf('.');
+    String moduleFileRoot = index < 0 ? moduleFile : moduleFile.substring(0,index);
+    installFile = new File(installFile.getParentFile(),moduleFileRoot+".jnlp");
   }
 }
