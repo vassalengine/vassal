@@ -65,6 +65,7 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
@@ -76,7 +77,7 @@ import VASSAL.tools.SequenceEncoder;
 public class BoardPicker extends JDialog implements ActionListener, GameComponent, Configurable, CommandEncoder, ValidityChecker {
   private static final long serialVersionUID = 1L;
 
-  public static final String ID = "BoardPicker";
+  public static final String ID = "BoardPicker"; //$NON-NLS-1$
   protected Vector possibleBoards = new Vector();
   protected Vector currentBoards = null;
   private Dimension psize = new Dimension(350, 125);
@@ -85,28 +86,28 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
   protected JButton cancelButton;
   protected Map map;
   protected JPanel slotPanel;
-  protected String version = "0.0";
+  protected String version = "0.0"; //$NON-NLS-1$
   protected int nx = 1, ny = 1;
   protected JToolBar controls;
   protected JButton addRowButton;
   protected JButton addColumnButton;
   protected boolean allowMultiple;
   protected int maxColumns;
-  protected String title = "Choose Boards";
-  protected String addRowButtonText = "Add row";
-  protected String addColumnButtonText = "Add column";
-  protected String boardPrompt = "Select board";
+  protected String title = Resources.getString("BoardPicker.choose_boards"); //$NON-NLS-1$
+  protected String addRowButtonText = Resources.getString("BoardPicker.add_row"); //$NON-NLS-1$
+  protected String addColumnButtonText = Resources.getString("BoardPicker.add_column"); //$NON-NLS-1$
+  protected String boardPrompt = Resources.getString("BoardPicker.select_board"); //$NON-NLS-1$
   protected String defaultSetup;
   protected Vector multipleButtons;
-  public static final String SCALE = "slotScale";
-  public static final String SLOT_HEIGHT = "slotHeight";
-  public static final String SLOT_WIDTH = "slotWidth";
-  public static final String SETUP = "setup";
-  public static final String DIALOG_TITLE = "title";
-  public static final String ADD_ROW_BUTTON_TEXT = "addRowText";
-  public static final String ADD_COLUMN_BUTTON_TEXT = "addColumnText";
-  public static final String BOARD_PROMPT = "boardPrompt";
-  public static final String MAX_COLUMNS = "maxColumns";
+  public static final String SCALE = "slotScale"; //$NON-NLS-1$
+  public static final String SLOT_HEIGHT = "slotHeight"; //$NON-NLS-1$
+  public static final String SLOT_WIDTH = "slotWidth"; //$NON-NLS-1$
+  public static final String SETUP = "setup"; //$NON-NLS-1$
+  public static final String DIALOG_TITLE = "title"; //$NON-NLS-1$
+  public static final String ADD_ROW_BUTTON_TEXT = "addRowText"; //$NON-NLS-1$
+  public static final String ADD_COLUMN_BUTTON_TEXT = "addColumnText"; //$NON-NLS-1$
+  public static final String BOARD_PROMPT = "boardPrompt"; //$NON-NLS-1$
+  public static final String MAX_COLUMNS = "maxColumns"; //$NON-NLS-1$
   private JButton clearButton;
   private JButton okButton;
 
@@ -118,26 +119,26 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
   protected void initComponents() {
     multipleButtons = new Vector();
     setTitle(title);
-    status = new JTextField("");
+    status = new JTextField(""); //$NON-NLS-1$
     status.setEditable(false);
     slotPanel = new JPanel();
     controls = new JToolBar();
     controls.setFloatable(false);
     controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-    okButton = addButton("Ok");
-    cancelButton = addButton("Cancel");
+    okButton = addButton(Resources.getString(Resources.OK));
+    cancelButton = addButton(Resources.getString(Resources.CANCEL));
     addRowButton = addButton(addRowButtonText);
     multipleButtons.addElement(addRowButton);
     addColumnButton = addButton(addColumnButtonText);
     multipleButtons.addElement(addColumnButton);
-    clearButton = addButton("Clear");
+    clearButton = addButton(Resources.getString("BoardPicker.clear")); //$NON-NLS-1$
     multipleButtons.addElement(clearButton);
     setAllowMultiple(allowMultiple);
-    getContentPane().add("North", status);
+    getContentPane().add("North", status); //$NON-NLS-1$
     JPanel pp = new JPanel();
     pp.add(controls);
-    getContentPane().add("West", pp);
-    getContentPane().add("Center", new ScrollPane(slotPanel));
+    getContentPane().add("West", pp); //$NON-NLS-1$
+    getContentPane().add("Center", new ScrollPane(slotPanel)); //$NON-NLS-1$
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent we) {
@@ -230,7 +231,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
 
   public void validate(Buildable target, ValidationReport report) {
     if (possibleBoards.size() == 0) {
-      report.addWarning("Must define at least one board in " + ConfigureTree.getConfigureName(map));
+      report.addWarning(Resources.getString("BoardPicker.must_define", ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
     }
     Set names = new HashSet();
     for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
@@ -238,7 +239,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
       if (o instanceof Board) {
         Board b = (Board) o;
         if (names.contains(b.getName())) {
-          report.addWarning("More than one board named '" + b.getName() + "' in " + ConfigureTree.getConfigureName(map));
+          report.addWarning(Resources.getString("BoardPicker.more_than_one", b.getName(), ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
         }
         names.add(b.getName());
         b.validate(b, report);
@@ -251,7 +252,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
     if (defaultSetup == null || defaultSetup.length() == 0) {
       if (possibleBoards.size() == 1 && possibleBoards.firstElement() instanceof Board) {
         Board b = (Board) possibleBoards.firstElement();
-        if (!"true".equals(b.getAttributeValueString(Board.REVERSIBLE))) {
+        if (!"true".equals(b.getAttributeValueString(Board.REVERSIBLE))) { //$NON-NLS-1$
           Vector v = new Vector();
           v.addElement(b);
           s = encode(new SetBoards(this, v));
@@ -287,7 +288,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
   }
 
   public String getBoardDelimiter() {
-    return "bd\t";
+    return "bd\t"; //$NON-NLS-1$
   }
 
   public HelpFile getHelpFile() {
@@ -388,7 +389,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
         return b;
       }
     }
-    warn("Board " + boardName + " not found");
+    warn(Resources.getString("BoardPicker.board_not_found", boardName)); //$NON-NLS-1$
     return null;
   }
 
@@ -522,7 +523,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
       initComponents();
     }
     else {
-      warn("");
+      warn(""); //$NON-NLS-1$
       removeAllBoards();
       slotPanel.add(new BoardSlot(this, boardPrompt), 0);
       pack();
@@ -633,7 +634,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
         String name = st2.nextToken();
         boolean reversed = false;
         if (st2.hasMoreTokens()) {
-          reversed = "rev".equals(st2.nextToken());
+          reversed = "rev".equals(st2.nextToken()); //$NON-NLS-1$
         }
         Point p = new Point(st.nextInt(0), st.nextInt(0));
         Board b = getBoard(name);
@@ -662,10 +663,10 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
           Board b = (Board) e.nextElement();
           SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
           if (b.isReversed()) {
-            se2.append("rev");
+            se2.append("rev"); //$NON-NLS-1$
           }
           se.append(se2.getValue());
-          se.append("" + b.relativePosition().x).append("" + b.relativePosition().y);
+          se.append("" + b.relativePosition().x).append("" + b.relativePosition().y); //$NON-NLS-1$ //$NON-NLS-2$
         }
       }
       return se.getValue();
@@ -756,7 +757,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
         }
       });
       controls.add(height.getControls());
-      selectButton = new JButton("Select Default Board Setup");
+      selectButton = new JButton(Resources.getString("BoardPicker.select_default")); //$NON-NLS-1$
       selectButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           selectBoards();
@@ -775,5 +776,8 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
 
     public void setValue(String s) {
     }
+  }
+  public String getI18nKey() {
+    return "BoardPicker";
   }
 }
