@@ -239,7 +239,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         else if (copyData != null) {
           try {
             Configurable copyBase = (Configurable) copyData.getUserObject();
-            Configurable clone = copyBase.getClass().newInstance();
+            Configurable clone = (Configurable) copyBase.getClass().newInstance();
             clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
             insert(target, clone, getTreeNode(target).getChildCount());
           }
@@ -375,7 +375,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         public void actionPerformed(ActionEvent evt) {
           try {
-            Configurable clone = target.getClass().newInstance();
+            Configurable clone = (Configurable) target.getClass().newInstance();
             clone.build(target.getBuildElement(Builder.createNewDocument()));
             insert(getParent(targetNode), clone, targetNode.getParent().getIndex(targetNode) + 1);
           }
