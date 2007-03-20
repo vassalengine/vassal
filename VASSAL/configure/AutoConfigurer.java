@@ -119,6 +119,9 @@ public class AutoConfigurer extends Configurer
     else if (Icon.class.isAssignableFrom(type)) {
       config = new IconConfigurer(key,prompt,null);
     }
+    else if (PropertyExpression.class.isAssignableFrom(type)) {
+      config = new PropertyExpressionConfigurer(key,prompt);
+    }
     else if (StringEnum.class.isAssignableFrom(type)) {
       try {
         String[] validValues = ((StringEnum) type.newInstance()).getValidValues(target);

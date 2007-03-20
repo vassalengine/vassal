@@ -53,6 +53,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
@@ -67,7 +68,6 @@ import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
-import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
@@ -149,8 +149,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected Color fgColor = Color.black;
   protected Color bgColor = Color.white;
   protected int fontSize = 9;
-  protected String propertyFilterString = "";
-  protected PieceFilter propertyFilter = null;
+  protected PropertyExpression propertyFilter = new PropertyExpression();
 
   protected Rectangle bounds;
   protected boolean mouseInView = true;
@@ -735,7 +734,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     Boolean.class, Boolean.class, Integer.class, ReportFormatConfig.class, CounterFormatConfig.class,EmptyFormatConfig.class,
 
-    DisplayConfig.class, String[].class, String.class,Boolean.class, Boolean.class, Boolean.class};
+    DisplayConfig.class, String[].class, PropertyExpression.class,Boolean.class, Boolean.class, Boolean.class};
   }
 
   public static class DisplayConfig extends StringEnum {
@@ -924,8 +923,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
     }
     else if (PROPERTY_FILTER.equals(name)) {
-      propertyFilterString = (String) value;
-      propertyFilter = PropertiesPieceFilter.parse(propertyFilterString);
+      propertyFilter.setExpression((String) value);
     }
   }
 
@@ -997,7 +995,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return String.valueOf(fontSize);
     }
     else if (PROPERTY_FILTER.equals(name)) {
-      return propertyFilterString;
+      return propertyFilter.getExpression();
     }
     else
       return null;

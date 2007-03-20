@@ -34,8 +34,9 @@ import javax.swing.KeyStroke;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.KeyStrokeArrayConfigurer;
+import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -52,7 +53,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   protected static final String DISABLE = "Disable";
 
   protected String name = "";
-  protected String propertyMatch = "";
+  protected PropertyExpression propertyMatch = new PropertyExpression();
   protected String action = HIDE;
   protected KeyStroke[] watchKeys = new KeyStroke[0];
 
@@ -89,7 +90,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     SequenceEncoder se = new SequenceEncoder(';');
     se.append(name)
       .append(action)
-      .append(propertyMatch)
+      .append(propertyMatch.getExpression())
       .append(KeyStrokeArrayConfigurer.encode(watchKeys));
 
     return ID + se.getValue();
@@ -142,9 +143,8 @@ public class RestrictCommands extends Decorator implements EditablePiece {
   
   protected boolean matchesFilter() {
     GamePiece outer = Decorator.getOutermost(this);
-    if (propertyMatch != null && propertyMatch.length() > 0) {
-      PieceFilter filter = PropertiesPieceFilter.parse(new FormattedString(propertyMatch).getText(outer));
-      if (!filter.accept(outer)) {
+    if (!propertyMatch.isNull()) {
+      if (!propertyMatch.accept(outer)) {
         return false;
       }
     }
@@ -175,7 +175,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
     st.nextToken();
     name = st.nextToken("");
     action = st.nextToken(HIDE);
-    propertyMatch = st.nextToken("");
+    propertyMatch.setExpression(st.nextToken(""));
 
     String keys = st.nextToken("");
     if (keys.indexOf(',') > 0) {
@@ -219,7 +219,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
       b.add(actionOption);
       box.add(b);
       
-      propertyMatch = new StringConfigurer(null, "Restrict when properties match:  ", piece.propertyMatch);
+      propertyMatch = new PropertyExpressionConfigurer(null, "Restrict when properties match:  ", piece.propertyMatch);
       box.add(propertyMatch.getControls());
 
       watchKeys = new KeyStrokeArrayConfigurer(null, "Restrict these Key Commands  ", piece.watchKeys);

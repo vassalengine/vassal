@@ -19,12 +19,10 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
-import VASSAL.counters.PieceFilter;
-import VASSAL.counters.PropertiesPieceFilter;
-import VASSAL.tools.FormattedString;
 
 public class SelectionHighlighter extends AbstractConfigurable implements Highlighter {
 
@@ -37,7 +35,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   public static final String X_OFFSET = "xoffset";
   public static final String Y_OFFSET = "yoffset";
 
-  protected String matchProperties = "";
+  protected PropertyExpression matchProperties = new PropertyExpression();
   protected Color color = Color.RED;
   protected int thickness = 3;
   protected boolean useImage = false;
@@ -47,7 +45,6 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
 
   protected VisibilityCondition visibilityCondition;
   protected Image image;
-  protected PieceFilter filter;
 
   public void draw(GamePiece p, Graphics g, int x, int y, Component obs, double zoom) {
     Graphics2D g2d = (Graphics2D) g;
@@ -100,11 +97,11 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   }
 
   protected boolean accept(GamePiece p) {
-    if (matchProperties.equals("") || filter == null) {
+    if (matchProperties.isNull()) {
       return true;
     }
     
-    return filter.accept(p);
+    return matchProperties.accept(p);
   }
   
   public static String getConfigureTypeName() {
@@ -117,7 +114,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, Boolean.class, Color.class, Integer.class,
+    return new Class[] {String.class, PropertyExpression.class, Boolean.class, Color.class, Integer.class,
         IconConfig.class, Integer.class, Integer.class};
   }
 
@@ -156,8 +153,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       setConfigureName((String) value);
     }
     else if (key.equals(MATCH)) {
-      matchProperties = (String) value;
-      filter = PropertiesPieceFilter.parse(new FormattedString(matchProperties).getText());
+      matchProperties.setExpression((String) value);
     }
     else if (key.equals(USE_IMAGE)) {
       if (value instanceof String) {
@@ -226,7 +222,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       return getConfigureName();
     }
     else if (key.equals(MATCH)) {
-      return matchProperties;
+      return matchProperties.getExpression();
     }
     else if (key.equals(USE_IMAGE)) {
       return String.valueOf(useImage);

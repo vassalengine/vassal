@@ -36,8 +36,9 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.KeyStrokeArrayConfigurer;
+import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -53,7 +54,7 @@ public class TriggerAction extends Decorator implements EditablePiece {
   protected String name = "";
   protected String command = "";
   protected KeyStroke key = null;
-  protected String propertyMatch = "";
+  protected PropertyExpression propertyMatch = new PropertyExpression();
   protected KeyStroke[] watchKeys = new KeyStroke[0];
   protected KeyStroke[] actionKeys = new KeyStroke[0];
   protected Set triggeredKeys; // Safeguard against infinite loops
@@ -97,7 +98,7 @@ public class TriggerAction extends Decorator implements EditablePiece {
     se.append(name)
       .append(command)
       .append(key)
-      .append(propertyMatch)
+      .append(propertyMatch.getExpression())
       .append(KeyStrokeArrayConfigurer.encode(watchKeys))
       .append(KeyStrokeArrayConfigurer.encode(actionKeys));
 
@@ -167,9 +168,8 @@ public class TriggerAction extends Decorator implements EditablePiece {
   
   protected boolean matchesFilter() {
     GamePiece outer = Decorator.getOutermost(this);
-    if (propertyMatch != null && propertyMatch.length() > 0) {
-      PieceFilter filter = PropertiesPieceFilter.parse(new FormattedString(propertyMatch).getText(outer));
-      if (!filter.accept(outer)) {
+    if (!propertyMatch.isNull()) {
+      if (!propertyMatch.accept(outer)) {
         return false;
       }
     }
@@ -201,7 +201,7 @@ public class TriggerAction extends Decorator implements EditablePiece {
     name = st.nextToken("");
     command = st.nextToken("Trigger");
     key = st.nextKeyStroke('T');
-    propertyMatch = st.nextToken("");
+    propertyMatch.setExpression(st.nextToken(""));
 
     String keys = st.nextToken("");
     if (keys.indexOf(',') > 0) {
@@ -248,7 +248,7 @@ public class TriggerAction extends Decorator implements EditablePiece {
       name = new StringConfigurer(null, "Description:  ", piece.name);
       box.add(name.getControls());
 
-      propertyMatch = new StringConfigurer(null, "Trigger when properties match:  ", piece.propertyMatch);
+      propertyMatch = new PropertyExpressionConfigurer(null, "Trigger when properties match:  ", piece.propertyMatch);
       box.add(propertyMatch.getControls());
 
       Box commandBox = Box.createHorizontalBox();

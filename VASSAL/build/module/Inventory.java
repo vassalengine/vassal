@@ -81,6 +81,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
@@ -128,7 +129,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 //  protected String destination = DEST_TREE;
 
   public static final String FILTER = "include"; //$NON-NLS-1$
-  protected String piecePropertiesFilter = ""; //$NON-NLS-1$
+  protected PropertyExpression piecePropertiesFilter = new PropertyExpression(); //$NON-NLS-1$
 
   public static final String GROUP_BY = "groupBy"; //$NON-NLS-1$
   protected String[] groupBy = {""}; //$NON-NLS-1$
@@ -420,7 +421,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 		  path.add(groupBy[i]);
 	  results = new CounterInventory(new Counter(this.getConfigureName()), path, sortPieces);
 
-	  PieceIterator pi = new PieceIterator(GameModule.getGameModule().getGameState().getPieces(), new Selector(piecePropertiesFilter));
+	  PieceIterator pi = new PieceIterator(GameModule.getGameModule().getGameState().getPieces(), piecePropertiesFilter);
 
 	  while (pi.hasMoreElements()) {
 		  ArrayList groups = new ArrayList();
@@ -517,7 +518,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       setConfigureName((String) o);
     }
     else if (FILTER.equals(key)) {
-      piecePropertiesFilter = (String) o;
+      piecePropertiesFilter.setExpression((String) o);
     }
     else if (GROUP_BY.equals(key)) {
       if (o instanceof String) {
@@ -634,7 +635,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       return getConfigureName();
     }
     else if (FILTER.equals(key)) {
-      return piecePropertiesFilter;
+      return piecePropertiesFilter.getExpression();
     }
     else if (GROUP_BY.equals(key)) {
       return StringArrayConfigurer.arrayToString(groupBy);

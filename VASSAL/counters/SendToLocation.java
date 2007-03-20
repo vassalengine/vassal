@@ -33,6 +33,8 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ChooseComponentDialog;
 import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.tools.FormattedString;
@@ -96,7 +98,7 @@ public class SendToLocation extends Decorator implements EditablePiece {
   protected String destination;
   protected FormattedString zone = new FormattedString("");
   protected FormattedString region = new FormattedString("");
-  protected FormattedString propertyFilter = new FormattedString("");
+  protected PropertyExpression propertyFilter = new PropertyExpression("");
 
   public SendToLocation() {
     this(ID + ";;;;0;0;;", null);
@@ -126,7 +128,7 @@ public class SendToLocation extends Decorator implements EditablePiece {
     destination = st.nextToken("");
     zone.setFormat(st.nextToken(""));
     region.setFormat(st.nextToken(""));
-    propertyFilter.setFormat(st.nextToken(""));
+    propertyFilter.setExpression(st.nextToken(""));
   }
 
   public String myGetType() {
@@ -147,7 +149,7 @@ public class SendToLocation extends Decorator implements EditablePiece {
         .append(destination)
         .append(zone.getFormat())
         .append(region.getFormat())
-        .append(propertyFilter.getFormat());
+        .append(propertyFilter.getExpression());
     return ID + se.getValue();
   }
 
@@ -205,7 +207,6 @@ public class SendToLocation extends Decorator implements EditablePiece {
       
       // Home in on a counter
       if (destination.equals(DEST_COUNTER.substring(0, 1))) {
-        PieceFilter filter = PropertiesPieceFilter.parse(propertyFilter.getText(outer));
         GamePiece target = null;
         // Find first counter matching the properties
         for (Enumeration e = GameModule.getGameModule().getGameState().getPieces(); e.hasMoreElements() && target==null; ) {
@@ -213,13 +214,13 @@ public class SendToLocation extends Decorator implements EditablePiece {
           if (piece instanceof Stack) {
             Stack s = (Stack) piece;
             for (int i=0; i < s.getPieceCount() && target == null; i++) {
-              if (filter.accept(s.getPieceAt(i))) {
+              if (propertyFilter.accept(s.getPieceAt(i))) {
                 target = s.getPieceAt(i);
               }
             }
           }
           else {
-            if (filter.accept(piece)) {
+            if (propertyFilter.accept(piece)) {
               target = piece;
             }
           }
@@ -488,7 +489,7 @@ public class SendToLocation extends Decorator implements EditablePiece {
       regionInput = new StringConfigurer(null, "Region Name:  ", p.region.getFormat());
       controls.add(regionInput.getControls());
       
-      propertyInput = new StringConfigurer(null, "Property Match:  ", p.propertyFilter.getFormat());
+      propertyInput = new PropertyExpressionConfigurer(null, "Property Match:  ", p.propertyFilter);
       controls.add(propertyInput.getControls());
       
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);

@@ -19,6 +19,7 @@
 package VASSAL.build.module.map.boardPicker.board;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -183,13 +184,16 @@ public class Region extends AbstractConfigurable {
   }
   /*
    * Move the region. Ensure the selectable region remains within
-   * the panel
+   * its container
    */
   public void move(int dx, int dy, JComponent c) {
-    Rectangle newRect = selectionRect;
-    newRect.translate(dx, dy);
 
-    if (c.getVisibleRect().contains(newRect)) {
+    int newX = getOrigin().x + dx;
+    int newY = getOrigin().y + dy;
+    
+    Dimension d = myGrid.container.getSize();
+    
+    if (newX >= 0 && newX < d.width && newY >= 0 && newY < d.height) {
       moveOrigin(dx, dy);
     }
     return;

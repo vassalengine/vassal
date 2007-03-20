@@ -21,8 +21,9 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.PropertyExpression;
+import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
 /*
@@ -54,7 +55,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
   protected KeyStroke key;
   protected KeyStroke globalKey;
   protected GlobalCommand globalCommand = new GlobalCommand();
-  protected String propertiesFilter;
+  protected PropertyExpression propertiesFilter;
   protected boolean restrictRange;
   protected boolean fixedRange = true;
   protected int range;
@@ -77,7 +78,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
     commandName = st.nextToken("Global Command");
     key = st.nextKeyStroke('G');
     globalKey = st.nextKeyStroke('K');
-    propertiesFilter = st.nextToken("");
+    propertiesFilter.setExpression(st.nextToken(""));
     restrictRange = st.nextBoolean(false);
     range = st.nextInt(1);
     globalCommand.setReportSingle(st.nextBoolean(true));
@@ -94,7 +95,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
     se.append(commandName)
         .append(key)
         .append(globalKey)
-        .append(propertiesFilter)
+        .append(propertiesFilter.getExpression())
         .append(restrictRange)
         .append(range)
         .append(globalCommand.isReportSingle())
@@ -170,7 +171,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
   }
 
   public void apply() {
-    PieceFilter filter = PropertiesPieceFilter.parse(new FormattedString(propertiesFilter).getText(Decorator.getOutermost(this)));
+    PieceFilter filter = propertiesFilter.getFilter(Decorator.getOutermost(this));
     Command c = new NullCommand();
     if (restrictRange) {
       int r = range;
@@ -239,7 +240,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
       globalKey = new HotKeyConfigurer(null, "Global Key Command:  ", p.globalKey);
       controls.add(globalKey.getControls());
 
-      propertyMatch = new StringConfigurer(null, "Matching Properties:  ", p.propertiesFilter);
+      propertyMatch = new PropertyExpressionConfigurer(null, "Matching Properties:  ", p.propertiesFilter);
       controls.add(propertyMatch.getControls());
       
       deckPolicy = new MassKeyCommand.DeckPolicyConfig();

@@ -50,6 +50,7 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.counters.BooleanAndPieceFilter;
@@ -58,7 +59,6 @@ import VASSAL.counters.Embellishment;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.GlobalCommand;
 import VASSAL.counters.PieceFilter;
-import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ToolBarComponent;
@@ -92,9 +92,8 @@ public class MassKeyCommand extends AbstractConfigurable {
   private String condition;
   protected String checkProperty;
   protected String checkValue;
-  protected String propertiesFilter;
+  protected PropertyExpression propertiesFilter = new PropertyExpression();
   protected PropertySource propertySource;
-  protected boolean filterIsDynamic;
   protected PieceFilter filter;
   private Map map;
   protected GlobalCommand globalCommand = new GlobalCommand();
@@ -157,7 +156,7 @@ public class MassKeyCommand extends AbstractConfigurable {
 
   public Class[] getAttributeTypes() {
     if (condition == null) {
-      return new Class[]{String.class, KeyStroke.class, String.class, DeckPolicyConfig.class, String.class, String.class, IconConfig.class, KeyStroke.class,
+      return new Class[]{String.class, KeyStroke.class, PropertyExpression.class, DeckPolicyConfig.class, String.class, String.class, IconConfig.class, KeyStroke.class,
                          Boolean.class, ReportFormatConfig.class};
     }
     else {
@@ -291,7 +290,7 @@ public class MassKeyCommand extends AbstractConfigurable {
       return propertiesFilter != null ? null : checkValue;
     }
     else if (PROPERTIES_FILTER.equals(key)) {
-      return propertiesFilter;
+      return propertiesFilter.getExpression();
     }
     else if (CONDITION.equals(key)) {
       return ALWAYS.equals(condition) ? null : condition;
@@ -333,7 +332,7 @@ public class MassKeyCommand extends AbstractConfigurable {
   }
 
   public PieceFilter getFilter() {
-    if (filterIsDynamic) {
+    if (propertiesFilter.isDynamic()) {
       buildFilter();
     }
     return filter;
@@ -341,10 +340,10 @@ public class MassKeyCommand extends AbstractConfigurable {
 
   private void buildFilter() {
     if (checkValue != null) {
-      propertiesFilter = checkProperty + "=" + checkValue;
+      propertiesFilter.setExpression(checkProperty + "=" + checkValue);
     }
     if (propertiesFilter != null) {
-      filter = PropertiesPieceFilter.parse(new FormattedString(propertiesFilter).getText(propertySource));
+      filter = propertiesFilter.getFilter(propertySource);
     }
     if (filter != null && condition != null) {
       filter = new BooleanAndPieceFilter(filter, new PieceFilter() {
@@ -373,7 +372,7 @@ public class MassKeyCommand extends AbstractConfigurable {
     else if (NAME.equals(key)) {
       setConfigureName((String) value);
       if (launch.getAttributeValueString(TOOLTIP) == null) {
-        launch.setAttribute(TOOLTIP, (String) value);
+        launch.setAttribute(TOOLTIP, value);
       }
     }
     else if (KEY_COMMAND.equals(key)) {
@@ -413,8 +412,7 @@ public class MassKeyCommand extends AbstractConfigurable {
       buildFilter();
     }
     else if (PROPERTIES_FILTER.equals(key)) {
-      propertiesFilter = (String) value;
-      filterIsDynamic = propertiesFilter != null && propertiesFilter.indexOf('$') >= 0;
+      propertiesFilter.setExpression((String) value);
       buildFilter();
     }
     else if (CONDITION.equals(key)) {
