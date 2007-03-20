@@ -239,7 +239,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         else if (copyData != null) {
           try {
             Configurable copyBase = (Configurable) copyData.getUserObject();
-            Configurable clone = (Configurable) copyBase.getClass().newInstance();
+            Configurable clone = copyBase.getClass().newInstance();
             clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
             insert(target, clone, getTreeNode(target).getChildCount());
           }
@@ -375,7 +375,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         public void actionPerformed(ActionEvent evt) {
           try {
-            Configurable clone = (Configurable) target.getClass().newInstance();
+            Configurable clone = target.getClass().newInstance();
             clone.build(target.getBuildElement(Builder.createNewDocument()));
             insert(getParent(targetNode), clone, targetNode.getParent().getIndex(targetNode) + 1);
           }
@@ -428,7 +428,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildEditAction(final Configurable target) {
-    return new EditPropertiesAction(target, helpWindow, (Frame) SwingUtilities.getAncestorOfClass(Frame.class, this));
+    return new EditPropertiesAction(target, helpWindow, (Frame) SwingUtilities.getAncestorOfClass(Frame.class, this), this);
   }
 
   public boolean canContainGamePiece(final Configurable target) {
@@ -678,5 +678,26 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   public void mouseMoved(MouseEvent e) {
+  }
+  
+  /*
+   * Refresh the display of a node
+   */
+  public void nodeUpdated(Configurable target) {
+    
+    DefaultMutableTreeNode node = getTreeNode(target);
+    Configurable parent = getParent(node);
+    
+    if (remove(parent, target)) {
+      insert(parent, target, 0);
+    } 
+  }
+  
+  /*
+   * Configurers that add or remove their own children directly should implement the Mutable interface 
+   * so that ConfigureTree can refresh the changed node.
+   */
+  public interface Mutable {
+  
   }
 }

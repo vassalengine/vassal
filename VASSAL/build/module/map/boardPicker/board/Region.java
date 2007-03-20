@@ -49,6 +49,13 @@ public class Region extends AbstractConfigurable {
   public Region(Point p) {
     origin = p;
   }
+  
+  public Region(Region r) {
+    name = r.getName();
+    origin.x = r.getOrigin().x;
+    origin.y = r.getOrigin().y;
+    myGrid = r.myGrid;
+  }
 
   public String getName() {
     return name;
@@ -192,8 +199,11 @@ public class Region extends AbstractConfigurable {
    * If the grid is visible, draw a dot and a label. Mainly of use for testing
    * a newly created grid.
    */
-
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
+    draw(g, bounds, visibleRect, scale, reversed, 0, 0);
+  }
+  
+  public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed, int xOffset, int yOffset) {
     if (!bounds.intersects(visibleRect)) {
       return;
     }
@@ -215,8 +225,8 @@ public class Region extends AbstractConfigurable {
       g.setClip(clipArea);
     }
 
-    int posX = (int) (scale * origin.x + 0.5) + bounds.x - 1;
-    int posY = (int) (scale * origin.y + 0.5) + bounds.y - 1;
+    int posX = (int) (scale * origin.x + 0.5) + bounds.x - 1 + xOffset;
+    int posY = (int) (scale * origin.y + 0.5) + bounds.y - 1 + yOffset;
 
     Color saveColor = g.getColor();
 
@@ -232,8 +242,8 @@ public class Region extends AbstractConfigurable {
     g.setClip(oldClip);
 
     // Calculate and store the selection rectangle
-    int width = g.getFontMetrics().stringWidth(name + "  ");
-    int height = g.getFontMetrics().getHeight();
+    int width = g.getFontMetrics().stringWidth(name + "  ")+1;
+    int height = g.getFontMetrics().getHeight()+1;
 
     selectionRect.setLocation(posX - (width / 2), posY - 1);
     selectionRect.setSize(width, height + labelOffset + 1);

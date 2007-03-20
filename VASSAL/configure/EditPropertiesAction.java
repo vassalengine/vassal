@@ -24,6 +24,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Hashtable;
 import javax.swing.AbstractAction;
+
 import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpWindow;
 
@@ -33,10 +34,11 @@ import VASSAL.build.module.documentation.HelpWindow;
 public class EditPropertiesAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private Configurable target;
-  private HelpWindow helpWindow;
-  private static Hashtable openWindows = new Hashtable();
-  private Frame dialogOwner;
+  protected Configurable target;
+  protected HelpWindow helpWindow;
+  protected static Hashtable openWindows = new Hashtable();
+  protected Frame dialogOwner;
+  protected ConfigureTree tree;
 
   public EditPropertiesAction(Configurable target, HelpWindow helpWindow, Frame dialogOwner) {
     super("Properties");
@@ -46,6 +48,14 @@ public class EditPropertiesAction extends AbstractAction {
     setEnabled(target.getConfigurer() != null);
   }
 
+  /*
+   * Used by ConfigureTree where Configurers may change the children of a node
+   */
+  public EditPropertiesAction(Configurable target, HelpWindow helpWindow, Frame dialogOwner, ConfigureTree tree) {
+    this(target, helpWindow, dialogOwner);
+    this.tree = tree;
+  }
+  
   public void actionPerformed(ActionEvent evt) {
     PropertiesWindow w = (PropertiesWindow) openWindows.get(target);
     if (w == null) {
@@ -53,6 +63,9 @@ public class EditPropertiesAction extends AbstractAction {
       w.addWindowListener(new WindowAdapter() {
         public void windowClosed(WindowEvent e) {
           openWindows.remove(target);
+          if (tree != null && target instanceof ConfigureTree.Mutable) {
+            tree.nodeUpdated(target);          
+          }
         }
       });
       openWindows.put(target,w);
