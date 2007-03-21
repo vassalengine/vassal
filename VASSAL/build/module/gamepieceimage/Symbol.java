@@ -369,7 +369,7 @@ public class Symbol {
       }
 
       else if (name.equals(MOUNTAIN)) {
-        int x_off = (int) (bounds.width / 6);
+        int x_off = bounds.width / 6;
         GeneralPath p = new GeneralPath();
         p.moveTo(x_center, y_center);
         p.lineTo(x_center+x_off, y_bottom);
@@ -411,9 +411,9 @@ public class Symbol {
       int count = option.getCount();
 
       int sym_w;
-      int sym_h = (int) (bounds.height / 3);
+      int sym_h = bounds.height / 3;
       if (count <= 4) {
-        sym_w = (int) (bounds.width / 5);
+        sym_w = bounds.width / 5;
       }
       else {
         sym_w = bounds.width / 7;

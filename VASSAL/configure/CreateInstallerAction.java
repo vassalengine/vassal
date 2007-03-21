@@ -63,6 +63,8 @@ import VASSAL.tools.FileChooser;
  * @author rkinney
  */
 public class CreateInstallerAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private static final Class[] installerClasses = {HttpRequestWrapper.class, ChooseDirScreen.class, ChooseDirScreen.DirectoryFilter.class,
                                                    ChooseHeapSizeScreen.class, ChooseVersionScreen.class, Constants.class, FailureScreen.class,
                                                    InstallJnlpScreen.class, InstallProgressScreen.class, InstallModuleScreen.class, InstallWizard.class,
