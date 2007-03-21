@@ -415,7 +415,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         goodExpressionCount++;
       }
     }
-    this.countExpressions = (CountExpression[]) java.util.Arrays.copyOf(c, goodExpressionCount);
+    this.countExpressions = new CountExpression[goodExpressionCount];
+    System.arraycopy(c, 0, countExpressions, 0, goodExpressionCount);
   }
  
   public void setExpressionCounting(boolean expressionCounting) {
