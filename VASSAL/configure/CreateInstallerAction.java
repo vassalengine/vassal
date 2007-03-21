@@ -71,30 +71,30 @@ public class CreateInstallerAction extends AbstractAction {
                                                    Screen.class, SuccessScreen.class, WizardDialog.class, Resources.class,
                                                    Resources.VassalPropertyClassLoader.class};
   private Frame parent;
-  public static final String I18N_PROPERTIES = "VASSAL/i18n/VASSAL.properties";
-  private static final String[] HEAP_SIZES = new String[]{"256M", "512M", "1000M", "1500M", "2000M"};
-  private static final String[] HEAP_SIZES_PLAIN_TEXT = new String[]{"256 MB", "512 MB", "1 GB", "1.5 GB", "2 GB"};
+  public static final String I18N_PROPERTIES = "VASSAL/i18n/VASSAL.properties"; //$NON-NLS-1$
+  private static final String[] HEAP_SIZES = new String[]{"256M", "512M", "758M", "1024M", "1536M"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+  private static final String[] HEAP_SIZES_PLAIN_TEXT = new String[]{Resources.getString("Install.256_mb"), Resources.getString("Install.512_mb"), Resources.getString("Install.768_mb"), Resources.getString("Install.1_gb"), Resources.getString("Install.1.5_gb")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
   private static Map heapSizes = new HashMap();
   static {
     for (int i = 0; i < HEAP_SIZES_PLAIN_TEXT.length; i++) {
       heapSizes.put(HEAP_SIZES_PLAIN_TEXT[i], HEAP_SIZES[i]);
     }
   }
-  private String heapSize = "256M";
+  private String heapSize = "256M"; //$NON-NLS-1$
 
   public CreateInstallerAction(Frame parent) {
-    super("Create Installer");
+    super(Resources.getString("Install.create_installer")); //$NON-NLS-1$
     this.parent = parent;
   }
 
   public void actionPerformed(ActionEvent e) {
-    final JDialog d = new JDialog(parent, "Create Installer", true);
+    final JDialog d = new JDialog(parent, Resources.getString("Install.create_installer"), true); //$NON-NLS-1$
     d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
-    final StringEnumConfigurer heapSizeConfigurer = new StringEnumConfigurer(null, "Memory Allocation", HEAP_SIZES_PLAIN_TEXT);
+    final StringEnumConfigurer heapSizeConfigurer = new StringEnumConfigurer(null, "Memory Allocation", HEAP_SIZES_PLAIN_TEXT); //$NON-NLS-1$
     heapSizeConfigurer.setValue(HEAP_SIZES_PLAIN_TEXT[0]);
     d.getContentPane().add(heapSizeConfigurer.getControls());
-    final JButton ok = new JButton("Create");
-    JButton cancel = new JButton("Cancel");
+    final JButton ok = new JButton(Resources.getString("General.create")); //$NON-NLS-1$
+    JButton cancel = new JButton(Resources.getString("General.cancel")); //$NON-NLS-1$
     Box b = Box.createHorizontalBox();
     b.add(ok);
     b.add(cancel);
@@ -112,13 +112,13 @@ public class CreateInstallerAction extends AbstractAction {
         FileChooser c = FileChooser.createFileChooser(parent);
         if (c.showSaveDialog() == FileChooser.APPROVE_OPTION) {
           File destFile = c.getSelectedFile();
-          if (!destFile.getName().endsWith(".jar")) {
-            JOptionPane.showMessageDialog(parent, "File name must end in '.jar'");
+          if (!destFile.getName().endsWith(".jar")) { //$NON-NLS-1$
+            JOptionPane.showMessageDialog(parent, Resources.getString("Install.require_jar_extension")); //$NON-NLS-1$
           }
           else {
             File tempFile;
             try {
-              tempFile = File.createTempFile("installer", ".zip");
+              tempFile = File.createTempFile("installer", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
               ZipOutputStream output = new ZipOutputStream(new FileOutputStream(tempFile));
               writeInstallerClasses(output);
               writeInstallerProperties(output);
@@ -126,11 +126,11 @@ public class CreateInstallerAction extends AbstractAction {
               writeResources(output);
               output.close();
               if (!tempFile.renameTo(destFile)) {
-                throw new IOException("Cannot create " + destFile);
+                throw new IOException(Resources.getString("BasicLogger.unable_to_write", destFile.getPath())); //$NON-NLS-1$
               }
             }
             catch (IOException e1) {
-              JOptionPane.showMessageDialog(parent, "Error saving file:  " + e1.getMessage());
+              JOptionPane.showMessageDialog(parent, Resources.getString("Install.error_saving_file") + e1.getMessage()); //$NON-NLS-1$
             }
             finally {
               d.dispose();
@@ -145,7 +145,7 @@ public class CreateInstallerAction extends AbstractAction {
   private void writeResources(ZipOutputStream output) throws IOException {
     ZipEntry e = new ZipEntry(I18N_PROPERTIES);
     output.putNextEntry(e);
-    InputStream input = getClass().getResourceAsStream("/" + I18N_PROPERTIES);
+    InputStream input = getClass().getResourceAsStream("/" + I18N_PROPERTIES); //$NON-NLS-1$
     writeEntry(output, input);
     File module = new File(GameModule.getGameModule().getDataArchive().getName());
     e = new ZipEntry(module.getName());
@@ -162,28 +162,28 @@ public class CreateInstallerAction extends AbstractAction {
   }
 
   private void writeManifest(ZipOutputStream output) throws IOException {
-    ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF");
+    ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF"); //$NON-NLS-1$
     manifestEntry.setMethod(ZipEntry.DEFLATED);
     StringBuffer buffer = new StringBuffer();
-    buffer.append("Manifest-Version: 1.0\n").append("Main-Class: " + InstallWizard.class.getName() + "\n");
+    buffer.append("Manifest-Version: 1.0\n").append("Main-Class: " + InstallWizard.class.getName() + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     output.putNextEntry(manifestEntry);
     output.write(buffer.toString().getBytes());
   }
 
   private void writeInstallerProperties(ZipOutputStream output) throws IOException {
     Properties p = new Properties();
-    p.put(Constants.TITLE, "Install " + GameModule.getGameModule().getGameName());
+    p.put(Constants.TITLE, "Install " + GameModule.getGameModule().getGameName()); //$NON-NLS-1$
     p.put(Constants.INITIAL_SCREEN, ChooseDirScreen.class.getName());
     p.put(ChooseDirScreen.NEXT_SCREEN, InstallModuleScreen.class.getName());
     p.put(Constants.HEAP_SIZE, heapSize);
-    String jnlpURL = "http://www.vassalengine.org/ws/vassal-";
-    StringTokenizer st = new StringTokenizer(Info.getVersion(), ".b");
-    jnlpURL += st.nextToken() + "." + st.nextToken() + ".jnlp";
+    String jnlpURL = "http://www.vassalengine.org/ws/vassal-"; //$NON-NLS-1$
+    StringTokenizer st = new StringTokenizer(Info.getVersion(), ".b"); //$NON-NLS-1$
+    jnlpURL += st.nextToken() + "." + st.nextToken() + ".jnlp"; //$NON-NLS-1$ //$NON-NLS-2$
     p.put(Constants.JNLP_URL, jnlpURL);
     File f = new File(GameModule.getGameModule().getDataArchive().getArchive().getName());
     p.put(Constants.MODULE_FILE, f.getName());
     p.put(Constants.JNLP_TITLE, GameModule.getGameModule().getGameName());
-    p.put(Constants.INTERNAL_RESOURCES, I18N_PROPERTIES + "," + f.getName());
+    p.put(Constants.INTERNAL_RESOURCES, I18N_PROPERTIES + "," + f.getName()); //$NON-NLS-1$
     ZipEntry e = new ZipEntry(InstallWizard.INSTALL_PROPERTIES);
     output.putNextEntry(e);
     p.store(output, null);
@@ -191,18 +191,18 @@ public class CreateInstallerAction extends AbstractAction {
 
   private void writeInstallerClasses(ZipOutputStream output) throws IOException {
     for (int i = 0; i < installerClasses.length; i++) {
-      String className = installerClasses[i].getName().replace('.', '/') + ".class";
+      String className = installerClasses[i].getName().replace('.', '/') + ".class"; //$NON-NLS-1$
       ZipEntry classEntry = new ZipEntry(className);
       classEntry.setMethod(ZipEntry.DEFLATED);
       output.putNextEntry(classEntry);
-      InputStream input = getClass().getResourceAsStream("/" + className);
+      InputStream input = getClass().getResourceAsStream("/" + className); //$NON-NLS-1$
       writeEntry(output, input);
     }
   }
 
   public static void main(String[] args) throws Exception {
-    Resources.init(new File(System.getProperty("user.dir")));
-    Prefs globalPrefs = new Prefs(new PrefsEditor(new ArchiveWriter("pref")), "VASSAL"); //$NON-NLS-1$
+    Resources.init(new File(System.getProperty("user.dir"))); //$NON-NLS-1$
+    Prefs globalPrefs = new Prefs(new PrefsEditor(new ArchiveWriter("pref")), "VASSAL"); //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.init(new BasicModule(new ArchiveWriter(args[0]), globalPrefs));
     new CreateInstallerAction(null).actionPerformed(null);
     System.exit(0);

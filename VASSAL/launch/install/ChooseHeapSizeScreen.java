@@ -35,6 +35,7 @@ public class ChooseHeapSizeScreen implements Screen, Constants {
   private JRadioButton b128M = new JRadioButton(Resources.getString("Install.128_mb")); //$NON-NLS-1$
   private JRadioButton b256M = new JRadioButton(Resources.getString("Install.256_mb")); //$NON-NLS-1$
   private JRadioButton b512M = new JRadioButton(Resources.getString("Install.512_mb")); //$NON-NLS-1$
+  private JRadioButton b768M = new JRadioButton(Resources.getString("Install.768_mb")); //$NON-NLS-1$
   private JRadioButton b1000M = new JRadioButton(Resources.getString("Install.1_gb")); //$NON-NLS-1$
   private JRadioButton b1500M = new JRadioButton(Resources.getString("Install.1.5_gb")); //$NON-NLS-1$
   private ButtonGroup group = new ButtonGroup();
@@ -50,10 +51,13 @@ public class ChooseHeapSizeScreen implements Screen, Constants {
     b512M.putClientProperty(HEAP_SIZE, "512m"); //$NON-NLS-1$
     group.add(b512M);
     controls.add(b512M);
-    b1000M.putClientProperty(HEAP_SIZE, "1000M"); //$NON-NLS-1$
+    b768M.putClientProperty(HEAP_SIZE, "768m"); //$NON-NLS-1$
+    group.add(b768M);
+    controls.add(b768M);
+    b1000M.putClientProperty(HEAP_SIZE, "1024M"); //$NON-NLS-1$
     group.add(b1000M);
     controls.add(b1000M);
-    b1500M.putClientProperty(HEAP_SIZE, "1500M"); //$NON-NLS-1$
+    b1500M.putClientProperty(HEAP_SIZE, "1536M"); //$NON-NLS-1$
     group.add(b1500M);
     b256M.setSelected(true);
     controls.add(b1500M);
