@@ -29,6 +29,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.Tutorial;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.i18n.Resources;
@@ -79,7 +80,10 @@ public class Documentation extends AbstractConfigurable {
     File f = null;
     if (GameModule.getGameModule() != null
         && GameModule.getGameModule().getGlobalPrefs() != null) {
-      f = (File) GameModule.getGameModule().getGlobalPrefs().getValue(DOCS_DIR);
+      String storedValue = GameModule.getGameModule().getGlobalPrefs().getStoredValue(DOCS_DIR);
+      if (storedValue != null) {
+        f = new File(storedValue);
+      }
     }
     return f;
   }
