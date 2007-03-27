@@ -53,7 +53,7 @@ public class HelpFile extends AbstractConfigurable {
   private String fileType = ARCHIVE_ENTRY;
 
   public static String getConfigureTypeName() {
-    return "Help File";
+    return "Plain Text Help File";
   }
 
   public HelpFile() {
@@ -215,11 +215,11 @@ public class HelpFile extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Menu Entry", "Text/HTML File", "Add Image"};
+    return new String[]{"Menu Entry", "Text File"};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, File.class, Image.class};
+    return new Class[]{String.class, File.class};
   }
 
   public Class[] getAllowableConfigureComponents() {

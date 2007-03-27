@@ -42,10 +42,10 @@ import VASSAL.build.GameModule;
  */
 public class AutoConfigurer extends Configurer
   implements PropertyChangeListener {
-  private JPanel p;
-  private AutoConfigurable target;
-  private Vector configurers = new Vector();;
-  private Hashtable conditions;
+  protected JPanel p;
+  protected AutoConfigurable target;
+  protected Vector configurers = new Vector();;
+  protected Hashtable conditions;
 
   public AutoConfigurer(AutoConfigurable c) {
     super(null, c.getConfigureName());

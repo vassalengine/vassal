@@ -25,11 +25,11 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.AboutScreen;
+import VASSAL.build.module.documentation.BrowserHelpFile;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.Tutorial;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.i18n.Resources;
@@ -113,7 +113,7 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public Class[] getAllowableConfigureComponents() {
-    return new Class[]{HelpFile.class, AboutScreen.class, Tutorial.class};
+    return new Class[]{BrowserHelpFile.class, AboutScreen.class, Tutorial.class, HelpFile.class};
   }
 
   public static String getConfigureTypeName() {

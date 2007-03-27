@@ -17,6 +17,7 @@
  */
 package VASSAL.build.module.documentation;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
@@ -61,7 +62,6 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   protected static BrowserLauncher browserLauncher;
   protected static Exception launchError;
   protected String name;
-  protected String contents;
   protected String startingPage;
   protected JMenuItem launch;
   protected String url;
@@ -103,20 +103,36 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg);
     }
   }
+  
+  /**
+   * The entry in the module Zip file containing the HTML directory 
+   * @return
+   */
+  protected String getContentsResource() {
+    return name == null ? null : name.replace(' ', '_');
+  }
 
   protected void extractContents() {
     try {
+      ZipInputStream in = null;
+      try {
+        in = new ZipInputStream(GameModule.getGameModule().getDataArchive().getFileStream("help/" + getContentsResource()));
+      }
+      catch (IOException e) {
+        // The help file was created with empty contents.  Assume an absolute URL as the starting page
+        url = startingPage;
+        return;
+      }
       File tmp = File.createTempFile("VASSAL", "help");
       File output = tmp.getParentFile();
       tmp.delete();
       output = new File(output, "VASSAL");
       output = new File(output, "help");
-      output = new File(output, contents);
+      output = new File(output, getContentsResource());
       if (output.exists()) {
         recursiveDelete(output);
       }
       output.mkdirs();
-      ZipInputStream in = new ZipInputStream(GameModule.getGameModule().getDataArchive().getFileStream("help/" + contents));
       ZipEntry entry;
       int count;
       byte[] buffer = new byte[1024];
@@ -160,9 +176,6 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     if (TITLE.equals(key)) {
       return name;
     }
-    else if (CONTENTS.equals(key)) {
-      return contents;
-    }
     else if (STARTING_PAGE.equals(key)) {
       return startingPage;
     }
@@ -173,9 +186,6 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     if (TITLE.equals(key)) {
       name = (String) value;
       launch.setText(name);
-    }
-    else if (CONTENTS.equals(key)) {
-      contents = (String) value;
       url = null;
       launchError = null;
     }
@@ -211,7 +221,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("BrowserHelpFile.htm");
+    return HelpFile.getReferenceManualPage("HelpMenu.htm","HtmlHelpFile");
   }
 
   public void remove(Buildable child) {
@@ -223,7 +233,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public static String getConfigureTypeName() {
-    return "External Browser Help File";
+    return "HTML Help File";
   }
   /**
    * The attributes we want to expose in the editor are not the same as the ones we want to save to the buildFile, so we
@@ -262,27 +272,34 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     public void setAttribute(String key, Object value) {
       if (DIR.equals(key)) {
         dir = (File) value;
-        if (dir != null) {
-          BrowserHelpFile.this.contents = dir.getName();
-          try {
-            File packed = File.createTempFile("VASSALhelp", ".zip");
-            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(packed));
-            packFile(dir, "", out);
-            out.close();
-            GameModule.getGameModule().getArchiveWriter().addFile(packed.getPath(), "help/"+dir.getName());
-          }
-          catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
       }
       else {
         BrowserHelpFile.this.setAttribute(key, value);
       }
     }
 
+    public void packContents() {
+      if (dir != null) {
+        try {
+          File packed = File.createTempFile("VASSALhelp", ".zip");
+          ZipOutputStream out = new ZipOutputStream(new FileOutputStream(packed));
+          File[] files = dir.listFiles();
+          for (int i = 0; i < files.length; i++) {
+            packFile(files[i], "", out);
+          }
+          out.close();
+          GameModule.getGameModule().getArchiveWriter().addFile(packed.getPath(), "help/"+BrowserHelpFile.this.getContentsResource());
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
     protected void packFile(File packed, String prefix, ZipOutputStream out) throws IOException {
       if (packed.isDirectory()) {
+        ZipEntry entry = new ZipEntry(packed.getName()+"/");
+        out.putNextEntry(entry);
         File[] dir = packed.listFiles();
         for (int i = 0; i < dir.length; i++) {
           packFile(dir[i],prefix+packed.getName()+"/",out);
@@ -346,7 +363,13 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
   public static class ContentsConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new DirectoryConfigurer(key, name);
+      return new DirectoryConfigurer(key, name){
+        public Component getControls() {
+          Component controls = super.getControls();
+          tf.setEditable(false);
+          return controls;
+        }
+      };
     }
   }
   /**
@@ -359,6 +382,13 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   protected static class MyConfigurer extends AutoConfigurer {
     public MyConfigurer(AutoConfigurable c) {
       super(c);
+    }
+
+    public Object getValue() {
+      if (target != null) {
+        ((ConfigSupport)target).packContents();
+      }
+      return super.getValue();
     }
   }
 }

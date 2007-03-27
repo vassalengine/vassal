@@ -1,106 +1,228 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
+
+
+  
+  
+  
+  
   <title>Help Menu</title>
-  <meta http-equiv="content-type"
- content="text/html; charset=ISO-8859-1">
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 </head>
+
+
 <body>
+
+
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
+
   <tbody>
+
+
     <tr align="center">
+
+
       <td valign="top">
+      
+      
       <h1>VASSAL Reference Manual</h1>
+
+
       <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
 &gt; <b>Help Menu</b></small><br>
+
+
       <br>
+
+
       </td>
+
+
     </tr>
+
+
     <tr>
+
+
       <td valign="top">
+      
+      
       <hr size="2" width="100%">
+      
+      
       <h2>Help Menu</h2>
+
+
 The "Help" menu in the main control window contain general help files
 for VASSAL.&nbsp; You may add more help files specific to the module you
 are
 creating. <br>
+
+
       <br>
+
+
+      
+      
       <hr size="2" width="100%">
+      
+      
       <h2>Sub-Components</h2>
-      <h3><a name="HelpFile"></a>Help File</h3>
-      <img src="images/HelpFile.png" alt="" height="122" width="401"> <br>
-Each Help File added adds an entry to the help menu.&nbsp; Help files
-be either plain text or simple HTML (no Javascript or frames). &nbsp;To add a single-page Help
-File
-simply create the file with any text editor on your machine and select
-it.<br>
+
+
+      
+      
+      <h3><a name="HtmlHelpFile"></a>HTML Help File</h3>
+
+
+      <img style="width: 526px; height: 125px;" src="images/HtmlHelpFile.png" alt=""> <br>
+Adds an entry to the help menu.&nbsp; Selecting the menu opens an
+external browser on the user's machine with HTML content that you
+specify.<br>
       <br>
-To add a multi-page HTML Help File, first create all the HTML files in a single
-directory. Select the starting page as you would for a single-page help file.  Then save the module and quit VASSAL.  Open the module file with a Zip utility (On Windows, rename the file to have a .zip extension and double-click), manually add the contents of your help directory to the module and save.<br><br>
-Another method of creating multi-page Help Files without having to quit VASSAL is to place all images used by the Help File into a sub-directory named
-'images'.
-&nbsp;Select the HTML and image files one at a time from the Help File
-properties
-dialog. &nbsp;The last HTML file you select will be the starting page.<br>
+      <span style="font-weight: bold;">Menu Entry</span>: &nbsp;The menu item to be added to the Help menu.<br>
+
+
+      <span style="font-weight: bold;">Contents</span>: &nbsp;A
+folder on your local file system. &nbsp;The contents of the folder will
+be copied into the module and expanded onto the user's machine when the
+user selects the menu item. &nbsp;The folder can contains any number of
+sub-folders and can include image data, style sheets, etc. &nbsp;Be
+sure that your HTML content makes use of relative URLs.<br>
+      <span style="font-weight: bold;">Starting Page</span>: &nbsp;The file within the Contents folder that the user's browser will be pointed to.<br>
       <br>
-&nbsp;The contents of the file will be displayed when the player
-selects
-that menu item from the help menu. &nbsp;Note: &nbsp;when editing a
-module,
-you will need to save before you are able to view the help contents.<br>
+      <span style="font-style: italic;">Note: &nbsp;</span>You can
+launch an external URL in the user's browser by specifying the URL as
+the Starting Page and leaving the Contents set to null.<br>
+
+
+      <h3><a name="HelpFile"></a>Plain Text Help File</h3>
+
+
+      <img style="width: 214px; height: 95px;" src="images/HelpFile.png" alt=""> <br>
+Adds an entry to the Help menu in the main controls window.&nbsp;
+Selecting the menu displays a new window with the contents of a plain
+text file.<br>
       <br>
-      <a name="AboutScreen">
+      <span style="font-weight: bold;">Menu Entry</span>: &nbsp;The menu item to be added to the Help menu.<br>
+
+
+      <span style="font-weight: bold;">Text File</span>: &nbsp;A file containing the contents of the window to be displayed.<br>
+
+
+      <span style="font-weight: bold;"><br>
+      </span><a name="AboutScreen">
       <h3>About Screen</h3>
+
+
       <img src="images/AboutScreen.png" alt="" height="97" width="396"><br>
+
+
 You may use any image you wish as an 'About' screen for your module.
 &nbsp;Feel free to include text in the image that credits you and any
 other contributors to the module.<br>
+
+
       <br>
+
+
 The About Screen will always display the current version of the VASSAL
 and engine and module.<br>
+
+
       <br>
+
+
 If you name your About Screen image 'Splash.gif' on your hard drive
 before importing it into the module, then that image will be used as a
 splash
 screen when loading the module directly from command line (as described
 in the VASSAL README file).<br>
+
+
       <br>
+
+
       </a><br>
+
+
       <a name="Tutorial">
+      
+      
       <h3>Tutorial</h3>
-      <img src="images/Tutorial.png" alt=""
- style="width: 488px; height: 163px;"><br>
+
+
+      <img src="images/Tutorial.png" alt="" style="width: 488px; height: 163px;"><br>
+
+
 You may create a tutorial by writing a logfile and making it accessible
 from the help menu.<br>
+
+
       <br>
+
+
       <span style="font-weight: bold;">Menu Text</span> is the menu
 item under the Help Menu<br>
+
+
       <span style="font-weight: bold;">Logfile</span> is the logfile
 that players will step through when they select the corresponding menu
 item.<span style="font-style: italic;"><span style="font-style: italic;"><br>
+
+
       </span></span><span style="font-weight: bold;">Launch
-automatically<span style="font-weight: bold;"><span
- style="font-weight: bold;"> </span></span></span>If selected, then
+automatically<span style="font-weight: bold;"><span style="font-weight: bold;"> </span></span></span>If selected, then
 players will automatically be prompted to run the tutorial the first
 time they load the module.<br>
+
+
       <span style="font-weight: bold;">Confirm message</span> provides
 the
 text in the yes/no dialog that is displayed to the player when they
 load the module for the first time.&nbsp; Answering "yes" will load the
 tutorial logfile.<br>
+
+
       <span style="font-weight: bold;">Welcome message</span> is the
 message that displays in the main controls window chat area when the
 tutorial is loaded.<br>
+
+
       </a><br>
+
+
       </td>
+
+
     </tr>
+
+
     <tr>
+
+
     </tr>
+
+
+  
+  
   </tbody>
 </table>
+
+
 <br>
+
+
 <br>
+
+
 <br>
+
+
 <br>
+
+
 </body>
 </html>
