@@ -25,6 +25,7 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.tools.BrowserSupport;
 
 /**
  * Action that displays a {@link HelpWindow}
@@ -52,8 +53,13 @@ public class ShowHelpAction extends AbstractAction {
   }
   public void actionPerformed(ActionEvent e) {
     if (contents != null) {
-      helpWindow.update(contents);
+      if ("file".equals(contents.getProtocol())) {
+        BrowserSupport.openURL(contents);
+      }
+      else {
+        helpWindow.update(contents);
+        helpWindow.setVisible(true);
+      }
     }
-    helpWindow.setVisible(true);
   }
 }

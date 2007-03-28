@@ -28,11 +28,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import VASSAL.build.AbstractBuildable;
@@ -46,9 +46,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.VisibilityCondition;
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import VASSAL.tools.BrowserSupport;
 
 /**
  * Unpacks a zipped directory stored in the module and displays it in an external browser window
@@ -56,15 +54,13 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
  * @author rkinney
  */
 public class BrowserHelpFile extends AbstractBuildable implements Configurable {
-  public static final String TITLE = "title";
-  public static final String CONTENTS = "contents";
-  public static final String STARTING_PAGE = "startingPage";
-  protected static BrowserLauncher browserLauncher;
-  protected static Exception launchError;
+  public static final String TITLE = "title"; //$NON-NLS-1$
+  public static final String CONTENTS = "contents"; //$NON-NLS-1$
+  public static final String STARTING_PAGE = "startingPage"; //$NON-NLS-1$
   protected String name;
   protected String startingPage;
   protected JMenuItem launch;
-  protected String url;
+  protected URL url;
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
 
   public BrowserHelpFile() {
@@ -78,29 +74,11 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public void launch() {
-    if (browserLauncher == null && launchError == null) {
-      try {
-        browserLauncher = new BrowserLauncher();
-      }
-      catch (BrowserLaunchingInitializingException e) {
-        launchError = e;
-      }
-      catch (UnsupportedOperatingSystemException e) {
-        launchError = e;
-      }
-    }
     if (url == null) {
       extractContents();
     }
-    if (launchError == null) {
-      browserLauncher.openURLinBrowser(url);
-    }
-    else {
-      String msg = "Unable to launch browser window";
-      if (launchError.getMessage() != null) {
-        msg += ":  " + launchError.getMessage();
-      }
-      JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg);
+    if (url != null) {
+      BrowserSupport.openURL(url);
     }
   }
   
@@ -116,18 +94,18 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     try {
       ZipInputStream in = null;
       try {
-        in = new ZipInputStream(GameModule.getGameModule().getDataArchive().getFileStream("help/" + getContentsResource()));
+        in = new ZipInputStream(GameModule.getGameModule().getDataArchive().getFileStream("help/" + getContentsResource())); //$NON-NLS-1$
       }
       catch (IOException e) {
         // The help file was created with empty contents.  Assume an absolute URL as the starting page
-        url = startingPage;
+        url = new URL(startingPage);
         return;
       }
-      File tmp = File.createTempFile("VASSAL", "help");
+      File tmp = File.createTempFile("VASSAL", "help"); //$NON-NLS-1$ //$NON-NLS-2$
       File output = tmp.getParentFile();
       tmp.delete();
-      output = new File(output, "VASSAL");
-      output = new File(output, "help");
+      output = new File(output, "VASSAL"); //$NON-NLS-1$
+      output = new File(output, "help"); //$NON-NLS-1$
       output = new File(output, getContentsResource());
       if (output.exists()) {
         recursiveDelete(output);
@@ -148,11 +126,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
           outStream.close();
         }
       }
-      url = new File(output, startingPage).toURL().toString();
+      url = new File(output, startingPage).toURL();
     }
     catch (IOException e) {
       e.printStackTrace();
-      launchError = e;
     }
   }
 
@@ -187,12 +164,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       name = (String) value;
       launch.setText(name);
       url = null;
-      launchError = null;
     }
     else if (STARTING_PAGE.equals(key)) {
       startingPage = (String) value;
       url = null;
-      launchError = null;
     }
   }
 
@@ -221,7 +196,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("HelpMenu.htm","HtmlHelpFile");
+    return HelpFile.getReferenceManualPage("HelpMenu.htm","HtmlHelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public void remove(Buildable child) {
@@ -233,7 +208,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public static String getConfigureTypeName() {
-    return "HTML Help File";
+    return "HTML Help File"; //$NON-NLS-1$
   }
   /**
    * The attributes we want to expose in the editor are not the same as the ones we want to save to the buildFile, so we
@@ -241,11 +216,11 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
    * ArchiveWriter
    */
   protected class ConfigSupport implements AutoConfigurable {
-    public static final String DIR = "dir";
+    public static final String DIR = "dir"; //$NON-NLS-1$
     protected File dir;
 
     public String[] getAttributeDescriptions() {
-      return new String[]{"Menu Entry", "Contents", "Starting Page"};
+      return new String[]{"Menu Entry", "Contents", "Starting Page"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public String[] getAttributeNames() {
@@ -281,14 +256,14 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     public void packContents() {
       if (dir != null) {
         try {
-          File packed = File.createTempFile("VASSALhelp", ".zip");
+          File packed = File.createTempFile("VASSALhelp", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
           ZipOutputStream out = new ZipOutputStream(new FileOutputStream(packed));
           File[] files = dir.listFiles();
           for (int i = 0; i < files.length; i++) {
-            packFile(files[i], "", out);
+            packFile(files[i], "", out); //$NON-NLS-1$
           }
           out.close();
-          GameModule.getGameModule().getArchiveWriter().addFile(packed.getPath(), "help/"+BrowserHelpFile.this.getContentsResource());
+          GameModule.getGameModule().getArchiveWriter().addFile(packed.getPath(), "help/"+BrowserHelpFile.this.getContentsResource()); //$NON-NLS-1$
         }
         catch (IOException e) {
           e.printStackTrace();
@@ -298,11 +273,11 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
     protected void packFile(File packed, String prefix, ZipOutputStream out) throws IOException {
       if (packed.isDirectory()) {
-        ZipEntry entry = new ZipEntry(packed.getName()+"/");
+        ZipEntry entry = new ZipEntry(packed.getName()+"/"); //$NON-NLS-1$
         out.putNextEntry(entry);
         File[] dir = packed.listFiles();
         for (int i = 0; i < dir.length; i++) {
-          packFile(dir[i],prefix+packed.getName()+"/",out);
+          packFile(dir[i],prefix+packed.getName()+"/",out); //$NON-NLS-1$
         }
       }
       else {
