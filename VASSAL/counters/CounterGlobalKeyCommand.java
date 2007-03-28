@@ -55,7 +55,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
   protected KeyStroke key;
   protected KeyStroke globalKey;
   protected GlobalCommand globalCommand = new GlobalCommand();
-  protected PropertyExpression propertiesFilter;
+  protected PropertyExpression propertiesFilter = new PropertyExpression();
   protected boolean restrictRange;
   protected boolean fixedRange = true;
   protected int range;

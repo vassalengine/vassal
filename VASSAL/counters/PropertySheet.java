@@ -52,6 +52,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -330,8 +331,6 @@ public class PropertySheet extends Decorator implements EditablePiece {
     if (launch.matches(stroke)) {
       if (frame == null) {
 
-        Container pane;
-
         m_fields = new ArrayList();
         VASSAL.build.module.Map map = piece.getMap();
         Frame parent = null;
@@ -343,7 +342,11 @@ public class PropertySheet extends Decorator implements EditablePiece {
         }
 
         frame = new PropertySheetDialog(parent);
-        pane = frame.getContentPane();
+        
+        JPanel pane = new JPanel();
+        JScrollPane scroll = new JScrollPane(pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        frame.getContentPane().add(scroll);
+        
 
         // set up Apply button
         if (commitStyle == COMMIT_ON_APPLY) {
