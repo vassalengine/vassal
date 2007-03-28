@@ -20,6 +20,7 @@ package VASSAL.tools;
 import java.net.URL;
 import javax.swing.JOptionPane;
 import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
@@ -40,11 +41,11 @@ public class BrowserSupport {
       browserLauncher.openURLinBrowser(url.toString());
     }
     else {
-      String msg = "Unable to launch browser window\n";
+      String msg = Resources.getString("BrowserSupport.unable_to_launch")+"\n"; //$NON-NLS-1$
       if (initializationError.getMessage() != null) {
-        msg += initializationError.getMessage()+"\n";
+        msg += initializationError.getMessage()+"\n"; //$NON-NLS-1$
       }
-      msg += "Open your browser and point it to "+url;
+      msg += Resources.getString("BrowserSupport.open_browser",url.toString()); //$NON-NLS-1$
       JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg);
     }
 
