@@ -363,8 +363,7 @@ public class Embellishment extends Decorator implements EditablePiece {
         value = -v;
       }
     }
-    catch (Exception e) {
-      
+    catch (NumberFormatException e) {
     }
     return;
   }
