@@ -162,6 +162,18 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
           }
         }
       }
+      
+      // Promote contents of a single submenu
+      if (commands.size() == 1) {
+        if (commands.get(0) instanceof JMenu) {
+          JMenu submenu = (JMenu) commands.get(0);
+          commands.remove(submenu);
+          for (int i = 0; i < submenu.getItemCount(); i++) {
+            commands.add(submenu.getItem(i));
+          }
+        }
+      }
+      
       for (Iterator it = commands.iterator();
            it.hasNext();) {
         popup.add((JMenuItem) it.next());
