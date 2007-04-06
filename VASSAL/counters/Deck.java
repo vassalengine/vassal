@@ -151,7 +151,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     //Clear out all of the registered count expressions
     for (int index = 0; index < countExpressions.length; index++) {
-      getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+countExpressions[index].getName(),null,""+0)); //$NON-NLS-1$ //$NON-NLS-2$
+      getMap().setProperty(deckName+"_"+countExpressions[index].getName(),"0"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     //Increase all of the pieces with expressions specified in this deck
     for (Enumeration e = getPieces(); e.hasMoreElements();) {
@@ -208,7 +208,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
             else {
               newValue--;
             }
-            getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_"+countExpressions[index].getName(),null,""+newValue)); //$NON-NLS-1$  //$NON-NLS-2$
+            getMap().setProperty(deckName+"_"+countExpressions[index].getName(),String.valueOf(newValue)); //$NON-NLS-1$  //$NON-NLS-2$
           }
       }
     }
@@ -220,7 +220,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    */
   protected void fireNumCardsProperty() {
     if (getMap() != null) {
-      getMap().getPropertyListener().propertyChange(new PropertyChangeEvent(this,deckName+"_numPieces",null,String.valueOf(pieceCount))); //$NON-NLS-1$
+      getMap().setProperty(deckName+"_numPieces",String.valueOf(pieceCount)); //$NON-NLS-1$
     }
   }
   

@@ -63,7 +63,7 @@ public class Tutorial extends AbstractConfigurable {
     };
   }
 
-  private void launch() {
+  public void launch() {
     try {
       int index = fileName.indexOf("."); //$NON-NLS-1$
       String prefix = index > 3 ? fileName.substring(0, index) : "VSL"; //$NON-NLS-1$
@@ -171,6 +171,7 @@ public class Tutorial extends AbstractConfigurable {
     item = ((Documentation) parent).getHelpMenu().add(launch);
     final String key = "viewedTutorial" + getConfigureName(); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(null, new BooleanConfigurer(key, null, Boolean.FALSE));
+    GameModule.getGameModule().getConsoleWindow().setTutorial(this);
     if (launchOnFirstStartup
         && !Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(key))) {
       Runnable runnable = new Runnable() {

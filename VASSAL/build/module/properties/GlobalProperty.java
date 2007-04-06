@@ -1,9 +1,5 @@
 package VASSAL.build.module.properties;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.JToolBar;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -24,8 +20,7 @@ import VASSAL.tools.ToolBarComponent;
  * @author rkinney
  * 
  */
-public class GlobalProperty extends AbstractConfigurable implements ToolBarComponent, GameComponent, CommandEncoder, PropertySource {
-  protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+public class GlobalProperty extends AbstractConfigurable implements ToolBarComponent, GameComponent, CommandEncoder, PropertySource, MutablePropertySource {
   public static final String NAME = "name";
   public static final String INITIAL_VALUE = "initialValue";
   public static final String DESCRIPTION = "description";
@@ -44,6 +39,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   protected boolean wrap;
   protected VisibilityCondition numericVisibility;
   protected FormattedString format = new FormattedString();
+  protected MutablePropertiesContainer propertiesContainer;
   protected PropertySource propertySource;
 
   public GlobalProperty() {
@@ -69,9 +65,9 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       String oldName = getConfigureName();
-      propertyChangeSupport.firePropertyChange(oldName, propertyValue, null); // Clear the value under the old key
+      propertiesContainer.setProperty(oldName, null);
       setConfigureName((String) value);
-      propertyChangeSupport.firePropertyChange(getConfigureName(), null, propertyValue);
+      propertiesContainer.setProperty(getConfigureName(), propertyValue);
     }
     else if (INITIAL_VALUE.equals(key)) {
       initialValue = (String) value;
@@ -132,8 +128,8 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public void removeFrom(Buildable parent) {
-    propertyChangeSupport.firePropertyChange(getConfigureName(), propertyValue, null);
-    propertyChangeSupport.removePropertyChangeListener(((GlobalPropertiesContainer) parent).getPropertyListener());
+    propertiesContainer.setProperty(getConfigureName(), null);
+    propertiesContainer = null;
     GameModule.getGameModule().removeCommandEncoder(this);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
@@ -149,8 +145,8 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   public void addTo(Buildable parent) {
     // Initialize property with current values
     setPropertyValue(initialValue);
-    propertyChangeSupport.addPropertyChangeListener(((GlobalPropertiesContainer) parent).getPropertyListener());
-    propertyChangeSupport.firePropertyChange(getConfigureName(), null, propertyValue);
+    propertiesContainer = (MutablePropertiesContainer) parent;
+    propertiesContainer.setProperty(getConfigureName(), propertyValue);
     tempToolbar.setDelegate((ToolBarComponent) parent);
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
@@ -164,16 +160,8 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   public Command setPropertyValue(String value) {
     String oldValue = propertyValue;
     propertyValue = value;
-    propertyChangeSupport.firePropertyChange(getConfigureName(), oldValue, propertyValue);
+    propertiesContainer.setProperty(getConfigureName(), propertyValue);
     return new GlobalProperty.SetGlobalProperty(this, oldValue, value);
-  }
-
-  public void addPropertyChangeListener(PropertyChangeListener listener) {
-    propertyChangeSupport.addPropertyChangeListener(listener);
-  }
-
-  public void removePropertyChangeListener(PropertyChangeListener listener) {
-    propertyChangeSupport.removePropertyChangeListener(listener);
   }
 
   public JToolBar getToolBar() {
@@ -298,19 +286,4 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     return "Global Property";
   }
 
-  /**
-   * Look for a GlobalProperty in the list of GlobalPropertyContainers. Return the first one found, searching the lists
-   * in order. The list may contain null references, which are skipped
-   * 
-   * @param propertyContainers
-   * @return
-   */
-  public static GlobalProperty findGlobalProperty(String propertyName, List propertyContainers) {
-    GlobalProperty p = null;
-    for (Iterator it = propertyContainers.iterator(); it.hasNext() && p == null;) {
-      GlobalPropertiesContainer c = (GlobalPropertiesContainer) it.next();
-      p = (c == null ? null : c.getGlobalProperty(propertyName));
-    }
-    return p;
-  }
 }

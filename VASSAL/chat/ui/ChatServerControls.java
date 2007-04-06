@@ -46,7 +46,6 @@ import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
-import VASSAL.build.module.ServerConnection;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
@@ -152,7 +151,7 @@ public class ChatServerControls extends AbstractBuildable {
     gm.getToolBar().add(launch);
   }
 
-  protected void toggleVisible() {
+  public void toggleVisible() {
     if (controlPanel.getTopLevelAncestor() == null) {
       if (GlobalOptions.getInstance().isUseSingleWindow()) {
         splitter = new ComponentSplitter().splitRight(GameModule.getGameModule().getControlPanel(), controlPanel, false);
@@ -232,11 +231,7 @@ public class ChatServerControls extends AbstractBuildable {
     client.addPropertyChangeListener(ChatServerConnection.ROOM, currentRoomUpdater);
   }
 
-  public ChatServerConnection getSvrConnection() {
-    return client;
-  }
-
-  public ServerConnection getClient() {
+  public ChatServerConnection getClient() {
     return client;
   }
 
@@ -250,8 +245,6 @@ public class ChatServerControls extends AbstractBuildable {
   public String getAttributeValueString(String name) {
     return null;
   }
-
-  
 
   public JToolBar getToolbar() {
     return toolbar;

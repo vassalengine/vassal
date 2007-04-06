@@ -154,7 +154,7 @@ public class DiceButton extends AbstractConfigurable {
 
     String report = formatResult(val);
     GameModule.getGameModule().getChatter().send(report);
-    GameModule.getGameModule().getPropertyListener().propertyChange(new PropertyChangeEvent(this,getConfigureName()+"_result",null,val)); //$NON-NLS-1$
+    GameModule.getGameModule().setProperty(getConfigureName()+"_result",val); //$NON-NLS-1$
   }
 
   /**

@@ -108,7 +108,7 @@ import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.GlobalProperties;
-import VASSAL.build.module.properties.GlobalPropertiesContainer;
+import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.GlobalProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.widget.MapWidget;
@@ -157,7 +157,7 @@ import VASSAL.tools.UniqueIdManager;
  * contained in the <code>VASSAL.build.module.map</code> package
  */
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
-		UniqueIdManager.Identifyable, ToolBarComponent, GlobalPropertiesContainer, PropertySource, PlayerRoster.SideChangeListener, Runnable {
+		UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener, Runnable {
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
   protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
@@ -542,19 +542,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		return toolBar;
 	}
 
-	public PropertyChangeListener getPropertyListener() {
-		if (globalPropertyListener == null) {
-			globalPropertyListener = new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent evt) {
-					globalProperties.put(evt.getPropertyName(), evt.getNewValue());
-					repaint();
-				}
-			};
-		}
-		return globalPropertyListener;
-	}
-  
-	/**
+	public void setProperty(String key, String value) {
+    globalProperties.put(key,value);
+    repaint();
+  }
+
+  /**
    * Add a {@link Drawable} component to this map
    * 
    * @see #paint

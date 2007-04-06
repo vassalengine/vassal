@@ -20,14 +20,13 @@
 package VASSAL.preferences;
 
 import java.awt.Component;
-import java.beans.PropertyChangeSupport;
 import javax.swing.JLabel;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.properties.GlobalPropertiesContainer;
+import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 
@@ -47,7 +46,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
   
   protected String tabName = "";
   protected String variableName = "";  
-  protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+  protected MutablePropertiesContainer propertiesContainer;
   
   public BasicPreference() {
     tabName = GameModule.getGameModule().getConfigureName();  
@@ -120,7 +119,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
   public abstract Configurer getPreferenceConfigurer();
   
   public void addTo(Buildable b) {
-    propertyChangeSupport.addPropertyChangeListener(((GlobalPropertiesContainer) GameModule.getGameModule()).getPropertyListener());
+    propertiesContainer = (MutablePropertiesContainer) b;
     if (tabName.length() > 0) {
       GameModule.getGameModule().getPrefs().addOption(tabName, getPreferenceConfigurer());
     }
@@ -130,13 +129,12 @@ public abstract class BasicPreference extends AbstractConfigurable {
   }
 
   protected void updateGlobalProperty(String newValue) {
-    String oldValue = (String) GameModule.getGameModule().getProperty(getVariableName());
-    propertyChangeSupport.firePropertyChange(getVariableName(), oldValue, newValue);
+    propertiesContainer.setProperty(getVariableName(), newValue);
     
   }
 
   public void removeFrom(Buildable b) {
-    propertyChangeSupport.removePropertyChangeListener(((GlobalPropertiesContainer) GameModule.getGameModule()).getPropertyListener());
+    propertiesContainer = null;
   }
 
   public HelpFile getHelpFile() {

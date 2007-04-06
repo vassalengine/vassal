@@ -40,6 +40,7 @@ import VASSAL.tools.SequenceEncoder;
 
 public class BasicModule extends GameModule {
   private static char COMMAND_SEPARATOR = (char) java.awt.event.KeyEvent.VK_ESCAPE;
+  protected ChatServerControls serverControls;
 
   public BasicModule(DataArchive archive, Prefs globalPrefs) {
     super(archive);
@@ -114,8 +115,8 @@ public class BasicModule extends GameModule {
     server = new HybridClient();
     ServerConfigurer config = new ServerConfigurer("ServerImpl", "Server", (HybridClient) server); //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.getGameModule().getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
-    ChatServerControls c = new ChatServerControls();
-    c.addTo(this);
+    serverControls = new ChatServerControls();
+    serverControls.addTo(this);
   }
 
   protected void initLogger() {
@@ -237,5 +238,9 @@ public class BasicModule extends GameModule {
     catch (IllegalAccessException e) {
       e.printStackTrace();
     }
+  }
+
+  public ChatServerControls getServerControls() {
+    return serverControls;
   }
 }

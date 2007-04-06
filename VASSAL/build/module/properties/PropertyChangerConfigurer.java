@@ -13,6 +13,13 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
+/**
+ * Configurer instance that allows a module editor to specify a PropertyChanger, i.e. the way in which a dynamic
+ * property will be updated by a player during a game
+ * 
+ * @author rkinney
+ * 
+ */
 public class PropertyChangerConfigurer extends Configurer {
   protected static final String PLAIN_TYPE = "Set value directly";
   protected static final String INCREMENT_TYPE = "Increment numeric value";
@@ -31,19 +38,16 @@ public class PropertyChangerConfigurer extends Configurer {
     typeToCode.put(NumericPropertyPrompt.class, new Character(PROMPT_CODE));
     typeToCode.put(IncrementProperty.class, new Character(INCR_CODE));
     typeToCode.put(EnumeratedPropertyPrompt.class, new Character(ENUM_CODE));
-
     typeToDescription.put(PropertySetter.class, PLAIN_TYPE);
     typeToDescription.put(PropertyPrompt.class, PROMPT_TYPE);
     typeToDescription.put(NumericPropertyPrompt.class, PROMPT_TYPE);
     typeToDescription.put(IncrementProperty.class, INCREMENT_TYPE);
     typeToDescription.put(EnumeratedPropertyPrompt.class, SELECT_TYPE);
-
     descriptionToCode.put(PLAIN_TYPE, new Character(PLAIN_CODE));
     descriptionToCode.put(INCREMENT_TYPE, new Character(INCR_CODE));
     descriptionToCode.put(PROMPT_TYPE, new Character(PROMPT_CODE));
     descriptionToCode.put(SELECT_TYPE, new Character(ENUM_CODE));
   }
-
   protected Constraints constraints;
   protected JPanel controls;
   protected StringEnumConfigurer typeConfig;
@@ -67,16 +71,16 @@ public class PropertyChangerConfigurer extends Configurer {
         }
       };
       controls = new JPanel();
-      controls.setLayout(new BoxLayout(controls,BoxLayout.X_AXIS));
-      typeConfig = new StringEnumConfigurer(null,"Type:  ",new String[]{PLAIN_TYPE,INCREMENT_TYPE,PROMPT_TYPE,SELECT_TYPE});
+      controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
+      typeConfig = new StringEnumConfigurer(null, "Type:  ", new String[]{PLAIN_TYPE, INCREMENT_TYPE, PROMPT_TYPE, SELECT_TYPE});
       typeConfig.addPropertyChangeListener(l);
-      valueConfig = new StringConfigurer(null,"New Value:  ");
+      valueConfig = new StringConfigurer(null, "New Value:  ");
       valueConfig.addPropertyChangeListener(l);
-      promptConfig = new StringConfigurer(null,"Prompt:  ");
+      promptConfig = new StringConfigurer(null, "Prompt:  ");
       promptConfig.addPropertyChangeListener(l);
-      incrConfig = new StringConfigurer(null,"Increment by:  ");
+      incrConfig = new StringConfigurer(null, "Increment by:  ");
       incrConfig.addPropertyChangeListener(l);
-      validValuesConfig = new StringArrayConfigurer(null,"Valid Values");
+      validValuesConfig = new StringArrayConfigurer(null, "Valid Values");
       validValuesConfig.addPropertyChangeListener(l);
       controls.add(typeConfig.getControls());
       controls.add(valueConfig.getControls());
@@ -92,7 +96,7 @@ public class PropertyChangerConfigurer extends Configurer {
     PropertyChanger pc = getPropertyChanger();
     typeConfig.setValue(typeToDescription.get(pc.getClass()));
     if (pc instanceof PropertySetter) {
-      valueConfig.setValue(((PropertySetter)pc).getRawValue());
+      valueConfig.setValue(((PropertySetter) pc).getRawValue());
       valueConfig.getControls().setVisible(true);
     }
     else {
@@ -120,10 +124,10 @@ public class PropertyChangerConfigurer extends Configurer {
       validValuesConfig.getControls().setVisible(false);
     }
   }
-  
+
   protected void updateValue() {
     PropertyChanger p;
-    switch (((Character)descriptionToCode.get(typeConfig.getValueString())).charValue()) {
+    switch (((Character) descriptionToCode.get(typeConfig.getValueString())).charValue()) {
     case PROMPT_CODE:
       p = new PropertyPrompt(constraints, promptConfig.getValueString());
       break;
@@ -155,7 +159,7 @@ public class PropertyChangerConfigurer extends Configurer {
         se.append(ENUM_CODE).append(((PropertyPrompt) propChanger).getPrompt()).append(((EnumeratedPropertyPrompt) propChanger).getValidValues());
         break;
       case PLAIN_CODE:
-        se.append(PLAIN_CODE).append(((PropertySetter)propChanger).getRawValue());
+        se.append(PLAIN_CODE).append(((PropertySetter) propChanger).getRawValue());
       }
     }
     return se.getValue();
@@ -187,8 +191,6 @@ public class PropertyChangerConfigurer extends Configurer {
     }
     setValue(p);
   }
-
   public static interface Constraints extends PropertyPrompt.Constraints, IncrementProperty.Constraints, PropertySource {
   }
-
 }

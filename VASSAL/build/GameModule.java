@@ -45,6 +45,7 @@ import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.ConsoleWindow;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.GameState;
@@ -67,7 +68,7 @@ import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.GlobalProperties;
-import VASSAL.build.module.properties.GlobalPropertiesContainer;
+import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.GlobalProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
@@ -96,7 +97,7 @@ import VASSAL.tools.ToolBarComponent;
  * It is a singleton, and contains access points for many other classes,
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger},
  * and {@link Prefs} */
-public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, GlobalPropertiesContainer {
+public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer {
   protected static final String DEFAULT_NAME = "Unnamed module";  //$NON-NLS-1$
   public static final String MODULE_NAME = "name";  //$NON-NLS-1$
   public static final String MODULE_VERSION = "version";  //$NON-NLS-1$
@@ -129,6 +130,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected ServerConnection server;
 
   protected JFrame frame = new JFrame();
+  
+  protected ConsoleWindow console = new ConsoleWindow();
 
   protected Vector keyStrokeSources = new Vector();
   protected Vector keyStrokeListeners = new Vector();
@@ -140,6 +143,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public JFrame getFrame() {
     return frame;
   }
+  
+  public ConsoleWindow getConsoleWindow() {
+    return console;
+  }
+
+
 
   protected GameModule(DataArchive archive) {
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -620,7 +629,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   private static String userId = null;
-	private PropertyChangeListener globalPropertyListener;
 
   /**
    * @return a String that uniquely identifies the user
@@ -754,21 +762,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return globalProperties.get(key);
   }
   
-  public PropertyChangeListener getPropertyListener() {
-  	if (globalPropertyListener == null) {
-  		globalPropertyListener = new PropertyChangeListener() {
-  			public void propertyChange(PropertyChangeEvent evt) {
-  				globalProperties.put(evt.getPropertyName(),evt.getNewValue());
-          for (Iterator maps = Map.getAllMaps(); maps.hasNext(); ) {
-            Map map = (Map) maps.next();
-            map.repaint();            
-          }
-  			}
-  		};
-  	}
-		return globalPropertyListener;
+  public void setProperty(String key, String value) {
+    globalProperties.put(key,value);
+    for (Iterator maps = Map.getAllMaps(); maps.hasNext(); ) {
+      Map map = (Map) maps.next();
+      map.repaint();            
+    }
   }
-  
+
   public GlobalProperty getGlobalProperty(String name) {
     GlobalProperty property = null;
     Enumeration e = getComponents(GlobalProperties.class);

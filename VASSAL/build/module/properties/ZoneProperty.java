@@ -60,8 +60,8 @@ public class ZoneProperty extends GlobalProperty {
 
   public void addTo(Buildable parent) {
     // Initialize property with current values
-    propertyChangeSupport.addPropertyChangeListener(((GlobalPropertiesContainer)parent).getPropertyListener());
-    propertyChangeSupport.firePropertyChange(getConfigureName(),null,propertyValue);
+    propertiesContainer = (MutablePropertiesContainer) parent;
+    propertiesContainer.setProperty(getConfigureName(), propertyValue);
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     propertySource = (PropertySource) parent;

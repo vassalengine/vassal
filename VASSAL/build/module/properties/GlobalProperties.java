@@ -20,12 +20,11 @@ import VASSAL.tools.ToolBarComponent;
  * @author rkinney
  * 
  */
-public class GlobalProperties extends AbstractConfigurable implements GlobalPropertiesContainer, ToolBarComponent, PropertySource {
+public class GlobalProperties extends AbstractConfigurable implements MutablePropertiesContainer, ToolBarComponent, PropertySource {
   private TemporaryToolBar tempToolbar = new TemporaryToolBar();
   private PropertySource propertySource;
-  private PropertyChangeListener forwardPropertyChange;
-  private PropertyChangeSupport propertyChangeSupport;
   private HashMap initialValues = new HashMap();
+  private MutablePropertiesContainer parent;
 
   public String[] getAttributeDescriptions() {
     return new String[0];
@@ -55,7 +54,7 @@ public class GlobalProperties extends AbstractConfigurable implements GlobalProp
   }
 
   public void removeFrom(Buildable parent) {
-    propertyChangeSupport.removePropertyChangeListener(((GlobalPropertiesContainer) parent).getPropertyListener());
+    parent = null;
   }
 
   public HelpFile getHelpFile() {
@@ -67,31 +66,23 @@ public class GlobalProperties extends AbstractConfigurable implements GlobalProp
   }
 
   public void addTo(Buildable parent) {
-    propertyChangeSupport = new PropertyChangeSupport(this);
-    propertyChangeSupport.addPropertyChangeListener(((GlobalPropertiesContainer) parent).getPropertyListener());
+    this.parent = (MutablePropertiesContainer) parent;
     for (Iterator it = initialValues.keySet().iterator(); it.hasNext();) {
-      Object key = it.next();
-      Object value = initialValues.get(key);
-      propertyChangeSupport.firePropertyChange(key.toString(),null,value);
+      String key = (String) it.next();
+      String value = (String) initialValues.get(key);
+      this.parent.setProperty(key, value);
     }
     tempToolbar.setDelegate((ToolBarComponent) parent);
     propertySource = (PropertySource) parent;
   }
 
-  public PropertyChangeListener getPropertyListener() {
-    if (forwardPropertyChange == null) {
-      forwardPropertyChange = new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (propertyChangeSupport == null) {
-            initialValues.put(evt.getPropertyName(), evt.getNewValue());
-          }
-          else {
-            propertyChangeSupport.firePropertyChange(evt);
-          }
-        }
-      };
+  public void setProperty(String key, String value) {
+    if (parent == null) {
+      initialValues.put(key, value);
     }
-    return forwardPropertyChange;
+    else {
+      parent.setProperty(key, value);
+    }
   }
 
   public JToolBar getToolBar() {

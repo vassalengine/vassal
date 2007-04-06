@@ -210,6 +210,7 @@ public class PredefinedSetup extends AbstractConfigurable {
       PredefinedSetup setup = (PredefinedSetup) parent;
       setup.menu.add(getMenuInUse());
     }
+    GameModule.getGameModule().getConsoleWindow().addPredefinedSetup(this);
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -234,5 +235,10 @@ public class PredefinedSetup extends AbstractConfigurable {
       PredefinedSetup setup = (PredefinedSetup) parent;
       setup.menu.remove(getMenuInUse());
     }
+    GameModule.getGameModule().getConsoleWindow().removePredefinedSetup(this);
+  }
+
+  public boolean isMenu() {
+    return isMenu;
   }
 }

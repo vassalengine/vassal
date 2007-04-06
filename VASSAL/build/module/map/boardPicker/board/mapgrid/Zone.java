@@ -57,8 +57,9 @@ import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
-import VASSAL.build.module.properties.GlobalPropertiesContainer;
+import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.GlobalProperty;
+import VASSAL.build.module.properties.MutablePropertySource;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.module.properties.ZoneProperty;
 import VASSAL.command.Command;
@@ -69,7 +70,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.FormattedString;
 
-public class Zone extends AbstractConfigurable implements GridContainer, GlobalPropertiesContainer, PropertySource, GameComponent {
+public class Zone extends AbstractConfigurable implements GridContainer, MutablePropertiesContainer, PropertySource, GameComponent {
   public static final String NAME = "name";
   public static final String PATH = "path";
   public static final String USE_PARENT_GRID = "useParentGrid";
@@ -101,7 +102,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
   protected ZoneHighlight highlighter = null;
   protected boolean useHighlight = false;
   protected String highlightPropertyName = "";
-  protected GlobalProperty highlightProperty = null;
+  protected MutablePropertySource highlightProperty = null;
   protected PropertyChangeListener highlightPropertyChangeListener = null;
 
   public Zone() {
@@ -221,16 +222,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
     return useParentGrid ? new Class[]{ZoneProperty.class} : new Class[]{HexGrid.class, SquareGrid.class, RegionGrid.class, ZoneProperty.class};
   }
 
-  public PropertyChangeListener getPropertyListener() {
-    if (globalPropertyListener == null) {
-      globalPropertyListener = new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          globalProperties.put(evt.getPropertyName(), evt.getNewValue());
-          repaint();
-        }
-      };
-    }
-    return globalPropertyListener;
+  public void setProperty(String key, String value) {
+    globalProperties.put(key,value);
+    repaint();
   }
 
   public String locationName(Point p) {
@@ -397,8 +391,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, GlobalP
   public void setup(boolean gameStarting) {
     if (gameStarting) {
       if (useHighlight && highlightPropertyName.length() > 0) {
-        highlightProperty = GlobalProperty
-            .findGlobalProperty(highlightPropertyName, Arrays.asList(new GlobalPropertiesContainer[]{this, getMap(), GameModule.getGameModule()}));
+        highlightProperty = MutablePropertySource.Util
+            .findMutableProperty(highlightPropertyName, Arrays.asList(new MutablePropertiesContainer[]{this, getMap(), GameModule.getGameModule()}));
         if (highlightProperty != null) {
           if (highlightPropertyChangeListener == null) {
             highlightPropertyChangeListener = new PropertyChangeListener() {

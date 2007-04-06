@@ -34,7 +34,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.build.module.properties.GlobalProperty;
+import VASSAL.build.module.properties.MutablePropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
@@ -165,7 +165,7 @@ public class SetGlobalProperty extends DynamicProperty {
     Command comm = new NullCommand();
     for (int i = 0; i < keyCommands.length; i++) {
       if (keyCommands[i].matches(stroke)) {
-        GlobalProperty prop = null;
+        MutablePropertySource prop = null;
         String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
         
         List propertyContainers = new ArrayList();
@@ -189,7 +189,7 @@ public class SetGlobalProperty extends DynamicProperty {
         if (z != null) {
           propertyContainers.add(0, z);
         }
-        prop = GlobalProperty.findGlobalProperty(propertyName, propertyContainers);
+        prop = MutablePropertySource.Util.findMutableProperty(propertyName, propertyContainers);
         /*
          * Debugging could be painful, so print a useful message in the Chat Window if no property can be found to
          * update
