@@ -52,7 +52,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -109,7 +108,7 @@ import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
-import VASSAL.build.module.properties.GlobalProperty;
+import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.widget.MapWidget;
 import VASSAL.command.AddPiece;
@@ -183,7 +182,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
 	protected PieceCollection pieces = new DefaultPieceCollection();
-	protected java.util.Map globalProperties = new HashMap();
 	protected Highlighter highlighter = new ColoredBorder();
   protected ArrayList highlighters = new ArrayList();
   protected boolean clearFirst = false; // Whether to clear the display before
@@ -202,6 +200,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	protected JPanel root;
 	protected PropertyChangeListener globalPropertyListener;
   protected String tooltip = ""; //$NON-NLS-1$
+  protected MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
+  protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
+    public void propertyChange(PropertyChangeEvent evt) {
+      repaint();
+    }
+  };
 
 	public Map() {
 		getView();
@@ -541,11 +545,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	public JToolBar getToolBar() {
 		return toolBar;
 	}
-
-	public void setProperty(String key, String value) {
-    globalProperties.put(key,value);
-    repaint();
-  }
 
   /**
    * Add a {@link Drawable} component to this map
@@ -1529,8 +1528,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
 	public Object getProperty(Object key) {
 		Object value = null;
-		value = globalProperties.get(key);
-		if (value == null) {
+    MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
+    if (p != null) {
+      value = p.getPropertyValue();
+    }
+    else {
 			value = GameModule.getGameModule().getProperty(key);
 		}
 		return value;
@@ -2027,21 +2029,24 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   /**
    * Find a contained Global Variable by name
    */
-  public GlobalProperty getGlobalProperty(String name) {
-    GlobalProperty property = null;
-    Enumeration e = getComponents(GlobalProperties.class);
-    if (e != null) {
-      for (Enumeration en = ((GlobalProperties) e.nextElement()).getComponents(GlobalProperty.class) ;en.hasMoreElements() && property == null;) {
-        GlobalProperty prop = (GlobalProperty) en.nextElement();
-        if (prop.getConfigureName().equals(name)) {
-          property = prop;
-        }
-      }
-    }
-    return property;
+  public MutableProperty getMutableProperty(String name) {
+    return propsContainer.getMutableProperty(name);
   }
   
-	/**
+	public void addMutableProperty(String key, MutableProperty p) {
+    propsContainer.addMutableProperty(key, p);
+    p.addMutablePropertyChangeListener(repaintOnPropertyChange);
+  }
+
+  public MutableProperty removeMutableProperty(String key) {
+    MutableProperty p = propsContainer.removeMutableProperty(key);
+    if (p != null) {
+      p.removeMutablePropertyChangeListener(repaintOnPropertyChange);
+    }
+    return p;
+  }
+
+  /**
    * Each Map must have a unique String id
    * 
    * @return the id for this map

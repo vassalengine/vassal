@@ -28,7 +28,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
@@ -67,9 +66,8 @@ import VASSAL.build.module.ServerConnection;
 import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
-import VASSAL.build.module.properties.GlobalProperty;
+import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
@@ -113,7 +111,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected String lastSavedConfiguration;
   protected FileChooser fileChooser;
   protected FileDialog fileDialog;
-  protected java.util.Map globalProperties = new HashMap();
+  protected MutablePropertiesContainer propsContainer = new Impl();
+  protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
+    public void propertyChange(PropertyChangeEvent evt) {
+        for (Iterator maps = Map.getAllMaps(); maps.hasNext(); ) {
+          Map map = (Map) maps.next();
+          map.repaint();            
+        }
+    }
+  };
 
   protected JPanel controlPanel = new JPanel();
 
@@ -759,29 +765,27 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     else if (GlobalOptions.PLAYER_ID.equals(key)) {
       return GlobalOptions.getInstance().getPlayerId();
     }
-    return globalProperties.get(key);
+    MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
+    return p == null ? null : p.getPropertyValue();
   }
   
-  public void setProperty(String key, String value) {
-    globalProperties.put(key,value);
-    for (Iterator maps = Map.getAllMaps(); maps.hasNext(); ) {
-      Map map = (Map) maps.next();
-      map.repaint();            
-    }
+  public MutableProperty getMutableProperty(String name) {
+    return propsContainer.getMutableProperty(name);
   }
 
-  public GlobalProperty getGlobalProperty(String name) {
-    GlobalProperty property = null;
-    Enumeration e = getComponents(GlobalProperties.class);
-    if (e != null) {
-      for (Enumeration en = ((GlobalProperties) e.nextElement()).getComponents(GlobalProperty.class) ;en.hasMoreElements() && property == null;) {
-        GlobalProperty prop = (GlobalProperty) en.nextElement();
-        if (prop.getConfigureName().equals(name)) {
-          property = prop;
-        }
-      }
-    }
-    return property;
+  public void addMutableProperty(String key, MutableProperty p) {
+    propsContainer.addMutableProperty(key, p);
+    p.addMutablePropertyChangeListener(repaintOnPropertyChange);
   }
+
+  public MutableProperty removeMutableProperty(String key) {
+    MutableProperty p = propsContainer.removeMutableProperty(key);
+    if (p != null) {
+      p.removeMutablePropertyChangeListener(repaintOnPropertyChange);
+    }
+    return p;
+  }
+  
+  
 
 }

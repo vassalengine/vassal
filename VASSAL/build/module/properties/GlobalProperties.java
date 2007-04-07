@@ -1,8 +1,5 @@
 package VASSAL.build.module.properties;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -69,19 +66,28 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     this.parent = (MutablePropertiesContainer) parent;
     for (Iterator it = initialValues.keySet().iterator(); it.hasNext();) {
       String key = (String) it.next();
-      String value = (String) initialValues.get(key);
-      this.parent.setProperty(key, value);
+      MutableProperty p = (MutableProperty) initialValues.get(key);
+      this.parent.addMutableProperty(key, p);
     }
     tempToolbar.setDelegate((ToolBarComponent) parent);
     propertySource = (PropertySource) parent;
   }
-
-  public void setProperty(String key, String value) {
+  
+  public void addMutableProperty(String key, MutableProperty p) {
     if (parent == null) {
-      initialValues.put(key, value);
+      initialValues.put(key,p);
     }
     else {
-      parent.setProperty(key, value);
+      parent.addMutableProperty(key, p);
+    }
+  }
+
+  public MutableProperty removeMutableProperty(String key) {
+    if (parent == null) {
+      return (MutableProperty) initialValues.remove(key);
+    }
+    else {
+      return parent.removeMutableProperty(key);
     }
   }
 
@@ -93,7 +99,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     return propertySource == null ? null : propertySource.getProperty(key);
   }
 
-  public GlobalProperty getGlobalProperty(String name) {
+  public GlobalProperty getMutableProperty(String name) {
     GlobalProperty property = null;
     for (Enumeration e = getComponents(GlobalProperty.class);e.hasMoreElements() && property == null;) {
       GlobalProperty prop = (GlobalProperty) e.nextElement();

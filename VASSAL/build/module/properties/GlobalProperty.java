@@ -1,5 +1,6 @@
 package VASSAL.build.module.properties;
 
+import java.beans.PropertyChangeListener;
 import javax.swing.JToolBar;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -20,7 +21,7 @@ import VASSAL.tools.ToolBarComponent;
  * @author rkinney
  * 
  */
-public class GlobalProperty extends AbstractConfigurable implements ToolBarComponent, GameComponent, CommandEncoder, PropertySource, MutablePropertySource {
+public class GlobalProperty extends AbstractConfigurable implements ToolBarComponent, GameComponent, CommandEncoder, PropertySource, MutableProperty {
   public static final String NAME = "name";
   public static final String INITIAL_VALUE = "initialValue";
   public static final String DESCRIPTION = "description";
@@ -30,7 +31,6 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   public static final String WRAP = "wrap";
   protected static final String COMMAND_PREFIX = "GlobalProperty\t";
   protected TemporaryToolBar tempToolbar = new TemporaryToolBar();
-  protected String propertyValue;
   protected String description;
   protected String initialValue;
   protected boolean numeric;
@@ -39,8 +39,8 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   protected boolean wrap;
   protected VisibilityCondition numericVisibility;
   protected FormattedString format = new FormattedString();
-  protected MutablePropertiesContainer propertiesContainer;
   protected PropertySource propertySource;
+  protected MutableProperty.Impl property = new MutableProperty.Impl("", this);
 
   public GlobalProperty() {
     numericVisibility = new VisibilityCondition() {
@@ -64,17 +64,15 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
-      String oldName = getConfigureName();
-      propertiesContainer.setProperty(oldName, null);
       setConfigureName((String) value);
-      propertiesContainer.setProperty(getConfigureName(), propertyValue);
+      property.setPropertyName(getConfigureName());
     }
     else if (INITIAL_VALUE.equals(key)) {
       initialValue = (String) value;
       if (initialValue == null) {
         initialValue = "";
       }
-      setPropertyValue(initialValue);
+      property.setPropertyValue(initialValue);
     }
     else if (DESCRIPTION.equals(key)) {
       description = (String) value;
@@ -128,8 +126,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public void removeFrom(Buildable parent) {
-    propertiesContainer.setProperty(getConfigureName(), null);
-    propertiesContainer = null;
+    property.removeFromContainer();
     GameModule.getGameModule().removeCommandEncoder(this);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
   }
@@ -143,25 +140,11 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public void addTo(Buildable parent) {
-    // Initialize property with current values
-    setPropertyValue(initialValue);
-    propertiesContainer = (MutablePropertiesContainer) parent;
-    propertiesContainer.setProperty(getConfigureName(), propertyValue);
+    property.addTo((MutablePropertiesContainer) parent);
     tempToolbar.setDelegate((ToolBarComponent) parent);
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     propertySource = (PropertySource) parent;
-  }
-
-  public String getPropertyValue() {
-    return propertyValue;
-  }
-
-  public Command setPropertyValue(String value) {
-    String oldValue = propertyValue;
-    propertyValue = value;
-    propertiesContainer.setProperty(getConfigureName(), propertyValue);
-    return new GlobalProperty.SetGlobalProperty(this, oldValue, value);
   }
 
   public JToolBar getToolBar() {
@@ -170,13 +153,13 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
-      setPropertyValue(initialValue); // Set value back to default for next New Game
+      property.setPropertyValue(initialValue); // Set value back to default for next New Game
     }
     return;
   }
 
   public Command getRestoreCommand() {
-    return new SetGlobalProperty(this, "", getPropertyValue());
+    return new SetGlobalProperty(this, "", property.getPropertyValue());
   }
 
   public Command decode(String command) {
@@ -186,7 +169,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     if (prefix.equals(COMMAND_PREFIX)) {
       String propertyId = sd.nextToken("");
       if (propertyId.equals(getPropertyId())) {
-        comm = new SetGlobalProperty(this, getPropertyValue(), sd.nextToken(""));
+        comm = new SetGlobalProperty(this, property.getPropertyValue(), sd.nextToken(""));
       }
     }
     return comm;
@@ -232,7 +215,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     }
 
     protected void executeCommand() {
-      target.setPropertyValue(newValue);
+      target.property.setPropertyValue(newValue);
     }
 
     protected Command myUndoCommand() {
@@ -284,6 +267,38 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   public static String getConfigureTypeName() {
     return "Global Property";
+  }
+  
+  public class Property extends MutableProperty.Impl {
+
+    public Property(String propertyName, Object source) {
+      super(propertyName, source);
+    }
+
+    protected Command getChangeCommand(String oldValue, String newValue) {
+      return new GlobalProperty.SetGlobalProperty(GlobalProperty.this, oldValue, newValue);
+    }
+    
+  }
+
+  public void addMutablePropertyChangeListener(PropertyChangeListener l) {
+    property.addMutablePropertyChangeListener(l);
+  }
+
+  public void removeMutablePropertyChangeListener(PropertyChangeListener l) {
+    property.removeMutablePropertyChangeListener(l);
+  }
+
+  public void setPropertyName(String name) {
+    property.setPropertyName(name);
+  }
+
+  public Command setPropertyValue(String newValue) {
+    return property.setPropertyValue(newValue);
+  }
+
+  public String getPropertyValue() {
+    return property.getPropertyValue();
   }
 
 }

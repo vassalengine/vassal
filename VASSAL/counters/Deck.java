@@ -27,7 +27,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -36,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -50,15 +50,16 @@ import javax.swing.SwingUtilities;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
-import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.PlayerRoster;
+import VASSAL.build.module.map.DrawPile;
+import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.build.module.properties.MutableProperty.Impl;
 import VASSAL.command.AddPiece;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
-import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
@@ -99,6 +100,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected String faceDownMsgFormat;
   protected boolean drawFaceUp;
   protected boolean persistable;
+  protected MutableProperty.Impl countProperty = new MutableProperty.Impl("",this);
+  protected List expressionProperties = new ArrayList();
 
   protected String deckName;
 
@@ -151,7 +154,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     //Clear out all of the registered count expressions
     for (int index = 0; index < countExpressions.length; index++) {
-      getMap().setProperty(deckName+"_"+countExpressions[index].getName(),"0"); //$NON-NLS-1$ //$NON-NLS-2$
+      ((MutableProperty.Impl)expressionProperties.get(index)).setPropertyValue("0"); //$NON-NLS-1$
     }
     //Increase all of the pieces with expressions specified in this deck
     for (Enumeration e = getPieces(); e.hasMoreElements();) {
@@ -195,11 +198,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       return;
     }
     //test all the expressions for this deck
-    for (int index = 0;index < countExpressions.length;index++){ 
+    for (int index = 0;index < countExpressions.length;index++) {
+      MutableProperty.Impl prop = (Impl) expressionProperties.get(index);
       FormattedString formatted = new FormattedString(countExpressions[index].getExpression());
       PieceFilter f = PropertiesPieceFilter.parse(formatted.getText());
       if (f.accept(p)) {
-        String mapProperty = (String) getMap().getProperty(deckName+"_"+countExpressions[index].getName()); //$NON-NLS-1$
+        String mapProperty = prop.getPropertyValue();
           if (mapProperty != null) {
             int newValue = (Integer.decode(mapProperty)).intValue();
             if (increase) {
@@ -208,7 +212,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
             else {
               newValue--;
             }
-            getMap().setProperty(deckName+"_"+countExpressions[index].getName(),String.valueOf(newValue)); //$NON-NLS-1$  //$NON-NLS-2$
+            prop.setPropertyValue(String.valueOf(newValue));
           }
       }
     }
@@ -219,9 +223,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * @param oldPieceCount
    */
   protected void fireNumCardsProperty() {
-    if (getMap() != null) {
-      getMap().setProperty(deckName+"_numPieces",String.valueOf(pieceCount)); //$NON-NLS-1$
-    }
+    countProperty.setPropertyValue(String.valueOf(pieceCount));
   }
   
   protected void insertPieceAt(GamePiece p, int index) {
@@ -243,6 +245,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public void setMap(Map map) {
+    if (map != getMap()) {
+      countProperty.removeFromContainer();
+      countProperty.addTo(map);
+    }
     super.setMap(map);
     updateCountsAll();
     fireNumCardsProperty();
@@ -417,6 +423,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     this.countExpressions = new CountExpression[goodExpressionCount];
     System.arraycopy(c, 0, countExpressions, 0, goodExpressionCount);
+    while (countExpressions.length > expressionProperties.size()) {
+      expressionProperties.add(new MutableProperty.Impl("",this));
+    }
+    for (int i = 0; i < countExpressions.length; i++) {
+      ((MutableProperty.Impl)expressionProperties.get(i)).setPropertyName(deckName+"_"+countExpressions[i].getName());
+    }
   }
  
   public void setExpressionCounting(boolean expressionCounting) {
@@ -437,6 +449,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void setDeckName(String n) {
     deckName = n;
+    countProperty.setPropertyName(deckName+"_numPieces");
+    for (int i=0;i<countExpressions.length;++i) {
+      ((MutableProperty.Impl)expressionProperties.get(i)).setPropertyName(deckName+"_"+countExpressions[i].getName());
+    }
   }
 
   public String getDeckName() {

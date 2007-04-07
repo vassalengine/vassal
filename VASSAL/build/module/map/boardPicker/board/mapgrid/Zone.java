@@ -36,8 +36,6 @@ import java.awt.geom.Area;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -58,8 +56,7 @@ import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
-import VASSAL.build.module.properties.GlobalProperty;
-import VASSAL.build.module.properties.MutablePropertySource;
+import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.module.properties.ZoneProperty;
 import VASSAL.command.Command;
@@ -85,8 +82,13 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   protected MapGrid grid = null;
   protected ZonedGrid parentGrid;
   protected boolean useParentGrid;
-  protected java.util.Map globalProperties = new HashMap();
   protected PropertyChangeListener globalPropertyListener;
+  protected MutablePropertiesContainer propsContainer = new Impl();
+  protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
+    public void propertyChange(PropertyChangeEvent evt) {
+      repaint();
+    }
+  };
   /*
    * Cache as much as possible to minimise the number of Affine Transformations that need to be performed.
    */
@@ -102,7 +104,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   protected ZoneHighlight highlighter = null;
   protected boolean useHighlight = false;
   protected String highlightPropertyName = "";
-  protected MutablePropertySource highlightProperty = null;
+  protected MutableProperty highlightProperty = null;
   protected PropertyChangeListener highlightPropertyChangeListener = null;
 
   public Zone() {
@@ -222,9 +224,17 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return useParentGrid ? new Class[]{ZoneProperty.class} : new Class[]{HexGrid.class, SquareGrid.class, RegionGrid.class, ZoneProperty.class};
   }
 
-  public void setProperty(String key, String value) {
-    globalProperties.put(key,value);
-    repaint();
+  public void addMutableProperty(String key, MutableProperty p) {
+    p.addMutablePropertyChangeListener(repaintOnPropertyChange);
+    propsContainer.addMutableProperty(key, p);
+  }
+
+  public MutableProperty removeMutableProperty(String key) {
+    MutableProperty existing = propsContainer.removeMutableProperty(key);
+    if (existing != null) {
+      existing.removeMutablePropertyChangeListener(repaintOnPropertyChange);
+    }
+    return existing;
   }
 
   public String locationName(Point p) {
@@ -362,8 +372,11 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    */
   public Object getProperty(Object key) {
     Object value = null;
-    value = globalProperties.get(key);
-    if (value == null) {
+    MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
+    if (p != null) {
+      value = p.getPropertyValue();
+    }
+    else {
       value = getMap().getProperty(key);
     }
     return value;
@@ -374,15 +387,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    * 
    * @see VASSAL.build.module.properties.GlobalPropertiesContainer#getGlobalProperty(java.lang.String)
    */
-  public GlobalProperty getGlobalProperty(String name) {
-    GlobalProperty property = null;
-    for (Enumeration e = getAllDescendantComponents(GlobalProperty.class); e.hasMoreElements() && property == null;) {
-      GlobalProperty prop = (GlobalProperty) e.nextElement();
-      if (prop.getConfigureName().equals(name)) {
-        property = prop;
-      }
-    }
-    return property;
+  public MutableProperty getMutableProperty(String name) {
+    return propsContainer.getMutableProperty(name);
   }
 
   /*
@@ -391,7 +397,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   public void setup(boolean gameStarting) {
     if (gameStarting) {
       if (useHighlight && highlightPropertyName.length() > 0) {
-        highlightProperty = MutablePropertySource.Util
+        highlightProperty = MutableProperty.Util
             .findMutableProperty(highlightPropertyName, Arrays.asList(new MutablePropertiesContainer[]{this, getMap(), GameModule.getGameModule()}));
         if (highlightProperty != null) {
           if (highlightPropertyChangeListener == null) {
@@ -401,14 +407,14 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
               }
             };
           }
-          highlightProperty.addPropertyChangeListener(highlightPropertyChangeListener);
+          highlightProperty.addMutablePropertyChangeListener(highlightPropertyChangeListener);
           setHighlighter(highlightProperty.getPropertyValue());
         }
       }
     }
     else {
       if (highlightProperty != null && highlightPropertyChangeListener != null) {
-        highlightProperty.removePropertyChangeListener(highlightPropertyChangeListener);
+        highlightProperty.removeMutablePropertyChangeListener(highlightPropertyChangeListener);
         highlightProperty = null;
       }
     }

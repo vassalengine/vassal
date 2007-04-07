@@ -20,13 +20,15 @@ package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import javax.swing.KeyStroke;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.MutablePropertiesContainer;
+import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.build.module.properties.MutableProperty.Impl;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
@@ -34,7 +36,6 @@ import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
@@ -51,6 +52,7 @@ public class DiceButton extends AbstractConfigurable {
   protected FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** <$" + GlobalOptions.PLAYER_NAME + "$>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
   protected LaunchButton launch;
   protected String tooltip = ""; //$NON-NLS-1$
+  protected MutableProperty.Impl property = new Impl("",this);
 
   public static final String DEPRECATED_NAME = "label"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
@@ -154,7 +156,7 @@ public class DiceButton extends AbstractConfigurable {
 
     String report = formatResult(val);
     GameModule.getGameModule().getChatter().send(report);
-    GameModule.getGameModule().setProperty(getConfigureName()+"_result",val); //$NON-NLS-1$
+    property.setPropertyValue(val);
   }
 
   /**
@@ -240,6 +242,7 @@ public class DiceButton extends AbstractConfigurable {
   public void addTo(Buildable parent) {
     ran = GameModule.getGameModule().getRNG();
     GameModule.getGameModule().getToolBar().add(getComponent());
+    property.addTo((MutablePropertiesContainer)parent);
   }
 
   /**
@@ -256,6 +259,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (NAME.equals(key)) {
       setConfigureName((String) o);
+      property.setPropertyName(getConfigureName()+"_result");
       launch.setToolTipText((String) o);
     }
     else if (N_DICE.equals(key)) {

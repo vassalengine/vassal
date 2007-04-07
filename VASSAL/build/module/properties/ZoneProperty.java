@@ -23,7 +23,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.build.module.properties.GlobalProperty;
 
 /**
  * 
@@ -59,9 +58,7 @@ public class ZoneProperty extends GlobalProperty {
   }
 
   public void addTo(Buildable parent) {
-    // Initialize property with current values
-    propertiesContainer = (MutablePropertiesContainer) parent;
-    propertiesContainer.setProperty(getConfigureName(), propertyValue);
+    property.addTo((MutablePropertiesContainer) parent);
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     propertySource = (PropertySource) parent;

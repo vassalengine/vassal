@@ -26,7 +26,7 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.properties.MutablePropertiesContainer;
+import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 
@@ -46,7 +46,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
   
   protected String tabName = "";
   protected String variableName = "";  
-  protected MutablePropertiesContainer propertiesContainer;
+  protected MutableProperty.Impl property = new MutableProperty.Impl("",this);
   
   public BasicPreference() {
     tabName = GameModule.getGameModule().getConfigureName();  
@@ -84,6 +84,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       variableName = (String) value;
+      property.setPropertyName(variableName);
     }
     else if (TAB.equals(key)) {
       tabName = (String) value;
@@ -119,7 +120,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
   public abstract Configurer getPreferenceConfigurer();
   
   public void addTo(Buildable b) {
-    propertiesContainer = (MutablePropertiesContainer) b;
+    property.addTo(GameModule.getGameModule());
     if (tabName.length() > 0) {
       GameModule.getGameModule().getPrefs().addOption(tabName, getPreferenceConfigurer());
     }
@@ -129,12 +130,11 @@ public abstract class BasicPreference extends AbstractConfigurable {
   }
 
   protected void updateGlobalProperty(String newValue) {
-    propertiesContainer.setProperty(getVariableName(), newValue);
-    
+    property.setPropertyValue(newValue);
   }
 
   public void removeFrom(Buildable b) {
-    propertiesContainer = null;
+    property.removeFromContainer();
   }
 
   public HelpFile getHelpFile() {
