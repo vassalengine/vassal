@@ -75,7 +75,7 @@ public class PrefsEditor {
         dialog.setVisible(true);
       }
     };
-    editAction.putValue(Action.MNEMONIC_KEY, new Integer((int) 'P'));
+    editAction.putValue(Action.MNEMONIC_KEY, new Integer('P'));
 
     prefs = new Vector();
 
@@ -139,7 +139,9 @@ public class PrefsEditor {
           }
         });
       }
-      setupDialog.getContentPane().add(new JLabel(prompt));
+      JPanel p = new JPanel();
+      p.add(new JLabel(prompt));
+      setupDialog.getContentPane().add(p);
       setupDialog.getContentPane().add(c.getControls());
       JButton b = new JButton(Resources.getString(Resources.OK));
       b.addActionListener(new ActionListener() {
@@ -147,7 +149,7 @@ public class PrefsEditor {
           setupDialog.setVisible(false);
         }
       });
-      JPanel p = new JPanel();
+      p = new JPanel();
       p.add(b);
       setupDialog.getContentPane().add(p);
       setupDialog.pack();
