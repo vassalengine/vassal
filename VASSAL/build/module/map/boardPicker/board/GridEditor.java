@@ -130,7 +130,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       public void actionPerformed(ActionEvent e) {
         cancelSetMode();
         setVisible(false);
-        GameModule.getGameModule().getDataArchive().clearScaledImageCache();
+        GameModule.getGameModule()
+                  .getDataArchive().clearTransformedImageCache();
       }
     });
     buttonPanel.add(okButton);

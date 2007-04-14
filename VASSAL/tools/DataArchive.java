@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2007 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -72,13 +72,14 @@ public class DataArchive extends SecureClassLoader {
   protected List extensions = new ArrayList();
   private HashMap imageCache = new HashMap();
   private HashMap soundCache = new HashMap();
-  private HashMap scaledImageCache = new HashMap();
+  private HashMap transImageCache = new HashMap();
   private HashMap imageSources = new HashMap();
   protected String[] imageNames;
   public static final String IMAGE_DIR = "images/";
   public static final String SOUNDS_DIR = "sounds/";
   private BooleanConfigurer smoothPrefs;
   private CodeSource cs;
+  protected SVGManager svgManager;
 
   // empty image for images scaled to zero size
   private static final Image NULL_IMAGE =
@@ -180,6 +181,91 @@ public class DataArchive extends SecureClassLoader {
   }
 
   /**
+   * Return a transformed instance of the image.
+   * The image will be retrieved from the cache if available, and cached
+   * after retrieval if not.
+   * @param base the untransformed Image
+   * @param scale the scaling factor
+   * @param theta the angle of rotation about the Image center
+   */
+  public Image getTransformedImage(Image base, double scale, double theta,
+                                   boolean forceSmoothing) {
+    if (base == null) {
+      return null;
+    }
+
+    Dimension d = getImageBounds(base).getSize();
+    d.width *= scale;
+    d.height *= scale;
+    if (d.width == 0 || d.height == 0) {
+      return NULL_IMAGE;
+    }
+
+    TransformedCacheKey key = new TransformedCacheKey(base, scale, theta);
+    Image trans = (Image) transImageCache.get(key);
+    if (trans == null) {
+      trans = createTransformedInstance(base, scale, theta, forceSmoothing);
+      new ImageIcon(trans); // Wait for the image to load
+      transImageCache.put(key, trans);
+    }
+    return trans;
+  }
+
+  /**
+   * Does the actual work of transforming an image.
+   */
+  protected Image createTransformedInstance(Image im, double zoom,
+    double theta, boolean forceSmoothing) {
+    if (zoom == 1 && theta == 0) return im;
+
+    // get smoothing preferences
+    if (smoothPrefs == null) {
+      smoothPrefs = (BooleanConfigurer) GameModule.getGameModule()
+        .getPrefs().getOption(GlobalOptions.SCALER_ALGORITHM);
+      if (smoothPrefs == null) {
+        smoothPrefs = new BooleanConfigurer(null, null, Boolean.TRUE);
+      }
+      smoothPrefs.addPropertyChangeListener(new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          clearTransformedImageCache();
+        }
+      });
+    }
+    
+    boolean smooth = Boolean.TRUE.equals(smoothPrefs.getValue());
+
+    if (im instanceof SVGManager.SVGBufferedImage) {
+      return ((SVGManager.SVGBufferedImage) im)
+        .getTransformedInstance(zoom, theta);
+    }
+    else {
+      Rectangle ubox = getImageBounds(im);
+      AffineTransform bt = new AffineTransform();
+      bt.rotate(-Math.PI/180 * theta, ubox.getCenterX(), ubox.getCenterY());
+      bt.scale(zoom, zoom);
+
+      Rectangle tbox = bt.createTransformedShape(ubox).getBounds();
+
+      BufferedImage trans = new BufferedImage(tbox.width,
+                                              tbox.height,
+                                              BufferedImage.TYPE_4BYTE_ABGR);
+      Graphics2D g2d = trans.createGraphics();
+      g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
+      AffineTransform t = new AffineTransform();
+      t.translate(-tbox.x, -tbox.y);
+      t.rotate(-Math.PI/180 * theta, ubox.getCenterX(), ubox.getCenterY());
+      t.scale(zoom, zoom);
+      t.translate(ubox.x, ubox.y);
+
+      g2d.drawImage(im, t, null);
+      return trans;
+    }
+  }
+
+  /**
    * Return a scaled instance of the image.
    * The image will be retrieved from cache if available, cached otherwise
    * @param base
@@ -187,7 +273,7 @@ public class DataArchive extends SecureClassLoader {
    * @return
    */
   public Image getScaledImage(Image base, double scale) {
-    return getScaledImage(base, scale, false, true);
+    return getTransformedImage(base, scale, 0, true);
   }
 
   /**
@@ -199,69 +285,10 @@ public class DataArchive extends SecureClassLoader {
    * @param forceSmoothing If true, force smoothing.  This usually yields better results, but can be slow for large images
    * @return
    */
-  public Image getScaledImage(Image base, double scale, boolean reversed, boolean forceSmoothing) {
-    if (base == null) {
-      return null;
-    }
-    Dimension d = getImageBounds(base).getSize();
-    d.width *= scale;
-    d.height *= scale;
-    if (d.width == 0 || d.height == 0) {
-      return NULL_IMAGE;
-    }
-    ScaledCacheKey key = new ScaledCacheKey(base, d, reversed);
-    Image scaled = (Image) scaledImageCache.get(key);
-    if (scaled == null) {
-      scaled = createScaledInstance(base, d, reversed, forceSmoothing);
-      new ImageIcon(scaled); // Wait for the image to load
-      scaledImageCache.put(key, scaled);
-    }
-    return scaled;
-  }
-
-  /**
-   * Create a new scaled instance of the argument image, optionally reversed
-   * @param im
-   * @param size
-   * @param reversed
-   * @param forceSmoothing If true, force a smoothing algorithm.  May be too slow for large images
-   * @return
-   */
-  protected Image createScaledInstance(Image im, Dimension size, boolean reversed, boolean forceSmoothing) {
-    Dimension fullSize = getImageBounds(im).getSize();
-    if (fullSize.equals(size) && !reversed) {
-      return im;
-    }
-    if (smoothPrefs == null) {
-      smoothPrefs = (BooleanConfigurer) GameModule.getGameModule().getPrefs().getOption(GlobalOptions.SCALER_ALGORITHM);
-      if (smoothPrefs == null) {
-        smoothPrefs = new BooleanConfigurer(null, null, Boolean.TRUE);
-      }
-      smoothPrefs.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          clearScaledImageCache();
-        }
-      });
-    }
-    boolean smooth = Boolean.TRUE.equals(smoothPrefs.getValue());
-    if (reversed) {
-      BufferedImage rev = new BufferedImage(size.width, size.height, BufferedImage.TYPE_4BYTE_ABGR);
-      Graphics2D g2d = rev.createGraphics();
-      if (smooth) {
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-      }
-      double zoom = (double) size.width / fullSize.width;
-      AffineTransform t = AffineTransform.getRotateInstance(Math.PI, size.width * .5, size.height * .5);
-      t.scale(zoom, zoom);
-      g2d.drawImage(im, t, null);
-      return rev;
-    }
-    else if (smooth && forceSmoothing) {
-      return improvedScaling(im, size.width, size.height);
-    }
-    else {
-      return im.getScaledInstance(size.width, size.height, smooth ? Image.SCALE_AREA_AVERAGING : Image.SCALE_DEFAULT);
-    }
+  public Image getScaledImage(Image base, double scale, boolean reversed,
+                              boolean forceSmoothing) {
+    return getTransformedImage(base, scale,
+                               reversed ? 180 : 0, forceSmoothing);
   }
 
   /**
@@ -271,9 +298,13 @@ public class DataArchive extends SecureClassLoader {
    */
   public static Rectangle getImageBounds(Image im) {
     ImageIcon icon = new ImageIcon(im);
-    return new Rectangle(-icon.getIconWidth() / 2, -icon.getIconHeight() / 2, icon.getIconWidth(), icon.getIconHeight());
+    return new Rectangle(-icon.getIconWidth() / 2, -icon.getIconHeight() / 2,
+                          icon.getIconWidth(), icon.getIconHeight());
   }
 
+  /**
+   * @deprecated Don't use this. Regular scaling is just as good now.
+   */
   public Image improvedScaling(Image img, int width, int height) {
     ImageFilter filter;
 
@@ -286,10 +317,24 @@ public class DataArchive extends SecureClassLoader {
     return Toolkit.getDefaultToolkit().createImage(prod);
   }
 
+  /**
+   * Get the size of an image without loading and decoding it.
+   *
+   * @param name filename of the image
+   * @return the size of the image
+   */
   public Dimension getImageSize(String name) throws IOException {
     String path = IMAGE_DIR + name;
     String gifPath = path + ".gif";
 
+    if (name.toLowerCase().endsWith(".svg")) {
+      if (svgManager == null) svgManager = new SVGManager(this);
+
+      return svgManager.getImageSize("jar:file://" +
+         (archive != null ? archive.getName() : "null") + "!/" + path,
+        getFileStream(path));
+    }
+    else {
       String ext = name.substring(name.lastIndexOf('.') + 1);
       ImageReader reader =
          (ImageReader) ImageIO.getImageReadersBySuffix(ext).next();
@@ -303,8 +348,8 @@ public class DataArchive extends SecureClassLoader {
       }
 
       return new Dimension(reader.getWidth(0), reader.getHeight(0));
+    }
   }
-
 
 /*
   private Shape getImageShape(String imageName) {
@@ -349,24 +394,32 @@ public class DataArchive extends SecureClassLoader {
 
   public void unCacheImage(Image im) {
     ArrayList toClear = new ArrayList();
-    for (Iterator iterator = scaledImageCache.keySet().iterator(); iterator.hasNext();) {
-      ScaledCacheKey key = (ScaledCacheKey) iterator.next();
+    for (Iterator i = transImageCache.keySet().iterator(); i.hasNext(); ) {
+      TransformedCacheKey key = (TransformedCacheKey) i.next();
       if (im.equals(key.base)) {
         toClear.add(key);
       }
     }
-    for (Iterator iterator = toClear.iterator(); iterator.hasNext();) {
-      ScaledCacheKey scaledCacheKey = (ScaledCacheKey) iterator.next();
-      scaledImageCache.remove(scaledCacheKey);
+
+    for (Iterator i = toClear.iterator(); i.hasNext(); ) {
+      TransformedCacheKey transCacheKey = (TransformedCacheKey) i.next();
+      transImageCache.remove(transCacheKey);
     }
   }
   
-  public void clearScaledImageCache() {
-    scaledImageCache.clear();
-    for (Iterator iter = extensions.iterator(); iter.hasNext();) {
-      DataArchive ext = (DataArchive) iter.next();
-      ext.clearScaledImageCache();
+  public void clearTransformedImageCache() {
+    transImageCache.clear();
+    for (Iterator i = extensions.iterator(); i.hasNext();) {
+      DataArchive ext = (DataArchive) i.next();
+      ext.clearTransformedImageCache();
     }
+  }
+ 
+  /**
+   * @deprecated Use {@link #clearTransformedImageCache()} instead.
+   */ 
+  public void clearScaledImageCache() {
+    clearTransformedImageCache();
   }
 
   public Image getImage(String name) throws IOException {
@@ -374,11 +427,20 @@ public class DataArchive extends SecureClassLoader {
     String gifPath = path + ".gif";
     Image image = null;
 
-    try {
-       image = getImage(getFileStream(path));
+    if (name.toLowerCase().endsWith(".svg")) {
+      if (svgManager == null) svgManager = new SVGManager(this);
+
+      image = svgManager.loadSVGImage("jar:file://" +
+         (archive != null ? archive.getName() : "null") + "!/" + path,
+        getFileStream(path));
     }
-    catch (IOException e) {
-      image = getImage(getFileStream(gifPath));
+    else {
+      try {
+        image = getImage(getFileStream(path));
+      }
+      catch (IOException e) {
+        image = getImage(getFileStream(gifPath));
+      }
     }
     return image;
   }
@@ -634,35 +696,41 @@ public class DataArchive extends SecureClassLoader {
     }
   }
 
-  private static class ScaledCacheKey {
+  /** 
+   * The hash key class for use with {@link #transImageCache}.
+   */
+  private static class TransformedCacheKey {
     private Image base;
-    private Dimension bounds;
-    private boolean reversed;
+    private double zoom;
+    private double theta;
 
-    public ScaledCacheKey(Image base, Dimension bounds, boolean reversed) {
-      this.bounds = bounds;
+    public TransformedCacheKey(Image base, double zoom, double theta) {
       this.base = base;
-      this.reversed = reversed;
+      this.zoom = zoom;
+      this.theta = theta;
     }
 
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (!(o instanceof ScaledCacheKey)) return false;
+      if (!(o instanceof TransformedCacheKey)) return false;
 
-      final ScaledCacheKey scaledCacheKey = (ScaledCacheKey) o;
+      final TransformedCacheKey t = (TransformedCacheKey) o;
 
-      if (reversed != scaledCacheKey.reversed) return false;
-      if (!base.equals(scaledCacheKey.base)) return false;
-      if (!bounds.equals(scaledCacheKey.bounds)) return false;
+      if (base == null) return t.base == null;
+      if (!base.equals(t.base) || zoom != t.zoom || theta != t.theta) {
+        return false;
+      }
 
       return true;
     }
 
     public int hashCode() {
-      int result;
-      result = base.hashCode();
-      result = 29 * result + bounds.hashCode();
-      result = 29 * result + (reversed ? 1 : 0);
+      int result = 17;
+      result = 37 * result + base.hashCode();
+      long l = Double.doubleToLongBits(zoom);
+      result = 37 * result + (int)(l^(l >>> 32)); 
+      l = Double.doubleToLongBits(theta);
+      result = 37 * result + (int)(l^(l >>> 32)); 
       return result;
     }
   }

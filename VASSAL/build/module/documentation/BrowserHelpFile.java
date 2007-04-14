@@ -126,7 +126,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
           outStream.close();
         }
       }
-      url = new File(output, startingPage).toURL();
+      url = new File(output, startingPage).toURI().toURL();
     }
     catch (IOException e) {
       e.printStackTrace();
