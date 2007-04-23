@@ -181,7 +181,7 @@ public class GameState implements CommandEncoder {
       sub.setup(this.gameStarting);
     }
     if (gameStarting) {
-      GameModule.getGameModule().getDataArchive().clearScaledImageCache();
+      GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
     }
     gameStarted = gameStarted || this.gameStarting;
     lastSave = gameStarting ? saveString() : null;
