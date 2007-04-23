@@ -33,6 +33,7 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -49,7 +50,7 @@ import VASSAL.build.widget.PieceSlot;
  * This is the GamePiece designer dialog.  It appears when you edit
  * the properties of a "Single Piece" in the Configuration window.
  */
-public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtension {
+public class PieceDefiner extends JPanel implements HelpWindowExtension {
   private static final long serialVersionUID = 1L;
 
   protected static DefaultListModel availableModel;
@@ -58,6 +59,7 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
   protected PieceSlot slot;
   private GamePiece piece;
   private HelpWindow helpWindow;
+  protected static Decorator clipBoard;
 
   /** Creates new form test */
   public PieceDefiner() {
@@ -167,24 +169,26 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
     JPanel controls = new JPanel();
     controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
 
-    availablePanel = new javax.swing.JPanel();
-    availableScroll = new javax.swing.JScrollPane();
-    availableList = new javax.swing.JList();
-    helpButton = new javax.swing.JButton();
-    importButton = new javax.swing.JButton();
-    addRemovePanel = new javax.swing.JPanel();
-    addButton = new javax.swing.JButton();
-    removeButton = new javax.swing.JButton();
-    inUsePanel = new javax.swing.JPanel();
-    inUseScroll = new javax.swing.JScrollPane();
-    inUseList = new javax.swing.JList();
-    propsButton = new javax.swing.JButton();
-    moveUpDownPanel = new javax.swing.JPanel();
-    moveUpButton = new javax.swing.JButton();
-    moveDownButton = new javax.swing.JButton();
-//        setLayout(new javax.swing.BoxLayout(this, 0));
+    availablePanel = new JPanel();
+    availableScroll = new JScrollPane();
+    availableList = new JList();
+    helpButton = new JButton();
+    importButton = new JButton();
+    addRemovePanel = new JPanel();
+    addButton = new JButton();
+    removeButton = new JButton();
+    inUsePanel = new JPanel();
+    inUseScroll = new JScrollPane();
+    inUseList = new JList();
+    propsButton = new JButton();
+    moveUpDownPanel = new JPanel();
+    moveUpButton = new JButton();
+    moveDownButton = new JButton();
+    copyButton = new JButton();
+    pasteButton = new JButton();
+//        setLayout(new BoxLayout(this, 0));
 
-    availablePanel.setLayout(new javax.swing.BoxLayout(availablePanel, 1));
+    availablePanel.setLayout(new BoxLayout(availablePanel, 1));
 
 
     availableList.setModel(availableModel);
@@ -211,8 +215,8 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
 
 
     helpButton.setText("Help");
-    helpButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    helpButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         showHelpForPiece();
       }
     }
@@ -220,8 +224,8 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
     availablePanel.add(helpButton);
 
     importButton.setText("Import");
-    importButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    importButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         String className = JOptionPane.showInputDialog(PieceDefiner.this, "Enter fully-qualified name of Java class to import");
         importPiece(className);
       }
@@ -232,11 +236,11 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
 
     controls.add(availablePanel);
 
-    addRemovePanel.setLayout(new javax.swing.BoxLayout(addRemovePanel, 1));
+    addRemovePanel.setLayout(new BoxLayout(addRemovePanel, 1));
 
     addButton.setText("Add ->");
-    addButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    addButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         Object selected = availableList.getSelectedValue();
         if (selected instanceof Decorator) {
           if (inUseModel.getSize() > 0) {
@@ -276,8 +280,8 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
 
 
     removeButton.setText("<- Remove");
-    removeButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    removeButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         int index = inUseList.getSelectedIndex();
         if (index >= 0) {
           removeTrait(index);
@@ -294,7 +298,7 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
     controls.add(addRemovePanel);
 
 
-    inUsePanel.setLayout(new javax.swing.BoxLayout(inUsePanel, 1));
+    inUsePanel.setLayout(new BoxLayout(inUsePanel, 1));
 
 
     inUseList.setModel(inUseModel);
@@ -307,10 +311,13 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
         propsButton.setEnabled(o instanceof EditablePiece);
         if (inUseModel.size() > 1) {
           removeButton.setEnabled(index > 0);
+          copyButton.setEnabled(index > 0);
         }
         else {
           removeButton.setEnabled(index == 0);
+          copyButton.setEnabled(index == 0);
         }
+        pasteButton.setEnabled(clipBoard != null);
         moveUpButton.setEnabled(index > 1);
         moveDownButton.setEnabled(index > 0
                                   && index < inUseModel.size() - 1);
@@ -335,8 +342,8 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
 
 
     propsButton.setText("Properties");
-    propsButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    propsButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         int index = inUseList.getSelectedIndex();
         if (index >= 0) {
           edit(index);
@@ -350,11 +357,11 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
     controls.add(inUsePanel);
 
 
-    moveUpDownPanel.setLayout(new javax.swing.BoxLayout(moveUpDownPanel, 1));
+    moveUpDownPanel.setLayout(new BoxLayout(moveUpDownPanel, BoxLayout.Y_AXIS));
 
     moveUpButton.setText("Move Up");
-    moveUpButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    moveUpButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         int index = inUseList.getSelectedIndex();
         if (index > 1 && index < inUseModel.size()) {
           moveDecoratorUp(index);
@@ -366,8 +373,8 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
 
 
     moveDownButton.setText("Move Down");
-    moveDownButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
+    moveDownButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         int index = inUseList.getSelectedIndex();
         if (index > 0 && index < inUseModel.size() - 1) {
           moveDecoratorDown(index);
@@ -376,7 +383,36 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
     }
     );
     moveUpDownPanel.add(moveDownButton);
+    
+    copyButton.setText("Copy");
+    copyButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        pasteButton.setEnabled(true);
+        int index = inUseList.getSelectedIndex();
+        Decorator target = (Decorator) inUseModel.get(index);
+        try {
+          String type = target.myGetType();
+          String state = target.myGetState();
+          clipBoard = (Decorator) GameModule.getGameModule().createPiece(type, null);
+          clipBoard.mySetState(state);
+        } 
+        catch (Exception e) {
+          clipBoard = null;
+        }
+      }});
+    moveUpDownPanel.add(copyButton);
 
+    pasteButton.setText("Paste");
+    pasteButton.setEnabled(clipBoard != null);
+    pasteButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        Decorator c = (Decorator) GameModule.getGameModule().createPiece(clipBoard.myGetType(), null);
+        c.mySetState(clipBoard.myGetState());
+        c.setInner((GamePiece) inUseModel.lastElement());
+        inUseModel.addElement(c);
+      }});
+    moveUpDownPanel.add(pasteButton);
+    
     controls.add(moveUpDownPanel);
 
     add(controls);
@@ -547,7 +583,7 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
 
   protected void addTrait(Decorator c) {
     try {
-      c = (Decorator) c.getClass().newInstance();
+      c = c.getClass().newInstance();
       c.setInner((GamePiece) inUseModel.lastElement());
       inUseModel.addElement(c);
     }
@@ -558,21 +594,23 @@ public class PieceDefiner extends javax.swing.JPanel implements HelpWindowExtens
   }
 
 
-  private javax.swing.JPanel availablePanel;
-  private javax.swing.JScrollPane availableScroll;
-  private javax.swing.JList availableList;
-  private javax.swing.JButton helpButton;
-  private javax.swing.JButton importButton;
-  private javax.swing.JPanel addRemovePanel;
-  private javax.swing.JButton addButton;
-  private javax.swing.JButton removeButton;
-  private javax.swing.JPanel inUsePanel;
-  private javax.swing.JScrollPane inUseScroll;
-  private javax.swing.JList inUseList;
-  private javax.swing.JButton propsButton;
-  private javax.swing.JPanel moveUpDownPanel;
-  private javax.swing.JButton moveUpButton;
-  private javax.swing.JButton moveDownButton;
+  private JPanel availablePanel;
+  private JScrollPane availableScroll;
+  private JList availableList;
+  private JButton helpButton;
+  private JButton importButton;
+  private JPanel addRemovePanel;
+  private JButton addButton;
+  private JButton removeButton;
+  private JPanel inUsePanel;
+  private JScrollPane inUseScroll;
+  private JList inUseList;
+  private JButton propsButton;
+  private JPanel moveUpDownPanel;
+  private JButton moveUpButton;
+  private JButton moveDownButton;
+  protected JButton copyButton;
+  protected JButton pasteButton;
 
   private static class Renderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1L;
