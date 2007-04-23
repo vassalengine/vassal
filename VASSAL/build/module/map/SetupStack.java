@@ -38,6 +38,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Iterator;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -249,11 +250,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     Stack s = createStack();
     Configurable[] c = getConfigureComponents();
     for (int i = 0; i < c.length; ++i) {
-      PieceSlot slot = (PieceSlot) c[i];
-      GamePiece p = slot.getPiece();
-      p = PieceCloner.getInstance().clonePiece(p);
-      GameModule.getGameModule().getGameState().addPiece(p);
-      s.add(p);
+      if (c[i] instanceof PieceSlot) {
+        PieceSlot slot = (PieceSlot) c[i];
+        GamePiece p = slot.getPiece();
+        p = PieceCloner.getInstance().clonePiece(p);
+        GameModule.getGameModule().getGameState().addPiece(p);
+        s.add(p);
+      }
     }
     GameModule.getGameModule().getGameState().addPiece(s);
     return s;
@@ -340,6 +343,14 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     stackConfigurer.setVisible(true);
   }
  
+  protected PieceSlot getTopPiece() {
+    Enumeration e = getAllDescendantComponents(PieceSlot.class);
+    if (e.hasMoreElements()) {
+      return (PieceSlot) e.nextElement();
+    }
+    return null;
+  }
+  
   /* 
    * Return a board to configure the stack on.
    */
@@ -365,7 +376,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected static final int DELTA = 1;
   protected static final int FAST = 10;
   protected static final int FASTER = 5;
-  protected static final int DUMMY_SIZE = 50;
+  protected static final int DEFAULT_DUMMY_SIZE = 50;
   
   public class StackConfigurer extends JFrame implements ActionListener, KeyListener, MouseListener {
 
@@ -378,13 +389,23 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     protected PieceSlot mySlot;
     protected GamePiece myPiece;
     protected Point savePosition;
+    protected Dimension dummySize;
+    protected BufferedImage dummyImage;
 
     public StackConfigurer(SetupStack stack) {
       super("Adjust At-Start Stack");
       myStack = stack;
-      mySlot = (PieceSlot) myStack.buildComponents.get(0);
-      myPiece = mySlot.getPiece();
+      mySlot = stack.getTopPiece();
+      if (mySlot != null) {
+        myPiece = mySlot.getPiece();
+      }
       savePosition = new Point(myStack.pos);
+      if (stack instanceof DrawPile) {
+        dummySize = new Dimension(((DrawPile) stack).getSize());
+      }
+      else {
+        dummySize = new Dimension(DEFAULT_DUMMY_SIZE, DEFAULT_DUMMY_SIZE);
+      }
       addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent e) {
           cancel();
@@ -500,26 +521,28 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
      * need to supply a dummy one.
      */
     public BufferedImage getDummyImage() {
-      BufferedImage dummyImage = new BufferedImage(DUMMY_SIZE*2, DUMMY_SIZE*2, BufferedImage.TYPE_INT_ARGB);
-      Graphics g = dummyImage.getGraphics();
-      g.setColor(Color.white);
-      g.fillRect(0, 0, DUMMY_SIZE, DUMMY_SIZE);
-      g.setColor(Color.black);
-      g.drawRect(0, 0, DUMMY_SIZE, DUMMY_SIZE);
+      if (dummyImage == null) {
+        dummyImage = new BufferedImage(dummySize.width*2, dummySize.height*2, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = dummyImage.getGraphics();
+        g.setColor(Color.white);
+        g.fillRect(0, 0, dummySize.width, dummySize.height);
+        g.setColor(Color.black);
+        g.drawRect(0, 0, dummySize.width, dummySize.height);
+      }
       return dummyImage;
     }
     
     public void drawDummyImage(Graphics g, int x, int y) {
-      drawDummyImage(g, x-DUMMY_SIZE/2, y-DUMMY_SIZE/2, null, 1.0);
+      drawDummyImage(g, x-dummySize.width/2, y-dummySize.height/2, null, 1.0);
     }
     
     public void drawDummyImage(Graphics g, int x, int y, Component obs, double zoom) {
       g.drawImage(getDummyImage(), x, y, obs);
     }
     
-    public void drawImage(Graphics g, int x, int y, Component obs, double zoom) {
-      Rectangle r = myPiece.boundingBox();
-      if (r.width == 0 || r.height == 0) {
+    public void drawImage(Graphics g, int x, int y, Component obs, double zoom) {      
+      Rectangle r = myPiece == null ? null : myPiece.boundingBox();
+      if (r == null || r.width == 0 || r.height == 0) {
         drawDummyImage(g, x, y);
       }
       else {
@@ -529,12 +552,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
     
     public Rectangle getPieceBoundingBox() {
-      Rectangle r = myPiece.getShape().getBounds();
-      if (r.width == 0 || r.height == 0) {
-        r.x = 0 - DUMMY_SIZE/2;
-        r.y = r.x;
-        r.width = DUMMY_SIZE;
-        r.height = DUMMY_SIZE;
+      Rectangle r = myPiece == null ? new Rectangle() : myPiece.getShape().getBounds();
+      if (r == null || r.width == 0 || r.height == 0) {
+        r.x = 0 - dummySize.width/2;
+        r.y = 0 - dummySize.height/2;
+        r.width = dummySize.width;
+        r.height = dummySize.height;
       }
       return r;
     }
@@ -559,7 +582,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         adjustX(1, e);
         break;
       default :
-        myPiece.keyEvent(KeyStroke.getKeyStrokeForEvent(e));
+        if (myPiece != null) {
+          myPiece.keyEvent(KeyStroke.getKeyStrokeForEvent(e));
+        }
         break;
       }
       updateDisplay();
@@ -619,7 +644,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public void mousePressed(MouseEvent e) {
       Rectangle r = getPieceBoundingBox();
       r.translate(pos.x, pos.y);
-      if (e.isMetaDown() && r.contains(e.getPoint())) {
+      if (myPiece != null && e.isMetaDown() && r.contains(e.getPoint())) {
         JPopupMenu popup = MenuDisplayer.createPopup(myPiece);
         popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
           public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
@@ -670,8 +695,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         myBoard = b;
         myGrid = b.getGrid();
         myStack = s;
-        slot = (PieceSlot) myStack.buildComponents.get(0);
-        myPiece = slot.getPiece();
+        slot = myStack.getTopPiece();
+        if (slot != null) {
+          myPiece = slot.getPiece();
+        }
         new DropTarget(this, DnDConstants.ACTION_MOVE, this);
         ds.createDefaultDragGestureRecognizer(this,
           DnDConstants.ACTION_MOVE, this);

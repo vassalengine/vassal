@@ -19,6 +19,7 @@
 package VASSAL.build.module.map;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -93,6 +94,18 @@ public class DrawPile extends SetupStack {
     return popup.getComponentCount() > 0 ? popup : null;
   }
 
+  /**
+   * Decks can contain child Global Key Commands that only apply
+   * to cards in the Deck. Pass these to the dummy Deck component
+   */
+  public void addGlobalKeyCommand(DeckGlobalKeyCommand globalCommand) {
+    dummy.addGlobalKeyCommand(globalCommand);
+  }
+
+  public void removeGlobalKeyCommand(DeckGlobalKeyCommand globalCommand) {
+    dummy.removeGlobalKeyCommand(globalCommand);
+  }
+  
   /**
    * Return the DrawPile instance with the matching id or name
    * @param id the Id or ConfigureName of the target DrawPile
@@ -503,7 +516,7 @@ public class DrawPile extends SetupStack {
   }
 
   public Class[] getAllowableConfigureComponents() {
-    return new Class[]{CardSlot.class};
+    return new Class[]{CardSlot.class, DeckGlobalKeyCommand.class};
   }
 
   public Point getPosition() {
@@ -543,6 +556,10 @@ public class DrawPile extends SetupStack {
 
   protected String getDeckType() {
     return dummy.getType();
+  }
+  
+  public Dimension getSize() {
+    return dummy.getSize();
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {

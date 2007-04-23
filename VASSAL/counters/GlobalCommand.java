@@ -100,7 +100,7 @@ public class GlobalCommand {
     return c;
   }
 
-  private class Visitor implements DeckVisitor {
+  protected class Visitor implements DeckVisitor {
     private Command command;
     private BoundsTracker tracker;
     private PieceFilter filter;

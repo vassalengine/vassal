@@ -86,16 +86,16 @@ public class MassKeyCommand extends AbstractConfigurable {
   private static final String ALWAYS = "Always";
   public static final String CHECK_PROPERTY = "property";
   public static final String CHECK_VALUE = "propValue";
-  private LaunchButton launch;
-  private KeyStroke stroke = KeyStroke.getKeyStroke(0, 0);
-  private String[] names = new String[0];
-  private String condition;
+  protected LaunchButton launch;
+  protected KeyStroke stroke = KeyStroke.getKeyStroke(0, 0);
+  protected String[] names = new String[0];
+  protected String condition;
   protected String checkProperty;
   protected String checkValue;
   protected PropertyExpression propertiesFilter = new PropertyExpression();
   protected PropertySource propertySource;
   protected PieceFilter filter;
-  private Map map;
+  protected Map map;
   protected GlobalCommand globalCommand = new GlobalCommand();
   protected FormattedString reportFormat = new FormattedString();
 
@@ -176,19 +176,21 @@ public class MassKeyCommand extends AbstractConfigurable {
     }
   }
   public static class DeckPolicyConfig extends Configurer implements ConfigurerFactory {
-    private static final String FIXED = "Fixed number of pieces";
-    private static final String NONE = "No pieces";
-    private static final String ALL = "All pieces";
-    private IntConfigurer intConfig;
-    private StringEnumConfigurer typeConfig;
-    private Box controls;
+    protected static final String FIXED = "Fixed number of pieces";
+    protected static final String NONE = "No pieces";
+    protected static final String ALL = "All pieces";
+    protected IntConfigurer intConfig;
+    protected StringEnumConfigurer typeConfig;
+    protected JLabel prompt;
+    protected Box controls;
 
     public DeckPolicyConfig() {
       super(null, "");
       typeConfig = new StringEnumConfigurer(null, "", new String[]{ALL, NONE, FIXED});
       intConfig = new IntConfigurer(null, "");
       controls = Box.createHorizontalBox();
-      controls.add(new JLabel("Within a Deck, apply to:  "));
+      prompt = new JLabel("Within a Deck, apply to:  ");
+      controls.add(prompt);
       controls.add(typeConfig.getControls());
       controls.add(intConfig.getControls());
       PropertyChangeListener l = new PropertyChangeListener() {

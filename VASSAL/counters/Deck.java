@@ -51,6 +51,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.PlayerRoster;
+import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.MutableProperty.Impl;
@@ -110,8 +111,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected int maxStack = 10;
   protected CountExpression[] countExpressions;
   protected boolean expressionCounting = false;
-  protected ArrayList nextDraw;
+  protected ArrayList nextDraw = null;
   protected KeyCommand[] commands;
+  protected ArrayList<DeckGlobalKeyCommand> globalCommands = new ArrayList<DeckGlobalKeyCommand>();
   protected CommandEncoder commandEncoder = new CommandEncoder() {
     public Command decode(String command) {
       Command c = null;
@@ -144,6 +146,29 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     updateCountsAll();
   } 
 
+  public void addGlobalKeyCommand(DeckGlobalKeyCommand globalCommand) {
+    globalCommands.add(globalCommand);
+  }
+
+  public void removeGlobalKeyCommand(DeckGlobalKeyCommand globalCommand) {
+    globalCommands.remove(globalCommand);
+  }
+  
+  protected String[] getGlobalCommands() {
+    String[] commands = new String[globalCommands.size()];
+    for (int i = 0; i < globalCommands.size(); i++) {
+      commands[i] = globalCommands.get(i).encode();
+    }
+    return commands;
+  }
+  
+  protected void setGlobalCommands(String[] commands) {
+    globalCommands = new ArrayList(commands.length);
+    for (int i = 0; i < commands.length; i++) {
+      globalCommands.add(new DeckGlobalKeyCommand(commands[i]));
+    }
+  }
+  
   /**
   * Update map-level count properties for all "expressions" of pieces that are configured
   * to be counted.  These are held in the String[] countExpressions.
@@ -279,6 +304,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     maxStack = st.nextInt(10);
     setCountExpressions(st.nextStringArray(0));
     expressionCounting = st.nextBoolean(false);
+    setGlobalCommands(st.nextStringArray(0));
     
     if (shuffleListener == null) {
       shuffleListener = new KeyStrokeListener(new ActionListener() {
@@ -514,7 +540,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         faceDownOption).append(shuffleOption).append(String.valueOf(allowMultipleDraw)).append(String.valueOf(allowSelectDraw)).append(
         String.valueOf(reversible)).append(reshuffleCommand).append(reshuffleTarget).append(reshuffleMsgFormat).append(deckName).append(shuffleMsgFormat)
         .append(reverseMsgFormat).append(faceDownMsgFormat).append(drawFaceUp).append(persistable).append(shuffleKey).append(reshuffleKey).append(String.valueOf(maxStack))
-        .append(getCountExpressions()).append(expressionCounting);
+        .append(getCountExpressions()).append(expressionCounting)
+        .append(getGlobalCommands());
     return ID + se.getValue();
   }
 
@@ -699,7 +726,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void draw(java.awt.Graphics g, int x, int y, Component obs, double zoom) {
     int count = Math.min(getPieceCount(), maxStack);
-    GamePiece top = nextDraw != null ? (GamePiece) nextDraw.get(0) : topPiece();
+    GamePiece top = (nextDraw != null && nextDraw.size() > 0) ? (GamePiece) nextDraw.get(0) : topPiece();
 
     if (top != null) {
       Object owner = top.getProperty(Properties.OBSCURED_BY);
@@ -865,6 +892,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         };
         l.add(c);
       }
+      for (Iterator<DeckGlobalKeyCommand> i = globalCommands.iterator(); i.hasNext(); l.add(i.next().getKeyCommand(this)));
       commands = (KeyCommand[]) l.toArray(new KeyCommand[l.size()]);
     }
     for (int i = 0; i < commands.length; ++i) {
