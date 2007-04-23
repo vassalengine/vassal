@@ -46,6 +46,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.dice.RollSet;
 import VASSAL.preferences.Prefs;
 
 /**
@@ -142,7 +143,7 @@ public class MultiRoll extends JDialog implements ActionListener {
     return description;
   }
 
-  public DieManager.RollSet getRollSet() {
+  public RollSet getRollSet() {
     ArrayList l = new ArrayList();
     for (int i = 0; i < MAX_ROLLS; ++i) {
       if (useDie[i]) {
@@ -150,7 +151,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       }
     }
     DieRoll[] rolls = (DieRoll[]) l.toArray(new DieRoll[l.size()]);
-    return new DieManager.RollSet(getDescription(), rolls);
+    return new RollSet(getDescription(), rolls);
   }
 
   /*
