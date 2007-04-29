@@ -58,7 +58,6 @@ public class PendingPeerManager extends Thread implements NewPeersSupport {
   private UserDialog zUserDialog;
   private PendingPeerLinkedList zPendingPeers = new PendingPeerLinkedList();
   private PendingPeersSupport zPendingPeersSupport = null;
-  private long socketConnectTimeout = 60000;
   private int maxRetries = 3;
 
   public PendingPeerManager(UserDialog pUserDialog) {
@@ -183,6 +182,5 @@ public class PendingPeerManager extends Thread implements NewPeersSupport {
   }
 
   public void setSocketConnectTimeout(long socketConnectTimeout) {
-    this.socketConnectTimeout = socketConnectTimeout;
   }
 }

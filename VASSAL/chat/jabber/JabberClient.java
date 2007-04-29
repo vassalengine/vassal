@@ -51,8 +51,8 @@ import VASSAL.command.CommandEncoder;
 public class JabberClient implements ChatServerConnection, PacketListener, ServerStatus {
   private MessageBoard msgSvr;
   private XMPPConnection conn;
-  private String username;
-  private String password;
+//  private String username;
+//  private String password;
   private String host;
   private int port = 5222;
   private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
@@ -66,8 +66,8 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   public JabberClient(CommandEncoder encoder, String host, int port, String username, String password) {
     this.host = host;
     this.conferenceService = "conference." + host;
-    this.username = username;
-    this.password = password;
+//    this.username = username;
+//    this.password = password;
     this.encoder = encoder;
     defaultRoom = JabberRoom.createLocal(this, "Main Room");
   }
@@ -355,7 +355,6 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   }
   private class MonitorRooms implements PacketListener, ParticipantStatusListener {
     private static final String PLAYER_CHANGED_ROOMS = "PLAYER_CHANGED_ROOMS";
-    private static final String SEND_ROOM = "SEND_ROOM";
     private static final String NEW_ROOM = "newRoom";
     private static final String OLD_ROOM = "oldRoom";
     private MultiUserChat monitorRoom;
@@ -445,7 +444,6 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
 
     public void updateRooms(String jid) throws XMPPException {
       removeFromCurrentRoom(jid);
-      JabberPlayer p = getPlayer(jid);
       String newRoomJID = null;
       for (Iterator iter = MultiUserChat.getJoinedRooms(conn, jid); iter.hasNext();) {
         String roomJID = (String) iter.next();

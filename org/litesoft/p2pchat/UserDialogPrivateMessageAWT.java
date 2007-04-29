@@ -76,7 +76,7 @@ public class UserDialogPrivateMessageAWT extends Frame {
         }
       }
     );
-    show();
+    setVisible(true);
   }
 
   private Panel layoutChatEntryPanel() {

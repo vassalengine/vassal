@@ -57,15 +57,6 @@ public class NodeClientFactory extends ChatServerFactory {
         return port;
       }
     };
-    PeerPoolInfo info = new PeerPoolInfo() {
-      public String getModuleName() {
-        return GameModule.getGameModule() == null ? UNNAMED_MODULE : GameModule.getGameModule().getGameName();
-      }
-
-      public String getUserName() {
-        return GameModule.getUserId();
-      }
-    };
     PeerPoolInfo publicInfo = new PeerPoolInfo() {
       public String getModuleName() {
         return GameModule.getGameModule() == null ? UNNAMED_MODULE : GameModule.getGameModule().getGameName();

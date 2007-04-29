@@ -78,7 +78,7 @@ public class UserDialogAWT extends Frame implements UserDialog {
         }
       }
     );
-    show();
+    setVisible(true);
     showWho();
     zChatText.requestFocus();
   }

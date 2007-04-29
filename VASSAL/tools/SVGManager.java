@@ -18,45 +18,30 @@
  */
 package VASSAL.tools;
 
+import java.awt.AlphaComposite;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
-
-import org.apache.batik.ext.awt.image.GraphicsUtil;
-import org.apache.batik.transcoder.SVGAbstractTranscoder;
-import org.apache.batik.transcoder.TranscodingHints;
-import org.apache.batik.transcoder.keys.BooleanKey;
-import org.apache.batik.transcoder.keys.PaintKey;
-
 import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.css.engine.CSSImportedElementRoot;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
@@ -64,20 +49,20 @@ import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
-import org.apache.batik.gvt.CanvasGraphicsNode;
-import org.apache.batik.gvt.CompositeGraphicsNode;
-import org.apache.batik.gvt.GraphicsNode;
+import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
+import org.apache.batik.transcoder.SVGAbstractTranscoder;
+import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.TranscoderException;
+import org.apache.batik.transcoder.TranscodingHints;
 import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.keys.BooleanKey;
+import org.apache.batik.transcoder.keys.PaintKey;
 import org.apache.batik.util.ParsedURL;
-import org.apache.batik.util.XMLConstants;
 import org.apache.batik.util.XMLResourceDescriptor;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -17,15 +17,8 @@
  */
 package VASSAL.build.module;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.event.ListDataEvent;
@@ -33,10 +26,9 @@ import javax.swing.event.ListDataListener;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.dice.BonesDiceServer;
 import VASSAL.build.module.dice.DieServer;
 import VASSAL.build.module.dice.RollSet;
-import VASSAL.build.module.dice.BonesDiceServer;
-import VASSAL.build.module.dice.ShadowDiceDieServer;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
@@ -44,7 +36,6 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.preferences.Prefs;
-import VASSAL.tools.BackgroundTask;
 import VASSAL.tools.FormattedString;
 
 /**

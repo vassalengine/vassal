@@ -17,13 +17,11 @@
  */
 package VASSAL.chat.node;
 
-import VASSAL.chat.HttpRequestWrapper;
-import VASSAL.chat.SimplePlayer;
-import VASSAL.tools.PropertiesEncoder;
-
 import java.io.IOException;
-import java.util.Properties;
 import java.util.Date;
+import java.util.Properties;
+import VASSAL.chat.HttpRequestWrapper;
+import VASSAL.tools.PropertiesEncoder;
 
 /**
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
