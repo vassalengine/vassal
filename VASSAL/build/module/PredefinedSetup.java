@@ -158,7 +158,7 @@ public class PredefinedSetup extends AbstractConfigurable {
         if (tmp.renameTo(renamed)) {
           tmp = renamed;
         }
-        GameModule.getGameModule().getGameState().loadGame(tmp);
+        GameModule.getGameModule().getGameState().loadGameInBackground(tmp);
       }
       catch (IOException e1) {
         e1.printStackTrace();
@@ -210,7 +210,7 @@ public class PredefinedSetup extends AbstractConfigurable {
       PredefinedSetup setup = (PredefinedSetup) parent;
       setup.menu.add(getMenuInUse());
     }
-    GameModule.getGameModule().getConsoleWindow().addPredefinedSetup(this);
+    GameModule.getGameModule().getWizardSupport().addPredefinedSetup(this);
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -235,7 +235,7 @@ public class PredefinedSetup extends AbstractConfigurable {
       PredefinedSetup setup = (PredefinedSetup) parent;
       setup.menu.remove(getMenuInUse());
     }
-    GameModule.getGameModule().getConsoleWindow().removePredefinedSetup(this);
+    GameModule.getGameModule().getWizardSupport().removePredefinedSetup(this);
   }
 
   public boolean isMenu() {

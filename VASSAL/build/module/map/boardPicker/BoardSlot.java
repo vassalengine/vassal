@@ -154,6 +154,8 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
       repaint();
     }
   }
+  
+  
 
   public int getIconHeight() {
     if (board != null) {

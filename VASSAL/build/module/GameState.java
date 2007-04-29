@@ -27,14 +27,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-
 import VASSAL.build.GameModule;
 import VASSAL.command.AddPiece;
 import VASSAL.command.AlertCommand;
@@ -48,7 +49,6 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BackgroundTask;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.Deobfuscator;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.Obfuscator;
@@ -58,7 +58,8 @@ import VASSAL.tools.Obfuscator;
  * @see GameModule#getGameState */
 public class GameState implements CommandEncoder {
   protected Hashtable pieces = new Hashtable();
-  protected Vector gameComponents = new Vector();
+  protected List gameComponents = new ArrayList();
+  protected List setupSteps = new ArrayList();
   protected JMenuItem loadGame, saveGame, newGame, closeGame;
   protected String lastSave;
 
@@ -107,7 +108,9 @@ public class GameState implements CommandEncoder {
     mod.getFileMenu().add(loadGame);
     mod.getFileMenu().add(saveGame);
     mod.getFileMenu().add(closeGame);
-    setup(false);
+
+    saveGame.setEnabled(gameStarting);
+    closeGame.setEnabled(gameStarting);
   }
 
   /**
@@ -122,24 +125,45 @@ public class GameState implements CommandEncoder {
    * Add a {@link GameComponent} to the list of objects that will
    * be notified when a game is started/ended     */
   public void addGameComponent(GameComponent theComponent) {
-    gameComponents.addElement(theComponent);
+    gameComponents.add(theComponent);
   }
 
   /**
    * Remove a {@link GameComponent} from the list of objects that will
    * be notified when a game is started/ended     */
   public void removeGameComponent(GameComponent theComponent) {
-    gameComponents.removeElement(theComponent);
+    gameComponents.remove(theComponent);
   }
-
+  
   /**
    * @return an enumeration of all {@link GameComponent} objects
    * that have been added to this GameState */
   public Enumeration getGameComponentsEnum() {
-    return gameComponents.elements();
+    return Collections.enumeration(gameComponents);
   }
 
+  /** Add a {@link GameSetupStep} */
+  public void addGameSetupStep(GameSetupStep step) {
+    setupSteps.add(step);
+  }
+  
+  /** Remove a {@link GameSetupStep} */
+  public void removeGameSetupStep(GameSetupStep step) {
+    setupSteps.remove(step);
+  }
 
+  /** @return an iterator of all {@link GameSetupStep}s that are not yet finished */
+  public Iterator getUnfinishedSetupSteps() {
+    List l = new ArrayList();
+    for (Iterator it = setupSteps.iterator();it.hasNext();) {
+      GameSetupStep step = (GameSetupStep) it.next();
+      if (!step.isFinished()) {
+        l.add(step);
+      }
+    }
+    return l.iterator();
+  }
+  
   /* Using an instance variable allows us to shut down in the
      middle of a startup. */
   private boolean gameStarting = false;
@@ -168,6 +192,7 @@ public class GameState implements CommandEncoder {
     closeGame.setEnabled(gameStarting);
     if (gameStarting) {
       loadGame.setText(Resources.getString("GameState.load_continuation"));  //$NON-NLS-1$
+      GameModule.getGameModule().getWizardSupport().showGameSetupWizard();
     }
     else {
       loadGame.setText(Resources.getString("GameState.load_game"));  //$NON-NLS-1$
@@ -175,9 +200,9 @@ public class GameState implements CommandEncoder {
     }
 
     gameStarted = gameStarted && this.gameStarting;
-    for (Enumeration e = gameComponents.elements();
-         e.hasMoreElements();) {
-      GameComponent sub = (GameComponent) e.nextElement();
+    for (Iterator it = gameComponents.iterator();
+         it.hasNext();) {
+      GameComponent sub = (GameComponent) it.next();
       sub.setup(this.gameStarting);
     }
     if (gameStarting) {
@@ -207,7 +232,7 @@ public class GameState implements CommandEncoder {
           loadContinuation(f);
         }
         else {
-          loadGame(f);
+          loadGameInBackground(f);
         }
       }
       catch (IOException e) {
@@ -310,8 +335,7 @@ public class GameState implements CommandEncoder {
   }
 
   public void loadContinuation(File f) throws IOException {
-    byte[] b = new Deobfuscator(getSaveFileInputStream(f.getPath())).getPlainText();
-    Command c = GameModule.getGameModule().decode(new String(b, "UTF-8").trim());  //$NON-NLS-1$
+    Command c = decodeSavedGame(f);
     CommandFilter filter = new CommandFilter() {
       protected boolean accept(Command c) {
         return c instanceof BasicLogger.LogCommand;
@@ -361,8 +385,8 @@ public class GameState implements CommandEncoder {
     Command c = new SetupCommand(false);
     c.append(checkVersionCommand());
     c.append(getRestorePiecesCommand());
-    for (Enumeration e = gameComponents.elements(); e.hasMoreElements();) {
-      c.append(((GameComponent) e.nextElement()).getRestoreCommand());
+    for (Iterator it = gameComponents.iterator(); it.hasNext();) {
+      c.append(((GameComponent) it.next()).getRestoreCommand());
     }
     c.append(new SetupCommand(true));
     return c;
@@ -422,8 +446,7 @@ public class GameState implements CommandEncoder {
     }
   }
 
-  public void loadGame(File f) throws IOException {
-    final String name = f.getPath();
+  public void loadGameInBackground(final File f) throws IOException {
     final String shortName = f.getName();
     GameModule.getGameModule().warn(Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
     new BackgroundTask() {
@@ -432,8 +455,7 @@ public class GameState implements CommandEncoder {
 
       public void doFirst() {
         try {
-          byte b[] = new Deobfuscator(getSaveFileInputStream(name)).getPlainText();
-          loadCommand = GameModule.getGameModule().decode(new String(b, "UTF-8").trim());  //$NON-NLS-1$
+          loadCommand = decodeSavedGame(f);
           if (loadCommand != null) {
             msg = Resources.getString("GameState.loaded", shortName);  //$NON-NLS-1$
           }
@@ -460,17 +482,6 @@ public class GameState implements CommandEncoder {
     }.start();
   }
 
-  private InputStream getSaveFileInputStream(final String name) throws IOException {
-    InputStream in;
-    try {
-      in = DataArchive.getFileStream(new File(name), SAVEFILE_ZIP_ENTRY);
-    }
-    catch (IOException e) {
-      in = new FileInputStream(name);
-    }
-    return in;
-  }
-
   /**
    * @return a Command that, when executed, will add all pieces currently in the game. Used when saving a game.
    */
@@ -493,4 +504,24 @@ public class GameState implements CommandEncoder {
     return c;
   }
 
+  /**
+   * Read a saved game and translate it into a Command.  Executing the command will load the saved game 
+   * @param fileName
+   * @return
+   * @throws IOException
+   */
+  public Command decodeSavedGame(File saveFile) throws IOException {
+    return decodeSavedGame(new FileInputStream(saveFile));
+  }
+  
+  public Command decodeSavedGame(InputStream in) throws IOException {
+    ZipInputStream zipInput = new ZipInputStream(in);
+    for (ZipEntry entry = zipInput.getNextEntry(); entry != null; entry = zipInput.getNextEntry()) {
+      if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
+        byte b[] = new Deobfuscator(zipInput).getPlainText();
+        return GameModule.getGameModule().decode(new String(b, "UTF-8").trim());
+      }
+    }
+    throw new IOException("Invalid saveFile format");
+  }
 }

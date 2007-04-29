@@ -18,15 +18,16 @@
  */
 package VASSAL.build.module.map;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -39,11 +40,11 @@ import java.util.Set;
 import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.WindowConstants;
+import javax.swing.SwingUtilities;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -53,6 +54,7 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.GameSetupStep;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.BoardSlot;
@@ -66,7 +68,6 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -74,21 +75,20 @@ import VASSAL.tools.SequenceEncoder;
  * recognizes {@link Command}s that specify the set of boards to be used on a map. As a {@link GameComponent} it reacts
  * to the start of a game by prompting the player to select boards if none have been specified
  */
-public class BoardPicker extends JDialog implements ActionListener, GameComponent, Configurable, CommandEncoder, ValidityChecker {
+public class BoardPicker implements ActionListener, GameComponent, GameSetupStep, Configurable, CommandEncoder, ValidityChecker {
   private static final long serialVersionUID = 1L;
-
   public static final String ID = "BoardPicker"; //$NON-NLS-1$
   protected Vector possibleBoards = new Vector();
   protected Vector currentBoards = null;
   private Dimension psize = new Dimension(350, 125);
   private double slotScale = 0.2;
   protected JTextField status;
-  protected JButton cancelButton;
   protected Map map;
   protected JPanel slotPanel;
   protected String version = "0.0"; //$NON-NLS-1$
   protected int nx = 1, ny = 1;
-  protected JToolBar controls;
+  protected JToolBar toolbar;
+  protected JPanel controls;
   protected JButton addRowButton;
   protected JButton addColumnButton;
   protected boolean allowMultiple;
@@ -109,24 +109,21 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
   public static final String BOARD_PROMPT = "boardPrompt"; //$NON-NLS-1$
   public static final String MAX_COLUMNS = "maxColumns"; //$NON-NLS-1$
   private JButton clearButton;
-  private JButton okButton;
+  protected JScrollPane slotScroll;
 
   public BoardPicker() {
-    super((java.awt.Frame) null, true);
     allowMultiple = false;
   }
 
   protected void initComponents() {
     multipleButtons = new Vector();
-    setTitle(title);
+    controls = new JPanel(new BorderLayout());
     status = new JTextField(""); //$NON-NLS-1$
     status.setEditable(false);
     slotPanel = new JPanel();
-    controls = new JToolBar();
-    controls.setFloatable(false);
-    controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-    okButton = addButton(Resources.getString(Resources.OK));
-    cancelButton = addButton(Resources.getString(Resources.CANCEL));
+    toolbar = new JToolBar();
+    toolbar.setFloatable(false);
+    toolbar.setLayout(new BoxLayout(toolbar, BoxLayout.Y_AXIS));
     addRowButton = addButton(addRowButtonText);
     multipleButtons.addElement(addRowButton);
     addColumnButton = addButton(addColumnButtonText);
@@ -134,20 +131,33 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
     clearButton = addButton(Resources.getString("BoardPicker.clear")); //$NON-NLS-1$
     multipleButtons.addElement(clearButton);
     setAllowMultiple(allowMultiple);
-    getContentPane().add("North", status); //$NON-NLS-1$
+    controls.add("North", status); //$NON-NLS-1$
     JPanel pp = new JPanel();
-    pp.add(controls);
-    getContentPane().add("West", pp); //$NON-NLS-1$
-    getContentPane().add("Center", new ScrollPane(slotPanel)); //$NON-NLS-1$
-    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent we) {
-        cancel();
+    pp.add(toolbar);
+    controls.add("West", pp); //$NON-NLS-1$
+    slotScroll = new JScrollPane(slotPanel);
+    controls.add("Center", slotScroll); //$NON-NLS-1$
+    controls.addHierarchyBoundsListener(new HierarchyBoundsListener() {
+      boolean scheduled = false;
+      Runnable r = new Runnable() {
+        public void run() {
+          Dimension d = controls.getParent().getSize();
+          slotScroll.setSize(Math.min(d.width-(controls.getWidth()-slotScroll.getWidth()), slotScroll.getWidth()),Math.min(d.height,slotScroll.getHeight()));
+          controls.setLocation(0,0);
+          slotPanel.revalidate();
+          scheduled = false;
+        }
+      };
+      public void ancestorMoved(HierarchyEvent e) {
+      }
+      public void ancestorResized(HierarchyEvent e) {
+        if (!scheduled) {
+          SwingUtilities.invokeLater(r);
+          scheduled = true;
+        }
       }
     });
     reset();
-    setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 - getSize().width / 2, Toolkit.getDefaultToolkit().getScreenSize().height / 2
-        - getSize().height / 2);
   }
 
   public Dimension getDefaultSlotSize() {
@@ -173,6 +183,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
     for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
       ((Board) e.nextElement()).setMap(map);
     }
+    GameModule.getGameModule().getGameState().addGameSetupStep(this);
   }
 
   public void build(Element e) {
@@ -277,6 +288,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
   }
 
   public void removeFrom(Buildable parent) {
+    GameModule.getGameModule().getGameState().removeGameSetupStep(this);
   }
 
   public static String getConfigureTypeName() {
@@ -334,14 +346,6 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
     pack();
   }
 
-  public void pack() {
-    super.pack();
-    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-    int maxWidth = d.width - getLocation().x;
-    int maxHeight = d.height - getLocation().y;
-    setSize(Math.min(getSize().width, maxWidth), Math.min(getSize().height, maxHeight));
-  }
-
   protected void selectBoards() {
     if (currentBoards != null) {
       setBoards(currentBoards.elements());
@@ -349,9 +353,6 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
     else {
       reset();
     }
-    cancelButton.setVisible(false);
-    setVisible(true);
-    cancelButton.setVisible(true);
     if (currentBoards != null && currentBoards.size() > 0) {
       defaultSetup = encode(new SetBoards(this, currentBoards));
     }
@@ -407,16 +408,30 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
             c.execute();
           }
         }
-        if ((currentBoards == null || currentBoards.size() == 0) && possibleBoards.size() > 0) {
-          reset();
-          setVisible(true);
-        }
       }
       map.setBoards(getCurrentBoards());
     }
     else {
       currentBoards = null;
     }
+  }
+
+  public void finish() {
+    currentBoards = new Vector(getBoardsFromControls());
+    map.setBoards(getCurrentBoards());
+  }
+
+  public Component getControls() {
+    reset();
+    return controls;
+  }
+
+  public String getStepTitle() {
+    return title;
+  }
+
+  public boolean isFinished() {
+    return currentBoards != null || getDefaultSetup() != null;
   }
 
   /**
@@ -434,7 +449,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
   protected JButton addButton(String s, int index) {
     JButton b = new JButton(s);
     b.addActionListener(this);
-    controls.add(b, null, index);
+    toolbar.add(b, null, index);
     return b;
   }
 
@@ -471,18 +486,6 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
     else if (clearButton == e.getSource()) {
       reset();
     }
-    else if (okButton == e.getSource()) {
-      currentBoards = new Vector(getBoardsFromControls());
-      setVisible(false);
-    }
-    else if (cancelButton == e.getSource()) {
-      cancel();
-    }
-  }
-
-  protected void cancel() {
-    GameModule.getGameModule().getGameState().setup(false);
-    setVisible(false);
   }
 
   /**
@@ -500,7 +503,7 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
    */
   public List getBoardsFromControls() {
     List boardList = new ArrayList();
-    if (controls != null) {
+    if (toolbar != null) {
       // Adjust the bounds of each board according to its relative position
       for (int i = 0; i < nx; ++i) {
         for (int j = 0; j < ny; ++j) {
@@ -519,15 +522,16 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
   }
 
   public void reset() {
-    if (controls == null) {
+    if (toolbar == null) {
       initComponents();
     }
     else {
       warn(""); //$NON-NLS-1$
       removeAllBoards();
       slotPanel.add(new BoardSlot(this, boardPrompt), 0);
-      pack();
     }
+    controls.revalidate();
+    pack();
   }
 
   public int getRowCount() {
@@ -714,9 +718,6 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
             BoardPicker.this.title = (String) evt.getNewValue();
-            if (controls != null) {
-              setTitle(BoardPicker.this.title);
-            }
           }
         }
       });
@@ -777,7 +778,23 @@ public class BoardPicker extends JDialog implements ActionListener, GameComponen
     public void setValue(String s) {
     }
   }
+
   public String getI18nKey() {
     return "BoardPicker";
+  }
+
+  public void repaint() {
+    if (controls != null) {
+      controls.repaint();
+    }
+  }
+
+  public void pack() {
+    if (controls != null) {
+      Window w = SwingUtilities.getWindowAncestor(controls);
+      if (w != null) {
+        w.pack();
+      }
+    }
   }
 }

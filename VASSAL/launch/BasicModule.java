@@ -212,11 +212,16 @@ public class BasicModule extends GameModule {
       Rectangle r = new Rectangle(0, 0, screen.width, screen.height / 4);
       getPrefs().addOption(new PositionOption(key, frame, r));
     }
-    frame.setVisible(true);
     String mess = Resources.getString("BasicModule.version_message", gameName, moduleVersion); //$NON-NLS-1$
     warn(mess);
     System.err.println("-- " + mess); //$NON-NLS-1$
     frame.setTitle(gameName);
+    if (getArchiveWriter() == null) {
+      getWizardSupport().showWelcomeWizard();
+    }
+    else {
+      frame.setVisible(true);
+    }
   }
 
   protected void ensureComponent(Class componentClass) {

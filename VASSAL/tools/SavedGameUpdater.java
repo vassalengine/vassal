@@ -54,7 +54,7 @@ public class SavedGameUpdater {
    */
   public void updateSavedGame(Properties pieceSlot, File savedGame) throws IOException {
     GameModule.getGameModule().getGameState().setup(false);
-    GameModule.getGameModule().getGameState().loadGame(savedGame);
+    GameModule.getGameModule().getGameState().loadGameInBackground(savedGame);
     while (!GameModule.getGameModule().getGameState().isGameStarted()) {
       try {
         Thread.sleep(100);

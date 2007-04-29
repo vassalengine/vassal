@@ -232,8 +232,6 @@ public class DataArchive extends SecureClassLoader {
       });
     }
     
-    boolean smooth = Boolean.TRUE.equals(smoothPrefs.getValue());
-
     if (im instanceof SVGManager.SVGBufferedImage) {
       return ((SVGManager.SVGBufferedImage) im)
         .getTransformedInstance(zoom, theta);

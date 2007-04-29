@@ -47,6 +47,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
@@ -54,7 +55,7 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * Maintains a list of players involved in the current game
  */
-public class PlayerRoster implements Configurable, CommandEncoder, GameComponent {
+public class PlayerRoster implements Configurable, CommandEncoder, GameComponent, GameSetupStep {
   public static final String BUTTON_ICON = "buttonIcon"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
   public static final String TOOL_TIP = "buttonToolTip"; //$NON-NLS-1$
@@ -117,11 +118,14 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   public Element getBuildElement(Document doc) {
     Element el = doc.createElement(getClass().getName());
     String att = retireButton.getAttributeValueString(BUTTON_TEXT);
-	if (att != null) el.setAttribute(BUTTON_TEXT, att);
+    if (att != null)
+      el.setAttribute(BUTTON_TEXT, att);
     att = retireButton.getAttributeValueString(BUTTON_ICON);
-	if (att != null) el.setAttribute(BUTTON_ICON, att);
-	att = retireButton.getAttributeValueString(TOOL_TIP);
-    if (att != null) el.setAttribute(TOOL_TIP, att);
+    if (att != null)
+      el.setAttribute(BUTTON_ICON, att);
+    att = retireButton.getAttributeValueString(TOOL_TIP);
+    if (att != null)
+      el.setAttribute(TOOL_TIP, att);
     for (Iterator e = sides.iterator(); e.hasNext();) {
       Element sub = doc.createElement("entry"); //$NON-NLS-1$
       sub.appendChild(doc.createTextNode((String) e.next()));
@@ -136,7 +140,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
 
   public void addPropertyChangeListener(PropertyChangeListener l) {
   }
-  
+
   public static void addSideChangeListener(SideChangeListener l) {
     PlayerRoster r = getInstance();
     if (r != null) {
@@ -161,6 +165,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
 
   public void addTo(Buildable b) {
     GameModule.getGameModule().getGameState().addGameComponent(this);
+    GameModule.getGameModule().getGameState().addGameSetupStep(this);
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getToolBar().add(retireButton);
   }
@@ -168,9 +173,12 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   protected void launch() {
     String mySide = getMySide();
     if (mySide != null || sides.size() != players.size()) {
-      String[] options = sides.size() == players.size() ? new String[] {Resources.getString(Resources.YES), Resources.getString(Resources.NO)} : new String[] {Resources.getString("PlayerRoster.become_observer"), Resources.getString("PlayerRoster.join_another_side"), Resources.getString(Resources.CANCEL)}; //$NON-NLS-1$ //$NON-NLS-2$
+      String[] options = sides.size() == players.size() ? new String[]{Resources.getString(Resources.YES), Resources.getString(Resources.NO)}
+          : new String[]{
+                         Resources.getString("PlayerRoster.become_observer"), Resources.getString("PlayerRoster.join_another_side"), Resources.getString(Resources.CANCEL)}; //$NON-NLS-1$ //$NON-NLS-2$
       final int CANCEL = options.length - 1;
-      int option = (JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(), Resources.getString("PlayerRoster.give_up_position", mySide), Resources.getString("PlayerRoster.retire"), //$NON-NLS-1$ //$NON-NLS-2$
+      int option = (JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(),
+          Resources.getString("PlayerRoster.give_up_position", mySide), Resources.getString("PlayerRoster.retire"), //$NON-NLS-1$ //$NON-NLS-2$
           JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, Resources.getString("PlayerRoster.become_observer"))); //$NON-NLS-1$
       if (option == 0) {
         String oldSide = getMySide();
@@ -191,14 +199,14 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   protected void fireSideChange(String oldSide, String newSide) {
     for (Iterator it = sideChangeListeners.iterator(); it.hasNext();) {
       SideChangeListener l = (SideChangeListener) it.next();
-      l.sideChanged(oldSide,newSide);
+      l.sideChanged(oldSide, newSide);
     }
   }
 
   public static boolean isActive() {
     return getInstance() != null;
   }
-  
+
   protected static PlayerRoster getInstance() {
     PlayerRoster r = null;
     Enumeration e = GameModule.getGameModule().getComponents(PlayerRoster.class);
@@ -211,7 +219,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   public static String getMySide() {
     PlayerRoster r = getInstance();
     if (r != null) {
-      Entry[] players = r.getPlayers();
+      PlayerInfo[] players = r.getPlayers();
       for (int i = 0; i < players.length; ++i) {
         if (players[i].playerId.equals(GameModule.getUserId())) {
           return players[i].side;
@@ -221,16 +229,16 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
     return null;
   }
 
-  public Entry[] getPlayers() {
-    Entry[] p = new Entry[players.size()];
+  public PlayerInfo[] getPlayers() {
+    PlayerInfo[] p = new PlayerInfo[players.size()];
     for (int i = 0; i < p.length; ++i) {
-      p[i] = (Entry) players.get(i);
+      p[i] = (PlayerInfo) players.get(i);
     }
     return p;
   }
 
   public void add(String playerId, String playerName, String side) {
-    Entry e = new Entry(playerId, playerName, side);
+    PlayerInfo e = new PlayerInfo(playerId, playerName, side);
     if (players.contains(e)) {
       players.set(players.indexOf(e), e);
     }
@@ -240,7 +248,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   }
 
   public void remove(String playerId) {
-    Entry e = new Entry(playerId, null, null);
+    PlayerInfo e = new PlayerInfo(playerId, null, null);
     players.remove(e);
   }
 
@@ -271,7 +279,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   public Command getRestoreCommand() {
     Command c = null;
     for (Iterator e = players.iterator(); e.hasNext();) {
-      Entry entry = (Entry) e.next();
+      PlayerInfo entry = (PlayerInfo) e.next();
       Command sub = new Add(this, entry.playerId, entry.playerName, entry.side);
       c = c == null ? sub : c.append(sub);
     }
@@ -280,13 +288,10 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
 
   public void setup(boolean gameStarting) {
     if (gameStarting) {
-      Entry me = new Entry(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), null);
+      PlayerInfo me = new PlayerInfo(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), null);
       if (players.contains(me)) {
-        Entry saved = (Entry) players.get(players.indexOf(me));
+        PlayerInfo saved = (PlayerInfo) players.get(players.indexOf(me));
         saved.playerName = me.playerName;
-      }
-      else if (sides.size() > 0){
-        promptForSide();
       }
     }
     else {
@@ -295,45 +300,76 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
     retireButton.setVisible(gameStarting && getMySide() != null);
   }
 
+  public void finish() {
+    String newSide = sideConfig.getValueString();
+    if (newSide != null) {
+      Add a = new Add(this, GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
+      a.execute();
+      GameModule.getGameModule().getServer().sendToOthers(a);
+    }
+    retireButton.setVisible(getMySide() != null);
+  }
+
+  public Component getControls() {
+    List availableSides = new ArrayList(sides);
+    List alreadyTaken = new ArrayList();
+    for (int i = 0; i < players.size(); ++i) {
+      alreadyTaken.add(((PlayerInfo) players.get(i)).side);
+    }
+    availableSides.removeAll(alreadyTaken);
+    availableSides.add(0, OBSERVER);
+    sideConfig = new StringEnumConfigurer(null, Resources.getString("PlayerRoster.join_game_as"), (String[]) availableSides.toArray(new String[availableSides
+        .size()]));
+    sideConfig.setValue(OBSERVER);
+    return sideConfig.getControls();
+  }
+
+  public String getStepTitle() {
+    return Resources.getString("PlayerRoster.choose_side");
+  }
+
+  public boolean isFinished() {
+    return players.contains(new PlayerInfo(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), null)) || sides.size() == players.size();
+  }
+
   protected void promptForSide() {
     List availableSides = new ArrayList(sides);
     List alreadyTaken = new ArrayList();
     for (int i = 0; i < players.size(); ++i) {
-      alreadyTaken.add(((Entry) players.get(i)).side);
+      alreadyTaken.add(((PlayerInfo) players.get(i)).side);
     }
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, OBSERVER);
-    String newSide = (String) JOptionPane.showInputDialog(GameModule.getGameModule().getFrame(), Resources.getString("PlayerRoster.join_game_as"), Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$ //$NON-NLS-2$
+    String newSide = (String) JOptionPane.showInputDialog(GameModule.getGameModule().getFrame(),
+        Resources.getString("PlayerRoster.join_game_as"), Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$ //$NON-NLS-2$
         JOptionPane.QUESTION_MESSAGE, null, (String[]) availableSides.toArray(new String[availableSides.size()]), OBSERVER);
-    if (newSide != null && !OBSERVER.equals(newSide)) {
-      Entry me = new Entry(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
+    if (newSide != null) {
+      PlayerInfo me = new PlayerInfo(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       Add a = new Add(this, me.playerId, me.playerName, me.side);
       a.execute();
       GameModule.getGameModule().getServer().sendToOthers(a);
     }
   }
-
-  public static class Entry {
+  public static class PlayerInfo {
     public String playerId;
     public String playerName;
     public String side;
 
-    public Entry(String id, String name, String side) {
+    public PlayerInfo(String id, String name, String side) {
       playerId = id;
       playerName = name;
       this.side = side;
     }
 
     public boolean equals(Object o) {
-      if (o instanceof Entry && playerId != null) {
-        return playerId.equals(((Entry) o).playerId);
+      if (o instanceof PlayerInfo && playerId != null) {
+        return playerId.equals(((PlayerInfo) o).playerId);
       }
       else {
         return false;
       }
     }
   }
-
   public static class Add extends Command {
     private PlayerRoster roster;
     private String id, name, side;
@@ -353,7 +389,6 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
       return null;
     }
   }
-
   private class Con extends Configurer {
     private StringArrayConfigurer sidesConfig;
     private IconConfigurer iconConfig;
@@ -365,7 +400,6 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
       super(null, null);
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-
       sidesConfig = new StringArrayConfigurer(null, "Sides available to players", (String[]) sides.toArray(new String[sides.size()]));
       sidesConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -374,7 +408,6 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
         }
       });
       controls.add(sidesConfig.getControls());
-
       textConfig = new StringConfigurer(BUTTON_TEXT, "'Retire' button text:  ", retireButton.getAttributeValueString(BUTTON_TEXT));
       textConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -382,7 +415,6 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
         }
       });
       controls.add(textConfig.getControls());
-
       tooltipConfig = new StringConfigurer(TOOL_TIP, "'Retire' button tooltip:  ", retireButton.getAttributeValueString(TOOL_TIP));
       tooltipConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -390,7 +422,6 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
         }
       });
       controls.add(tooltipConfig.getControls());
-      
       iconConfig = new IconConfigurer(BUTTON_ICON, "'Retire' button icon:  ", null);
       iconConfig.setValue(retireButton.getIcon());
       iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
@@ -399,7 +430,6 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
         }
       });
       controls.add(iconConfig.getControls());
-
     }
 
     public String getValueString() {
@@ -413,12 +443,10 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
       return controls;
     }
   }
-
   /** Call-back interface for when a player changes sides during a game */
   public static interface SideChangeListener {
     void sideChanged(String oldSide, String newSide);
   }
-
   private static String OBSERVER = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
-
+  protected StringEnumConfigurer sideConfig;
 }

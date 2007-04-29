@@ -44,14 +44,12 @@ import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.Chatter;
-import VASSAL.build.module.ConsoleWindow;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalKeyCommand;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Inventory;
-import VASSAL.build.module.InternetDiceButton;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.MultiActionButton;
@@ -66,6 +64,7 @@ import VASSAL.build.module.RandomTextButton;
 import VASSAL.build.module.ServerConnection;
 import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.ToolbarMenu;
+import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
@@ -138,7 +137,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   protected JFrame frame = new JFrame();
   
-  protected ConsoleWindow console = new ConsoleWindow();
+  protected WizardSupport wizardSupport = new WizardSupport();
 
   protected Vector keyStrokeSources = new Vector();
   protected Vector keyStrokeListeners = new Vector();
@@ -151,11 +150,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return frame;
   }
   
-  public ConsoleWindow getConsoleWindow() {
-    return console;
+  public WizardSupport getWizardSupport() {
+    return wizardSupport;
   }
-
-
 
   protected GameModule(DataArchive archive) {
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

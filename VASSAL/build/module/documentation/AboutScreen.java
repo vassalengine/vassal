@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Enumeration;
 import javax.swing.BoxLayout;
@@ -174,26 +175,11 @@ public class AboutScreen extends AbstractConfigurable {
       }
       fileName = (String) val;
       image = getImage();
+      GameModule.getGameModule().getWizardSupport().setBackgroundImage(image);
       window = null;
     }
   }
 
-  /*
-  public Configurer[] getAttributeConfigurers() {
-      Configurer config[] = new Configurer[2];
-      config[0] = new StringConfigurer(TITLE,"Menu Entry");
-      config[0].setValue(getConfigureName());
-      listenTo(config[0]);
-
-      config[1] = new ImageConfigurer
-      (FILE,"Image",
-      GameModule.getGameModule().getArchiveWriter());
-      config[1].setValue(fileName);
-      listenTo(config[1]);
-
-      return config;
-  }
-  */
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }

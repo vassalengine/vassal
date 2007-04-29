@@ -324,7 +324,7 @@ public class Main {
                 try {
                   loadModule(archive, true, properties);
                   if (saveFile != null) {
-                    GameModule.getGameModule().getGameState().loadGame(new File(saveFile));
+                    GameModule.getGameModule().getGameState().loadGameInBackground(new File(saveFile));
                   }
                 }
                 catch (IOException e) {
@@ -445,7 +445,7 @@ public class Main {
         f.dispose();
         try {
           GameModule.init(new BasicModule(initArchive(tourMod), globalPrefs));
-          GameModule.getGameModule().getGameState().loadGame(tourLog);
+          GameModule.getGameModule().getGameState().loadGameInBackground(tourLog);
         }
         catch (Exception e) {
           e.printStackTrace();

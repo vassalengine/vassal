@@ -19,11 +19,9 @@
 package VASSAL.build.module.documentation;
 
 import java.awt.event.ActionEvent;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenuItem;
@@ -33,9 +31,11 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
+import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.BackgroundTask;
 
 /**
  * Provides tutorial functionality by reading in a logfile
@@ -64,42 +64,43 @@ public class Tutorial extends AbstractConfigurable {
   }
 
   public void launch() {
-    try {
-      int index = fileName.indexOf("."); //$NON-NLS-1$
-      String prefix = index > 3 ? fileName.substring(0, index) : "VSL"; //$NON-NLS-1$
-      String suffix = index >= 0 ? fileName.substring(index) : ".log"; //$NON-NLS-1$
-      File tmp = File.createTempFile(prefix, suffix);
-      BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(tmp));
-      BufferedInputStream in = new BufferedInputStream(GameModule.getGameModule().getDataArchive().getFileStream(fileName));
-      int len = 0;
-      byte[] b = new byte[in.available()];
-      while ((len = in.read(b)) > 0) {
-        out.write(b, 0, len);
+    GameModule.getGameModule().warn(Resources.getString("Tutorial.Tutorial.loading")); //$NON-NLS-1$
+    new BackgroundTask() {
+      private Command saveCommand;
+      private String error;
+      public void doFirst() {
+        try {
+          saveCommand = getTutorialCommand();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+          String msg = Resources.getString("Tutorial.unable_to_launch", name); //$NON-NLS-1$
+          if (e.getMessage() != null) {
+            msg += ":  " + e.getMessage(); //$NON-NLS-1$
+          }
+          error = msg;
+        }
       }
-      in.close();
-      out.close();
-      File renamed = new File(tmp.getParent(), (String) launch.getValue(Action.NAME));
-      if (tmp.renameTo(renamed)) {
-        tmp = renamed;
+
+      @Override
+      public void doLater() {
+        if (saveCommand != null) {
+          saveCommand.execute();
+          if (welcomeMessage != null
+              && welcomeMessage.length() > 0) {
+            GameModule.getGameModule().warn(welcomeMessage);
+          }
+        }
+        else {
+          GameModule.getGameModule().warn(error);
+        }
       }
-      if (welcomeMessage != null
-          && welcomeMessage.length() > 0) {
-        GameModule.getGameModule().warn(welcomeMessage);
-      }
-      GameModule.getGameModule().getGameState().loadGame(tmp);
-    }
-    catch (IOException e1) {
-      e1.printStackTrace();
-      String msg = Resources.getString("Tutorial.unable_to_launch", name); //$NON-NLS-1$
-      if (e1.getMessage() != null) {
-        msg += ":  " + e1.getMessage(); //$NON-NLS-1$
-      }
-      GameModule.getGameModule().warn(msg);
-    }
+      
+    }.start();
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Menu Text", "Logfile", "Launch automatically on first startup", "Auto-launch confirm message", "Welcome message"};
+    return new String[]{"Menu Text", "Logfile", "Launch automatically on first startup", "Auto-launch confirm message", "Welcome message"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
   }
 
   public Class[] getAttributeTypes() {
@@ -171,7 +172,7 @@ public class Tutorial extends AbstractConfigurable {
     item = ((Documentation) parent).getHelpMenu().add(launch);
     final String key = "viewedTutorial" + getConfigureName(); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(null, new BooleanConfigurer(key, null, Boolean.FALSE));
-    GameModule.getGameModule().getConsoleWindow().setTutorial(this);
+    GameModule.getGameModule().getWizardSupport().setTutorial(this);
     if (launchOnFirstStartup
         && !Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(key))) {
       Runnable runnable = new Runnable() {
@@ -203,5 +204,18 @@ public class Tutorial extends AbstractConfigurable {
     if (item != null) {
       ((Documentation) parent).getHelpMenu().remove(item);
     }
+  }
+
+  /**
+   * Get the Command representing this tutorial logfile.  Executing the command loads the tutorial
+   * @return
+   * @throws IOException
+   */
+  public Command getTutorialCommand() throws IOException {
+    return GameModule.getGameModule().getGameState().decodeSavedGame(getTutorialContents());
+  }
+
+  public InputStream getTutorialContents() throws IOException {
+    return GameModule.getGameModule().getDataArchive().getFileStream(fileName);
   }
 }
