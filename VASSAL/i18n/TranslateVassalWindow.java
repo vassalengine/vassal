@@ -58,7 +58,12 @@ public class TranslateVassalWindow extends TranslateWindow {
     JButton okButton = new JButton(Resources.getString(Resources.SAVE));
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        save();
+        try {
+          save();
+        }
+        catch (IOException e1) {
+          reportSaveError(e1);
+        }
       }
     });
     buttonBox.add(okButton);
@@ -80,7 +85,7 @@ public class TranslateVassalWindow extends TranslateWindow {
       ;
     }
     Collections.sort(keyList);
-    keys = (String[]) keyList.toArray(new String[0]);
+    keys = (String[]) keyList.toArray(new String[keyList.size()]);
     copyButtons = new CopyButton[keys.length];
     ((MyTableModel) keyTable.getModel()).update();
   }
@@ -88,7 +93,13 @@ public class TranslateVassalWindow extends TranslateWindow {
   
   protected void loadTranslation() {
     if (currentTranslation.isDirty()) {
-      if (!querySave()) {
+      try {
+        if (!querySave()) {
+          return;
+        }
+      }
+      catch (IOException e) {
+        reportSaveError(e);
         return;
       }
     }

@@ -20,11 +20,12 @@ package VASSAL.i18n;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -35,6 +36,7 @@ import java.util.Properties;
  * 
  */
 public class VassalTranslation extends Translation {
+  protected String[] allKeys;
   public VassalTranslation() {
     setConfigureName("VASSAL");
   }
@@ -46,10 +48,34 @@ public class VassalTranslation extends Translation {
   public void clearProperties() {
     localProperties = new Properties();
     dirty = false;
+    allKeys = null;
   }
 
   public String getAttributeValueString(String key) {
     return Resources.getString(key);
+  }
+  
+  public String[] getAttributeDescriptions() {
+    initkeys();
+    return allKeys;
+  }
+
+  public String[] getAttributeNames() {
+    initkeys();
+    return allKeys;
+  }
+
+  protected void initkeys() {
+    if (allKeys == null) {
+      ArrayList keyList = new ArrayList();
+      ArrayList descList = new ArrayList();
+      for (Enumeration e = Resources.getVassalKeys(); e.hasMoreElements(); ) {
+        String s = (String)e.nextElement();
+        keyList.add(s);
+        descList.add(Resources.getVassalString(s));
+      }
+      allKeys = (String[]) keyList.toArray(new String[keyList.size()]);
+    }
   }
 
   public void saveProperties(File file, Locale locale) throws IOException {

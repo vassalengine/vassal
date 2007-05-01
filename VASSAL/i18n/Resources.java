@@ -26,10 +26,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import javax.swing.UIManager;
-
-import VASSAL.build.GameModule;
 
 public class Resources {
 

@@ -18,11 +18,13 @@
  */
 package VASSAL.i18n;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Set;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -116,9 +118,10 @@ public class Language extends AbstractConfigurable {
    * NB - You cannot create a default translation (Module.properties) using
    * the VASSAL editor, but a default file can be placed into a module or
    * extension manually.
+   * @throws IOException 
    *
    */
-  public static void translate() {
+  public static void translate() throws IOException {
     if (GameModule.getGameModule().isLocalizationEnabled()) {
       for (Iterator i = moduleTranslations.iterator(); i.hasNext(); ) {
         addBundle(((Translation) i.next()).getBundle());
@@ -157,7 +160,7 @@ public class Language extends AbstractConfigurable {
     try {
       return masterBundle.getString(key);
     }
-    catch (Exception e) {
+    catch (MissingResourceException e) {
       return defaultValue;
     }
   }

@@ -38,11 +38,11 @@ public class PieceI18nData {
   }
   
   public String[] getValues() {
-    return values.toArray(new String[0]);
+    return values.toArray(new String[values.size()]);
   }
 
   public String[] getDescriptions() {
-    return descriptions.toArray(new String[0]);
+    return descriptions.toArray(new String[descriptions.size()]);
   }
   
   public void add(String value, String description) {

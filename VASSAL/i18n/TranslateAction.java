@@ -43,7 +43,7 @@ public class TranslateAction extends AbstractAction {
   protected ConfigureTree tree;
 
   public TranslateAction(Configurable target, HelpWindow helpWindow, ConfigureTree tree) {
-    super("Translation");
+    super("Translate");
     this.helpWindow = helpWindow;
     this.target = target;
     this.dialogOwner = (Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree);

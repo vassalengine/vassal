@@ -84,27 +84,11 @@ public class ComponentI18nData {
     translatable = new boolean[attributeNames.length];
     for (int i = 0; i < types.length && i < attributeNames.length; i++) {
       if (types[i] != null) {        
-        translatable[i] = (types[i].equals(String.class) || isImplementing(types[i], TranslatableConfigurerFactory.class));
+        translatable[i] = (types[i].equals(String.class) || types[i].isAssignableFrom(TranslatableConfigurerFactory.class));
       }
     }
   }
   
-  /**
-   * Test if a class implements a specified interface
-   * @param test Class to test
-   * @param iface Interface to test
-   * @return true if test implements iface
-   */
-  protected boolean isImplementing (Class test, Class iface) {
-    Class[] interfaces = test.getInterfaces();
-    for (int i = 0; i < interfaces.length; i++) {
-      if (interfaces[i].equals(iface)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   /**
    * Build from a Configurable. Configurable does not support
    * getAttributeNames() getAttributeTypes() or getAttributeValueString(), so

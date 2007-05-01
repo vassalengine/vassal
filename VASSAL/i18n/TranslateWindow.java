@@ -30,6 +30,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.EventObject;
 
@@ -64,6 +65,7 @@ import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeSelectionModel;
 
 import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.PropertiesWindow;
@@ -257,7 +259,12 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     JButton okButton = new JButton(Resources.getString(Resources.OK));
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        save();
+        try {
+          save();
+        }
+        catch (IOException e1) {
+          reportSaveError(e1);
+        }
       }
     });
     buttonBox.add(okButton);
@@ -288,10 +295,15 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   protected void changeLanguage(String selectedTranslation) {
     if (currentTranslation != null) {
       if (currentTranslation.isDirty()) {
-        if (!querySave()) {
-          langBox.removeActionListener(boxListener);
-          langBox.setSelectedItem(lastSelectedLangIndex);
-          langBox.addActionListener(boxListener);
+        try {
+          if (!querySave()) {
+            langBox.removeActionListener(boxListener);
+            langBox.setSelectedItem(lastSelectedLangIndex);
+            langBox.addActionListener(boxListener);
+          }
+        }
+        catch (IOException e) {
+          reportSaveError(e);
         }
       }
     }
@@ -373,15 +385,20 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     commitTableEdit();
     if (currentTranslation != null) {
       if (currentTranslation.isDirty()) {
-        if (!querySave()) {
-          return;
+        try {
+          if (!querySave()) {
+            return;
+          }
+        }
+        catch (IOException e) {
+          reportSaveError(e);
         }
       }
     }
     dispose();
   }
 
-  protected boolean querySave() {
+  protected boolean querySave() throws IOException {
     switch (JOptionPane.showConfirmDialog(this, "Do you want to save these changes now?",
         "Unsaved Changes", JOptionPane.YES_NO_CANCEL_OPTION)) {
     case JOptionPane.YES_OPTION:
@@ -398,8 +415,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
   /**
    * Save button clicked
+   * @throws IOException 
    */
-  protected void save() {
+  protected void save() throws IOException {
     commitTableEdit();
     if (saveTranslation()) {
       dispose();
@@ -408,8 +426,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
   /**
    * Save the current Translation
+   * @throws IOException 
    */
-  protected boolean saveTranslation() {
+  protected boolean saveTranslation() throws IOException {
     if (currentTranslation != null) {
       currentTranslation.saveProperties();
     }
@@ -418,11 +437,21 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
   /**
    * Reload the current translation from the archive
+   * @throws IOException 
    */
-  protected void reloadTranslation() {
+  protected void reloadTranslation() throws IOException {
     if (currentTranslation != null) {
       currentTranslation.reloadProperties();
     }
+  }
+
+  protected void reportSaveError(IOException e1) {
+    e1.printStackTrace();
+    String msg = e1.getMessage();
+    if (msg == null) {
+      msg = "Unable to save";
+    }
+    JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg, "Error while saving", JOptionPane.ERROR_MESSAGE);
   }
 
   /**

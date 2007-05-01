@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -34,32 +33,30 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.tools.ArchiveWriter;
 
 public class Translation extends AbstractConfigurable implements Comparable {
-
   protected static final String LOCALE = "locale"; //$NON-NLS-1$
-  protected Locale locale;  
+  protected Locale locale;
   protected boolean dirty = false;
   protected Properties localProperties;
-  
+
   public Translation() {
     locale = new Locale(Locale.getDefault().getLanguage());
   }
-  
+
   public String[] getAttributeDescriptions() {
-    return new String[] {"Locale:  "};
+    return new String[]{"Locale:  "};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] { LocalePrompt.class};
+    return new Class[]{LocalePrompt.class};
   }
-
   public static class LocalePrompt implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new LocaleConfigurer(key, name, "");
     }
   }
-  
+
   public String[] getAttributeNames() {
-    return new String[] {LOCALE };
+    return new String[]{LOCALE};
   }
 
   public String getAttributeValueString(String key) {
@@ -76,7 +73,7 @@ public class Translation extends AbstractConfigurable implements Comparable {
       setConfigureName(locale.getDisplayName());
     }
   }
-  
+
   protected String getDescription() {
     return locale.getDisplayName(Locale.getDefault());
   }
@@ -84,7 +81,7 @@ public class Translation extends AbstractConfigurable implements Comparable {
   public String getConfigureName() {
     return getDescription();
   }
-   
+
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }
@@ -100,32 +97,44 @@ public class Translation extends AbstractConfigurable implements Comparable {
   public void addTo(Buildable parent) {
     ((Language) parent).addTranslation(this);
     if (!GameModule.getGameModule().isLocalizationEnabled()) {
-      loadProperties();
+      try {
+        loadProperties();
+      }
+      catch (IOException e) {
+        String msg = e.getMessage();
+        if (msg == null) {
+          msg = "IOException";
+        }
+        throw new IllegalArgumentException(msg,e);
+      }
     }
   }
-  
+
   /**
-   * Set a property into our property map. i.e. an attribute has
-   * been translated
+   * Set a property into our property map. i.e. an attribute has been translated
    * 
-   * @param key property key
-   * @param value property value
+   * @param key
+   *          property key
+   * @param value
+   *          property value
    */
   public void setProperty(String key, String value) {
     getProperties().setProperty(key, value);
     dirty = true;
   }
-  
+
   /**
    * Return true if this translation has unsaved modifications
+   * 
    * @return true if undaved changes
    */
   public boolean isDirty() {
     return dirty;
   }
-  
+
   /**
    * Return the translation for the supplied key
+   * 
    * @param s
    * @return
    */
@@ -134,96 +143,89 @@ public class Translation extends AbstractConfigurable implements Comparable {
     translation = getProperties().getProperty(key);
     return translation;
   }
-  
+
   /**
    * Load properties from the bundle file in the module/extension
-   *
+   * @throws IOException 
+   * 
    */
-  protected void loadProperties() {
+  protected void loadProperties() throws IOException {
     String bundle = getBundleName() + ".properties"; //$NON-NLS-1$
     InputStream in = null;
     if (localProperties == null) {
       localProperties = new Properties();
     }
-    try {
-      in = GameModule.getGameModule().getDataArchive().getFileStream(bundle);
-      localProperties.load(in);
-      dirty = false;
-      in.close();
-    }
-    catch (IOException e) {
-      System.err.println("Failed to load " + bundle); //$NON-NLS-1$
-    }
+    in = GameModule.getGameModule().getDataArchive().getFileStream(bundle);
+    localProperties.load(in);
+    dirty = false;
+    in.close();
   }
-  
-  protected VassalResourceBundle getBundle() {
+
+  protected VassalResourceBundle getBundle() throws IOException {
     String bundle = getBundleName() + ".properties"; //$NON-NLS-1$
     InputStream in = null;
-    try {
-      in = GameModule.getGameModule().getDataArchive().getFileStream(bundle);
-      return new VassalResourceBundle(in);
-    }
-    catch (IOException e) {
-      System.err.println("Failed to load " + bundle); //$NON-NLS-1$
-    }
-    return null;
+    in = GameModule.getGameModule().getDataArchive().getFileStream(bundle);
+    return new VassalResourceBundle(in);
   }
-  
+
   /**
    * Reload the properties from the module/extension
-   *
+   * @throws IOException 
+   * 
    */
-  public void reloadProperties() {
+  public void reloadProperties() throws IOException {
     localProperties = new Properties();
     loadProperties();
   }
-  
+
   /**
    * Save the properties back to the module/extension
-   *
+   * @throws IOException 
+   * 
    */
-  protected void saveProperties() {
+  protected void saveProperties() throws IOException {
     String bundle = getBundleName() + ".properties"; //$NON-NLS-1$
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    try {
-      getProperties().store(out, "Module translation");
-      ArchiveWriter writer = GameModule.getGameModule().getArchiveWriter();
-      if (writer != null) {
-        writer.addFile(bundle, out.toByteArray());
-        dirty = false;
-      }
-      out.close();
+    getProperties().store(out, "Module translation");
+    ArchiveWriter writer = GameModule.getGameModule().getArchiveWriter();
+    if (writer != null) {
+      writer.addFile(bundle, out.toByteArray());
+      dirty = false;
     }
-    catch (IOException e) {
-    }
-
+    out.close();
   }
-  
-  
+
   /**
-   * Return the properties map for this translation. Create and load
-   * from the moduel if necessary
+   * Return the properties map for this translation. Create and load from the moduel if necessary
    * 
    * @return properties
    */
   public Properties getProperties() {
     if (localProperties == null) {
-      loadProperties();
+      try {
+        loadProperties();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+        localProperties = new Properties();
+      }
     }
     return localProperties;
   }
-  
+
   /**
    * Build the bundle name
+   * 
    * @return bundle name
    */
   public String getBundleName() {
     return Resources.MODULE_BUNDLE + "_" + locale.getLanguage() //$NON-NLS-1$
-      +  (locale.getCountry().length() > 0 ? ("_" + locale.getCountry()) : ""); //$NON-NLS-1$ //$NON-NLS-2$
+        + (locale.getCountry().length() > 0 ? ("_" + locale.getCountry()) : ""); //$NON-NLS-1$ //$NON-NLS-2$
   }
-  
+
   /**
    * Build the bundle file name
+   * 
    * @return bundle file name
    */
   public String getBundleFileName() {
@@ -233,5 +235,4 @@ public class Translation extends AbstractConfigurable implements Comparable {
   public int compareTo(Object o) {
     return getDescription().compareTo(((Translation) o).getDescription());
   }
-  
 }

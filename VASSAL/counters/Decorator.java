@@ -24,7 +24,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.i18n.Language;
 import VASSAL.tools.SequenceEncoder;
 
 /**
