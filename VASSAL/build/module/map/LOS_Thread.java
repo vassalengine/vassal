@@ -58,6 +58,7 @@ import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
@@ -523,7 +524,7 @@ public class LOS_Thread extends AbstractConfigurable implements
         p = map.snapTo(p);
       }
       anchor = p;
-      anchorLocation = map.locationName(anchor);
+      anchorLocation = map.localizedLocationName(anchor);
       lastLocation = anchorLocation;
       lastRange = "";
       checkList.clear();
@@ -567,7 +568,7 @@ public class LOS_Thread extends AbstractConfigurable implements
         reportFormat.setProperty(CHECK_COUNT, String.valueOf(getLosCheckCount()));
         reportFormat.setProperty(CHECK_LIST, getLosCheckList());
     
-        GameModule.getGameModule().getChatter().send(reportFormat.getText());
+        GameModule.getGameModule().getChatter().send(reportFormat.getLocalizedText());
       }
     }
     ctrlWhenClick = false;
@@ -767,7 +768,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
   }
   
-  public static class ReportFormatConfig implements ConfigurerFactory {
+  public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] { FROM_LOCATION, TO_LOCATION, RANGE, CHECK_COUNT, CHECK_LIST });
     }

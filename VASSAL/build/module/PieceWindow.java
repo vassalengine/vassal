@@ -200,6 +200,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       }
       GameModule.getGameModule().getToolBar().add(launch);
     }
+    setAttributeTranslatable(NAME, false);
   }
 
   public void removeFrom(Buildable parent) {

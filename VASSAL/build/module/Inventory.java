@@ -94,6 +94,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.PropertiesPieceFilter;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
@@ -479,7 +480,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
   public Class[] getAttributeTypes() {
 	  return new Class[] {String.class, String.class, String.class, IconConfig.class, KeyStroke.class,  // DestConfig.class, 
-			  String.class, String[].class, String.class, Boolean.class,
+			  PropertyExpression.class, String[].class, String.class, Boolean.class,
 			  PieceFormatConfig.class, Boolean.class, PieceFormatConfig.class, 
 			  SortConfig.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class, 
 			  Double.class, String[].class};
@@ -497,7 +498,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       return new IconConfigurer(key, name, "/images/inventory.gif"); //$NON-NLS-1$
     }
   }
-  public static class PieceFormatConfig implements ConfigurerFactory {
+  public static class PieceFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new GamePieceFormattedStringConfigurer(key, name);
     }
@@ -916,10 +917,10 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     }
 
     public String toString() {
-      return format.getText(this);
+      return format.getLocalizedText(this);
     }
     public String toSortKey() {
-      return sortingFormat.getText(this);
+      return sortingFormat.getLocalizedText(this);
     }
 
     public String[] getPath() {
@@ -983,6 +984,10 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       return value;
     }
 
+    public Object getLocalizedProperty(Object key) {
+      return getProperty(key);
+    }
+    
     public void setNode(CounterNode node) {
       this.node = node;
     }

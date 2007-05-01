@@ -49,11 +49,11 @@ import VASSAL.tools.DataArchive;
  * displays a window with a stored image on it.  Good for a splash
  * screen or an "about" screen.  */
 public class AboutScreen extends AbstractConfigurable {
-  private Image image;
-  private String title;
-  private String fileName;
-  private JMenuItem launch;
-  private Window window;
+  protected Image image;
+  protected String title;
+  protected String fileName;
+  protected JMenuItem launch;
+  protected Window window;
 
   public AboutScreen() {
     launch = new JMenuItem();
@@ -140,8 +140,8 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Menu Entry", //$NON-NLS-1$
-                        "Image"}; //$NON-NLS-1$
+    return new String[]{"Menu Entry:  ", //$NON-NLS-1$
+                        "Image:  "}; //$NON-NLS-1$
   }
 
   public Class[] getAttributeTypes() {

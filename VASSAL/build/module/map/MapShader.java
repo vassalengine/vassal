@@ -498,7 +498,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     if (NAME.equals(key)) {
       setConfigureName((String) value);
       if (launch.getAttributeValueString(TOOLTIP) == null) {
-        launch.setAttribute(TOOLTIP, (String) value);
+        launch.setAttribute(TOOLTIP, value);
       }
     }
     else if (ALWAYS_ON.equals(key)) {
@@ -719,6 +719,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     map.addDrawComponent(this);
     idMgr.add(this);
     validator = idMgr;
+    setAttributeTranslatable(NAME, false);
   }
 
   public String getId() {

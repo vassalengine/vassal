@@ -92,6 +92,9 @@ public interface GamePiece extends PropertySource {
 
   /** The plain English name for this piece */
   public String getName();
+  
+  /** And the translated name for this piece */
+  public String getLocalizedName();
 
   /**
    * Each GamePiece must have a unique String identifier

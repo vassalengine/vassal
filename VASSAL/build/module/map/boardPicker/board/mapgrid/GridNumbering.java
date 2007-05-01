@@ -33,6 +33,7 @@ import java.awt.Point;
  */
 public interface GridNumbering {
     public String locationName(Point pt);
+    public String localizedLocationName(Point pt);
 
     public void draw(java.awt.Graphics g, java.awt.Rectangle bounds, java.awt.Rectangle visibleRect, double scale, boolean reversed);
 

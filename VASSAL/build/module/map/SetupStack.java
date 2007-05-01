@@ -216,6 +216,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     idMgr.add(this);
 
     GameModule.getGameModule().getGameState().addGameComponent(this);
+    setAttributeTranslatable(NAME, false);
   }
 
   public Class[] getAllowableConfigureComponents() {

@@ -39,6 +39,7 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.tools.ScrollPane;
 
 /**
@@ -118,6 +119,7 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
       mb.add(helpMenu);
     }
     mb.add(createUpdateMenu());
+    mb.add(createTranslateMenu());
     setJMenuBar(mb);
     pack();
   }
@@ -139,6 +141,18 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
     });
     updaterMenu.add(mi);
     return updaterMenu;
+  }
+  
+  protected JMenu createTranslateMenu() {
+    JMenu translateMenu = new JMenu("Translate");
+    JMenuItem mi = new JMenuItem("Translate VASSAL User Interface");
+    mi.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        new TranslateVassalWindow(ModuleEditWindow.this).setVisible(true);
+      }
+    });
+    translateMenu.add(mi);
+    return translateMenu;
   }
 
   protected void saveAs() {

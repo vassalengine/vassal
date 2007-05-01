@@ -28,6 +28,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
+import VASSAL.i18n.Language;
+import VASSAL.i18n.Translatable;
 
 /**
  * Abstract implementation of the Buildable interface To make a Buildable
@@ -53,6 +55,16 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 			for (int i = 0; i < n.getLength(); ++i) {
 				Attr att = (Attr) n.item(i);
 				setAttribute(att.getName(), att.getValue());
+        
+        /*
+         * Save a record of all Attributes for later translation. Need to save
+         * all attributes, not just translatable ones as the current component
+         * has not been completely built yet and a ComponentI18nData object
+         * cannot be built. 
+         */
+        if (this instanceof Translatable) {
+          Language.saveTranslatableAttribute((Translatable) this, att.getName(), att.getValue());
+        }
 			}
 			Builder.build(e, this);
 		}

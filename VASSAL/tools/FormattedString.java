@@ -57,12 +57,16 @@ public class FormattedString {
    * @return
    */
   public String getText() {
-    return getText(defaultProperties);
+    return getText(defaultProperties, false);
+  }
+  
+  public String getLocalizedText() {
+    return getText(defaultProperties, true);
   }
 
-  public String getText(GamePiece piece) {
-    return getText((PropertySource)piece);
-  }
+//  public String getText(GamePiece piece) {  GamePiece is now a PropertySource
+//    return getText((PropertySource)piece);
+//  }
   /**
    * Return the resulting string after substituting properties
    * Also, if any property keys match a property in the given GamePiece,
@@ -72,6 +76,13 @@ public class FormattedString {
    * @return
    */
   public String getText(PropertySource ps) {
+    return getText(ps, false);
+  }
+  public String getLocalizedText(PropertySource ps) {
+    return getText(ps, true);
+  }
+  
+  protected String getText(PropertySource ps, boolean localized) {
     StringBuffer buffer = new StringBuffer();
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(formatString, '$');
     boolean isProperty = true;
@@ -92,7 +103,7 @@ public class FormattedString {
           }
         }
         else if (ps != null) {
-          Object value = ps.getProperty(token);
+          Object value = localized ? ps.getLocalizedProperty(token) : ps.getProperty(token);
           if (value != null) {
             buffer.append(value.toString());
           }

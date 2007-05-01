@@ -13,6 +13,8 @@ import VASSAL.command.AddPiece;
 import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /*
@@ -37,12 +39,12 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * This trait adds a command that creates a duplicate of the selected Gamepiece
  */
-public class Clone extends Decorator implements EditablePiece {
+public class Clone extends Decorator implements TranslatablePiece {
   public static final String ID = "clone;";
-  private KeyCommand[] command;
-  private String commandName;
-  private KeyStroke key;
-  private KeyCommand cloneCommand;
+  protected KeyCommand[] command;
+  protected String commandName;
+  protected KeyStroke key;
+  protected KeyCommand cloneCommand;
 
   public Clone() {
     this(ID + "Clone;C", null);
@@ -138,6 +140,12 @@ public class Clone extends Decorator implements EditablePiece {
     return HelpFile.getReferenceManualPage("GamePiece.htm","Clone");
   }
 
+  public PieceI18nData getI18nData() {
+    PieceI18nData data = new PieceI18nData(this);
+    data.add(commandName, "Clone command");
+    return data;
+  }
+   
   public static class Ed implements PieceEditor {
     private StringConfigurer nameInput;
     private HotKeyConfigurer keyInput;

@@ -363,7 +363,7 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public String getPlayerId() {
     playerIdFormat.setProperty(PLAYER_NAME, (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
-    playerIdFormat.setProperty(PLAYER_SIDE, PlayerRoster.getMySide());
+    playerIdFormat.setProperty(PLAYER_SIDE, PlayerRoster.getMyLocalizedSide());
     return playerIdFormat.getText();
   }
 

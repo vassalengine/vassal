@@ -43,6 +43,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.ServerConnection;
+import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.PrefsEditor;
@@ -574,6 +575,7 @@ public class Main {
               if (GameModule.getGameModule() != null) {
                 dispose();
               }
+              Language.translate();
             }
           }
           catch (Exception e) {

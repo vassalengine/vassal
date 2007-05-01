@@ -47,6 +47,9 @@ import VASSAL.command.AddPiece;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
+import VASSAL.i18n.Language;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.SequenceEncoder;
 
@@ -54,7 +57,7 @@ import VASSAL.tools.SequenceEncoder;
  * Basic class for representing a physical component of the game
  * Can be a counter, a card, or an overlay
  */
-public class BasicPiece implements EditablePiece, StateMergeable {
+public class BasicPiece implements TranslatablePiece, StateMergeable {
 
   public static final String ID = "piece;";
   private static Highlighter highlighter;
@@ -201,6 +204,71 @@ public class BasicPiece implements EditablePiece, StateMergeable {
     
     return prop;
   }
+  
+  public Object getLocalizedProperty(Object key) {
+    if (Properties.KEY_COMMANDS.equals(key)) {
+      return getProperty(key);
+    }
+    else if (LOCATION_NAME.equals(key)) {
+      return getMap() == null ? "" : getMap().localizedLocationName(getPosition());
+    }
+    else if (PIECE_NAME.equals(key)) {
+      return Decorator.getOutermost(this).getName();
+    }
+    else if (BASIC_NAME.equals(key)) {
+      return getLocalizedName();
+    }
+    else if (CURRENT_MAP.equals(key)) {
+      return getMap() == null ? "" : getMap().getLocalizedConfigureName();
+    }
+    else if (DECK_NAME.equals(key)) {
+      return getParent() instanceof Deck ? ((Deck)getParent()).getLocalizedDeckName() : "";
+    }
+    else if (CURRENT_BOARD.equals(key)) {
+      if (getMap() != null) {
+        Board b = getMap().findBoard(getPosition());
+        if (b != null) {
+          return b.getLocalizedName();
+        }
+      }
+      return "";
+    }
+    else if (CURRENT_ZONE.equals(key)) {
+      if (getMap() != null) {
+        Zone z = getMap().findZone(getPosition());
+        if (z != null) {
+          return z.getLocalizedName();
+        }
+      }
+      return "";
+    }
+    else if (CURRENT_X.equals(key)) {
+      return getProperty(key);
+    }
+    else if (CURRENT_Y.equals(key)) {
+      return getProperty(key);     
+    }
+    else if (Properties.VISIBLE_STATE.equals(key)) {
+      return getProperty(key);
+    }
+    Object prop = props == null ? null : props.get(key);
+    if (prop == null) {
+      Map map = getMap();
+      Zone zone = (map == null ? null : map.findZone(getPosition()));
+      if (zone != null) {
+        prop = zone.getLocalizedProperty(key);
+      }
+      else if (map != null) {
+        prop = map.getLocalizedProperty(key);
+      }
+      else {
+        prop = GameModule.getGameModule().getLocalizedProperty(key);
+      }
+    }
+    
+    return prop;
+  }
+  
 
   public void setProperty(Object key, Object val) {
     if (props == null) {
@@ -341,6 +409,11 @@ public class BasicPiece implements EditablePiece, StateMergeable {
     return commonName;
   }
 
+  public String getLocalizedName() {
+    String key = TranslatablePiece.PREFIX + "." + getName();
+    return Language.translate(key, getName());
+  }
+  
   public Command keyEvent(KeyStroke stroke) {
     getKeyCommands();
     if (!isEnabled(stroke)) {
@@ -626,5 +699,11 @@ public class BasicPiece implements EditablePiece, StateMergeable {
 
   public String toString() {
     return super.toString()+"[name="+getName()+",type="+getType()+",state="+getState()+"]";
+  }
+
+  public PieceI18nData getI18nData() {
+    PieceI18nData data = new PieceI18nData(this);
+    data.add(commonName, "Piece Name");
+    return data;
   }
 }

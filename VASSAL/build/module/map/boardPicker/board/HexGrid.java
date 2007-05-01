@@ -374,6 +374,10 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
   public String locationName(Point p) {
     return numbering == null ? null : numbering.locationName(p);
   }
+  
+  public String localizedLocationName(Point p) {
+    return numbering == null ? null : numbering.localizedLocationName(p);
+  }
 
   public Point getLocation(String hex) throws MapGrid.BadCoords {
     throw new MapGrid.BadCoords("No naming scheme specified");

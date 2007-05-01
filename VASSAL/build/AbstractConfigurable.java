@@ -25,6 +25,9 @@ import java.util.Vector;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Language;
+import VASSAL.i18n.Translatable;
 
 /**
  * An abstract implementation of the Configurable interface.  Takes care of
@@ -34,6 +37,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   protected PropertyChangeSupport changeSupport;
   protected String name;
   protected Configurer config;
+  protected ComponentI18nData myI18nData;
 
   /**
    * Remove a Buildable object from this object
@@ -43,6 +47,16 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   }
 
   public String getConfigureName() {
+    if (Language.isTranslationComplete()) {
+      String n = getI18nData().getUntranslatedConfigureName();
+      return n == null ? name : n;
+    }
+    else {
+      return getLocalizedConfigureName();
+    }
+  }
+  
+  public String getLocalizedConfigureName() {
     return name;
   }
 
@@ -54,6 +68,9 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
     name = s;
     if (changeSupport != null) {
       changeSupport.firePropertyChange(NAME_PROPERTY, oldName, name);
+    }
+    if (Language.isTranslationInProgress()) {
+      getI18nData().setUntranslatedConfigureName(oldName);
     }
   }
 
@@ -84,6 +101,51 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
     return null;
   }
 
+  /**
+   * Return the i18n data for this component
+   */ 
+  public ComponentI18nData getI18nData() {
+    if (myI18nData == null) {
+      myI18nData = new ComponentI18nData(this, getI18nPrefix());
+    }
+    return myI18nData;
+  }
+  
+  /**
+   * Generate a standard prefix for i18n keys for attributes
+   * of this component - Classname.attributeName 
+   */
+  protected String getI18nPrefix() {
+    String key = getClass().getSimpleName();
+    if (getConfigureName() != null && getConfigureName().length() > 0 ) {
+      key += "." + getConfigureName();
+    }
+    return key;
+  }
+  
+  /**
+   * Over-ride the default attribute translatability. This is called
+   * by inidivdual components to force specific attributes to be
+   * translatable or not translatable
+   */
+  protected void setAttributeTranslatable(String attr, boolean b) {
+    getI18nData().setAttributeTranslatable(attr, b);
+  }
+  
+  protected void setAllAttributesUntranslatable() {
+    getI18nData().setAllAttributesUntranslatable();
+  }
+  
+  /**
+   * Set the owning translatable of this component
+   */ 
+  public void add(Buildable b) {
+    super.add(b);
+    if (b instanceof Translatable) {
+      ((Translatable) b).getI18nData().setOwningComponent(this);
+    }
+  }
+  
   public void addPropertyChangeListener(PropertyChangeListener l) {
     if (changeSupport == null) {
       changeSupport = new PropertyChangeSupport(this);

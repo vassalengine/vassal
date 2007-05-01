@@ -32,6 +32,7 @@ import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
+import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
@@ -98,6 +99,7 @@ public class BasicModule extends GameModule {
       super.build(e);
       ensureComponent(GamePieceImageDefinitions.class);
       ensureComponent(GlobalProperties.class);
+      ensureComponent(Language.class);      
     }
     else {
       buildDefaultComponents();
@@ -199,6 +201,7 @@ public class BasicModule extends GameModule {
     addComponent(PrototypesContainer.class);
     addComponent(PieceWindow.class);
     addComponent(Chatter.class);
+    addComponent(Language.class);
   }
 
   protected void initFrame() {
@@ -244,8 +247,16 @@ public class BasicModule extends GameModule {
       e.printStackTrace();
     }
   }
-
+  
   public ChatServerControls getServerControls() {
     return serverControls;
   }
+  
+  /*
+   * The module I18n key prefix is null for the top level.
+   */
+  public String getI18nPrefix() {
+    return "";
+  }
+
 }

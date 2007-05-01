@@ -399,7 +399,11 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     format.setProperty(GRID_LOCATION, getName(row, col));
     format.setProperty(ROW, getName(row+vOff, vType, vLeading));
     format.setProperty(COLUMN, getName(col+hOff, hType, hLeading));
-    return format.getText();
+    return format.getLocalizedText();
+  }
+  
+  public String localizedLocationName(Point pt) {
+    return locationName(pt);
   }
 
   public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -415,7 +419,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
         } while (rowOrColumn >= 0);
         return val;
       default: // Numeric
-        while (leading > 0 && rowOrColumn < Math.pow(10.0, (double) leading--)) {
+        while (leading > 0 && rowOrColumn < Math.pow(10.0, leading--)) {
           val += "0";
         }
         return val + rowOrColumn;

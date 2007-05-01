@@ -78,7 +78,7 @@ public class MapWidget extends Widget {
 
   public void addTo(Buildable b) {
     super.addTo(b);
-    parent = (Widget) b;
+    parent = b;
   }
   
   public void add(Buildable b) {

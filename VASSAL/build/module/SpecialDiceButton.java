@@ -49,6 +49,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
@@ -165,7 +166,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     if (reportResultInWindow) {
       dialog.setVisible(true);
       format.setFormat(windowTitleResultFormat);
-      dialog.setTitle(format.getText());
+      dialog.setTitle(format.getLocalizedText());
       dialogLabel.repaint();
     }
     if (reportResultInButton) {
@@ -175,7 +176,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   private Command reportTextResults(int[] results) {
-    format.setProperty(NAME, getConfigureName());
+    format.setProperty(NAME, getLocalizedConfigureName());
 
     int total = 0;
     for (int i = 0; i < dice.size(); ++i) {
@@ -185,7 +186,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     }
     format.setProperty(RESULT_TOTAL, "" + total); //$NON-NLS-1$
     format.setFormat(chatResultFormat);
-    String msg = format.getText();
+    String msg = format.getLocalizedText();
     if (msg.startsWith("*")) { //$NON-NLS-1$
       msg = "*" + msg; //$NON-NLS-1$
     }
@@ -265,7 +266,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     }
   }
 
-  public static class ReportFormatConfig implements ConfigurerFactory {
+  public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{NAME, RESULT_N, RESULT_TOTAL});
     }

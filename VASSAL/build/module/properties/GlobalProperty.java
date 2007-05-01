@@ -145,6 +145,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     GameModule.getGameModule().addCommandEncoder(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     propertySource = (PropertySource) parent;
+    setAllAttributesUntranslatable();
   }
 
   public JToolBar getToolBar() {
@@ -263,6 +264,10 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
 
   public Object getProperty(Object key) {
     return propertySource == null ? null : propertySource.getProperty(key);
+  }
+
+  public Object getLocalizedProperty(Object key) {
+    return propertySource == null ? null : propertySource.getLocalizedProperty(key);
   }
 
   public static String getConfigureTypeName() {

@@ -37,7 +37,6 @@ import VASSAL.build.widget.CardSlot;
 import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
@@ -46,6 +45,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.UniqueIdManager;
 
 public class DrawPile extends SetupStack {
@@ -87,6 +87,7 @@ public class DrawPile extends SetupStack {
   public void addTo(Buildable parent) {
     super.addTo(parent);
     idMgr.add(this);
+    setAttributeTranslatable(NAME, true);
   }
 
   protected JPopupMenu buildPopup() {
@@ -263,7 +264,7 @@ public class DrawPile extends SetupStack {
                        String[].class};
   }
 
-  public static class FormattedStringConfig implements ConfigurerFactory {
+  public static class FormattedStringConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{DECK_NAME,
                                                                            COMMAND_NAME});

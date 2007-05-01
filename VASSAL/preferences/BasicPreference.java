@@ -50,6 +50,8 @@ public abstract class BasicPreference extends AbstractConfigurable {
   
   public BasicPreference() {
     tabName = GameModule.getGameModule().getConfigureName();  
+    setAttributeTranslatable(NAME, false);
+    setAttributeTranslatable(DEFAULT, false);
   }
   
   public String[] getAttributeNames() {

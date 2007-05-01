@@ -61,6 +61,8 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.counters.PropertiesPieceFilter;
+import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
@@ -105,6 +107,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected List expressionProperties = new ArrayList();
 
   protected String deckName;
+  protected String untranslatedDeckName;
 
   protected boolean faceDown;
   protected int dragCount = 0;
@@ -474,6 +477,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public void setDeckName(String n) {
+    if (Language.isTranslationInProgress()) {
+      untranslatedDeckName = deckName;
+    }
     deckName = n;
     countProperty.setPropertyName(deckName+"_numPieces");
     for (int i=0;i<countExpressions.length;++i) {
@@ -482,9 +488,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public String getDeckName() {
-    return deckName;
+    return untranslatedDeckName == null ? deckName : untranslatedDeckName;
   }
 
+
+  public String getLocalizedDeckName() {
+    return deckName;
+  }
+  
   /**
    * The popup menu text for the command that sends the entire deck to another
    * deck
@@ -912,9 +923,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected Command reportCommand(String format, String commandName) {
     Command c = null;
     FormattedString reportFormat = new FormattedString(format);
-    reportFormat.setProperty(DrawPile.DECK_NAME, getDeckName());
+    reportFormat.setProperty(DrawPile.DECK_NAME, getLocalizedDeckName());
     reportFormat.setProperty(DrawPile.COMMAND_NAME, commandName);
-    String rep = reportFormat.getText();
+    String rep = reportFormat.getLocalizedText();
     if (rep.length() > 0) {
       c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + rep); //$NON-NLS-1$
       c.execute();

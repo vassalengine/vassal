@@ -148,7 +148,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
       for (int i = 0, n = toolbar.getComponentCount(); i < n; ++i) {
         if (toolbar.getComponentAtIndex(i) instanceof JButton) {
           JButton b = ((JButton) toolbar.getComponentAtIndex(i));
-          m.put(b.getText(), b);
+          m.put(b.getClientProperty(LaunchButton.UNTRANSLATED_TEXT), b);
         }
       }
     }

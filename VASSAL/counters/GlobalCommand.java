@@ -71,7 +71,7 @@ public class GlobalCommand {
    * @return a the corresponding {@link Command}
    */
   public Command apply(Map[] m, PieceFilter filter) {
-    String reportText = reportFormat.getText();
+    String reportText = reportFormat.getLocalizedText();
     Command c;
     if (reportText.length() > 0) {
       c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "*" + reportText);

@@ -132,9 +132,9 @@ public class ReportState extends Decorator implements EditablePiece {
     boolean isVisible = !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS));
 
     PieceAccess.GlobalAccess.hideAll();
-    String oldUnitName = oldPiece.getName();
+    String oldUnitName = oldPiece.getLocalizedName();
     format.setProperty(OLD_UNIT_NAME, oldUnitName);
-    String newUnitName = outer.getName();
+    String newUnitName = outer.getLocalizedName();
     format.setProperty(NEW_UNIT_NAME, newUnitName);
     PieceAccess.GlobalAccess.revertAll();
 
@@ -181,7 +181,7 @@ public class ReportState extends Decorator implements EditablePiece {
 
           OldAndNewPieceProperties properties = new OldAndNewPieceProperties(oldPiece,outer);
 
-          String reportText = format.getText(properties);
+          String reportText = format.getLocalizedText(properties);
 
           if (getMap() != null) {
             format.setFormat(getMap().getChangeFormat());
@@ -193,7 +193,7 @@ public class ReportState extends Decorator implements EditablePiece {
             format.setFormat("$"+Map.MESSAGE+"$");
           }
           format.setProperty(Map.MESSAGE, reportText);
-          reportText = format.getText(properties);
+          reportText = format.getLocalizedText(properties);
 
           if (reportText.length() > 0) {
             Command display = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);
@@ -385,6 +385,10 @@ public class ReportState extends Decorator implements EditablePiece {
         }
       }
       return value;
+    }
+    
+    public Object getLocalizedProperty(Object key) {
+      return getProperty(key);
     }
     
   }

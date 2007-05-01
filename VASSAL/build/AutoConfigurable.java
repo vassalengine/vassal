@@ -23,6 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Language;
 
 /**
  * A class that implements AutoConfigurable can use the {@link AutoConfigurer}
@@ -77,6 +78,7 @@ public interface AutoConfigurable extends Configurable {
         for (int i = 0; i < n.getLength(); ++i) {
           Attr att = (Attr) n.item(i);
           parent.setAttribute(att.getName(), att.getValue());
+          Language.saveTranslatableAttribute(parent, att.getName(), att.getValue());
         }
       }
     }

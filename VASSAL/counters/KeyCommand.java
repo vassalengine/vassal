@@ -19,15 +19,20 @@
 package VASSAL.counters;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.i18n.Language;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 
 public class KeyCommand extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
   private String name;
+  protected String untranslatedName;
   private KeyStroke stroke;
   private GamePiece target;
   private boolean global;
@@ -101,6 +106,24 @@ public class KeyCommand extends AbstractAction {
       }
       t.addPiece(outer);
       t.repaint();
+    }
+  }
+  
+  public void translate(TranslatablePiece piece) {
+    if (untranslatedName == null) {
+       untranslatedName = name;
+       PieceI18nData data = piece.getI18nData();
+       String key = "";
+       String[] values = data.getValues();
+       for (int i = 0; i < values.length; i++) {
+         if (values[i].equals(name)) {
+           key = TranslatablePiece.PREFIX + "." + values[i];
+         }
+       }
+       
+       name = key.length() > 0 ? Language.translate(key, name) : name;
+
+       putValue(Action.NAME, stroke == null ? name : name + "  " + HotKeyConfigurer.getString(stroke));
     }
   }
 }

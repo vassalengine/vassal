@@ -99,8 +99,12 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     return propertySource == null ? null : propertySource.getProperty(key);
   }
 
-  public MutableProperty getMutableProperty(String name) {
-    GlobalProperty property = null;
+  public Object getLocalizedProperty(Object key) {
+    return propertySource == null ? null : propertySource.getLocalizedProperty(key);
+  }
+  
+   public GlobalProperty getMutableProperty(String name) {
+   GlobalProperty property = null;
     for (Enumeration e = getComponents(GlobalProperty.class);e.hasMoreElements() && property == null;) {
       GlobalProperty prop = (GlobalProperty) e.nextElement();
       if (prop.getConfigureName().equals(name)) {
@@ -108,5 +112,12 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
       }
     }
     return property;
+  }
+  
+  /*
+   * Null i18n key prefix for this component
+   */
+  public String getI18nPrefix() {
+    return "";
   }
 }

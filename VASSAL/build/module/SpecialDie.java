@@ -25,8 +25,8 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 
 public class SpecialDie extends AbstractConfigurable {
@@ -60,7 +60,7 @@ public class SpecialDie extends AbstractConfigurable {
     return new Class[]{String.class, ResultFormatConfig.class};
   }
 
-  public static class ResultFormatConfig implements ConfigurerFactory {
+  public static class ResultFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[]{NAME, RESULT, NUMERICAL_VALUE});
     }
@@ -115,10 +115,10 @@ public class SpecialDie extends AbstractConfigurable {
 
   public String getTextValue(int face) {
     SpecialDieFace aFace = (SpecialDieFace) dieFaceList.get(face);
-    format.setProperty(NAME, getConfigureName());
+    format.setProperty(NAME, getLocalizedConfigureName());
     format.setProperty(RESULT, aFace.getTextValue());
     format.setProperty(NUMERICAL_VALUE, aFace.getIntValue() + ""); //$NON-NLS-1$
-    return format.getText();
+    return format.getLocalizedText();
   }
 
   public int getIntValue(int face) {

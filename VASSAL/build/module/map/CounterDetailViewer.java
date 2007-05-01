@@ -170,6 +170,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     map.getView().addMouseMotionListener(this);
     map.getView().addMouseListener(this);
     map.getView().addKeyListener(this);
+    setAttributeTranslatable(VERSION, false);
+    setAttributeTranslatable(SUMMARY_REPORT_FORMAT, true);
+    setAttributeTranslatable(COUNTER_REPORT_FORMAT, true);
   }
 
   public void draw(Graphics g, Map map) {
@@ -258,7 +261,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         g.setClip(oldClip);
 
         if (isTextUnderCounters()) {
-          String text = counterReportFormat.getText(piece);
+          String text = counterReportFormat.getLocalizedText(piece);
           int x = bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset;
           int y = bounds.y + bounds.height + 10;
           drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
@@ -294,27 +297,28 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     String report = "";
     int x = bounds.x - bounds.width;
     int y = bounds.y - 5;
+    String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
 
     if (displayablePieces.size() == 0) {
       Point mapPt = map.mapCoordinates(currentMousePosition.getPoint());
       Point snapPt = map.snapTo(mapPt);
-      String locationName = map.locationName(snapPt);
-      emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals("offboard") ? "" : locationName);
-      emptyHexReportFormat.setProperty(BasicPiece.CURRENT_MAP, map.getMapName());
+      String locationName = map.localizedLocationName(snapPt);
+      emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
+      emptyHexReportFormat.setProperty(BasicPiece.CURRENT_MAP, map.getLocalizedMapName());
       Board b = map.findBoard(snapPt);
-      String boardName = (b == null) ? "" : b.getName();
+      String boardName = (b == null) ? "" : b.getLocalizedName();
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_BOARD, boardName);
       Zone z = map.findZone(snapPt);
-      String zone = (z == null) ? "" : z.getName();
+      String zone = (z == null) ? "" : z.getLocalizedName();
       emptyHexReportFormat.setProperty(BasicPiece.CURRENT_ZONE, zone);
-      report = emptyHexReportFormat.getText();
+      report = emptyHexReportFormat.getLocalizedText();
       x -= g.getFontMetrics().stringWidth(report) / 2;
     }
     else {
       GamePiece topPiece = (GamePiece) displayablePieces.get(0);
-      String locationName = (String) topPiece.getProperty(BasicPiece.LOCATION_NAME);
-      emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals("offboard") ? "" : locationName);
-      report = summaryReportFormat.getText(new SumProperties(displayablePieces));
+      String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
+      emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
+      report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
       x += borderWidth * pieces.size() + 2;
     }
 

@@ -20,6 +20,7 @@ package VASSAL.build;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
+import VASSAL.i18n.Translatable;
 
 /**
  * An object that implements the Configurable interface can, in
@@ -27,7 +28,7 @@ import VASSAL.configure.Configurer;
  * manipulated by the user directly in the VASSAL module editor via
  * the Configuration window.
  */
-public interface Configurable extends Buildable {
+public interface Configurable extends Translatable {
     public static final String NAME_PROPERTY = "name"; //$NON-NLS-1$
 
     /**

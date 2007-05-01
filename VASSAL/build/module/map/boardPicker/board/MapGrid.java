@@ -40,6 +40,7 @@ public interface MapGrid {
    * @return a string describing the location containing the given point
    */
   public String locationName(Point p);
+  public String localizedLocationName(Point p);
 
   /**
    * @return A point p such that locationName(p).equals(location)

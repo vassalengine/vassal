@@ -44,12 +44,12 @@ public class HelpFile extends AbstractConfigurable {
   public static final String RESOURCE = "resource"; //$NON-NLS-1$
   public static final String LOCAL_FILE = "file"; //$NON-NLS-1$
 
-  private HelpWindow frame;
-  private URL contents;
-  private String title;
-  private String fileName;
-  private JMenuItem launch;
-  private String fileType = ARCHIVE_ENTRY;
+  protected HelpWindow frame;
+  protected URL contents;
+  protected String title;
+  protected String fileName;
+  protected JMenuItem launch;
+  protected String fileType = ARCHIVE_ENTRY;
 
   public static String getConfigureTypeName() {
     return "Plain Text Help File";
@@ -214,7 +214,7 @@ public class HelpFile extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Menu Entry", "Text File"};
+    return new String[]{"Menu Entry:  ", "Text File:  "};
   }
 
   public Class[] getAttributeTypes() {

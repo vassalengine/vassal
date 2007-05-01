@@ -53,6 +53,8 @@ import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.Properties;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.TranslatablePieceContainer;
 
 /**
  * A Component that displays a GamePiece.
@@ -61,7 +63,7 @@ import VASSAL.counters.Properties;
  * a PieceSlot is forwarded to the {@link GamePiece#keyEvent} method for the
  * PieceSlot's GamePiece. Clicking on a PieceSlot initiates a drag
  */
-public class PieceSlot extends Widget implements MouseListener, KeyListener {
+public class PieceSlot extends Widget implements MouseListener, KeyListener, TranslatablePieceContainer {
   private GamePiece c;
   private String name;
   private String pieceDefinition;
@@ -309,7 +311,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   public String[] getAttributeNames() {
-    return null;
+    return new String[0];
   }
 
   public String[] getAttributeDescriptions() {
@@ -322,18 +324,15 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   public void setAttribute(String name, Object value) {
   }
+ 
 
-  public String getAttributeValueString(String name) {
-    return null;
-  }
-
-  /**
-   * @return an array of Configurer objects representing the attributes of this
-   *         Configurable object
-   */
-  public Configurer[] getAttributeConfigurers() {
-    return new Configurer[0];
-  }
+//  /**
+//   * @return an array of Configurer objects representing the attributes of this
+//   *         Configurable object
+//   */
+//  public Configurer[] getAttributeConfigurers() {
+//    return new Configurer[0];
+//  }
 
   /**
    * @return an array of Configurer objects representing the Buildable children
@@ -351,6 +350,21 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     return new Class[0];
   }
 
+  /*
+   * Redirect getAttributeValueString() to return the attribute
+   * values for the enclosed pieces
+   */
+  public String getAttributeValueString(String attr) {
+    return getI18nData().getLocalUntranslatedValue(attr);
+  }
+  
+  public ComponentI18nData getI18nData() {
+    if (myI18nData == null) {
+      myI18nData = new ComponentI18nData(this, getPiece());
+    }
+    return myI18nData;
+  }
+  
   public Configurer getConfigurer() {
     return new MyConfigurer(this);
   }

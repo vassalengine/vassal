@@ -499,12 +499,12 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Disable stacking",
-                        "Horizontal separation when expanded",
-                        "Vertical separation when expanded",
-                        "Horizontal separation when not expanded",
-                        "Vertical separation when not expanded",
-                        "Color of pieces when not expanded"};
+    return new String[]{"Disable stacking?",
+                        "Horizontal separation when expanded:  ",
+                        "Vertical separation when expanded:  ",
+                        "Horizontal separation when not expanded:  ",
+                        "Vertical separation when not expanded:  ",
+                        "Color of pieces when not expanded:  "};
   }
 
   public Class[] getAttributeTypes() {

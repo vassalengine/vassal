@@ -139,6 +139,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.ReportState;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ComponentSplitter;
@@ -206,6 +207,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       repaint();
     }
   };
+  protected PieceMover pieceMover;
 
 	public Map() {
 		getView();
@@ -214,6 +216,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     toolBar.setAlignmentX(0.0F);
 		toolBar.setFloatable(false);
 	}
+  
 	public static final String NAME = "mapName"; //$NON-NLS-1$
 	public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
 	public static final String MARK_UNMOVED_ICON = "markUnmovedIcon"; //$NON-NLS-1$
@@ -250,6 +253,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
     else if (MARK_UNMOVED_TEXT.equals(key)) {
       markUnmovedText = (String) value;
+      if (pieceMover != null) {
+        pieceMover.setAttribute(MARK_UNMOVED_TEXT, markUnmovedText);
+      }
     }
     else if (MARK_UNMOVED_TOOLTIP.equals(key)) {
       markUnmovedTooltip = (String) value;
@@ -546,6 +552,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		return toolBar;
 	}
 
+
   /**
    * Add a {@link Drawable} component to this map
    * 
@@ -605,6 +612,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         new BooleanConfigurer(MOVING_STACKS_PICKUP_UNITS, Resources.getString("Map.moving_stacks_preference"), Boolean.FALSE)); //$NON-NLS-1$
 	}
 
+  public void setPieceMover(PieceMover mover) {
+    pieceMover = mover;
+  }
+  
 	public void removeFrom(Buildable b) {
 		GameModule.getGameModule().getGameState().removeGameComponent(this);
 		Window w = SwingUtilities.getWindowAncestor(theMap);
@@ -866,30 +877,44 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		return loc;
 	}
+  
+  public String localizedLocationName(Point p) {
+    String loc = getLocalizedDeckNameAt(p);
+    if (loc == null) {
+      Board b = findBoard(p);
+      if (b != null) {
+        loc = b.localizedLocationName(new Point(p.x - b.bounds().x, p.y - b.bounds().y));
+      }
+    }
+    if (loc == null) {
+      loc = Resources.getString("Map.offboard"); //$NON-NLS-1$
+    }
+    return loc;
+  }
 
 	/**
    * @return a String name for the given location on the map. Include Map name if requested. Report deck name instead of
    *         location if point is inside the bounds of a deck. Do not include location if this map is not visible to all
    *         players.
    */
-	public String getFullLocationName(Point p, boolean includeMap) {
-		String loc = ""; //$NON-NLS-1$
-		if (includeMap && getMapName() != null && getMapName().length() > 0) {
-			loc = "[" + getMapName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		if (isVisibleToAll() && p != null) {
-			String pos = getDeckNameContaining(p);
-			if (pos == null) {
-				if (locationName(p) != null) {
-					loc = locationName(p) + loc;
-				}
-			}
-			else {
-				loc = pos;
-			}
-		}
-		return loc;
-	}
+//	public String getFullLocationName(Point p, boolean includeMap) {
+//		String loc = ""; //$NON-NLS-1$
+//		if (includeMap && getMapName() != null && getMapName().length() > 0) {
+//			loc = "[" + getMapName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+//		}
+//		if (isVisibleToAll() && p != null) {
+//			String pos = getDeckNameContaining(p);
+//			if (pos == null) {
+//				if (locationName(p) != null) {
+//					loc = locationName(p) + loc;
+//				}
+//			}
+//			else {
+//				loc = pos;
+//			}
+//		}
+//		return loc;
+//	}
 
 	/**
    * Is this map visible to all players
@@ -942,6 +967,21 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		return deck;
 	}
+  
+  public String getLocalizedDeckNameAt(Point p) {
+    String deck = null;
+    if (p != null) {
+      Enumeration e = getComponents(DrawPile.class);
+      while (e.hasMoreElements()) {
+        DrawPile d = (DrawPile) e.nextElement();
+        if (d.getPosition().equals(p)) {
+          deck = d.getLocalizedConfigureName();
+          break;
+        }
+      }
+    }
+    return deck;
+  }
 
 	/**
    * Because MouseEvents are received in component coordinates, it is inconvenient for MouseListeners on the map to have
@@ -1537,6 +1577,19 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		return value;
 	}
+  
+  public Object getLocalizedProperty(Object key) {
+    Object value = null;
+    MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
+    if (p != null) {
+      value = p.getPropertyValue();
+    }
+    if (value == null) {
+      value = GameModule.getGameModule().getLocalizedProperty(key);
+    }
+    return value;
+  }
+  
 
 	public KeyStroke getMoveKey() {
 		return moveKey;
@@ -1665,7 +1718,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	protected String getDefaultWindowTitle() {
-		return getMapName().length() > 0 ? getMapName() : Resources.getString("Map.window_title", GameModule.getGameModule().getGameName()); //$NON-NLS-1$
+		return getLocalizedMapName().length() > 0 ? getLocalizedMapName() : Resources.getString("Map.window_title", GameModule.getGameModule().getGameName()); //$NON-NLS-1$
 	}
 
 	/**
@@ -1842,9 +1895,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	public String getMapName() {
-		return mapName;
+		return getConfigureName();
 	}
 
+  public String getLocalizedMapName() {
+    return getLocalizedConfigureName();
+  }
+  
 	public void setMapName(String s) {
 		mapName = s;
 		setConfigureName(mapName);
@@ -1891,22 +1948,22 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			return new IconConfigurer(key, name, "/images/unmoved.gif"); //$NON-NLS-1$
 		}
 	}
-	public static class MoveWithinFormatConfig implements ConfigurerFactory {
+	public static class MoveWithinFormatConfig implements TranslatableConfigurerFactory {
 		public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
 			return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, MAP_NAME, OLD_LOCATION });
 		}
 	}
-	public static class MoveToFormatConfig implements ConfigurerFactory {
+	public static class MoveToFormatConfig implements TranslatableConfigurerFactory {
 		public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
 			return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, LOCATION, OLD_MAP, MAP_NAME, OLD_LOCATION });
 		}
 	}
-	public static class CreateFormatConfig implements ConfigurerFactory {
+	public static class CreateFormatConfig implements TranslatableConfigurerFactory {
 		public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
 			return new PlayerIdFormattedStringConfigurer(key, name, new String[] { PIECE_NAME, MAP_NAME, LOCATION });
 		}
 	}
-	public static class ChangeFormatConfig implements ConfigurerFactory {
+	public static class ChangeFormatConfig implements TranslatableConfigurerFactory {
 		public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
 			return new PlayerIdFormattedStringConfigurer(key, name, new String[] { MESSAGE, ReportState.COMMAND_NAME, ReportState.OLD_UNIT_NAME,
 					ReportState.NEW_UNIT_NAME, ReportState.MAP_NAME, ReportState.LOCATION_NAME });

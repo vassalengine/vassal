@@ -64,6 +64,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.FormattedString;
 
@@ -112,9 +113,13 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   public String getName() {
-    return name;
+    return getConfigureName();
   }
 
+  public String getLocalizedName() {
+    return getLocalizedConfigureName();
+  }
+  
   public String[] getAttributeNames() {
     return new String[]{NAME, LOCATION_FORMAT, PATH, USE_PARENT_GRID, USE_HIGHLIGHT, HIGHLIGHT_PROPERTY};
   }
@@ -126,7 +131,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   public Class[] getAttributeTypes() {
     return new Class[]{String.class, LocationFormatConfig.class, ShapeEditor.class, Boolean.class, Boolean.class, String.class};
   }
-  public static class LocationFormatConfig implements ConfigurerFactory {
+  public static class LocationFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[]{NAME, GRID_LOCATION});
     }
@@ -141,6 +146,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     parentGrid = (ZonedGrid) b;
     parentGrid.addZone(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
+    setAttributeTranslatable(HIGHLIGHT_PROPERTY, false);
   }
 
   public void repaint() {
@@ -246,6 +252,17 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
     format.setProperty(GRID_LOCATION, gridLocation);
     return format.getText();
+  }
+  
+  public String localizedLocationName(Point p) {
+    format.setFormat(locationFormat);
+    format.setProperty(NAME, getLocalizedConfigureName());
+    String gridLocation = null;
+    if (getGrid() != null) {
+      gridLocation = getGrid().localizedLocationName(p);
+    }
+    format.setProperty(GRID_LOCATION, gridLocation);
+    return format.getLocalizedText();
   }
 
   public boolean contains(Point p) {
@@ -382,6 +399,17 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return value;
   }
 
+  public Object getLocalizedProperty(Object key) {
+    Object value = null;
+    MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
+    if (p != null) {
+      value = p.getPropertyValue();
+    }
+    if (value == null) {
+      value = getMap().getLocalizedProperty(key);
+    }
+    return value;
+  }
   /*
    * Return a named Global Property
    * 
@@ -502,8 +530,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         public void actionPerformed(ActionEvent e) {
           setValue((Object) getValueString());
           frame.setVisible(false);
-          GameModule.getGameModule()
-                    .getDataArchive().clearTransformedImageCache();
+          GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
         }
       });
       buttonPanel.add(closeButton);

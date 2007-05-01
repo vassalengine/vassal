@@ -22,6 +22,8 @@ import java.awt.Point;
 import javax.swing.KeyStroke;
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
+import VASSAL.i18n.TranslatablePiece;
+import VASSAL.i18n.Language;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -81,6 +83,24 @@ public abstract class Decorator implements GamePiece, StateMergeable {
     }
     else {
       return piece.getProperty(key);
+    }
+  }
+  
+  public Object getLocalizedProperty(Object key) {
+    if (Properties.KEY_COMMANDS.equals(key)) {
+      return getProperty(key);
+    }
+    else if (Properties.INNER.equals(key)) {
+      return getProperty(key);
+    }
+    else if (Properties.OUTER.equals(key)) {
+      return getProperty(key);
+    }
+    else if (Properties.VISIBLE_STATE.equals(key)) {
+      return getProperty(key);
+    }
+    else {
+      return piece.getLocalizedProperty(key);
     }
   }
 
@@ -190,6 +210,11 @@ public abstract class Decorator implements GamePiece, StateMergeable {
    */
   protected KeyCommand[] getKeyCommands() {
     KeyCommand myC[] = myGetKeyCommands();
+    if (this instanceof TranslatablePiece && Language.isPlayMode()) {
+      for (int i = 0; i < myC.length; i++) {
+        myC[i].translate((TranslatablePiece) this);
+      }
+    }
     KeyCommand c[] = (KeyCommand[]) piece.getProperty(Properties.KEY_COMMANDS);
     if (c == null) {
       return myC;
@@ -281,5 +306,13 @@ public abstract class Decorator implements GamePiece, StateMergeable {
     else {
       return super.toString()+"[name="+getName()+",type="+getType()+",state="+getState()+"]";
     }
+  }
+  
+  /**
+   * Return the translated name for this piece. Most pieces do not have
+   * translatable elements, so just return the standard name
+   */
+  public String getLocalizedName() {
+    return piece.getLocalizedName();
   }
 }

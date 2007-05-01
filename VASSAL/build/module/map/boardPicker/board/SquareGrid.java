@@ -401,6 +401,10 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     return gridNumbering == null ? null : gridNumbering.locationName(p);
   }
 
+  public String localizedLocationName(Point p) {
+    return gridNumbering == null ? null : gridNumbering.localizedLocationName(p);
+  }
+  
   public boolean isVisible() {
     return visible;
   }

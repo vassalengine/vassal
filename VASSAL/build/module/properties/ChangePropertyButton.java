@@ -15,6 +15,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 
@@ -58,7 +59,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
         report.setProperty(OLD_VALUE_FORMAT, oldValue);
         report.setProperty(NEW_VALUE_FORMAT, property.getPropertyValue());
         report.setProperty(DESCRIPTION_FORMAT, property.getDescription());
-        Chatter.DisplayText chatCommand = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* "+report.getText());
+        Chatter.DisplayText chatCommand = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* "+report.getLocalizedText());
         chatCommand.execute();
         c.append(chatCommand);
       }
@@ -78,7 +79,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button text", "Button icon", "Hotkey", "Report format", "Options"};
+    return new String[] {"Button text:  ", "Button icon:  ", "Hotkey:  ", "Report format:  ", "Options:  "};
   }
 
   public Class[] getAttributeTypes() {
@@ -89,7 +90,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
     return new String[] {BUTTON_TEXT, BUTTON_ICON, HOTKEY, REPORT_FORMAT, PROPERTY_CHANGER};
   }
 
-  public static class ReportFormatConfig implements ConfigurerFactory {
+  public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] {OLD_VALUE_FORMAT, NEW_VALUE_FORMAT, DESCRIPTION_FORMAT});
     }
@@ -176,5 +177,9 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
 
   public Object getProperty(Object key) {
     return property.getProperty(key);
+  }
+  
+  public Object getLocalizedProperty(Object key) {
+    return property.getLocalizedProperty(key);
   }
 }

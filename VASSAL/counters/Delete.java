@@ -14,6 +14,8 @@ import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /*
@@ -38,12 +40,12 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * This trait adds a command that creates a duplicate of the selected Gamepiece
  */
-public class Delete extends Decorator implements EditablePiece {
+public class Delete extends Decorator implements TranslatablePiece {
   public static final String ID = "delete;";
-  private KeyCommand[] keyCommands;
-  private KeyCommand deleteCommand;
-  private String commandName;
-  private KeyStroke key;
+  protected KeyCommand[] keyCommands;
+  protected KeyCommand deleteCommand;
+  protected String commandName;
+  protected KeyStroke key;
 
   public Delete() {
     this(ID + "Delete;D", null);
@@ -144,7 +146,14 @@ public class Delete extends Decorator implements EditablePiece {
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GamePiece.htm", "Delete");
   }
+  
 
+  public PieceI18nData getI18nData() {
+    PieceI18nData data = new PieceI18nData(this);
+    data.add(commandName, "Delete command");
+    return data;
+  }
+  
   public static class Ed implements PieceEditor {
     private StringConfigurer nameInput;
     private HotKeyConfigurer keyInput;

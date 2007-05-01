@@ -39,6 +39,8 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Translatable;
 import VASSAL.tools.LaunchButton;
 
 /**
@@ -54,6 +56,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   protected LaunchButton launch;
   protected String showingIcon;
   protected String hiddenIcon;
+  protected ComponentI18nData myI18nData;
   public static final String DEFAULT_SHOWING_ICON = "/images/globe_unselected.gif";
   public static final String DEFAULT_HIDDEN_ICON = "/images/globe_selected.gif";
 
@@ -87,6 +90,10 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     map.addDrawComponent(this);
 
     map.getToolBar().add(launch);
+    
+    if (b instanceof Translatable) {
+      getI18nData().setOwningComponent((Translatable) b);
+    }
   }
 
   protected void setPiecesVisible(boolean visible) {
@@ -236,6 +243,13 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
     return AutoConfigurable.Util.getBuildElement(doc, this);
+  }
+  
+  public ComponentI18nData getI18nData() {
+    if (myI18nData == null) {
+      myI18nData = new ComponentI18nData(this, "HidePieces");
+    }
+    return myI18nData;
   }
 }
 

@@ -59,6 +59,7 @@ import VASSAL.counters.Embellishment;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.GlobalCommand;
 import VASSAL.counters.PieceFilter;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ToolBarComponent;
@@ -118,6 +119,7 @@ public class MassKeyCommand extends AbstractConfigurable {
     if (parent instanceof PropertySource) {
       propertySource = (PropertySource) parent;
     }
+    setAttributeTranslatable(NAME, false);
   }
 
   public void apply() {
@@ -170,7 +172,7 @@ public class MassKeyCommand extends AbstractConfigurable {
       return new IconConfigurer(key, name, "/images/keyCommand.gif");
     }
   }
-  public static class ReportFormatConfig implements ConfigurerFactory {
+  public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[0]);
     }

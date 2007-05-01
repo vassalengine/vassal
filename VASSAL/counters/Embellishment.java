@@ -58,6 +58,9 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.KeyModifiersConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Language;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
@@ -69,7 +72,7 @@ import VASSAL.tools.SequenceEncoder;
  * The current image is superimposed over the inner piece. The entire layer may
  * be activated or deactivated.
  */
-public class Embellishment extends Decorator implements EditablePiece {
+public class Embellishment extends Decorator implements TranslatablePiece {
   public static final String OLD_ID = "emb;";
   public static final String ID = "emb2;"; // New type encoding
 
@@ -252,18 +255,26 @@ public class Embellishment extends Decorator implements EditablePiece {
     loopLevels = true;
   }
 
+  public String getLocalizedName() {
+    return getName(true);
+  }
+  
   public String getName() {
+    return getName(false);
+  }
+  
+  public String getName(boolean localized) {
     String name = null;
-    if (value > 0 && commonName[value - 1] != null && commonName[value - 1].length() > 0) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(commonName[value - 1], '+');
+    if (value > 0 && getCommonName(localized, value - 1) != null && getCommonName(localized, value - 1).length() > 0) {
+      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(getCommonName(localized, value - 1), '+');
       String first = st.nextToken();
       if (st.hasMoreTokens()) {
         String second = st.nextToken();
         if (first.length() == 0) {
-          name = piece.getName() + second;
+          name = (localized ? piece.getLocalizedName() : piece.getName()) + second;
         }
         else {
-          name = first + piece.getName();
+          name = first + (localized ? piece.getLocalizedName() : piece.getName());
         }
       }
       else {
@@ -271,11 +282,11 @@ public class Embellishment extends Decorator implements EditablePiece {
       }
     }
     else {
-      name = piece.getName();
+      name = (localized ? piece.getLocalizedName() : piece.getName());
     }
     return name;
   }
-
+ 
   public void mySetState(String s) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     value = st.nextInt(1);
@@ -569,12 +580,7 @@ public class Embellishment extends Decorator implements EditablePiece {
     else if (key.equals(name + NAME)) {
       checkPropertyLevel();
       if (value > 0) {
-        String s = commonName[Math.abs(value) - 1];
-        if (s.startsWith("+"))
-          return s.substring(1);
-        if (s.endsWith("+"))
-          return s.substring(0, s.length() - 2);
-        return s;
+        return strip(commonName[Math.abs(value) - 1]);
       }
       else
         return "";
@@ -596,6 +602,47 @@ public class Embellishment extends Decorator implements EditablePiece {
     return super.getProperty(key);
   }
 
+  public Object getLocalizedProperty(Object key) {
+    if (key.equals(name + IMAGE) || key.equals(name + LEVEL) || key.equals(name + ACTIVE) || key.equals(Properties.VISIBLE_STATE)) {
+      return getProperty(key);
+    }
+    else if (key.equals(name + NAME)) {
+      
+      checkPropertyLevel();
+      if (value > 0) {      
+        return strip(getLocalizedCommonName(Math.abs(value) - 1));
+      }
+      else
+        return "";
+    }
+    return super.getLocalizedProperty(key);
+  }
+  
+  protected String strip (String s) {
+    if (s.startsWith("+"))
+      return s.substring(1);
+    if (s.endsWith("+"))
+      return s.substring(0, s.length() - 2);
+    return s;
+  }
+  
+  protected String getCommonName(boolean localized, int i) {
+    return localized ? getLocalizedCommonName(i) : commonName[i];
+  }
+  
+  protected String getLocalizedCommonName(int i) {
+    String name = commonName[i];
+    String key = TranslatablePiece.PREFIX + "." + strip(name);
+    String translation = Language.translate(key, strip(name));
+    if (name.startsWith("+")) {
+      return "+" + translation;
+    }
+    if (name.endsWith("+")) {
+      return translation + "+";
+    }
+    return translation;
+  }
+  
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Layer.htm");
   }
@@ -1083,4 +1130,23 @@ public class Embellishment extends Decorator implements EditablePiece {
     }
 
   }
-}
+
+  public PieceI18nData getI18nData() {
+    PieceI18nData data = new PieceI18nData(this);
+    if (activateKey.length() > 0) {
+      data.add(activateCommand, "Activate command");
+    }
+    if (!followProperty) {
+      data.add(upCommand, "Increase command");
+      data.add(downCommand, "Decrease command");
+      data.add(resetCommand, "Reset command");
+      data.add(rndText, "Random command");
+    }
+    // Strip off prefix/suffix marker
+    for (int i = 0; i < commonName.length; i++) {
+      data.add(strip(commonName[i]), "Level " + (i+1) + " name");
+    }
+    return data;
+  }
+
+ }

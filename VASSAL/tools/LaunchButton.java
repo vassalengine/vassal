@@ -27,6 +27,8 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Language;
+import VASSAL.i18n.Resources;
 
 /**
  * A JButton for placing into a VASSAL component's toolbar.
@@ -35,6 +37,7 @@ import VASSAL.configure.StringConfigurer;
  */
 public class LaunchButton extends JButton {
   private static final long serialVersionUID = 1L;
+  public static final String UNTRANSLATED_TEXT = "unTranslatedText"; //$NON-NLS-1$
 
   protected String tooltipAtt;
   protected String nameAtt;
@@ -113,6 +116,9 @@ public class LaunchButton extends JButton {
   public void setAttribute(String key, Object value) {
     if (key != null) {
       if (key.equals(nameAtt)) {
+        if (Language.isTranslationInProgress()) {
+          putClientProperty(UNTRANSLATED_TEXT, getText());
+        }
         setText((String) value);
         checkVisibility();
       }
@@ -136,27 +142,27 @@ public class LaunchButton extends JButton {
       }
     }
   }
-
+  
   public void setToolTipText(String text) {
     toolTipText = text;
     if (keyListener.getKeyStroke() != null) {
       text =
-        (text == null ? "" : text + " ")
-        + "[" + HotKeyConfigurer.getString(keyListener.getKeyStroke()) + "]";
+        (text == null ? "" : text + " ") //$NON-NLS-1$ //$NON-NLS-2$
+        + "[" + HotKeyConfigurer.getString(keyListener.getKeyStroke()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
     super.setToolTipText(text);
   }
 
   public Configurer getNameConfigurer() {
     if (nameConfig == null && nameAtt != null) {
-      nameConfig = new StringConfigurer(nameAtt, "Button text", getText());
+      nameConfig = new StringConfigurer(nameAtt, Resources.getString("Editor.button_text_label"), getText()); //$NON-NLS-1$
     }
     return nameConfig;
   }
 
   public Configurer getHotkeyConfigurer() {
     if (keyConfig == null && keyAtt != null) {
-      keyConfig = new HotKeyConfigurer(keyAtt, "Hotkey", keyListener.getKeyStroke());
+      keyConfig = new HotKeyConfigurer(keyAtt, Resources.getString("Editor.hotkey_label"), keyListener.getKeyStroke()); //$NON-NLS-1$
     }
     return keyConfig;
   }
@@ -164,4 +170,5 @@ public class LaunchButton extends JButton {
 	protected void checkVisibility() {
 		setVisible((getText() != null && getText().length() > 0) || getIcon() != null);
 	}
+
 }

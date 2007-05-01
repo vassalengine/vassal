@@ -84,6 +84,7 @@ public class RandomTextButton extends DiceButton {
       }
     };
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, ranAction);
+    setAttributeTranslatable(FACES, true);
   }
   
   public static String getConfigureTypeName() {

@@ -35,7 +35,6 @@ import VASSAL.counters.Labeler;
 
 public class Region extends AbstractConfigurable {
 
-  private String name = "";
   private Point origin = new Point(0, 0);
 
   private RegionGrid myGrid;
@@ -52,16 +51,20 @@ public class Region extends AbstractConfigurable {
   }
   
   public Region(Region r) {
-    name = r.getName();
+    setConfigureName(r.getName());
     origin.x = r.getOrigin().x;
     origin.y = r.getOrigin().y;
     myGrid = r.myGrid;
   }
 
   public String getName() {
-    return name;
+    return getConfigureName();
   }
 
+  public String getLocalizedName() {
+    return getLocalizedConfigureName();
+  }
+  
   public Rectangle getSelectionRect() {
     return selectionRect;
   }
@@ -113,10 +116,6 @@ public class Region extends AbstractConfigurable {
     return "Region";
   }
 
-  public String getConfigureName() {
-    return name;
-  }
-
   public boolean contains(Point p) {
     return selectionRect.contains(p);
   }
@@ -128,7 +127,7 @@ public class Region extends AbstractConfigurable {
 
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
-      return "" + name;
+      return getConfigureName();
     }
     else if (X.equals(key)) {
       return "" + origin.x;
@@ -144,8 +143,7 @@ public class Region extends AbstractConfigurable {
       return;
 
     if (NAME.equals(key)) {
-      name = (String) val;
-      setConfigureName(name);
+      setConfigureName((String) val);
       if (myGrid != null) myGrid.addRegion(this);
     }
     else if (X.equals(key)) {
@@ -168,9 +166,13 @@ public class Region extends AbstractConfigurable {
   }
 
   public String locationName() {
-    return name;
+    return getConfigureName();
   }
 
+  public String localizedLocationName() {
+    return getLocalizedConfigureName();
+  }
+  
   public boolean isSelected() {
     return selected;
   }
@@ -241,12 +243,12 @@ public class Region extends AbstractConfigurable {
 
     g.setColor(saveColor);
 
-    Labeler.drawLabel(g, name, posX, posY + labelOffset, f, Labeler.CENTER,
+    Labeler.drawLabel(g, getLocalizedConfigureName(), posX, posY + labelOffset, f, Labeler.CENTER,
                       Labeler.TOP, fg, bg, fg);
     g.setClip(oldClip);
 
     // Calculate and store the selection rectangle
-    int width = g.getFontMetrics().stringWidth(name + "  ")+1;
+    int width = g.getFontMetrics().stringWidth(getConfigureName() + "  ")+1;
     int height = g.getFontMetrics().getHeight()+1;
 
     selectionRect.setLocation(posX - (width / 2), posY - 1);

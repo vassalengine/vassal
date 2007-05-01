@@ -799,6 +799,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return p;
   }
   
+  public Object getLocalizedProperty(Object key) {
+    if (GlobalOptions.PLAYER_SIDE.equals(key)) {
+      String mySide = PlayerRoster.getMyLocalizedSide();
+      return mySide == null ? "" : mySide;  //$NON-NLS-1$
+    }
+    else {
+      return getProperty(key);
+    }
+  }
   
-
 }

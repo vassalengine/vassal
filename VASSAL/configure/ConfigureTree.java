@@ -50,6 +50,7 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.i18n.TranslateAction;
 
 /**
  * This is the Configuration Tree that appears in the Configuration window when editing a VASSAL module.
@@ -59,7 +60,7 @@ import VASSAL.build.module.documentation.HelpWindow;
 public class ConfigureTree extends JTree implements PropertyChangeListener, MouseListener, MouseMotionListener {
   private static final long serialVersionUID = 1L;
 
-  private Hashtable nodes = new Hashtable();
+  protected Hashtable nodes = new Hashtable();
   protected DefaultMutableTreeNode copyData;
   protected DefaultMutableTreeNode cutData;
   protected HelpWindow helpWindow;
@@ -127,6 +128,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     Vector v = new Vector();
     v.addElement(buildEditAction(target));
     v.addElement(buildEditPiecesAction(target));
+    addActionGroup(popup, v);
+
+    v.addElement(buildTranslateAction(target));
     addActionGroup(popup, v);
 
     v.addElement(buildHelpAction(target));
@@ -239,7 +243,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         else if (copyData != null) {
           try {
             Configurable copyBase = (Configurable) copyData.getUserObject();
-            Configurable clone = (Configurable) copyBase.getClass().newInstance();
+            Configurable clone = copyBase.getClass().newInstance();
             clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
             insert(target, clone, getTreeNode(target).getChildCount());
           }
@@ -375,7 +379,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         public void actionPerformed(ActionEvent evt) {
           try {
-            Configurable clone = (Configurable) target.getClass().newInstance();
+            Configurable clone = target.getClass().newInstance();
             clone.build(target.getBuildElement(Builder.createNewDocument()));
             insert(getParent(targetNode), clone, targetNode.getParent().getIndex(targetNode) + 1);
           }
@@ -431,6 +435,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return new EditPropertiesAction(target, helpWindow, (Frame) SwingUtilities.getAncestorOfClass(Frame.class, this), this);
   }
 
+  protected Action buildTranslateAction(final Configurable target) {
+    Action a = new TranslateAction(target, helpWindow, this);
+    a.setEnabled(target.getI18nData().isTranslatable());
+    return a;
+  }
+  
   public boolean canContainGamePiece(final Configurable target) {
     boolean canContainPiece = false;
     Class[] sub = target.getAllowableConfigureComponents();
@@ -693,11 +703,22 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     } 
   }
   
-  /*
+  /**
    * Configurers that add or remove their own children directly should implement the Mutable interface 
    * so that ConfigureTree can refresh the changed node.
    */
   public interface Mutable {
   
+  }
+  
+  /**
+   * Build an AddAction and execute it to request a new
+   * component from the user 
+   * 
+   * @param c Target Parent
+   * @param type Type to add
+   */
+  public void externalInsert(Configurable c,Configurable child) {
+    insert(c, child, getTreeNode(c).getChildCount());
   }
 }

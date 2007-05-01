@@ -233,6 +233,22 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return name;
   }
 
+  public String localizedLocationName(Point p) {
+    String name = null;
+    for (Iterator it = zones.iterator(); it.hasNext();) {
+      Zone zone = (Zone) it.next();
+      if (zone.contains(p)) {
+        name = zone.localizedLocationName(p);
+        break;
+      }
+    }
+    if (name == null
+        && background != null) {
+      name = background.localizedLocationName(p);
+    }
+    return name;
+  }
+  
   public int range(Point p1, Point p2) {
     MapGrid grid = background;
     Zone z1 = findZone(p1);

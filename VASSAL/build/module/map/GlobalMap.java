@@ -57,6 +57,8 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Translatable;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ScrollPane;
@@ -80,6 +82,7 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
   protected JPanel borderPanel;
   protected JScrollPane scroll;
   protected boolean scrollVisible;
+  protected ComponentI18nData myI18nData;
 
   public GlobalMap() {
     ActionListener al = new ActionListener() {
@@ -137,6 +140,10 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
     map.addDrawComponent(this);
 
     map.getToolBar().add(launch);
+    
+    if (b instanceof Translatable) {
+      getI18nData().setOwningComponent((Translatable) b);
+    }
 
     if (SwingUtilities.getWindowAncestor(map.getView()) != null) {
       initWindow();
@@ -485,5 +492,12 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
       map.repaint();
     }
 
+  }
+  
+  public ComponentI18nData getI18nData() {
+    if (myI18nData == null) {
+      myI18nData = new ComponentI18nData(this, "GlobalMap");
+    }
+    return myI18nData;
   }
 }

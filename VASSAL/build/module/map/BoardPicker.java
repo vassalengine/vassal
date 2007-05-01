@@ -67,7 +67,10 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.Translatable;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -80,8 +83,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   public static final String ID = "BoardPicker"; //$NON-NLS-1$
   protected Vector possibleBoards = new Vector();
   protected Vector currentBoards = null;
-  private Dimension psize = new Dimension(350, 125);
-  private double slotScale = 0.2;
+  protected Dimension psize = new Dimension(350, 125);
+  protected double slotScale = 0.2;
   protected JTextField status;
   protected Map map;
   protected JPanel slotPanel;
@@ -108,7 +111,9 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   public static final String ADD_COLUMN_BUTTON_TEXT = "addColumnText"; //$NON-NLS-1$
   public static final String BOARD_PROMPT = "boardPrompt"; //$NON-NLS-1$
   public static final String MAX_COLUMNS = "maxColumns"; //$NON-NLS-1$
-  private JButton clearButton;
+  protected JButton clearButton;
+  protected JButton okButton;
+  protected ComponentI18nData myI18nData;
   protected JScrollPane slotScroll;
 
   public BoardPicker() {
@@ -183,6 +188,9 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
       ((Board) e.nextElement()).setMap(map);
     }
+    if (b instanceof Translatable) {
+      getI18nData().setOwningComponent((Translatable) b);
+    }
     GameModule.getGameModule().getGameState().addGameSetupStep(this);
   }
 
@@ -225,18 +233,27 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       if (value != null && value.length() > 0) {
         title = value;
       }
-      value = e.getAttribute(ADD_ROW_BUTTON_TEXT);
-      if (value != null && value.length() > 0) {
-        addRowButtonText = value;
-      }
-      value = e.getAttribute(ADD_COLUMN_BUTTON_TEXT);
-      if (value != null && value.length() > 0) {
-        addColumnButtonText = value;
-      }
+ /* 
+  *      'Add Row' and 'Add Column' text are no longer configurable, just use
+  *      the standard (possibly translated) text
+  *      
+  *      value = e.getAttribute(ADD_ROW_BUTTON_TEXT);
+  *      if (value != null && value.length() > 0) {
+  *        addRowButtonText = value;
+  *      }
+  *      value = e.getAttribute(ADD_COLUMN_BUTTON_TEXT);
+  *      if (value != null && value.length() > 0) {
+  *        addColumnButtonText = value;
+  *      }
+  */
       value = e.getAttribute(BOARD_PROMPT);
       if (value != null && value.length() > 0) {
         boardPrompt = value;
       }
+      
+      // Record attributes for later translation
+      Language.saveTranslatableAttribute(this, BOARD_PROMPT, boardPrompt);
+      Language.saveTranslatableAttribute(this, DIALOG_TITLE, title);
     }
   }
 
@@ -278,6 +295,9 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
    */
   public void add(Buildable b) {
     possibleBoards.addElement(b);
+    if (b instanceof Translatable) {
+      ((Translatable) b).getI18nData().setOwningComponent(this);
+    }
   }
 
   /**
@@ -292,7 +312,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   public static String getConfigureTypeName() {
-    return "Map Boards";
+    return Resources.getString("Editor.BoardPicker.component_type"); //$NON-NLS-1$
   }
 
   public String getConfigureName() {
@@ -379,14 +399,31 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     }
     return s;
   }
+  
+  public String[] getAllowableLocalizedBoardNames() {
+    String s[] = new String[possibleBoards.size()];
+    for (int i = 0; i < s.length; ++i) {
+      s[i] = ((Board) possibleBoards.elementAt(i)).getLocalizedName();
+    }
+    return s;
+  }
 
   /**
    * @return a Board with the given name.
    */
   public Board getBoard(String boardName) {
+    return getBoard(boardName, false);
+  }
+  
+  public Board getLocalizedBoard(String localizedBoardName) {
+    return getBoard(localizedBoardName, true);
+  }
+  
+  protected Board getBoard(String boardName, boolean localized) {
     for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
       Board b = (Board) e.nextElement();
-      if (b.getName().equals(boardName)) {
+      String checkName = localized ? b.getLocalizedName() : b.getName();
+      if (checkName.equals(boardName)) {
         return b;
       }
     }
@@ -713,7 +750,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       super(null, null);
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      title = new StringConfigurer(null, "Dialog Title:  ", BoardPicker.this.title);
+      title = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.dialog_title"), BoardPicker.this.title); //$NON-NLS-1$
       title.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
@@ -722,7 +759,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
         }
       });
       controls.add(title.getControls());
-      prompt = new StringConfigurer(null, "\"Select Boards\" prompt:  ", BoardPicker.this.boardPrompt);
+      prompt = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.board_prompt"), BoardPicker.this.boardPrompt); //$NON-NLS-1$
       prompt.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
@@ -731,7 +768,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
         }
       });
       controls.add(prompt.getControls());
-      scale = new DoubleConfigurer(null, "Cell scale factor:  ", new Double(slotScale));
+      scale = new DoubleConfigurer(null, Resources.getString("Editor.BoardPicker.cell_scale_factor"), new Double(slotScale)); //$NON-NLS-1$
       scale.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
@@ -740,7 +777,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
         }
       });
       controls.add(scale.getControls());
-      width = new IntConfigurer(null, "Cell width:  ", new Integer(psize.width));
+      width = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_width"), new Integer(psize.width)); //$NON-NLS-1$
       width.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
@@ -749,7 +786,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
         }
       });
       controls.add(width.getControls());
-      height = new IntConfigurer(null, "Cell height:  ", new Integer(psize.height));
+      height = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_height"), new Integer(psize.height)); //$NON-NLS-1$
       height.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
@@ -778,9 +815,38 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     public void setValue(String s) {
     }
   }
+  
+  /*
+   * Record which attributes are translatable
+   */
+  public ComponentI18nData getI18nData() {
+    if (myI18nData == null) {
+      myI18nData = new ComponentI18nData(this, "", null, //$NON-NLS-1$
+          new String[] {DIALOG_TITLE, BOARD_PROMPT},
+          new boolean[] {true, true},
+          new String[] {Resources.getString("Editor.BoardPicker.dialog_title"), Resources.getString("Editor.BoardPicker.board_prompt") //$NON-NLS-1$ //$NON-NLS-2$
+      });
+    }
+    return myI18nData;
+  }
 
-  public String getI18nKey() {
-    return "BoardPicker";
+  public void setAttribute(String key, Object value) {
+    if (DIALOG_TITLE.equals(key)) {
+      title = (String) value;
+    }
+    else if (BOARD_PROMPT.equals(key)) {
+      boardPrompt = (String) value;
+    }
+  }
+
+  public String getAttributeValueString(String attr) {
+    if (DIALOG_TITLE.equals(attr)) {
+      return title;
+    }
+    else if (BOARD_PROMPT.equals(attr)) {
+      return boardPrompt;
+    }
+    return null;
   }
 
   public void repaint() {

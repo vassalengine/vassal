@@ -36,6 +36,8 @@ import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
@@ -165,9 +167,9 @@ public class DiceButton extends AbstractConfigurable {
    * @return
    */
   protected String formatResult(String result) {
-    reportFormat.setProperty(REPORT_NAME, getConfigureName());
+    reportFormat.setProperty(REPORT_NAME, getLocalizedConfigureName());
     reportFormat.setProperty(RESULT, result);
-    String text = reportFormat.getText();
+    String text = reportFormat.getLocalizedText();
     String report = text.startsWith("*") ? "*" + text : "* " + text; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     return report;
   }
@@ -182,9 +184,9 @@ public class DiceButton extends AbstractConfigurable {
                         "Button text:  ",
                         "Tooltip text:  ",
                         "Button icon:  ",
-                        "Number of dice:  ",
-                        "Number of sides per die:  ",
-                        "Add to each die:  ",
+                        Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
+                        Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
+                        Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
                         "Report Total?",
                         "Hotkey:  ",
                         "Prompt for values when button pushed?",
@@ -197,7 +199,7 @@ public class DiceButton extends AbstractConfigurable {
     }
   }
 
-  public static class ReportFormatConfig implements ConfigurerFactory {
+  public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT});
     }

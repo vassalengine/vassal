@@ -44,6 +44,10 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   protected Map map;
   protected TemporaryToolBar tempToolBar;
 
+  public LayeredPieceCollection() {
+    this.setAttributeTranslatable(PROPERTY_NAME, false);
+  }
+  
   public String[] getAttributeDescriptions() {
     return new String[]{"Property name for layer:  ","Layer Order"};
   }

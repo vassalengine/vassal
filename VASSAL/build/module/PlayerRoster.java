@@ -36,6 +36,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
+import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -47,6 +48,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Language;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
@@ -55,13 +57,15 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * Maintains a list of players involved in the current game
  */
-public class PlayerRoster implements Configurable, CommandEncoder, GameComponent, GameSetupStep {
+public class PlayerRoster extends AbstractConfigurable implements CommandEncoder, GameComponent, GameSetupStep {
   public static final String BUTTON_ICON = "buttonIcon"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
   public static final String TOOL_TIP = "buttonToolTip"; //$NON-NLS-1$
+  public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
   protected List players = new ArrayList();
   protected List sides = new ArrayList();
+  protected String[] untranslatedSides;
   protected LaunchButton retireButton;
   protected List sideChangeListeners = new ArrayList();
 
@@ -90,6 +94,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
       for (int i = 0; i < attributes.getLength(); ++i) {
         Attr att = (Attr) attributes.item(i);
         retireButton.setAttribute(att.getName(), att.getValue());
+        Language.saveTranslatableAttribute(this, att.getName(), att.getValue());
       }
       NodeList n = e.getElementsByTagName("*"); //$NON-NLS-1$
       sides.clear();
@@ -97,6 +102,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
         Element el = (Element) n.item(i);
         sides.add(Builder.getText(el));
       }
+      Language.saveTranslatableAttribute(this, SIDES, getSidesAsString());
     }
   }
 
@@ -217,12 +223,20 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   }
 
   public static String getMySide() {
+    return getMySide(false);
+  }
+
+  public static String getMyLocalizedSide() {
+    return getMySide(true);
+  }
+  
+  protected static String getMySide(boolean localized) {
     PlayerRoster r = getInstance();
     if (r != null) {
       PlayerInfo[] players = r.getPlayers();
       for (int i = 0; i < players.length; ++i) {
         if (players[i].playerId.equals(GameModule.getUserId())) {
-          return players[i].side;
+          return localized ? players[i].getLocalizedSide() : players[i].getSide();
         }
       }
     }
@@ -342,7 +356,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
     availableSides.add(0, OBSERVER);
     String newSide = (String) JOptionPane.showInputDialog(GameModule.getGameModule().getFrame(),
         Resources.getString("PlayerRoster.join_game_as"), Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$ //$NON-NLS-2$
-        JOptionPane.QUESTION_MESSAGE, null, (String[]) availableSides.toArray(new String[availableSides.size()]), OBSERVER);
+        JOptionPane.QUESTION_MESSAGE, null, availableSides.toArray(new String[availableSides.size()]), OBSERVER);
     if (newSide != null) {
       PlayerInfo me = new PlayerInfo(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       Add a = new Add(this, me.playerId, me.playerName, me.side);
@@ -353,7 +367,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   public static class PlayerInfo {
     public String playerId;
     public String playerName;
-    public String side;
+    private String side;
 
     public PlayerInfo(String id, String name, String side) {
       playerId = id;
@@ -368,6 +382,14 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
       else {
         return false;
       }
+    }
+    
+    public String getSide() {
+      return side;
+    }
+    
+    public String getLocalizedSide() {
+      return PlayerRoster.getInstance().translateSide(side);
     }
   }
   public static class Add extends Command {
@@ -400,7 +422,7 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
       super(null, null);
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      sidesConfig = new StringArrayConfigurer(null, "Sides available to players", (String[]) sides.toArray(new String[sides.size()]));
+      sidesConfig = new StringArrayConfigurer(null, "Sides available to players", sides.toArray(new String[sides.size()]));
       sidesConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           sides.clear();
@@ -449,4 +471,76 @@ public class PlayerRoster implements Configurable, CommandEncoder, GameComponent
   }
   private static String OBSERVER = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
   protected StringEnumConfigurer sideConfig;
+  
+  /**
+   * PlayerRoster is not a true AbstractConfigurable, it handles
+   * it's own configuration. Implement the rest of the AbstractConfigurable
+   * abstract classes for i18n.
+   */
+  public String[] getAttributeNames() {
+    return new String[] {BUTTON_TEXT, TOOL_TIP, SIDES};
+  }
+
+  public Class[] getAttributeTypes() {
+     return new Class[] { String.class, String.class, String.class };
+  }
+
+  public String getAttributeValueString(String key) {
+    if (SIDES.equals(key)) {
+      return getSidesAsString();
+    }
+    return retireButton.getAttributeValueString(key);
+  }
+
+  /*
+   * Only ever called from Language.translate()
+   */
+  public void setAttribute(String key, Object value) {
+    if (SIDES.equals(key)) {
+      untranslatedSides = new String[sides.size()];
+      for (int i = 0; i < sides.size(); i++) {
+        untranslatedSides[i] = (String) sides.get(i);
+      }
+      String[] s = StringArrayConfigurer.stringToArray((String) value);
+      sides = new ArrayList(s.length);
+      for (int i = 0; i < s.length; i++) {
+        sides.add(s[i]);
+      }
+    }
+    else {
+      retireButton.setAttribute(key, value);
+    }  
+  }
+  
+  protected String getSidesAsString() {
+    String[] s = (String[]) sides.toArray(new String[0]);
+    return StringArrayConfigurer.arrayToString(s);
+  }
+  
+  protected String untranslateSide(String side) {
+    if (untranslatedSides != null) {
+      for (int i = 0; i < sides.size(); i++) {
+        if (((String) sides.get(i)).equals(side)) {
+          return untranslatedSides[i];
+        }
+      }
+    }
+    return side;
+  }
+
+  protected String translateSide(String side) {
+    if (untranslatedSides != null) {
+      for (int i = 0; i < untranslatedSides.length; i++) {
+        if (untranslatedSides[i].equals(side)) {
+          return (String) sides.get(i);
+        }
+      }
+    }
+    return side;
+  }
+  
+  public String[] getAttributeDescriptions() {
+    return null;
+  }
+
 }

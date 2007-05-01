@@ -57,7 +57,6 @@ import java.util.HashMap;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JRootPane;
@@ -91,19 +90,22 @@ import VASSAL.counters.PieceSorter;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.LaunchButton;
 
 /**
  * This is a MouseListener that moves pieces onto a Map window
  */
 public class PieceMover extends AbstractBuildable implements MouseListener, GameComponent, Comparator {
   /** The Preferences key for autoreporting moves. */
-  public static final String AUTO_REPORT = "autoReport";
-  protected static final String OFFMAP = "offmap";
+  public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
+  public static final String NAME = "name";
   protected Map map;
   protected Point dragBegin;
   protected GamePiece dragging;
-  protected JButton markUnmovedButton;
-  public static final String ICON_NAME = "icon";
+  protected LaunchButton markUnmovedButton;
+  protected String markUnmovedText;
+  public static final String ICON_NAME = "icon"; //$NON-NLS-1$
   protected String iconName;
   protected PieceFinder dragTargetSelector; // Selects drag target from mouse
   // click on the Map
@@ -122,7 +124,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     map.addLocalMouseListener(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     map.setDragGestureListener(DragHandler.getTheDragHandler());
-
+    map.setPieceMover(this);
   }
 
   protected MovementReporter createMovementReporter(Command c) {
@@ -298,7 +300,20 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     }
     if (!GlobalOptions.NEVER.equals(value)) {
       if (markUnmovedButton == null) {
-        markUnmovedButton = new JButton();
+        
+        ActionListener al = new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            GamePiece[] p = map.getAllPieces();
+            Command c = new NullCommand();
+            for (int i = 0; i < p.length; ++i) {
+              c.append(markMoved(p[i], false));
+            }
+            GameModule.getGameModule().sendAndLog(c);
+            map.repaint();
+          }
+        };
+        
+        markUnmovedButton = new LaunchButton("", NAME, null, null, al );
         if (iconName != null) {
           try {
             markUnmovedButton.setIcon(new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(iconName)));
@@ -313,7 +328,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
             icon = new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(map.getAttributeValueString(Map.MARK_UNMOVED_ICON)));
           }
           catch (IOException e) {
-            URL defaultImage = getClass().getResource("/images/unmoved.gif");
+            URL defaultImage = getClass().getResource("/images/unmoved.gif"); //$NON-NLS-1$
             if (defaultImage != null) {
               icon = new ImageIcon(defaultImage);
             }
@@ -322,23 +337,12 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
             markUnmovedButton.setIcon(icon);
           }
           else {
-            markUnmovedButton.setText("Mark Unmoved");
+            markUnmovedButton.setText(Resources.getString("Map.mark_unmoved_text")); //$NON-NLS-1$
           }
         }
         markUnmovedButton.setAlignmentY(0.0F);
-        markUnmovedButton.setText(map.getAttributeValueString(Map.MARK_UNMOVED_TEXT));
+        markUnmovedButton.setText(markUnmovedText);
         markUnmovedButton.setToolTipText(map.getAttributeValueString(Map.MARK_UNMOVED_TOOLTIP));
-        markUnmovedButton.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            GamePiece[] p = map.getAllPieces();
-            Command c = new NullCommand();
-            for (int i = 0; i < p.length; ++i) {
-              c.append(markMoved(p[i], false));
-            }
-            GameModule.getGameModule().sendAndLog(c);
-            map.repaint();
-          }
-        });
         map.getToolBar().add(markUnmovedButton);
       }
     }
@@ -371,6 +375,12 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     if (ICON_NAME.equals(key)) {
       iconName = (String) value;
     }
+    else if (Map.MARK_UNMOVED_TEXT.equals(key)) {
+      if (markUnmovedButton != null) {
+        markUnmovedButton.setAttribute(NAME, value);
+      }
+      markUnmovedText = (String) value;
+    }
   }
 
   protected boolean isMultipleSelectionEvent(MouseEvent e) {
@@ -401,10 +411,10 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
   }
   
   private void setOld(GamePiece p) {
-    String mapName = "";
-    String boardName = "";
-    String zoneName = "";
-    String locationName = "";
+    String mapName = ""; //$NON-NLS-1$
+    String boardName = ""; //$NON-NLS-1$
+    String zoneName = ""; //$NON-NLS-1$
+    String locationName = ""; //$NON-NLS-1$
     Map m = p.getMap();
     Point pos = p.getPosition();
     
@@ -421,8 +431,8 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
       locationName = m.locationName(pos);
     }
     
-    p.setProperty(BasicPiece.OLD_X, pos.x+"");
-    p.setProperty(BasicPiece.OLD_Y, pos.y+"");
+    p.setProperty(BasicPiece.OLD_X, pos.x+""); //$NON-NLS-1$
+    p.setProperty(BasicPiece.OLD_Y, pos.y+""); //$NON-NLS-1$
     p.setProperty(BasicPiece.OLD_MAP, mapName);
     p.setProperty(BasicPiece.OLD_BOARD, boardName);
     p.setProperty(BasicPiece.OLD_ZONE, zoneName);
@@ -753,7 +763,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     /** CTOR */
     private DragHandler() {
       if (theDragHandler != null) {
-        throw new java.lang.RuntimeException("There can be no more than one DragHandler!");
+        throw new java.lang.RuntimeException("There can be no more than one DragHandler!"); //$NON-NLS-1$
       }
     }
 
@@ -1043,7 +1053,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
         	Point dragPointOffset = new Point (0,0);
         	dragPointOffset.x = boundingBox.x + currentPieceOffsetX - EXTRA_BORDER;
         	dragPointOffset.y = boundingBox.y + currentPieceOffsetY - EXTRA_BORDER;
-        	dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR), dragImage, dragPointOffset, new StringSelection(""), this);
+        	dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR), dragImage, dragPointOffset, new StringSelection(""), this); //$NON-NLS-1$
           dge.getDragSource().addDragSourceMotionListener(this);
         }
         catch (InvalidDnDOperationException e) {

@@ -87,8 +87,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
     setConfigureName(boardName);
   }
 
+  public String getLocalizedName() {
+    return getLocalizedConfigureName();
+  }
+  
   public String getName() {
-    return boardName;
+    return getConfigureName();
   }
 
   public void addTo(Buildable b) {
@@ -109,10 +113,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   public Class[] getAttributeTypes() {
     return new Class[]{String.class, Image.class, Boolean.class, Integer.class, Integer.class, Color.class};
-  }
-
-  public String getConfigureName() {
-    return super.getConfigureName();
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -137,7 +137,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   public String getAttributeValueString(String key) {
     if (NAME.equals(key)) {
-      return boardName;
+      return getConfigureName();
     }
     else if (IMAGE.equals(key)) {
       return imageFile;
@@ -330,6 +330,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
     return grid == null ? null : grid.locationName(localCoordinates(p));
   }
 
+  public String localizedLocationName(Point p) {
+    return grid == null ? null : grid.localizedLocationName(localCoordinates(p));
+  }
+  
   public Point snapTo(Point p) {
     return grid == null ? p : globalCoordinates(grid.snapTo(localCoordinates(p)));
   }

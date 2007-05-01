@@ -23,6 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.i18n.Language;
 
 /**
  * A general-purpose configurable GUI container
@@ -55,6 +56,7 @@ public abstract class Widget extends AbstractConfigurable {
       for (int i = 0; i < n.getLength(); ++i) {
         Attr att = (Attr) n.item(i);
         setAttribute(att.getName(), att.getValue());
+        Language.saveTranslatableAttribute(this, att.getName(), att.getValue());
       }
     }
   }

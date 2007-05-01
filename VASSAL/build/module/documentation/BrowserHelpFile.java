@@ -46,6 +46,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.ComponentI18nData;
 import VASSAL.tools.BrowserSupport;
 
 /**
@@ -62,6 +63,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   protected JMenuItem launch;
   protected URL url;
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
+  protected ComponentI18nData myI18nData;
 
   public BrowserHelpFile() {
     super();
@@ -144,7 +146,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       output.delete();
     }
   }
-
+ 
   public String[] getAttributeNames() {
     return new String[]{TITLE, CONTENTS, STARTING_PAGE};
   }
@@ -164,6 +166,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       name = (String) value;
       launch.setText(name);
       url = null;
+      getI18nData().setUntranslatedValue(key, name);
     }
     else if (STARTING_PAGE.equals(key)) {
       startingPage = (String) value;
@@ -220,7 +223,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     protected File dir;
 
     public String[] getAttributeDescriptions() {
-      return new String[]{"Menu Entry", "Contents", "Starting Page"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      return new String[]{"Menu Entry:  ", "Contents:  ", "Starting Page:  "};
     }
 
     public String[] getAttributeNames() {
@@ -335,6 +338,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     public Element getBuildElement(Document doc) {
       return null;
     }
+
+    public ComponentI18nData getI18nData() {
+      return null;
+    }
   }
   public static class ContentsConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -365,5 +372,15 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       }
       return super.getValue();
     }
+  }
+  
+  public ComponentI18nData getI18nData() {
+    if (myI18nData == null) {
+      myI18nData = new ComponentI18nData(this, "BrowserHelpFile." + getConfigureName(), null,
+          new String[] {TITLE},
+          new boolean[] {true},
+          new String[] {"Menu Entry:  "});
+    }
+    return myI18nData;
   }
 }

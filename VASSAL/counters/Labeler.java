@@ -177,7 +177,7 @@ public class Labeler extends Decorator implements EditablePiece {
     else {
       nameFormat.setProperty(PIECE_NAME, piece.getName());
       nameFormat.setProperty(LABEL, getLabel());
-      return nameFormat.getText(Decorator.getOutermost(this));
+      return nameFormat.getLocalizedText(Decorator.getOutermost(this));
     }
   }
 
@@ -350,7 +350,7 @@ public class Labeler extends Decorator implements EditablePiece {
   }
 
   public String getLabel() {
-    return labelFormat.getText(Decorator.getOutermost(this));
+    return labelFormat.getLocalizedText(Decorator.getOutermost(this));
   }
 
   public Rectangle boundingBox() {

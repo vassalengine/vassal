@@ -347,6 +347,29 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return region != null ? region.getName() : null;
 
   }
+  
+  public String localizedLocationName(Point p) {
+
+    Point checkPoint;
+
+    if (regionList.isEmpty()) {
+      return null;
+    }
+
+    //
+    // If snap-to is turned off, then p has not been snapped to a grid point yet
+    //
+    if (snapTo) {
+      checkPoint = p;
+    }
+    else {
+      checkPoint = doSnap(p);
+    }
+
+    Region region = (Region) regionList.get(checkPoint);
+    return region != null ? region.getLocalizedName() : null;
+
+  }
 
   /**
    * Return Region selected by Point

@@ -193,14 +193,14 @@ public class MovementReporter {
         break;
       }
       format.setProperty(Map.PIECE_NAME, ms.getPieceName());
-      format.setProperty(Map.LOCATION, toMap.locationName(ms.getNewPosition()));
+      format.setProperty(Map.LOCATION, toMap.localizedLocationName(ms.getNewPosition()));
       if (fromMap != null) {
-        format.setProperty(Map.OLD_MAP, fromMap.getConfigureName());
-        format.setProperty(Map.OLD_LOCATION, fromMap.locationName(ms.getOldPosition()));
+        format.setProperty(Map.OLD_MAP, fromMap.getLocalizedConfigureName());
+        format.setProperty(Map.OLD_LOCATION, fromMap.localizedLocationName(ms.getOldPosition()));
       }
-      format.setProperty(Map.MAP_NAME, toMap.getConfigureName());
+      format.setProperty(Map.MAP_NAME, toMap.getLocalizedConfigureName());
 
-      String moveText = format.getText();
+      String moveText = format.getLocalizedText();
 
       if (moveText.length() > 0) {
         c = c.append(new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + moveText));
@@ -289,7 +289,7 @@ public class MovementReporter {
       StringBuffer names = new StringBuffer();
       for (Iterator it = pieces.iterator(); it.hasNext();) {
         GamePiece gamePiece = (GamePiece) it.next();
-        names.append(gamePiece.getName());
+        names.append(gamePiece.getLocalizedName());
         if (it.hasNext()) {
           names.append(", ");
         }

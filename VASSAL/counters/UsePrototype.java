@@ -87,6 +87,10 @@ public class UsePrototype extends Decorator implements EditablePiece {
         public Object getProperty(Object key) {
           return p.getProperty(String.valueOf(key));
         }
+
+        public Object getLocalizedProperty(Object key) {
+          return getProperty(key);
+        }
       };
     }
     lastCachedPrototype = null;

@@ -32,12 +32,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.OverlayLayout;
 import VASSAL.build.module.map.BoardPicker;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.BackgroundTask;
 
 public class BoardSlot extends JPanel implements Icon, ActionListener {
   private static final long serialVersionUID = 1L;
 
-  private String prompt = "Select board";
+  private String prompt = Resources.getString("BoardPicker.select_board"); //$NON-NLS-1$
 
   protected BoardPicker picker;
   protected Board board = null;
@@ -46,21 +47,21 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
   protected JCheckBox reverseCheckBox;
 
   public BoardSlot(BoardPicker bp) {
-    this(bp,"Select board");
+    this(bp,Resources.getString("BoardPicker.select_board")); //$NON-NLS-1$
   }
   public BoardSlot(BoardPicker bp, String prompt) {
     this.prompt = prompt;
     picker = bp;
     boards = new JComboBox();
     boards.addItem(prompt);
-    String s[] = picker.getAllowableBoardNames();
+    String s[] = picker.getAllowableLocalizedBoardNames();
     for (int i = 0; i < s.length; ++i) {
       boards.addItem(s[i]);
     }
     boards.setSelectedIndex(s.length == 1 ? 1 : 0);
     boards.addActionListener(this);
 
-    reverseCheckBox = new JCheckBox("flip");
+    reverseCheckBox = new JCheckBox(Resources.getString("BoardPicker.flip")); //$NON-NLS-1$
     reverseCheckBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         if (getBoard() != null) {
@@ -94,7 +95,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
       setBoard(null);
     }
     else {
-      Board b = picker.getBoard((String) boards.getSelectedItem());
+      Board b = picker.getLocalizedBoard((String) boards.getSelectedItem());
       if (picker.getBoardsFromControls().contains(b)) {
         b = b.copy();
       }
@@ -110,20 +111,20 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     board = b;
     System.gc();
     if (b != null) {
-      reverseCheckBox.setVisible("true".equals(b.getAttributeValueString(Board.REVERSIBLE)));
+      reverseCheckBox.setVisible("true".equals(b.getAttributeValueString(Board.REVERSIBLE))); //$NON-NLS-1$
       reverseCheckBox.setSelected(b.isReversed());
 
       board = b;
-      picker.warn("Loading " + b.getName() + " ...");
+      picker.warn(Resources.getString("BoardPicker.loading", b.getLocalizedName())); //$NON-NLS-1$
       final javax.swing.Timer t = new javax.swing.Timer(1000, new ActionListener() {
         boolean toggle = false;
 
         public void actionPerformed(ActionEvent evt) {
           if (toggle) {
-            picker.warn("Loading " + b.getName() + " ...");
+            picker.warn(Resources.getString("BoardPicker.loading", b.getLocalizedName())); //$NON-NLS-1$
           }
           else {
-            picker.warn("Loading " + b.getName());
+            picker.warn(Resources.getString("BoardPicker.loading2", b.getLocalizedName())); //$NON-NLS-1$
           }
           toggle = !toggle;
         }
@@ -136,7 +137,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
         }
 
         public void doLater() {
-          picker.warn("Loaded " + b.getName());
+          picker.warn(Resources.getString("BoardPicker.loaded", b.getLocalizedName())); //$NON-NLS-1$
           t.stop();
           setSize(getPreferredSize());
           revalidate();

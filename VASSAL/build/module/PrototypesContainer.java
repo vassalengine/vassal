@@ -11,6 +11,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.i18n.ComponentI18nData;
 
 /*
  * $Id$
@@ -108,5 +109,11 @@ public class PrototypesContainer extends AbstractConfigurable {
       }
     }
     return (PrototypeDefinition) instance.definitions.get(name);
+  }
+  
+  public ComponentI18nData getI18nData() {
+    ComponentI18nData data = super.getI18nData();
+    data.setPrefix("");
+    return data;
   }
 }

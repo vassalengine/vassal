@@ -7,6 +7,8 @@ import java.util.HashMap;
 import javax.swing.Box;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -24,6 +26,8 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PieceEditor;
 import VASSAL.counters.Properties;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.TranslatablePieceContainer;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
 
@@ -45,7 +49,7 @@ import VASSAL.tools.UniqueIdManager;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-public class PrototypeDefinition implements Configurable, UniqueIdManager.Identifyable, ValidityChecker {
+public class PrototypeDefinition extends AbstractConfigurable implements UniqueIdManager.Identifyable, ValidityChecker, TranslatablePieceContainer {
   private String name = "Prototype"; //$NON-NLS-1$
   private java.util.Map pieces = new HashMap();
   private String pieceDefinition;
@@ -236,4 +240,40 @@ public class PrototypeDefinition implements Configurable, UniqueIdManager.Identi
       }
     }
   }
-}
+  
+  /*
+   * Implement Translatable - Since PrototypeDefinition implements its
+   * own configurer, methods below here will only ever be called by the
+   * translation subsystem.
+   */
+
+  public void setAttribute(String attr, Object value) {
+  }
+
+  public String[] getAttributeDescriptions() {
+    return new String[0];
+  }
+
+  public Class[] getAttributeTypes() {
+    return new Class[0];
+  }
+
+  public String[] getAttributeNames() {
+    return new String[0];
+  }
+
+  /*
+   * Redirect getAttributeValueString() to return the attribute
+   * values for the enclosed pieces
+   */
+  public String getAttributeValueString(String attr) {
+    return getI18nData().getLocalUntranslatedValue(attr);
+  }
+  
+  public ComponentI18nData getI18nData() {
+    if (myI18nData == null) {
+      myI18nData = new ComponentI18nData(this, getPiece());
+    }
+    return myI18nData;
+  }
+ }

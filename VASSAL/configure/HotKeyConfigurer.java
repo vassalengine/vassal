@@ -27,6 +27,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import VASSAL.i18n.Resources;
+
 /**
  * A Configurer for {@link KeyStroke} values
  */
@@ -110,16 +112,16 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
     String s = KeyEvent.getKeyText(k.getKeyCode());
     s = s.replace(' ', '_');
     if ((k.getModifiers() & KeyEvent.SHIFT_MASK) > 0) {
-      s = KeyEvent.getKeyText(KeyEvent.VK_SHIFT) + " " + s;
+      s = Resources.getString("Keys.shift") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
     if ((k.getModifiers() & KeyEvent.CTRL_MASK) > 0) {
-      s = KeyEvent.getKeyText(KeyEvent.VK_CONTROL) + " " + s;
+      s = Resources.getString("Keys.ctrl") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
     if ((k.getModifiers() & KeyEvent.META_MASK) > 0) {
-      s = KeyEvent.getKeyText(KeyEvent.VK_META) + " " + s;
+      s = Resources.getString("Keys.meta") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
     if ((k.getModifiers() & KeyEvent.ALT_MASK) > 0) {
-      s = KeyEvent.getKeyText(KeyEvent.VK_ALT) + " " + s;
+      s = Resources.getString("Keys.alt") + " " + s; //$NON-NLS-1$ //$NON-NLS-2$
     }
     return s.toUpperCase();
   }
@@ -128,7 +130,7 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
    * Decode a String into a KeyStroke
    */
   public static KeyStroke decode(String s) {
-    int index = s.indexOf(",");
+    int index = s.indexOf(","); //$NON-NLS-1$
     try {
       return KeyStroke.getKeyStroke
           (Integer.parseInt(s.substring(0, index)),
@@ -144,7 +146,7 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
    * Encode a KeyStroke into a String
    */
   public static String encode(KeyStroke stroke) {
-    return stroke == null ? "" : stroke.getKeyCode() + "," + stroke.getModifiers();
+    return stroke == null ? "" : stroke.getKeyCode() + "," + stroke.getModifiers(); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
 }
