@@ -20,59 +20,47 @@ package VASSAL.i18n;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Locale;
 import java.util.Properties;
 
 /**
- * Utility class to allow translation of VASSAL using the Component
- * Translation mechanism
+ * Utility class to allow translation of VASSAL using the Component Translation mechanism
  * 
  * @author Brent Easton
- *
+ * 
  */
 public class VassalTranslation extends Translation {
-  
   public VassalTranslation() {
     setConfigureName("VASSAL");
   }
-  
+
   protected String getDescription() {
     return "VASSAL";
   }
 
-
   public void clearProperties() {
-    localProperties = new Properties();  
+    localProperties = new Properties();
     dirty = false;
   }
-  
+
   public String getAttributeValueString(String key) {
     return Resources.getString(key);
   }
-  
-  public void saveProperties(File file, Locale locale) {
-    try {
-      OutputStream out = new FileOutputStream(file);
-      localProperties.store(out, locale.getDisplayName());
-      dirty = false;
-    }
-    catch (Exception e) {
-      // Some error message here
-    }
-  }
-  
-  protected void loadProperties(File file) {
 
-    try {
-      InputStream in = new FileInputStream(file);
-      localProperties.load(in);
-      dirty = false;
-    }
-    catch (Exception e) {
-//    Some error message here
-    }
+  public void saveProperties(File file, Locale locale) throws IOException {
+    OutputStream out = new FileOutputStream(file);
+    localProperties.store(out, locale.getDisplayName());
+    dirty = false;
+  }
+
+  protected void loadProperties(File file) throws IOException {
+    InputStream in = new FileInputStream(file);
+    localProperties.load(in);
+    dirty = false;
   }
 }

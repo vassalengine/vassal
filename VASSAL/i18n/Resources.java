@@ -184,7 +184,7 @@ public class Resources {
       s = bundle.getString(id);
     }
     catch (Exception ex) {
-      GameModule.getGameModule().warn("No Translation: " + id);
+      System.err.println("No Translation: " + id);
     }
     
     // 2. Worst case, return the key    

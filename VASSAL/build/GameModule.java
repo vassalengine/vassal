@@ -706,6 +706,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public ArchiveWriter getArchiveWriter() {
     return archive.getWriter();
   }
+  
+  /**
+   * Is the module being translated into the user's Locale?  Localization is disabled when editing a module
+   *
+   * @return true if the module/extension has been localized
+   */
+  public boolean isLocalizationEnabled() {
+    return getArchiveWriter() == null;
+  }
 
   /**
    * @return the singleton instance of GameModule

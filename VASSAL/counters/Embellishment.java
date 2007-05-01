@@ -619,10 +619,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
   
   protected String strip (String s) {
-    if (s.startsWith("+"))
+    if (s == null) {
+      return null;
+    }
+    if (s.startsWith("+")) {
       return s.substring(1);
-    if (s.endsWith("+"))
+    }
+    if (s.endsWith("+")) {
       return s.substring(0, s.length() - 2);
+    }
     return s;
   }
   

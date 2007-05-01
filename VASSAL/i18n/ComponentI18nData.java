@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
@@ -348,7 +349,7 @@ public class ComponentI18nData {
    * @return untranslated value
    */
   public String getUntranslatedValue(String attr) {
-    if (Language.isPlayMode()) {
+    if (GameModule.getGameModule().isLocalizationEnabled()) {
       return getLocalUntranslatedValue(attr);
     }
     else if (myComponent instanceof AbstractConfigurable) {

@@ -540,7 +540,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
   
   public String[] getAttributeDescriptions() {
-    return null;
+    return new String[0];
   }
 
 }

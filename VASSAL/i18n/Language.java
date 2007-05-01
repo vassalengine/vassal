@@ -20,10 +20,10 @@ package VASSAL.i18n;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
-
+import java.util.Set;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -88,20 +88,10 @@ public class Language extends AbstractConfigurable {
     return null;
   }
 
-  /**
-   * Is the module or extension being edited? Translation of a module only
-   * takes place when editing is not in progress.
-   *
-   * @return true if the module/extension is not being edited
-   */
-  public static boolean isPlayMode() {
-    return GameModule.getGameModule().getArchiveWriter() == null;
-  }
-  
   /*
    * Record attributes as the module is being built for later translation 
    */
-  protected static HashMap translatableItems = new HashMap();
+  protected static Set<TranslatableAttribute> translatableItems = new HashSet<TranslatableAttribute>();
   
   /**
    * Record an attribute that may need to be translated.
@@ -111,9 +101,9 @@ public class Language extends AbstractConfigurable {
    * @param value current value of attribute
    */
   public static void saveTranslatableAttribute(Translatable component, String name, String value) {
-    if (isPlayMode()) {
+    if (GameModule.getGameModule().isLocalizationEnabled()) {
       TranslatableAttribute ta = new TranslatableAttribute(component, name, value);
-      translatableItems.put(ta, ta);
+      translatableItems.add(ta);
     }
   }
   
@@ -129,7 +119,7 @@ public class Language extends AbstractConfigurable {
    *
    */
   public static void translate() {
-    if (isPlayMode()) {
+    if (GameModule.getGameModule().isLocalizationEnabled()) {
       for (Iterator i = moduleTranslations.iterator(); i.hasNext(); ) {
         addBundle(((Translation) i.next()).getBundle());
       }
@@ -141,18 +131,12 @@ public class Language extends AbstractConfigurable {
       }
 
       setTranslationInProgress(true);
-      for (Iterator i = translatableItems.values().iterator(); i.hasNext(); ) {
-        TranslatableAttribute attr = (TranslatableAttribute) i.next(); 
+      for (TranslatableAttribute attr : translatableItems) {
         if (attr.isTranslatable()) {
           String key = attr.getKey();
-          try {
-            String translation = masterBundle.getString(key);
-            if (translation != null) { 
-              attr.applyTranslation(translation);
-            }
-          }
-          catch (Exception e) {
-            
+          String translation = masterBundle.getString(key);
+          if (translation != null) { 
+            attr.applyTranslation(translation);
           }
         }
       }
@@ -239,7 +223,7 @@ public class Language extends AbstractConfigurable {
      * match our locale from various extensions. These will be merged into
      * one after all are loaded.
      */
-    if (isPlayMode()) {
+    if (GameModule.getGameModule().isLocalizationEnabled()) {
       if (moduleBundle.equals(t.getBundleFileName())) {
         moduleTranslations.add(t);
       }

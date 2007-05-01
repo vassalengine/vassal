@@ -20,6 +20,7 @@ package VASSAL.counters;
 
 import java.awt.Point;
 import javax.swing.KeyStroke;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
 import VASSAL.i18n.TranslatablePiece;
@@ -210,7 +211,7 @@ public abstract class Decorator implements GamePiece, StateMergeable {
    */
   protected KeyCommand[] getKeyCommands() {
     KeyCommand myC[] = myGetKeyCommands();
-    if (this instanceof TranslatablePiece && Language.isPlayMode()) {
+    if (this instanceof TranslatablePiece && GameModule.getGameModule().isLocalizationEnabled()) {
       for (int i = 0; i < myC.length; i++) {
         myC[i].translate((TranslatablePiece) this);
       }

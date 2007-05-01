@@ -25,7 +25,7 @@ import VASSAL.build.Buildable;
  * children, must implement Translatable
  */
 
-public interface Translatable extends Buildable{
+public interface Translatable extends Buildable {
 
   public ComponentI18nData getI18nData();
   public String getAttributeValueString(String attr);

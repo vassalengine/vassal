@@ -5,6 +5,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -80,6 +81,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     }
     Collections.sort(keyList);
     keys = (String[]) keyList.toArray(new String[0]);
+    copyButtons = new CopyButton[keys.length];
     ((MyTableModel) keyTable.getModel()).update();
   }
   
@@ -113,7 +115,17 @@ public class TranslateVassalWindow extends TranslateWindow {
       localeConfig.setValue(locale);
     }
 
-    ((VassalTranslation) target).loadProperties(file);
+    try {
+      ((VassalTranslation) target).loadProperties(file);
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      String msg = e.getMessage();
+      if (msg == null) {
+        msg = "Unable to load translation";
+      }
+      loadError(msg);
+    }
   }
 
   protected void loadError(String mess) {
@@ -143,7 +155,18 @@ public class TranslateVassalWindow extends TranslateWindow {
           JOptionPane.YES_NO_OPTION)) {
         return false;
     } 
-    ((VassalTranslation) target).saveProperties(outputFile, localeConfig.getValueLocale());
+    try {
+      ((VassalTranslation) target).saveProperties(outputFile, localeConfig.getValueLocale());
+    }
+    catch (IOException e) {
+      String msg = e.getMessage();
+      if (msg == null) {
+        msg = "Unable to save translation";
+      }
+      e.printStackTrace();
+      JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg);
+      return false;
+    }
     return true;
   }
 }

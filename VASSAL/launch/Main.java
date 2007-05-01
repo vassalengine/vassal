@@ -487,6 +487,7 @@ public class Main {
           new ExtensionsLoader().addTo(GameModule.getGameModule());
       }
     }
+    Language.translate();
   }
 
   protected void loadExtension(String name) {
@@ -575,7 +576,6 @@ public class Main {
               if (GameModule.getGameModule() != null) {
                 dispose();
               }
-              Language.translate();
             }
           }
           catch (Exception e) {

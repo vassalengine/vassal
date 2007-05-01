@@ -99,7 +99,7 @@ public class Translation extends AbstractConfigurable implements Comparable {
 
   public void addTo(Buildable parent) {
     ((Language) parent).addTranslation(this);
-    if (!Language.isPlayMode()) {
+    if (!GameModule.getGameModule().isLocalizationEnabled()) {
       loadProperties();
     }
   }
