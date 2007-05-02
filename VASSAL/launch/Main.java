@@ -42,7 +42,8 @@ import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
-import VASSAL.build.module.ServerConnection;
+import VASSAL.chat.CgiServerStatus;
+import VASSAL.chat.ui.ShowServerStatusAction;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
@@ -505,12 +506,8 @@ public class Main {
     return archive;
   }
   
-  protected ServerConnection initClient() {
-    return null;
-  }
-
   protected Action initShowServerStatusAction() {
-    return null;
+    return new ShowServerStatusAction(new CgiServerStatus(),null);
   }
 
   protected  class Frame extends JFrame {

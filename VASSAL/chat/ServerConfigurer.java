@@ -105,8 +105,9 @@ public class ServerConfigurer extends Configurer {
           }
         }
       });
-      group.add(jabberButton);
-      box.add(jabberButton);
+//    Disable Jabber server until next release
+//      group.add(jabberButton);
+//      box.add(jabberButton);
       jabberHostPrompt = new JLabel(Resources.getString("Server.host")); //$NON-NLS-1$
       box.add(jabberHostPrompt);
       jabberHost = new JTextField(18);
