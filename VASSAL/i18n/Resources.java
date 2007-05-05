@@ -250,7 +250,7 @@ public class Resources {
        * No openable file in Doc dir, so let Java find one for us in the standard classpath.
        */
       if (url == null) {
-        url = super.getResource(name);
+        url = Resources.class.getClassLoader().getResource(name);
       }
       return url;
     }
