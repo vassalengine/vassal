@@ -20,11 +20,9 @@ package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import VASSAL.build.AbstractConfigurable;
@@ -141,38 +139,20 @@ public class PredefinedSetup extends AbstractConfigurable {
     if (useFile
       && fileName != null) {
       try {
-        int index = fileName.indexOf("."); //$NON-NLS-1$
-        String prefix = index > 3 ? fileName.substring(0, index) : "VSL"; //$NON-NLS-1$
-        String suffix = index >= 0 ? fileName.substring(index) : ".sav"; //$NON-NLS-1$
-        File tmp = File.createTempFile(prefix, suffix);
-        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(tmp));
-        BufferedInputStream in = new BufferedInputStream(GameModule.getGameModule().getDataArchive().getFileStream(fileName));
-        int len = 0;
-        byte[] b = new byte[in.available()];
-        while ((len = in.read(b)) > 0) {
-          out.write(b, 0, len);
-        }
-        in.close();
-        out.close();
-        File renamed = new File(tmp.getParent(), fileName);
-        if (tmp.renameTo(renamed)) {
-          tmp = renamed;
-        }
-        GameModule.getGameModule().getGameState().loadGameInBackground(tmp);
+        GameModule.getGameModule().getGameState().loadGameInBackground(fileName, getSavedGameContents());
       }
-      catch (IOException e1) {
-        e1.printStackTrace();
-        String msg = Resources.getString("PredefinedSetup.unable_to_start_game"); //$NON-NLS-1$
-        if (e1.getMessage() != null) {
-          msg += ":  " + e1.getMessage(); //$NON-NLS-1$
-        }
-        GameModule.getGameModule().warn(msg);
+      catch (IOException e) {
+        GameModule.getGameModule().warn(Resources.getString("GameState.invalid_savefile", fileName));
       }
     }
     else {
       GameModule.getGameModule().getGameState().setup(false);
       GameModule.getGameModule().getGameState().setup(true);
     }
+  }
+
+  public InputStream getSavedGameContents() throws IOException {
+    return GameModule.getGameModule().getDataArchive().getFileStream(fileName);
   }
 
   private JMenuItem getMenuInUse() {

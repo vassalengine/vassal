@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -446,8 +447,16 @@ public class GameState implements CommandEncoder {
     }
   }
 
-  public void loadGameInBackground(final File f) throws IOException {
-    final String shortName = f.getName();
+  public void loadGameInBackground(final File f) {
+    try {
+      loadGameInBackground(f.getName(), new FileInputStream(f));
+    }
+    catch (FileNotFoundException e) {
+      GameModule.getGameModule().warn(Resources.getString("GameState.invalid_savefile", f.getPath()));
+    }
+  }
+
+  public void loadGameInBackground(final String shortName, final InputStream in)  {
     GameModule.getGameModule().warn(Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
     new BackgroundTask() {
       private String msg;
@@ -455,7 +464,7 @@ public class GameState implements CommandEncoder {
 
       public void doFirst() {
         try {
-          loadCommand = decodeSavedGame(f);
+          loadCommand = decodeSavedGame(in);
           if (loadCommand != null) {
             msg = Resources.getString("GameState.loaded", shortName);  //$NON-NLS-1$
           }

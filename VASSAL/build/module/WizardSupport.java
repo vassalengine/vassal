@@ -46,6 +46,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -99,8 +100,9 @@ public class WizardSupport {
   public WizardSupport() {
   }
 
-  /** 
+  /**
    * Add a {@link PredefinedSetup} to the wizard page for starting a new game offline
+   * 
    * @param setup
    */
   public void addPredefinedSetup(PredefinedSetup setup) {
@@ -113,6 +115,7 @@ public class WizardSupport {
 
   /**
    * Specify a {@link Tutorial} that the user may load from the {@link InitialWelcomeSteps}
+   * 
    * @param tutorial
    */
   public void setTutorial(Tutorial tutorial) {
@@ -121,7 +124,7 @@ public class WizardSupport {
 
   /**
    * Show the "Welcome" wizard, shown when loading a module in play mode
-   *
+   * 
    */
   public void showWelcomeWizard() {
     WizardBranchController c = createWelcomeWizard();
@@ -165,13 +168,14 @@ public class WizardSupport {
       return GameSetupPanels.newInstance();
     }
     else {
-      return new PlayOfflinePanels(Resources.getString("WizardSupport.WizardSupport.PlayOffline"), SETUP_KEY, Resources.getString("WizardSupport.WizardSupport.SelectSetup"), l); //$NON-NLS-1$ //$NON-NLS-2$
+      return new PlayOfflinePanels(
+          Resources.getString("WizardSupport.WizardSupport.PlayOffline"), Resources.getString("WizardSupport.WizardSupport.SelectSetup"), l); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 
   /**
    * Show a wizard that prompts the user to specify information for unfinished {@link GameSetupStep}s
-   *
+   * 
    */
   public void showGameSetupWizard() {
     GameSetupPanels panels = GameSetupPanels.newInstance();
@@ -248,7 +252,8 @@ public class WizardSupport {
 
   public InitialWelcomeSteps createInitialWelcomeSteps() {
     if (GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME) == null) {
-      return new InitialWelcomeSteps(new String[]{"name", ACTION_KEY}, new String[]{Resources.getString("WizardSupport.WizardSupport.EnterName"), Resources.getString("WizardSupport.WizardSupport.SelectPlayMode")}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      return new InitialWelcomeSteps(
+          new String[]{"name", ACTION_KEY}, new String[]{Resources.getString("WizardSupport.WizardSupport.EnterName"), Resources.getString("WizardSupport.WizardSupport.SelectPlayMode")}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     else {
       return new InitialWelcomeSteps(new String[]{ACTION_KEY}, new String[]{Resources.getString("WizardSupport.SelectPlayMode")}); //$NON-NLS-1$
@@ -412,28 +417,42 @@ public class WizardSupport {
    */
   public static class PlayOfflinePanels extends WizardPanelProvider {
     private List setups;
+    private String description;
 
-    protected PlayOfflinePanels(String title, String singleStep, String singleDescription, List setups) {
-      super(title, singleStep, singleDescription);
+    protected PlayOfflinePanels(String title, String singleDescription, List setups) {
+      super(title, SETUP_KEY, singleDescription);
       this.setups = setups;
+      this.description = singleDescription;
     }
 
-    protected JComponent createPanel(WizardController controller, String id, final Map settings) {
-      settings.put(SETUP_KEY, setups.get(0));
+    protected JComponent createPanel(final WizardController controller, String id, final Map settings) {
       final JComboBox setupSelection = new JComboBox(setups.toArray());
+      ((DefaultComboBoxModel) setupSelection.getModel()).insertElementAt("  ", 0);
+      setupSelection.setSelectedIndex(0);
       setupSelection.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          settings.put(SETUP_KEY, setupSelection.getSelectedItem());
+          if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
+            PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
+            loadSetup(setup, controller, settings);
+          }
+          else {
+            controller.setProblem(description);
+          }
         }
       });
       setupSelection.setMaximumSize(new Dimension(setupSelection.getMaximumSize().width, setupSelection.getPreferredSize().height));
       setupSelection.setRenderer(new DefaultListCellRenderer() {
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
           JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-          PredefinedSetup pds = (PredefinedSetup) value;
-          c.setText((pds).getConfigureName());
-          if (pds.isMenu()) {
-            c.setSize(0, 0);
+          if (value instanceof PredefinedSetup) {
+            PredefinedSetup pds = (PredefinedSetup) value;
+            c.setText((pds).getConfigureName());
+            if (pds.isMenu()) {
+              c.setSize(0, 0);
+            }
+          }
+          else {
+            c.setText(value == null ? "" : value.toString());
           }
           return c;
         }
@@ -442,7 +461,17 @@ public class WizardSupport {
       box.add(Box.createVerticalGlue());
       box.add(setupSelection);
       box.add(Box.createVerticalGlue());
+      controller.setProblem(description);
       return box;
+    }
+
+    protected void loadSetup(PredefinedSetup setup, final WizardController controller, final Map settings) {
+      try {
+        new SavedGameLoader(controller, settings, setup.getSavedGameContents(), POST_PLAY_OFFLINE_WIZARD).start();
+      }
+      catch (IOException e1) {
+        controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
+      }
     }
   }
   /** Branches the wizard by forwarding to the Wizard stored in the wizard settings under a specified key */
@@ -472,8 +501,8 @@ public class WizardSupport {
     }
   }
   /**
-   * Loads a saved game in the background. Add a branch to the wizard if the loaded game has unfinished {@link GameSetupStep}s.
-   * Otherwise, enable the finish button
+   * Loads a saved game in the background. Add a branch to the wizard if the loaded game has unfinished
+   * {@link GameSetupStep}s. Otherwise, enable the finish button
    * 
    * @author rkinney
    * 
@@ -555,8 +584,9 @@ public class WizardSupport {
   }
   /**
    * Wizard page for an unfinished {@link GameSetupStep}
+   * 
    * @author rkinney
-   *
+   * 
    */
   public static class SetupStepPage extends WizardPage {
     public SetupStepPage(GameSetupStep step) {

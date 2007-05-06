@@ -132,9 +132,12 @@ public class Language extends AbstractConfigurable {
         for (TranslatableAttribute attr : translatableItems) {
           if (attr.isTranslatable()) {
             String key = attr.getKey();
-            String translation = masterBundle.getString(key);
-            if (translation != null) {
+            try {
+              String translation = masterBundle.getString(key);
               attr.applyTranslation(translation);
+            }
+            catch (MissingResourceException e) {
+              // Assume that the translated text is the same as the original
             }
           }
         }
