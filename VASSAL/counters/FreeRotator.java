@@ -464,10 +464,10 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   private double getRelativeAngle(Point p, Point origin) {
     double myAngle;
     if (p.y == origin.y) {
-      myAngle = p.x < origin.x ? Math.PI / 2 : -Math.PI / 2;
+      myAngle = p.x < origin.x ? -Math.PI/2.0 : Math.PI/2.0;
     }
     else {
-      myAngle = Math.atan((float) (p.x - origin.x) / (float) (origin.y - p.y));
+      myAngle = Math.atan((double)(p.x - origin.x) / (double)(origin.y - p.y));
       if (origin.y < p.y) {
         myAngle += Math.PI;
       }
