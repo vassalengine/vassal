@@ -251,7 +251,8 @@ public class WizardSupport {
   }
 
   public InitialWelcomeSteps createInitialWelcomeSteps() {
-    if (GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME) == null) {
+    Object realName = GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
+    if (realName == null || realName.equals(Resources.getString("Prefs.newbie"))) {
       return new InitialWelcomeSteps(
           new String[]{"name", ACTION_KEY}, new String[]{Resources.getString("WizardSupport.WizardSupport.EnterName"), Resources.getString("WizardSupport.WizardSupport.SelectPlayMode")}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -399,6 +400,9 @@ public class WizardSupport {
         pwdConfig.addPropertyChangeListener(pl);
         box.add(nameConfig.getControls());
         box.add(pwdConfig.getControls());
+        JLabel l = new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
+        l.setAlignmentX(Box.CENTER_ALIGNMENT);
+        box.add(l);
         box.add(Box.createVerticalGlue());
         nameControls = box;
       }

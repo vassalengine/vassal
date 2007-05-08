@@ -20,15 +20,15 @@ package VASSAL.chat.node;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Properties;
+
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.HttpMessageServer;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.command.Command;
-import VASSAL.configure.StringConfigurer;
-import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Resources;
 
 /**
@@ -97,18 +97,6 @@ public class NodeClientFactory extends ChatServerFactory {
   public static NodeClientFactory getInstance() {
     if (instance == null) {
       instance = new NodeClientFactory();
-      StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
-      TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
-      StringConfigurer user = new StringConfigurer("UserName", Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-      user.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          GameModule.setUserId((String) evt.getNewValue());
-        }
-      });
-      GameModule.setUserId((String) user.getValue());
-      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName, Resources.getString("Prefs.name_prompt"));   //$NON-NLS-1$ //$NON-NLS-2$
-      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user, Resources.getString("Prefs.password_prompt2"));   //$NON-NLS-1$ //$NON-NLS-2$
-      GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
     }
     return instance;
   }

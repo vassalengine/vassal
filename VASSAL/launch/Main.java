@@ -97,9 +97,6 @@ public class Main {
     properties = parseArgs(args);
     File prefsFile = initPrefsFile();
     isFirstTime = !prefsFile.exists();
-    if (isFirstTime) {
-      showLicense();
-    }
     builtInModule = properties.get(BUILT_IN) != null;
     final File installDir = properties.get(LOCAL_INSTALL) != null
       ? new File(System.getProperty("user.dir")) : null;  //$NON-NLS-1$

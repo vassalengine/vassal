@@ -105,9 +105,8 @@ public class ServerConfigurer extends Configurer {
           }
         }
       });
-//    Disable Jabber server until next release
-//      group.add(jabberButton);
-//      box.add(jabberButton);
+      group.add(jabberButton);
+      box.add(jabberButton);
       jabberHostPrompt = new JLabel(Resources.getString("Server.host")); //$NON-NLS-1$
       box.add(jabberHostPrompt);
       jabberHost = new JTextField(18);
@@ -130,7 +129,8 @@ public class ServerConfigurer extends Configurer {
         }
       });
       box.add(jabberHost);
-      controls.add(box);
+//    Disable Jabber server until next release
+//      controls.add(box);
       directButton = new JRadioButton(DIRECT_BUTTON);
       directButton.setAlignmentX(0.0f);
       directButton.addItemListener(new ItemListener() {

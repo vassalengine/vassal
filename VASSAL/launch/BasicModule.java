@@ -3,6 +3,8 @@ package VASSAL.launch;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +34,8 @@ import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
+import VASSAL.configure.StringConfigurer;
+import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
@@ -92,6 +96,7 @@ public class BasicModule extends GameModule {
         vassalVersionCreated = e.getAttribute(VASSAL_VERSION_CREATED);
       }
     }
+    initIdentityPreferences();
     initGameState();
     initLogger();
     initServer();
@@ -107,7 +112,21 @@ public class BasicModule extends GameModule {
     initFrame();
   }
 
-  protected void initServer() {
+  protected void initIdentityPreferences() {
+    StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
+    TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
+    StringConfigurer user = new StringConfigurer("UserName", Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    user.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        GameModule.setUserId((String) evt.getNewValue());
+      }
+    });
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), fullName);   //$NON-NLS-1$ //$NON-NLS-2$
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
+    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
+  }
+
+protected void initServer() {
     DynamicClientFactory dynamicClientFactory = new DynamicClientFactory();
     ChatServerFactory.register(ChatServerFactory.DEFAULT_TYPE, dynamicClientFactory);
     ChatServerFactory.register(NodeClientFactory.NODE_TYPE, NodeClientFactory.getInstance());
