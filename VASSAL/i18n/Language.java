@@ -159,7 +159,7 @@ public class Language extends AbstractConfigurable {
    */
   public static String translate(String key, String defaultValue) {
     try {
-      return masterBundle.getString(key);
+      return masterBundle == null ? defaultValue : masterBundle.getString(key);
     }
     catch (MissingResourceException e) {
       return defaultValue;

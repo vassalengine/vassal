@@ -178,6 +178,9 @@ public class Immobilized extends Decorator implements EditablePiece {
     else if (Properties.MOVE_EVENT_FILTER.equals(key)) {
       return moveFilter;
     }
+    else if (Properties.NON_MOVABLE.equals(key)) {
+        return neverMove;
+    }
     else {
       return super.getProperty(key);
     }

@@ -34,18 +34,18 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.FilteredImageSource;
-import java.awt.image.ImageProducer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -56,7 +56,6 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.tools.RotateFilter;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -221,9 +220,11 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     }
     else {
       Image rotated = getRotatedImage(getAngle(), obs);
-      Rectangle r = getRotatedBounds();
-      Image zoomed = GameModule.getGameModule().getDataArchive().getScaledImage(rotated, zoom);
-      g.drawImage(zoomed, x + (int) (zoom * r.x), y + (int) (zoom * r.y), obs);
+      if (rotated != null) {
+        Rectangle r = getRotatedBounds();
+        Image zoomed = GameModule.getGameModule().getDataArchive().getScaledImage(rotated, zoom);
+        g.drawImage(zoomed, x + (int) (zoom * r.x), y + (int) (zoom * r.y), obs);
+      }
     }
   }
 
@@ -514,17 +515,12 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
         t.translate(unrotatedBounds.x, unrotatedBounds.y);
 
         g2d.drawImage(unrotated.getImage(obs), t, obs);
+        images.put(new Double(angle), rotated);
+        bounds.put(new Double(angle), rotatedBounds);
       }
       else {
-        RotateFilter filter = new RotateFilter(angle);
-        rotatedBounds = piece.boundingBox();
-        filter.transformSpace(rotatedBounds);
-        ImageProducer producer =
-          new FilteredImageSource(unrotated.getImage(obs).getSource(), filter);
-        rotated = obs.createImage(producer);
+          rotated = null;
       }
-      images.put(new Double(angle), rotated);
-      bounds.put(new Double(angle), rotatedBounds);
     }
     return rotated;
   }

@@ -75,6 +75,9 @@ public class Hideable extends Decorator implements EditablePiece {
     else if (Properties.INVISIBLE_TO_OTHERS.equals(key)) {
       return invisibleToOthers() ? Boolean.TRUE : Boolean.FALSE;
     }
+    else if (Properties.VISIBLE_STATE.equals(key)) {
+        return String.valueOf(invisibleToOthers())+invisibleToMe()+piece.getProperty(key);
+      }
     else {
       return super.getProperty(key);
     }
