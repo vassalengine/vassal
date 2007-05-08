@@ -98,6 +98,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public static final String DRAW_PIECES_AT_ZOOM = "graphicsZoom";
   public static final String BORDER_WIDTH = "borderWidth";
   public static final String SHOW_NOSTACK = "showNoStack";
+  public static final String SHOW_MOVE_SELECTED = "showMoveSelectde";
+  public static final String SHOW_NON_MOVABLE = "showNonMovable";
   public static final String SHOW_DECK = "showDeck";
   public static final String UNROTATE_PIECES = "unrotatePieces";
   public static final String DISPLAY = "display";
@@ -140,6 +142,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected double graphicsZoomLevel = 1.0;
   protected int borderWidth = 0;
   protected boolean showNoStack = false;
+  protected boolean showMoveSelected = false;
+  protected boolean showNonMovable = false;
   protected String displayWhat = TOP_LAYER;
   protected String[] displayLayers = new String[0];
   protected FormattedString summaryReportFormat = new FormattedString("$" + BasicPiece.LOCATION_NAME + "$");
@@ -441,14 +445,19 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         return false;
       }
 
-      if (Boolean.TRUE.equals(piece.getProperty(Properties.TERRAIN))) {
-        return false;
-      }
-
       // If it Does Not Stack, do we want to see it?
       if (Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK)) && !showNoStack) {
         return false;
+      }      
+      
+      if (Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE)) && !showNonMovable) {
+        return false;
       }
+      
+      if (Boolean.TRUE.equals(piece.getProperty(Properties.TERRAIN)) && !showMoveSelected) {
+        return false;
+      }
+
 
       // Deck?
       if (piece.getParent() instanceof Deck && !showDeck) {
@@ -709,7 +718,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     SHOW_TEXT, SHOW_TEXT_SINGLE_DEPRECATED, FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, EMPTY_HEX_REPORT_FORMAT,
 
-    DISPLAY, LAYER_LIST, PROPERTY_FILTER,SHOW_NOSTACK, UNROTATE_PIECES, SHOW_DECK};
+    DISPLAY, LAYER_LIST, PROPERTY_FILTER,SHOW_NOSTACK, SHOW_MOVE_SELECTED, SHOW_NON_MOVABLE, UNROTATE_PIECES, SHOW_DECK};
   }
 
   public String[] getAttributeDescriptions() {
@@ -725,7 +734,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         "Font size:  ", "Summary text above pieces:  ", "Text below each piece:  ","Text for empty location:  ",
 
         "Include individual pieces:  ", "Listed layers",
-        "Piece selection property filter:  ","Include non-stacking pieces (if movable)?", "Show pieces in un-rotated state?", "Include top piece in Deck?"};
+        "Piece selection property filter:  ","Include non-stacking pieces?", "Include move-when-selected pieces?", "Include non-movable pieces?", 
+        "Show pieces in un-rotated state?", "Include top piece in Deck?"};
 
   }
 
@@ -738,7 +748,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
     Boolean.class, Boolean.class, Integer.class, ReportFormatConfig.class, CounterFormatConfig.class,EmptyFormatConfig.class,
 
-    DisplayConfig.class, String[].class, PropertyExpression.class,Boolean.class, Boolean.class, Boolean.class};
+    DisplayConfig.class, String[].class, PropertyExpression.class,Boolean.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class};
   }
 
   public static class DisplayConfig extends StringEnum {
@@ -862,6 +872,22 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         showNoStack = "true".equals(value);
       }
     }
+    else if (SHOW_MOVE_SELECTED.equals(name)) {
+      if (value instanceof Boolean) {
+        showMoveSelected = ((Boolean) value).booleanValue();
+      }
+      else if (value instanceof String) {
+        showMoveSelected = "true".equals(value);
+      }
+    }
+    else if (SHOW_NON_MOVABLE.equals(name)) {
+      if (value instanceof Boolean) {
+        showNonMovable = ((Boolean) value).booleanValue();
+      }
+      else if (value instanceof String) {
+        showNonMovable = "true".equals(value);
+      }
+    }
     else if (SHOW_DECK.equals(name)) {
       if (value instanceof Boolean) {
         showDeck = ((Boolean) value).booleanValue();
@@ -962,6 +988,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     else if (SHOW_NOSTACK.equals(name)) {
       return String.valueOf(showNoStack);
     }
+    else if (SHOW_MOVE_SELECTED.equals(name)) {
+      return String.valueOf(showMoveSelected);
+    }
+    else if (SHOW_NON_MOVABLE.equals(name)) {
+      return String.valueOf(showNonMovable);
+    }
     else if (SHOW_DECK.equals(name)) {
       return String.valueOf(showDeck);
     }
@@ -1049,6 +1081,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
           return showText && minimumDisplayablePieces == 0;
+        }
+      };
+    }
+    else if (SHOW_MOVE_SELECTED.equals(name) || SHOW_NON_MOVABLE.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return showNoStack;
         }
       };
     }

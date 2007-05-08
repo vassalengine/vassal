@@ -91,7 +91,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected KeyStroke resetKey;
   
   protected boolean followProperty;
-  protected String propertyName;
+  protected String propertyName = "";
   protected int firstLevelValue;
   
   // random layers
