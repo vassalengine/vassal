@@ -667,8 +667,8 @@ public class LOS_Thread extends AbstractConfigurable implements
       
       if (drawRange) {
         r = new Rectangle(lastRangeRect);
-        r.width+= (int) r.width / map.getZoom() + 1;
-        r.height+= (int) r.height / map.getZoom() + 1;
+        r.width += (int)(r.width / map.getZoom()) + 1;
+        r.height += (int)(r.height / map.getZoom()) + 1;
         map.repaint(r);
       }      
     }
