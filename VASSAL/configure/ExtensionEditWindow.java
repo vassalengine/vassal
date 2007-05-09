@@ -31,7 +31,7 @@ import VASSAL.tools.ScrollPane;
 /**
  * Editing window for a module extension
  */
-public class ExtensionEditWindow extends VASSAL.configure.ModuleEditWindow {
+public class ExtensionEditWindow extends ModuleEditWindow {
   private static final long serialVersionUID = 1L;
 
   private ModuleExtension extension;
@@ -45,10 +45,8 @@ public class ExtensionEditWindow extends VASSAL.configure.ModuleEditWindow {
   }
 
   private void initExtensionComponents() {
-    super.initComponents(
-      new ScrollPane(
-         new VASSAL.configure.ExtensionTree(GameModule.getGameModule(),
-                                            helpWindow, extension)));
+    tree = new ExtensionTree(GameModule.getGameModule(), helpWindow, extension);
+    super.initComponents(new ScrollPane(tree));
     toolbar.addSeparator();
     toolbar.add(extension.getEditAction(new JDialog(this)));
   }

@@ -18,6 +18,8 @@
  */
 package VASSAL.configure;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -25,6 +27,7 @@ import java.util.Enumeration;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
+import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -45,6 +48,7 @@ public class ExtensionTree extends ConfigureTree {
   public ExtensionTree(Configurable root, HelpWindow helpWindow, ModuleExtension extention) {
     super(root, helpWindow);
     this.extension = extention;
+    setCellRenderer(new ExtensionRenderer());
   }
 
   private boolean isEditable(DefaultMutableTreeNode node) {
@@ -196,7 +200,7 @@ public class ExtensionTree extends ConfigureTree {
           else if (copyData != null) {
             try {
               Configurable copyTarget = (Configurable) copyData.getUserObject();
-              Configurable clone = (Configurable) copyTarget.getClass().newInstance();
+              Configurable clone = copyTarget.getClass().newInstance();
               clone.build(copyTarget.getBuildElement(Builder.createNewDocument()));
               if (insert(target, clone, getTreeNode(target).getChildCount())) {
                 extension.add(new ExtensionElement(clone, getPath(getTreeNode(target))));
@@ -222,15 +226,20 @@ public class ExtensionTree extends ConfigureTree {
             }
           }
           cutData = null;
+          updateEditMenu();
         }
       };
-      a.setEnabled((cutData != null
-                    && super.isValidParent(target, (Configurable) cutData.getUserObject())
-                    && isEditable(getParent(cutData)))
-                   || (copyData != null
-                       && super.isValidParent(target, (Configurable) copyData.getUserObject())));
+      a.setEnabled(isValidPasteTarget(target));
     }
     return a;
+  }
+  
+  protected boolean isValidPasteTarget(Configurable target) {
+    return (cutData != null
+        && super.isValidParent(target, (Configurable) cutData.getUserObject())
+        && isEditable(getParent(cutData)))
+       || (copyData != null
+           && super.isValidParent(target, (Configurable) copyData.getUserObject()));
   }
 
   protected Action buildMoveAction(Configurable target) {
@@ -275,7 +284,7 @@ public class ExtensionTree extends ConfigureTree {
 
         public void actionPerformed(ActionEvent evt) {
           try {
-            Configurable clone = (Configurable) target.getClass().newInstance();
+            Configurable clone = target.getClass().newInstance();
             clone.build(target.getBuildElement(Builder.createNewDocument()));
             if (insert((Configurable) ((DefaultMutableTreeNode) targetNode.getParent()).getUserObject(), clone, targetNode.getParent().getChildCount())) {
               extension.add(new ExtensionElement(clone, getPath((DefaultMutableTreeNode) targetNode.getParent())));
@@ -316,5 +325,32 @@ public class ExtensionTree extends ConfigureTree {
 
   protected boolean isValidParent(Configurable parent, Configurable child) {
     return super.isValidParent(parent, child) && isEditable(parent);
+  }
+  
+  protected void updateEditMenu() {
+    super.updateEditMenu();
+    deleteItem.setEnabled(selected != null && isEditable(selected));
+    cutItem.setEnabled(selected != null && isEditable(selected));
+    cutAction.setEnabled(selected != null && isEditable(selected));
+    propertiesItem.setEnabled(selected != null && isEditable(selected) && selected.getConfigurer() != null);
+  }
+  
+  /**
+   * Change color of component names based on editable status
+   */
+  class ExtensionRenderer extends Renderer {
+
+    private static final long serialVersionUID = 1L;
+
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
+        boolean expanded, boolean leaf, int row, boolean hasFocus) {
+
+      Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row,
+          hasFocus);
+      c.setForeground(isEditable((DefaultMutableTreeNode) value) ? Color.BLACK : Color.GRAY);
+
+      return c;
+    }
+
   }
 }

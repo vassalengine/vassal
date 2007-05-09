@@ -19,8 +19,10 @@
 package VASSAL.configure;
 
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -37,19 +39,27 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 
 /**
@@ -57,13 +67,50 @@ import VASSAL.i18n.TranslateAction;
  * Each node in the tree structure is a {@link VASSAL.build.Configurable} object, whose
  * child nodes are obtained via {@link VASSAL.build.Configurable#getConfigureComponents}
  */
-public class ConfigureTree extends JTree implements PropertyChangeListener, MouseListener, MouseMotionListener {
+public class ConfigureTree extends JTree implements PropertyChangeListener, MouseListener, MouseMotionListener, TreeSelectionListener {
   private static final long serialVersionUID = 1L;
 
   protected Hashtable nodes = new Hashtable();
   protected DefaultMutableTreeNode copyData;
   protected DefaultMutableTreeNode cutData;
   protected HelpWindow helpWindow;
+  protected Configurable selected;
+  protected int selectedRow;
+  
+  protected String moveCmd;
+  protected String deleteCmd;
+  protected String pasteCmd;
+  protected String copyCmd;
+  protected String cutCmd;
+  protected String helpCmd;
+  protected String propertiesCmd;
+  protected String translateCmd;
+  
+  protected KeyStroke cutKey;
+  protected KeyStroke copyKey;
+  protected KeyStroke pasteKey;
+  protected KeyStroke deleteKey;
+  protected KeyStroke moveKey;
+  protected KeyStroke helpKey;
+  protected KeyStroke propertiesKey;
+  protected KeyStroke translateKey;
+   
+  protected Action cutAction;
+  protected Action copyAction;
+  protected Action pasteAction;
+  protected Action deleteAction;
+  protected Action moveAction;
+  protected Action propertiesAction;
+  protected Action translateAction;
+  protected Action helpAction;
+
+  protected JMenuItem cutItem;
+  protected JMenuItem copyItem;
+  protected JMenuItem pasteItem;
+  protected JMenuItem deleteItem;
+  protected JMenuItem moveItem;
+  protected JMenuItem propertiesItem;
+  protected JMenuItem translateItem;
 
   public static java.awt.Font POPUP_MENU_FONT = new java.awt.Font("Dialog", 0, 11);
 
@@ -77,8 +124,65 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     setCellRenderer(buildRenderer());
     addMouseListener(this);
     addMouseMotionListener(this);
+    addTreeSelectionListener(this);
+    
+    moveCmd = Resources.getString("Editor.move"); //$NON-NLS-1$
+    deleteCmd = Resources.getString("Editor.delete"); //$NON-NLS-1$
+    pasteCmd = Resources.getString("Editor.paste"); //$NON-NLS-1$
+    copyCmd = Resources.getString("Editor.copy"); //$NON-NLS-1$
+    cutCmd = Resources.getString("Editor.cut"); //$NON-NLS-1$
+    propertiesCmd = Resources.getString("Editor.ModuleEditor.properties"); //$NON-NLS-1$
+    translateCmd = Resources.getString("Editor.ModuleEditor.translate"); //$NON-NLS-1$
+    helpCmd = Resources.getString("Editor.ModuleEditor.component_help"); //$NON-NLS-1$
+    
+    int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+    cutKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, mask);
+    copyKey = KeyStroke.getKeyStroke(KeyEvent.VK_C, mask);
+    pasteKey = KeyStroke.getKeyStroke(KeyEvent.VK_V, mask);
+    deleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+    moveKey = KeyStroke.getKeyStroke(KeyEvent.VK_M, mask); 
+    propertiesKey = KeyStroke.getKeyStroke(KeyEvent.VK_P, mask);
+    translateKey = KeyStroke.getKeyStroke(KeyEvent.VK_T, mask); 
+    helpKey = KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0);
+    
+    copyAction = new KeyAction(copyCmd, copyKey);
+    pasteAction = new KeyAction(pasteCmd, pasteKey);
+    cutAction = new KeyAction(cutCmd, cutKey);
+    deleteAction = new KeyAction(deleteCmd, deleteKey);
+    moveAction = new KeyAction(moveCmd, moveKey);
+    propertiesAction = new KeyAction(propertiesCmd, propertiesKey);
+    translateAction = new KeyAction(translateCmd, translateKey);
+    helpAction = new KeyAction(helpCmd, helpKey);
+    
+    /*
+     * Cut, Copy and Paste will not work unless I add them to the
+     * JTree input and action maps. Why??? All the others work fine.
+     */
+    getInputMap().put(cutKey, cutCmd);
+    getInputMap().put(copyKey, copyCmd);
+    getInputMap().put(pasteKey, pasteCmd);
+    
+    getActionMap().put(cutCmd, cutAction);
+    getActionMap().put(copyCmd, copyAction);
+    getActionMap().put(pasteCmd, pasteAction);    
+
+    this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
   }
 
+  class KeyAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
+    protected String actionName;
+    public KeyAction(String name, KeyStroke key) {
+      super(name);
+      actionName = name;
+      putValue(Action.ACCELERATOR_KEY, key);
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+      doKeyAction(actionName);      
+    }    
+  }
+  
   protected Renderer buildRenderer() {
     return new Renderer();
   }
@@ -153,12 +257,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action buildMoveAction(final Configurable target) {
     Action a = null;
     if (getTreeNode(target).getParent() != null) {
-      a = new AbstractAction("Move") {
+      a = new AbstractAction(moveCmd) {
         private static final long serialVersionUID = 1L; 
 
         public void actionPerformed(ActionEvent e) {
           final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), true);
-          d.setTitle(target.getConfigureName() == null ? "Move" : "Move " + target.getConfigureName());
+          d.setTitle(target.getConfigureName() == null ? moveCmd : moveCmd + " " + target.getConfigureName());
           d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
           Box box = Box.createHorizontalBox();
           box.add(new JLabel("Move to position"));
@@ -175,7 +279,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           final int currentIndex = targetNode.getParent().getIndex(targetNode);
           select.setSelectedIndex(currentIndex);
           box.add(select);
-          JButton ok = new JButton("Ok");
+          JButton ok = new JButton(Resources.getString(Resources.OK));
           ok.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               int index = select.getSelectedIndex();
@@ -202,12 +306,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action buildCutAction(final Configurable target) {
     Action a = null;
     if (getTreeNode(target).getParent() != null) {
-      a = new AbstractAction("Cut") {
+      a = new AbstractAction(cutCmd) {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
           cutData = getTreeNode(target);
           copyData = null;
+          updateEditMenu();
         }
       };
     }
@@ -217,12 +322,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action buildCopyAction(final Configurable target) {
     Action a = null;
     if (getTreeNode(target).getParent() != null) {
-      a = new AbstractAction("Copy") {
+      a = new AbstractAction(copyCmd) {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
           copyData = getTreeNode(target);
           cutData = null;
+          updateEditMenu();
         }
       };
     }
@@ -230,7 +336,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildPasteAction(final Configurable target) {
-    Action a = new AbstractAction("Paste") {
+    Action a = new AbstractAction(pasteCmd) {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
@@ -267,11 +373,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
         }
         cutData = null;
+        updateEditMenu();
       }
     };
-    a.setEnabled((cutData != null && isValidParent(target, (Configurable) cutData.getUserObject()))
-                 || (copyData != null && isValidParent(target, (Configurable) copyData.getUserObject())));
+    a.setEnabled(isValidPasteTarget(target));
     return a;
+  }
+  
+  protected boolean isValidPasteTarget(Configurable target) {
+    return (cutData != null && (isValidParent(target, (Configurable) cutData.getUserObject())) || isValidParent(
+        getParent(target), (Configurable) cutData.getUserObject()))
+        || (copyData != null && (isValidParent(target, (Configurable) copyData.getUserObject()) || isValidParent(
+            getParent(target), (Configurable) copyData.getUserObject())));
   }
 
   protected Action buildImportAction(final Configurable target) {
@@ -409,11 +522,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     final Configurable parent
         = getParent(targetNode);
     if (targetNode.getParent() != null) {
-      return new AbstractAction("Delete") {
+      return new AbstractAction(deleteCmd) {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent evt) {
+          int row = selectedRow;
           remove(parent, target);
+          if (row < getRowCount()) {
+            setSelectionRow(row);
+          }
+          else {
+            setSelectionRow(row-1);
+          }
         }
       };
     }
@@ -616,6 +736,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
       else if (e.isMetaDown()) {
+        setSelectionRow(getClosestRowForLocation(e.getX(), e.getY()));
         JPopupMenu popup = buildPopupMenu(target);
         popup.show(ConfigureTree.this, e.getX(), e.getY());
         popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
@@ -721,4 +842,104 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   public void externalInsert(Configurable c,Configurable child) {
     insert(c, child, getTreeNode(c).getChildCount());
   }
+  
+  public Action getHelpAction() {
+    return helpAction;
+  }
+  
+  public JMenu buildEditMenu() {
+    JMenu menu = new JMenu(Resources.getString(Resources.EDIT)); //$NON-NLS-1$
+    deleteItem = new JMenuItem(deleteAction);
+    menu.add(deleteItem);
+    cutItem = new JMenuItem(cutAction);
+    menu.add(cutItem);
+    copyItem = new JMenuItem(copyAction);
+    menu.add(copyItem);
+    pasteItem = new JMenuItem(pasteAction);
+    menu.add(pasteItem);
+    moveItem = new JMenuItem(moveAction);
+    menu.add(moveItem);
+    menu.addSeparator();
+    propertiesItem = new JMenuItem(propertiesAction);
+    menu.add(propertiesItem);
+    translateItem = new JMenuItem(translateAction);
+    menu.add(translateItem);
+    updateEditMenu();
+    return menu;
+  }
+  
+  /**
+   * Handle main Edit menu selections/accelerators
+   * @param action Edit command name
+   */
+ protected void doKeyAction(String action) {
+   DefaultMutableTreeNode targetNode = (DefaultMutableTreeNode) this.getLastSelectedPathComponent();
+   if (targetNode != null) {
+     Configurable target = (Configurable) targetNode.getUserObject();
+     Action a = null;
+     if (cutCmd.equals(action)) {
+       a = buildCutAction(target);
+     }
+     else  if (copyCmd.equals(action)) {
+       a = buildCopyAction(target);
+     }
+     else  if (pasteCmd.equals(action) || action.equals(pasteKey.getKeyChar())) {
+       a = buildPasteAction(target);
+     }
+     else  if (deleteCmd.equals(action)) {
+       a = buildDeleteAction(target);
+     }
+     else if (moveCmd.equals(action)) {
+       a = buildMoveAction(target);
+     }
+     else  if (propertiesCmd.equals(action)) {
+       a = buildEditAction(target);
+     }
+     else if (translateCmd.equals(action)) {
+       a = buildTranslateAction(target);
+     }
+     else if (helpCmd.equals(action)) {
+       a = buildHelpAction(target); 
+     }
+     if (a != null) {
+       a.actionPerformed(null);
+     }
+   }
+ }
+ 
+ /**
+  * Tree selection changed, record info about the currently selected component
+  */
+ public void valueChanged(TreeSelectionEvent e) {
+   selected = null; 
+   TreePath path = e.getPath();
+   if (path != null) {
+     selected = (Configurable) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
+     selectedRow = getRowForPath(path);
+   }
+   updateEditMenu();
+ }
+ 
+ protected void updateEditMenu() {
+   deleteItem.setEnabled(selected != null);
+   cutItem.setEnabled(selected != null);
+   cutAction.setEnabled(selected != null);
+   copyItem.setEnabled(selected != null);
+   copyAction.setEnabled(selected != null);
+   pasteItem.setEnabled(selected != null && isValidPasteTarget(selected));
+   pasteAction.setEnabled(selected != null && isValidPasteTarget(selected));
+   moveItem.setEnabled(selected != null);
+   propertiesItem.setEnabled(selected != null && selected.getConfigurer() != null);
+   translateItem.setEnabled(selected != null);
+ }
+ 
+ /**
+  * Find the parent Configurable of a specified Configurable
+  * @param target
+  * @return parent
+  */
+ protected Configurable getParent(Configurable target) {
+   DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) getTreeNode(target).getParent();
+   return (Configurable) parentNode.getUserObject();
+ }
 }

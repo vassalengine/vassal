@@ -25,10 +25,13 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import VASSAL.build.Builder;
@@ -98,10 +101,17 @@ public class PropertiesWindow extends JDialog {
       }
     });
     buttonBox.add(cancelButton);
+
+    if (target.getHelpFile() != null) {
+      Action helpAction = new ShowHelpAction(helpWindow, target.getHelpFile(), null); 
+      JButton helpButton = new JButton(helpAction);
+      buttonBox.add(helpButton);
+      pack();
+    }
+
     getContentPane().add(buttonBox);
     pack();
     setLocationRelativeTo(getParent());
-
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent we) {

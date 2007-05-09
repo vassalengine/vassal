@@ -27,6 +27,7 @@ import javax.swing.AbstractAction;
 
 import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.i18n.Resources;
 
 /**
  * Action to edit the Properties of a component
@@ -41,7 +42,7 @@ public class EditPropertiesAction extends AbstractAction {
   protected ConfigureTree tree;
 
   public EditPropertiesAction(Configurable target, HelpWindow helpWindow, Frame dialogOwner) {
-    super("Properties");
+    super(Resources.getString("Editor.ModuleEditor.properties")); //$NON-NLS-1$
     this.helpWindow = helpWindow;
     this.target = target;
     this.dialogOwner = dialogOwner;

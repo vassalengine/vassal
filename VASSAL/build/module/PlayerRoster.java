@@ -540,7 +540,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
   
   public String[] getAttributeDescriptions() {
-    return new String[0];
+    return new String[] {"Button Text:  ", "Tool Tip:  ", "Sides:  "};
   }
 
 }

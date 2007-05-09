@@ -93,7 +93,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     if (p != null && !ignoreEvent) {
       boolean movingStacksPickupUnits = ((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS)).booleanValue();
       if (!KeyBuffer.getBuffer().contains(p)) {
-        if (!e.isShiftDown() && !e.isControlDown() && !e.isMetaDown()) {
+        if (!e.isShiftDown() && !e.isControlDown()) {
           KeyBuffer.getBuffer().clear();
         }
         // RFE 1629255 - If the top piece of an unexpanded stack is left-clicked

@@ -20,8 +20,10 @@ package VASSAL.configure;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
@@ -34,11 +36,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.tools.ScrollPane;
 
@@ -50,9 +54,10 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
 
   protected HelpWindow helpWindow;
   protected JToolBar toolbar;
+  protected ConfigureTree tree;
 
   public ModuleEditWindow() {
-    helpWindow = new HelpWindow("Reference Manual", null);
+    helpWindow = new HelpWindow(Resources.getString("Editor.ModuleEditor.reference_manual"), null); //$NON-NLS-1$
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(this);
     refreshTitle();
@@ -63,9 +68,8 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
         }
       }
     });
-    initComponents(
-      new ScrollPane(
-         new ConfigureTree(GameModule.getGameModule(), helpWindow)));
+    tree = new ConfigureTree(GameModule.getGameModule(), helpWindow);
+    initComponents(new ScrollPane(tree));
   }
 
   protected void initComponents(Component view) {
@@ -91,9 +95,9 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
     Action helpAction = null;
     try {
       File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-      dir = new File(dir, "ReferenceManual");
-      helpAction = new ShowHelpAction(helpWindow, HelpFile.toURL(new File(dir, "index.htm")), helpWindow.getClass().getResource("/images/Help16.gif"));
-      helpAction.putValue(Action.SHORT_DESCRIPTION, "Reference Manual");
+      dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
+      helpAction = new ShowHelpAction(helpWindow, HelpFile.toURL(new File(dir, "index.htm")), helpWindow.getClass().getResource("/images/Help16.gif")); //$NON-NLS-1$ //$NON-NLS-2$
+      helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ModuleEditor.reference_manual")); //$NON-NLS-1$
       toolbar.add(helpAction);
     }
     catch (MalformedURLException e) {
@@ -102,19 +106,24 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
     getContentPane().add(toolbar, BorderLayout.NORTH);
     JMenuBar mb = new JMenuBar();
     JMenuItem mi;
-    JMenu fileMenu = new JMenu("File");
-    mi = new JMenuItem("Save");
+    JMenu fileMenu = new JMenu(Resources.getString(Resources.FILE));
+    mi = new JMenuItem(Resources.getString("Editor.save")); //$NON-NLS-1$
+    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     mi.addActionListener(saveAction);
     fileMenu.add(mi);
-    mi = new JMenuItem("Save as ...");
+    mi = new JMenuItem(Resources.getString("Editor.save_as")); //$NON-NLS-1$
+    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     mi.addActionListener(saveAsAction);
     fileMenu.add(mi);
     fileMenu.add(new CreateInstallerAction(this));
-    mb.add(fileMenu);
+    mb.add(fileMenu);    
+    mb.add(tree.buildEditMenu());    
     if (helpAction != null) {
-      JMenu helpMenu = new JMenu("Help");
-      mi = new JMenuItem("Reference Manual");
-      mi.addActionListener(helpAction);
+      JMenu helpMenu = new JMenu(Resources.getString(Resources.HELP));
+      mi = new JMenuItem(Resources.getString("Editor.ModuleEditor.reference_manual")); //$NON-NLS-1$
+      mi.addActionListener(helpAction);     
+      helpMenu.add(mi);
+      mi = new JMenuItem(tree.getHelpAction());
       helpMenu.add(mi);
       mb.add(helpMenu);
     }
@@ -125,15 +134,15 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
   }
 
   protected JMenu createUpdateMenu() {
-    JMenu updaterMenu = new JMenu("Updaters");
-    JMenuItem mi = new JMenuItem("Create module updater");
+    JMenu updaterMenu = new JMenu(Resources.getString("Editor.ModuleEditor.updaters")); //$NON-NLS-1$
+    JMenuItem mi = new JMenuItem(Resources.getString("Editor.ModuleEditor.create_module_updater")); //$NON-NLS-1$
     mi.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         new ModuleUpdaterDialog(ModuleEditWindow.this, helpWindow).setVisible(true);
       }
     });
     updaterMenu.add(mi);
-    mi = new JMenuItem("Update saved games");
+    mi = new JMenuItem(Resources.getString("Editor.ModuleEditor.update_saved")); //$NON-NLS-1$
     mi.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         new SavedGameUpdaterDialog(ModuleEditWindow.this, helpWindow).setVisible(true);
@@ -144,8 +153,8 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
   }
   
   protected JMenu createTranslateMenu() {
-    JMenu translateMenu = new JMenu("Translate");
-    JMenuItem mi = new JMenuItem("Translate VASSAL User Interface");
+    JMenu translateMenu = new JMenu(Resources.getString("Editor.ModuleEditor.translate")); //$NON-NLS-1$
+    JMenuItem mi = new JMenuItem(Resources.getString("Editor.ModuleEditor.translate_vassal")); //$NON-NLS-1$
     mi.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         new TranslateVassalWindow(ModuleEditWindow.this).setVisible(true);
@@ -194,9 +203,9 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
   protected void refreshTitle() {
     String configureName = GameModule.getGameModule().getConfigureName();
     if (configureName == null) {
-      configureName = "Module";
+      configureName = Resources.getString("Editor.ModuleEditor.coponent_type"); //$NON-NLS-1$
     }
-    setTitle("Edit " + configureName);
+    setTitle(Resources.getString("Editor.ModuleEditor.edit", configureName)); //$NON-NLS-1$
   }
 
   public void windowActivated(WindowEvent e) {

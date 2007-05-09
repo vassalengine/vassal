@@ -1011,6 +1011,13 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
         Rectangle r = piece.boundingBox();
         Point o = piece.getPosition();
         r.translate(o.x, o.y);
+        Stack parent = piece.getParent();
+        // Take stacking into account
+        Point offset = new Point(0, 0);
+        if (parent != null) {
+          offset = piece.getMap().getStackMetrics().relativePosition(piece.getParent(), piece);
+          r.translate(offset.x, offset.y);
+        }
         if (r.contains(dragOrigin)) {
           isDragOnPiece = true;
         }
