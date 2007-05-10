@@ -68,6 +68,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
 
   public void addTo(Buildable parent) {
     validator = new SingleChildInstance(GameModule.getGameModule(),getClass());
+    setAllAttributesUntranslatable();
   }
 
   public Class[] getAllowableConfigureComponents() {

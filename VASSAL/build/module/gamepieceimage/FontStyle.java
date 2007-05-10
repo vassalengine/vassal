@@ -122,7 +122,7 @@ public class FontStyle extends AbstractConfigurable {
   }
   
   public void addTo(Buildable parent) {
-
+    setAllAttributesUntranslatable();
   }
   
 }

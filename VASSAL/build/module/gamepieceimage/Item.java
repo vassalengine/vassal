@@ -185,7 +185,7 @@ public abstract class Item extends AbstractConfigurable {
   }
 
   public void addTo(Buildable parent) {
-
+    setAllAttributesUntranslatable();
   }
   
   private VisibilityCondition advancedCond = new VisibilityCondition() {

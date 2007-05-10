@@ -1138,18 +1138,19 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public PieceI18nData getI18nData() {
     PieceI18nData data = new PieceI18nData(this);
+    String prefix = name.length() > 0 ? name+": " : "";
     if (activateKey.length() > 0) {
-      data.add(activateCommand, "Activate command");
+      data.add(activateCommand, prefix+"Activate command");
     }
     if (!followProperty) {
-      data.add(upCommand, "Increase command");
-      data.add(downCommand, "Decrease command");
-      data.add(resetCommand, "Reset command");
-      data.add(rndText, "Random command");
+      data.add(upCommand, prefix+"Increase command");
+      data.add(downCommand, prefix+"Decrease command");
+      data.add(resetCommand, prefix+"Reset command");
+      data.add(rndText, prefix+"Random command");
     }
     // Strip off prefix/suffix marker
     for (int i = 0; i < commonName.length; i++) {
-      data.add(strip(commonName[i]), "Level " + (i+1) + " name");
+      data.add(strip(commonName[i]), prefix+"Level " + (i+1) + " name");
     }
     return data;
   }

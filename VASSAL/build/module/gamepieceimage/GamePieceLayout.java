@@ -229,6 +229,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public void addTo(Buildable parent) {
+    setAllAttributesUntranslatable();
   }
 
   public static String getConfigureTypeName() {

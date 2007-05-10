@@ -101,11 +101,12 @@ public class Translation extends AbstractConfigurable implements Comparable {
         loadProperties();
       }
       catch (IOException e) {
-        String msg = e.getMessage();
-        if (msg == null) {
-          msg = "IOException";
-        }
-        throw new IllegalArgumentException(msg,e);
+        // Fail quietly - This error will occur when adding a new translation
+//        String msg = e.getMessage();
+//        if (msg == null) {
+//          msg = "IOException";
+//        }
+//        throw new IllegalArgumentException(msg,e);   
       }
     }
   }

@@ -45,6 +45,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.BackgroundTask;
 import VASSAL.tools.LaunchButton;
 
@@ -72,8 +73,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         if (zoomLevel < zoomFactor.length - 1) {
           final JWindow w = new JWindow(SwingUtilities.getWindowAncestor(map.getView()));
           w.getContentPane().setBackground(Color.white);
-          JLabel l = new JLabel("Scaling Map ...");
-          l.setFont(new Font("Dialog",Font.PLAIN,48));
+          JLabel l = new JLabel(Resources.getString("Zoomer.scaling_map")); //$NON-NLS-1$
+          l.setFont(new Font("Dialog",Font.PLAIN,48)); //$NON-NLS-1$
           l.setBackground(Color.white);
           l.setForeground(Color.black);
           l.setBorder(new BevelBorder(BevelBorder.RAISED,Color.lightGray,Color.darkGray));
@@ -111,14 +112,11 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       }
     };
 
-    //zoomInButton = new LaunchButton("Z", null, ZOOM_IN, zoomIn);
     zoomInButton = new LaunchButton(null, IN_TOOLTIP, IN_BUTTON_TEXT, ZOOM_IN, IN_ICON_NAME, zoomIn);
-    zoomInButton.setAttribute(IN_TOOLTIP, "Zoom in");
+    zoomInButton.setAttribute(IN_TOOLTIP, Resources.getString("Zoomer.zoom_in")); //$NON-NLS-1$
     zoomInButton.setAttribute(IN_ICON_NAME, IN_DEFAULT_ICON);
-    //zoomInButton.setEnabled(false);
-    //zoomOutButton = new LaunchButton("z", null, ZOOM_OUT, zoomOut);
     zoomOutButton = new LaunchButton(null, OUT_TOOLTIP, OUT_BUTTON_TEXT, ZOOM_OUT, OUT_ICON_NAME, zoomOut);
-    zoomOutButton.setAttribute(OUT_TOOLTIP, "Zoom out");
+    zoomOutButton.setAttribute(OUT_TOOLTIP, Resources.getString("Zoomer.zoom_out")); //$NON-NLS-1$
     zoomOutButton.setAttribute(OUT_ICON_NAME, OUT_DEFAULT_ICON);
 
     setConfigureName(null);
@@ -135,17 +133,17 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Magnification factor",
-                        "Number of zoom levels",
-                        "Starting zoom level",
-                        "Zoom in tooltip text",
-                        "Zoom in button text",
-                        "Zoom in Icon",
-                        "Zoom in hotkey",
-                        "Zoom out tooltip text",
-                        "Zoom out button text",
-                        "Zoom out Icon",
-                        "Zoom out hotkey"};
+    return new String[]{"Magnification factor:  ",
+                        "Number of zoom levels:  ",
+                        "Starting zoom level:  ",
+                        "Zoom in tooltip text:  ",
+                        "Zoom in button text:  ",
+                        "Zoom in Icon:  ",
+                        "Zoom in hotkey:  ",
+                        "Zoom out tooltip text:  ",
+                        "Zoom out button text:  ",
+                        "Zoom out Icon:  ",
+                        "Zoom out hotkey:  "};
   }
 
   public Class[] getAttributeTypes() {
@@ -174,21 +172,21 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
   }
   
-  protected static final String FACTOR = "factor";
-  protected static final String MAX = "max";
-  protected static final String ZOOM_START = "zoomStart";
+  protected static final String FACTOR = "factor"; //$NON-NLS-1$
+  protected static final String MAX = "max"; //$NON-NLS-1$
+  protected static final String ZOOM_START = "zoomStart"; //$NON-NLS-1$
   
-  protected static final String ZOOM_IN = "zoomInKey";
-  protected static final String IN_TOOLTIP = "inTooltip";
-  protected static final String IN_BUTTON_TEXT = "inButtonText";
-  protected static final String IN_ICON_NAME = "inIconName";
-  protected static final String IN_DEFAULT_ICON = "/images/zoomIn.gif";
+  protected static final String ZOOM_IN = "zoomInKey"; //$NON-NLS-1$
+  protected static final String IN_TOOLTIP = "inTooltip"; //$NON-NLS-1$
+  protected static final String IN_BUTTON_TEXT = "inButtonText"; //$NON-NLS-1$
+  protected static final String IN_ICON_NAME = "inIconName"; //$NON-NLS-1$
+  protected static final String IN_DEFAULT_ICON = "/images/zoomIn.gif"; //$NON-NLS-1$
   
-  protected static final String ZOOM_OUT = "zoomOutKey";
-  protected static final String OUT_TOOLTIP = "outTooltip";
-  protected static final String OUT_BUTTON_TEXT = "outButtonText";
-  protected static final String OUT_ICON_NAME = "outIconName";
-  protected static final String OUT_DEFAULT_ICON = "/images/zoomOut.gif";
+  protected static final String ZOOM_OUT = "zoomOutKey"; //$NON-NLS-1$
+  protected static final String OUT_TOOLTIP = "outTooltip"; //$NON-NLS-1$
+  protected static final String OUT_BUTTON_TEXT = "outButtonText"; //$NON-NLS-1$
+  protected static final String OUT_ICON_NAME = "outIconName"; //$NON-NLS-1$
+  protected static final String OUT_DEFAULT_ICON = "/images/zoomOut.gif"; //$NON-NLS-1$
   
   public void addTo(Buildable b) {
     GameModule.getGameModule().getGameState().addGameComponent(this);
@@ -199,28 +197,18 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
     map.setZoomer(this);
     map.getToolBar().add(zoomInButton);
-//    java.net.URL image = getClass().getResource("/images/zoomIn.gif");
-//    if (image != null) {
-//      zoomInButton.setIcon(new ImageIcon(image));
-//      zoomInButton.setText("");
-//    }
     map.getToolBar().add(zoomOutButton);
-//    image = getClass().getResource("/images/zoomOut.gif");
-//    if (image != null) {
-//      zoomOutButton.setIcon(new ImageIcon(image));
-//      zoomOutButton.setText("");
-//    }
   }
 
   public String getAttributeValueString(String key) {
     if (MAX.equals(key)) {
-      return "" + maxZoom;
+      return "" + maxZoom; //$NON-NLS-1$
     } 
     else if (ZOOM_START.equals(key)) {
-	  return "" + zoomStart;
+	  return "" + zoomStart; //$NON-NLS-1$
     }
     else if (FACTOR.equals(key)) {
-      return "" + zoomStep;
+      return "" + zoomStep; //$NON-NLS-1$
     }
     else if (zoomInButton.getAttributeValueString(key) != null) {
       return zoomInButton.getAttributeValueString(key);
@@ -346,7 +334,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm", "Zoom");
+    return HelpFile.getReferenceManualPage("Map.htm", "Zoom"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public void setup(boolean gameStarting) {

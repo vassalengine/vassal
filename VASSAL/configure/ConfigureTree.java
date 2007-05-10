@@ -381,10 +381,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
   
   protected boolean isValidPasteTarget(Configurable target) {
-    return (cutData != null && (isValidParent(target, (Configurable) cutData.getUserObject())) || isValidParent(
-        getParent(target), (Configurable) cutData.getUserObject()))
-        || (copyData != null && (isValidParent(target, (Configurable) copyData.getUserObject()) || isValidParent(
-            getParent(target), (Configurable) copyData.getUserObject())));
+     return (cutData != null && isValidParent(target, (Configurable) cutData.getUserObject()))
+        || (copyData != null && isValidParent(target, (Configurable) copyData.getUserObject()));
   }
 
   protected Action buildImportAction(final Configurable target) {

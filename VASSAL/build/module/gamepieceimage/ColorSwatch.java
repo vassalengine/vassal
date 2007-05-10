@@ -120,7 +120,7 @@ public class ColorSwatch extends AbstractConfigurable implements Comparable {
   }
 
   public void addTo(Buildable parent) {
-
+    setAllAttributesUntranslatable();
   }
   
   public static ColorSwatch getBlack() {
@@ -140,11 +140,6 @@ public class ColorSwatch extends AbstractConfigurable implements Comparable {
   }
   
   public String encode() {
-    
-//    SequenceEncoder se = new SequenceEncoder(';');
-//    se.append(getConfigureName());
-//    //se.append(getColor());
-//    return se.getValue();
     return getConfigureName();
   }
   
@@ -156,7 +151,6 @@ public class ColorSwatch extends AbstractConfigurable implements Comparable {
       c = ColorManager.getColorManager().getColorByName("BLACK"); //$NON-NLS-1$
     }
     setColor(c);
-    //setColor(sd.nextColor(Color.BLACK));
   }
   
   public static ColorSwatch getDefaultSwatch() {

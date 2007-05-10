@@ -703,7 +703,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
 
   public PieceI18nData getI18nData() {
     PieceI18nData data = new PieceI18nData(this);
-    data.add(commonName, "Piece Name");
+    data.add(commonName, "Basic piece name");
     return data;
   }
 }
