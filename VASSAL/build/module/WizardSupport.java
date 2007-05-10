@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -56,6 +57,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JRadioButton;
 import javax.swing.UIManager;
+
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.modules.wizard.InstructionsPanel;
 import org.netbeans.spi.wizard.Wizard;
@@ -66,12 +68,14 @@ import org.netbeans.spi.wizard.WizardObserver;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPanelProvider;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.Tutorial;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.command.CommandFilter;
 import VASSAL.configure.FileConfigurer;
+import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
@@ -94,6 +98,7 @@ public class WizardSupport {
   public static final String PLAY_ONLINE_ACTION = "online"; //$NON-NLS-1$
   public static final String PLAY_OFFLINE_ACTION = "offline"; //$NON-NLS-1$
   public static final String LOAD_GAME_ACTION = "loadGame"; //$NON-NLS-1$
+  private static final int MAX_LOGO_WIDTH = 200;
   protected List setups = new ArrayList();
   protected Tutorial tutorial;
 
@@ -231,7 +236,7 @@ public class WizardSupport {
             panel.paintComponent(g);
           }
         });
-        proxy.setPreferredSize(new Dimension(Math.min(200, proxy.getPreferredSize().width), proxy.getPreferredSize().height));
+        proxy.setPreferredSize(new Dimension(Math.min(MAX_LOGO_WIDTH, proxy.getPreferredSize().width), proxy.getPreferredSize().height));
         parent.add(proxy, BorderLayout.WEST);
         wizard.addWizardObserver(this);
       }
@@ -380,16 +385,20 @@ public class WizardSupport {
         box.add(Box.createVerticalGlue());
         controller.setProblem(Resources.getString("WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
         final StringConfigurer nameConfig = new StringConfigurer(null, Resources.getString("WizardSupport.RealName")); //$NON-NLS-1$
-        final StringConfigurer pwdConfig = new StringConfigurer(null, Resources.getString("WizardSupport.Password")); //$NON-NLS-1$
+        final StringConfigurer pwd = new PasswordConfigurer(null, Resources.getString("WizardSupport.Password")); //$NON-NLS-1$
+        final StringConfigurer pwd2 = new PasswordConfigurer(null, Resources.getString("WizardSupport.ConfirmPassword")); //$NON-NLS-1$
         PropertyChangeListener pl = new PropertyChangeListener() {
           public void propertyChange(PropertyChangeEvent evt) {
             settings.put(GameModule.REAL_NAME, nameConfig.getValue());
-            settings.put(GameModule.SECRET_NAME, pwdConfig.getValue());
+            settings.put(GameModule.SECRET_NAME, pwd.getValue());
             if (nameConfig.getValue() == null || "".equals(nameConfig.getValue())) { //$NON-NLS-1$
               controller.setProblem(Resources.getString("WizardSupport.EnterYourName")); //$NON-NLS-1$
             }
-            else if (pwdConfig.getValue() == null || "".equals(pwdConfig.getValue())) { //$NON-NLS-1$
+            else if (pwd.getValue() == null || "".equals(pwd.getValue())) { //$NON-NLS-1$
               controller.setProblem(Resources.getString("WizardSupport.EnterYourPassword")); //$NON-NLS-1$
+            }
+            else if (!pwd.getValue().equals(pwd2.getValue())) {
+              controller.setProblem(Resources.getString("WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
             }
             else {
               controller.setProblem(null);
@@ -397,9 +406,11 @@ public class WizardSupport {
           }
         };
         nameConfig.addPropertyChangeListener(pl);
-        pwdConfig.addPropertyChangeListener(pl);
+        pwd.addPropertyChangeListener(pl);
+        pwd2.addPropertyChangeListener(pl);
         box.add(nameConfig.getControls());
-        box.add(pwdConfig.getControls());
+        box.add(pwd.getControls());
+        box.add(pwd2.getControls());
         JLabel l = new JLabel(Resources.getString("WizardSupport.NameAndPasswordDetails"));
         l.setAlignmentX(Box.CENTER_ALIGNMENT);
         box.add(l);
@@ -603,12 +614,13 @@ public class WizardSupport {
   public void setBackgroundImage(Image image) {
     if (image != null) {
       ImageIcon icon = new ImageIcon(image);
-      BufferedImage buffIm = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+      int width = Math.min(MAX_LOGO_WIDTH,icon.getIconWidth());
+      BufferedImage buffIm = new BufferedImage(width, icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
       Graphics2D g = (Graphics2D) buffIm.getGraphics();
       g.setColor(Color.white);
       g.fillRect(0, 0, icon.getIconWidth(), icon.getIconHeight());
       g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
-      icon.paintIcon(null, g, 0, 0);
+      icon.paintIcon(null, g, (width-icon.getIconWidth())/2, 0);
       UIManager.put("wizard.sidebar.image", buffIm); //$NON-NLS-1$
     }
   }

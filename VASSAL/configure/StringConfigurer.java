@@ -54,7 +54,7 @@ public class StringConfigurer extends Configurer {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
       p.add(new JLabel(getName()));
-      nameField = new JTextField(12);
+      nameField = buildTextField();
       nameField.setMaximumSize
         (new java.awt.Dimension(nameField.getMaximumSize().width,
                                 nameField.getPreferredSize().height));
@@ -69,5 +69,9 @@ public class StringConfigurer extends Configurer {
       });
     }
     return p;
+  }
+
+  protected JTextField buildTextField() {
+    return new JTextField(12);
   }
 }
