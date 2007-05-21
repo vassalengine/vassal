@@ -120,7 +120,12 @@ public class Translation extends AbstractConfigurable implements Comparable {
    *          property value
    */
   public void setProperty(String key, String value) {
-    getProperties().setProperty(key, value);
+	if (value == null || value.length() == 0) {
+      getProperties().remove(key);	
+	}
+	else {
+      getProperties().setProperty(key, value);
+	}
     dirty = true;
   }
 
@@ -156,10 +161,16 @@ public class Translation extends AbstractConfigurable implements Comparable {
     if (localProperties == null) {
       localProperties = new Properties();
     }
-    in = GameModule.getGameModule().getDataArchive().getFileStream(bundle);
-    localProperties.load(in);
+	try {
+		in = GameModule.getGameModule().getDataArchive().getFileStream(bundle);
+	} catch (IOException e) {
+		// properties have not been saved yet
+	}    
+	if (in != null) {
+	  localProperties.load(in);
+	  in.close();
+	}
     dirty = false;
-    in.close();
   }
 
   protected VassalResourceBundle getBundle() throws IOException {

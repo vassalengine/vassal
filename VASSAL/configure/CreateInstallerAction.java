@@ -201,7 +201,6 @@ public class CreateInstallerAction extends AbstractAction {
   }
 
   public static void main(String[] args) throws Exception {
-    Resources.init(new File(System.getProperty("user.dir"))); //$NON-NLS-1$
     Prefs globalPrefs = new Prefs(new PrefsEditor(new ArchiveWriter("pref")), "VASSAL"); //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.init(new BasicModule(new ArchiveWriter(args[0]), globalPrefs));
     new CreateInstallerAction(null).actionPerformed(null);

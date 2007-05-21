@@ -220,7 +220,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     });
 
     keyTable.getSelectionModel().addListSelectionListener(this);
-    keyTable.setEnabled(Language.getTranslationList().length > 0);
+    keyTable.setEnabled(currentTranslation != null);
         
     JScrollPane keyScroll = new JScrollPane(keyTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

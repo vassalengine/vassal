@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
@@ -33,6 +34,7 @@ public class TranslateVassalWindow extends TranslateWindow {
   public TranslateVassalWindow(Frame owner) {
     super(owner, false, new VassalTranslation(), null, null);
     currentTranslation = (Translation) target;
+    keyTable.setEnabled(true);
     newTranslation();
   }
 
@@ -108,11 +110,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     if (fc.showOpenDialog(this) != FileChooser.APPROVE_OPTION)
       return;
     File file = fc.getSelectedFile();
-    if (! file.getName().startsWith(Resources.MODULE_BUNDLE)) {
-      loadError("Module Properties files must start with 'Module_'.");
-      return;
-    } 
-    else if (! file.getName().endsWith(".properties")) {
+    if (! file.getName().endsWith(".properties")) {
       loadError("Module Properties files must end in '.properties'.");
       return;
     }
@@ -147,25 +145,17 @@ public class TranslateVassalWindow extends TranslateWindow {
   protected boolean saveTranslation() {
     FileChooser fc = GameModule.getGameModule().getFileChooser();
     Locale l = localeConfig.getValueLocale();
-    String bundle = Resources.MODULE_BUNDLE + "_" + l.getLanguage();
+    String bundle = "VASSAL_" + l.getLanguage();
     if (l.getCountry() != null && l.getCountry().length() > 0) {
       bundle += "_" + l.getCountry();
     }
     bundle += ".properties";
-    fc.setSelectedFile(new File(bundle));
+    fc.setSelectedFile(new File(Info.getHomeDir(),bundle));
 
     if (fc.showSaveDialog(this) != FileChooser.APPROVE_OPTION)
       return false;
     
     File outputFile = fc.getSelectedFile();
-    if (outputFile != null &&
-        outputFile.exists() &&
-        JOptionPane.NO_OPTION ==
-         JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(),
-          outputFile.getName() + " already exists. OK to overwrite?", "File Exists", 
-          JOptionPane.YES_NO_OPTION)) {
-        return false;
-    } 
     try {
       ((VassalTranslation) target).saveProperties(outputFile, localeConfig.getValueLocale());
     }

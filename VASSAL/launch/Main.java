@@ -23,6 +23,7 @@ import java.util.Observer;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.zip.ZipFile;
+
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -37,6 +38,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
+
+import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Documentation;
@@ -65,12 +68,9 @@ public class Main {
   protected boolean isFirstTime;
   protected boolean builtInModule;
   protected Prefs globalPrefs;
-  protected File homeDir;
   public Main(final String[] args) {
     System.setProperty("swing.aatext", "true");   //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("swing.boldMetal", "false");   //$NON-NLS-1$ //$NON-NLS-2$
-    initHomeDir();
-    initResources();
     initProperties();
     System.err.println("-- OS " + System.getProperty("os.name"));   //$NON-NLS-1$ //$NON-NLS-2$
     System.err.println("-- Java version " + System.getProperty("java.version"));   //$NON-NLS-1$ //$NON-NLS-2$
@@ -141,7 +141,7 @@ public class Main {
   }
 
   protected File initPrefsFile() {
-    File prefsFile = new File(homeDir, "Preferences");  //$NON-NLS-1$
+    File prefsFile = new File(Info.getHomeDir(), "Preferences");  //$NON-NLS-1$
     File oldFile = new File(System.getProperty("user.home")  //$NON-NLS-1$
                             + File.separator + ".VassalPreferences");  //$NON-NLS-1$
     if (!prefsFile.exists()
@@ -149,21 +149,6 @@ public class Main {
       oldFile.renameTo(prefsFile);
     }
     return prefsFile;
-  }
-
-  protected void initHomeDir() {
-    homeDir = new File(System.getProperty("user.home"), "VASSAL");   //$NON-NLS-1$ //$NON-NLS-2$
-    if (!homeDir.exists()) {
-      homeDir.mkdir();
-    }
-    else if (!homeDir.isDirectory()) {
-      homeDir.delete();
-      homeDir.mkdir();
-    }
-  }
-  
-  protected void initResources() {
-    Resources.init(homeDir);
   }
 
   protected void newExtension() {
