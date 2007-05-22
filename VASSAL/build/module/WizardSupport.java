@@ -98,7 +98,7 @@ public class WizardSupport {
   public static final String PLAY_ONLINE_ACTION = "online"; //$NON-NLS-1$
   public static final String PLAY_OFFLINE_ACTION = "offline"; //$NON-NLS-1$
   public static final String LOAD_GAME_ACTION = "loadGame"; //$NON-NLS-1$
-  private static final int MAX_LOGO_WIDTH = 200;
+  protected Dimension logoSize = new Dimension(200,200);
   protected List setups = new ArrayList();
   protected Tutorial tutorial;
 
@@ -136,7 +136,7 @@ public class WizardSupport {
     Wizard welcomeWizard = c.createWizard();
     Map props = new HashMap();
     props.put(WELCOME_WIZARD_KEY, welcomeWizard);
-    Object result = WizardDisplayer.showWizard(welcomeWizard, new Rectangle(0, 0, 700, 400), null, props);
+    Object result = WizardDisplayer.showWizard(welcomeWizard, new Rectangle(0, 0, logoSize.width+400, logoSize.height), null, props);
     if (result instanceof Map) {
       Map m = (Map) result;
       Object action = m.get(ACTION_KEY);
@@ -185,7 +185,7 @@ public class WizardSupport {
   public void showGameSetupWizard() {
     GameSetupPanels panels = GameSetupPanels.newInstance();
     if (panels != null) {
-      WizardDisplayer.showWizard(panels.newWizard(), new Rectangle(0, 0, 700, 400));
+      WizardDisplayer.showWizard(panels.newWizard(logoSize), new Rectangle(0, 0, logoSize.width+400, logoSize.height));
     }
   }
   /**
@@ -198,10 +198,12 @@ public class WizardSupport {
     private final Component page;
     private JLabel proxy;
     private Wizard wizard;
+    private Dimension logoSize;
 
-    protected InstructionsPanelLayoutFix(Wizard wizard, Component page) {
+    protected InstructionsPanelLayoutFix(Wizard wizard, Component page, Dimension logoSize) {
       this.page = page;
       this.wizard = wizard;
+      this.logoSize = logoSize;
       page.addHierarchyListener(this);
     }
 
@@ -236,7 +238,7 @@ public class WizardSupport {
             panel.paintComponent(g);
           }
         });
-        proxy.setPreferredSize(new Dimension(Math.min(MAX_LOGO_WIDTH, proxy.getPreferredSize().width), proxy.getPreferredSize().height));
+        proxy.setPreferredSize(new Dimension(Math.min(logoSize.width, proxy.getPreferredSize().width), proxy.getPreferredSize().height));
         parent.add(proxy, BorderLayout.WEST);
         wizard.addWizardObserver(this);
       }
@@ -259,7 +261,7 @@ public class WizardSupport {
     Object realName = GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
     if (realName == null || realName.equals(Resources.getString("Prefs.newbie"))) {
       return new InitialWelcomeSteps(
-          new String[]{"name", ACTION_KEY}, new String[]{Resources.getString("WizardSupport.WizardSupport.EnterName"), Resources.getString("WizardSupport.WizardSupport.SelectPlayMode")}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          new String[]{InitialWelcomeSteps.NAME_STEP, ACTION_KEY}, new String[]{Resources.getString("WizardSupport.WizardSupport.EnterName"), Resources.getString("WizardSupport.WizardSupport.SelectPlayMode")}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     else {
       return new InitialWelcomeSteps(new String[]{ACTION_KEY}, new String[]{Resources.getString("WizardSupport.SelectPlayMode")}); //$NON-NLS-1$
@@ -293,7 +295,7 @@ public class WizardSupport {
       else {
         throw new IllegalArgumentException("Illegal step: " + id); //$NON-NLS-1$
       }
-      new InstructionsPanelLayoutFix((Wizard) settings.get(WELCOME_WIZARD_KEY), c);
+      new InstructionsPanelLayoutFix((Wizard) settings.get(WELCOME_WIZARD_KEY), c, logoSize);
       SplashScreen.disposeAll();
       return c;
     }
@@ -401,6 +403,8 @@ public class WizardSupport {
               controller.setProblem(Resources.getString("WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
             }
             else {
+              GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
+              GameModule.getGameModule().getPrefs().getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
               controller.setProblem(null);
             }
           }
@@ -614,13 +618,13 @@ public class WizardSupport {
   public void setBackgroundImage(Image image) {
     if (image != null) {
       ImageIcon icon = new ImageIcon(image);
-      int width = Math.min(MAX_LOGO_WIDTH,icon.getIconWidth());
-      BufferedImage buffIm = new BufferedImage(width, icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+      logoSize = new Dimension(icon.getIconWidth(), icon.getIconHeight());
+      BufferedImage buffIm = new BufferedImage(logoSize.width, logoSize.height, BufferedImage.TYPE_4BYTE_ABGR);
       Graphics2D g = (Graphics2D) buffIm.getGraphics();
       g.setColor(Color.white);
       g.fillRect(0, 0, icon.getIconWidth(), icon.getIconHeight());
       g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
-      icon.paintIcon(null, g, (width-icon.getIconWidth())/2, 0);
+      icon.paintIcon(null, g, 0, 0);
       UIManager.put("wizard.sidebar.image", buffIm); //$NON-NLS-1$
     }
   }
@@ -682,9 +686,9 @@ public class WizardSupport {
       return wizardData;
     }
 
-    public Wizard newWizard() {
+    public Wizard newWizard(Dimension logoSize) {
       Wizard w = createWizard();
-      new InstructionsPanelLayoutFix(w, pages[0]);
+      new InstructionsPanelLayoutFix(w, pages[0], logoSize);
       return w;
     }
   }
