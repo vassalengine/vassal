@@ -46,6 +46,8 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -53,7 +55,7 @@ import VASSAL.tools.SequenceEncoder;
  * Give a piece a command that moves it a fixed amount in a particular direction,
  * optionally tracking the current rotation of the piece.
  */
-public class Translate extends Decorator implements EditablePiece {
+public class Translate extends Decorator implements TranslatablePiece {
   public static final String ID = "translate;";
   protected KeyCommand[] commands;
   protected String commandName;
@@ -253,6 +255,11 @@ public class Translate extends Decorator implements EditablePiece {
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Translate.htm");
   }
+  
+  public PieceI18nData getI18nData() {
+    return getI18nData(commandName, getCommandDescription(description, "Move Fixed Distance command"));
+  }
+  
 
   public static class Editor implements PieceEditor {
     private StringConfigurer xDist;
@@ -281,7 +288,7 @@ public class Translate extends Decorator implements EditablePiece {
       controls.add(xDist.getControls());
       yDist = new StringConfigurer(null, "Distance upwards:  ", t.yDist.getFormat());
       controls.add(yDist.getControls());
-      moveStack = new BooleanConfigurer(null, "Move entire stack", new Boolean(t.moveStack));
+      moveStack = new BooleanConfigurer(null, "Move entire stack?", new Boolean(t.moveStack));
       controls.add(moveStack.getControls());
       
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);

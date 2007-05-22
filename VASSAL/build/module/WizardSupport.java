@@ -446,7 +446,7 @@ public class WizardSupport {
 
     protected JComponent createPanel(final WizardController controller, String id, final Map settings) {
       final JComboBox setupSelection = new JComboBox(setups.toArray());
-      ((DefaultComboBoxModel) setupSelection.getModel()).insertElementAt("  ", 0);
+      ((DefaultComboBoxModel) setupSelection.getModel()).insertElementAt(description, 0);
       setupSelection.setSelectedIndex(0);
       setupSelection.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {

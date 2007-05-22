@@ -47,9 +47,11 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.PieceAccessConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
-public class Obscurable extends Decorator implements EditablePiece {
+public class Obscurable extends Decorator implements TranslatablePiece {
   public static final String ID = "obs;";
   protected static final char INSET = 'I';
   protected static final char BACKGROUND = 'B';
@@ -63,6 +65,7 @@ public class Obscurable extends Decorator implements EditablePiece {
   protected String obscuredToOthersImage;
   protected String obscuredBy;
   protected String hideCommand = "Mask";
+  protected String peekCommand = "Peek";
   protected GamePiece obscuredToMeView;
   protected GamePiece obscuredToOthersView;
   protected boolean peeking;
@@ -310,16 +313,26 @@ public class Obscurable extends Decorator implements EditablePiece {
     }
   }
 
+  public String getLocalizedName() {
+    String maskedName = maskName == null ? "?" : maskName;
+    maskedName = getTranslation(maskedName);
+    return getName(maskedName, true);
+  }
+  
   public String getName() {
     String maskedName = maskName == null ? "?" : maskName;
+    return getName(maskedName, false);
+  }
+  
+  protected String getName(String maskedName, boolean localized) {
     if (obscuredToMe()) {
       return maskedName;
     }
     else if (obscuredToOthers()) {
-      return piece.getName() + "(" + maskedName + ")";
+      return (localized ? piece.getLocalizedName() : piece.getName()) + "(" + maskedName + ")";
     }
     else {
-      return piece.getName();
+      return (localized ? piece.getLocalizedName() : piece.getName());
     }
   }
 
@@ -362,7 +375,7 @@ public class Obscurable extends Decorator implements EditablePiece {
     }
       
     // Peek Command
-    peek = new KeyCommand("Peek", peekKey, outer);
+    peek = new KeyCommand(peekCommand, peekKey, outer);
     if (displayStyle == PEEK && peekKey != null) {
       l.add(peek);
     }
@@ -467,6 +480,10 @@ public class Obscurable extends Decorator implements EditablePiece {
     }
   }
 
+  public PieceI18nData getI18nData() {
+    return getI18nData(new String[] {hideCommand, maskName, peekCommand}, new String[] {"Mask command", "Name when masked", "Peek command"});
+  }
+  
   private static class Ed implements PieceEditor {
     private ImagePicker picker;
     private HotKeyConfigurer obscureKeyInput;
@@ -485,7 +502,7 @@ public class Obscurable extends Decorator implements EditablePiece {
       Box box = Box.createHorizontalBox();
       obscureCommandInput = new StringConfigurer(null, "Mask Command:  ", p.hideCommand);
       box.add(obscureCommandInput.getControls());
-      obscureKeyInput = new HotKeyConfigurer(null,"Keyboard Command:  ",p.keyCommand);
+      obscureKeyInput = new HotKeyConfigurer(null,"  Keyboard Command:  ",p.keyCommand);
       box.add(obscureKeyInput.getControls());
       controls.add(box);
       

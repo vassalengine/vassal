@@ -141,9 +141,7 @@ public class Clone extends Decorator implements TranslatablePiece {
   }
 
   public PieceI18nData getI18nData() {
-    PieceI18nData data = new PieceI18nData(this);
-    data.add(commandName, "Clone command");
-    return data;
+    return getI18nData(commandName, "Clone command");
   }
    
   public static class Ed implements PieceEditor {

@@ -41,12 +41,14 @@ import VASSAL.configure.DoubleConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /**
  * Provides commands to pivot a Game Piece around a given point
  */
-public class Pivot extends Decorator implements EditablePiece {
+public class Pivot extends Decorator implements TranslatablePiece {
   public static final String ID = "pivot;";
   public static final String DEGREES = "_Degrees";
   protected int pivotX;
@@ -208,6 +210,11 @@ public class Pivot extends Decorator implements EditablePiece {
     return new Ed(this);
   }
 
+  public PieceI18nData getI18nData() {
+    return getI18nData(command, "Pivot command");
+  }
+  
+  
   public static class Ed implements PieceEditor {
     private StringConfigurer command;
     private HotKeyConfigurer key;
@@ -232,7 +239,7 @@ public class Pivot extends Decorator implements EditablePiece {
       b.add(yOff.getControls());
       controls.add(b);
 
-      fixedAngle = new BooleanConfigurer(null, "Pivot through fixed angle", new Boolean(p.fixedAngle));
+      fixedAngle = new BooleanConfigurer(null, "Pivot through fixed angle?", new Boolean(p.fixedAngle));
       controls.add(fixedAngle.getControls());
 
       angle = new DoubleConfigurer(null, "Angle:  ", new Double(p.angle));

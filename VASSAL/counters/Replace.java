@@ -23,6 +23,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.i18n.PieceI18nData;
 
 /**
  * GamePiece trait that replaces a GamePiece with another one
@@ -121,6 +122,10 @@ public class Replace extends PlaceMarker {
     }
   }
 
+  public PieceI18nData getI18nData() {
+    return getI18nData(command.getName(), getCommandDescription(description, "Replace command"));
+  }
+
   protected static class Ed extends PlaceMarker.Ed {
     public Ed(Replace piece) {
       super(piece);
@@ -128,7 +133,7 @@ public class Replace extends PlaceMarker {
     }
 
     protected BooleanConfigurer createMatchRotationConfig() {
-      return new BooleanConfigurer(null, "Match Current State");
+      return new BooleanConfigurer(null, "Match Current State?");
     }
 
     public String getType() {

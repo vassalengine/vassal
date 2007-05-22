@@ -39,6 +39,8 @@ import VASSAL.configure.KeyStrokeArrayConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -47,7 +49,7 @@ import VASSAL.tools.SequenceEncoder;
  *  - Triggered by own KeyCommand or list of keystrokes
  *  - Match against an optional Property Filter
  * */
-public class TriggerAction extends Decorator implements EditablePiece {
+public class TriggerAction extends Decorator implements TranslatablePiece {
 
   public static final String ID = "macro;";
 
@@ -230,6 +232,10 @@ public class TriggerAction extends Decorator implements EditablePiece {
     return new Ed(this);
   }
 
+  public PieceI18nData getI18nData() {
+    return getI18nData(command, getCommandDescription(name, "Trigger command"));
+  }
+  
   public static class Ed implements PieceEditor {
 
     private StringConfigurer name;

@@ -51,11 +51,13 @@ import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
 /** * Displays a text label, with content specified by the user at runtime */
-public class Labeler extends Decorator implements EditablePiece {
+public class Labeler extends Decorator implements TranslatablePiece {
   public static final String ID = "label;";
   protected Color textBg = Color.black;
   protected Color textFg = Color.white;
@@ -471,11 +473,11 @@ public class Labeler extends Decorator implements EditablePiece {
       b = Box.createHorizontalBox();
       fontSize = new IntConfigurer(null, "Font size:  ", new Integer(l.font.getSize()));
       b.add(fontSize.getControls());
-      b.add(new JLabel("  Bold:  "));
+      b.add(new JLabel("  Bold?"));
       int fontStyle = l.font.getStyle();
       bold = new BooleanConfigurer(null, "", new Boolean(fontStyle != Font.PLAIN && fontStyle != Font.ITALIC));
       b.add(bold.getControls());
-      b.add(new JLabel("  Italic:  "));
+      b.add(new JLabel("  Italic?"));
       italic = new BooleanConfigurer(null, "", new Boolean(fontStyle != Font.PLAIN && fontStyle != Font.BOLD));
       b.add(italic.getControls());
       controls.add(b);
@@ -619,5 +621,9 @@ public class Labeler extends Decorator implements EditablePiece {
         return this;
       }
     }
+  }
+  
+  public PieceI18nData getI18nData() {
+    return getI18nData(menuCommand, "Change Label Command");
   }
 }

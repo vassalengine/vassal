@@ -41,6 +41,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -72,12 +73,14 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /**
  * A Decorator class that endows a GamePiece with a dialog. */
-public class PropertySheet extends Decorator implements EditablePiece {
+public class PropertySheet extends Decorator implements TranslatablePiece {
   public static final String ID = "propertysheet;";
 
   protected String oldState;
@@ -116,8 +119,7 @@ public class PropertySheet extends Decorator implements EditablePiece {
 
   protected String state;
   protected HashMap properties = new HashMap();
-  java.util.List m_values;
-  java.util.List m_fields;
+  protected List m_fields;
 
 
   static final char TYPE_DELIMITOR = ';';
@@ -466,7 +468,7 @@ public class PropertySheet extends Decorator implements EditablePiece {
             c.gridx = 0;
             c.weighty = 0.0;
             c.weightx = c.gridwidth == 2 ? 1.0 : 0.0;
-            pane.add(new JLabel(name), c);
+            pane.add(new JLabel(getTranslation(name)), c);
             if (c.gridwidth == 2) {
               ++c.gridy;
             }
@@ -535,7 +537,7 @@ public class PropertySheet extends Decorator implements EditablePiece {
       }
 
       // Name window and make it visible
-      frame.setTitle(getName());
+      frame.setTitle(getLocalizedName());
       oldState = Decorator.getOutermost(this).getState();
       frame.setVisible(true);
       return null;
@@ -584,7 +586,7 @@ public class PropertySheet extends Decorator implements EditablePiece {
       c.gridx = 0;
       c.weightx = 0.0;
       c.fill = GridBagConstraints.NONE;
-      add(new JLabel("Keystroke"), c);
+      add(new JLabel("Keystroke:"), c);
 
       ++c.gridx;
       JTextField field = new JTextField(Character.toString(value));
@@ -810,6 +812,26 @@ public class PropertySheet extends Decorator implements EditablePiece {
       }
     }
   }
+  
+  public PieceI18nData getI18nData() {
+    ArrayList<String> items = new ArrayList<String>();
+    SequenceEncoder.Decoder defDecoder = new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
+    while (defDecoder.hasMoreTokens()) {
+      String item = defDecoder.nextToken();
+      items.add(item.substring(1));
+    }
+    String[] menuNames = new String[items.size()+1];
+    String[] descriptions = new String[items.size()+1];
+    menuNames[0]  = menuName;
+    descriptions[0] = "Property Sheet command";
+    int j = 1;
+    for (Iterator<String> i = items.iterator(); i.hasNext(); ) {
+      menuNames[j] = i.next();
+      descriptions[j] = "Property Sheet item " + j;
+      j++;
+    }
+    return getI18nData(menuNames, descriptions);
+  }
 
   private static class Ed implements PieceEditor {
 
@@ -825,10 +847,10 @@ public class PropertySheet extends Decorator implements EditablePiece {
 
     public Ed(PropertySheet propertySheet) {
       m_panel = new PropertyPanel();
-      menuNameCtrl = m_panel.addStringCtrl("Menu Text", propertySheet.menuName);
+      menuNameCtrl = m_panel.addStringCtrl("Menu Text:", propertySheet.menuName);
       keystrokeCtrl = m_panel.addKeystrokeCtrl(propertySheet.launchKey);
-      commitCtrl = m_panel.addComboBox("Commit changes on", COMMIT_VALUES, propertySheet.commitStyle);
-      colorCtrl = m_panel.addColorCtrl("Background Color", propertySheet.backgroundColor);
+      commitCtrl = m_panel.addComboBox("Commit changes on:", COMMIT_VALUES, propertySheet.commitStyle);
+      colorCtrl = m_panel.addColorCtrl("Background Color:", propertySheet.backgroundColor);
       DefaultTableModel dataModel = new DefaultTableModel(getTableData(propertySheet.m_definition), COLUMN_NAMES);
       AddCreateRow(dataModel);
       propertyTable = m_panel.addTableCtrl("Properties:", dataModel, DEFAULT_ROW);

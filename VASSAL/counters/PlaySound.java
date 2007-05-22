@@ -35,6 +35,8 @@ import VASSAL.configure.AudioClipConfigurer;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -44,7 +46,7 @@ import VASSAL.tools.SequenceEncoder;
  * @author rkinney
  * 
  */
-public class PlaySound extends Decorator implements EditablePiece {
+public class PlaySound extends Decorator implements TranslatablePiece {
   public static final String ID = "playSound;";
   protected String menuText;
   protected KeyStroke stroke;
@@ -144,6 +146,10 @@ public class PlaySound extends Decorator implements EditablePiece {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
+  
+  public PieceI18nData getI18nData() {
+    return getI18nData(menuText, "Play Sound command");
+  }
 
   public static class Ed implements PieceEditor {
     private StringConfigurer menuConfig;
@@ -158,7 +164,7 @@ public class PlaySound extends Decorator implements EditablePiece {
       soundConfig = new AudioClipConfigurer(null, "Sound Clip:  ", GameModule.getGameModule().getArchiveWriter());
       soundConfig.setValue(p.format.getFormat());
       soundConfig.setEditable(true);
-      sendConfig = new BooleanConfigurer(null, "Send sound to other players", p.sendToOthers);
+      sendConfig = new BooleanConfigurer(null, "Send sound to other players?", p.sendToOthers);
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
       panel.add(menuConfig.getControls());

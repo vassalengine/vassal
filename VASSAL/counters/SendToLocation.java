@@ -37,6 +37,8 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -70,7 +72,7 @@ import VASSAL.tools.SequenceEncoder;
  * by a set of multipliers.
  * All Input Fields may use $...$ variable names 
  */
-public class SendToLocation extends Decorator implements EditablePiece {
+public class SendToLocation extends Decorator implements TranslatablePiece {
   public static final String ID = "sendto;";
   public static final String BACK_MAP = "backMap";
   public static final String BACK_POINT = "backPoint";
@@ -369,6 +371,11 @@ public class SendToLocation extends Decorator implements EditablePiece {
 
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("SendToLocation.htm");
+  }
+  
+  public PieceI18nData getI18nData() {
+    return getI18nData(new String[] {commandName, backCommandName}, 
+                       new String[] {getCommandDescription(description, "Send command"), getCommandDescription(description, "Back command")});
   }
   
   public static class Ed implements PieceEditor {

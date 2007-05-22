@@ -56,6 +56,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -552,6 +553,11 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
 
   public PieceEditor getEditor() {
     return new Ed(this);
+  }
+  
+  public PieceI18nData getI18nData() {
+    return getI18nData(new String[] {setAngleText, rotateCWText, rotateCCWText, rotateRNDText}, 
+                       new String[] {getCommandDescription(name, "Set Angle command"), getCommandDescription(name, "Rotate CW command"), getCommandDescription(name, "Rotate CCW command"), getCommandDescription(name, "Rotate Random command")});
   }
 
   private static class Ed implements PieceEditor, java.beans.PropertyChangeListener {

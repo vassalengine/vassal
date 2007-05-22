@@ -38,13 +38,15 @@ import VASSAL.build.module.map.DrawPile;
 import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 
 /**
  * GamePiece trait that returns a piece to a {@link DrawPile}
  */
-public class ReturnToDeck extends Decorator implements EditablePiece {
+public class ReturnToDeck extends Decorator implements TranslatablePiece {
   public static final String ID = "return;";
   protected String deckId;
   protected String returnCommand;
@@ -158,6 +160,10 @@ public class ReturnToDeck extends Decorator implements EditablePiece {
     return HelpFile.getReferenceManualPage("ReturnToDeck.htm");
   }
 
+  public PieceI18nData getI18nData() {
+    return getI18nData(returnCommand, "Return to Deck command");
+  }
+  
   private static class Ed implements PieceEditor {
     private StringConfigurer menuName;
     private HotKeyConfigurer menuKey;

@@ -147,11 +147,8 @@ public class Delete extends Decorator implements TranslatablePiece {
     return HelpFile.getReferenceManualPage("GamePiece.htm", "Delete");
   }
   
-
   public PieceI18nData getI18nData() {
-    PieceI18nData data = new PieceI18nData(this);
-    data.add(commandName, "Delete command");
-    return data;
+    return getI18nData(commandName, "Delete command");
   }
   
   public static class Ed implements PieceEditor {

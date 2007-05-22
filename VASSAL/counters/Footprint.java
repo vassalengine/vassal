@@ -52,6 +52,7 @@ import VASSAL.configure.DoubleConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -331,7 +332,7 @@ public class Footprint extends MovementMarkable {
     int transparencyPercent = selected ? selectedTransparency : unSelectedTransparency;
     if (transparencyPercent < 0) transparencyPercent = 0;
     if (transparencyPercent > 100) transparencyPercent = 100;
-    float transparency = (float) transparencyPercent / 100.0f;
+    float transparency = transparencyPercent / 100.0f;
     Composite oldComposite = g2d.getComposite();
     Stroke oldStroke = g2d.getStroke();
     Color oldColor = g2d.getColor();
@@ -590,6 +591,12 @@ public class Footprint extends MovementMarkable {
 
   public PieceEditor getEditor() {
     return new Ed(this);
+  }
+  
+  public PieceI18nData getI18nData() {
+    PieceI18nData data = super.getI18nData();
+    data.add(menuCommand, "Show Movement Trail command");
+    return data;
   }
 
   /**

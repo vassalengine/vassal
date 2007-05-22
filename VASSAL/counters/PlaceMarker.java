@@ -57,13 +57,15 @@ import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.ComponentPathBuilder;
 import VASSAL.tools.SequenceEncoder;
 
 /**
  * This Decorator defines a key command to places another counter on top of this one.
  */
-public class PlaceMarker extends Decorator implements EditablePiece {
+public class PlaceMarker extends Decorator implements TranslatablePiece {
   public static final String ID = "placemark;";
   protected KeyCommand command;
   protected KeyStroke key;
@@ -268,6 +270,10 @@ public class PlaceMarker extends Decorator implements EditablePiece {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
+  
+  public PieceI18nData getI18nData() {
+    return getI18nData(command.getName(), getCommandDescription(description, "Place Marker command"));
+  }
 
   protected static class Ed implements PieceEditor {
     private HotKeyConfigurer keyInput;
@@ -288,7 +294,7 @@ public class PlaceMarker extends Decorator implements EditablePiece {
       descConfig = new StringConfigurer(null, "Description:  ", piece.description);
       keyInput = new HotKeyConfigurer(null,"Keyboard Command:  ",piece.key);
       afterBurner = new HotKeyConfigurer(null, "Keystroke to apply after placement:  ", piece.afterBurnerKey);
-      commandInput = new StringConfigurer(null, "Command: ", piece.command.getName());
+      commandInput = new StringConfigurer(null, "Command:  ", piece.command.getName());
       GamePiece marker = piece.createBaseMarker();
       pieceInput = new PieceSlot(marker);
 
@@ -335,7 +341,7 @@ public class PlaceMarker extends Decorator implements EditablePiece {
     }
 
     protected BooleanConfigurer createMatchRotationConfig() {
-      return new BooleanConfigurer(null,"Match Rotation");
+      return new BooleanConfigurer(null,"Match Rotation?");
     }
 
     public Component getControls() {

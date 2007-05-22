@@ -35,13 +35,15 @@ import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /**
  * A Decorator class that endows a GamePiece with an editable
  * spreadsheet (i.e. JTable) */
-public class TableInfo extends Decorator implements EditablePiece {
+public class TableInfo extends Decorator implements TranslatablePiece {
   public static final String ID = "table;";
 
   protected String values;
@@ -199,6 +201,10 @@ public class TableInfo extends Decorator implements EditablePiece {
     return new Ed(this);
   }
 
+  public PieceI18nData getI18nData() {
+    return getI18nData(command, "Table Info command");
+  }
+  
   private static class Ed implements PieceEditor {
     private IntConfigurer rowConfig = new IntConfigurer(null, "Number of rows:  ");
     private IntConfigurer colConfig = new IntConfigurer(null, "Number of columns:  ");

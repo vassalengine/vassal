@@ -271,9 +271,9 @@ public class PrototypeDefinition extends AbstractConfigurable implements UniqueI
   }
   
   public ComponentI18nData getI18nData() {
-    if (myI18nData == null) {
-      myI18nData = new ComponentI18nData(this, getPiece());
-    }
-    return myI18nData;
+    /*
+     * Prototype definition may change due to editing, so no caching
+     */
+    return new ComponentI18nData(this, getPiece());
   }
  }

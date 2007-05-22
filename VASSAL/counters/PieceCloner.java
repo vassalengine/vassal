@@ -58,7 +58,7 @@ public class PieceCloner {
     else if (piece instanceof EditablePiece
         && piece instanceof Decorator) {
       try {
-        clone = (GamePiece) piece.getClass().newInstance();
+        clone = piece.getClass().newInstance();
         ((Decorator) clone).setInner(clonePiece(((Decorator) piece).getInner()));
         ((EditablePiece) clone).mySetType(((Decorator) piece).myGetType());
         ((Decorator) clone).mySetState(((Decorator) piece).myGetState());

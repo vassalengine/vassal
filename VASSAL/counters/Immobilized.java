@@ -268,11 +268,11 @@ public class Immobilized extends Decorator implements EditablePiece {
       else {
         selectionOption.setSelectedIndex(0);
       }
-      ignoreGridBox = new JCheckBox("Ignore map grid when moving");
+      ignoreGridBox = new JCheckBox("Ignore map grid when moving?");
       ignoreGridBox.setSelected(p.ignoreGrid);
       controls = Box.createVerticalBox();
       Box b = Box.createHorizontalBox();
-      b.add(new JLabel("Select piece  "));
+      b.add(new JLabel("Select piece:  "));
       b.add(selectionOption);
       controls.add(b);
 
@@ -290,7 +290,7 @@ public class Immobilized extends Decorator implements EditablePiece {
         movementOption.setSelectedIndex(0);
       }
       b = Box.createHorizontalBox();
-      b.add(new JLabel("Move piece  "));
+      b.add(new JLabel("Move piece:  "));
       b.add(movementOption);
       controls.add(b);
       controls.add(ignoreGridBox);

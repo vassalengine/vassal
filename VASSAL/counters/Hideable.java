@@ -39,9 +39,11 @@ import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.PieceAccessConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
-public class Hideable extends Decorator implements EditablePiece {
+public class Hideable extends Decorator implements TranslatablePiece {
 
   public static final String ID = "hide;";
   public static final String HIDDEN_BY = "hiddenBy";
@@ -233,6 +235,10 @@ public class Hideable extends Decorator implements EditablePiece {
     else {
       PieceAccess.GlobalAccess.revertAll();
     }
+  }
+  
+  public PieceI18nData getI18nData() {
+    return getI18nData(command, "Hide command");
   }
 
   protected static class Ed implements PieceEditor {

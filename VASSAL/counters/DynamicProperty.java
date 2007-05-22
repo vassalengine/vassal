@@ -43,6 +43,8 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -53,7 +55,7 @@ import VASSAL.tools.SequenceEncoder;
  * @author rkinney
  * 
  */
-public class DynamicProperty extends Decorator implements EditablePiece, PropertyPrompt.DialogParent, PropertyChangerConfigurer.Constraints {
+public class DynamicProperty extends Decorator implements TranslatablePiece, PropertyPrompt.DialogParent, PropertyChangerConfigurer.Constraints {
 
   public static final String ID = "PROP;";
 
@@ -259,6 +261,16 @@ public class DynamicProperty extends Decorator implements EditablePiece, Propert
   public PieceEditor getEditor() {
     return new Ed(this);
   }
+  
+  public PieceI18nData getI18nData() {
+    String[] commandNames = new String[menuCommands.length];
+    String[] commandDescs = new String[menuCommands.length];
+    for (int i=0; i < menuCommands.length; i++) {
+      commandNames[i] = menuCommands[i].getName();
+      commandDescs[i] = "Property " + key + ": Menu Command " + i;
+    }
+    return getI18nData(commandNames, commandDescs);
+  }
 
   protected static class Ed implements PieceEditor {
     protected StringConfigurer nameConfig;
@@ -289,15 +301,15 @@ public class DynamicProperty extends Decorator implements EditablePiece, Propert
       controls = Box.createVerticalBox();
       nameConfig = new StringConfigurer(null, "Name:  ", m.getKey());
       controls.add(nameConfig.getControls());
-      initialValueConfig = new StringConfigurer(null, "Value: ", m.getValue());
+      initialValueConfig = new StringConfigurer(null, "Value:  ", m.getValue());
       controls.add(initialValueConfig.getControls());
-      numericConfig = new BooleanConfigurer(null, "Is numeric: ", m.isNumeric());
+      numericConfig = new BooleanConfigurer(null, "Is numeric:  ", m.isNumeric());
       controls.add(numericConfig.getControls());
-      minConfig = new IntConfigurer(null, "Minimum value: ", new Integer(m.getMinimumValue()));
+      minConfig = new IntConfigurer(null, "Minimum value:  ", new Integer(m.getMinimumValue()));
       controls.add(minConfig.getControls());
-      maxConfig = new IntConfigurer(null, "Maximum value: ", new Integer(m.getMaximumValue()));
+      maxConfig = new IntConfigurer(null, "Maximum value:  ", new Integer(m.getMaximumValue()));
       controls.add(maxConfig.getControls());
-      wrapConfig = new BooleanConfigurer(null, "Wrap ", m.isWrap());
+      wrapConfig = new BooleanConfigurer(null, "Wrap?", m.isWrap());
       controls.add(wrapConfig.getControls());
       controls.add(keyCommandListConfig.getControls());
 

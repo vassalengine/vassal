@@ -23,6 +23,8 @@ import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
+import VASSAL.i18n.Language;
+import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
@@ -314,5 +316,40 @@ public abstract class Decorator implements GamePiece, StateMergeable {
    */
   public String getLocalizedName() {
     return piece.getLocalizedName();
+  }
+  
+  /**
+   * Return I18n data for this piece
+   * @return
+   */
+  public PieceI18nData getI18nData() {
+    return new PieceI18nData(this);
+  }
+  
+  protected PieceI18nData getI18nData(String command, String description) {
+    PieceI18nData data = new PieceI18nData(this);
+    data.add(command, description);
+    return data;
+  }
+  
+  protected PieceI18nData getI18nData(String[] commands, String[] descriptions) {
+    PieceI18nData data = new PieceI18nData(this);
+    for (int i = 0; i < commands.length; i++) {
+      data.add(commands[i], descriptions[i]);
+    }
+    return data;
+  }
+  
+  protected String getCommandDescription(String description, String command) {
+    String s = "";
+    if (description != null && description.length() > 0) {
+      s += description + ": ";
+    }
+    return s + command;
+  }
+  
+  protected String getTranslation(String key) {
+    String fullKey = TranslatablePiece.PREFIX + "." + key;
+    return Language.translate(fullKey, key);
   }
 }

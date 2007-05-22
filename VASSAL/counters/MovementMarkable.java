@@ -48,20 +48,22 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /**
  * A GamePiece with this trait will automatically be marked whenever it is moved.  A marked piece is
  * indicated by drawing a specified image at a specified location
  */
-public class MovementMarkable extends Decorator implements EditablePiece {
+public class MovementMarkable extends Decorator implements TranslatablePiece {
   public static final String ID = "markmoved;";
 
   private int xOffset = 0;
   private int yOffset = 0;
   private String command;
   private KeyStroke key;
-  private IconConfigurer movedIcon = new IconConfigurer(null, "Marker Image", "/images/moved.gif");
+  private IconConfigurer movedIcon = new IconConfigurer(null, "Marker Image:  ", "/images/moved.gif");
   private boolean hasMoved = false;
 
   public MovementMarkable() {
@@ -187,6 +189,11 @@ public class MovementMarkable extends Decorator implements EditablePiece {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
+  
+  public PieceI18nData getI18nData() {
+    return getI18nData(command, "Mark Moved command");
+  }
+  
 
   private static class Ed implements PieceEditor {
     private IconConfigurer iconConfig;

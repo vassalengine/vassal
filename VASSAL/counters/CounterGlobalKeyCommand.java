@@ -24,6 +24,8 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /*
@@ -48,7 +50,7 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * Adds a menu item that applies a {@link GlobalCommand} to other pieces
  */
-public class CounterGlobalKeyCommand extends Decorator implements EditablePiece {
+public class CounterGlobalKeyCommand extends Decorator implements TranslatablePiece {
   public static final String ID = "globalkey;";
   protected KeyCommand[] command;
   protected String commandName;
@@ -191,6 +193,10 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
 	}
     GameModule.getGameModule().sendAndLog(c);
   }
+  
+  public PieceI18nData getI18nData() {
+    return getI18nData(commandName, getCommandDescription(description, "Command name"));
+  }
 
   public static class Ed implements PieceEditor {
     protected StringConfigurer nameInput;
@@ -261,7 +267,7 @@ public class CounterGlobalKeyCommand extends Decorator implements EditablePiece 
       rangeProperty = new StringConfigurer(null, "Range Property:  ", p.rangeProperty);
       controls.add(rangeProperty.getControls());
             
-      suppress = new BooleanConfigurer(null, "Suppress individual reports", p.globalCommand.isReportSingle());
+      suppress = new BooleanConfigurer(null, "Suppress individual reports?", p.globalCommand.isReportSingle());
       controls.add(suppress.getControls());
       
       pl.propertyChange(null);

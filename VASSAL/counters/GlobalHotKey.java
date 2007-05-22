@@ -11,6 +11,8 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -19,19 +21,16 @@ import VASSAL.tools.SequenceEncoder;
  * @author rkinney
  * 
  */
-public class GlobalHotKey extends Decorator implements EditablePiece {
+public class GlobalHotKey extends Decorator implements TranslatablePiece {
 	public static final String ID="globalhotkey;";
 	
 	protected KeyStroke commandKey;
-	
 	protected KeyStroke globalHotKey;
-	
 	protected String commandName="Hotkey";
-	
 	protected KeyCommand[] commands;
-	
 	protected KeyCommand command;
-	
+	protected String description = "";
+  
 	public GlobalHotKey() {
 		this(ID,null);
 	}
@@ -60,7 +59,7 @@ public class GlobalHotKey extends Decorator implements EditablePiece {
 
 	public String myGetType() {
 		SequenceEncoder se = new SequenceEncoder(';');
-		se.append(commandName).append(commandKey).append(globalHotKey);
+		se.append(commandName).append(commandKey).append(globalHotKey).append(description);
 		return ID+se.getValue();
 	}
 
@@ -92,7 +91,7 @@ public class GlobalHotKey extends Decorator implements EditablePiece {
 	}
 
 	public String getDescription() {
-		return globalHotKey == null ? "Global Hotkey" : "Global Hotkey:  "+HotKeyConfigurer.getString(commandKey)+" -> "+HotKeyConfigurer.getString(globalHotKey);
+		return (description == null || description.length() == 0) ? "Global Hotkey" : "Global Hotkey:  "+description;
 	}
 
 	public HelpFile getHelpFile() {
@@ -103,7 +102,8 @@ public class GlobalHotKey extends Decorator implements EditablePiece {
 		SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(type.substring(ID.length()),';');
 		commandName = sd.nextToken();
 		commandKey = sd.nextKeyStroke('H');
-		globalHotKey = sd.nextKeyStroke('H');
+		globalHotKey = sd.nextKeyStroke(null);
+    description = sd.nextToken("");
 		commands = null;
 	}
 
@@ -111,23 +111,32 @@ public class GlobalHotKey extends Decorator implements EditablePiece {
 		return new Ed(this);
 	}
 	
+  public PieceI18nData getI18nData() {
+    return getI18nData(commandName, getDescription() + " command");
+  }
+  
 	public static class Ed implements PieceEditor {
 		
 		private StringConfigurer commandConfig;
 		private HotKeyConfigurer commandKeyConfig;
 		private HotKeyConfigurer hotKeyConfig;
+    protected StringConfigurer descConfig;
 		
 		private Box controls;
 
 		public Ed(GlobalHotKey k) {
 			controls = Box.createVerticalBox();
-			commandConfig = new StringConfigurer(null,"Menu text: ",k.commandName);
+      
+      descConfig = new StringConfigurer(null, "Description:  ", k.description);
+      controls.add(descConfig.getControls());
+      
+			commandConfig = new StringConfigurer(null,"Menu text:  ",k.commandName);
 			controls.add(commandConfig.getControls());
 
-			commandKeyConfig = new HotKeyConfigurer(null,"Keyboard Command: ",k.commandKey);
+			commandKeyConfig = new HotKeyConfigurer(null,"Keyboard Command:  ",k.commandKey);
 			controls.add(commandKeyConfig.getControls());
 
-			hotKeyConfig = new HotKeyConfigurer(null,"Global Hotkey: ",k.globalHotKey);
+			hotKeyConfig = new HotKeyConfigurer(null,"Global Hotkey:  ",k.globalHotKey);
 			controls.add(hotKeyConfig.getControls());
 		}
 
@@ -141,7 +150,7 @@ public class GlobalHotKey extends Decorator implements EditablePiece {
 
 		public String getType() {
 			SequenceEncoder se = new SequenceEncoder(';');
-			se.append(commandConfig.getValueString()).append(commandKeyConfig.getValueString()).append(hotKeyConfig.getValueString());
+			se.append(commandConfig.getValueString()).append(commandKeyConfig.getValueString()).append(hotKeyConfig.getValueString()).append(descConfig.getValueString());
 			return ID+se.getValue();
 		}
 		

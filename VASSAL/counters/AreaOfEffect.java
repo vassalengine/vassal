@@ -59,6 +59,8 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -66,7 +68,7 @@ import VASSAL.tools.SequenceEncoder;
  *
  * Displays a transparency surrounding the GamePiece which represents the Area of Effect of the GamePiece
  */
-public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.ShadedPiece {
+public class AreaOfEffect extends Decorator implements TranslatablePiece, MapShader.ShadedPiece {
   public static final String ID = "AreaOfEffect;";
   protected static final Color defaultTransparencyColor = Color.GRAY;
   protected static final float defaultTransparencyLevel = 0.3F;
@@ -314,7 +316,7 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
       descConfig = new StringConfigurer(null, "Description:  ", trait.description);
       panel.add(descConfig.getControls());
       
-      useMapShader = new BooleanConfigurer(null, "Use Map Shading", trait.mapShaderName != null);
+      useMapShader = new BooleanConfigurer(null, "Use Map Shading?", trait.mapShaderName != null);
       mapShaderId = trait.mapShaderName;
       panel.add(useMapShader.getControls());
       selectShader = Box.createHorizontalBox();
@@ -343,9 +345,9 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
         }
       });
 
-      transparencyColorValue = new ColorConfigurer(null, "Fill Color: ", trait.transparencyColor);
+      transparencyColorValue = new ColorConfigurer(null, "Fill Color:  ", trait.transparencyColor);
       panel.add(transparencyColorValue.getControls());
-      transparencyValue = new IntConfigurer(null, "Opacity (%): ", new Integer((int) (trait.transparencyLevel * 100)));
+      transparencyValue = new IntConfigurer(null, "Opacity (%):  ", new Integer((int) (trait.transparencyLevel * 100)));
       panel.add(transparencyValue.getControls());
       
       fixedRadius = new BooleanConfigurer(null, "Fixed Radius?", new Boolean(trait.fixedRadius));
@@ -362,9 +364,9 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
       radiusMarker = new StringConfigurer(null, "Radius Marker: ", trait.radiusMarker);
       panel.add(radiusMarker.getControls());
 
-      alwaysActive = new BooleanConfigurer(null, "Always visible", trait.alwaysActive ? Boolean.TRUE : Boolean.FALSE);
-      activateCommand = new StringConfigurer(null, "Toggle visible command: ", trait.activateCommand);
-      activateKey = new HotKeyConfigurer(null, "Toggle visible keyboard shortcut: ", trait.activateKey);
+      alwaysActive = new BooleanConfigurer(null, "Always visible?", trait.alwaysActive ? Boolean.TRUE : Boolean.FALSE);
+      activateCommand = new StringConfigurer(null, "Toggle visible command:  ", trait.activateCommand);
+      activateKey = new HotKeyConfigurer(null, "Toggle visible keyboard shortcut:  ", trait.activateKey);
 
       updateRangeVisibility();
       
@@ -445,5 +447,9 @@ public class AreaOfEffect extends Decorator implements EditablePiece, MapShader.
 
       return AreaOfEffect.ID + se.getValue();
     }
+  }
+  
+  public PieceI18nData getI18nData() {
+    return getI18nData(activateCommand, getCommandDescription(description, "Toggle Visible command"));
   }
 }

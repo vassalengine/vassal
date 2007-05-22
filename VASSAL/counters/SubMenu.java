@@ -30,10 +30,12 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
 /** A trait that groups menu items of other traits into a sub-menu */
-public class SubMenu extends Decorator implements EditablePiece {
+public class SubMenu extends Decorator implements TranslatablePiece {
   public static final String ID = "submenu;";
   private KeyCommand[] keyCommands = new KeyCommand[1];
 
@@ -97,7 +99,7 @@ public class SubMenu extends Decorator implements EditablePiece {
   public String getMenuName() {
     return keyCommands[0].getName();
   }
-
+  
   public Command myKeyEvent(KeyStroke stroke) {
     return null;
   }
@@ -121,6 +123,10 @@ public class SubMenu extends Decorator implements EditablePiece {
     return getInner().getShape();
   }
 
+  public PieceI18nData getI18nData() {
+    return getI18nData(getMenuName(), "Sub Menu Name");
+  }
+  
   public static class Editor implements PieceEditor {
     private StringConfigurer nameConfig;
     private StringArrayConfigurer commandsConfig;

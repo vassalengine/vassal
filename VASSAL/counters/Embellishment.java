@@ -58,7 +58,6 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.KeyModifiersConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.Language;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.DataArchive;
@@ -632,13 +631,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
   
   protected String getCommonName(boolean localized, int i) {
-    return localized ? getLocalizedCommonName(i) : commonName[i];
+    return localized ? getLocalizedCommonName(i) : commonName[i]+"";
   }
   
   protected String getLocalizedCommonName(int i) {
-    String name = commonName[i];
-    String key = TranslatablePiece.PREFIX + "." + strip(name);
-    String translation = Language.translate(key, strip(name));
+    String name = commonName[i]+"";
+    String translation = getTranslation(strip(name));
     if (name.startsWith("+")) {
       return "+" + translation;
     }
@@ -685,11 +683,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private JTextField upKeyInput = new JTextField("]");
     private JTextField downKeyInput = new JTextField("[");
     private JTextField activateCommand = new JTextField("Activate");
-    private KeyModifiersConfigurer activateModifiers = new KeyModifiersConfigurer(null, "key:  ");
+    private KeyModifiersConfigurer activateModifiers = new KeyModifiersConfigurer(null, "  key:  ");
     private JTextField upCommand = new JTextField("Increase");
-    private KeyModifiersConfigurer upModifiers = new KeyModifiersConfigurer(null, "  key: ");
+    private KeyModifiersConfigurer upModifiers = new KeyModifiersConfigurer(null, "  key:  ");
     private JTextField downCommand = new JTextField("Decrease");
-    private KeyModifiersConfigurer downModifiers = new KeyModifiersConfigurer(null, "  key: ");
+    private KeyModifiersConfigurer downModifiers = new KeyModifiersConfigurer(null, "  key:  ");
     // random layers
     private JTextField rndCommand = new JTextField(8);
     // random layers
@@ -698,11 +696,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private JTextField levelNameInput = new JTextField(8);
     private JRadioButton prefix = new JRadioButton("is prefix");
     private JRadioButton suffix = new JRadioButton("is suffix");
-    private JCheckBox alwaysActive = new JCheckBox("Always active");
-    private JCheckBox drawUnderneath = new JCheckBox("Underneath when highlighted");
+    private JCheckBox alwaysActive = new JCheckBox("Always active?");
+    private JCheckBox drawUnderneath = new JCheckBox("Underneath when highlighted?");
     private JTextField resetLevel = new JTextField(2);
     private JTextField resetCommand = new JTextField(8);
-    private JCheckBox loop = new JCheckBox("Loop through levels");
+    private JCheckBox loop = new JCheckBox("Loop through levels?");
     private HotKeyConfigurer resetKey = new HotKeyConfigurer(null, "  Keyboard:  ");
     private JTextField name = new JTextField(8);
 
@@ -729,7 +727,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
       Box nameControls = Box.createHorizontalBox();
-      nameControls.add(new JLabel("Name"));
+      nameControls.add(new JLabel("Name:  "));
       nameControls.add(name);
       controls.add(nameControls);
       JPanel p = new JPanel();
@@ -750,27 +748,27 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       p.add(downKeyInput);
 
       reset1Controls = Box.createHorizontalBox();
-      reset1Controls.add(new JLabel("Reset to level: "));
+      reset1Controls.add(new JLabel("Reset to level:  "));
       reset1Controls.add(resetLevel);
       p.add(reset1Controls);
       reset2Controls = Box.createHorizontalBox();
-      reset2Controls.add(new JLabel("  Command: "));
+      reset2Controls.add(new JLabel("  Command:  "));
       reset2Controls.add(resetCommand);
       p.add(reset2Controls);
       p.add(resetKey.getControls());
 
       // random layer
       rnd1Controls = Box.createHorizontalBox();
-      rnd1Controls.add(new JLabel("Randomize"));
+      rnd1Controls.add(new JLabel("Randomize:  "));
       p.add(rnd1Controls);
       rnd2Controls = Box.createHorizontalBox();
-      rnd2Controls.add(new JLabel("  Command: "));
+      rnd2Controls.add(new JLabel("  Command:  "));
       rndCommand = new JTextField(12);
       rndCommand.setMaximumSize(rndCommand.getPreferredSize());
       rndCommand.setText(e.rndText);
       rnd2Controls.add(rndCommand);
       p.add(rnd2Controls);
-      rndKeyConfig = new HotKeyConfigurer(null, "  Keyboard: ", e.rndKey);
+      rndKeyConfig = new HotKeyConfigurer(null, "  Keyboard:  ", e.rndKey);
       p.add(rndKeyConfig.getControls());
       // end random layer
 
@@ -834,7 +832,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       p2.setLayout(new GridLayout(2, 2));
 
       box = Box.createHorizontalBox();
-      box.add(new JLabel("Level Name: "));
+      box.add(new JLabel("Level Name:  "));
       levelNameInput.setMaximumSize(levelNameInput.getPreferredSize());
       levelNameInput.addKeyListener(new KeyAdapter() {
         public void keyReleased(KeyEvent evt) {
