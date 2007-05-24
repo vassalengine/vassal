@@ -36,6 +36,11 @@ import java.util.Properties;
  * 
  */
 public class VassalTranslation extends Translation {
+
+  protected String getI18nPrefix() {
+    return "";
+  }
+
   protected String[] allKeys;
   public VassalTranslation() {
     setConfigureName("VASSAL");

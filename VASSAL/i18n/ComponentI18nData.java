@@ -179,10 +179,10 @@ public class ComponentI18nData {
     String fullPrefix = getOwningComponent() == null ? "" : getOwningComponent().getI18nData() //$NON-NLS-1$
         .getFullPrefix();
 
-    if (fullPrefix.length() > 0 && prefix.length() > 0) {
+    if (fullPrefix.length() > 0) {
       fullPrefix += "."; //$NON-NLS-1$
     }
-    return fullPrefix + prefix;
+    return prefix.length() > 0 ? fullPrefix + prefix + "." : fullPrefix;
   }
 
   /**
@@ -399,11 +399,7 @@ public class ComponentI18nData {
    * Return a translation of an attribute
    */
   public String getTranslatedValue(String attr, Translation translation) {
-    String fullKey = getFullPrefix();
-    if (fullKey.length() > 0) {
-      fullKey += "."; //$NON-NLS-1$
-    }
-    fullKey += attr;
+    String fullKey = getFullPrefix() + attr;
     return translation.translate(fullKey);
   }
 

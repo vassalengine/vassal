@@ -43,7 +43,7 @@ public class TranslatableAttribute {
   }
 
   public String getKey() {
-    return component.getI18nData().getFullPrefix() + "." + attributeName; //$NON-NLS-1$
+    return component.getI18nData().getFullPrefix() + attributeName; //$NON-NLS-1$
   }
 
   public boolean isTranslatable() {

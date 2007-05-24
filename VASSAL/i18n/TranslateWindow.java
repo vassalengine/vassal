@@ -348,7 +348,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
     else {
       String key = keys[lsm.getMinSelectionIndex()];
-      currentKey = keyTarget.getI18nData().getFullPrefix() + "." + key; //$NON-NLS-1$
+      currentKey = keyTarget.getI18nData().getFullPrefix() + key; //$NON-NLS-1$
     }
   }
 
@@ -683,7 +683,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
           col);
 
-      String fullKey = target.getI18nData().getFullPrefix() + "." + keys[row]; //$NON-NLS-1$
+      String fullKey = target.getI18nData().getFullPrefix() + keys[row]; //$NON-NLS-1$
       String translation = currentTranslation == null ? "" : currentTranslation.translate(fullKey);
       String originalValue = target.getAttributeValueString(keys[row]);
 
@@ -719,14 +719,14 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
     public void actionPerformed(ActionEvent e) {
       String key = keys[row];
-      currentKey = keyTarget.getI18nData().getFullPrefix() + "." + key; //$NON-NLS-1$  
+      currentKey = keyTarget.getI18nData().getFullPrefix() +  key; //$NON-NLS-1$  
       currentTranslation.setProperty(currentKey, keyTarget.getAttributeValueString(keys[row]));
       checkEnabled();
       ((MyTableModel) keyTable.getModel()).update();   
     }
     public void checkEnabled() {
       if (keyTarget != null && keys != null && keys[row] != null) {
-        String t = currentTranslation == null ? "" : currentTranslation.translate(keyTarget.getI18nData().getFullPrefix() + "." + keys[row]); //$NON-NLS-1$
+        String t = currentTranslation == null ? "" : currentTranslation.translate(keyTarget.getI18nData().getFullPrefix() + keys[row]); //$NON-NLS-1$
         setEnabled(t == null || t.length() == 0);
       }
       else {
