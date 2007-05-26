@@ -66,9 +66,11 @@ import javax.swing.tree.TreeSelectionModel;
 
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.PropertiesWindow;
+import VASSAL.configure.ShowHelpAction;
 
 /**
  * Window for editing translations of a {@link Configurable} object
@@ -256,6 +258,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   
   protected Component getButtonPanel() {
     JPanel buttonBox = new JPanel();
+    JButton helpButton = new JButton(Resources.getString(Resources.HELP));
+    helpButton.addActionListener(new ShowHelpAction(null,HelpFile.getReferenceManualPage("Translations.htm#module"),null));;
+    buttonBox.add(helpButton);
     JButton okButton = new JButton(Resources.getString(Resources.OK));
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
