@@ -103,22 +103,17 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected void initComponents() {
-
     setTitle("Translate " + VASSAL.configure.ConfigureTree.getConfigureName((Configurable) target));
     JPanel mainPanel = new JPanel(new BorderLayout());
-
     /*
      * Place Language selector above Tree and Keys
      */
-    JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, getHeaderPanel(), getMainPanel());
-    split.setResizeWeight(0);
-    mainPanel.add(split, BorderLayout.CENTER);
+    mainPanel.add(getHeaderPanel(), BorderLayout.PAGE_START);
+    mainPanel.add(buildMainPanel(), BorderLayout.CENTER);
     mainPanel.add(getButtonPanel(), BorderLayout.PAGE_END);
-    
     getContentPane().add(mainPanel);
     pack();
     setLocationRelativeTo(getParent());
-
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent we) {
@@ -201,32 +196,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
   }
   
-  protected Component getMainPanel() {
-    /*
-     * Key Panel - Table of Keys for the component currently selected in the
-     * Tree Panel
-     */
-    JPanel keyPanel = new JPanel(new BorderLayout());
-    keyPanel.setMinimumSize(new Dimension(800, 100));
-    keyTable = new MyTable();
-    keyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-    keyTable.addFocusListener(new FocusListener() {
-      public void focusGained(java.awt.event.FocusEvent e) {
-      }
-      public void focusLost(java.awt.event.FocusEvent e) {
-        commitTableEdit();
-      }
-    });
-
-    keyTable.getSelectionModel().addListSelectionListener(this);
-    keyTable.setEnabled(currentTranslation != null);
-        
-    JScrollPane keyScroll = new JScrollPane(keyTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    keyPanel.add(keyScroll, BorderLayout.CENTER);
-    keyPanel.setMinimumSize(new Dimension(400, 100));
-    keyPanel.setPreferredSize(new Dimension(800, 200));
+  protected Component buildMainPanel() {
+    JPanel keyPanel = buildKeyTablePanel();
 
     /*
      * Tree of all components from target component down
@@ -252,6 +223,35 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     split1.setResizeWeight(0.5);
     
     return split1;
+  }
+
+  protected JPanel buildKeyTablePanel() {
+    /*
+     * Key Panel - Table of Keys for the component currently selected in the
+     * Tree Panel
+     */
+    JPanel keyPanel = new JPanel(new BorderLayout());
+    keyPanel.setMinimumSize(new Dimension(800, 100));
+    keyTable = new MyTable();
+    keyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    keyTable.addFocusListener(new FocusListener() {
+      public void focusGained(java.awt.event.FocusEvent e) {
+      }
+      public void focusLost(java.awt.event.FocusEvent e) {
+        commitTableEdit();
+      }
+    });
+
+    keyTable.getSelectionModel().addListSelectionListener(this);
+    keyTable.setEnabled(currentTranslation != null);
+        
+    JScrollPane keyScroll = new JScrollPane(keyTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    keyPanel.add(keyScroll, BorderLayout.CENTER);
+    keyPanel.setMinimumSize(new Dimension(400, 100));
+    keyPanel.setPreferredSize(new Dimension(800, 200));
+    return keyPanel;
   }
   
   protected Component getButtonPanel() {
@@ -637,7 +637,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
 
         case TRAN_COL:
           if (currentTranslation != null) {
-            String key = keyTarget.getI18nData().getFullPrefix() + "." + keys[row]; //$NON-NLS-1$
+            String key = keyTarget.getI18nData().getFullPrefix() + keys[row]; //$NON-NLS-1$
             return currentTranslation.translate(key);
           }
         }

@@ -37,13 +37,24 @@ import java.util.Properties;
  */
 public class VassalTranslation extends Translation {
 
-  protected String getI18nPrefix() {
-    return "";
-  }
-
   protected String[] allKeys;
+  
+  protected Properties baseValues = new Properties();
+
   public VassalTranslation() {
     setConfigureName("VASSAL");
+    try {
+      baseValues.load(getClass().getResourceAsStream("VASSAL.properties"));
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  
+
+  protected String getI18nPrefix() {
+    return "";
   }
 
   protected String getDescription() {
@@ -57,7 +68,7 @@ public class VassalTranslation extends Translation {
   }
 
   public String getAttributeValueString(String key) {
-    return Resources.getString(key);
+    return baseValues.getProperty(key);
   }
   
   public String[] getAttributeDescriptions() {

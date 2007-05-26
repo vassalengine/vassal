@@ -370,6 +370,9 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     private String side;
 
     public PlayerInfo(String id, String name, String side) {
+      if (id == null) {
+        throw new NullPointerException("Player id cannot be null");
+      }
       playerId = id;
       playerName = name;
       this.side = side;

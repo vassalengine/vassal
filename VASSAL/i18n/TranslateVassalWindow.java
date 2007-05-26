@@ -10,27 +10,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
-
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
+import javax.swing.JSplitPane;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
+import VASSAL.configure.ShowHelpAction;
 import VASSAL.tools.ExtensionFileFilter;
 import VASSAL.tools.FileChooser;
 
 public class TranslateVassalWindow extends TranslateWindow {
-
   private static final long serialVersionUID = 1L;
-  protected LocaleConfigurer localeConfig; 
-  
+  protected LocaleConfigurer localeConfig;
+
   public TranslateVassalWindow(Frame owner, boolean modal, Translatable target, HelpWindow helpWindow, ConfigureTree tree) {
     super(owner, modal, target, helpWindow, tree);
   }
-  
+
   public TranslateVassalWindow(Frame owner) {
     super(owner, false, new VassalTranslation(), null, null);
     currentTranslation = (Translation) target;
@@ -38,25 +38,30 @@ public class TranslateVassalWindow extends TranslateWindow {
     newTranslation();
   }
 
+  protected Component buildMainPanel() {
+    JSplitPane pane = (JSplitPane) super.buildMainPanel();
+    return pane.getBottomComponent();
+  }
+
   protected Component getHeaderPanel() {
     JPanel headPanel = new JPanel();
     localeConfig = new LocaleConfigurer(null, "", new Locale(Locale.getDefault().getLanguage()));
     headPanel.add(localeConfig.getControls());
-     
     return headPanel;
   }
-  
+
   protected Component getButtonPanel() {
     JPanel buttonBox = new JPanel();
-    
+    JButton helpButton = new JButton(Resources.getString(Resources.HELP));
+    helpButton.addActionListener(new ShowHelpAction(null,HelpFile.getReferenceManualPage("Translations.htm"),null));;
     JButton loadButton = new JButton(Resources.getString(Resources.LOAD));
     loadButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         loadTranslation();
-      }});
+      }
+    });
+    buttonBox.add(helpButton);
     buttonBox.add(loadButton);
-    
-    
     JButton okButton = new JButton(Resources.getString(Resources.SAVE));
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -78,10 +83,9 @@ public class TranslateVassalWindow extends TranslateWindow {
     buttonBox.add(cancelButton);
     return buttonBox;
   }
-  
+
   protected void newTranslation() {
     ((VassalTranslation) target).clearProperties();
-    
     ArrayList keyList = new ArrayList();
     for (Enumeration e = Resources.getVassalKeys(); e.hasMoreElements(); keyList.add(e.nextElement())) {
       ;
@@ -91,8 +95,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     copyButtons = new CopyButton[keys.length];
     ((MyTableModel) keyTable.getModel()).update();
   }
-  
-  
+
   protected void loadTranslation() {
     if (currentTranslation.isDirty()) {
       try {
@@ -106,24 +109,23 @@ public class TranslateVassalWindow extends TranslateWindow {
       }
     }
     FileChooser fc = GameModule.getGameModule().getFileChooser();
-    fc.setFileFilter(new ExtensionFileFilter("Property Files", new String[] {".properties"}));
+    fc.setFileFilter(new ExtensionFileFilter("Property Files", new String[]{".properties"}));
     if (fc.showOpenDialog(this) != FileChooser.APPROVE_OPTION)
       return;
     File file = fc.getSelectedFile();
-    if (! file.getName().endsWith(".properties")) {
+    if (!file.getName().endsWith(".properties")) {
       loadError("Module Properties files must end in '.properties'.");
       return;
     }
     else {
-      String language = file.getName().substring(7,9);
+      String language = file.getName().substring(7, 9);
       String country = "";
       if (file.getName().charAt(9) == '_') {
-        country = file.getName().substring(10,12);
+        country = file.getName().substring(10, 12);
       }
       Locale locale = new Locale(language, country);
       localeConfig.setValue(locale);
     }
-
     try {
       ((VassalTranslation) target).loadProperties(file);
     }
@@ -135,6 +137,7 @@ public class TranslateVassalWindow extends TranslateWindow {
       }
       loadError(msg);
     }
+    ((MyTableModel) keyTable.getModel()).fireTableDataChanged();
   }
 
   protected void loadError(String mess) {
@@ -150,11 +153,9 @@ public class TranslateVassalWindow extends TranslateWindow {
       bundle += "_" + l.getCountry();
     }
     bundle += ".properties";
-    fc.setSelectedFile(new File(Info.getHomeDir(),bundle));
-
+    fc.setSelectedFile(new File(Info.getHomeDir(), bundle));
     if (fc.showSaveDialog(this) != FileChooser.APPROVE_OPTION)
       return false;
-    
     File outputFile = fc.getSelectedFile();
     try {
       ((VassalTranslation) target).saveProperties(outputFile, localeConfig.getValueLocale());
