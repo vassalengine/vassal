@@ -50,6 +50,8 @@ import VASSAL.configure.KeyStrokeArrayConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -57,7 +59,7 @@ import VASSAL.tools.SequenceEncoder;
  * A GamePiece with this trait will echo the piece's current name when any of a given key commands are pressed
  * (and after they take effect)
  */
-public class ReportState extends Decorator implements EditablePiece {
+public class ReportState extends Decorator implements TranslatablePiece {
   public static final String ID = "report;";
   protected KeyStroke[] keys;
   protected FormattedString format = new FormattedString();
@@ -177,7 +179,7 @@ public class ReportState extends Decorator implements EditablePiece {
               theFormat = cycleReportFormat[(cycleIndex + cycleReportFormat.length - 1) % cycleReportFormat.length];
             }
           }
-          format.setFormat(theFormat);
+          format.setFormat(getTranslation(theFormat));
 
           OldAndNewPieceProperties properties = new OldAndNewPieceProperties(oldPiece,outer);
 
@@ -279,6 +281,21 @@ public class ReportState extends Decorator implements EditablePiece {
     return new Ed(this);
   }
 
+  public PieceI18nData getI18nData() {
+    int c = cycleReportFormat == null ? 0 : cycleReportFormat.length;
+    String[] formats = new String[c+1];
+    String[] descriptions = new String[c+1];
+    formats[0] = reportFormat;
+    descriptions[0] = getCommandDescription(description, "Report Format");
+    int j = 1;
+    for (int i=0; i < c; i++) {
+      formats[j] = cycleReportFormat[i];
+      descriptions[j] = getCommandDescription(description, "Report Format " + j);
+      j++;
+    }
+    return getI18nData(formats, descriptions);
+  }
+  
   public static final String OLD_UNIT_NAME = "oldPieceName";
   public static final String NEW_UNIT_NAME = "newPieceName";
   public static final String MAP_NAME = "mapName";

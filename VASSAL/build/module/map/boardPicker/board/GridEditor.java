@@ -312,7 +312,12 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
   }
 
+  public void rebuild() {
+    
+  }
+  
   public void keyReleased(KeyEvent e) {    
+    rebuild();
   }
 
   public void keyTyped(KeyEvent e) {    

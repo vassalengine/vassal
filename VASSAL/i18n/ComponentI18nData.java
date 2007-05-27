@@ -27,6 +27,7 @@ import VASSAL.build.GameModule;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.PlaceMarker;
 
 /**
  * Object encapsulating the internationalization information for a component.
@@ -50,6 +51,7 @@ public class ComponentI18nData {
   protected boolean[] translatable;
   protected String[] untranslatedValues = null;
   protected String untranslatedConfigureName = null;
+  protected ArrayList<TranslatableMarker> markers = new ArrayList<TranslatableMarker>();
 
   /**
    * Build from an AbstractConfigurable. The parent will be set from
@@ -140,6 +142,9 @@ public class ComponentI18nData {
           descriptions.add(desc[i]);
         }
       }
+      if (p instanceof PlaceMarker) {
+        markers.add(new TranslatableMarker((PlaceMarker) p));
+      }
       if (p instanceof BasicPiece) {
         p = null;
       }
@@ -179,10 +184,10 @@ public class ComponentI18nData {
     String fullPrefix = getOwningComponent() == null ? "" : getOwningComponent().getI18nData() //$NON-NLS-1$
         .getFullPrefix();
 
-    if (fullPrefix.length() > 0) {
+    if (fullPrefix.length() > 0 && prefix.length() > 0) {
       fullPrefix += "."; //$NON-NLS-1$
     }
-    return prefix.length() > 0 ? fullPrefix + prefix + "." : fullPrefix;
+    return fullPrefix + prefix;
   }
 
   /**
@@ -326,6 +331,9 @@ public class ComponentI18nData {
     return "";
   }
   
+  public String getAttributeDescription(int i) {
+    return attributeDescriptions[i];
+  }
   /**
    * Return the pre-translation value of the specified attribute
    *
@@ -408,7 +416,12 @@ public class ComponentI18nData {
    * @return Child translatables
    */
   public Translatable[] getChildren() {
-    return myComponent.getConfigureComponents();
+    if (markers.size() > 0) {
+      return markers.toArray(new Translatable[0]); 
+    }
+    else {
+      return myComponent.getConfigureComponents();
+    }
   }
 
   /**
