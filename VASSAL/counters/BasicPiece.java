@@ -410,7 +410,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   }
 
   public String getLocalizedName() {
-    String key = TranslatablePiece.PREFIX + "." + getName();
+    String key = TranslatablePiece.PREFIX + getName();
     return Language.translate(key, getName());
   }
   

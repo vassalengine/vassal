@@ -114,10 +114,9 @@ public class KeyCommand extends AbstractAction {
        untranslatedName = name;
        PieceI18nData data = piece.getI18nData();
        String key = "";
-       String[] values = data.getValues();
-       for (int i = 0; i < values.length; i++) {
-         if (values[i].equals(name)) {
-           key = TranslatablePiece.PREFIX + "." + values[i];
+       for (PieceI18nData.Property p : data.getProperties()) {
+         if (p.getValue().equals(name)) {
+           key = TranslatablePiece.PREFIX + p.getValue();
          }
        }
        

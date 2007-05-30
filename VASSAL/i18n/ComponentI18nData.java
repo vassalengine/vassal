@@ -135,11 +135,9 @@ public class ComponentI18nData {
     for (GamePiece p = piece; p != null; ) {
       if (p instanceof TranslatablePiece) {
         PieceI18nData pieceData = ((TranslatablePiece) p).getI18nData();
-        String[] val = pieceData.getValues();
-        String[] desc = pieceData.getDescriptions();
-        for (int i = 0; i < val.length; i++) {
-          values.add(val[i]);
-          descriptions.add(desc[i]);
+        for (PieceI18nData.Property prop : pieceData.getProperties()) {
+          values.add(prop.getValue());
+          descriptions.add(prop.getDescription());
         }
       }
       if (p instanceof PlaceMarker) {

@@ -19,36 +19,49 @@
 package VASSAL.i18n;
 
 import java.util.ArrayList;
-
+import java.util.Collections;
+import java.util.List;
 import VASSAL.counters.GamePiece;
 
 /**
  * Object encapsulating the internationalization information for a GamePiece.
+ * 
  * @author Brent Easton
- *
+ * 
  */
 public class PieceI18nData {
-
   protected GamePiece piece;
-  protected ArrayList<String> values = new ArrayList<String>();
-  protected ArrayList<String> descriptions = new ArrayList<String>();
-  
+  protected ArrayList<Property> properties = new ArrayList<Property>();
+
   public PieceI18nData(GamePiece piece) {
     this.piece = piece;
   }
-  
-  public String[] getValues() {
-    return values.toArray(new String[values.size()]);
+
+  public List<Property> getProperties() {
+    return Collections.unmodifiableList(properties);
   }
 
-  public String[] getDescriptions() {
-    return descriptions.toArray(new String[descriptions.size()]);
-  }
-  
   public void add(String value, String description) {
     if (value != null && value.length() > 0) {
-      values.add(value);
-      descriptions.add(description);
+      properties.add(new Property(value, description));
+    }
+  }
+  public static class Property {
+    private String value;
+    private String description;
+
+    public Property(String value, String description) {
+      super();
+      this.value = value;
+      this.description = description;
+    }
+
+    public String getDescription() {
+      return description;
+    }
+
+    public String getValue() {
+      return value;
     }
   }
 }

@@ -349,7 +349,7 @@ public abstract class Decorator implements GamePiece, StateMergeable {
   }
   
   protected String getTranslation(String key) {
-    String fullKey = TranslatablePiece.PREFIX + "." + key;
+    String fullKey = TranslatablePiece.PREFIX + key;
     return Language.translate(fullKey, key);
   }
 }

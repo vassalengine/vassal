@@ -405,7 +405,17 @@ public class WizardSupport {
             else {
               GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).setValue(nameConfig.getValueString());
               GameModule.getGameModule().getPrefs().getOption(GameModule.SECRET_NAME).setValue(pwd.getValueString());
-              controller.setProblem(null);
+              try {
+                GameModule.getGameModule().getPrefs().write();
+                controller.setProblem(null);
+              }
+              catch (IOException e) {
+                String msg = e.getMessage();
+                if (msg == null) {
+                  msg = Resources.getString("Prefs.unable_to_save");
+                }
+                controller.setProblem(msg);
+              }
             }
           }
         };
