@@ -47,12 +47,12 @@ public class PieceI18nData {
     }
   }
   public static class Property {
-    private String value;
+    private String name;
     private String description;
 
     public Property(String value, String description) {
       super();
-      this.value = value;
+      this.name = value;
       this.description = description;
     }
 
@@ -60,8 +60,8 @@ public class PieceI18nData {
       return description;
     }
 
-    public String getValue() {
-      return value;
+    public String getName() {
+      return name;
     }
   }
 }

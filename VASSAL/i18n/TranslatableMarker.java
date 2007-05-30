@@ -36,8 +36,6 @@ import VASSAL.counters.PlaceMarker;
 public class TranslatableMarker extends AbstractConfigurable {
 
   protected GamePiece markerDefinition;
-  protected String[] names;
-  protected String[] values;
   
   public TranslatableMarker(PlaceMarker p) {
     markerDefinition = p.createBaseMarker();

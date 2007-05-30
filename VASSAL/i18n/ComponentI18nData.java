@@ -19,47 +19,46 @@
 package VASSAL.i18n;
 
 import java.util.ArrayList;
-
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PlaceMarker;
 
 /**
- * Object encapsulating the internationalization information for a component.
- * The majority of translatable components subclass AbstractConfigurable, but
- * some extend JFrame or JDialog and implement Configurable or AutoConfigurable.
+ * Object encapsulating the internationalization information for a component. The majority of translatable components
+ * subclass AbstractConfigurable, but some extend JFrame or JDialog and implement Configurable or AutoConfigurable.
  * 
- * AbstractConfigurable components are almost completely handled within the 
- * AbstractConfigurable base class. AutoConfigurable/Configurable components
- * must call a different constructor and supply additional information
- *
+ * AbstractConfigurable components are almost completely handled within the AbstractConfigurable base class.
+ * AutoConfigurable/Configurable components must call a different constructor and supply additional information
+ * 
  * @author Brent Easton
- *
+ * 
  */
 public class ComponentI18nData {
-
   protected String prefix;
   protected Translatable parent;
   protected Configurable myComponent;
-  protected String[] attributeNames;
-  protected String[] attributeDescriptions;
-  protected boolean[] translatable;
-  protected String[] untranslatedValues = null;
+  protected Map<String, Property> translatableProperties = new TreeMap<String, Property>();
+  protected Map<String, Property> allProperties = new TreeMap<String, Property>();
+  protected List<Translatable> children = new ArrayList<Translatable>();
   protected String untranslatedConfigureName = null;
-  protected ArrayList<TranslatableMarker> markers = new ArrayList<TranslatableMarker>();
 
   /**
-   * Build from an AbstractConfigurable. The parent will be set from
-   * AbstractConfigurable.add(). untranslatedValues will be filled in
-   * as attributes are translated.
-   *
-   * @param c AbstractConfigurable component
-   * @param prefix I18n Prefix
+   * Build from an AbstractConfigurable. The parent will be set from AbstractConfigurable.add(). untranslatedValues will
+   * be filled in as attributes are translated.
+   * 
+   * @param c
+   *          AbstractConfigurable component
+   * @param prefix
+   *          I18n Prefix
    */
   public ComponentI18nData(AbstractConfigurable c, String prefix) {
     init(c, prefix, c.getAttributeNames(), c.getAttributeTypes(), c.getAttributeDescriptions());
@@ -67,9 +66,11 @@ public class ComponentI18nData {
 
   /**
    * Build from an AutoConfigurable
-   *
-   * @param c AutoConfgurable component
-   * @param prefix I18n prefix
+   * 
+   * @param c
+   *          AutoConfgurable component
+   * @param prefix
+   *          I18n prefix
    */
   public ComponentI18nData(AutoConfigurable c, String prefix) {
     this.prefix = prefix;
@@ -78,38 +79,48 @@ public class ComponentI18nData {
   }
 
   protected void init(Configurable c, String pfx, String[] names, Class[] types, String[] descriptions) {
+    boolean[] translatable = new boolean[types.length];
+    for (int i = 0; i < types.length; i++) {
+      translatable[i] = types[i] != null && (types[i].equals(String.class) || types[i].isAssignableFrom(TranslatableConfigurerFactory.class));
+    }
+    init(c, pfx, names, descriptions, translatable);
+  }
+
+  protected void init(Configurable c, String pfx, String[] names, String[] descriptions, boolean[] translatable) {
     prefix = pfx;
     myComponent = c;
-    attributeNames = names;
-    attributeDescriptions = descriptions;
-    
-    translatable = new boolean[attributeNames.length];
-    for (int i = 0; i < types.length && i < attributeNames.length; i++) {
-      if (types[i] != null) {        
-        translatable[i] = (types[i].equals(String.class) || types[i].isAssignableFrom(TranslatableConfigurerFactory.class));
+    for (Configurable child : myComponent.getConfigureComponents()) {
+      children.add(child);
+    }
+    for (int i = 0; i < translatable.length; i++) {
+      Property p = new Property(names[i], descriptions[i]);
+      allProperties.put(names[i], p);
+      if (translatable[i]) {
+        translatableProperties.put(names[i], p);
       }
     }
   }
-  
+
   /**
-   * Build from a Configurable. Configurable does not support
-   * getAttributeNames() getAttributeTypes() or getAttributeValueString(), so
-   * more information must be supplied.
-   *
-   * @param c Component
-   * @param prefix I18n prefix
-   * @param parent parent translatable
-   * @param names Array of attribute names
-   * @param translatable Array of Attribute translatable status
+   * Build from a Configurable. Configurable does not support getAttributeNames() getAttributeTypes() or
+   * getAttributeValueString(), so more information must be supplied.
+   * 
+   * @param c
+   *          Component
+   * @param prefix
+   *          I18n prefix
+   * @param parent
+   *          parent translatable
+   * @param names
+   *          Array of attribute names
+   * @param translatable
+   *          Array of Attribute translatable status
    */
-  public ComponentI18nData(Configurable c, String prefix, Translatable parent, String[] names,
-      boolean[] translatable, String[] descriptions) {
+  public ComponentI18nData(Configurable c, String prefix, Translatable parent, String[] names, boolean[] translatable, String[] descriptions) {
     myComponent = c;
     this.prefix = prefix;
     this.parent = parent;
-    this.attributeNames = names;
-    this.translatable = translatable;
-    this.attributeDescriptions = descriptions;
+    init(c, prefix, names, descriptions, translatable);
   }
 
   public ComponentI18nData(Configurable c, String prefix, Translatable parent) {
@@ -119,29 +130,25 @@ public class ComponentI18nData {
   public ComponentI18nData(Configurable c, String prefix) {
     this(c, prefix, (Translatable) null);
   }
-  
+
   /**
    * Special build for PrototypeDefinition and PieceSlot
    */
-  
   public ComponentI18nData(Configurable c, GamePiece piece) {
     myComponent = c;
     this.prefix = TranslatablePiece.PREFIX;
     parent = null;
-    
-    ArrayList<String> values = new ArrayList<String>();
-    ArrayList<String> descriptions = new ArrayList<String>();
-    
-    for (GamePiece p = piece; p != null; ) {
+    for (GamePiece p = piece; p != null;) {
       if (p instanceof TranslatablePiece) {
         PieceI18nData pieceData = ((TranslatablePiece) p).getI18nData();
         for (PieceI18nData.Property prop : pieceData.getProperties()) {
-          values.add(prop.getValue());
-          descriptions.add(prop.getDescription());
+          Property property = new Property(prop.getName(), prop.getDescription());
+          translatableProperties.put(prop.getName(), property);
+          allProperties.put(prop.getName(),property);
         }
       }
       if (p instanceof PlaceMarker) {
-        markers.add(new TranslatableMarker((PlaceMarker) p));
+        children.add(new TranslatableMarker((PlaceMarker) p));
       }
       if (p instanceof BasicPiece) {
         p = null;
@@ -150,15 +157,8 @@ public class ComponentI18nData {
         p = ((Decorator) p).getInner();
       }
     }
-    
-    attributeNames = values.toArray(new String[0]);
-    untranslatedValues = attributeNames;
-    attributeDescriptions = descriptions.toArray(new String[0]);
-    
-    translatable = new boolean[attributeNames.length];
-    for (int i = 0; i <attributeNames.length; translatable[i++] = true);
   }
-  
+
   /**
    * Return a unique Key prefix identifying this component
    */
@@ -169,9 +169,9 @@ public class ComponentI18nData {
   public void setPrefix(String p) {
     prefix = p;
   }
+
   /**
-   * Return a unique key prefix including a full path of parent prefixes. 
-   * All Translatable Pieces share a common prefix.
+   * Return a unique key prefix including a full path of parent prefixes. All Translatable Pieces share a common prefix.
    * 
    * @return
    */
@@ -181,7 +181,6 @@ public class ComponentI18nData {
     }
     String fullPrefix = getOwningComponent() == null ? "" : getOwningComponent().getI18nData() //$NON-NLS-1$
         .getFullPrefix();
-
     if (fullPrefix.length() > 0 && prefix.length() > 0) {
       fullPrefix += "."; //$NON-NLS-1$
     }
@@ -189,24 +188,10 @@ public class ComponentI18nData {
   }
 
   /**
-   * Return a list of all of the translatable Keys for attributes of this
-   * Translatable item.
+   * Return a list of all of the translatable Keys for attributes of this Translatable item.
    */
-  public String[] getAttributeKeys() {
-    int count = 0;
-    for (int i = 0; i < translatable.length; i++) {
-      if (translatable[i]) {
-        count++;
-      }
-    }
-    String[] keys = new String[count];
-    int idx = 0;
-    for (int i = 0; i < translatable.length; i++) {
-      if (translatable[i]) {
-        keys[idx++] = attributeNames[i];
-      }
-    }
-    return keys;
+  public Collection<String> getAttributeKeys() {
+    return translatableProperties.keySet();
   }
 
   /**
@@ -225,62 +210,46 @@ public class ComponentI18nData {
 
   /**
    * Is the specified attribute allowed to be translated?
-   * @param attr Attribute name
+   * 
+   * @param attr
+   *          Attribute name
    * @return is translatable
    */
   public boolean isAttributeTranslatable(String attr) {
-    for (int i = 0; i < attributeNames.length; i++) {
-      if (attr.equals(attributeNames[i])) {
-        return translatable[i];
+    return translatableProperties.containsKey(attr);
+  }
+
+  /**
+   * Return true if this component has any translatable attributes, or if any of its children are translatable
+   * 
+   * @return component translatable status
+   */
+  public boolean isTranslatable() {
+    if (translatableProperties.size() > 0) {
+      return true;
+    }
+    for (Translatable child : children) {
+      if (child.getI18nData().isTranslatable()) {
+        return true;
       }
     }
     return false;
   }
 
   /**
-   * Return true if this component has any translatable attributes,
-   * or if any of its children are translatable
-   *
-   * @return component translatable status
-   */
-  public boolean isTranslatable() {
-    for (int i = 0; i < translatable.length; i++) {
-      if (translatable[i]) {
-        return true;
-      }
-    }
-    
-    Translatable[] children = getChildren();
-    for (int i = 0; i < children.length; i++) {
-      if (children[i].getI18nData().isTranslatable()) {
-        return true;
-      }
-    }
-    return false;
-  }
-  
-  /**
-   * Replace the full set of translatable attribute names
-   * @param names Array of attribute names
-   */
-  public void setTranslatableAttributes(String[] names) {
-    attributeNames = names;
-    translatable = new boolean[attributeNames.length];
-    for (int i = 0; i < attributeNames.length; i++) {
-      translatable[i] = true;
-    }
-  }
-  
-  /**
    * Force a specified attribute to be translatable/not translatable
-   * @param attribute Attribute name
-   * @param set translatable status
+   * 
+   * @param attribute
+   *          Attribute name
+   * @param set
+   *          translatable status
    */
   public void setAttributeTranslatable(String attribute, boolean set) {
-    for (int i = 0; i < attributeNames.length; i++) {
-      if (attributeNames[i].equals(attribute)) {
-        translatable[i] = set;
-      }
+    if (set) {
+      translatableProperties.put(attribute, allProperties.get(attribute));
+    }
+    else {
+      translatableProperties.remove(attribute);
     }
   }
 
@@ -288,32 +257,26 @@ public class ComponentI18nData {
    * Convenience method to force all attributes to be not translatable
    */
   public void setAllAttributesUntranslatable() {
-    for (int i = 0; i < translatable.length; i++) {
-      translatable[i] = false;
-    }
+    translatableProperties.clear();
   }
-  
+
   /**
-   * Apply a translatation to the specified attribute. Record the 
-   * untranslated value in the untranslatedValues array and set the
-   * new value into the real attribute
+   * Apply a translatation to the specified attribute. Record the untranslated value in the untranslatedValues array and
+   * set the new value into the real attribute
    * 
-   * @param attr Attribute name
-   * @param value Translated value
+   * @param attr
+   *          Attribute name
+   * @param value
+   *          Translated value
    */
   public void applyTranslation(String attr, String value) {
-    if (untranslatedValues == null) {
-      untranslatedValues = new String[attributeNames.length];
+    Property p = translatableProperties.get(attr);
+    if (attr != null) {
+      p.setUntranslatedValue(myComponent.getAttributeValueString(attr));
+      myComponent.setAttribute(attr, value);
     }
-    String currentValue = myComponent.getAttributeValueString(attr);
-    for (int i = 0; i < attributeNames.length; i++) {
-      if (attributeNames[i].equals(attr)) {
-        untranslatedValues[i] = currentValue;
-      }
-    }
-    myComponent.setAttribute(attr, value);
   }
-  
+
   /**
    * Return description for named Attribute
    * 
@@ -321,78 +284,50 @@ public class ComponentI18nData {
    * @return description
    */
   public String getAttributeDescription(String attr) {
-    for (int i = 0; i < attributeNames.length; i++) {
-      if (attributeNames[i].equals(attr)) {
-        return attributeDescriptions[i];
-      }
-    }
-    return "";
+    return allProperties.get(attr).getDescription();
   }
-  
-  public String getAttributeDescription(int i) {
-    return attributeDescriptions[i];
-  }
-  /**
-   * Return the pre-translation value of the specified attribute
-   *
-   * @param attr Attribute name
-   * @return untranslated value
-   */
-  public String getUntranslatedValue(String attr) {
-    if (GameModule.getGameModule().isLocalizationEnabled()) {
-      return getLocalUntranslatedValue(attr);
-    }
-    else if (myComponent instanceof AbstractConfigurable) {
-       return ((AbstractConfigurable) myComponent).getAttributeValueString(attr); 
-    }
-    else if (myComponent instanceof AutoConfigurable) {
-       return ((AutoConfigurable) myComponent).getAttributeValueString(attr);
-    }  
-    return getLocalUntranslatedValue(attr);
-  }
-  
+
   /**
    * Return the pre-translation value stored in this Object.
    * 
-   * @param attr Attribute Name
+   * @param attr
+   *          Attribute Name
    * @returnun translated value
    */
   public String getLocalUntranslatedValue(String attr) {
-    for (int i = 0; i < attributeNames.length; i++) {
-      if (attr.equals(attributeNames[i]) && untranslatedValues != null) {
-        return untranslatedValues[i] == null ? myComponent.getAttributeValueString(attr) : untranslatedValues[i]; //$NON-NLS-1$
-      }
-    } 
-    return myComponent.getAttributeValueString(attr); 
+    String val;
+    Property p = allProperties.get(attr);
+    if (p == null || p.getUntranslatedValue() == null) {
+      val = myComponent.getAttributeValueString(attr);
+    }
+    else {
+      val = p.getUntranslatedValue();
+    }
+    return val;
   }
-  
+
   /**
-   * Set an untranslatedValue for the specified attribute. Used by components
-   * that do not subclass AbstractConfigurable
+   * Set an untranslatedValue for the specified attribute. Used by components that do not subclass AbstractConfigurable
    * 
-   * @param attr Attribute name
-   * @param value untranslated value
+   * @param attr
+   *          Attribute name
+   * @param value
+   *          untranslated value
    */
   public void setUntranslatedValue(String attr, String value) {
-    if (untranslatedValues == null) {
-      untranslatedValues = new String[attributeNames.length];
-    }
-    for (int i = 0; i < attributeNames.length && i < untranslatedValues.length; i++) {
-      if (attr.equals(attributeNames[i])) {
-        untranslatedValues[i] = value;
-      }
-    }
+    allProperties.get(attr).setUntranslatedValue(value);
   }
-  
+
   /**
    * Save the untranslated ConfigureName for this component
    * 
-   * @param name untranslated configure name
+   * @param name
+   *          untranslated configure name
    */
   public void setUntranslatedConfigureName(String name) {
     untranslatedConfigureName = name;
   }
-  
+
   /**
    * Return the untranslated Configure name for this component
    * 
@@ -401,6 +336,7 @@ public class ComponentI18nData {
   public String getUntranslatedConfigureName() {
     return untranslatedConfigureName;
   }
+
   /*
    * Return a translation of an attribute
    */
@@ -411,60 +347,77 @@ public class ComponentI18nData {
 
   /**
    * Return all child Translatable components of this component
+   * 
    * @return Child translatables
    */
-  public Translatable[] getChildren() {
-    if (markers.size() > 0) {
-      return markers.toArray(new Translatable[0]); 
-    }
-    else {
-      return myComponent.getConfigureComponents();
-    }
+  public List<Translatable> getChildren() {
+    return Collections.unmodifiableList(children);
   }
 
   /**
-   * Return true if this component or any of its children have at least
-   * one translatable attribute with a non-null value that does not have
-   * a translation in the supplied translation.
-   *
-   * @param t Translation
+   * Return true if this component or any of its children have at least one translatable attribute with a non-null value
+   * that does not have a translation in the supplied translation.
+   * 
+   * @param t
+   *          Translation
    * @return true if translation of this component is not complete
    */
   public boolean hasUntranslatedAttributes(Translation t) {
-    
     if (t == null) {
       return false;
     }
-
     /*
      * Check attributes of this component first
      */
-    for (int i = 0; i < attributeNames.length; i++) {
-      if (translatable[i]) {
-        String currentValue = myComponent.getAttributeValueString(attributeNames[i]);
-        if (currentValue != null && currentValue.length() > 0) {
-          String translation = getTranslatedValue(attributeNames[i], t);
-          if (translation == null || translation.length() == 0) {
-            return true;
-          }
+    for (Property p : translatableProperties.values()) {
+      String currentValue = myComponent.getAttributeValueString(p.getName());
+      if (currentValue != null && currentValue.length() > 0) {
+        String translation = getTranslatedValue(p.getName(), t);
+        if (translation == null || translation.length() == 0) {
+          return true;
         }
       }
     }
-    
     /*
      * Check Children
      */
-    Translatable[] children = getChildren();
-    for (int i = 0; i < children.length; i++) {
-      if (children[i].getI18nData().hasUntranslatedAttributes(t)) {
+    for (Translatable child : children) {
+      if (child.getI18nData().hasUntranslatedAttributes(t)) {
         return true;
       }
     }
-    
-    /* 
+    /*
      * Nothing left untranslated!
      */
     return false;
   }
+  /** An attribute of a Configurable component that can be translated into another language */
+  public static class Property {
+    private String name;
+    private String description;
+    private String untranslatedValue;
 
+    public Property(String name, String description) {
+      super();
+      this.name = name;
+      this.description = description;
+      this.untranslatedValue = name;
+    }
+
+    public String getDescription() {
+      return description;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public String getUntranslatedValue() {
+      return untranslatedValue;
+    }
+
+    public void setUntranslatedValue(String untranslatedValue) {
+      this.untranslatedValue = untranslatedValue;
+    }
+  }
 }

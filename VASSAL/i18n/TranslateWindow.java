@@ -328,7 +328,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     MyTreeNode node = (MyTreeNode) tree.getLastSelectedPathComponent();
     if (node == null)
       return;
-    keys = node.getTarget().getI18nData().getAttributeKeys();
+    keys = node.getTarget().getI18nData().getAttributeKeys().toArray(new String[0]);
     copyButtons = new CopyButton[keys.length];
     keyTarget = node.getTarget();
     ((AbstractTableModel) keyTable.getModel()).fireTableStructureChanged();
@@ -362,9 +362,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    */
 
   protected void createNodes(MyTreeNode top) {
-    Translatable[] children = top.getTarget().getI18nData().getChildren();
-    for (int i = 0; i < children.length; i++) {
-      MyTreeNode childNode = new MyTreeNode(children[i]);
+    for (Translatable child : top.getTarget().getI18nData().getChildren()) {
+      MyTreeNode childNode = new MyTreeNode(child);
       createNodes(childNode);
       top.add(childNode);
     }
