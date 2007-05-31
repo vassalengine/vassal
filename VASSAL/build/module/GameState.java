@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.swing.JMenuItem;
@@ -55,12 +54,15 @@ import VASSAL.tools.FileChooser;
 import VASSAL.tools.Obfuscator;
 
 /**
- * The GameState represents the state of the game currently being played.  Only one game can be open at once.
+ * The GameState represents the state of the game currently being played.
+ * Only one game can be open at once.
  * @see GameModule#getGameState */
 public class GameState implements CommandEncoder {
   protected Hashtable pieces = new Hashtable();
-  protected List gameComponents = new ArrayList();
-  protected List setupSteps = new ArrayList();
+  protected ArrayList<GameComponent> gameComponents =
+    new ArrayList<GameComponent>();
+  protected ArrayList<GameSetupStep> setupSteps =
+    new ArrayList<GameSetupStep>();
   protected JMenuItem loadGame, saveGame, newGame, closeGame;
   protected String lastSave;
 
@@ -153,11 +155,14 @@ public class GameState implements CommandEncoder {
     setupSteps.remove(step);
   }
 
-  /** @return an iterator of all {@link GameSetupStep}s that are not yet finished */
+  /**
+   * @return an iterator of all {@link GameSetupStep}s that are not
+   * yet finished
+   */
   public Iterator getUnfinishedSetupSteps() {
-    List l = new ArrayList();
-    for (Iterator it = setupSteps.iterator();it.hasNext();) {
-      GameSetupStep step = (GameSetupStep) it.next();
+    ArrayList<GameSetupStep> l = new ArrayList<GameSetupStep>();
+    for (Iterator<GameSetupStep> i = setupSteps.iterator(); i.hasNext(); ) {
+      GameSetupStep step = i.next();
       if (!step.isFinished()) {
         l.add(step);
       }
@@ -201,10 +206,8 @@ public class GameState implements CommandEncoder {
     }
 
     gameStarted = gameStarted && this.gameStarting;
-    for (Iterator it = gameComponents.iterator();
-         it.hasNext();) {
-      GameComponent sub = (GameComponent) it.next();
-      sub.setup(this.gameStarting);
+    for (Iterator<GameComponent> i = gameComponents.iterator(); i.hasNext();) {
+      i.next().setup(this.gameStarting);
     }
     if (gameStarting) {
       GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
@@ -386,8 +389,8 @@ public class GameState implements CommandEncoder {
     Command c = new SetupCommand(false);
     c.append(checkVersionCommand());
     c.append(getRestorePiecesCommand());
-    for (Iterator it = gameComponents.iterator(); it.hasNext();) {
-      c.append(((GameComponent) it.next()).getRestoreCommand());
+    for (Iterator<GameComponent> i = gameComponents.iterator(); i.hasNext();) {
+      c.append(i.next().getRestoreCommand());
     }
     c.append(new SetupCommand(true));
     return c;
@@ -492,10 +495,11 @@ public class GameState implements CommandEncoder {
   }
 
   /**
-   * @return a Command that, when executed, will add all pieces currently in the game. Used when saving a game.
+   * @return a Command that, when executed, will add all pieces currently
+   * in the game. Used when saving a game.
    */
   public Command getRestorePiecesCommand() {
-    List pieceList = new ArrayList();
+    ArrayList<GamePiece> pieceList = new ArrayList<GamePiece>();
     for (Enumeration e = pieces.elements(); e.hasMoreElements();) {
       GamePiece p = (GamePiece) e.nextElement();
       int index = 0;
@@ -506,9 +510,8 @@ public class GameState implements CommandEncoder {
       pieceList.add(index, p);
     }
     Command c = new NullCommand();
-    for (Iterator it = pieceList.iterator(); it.hasNext();) {
-      GamePiece p = (GamePiece) it.next();
-      c.append(new AddPiece(p));
+    for (Iterator<GamePiece> i = pieceList.iterator(); i.hasNext(); ) {
+      c.append(new AddPiece(i.next()));
     }
     return c;
   }

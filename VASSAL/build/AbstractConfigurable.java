@@ -20,8 +20,8 @@ package VASSAL.build;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Vector;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.VisibilityCondition;
@@ -160,19 +160,14 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   }
   
   public Configurable[] getConfigureComponents() {
-    Vector v = new Vector();
-    for (Enumeration e = getBuildComponents();
-         e.hasMoreElements();) {
+    ArrayList<Configurable> l = new ArrayList<Configurable>();
+    for (Enumeration e = getBuildComponents(); e.hasMoreElements(); ) {
       Buildable b = (Buildable) e.nextElement();
       if (b instanceof Configurable) {
-        v.addElement(b);
+        l.add((Configurable) b);
       }
     }
-    Configurable c[] = new Configurable[v.size()];
-    for (int i = 0; i < v.size(); ++i) {
-      c[i] = (Configurable) v.elementAt(i);
-    }
-    return c;
+    return l.toArray(new Configurable[l.size()]);
   }
 
   /**

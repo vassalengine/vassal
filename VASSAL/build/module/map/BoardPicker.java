@@ -101,7 +101,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   protected String addColumnButtonText = Resources.getString("BoardPicker.add_column"); //$NON-NLS-1$
   protected String boardPrompt = Resources.getString("BoardPicker.select_board"); //$NON-NLS-1$
   protected String defaultSetup;
-  protected Vector multipleButtons;
+  protected ArrayList<JButton> multipleButtons;
   public static final String SCALE = "slotScale"; //$NON-NLS-1$
   public static final String SLOT_HEIGHT = "slotHeight"; //$NON-NLS-1$
   public static final String SLOT_WIDTH = "slotWidth"; //$NON-NLS-1$
@@ -121,7 +121,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   protected void initComponents() {
-    multipleButtons = new Vector();
+    multipleButtons = new ArrayList<JButton>();
     controls = new JPanel(new BorderLayout());
     status = new JTextField(""); //$NON-NLS-1$
     status.setEditable(false);
@@ -130,11 +130,11 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     toolbar.setFloatable(false);
     toolbar.setLayout(new BoxLayout(toolbar, BoxLayout.Y_AXIS));
     addRowButton = addButton(addRowButtonText);
-    multipleButtons.addElement(addRowButton);
+    multipleButtons.add(addRowButton);
     addColumnButton = addButton(addColumnButtonText);
-    multipleButtons.addElement(addColumnButton);
+    multipleButtons.add(addColumnButton);
     clearButton = addButton(Resources.getString("BoardPicker.clear")); //$NON-NLS-1$
-    multipleButtons.addElement(clearButton);
+    multipleButtons.add(clearButton);
     setAllowMultiple(allowMultiple);
     controls.add("North", status); //$NON-NLS-1$
     JPanel pp = new JPanel();
@@ -348,19 +348,19 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
 
   public void setBoards(Enumeration bdEnum) {
     reset();
-    List l = new ArrayList();
+    ArrayList<Board> l = new ArrayList<Board>();
     while (bdEnum.hasMoreElements()) {
-      l.add(bdEnum.nextElement());
+      l.add((Board) bdEnum.nextElement());
     }
-    for (Iterator e = l.iterator(); e.hasNext();) {
-      Board b = (Board) e.next();
+    for (Iterator<Board> i = l.iterator(); i.hasNext(); ) {
+      Board b = i.next();
       if (b.relativePosition().x > nx - 1)
         addColumn();
       if (b.relativePosition().y > ny - 1)
         addRow();
     }
-    for (Iterator e = l.iterator(); e.hasNext();) {
-      Board b = (Board) e.next();
+    for (Iterator<Board> i = l.iterator(); i.hasNext(); ) {
+      Board b = i.next();
       getSlot(b.relativePosition().x + nx * b.relativePosition().y).setBoard(b);
     }
     pack();
@@ -386,7 +386,9 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
    *         savefile
    */
   public Enumeration getCurrentBoards() {
-    return currentBoards == null ? Collections.enumeration(Collections.EMPTY_LIST) : currentBoards.elements();
+    return currentBoards == null ?
+           Collections.enumeration(Collections.EMPTY_LIST) :
+           currentBoards.elements();
   }
 
   /**
@@ -635,8 +637,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   public void setAllowMultiple(boolean val) {
     allowMultiple = val;
     if (multipleButtons != null) {
-      for (Enumeration e = multipleButtons.elements(); e.hasMoreElements();) {
-        ((JButton) e.nextElement()).setVisible(allowMultiple);
+      for (Iterator<JButton> i = multipleButtons.iterator(); i.hasNext(); ) {
+        i.next().setVisible(allowMultiple);
       }
     }
   }

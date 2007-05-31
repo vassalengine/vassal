@@ -26,8 +26,8 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -167,7 +167,8 @@ public class ComponentSplitter {
     public static final int HIDE_BOTTOM = 1;
     public static final int HIDE_LEFT = 2;
     public static final int HIDE_RIGHT = 3;
-    private Vector showingTransverseComponents = new Vector();
+    private ArrayList<SplitPane> showingTransverseComponents =
+      new ArrayList<SplitPane>();
     private int transverseHiddenSize;
 
     /**
@@ -344,7 +345,7 @@ public class ComponentSplitter {
       if (showingTransverseComponents.isEmpty()) {
         transverseHiddenSize = getBaseComponentSize();
       }
-      showingTransverseComponents.addElement(split);
+      showingTransverseComponents.add(split);
       resizeBaseComponent();
     }
 
@@ -377,41 +378,49 @@ public class ComponentSplitter {
      */
     protected int getPreferredBaseComponentSize() {
       int size = transverseHiddenSize;
-      for (Enumeration e = showingTransverseComponents.elements(); e.hasMoreElements();) {
-        SplitPane split = (SplitPane) e.nextElement();
+      for (Iterator<SplitPane> i = showingTransverseComponents.iterator();
+           i.hasNext(); ) {
+        SplitPane split = i.next();
         switch (getOrientation()) {
         case VERTICAL_SPLIT:
-          size = Math.max(size, split.getHideableComponent().getPreferredSize().height);
+          size = Math.max(size,
+            split.getHideableComponent().getPreferredSize().height);
           break;
         case HORIZONTAL_SPLIT:
-          size = Math.max(size, split.getHideableComponent().getPreferredSize().width);
+          size = Math.max(size,
+            split.getHideableComponent().getPreferredSize().width);
         }
       }
       return size;
     }
 
     /**
-     * Set the divider location and/or the top-level ancestor size to the preferred transverse size.
+     * Set the divider location and/or the top-level ancestor size to
+     * the preferred transverse size.
      * 
      * @param split
      */
     protected void hideTransverseComponent(SplitPane split) {
-      showingTransverseComponents.removeElement(split);
+      showingTransverseComponents.remove(split);
       resizeBaseComponent();
     }
 
     /**
-     * Return the preferred size of the top-level container in the direction transverse to this SplitPane's orientation.
-     * Depends on which ancestors have been shown using {@link #showTransverseComponent}.
+     * Return the preferred size of the top-level container in the
+     * direction transverse to this SplitPane's orientation.
+     * Depends on which ancestors have been shown using
+     * {@link #showTransverseComponent}.
      */
     protected Dimension getTransverseSize() {
       Dimension newSize = getTopLevelAncestor().getSize();
       switch (getOrientation()) {
       case VERTICAL_SPLIT:
-        newSize.height += getPreferredBaseComponentSize() - getBaseComponentSize();
+        newSize.height += getPreferredBaseComponentSize()
+                        - getBaseComponentSize();
         break;
       case HORIZONTAL_SPLIT:
-        newSize.width += getPreferredBaseComponentSize() - getBaseComponentSize();
+        newSize.width += getPreferredBaseComponentSize()
+                       - getBaseComponentSize();
       }
       return newSize;
     }

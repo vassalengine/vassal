@@ -28,6 +28,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -213,39 +215,40 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
-  private void addActionGroup(JPopupMenu menu, Vector v) {
+  private void addActionGroup(JPopupMenu menu, ArrayList<Action> l) {
     boolean empty = true;
-    for (int i = 0; i < v.size(); ++i) {
-      if (v.elementAt(i) != null) {
-        menu.add((Action) v.elementAt(i)).setFont(POPUP_MENU_FONT);
+    for (int i = 0; i < l.size(); ++i) {
+      if (l.get(i) != null) {
+        menu.add(l.get(i)).setFont(POPUP_MENU_FONT);
         empty = false;
       }
     }
     if (!empty) {
       menu.addSeparator();
     }
-    v.removeAllElements();
+    l.clear();
   }
 
   protected JPopupMenu buildPopupMenu(final Configurable target) {
     JPopupMenu popup = new JPopupMenu();
-    Vector v = new Vector();
-    v.addElement(buildEditAction(target));
-    v.addElement(buildEditPiecesAction(target));
-    addActionGroup(popup, v);
 
-    v.addElement(buildTranslateAction(target));
-    addActionGroup(popup, v);
+    ArrayList<Action> l = new ArrayList<Action>();
+    l.add(buildEditAction(target));
+    l.add(buildEditPiecesAction(target));
+    addActionGroup(popup, l);
 
-    v.addElement(buildHelpAction(target));
-    addActionGroup(popup, v);
+    l.add(buildTranslateAction(target));
+    addActionGroup(popup, l);
 
-    v.addElement(buildDeleteAction(target));
-    v.addElement(buildCutAction(target));
-    v.addElement(buildCopyAction(target));
-    v.addElement(buildPasteAction(target));
-    v.addElement(buildMoveAction(target));
-    addActionGroup(popup, v);
+    l.add(buildHelpAction(target));
+    addActionGroup(popup, l);
+
+    l.add(buildDeleteAction(target));
+    l.add(buildCutAction(target));
+    l.add(buildCopyAction(target));
+    l.add(buildPasteAction(target));
+    l.add(buildMoveAction(target));
+    addActionGroup(popup, l);
 
     for (Enumeration e = buildAddActions(target); e.hasMoreElements();) {
       addAction(popup, (Action) e.nextElement());
@@ -429,14 +432,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Enumeration buildAddActions(final Configurable target) {
-    Vector v = new Vector();
+    ArrayList<Action> l = new ArrayList<Action>();
     Class[] allow = target.getAllowableConfigureComponents();
     for (int i = 0; i < allow.length; ++i) {
       final Class newConfig = allow[i];
       Action action = buildAddAction(target, newConfig);
-      v.addElement(action);
+      l.add(action);
     }
-    return v.elements();
+    return Collections.enumeration(l);
   }
 
   protected Action buildAddAction(final Configurable target, final Class newConfig) {

@@ -20,17 +20,21 @@ package VASSAL.tools;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.KeyStroke;
 
 /**
- * Utility class for associating an Action with a keystroke from multiple different component sources
+ * Utility class for associating an Action with a keystroke from multiple
+ * different component sources
+ *
  * @see VASSAL.build.GameModule#addKeyStrokeListener
  * @see VASSAL.build.GameModule#addKeyStrokeSource
  */
 public class KeyStrokeListener {
   private ActionListener l;
   private KeyStroke key;
-  private java.util.List sources = new java.util.ArrayList();
+  private ArrayList<KeyStrokeSource> sources = new ArrayList<KeyStrokeSource>();
 
   public KeyStrokeListener(ActionListener l, KeyStroke key) {
     this.l = l;
@@ -46,14 +50,13 @@ public class KeyStrokeListener {
       newKey = null;
     }
     if (key != null) {
-      for (int i = 0; i < sources.size(); ++i) {
-        ((KeyStrokeSource) sources.get(i))
-          .getComponent().unregisterKeyboardAction(key);
+      for (Iterator<KeyStrokeSource> i = sources.iterator(); i.hasNext(); ) {
+        i.next().getComponent().unregisterKeyboardAction(key);
       }
     }
     key = newKey;
-    for (int i = 0; i < sources.size(); ++i) {
-      addKeyStrokeSource((KeyStrokeSource) sources.get(i));
+    for (Iterator<KeyStrokeSource> i = sources.iterator(); i.hasNext(); ) {
+      addKeyStrokeSource(i.next());
     }
   }
 
