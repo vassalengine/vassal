@@ -49,7 +49,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -58,7 +57,6 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.swing.ImageIcon;
 import sun.applet.AppletAudioClip;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
@@ -69,11 +67,15 @@ import VASSAL.configure.BooleanConfigurer;
  */
 public class DataArchive extends SecureClassLoader {
   protected ZipFile archive = null;
-  protected List extensions = new ArrayList();
-  private HashMap imageCache = new HashMap();
-  private HashMap soundCache = new HashMap();
-  private HashMap transImageCache = new HashMap();
-  private HashMap imageSources = new HashMap();
+  protected ArrayList<DataArchive> extensions = new ArrayList<DataArchive>();
+  private HashMap<String,Image> imageCache =
+    new HashMap<String,Image>();
+  private HashMap<String,AudioClip> soundCache =
+    new HashMap<String,AudioClip>();
+  private HashMap<TransformedCacheKey,Image> transImageCache =
+    new HashMap<TransformedCacheKey,Image>();
+  private HashMap<String,ImageSource> imageSources =
+    new HashMap<String,ImageSource>();
   protected String[] imageNames;
   public static final String IMAGE_DIR = "images/";
   public static final String SOUNDS_DIR = "sounds/";
@@ -144,21 +146,21 @@ public class DataArchive extends SecureClassLoader {
 
   /*
    ** Find an image from the archive
-   * Once an image is found, cache it in Hashtable
+   * Once an image is found, cache it in our HashMap.
    */
   public Image getCachedImage(String name) throws IOException {
     String path = IMAGE_DIR + name;
     String gifPath = path + ".gif";
-    Image image = (Image)imageCache.get(path);
+    Image image = imageCache.get(path);
     ImageSource src;
     if (image != null) {
       return image;
     }
-    else if ((image = (Image)imageCache.get(gifPath)) != null) {
+    else if ((image = imageCache.get(gifPath)) != null) {
       return image;
     }
     else {
-      if ((src = (ImageSource)imageSources.get(name)) != null) {
+      if ((src = imageSources.get(name)) != null) {
          image = src.getImage();
       }
       else {
@@ -172,7 +174,7 @@ public class DataArchive extends SecureClassLoader {
 
   public AudioClip getCachedAudioClip(String name) throws IOException {
     String path = SOUNDS_DIR + name;
-    AudioClip clip = (AudioClip)soundCache.get(path);
+    AudioClip clip = soundCache.get(path);
     if (clip == null) {
       clip = new AppletAudioClip(getBytes(getFileStream(path)));
       soundCache.put(path,clip);
@@ -202,7 +204,7 @@ public class DataArchive extends SecureClassLoader {
     }
 
     TransformedCacheKey key = new TransformedCacheKey(base, scale, theta);
-    Image trans = (Image) transImageCache.get(key);
+    Image trans = transImageCache.get(key);
     if (trans == null) {
       trans = createTransformedInstance(base, scale, theta, forceSmoothing);
       new ImageIcon(trans); // Wait for the image to load
@@ -334,8 +336,7 @@ public class DataArchive extends SecureClassLoader {
     }
     else {
       String ext = name.substring(name.lastIndexOf('.') + 1);
-      ImageReader reader =
-         (ImageReader) ImageIO.getImageReadersBySuffix(ext).next();
+      ImageReader reader = ImageIO.getImageReadersBySuffix(ext).next();
 
       try {
          reader.setInput(new MemoryCacheImageInputStream(getFileStream(path)));
@@ -391,24 +392,22 @@ public class DataArchive extends SecureClassLoader {
   }
 
   public void unCacheImage(Image im) {
-    ArrayList toClear = new ArrayList();
-    for (Iterator i = transImageCache.keySet().iterator(); i.hasNext(); ) {
-      TransformedCacheKey key = (TransformedCacheKey) i.next();
+    ArrayList<TransformedCacheKey> toClear =
+      new ArrayList<TransformedCacheKey>();
+    for (TransformedCacheKey key : transImageCache.keySet()) {
       if (im.equals(key.base)) {
         toClear.add(key);
       }
     }
 
-    for (Iterator i = toClear.iterator(); i.hasNext(); ) {
-      TransformedCacheKey transCacheKey = (TransformedCacheKey) i.next();
-      transImageCache.remove(transCacheKey);
+    for (TransformedCacheKey key : toClear) {
+      transImageCache.remove(key);
     }
   }
   
   public void clearTransformedImageCache() {
     transImageCache.clear();
-    for (Iterator i = extensions.iterator(); i.hasNext();) {
-      DataArchive ext = (DataArchive) i.next();
+    for (DataArchive ext : extensions) {
       ext.clearTransformedImageCache();
     }
   }
@@ -517,7 +516,7 @@ public class DataArchive extends SecureClassLoader {
   protected InputStream getFileStreamFromExtension(String file) {
     InputStream stream = null;;
     for (int i = 0; i < extensions.size() && stream == null; ++i) {
-      DataArchive ext = (DataArchive) extensions.get(i);
+      DataArchive ext = extensions.get(i);
       try {
         stream = ext.getFileStream(file);
       }
@@ -550,7 +549,7 @@ public class DataArchive extends SecureClassLoader {
   protected URL getURLFromExtension(String fileName) {
     URL url = null;
     for (int i = 0; i < extensions.size() && url == null; ++i) {
-      DataArchive ext = (DataArchive) extensions.get(i);
+      DataArchive ext = extensions.get(i);
       try {
         url = ext.getURL(fileName);
       }
@@ -562,7 +561,9 @@ public class DataArchive extends SecureClassLoader {
   }
 
   /**
-   * DataArchives can extend other archives.  The extensions will be searched for data if not found in the parent archive
+   * DataArchives can extend other archives. The extensions will be
+   * searched for data if not found in the parent archive.
+   *
    * @param ext the extension
    */
   public void addExtension(DataArchive ext) {
@@ -570,8 +571,8 @@ public class DataArchive extends SecureClassLoader {
   }
 
   /**
-   * Return the writeable instance of DataArchive, either this or one of its extensions
-   * (At most one archive should be being edited at a time)
+   * Return the writeable instance of DataArchive, either this or one
+   * of its extensions. (At most one archive should be being edited at a time)
    * @return
    */
   public ArchiveWriter getWriter() {
@@ -580,10 +581,9 @@ public class DataArchive extends SecureClassLoader {
       writer = (ArchiveWriter) this;
     }
     else {
-      for (Iterator it = extensions.iterator(); it.hasNext();) {
-        Object o = it.next();
-        if (o instanceof ArchiveWriter) {
-          writer = (ArchiveWriter) o;
+      for (DataArchive ext : extensions) {
+        if (ext instanceof ArchiveWriter) {
+          writer = (ArchiveWriter) ext;
           break;
         }
       }
@@ -648,19 +648,21 @@ public class DataArchive extends SecureClassLoader {
 
   public String[] getImageNames() {
     if (isNameCacheStale()) {
-      Collection allNames = new HashSet(); 
+// FIXME: could we do this more efficiently with a SortedSet?
+      Collection<String> allNames = new HashSet<String>(); 
       listImageNames(allNames);
-      List l = new ArrayList(allNames);
-      Collections.sort(l,String.CASE_INSENSITIVE_ORDER);
-      imageNames = (String[]) l.toArray(new String[l.size()]);
+      ArrayList<String> l = new ArrayList<String>(allNames);
+      Collections.sort(l, String.CASE_INSENSITIVE_ORDER);
+      imageNames = l.toArray(new String[l.size()]);
     }
     return imageNames;
   }
 
   protected boolean isNameCacheStale() {
     boolean isStale = imageNames == null;
-    for (Iterator it = extensions.iterator(); it.hasNext() && !isStale;) {
-      isStale = ((DataArchive) it.next()).imageNames == null;
+    for (Iterator<DataArchive> i = extensions.iterator();
+         i.hasNext() && !isStale; ) {
+      isStale = i.next().imageNames == null;
     }
     return isStale;
   }
@@ -670,9 +672,7 @@ public class DataArchive extends SecureClassLoader {
    * @param l
    */
   protected void listImageNames(Collection l) {
-    for (Iterator it = imageSources.keySet().iterator(); it.hasNext();) {
-      l.add(it.next());
-    }
+    l.addAll(imageSources.keySet());
     if (archive != null) {
       try {
         ZipInputStream zis
@@ -689,8 +689,8 @@ public class DataArchive extends SecureClassLoader {
         e.printStackTrace();
       }
     }
-    for (Iterator it = extensions.iterator(); it.hasNext();) {
-      ((DataArchive) it.next()).listImageNames(l);
+    for (DataArchive ext : extensions) {
+      ext.listImageNames(l);
     }
   }
 

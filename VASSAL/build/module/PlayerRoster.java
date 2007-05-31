@@ -26,8 +26,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -48,8 +46,8 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.Language;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
@@ -63,11 +61,12 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public static final String TOOL_TIP = "buttonToolTip"; //$NON-NLS-1$
   public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
-  protected List players = new ArrayList();
-  protected List sides = new ArrayList();
+  protected ArrayList<PlayerInfo> players = new ArrayList<PlayerInfo>();
+  protected ArrayList<String> sides = new ArrayList<String>();
   protected String[] untranslatedSides;
   protected LaunchButton retireButton;
-  protected List sideChangeListeners = new ArrayList();
+  protected ArrayList<SideChangeListener> sideChangeListeners =
+    new ArrayList<SideChangeListener>();
 
   public PlayerRoster() {
     ActionListener al = new ActionListener() {
@@ -132,9 +131,9 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     att = retireButton.getAttributeValueString(TOOL_TIP);
     if (att != null)
       el.setAttribute(TOOL_TIP, att);
-    for (Iterator e = sides.iterator(); e.hasNext();) {
+    for (String s : sides) {
       Element sub = doc.createElement("entry"); //$NON-NLS-1$
-      sub.appendChild(doc.createTextNode((String) e.next()));
+      sub.appendChild(doc.createTextNode(s));
       el.appendChild(sub);
     }
     return el;
@@ -203,8 +202,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   protected void fireSideChange(String oldSide, String newSide) {
-    for (Iterator it = sideChangeListeners.iterator(); it.hasNext();) {
-      SideChangeListener l = (SideChangeListener) it.next();
+    for (SideChangeListener l : sideChangeListeners) {
       l.sideChanged(oldSide, newSide);
     }
   }
@@ -233,10 +231,10 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   protected static String getMySide(boolean localized) {
     PlayerRoster r = getInstance();
     if (r != null) {
-      PlayerInfo[] players = r.getPlayers();
-      for (int i = 0; i < players.length; ++i) {
-        if (players[i].playerId.equals(GameModule.getUserId())) {
-          return localized ? players[i].getLocalizedSide() : players[i].getSide();
+      PlayerInfo[] pl = r.getPlayers();
+      for (int i = 0; i < pl.length; ++i) {
+        if (pl[i].playerId.equals(GameModule.getUserId())) {
+          return localized ? pl[i].getLocalizedSide() : pl[i].getSide();
         }
       }
     }
@@ -244,11 +242,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public PlayerInfo[] getPlayers() {
-    PlayerInfo[] p = new PlayerInfo[players.size()];
-    for (int i = 0; i < p.length; ++i) {
-      p[i] = (PlayerInfo) players.get(i);
-    }
-    return p;
+    return players.toArray(new PlayerInfo[players.size()]);
   }
 
   public void add(String playerId, String playerName, String side) {
@@ -292,8 +286,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   public Command getRestoreCommand() {
     Command c = null;
-    for (Iterator e = players.iterator(); e.hasNext();) {
-      PlayerInfo entry = (PlayerInfo) e.next();
+    for (PlayerInfo entry : players) {
       Command sub = new Add(this, entry.playerId, entry.playerName, entry.side);
       c = c == null ? sub : c.append(sub);
     }
@@ -302,9 +295,10 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   public void setup(boolean gameStarting) {
     if (gameStarting) {
-      PlayerInfo me = new PlayerInfo(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), null);
+      PlayerInfo me = new PlayerInfo(GameModule.getUserId(),
+        GlobalOptions.getInstance().getPlayerId(), null);
       if (players.contains(me)) {
-        PlayerInfo saved = (PlayerInfo) players.get(players.indexOf(me));
+        PlayerInfo saved = players.get(players.indexOf(me));
         saved.playerName = me.playerName;
       }
     }
@@ -325,15 +319,18 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public Component getControls() {
-    List availableSides = new ArrayList(sides);
-    List alreadyTaken = new ArrayList();
-    for (int i = 0; i < players.size(); ++i) {
-      alreadyTaken.add(((PlayerInfo) players.get(i)).side);
+    ArrayList<String> availableSides = new ArrayList<String>(sides);
+    ArrayList<String> alreadyTaken = new ArrayList<String>();
+
+    for (PlayerInfo p : players) {
+      alreadyTaken.add(p.side);
     }
+
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, OBSERVER);
-    sideConfig = new StringEnumConfigurer(null, Resources.getString("PlayerRoster.join_game_as"), (String[]) availableSides.toArray(new String[availableSides
-        .size()]));
+    sideConfig = new StringEnumConfigurer(null,
+      Resources.getString("PlayerRoster.join_game_as"),
+      availableSides.toArray(new String[availableSides.size()]));
     sideConfig.setValue(OBSERVER);
     return sideConfig.getControls();
   }
@@ -343,15 +340,20 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public boolean isFinished() {
-    return players.contains(new PlayerInfo(GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), null)) || sides.size() == players.size();
+    return players.contains(
+      new PlayerInfo(GameModule.getUserId(),
+                     GlobalOptions.getInstance().getPlayerId(), null)) ||
+      sides.size() == players.size();
   }
 
   protected void promptForSide() {
-    List availableSides = new ArrayList(sides);
-    List alreadyTaken = new ArrayList();
-    for (int i = 0; i < players.size(); ++i) {
-      alreadyTaken.add(((PlayerInfo) players.get(i)).side);
+    ArrayList<String> availableSides = new ArrayList<String>(sides);
+    ArrayList<String> alreadyTaken = new ArrayList<String>();
+
+    for (PlayerInfo p : players) {
+      alreadyTaken.add(p.side);
     }
+
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, OBSERVER);
     String newSide = (String) JOptionPane.showInputDialog(GameModule.getGameModule().getFrame(),
@@ -364,6 +366,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       GameModule.getGameModule().getServer().sendToOthers(a);
     }
   }
+
   public static class PlayerInfo {
     public String playerId;
     public String playerName;
@@ -395,11 +398,13 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       return PlayerRoster.getInstance().translateSide(side);
     }
   }
+
   public static class Add extends Command {
     private PlayerRoster roster;
     private String id, name, side;
 
-    public Add(PlayerRoster r, String playerId, String playerName, String side) {
+    public Add(PlayerRoster r, String playerId,
+               String playerName, String side) {
       roster = r;
       id = playerId;
       name = playerName;
@@ -414,6 +419,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       return null;
     }
   }
+
   private class Con extends Configurer {
     private StringArrayConfigurer sidesConfig;
     private IconConfigurer iconConfig;
@@ -468,10 +474,12 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       return controls;
     }
   }
+
   /** Call-back interface for when a player changes sides during a game */
   public static interface SideChangeListener {
     void sideChanged(String oldSide, String newSide);
   }
+
   private static String OBSERVER = Resources.getString("PlayerRoster.observer"); //$NON-NLS-1$
   protected StringEnumConfigurer sideConfig;
   
@@ -500,12 +508,9 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
    */
   public void setAttribute(String key, Object value) {
     if (SIDES.equals(key)) {
-      untranslatedSides = new String[sides.size()];
-      for (int i = 0; i < sides.size(); i++) {
-        untranslatedSides[i] = (String) sides.get(i);
-      }
+      untranslatedSides = sides.toArray(new String[sides.size()]);
       String[] s = StringArrayConfigurer.stringToArray((String) value);
-      sides = new ArrayList(s.length);
+      sides = new ArrayList<String>(s.length);
       for (int i = 0; i < s.length; i++) {
         sides.add(s[i]);
       }
@@ -516,14 +521,14 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
   
   protected String getSidesAsString() {
-    String[] s = (String[]) sides.toArray(new String[0]);
+    String[] s = sides.toArray(new String[sides.size()]);
     return StringArrayConfigurer.arrayToString(s);
   }
   
   protected String untranslateSide(String side) {
     if (untranslatedSides != null) {
       for (int i = 0; i < sides.size(); i++) {
-        if (((String) sides.get(i)).equals(side)) {
+        if (sides.get(i).equals(side)) {
           return untranslatedSides[i];
         }
       }
@@ -535,7 +540,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     if (untranslatedSides != null) {
       for (int i = 0; i < untranslatedSides.length; i++) {
         if (untranslatedSides[i].equals(side)) {
-          return (String) sides.get(i);
+          return sides.get(i);
         }
       }
     }
@@ -545,5 +550,4 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public String[] getAttributeDescriptions() {
     return new String[] {"Button Text:  ", "Tool Tip:  ", "Sides:  "};
   }
-
 }

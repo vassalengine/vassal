@@ -28,9 +28,6 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -65,7 +62,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t"; //$NON-NLS-1$
 
-  protected List dice = new ArrayList();
+  protected ArrayList<SpecialDie> dice = new ArrayList<SpecialDie>();
   protected java.util.Random ran;
   protected boolean reportResultAsText = true;
   protected boolean reportResultInWindow = false;
@@ -150,8 +147,8 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected void DR() {
     int[] results = new int[dice.size()];
     int i = 0;
-    for (Iterator it = dice.iterator(); it.hasNext();) {
-      results[i++] = ran.nextInt(((SpecialDie) it.next()).getFaceCount());
+    for (SpecialDie sd : dice) {
+      results[i++] = ran.nextInt(sd.getFaceCount());
     }
     Command c = reportResults(results);
     if (reportResultAsText) {
@@ -180,7 +177,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
     int total = 0;
     for (int i = 0; i < dice.size(); ++i) {
-      SpecialDie die = (SpecialDie) dice.get(i);
+      SpecialDie die = dice.get(i);
       format.setProperty("result" + (i + 1), die.getTextValue(results[i])); //$NON-NLS-1$
       total += die.getIntValue(results[i]);
     }
@@ -505,13 +502,13 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return EMPTY;
     }
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    Vector v = new Vector();
+    ArrayList<String> l = new ArrayList<String>();
     while (st.hasMoreTokens()) {
-      v.addElement(st.nextToken());
+      l.add(st.nextToken());
     }
-    int[] val = new int[v.size()];
+    int[] val = new int[l.size()];
     for (int i = 0; i < val.length; ++i) {
-      val[i] = Integer.parseInt((String) v.elementAt(i));
+      val[i] = Integer.parseInt(l.get(i));
     }
     return val;
   }
@@ -544,14 +541,14 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       st.nextToken();
     }
     if (st != null) {
-      List l = new ArrayList();
+      ArrayList<String> l = new ArrayList<String>();
       while (st.hasMoreTokens()) {
         l.add(st.nextToken());
       }
       int[] results = new int[l.size()];
       int i = 0;
-      for (Iterator iterator = l.iterator(); iterator.hasNext();) {
-        results[i++] = Integer.parseInt((String) iterator.next());
+      for (String n : l) {
+        results[i++] = Integer.parseInt(n);
       }
       return new ShowResults(this, results);
     }

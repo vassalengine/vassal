@@ -22,7 +22,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GlobalOptions;
@@ -45,8 +44,8 @@ import VASSAL.tools.FormattedString;
 public class MovementReporter {
   private FormattedString format = new FormattedString();
 
-  private List movesToReport = new ArrayList();
-  private List movesToMark = new ArrayList();
+  private ArrayList<MoveSummary> movesToReport = new ArrayList<MoveSummary>();
+  private ArrayList<MoveSummary> movesToMark = new ArrayList<MoveSummary>();
 
   public MovementReporter(Command moveCommand) {
     extractMoveCommands(moveCommand);
@@ -73,7 +72,7 @@ public class MovementReporter {
       if (index >= 0
           && c instanceof MovePiece
           && shouldReport((MovePiece) c)) {
-        MoveSummary existing = (MoveSummary) movesToReport.get(index);
+        MoveSummary existing = movesToReport.get(index);
         existing.append((MovePiece) c);
       }
       else {
@@ -97,10 +96,8 @@ public class MovementReporter {
     Command c = null;
     if (!movesToMark.isEmpty()) {
       c = new NullCommand();
-      for (Iterator it = movesToMark.iterator(); it.hasNext();) {
-        MoveSummary moveSummary = (MoveSummary) it.next();
-        for (Iterator iterator = moveSummary.pieces.iterator(); iterator.hasNext();) {
-          GamePiece p = (GamePiece) iterator.next();
+      for (MoveSummary ms : movesToMark) {
+        for (GamePiece p : ms.pieces) {
           c.append(markMoved(p));
         }
       }
@@ -175,8 +172,7 @@ public class MovementReporter {
     PieceAccess.GlobalAccess.hideAll();
 
     Command c = new NullCommand();
-    for (Iterator it = movesToReport.iterator(); it.hasNext();) {
-      MoveSummary ms = (MoveSummary) it.next();
+    for (MoveSummary ms : movesToReport) {
       Map fromMap = Map.getMapById(ms.getOldMapId());
       Map toMap = Map.getMapById(ms.getNewMapId());
       format.clearProperties();
@@ -213,7 +209,7 @@ public class MovementReporter {
   public static class MoveSummary {
     private String oldMapId, newMapId;
     private Point oldPosition, newPosition;
-    private List pieces = new ArrayList();
+    private ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
 
     public MoveSummary(AddPiece c) {
       GamePiece target = c.getTarget();
@@ -223,7 +219,8 @@ public class MovementReporter {
     }
 
     public MoveSummary(MovePiece c) {
-      GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(c.getId());
+      GamePiece target = GameModule.getGameModule()
+                                   .getGameState().getPieceForId(c.getId());
       oldMapId = c.getOldMapId();
       newMapId = c.getNewMapId();
       oldPosition = c.getOldPosition();
@@ -278,19 +275,19 @@ public class MovementReporter {
     }
 
     public void append(MovePiece movePiece) {
-      GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(movePiece.getId());
-      if (target != null
-        && !pieces.contains(target)) {
+      GamePiece target = GameModule.getGameModule()
+                                   .getGameState()
+                                   .getPieceForId(movePiece.getId());
+      if (target != null && !pieces.contains(target)) {
         pieces.add(target);
       }
     }
 
     public String getPieceName() {
       StringBuffer names = new StringBuffer();
-      for (Iterator it = pieces.iterator(); it.hasNext();) {
-        GamePiece gamePiece = (GamePiece) it.next();
-        names.append(gamePiece.getLocalizedName());
-        if (it.hasNext()) {
+      for (Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
+        names.append(i.next().getLocalizedName());
+        if (i.hasNext()) {
           names.append(", ");
         }
       }

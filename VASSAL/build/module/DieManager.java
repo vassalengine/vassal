@@ -17,9 +17,8 @@
  */
 package VASSAL.build.module;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.DefaultListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -47,8 +46,9 @@ import VASSAL.tools.FormattedString;
 
 public class DieManager extends AbstractConfigurable {
 
-  private Hashtable servers;
-  private Vector dieButtons = new Vector();
+  private HashMap<String,DieServer> servers;
+  private ArrayList<InternetDiceButton> dieButtons =
+    new ArrayList<InternetDiceButton>();
   private String desc = "Die Manager";
   private boolean useMultiRoll;
   private int defaultNDice = 2;
@@ -76,7 +76,7 @@ public class DieManager extends AbstractConfigurable {
   public DieManager() {
 
     DieServer d;
-    servers = new Hashtable();
+    servers = new HashMap<String,DieServer>();
 
     /*
      * Create the Internet Dice Servers we know about
@@ -152,31 +152,26 @@ public class DieManager extends AbstractConfigurable {
 
   // Return names of all known Dice Servers
   public String[] getNames() {
+// FIXME: better to return zero-length array
     if (servers == null) {
       return null;
     }
     else {
-      String s[] = new String[servers.size()];
-      Enumeration e = servers.keys();
-
-      for (int i = 0; e.hasMoreElements(); i++) {
-        s[i] = (String) e.nextElement();
-      }
-      return s;
+      return servers.keySet().toArray(new String[servers.size()]); 
     }
   }
 
   // Return descriptions of all known dice servers
   public String[] getDescriptions() {
+// FIXME: better to return zero-length array
     if (servers == null) {
       return null;
     }
     else {
       String s[] = new String[servers.size()];
-      Enumeration e = servers.elements();
-
-      for (int i = 0; e.hasMoreElements(); i++) {
-        s[i] = ((DieServer) e.nextElement()).getDescription();
+      int i = 0;
+      for (DieServer d : servers.values()) {
+        s[i++] = d.getDescription();
       }
       return s;
     }
@@ -184,16 +179,12 @@ public class DieManager extends AbstractConfigurable {
 
   // Return server matching Name
   public DieServer getServerForName(String name) {
-    return (DieServer) servers.get(name);
+    return servers.get(name);
   }
 
   // Return server matching Description
   public DieServer getServerFromDescription(String de) {
-    DieServer d = null;
-
-    Enumeration e = servers.elements();
-    while (e.hasMoreElements()) {
-      d = (DieServer) e.nextElement();
+    for (DieServer d : servers.values()) {
       if (de.equals(d.getDescription())) {
         return d;
       }

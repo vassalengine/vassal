@@ -21,8 +21,9 @@ package VASSAL.counters;
 import java.awt.CardLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -89,11 +90,11 @@ public class MultiImagePicker extends JPanel {
   }
 
   public Enumeration getImageNames() {
-    Vector v = new Vector();
-    for (int i = 0,j = imageListElements.size(); i < j; ++i) {
-      v.addElement((((ImagePicker) multiPanel.getComponent(i)).getImageName()));
+    ArrayList<String> l = new ArrayList<String>();
+    for (int i = 0, j = imageListElements.size(); i < j; ++i) {
+      l.add((((ImagePicker) multiPanel.getComponent(i)).getImageName()));
     }
-    return v.elements();
+    return Collections.enumeration(l);
   }
 
   public void removeEntryAt(int index) {

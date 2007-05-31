@@ -31,8 +31,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -65,14 +64,20 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 
 /**
- * This is the Configuration Tree that appears in the Configuration window when editing a VASSAL module.
- * Each node in the tree structure is a {@link VASSAL.build.Configurable} object, whose
- * child nodes are obtained via {@link VASSAL.build.Configurable#getConfigureComponents}
+ * This is the Configuration Tree that appears in the Configuration window
+ * when editing a VASSAL module. Each node in the tree structure is a
+ * {@link VASSAL.build.Configurable} object, whose child nodes are obtained
+ * via {@link VASSAL.build.Configurable#getConfigureComponents}.
  */
-public class ConfigureTree extends JTree implements PropertyChangeListener, MouseListener, MouseMotionListener, TreeSelectionListener {
+public class ConfigureTree extends JTree
+                           implements PropertyChangeListener,
+                                      MouseListener,
+                                      MouseMotionListener,
+                                      TreeSelectionListener {
   private static final long serialVersionUID = 1L;
 
-  protected Hashtable nodes = new Hashtable();
+  protected HashMap<Configurable,DefaultMutableTreeNode> nodes =
+    new HashMap<Configurable,DefaultMutableTreeNode>();
   protected DefaultMutableTreeNode copyData;
   protected DefaultMutableTreeNode cutData;
   protected HelpWindow helpWindow;
@@ -168,7 +173,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     getActionMap().put(copyCmd, copyAction);
     getActionMap().put(pasteCmd, pasteAction);    
 
-    this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    this.getSelectionModel()
+        .setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
   }
 
   class KeyAction extends AbstractAction {
@@ -599,7 +605,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     Configurable[] oldContents = parent.getConfigureComponents();
 
     boolean succeeded = true;
-    Vector moveToBack = new Vector();
+    ArrayList<Configurable> moveToBack = new ArrayList<Configurable>();
     for (int i = index; i < oldContents.length; ++i) {
       try {
         oldContents[i].removeFrom(parent);
@@ -619,7 +625,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
         return false;
       }
-      moveToBack.addElement(oldContents[i]);
+      moveToBack.add(oldContents[i]);
     }
     try {
       child.addTo(parent);
@@ -637,12 +643,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
            JOptionPane.ERROR_MESSAGE);
       succeeded = false;
     }
-    while (moveToBack.size() > 0) {
-      Configurable c = (Configurable) moveToBack.firstElement();
+
+    for (Configurable c : moveToBack) {
       parent.add(c);
       c.addTo(parent);
-      moveToBack.removeElementAt(0);
     }
+
     return succeeded;
   }
 
@@ -782,7 +788,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   */
 
   public DefaultMutableTreeNode getTreeNode(Configurable target) {
-    return (DefaultMutableTreeNode) nodes.get(target);
+    return nodes.get(target);
   }
 
   public void mouseDragged(MouseEvent evt) {

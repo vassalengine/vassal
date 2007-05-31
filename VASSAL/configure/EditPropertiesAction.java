@@ -22,7 +22,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Hashtable;
+import java.util.HashMap;
 import javax.swing.AbstractAction;
 
 import VASSAL.build.Configurable;
@@ -37,7 +37,8 @@ public class EditPropertiesAction extends AbstractAction {
 
   protected Configurable target;
   protected HelpWindow helpWindow;
-  protected static Hashtable openWindows = new Hashtable();
+  protected static HashMap<Configurable,PropertiesWindow> openWindows =
+    new HashMap<Configurable,PropertiesWindow>();
   protected Frame dialogOwner;
   protected ConfigureTree tree;
 
@@ -58,7 +59,7 @@ public class EditPropertiesAction extends AbstractAction {
   }
   
   public void actionPerformed(ActionEvent evt) {
-    PropertiesWindow w = (PropertiesWindow) openWindows.get(target);
+    PropertiesWindow w = openWindows.get(target);
     if (w == null) {
       w = new PropertiesWindow(dialogOwner,false,target,helpWindow);
       w.addWindowListener(new WindowAdapter() {

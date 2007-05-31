@@ -23,8 +23,8 @@ import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -48,10 +48,10 @@ public class BoxWidget extends Widget
   private DefaultComboBoxModel widgets = new DefaultComboBoxModel();
   private CardLayout layout = new CardLayout();
   private JPanel multiPanel = new JPanel();
-  private Vector built = new Vector();
+  private ArrayList<Widget> built = new ArrayList<Widget>();
   private Dimension size = new Dimension();
 
-  private Hashtable keys = new Hashtable();
+  private HashMap<Object,String> keys = new HashMap<Object,String>();
   private int count = 0;
 
   public BoxWidget() {
@@ -112,7 +112,7 @@ public class BoxWidget extends Widget
   }
 
   private String getKey(Object o) {
-    String s = (String) keys.get(o);
+    String s = keys.get(o);
     if (s == null) {
       s = "" + new Integer(count++);
       keys.put(o, s);
@@ -125,7 +125,7 @@ public class BoxWidget extends Widget
       Widget w = (Widget) box.getSelectedItem();
       if (!built.contains(w)) {
         multiPanel.add(getKey(w), w.getComponent());
-        built.addElement(w);
+        built.add(w);
       }
       layout.show(multiPanel, getKey(w));
     }

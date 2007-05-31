@@ -22,7 +22,8 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 
 /**
- * Evaluates properties of the GameModule and conditionally executes another Command if all values are satisfied
+ * Evaluates properties of the GameModule and conditionally executes
+ * another Command if all values are satisfied.
  */
 public class ConditionalCommand extends Command {
   private Condition[] conditions;
@@ -55,7 +56,10 @@ public class ConditionalCommand extends Command {
     return conditions;
   }
 
-  /** Class representing a condition that must be satisfied if the Command is to be executed */
+  /**
+   * The class representing a condition that must be satisfied if the
+   * Command is to be executed
+   */
   public static abstract class Condition {
     public abstract boolean isSatisfied();
   }

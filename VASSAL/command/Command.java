@@ -18,7 +18,6 @@
  */
 package VASSAL.command;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import VASSAL.build.GameModule;
@@ -33,15 +32,14 @@ import VASSAL.build.GameModule;
  * @see CommandEncoder
  */
 public abstract class Command {
-  private LinkedList seq = new LinkedList();
+  private LinkedList<Command> seq = new LinkedList<Command>();
   private Command undo;
 
   public Command() {
   }
 
   public Command[] getSubCommands() {
-    Command[] c = new Command[seq.size()];
-    return (Command[]) seq.toArray(c);
+    return seq.toArray(new Command[seq.size()]);
   }
 
   /**
@@ -53,13 +51,12 @@ public abstract class Command {
       executeCommand();
     }
     catch (Exception ex) {
-      LinkedList oldSeq = seq;
+      LinkedList<Command> oldSeq = seq;
       stripSubCommands();
       reportException(this, ex);
       seq = oldSeq;
     }
-    for (Iterator i = seq.iterator(); i.hasNext();) {
-      Command c = (Command) i.next();
+    for (Command c : seq) {
       try {
         c.execute();
       }
@@ -70,7 +67,8 @@ public abstract class Command {
   }
 
   private void reportException(Command c, Exception ex) {
-    String s = GameModule.getGameModule() == null ? c.toString() : GameModule.getGameModule().encode(c);
+    String s = GameModule.getGameModule() == null ?
+      c.toString() : GameModule.getGameModule().encode(c);
     System.err.println("Unable to execute " + s);
     ex.printStackTrace();
   }
@@ -81,8 +79,9 @@ public abstract class Command {
   protected abstract void executeCommand();
 
   /**
-   * If the action can be undone, return a Command that performs the inverse action. The Command returned should only
-   * undo {@link #executeCommand}, not the actions of subcommands
+   * If the action can be undone, return a Command that performs the
+   * inverse action. The Command returned should only undo
+   * {@link #executeCommand}, not the actions of subcommands
    */
   protected abstract Command myUndoCommand();
 
@@ -90,7 +89,7 @@ public abstract class Command {
    * Remove all subcommands.
    */
   public void stripSubCommands() {
-    seq = new LinkedList();
+    seq = new LinkedList<Command>();
   }
 
   /**
@@ -121,8 +120,8 @@ public abstract class Command {
    * @return
    */
   protected boolean isAtomic() {
-    for (Iterator i = seq.iterator(); i.hasNext();) {
-      if (!((Command) i.next()).isNull()) {
+    for (Command c : seq) {
+      if (!c.isNull()) {
         return false;
       }
     }
@@ -136,8 +135,8 @@ public abstract class Command {
     if (details != null) {
       s += "[" + details + "]";
     }
-    for (Iterator i = seq.iterator(); i.hasNext();) {
-      s += "+" + i.next().toString();
+    for (Command c : seq) {
+      s += "+" + c.toString();
     }
     return s;
   }
@@ -167,8 +166,9 @@ public abstract class Command {
   public Command getUndoCommand() {
     if (undo == null) {
       undo = new NullCommand();
-      for (ListIterator i = seq.listIterator(seq.size()); i.hasPrevious();) {
-        undo = undo.append(((Command) i.previous()).getUndoCommand());
+      for (ListIterator<Command> i = seq.listIterator(seq.size());
+           i.hasPrevious(); ) {
+        undo = undo.append(i.previous().getUndoCommand());
       }
       undo = undo.append(myUndoCommand());
     }

@@ -18,29 +18,21 @@
  */
 package VASSAL.configure;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Summarizes error/warning messages about invalid module configuration
  */
 public class ValidationReport {
-  private List messages = new ArrayList();
+  private ArrayList<String> messages = new ArrayList<String>();
 
   public void addWarning(String msg) {
     messages.add(msg);
   }
 
-  public List getWarnings() {
-    return new AbstractList() {
-      public Object get(int index) {
-        return messages.get(index);
-      }
-
-      public int size() {
-        return messages.size();
-      }
-    };
+  public List<String> getWarnings() {
+    return Collections.unmodifiableList(messages);
   }
 }

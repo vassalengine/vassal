@@ -841,7 +841,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
       currentPieceOffsetY = (int) (originalPieceOffsetY / dragPieceOffCenterZoom * zoom + 0.5);
       // get the piece(s) our cursor will be based on
       PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
-      List relativePositions = new ArrayList();
+      ArrayList<Point> relativePositions = new ArrayList<Point>();
       GamePiece firstPiece = dragContents.nextPiece();
       // Record sizing info and resize our cursor
       boundingBox = firstPiece.getShape().getBounds();
@@ -870,7 +870,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
       int index = 0;
       for (dragContents = DragBuffer.getBuffer().getIterator(); dragContents.hasMoreElements();) {
         GamePiece piece = dragContents.nextPiece();
-        Point pos = (Point) relativePositions.get(index++);
+        Point pos = relativePositions.get(index++);
         piece.draw(graphics, EXTRA_BORDER - boundingBox.x + pos.x, EXTRA_BORDER - boundingBox.y + pos.y, null, zoom);
       }
       // Make bitmap 50% transparent
@@ -923,7 +923,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
       currentPieceOffsetY = (int) (originalPieceOffsetY / dragPieceOffCenterZoom * zoom + 0.5);
       // get the piece(s) our cursor will be based on
       PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
-      List relativePositions = new ArrayList();
+      ArrayList<Point> relativePositions = new ArrayList<Point>();
       GamePiece firstPiece = dragContents.nextPiece();
       // Record sizing info and resize our cursor
       boundingBox = firstPiece.getShape().getBounds();
@@ -953,7 +953,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
       int index = 0;
       for (dragContents = DragBuffer.getBuffer().getIterator(); dragContents.hasMoreElements();) {
         GamePiece piece = dragContents.nextPiece();
-        Point pos = (Point) relativePositions.get(index++);
+        Point pos = relativePositions.get(index++);
         piece.draw(graphics, EXTRA_BORDER - boundingBox.x + pos.x, EXTRA_BORDER - boundingBox.y + pos.y, dragCursor, zoom);
       }
       dragCursor.setSize(width, height);

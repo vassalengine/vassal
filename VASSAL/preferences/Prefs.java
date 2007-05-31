@@ -22,7 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Properties;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
@@ -33,7 +33,7 @@ import VASSAL.i18n.Resources;
  * writing the preferences to disk
  */
 public class Prefs {
-  private Hashtable options = new Hashtable();
+  private HashMap<String,Configurer> options = new HashMap<String,Configurer>();
   private Properties storedValues = new Properties();
   private PrefsEditor editor;
   private String name;
@@ -59,16 +59,16 @@ public class Prefs {
 
   /**
    * Add a configurable property to the preferences in the given category
+   *
    * @param category the tab under which to add the Configurer's controls
-   * in the editor window.  If null, do not add controls
+   * in the editor window.  If null, do not add controls.
+   *
    * @param prompt If non-null and the value was not read from the
    * preferences file on initialization (i.e. first-time setup),
    * prompt the user for an initial value
-   *
    */
   public void addOption(String category, Configurer o, String prompt) {
-    if (o != null
-        && options.get(o.getKey()) == null) {
+    if (o != null && options.get(o.getKey()) == null) {
       options.put(o.getKey(), o);
       String val = storedValues.getProperty(o.getKey());
       if (val != null) {
@@ -82,12 +82,12 @@ public class Prefs {
   }
 
   public void setValue(String option, Object value) {
-    Configurer c = (Configurer) options.get(option);
+    Configurer c = options.get(option);
     c.setValue(value);
   }
 
   public Configurer getOption(String s) {
-    return (Configurer) options.get(s);
+    return options.get(s);
   }
 
   /**
@@ -96,7 +96,7 @@ public class Prefs {
    * @return the value of the preferences setting stored under key
    */
   public Object getValue(String key) {
-    Configurer c = (Configurer) options.get(key);
+    Configurer c = options.get(key);
     return c == null ? null : c.getValue();
   }
 
@@ -118,7 +118,7 @@ public class Prefs {
       for (Enumeration e = storedValues.keys(); e.hasMoreElements();) {
         String key = (String) e.nextElement();
         String value = storedValues.getProperty(key);
-        Configurer c = (Configurer) options.get(key);
+        Configurer c = options.get(key);
         if (c != null) {
           c.setValue(value);
         }
@@ -132,8 +132,7 @@ public class Prefs {
    * Store this set of preferences in the editor, but don't yet save to disk
    */
   public void save() throws IOException {
-    for (Enumeration e = options.elements(); e.hasMoreElements();) {
-      Configurer c = (Configurer) e.nextElement();
+    for (Configurer c : options.values()) {
       String val = c.getValueString();
       if (val != null) {
         storedValues.put(c.getKey(), val);
@@ -144,8 +143,8 @@ public class Prefs {
     }
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     storedValues.store(out, null);
-    editor.getArchive().addFile(name,
-                                new java.io.ByteArrayInputStream(out.toByteArray()));
+    editor.getArchive()
+          .addFile(name, new java.io.ByteArrayInputStream(out.toByteArray()));
   }
 
   /** Save these preferences and write to disk */

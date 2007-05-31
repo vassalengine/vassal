@@ -99,7 +99,8 @@ public class WizardSupport {
   public static final String PLAY_OFFLINE_ACTION = "offline"; //$NON-NLS-1$
   public static final String LOAD_GAME_ACTION = "loadGame"; //$NON-NLS-1$
   protected Dimension logoSize = new Dimension(200,200);
-  protected List setups = new ArrayList();
+  protected ArrayList<PredefinedSetup> setups =
+    new ArrayList<PredefinedSetup>();
   protected Tutorial tutorial;
 
   public WizardSupport() {
@@ -134,7 +135,7 @@ public class WizardSupport {
   public void showWelcomeWizard() {
     WizardBranchController c = createWelcomeWizard();
     Wizard welcomeWizard = c.createWizard();
-    Map props = new HashMap();
+    HashMap<String,Wizard> props = new HashMap<String,Wizard>();
     props.put(WELCOME_WIZARD_KEY, welcomeWizard);
     Object result = WizardDisplayer.showWizard(welcomeWizard, new Rectangle(0, 0, logoSize.width+400, logoSize.height), null, props);
     if (result instanceof Map) {
@@ -163,12 +164,11 @@ public class WizardSupport {
   }
 
   public WizardPanelProvider createPlayOfflinePanels() {
-    ArrayList l = new ArrayList(setups);
-    for (int i = 0; i < l.size(); ++i) {
-      if (((PredefinedSetup) l.get(i)).isMenu()) {
-        l.remove(i--);
-      }
-    }
+    ArrayList<PredefinedSetup> l = new ArrayList<PredefinedSetup>();
+    for (PredefinedSetup ps : setups) {
+      if (!ps.isMenu()) l.add(ps);
+    } 
+
     if (l.size() == 0) {
       return GameSetupPanels.newInstance();
     }

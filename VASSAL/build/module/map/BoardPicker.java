@@ -34,9 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -53,8 +51,8 @@ import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
-import VASSAL.build.module.Map;
 import VASSAL.build.module.GameSetupStep;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.BoardSlot;
@@ -261,7 +259,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     if (possibleBoards.size() == 0) {
       report.addWarning(Resources.getString("BoardPicker.must_define", ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
     }
-    Set names = new HashSet();
+    HashSet<String> names = new HashSet<String>();
     for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
       Object o = e.nextElement();
       if (o instanceof Board) {
@@ -352,15 +350,13 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     while (bdEnum.hasMoreElements()) {
       l.add((Board) bdEnum.nextElement());
     }
-    for (Iterator<Board> i = l.iterator(); i.hasNext(); ) {
-      Board b = i.next();
+    for (Board b : l) {
       if (b.relativePosition().x > nx - 1)
         addColumn();
       if (b.relativePosition().y > ny - 1)
         addRow();
     }
-    for (Iterator<Board> i = l.iterator(); i.hasNext(); ) {
-      Board b = i.next();
+    for (Board b : l) {
       getSlot(b.relativePosition().x + nx * b.relativePosition().y).setBoard(b);
     }
     pack();
@@ -637,8 +633,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   public void setAllowMultiple(boolean val) {
     allowMultiple = val;
     if (multipleButtons != null) {
-      for (Iterator<JButton> i = multipleButtons.iterator(); i.hasNext(); ) {
-        i.next().setVisible(allowMultiple);
+      for (JButton b : multipleButtons) {
+        b.setVisible(allowMultiple);
       }
     }
   }

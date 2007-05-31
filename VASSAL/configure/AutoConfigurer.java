@@ -23,9 +23,8 @@ import java.awt.Image;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JPanel;
@@ -44,8 +43,8 @@ public class AutoConfigurer extends Configurer
   implements PropertyChangeListener {
   protected JPanel p;
   protected AutoConfigurable target;
-  protected Vector configurers = new Vector();;
-  protected Hashtable conditions;
+  protected ArrayList<Configurer> configurers = new ArrayList<Configurer>();
+  protected HashMap<String,VisibilityCondition> conditions;
 
   public AutoConfigurer(AutoConfigurable c) {
     super(null, c.getConfigureName());
@@ -81,7 +80,7 @@ public class AutoConfigurer extends Configurer
         box.add(config.getControls());
         box.add(Box.createHorizontalGlue());
         p.add(box);
-        configurers.addElement(config);
+        configurers.add(config);
       }
       setVisibility(name[i],c.getAttributeVisibility(name[i]));
     }
@@ -181,7 +180,7 @@ public class AutoConfigurer extends Configurer
   public void setVisibility(String attribute, VisibilityCondition c) {
     if (c != null) {
     if (conditions == null) {
-      conditions = new Hashtable();
+      conditions = new HashMap<String,VisibilityCondition>();
     }
     conditions.put(attribute, c);
     checkVisibility();
@@ -191,10 +190,8 @@ public class AutoConfigurer extends Configurer
   protected void checkVisibility() {
     boolean visChanged = false;
     if (conditions != null) {
-      for (Enumeration e = configurers.elements();
-           e.hasMoreElements();) {
-        Configurer c = (Configurer) e.nextElement();
-        VisibilityCondition cond = (VisibilityCondition) conditions.get(c.getKey());
+      for (Configurer c : configurers) {
+        VisibilityCondition cond = conditions.get(c.getKey());
         if (cond != null) {
           if (c.getControls().isVisible() != cond.shouldBeVisible()) {
             visChanged = true;
@@ -210,9 +207,7 @@ public class AutoConfigurer extends Configurer
   }
 
   public Configurer getConfigurer(String attribute) {
-    for (Enumeration e = configurers.elements();
-         e.hasMoreElements();) {
-      Configurer c = (Configurer) e.nextElement();
+    for (Configurer c : configurers) {
       if (attribute.equals(c.getKey())) {
         return c;
       }

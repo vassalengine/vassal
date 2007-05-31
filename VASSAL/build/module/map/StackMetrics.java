@@ -28,8 +28,7 @@ import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.Collections;
 import javax.swing.KeyStroke;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -618,14 +617,9 @@ public class StackMetrics extends AbstractConfigurable {
           comm = comm.append(new AddPiece(moving));
         }
         if (moving instanceof Stack) {
-          java.util.List l = new ArrayList();
-          for (Enumeration e = ((Stack) moving).getPieces();
-               e.hasMoreElements();) {
-            l.add(e.nextElement());
-          }
-          for (Iterator it = l.iterator();
-               it.hasNext();) {
-            GamePiece p = (GamePiece) it.next();
+          ArrayList<GamePiece> l =
+            Collections.list(((Stack) moving).getPieces());
+          for (GamePiece p : l) {
             MoveTracker t = new MoveTracker(p);
             fixedParent.insertChild(p, index++);
             comm = comm.append(t.getMoveCommand());

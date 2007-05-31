@@ -27,7 +27,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import javax.swing.Box;
 import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
@@ -177,8 +176,9 @@ public class ActionButton extends Decorator implements EditablePiece {
    * click falls within the button's boundaries
    */
   protected static class ButtonPusher {
-    private Set maps = new HashSet();
-    private java.util.Map components = new HashMap();
+    private HashSet<Map> maps = new HashSet<Map>();
+    private HashMap<Component,ComponentMouseListener> componentMouseListeners =
+      new HashMap<Component,ComponentMouseListener>();
 
     public void register(Map map) {
       if (map != null) {
@@ -191,11 +191,11 @@ public class ActionButton extends Decorator implements EditablePiece {
 
     public void register(Component obs, GamePiece piece, int x, int y) {
       if (obs != null) {
-        ComponentMouseListener l = (ComponentMouseListener) components.get(obs);
+        ComponentMouseListener l = componentMouseListeners.get(obs);
         if (l == null) {
           l = new ComponentMouseListener(piece, x, y);
           obs.addMouseListener(l);
-          components.put(obs, l);
+          componentMouseListeners.put(obs, l);
         }
         else {
           l.xOffset = x;
@@ -220,12 +220,14 @@ public class ActionButton extends Decorator implements EditablePiece {
      *          ActionButton trait
      */
     public void doClick(GamePiece p, Point point) {
-      for (GamePiece piece = p; piece instanceof Decorator; piece = ((Decorator) piece).getInner()) {
+      for (GamePiece piece = p; piece instanceof Decorator;
+           piece = ((Decorator) piece).getInner()) {
         if (piece instanceof ActionButton) {
           ActionButton action = (ActionButton) piece;
           if (action.bounds.contains(point)) {
             // Save state prior to command
-            p.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p));
+            p.setProperty(Properties.SNAPSHOT,
+              PieceCloner.getInstance().clonePiece(p));
             Command command = p.keyEvent(action.stroke);
             GameModule.getGameModule().sendAndLog(command);
           }

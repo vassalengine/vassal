@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Set;
@@ -40,10 +39,14 @@ public class Language extends AbstractConfigurable {
   protected static String moduleBundle;
   protected static String languageBundle;
   protected static String countryBundle;
-  protected static ArrayList moduleTranslations = new ArrayList();
-  protected static ArrayList languageTranslations = new ArrayList();
-  protected static ArrayList countryTranslations = new ArrayList();
-  protected static ArrayList translations = new ArrayList();
+  protected static ArrayList<Translation> moduleTranslations =
+    new ArrayList<Translation>();
+  protected static ArrayList<Translation> languageTranslations =
+    new ArrayList<Translation>();
+  protected static ArrayList<Translation> countryTranslations =
+    new ArrayList<Translation>();
+  protected static ArrayList<Translation> translations =
+    new ArrayList<Translation>();
   protected static Language instance;
   /*
    * Master translation property list
@@ -63,8 +66,8 @@ public class Language extends AbstractConfigurable {
     Collections.sort(translations);
     String[] s = new String[translations.size()];
     int idx = 0;
-    for (Iterator i = translations.iterator(); i.hasNext();) {
-      s[idx++] = ((Translation) i.next()).getDescription();
+    for (Translation t : translations) {
+      s[idx++] = t.getDescription();
     }
     return s;
   }
@@ -76,18 +79,19 @@ public class Language extends AbstractConfigurable {
    * @return Translation object
    */
   public static Translation getTranslation(String description) {
-    for (Iterator i = translations.iterator(); i.hasNext();) {
-      Translation t = (Translation) i.next();
+    for (Translation t : translations) {
       if (t.getDescription().equals(description)) {
         return t;
       }
     }
     return null;
   }
-  /*
+
+  /**
    * Record attributes as the module is being built for later translation
    */
-  protected static Set<TranslatableAttribute> translatableItems = new HashSet<TranslatableAttribute>();
+  protected static Set<TranslatableAttribute> translatableItems =
+    new HashSet<TranslatableAttribute>();
 
   /**
    * Record an attribute that may need to be translated.
@@ -118,14 +122,14 @@ public class Language extends AbstractConfigurable {
    */
   public static void translate() throws IOException {
     if (GameModule.getGameModule().isLocalizationEnabled()) {
-      for (Iterator i = moduleTranslations.iterator(); i.hasNext();) {
-        addBundle(((Translation) i.next()).getBundle());
+      for (Translation t : moduleTranslations) {
+        addBundle(t.getBundle());
       }
-      for (Iterator i = languageTranslations.iterator(); i.hasNext();) {
-        addBundle(((Translation) i.next()).getBundle());
+      for (Translation t : languageTranslations) {
+        addBundle(t.getBundle());
       }
-      for (Iterator i = countryTranslations.iterator(); i.hasNext();) {
-        addBundle(((Translation) i.next()).getBundle());
+      for (Translation t : countryTranslations) {
+        addBundle(t.getBundle());
       }
       if (masterBundle != null) {
         setTranslationInProgress(true);

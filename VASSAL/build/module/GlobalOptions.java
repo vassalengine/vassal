@@ -87,7 +87,7 @@ public class GlobalOptions extends AbstractConfigurable {
   private String autoReport = NEVER;
   private String markMoved = NEVER;
 
-  private java.util.Map properties = new HashMap();
+  private HashMap<String,Object> properties = new HashMap<String,Object>();
   private java.util.Map optionConfigurers = new LinkedHashMap();
   private Properties optionInitialValues = new Properties();
 
@@ -161,8 +161,8 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public String[] getAttributeNames() {
     List attributes = new ArrayList(Arrays.asList(new String[]{NON_OWNER_UNMASKABLE, PROMPT_STRING, CENTER_ON_MOVE, AUTO_REPORT, PLAYER_ID_FORMAT}));
-    for (Iterator it = properties.keySet().iterator(); it.hasNext();) {
-      attributes.add(it.next());
+    for (String key : properties.keySet()) {
+      attributes.add(key);
     }
     return (String[]) attributes.toArray(new String[attributes.size()]);
   }

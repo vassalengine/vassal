@@ -30,7 +30,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -58,7 +58,7 @@ import VASSAL.tools.Obfuscator;
  * Only one game can be open at once.
  * @see GameModule#getGameState */
 public class GameState implements CommandEncoder {
-  protected Hashtable pieces = new Hashtable();
+  protected HashMap<String,GamePiece> pieces = new HashMap<String,GamePiece>();
   protected ArrayList<GameComponent> gameComponents =
     new ArrayList<GameComponent>();
   protected ArrayList<GameSetupStep> setupSteps =
@@ -161,8 +161,7 @@ public class GameState implements CommandEncoder {
    */
   public Iterator getUnfinishedSetupSteps() {
     ArrayList<GameSetupStep> l = new ArrayList<GameSetupStep>();
-    for (Iterator<GameSetupStep> i = setupSteps.iterator(); i.hasNext(); ) {
-      GameSetupStep step = i.next();
+    for (GameSetupStep step : setupSteps) {
       if (!step.isFinished()) {
         l.add(step);
       }
@@ -206,8 +205,8 @@ public class GameState implements CommandEncoder {
     }
 
     gameStarted = gameStarted && this.gameStarting;
-    for (Iterator<GameComponent> i = gameComponents.iterator(); i.hasNext();) {
-      i.next().setup(this.gameStarting);
+    for (GameComponent gc : gameComponents) {
+      gc.setup(this.gameStarting);
     }
     if (gameStarting) {
       GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
@@ -310,7 +309,7 @@ public class GameState implements CommandEncoder {
    * @return the {@link GamePiece} in the current game with the given id
    */
   public GamePiece getPieceForId(String id) {
-    return id == null ? null : (GamePiece) pieces.get(id);
+    return id == null ? null : pieces.get(id);
   }
 
   /**
@@ -353,7 +352,7 @@ public class GameState implements CommandEncoder {
 
   /**     * @return an Enumeration of all {@link GamePiece}s in the game.     */
   public Enumeration getPieces() {
-    return pieces.elements();
+    return Collections.enumeration(pieces.values());
   }
 
   public static class SetupCommand extends Command {
@@ -389,8 +388,8 @@ public class GameState implements CommandEncoder {
     Command c = new SetupCommand(false);
     c.append(checkVersionCommand());
     c.append(getRestorePiecesCommand());
-    for (Iterator<GameComponent> i = gameComponents.iterator(); i.hasNext();) {
-      c.append(i.next().getRestoreCommand());
+    for (GameComponent gc : gameComponents) {
+      c.append(gc.getRestoreCommand());
     }
     c.append(new SetupCommand(true));
     return c;
@@ -500,8 +499,7 @@ public class GameState implements CommandEncoder {
    */
   public Command getRestorePiecesCommand() {
     ArrayList<GamePiece> pieceList = new ArrayList<GamePiece>();
-    for (Enumeration e = pieces.elements(); e.hasMoreElements();) {
-      GamePiece p = (GamePiece) e.nextElement();
+    for (GamePiece p : pieces.values()) {
       int index = 0;
       if (p.getParent() == null) {
         index = pieceList.size();
@@ -510,8 +508,8 @@ public class GameState implements CommandEncoder {
       pieceList.add(index, p);
     }
     Command c = new NullCommand();
-    for (Iterator<GamePiece> i = pieceList.iterator(); i.hasNext(); ) {
-      c.append(new AddPiece(i.next()));
+    for (GamePiece p : pieceList) {
+      c.append(new AddPiece(p));
     }
     return c;
   }

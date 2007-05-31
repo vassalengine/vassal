@@ -24,23 +24,24 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.Iterator;
 import javax.swing.JFrame;
 import VASSAL.build.module.Map;
 
 public class DragBuffer {
   private static DragBuffer theBuffer;
-  private Vector pieces;
+  private ArrayList<GamePiece> pieces;
   private MouseEvent lastRelease;
   private Component dropTarget;
   private MouseListener dropHandler;
   private Map dragFromMap;
 
   private DragBuffer() {
-    pieces = new Vector();
+    pieces = new ArrayList<GamePiece>();
   }
 
   public static void init(DragBuffer db) {
@@ -56,20 +57,19 @@ public class DragBuffer {
   }
 
   public void add(GamePiece p) {
-    if (p != null
-        && !pieces.contains(p)
-        && !Boolean.TRUE.equals(p.getProperty(Properties.RESTRICTED))) {
+    if (p != null &&
+        !pieces.contains(p) &&
+        !Boolean.TRUE.equals(p.getProperty(Properties.RESTRICTED))) {
       if (p instanceof Stack) {
         for (Enumeration e = ((Stack) p).getPieces(); e.hasMoreElements();) {
-          if (Boolean.TRUE.equals(((GamePiece) e.nextElement()).getProperty(Properties.RESTRICTED))) {
+          if (Boolean.TRUE.equals(
+              ((GamePiece) e.nextElement())
+                            .getProperty(Properties.RESTRICTED))) {
             return;
           }
         }
-        pieces.addElement(p);
       }
-      else {
-        pieces.addElement(p);
-      }
+      pieces.add(p);
       dragFromMap = p.getMap();
     }
   }
@@ -79,7 +79,7 @@ public class DragBuffer {
   }
 
   public void clear() {
-    pieces.removeAllElements();
+    pieces.clear();
   }
 
   public void addDragSource(Component c) {
@@ -138,7 +138,7 @@ public class DragBuffer {
   }
 
   public void remove(GamePiece p) {
-    pieces.removeElement(p);
+    pieces.remove(p);
   }
 
   public boolean contains(GamePiece p) {
@@ -146,16 +146,14 @@ public class DragBuffer {
   }
 
   public PieceIterator getIterator() {
-    return new PieceIterator(pieces.elements());
+    return new PieceIterator(Collections.enumeration(pieces));
   }
 
   public String contents() {
     String s = "";
-    for (Enumeration e = pieces.elements();
-         e.hasMoreElements();) {
-      GamePiece p = (GamePiece) e.nextElement();
-      s = s.concat(p.getName());
-      if (e.hasMoreElements())
+    for (Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
+      s = s.concat(i.next().getName());
+      if (i.hasNext())
         s = s.concat(",");
     }
     return s;
@@ -191,7 +189,7 @@ public class DragBuffer {
 
   public Cursor createDragCursor(Component comp) {
     Cursor c = null;
-    if (pieces.size() > 0) {
+    if (!pieces.isEmpty()) {
       c = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
     }
     return c;

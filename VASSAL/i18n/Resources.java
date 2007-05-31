@@ -264,7 +264,7 @@ public class Resources {
 			File propFile = new File(Info.getHomeDir(), propFileName);
 			if (propFile.exists()) {
 				try {
-					url = propFile.toURL();
+					url = propFile.toURI().toURL();
 				} catch (MalformedURLException e) {
 				}
 			}

@@ -27,8 +27,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -99,7 +99,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   private Stack parent;
   private Point pos = new Point(0, 0);
   private String id;
-  private HashMap props;
+  private HashMap<Object,Object> props;
 
   private char cloneKey, deleteKey; // Moved into independent traits, but retained for backward compatibility
   protected String imageName;
@@ -272,7 +272,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
 
   public void setProperty(Object key, Object val) {
     if (props == null) {
-      props = new HashMap();
+      props = new HashMap<Object,Object>();
     }
     if (val == null) {
       props.remove(key);
@@ -321,20 +321,19 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
 
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
-      Vector v = new Vector();
+      ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
       GamePiece target = Decorator.getOutermost(this);
+
       if (cloneKey > 0) {
-        v.addElement(new KeyCommand("Clone",
-                                    KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_MASK), target, getI18nData()));
+        l.add(new KeyCommand("Clone",
+          KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_MASK), target));
       }
       if (deleteKey > 0) {
-        v.addElement(new KeyCommand("Delete",
-                                    KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK), target, getI18nData()));
+        l.add(new KeyCommand("Delete",
+          KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK), target));
       }
-      commands = new KeyCommand[v.size()];
-      for (int i = 0; i < v.size(); ++i) {
-        commands[i] = (KeyCommand) v.elementAt(i);
-      }
+
+      commands = l.toArray(new KeyCommand[l.size()]);
     }
     GamePiece outer = Decorator.getOutermost(this);
     boolean canAdjustPosition = outer.getMap() != null &&

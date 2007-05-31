@@ -32,6 +32,7 @@ import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import javax.swing.Icon;
@@ -324,13 +325,13 @@ public class ZoneHighlight extends AbstractConfigurable  {
 
       JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,opacity);
 
-      Hashtable labelTable = new Hashtable();
-      labelTable.put( new Integer(0), new JLabel("Transparent") );
-      labelTable.put( new Integer(100), new JLabel("Opaque") );
+      HashMap<Integer,JLabel> labelTable = new HashMap<Integer,JLabel>();
+      labelTable.put(new Integer(0), new JLabel("Transparent"));
+      labelTable.put(new Integer(100), new JLabel("Opaque"));
 
       slider.setMajorTickSpacing(10);
       slider.setPaintTicks(true);
-      slider.setLabelTable(labelTable);
+      slider.setLabelTable(new Hashtable(labelTable));
       slider.setPaintLabels(true);
       slider.setBorder(javax.swing.BorderFactory.createTitledBorder(name));
       slider.addChangeListener(new ChangeListener() {

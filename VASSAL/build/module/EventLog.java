@@ -18,8 +18,9 @@
  */
 package VASSAL.build.module;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Vector;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -31,33 +32,36 @@ import VASSAL.tools.SequenceEncoder;
 public class EventLog extends AbstractBuildable implements CommandEncoder, GameComponent {
   public static final String EVENT_LIST = "Events"; //$NON-NLS-1$
 
-  private Vector myEvents;
-  private Vector savedEvents;
+  private ArrayList<Event> myEvents;
+  private ArrayList<Event> savedEvents;
 
   public void addTo(Buildable b) {
     GameModule mod = GameModule.getGameModule();
     mod.addCommandEncoder(this);
     mod.getGameState().addGameComponent(this);
     mod.getPrefs().addOption(new StringConfigurer(EVENT_LIST, null));
-    myEvents = new Vector();
-    savedEvents = new Vector();
+    myEvents = new ArrayList<Event>();
+    savedEvents = new ArrayList<Event>();
     for (Enumeration e = decodeEvents((String) mod.getPrefs().getValue(EVENT_LIST));
          e.hasMoreElements();) {
-      myEvents.addElement(e.nextElement());
+      myEvents.add((Event) e.nextElement());
     }
   }
 
   public void clearSaved() {
-    savedEvents.removeAllElements();
+    savedEvents.clear();
   }
 
   public void store(Event e) {
-    savedEvents.addElement(e);
+    savedEvents.add(e);
   }
 
   public void log(Event e) {
-    myEvents.addElement(e);
-    GameModule.getGameModule().getPrefs().getOption(EVENT_LIST).setValue(encodeEvents(myEvents.elements()));
+    myEvents.add(e);
+    GameModule.getGameModule()
+              .getPrefs()
+              .getOption(EVENT_LIST)
+              .setValue(encodeEvents(Collections.enumeration(myEvents)));
   }
 
   public Command decode(String s) {
@@ -85,18 +89,20 @@ public class EventLog extends AbstractBuildable implements CommandEncoder, GameC
   }
 
   public Command getRestoreCommand() {
-    return new StoreEvents(this, encodeEvents(savedEvents.elements()));
+    return new StoreEvents(this,
+      encodeEvents(Collections.enumeration(savedEvents)));
   }
 
   public static Enumeration decodeEvents(String s) {
-    Vector v = new Vector();
+    ArrayList<Event> l = new ArrayList<Event>();
     SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
     while (se.hasMoreTokens()) {
-      SequenceEncoder.Decoder sub = new SequenceEncoder.Decoder(se.nextToken(), ',');
-      v.addElement(new Event(Long.parseLong(sub.nextToken()),
-                             sub.nextToken(), sub.nextToken()));
+      SequenceEncoder.Decoder sub =
+        new SequenceEncoder.Decoder(se.nextToken(), ',');
+      l.add(new Event(Long.parseLong(sub.nextToken()),
+                      sub.nextToken(), sub.nextToken()));
     }
-    return v.elements();
+    return Collections.enumeration(l);
   }
 
   public static String encodeEvents(Enumeration e) {

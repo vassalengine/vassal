@@ -26,8 +26,6 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.StackMetrics;
@@ -458,23 +456,24 @@ public class Stack implements GamePiece, StateMergeable {
       stOld.nextToken();
       merge.append(stNew.nextToken());
       stOld.nextToken();
-      List newContents = new ArrayList();
+      ArrayList<String> newContents = new ArrayList<String>();
       while (stNew.hasMoreTokens()) {
         newContents.add(stNew.nextToken());
       }
-      List oldContents = new ArrayList();
+      ArrayList<String> oldContents = new ArrayList<String>();
       while (stOld.hasMoreTokens()) {
         oldContents.add(stOld.nextToken());
       }
       for (int i = 0, j = getPieceCount(); i < j; ++i) {
         String id = getPieceAt(i).getId();
         if (!newContents.contains(id) && !oldContents.contains(id)) {
-          int index = i == 0 ? -1 : newContents.indexOf(getPieceAt(i - 1).getId());
+          int index = i == 0 ? -1 :
+            newContents.indexOf(getPieceAt(i - 1).getId());
           newContents.add(index + 1, id);
         }
       }
-      for (Iterator e = newContents.iterator(); e.hasNext();) {
-        merge.append(e.next().toString());
+      for (String s : newContents) {
+        merge.append(s);
       }
       mergedState = merge.getValue();
     }

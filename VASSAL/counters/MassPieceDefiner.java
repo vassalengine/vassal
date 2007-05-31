@@ -18,8 +18,8 @@
  */
 package VASSAL.counters;
 
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Iterator;
 import VASSAL.build.Configurable;
 import VASSAL.build.widget.PieceSlot;
 
@@ -29,19 +29,20 @@ import VASSAL.build.widget.PieceSlot;
 public class MassPieceDefiner extends PieceDefiner {
   private static final long serialVersionUID = 1L;
 
-  private Vector definers;
+  private ArrayList<Entry> definers;
 
   public MassPieceDefiner(Configurable top) {
     super();
-    definers = new Vector();
+    definers = new ArrayList<Entry>();
     init(top);
-    if (definers.size() > 0) {
-      setPiece(((Entry) definers.firstElement()).slot.getPiece());
-      Vector template = getTemplate();
+    if (!definers.isEmpty()) {
+      setPiece(definers.get(0).slot.getPiece());
+      ArrayList<Class> template = getTemplate();
+
       for (int i = 0; i < definers.size(); ++i) {
-        GamePiece p = ((Entry) definers.elementAt(i)).definer.getPiece();
+        GamePiece p = definers.get(i).definer.getPiece();
         if (!matchesTemplate(p, template)) {
-          definers.removeElementAt(i--);
+          definers.remove(i--);
         }
       }
     }
@@ -51,7 +52,7 @@ public class MassPieceDefiner extends PieceDefiner {
     if (c instanceof PieceSlot) {
       PieceDefiner def = new Def();
       def.setPiece(((PieceSlot) c).getPiece());
-      definers.addElement(new Entry((PieceSlot) c, def));
+      definers.add(new Entry((PieceSlot) c, def));
     }
     Configurable[] child = c.getConfigureComponents();
     for (int i = 0; i < child.length; ++i) {
@@ -59,77 +60,67 @@ public class MassPieceDefiner extends PieceDefiner {
     }
   }
 
-  private Vector getTemplate() {
-    GamePiece p = ((Entry) definers.firstElement()).definer.getPiece();
-    Vector types = new Vector();
+  private ArrayList<Class> getTemplate() {
+    GamePiece p = definers.get(0).definer.getPiece();
+    ArrayList<Class> types = new ArrayList<Class>();
     while (p instanceof Decorator) {
-      types.addElement(p.getClass());
+      types.add(p.getClass());
       p = ((Decorator) p).piece;
     }
-    types.addElement(p.getClass());
+    types.add(p.getClass());
     return types;
   }
 
-  private boolean matchesTemplate(GamePiece p, Vector template) {
-    Enumeration e = template.elements();
-    while (p instanceof Decorator
-      && e.hasMoreElements()) {
-      if (p.getClass() != e.nextElement()) {
+  private boolean matchesTemplate(GamePiece p, ArrayList<Class> template) {
+    Iterator<Class> i = template.iterator();
+    while (p instanceof Decorator && i.hasNext()) {
+      if (p.getClass() != i.next()) {
         return false;
       }
       p = ((Decorator) p).piece;
     }
-    return e.hasMoreElements() ?
-      p.getClass() == e.nextElement() && !e.hasMoreElements()
-      : false;
+    return i.hasNext() ? p.getClass() == i.next() && !i.hasNext() : false;
   }
 
   protected void addTrait(Decorator c) {
     super.addTrait(c);
-    for (Enumeration e = definers.elements();
-         e.hasMoreElements();) {
-      ((Entry) e.nextElement()).definer.addTrait(c);
+    for (Entry e : definers) {
+      e.definer.addTrait(c);
     }
   }
 
   protected void removeTrait(int index) {
     super.removeTrait(index);
-    for (Enumeration e = definers.elements();
-         e.hasMoreElements();) {
-      ((Entry) e.nextElement()).definer.removeTrait(index);
+    for (Entry e : definers) {
+      e.definer.removeTrait(index);
     }
   }
 
   protected void moveDecoratorUp(int index) {
     super.moveDecoratorUp(index);
-    for (Enumeration e = definers.elements();
-         e.hasMoreElements();) {
-      ((Entry) e.nextElement()).definer.moveDecoratorUp(index);
+    for (Entry e : definers) {
+      e.definer.moveDecoratorUp(index);
     }
   }
 
   protected void moveDecoratorDown(int index) {
     super.moveDecoratorDown(index);
-    for (Enumeration e = definers.elements();
-         e.hasMoreElements();) {
-      ((Entry) e.nextElement()).definer.moveDecoratorDown(index);
+    for (Entry e : definers) {
+      e.definer.moveDecoratorDown(index);
     }
   }
 
   protected boolean edit(int index) {
     boolean result = super.edit(index);
-    for (Enumeration e = definers.elements();
-         e.hasMoreElements();) {
-      ((Entry) e.nextElement()).definer.edit(index);
+    for (Entry e : definers) {
+      e.definer.edit(index);
     }
     return result;
   }
 
   public void save() {
-    for (Enumeration e = definers.elements();
-         e.hasMoreElements();) {
-      Entry entry = (Entry) e.nextElement();
-      entry.slot.setPiece(entry.definer.getPiece());
+    for (Entry e : definers) {
+      e.slot.setPiece(e.definer.getPiece());
     }
   }
 

@@ -36,9 +36,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.UserAgent;
@@ -133,7 +131,7 @@ public class SVGManager {
     *          the path of the file to check for external references 
     */
    public List getExternalReferences(String path) {
-      List reflist = new ArrayList();
+      ArrayList<String> reflist = new ArrayList<String>();
       reflist.add(path);
       return getExternalReferences(path, reflist);
    }
@@ -148,8 +146,9 @@ public class SVGManager {
     * @param known
     *          the list of references already found
     */
-   protected List getExternalReferences(String path, List known) {
-      Set follow = new HashSet();
+   protected List<String> getExternalReferences(String path,
+                                                List<String> known) {
+      HashSet<String> follow = new HashSet<String>();
       try {
          URL here = new URL("file", null, (new File(path)).getCanonicalPath());
          Document doc = factory.createDocument(here.toString());
@@ -180,9 +179,10 @@ public class SVGManager {
 //         ex.printStackTrace();
       }
 
-      for (Iterator i = follow.iterator(); i.hasNext(); )
-         known.addAll(getExternalReferences((String) i.next(), known));
-      
+      for (String s : follow) {
+         known.addAll(getExternalReferences(s, known));
+      }      
+
       return known;
    }
 

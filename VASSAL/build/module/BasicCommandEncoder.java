@@ -81,8 +81,10 @@ import VASSAL.tools.SequenceEncoder;
  * {@link GamePiece} classes.
  */
 public class BasicCommandEncoder implements CommandEncoder, Buildable {
-  private java.util.Map basicFactories = new HashMap();
-  private java.util.Map decoratorFactories = new HashMap();
+  private HashMap<String,BasicPieceFactory> basicFactories =
+    new HashMap<String,BasicPieceFactory>();
+  private HashMap<String,DecoratorFactory> decoratorFactories =
+    new HashMap<String,DecoratorFactory>();
 
   public BasicCommandEncoder() {
     basicFactories.put(Stack.TYPE, new BasicPieceFactory() {
@@ -290,7 +292,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     if (prefix.length() == 0) {
       prefix = type;
     }
-    DecoratorFactory f = (DecoratorFactory) decoratorFactories.get(prefix);
+    DecoratorFactory f = decoratorFactories.get(prefix);
     if (f != null) {
       d = f.createDecorator(type, inner);
     }
@@ -314,7 +316,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     if (prefix.length() == 0) {
       prefix = type;
     }
-    BasicPieceFactory f = (BasicPieceFactory) basicFactories.get(prefix);
+    BasicPieceFactory f = basicFactories.get(prefix);
     if (f != null) {
       p = f.createBasicPiece(type);
     }

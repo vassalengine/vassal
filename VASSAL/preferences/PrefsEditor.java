@@ -28,9 +28,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -49,9 +48,9 @@ import VASSAL.tools.SplashScreen;
 
 public class PrefsEditor {
   private JDialog dialog;
-  private Vector options = new Vector();
-  private Hashtable savedValues;
-  private Vector prefs;
+  private ArrayList<Configurer> options = new ArrayList<Configurer>();
+  private HashMap<Configurer,Object> savedValues;
+  private ArrayList<Prefs> prefs;
   private JButton save, cancel;
   private JTabbedPane optionsTab;
   private JDialog setupDialog;
@@ -61,7 +60,7 @@ public class PrefsEditor {
 
   public PrefsEditor(ArchiveWriter archive) {
 
-    savedValues = new Hashtable();
+    savedValues = new HashMap<Configurer,Object>();
     this.archive = archive;
 
     editAction = new AbstractAction(Resources.getString("Prefs.edit_preferences")) { //$NON-NLS-1$
@@ -77,7 +76,7 @@ public class PrefsEditor {
     };
     editAction.putValue(Action.MNEMONIC_KEY, new Integer('P'));
 
-    prefs = new Vector();
+    prefs = new ArrayList<Prefs>();
 
     save = new JButton(Resources.getString(Resources.OK));
     save.addActionListener(new ActionListener() {
@@ -122,7 +121,7 @@ public class PrefsEditor {
   }
 
   public void addPrefs(Prefs p) {
-    prefs.addElement(p);
+    prefs.add(p);
   }
 
   public void addOption(String category, Configurer c, String prompt) {
@@ -179,7 +178,7 @@ public class PrefsEditor {
       pan.setLayout(new BoxLayout(pan, BoxLayout.Y_AXIS));
       optionsTab.addTab(category, pan);
     }
-    options.addElement(c);
+    options.add(c);
     Box b = Box.createHorizontalBox();
     b.add(c.getControls());
     b.add(Box.createHorizontalGlue());
@@ -188,9 +187,7 @@ public class PrefsEditor {
 
   private void storeValues() {
     savedValues.clear();
-    for (Enumeration e = options.elements();
-         e.hasMoreElements();) {
-      Configurer c = (Configurer) e.nextElement();
+    for (Configurer c : options) {
       c.setFrozen(true);
       if (c.getValue() != null) {
         savedValues.put(c, c.getValue());
@@ -203,9 +200,7 @@ public class PrefsEditor {
   }
 
   protected void cancel() {
-    for (Enumeration e = options.elements();
-         e.hasMoreElements();) {
-      Configurer c = (Configurer) e.nextElement();
+    for (Configurer c : options) {
       c.setValue(savedValues.get(c));
       c.setFrozen(false);
     }
@@ -213,9 +208,7 @@ public class PrefsEditor {
   }
 
   protected void save() {
-    for (Enumeration e = options.elements();
-         e.hasMoreElements();) {
-      Configurer c = (Configurer) e.nextElement();
+    for (Configurer c : options) {
       c.fireUpdate();
       c.setFrozen(false);
     }
@@ -233,8 +226,8 @@ public class PrefsEditor {
   }
 
   public void write() throws IOException {
-    for (Enumeration e = prefs.elements(); e.hasMoreElements();) {
-      ((Prefs) e.nextElement()).save();
+    for (Prefs p : prefs) {
+      p.save();
     }
     archive.write();
   }

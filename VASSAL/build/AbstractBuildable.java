@@ -21,8 +21,6 @@ package VASSAL.build;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -38,7 +36,7 @@ import VASSAL.i18n.Translatable;
  * handled automatically.
  */
 public abstract class AbstractBuildable implements Buildable, ValidityChecker {
-	protected List buildComponents = new ArrayList();
+	protected ArrayList<Buildable> buildComponents = new ArrayList<Buildable>();
 
 	protected ValidityChecker validator; // Sub-classes can set this
 
@@ -106,11 +104,10 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 	 * @return all build components that are an instance of the given class
 	 */
 	public Enumeration getComponents(Class target) {
-		List l = new ArrayList();
-		for (Iterator it = buildComponents.iterator(); it.hasNext();) {
-			Object o = it.next();
-			if (target.isInstance(o)) {
-				l.add(o);
+		ArrayList<Buildable> l = new ArrayList<Buildable>();
+		for (Buildable b : buildComponents) {
+			if (target.isInstance(b)) {
+				l.add(b);
 			}
 		}
 		return Collections.enumeration(l);
@@ -124,18 +121,16 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 	 * @return
 	 */
 	public Enumeration getAllDescendantComponents(Class target) {
-		ArrayList l = new ArrayList();
+		ArrayList<Buildable> l = new ArrayList<Buildable>();
 		addComponents(target, l);
 		return Collections.enumeration(l);
 	}
 
-	private void addComponents(Class target,
-			ArrayList l) {
+	private void addComponents(Class target, ArrayList<Buildable> l) {
 		if (target.isInstance(this)) {
 			l.add(this);
 		}
-		for (Iterator it = buildComponents.iterator(); it.hasNext();) {
-			Buildable b = (Buildable) it.next();
+		for (Buildable b : buildComponents) {
 			if (target.isInstance(b)) {
 				l.add(b);
 			}
@@ -182,8 +177,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 		if (validator != null) {
 			validator.validate(target, report);
 		}
-		for (Iterator it = buildComponents.iterator(); it.hasNext();) {
-			Buildable child = (Buildable) it.next();
+		for (Buildable child : buildComponents) {
 			if (child instanceof ValidityChecker) {
 				((ValidityChecker) child).validate(child, report);
 			}

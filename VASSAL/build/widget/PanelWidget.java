@@ -22,7 +22,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
-import java.util.Vector;
+import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -38,7 +38,7 @@ import VASSAL.configure.VisibilityCondition;
  */
 public class PanelWidget extends Widget {
   private JPanel panel;
-  private Vector widgets = new Vector();
+  private ArrayList<Widget> widgets = new ArrayList<Widget>();
   private int nColumns = 3;
   private boolean vertical = false;
   private boolean fixed = false;
@@ -55,8 +55,8 @@ public class PanelWidget extends Widget {
       rebuild();
       panel = new JPanel();
       panel.setLayout(getLayout(panel));
-      for (int i = 0; i < widgets.size(); ++i) {
-        Component c = ((Widget) widgets.elementAt(i)).getComponent();
+      for (Widget w : widgets) {
+        Component c = w.getComponent();
         if (c instanceof JComponent) {
           ((JComponent) c).setAlignmentX(0.0F);
           ((JComponent) c).setAlignmentY(0.0F);
@@ -80,7 +80,7 @@ public class PanelWidget extends Widget {
   public void add(Buildable b) {
     if (b instanceof Widget) {
       Widget w = (Widget) b;
-      widgets.addElement(w);
+      widgets.add(w);
       if (panel != null) {
         Component c = w.getComponent();
         if (c instanceof JComponent) {
@@ -100,7 +100,7 @@ public class PanelWidget extends Widget {
       if (panel != null) {
         panel.remove(w.getComponent());
       }
-      widgets.removeElement(w);
+      widgets.remove(w);
     }
     super.remove(b);
   }

@@ -22,7 +22,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Hashtable;
+import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 
@@ -38,7 +38,8 @@ public class TranslateAction extends AbstractAction {
 
   protected Configurable target;
   protected HelpWindow helpWindow;
-  protected static Hashtable openWindows = new Hashtable();
+  protected static HashMap<Configurable,TranslateWindow> openWindows =
+    new HashMap<Configurable,TranslateWindow>();
   protected Frame dialogOwner;
   protected ConfigureTree tree;
 
@@ -51,17 +52,17 @@ public class TranslateAction extends AbstractAction {
   }
 
   public void actionPerformed(ActionEvent evt) {
-    TranslateWindow w = (TranslateWindow) openWindows.get(target);
-      if (w == null) {
-        w = new TranslateWindow(dialogOwner, false, target, helpWindow, tree);
-        w.addWindowListener(new WindowAdapter() {
-          public void windowClosed(WindowEvent e) {
-            openWindows.remove(target);
-          }
-        });
-        openWindows.put(target,w);
-        w.setVisible(true);
-      }
-      w.toFront();
+    TranslateWindow w = openWindows.get(target);
+    if (w == null) {
+      w = new TranslateWindow(dialogOwner, false, target, helpWindow, tree);
+      w.addWindowListener(new WindowAdapter() {
+        public void windowClosed(WindowEvent e) {
+          openWindows.remove(target);
+        }
+      });
+      openWindows.put(target,w);
+      w.setVisible(true);
+    }
+    w.toFront();
   }
 }

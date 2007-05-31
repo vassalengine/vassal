@@ -47,7 +47,7 @@ import VASSAL.configure.Configurer;
  * Map Grid that contains any number of {@link VASSAL.build.module.map.boardPicker.board.mapgrid.Zone}s against a background {@link MapGrid}
  */
 public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, GridContainer {
-  protected ArrayList zones = new ArrayList();
+  protected ArrayList<Zone> zones = new ArrayList<Zone>();
   protected MapGrid background;
   protected GridContainer container;
   protected ZonedGridHighlighter zoneHighlighters;
@@ -124,9 +124,9 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   /*
-   * Zones that do not use the background grid must clip out the portion of the background 
-   * grid that they cover. Cache as much of the work as possible to prevent bogging down
-   * with large numbers of zones.
+   * Zones that do not use the background grid must clip out the portion of
+   * the background grid that they cover. Cache as much of the work as
+   * possible to prevent bogging down with large numbers of zones.
    */
   protected Area scaledZones = null;
   protected Area translatedZones = null;
@@ -144,20 +144,22 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     if (background != null && background.isVisible()) {
       
       /*
-       * Calculate and cache scaled shape consisting of all zones that do not use the parent grid.
-       * (There may be none!)
+       * Calculate and cache scaled shape consisting of all zones that do not
+       * use the parent grid. (There may be none!)
        */
       if (lastScale != scale || scaleTransform == null) {
         scaleTransform = AffineTransform.getScaleInstance(scale, scale);
         scaledZones = null;
-        for (Iterator it = zones.iterator(); it.hasNext();) {
-          Zone zone = (Zone) it.next();
+
+        for (Zone zone : zones) {
           if (!zone.isUseParentGrid()) {
             if (scaledZones == null) {
-              scaledZones = new Area(scaleTransform.createTransformedShape(zone.getShape()));
+              scaledZones = new Area(
+                scaleTransform.createTransformedShape(zone.getShape()));
             }
             else {
-              scaledZones.add(new Area(scaleTransform.createTransformedShape(zone.getShape())));
+              scaledZones.add(new Area(
+                scaleTransform.createTransformedShape(zone.getShape())));
             }
           }
         }
@@ -194,8 +196,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     /*
      * Draw each Zone
      */
-    for (Iterator it = zones.iterator(); it.hasNext();) {
-      Zone zone = (Zone) it.next();
+    for (Zone zone : zones) {
       zone.draw(g, bounds, visibleRect, scale, reversed);
     }
   }
@@ -219,8 +220,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   public String locationName(Point p) {
     String name = null;
-    for (Iterator it = zones.iterator(); it.hasNext();) {
-      Zone zone = (Zone) it.next();
+    for (Zone zone : zones) {
       if (zone.contains(p)) {
         name = zone.locationName(p);
         break;
@@ -235,8 +235,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   public String localizedLocationName(Point p) {
     String name = null;
-    for (Iterator it = zones.iterator(); it.hasNext();) {
-      Zone zone = (Zone) it.next();
+    for (Zone zone : zones) {
       if (zone.contains(p)) {
         name = zone.localizedLocationName(p);
         break;
@@ -279,8 +278,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   public Zone findZone(Point p) {
-    for (Iterator it = zones.iterator(); it.hasNext();) {
-      Zone zone = (Zone) it.next();
+    for (Zone zone : zones) {
       if (zone.contains(p)) {
         return zone;
       }
@@ -289,8 +287,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
   
   public Zone findZone(String name) {
-    for (Iterator it = zones.iterator(); it.hasNext();) {
-      Zone zone = (Zone) it.next();
+    for (Zone zone : zones) {
       if (zone.getName().equals(name)) {
         return zone;
       }
@@ -311,8 +308,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   public boolean isLocationRestricted(Point p) {
-    for (Iterator it = zones.iterator(); it.hasNext();) {
-      Zone zone = (Zone) it.next();
+    for (Zone zone : zones) {
       if (zone.contains(p)) {
         return zone.getGrid() != null && zone.getGrid().isLocationRestricted(p);
       }

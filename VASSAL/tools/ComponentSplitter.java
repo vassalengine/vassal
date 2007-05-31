@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -378,9 +377,7 @@ public class ComponentSplitter {
      */
     protected int getPreferredBaseComponentSize() {
       int size = transverseHiddenSize;
-      for (Iterator<SplitPane> i = showingTransverseComponents.iterator();
-           i.hasNext(); ) {
-        SplitPane split = i.next();
+      for (SplitPane split : showingTransverseComponents) {
         switch (getOrientation()) {
         case VERTICAL_SPLIT:
           size = Math.max(size,

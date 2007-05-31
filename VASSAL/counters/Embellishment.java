@@ -36,8 +36,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -48,7 +46,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionListener;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -235,16 +232,16 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     xOff = st.nextInt(0);
     yOff = st.nextInt(0);
 
-    Vector v = new Vector();
+    ArrayList<String> l = new ArrayList<String>();
     while (st.hasMoreTokens()) {
-      v.addElement(st.nextToken());
+      l.add(st.nextToken());
     }
-    nValues = v.size();
-    imageName = new String[v.size()];
-    commonName = new String[v.size()];
+    nValues = l.size();
+    imageName = new String[l.size()];
+    commonName = new String[l.size()];
     size = new Rectangle[imageName.length];
     for (int i = 0; i < imageName.length; ++i) {
-      String sub = (String) v.elementAt(i);
+      String sub = l.get(i);
       SequenceEncoder.Decoder subSt = new SequenceEncoder.Decoder(sub, ',');
       imageName[i] = subSt.nextToken();
       if (subSt.hasMoreTokens()) {
@@ -380,18 +377,27 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      List l = new ArrayList();
+      ArrayList<KeyCommand> l = new ArrayList();
       GamePiece outer = Decorator.getOutermost(this);
       if (activateCommand.length() > 0 && activateKey.length() > 0) {
-        l.add(new KeyCommand(activateCommand, KeyStroke.getKeyStroke(activateKey.charAt(0), activateModifiers), outer, getI18nData()));
+        l.add(new KeyCommand(activateCommand,
+          KeyStroke.getKeyStroke(activateKey.charAt(0), activateModifiers),
+          outer));
       }
-      if (upCommand.length() > 0 && upKey.length() > 0 && nValues > 1 && !followProperty) {
-
-        up = new KeyCommand(upCommand, KeyStroke.getKeyStroke(upKey.charAt(0), upModifiers), outer, getI18nData());
+      if (upCommand.length() > 0 &&
+          upKey.length() > 0 &&
+          nValues > 1 &&
+          !followProperty) {
+        up = new KeyCommand(upCommand,
+          KeyStroke.getKeyStroke(upKey.charAt(0), upModifiers), outer);
         l.add(up);
       }
-      if (downCommand.length() > 0 && downKey.length() > 0 && nValues > 1 && !followProperty) {
-        down = new KeyCommand(downCommand, KeyStroke.getKeyStroke(downKey.charAt(0), downModifiers), outer, getI18nData());
+      if (downCommand.length() > 0 &&
+          downKey.length() > 0 &&
+          nValues > 1 &&
+          !followProperty) {
+        down = new KeyCommand(downCommand,
+          KeyStroke.getKeyStroke(downKey.charAt(0), downModifiers), outer);
         l.add(down);
       }
       if (resetKey != null && resetCommand.length() > 0 && !followProperty) {
@@ -402,7 +408,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         l.add(new KeyCommand(rndText, rndKey, outer, getI18nData()));
       }
       // end random layers
-      commands = (KeyCommand[]) l.toArray(new KeyCommand[l.size()]);
+      commands = l.toArray(new KeyCommand[l.size()]);
     }
     if (up != null) {
       up.setEnabled(loopLevels || Math.abs(value) < imageName.length);
@@ -705,8 +711,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private JTextField name = new JTextField(8);
 
     private JPanel controls;
-    private List names;
-    private List isPrefix;
+    private ArrayList<String> names;
+    private ArrayList<Integer> isPrefix;
     private static final Integer NEITHER = new Integer(0);
     private static final Integer PREFIX = new Integer(1);
     private static final Integer SUFFIX = new Integer(2);
@@ -924,7 +930,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         levelNameInput.setText(null);
       }
       else {
-        levelNameInput.setText((String) names.get(index));
+        levelNameInput.setText(names.get(index));
         prefix.setSelected(PREFIX.equals(isPrefix.get(index)));
         suffix.setSelected(SUFFIX.equals(isPrefix.get(index)));
       }
@@ -957,18 +963,20 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
-      List imageNames = new ArrayList();
-      List commonNames = new ArrayList();
+      ArrayList<String> imageNames = new ArrayList<String>();
+      ArrayList<String> commonNames = new ArrayList<String>();
       int i = 0;
       for (Enumeration e = images.getImageNames(); e.hasMoreElements();) {
-        imageNames.add(e.nextElement());
-        String commonName = (String) names.get(i);
+        imageNames.add((String) e.nextElement());
+        String commonName = names.get(i);
         if (commonName != null && commonName.length() > 0) {
           if (PREFIX.equals(isPrefix.get(i))) {
-            commonName = new SequenceEncoder(commonName, '+').append("").getValue();
+            commonName =
+              new SequenceEncoder(commonName, '+').append("").getValue();
           }
           else if (SUFFIX.equals(isPrefix.get(i))) {
-            commonName = new SequenceEncoder("", '+').append(commonName).getValue();
+            commonName =
+              new SequenceEncoder("", '+').append(commonName).getValue();
           }
           else {
             commonName = new SequenceEncoder(commonName, '+').getValue();
@@ -990,19 +998,31 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         yOffInput.setText("0");
       }
 
-      se.append(activateCommand.getText()).append(activateModifiers.getValueString()).append(
-          activateKeyInput.getText()).append(upCommand.getText()).append(
-          upModifiers.getValueString()).append(upKeyInput.getText()).append(downCommand.getText())
-          .append(downModifiers.getValueString()).append(downKeyInput.getText()).append(
-              resetCommand.getText()).append((KeyStroke) resetKey.getValue()).append(
-              resetLevel.getText()).append(drawUnderneath.isSelected()).append(xOffInput.getText())
-          .append(yOffInput.getText()).append(
-              (String[]) imageNames.toArray(new String[imageNames.size()])).append(
-              (String[]) commonNames.toArray(new String[commonNames.size()])).append(
-              loop.isSelected()).append(name.getText()).append((KeyStroke) rndKeyConfig.getValue())
-          .append(rndCommand.getText() == null ? "" : rndCommand.getText().trim()).append(
-              followConfig.getValueString()).append(propertyConfig.getValueString())
-              .append(firstLevelConfig.getValueString());
+      se.append(activateCommand.getText())
+        .append(activateModifiers.getValueString())
+        .append(activateKeyInput.getText())
+        .append(upCommand.getText())
+        .append(upModifiers.getValueString())
+        .append(upKeyInput.getText())
+        .append(downCommand.getText())
+        .append(downModifiers.getValueString())
+        .append(downKeyInput.getText())
+        .append(resetCommand.getText())
+        .append((KeyStroke) resetKey.getValue())
+        .append(resetLevel.getText())
+        .append(drawUnderneath.isSelected())
+        .append(xOffInput.getText())
+        .append(yOffInput.getText())
+        .append(imageNames.toArray(new String[imageNames.size()]))
+        .append(commonNames.toArray(new String[commonNames.size()]))
+        .append(loop.isSelected())
+        .append(name.getText())
+        .append((KeyStroke) rndKeyConfig.getValue())
+        .append(rndCommand.getText() == null ? "" :
+                rndCommand.getText().trim())
+        .append(followConfig.getValueString())
+        .append(propertyConfig.getValueString())
+        .append(firstLevelConfig.getValueString());
 
       return ID + se.getValue();
 
@@ -1013,7 +1033,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       int i = 0;
       for (Enumeration e = images.getImageNames(); e.hasMoreElements();) {
         String imageName = (String) e.nextElement();
-        String commonName = (String) names.get(i);
+        String commonName = names.get(i);
         if (names.get(i) != null && commonName != null && commonName.length() > 0) {
           SequenceEncoder sub = new SequenceEncoder(imageName, ',');
           if (PREFIX.equals(isPrefix.get(i))) {
@@ -1068,8 +1088,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     public void reset(Embellishment e) {
       name.setText(e.name);
-      names = new Vector();
-      isPrefix = new Vector();
+      names = new ArrayList<String>();
+      isPrefix = new ArrayList<Integer>();
       for (int i = 0; i < e.commonName.length; ++i) {
         String s = e.commonName[i];
         Integer is = NEITHER;

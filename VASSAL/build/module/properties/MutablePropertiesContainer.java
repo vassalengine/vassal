@@ -1,7 +1,25 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2006-2007 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.build.module.properties;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A component that can contain mutable (updateable) properties
@@ -32,18 +50,19 @@ public interface MutablePropertiesContainer {
    *
    */
   public static class Impl implements MutablePropertiesContainer {
-    private Map props = new HashMap();
+    private HashMap<String,MutableProperty> props =
+      new HashMap<String,MutableProperty>();
 
     public void addMutableProperty(String key, MutableProperty p) {
       props.put(key,p);
     }
 
     public MutableProperty getMutableProperty(String propertyName) {
-      return (MutableProperty) props.get(propertyName);
+      return props.get(propertyName);
     }
 
     public MutableProperty removeMutableProperty(String key) {
-      return (MutableProperty) props.remove(key);
+      return props.remove(key);
     }
 
     public void setProperty2(String key, String value) {

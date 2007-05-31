@@ -21,7 +21,7 @@ package VASSAL.build.widget;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -51,7 +51,7 @@ public class ListWidget extends Widget
   private CardLayout layout;
   private JPanel multiPanel;
 
-  private Hashtable keys = new Hashtable();
+  private HashMap<Object,String> keys = new HashMap<Object,String>();
   private int count = 0;
 
   public ListWidget() {
@@ -73,8 +73,7 @@ public class ListWidget extends Widget
       panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
       multiPanel.setLayout(layout);
 
-      for (Enumeration e = getBuildComponents();
-           e.hasMoreElements();) {
+      for (Enumeration e = getBuildComponents(); e.hasMoreElements();) {
         Widget w = (Widget) e.nextElement();
         multiPanel.add(getKey(w), w.getComponent());
       }
@@ -110,7 +109,7 @@ public class ListWidget extends Widget
   }
 
   private String getKey(Object o) {
-    String s = (String) keys.get(o);
+    String s = keys.get(o);
     if (s == null) {
       s = "" + new Integer(count++);
       keys.put(o, s);

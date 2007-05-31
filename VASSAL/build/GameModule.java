@@ -27,10 +27,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -139,8 +139,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   
   protected WizardSupport wizardSupport = new WizardSupport();
 
-  protected Vector keyStrokeSources = new Vector();
-  protected Vector keyStrokeListeners = new Vector();
+  protected ArrayList<KeyStrokeSource> keyStrokeSources =
+    new ArrayList<KeyStrokeSource>();
+  protected ArrayList<KeyStrokeListener> keyStrokeListeners =
+    new ArrayList<KeyStrokeListener>();
   protected CommandEncoder[] commandEncoders = new CommandEncoder[0];
 
   /**
@@ -297,10 +299,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * forwarded to all listeners that have registered themselves with {@link #addKeyStrokeListener}
    */
   public void addKeyStrokeSource(KeyStrokeSource src) {
-    keyStrokeSources.addElement(src);
-    for (int i = 0; i < keyStrokeListeners.size(); ++i) {
-      ((KeyStrokeListener) keyStrokeListeners.elementAt(i))
-          .addKeyStrokeSource(src);
+    keyStrokeSources.add(src);
+    for (KeyStrokeListener l : keyStrokeListeners) {
+      l.addKeyStrokeSource(src);
     }
   }
 
@@ -312,17 +313,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * will forward hotkey events to listeners registered with this method.
    */
   public void addKeyStrokeListener(KeyStrokeListener l) {
-    keyStrokeListeners.addElement(l);
-    for (int i = 0; i < keyStrokeSources.size(); ++i) {
-      l.addKeyStrokeSource
-          ((KeyStrokeSource) keyStrokeSources.elementAt(i));
+    keyStrokeListeners.add(l);
+    for (KeyStrokeSource s : keyStrokeSources) {
+      l.addKeyStrokeSource(s);
     }
   }
   
   public void fireKeyStroke(KeyStroke stroke) {
   	if (stroke != null) {
-  		for (Iterator it = keyStrokeListeners.iterator(); it.hasNext();) {
-				KeyStrokeListener l = (KeyStrokeListener) it.next();
+  		for (KeyStrokeListener l : keyStrokeListeners) {
 				l.keyPressed(stroke);
 			}
   	}

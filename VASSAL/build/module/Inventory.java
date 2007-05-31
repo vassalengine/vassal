@@ -35,17 +35,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -66,7 +60,6 @@ import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -208,8 +201,8 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   }
 
   public void addTo(Buildable b) {
-	// Support for players changing sides
-	PlayerRoster.addSideChangeListener(this);
+  // Support for players changing sides
+  PlayerRoster.addSideChangeListener(this);
     launch.setAlignmentY(0.0F);
     GameModule.getGameModule().getToolBar().add(getComponent());
     GameModule.getGameModule().getGameState().addGameComponent(this);
@@ -283,37 +276,37 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   protected TreeCellRenderer initTreeCellRenderer() {
     return new DefaultTreeCellRenderer() {
 
-    	private static final long serialVersionUID = -250332615261355856L;
+      private static final long serialVersionUID = -250332615261355856L;
 
-    	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-    		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf && !foldersOnly, row, hasFocus);
-    		if (value instanceof CounterNode) {
-    			final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
-    			if (piece != null) {
-    				final Rectangle r = piece.getShape().getBounds();
-    				r.x = (int) Math.round(r.x * pieceZoom);
-    				r.y = (int) Math.round(r.y * pieceZoom);
-    				r.width = (int) Math.round(r.width * pieceZoom);
-    				r.height = (int) Math.round(r.height * pieceZoom);
-    				setIcon(new Icon() {
+      public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf && !foldersOnly, row, hasFocus);
+        if (value instanceof CounterNode) {
+          final GamePiece piece = ((CounterNode) value).getCounter().getPiece();
+          if (piece != null) {
+            final Rectangle r = piece.getShape().getBounds();
+            r.x = (int) Math.round(r.x * pieceZoom);
+            r.y = (int) Math.round(r.y * pieceZoom);
+            r.width = (int) Math.round(r.width * pieceZoom);
+            r.height = (int) Math.round(r.height * pieceZoom);
+            setIcon(new Icon() {
 
-    					public int getIconHeight() {
-    						return r.height;
-    					}
+              public int getIconHeight() {
+                return r.height;
+              }
 
-    					public int getIconWidth() {
-    						return r.width;
-    					}
+              public int getIconWidth() {
+                return r.width;
+              }
 
-    					public void paintIcon(Component c, Graphics g, int x, int y) {
-    						piece.draw(g, -r.x, -r.y, c, pieceZoom);
-    					}
+              public void paintIcon(Component c, Graphics g, int x, int y) {
+                piece.draw(g, -r.x, -r.y, c, pieceZoom);
+              }
 
-    				});
-    			}
-    		}
-    		return this;
-    	}
+            });
+          }
+        }
+        return this;
+      }
 
     };
   }
@@ -323,9 +316,9 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     // Written by Scot McConnachie.
     JButton writeButton = new JButton(Resources.getString(Resources.SAVE));
     writeButton.addActionListener(new ActionListener() {
-    	public void actionPerformed(ActionEvent e) {
-    		inventoryToText();
-    	}
+      public void actionPerformed(ActionEvent e) {
+        inventoryToText();
+      }
     });
     buttonBox.add(writeButton);
     JButton refreshButton = new JButton(Resources.getString(Resources.REFRESH));
@@ -357,28 +350,28 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
    * TODO rework text display of Inventory
    */
   protected void inventoryToText() {
-	  StringBuffer output = new StringBuffer(""); //$NON-NLS-1$
-	  FileChooser fc = GameModule.getGameModule().getFileChooser();
-	  if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) {
-		  return;
-	  }
-	  // TODO replace this hack
-	  mapSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
-	  // groupSeparator = mapSeparator + "  ";
-	  // groupSeparator = " ";
-	  output.append(results.getResultString()); 
-	  // .substring(1).replaceAll(
-	//		  mapSeparator, System.getProperty("line.separator"));
-	  try {
-		  PrintWriter p = new PrintWriter(new FileOutputStream(fc
-				  .getSelectedFile().getPath()));
-		  p.print(output);
-		  p.close();
-	      Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString("Inventory.wrote", fc.getSelectedFile().getName())); //$NON-NLS-1$
-	      c.execute();
-	  } catch (IOException e) {
-		  JOptionPane.showMessageDialog(null, e.getMessage());
-	  }
+    StringBuffer output = new StringBuffer(""); //$NON-NLS-1$
+    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) {
+      return;
+    }
+    // TODO replace this hack
+    mapSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
+    // groupSeparator = mapSeparator + "  ";
+    // groupSeparator = " ";
+    output.append(results.getResultString()); 
+    // .substring(1).replaceAll(
+  //      mapSeparator, System.getProperty("line.separator"));
+    try {
+      PrintWriter p = new PrintWriter(new FileOutputStream(fc
+          .getSelectedFile().getPath()));
+      p.print(output);
+      p.close();
+        Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString("Inventory.wrote", fc.getSelectedFile().getName())); //$NON-NLS-1$
+        c.execute();
+    } catch (IOException e) {
+      JOptionPane.showMessageDialog(null, e.getMessage());
+    }
   }
 
   public GamePiece getSelectedCounter() {
@@ -411,55 +404,56 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   }
 
   private void buildTreeModel() {
-	  // Initialize all pieces with CurrentBoard correctly.
-	  for (Iterator i = VASSAL.build.module.Map.getAllMaps(); i.hasNext();) {
-		  VASSAL.build.module.Map m = (VASSAL.build.module.Map) i.next();
-		  m.getPieces();
-	  }
-	  
-	  ArrayList path = new ArrayList();
-	  for (int i = 0; i < groupBy.length; i++)
-		  path.add(groupBy[i]);
-	  results = new CounterInventory(new Counter(this.getConfigureName()), path, sortPieces);
+    // Initialize all pieces with CurrentBoard correctly.
+    for (Iterator i = VASSAL.build.module.Map.getAllMaps(); i.hasNext();) {
+      VASSAL.build.module.Map m = (VASSAL.build.module.Map) i.next();
+      m.getPieces();
+    }
+    
+    ArrayList<String> path = new ArrayList<String>();
+    for (int i = 0; i < groupBy.length; i++)
+      path.add(groupBy[i]);
+    results = new CounterInventory(
+      new Counter(this.getConfigureName()), path, sortPieces);
 
-	  PieceIterator pi = new PieceIterator(GameModule.getGameModule().getGameState().getPieces(), piecePropertiesFilter);
+    PieceIterator pi = new PieceIterator(
+      GameModule.getGameModule().getGameState().getPieces(),
+      piecePropertiesFilter);
 
-	  while (pi.hasMoreElements()) {
-		  ArrayList groups = new ArrayList();
-		  GamePiece p = pi.nextPiece();
+    while (pi.hasMoreElements()) {
+      ArrayList<String> groups = new ArrayList<String>();
+      GamePiece p = pi.nextPiece();
 
-		  for (int i = 0; i < groupBy.length; i++) {
-			  if (groupBy[i].length() > 0) {
-				  String prop = (String) p.getProperty(groupBy[i]);
-				  if (prop != null)
-					  groups.add(p.getProperty(groupBy[i]));
-			  }
-		  }
+      for (int i = 0; i < groupBy.length; i++) {
+        if (groupBy[i].length() > 0) {
+          String prop = (String) p.getProperty(groupBy[i]);
+          if (prop != null)
+            groups.add(prop);
+        }
+      }
 
-		  int count = 1;
-		  if (nonLeafFormat.length() > 0)
-			  count = getTotalValue(p);
+      int count = 1;
+      if (nonLeafFormat.length() > 0)
+        count = getTotalValue(p);
 
-		  Counter c;
-		  c = new Counter(p, groups, count, pieceFormat, sortFormat);
-		  // Store
-		  results.insert(c);
-	  }
+      Counter c;
+      c = new Counter(p, groups, count, pieceFormat, sortFormat);
+      // Store
+      results.insert(c);
+    }
   }
 
-  
-
   protected int getTotalValue(GamePiece p) {
-	  String s = (String) p.getProperty(nonLeafFormat);
-	  int count = 1;
-	  try {
-		  count = Integer.parseInt(s);
-	  }
-	  catch (Exception e) {
-		  count = 1;
-	  }
+    String s = (String) p.getProperty(nonLeafFormat);
+    int count = 1;
+    try {
+      count = Integer.parseInt(s);
+    }
+    catch (Exception e) {
+      count = 1;
+    }
 
-	  return count;
+    return count;
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
@@ -471,26 +465,26 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   }
 
   public String[] getAttributeDescriptions() {
-	  return new String[] {"Name:  ", "Button text:  ", "Tooltip text:  ","Button icon:  ", "Hotkey:  ",  // "Display", 
-			  "Show only pieces matching these properties:  ", "Sort and Group By Properties",
-			  "Label for folders:  ", "Show only folders?", "Label for pieces:  ",  "Sort?", "Label for sort:  ", 
-			  "Sorting method:  ", "Center on selected piece?", 
-			  "Forward key strokes to selected piece?", "Show right-click menu of piece?", "Draw piece images?", "Zoom factor:  ", "Available to these sides"};
+    return new String[] {"Name:  ", "Button text:  ", "Tooltip text:  ","Button icon:  ", "Hotkey:  ",  // "Display", 
+        "Show only pieces matching these properties:  ", "Sort and Group By Properties",
+        "Label for folders:  ", "Show only folders?", "Label for pieces:  ",  "Sort?", "Label for sort:  ", 
+        "Sorting method:  ", "Center on selected piece?", 
+        "Forward key strokes to selected piece?", "Show right-click menu of piece?", "Draw piece images?", "Zoom factor:  ", "Available to these sides"};
   }
 
   public Class[] getAttributeTypes() {
-	  return new Class[] {String.class, String.class, String.class, IconConfig.class, KeyStroke.class,  // DestConfig.class, 
-			  PropertyExpression.class, String[].class, String.class, Boolean.class,
-			  PieceFormatConfig.class, Boolean.class, PieceFormatConfig.class, 
-			  SortConfig.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class, 
-			  Double.class, String[].class};
+    return new Class[] {String.class, String.class, String.class, IconConfig.class, KeyStroke.class,  // DestConfig.class, 
+        PropertyExpression.class, String[].class, String.class, Boolean.class,
+        PieceFormatConfig.class, Boolean.class, PieceFormatConfig.class, 
+        SortConfig.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class, 
+        Double.class, String[].class};
   }
 
   public String[] getAttributeNames() {
-	  return new String[] {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY,  // DEST, 
-			  FILTER, GROUP_BY, NON_LEAF_FORMAT, FOLDERS_ONLY, LEAF_FORMAT,
-			  SORT_PIECES, SORT_FORMAT,  
-			  SORTING, CENTERONPIECE, FORWARD_KEYSTROKE, SHOW_MENU, DRAW_PIECES, PIECE_ZOOM, SIDES};
+    return new String[] {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY,  // DEST, 
+        FILTER, GROUP_BY, NON_LEAF_FORMAT, FOLDERS_ONLY, LEAF_FORMAT,
+        SORT_PIECES, SORT_FORMAT,  
+        SORTING, CENTERONPIECE, FORWARD_KEYSTROKE, SHOW_MENU, DRAW_PIECES, PIECE_ZOOM, SIDES};
   }
 
   public static class IconConfig implements ConfigurerFactory {
@@ -504,14 +498,14 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     }
   }
 //  public static class DestConfig implements ConfigurerFactory {
-//	  public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-//		  return new StringEnumConfigurer(key, name, DEST_OPTIONS);
-//	  }
+//    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+//      return new StringEnumConfigurer(key, name, DEST_OPTIONS);
+//    }
 //  }
   public static class SortConfig implements ConfigurerFactory {
-	  public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-		  return new StringEnumConfigurer(key,name,SORT_OPTIONS);
-	  }
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new StringEnumConfigurer(key,name,SORT_OPTIONS);
+    }
   }
 
   public void setAttribute(String key, Object o) {
@@ -585,13 +579,13 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
         sortPieces = getBooleanValue(o);
     }
     else if (SORT_FORMAT.equals(key)) {
-    	sortFormat = (String) o;
+      sortFormat = (String) o;
     }
     else if (SORTING.equals(key)) {
-    	sortStrategy = (String) o;
+      sortStrategy = (String) o;
     }
 //    else if (DEST.equals(key)) {
-//    	destination = (String) o;
+//      destination = (String) o;
 //    }
 
     else {
@@ -681,13 +675,13 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
         return sortPieces + ""; //$NON-NLS-1$
     }
     else if (SORT_FORMAT.equals(key)) {
-    	return sortFormat;
+      return sortFormat;
     }
     else if (SORTING.equals(key)) {
-    	return sortStrategy;
+      return sortStrategy;
     }
 //    else if (DEST.equals(key)) {
-//    	return destination;
+//      return destination;
 //    }
 
     else {
@@ -701,8 +695,8 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
   public void setup(boolean gameStarting) {
     launch.setEnabled(gameStarting && enabledForPlayersSide());
-	  if (gameStarting) 
-		  setupLaunch();
+    if (gameStarting) 
+      setupLaunch();
   }
   
   protected void setupLaunch() {
@@ -714,7 +708,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
    * Update inventory according to change of side.
    */
   public void sideChanged(String oldSide, String newSide) {
-	  setupLaunch();
+    setupLaunch();
   }
 
   protected boolean enabledForPlayersSide() {
@@ -766,7 +760,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     Command c = new NullCommand();
     final TreePath[] tp = tree.getSelectionPaths();
     // set to not get duplicates
-    HashSet pieces = new HashSet();
+    HashSet<GamePiece> pieces = new HashSet<GamePiece>();
     for (int i = 0; i < tp.length; i++) {
       CounterNode node = (CounterNode) tp[i].getLastPathComponent();
       if (node.isLeaf()) {
@@ -780,8 +774,8 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
         }
       }
     }
-    for (Iterator i = pieces.iterator(); i.hasNext();) {
-      GamePiece piece = (GamePiece) i.next();
+
+    for (GamePiece piece : pieces) {
       GameModule.getGameModule().sendAndLog(piece.keyEvent(keyStroke));
     }
     return c;
@@ -793,7 +787,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
   private void refresh() {
     // Make an attempt to keep the same nodes expanded
-    Set expanded = new HashSet();
+    HashSet<String> expanded = new HashSet<String>();
     for (int i = 0, n = tree.getRowCount(); i < n; ++i) {
       if (tree.isExpanded(i)) {
         expanded.add(tree.getPathForRow(i).getLastPathComponent().toString());
@@ -801,8 +795,10 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     }
     buildTreeModel();
     tree.setModel(results);
+
     for (int i = 0; i < tree.getRowCount(); ++i) {
-      if (expanded.contains(tree.getPathForRow(i).getLastPathComponent().toString())) {
+      if (expanded.contains(
+            tree.getPathForRow(i).getLastPathComponent().toString())) {
         tree.expandRow(i);
       }
     }
@@ -867,9 +863,9 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 //    }
 //  }
 //  public static class SortStrategy extends StringEnum {
-//	  public String[] getValidValues(AutoConfigurable target) {
-//		  return new String[] {ALPHA, LENGTHALPHA, NUMERIC};
-//	  }
+//    public String[] getValidValues(AutoConfigurable target) {
+//      return new String[] {ALPHA, LENGTHALPHA, NUMERIC};
+//    }
 //  }
 
   /**
@@ -907,7 +903,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
     // piece can be null, so provide a alternate name
     public String getName() {
-    	if (piece != null)
+      if (piece != null)
         return piece.getName();
       return localName;
     }
@@ -1043,12 +1039,14 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   public class CounterNode implements Comparable {
     protected final String entry;
     protected final Counter counter;
-    protected List children;
+    protected ArrayList<CounterNode> children;
     protected int level;
 
     // protected int depth;
 
-    public CounterNode(final String entry, final Counter counter, final int level) { 
+    public CounterNode(final String entry,
+                       final Counter counter,
+                       final int level) { 
       this(entry, counter);
       this.level = level;
     }
@@ -1059,7 +1057,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       this.entry = entry;
       this.counter = counter;
       counter.setNode(this);
-      children = new ArrayList();
+      children = new ArrayList<CounterNode>();
     }
 
     public String toString() {
@@ -1079,7 +1077,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       if (getLevel() > 0)
         sep.append(mapSeparator);
       for (int i = 0; i < getLevel(); i++)
-    	  sep.append(groupSeparator);
+        sep.append(groupSeparator);
       return sep.toString();
     }
 
@@ -1093,8 +1091,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       else
         name.append(getEntry());
 
-      for (Iterator i = children.iterator(); i.hasNext();) {
-        CounterNode child = (CounterNode) i.next();
+      for (CounterNode child : children) {
         name.append(child.toResultString());
       }
       return name.toString();
@@ -1111,25 +1108,25 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     public void addChild(final CounterNode counterNode, boolean sort) {
       children.add(counterNode);
       if (sort)
-    	  sortChildren();
+        sortChildren();
     }
 
-    public void addChild(final int i, final CounterNode counterNode, boolean sort) {
+    public void addChild(final int i,
+                         final CounterNode counterNode, boolean sort) {
       children.add(i, counterNode);
       if (sort)
-    	  sortChildren();
+        sortChildren();
     }
+
     protected void sortChildren() {
-    	
-    	if (sortStrategy.equals(ALPHA)) 
-    		Collections.sort(children);
-    	else if (sortStrategy.equals(LENGTHALPHA))
-    		Collections.sort(children, new LengthAlpha());
-    	else if (sortStrategy.equals(NUMERIC))
-    		Collections.sort(children, new Numerical());
-    	else 
-    		Collections.sort(children);
-    	
+      if (sortStrategy.equals(ALPHA)) 
+        Collections.sort(children);
+      else if (sortStrategy.equals(LENGTHALPHA))
+        Collections.sort(children, new LengthAlpha());
+      else if (sortStrategy.equals(NUMERIC))
+        Collections.sort(children, new Numerical());
+      else 
+        Collections.sort(children);
     }
 
     public void removeChild(CounterNode child) {
@@ -1166,8 +1163,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
         value = counter.getValue();
 
       // inform children about update
-      for (Iterator i = children.iterator(); i.hasNext();) {
-        CounterNode child = (CounterNode) i.next();
+      for (CounterNode child : children) {
         value += child.updateValues();
       }
 
@@ -1185,192 +1181,197 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
         children.clear();
         return;
       }
-      for (Iterator i = children.iterator(); i.hasNext();) {
-        CounterNode child = (CounterNode) i.next();
+
+      for (CounterNode child : children) {
         child.cutLevel(cut - 1);
       }
     }
 
     public void cutLeaves() {
-      List toBeRemoved = new ArrayList();
-      for (Iterator i = children.iterator(); i.hasNext();) {
-        CounterNode child = (CounterNode) i.next();
-        if (child.isLeaf()) {
+     ArrayList<CounterNode> toBeRemoved = new ArrayList<CounterNode>();
+     for (CounterNode child : children) {
+        if (child.isLeaf())
           toBeRemoved.add(child);
-        }
         else
           child.cutLeaves();
       }
-      for (Iterator i = toBeRemoved.iterator(); i.hasNext();) {
-        CounterNode removeMe = (CounterNode) i.next();
-        children.remove(removeMe);
-      }
+      children.removeAll(toBeRemoved);
     }
 
     /**
      * Compare this CounterNode to another one based on the respective SortKeys.
      */
-	public int compareTo(Object node) {
-		CounterNode other = (CounterNode) node;
-		return this.toSortKey().compareTo(other.toSortKey());
-	}
+    public int compareTo(Object node) {
+      CounterNode other = (CounterNode) node;
+      return this.toSortKey().compareTo(other.toSortKey());
+    }
 
-	/**
-	 * Sort this CounterNode by the counters key, if no counter use the label. If no children, use the
-	 * name of the counterNode, probably could be $PropertyValue$ as well?
-	 * @return key as String
-	 */
-	protected String toSortKey() {
-		String sortKey = getEntry();
-		if (counter != null)
-			sortKey = counter.toSortKey();
-		if (!children.isEmpty())
-			sortKey = toString();
-		return sortKey;
-	}
+    /**
+     * Sort this CounterNode by the counters key, if no counter use the label.
+     * If no children, use the name of the counterNode, probably could be
+     * $PropertyValue$ as well?
+     *
+     * @return key as String
+     */
+    protected String toSortKey() {
+      String sortKey = getEntry();
+      if (counter != null)
+        sortKey = counter.toSortKey();
+      if (!children.isEmpty())
+        sortKey = toString();
+      return sortKey;
+    }
 
-	/**
-	 * Base class for comparing two CounterNodes. Contains methods for sanity checking of
-	 * arguments and comparing non-sane arguments.
-	 * @author spindler
-	 *
-	 */
-	protected class CompareCounterNodes {
-		/**
-		 * Sanity check for arguments.
-		 * @param arg0
-		 * @param arg1
-		 * @return true if arguments looks processable, false else
-		 */
-		protected boolean argsOK(Object arg0, Object arg1) {
-			return (arg0 != null && 
-					arg1 != null && 
-					arg0 instanceof CounterNode && 
-					arg1 instanceof CounterNode);
-		}
-		
-		protected int compareStrangeArgs(Object arg0, Object arg1) {
-			if (arg1.equals(arg1))
-				return 0;
+    /**
+     * Base class for comparing two CounterNodes. Contains methods for
+     * sanity checking of arguments and comparing non-sane arguments.
+     *
+     * @author spindler
+     */
+    protected class CompareCounterNodes {
+      /**
+       * Sanity check for arguments.
+       * @param arg0
+       * @param arg1
+       * @return true if arguments looks processable, false else
+       */
+      protected boolean argsOK(Object arg0, Object arg1) {
+        return (arg0 != null && 
+                arg1 != null && 
+                arg0 instanceof CounterNode && 
+                arg1 instanceof CounterNode);
+        }
+    
+      protected int compareStrangeArgs(Object arg0, Object arg1) {
+        if (arg1.equals(arg1))
+          return 0;
+  
+        if (arg0 == null)
+          return 1;
+        if (arg1 == null)
+          return -1;
+        if (arg0 instanceof CounterNode && !(arg1 instanceof CounterNode))
+          return -1;
+        if (arg1 instanceof CounterNode && !(arg0 instanceof CounterNode))
+          return 1;
+    
+        throw new RuntimeException("These CounterNodes are not strange!");
+      }
+    }
+  
+    /**
+     * Compare two CounterNodes based on the alphanumerical order of their
+     *  SortKeys.
+     *
+     * @author spindler
+     */
+    protected class Alpha extends CompareCounterNodes implements Comparator {
 
-			if (arg0 == null)
-				return 1;
-			if (arg1 == null)
-				return -1;
-			if (arg0 instanceof CounterNode && !(arg1 instanceof CounterNode))
-				return -1;
-			if (arg1 instanceof CounterNode && !(arg0 instanceof CounterNode))
-				return 1;
-		
-			throw new RuntimeException("These CounterNodes are not strange!");
-		}
-	}
-	
-	/**
-	 * Compare two CounterNodes based on the alphanumerical order of their SortKeys.
-	 * @author spindler
-	 *
-	 */
-	protected class Alpha extends CompareCounterNodes implements Comparator {
+      public int compare(Object arg0, Object arg1) {
+        if (!argsOK(arg0, arg1))
+          return compareStrangeArgs(arg0, arg1);
+        CounterNode left = (CounterNode) arg0;
+        CounterNode right = (CounterNode) arg1;
+  
+        return left.compareTo(right);
+      }  
+    }
 
-		public int compare(Object arg0, Object arg1) {
-			if (!argsOK(arg0, arg1))
-				return compareStrangeArgs(arg0, arg1);
-			CounterNode left = (CounterNode) arg0;
-			CounterNode right = (CounterNode) arg1;
+    /**
+     * Compare two CounterNodes based on the first integer value found in
+     * their SortKeys. If a CounterNodes SortKey does not contain an integer
+     * at all it is assigned the lowest available integer. 
+     *
+     * @author spindler
+     */
+    protected class Numerical extends CompareCounterNodes
+                              implements Comparator {
+      protected final String regex =  "\\d+"; //$NON-NLS-1$
+      protected final Pattern p = Pattern.compile(regex);
 
-			return left.compareTo(right);
-		}
-		
-	}
+      /**
+       * Get first integer in key, if any. Otherwise return lowest possible
+       * integer. 
+       *
+       * @param key is a string that may or may not contain an integer value
+       * @return the value of the integer found, min(Integer) otherwise
+       * 
+       */
+      protected int getInt(String key) {
+        int found = Integer.MIN_VALUE;
+        Matcher match = p.matcher(key);
 
-	/**
-	 * Compare two CounterNodes based on the first integer value found in their SortKeys.
-	 * If a CounterNodes SortKey does not contain an integer at all it is assigned the lowest
-	 * available integer. 
-	 * @author spindler
-	 *
-	 */
-	protected class Numerical extends CompareCounterNodes implements Comparator {
-
-		protected final String regex =  "\\d+"; //$NON-NLS-1$
-		protected final Pattern p = Pattern.compile(regex);
-
-		/**
-		 * Get first integer in key, if any. Otherwise return lowest possible integer. 
-		 * @param key is a string that may or may not contain an integer value
-		 * @return the value of the integer found, min(Integer) otherwise
-		 * 
-		 */
-		protected int getInt(String key) {
-			int found = Integer.MIN_VALUE;
-			Matcher match = p.matcher(key);
-
-			if (!match.find()) {
-				// return minimum value
-				return found;
-			}
-			int start = match.start();
-			found = Integer.parseInt(key.substring(start, match.end()));
+        if (!match.find()) {
+          // return minimum value
+          return found;
+        }
+        int start = match.start();
+        found = Integer.parseInt(key.substring(start, match.end()));
  
-			// Check for sign
-			if ( (start > 0) && (key.charAt(start-1) == '-') ) {
-				// negative integer found
-				// Is this a safe operation? What happens when MAX_VALUE * -1 < MIN_VALUE?
-				found *= -1;
-			}
-			return found;
-		}
-		/**
-		 * Compare two CounterNodes based on the first integer found in their SortKeys.
-		 */
-		public int compare(Object arg0, Object arg1) {
-			if (!argsOK(arg0, arg1))
-				return compareStrangeArgs(arg0, arg1);
-			CounterNode left = (CounterNode) arg0;
-			CounterNode right = (CounterNode) arg1;
+        // Check for sign
+        if ( (start > 0) && (key.charAt(start-1) == '-') ) {
+          // negative integer found
+          // FIXME: Is this a safe operation? What happens when
+          // MAX_VALUE * -1 < MIN_VALUE?
+          found *= -1;
+        }
+        return found;
+      }
 
- 			int l = getInt(left.toSortKey());
- 			int r = getInt(right.toSortKey());
+      /**
+       * Compare two CounterNodes based on the first integer found in their
+       * SortKeys.
+       */
+      public int compare(Object arg0, Object arg1) {
+        if (!argsOK(arg0, arg1))
+          return compareStrangeArgs(arg0, arg1);
+        CounterNode left = (CounterNode) arg0;
+        CounterNode right = (CounterNode) arg1;
+  
+         int l = getInt(left.toSortKey());
+         int r = getInt(right.toSortKey());
 
-			if (l < r)
-				return -1;
-			if (l > r)
-				return 1;
+        if (l < r)
+          return -1;
+        if (l > r)
+          return 1;
 
-			return 0;
-		}
-	}
-	/**
-	 * Compare two CounterNodes based on the length of their SortKeys and alphanumerical sorting.
-	 * @author spindler
-	 *
-	 */
-	protected class LengthAlpha extends CompareCounterNodes implements Comparator {
-		public int compare(Object arg0, Object arg1) {
-			if (!argsOK(arg0, arg1))
-				return compareStrangeArgs(arg0, arg1);
-			CounterNode left = (CounterNode) arg0;
-			CounterNode right = (CounterNode) arg1;
-			
-			int leftLength = left.toSortKey().length();
-			int rightLength = right.toSortKey().length();
-			if (leftLength < rightLength)
-				return -1;
-			if (leftLength > rightLength)
-				return 1;
-			// Native comparism
-			return (left.compareTo(right));
-		}
-	}
+        return 0;
+      }
+    }
 
+    /**
+     * Compare two CounterNodes based on the length of their SortKeys and
+     * alphanumerical sorting.
+     *
+     * @author spindler
+     */
+    protected class LengthAlpha extends CompareCounterNodes
+                                implements Comparator {
+      public int compare(Object arg0, Object arg1) {
+        if (!argsOK(arg0, arg1))
+          return compareStrangeArgs(arg0, arg1);
+        CounterNode left = (CounterNode) arg0;
+        CounterNode right = (CounterNode) arg1;
+        
+        int leftLength = left.toSortKey().length();
+        int rightLength = right.toSortKey().length();
+        if (leftLength < rightLength)
+          return -1;
+        if (leftLength > rightLength)
+          return 1;
+        // Native comparison
+        return (left.compareTo(right));
+      }
+    }
   }
 
   public class CounterInventory implements TreeModel {
     // Needed for TreeModel
-    protected Vector treeModelListeners = new Vector();
+    protected ArrayList<TreeModelListener> treeModelListeners =
+      new ArrayList<TreeModelListener>();
     // This contains shortcuts to the nodes of the tree
-    protected Map inventory;
+    protected HashMap<String,CounterNode> inventory;
     // The start of the tree
     protected CounterNode root;
     // Text view of the tree
@@ -1385,7 +1386,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     public CounterInventory(Counter c, ArrayList path, boolean sort) {
       this.root = new CounterNode(c.getName(), c);
       this.path = path;
-      this.inventory = new HashMap();
+      this.inventory = new HashMap<String,CounterNode>();
       this.sort = sort;
       changed = true;
     }
@@ -1404,13 +1405,15 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       for (int j = 0; path != null && j < path.length; j++) {
         hash.append(path[j]);
         if (inventory.get(hash.toString()) == null) {
-          newNode = new CounterNode(path[j], new Counter(path[j]), insertNode.getLevel() + 1);
+          newNode = new CounterNode(
+            path[j], new Counter(path[j]), insertNode.getLevel() + 1);
           inventory.put(hash.toString(), newNode);
           insertNode.addChild(newNode, sort);
         }
-        insertNode = (CounterNode) inventory.get(hash.toString());
+        insertNode = inventory.get(hash.toString());
       }
-      newNode = new CounterNode(counter.toString(), counter, insertNode.getLevel() + 1);
+      newNode = new CounterNode(
+        counter.toString(), counter, insertNode.getLevel() + 1);
       insertNode.addChild(newNode, sort);
       changed = true;
     }
@@ -1473,10 +1476,11 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       treeModelListeners.remove(l);
     }
 
-    public void fireNodesRemoved(Object[] path, int[] childIndices, Object[] children) {
+    public void fireNodesRemoved(Object[] path, int[] childIndices,
+                                 Object[] children) {
       TreeModelEvent e = new TreeModelEvent(this, path, childIndices, children);
-      for (Enumeration en = treeModelListeners.elements(); en.hasMoreElements();) {
-        ((TreeModelListener) en.nextElement()).treeNodesRemoved(e);
+      for (TreeModelListener l : treeModelListeners) {
+        l.treeNodesRemoved(e);
       }
     }
 
@@ -1495,5 +1499,4 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
     }
   }
-
 }

@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import VASSAL.build.AbstractConfigurable;
@@ -421,7 +420,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
    */
   public static class Cleanup implements GameComponent {
     private static Cleanup instance;
-    private HashSet toClean = new HashSet();
+    private HashSet<Board> toClean = new HashSet<Board>();
     private boolean gameStarted = false;
 
     public static void init() {
@@ -453,11 +452,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
     public void setup(boolean gameStarting) {
       if (gameStarted && !gameStarting) {
-        for (Iterator iterator = toClean.iterator(); iterator.hasNext();) {
-          Board board = (Board) iterator.next();
+        for (Board board : toClean) {
           board.cleanUp();
-          iterator.remove();
         }
+        toClean.clear();
       }
       gameStarted = gameStarting;
       System.gc();

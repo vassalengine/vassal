@@ -41,7 +41,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -825,8 +824,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     menuNames[0]  = menuName;
     descriptions[0] = "Property Sheet command";
     int j = 1;
-    for (Iterator<String> i = items.iterator(); i.hasNext(); ) {
-      menuNames[j] = i.next();
+    for (String s : items) {
+      menuNames[j] = s;
       descriptions[j] = "Property Sheet item " + j;
       j++;
     }
@@ -955,8 +954,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     private JTextField valField;
     private JTextField maxField;
     private TickLabel ticks;
-    private List actionListeners = new ArrayList();
-    private java.util.List documentListeners = new ArrayList();
+    private ArrayList<ActionListener> actionListeners =
+      new ArrayList<ActionListener>();
+    private ArrayList<DocumentListener> documentListeners =
+      new ArrayList<DocumentListener>();
 
     public TickPanel(String value, int type) {
       super(new GridBagLayout());
@@ -1089,8 +1090,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     public void fireActionEvent() {
-      for (java.util.Iterator it = actionListeners.iterator(); it.hasNext();) {
-        ((ActionListener) it.next()).actionPerformed(new ActionEvent(this, 0, null));
+      for (ActionListener l : actionListeners) {
+        l.actionPerformed(new ActionEvent(this, 0, null));
       }
     }
 
@@ -1104,8 +1105,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     public void fireDocumentEvent() {
-      for (java.util.Iterator it = documentListeners.iterator(); it.hasNext();) {
-        ((DocumentListener) it.next()).changedUpdate(null);
+      for (DocumentListener l : documentListeners) {
+        l.changedUpdate(null);
       }
     }
 
@@ -1143,7 +1144,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     private int numTicks = 0;
     private int maxTicks = 0;
     protected int panelType;
-    private java.util.List actionListeners = new ArrayList();
+    private ArrayList<ActionListener> actionListeners =
+      new ArrayList<ActionListener>();
 
     public int getNumTicks() {
       return numTicks;
@@ -1242,8 +1244,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
 
     public void fireActionEvent() {
-      for (java.util.Iterator it = actionListeners.iterator(); it.hasNext();) {
-        ((ActionListener) it.next()).actionPerformed(new ActionEvent(this, 0, null));
+      for (ActionListener l : actionListeners) {
+        l.actionPerformed(new ActionEvent(this, 0, null));
       }
     }
 
