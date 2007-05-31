@@ -31,7 +31,6 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JButton;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -56,7 +55,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   protected boolean dotsVisible = false;
   protected Color color;
   protected GridContainer container;
-  protected Map shapeCache = new HashMap();
+  protected HashMap<Integer,Area> shapeCache = new HashMap<Integer,Area>();
   protected SquareGridEditor gridEditor;
   protected String rangeOption = RANGE_METRIC;
 
@@ -317,7 +316,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   
 
   public Area getGridShape(Point center, int range) {
-    Area shape = (Area) shapeCache.get(new Integer(range));
+    Area shape = shapeCache.get(range);
     if (shape == null) {
       shape = getSingleSquareShape(0, 0);
       double dx = getDx();
@@ -332,7 +331,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
           shape.add(getSingleSquareShape(x1, y1));
         }
       }
-      shapeCache.put(new Integer(range), shape);
+      shapeCache.put(range, shape);
     }
     shape = new Area(AffineTransform.getTranslateInstance(center.x, center.y).createTransformedShape(shape));
     return shape;

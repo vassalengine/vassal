@@ -960,7 +960,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
 
       public void actionPerformed(ActionEvent evt) {
-        PropertiesWindow w = (PropertiesWindow) openWindows.get(target);
+        PropertiesWindow w = openWindows.get(target);
         if (w == null) {
           w = new PropertiesWindow(dialogOwner,false,target,helpWindow);
           w.addWindowListener(new WindowAdapter() {

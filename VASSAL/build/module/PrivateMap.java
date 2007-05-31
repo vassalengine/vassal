@@ -32,9 +32,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -253,9 +253,11 @@ public class PrivateMap extends Map {
   public static class View extends Map.View {
     private static final long serialVersionUID = 1L;
 
-    private Vector keyListeners = new Vector();
-    private Vector mouseListeners = new Vector();
-    private Vector mouseMotionListeners = new Vector();
+    private ArrayList<KeyListener> keyListeners = new ArrayList<KeyListener>();
+    private ArrayList<MouseListener> mouseListeners =
+      new ArrayList<MouseListener>();
+    private ArrayList<MouseMotionListener> mouseMotionListeners =
+      new ArrayList<MouseMotionListener>();
     private DropTarget dropTarget;
 
     public View(PrivateMap m) {
@@ -269,29 +271,29 @@ public class PrivateMap extends Map {
     }
 
     public synchronized void addKeyListener(KeyListener l) {
-      keyListeners.addElement(l);
+      keyListeners.add(l);
     }
 
     public synchronized void addMouseListener(MouseListener l) {
-      mouseListeners.addElement(l);
+      mouseListeners.add(l);
     }
 
     public synchronized void addMouseMotionListener(MouseMotionListener l) {
-      mouseMotionListeners.addElement(l);
+      mouseMotionListeners.add(l);
     }
 
     /**
      * Disable all keyboard and mouse listeners on this component
      */
     protected void disableListeners() {
-      for (Enumeration e = keyListeners.elements(); e.hasMoreElements();) {
-        removeKeyListener((KeyListener) e.nextElement());
+      for (KeyListener l : keyListeners) {
+        removeKeyListener(l);
       }
-      for (Enumeration e = mouseListeners.elements(); e.hasMoreElements();) {
-        removeMouseListener((MouseListener) e.nextElement());
+      for (MouseListener l : mouseListeners) {
+        removeMouseListener(l);
       }
-      for (Enumeration e = mouseMotionListeners.elements(); e.hasMoreElements();) {
-        removeMouseMotionListener((MouseMotionListener) e.nextElement());
+      for (MouseMotionListener l : mouseMotionListeners) {
+        removeMouseMotionListener(l);
       }
       super.setDropTarget(null);
     }
@@ -300,14 +302,14 @@ public class PrivateMap extends Map {
      * Enable all keyboard and mouse listeners on this component
      */
     protected void enableListeners() {
-      for (Enumeration e = keyListeners.elements(); e.hasMoreElements();) {
-        super.addKeyListener((KeyListener) e.nextElement());
+      for (KeyListener l : keyListeners) {
+        super.addKeyListener(l);
       }
-      for (Enumeration e = mouseListeners.elements(); e.hasMoreElements();) {
-        super.addMouseListener((MouseListener) e.nextElement());
+      for (MouseListener l : mouseListeners) {
+        super.addMouseListener(l);
       }
-      for (Enumeration e = mouseMotionListeners.elements(); e.hasMoreElements();) {
-        super.addMouseMotionListener((MouseMotionListener) e.nextElement());
+      for (MouseMotionListener l : mouseMotionListeners) {
+        super.addMouseMotionListener(l);
       }
       super.setDropTarget(dropTarget);
     }

@@ -157,7 +157,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   protected Rectangle bounds;
   protected boolean mouseInView = true;
-  protected List displayablePieces = null;
+  protected ArrayList<GamePiece> displayablePieces = null;
 
   public CounterDetailViewer() {
   }
@@ -206,9 +206,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
-  // Required for backward compatibility
-  protected void drawGraphics(Graphics g, Point pt, JComponent comp, PieceIterator pi) {
-    ArrayList a = new ArrayList();
+  /** Required for backward compatibility */
+  protected void drawGraphics(Graphics g, Point pt, JComponent comp,
+                              PieceIterator pi) {
+// FIXME: can we deprecate this?
+    ArrayList<GamePiece> a = new ArrayList<GamePiece>();
     while (pi.hasMoreElements()) {
       a.add(pi.nextPiece());
     }
@@ -282,9 +284,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     return textVisible && counterReportFormat.getFormat().length() > 0;
   }
 
-  // Required for backward compatibility
-  protected void drawText(Graphics g, Point pt, JComponent comp, PieceIterator pi) {
-    ArrayList a = new ArrayList();
+  /** Required for backward compatibility */
+  protected void drawText(Graphics g, Point pt,
+                          JComponent comp, PieceIterator pi) {
+// FIXME: can we deprecate this?
+    ArrayList<GamePiece> a = new ArrayList<GamePiece>();
     while (pi.hasMoreElements()) {
       a.add(pi.nextPiece());
     }
@@ -303,7 +307,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     int y = bounds.y - 5;
     String offboard = Resources.getString("Map.offboard");  //$NON-NLS-1$
 
-    if (displayablePieces.size() == 0) {
+    if (displayablePieces.isEmpty()) {
       Point mapPt = map.mapCoordinates(currentMousePosition.getPoint());
       Point snapPt = map.snapTo(mapPt);
       String locationName = map.localizedLocationName(snapPt);
@@ -319,7 +323,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       x -= g.getFontMetrics().stringWidth(report) / 2;
     }
     else {
-      GamePiece topPiece = (GamePiece) displayablePieces.get(0);
+      GamePiece topPiece = displayablePieces.get(0);
       String locationName = (String) topPiece.getLocalizedProperty(BasicPiece.LOCATION_NAME);
       emptyHexReportFormat.setProperty(BasicPiece.LOCATION_NAME, locationName.equals(offboard) ? "" : locationName);
       report = summaryReportFormat.getLocalizedText(new SumProperties(displayablePieces));
@@ -331,8 +335,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
-  // Required for backward compatibility
+  /** Required for backward compatibility */
   protected void drawLabel(Graphics g, Point pt, String label) {
+// FIXME: can we deprecate this?
     drawLabel(g, pt, label, Labeler.RIGHT, Labeler.BOTTOM);
   }
 
@@ -401,15 +406,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     return map.getZoom();
   }
 
-  /*
+  /**
    * Build an ArrayList of pieces to be displayed in order from bottom up, based
    * on selection criteria setup in config.
    */
-  protected List getDisplayablePieces() {
-
+  protected ArrayList<GamePiece> getDisplayablePieces() {
     GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
 
-    Visitor visitor = new Visitor(new Filter(), map, map.mapCoordinates(currentMousePosition.getPoint()));
+    Visitor visitor = new Visitor(new Filter(), map,
+      map.mapCoordinates(currentMousePosition.getPoint()));
     DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
 
     /*
@@ -423,7 +428,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     return visitor.getPieces();
   }
 
-  /*
+  /**
    * Utility class to select the pieces we wish to view.
    */
   protected class Filter implements PieceFilter {
@@ -515,7 +520,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    * pieces we are interested in.
    */
   protected static class Visitor extends PieceFinder.Movable {
-    protected ArrayList pieces;
+    protected ArrayList<GamePiece> pieces;
     protected Filter filter = null;
     protected CompoundPieceCollection collection;
     protected int lastLayer = -1;
@@ -527,14 +532,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (map.getPieceCollection() instanceof CompoundPieceCollection) {
         collection = (CompoundPieceCollection) map.getPieceCollection();
       }
-      pieces = new ArrayList();
+      pieces = new ArrayList<GamePiece>();
       this.filter = filter;
     }
 
     public Object visitDeck(Deck d) {
       if (foundPieceAt == null) {
         GamePiece top = d.topPiece();
-        if (top != null && !Boolean.TRUE.equals(top.getProperty(Properties.OBSCURED_TO_ME))) {
+        if (top != null &&
+            !Boolean.TRUE.equals(top.getProperty(Properties.OBSCURED_TO_ME))) {
           Rectangle r = (Rectangle) d.getShape();
           r.x += d.getPosition().x;
           r.y += d.getPosition().y;
@@ -547,7 +553,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
 
     public Object visitStack(Stack s) {
-      boolean addContents = foundPieceAt == null ? super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
+      boolean addContents = foundPieceAt == null ?
+        super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
       if (addContents) {
         for (Enumeration e = s.getPieces(); e.hasMoreElements();) {
           apply((GamePiece) e.nextElement());
@@ -557,7 +564,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
 
     public Object visitDefault(GamePiece p) {
-      if (foundPieceAt == null ? super.visitDefault(p) != null : foundPieceAt.equals(p.getPosition())) {
+      if (foundPieceAt == null ? super.visitDefault(p) != null
+                               : foundPieceAt.equals(p.getPosition())) {
         apply(p);
       }
       return null;
@@ -568,7 +576,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
      * passed pieces from the top down.
      */
     protected void apply(GamePiece p) {
-
       int layer = 0;
       String layerName = "";
 
@@ -576,7 +583,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       layerName = collection.getLayerNameForPiece(p);
 
       if (filter == null || filter.accept(p, layer, layerName)) {
-
         if (layer != lastLayer) {
           insertPos = 0;
           lastLayer = layer;
@@ -590,10 +596,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
     }
 
-    public List getPieces() {
+    public ArrayList<GamePiece> getPieces() {
       return pieces;
     }
-
   }
 
   public void mouseMoved(MouseEvent e) {

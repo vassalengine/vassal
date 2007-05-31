@@ -176,14 +176,17 @@ public class DrawPile extends SetupStack {
       GameComponent g;
       Map m;
 
-      ArrayList l = new ArrayList();
+      ArrayList<String> l = new ArrayList<String>();
       l.add(NONE);
-      for (Enumeration e = GameModule.getGameModule().getGameState().getGameComponentsEnum(); e.hasMoreElements();) {
+      for (Enumeration e = GameModule.getGameModule()
+                                     .getGameState().getGameComponentsEnum();
+           e.hasMoreElements();) {
         g = (GameComponent) e.nextElement();
         if (g != null && g instanceof Map) {
           m = (Map) g;
           if (m != null) {
-            for (Enumeration e1 = m.getComponents(DrawPile.class); e1.hasMoreElements();) {
+            for (Enumeration e1 = m.getComponents(DrawPile.class);
+                 e1.hasMoreElements();) {
               dp = (DrawPile) e1.nextElement();
               if (dp.getConfigureName() != null)
                 l.add(dp.getConfigureName());
@@ -191,7 +194,7 @@ public class DrawPile extends SetupStack {
           }
         }
       }
-      values = (String[]) l.toArray(new String[l.size()]);
+      values = l.toArray(new String[l.size()]);
       return values;
     }
   }

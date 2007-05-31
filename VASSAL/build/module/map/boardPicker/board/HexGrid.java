@@ -32,7 +32,6 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JButton;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -64,7 +63,7 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
   protected boolean cornersLegal = false;
   protected Color color = Color.black;
   protected boolean sideways = false;
-  protected Map shapeCache = new HashMap();
+  protected HashMap<Integer,Area> shapeCache = new HashMap<Integer,Area>();
   protected HexGridEditor gridEditor;
 
   public static final String X0 = "x0";
@@ -459,7 +458,7 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
 
 
   public Area getGridShape(Point center, int range) {
-    Area shape = (Area) shapeCache.get(new Integer(range));
+    Area shape = shapeCache.get(range);
     if (shape == null) {
       //Choose a starting point
       Point origin = new Point(0, 0);
@@ -488,8 +487,9 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
       }
 
       rotateIfSideways(origin);
-      shape.transform(AffineTransform.getTranslateInstance(0 - origin.x, 0 - origin.y));
-      shapeCache.put(new Integer(range), shape);
+      shape.transform(
+        AffineTransform.getTranslateInstance(0 - origin.x, 0 - origin.y));
+      shapeCache.put(range, shape);
     }
     shape = new Area(AffineTransform.getTranslateInstance(center.x, center.y).createTransformedShape(shape));
     return shape;

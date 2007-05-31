@@ -22,20 +22,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 
 
 public class KeyBuffer {
   private static KeyBuffer theBuffer;
-  private List pieces;
+  private ArrayList<GamePiece> pieces;
   private BoundsTracker bounds;
   private Comparator pieceSorter = new PieceSorter();
 
   private KeyBuffer() {
-    pieces = new ArrayList();
+    pieces = new ArrayList<GamePiece>();
     bounds = new BoundsTracker();
   }
 
@@ -52,16 +50,18 @@ public class KeyBuffer {
   }
 
   public void add(GamePiece p) {
-    if (p != null
-        && !pieces.contains(p)) {
+// FIXME: should we use a HashSet or LinkedHashSet instead to make contains()
+// checks faster? Is insertion order important?
+    if (p != null && !pieces.contains(p)) {
       pieces.add(p);
       p.setProperty(Properties.SELECTED, Boolean.TRUE);
     }
   }
 
   public void clear() {
-    while (pieces.size() > 0) {
-      remove((GamePiece) pieces.get(pieces.size() - 1));
+// FIXME: Is this inefficient? Better to call clear()?
+    while (!pieces.isEmpty()) {
+      remove(pieces.get(pieces.size() - 1));
     }
   }
 
@@ -87,7 +87,7 @@ public class KeyBuffer {
   }
 
   public boolean isEmpty() {
-    return pieces.size() == 0;
+    return pieces.isEmpty();
   }
 
   public Command keyCommand(javax.swing.KeyStroke stroke) {
@@ -98,12 +98,8 @@ public class KeyBuffer {
 
     // Copy contents into new list, because contents may change
     // as a result of key commands
-    List targets = new ArrayList();
-    for (Iterator it = pieces.iterator(); it.hasNext();) {
-      targets.add(it.next());
-    }
-    for (Iterator it = targets.iterator(); it.hasNext();) {
-      GamePiece p = (GamePiece) it.next();
+    ArrayList<GamePiece> targets = new ArrayList<GamePiece>(pieces);
+    for (GamePiece p : targets) {
       bounds.addPiece(p);
       p.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p)); // save state prior to command
       Command c2 = p.keyEvent(stroke);

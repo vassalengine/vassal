@@ -220,11 +220,11 @@ public class StringArrayConfigurer extends Configurer {
       return EMPTY;
     }
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    java.util.List l = new ArrayList();
+    ArrayList<String> l = new ArrayList<String>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
-    return (String[]) l.toArray(new String[l.size()]);
+    return l.toArray(new String[l.size()]);
   }
 
   protected void updateModel() {

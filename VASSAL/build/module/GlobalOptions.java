@@ -30,13 +30,9 @@ import java.awt.Container;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Properties;
-
 import javax.swing.JOptionPane;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -88,7 +84,8 @@ public class GlobalOptions extends AbstractConfigurable {
   private String markMoved = NEVER;
 
   private HashMap<String,Object> properties = new HashMap<String,Object>();
-  private java.util.Map optionConfigurers = new LinkedHashMap();
+  private java.util.Map<String,Configurer> optionConfigurers =
+    new LinkedHashMap<String,Configurer>();
   private Properties optionInitialValues = new Properties();
 
   private FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -160,11 +157,17 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public String[] getAttributeNames() {
-    List attributes = new ArrayList(Arrays.asList(new String[]{NON_OWNER_UNMASKABLE, PROMPT_STRING, CENTER_ON_MOVE, AUTO_REPORT, PLAYER_ID_FORMAT}));
+    ArrayList<String> attributes = new ArrayList<String>(Arrays.asList(
+      new String[]{ NON_OWNER_UNMASKABLE,
+                    PROMPT_STRING,
+                    CENTER_ON_MOVE,
+                    AUTO_REPORT,
+                    PLAYER_ID_FORMAT }));
+
     for (String key : properties.keySet()) {
       attributes.add(key);
     }
-    return (String[]) attributes.toArray(new String[attributes.size()]);
+    return attributes.toArray(new String[attributes.size()]);
   }
 
   public Class[] getAttributeTypes() {
@@ -242,11 +245,10 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public Element getBuildElement(Document doc) {
     Element e = super.getBuildElement(doc);
-    for (Iterator it = optionConfigurers.values().iterator(); it.hasNext();) {
-      Configurer configurer = (Configurer) it.next();
+    for (Configurer c : optionConfigurers.values()) {
       Element option = doc.createElement("option"); //$NON-NLS-1$
-      option.setAttribute("name",configurer.getKey()); //$NON-NLS-1$
-      option.appendChild(doc.createTextNode(configurer.getValueString()));
+      option.setAttribute("name", c.getKey()); //$NON-NLS-1$
+      option.appendChild(doc.createTextNode(c.getValueString()));
       e.appendChild(option);
     }
     return e;
@@ -255,8 +257,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public Configurer getConfigurer() {
     if (config == null) {
       Configurer defaultConfig = super.getConfigurer();
-      for (Iterator it = optionConfigurers.values().iterator(); it.hasNext();) {
-        Configurer c = (Configurer) it.next();
+      for (Configurer c : optionConfigurers.values()) {
         ((Container)defaultConfig.getControls()).add(c.getControls());
       }
     }
@@ -342,7 +343,7 @@ public class GlobalOptions extends AbstractConfigurable {
       playerIdFormat.setFormat((String) value);
     }
     else if (optionConfigurers.containsKey(key)) {
-      ((Configurer)optionConfigurers.get(key)).setValue(value);
+      optionConfigurers.get(key).setValue(value);
     }
     else {
       properties.put(key, value);

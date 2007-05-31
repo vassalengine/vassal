@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2006 Rodney Kinney
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available 
+ * at http://www.opensource.org.
+ */
 package VASSAL.build.module;
 
 import java.awt.Component;
@@ -10,8 +28,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -32,12 +48,16 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ToolBarComponent;
 
 /**
- * Takes buttons from the toolbar of a Map or the main module and places them into a popup menu
+ * Takes buttons from the toolbar of a Map or the main module and places
+ * them into a popup menu
  * 
  * @author rkinney
  * 
  */
-public class ToolbarMenu extends AbstractConfigurable implements ContainerListener, PropertyChangeListener, GameComponent {
+public class ToolbarMenu extends AbstractConfigurable
+                         implements ContainerListener,
+                                    PropertyChangeListener,
+                                    GameComponent {
   public static final String BUTTON_TEXT = "text"; //$NON-NLS-1$
   public static final String BUTTON_ICON = "icon"; //$NON-NLS-1$
   public static final String BUTTON_HOTKEY = "hotkey"; //$NON-NLS-1$
@@ -45,8 +65,9 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   public static final String MENU_ITEMS = "menuItems"; //$NON-NLS-1$
   /** Buttons where this property contains a JPopupMenu will turn into sub-menus */
   public static final String MENU_PROPERTY = "ToolbarMenu.popup"; //$NON-NLS-1$
-  protected List menuItems = new ArrayList();
-  protected java.util.Map buttonsToMenuMap = new HashMap();
+  protected ArrayList<String> menuItems = new ArrayList<String>();
+  protected HashMap<AbstractButton,JMenuItem> buttonsToMenuMap =
+    new HashMap<AbstractButton,JMenuItem>();
   protected LaunchButton launch;
   protected JToolBar toolbar;
   protected JPopupMenu menu;
@@ -83,7 +104,8 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
 
   public String getAttributeValueString(String key) {
     if (MENU_ITEMS.equals(key)) {
-      return StringArrayConfigurer.arrayToString((String[]) menuItems.toArray(new String[menuItems.size()]));
+      return StringArrayConfigurer.arrayToString(
+        menuItems.toArray(new String[menuItems.size()]));
     }
     else {
       return launch.getAttributeValueString(key);
@@ -95,7 +117,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
       if (value instanceof String) {
         value = StringArrayConfigurer.stringToArray((String) value);
       }
-      menuItems = Arrays.asList((String[]) value);
+      menuItems = new ArrayList<String>(Arrays.asList((String[]) value));
       if (toolbar != null) {
         scheduleBuildMenu();
       }
@@ -136,8 +158,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
   }
 
   protected void buildMenu() {
-    for (Iterator iter = buttonsToMenuMap.keySet().iterator(); iter.hasNext();) {
-      AbstractButton b = (AbstractButton) iter.next();
+    for (AbstractButton b : buttonsToMenuMap.keySet()) {
       b.setVisible(true);
       b.removePropertyChangeListener(this);
     }
@@ -156,8 +177,8 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
         }
       }
     }
-    for (Iterator it = menuItems.iterator(); it.hasNext();) {
-      String item = (String) it.next();
+    
+    for (String item : menuItems) {
       final JButton b = (JButton) m.get(item);
       if (b != null) {
         Object property = b.getClientProperty(MENU_PROPERTY);
@@ -220,7 +241,7 @@ public class ToolbarMenu extends AbstractConfigurable implements ContainerListen
 
   public void propertyChange(PropertyChangeEvent evt) {
     JButton b = (JButton) evt.getSource();
-    JMenuItem mi = (JMenuItem) buttonsToMenuMap.get(b);
+    JMenuItem mi = buttonsToMenuMap.get(b);
     if (mi != null) {
       if (AbstractButton.TEXT_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
         scheduleBuildMenu();

@@ -28,14 +28,13 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class ColoredBorder implements Highlighter {
   protected Color c;
   protected int thickness;
   
   // Additional Highlighters
-  protected ArrayList highlighters = new ArrayList();
+  protected ArrayList<Highlighter> highlighters = new ArrayList<Highlighter>();
 
   public ColoredBorder() {
     this(Color.black, 3);
@@ -81,8 +80,7 @@ public class ColoredBorder implements Highlighter {
     }
     
     // Draw any additional highlighters
-    for (Iterator i = highlighters.iterator();i.hasNext();) {
-      Highlighter h = (Highlighter) i.next();
+    for (Highlighter h : highlighters) {
       h.draw(p, g, x, y, obs, zoom);
     }
     
@@ -102,8 +100,8 @@ public class ColoredBorder implements Highlighter {
     Rectangle r = p.getShape().getBounds();
     r.translate(-thickness, -thickness);
     r.setSize(r.width + 2 * thickness, r.height + 2 * thickness);
-    for (Iterator it = highlighters.iterator(); it.hasNext();) {
-      Highlighter h = (Highlighter) it.next();
+
+    for (Highlighter h : highlighters) {
       r = r.union(h.boundingBox(p));
     }
     return r;

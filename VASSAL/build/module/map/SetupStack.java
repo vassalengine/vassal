@@ -285,7 +285,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public String[] getValidValues(AutoConfigurable target) {
       String[] values;
       if (target instanceof SetupStack) {
-        ArrayList l = new ArrayList();
+        ArrayList<String> l = new ArrayList<String>();
         l.add(ANY);
         Map m = ((SetupStack) target).map;
         if (m != null) {
@@ -294,10 +294,11 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         else {
           for (Iterator it = Map.getAllMaps(); it.hasNext();) {
             m = (Map) it.next();
-            l.addAll(Arrays.asList(m.getBoardPicker().getAllowableBoardNames()));
+            l.addAll(
+              Arrays.asList(m.getBoardPicker().getAllowableBoardNames()));
           }
         }
-        values = (String[]) l.toArray(new String[l.size()]);
+        values = l.toArray(new String[l.size()]);
       }
       else {
         values = new String[]{ANY};

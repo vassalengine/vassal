@@ -19,8 +19,6 @@
 package VASSAL.tools;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 
@@ -59,22 +57,26 @@ public class ComponentPathBuilder {
   }
 
   /**
-   * Return a list of {@link Configurable} components specified by the given identifier
+   * Return a list of {@link Configurable} components specified by the
+   * given identifier
+   *
    * @param id
    * @return
    * @throws PathFormatException if no such component exists
    */
   public Configurable[] getPath(String id) throws PathFormatException {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(id, '/');
-    List list = new ArrayList();
+    ArrayList<Configurable> list = new ArrayList<Configurable>();
     if (id.length() > 0) {
+      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(id, '/');
       addToPath(GameModule.getGameModule(), st, list);
     }
-    Configurable[] path = (Configurable[]) list.toArray(new Configurable[list.size()]);
-    return path;
+    return list.toArray(new Configurable[list.size()]);
   }
 
-  private void addToPath(Configurable parent, SequenceEncoder.Decoder st, List path) throws PathFormatException {
+  private void addToPath(Configurable parent,
+                         SequenceEncoder.Decoder st,
+                         ArrayList<Configurable> path)
+                         throws PathFormatException {
     if (st.hasMoreTokens()) {
       String id = st.nextToken();
       String name = null;
@@ -85,7 +87,7 @@ public class ComponentPathBuilder {
       }
       Configurable[] children = parent.getConfigureComponents();
       Configurable match = null;
-      List partialMatches = new ArrayList();
+      ArrayList<Configurable> partialMatches = new ArrayList<Configurable>();
       int i = -1;
       while (++i < children.length) {
         if (className.equals(children[i].getClass().getName())) {
@@ -101,18 +103,18 @@ public class ComponentPathBuilder {
         path.add(match);
         addToPath(match, st, path);
       }
-      else if (partialMatches.size() > 0) {
+      else if (!partialMatches.isEmpty()) {
         if (!st.hasMoreTokens()) {
            path.add(partialMatches.get(0));
         }
         else {
-          List subPath = null;
-          for (Iterator it = partialMatches.iterator(); it.hasNext();) {
-            Configurable candidate = (Configurable) it.next();
-            List l = new ArrayList();
+          ArrayList<Configurable> subPath = null;
+          for (Configurable candidate : partialMatches) {
+            ArrayList<Configurable> l = new ArrayList<Configurable>();
             try {
               addToPath(candidate, st.copy(), l);
               subPath = l;
+// FIXME: adding to front of an ArrayList! Should we use LinkedList instead?
               subPath.add(0, candidate);
               break;
             }
@@ -134,12 +136,15 @@ public class ComponentPathBuilder {
     }
   }
 
-  private void findFailed(String className, String name, Configurable parent) throws PathFormatException {
+  private void findFailed(String className, String name, Configurable parent)
+    throws PathFormatException {
+
     String msgName = name;
     if (msgName == null) {
       msgName = className.substring(className.lastIndexOf('.') + 1);
     }
-    throw new PathFormatException("Could not find " + msgName + " in " + VASSAL.configure.ConfigureTree.getConfigureName(parent.getClass()));
+    throw new PathFormatException("Could not find " + msgName + " in " +
+      VASSAL.configure.ConfigureTree.getConfigureName(parent.getClass()));
   }
 
   public static class PathFormatException extends Exception {

@@ -2,7 +2,6 @@ package VASSAL.build.module.properties;
 
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import javax.swing.JToolBar;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -20,7 +19,8 @@ import VASSAL.tools.ToolBarComponent;
 public class GlobalProperties extends AbstractConfigurable implements MutablePropertiesContainer, ToolBarComponent, PropertySource {
   private TemporaryToolBar tempToolbar = new TemporaryToolBar();
   private PropertySource propertySource;
-  private HashMap initialValues = new HashMap();
+  private HashMap<String,MutableProperty> initialValues =
+    new HashMap<String,MutableProperty>();
   private MutablePropertiesContainer parent;
 
   public String[] getAttributeDescriptions() {
@@ -64,9 +64,8 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
 
   public void addTo(Buildable parent) {
     this.parent = (MutablePropertiesContainer) parent;
-    for (Iterator it = initialValues.keySet().iterator(); it.hasNext();) {
-      String key = (String) it.next();
-      MutableProperty p = (MutableProperty) initialValues.get(key);
+    for (String key : initialValues.keySet()) {
+      MutableProperty p = initialValues.get(key);
       this.parent.addMutableProperty(key, p);
     }
     tempToolbar.setDelegate((ToolBarComponent) parent);
@@ -84,7 +83,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
 
   public MutableProperty removeMutableProperty(String key) {
     if (parent == null) {
-      return (MutableProperty) initialValues.remove(key);
+      return initialValues.remove(key);
     }
     else {
       return parent.removeMutableProperty(key);

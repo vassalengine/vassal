@@ -20,7 +20,6 @@ package VASSAL.build.module.map;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Properties;
@@ -84,9 +83,9 @@ public abstract class CompoundPieceCollection implements PieceCollection {
   }
   
   protected GamePiece[] getPieces(boolean includeDisabled) {
-    List l = new ArrayList();
+    ArrayList<GamePiece> l = new ArrayList<GamePiece>();
     int layer = bottomLayer;
-    for (int i=0;i<layers.length;++i) {
+    for (int i = 0; i < layers.length; ++i) {
       if (includeDisabled || (!includeDisabled && enabled[layer])) {
         l.addAll(Arrays.asList(layers[layer].getPieces()));
       }
@@ -95,7 +94,7 @@ public abstract class CompoundPieceCollection implements PieceCollection {
         layer = 0;
       }
     }
-    return (GamePiece[]) l.toArray(new GamePiece[l.size()]);
+    return l.toArray(new GamePiece[l.size()]);
   }
 
   public GamePiece[] getAllPieces() {

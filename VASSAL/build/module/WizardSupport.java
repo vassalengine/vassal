@@ -471,6 +471,8 @@ public class WizardSupport {
       });
       setupSelection.setMaximumSize(new Dimension(setupSelection.getMaximumSize().width, setupSelection.getPreferredSize().height));
       setupSelection.setRenderer(new DefaultListCellRenderer() {
+        private static final long serialVersionUID = 1L;
+
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
           JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
           if (value instanceof PredefinedSetup) {
@@ -618,6 +620,8 @@ public class WizardSupport {
    * 
    */
   public static class SetupStepPage extends WizardPage {
+    private static final long serialVersionUID = 1L;
+
     public SetupStepPage(GameSetupStep step) {
       super(step.getStepTitle());
       add(step.getControls());

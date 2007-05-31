@@ -25,7 +25,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -93,17 +92,24 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
   /**
    *
    * @param target
-   * @param global If true, then apply the KeyCommands globally, i.e. to all selected pieces
+   * @param global If true, then apply the KeyCommands globally,
+   * i.e. to all selected pieces
    * @return
    */
   public static JPopupMenu createPopup(GamePiece target, boolean global) {
     JPopupMenu popup = new JPopupMenu();
     KeyCommand c[] = (KeyCommand[]) target.getProperty(Properties.KEY_COMMANDS);
     if (c != null) {
-      List commands = new ArrayList();
-      List strokes = new ArrayList();
-      HashMap subMenus = new HashMap(); // Maps instances of KeyCommandSubMenu to corresponding JMenu
-      HashMap commandNames = new HashMap(); // Maps name to a list of commands with that name
+      ArrayList<JMenuItem> commands = new ArrayList<JMenuItem>();
+      ArrayList<KeyStroke> strokes = new ArrayList<KeyStroke>();
+
+      // Maps instances of KeyCommandSubMenu to corresponding JMenu
+      HashMap<KeyCommandSubMenu,JMenu> subMenus =
+        new HashMap<KeyCommandSubMenu,JMenu>();
+      // Maps name to a list of commands with that name
+      HashMap<String,ArrayList<JMenuItem>> commandNames =
+        new HashMap<String,ArrayList<JMenuItem>>();
+
       for (int i = 0; i < c.length; ++i) {
         c[i].setGlobal(global);
         KeyStroke stroke = c[i].getKeyStroke();
@@ -111,17 +117,18 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         if (c[i] instanceof KeyCommandSubMenu) {
           JMenu subMenu = new JMenu(c[i].getLocalizedMenuText());
           subMenu.setFont(POPUP_MENU_FONT);
-          subMenus.put(c[i], subMenu);
+          subMenus.put((KeyCommandSubMenu) c[i], subMenu);
           item = subMenu;
           commands.add(item);
           strokes.add(KeyStroke.getKeyStroke('\0'));
         }
         else {
           if (strokes.contains(stroke)) {
-            JMenuItem command = (JMenuItem) commands.get(strokes.indexOf(stroke));
-            String commandName = (String) command.getAction().getValue(Action.NAME);
-            if (commandName == null
-                || commandName.length() < c[i].getName().length()) {
+            JMenuItem command = commands.get(strokes.indexOf(stroke));
+            String commandName =
+              (String) command.getAction().getValue(Action.NAME);
+            if (commandName == null ||
+                commandName.length() < c[i].getName().length()) {
               item = new JMenuItem(c[i].getLocalizedMenuText());
               item.addActionListener(c[i]);
               item.setFont(POPUP_MENU_FONT);
@@ -138,26 +145,25 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             commands.add(item);
           }
         }
-        if (c[i].getName() != null
-            && c[i].getName().length() > 0
-            && item != null) {
-          List l = (List) commandNames.get(c[i].getName());
+        if (c[i].getName() != null &&
+            c[i].getName().length() > 0 &&
+            item != null) {
+          ArrayList<JMenuItem> l = commandNames.get(c[i].getName());
           if (l == null) {
-            l = new ArrayList();
+            l = new ArrayList<JMenuItem>();
             commandNames.put(c[i].getName(), l);
           }
           l.add(item);
         }
       }
+
       // Move commands from main menu into submenus
-      for (Iterator it = subMenus.keySet().iterator(); it.hasNext();) {
-        KeyCommandSubMenu menuCommand = (KeyCommandSubMenu) it.next();
-        JMenu subMenu = (JMenu) subMenus.get(menuCommand);
+      for (KeyCommandSubMenu menuCommand : subMenus.keySet()) {      
+        JMenu subMenu = subMenus.get(menuCommand);
         for (Iterator it2 = menuCommand.getCommands(); it2.hasNext();) {
-          List matchingCommands = (List) commandNames.get(it2.next());
+          ArrayList<JMenuItem> matchingCommands = commandNames.get(it2.next());
           if (matchingCommands != null) {
-            for (Iterator it3 = matchingCommands.iterator(); it3.hasNext();) {
-              JMenuItem item = (JMenuItem) it3.next();
+            for (JMenuItem item : matchingCommands) {
               subMenu.add(item);
               commands.remove(item);
             }
@@ -175,10 +181,9 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
           }
         }
       }
-      
-      for (Iterator it = commands.iterator();
-           it.hasNext();) {
-        popup.add((JMenuItem) it.next());
+
+      for (JMenuItem item : commands) {      
+        popup.add(item);
       }
     }
     return popup;

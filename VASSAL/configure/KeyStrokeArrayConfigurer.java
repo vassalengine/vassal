@@ -23,8 +23,6 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -36,7 +34,8 @@ import VASSAL.tools.SequenceEncoder;
  * Configures an array of keystrokes
  */
 public class KeyStrokeArrayConfigurer extends Configurer {
-  private List configs = new ArrayList();
+  private ArrayList<HotKeyConfigurer> configs =
+    new ArrayList<HotKeyConfigurer>();
   private Box controls;
 
   public KeyStrokeArrayConfigurer(String key, String name) {
@@ -97,42 +96,43 @@ public class KeyStrokeArrayConfigurer extends Configurer {
       if (keyStrokes == null) {
         keyStrokes = new KeyStroke[0];
       }
+
       for (int i = 0; i < keyStrokes.length; ++i) {
         if (i > configs.size()) {
           addKey(keyStrokes[i]);
         }
         else {
-          ((HotKeyConfigurer) configs.get(i)).setValue(keyStrokes[i]);
+          configs.get(i).setValue(keyStrokes[i]);
         }
       }
+
       for (int i = keyStrokes.length; i < configs.size(); ++i) {
-        ((HotKeyConfigurer) configs.get(i)).setValue(null);
+        configs.get(i).setValue(null);
       }
     }
   }
 
   public KeyStroke[] getKeyStrokes() {
-    List l = new ArrayList();
-    for (Iterator it = configs.iterator(); it.hasNext();) {
-      HotKeyConfigurer hotKeyConfigurer = (HotKeyConfigurer) it.next();
-      Object value = hotKeyConfigurer.getValue();
+    ArrayList<KeyStroke> l = new ArrayList<KeyStroke>();
+    for (HotKeyConfigurer hotKeyConfigurer : configs) {
+      KeyStroke value = (KeyStroke) hotKeyConfigurer.getValue();
       if (value != null) {
         l.add(value);
       }
     }
-    return (KeyStroke[]) l.toArray(new KeyStroke[l.size()]);
+    return l.toArray(new KeyStroke[l.size()]);
   }
 
   public static KeyStroke[] decode(String s) {
     if (s == null) {
       return null;
     }
-    List l = new ArrayList();
+    ArrayList<KeyStroke> l = new ArrayList<KeyStroke>();
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
     while (st.hasMoreTokens()) {
       l.add(HotKeyConfigurer.decode(st.nextToken()));
     }
-    return (KeyStroke[]) l.toArray(new KeyStroke[l.size()]);
+    return l.toArray(new KeyStroke[l.size()]);
   }
 
   public static String encode(KeyStroke[] keys) {
