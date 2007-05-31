@@ -304,13 +304,13 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     if (commands == null) {
       java.util.List l = new ArrayList();
       GamePiece outer = Decorator.getOutermost(this);
-      setAngleCommand = new KeyCommand(setAngleText, setAngleKey, outer);
-      rotateCWCommand = new KeyCommand(rotateCWText, rotateCWKey, outer);
+      setAngleCommand = new KeyCommand(setAngleText, setAngleKey, outer, getI18nData());
+      rotateCWCommand = new KeyCommand(rotateCWText, rotateCWKey, outer, getI18nData());
 
-      rotateCCWCommand = new KeyCommand(rotateCCWText, rotateCCWKey, outer);
+      rotateCCWCommand = new KeyCommand(rotateCCWText, rotateCCWKey, outer, getI18nData());
 
       // for random rotation
-      rotateRNDCommand = new KeyCommand(rotateRNDText, rotateRNDKey, outer);
+      rotateRNDCommand = new KeyCommand(rotateRNDText, rotateRNDKey, outer, getI18nData());
       // end random rotation
 
       if (validAngles.length == 1) {

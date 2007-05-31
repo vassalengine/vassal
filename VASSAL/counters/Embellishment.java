@@ -383,23 +383,23 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       List l = new ArrayList();
       GamePiece outer = Decorator.getOutermost(this);
       if (activateCommand.length() > 0 && activateKey.length() > 0) {
-        l.add(new KeyCommand(activateCommand, KeyStroke.getKeyStroke(activateKey.charAt(0), activateModifiers), outer));
+        l.add(new KeyCommand(activateCommand, KeyStroke.getKeyStroke(activateKey.charAt(0), activateModifiers), outer, getI18nData()));
       }
       if (upCommand.length() > 0 && upKey.length() > 0 && nValues > 1 && !followProperty) {
 
-        up = new KeyCommand(upCommand, KeyStroke.getKeyStroke(upKey.charAt(0), upModifiers), outer);
+        up = new KeyCommand(upCommand, KeyStroke.getKeyStroke(upKey.charAt(0), upModifiers), outer, getI18nData());
         l.add(up);
       }
       if (downCommand.length() > 0 && downKey.length() > 0 && nValues > 1 && !followProperty) {
-        down = new KeyCommand(downCommand, KeyStroke.getKeyStroke(downKey.charAt(0), downModifiers), outer);
+        down = new KeyCommand(downCommand, KeyStroke.getKeyStroke(downKey.charAt(0), downModifiers), outer, getI18nData());
         l.add(down);
       }
       if (resetKey != null && resetCommand.length() > 0 && !followProperty) {
-        l.add(new KeyCommand(resetCommand, resetKey, outer));
+        l.add(new KeyCommand(resetCommand, resetKey, outer, getI18nData()));
       }
       // random layers
       if (rndKey != null && rndText.length() > 0 && !followProperty) {
-        l.add(new KeyCommand(rndText, rndKey, outer));
+        l.add(new KeyCommand(rndText, rndKey, outer, getI18nData()));
       }
       // end random layers
       commands = (KeyCommand[]) l.toArray(new KeyCommand[l.size()]);

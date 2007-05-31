@@ -109,7 +109,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
         KeyStroke stroke = c[i].getKeyStroke();
         JMenuItem item = null;
         if (c[i] instanceof KeyCommandSubMenu) {
-          JMenu subMenu = new JMenu(c[i].getName());
+          JMenu subMenu = new JMenu(c[i].getLocalizedMenuText());
           subMenu.setFont(POPUP_MENU_FONT);
           subMenus.put(c[i], subMenu);
           item = subMenu;
@@ -122,7 +122,8 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             String commandName = (String) command.getAction().getValue(Action.NAME);
             if (commandName == null
                 || commandName.length() < c[i].getName().length()) {
-              item = new JMenuItem(c[i]);
+              item = new JMenuItem(c[i].getLocalizedMenuText());
+              item.addActionListener(c[i]);
               item.setFont(POPUP_MENU_FONT);
               item.setEnabled(c[i].isEnabled());
               commands.set(strokes.indexOf(stroke), item);
@@ -130,7 +131,8 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
           }
           else {
             strokes.add(stroke != null ? stroke : KeyStroke.getKeyStroke('\0'));
-            item = new JMenuItem(c[i]);
+            item = new JMenuItem(c[i].getLocalizedMenuText());
+            item.addActionListener(c[i]);
             item.setFont(POPUP_MENU_FONT);
             item.setEnabled(c[i].isEnabled());
             commands.add(item);

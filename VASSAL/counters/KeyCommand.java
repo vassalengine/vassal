@@ -19,7 +19,6 @@
 package VASSAL.counters;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
@@ -33,21 +32,29 @@ public class KeyCommand extends AbstractAction {
 
   private String name;
   protected String untranslatedName;
+  protected String localizedMenuText;
   private KeyStroke stroke;
   private GamePiece target;
   private boolean global;
   private boolean enabled = true;
 
+  protected PieceI18nData i18nData;
+
 
   public KeyCommand(String name, KeyStroke key, GamePiece target) {
+    this(name, key, target, null); 
+  }
+  
+  public KeyCommand(String name, KeyStroke key, GamePiece target, PieceI18nData i18nData) {
     super(key == null ? name : name + "  " + HotKeyConfigurer.getString(key));
     this.target = target;
     this.name = name;
     this.stroke = key;
+    this.i18nData = i18nData;
   }
 
   public KeyCommand(String name, KeyStroke key, GamePiece target, boolean enabled) {
-    this(name, key, target);
+    this(name, key, target, null);
     setEnabled(enabled);
   }
   
@@ -108,21 +115,28 @@ public class KeyCommand extends AbstractAction {
       t.repaint();
     }
   }
-  
-  public void translate(TranslatablePiece piece) {
-    if (untranslatedName == null) {
-       untranslatedName = name;
-       String key = "";
-       for (PieceI18nData.Property p : piece.getI18nData().getProperties()) {
-         if (p.getName().equals(name)) {
-           key = TranslatablePiece.PREFIX + p.getName();
-         }
-       }
-       
-       name = key.length() > 0 ? Language.translate(key, name) : name;
 
-       putValue(Action.NAME, stroke == null ? name : name + "  " + HotKeyConfigurer.getString(stroke));
+  /**
+   * The human-readable text that will appear in the right-click menu, translated to the user's Locale
+   * @return
+   */
+  public String getLocalizedMenuText() {
+    if (localizedMenuText == null && name != null) {
+      String localizedName = name;
+      if (i18nData != null && GameModule.getGameModule().isLocalizationEnabled()) {
+        String key = null;
+        for (PieceI18nData.Property p : i18nData.getProperties()) {
+          if (p.getName().equals(name)) {
+            key = TranslatablePiece.PREFIX + p.getName();
+          }
+        }
+        if (key != null) {
+          localizedName = Language.translate(key, name); 
+        }
+      }
+      localizedMenuText = stroke == null ? localizedName : localizedName + "  " + HotKeyConfigurer.getString(stroke);
     }
+    return localizedMenuText;
   }
 }
 

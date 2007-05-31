@@ -37,7 +37,8 @@ import VASSAL.tools.SequenceEncoder;
 /** A trait that groups menu items of other traits into a sub-menu */
 public class SubMenu extends Decorator implements TranslatablePiece {
   public static final String ID = "submenu;";
-  private KeyCommand[] keyCommands = new KeyCommand[1];
+  private String subMenu;
+  private KeyCommandSubMenu[] keyCommands = new KeyCommandSubMenu[1];
 
   public SubMenu() {
     this(ID+"Sub-Menu;",null);
@@ -68,9 +69,9 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type,';');
     st.nextToken();
-    KeyCommandSubMenu c = new KeyCommandSubMenu(st.nextToken(),this);
-    c.setCommands(StringArrayConfigurer.stringToArray(st.nextToken()));
-    keyCommands[0] = c;
+    subMenu = st.nextToken();
+    keyCommands[0] = new KeyCommandSubMenu(subMenu,this, getI18nData());
+    keyCommands[0].setCommands(StringArrayConfigurer.stringToArray(st.nextToken()));
   }
 
   protected KeyCommand[] myGetKeyCommands() {
@@ -88,16 +89,15 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   }
 
   public String[] getSubcommands() {
-    KeyCommandSubMenu c = (KeyCommandSubMenu)keyCommands[0];
     ArrayList l = new ArrayList();
-    for (Iterator it = c.getCommands(); it.hasNext();) {
+    for (Iterator it = keyCommands[0].getCommands(); it.hasNext();) {
       l.add(it.next());
     }
     return (String[]) l.toArray(new String[l.size()]);
   }
 
   public String getMenuName() {
-    return keyCommands[0].getName();
+    return subMenu;
   }
   
   public Command myKeyEvent(KeyStroke stroke) {

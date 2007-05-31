@@ -72,7 +72,7 @@ public class Delete extends Decorator implements TranslatablePiece {
 
   protected KeyCommand[] myGetKeyCommands() {
     if (keyCommands == null) {
-      deleteCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this));
+      deleteCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), getI18nData());
       if (commandName.length() > 0) {
         keyCommands = new KeyCommand[]{deleteCommand};
       }

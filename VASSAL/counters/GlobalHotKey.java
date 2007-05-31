@@ -42,7 +42,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
 
 	protected KeyCommand[] myGetKeyCommands() {
 		if (commands == null) {
-			command = new KeyCommand(commandName,commandKey,Decorator.getOutermost(this));
+			command = new KeyCommand(commandName,commandKey,Decorator.getOutermost(this), getI18nData());
 			if (commandName != null && commandName.length() > 0) {
 				commands = new KeyCommand[]{command};
 			}

@@ -325,11 +325,11 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
       GamePiece target = Decorator.getOutermost(this);
       if (cloneKey > 0) {
         v.addElement(new KeyCommand("Clone",
-                                    KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_MASK), target));
+                                    KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_MASK), target, getI18nData()));
       }
       if (deleteKey > 0) {
         v.addElement(new KeyCommand("Delete",
-                                    KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK), target));
+                                    KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK), target, getI18nData()));
       }
       commands = new KeyCommand[v.size()];
       for (int i = 0; i < v.size(); ++i) {

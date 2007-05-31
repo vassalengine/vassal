@@ -108,7 +108,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   }
 
   protected KeyCommand[] myGetKeyCommands() {
-    return new KeyCommand[]{new KeyCommand(command, key, Decorator.getOutermost(this))};
+    return new KeyCommand[]{new KeyCommand(command, key, Decorator.getOutermost(this), getI18nData())};
   }
 
   public Command myKeyEvent(javax.swing.KeyStroke stroke) {

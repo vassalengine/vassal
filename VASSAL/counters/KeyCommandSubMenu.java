@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import VASSAL.i18n.PieceI18nData;
 
 /** Represents a sub-menu in a GamePiece's right-click drop-down menu */
 public class KeyCommandSubMenu extends KeyCommand {
@@ -29,8 +30,8 @@ public class KeyCommandSubMenu extends KeyCommand {
 
   private List commands = new ArrayList();
 
-  public KeyCommandSubMenu(String name, GamePiece target) {
-    super(name, null, target);
+  public KeyCommandSubMenu(String name, GamePiece target, PieceI18nData data) {
+    super(name, null, target, data);
   }
 
   public void actionPerformed(ActionEvent evt) {
