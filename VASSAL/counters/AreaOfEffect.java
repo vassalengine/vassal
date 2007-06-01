@@ -131,7 +131,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     alwaysActive = st.nextBoolean(true);
     activateCommand = st.nextToken("Show Area");
     activateKey = st.nextKeyStroke(null);
-    keyCommand = new KeyCommand(activateCommand, activateKey, Decorator.getOutermost(this), getI18nData());
+    keyCommand = new KeyCommand(activateCommand, activateKey, Decorator.getOutermost(this), this);
     mapShaderName = st.nextToken("");
     if (mapShaderName.length() == 0) {
       mapShaderName = null;

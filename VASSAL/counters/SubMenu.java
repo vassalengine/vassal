@@ -70,7 +70,7 @@ public class SubMenu extends Decorator implements TranslatablePiece {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type,';');
     st.nextToken();
     subMenu = st.nextToken();
-    keyCommands[0] = new KeyCommandSubMenu(subMenu,this, getI18nData());
+    keyCommands[0] = new KeyCommandSubMenu(subMenu,this, this);
     keyCommands[0].setCommands(StringArrayConfigurer.stringToArray(st.nextToken()));
   }
 

@@ -349,8 +349,8 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
     protected PropertyChanger propChanger = null;
 
-    public DynamicKeyCommand(String name, KeyStroke key, GamePiece target, PieceI18nData data, PropertyChanger propChanger) {
-      super(name, key, target, data);
+    public DynamicKeyCommand(String name, KeyStroke key, GamePiece target, TranslatablePiece i18nPiece, PropertyChanger propChanger) {
+      super(name, key, target, i18nPiece);
       this.propChanger = propChanger;
     }
 
@@ -369,7 +369,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected DynamicProperty target;
 
     public DynamicKeyCommandConfigurer(DynamicProperty target) {
-      super(target.getKey(), target.getKey(), new DynamicKeyCommand("Change value", KeyStroke.getKeyStroke('V', InputEvent.CTRL_MASK), target, target.getI18nData(), 
+      super(target.getKey(), target.getKey(), new DynamicKeyCommand("Change value", KeyStroke.getKeyStroke('V', InputEvent.CTRL_MASK), target, target, 
           new PropertyPrompt(target, "Change value of " + target.getKey())));
       commandConfig = new StringConfigurer(null, " Menu Command:  ", "Change value");
       keyConfig = new HotKeyConfigurer(null, " Key Command:  ", KeyStroke.getKeyStroke('V', InputEvent.CTRL_MASK));
@@ -424,7 +424,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
     protected void updateValue() {
       noUpdate = true;
-      setValue(new DynamicKeyCommand(commandConfig.getValueString(), (KeyStroke) keyConfig.getValue(), target, target.getI18nData(), propChangeConfig.getPropertyChanger()));
+      setValue(new DynamicKeyCommand(commandConfig.getValueString(), (KeyStroke) keyConfig.getValue(), target, target, propChangeConfig.getPropertyChanger()));
       noUpdate = false;
     }
 

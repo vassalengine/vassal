@@ -145,7 +145,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
 
   protected KeyCommand[] myGetKeyCommands() {
     if (launch == null) {
-      launch = new KeyCommand(command, launchKey, Decorator.getOutermost(this), getI18nData());
+      launch = new KeyCommand(command, launchKey, Decorator.getOutermost(this), this);
     }
     return new KeyCommand[]{launch};
   }

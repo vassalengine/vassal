@@ -38,19 +38,19 @@ public class KeyCommand extends AbstractAction {
   private boolean global;
   private boolean enabled = true;
 
-  protected PieceI18nData i18nData;
+  protected TranslatablePiece i18nPiece;
 
 
   public KeyCommand(String name, KeyStroke key, GamePiece target) {
     this(name, key, target, null); 
   }
   
-  public KeyCommand(String name, KeyStroke key, GamePiece target, PieceI18nData i18nData) {
+  public KeyCommand(String name, KeyStroke key, GamePiece target, TranslatablePiece i18nPiece) {
     super(key == null ? name : name + "  " + HotKeyConfigurer.getString(key));
     this.target = target;
     this.name = name;
     this.stroke = key;
-    this.i18nData = i18nData;
+    this.i18nPiece = i18nPiece;
   }
 
   public KeyCommand(String name, KeyStroke key, GamePiece target, boolean enabled) {
@@ -123,9 +123,9 @@ public class KeyCommand extends AbstractAction {
   public String getLocalizedMenuText() {
     if (localizedMenuText == null && name != null) {
       String localizedName = name;
-      if (i18nData != null && GameModule.getGameModule().isLocalizationEnabled()) {
+      if (i18nPiece != null && GameModule.getGameModule().isLocalizationEnabled()) {
         String key = null;
-        for (PieceI18nData.Property p : i18nData.getProperties()) {
+        for (PieceI18nData.Property p : i18nPiece.getI18nData().getProperties()) {
           if (p.getName().equals(name)) {
             key = TranslatablePiece.PREFIX + p.getName();
           }

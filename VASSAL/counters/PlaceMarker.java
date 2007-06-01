@@ -245,7 +245,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     st.nextToken();
     String name = st.nextToken();
     key = st.nextKeyStroke(null);
-    command = new KeyCommand(name, key, this, getI18nData());
+    command = new KeyCommand(name, key, this, this);
     if (name.length() > 0 && key != null) {
       commands = new KeyCommand[]{command};
     }

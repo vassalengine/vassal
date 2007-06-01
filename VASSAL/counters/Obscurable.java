@@ -365,7 +365,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       keyCommand = KeyStroke.getKeyStroke(obscureKey, InputEvent.CTRL_MASK);
     }
       
-    hide = new KeyCommand(hideCommand, keyCommand, outer, getI18nData());
+    hide = new KeyCommand(hideCommand, keyCommand, outer, this);
     if (hideCommand.length() > 0 && isMaskable()) {
       l.add(hide);
       commandsWithoutPeek = new KeyCommand[] {hide};        
@@ -375,7 +375,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
       
     // Peek Command
-    peek = new KeyCommand(peekCommand, peekKey, outer, getI18nData());
+    peek = new KeyCommand(peekCommand, peekKey, outer, this);
     if (displayStyle == PEEK && peekKey != null) {
       l.add(peek);
     }

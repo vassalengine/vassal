@@ -401,11 +401,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         l.add(down);
       }
       if (resetKey != null && resetCommand.length() > 0 && !followProperty) {
-        l.add(new KeyCommand(resetCommand, resetKey, outer, getI18nData()));
+        l.add(new KeyCommand(resetCommand, resetKey, outer, this));
       }
       // random layers
       if (rndKey != null && rndText.length() > 0 && !followProperty) {
-        l.add(new KeyCommand(rndText, rndKey, outer, getI18nData()));
+        l.add(new KeyCommand(rndText, rndKey, outer, this));
       }
       // end random layers
       commands = l.toArray(new KeyCommand[l.size()]);

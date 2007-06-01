@@ -110,7 +110,7 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
 
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
-      myCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), getI18nData());
+      myCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
       if (commandName.length() > 0 && key != null) {
         command = new KeyCommand[]{ myCommand };
       }
