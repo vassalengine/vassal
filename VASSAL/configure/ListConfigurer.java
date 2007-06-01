@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2006 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.configure;
 
 import java.awt.Component;
@@ -24,7 +42,7 @@ import VASSAL.tools.SequenceEncoder;
 public abstract class ListConfigurer extends Configurer implements PropertyChangeListener {
   protected Box controls;
   protected Box configControls;
-  protected List configurers = new ArrayList();
+  protected ArrayList<Configurer> configurers = new ArrayList<Configurer>();
 
   public ListConfigurer(String key, String name) {
     super(key, name, new ArrayList());
@@ -63,8 +81,7 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
   protected void updateValue() {
     noUpdate = true;
     ArrayList newArray = new ArrayList();
-    for (Iterator iter = configurers.iterator(); iter.hasNext();) {
-      Configurer c = (Configurer) iter.next();
+    for (Configurer c : configurers) {
       newArray.add(c.getValue());
     }
     setValue(newArray);
@@ -118,8 +135,7 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
 
   protected void updateControls() {
     if (controls != null) {
-      for (Iterator iter = configurers.iterator(); iter.hasNext();) {
-        Configurer c = (Configurer) iter.next();
+      for (Configurer c : configurers) {
         c.removePropertyChangeListener(this);
       }
       configurers.clear();

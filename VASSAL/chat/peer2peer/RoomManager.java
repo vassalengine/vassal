@@ -1,73 +1,91 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2007 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.chat.peer2peer;
 
 import org.litesoft.p2pchat.PeerInfo;
-import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.Player;
+import VASSAL.chat.SimpleRoom;
+import VASSAL.chat.Room;
 import VASSAL.i18n.Resources;
 
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class RoomManager {
-  private Vector rooms = new Vector();
-  private SimpleRoom defaultRoom = new SimpleRoom(Resources.getString("Chat.main_room")); //$NON-NLS-1$
+  private ArrayList<Room> rooms = new ArrayList<Room>();
+  private SimpleRoom defaultRoom =
+    new SimpleRoom(Resources.getString("Chat.main_room")); //$NON-NLS-1$
 
   public RoomManager() {
-    rooms.addElement(defaultRoom);
+    rooms.add(defaultRoom);
   }
 
-  public VASSAL.chat.Room[] update(PeerInfo info) {
+  public Room[] update(PeerInfo info) {
     P2PPlayer p = new P2PPlayer(info);
-    VASSAL.chat.Room oldRoom = getRoomContaining(p);
-    VASSAL.chat.Room newRoom = new SimpleRoom(p.getRoom());
+    Room oldRoom = getRoomContaining(p);
+    Room newRoom = new SimpleRoom(p.getRoom());
     if (rooms.contains(newRoom)) {
-      newRoom = (VASSAL.chat.Room) rooms.elementAt(rooms.indexOf(newRoom));
+      newRoom = rooms.get(rooms.indexOf(newRoom));
     }
     else {
-      rooms.addElement(newRoom);
+      rooms.add(newRoom);
     }
     newRoom.addPlayer(p);
-    if (oldRoom != null
-      && !oldRoom.equals(newRoom)) {
+    if (oldRoom != null && !oldRoom.equals(newRoom)) {
       oldRoom.removePlayer(p);
-      if (oldRoom.getPlayerList().size() == 0
-        && !oldRoom.equals(defaultRoom)) {
-        rooms.removeElement(oldRoom);
+      if (oldRoom.getPlayerList().size() == 0 &&
+          !oldRoom.equals(defaultRoom)) {
+        rooms.remove(oldRoom);
       }
     }
     return getRooms();
   }
 
-  public VASSAL.chat.Room[] remove(PeerInfo info) {
+  public Room[] remove(PeerInfo info) {
     P2PPlayer p = new P2PPlayer(info);
     for (int i = 0; i < rooms.size(); ++i) {
-      VASSAL.chat.Room r = (VASSAL.chat.Room) rooms.elementAt(i);
+      Room r = rooms.get(i);
       r.removePlayer(p);
-      if (r.getPlayerList().size() == 0
-        && !r.equals(defaultRoom)) {
-        rooms.removeElementAt(i--);
+      if (r.getPlayerList().size() == 0 &&
+          !r.equals(defaultRoom)) {
+        rooms.remove(i--);
       }
     }
     return getRooms();
   }
 
   public P2PPlayer getPlayerById(String id) {
-    for (int i=0;i<rooms.size();++i){
-      VASSAL.chat.Room r = (VASSAL.chat.Room)rooms.elementAt(i);
-      VASSAL.chat.Player[] playerArray = (VASSAL.chat.Player[]) r.getPlayerList().toArray();
-      for (int j=0;j<playerArray.length;++j) {
-        P2PPlayer p = (P2PPlayer) playerArray[j];
-        if (id.equals(p.getId())) {
-          return p;
+    for (Room r : rooms) {
+      for (Player p : r.getPlayerList()) {
+        P2PPlayer p2pp = (P2PPlayer) p;
+        if (id.equals(p2pp.getId())) {
+          return p2pp;
         }
       }
     }
     return null;
   }
 
-  public VASSAL.chat.Room[] getRooms() {
+  public Room[] getRooms() {
+    return rooms.toArray(new Room[rooms.size()]);
+/*
 //	System.err.println("--------");
-    VASSAL.chat.Room[] r = new VASSAL.chat.Room[rooms.size()];
+    Room[] r = new Room[rooms.size()];
     for (int i = 0; i < r.length; ++i) {
       r[i] = (VASSAL.chat.Room) rooms.elementAt(i);
       //	    System.err.println("Room "+r[i]);
@@ -76,14 +94,14 @@ public class RoomManager {
       //	    }
     }
     return r;
+*/
   }
 
   public SimpleRoom getRoomContaining(Player p) {
-    for (Enumeration e = rooms.elements();
-         e.hasMoreElements();) {
-      SimpleRoom r = (SimpleRoom) e.nextElement();
-      if (r.contains(p)) {
-        return r;
+    for (Room r : rooms) {
+      SimpleRoom sr = (SimpleRoom) r;
+      if (sr.contains(p)) {
+        return sr;
       }
     }
     return null;
@@ -98,8 +116,8 @@ public class RoomManager {
   }
 
   public void clear() {
-    rooms.removeAllElements();
+    rooms.clear();
     defaultRoom.setPlayers(new Player[0]);
-    rooms.addElement(defaultRoom);
+    rooms.add(defaultRoom);
   }
 }

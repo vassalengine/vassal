@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -37,7 +38,8 @@ import VASSAL.chat.HttpRequestWrapper;
  * Children of rooms represent players.
  */
 public class AsynchronousServerNode extends ServerNode {
-  private static Logger logger = Logger.getLogger(AsynchronousServerNode.class.getName());
+  private static Logger logger =
+    Logger.getLogger(AsynchronousServerNode.class.getName());
   private StatusReporter statusReporter;
   private ReportContentsThread contentsReporter;
 
@@ -47,7 +49,8 @@ public class AsynchronousServerNode extends ServerNode {
   }
 
   protected void init(String url) {
-    statusReporter = new StatusReporter(url == null ? null : new HttpRequestWrapper(url), this);
+    statusReporter = new StatusReporter(
+      url == null ? null : new HttpRequestWrapper(url), this);
     contentsReporter = new ReportContentsThread(this);
   }
 
@@ -57,13 +60,13 @@ public class AsynchronousServerNode extends ServerNode {
 
   public static class ReportContentsThread extends Thread {
     private AsynchronousServerNode server;
-    private HashSet changed;
+    private HashSet<Node> changed;
     private long lastGlobalUpdate;
     private static final long GLOBAL_UPDATE_INTERVAL = 1000L * 120L;
 
     public ReportContentsThread(AsynchronousServerNode server) {
       this.server = server;
-      changed = new HashSet();
+      changed = new HashSet<Node>();
       start();
     }
 
@@ -83,16 +86,16 @@ public class AsynchronousServerNode extends ServerNode {
     private synchronized void sendContents() {
       server.statusReporter.updateContents(server.getLeafDescendants());
       long time = System.currentTimeMillis();
-      Iterator modules;
+      Iterator<Node> modules;
       if (time - lastGlobalUpdate < GLOBAL_UPDATE_INTERVAL) {
         modules = Arrays.asList(server.getChildren()).iterator();
         lastGlobalUpdate = time;
       }
       else {
-        modules =  changed.iterator();
+        modules = changed.iterator();
       }
       while (modules.hasNext()) {
-        Node module = (Node) modules.next();
+        Node module = modules.next();
         logger.fine("Sending contents of "+module.getId()); //$NON-NLS-1$
         Node[] players = module.getLeafDescendants();
         Node[] rooms = module.getChildren();
@@ -111,5 +114,4 @@ public class AsynchronousServerNode extends ServerNode {
       notifyAll();
     }
   }
-
 }

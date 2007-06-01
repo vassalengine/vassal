@@ -19,31 +19,33 @@
 package VASSAL.chat;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Represents the history and current state of connections to the chat room server 
- * @author rkinney
+ * Represents the history and current state of connections to the chat
+ * room server 
  *
+ * @author rkinney
  */
 public interface ServerStatus {
   /** Return the current connections to the server */
   public ModuleSummary[] getStatus();
   
   public String[] getSupportedTimeRanges();
+
   /**
-   *  Return the connections to the server within <code>time</code> milliseconds of the current time
+   * @return the connections to the server within <code>time</code>
+   * milliseconds of the current time
    */
   public ModuleSummary[] getHistory(String timeRange);
 
   public static class ModuleSummary {
     private String moduleName;
-    private Map rooms = new HashMap();
+    private HashMap<String,Room> rooms = new HashMap<String,Room>();
 
     public ModuleSummary(String moduleName, Room[] rooms) {
       this.moduleName = moduleName;
-      for (int i = 0; i < rooms.length; i++) {
-        this.rooms.put(rooms[i].getName(),rooms[i]);
+      for (Room r : rooms) {
+        this.rooms.put(r.getName(), r);
       }
     }
 
@@ -52,15 +54,15 @@ public interface ServerStatus {
     }
 
     public void addRoom(Room r) {
-      rooms.put(r.getName(),r);
+      rooms.put(r.getName(), r);
     }
 
     public SimpleRoom getRoom(String name) {
-      return (SimpleRoom)rooms.get(name);
+      return (SimpleRoom) rooms.get(name);
     }
 
     public Room[] getRooms() {
-      return (Room[]) rooms.values().toArray(new Room[rooms.size()]);
+      return rooms.values().toArray(new Room[rooms.size()]);
     }
 
     public String toString() {

@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -25,9 +26,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
@@ -43,6 +41,7 @@ import org.jivesoftware.smackx.muc.ParticipantStatusListener;
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
+import VASSAL.chat.Room;
 import VASSAL.chat.ServerStatus;
 import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.command.Command;
@@ -152,7 +151,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     }
   }
 
-  public VASSAL.chat.Room getRoom() {
+  public Room getRoom() {
     return monitor.getCurrentRoom();
   }
 
@@ -160,7 +159,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     return currentChat == null ? null : currentChat.getRoom();
   }
 
-  public void setRoom(VASSAL.chat.Room r) {
+  public void setRoom(Room r) {
     leaveCurrentRoom();
     String oldRoom = getCurrentRoomJID();
     JabberRoom newRoom = null;
@@ -180,7 +179,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     }
   }
 
-  public VASSAL.chat.Room[] getAvailableRooms() {
+  public Room[] getAvailableRooms() {
     return monitor.getAvailableRooms();
   }
 
@@ -353,26 +352,29 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     }
     return buf.toString();
   }
-  private class MonitorRooms implements PacketListener, ParticipantStatusListener {
+
+  private class MonitorRooms implements PacketListener,
+                                        ParticipantStatusListener {
     private static final String PLAYER_CHANGED_ROOMS = "PLAYER_CHANGED_ROOMS";
     private static final String NEW_ROOM = "newRoom";
     private static final String OLD_ROOM = "oldRoom";
     private MultiUserChat monitorRoom;
-    private Map playerToRoom = new HashMap();
-    private Map jidToRoom = new HashMap();
-    private Map jidToPlayer = new HashMap();
-    private Comparator roomSortOrder = new Comparator() {
-      public int compare(Object o1, Object o2) {
-        VASSAL.chat.Room r1 = (JabberRoom) o1;
-        VASSAL.chat.Room r2 = (JabberRoom) o2;
-        if (r1.equals(defaultRoom) && !r2.equals(defaultRoom)) {
+    private HashMap<String,String> playerToRoom = new HashMap<String,String>();
+    private HashMap<String,JabberRoom> jidToRoom =
+      new HashMap<String,JabberRoom>();
+    private HashMap<String,JabberPlayer> jidToPlayer =
+      new HashMap<String,JabberPlayer>();
+
+    private Comparator<Room> roomSortOrder = new Comparator<Room>() {
+      public int compare(Room o1, Room o2) {
+        if (o1.equals(defaultRoom) && !o2.equals(defaultRoom)) {
           return -1;
         }
-        else if (r2.equals(defaultRoom) && !r1.equals(defaultRoom)) {
+        else if (o2.equals(defaultRoom) && !o1.equals(defaultRoom)) {
           return 1;
         }
         else {
-          return r1.getName().compareTo(r2.getName());
+          return o1.getName().compareTo(o2.getName());
         }
       }
     };
@@ -401,12 +403,11 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       monitorRoom.addParticipantStatusListener(this);
     }
 
-    public VASSAL.chat.Room[] getAvailableRooms() {
-      List rooms = new ArrayList();
-      Set s = new HashSet(playerToRoom.values());
-      for (Iterator it = s.iterator(); it.hasNext();) {
-        String jid = (String) it.next();
-        Object room = jidToRoom.get(jid);
+    public Room[] getAvailableRooms() {
+      ArrayList<Room> rooms = new ArrayList<Room>();
+      HashSet<String> s = new HashSet<String>(playerToRoom.values());
+      for (String jid : s) {
+        Room room = jidToRoom.get(jid);
         if (room != null) {
           rooms.add(room);
         }
@@ -414,14 +415,14 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       if (!rooms.contains(defaultRoom)) {
         rooms.add(defaultRoom);
       }
-      VASSAL.chat.Room[] roomArray = (VASSAL.chat.Room[]) rooms.toArray(new VASSAL.chat.Room[rooms.size()]);
+      Room[] roomArray = rooms.toArray(new Room[rooms.size()]);
       Arrays.sort(roomArray, roomSortOrder);
       return roomArray;
     }
 
     public JabberRoom getCurrentRoom() {
       String jid = getCurrentRoomJID();
-      return (JabberRoom) jidToRoom.get(jid);
+      return jidToRoom.get(jid);
     }
 
     public void sendRoomChanged(String oldRoom, String newRoom) throws XMPPException {
@@ -464,7 +465,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     }
 
     private JabberRoom getRoom(String jid) throws XMPPException {
-      JabberRoom newRoom = (JabberRoom) jidToRoom.get(jid);
+      JabberRoom newRoom = jidToRoom.get(jid);
       if (newRoom == null) {
         newRoom = JabberRoom.createFromJID(JabberClient.this, jid);
         jidToRoom.put(jid, newRoom);
@@ -491,7 +492,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     }
 
     public void left(String participant) {
-      String oldRoomJID = (String) playerToRoom.get(participant);
+      String oldRoomJID = playerToRoom.get(participant);
       removeFromCurrentRoom(participant);
       fireRoomsUpdated();
       updateCurrentRoom(oldRoomJID);
@@ -514,9 +515,9 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
 
     private void removeFromCurrentRoom(String participant) {
       JabberPlayer p = getPlayer(participant);
-      String oldRoomJID = (String) playerToRoom.remove(participant);
+      String oldRoomJID = playerToRoom.remove(participant);
       if (oldRoomJID != null) {
-        JabberRoom oldRoom = (JabberRoom) jidToRoom.get(oldRoomJID);
+        JabberRoom oldRoom = jidToRoom.get(oldRoomJID);
         if (oldRoom != null) {
           oldRoom.removePlayer(p);
           if (oldRoom.getPlayerList().size() == 0) {
@@ -527,7 +528,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     }
 
     private JabberPlayer getPlayer(String jid) {
-      JabberPlayer p = (JabberPlayer) jidToPlayer.remove(jid);
+      JabberPlayer p = jidToPlayer.remove(jid);
       if (p == null) {
         p = new JabberPlayer(StringUtils.parseResource(jid), jid);
         jidToPlayer.put(jid, p);
@@ -591,9 +592,11 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   }
 
   public ModuleSummary[] getStatus() {
-    List entries = new ArrayList();
+    ArrayList<ModuleSummary> entries = new ArrayList<ModuleSummary>();
     try {
-      for (Iterator iter = MultiUserChat.getHostedRooms(conn, conferenceService).iterator(); iter.hasNext();) {
+      for (Iterator iter = MultiUserChat.getHostedRooms(
+        conn, conferenceService).iterator(); iter.hasNext(); ) {
+
         HostedRoom room = (HostedRoom) iter.next();
         MultiUserChat.getRoomInfo(conn, room.getJid());
       }
@@ -601,7 +604,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     catch (XMPPException e) {
       e.printStackTrace();
     }
-    return (ModuleSummary[]) entries.toArray(new ModuleSummary[entries.size()]);
+    return entries.toArray(new ModuleSummary[entries.size()]);
   }
 
   public String[] getSupportedTimeRanges() {

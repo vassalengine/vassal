@@ -20,11 +20,9 @@ package VASSAL.chat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.TimeZone;
@@ -44,22 +42,27 @@ public class CgiServerStatus implements ServerStatus {
   public static final String LAST_WEEK = "Server.last_week"; //$NON-NLS-1$
   public static final String LAST_MONTH = "Server.last_month"; //$NON-NLS-1$
   
-  private Map timeRanges = new HashMap();
+  private HashMap<String,Long> timeRanges = new HashMap<String,Long>();
   
-  private String[] times = new String[]{Resources.getString(LAST_DAY), Resources.getString(LAST_WEEK), Resources.getString(LAST_MONTH)};
+  private String[] times = new String[]{
+    Resources.getString(LAST_DAY),
+    Resources.getString(LAST_WEEK),
+    Resources.getString(LAST_MONTH)
+  };
 
   private HttpRequestWrapper request;
-  private List cachedQuery;
+  private ArrayList<String> cachedQuery;
 
   public CgiServerStatus() {
     request = new HttpRequestWrapper("http://www.vassalengine.org/util/"); //$NON-NLS-1$
-    timeRanges.put(Resources.getString(LAST_DAY),new Long(DAY));
-    timeRanges.put(Resources.getString(LAST_WEEK),new Long(DAY * 7));
-    timeRanges.put(Resources.getString(LAST_MONTH),new Long(DAY * 30));
+    timeRanges.put(Resources.getString(LAST_DAY), DAY);
+    timeRanges.put(Resources.getString(LAST_WEEK), DAY * 7);
+    timeRanges.put(Resources.getString(LAST_MONTH), DAY * 30);
   }
 
   public ServerStatus.ModuleSummary[] getStatus() {
-    Map entries = new HashMap();
+    HashMap<String,ServerStatus.ModuleSummary> entries =
+      new HashMap<String,ServerStatus.ModuleSummary>();
     try {
       for (Enumeration e = request.doGet("getCurrentConnections", new Properties()); e.hasMoreElements();) { //$NON-NLS-1$
         String s = (String) e.nextElement();
@@ -68,9 +71,10 @@ public class CgiServerStatus implements ServerStatus {
           String moduleName = st.nextToken();
           String roomName = st.nextToken();
           String playerName = st.nextToken();
-          ServerStatus.ModuleSummary entry = (ServerStatus.ModuleSummary) entries.get(moduleName);
+          ServerStatus.ModuleSummary entry = entries.get(moduleName);
           if (entry == null) {
-            entries.put(moduleName, createEntry(moduleName, roomName, playerName));
+            entries.put(moduleName,
+                        createEntry(moduleName, roomName, playerName));
           }
           else {
             updateEntry(entry, roomName, playerName);
@@ -85,12 +89,13 @@ public class CgiServerStatus implements ServerStatus {
     }
     cachedQuery = null;
     retrieveHistory();
-    ServerStatus.ModuleSummary[] entry = (ServerStatus.ModuleSummary[]) entries.values().toArray(new ServerStatus.ModuleSummary[entries.size()]);
+    ServerStatus.ModuleSummary[] entry =
+      entries.values().toArray(new ServerStatus.ModuleSummary[entries.size()]);
     return entry;
   }
 
   public ModuleSummary[] getHistory(String timeRange) {
-    Long l = (Long) timeRanges.get(timeRange);
+    Long l = timeRanges.get(timeRange);
     if (l != null) {
       return getHistory(l.longValue());
     }
@@ -108,10 +113,15 @@ public class CgiServerStatus implements ServerStatus {
       return getStatus();
     }
     long now = System.currentTimeMillis();
-    now += TimeZone.getDefault().getOffset(Calendar.ERA, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_YEAR, Calendar.DAY_OF_WEEK, Calendar.MILLISECOND);
-    Map entries = new HashMap();
-    for (Iterator it = retrieveHistory().iterator(); it.hasNext();) {
-      String s = (String) it.next();
+    now += TimeZone.getDefault().getOffset(Calendar.ERA,
+                                           Calendar.YEAR,
+                                           Calendar.MONTH,
+                                           Calendar.DAY_OF_YEAR,
+                                           Calendar.DAY_OF_WEEK,
+                                           Calendar.MILLISECOND);
+    HashMap<String,ServerStatus.ModuleSummary> entries =
+      new HashMap<String,ServerStatus.ModuleSummary>();
+    for (String s : retrieveHistory()) {
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
       try {
         String moduleName = st.nextToken();
@@ -119,9 +129,10 @@ public class CgiServerStatus implements ServerStatus {
         String playerName = st.nextToken();
         long when = Long.parseLong(st.nextToken());
         if (now - when <= time) {
-          ServerStatus.ModuleSummary entry = (ServerStatus.ModuleSummary) entries.get(moduleName);
+          ServerStatus.ModuleSummary entry = entries.get(moduleName);
           if (entry == null) {
-            entries.put(moduleName,createEntry(moduleName, roomName, playerName));
+            entries.put(moduleName,
+                        createEntry(moduleName, roomName, playerName));
           }
           else {
             updateEntry(entry, roomName, playerName);
@@ -133,17 +144,16 @@ public class CgiServerStatus implements ServerStatus {
       catch (NumberFormatException e2) {
       }
     }
-    ServerStatus.ModuleSummary[] entry = (ServerStatus.ModuleSummary[]) entries.values().toArray(new ServerStatus.ModuleSummary[entries.size()]);
+    ServerStatus.ModuleSummary[] entry = 
+      entries.values().toArray(new ServerStatus.ModuleSummary[entries.size()]);
     return entry;
   }
 
-  private List retrieveHistory() {
+  private ArrayList<String> retrieveHistory() {
     if (cachedQuery == null) {
-      cachedQuery = new ArrayList();
       try {
-        for (Enumeration e = request.doGet("getConnectionHistory", new Properties()); e.hasMoreElements();) { //$NON-NLS-1$
-          cachedQuery.add(e.nextElement());
-        }
+        cachedQuery = Collections.list(
+          request.doGet("getConnectionHistory", new Properties())); //$NON-NLS-1$
       }
       catch (IOException e) {
         e.printStackTrace();
@@ -152,7 +162,9 @@ public class CgiServerStatus implements ServerStatus {
     return cachedQuery;
   }
 
-  private ServerStatus.ModuleSummary updateEntry(ServerStatus.ModuleSummary entry, String roomName, String playerName) {
+  private ServerStatus.ModuleSummary updateEntry(
+    ServerStatus.ModuleSummary entry, String roomName, String playerName) {
+
     SimpleRoom existingRoom = entry.getRoom(roomName);
     if (existingRoom == null) {
       existingRoom = new SimpleRoom(roomName);
@@ -165,7 +177,9 @@ public class CgiServerStatus implements ServerStatus {
     return entry;
   }
 
-  private ServerStatus.ModuleSummary createEntry(String moduleName, String roomName, String playerName) {
+  private ServerStatus.ModuleSummary createEntry(String moduleName,
+                                                 String roomName,
+                                                 String playerName) {
     SimpleRoom r = new SimpleRoom(roomName);
     r.setPlayers(new Player[]{new SimplePlayer(playerName)});
     return new ServerStatus.ModuleSummary(moduleName, new Room[]{r});

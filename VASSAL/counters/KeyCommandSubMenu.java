@@ -20,15 +20,15 @@ package VASSAL.counters;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import VASSAL.i18n.TranslatablePiece;
 
 /** Represents a sub-menu in a GamePiece's right-click drop-down menu */
 public class KeyCommandSubMenu extends KeyCommand {
   private static final long serialVersionUID = 1L;
 
-  private List commands = new ArrayList();
+  private ArrayList<String> commands = new ArrayList<String>();
 
   public KeyCommandSubMenu(String name, GamePiece target, TranslatablePiece i18nPiece) {
     super(name, null, target, i18nPiece);
@@ -43,9 +43,7 @@ public class KeyCommandSubMenu extends KeyCommand {
 
   public void setCommands(String[] s) {
     commands.clear();
-    for (int i=0;i<s.length;++i) {
-      commands.add(s[i]);
-    }
+    commands.addAll(Arrays.asList(s));
   }
 
   public Iterator getCommands() {

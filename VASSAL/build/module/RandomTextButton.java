@@ -35,7 +35,8 @@ import VASSAL.tools.LaunchButton;
  *
  * This component places a button into the controls window toolbar.
  * Pressing the button generates random numbers or strings and displays the
- * result in the Chatter */
+ * result in the Chatter
+ */
 // TODO Expose result as a property
 public class RandomTextButton extends DiceButton {
   protected String[] m_faces;               // array with dice faces
@@ -153,29 +154,34 @@ public class RandomTextButton extends DiceButton {
    *  and reportTotal is enabled
    */
   public String[] getAttributeNames() {
-    ArrayList l = new ArrayList(Arrays.asList(super.getAttributeNames()));
+    ArrayList<String> l =
+      new ArrayList<String>(Arrays.asList(super.getAttributeNames()));
     l.remove(N_SIDES);
     l.add(FACES);
     l.add(NUMERIC);
-    return (String[]) l.toArray(new String[l.size()]);
+    return l.toArray(new String[l.size()]);
   }
 
   public String[] getAttributeDescriptions() {
-    ArrayList l = new ArrayList(Arrays.asList(super.getAttributeDescriptions()));
-    ArrayList names = new ArrayList(Arrays.asList(super.getAttributeNames()));
+    ArrayList<String> l =
+      new ArrayList<String>(Arrays.asList(super.getAttributeDescriptions()));
+    ArrayList<String> names =
+      new ArrayList<String>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add("Faces");
     l.add("Faces have numeric values?");
-    return (String[]) l.toArray(new String[l.size()]);
+    return l.toArray(new String[l.size()]);
   }
 
   public Class[] getAttributeTypes() {
-    ArrayList l = new ArrayList(Arrays.asList(super.getAttributeTypes()));
-    ArrayList names = new ArrayList(Arrays.asList(super.getAttributeNames()));
+    ArrayList<Class> l =
+      new ArrayList<Class>(Arrays.asList(super.getAttributeTypes()));
+    ArrayList<String> names =
+      new ArrayList<String>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add(String[].class);
     l.add(Boolean.class);
-    return (Class[]) l.toArray(new Class[names.size()]);
+    return l.toArray(new Class[names.size()]);
   }
 
   public void setAttribute(String key, Object value) {

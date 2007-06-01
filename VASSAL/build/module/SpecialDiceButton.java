@@ -133,7 +133,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * The text reported after the results of the roll;
    * @deprecated
    */
-  protected String getReportSuffix() {
+  @Deprecated protected String getReportSuffix() {
     return " ***  <" //$NON-NLS-1$
         + GameModule.getGameModule().getChatter().getHandle() + ">"; //$NON-NLS-1$
   }
@@ -590,7 +590,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     private void setResults(int[] results) {
       icons = new Icon[results.length];
       for (int i = 0; i < results.length; ++i) {
-        String imageName = ((SpecialDie) dice.get(i)).getImageName(results[i]);
+        String imageName = dice.get(i).getImageName(results[i]);
         try {
           Image aImage = GameModule.getGameModule().getDataArchive().getCachedImage(imageName);
           icons[i] = new ImageIcon(aImage);

@@ -36,7 +36,6 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Random;
 
 import javax.swing.Box;
@@ -94,8 +93,8 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   protected double[] validAngles = new double[] {0.0};
   protected int angleIndex = 0;
 
-  protected java.util.Map images = new HashMap();
-  protected java.util.Map bounds = new HashMap();
+  protected HashMap<Double,Image> images = new HashMap<Double,Image>();
+  protected HashMap<Double,Rectangle> bounds = new HashMap<Double,Rectangle>();
   protected PieceImage unrotated;
 
   protected double tempAngle, startAngle;
@@ -168,7 +167,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   }
 
   public Rectangle getRotatedBounds() {
-    Rectangle r = (Rectangle) bounds.get(new Double(getAngle()));
+    Rectangle r = bounds.get(getAngle());
     if (r == null) {
       r = piece.boundingBox();
     }
@@ -302,15 +301,18 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
 
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      java.util.List l = new ArrayList();
+      ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
       GamePiece outer = Decorator.getOutermost(this);
-      setAngleCommand = new KeyCommand(setAngleText, setAngleKey, outer);
-      rotateCWCommand = new KeyCommand(rotateCWText, rotateCWKey, outer);
-
-      rotateCCWCommand = new KeyCommand(rotateCCWText, rotateCCWKey, outer);
+      setAngleCommand =
+        new KeyCommand(setAngleText, setAngleKey, outer);
+      rotateCWCommand =
+        new KeyCommand(rotateCWText, rotateCWKey, outer);
+      rotateCCWCommand =
+        new KeyCommand(rotateCCWText, rotateCCWKey, outer);
 
       // for random rotation
-      rotateRNDCommand = new KeyCommand(rotateRNDText, rotateRNDKey, outer);
+      rotateRNDCommand =
+        new KeyCommand(rotateRNDText, rotateRNDKey, outer);
       // end random rotation
 
       if (validAngles.length == 1) {
@@ -343,9 +345,11 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
         l.add(rotateRNDCommand);
       }
       // end for random rotate
-      commands = (KeyCommand[]) l.toArray(new KeyCommand[l.size()]);
+      commands = l.toArray(new KeyCommand[l.size()]);
     }
-    setAngleCommand.setEnabled(getMap() != null && validAngles.length == 1 && setAngleText.length() > 0);
+    setAngleCommand.setEnabled(getMap() != null &&
+                               validAngles.length == 1 &&
+                               setAngleText.length() > 0);
     return commands;
   }
 
@@ -516,8 +520,8 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
         t.translate(unrotatedBounds.x, unrotatedBounds.y);
 
         g2d.drawImage(unrotated.getImage(obs), t, obs);
-        images.put(new Double(angle), rotated);
-        bounds.put(new Double(angle), rotatedBounds);
+        images.put(angle, rotated);
+        bounds.put(angle, rotatedBounds);
       }
       else {
           rotated = null;
@@ -530,13 +534,12 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     if (validAngles.length == 1) {
       angle = validAngles[0];
     }
-    Image rotated = (Image) images.get(new Double(angle));
+    Image rotated = images.get(angle);
     return rotated;
   }
 
   private void clearCachedImages() {
-    for (Iterator it = images.values().iterator(); it.hasNext();) {
-      Image im = (Image) it.next();
+    for (Image im : images.values()) {
       GameModule.getGameModule().getDataArchive().unCacheImage(im);
     }
     images.clear();

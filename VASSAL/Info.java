@@ -1,13 +1,3 @@
-package VASSAL;
-
-import java.awt.Component;
-import java.awt.GraphicsConfiguration;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.io.File;
-import java.util.StringTokenizer;
-
 /*
  * $Id$
  *
@@ -26,6 +16,15 @@ import java.util.StringTokenizer;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+package VASSAL;
+
+import java.awt.Component;
+import java.awt.GraphicsConfiguration;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.io.File;
+import java.util.StringTokenizer;
 
 /**
  * Class for storing release-related information
@@ -56,7 +55,7 @@ public final class Info {
 	 * @return true if this platform supports Swing Drag and Drop
 	 * @deprecated Check is no longer necessary since Java 1.4+ is required
 	 */
-	public static boolean isDndEnabled() {
+	@Deprecated public static boolean isDndEnabled() {
 		if (isDndEnabled == null) {
 			try {
 				Class.forName("java.awt.dnd.DropTarget"); //$NON-NLS-1$
@@ -89,7 +88,7 @@ public final class Info {
 	 * @deprecated since Java 1.4 is now required
 	 * @return true if this platform supports Java2D
 	 */
-	public static boolean is2dEnabled() {
+	@Deprecated public static boolean is2dEnabled() {
 		if (is2dEnabled == null) {
 			try {
 				Class.forName("java.awt.Graphics2D"); //$NON-NLS-1$

@@ -64,7 +64,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   }
 
   public Message[] getMessages() {
-    List msgList = new ArrayList();
+    ArrayList<Message> msgList = new ArrayList<Message>();
     try {
       for (Enumeration e = getMessagesURL.doGet(prepareInfo());
            e.hasMoreElements();) {
@@ -100,7 +100,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     catch (IOException ex) {
       ex.printStackTrace();
     }
-    Message[] msgs = (Message[]) msgList.toArray(new Message[msgList.size()]);
+    Message[] msgs = msgList.toArray(new Message[msgList.size()]);
     return msgs;
   }
 

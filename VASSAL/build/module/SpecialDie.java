@@ -19,7 +19,6 @@
 package VASSAL.build.module;
 
 import java.util.ArrayList;
-import java.util.List;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -31,7 +30,8 @@ import VASSAL.tools.FormattedString;
 
 public class SpecialDie extends AbstractConfigurable {
 
-  private List dieFaceList = new ArrayList();
+  private ArrayList<SpecialDieFace> dieFaceList =
+    new ArrayList<SpecialDieFace>();
   private FormattedString format = new FormattedString("$" + RESULT + "$"); //$NON-NLS-1$ //$NON-NLS-2$
 
   public static final String NAME = "name"; //$NON-NLS-1$
@@ -114,7 +114,7 @@ public class SpecialDie extends AbstractConfigurable {
   }
 
   public String getTextValue(int face) {
-    SpecialDieFace aFace = (SpecialDieFace) dieFaceList.get(face);
+    SpecialDieFace aFace = dieFaceList.get(face);
     format.setProperty(NAME, getLocalizedConfigureName());
     format.setProperty(RESULT, aFace.getTextValue());
     format.setProperty(NUMERICAL_VALUE, aFace.getIntValue() + ""); //$NON-NLS-1$
@@ -122,12 +122,12 @@ public class SpecialDie extends AbstractConfigurable {
   }
 
   public int getIntValue(int face) {
-    SpecialDieFace aFace = (SpecialDieFace) dieFaceList.get(face);
+    SpecialDieFace aFace = dieFaceList.get(face);
     return aFace.getIntValue();
   }
 
   public String getImageName(int face) {
-    SpecialDieFace aFace = (SpecialDieFace) dieFaceList.get(face);
+    SpecialDieFace aFace = dieFaceList.get(face);
     return aFace.getImageName();
   }
 }

@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -23,8 +24,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -43,8 +42,10 @@ import VASSAL.chat.SimpleRoom;
  */
 public class RoomInteractionControlsInitializer implements ChatControlsInitializer {
   public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10); //$NON-NLS-1$
-  private List playerActionFactories = new ArrayList();
-  private List roomActionFactories = new ArrayList();
+  private ArrayList<PlayerActionFactory> playerActionFactories =
+    new ArrayList<PlayerActionFactory>();
+  private ArrayList<RoomActionFactory> roomActionFactories =
+    new ArrayList<RoomActionFactory>();
   protected ChatServerConnection client;
   private MouseAdapter currentRoomPopupBuilder;
   private MouseAdapter roomPopupBuilder;
@@ -132,8 +133,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
 
   public JPopupMenu buildPopupForRoom(Room room, JTree tree) {
     JPopupMenu popup = new JPopupMenu();
-    for (Iterator it = roomActionFactories.iterator(); it.hasNext();) {
-      RoomActionFactory f = (RoomActionFactory) it.next();
+    for (RoomActionFactory f : roomActionFactories) {
       popup.add(f.getAction(room, tree));
     }
     return popup.getComponentCount() == 0 ? null : popup;
@@ -155,8 +155,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
 
   public JPopupMenu buildPopupForPlayer(Player target, JTree tree) {
     JPopupMenu popup = new JPopupMenu();
-    for (Iterator it = playerActionFactories.iterator(); it.hasNext();) {
-      PlayerActionFactory f = (PlayerActionFactory) it.next();
+    for (PlayerActionFactory f : playerActionFactories) {
       popup.add(f.getAction(target, tree));
     }
     return popup.getComponentCount() == 0 ? null : popup;

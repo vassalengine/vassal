@@ -134,7 +134,7 @@ public abstract class DieServer {
    * The text reported after the results of the roll;
    * @deprecated
    */
-  protected String getReportSuffix() {
+  @Deprecated protected String getReportSuffix() {
     return " ***  <" + GameModule.getGameModule().getChatter().getHandle() + ">";
   }
 

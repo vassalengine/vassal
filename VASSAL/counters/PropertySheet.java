@@ -41,7 +41,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -78,7 +77,8 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * A Decorator class that endows a GamePiece with a dialog. */
+ * A Decorator class that endows a GamePiece with a dialog.
+ */
 public class PropertySheet extends Decorator implements TranslatablePiece {
   public static final String ID = "propertysheet;";
 
@@ -118,7 +118,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   protected String state;
   protected HashMap properties = new HashMap();
-  protected List m_fields;
+  protected ArrayList<JComponent> m_fields;
 
 
   static final char TYPE_DELIMITOR = ';';
@@ -251,10 +251,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   private void updateStateFromFields() {
     SequenceEncoder encoder = new SequenceEncoder(STATE_DELIMITOR);
 
-    for (int iCtrl = 0; iCtrl < m_fields.size(); ++iCtrl) {
-      Object field = m_fields.get(iCtrl);
+    for (Object field : m_fields) {
       if (field instanceof JTextComponent) {
-        encoder.append(((JTextComponent) field).getText().replace('\n', LINE_DELIMINATOR));
+        encoder.append(((JTextComponent) field).getText()
+               .replace('\n', LINE_DELIMINATOR));
       }
       else if (field instanceof TickPanel) {
         encoder.append(((TickPanel) field).getValue());
@@ -264,14 +264,13 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
     }
 
-    if (encoder.getValue() != null
-        && !encoder.getValue().equals(state)) {
-
+    if (encoder.getValue() != null && !encoder.getValue().equals(state)) {
       mySetState(encoder.getValue());
 
       GamePiece outer = Decorator.getOutermost(PropertySheet.this);
       if (outer.getId() != null) {
-        GameModule.getGameModule().sendAndLog(new ChangePiece(outer.getId(), oldState, outer.getState()));
+        GameModule.getGameModule().sendAndLog(
+          new ChangePiece(outer.getId(), oldState, outer.getState()));
       }
     }
   }
@@ -281,8 +280,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     isUpdating = true;
     properties.clear();
 
-    SequenceEncoder.Decoder defDecoder = new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
-    SequenceEncoder.Decoder stateDecoder = new SequenceEncoder.Decoder(state, STATE_DELIMITOR);
+    SequenceEncoder.Decoder defDecoder =
+      new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
+    SequenceEncoder.Decoder stateDecoder =
+      new SequenceEncoder.Decoder(state, STATE_DELIMITOR);
     for (int iField = 0; defDecoder.hasMoreTokens(); ++iField) {
       String name = defDecoder.nextToken();
       if (name.length() == 0) {
@@ -325,14 +326,12 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     isUpdating = false;
   }
 
-
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
 
     if (launch.matches(stroke)) {
       if (frame == null) {
-
-        m_fields = new ArrayList();
+        m_fields = new ArrayList<JComponent>();
         VASSAL.build.module.Map map = piece.getMap();
         Frame parent = null;
         if (map != null && map.getView() != null) {
@@ -345,9 +344,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         frame = new PropertySheetDialog(parent);
         
         JPanel pane = new JPanel();
-        JScrollPane scroll = new JScrollPane(pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane scroll =
+          new JScrollPane(pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         frame.getContentPane().add(scroll);
-        
 
         // set up Apply button
         if (commitStyle == COMMIT_ON_APPLY) {
@@ -411,8 +411,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.BOTH;
-        SequenceEncoder.Decoder defDecoder = new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
-        SequenceEncoder.Decoder stateDecoder = new SequenceEncoder.Decoder(state, STATE_DELIMITOR);
+        SequenceEncoder.Decoder defDecoder =
+          new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
+        SequenceEncoder.Decoder stateDecoder =
+          new SequenceEncoder.Decoder(state, STATE_DELIMITOR);
 
         while (defDecoder.hasMoreTokens()) {
           String code = defDecoder.nextToken();
@@ -425,13 +427,16 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           switch (type) {
             case TEXT_FIELD:
               field = new JTextField(stateDecoder.nextToken(""));
-              ((JTextComponent) field).getDocument().addDocumentListener(changeListener);
+              ((JTextComponent) field).getDocument()
+                                      .addDocumentListener(changeListener);
               ((JTextField) field).addActionListener(frame);
               m_fields.add(field);
               break;
             case TEXT_AREA:
-              field = new JTextArea(stateDecoder.nextToken("").replace(LINE_DELIMINATOR, '\n'));
-              ((JTextComponent) field).getDocument().addDocumentListener(changeListener);
+              field = new JTextArea(
+                stateDecoder.nextToken("").replace(LINE_DELIMINATOR, '\n'));
+              ((JTextComponent) field).getDocument()
+                                      .addDocumentListener(changeListener);
               m_fields.add(field);
               field = new ScrollPane(field);
               break;
@@ -448,7 +453,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
               break;
             case SPINNER:
               JSpinner spinner = new JSpinner();
-              JTextField textField = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+              JTextField textField =
+                ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
               textField.setText(stateDecoder.nextToken(""));
               textField.getDocument().addDocumentListener(changeListener);
               m_fields.add(textField);

@@ -89,11 +89,11 @@ public class SubMenu extends Decorator implements TranslatablePiece {
   }
 
   public String[] getSubcommands() {
-    ArrayList l = new ArrayList();
-    for (Iterator it = keyCommands[0].getCommands(); it.hasNext();) {
-      l.add(it.next());
+    ArrayList<String> l = new ArrayList<String>();
+    for (Iterator it = keyCommands[0].getCommands(); it.hasNext(); ) {
+      l.add((String) it.next());
     }
-    return (String[]) l.toArray(new String[l.size()]);
+    return l.toArray(new String[l.size()]);
   }
 
   public String getMenuName() {

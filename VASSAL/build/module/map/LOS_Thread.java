@@ -32,8 +32,6 @@ import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Iterator;
-
 import javax.swing.KeyStroke;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -143,7 +141,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected String lastLocation = ""; 
   protected String lastRange = "";
   protected FormattedString reportFormat = new FormattedString("$playerId$ Checked LOS from $"+FROM_LOCATION+"$ to $"+CHECK_LIST+"$");
-  protected ArrayList checkList = new ArrayList();
+  protected ArrayList<String> checkList = new ArrayList<String>();
   protected String persistence = CTRL_CLICK;
   protected String persistentIconName;
   protected String global = ALWAYS;
@@ -623,10 +621,9 @@ public class LOS_Thread extends AbstractConfigurable implements
   }
 
   protected String getLosCheckList() {
+// FIXME: should use StringBuilder?
     String list = "";
-    String loc;
-    for (Iterator i = checkList.iterator(); i.hasNext(); ) {
-      loc = (String) i.next();
+    for (String loc : checkList) {
       list += (list.length() > 0 ? ", ": "") + loc;
     }
     return list;

@@ -41,7 +41,7 @@ public class SavedGameUpdater {
    */
   public Properties getPieceSlotsMap() {
     Properties p = new Properties();
-    List l = new ArrayList();
+    ArrayList<Configurable> l = new ArrayList<Configurable>();
     findPieceSlots(l, p);
     return p;
   }
@@ -91,12 +91,16 @@ public class SavedGameUpdater {
     GameModule.getGameModule().getGameState().saveGame(savedGame);
   }
 
-  protected void findPieceSlots(List l, Properties p) {
-    Object last = l.size() == 0 ? GameModule.getGameModule() : l.get(l.size() - 1);
+  protected void findPieceSlots(List<Configurable> l, Properties p) {
+    Object last = l.size() == 0 ?
+                  GameModule.getGameModule() : l.get(l.size() - 1);
+
     if (last instanceof PieceSlot) {
       PieceSlot slot = (PieceSlot) last;
       GamePiece clone = PieceCloner.getInstance().clonePiece(slot.getPiece()); // Resolve prototypes
-      p.setProperty(clone.getType(), ComponentPathBuilder.getInstance().getId((Configurable[]) l.toArray(new Configurable[l.size()])));
+      p.setProperty(clone.getType(),
+        ComponentPathBuilder.getInstance().getId(
+          l.toArray(new Configurable[l.size()])));
     }
     else if (last instanceof Configurable) {
       Configurable c = (Configurable) last;

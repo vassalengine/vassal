@@ -313,8 +313,9 @@ public class ResourceExtracter {
   }
 
   protected List getListedResources() throws IOException {
-    BufferedReader resourceList = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(getResourceList())));
-    ArrayList resources = new ArrayList();
+    BufferedReader resourceList = new BufferedReader(
+      new InputStreamReader(getClass().getResourceAsStream(getResourceList())));
+    ArrayList<String> resources = new ArrayList<String>();
     String nextResource = null;
     while ((nextResource = resourceList.readLine()) != null) {
       resources.add(nextResource);

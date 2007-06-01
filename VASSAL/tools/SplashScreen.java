@@ -21,11 +21,9 @@ package VASSAL.tools;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
@@ -36,7 +34,8 @@ import javax.swing.JWindow;
 public class SplashScreen extends JWindow {
   private static final long serialVersionUID = 1L;
 
-  private static java.util.List instances = new ArrayList();
+  private static ArrayList<SplashScreen> instances =
+    new ArrayList<SplashScreen>();
 
   public SplashScreen(Image im) {
     instances.add(this);
@@ -60,16 +59,14 @@ public class SplashScreen extends JWindow {
   }
 
   public static void sendAllToBack() {
-    for (Iterator it = instances.iterator(); it.hasNext();) {
-      Window w = (Window) it.next();
-      w.toBack();
+    for (SplashScreen s : instances) {
+      s.toBack();
     }
   }
   
   public static void disposeAll() {
-    for (Iterator it = instances.iterator(); it.hasNext();) {
-      Window w = (Window) it.next();
-      w.dispose();
+    for (SplashScreen s : instances) { 
+      s.dispose();
     }
   }
 }

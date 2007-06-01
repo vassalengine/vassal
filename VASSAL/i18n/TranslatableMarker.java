@@ -20,7 +20,6 @@ package VASSAL.i18n;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;

@@ -2,19 +2,19 @@
  * $Id$
  *
  * Copyright (c) 2000-2003 by Rodney Kinney, Brent Easton
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Library General Public License (LGPL) as published by
- * the Free Software Foundation.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
- * details.
- *
- * You should have received a copy of the GNU Library General Public License
- * along with this library; if not, copies are available at
- * http://www.opensource.org.
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
  */
 package VASSAL.counters;
 
@@ -35,7 +35,6 @@ import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -66,10 +65,11 @@ public class Footprint extends MovementMarkable {
   // State Variables (Saved in logfile/sent to opponent)
   protected boolean globalVisibility = false;  // Shared trail visibility (if globallyVisible == true)
   protected String startMapId = "";            // Map Id trail started on
-  protected List pointList = new ArrayList();   // List of points
+                                               // List of points
+  protected ArrayList<Point> pointList = new ArrayList<Point>();
 
   // Type Variables (Configured in Ed)
-  protected KeyStroke trailKey;	                   // Control Key to invoke
+  protected KeyStroke trailKey;	               // Control Key to invoke
   protected String menuCommand;                // Menu Command
   protected boolean initiallyVisible = false;  // Are Trails initially visible?
   protected boolean globallyVisible = false;   // Are Trails shared between players?
@@ -234,11 +234,11 @@ public class Footprint extends MovementMarkable {
 
   protected void recordCurrentPosition() {
     Point where = this.getPosition();
-    if (pointList.size() == 0) {
+    if (pointList.isEmpty()) {
       addPoint(where);
     }
     else {
-      Point last = (Point) pointList.get(pointList.size()-1);
+      Point last = pointList.get(pointList.size()-1);
       if (!last.equals(where)) { // Don't add the same point twice
         addPoint(where);
       }
@@ -262,7 +262,6 @@ public class Footprint extends MovementMarkable {
    * trail.
    */
   protected void addPoint(Point p) {
-
     pointList.add(p);
 
     getMyBoundingBox();

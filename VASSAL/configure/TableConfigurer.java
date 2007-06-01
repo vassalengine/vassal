@@ -163,10 +163,9 @@ public class TableConfigurer extends Configurer implements ActionListener  {
   }
 
   protected class Column {
-    
     protected Class type;
     protected String name;
-    protected ArrayList configurers = new ArrayList(0);
+    protected ArrayList<Configurer> configurers = new ArrayList<Configurer>();
     protected Box controls;
     protected JPanel contents;
     
@@ -177,7 +176,7 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     
     public Component getControls(int row) {
       if (row >= 0 && row < getRowCount()) {
-        return ((Configurer) configurers.get(row)).getControls();
+        return configurers.get(row).getControls();
       }
       return null;
     }

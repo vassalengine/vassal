@@ -19,7 +19,7 @@ package VASSAL.chat;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -31,12 +31,12 @@ import VASSAL.i18n.Resources;
 public class PrivateChatManager {
   private ChatServerConnection client;
 
-  private Vector chatters;
-  private Vector banned;
+  private ArrayList<Entry> chatters;
+  private ArrayList<Player> banned;
 
   public PrivateChatManager(ChatServerConnection client) {
-    chatters = new Vector();
-    banned = new Vector();
+    chatters = new ArrayList<Entry>();
+    banned = new ArrayList<Player>();
     this.client = client;
   }
 
@@ -47,11 +47,11 @@ public class PrivateChatManager {
     PrivateChatter chat = null;
     int index = chatters.indexOf(new Entry(sender, null));
     if (index >= 0) {
-      chat = ((Entry) chatters.elementAt(index)).chatter;
+      chat = chatters.get(index).chatter;
     }
     if (chat == null) {
       chat = new PrivateChatter(sender, client);
-      chatters.addElement(new Entry(sender, chat));
+      chatters.add(new Entry(sender, chat));
       JFrame f = new JFrame();
       f.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent e) {
@@ -73,7 +73,7 @@ public class PrivateChatManager {
        Resources.getString("Chat.ignore_messages", p.getName()), //$NON-NLS-1$
        null,
        JOptionPane.YES_NO_OPTION)) {
-      banned.addElement(p);
+      banned.add(p);
     }
   }
 

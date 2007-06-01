@@ -61,7 +61,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public static final String REVERSIBLE = "reversible";
   protected Image boardImage;
   /** @deprecated */
-  protected Hashtable scaledCache = new Hashtable();
+  @Deprecated protected Hashtable scaledCache = new Hashtable();
   protected Point pos = new Point(0, 0);
   protected Rectangle boundaries = new Rectangle(0, 0, 500, 500);
   protected String imageFile;
@@ -294,7 +294,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   /**
    * @deprecated Use {@link #fixImage()} instead.
    */
-  public void fixImage(Component map) {
+  @Deprecated public void fixImage(Component map) {
     fixImage();
   }
 

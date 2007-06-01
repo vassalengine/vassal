@@ -20,7 +20,6 @@ package VASSAL.build.module.noteswindow;
 
 import java.awt.Component;
 import java.util.HashSet;
-import java.util.Iterator;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import VASSAL.build.GameModule;
@@ -37,13 +36,13 @@ import VASSAL.tools.SequenceEncoder;
 public class PrivateNotesController implements GameComponent, CommandEncoder, SetPrivateTextCommand.Interface {
   public static final String COMMAND_PREFIX = "PNOTE\t"; //$NON-NLS-1$
 
-  private HashSet notes;
+  private HashSet<PrivateText> notes;
   private String myLastSavedNotes;
   private Component controls;
   private TextConfigurer text;
 
   public PrivateNotesController() {
-    notes = new HashSet();
+    notes = new HashSet<PrivateText>();
   }
 
   public Component getControls() {
@@ -91,8 +90,7 @@ public class PrivateNotesController implements GameComponent, CommandEncoder, Se
 
   public Command getRestoreCommand() {
     Command comm = null;
-    for (Iterator iterator = notes.iterator(); iterator.hasNext();) {
-      PrivateText privateText = (PrivateText) iterator.next();
+    for (PrivateText privateText : notes) {
       SetPrivateTextCommand c = new SetPrivateTextCommand(this, privateText);
       if (comm == null) {
         comm = c;

@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class SimpleRoom implements Room {
   private String name;
-  private List players = new ArrayList();
+  private ArrayList<Player> players = new ArrayList<Player>();
 
   public SimpleRoom() {
   }
@@ -57,8 +57,8 @@ public class SimpleRoom implements Room {
 
   public void setPlayers(Player[] players) {
     this.players.clear();
-    for (int i = 0; i < players.length; i++) {
-      addPlayer(players[i]);
+    for (Player p : players) {
+      addPlayer(p);
     }
   }
 
@@ -97,11 +97,11 @@ public class SimpleRoom implements Room {
     }
   }
 
-  public Iterator getPlayers() {
+  public Iterator<Player> getPlayers() {
     return players.iterator();
   }
 
-  public List getPlayerList() {
+  public List<Player> getPlayerList() {
     return Collections.unmodifiableList(players);
   }
 }

@@ -32,7 +32,7 @@ import java.util.Vector;
  * Quicksort implementation so we can sort using JRE 1.1
  * @deprecated Use {@link java.util.Collections.sort} instead.
  */
-public class Sort {
+@Deprecated public class Sort {
     private static void swap(Vector v, int i, int j) {
         Object tmp = v.elementAt(i);
         v.setElementAt(v.elementAt(j), i);
@@ -126,7 +126,7 @@ public class Sort {
     /**
      * @deprecated Use {@link java.util.Comparator} instead.
      */
-    public static interface Comparator {
+    @Deprecated public static interface Comparator {
         public int compare(Object o1, Object o2);
     }
 
@@ -135,7 +135,7 @@ public class Sort {
      * @deprecated Use the natural ordering on Strings instead.
      * @see java.lang.String.compareTo(String)
      */
-    public static class Alpha implements Comparator {
+    @Deprecated public static class Alpha implements Comparator {
         public int compare(Object o1, Object o2) {
             String s1 = (String) o1;
             String s2 = (String) o2;

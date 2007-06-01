@@ -121,7 +121,7 @@ public class DiceButton extends AbstractConfigurable {
    * The text reported before the results of the roll
    * @deprecated
    */
-  protected String getReportPrefix() {
+  @Deprecated protected String getReportPrefix() {
     return " *** " + getConfigureName() + " = "; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
@@ -129,7 +129,7 @@ public class DiceButton extends AbstractConfigurable {
    * The text reported after the results of the roll;
    * @deprecated
    */
-  protected String getReportSuffix() {
+  @Deprecated protected String getReportSuffix() {
     return " ***  <" //$NON-NLS-1$
         + GameModule.getGameModule().getChatter().getHandle() + ">"; //$NON-NLS-1$
   }

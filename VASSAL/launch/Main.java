@@ -1,3 +1,22 @@
+/*
+ * $Id: Info.java 2081 2007-05-21 08:46:11Z uckelman $
+ *
+ * Copyright (c) 2006 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.launch;
 
 import java.awt.Color;
@@ -277,14 +296,14 @@ public class Main {
   }
 
   protected String[] getExtractTargets(String[] args) {
-    ArrayList l = new ArrayList();
+    ArrayList<String> l = new ArrayList<String>();
     for (int i = 0; i < args.length; ++i) {
       if (args[i].startsWith("-ext")  //$NON-NLS-1$
           && i < args.length - 1) {
         l.add(args[i + 1]);
       }
     }
-    return (String[]) l.toArray(new String[l.size()]);
+    return l.toArray(new String[l.size()]);
   }
 
   protected void launchVassal(Prefs prefs, String[] args) {

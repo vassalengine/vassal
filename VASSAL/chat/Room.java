@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -28,7 +29,7 @@ public interface Room {
   /** The display name of this room */
   String getName();
   /** Return an (unmodifiable) list of players */
-  List getPlayerList();
+  List<Player> getPlayerList();
   /** Add a player to this room */
   void addPlayer(Player p);
   /** Remove a player from this room */

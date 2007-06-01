@@ -30,8 +30,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -52,8 +50,8 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * Give a piece a command that moves it a fixed amount in a particular direction,
- * optionally tracking the current rotation of the piece.
+ * Give a piece a command that moves it a fixed amount in a particular
+ * direction, optionally tracking the current rotation of the piece.
  */
 public class Translate extends Decorator implements TranslatablePiece {
   public static final String ID = "translate;";
@@ -352,29 +350,30 @@ public class Translate extends Decorator implements TranslatablePiece {
   }
 
   /**
-   * Batches up all the movement commands resulting from a single KeyEvent and executes them at once.
-   * Ensures that pieces that are moving won't be merged with other moving pieces until they've been moved
+   * Batches up all the movement commands resulting from a single KeyEvent
+   * and executes them at once. Ensures that pieces that are moving won't
+   * be merged with other moving pieces until they've been moved.
    */
   public static class MoveExecuter implements Runnable {
-    private java.util.List moves = new ArrayList();
-    private Set pieces = new HashSet();
+    private ArrayList<Move> moves = new ArrayList<Move>();
+    private HashSet<GamePiece> pieces = new HashSet<GamePiece>();
     private KeyStroke stroke;
-    private java.util.List innerPieces = new ArrayList();
+    private ArrayList<GamePiece> innerPieces = new ArrayList<GamePiece>();
 
     public void run() {
       mover = null;
       Command comm = new NullCommand();
-      for (Iterator it = moves.iterator(); it.hasNext();) {
-        final Move move = (Move) it.next();
-        final Map.Merger merger = new Map.Merger(move.map, move.pos, move.piece);
+      for (final Move move : moves) {
+        final Map.Merger merger =
+          new Map.Merger(move.map, move.pos, move.piece);
         DeckVisitor v = new DeckVisitor() {
           public Object visitDeck(Deck d) {
             return merger.visitDeck(d);
           }
 
           public Object visitStack(Stack s) {
-            if (!pieces.contains(s)
-                && move.map.getPieceCollection().canMerge(s, move.piece)) {
+            if (!pieces.contains(s) &&
+                move.map.getPieceCollection().canMerge(s, move.piece)) {
               return merger.visitStack(s);
             }
             else {
@@ -383,8 +382,8 @@ public class Translate extends Decorator implements TranslatablePiece {
           }
 
           public Object visitDefault(GamePiece p) {
-            if (!pieces.contains(p)
-                && move.map.getPieceCollection().canMerge(p, move.piece)) {
+            if (!pieces.contains(p) &&
+                move.map.getPieceCollection().canMerge(p, move.piece)) {
               return merger.visitDefault(p);
             }
             else {
@@ -399,7 +398,8 @@ public class Translate extends Decorator implements TranslatablePiece {
           c = move.map.placeAt(move.piece, move.pos);
           // Apply Auto-move key
           if (move.map.getMoveKey() != null) {
-            c.append(Decorator.getOutermost(move.piece).keyEvent(move.map.getMoveKey()));
+            c.append(Decorator.getOutermost(move.piece)
+                              .keyEvent(move.map.getMoveKey()));
           }
         }
         comm.append(c);
@@ -415,8 +415,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       comm.append(reportCommand);
       comm.append(r.markMovedPieces());
       if (stroke != null) {
-        for (Iterator it = innerPieces.iterator(); it.hasNext();) {
-          GamePiece gamePiece = (GamePiece) it.next();
+        for (GamePiece gamePiece : innerPieces) {
           comm.append(gamePiece.keyEvent(stroke));
         }
       }

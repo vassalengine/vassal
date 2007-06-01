@@ -20,7 +20,8 @@ package VASSAL.chat.messageboard;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
-import java.util.Vector;
+import java.util.Arrays;
+import java.util.Collections;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -31,7 +32,6 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
-
 import VASSAL.i18n.Resources;
 
 /**
@@ -60,11 +60,9 @@ public class MessageBoardControls {
   }
 
   public void showMessages(Message[] m) {
-    Vector v = new Vector();
-    for (int i = 0; i < m.length; ++i) {
-      v.addElement(m[i]);
-    }
-    viewer.setMessages(v.elements());
+    viewer.setMessages(
+      Collections.enumeration(
+        Collections.unmodifiableList((Arrays.asList(m)))));
   }
 
   private void initComponents() {

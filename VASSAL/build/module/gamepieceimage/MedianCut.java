@@ -15,7 +15,7 @@ import java.awt.image.WritableRaster;
    September, 1994 issue of Dr. Dobbs Journal.
    @deprecated
 */
-public class MedianCut {
+@Deprecated public class MedianCut {
    
    static final int MAXCOLORS = 256;   // maximum # of output colors
    static final int HSIZE = 32768;     // size of image histogram

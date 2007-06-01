@@ -72,15 +72,22 @@ import VASSAL.i18n.Translatable;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * This class is responsible for maintaining the {@link Board}s on a {@link Map}. As a {@link CommandEncoder}, it
- * recognizes {@link Command}s that specify the set of boards to be used on a map. As a {@link GameComponent} it reacts
- * to the start of a game by prompting the player to select boards if none have been specified
+ * This class is responsible for maintaining the {@link Board}s on a
+ * {@link Map}. As a {@link CommandEncoder}, it recognizes {@link Command}s
+ * that specify the set of boards to be used on a map. As a
+ * {@link GameComponent} it reacts to the start of a game by prompting the
+ * player to select boards if none have been specified.
  */
-public class BoardPicker implements ActionListener, GameComponent, GameSetupStep, Configurable, CommandEncoder, ValidityChecker {
+public class BoardPicker implements ActionListener,
+                                    GameComponent,
+                                    GameSetupStep,
+                                    Configurable,
+                                    CommandEncoder,
+                                    ValidityChecker {
   private static final long serialVersionUID = 1L;
   public static final String ID = "BoardPicker"; //$NON-NLS-1$
-  protected Vector possibleBoards = new Vector();
-  protected Vector currentBoards = null;
+  protected ArrayList<Board> possibleBoards = new ArrayList<Board>();
+  protected List<Board> currentBoards = null;
   protected Dimension psize = new Dimension(350, 125);
   protected double slotScale = 0.2;
   protected JTextField status;
@@ -181,10 +188,11 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   public void addTo(Buildable b) {
+// FIXME: warn about adding non-Boards?
     map = (Map) b;
     map.setBoardPicker(this);
-    for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
-      ((Board) e.nextElement()).setMap(map);
+    for (Board board : possibleBoards) {
+      board.setMap(map);
     }
     if (b instanceof Translatable) {
       getI18nData().setOwningComponent((Translatable) b);
@@ -212,7 +220,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
         Builder.build(e, this);
       }
       try {
-        psize = new Dimension(Integer.parseInt(e.getAttribute(SLOT_WIDTH)), Integer.parseInt(e.getAttribute(SLOT_HEIGHT)));
+        psize = new Dimension(Integer.parseInt(e.getAttribute(SLOT_WIDTH)),
+                              Integer.parseInt(e.getAttribute(SLOT_HEIGHT)));
       }
       catch (Exception ex) {
       }
@@ -256,32 +265,26 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   public void validate(Buildable target, ValidationReport report) {
-    if (possibleBoards.size() == 0) {
+    if (possibleBoards.isEmpty()) {
       report.addWarning(Resources.getString("BoardPicker.must_define", ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
     }
     HashSet<String> names = new HashSet<String>();
-    for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
-      Object o = e.nextElement();
-      if (o instanceof Board) {
-        Board b = (Board) o;
-        if (names.contains(b.getName())) {
-          report.addWarning(Resources.getString("BoardPicker.more_than_one", b.getName(), ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
-        }
-        names.add(b.getName());
-        b.validate(b, report);
+    for (Board b : possibleBoards) {
+      if (names.contains(b.getName())) {
+        report.addWarning(Resources.getString("BoardPicker.more_than_one", b.getName(), ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
       }
+      names.add(b.getName());
+      b.validate(b, report);
     }
   }
 
   private String getDefaultSetup() {
     String s = defaultSetup;
     if (defaultSetup == null || defaultSetup.length() == 0) {
-      if (possibleBoards.size() == 1 && possibleBoards.firstElement() instanceof Board) {
-        Board b = (Board) possibleBoards.firstElement();
+      if (possibleBoards.size() == 1) {
+        Board b = possibleBoards.get(0);
         if (!"true".equals(b.getAttributeValueString(Board.REVERSIBLE))) { //$NON-NLS-1$
-          Vector v = new Vector();
-          v.addElement(b);
-          s = encode(new SetBoards(this, v));
+          s = encode(new SetBoards(this, Collections.singletonList(b)));
         }
       }
     }
@@ -292,7 +295,11 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
    * Add a board to the list of those available for the user to choose from
    */
   public void add(Buildable b) {
-    possibleBoards.addElement(b);
+// FIXME: warn on non-Boards?
+    if (b instanceof Board) {
+      possibleBoards.add((Board) b);
+    }
+
     if (b instanceof Translatable) {
       ((Translatable) b).getI18nData().setOwningComponent(this);
     }
@@ -302,7 +309,10 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
    * Remove a board from the list of those available for the user to choose from
    */
   public void remove(Buildable b) {
-    possibleBoards.removeElement(b);
+// FIXME: warn on non-Boards?
+    if (b instanceof Board) {
+      possibleBoards.remove(b);
+    }
   }
 
   public void removeFrom(Buildable parent) {
@@ -330,11 +340,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   public Configurable[] getConfigureComponents() {
-    Configurable config[] = new Configurable[possibleBoards.size()];
-    for (int i = 0; i < possibleBoards.size(); ++i) {
-      config[i] = (Board) possibleBoards.elementAt(i);
-    }
-    return config;
+    return possibleBoards.toArray(new Configurable[possibleBoards.size()]);
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -364,12 +370,12 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
 
   protected void selectBoards() {
     if (currentBoards != null) {
-      setBoards(currentBoards.elements());
+      setBoards(Collections.enumeration(currentBoards));
     }
     else {
       reset();
     }
-    if (currentBoards != null && currentBoards.size() > 0) {
+    if (currentBoards != null && !currentBoards.isEmpty()) {
       defaultSetup = encode(new SetBoards(this, currentBoards));
     }
     else {
@@ -378,32 +384,32 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   /**
-   * @return an Enumeration of boards that have been selected either by the user via the dialog or from reading a
-   *         savefile
+   * @return an Enumeration of boards that have been selected either by
+   * the user via the dialog or from reading a savefile
    */
   public Enumeration getCurrentBoards() {
     return currentBoards == null ?
-           Collections.enumeration(Collections.EMPTY_LIST) :
-           currentBoards.elements();
+           Collections.enumeration(Collections.emptyList()) :
+           Collections.enumeration(currentBoards);
   }
 
   /**
    * @return an array of the names of all boards from which the user may choose
    */
   public String[] getAllowableBoardNames() {
-    String s[] = new String[possibleBoards.size()];
-    for (int i = 0; i < s.length; ++i) {
-      s[i] = ((Board) possibleBoards.elementAt(i)).getName();
+    ArrayList<String> s = new ArrayList<String>(possibleBoards.size());
+    for (Board b : possibleBoards) {
+      s.add(b.getName());
     }
-    return s;
+    return s.toArray(new String[s.size()]);
   }
   
   public String[] getAllowableLocalizedBoardNames() {
-    String s[] = new String[possibleBoards.size()];
-    for (int i = 0; i < s.length; ++i) {
-      s[i] = ((Board) possibleBoards.elementAt(i)).getLocalizedName();
+    ArrayList<String> s = new ArrayList<String>(possibleBoards.size());
+    for (Board b : possibleBoards) {
+      s.add(b.getLocalizedName());
     }
-    return s;
+    return s.toArray(new String[s.size()]);
   }
 
   /**
@@ -418,8 +424,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
   
   protected Board getBoard(String boardName, boolean localized) {
-    for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
-      Board b = (Board) e.nextElement();
+    for (Board b : possibleBoards) {
       String checkName = localized ? b.getLocalizedName() : b.getName();
       if (checkName.equals(boardName)) {
         return b;
@@ -452,7 +457,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   public void finish() {
-    currentBoards = new Vector(getBoardsFromControls());
+    currentBoards = new ArrayList<Board>(getBoardsFromControls());
     map.setBoards(getCurrentBoards());
   }
 
@@ -525,9 +530,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
 
   /**
    * @deprecated use {@link #getBoardsFromControls()}
-   * @return
    */
-  public Vector pickBoards() {
+  @Deprecated public Vector pickBoards() {
     return new Vector(getBoardsFromControls());
   }
 
@@ -536,8 +540,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
    * 
    * @return
    */
-  public List getBoardsFromControls() {
-    List boardList = new ArrayList();
+  public List<Board> getBoardsFromControls() {
+    ArrayList<Board> boardList = new ArrayList<Board>();
     if (toolbar != null) {
       // Adjust the bounds of each board according to its relative position
       for (int i = 0; i < nx; ++i) {
@@ -604,7 +608,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   public BoardSlot getSlot(int i) {
-    return i >= 0 && i < slotPanel.getComponentCount() ? (BoardSlot) slotPanel.getComponent(i) : null;
+    return i >= 0 && i < slotPanel.getComponentCount() ?
+      (BoardSlot) slotPanel.getComponent(i) : null;
   }
 
   public void repaintAll() {
@@ -648,28 +653,32 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     el.setAttribute(ADD_ROW_BUTTON_TEXT, addRowButtonText);
     el.setAttribute(ADD_COLUMN_BUTTON_TEXT, addColumnButtonText);
     el.setAttribute(BOARD_PROMPT, boardPrompt);
+  
     if (maxColumns > 0) {
       el.setAttribute(MAX_COLUMNS, String.valueOf(maxColumns));
     }
-    if (defaultSetup != null) {
+  
+   if (defaultSetup != null) {
       Element setupEl = doc.createElement(SETUP);
       setupEl.appendChild(doc.createTextNode(defaultSetup));
       el.appendChild(setupEl);
     }
-    for (Enumeration e = possibleBoards.elements(); e.hasMoreElements();) {
-      Board b = (Board) e.nextElement();
+     
+    for (Board b : possibleBoards) {
       el.appendChild(b.getBuildElement(doc));
     }
     return el;
   }
 
   public Command decode(String command) {
-    if (command.startsWith(map.getId() + ID) || command.startsWith(map.getConfigureName() + ID)) {
-      Vector bds = new Vector();
+    if (command.startsWith(map.getId() + ID) ||
+        command.startsWith(map.getConfigureName() + ID)) {
+      ArrayList<Board> bds = new ArrayList<Board>();
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
       st.nextToken();
       while (st.hasMoreTokens()) {
-        SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '/');
+        SequenceEncoder.Decoder st2 =
+          new SequenceEncoder.Decoder(st.nextToken(), '/');
         String name = st2.nextToken();
         boolean reversed = false;
         if (st2.hasMoreTokens()) {
@@ -683,7 +692,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
           }
           b.setReversed(reversed);
           b.relativePosition().move(p.x, p.y);
-          bds.addElement(b);
+          bds.add(b);
         }
       }
       return new SetBoards(this, bds);
@@ -694,12 +703,12 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   public String encode(Command c) {
-    if (c instanceof SetBoards && map != null && ((SetBoards) c).target == this) {
+    if (c instanceof SetBoards && map != null &&
+        ((SetBoards) c).target == this) {
       SequenceEncoder se = new SequenceEncoder(map.getIdentifier() + ID, '\t');
-      Vector bds = ((SetBoards) c).bds;
+      List<Board> bds = ((SetBoards) c).boards;
       if (bds != null) {
-        for (Enumeration e = bds.elements(); e.hasMoreElements();) {
-          Board b = (Board) e.nextElement();
+        for (Board b : bds) {
           SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
           if (b.isReversed()) {
             se2.append("rev"); //$NON-NLS-1$
@@ -714,17 +723,24 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       return null;
     }
   }
-  public static class SetBoards extends Command {
-    private Vector bds;
-    private BoardPicker target;
 
-    public SetBoards(BoardPicker target, Vector boards) {
+  public static class SetBoards extends Command {
+    private BoardPicker target;
+    private List<Board> boards;
+
+    public SetBoards(BoardPicker picker, List<Board> bds) {
+      target = picker;
+      boards = bds;
+    }
+
+    /** @deprecated Use {@link #SetBoards(BoardPicker,List<Board>)}. */
+    @Deprecated public SetBoards(BoardPicker target, Vector boards) {
       this.target = target;
-      bds = boards;
+      this.boards = boards;
     }
 
     protected void executeCommand() {
-      target.currentBoards = bds;
+      target.currentBoards = boards;
       if (GameModule.getGameModule().getGameState().isGameStarted()) {
         target.map.setBoards(target.getCurrentBoards());
         target.map.getView().revalidate();
@@ -735,6 +751,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       return null;
     }
   }
+
   private class Config extends Configurer {
     private JPanel controls;
     private JButton selectButton;

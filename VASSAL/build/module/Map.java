@@ -51,9 +51,9 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -163,7 +163,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
   protected static UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
 	protected JPanel theMap;
-  protected Vector drawComponents = new Vector();
+  protected ArrayList<Drawable> drawComponents = new ArrayList<Drawable>();
 	protected JScrollPane scroll;
 	protected ComponentSplitter.SplitPane mainWindowDock;
 	protected BoardPicker picker;
@@ -178,13 +178,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected String markUnmovedText = ""; //$NON-NLS-1$
   protected String markUnmovedTooltip = Resources.getString("Map.mark_unmoved"); //$NON-NLS-1$
 	protected MouseListener multicaster = null;
-	protected Vector mouseListenerStack = new Vector();
+	protected ArrayList<MouseListener> mouseListenerStack =
+    new ArrayList<MouseListener>();
 	protected Vector boards = new Vector();
 	protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
 	protected PieceCollection pieces = new DefaultPieceCollection();
 	protected Highlighter highlighter = new ColoredBorder();
-  protected ArrayList highlighters = new ArrayList();
+  protected ArrayList<Highlighter> highlighters = new ArrayList<Highlighter>();
   protected boolean clearFirst = false; // Whether to clear the display before
 	// drawing the map
   protected boolean hideCounters = false;// Option to hide counters to see
@@ -559,7 +560,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @see #paint
    */
 	public void addDrawComponent(Drawable theComponent) {
-		drawComponents.addElement(theComponent);
+		drawComponents.add(theComponent);
 	}
 
 	/**
@@ -568,7 +569,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @see #paint
    */
 	public void removeDrawComponent(Drawable theComponent) {
-		drawComponents.removeElement(theComponent);
+		drawComponents.remove(theComponent);
 	}
 
 	/**
@@ -584,7 +585,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		validator = new CompoundValidityChecker(new MandatoryComponent(this, BoardPicker.class), new MandatoryComponent(this, StackMetrics.class)).append(idMgr);
 		DragGestureListener dgl = new DragGestureListener() {
 			public void dragGestureRecognized(DragGestureEvent dge) {
-				if (mouseListenerStack.size() == 0 && dragGestureListener != null) {
+				if (mouseListenerStack.isEmpty() && dragGestureListener != null) {
 					dragGestureListener.dragGestureRecognized(dge);
 				}
 			}
@@ -1002,11 +1003,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * MouseListeners on a map may be pushed and popped onto a stack. Only the top listener on the stack receives mouse
-   * events
+   * MouseListeners on a map may be pushed and popped onto a stack.
+   * Only the top listener on the stack receives mouse events.
    */
 	public void pushMouseListener(MouseListener l) {
-		mouseListenerStack.addElement(l);
+		mouseListenerStack.add(l);
 	}
 
 	/**
@@ -1014,7 +1015,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * events
    */
 	public void popMouseListener() {
-		mouseListenerStack.removeElement(mouseListenerStack.lastElement());
+		mouseListenerStack.remove(mouseListenerStack.size()-1);
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -1032,10 +1033,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @see #addLocalMouseListener
    */
 	public void mouseClicked(MouseEvent e) {
-		if (mouseListenerStack.size() > 0) {
+		if (!mouseListenerStack.isEmpty()) {
 			Point p = mapCoordinates(e.getPoint());
 			e.translatePoint(p.x - e.getX(), p.y - e.getY());
-			((MouseListener) mouseListenerStack.lastElement()).mouseClicked(e);
+			mouseListenerStack.get(mouseListenerStack.size()-1).mouseClicked(e);
 		}
 		else if (multicaster != null) {
 			Point p = mapCoordinates(e.getPoint());
@@ -1066,27 +1067,25 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     // Deselect any counters on the last Map with focus
     if (!this.equals(activeMap)) {
       boolean dirty = false;
-      java.util.List l = new ArrayList();
-      for (Enumeration en = KeyBuffer.getBuffer().getPieces(); en.hasMoreElements();) {
-        l.add(en.nextElement());
-      }
-      for (Iterator it = l.iterator(); it.hasNext();) {
-        GamePiece p = (GamePiece) it.next();
+      ArrayList<GamePiece> l =
+        Collections.list(KeyBuffer.getBuffer().getPieces());
+      for (GamePiece p : l) {
         if (p.getMap() == activeMap) {
           KeyBuffer.getBuffer().remove(p);
           dirty = true;
         }
       }
+
       if (dirty && activeMap != null) {
         activeMap.repaint();
       }      
     }
     activeMap = this;
   
-		if (mouseListenerStack.size() > 0) {
+		if (!mouseListenerStack.isEmpty()) {
 			Point p = mapCoordinates(e.getPoint());
 			e.translatePoint(p.x - e.getX(), p.y - e.getY());
-			((MouseListener) mouseListenerStack.lastElement()).mousePressed(e);
+			mouseListenerStack.get(mouseListenerStack.size()-1).mousePressed(e);
 		}
 		else if (multicaster != null) {
 			Point p = mapCoordinates(e.getPoint());
@@ -1096,8 +1095,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * Mouse events are first translated into map coordinates. Then the event is forwarded to the top MouseListener in the
-   * stack, if any, otherwise forwarded to all LocalMouseListeners
+   * Mouse events are first translated into map coordinates.
+   * Then the event is forwarded to the top MouseListener in the
+   * stack, if any, otherwise forwarded to all LocalMouseListeners.
    * 
    * @see #pushMouseListener
    * @see #popMouseListener
@@ -1107,10 +1107,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		Point p = e.getPoint();
 		p.translate(theMap.getLocation().x, theMap.getLocation().y);
 		if (theMap.getBounds().contains(p)) {
-			if (mouseListenerStack.size() > 0) {
+			if (!mouseListenerStack.isEmpty()) {
 				p = mapCoordinates(e.getPoint());
 				e.translatePoint(p.x - e.getX(), p.y - e.getY());
-				((MouseListener) mouseListenerStack.lastElement()).mouseReleased(e);
+			  mouseListenerStack.get(mouseListenerStack.size()-1).mouseReleased(e);
 			}
 			else if (multicaster != null) {
 				p = mapCoordinates(e.getPoint());
@@ -1327,8 +1327,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	public void drawDrawable(Graphics g, boolean aboveCounters) {
-		for (Enumeration e = drawComponents.elements(); e.hasMoreElements();) {
-			Drawable drawable = (Drawable) e.nextElement();
+    for (Drawable drawable : drawComponents) {
 			if (!(aboveCounters ^ drawable.drawAboveCounters())) {
 				drawable.draw(g, this);
 			}
@@ -1826,7 +1825,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * 
    * @deprecated use {@link PieceCollection#moveToFront}
    */
-	public void reposition(GamePiece s, int pos) {
+	@Deprecated public void reposition(GamePiece s, int pos) {
 	}
 
 	/**
@@ -2069,14 +2068,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return
    */
 	public static Iterator getAllMaps() {
-		List l = new ArrayList();
-		for (Enumeration e = GameModule.getGameModule().getComponents(Map.class); e.hasMoreElements();) {
-			Map m = (Map) e.nextElement();
-			l.add(m);
-		}
-		for (Enumeration charts = GameModule.getGameModule().getComponents(ChartWindow.class); charts.hasMoreElements();) {
+		ArrayList<Map> l =
+      Collections.list(GameModule.getGameModule().getComponents(Map.class));
+		for (Enumeration charts = GameModule.getGameModule()
+                                        .getComponents(ChartWindow.class);
+         charts.hasMoreElements();) {
 			ChartWindow w = (ChartWindow) charts.nextElement();
-			for (Enumeration e = w.getAllDescendantComponents(MapWidget.class); e.hasMoreElements();) {
+			for (Enumeration e = w.getAllDescendantComponents(MapWidget.class);
+           e.hasMoreElements();) {
 				l.add(((MapWidget) e.nextElement()).getMap());
 			}
 		}

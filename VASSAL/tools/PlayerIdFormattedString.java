@@ -25,7 +25,7 @@ import VASSAL.build.GameModule;
  * variables for Player name, side, and id
  * @deprecated use FormattedString constructor with defaultProperties
  */
-public class PlayerIdFormattedString extends FormattedString {
+@Deprecated public class PlayerIdFormattedString extends FormattedString {
   public PlayerIdFormattedString() {
     this("");
   }

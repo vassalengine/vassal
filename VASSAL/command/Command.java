@@ -110,7 +110,7 @@ public abstract class Command {
   /**
    * @deprecated Use {@link #isAtomic()}
    */
-  protected boolean hasNullSubcommands() {
+  @Deprecated protected boolean hasNullSubcommands() {
     return isAtomic();
   }
 

@@ -1,10 +1,27 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2006 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.build.module.properties;
 
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
-import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
@@ -29,9 +46,12 @@ public class PropertyChangerConfigurer extends Configurer {
   protected static final char PROMPT_CODE = 'R';
   protected static final char ENUM_CODE = 'E';
   protected static final char INCR_CODE = 'I';
-  protected static final Map typeToCode = new HashMap();
-  protected static final Map typeToDescription = new HashMap();
-  protected static final Map descriptionToCode = new HashMap();
+  protected static final HashMap<Class,Character> typeToCode =
+    new HashMap<Class,Character>();
+  protected static final HashMap<Class,String> typeToDescription =
+    new HashMap<Class,String>();
+  protected static final HashMap<String,Character> descriptionToCode =
+    new HashMap<String,Character>();
   static {
     typeToCode.put(PropertySetter.class, new Character(PLAIN_CODE));
     typeToCode.put(PropertyPrompt.class, new Character(PROMPT_CODE));
@@ -127,7 +147,7 @@ public class PropertyChangerConfigurer extends Configurer {
 
   protected void updateValue() {
     PropertyChanger p;
-    switch (((Character) descriptionToCode.get(typeConfig.getValueString())).charValue()) {
+    switch (descriptionToCode.get(typeConfig.getValueString()).charValue()) {
     case PROMPT_CODE:
       p = new PropertyPrompt(constraints, promptConfig.getValueString());
       break;
@@ -135,7 +155,8 @@ public class PropertyChangerConfigurer extends Configurer {
       p = new IncrementProperty(incrConfig.getValueString(), constraints);
       break;
     case ENUM_CODE:
-      p = new EnumeratedPropertyPrompt(constraints, promptConfig.getValueString(), validValuesConfig.getStringArray());
+      p = new EnumeratedPropertyPrompt(constraints,
+        promptConfig.getValueString(), validValuesConfig.getStringArray());
       break;
     case PLAIN_CODE:
     default:
@@ -148,18 +169,23 @@ public class PropertyChangerConfigurer extends Configurer {
     PropertyChanger propChanger = getPropertyChanger();
     SequenceEncoder se = new SequenceEncoder(',');
     if (propChanger != null) {
-      switch (((Character) typeToCode.get(propChanger.getClass())).charValue()) {
+      switch (typeToCode.get(propChanger.getClass()).charValue()) {
       case PROMPT_CODE:
-        se.append(PROMPT_CODE).append(((PropertyPrompt) propChanger).getPrompt());
+        se.append(PROMPT_CODE)
+          .append(((PropertyPrompt) propChanger).getPrompt());
         break;
       case INCR_CODE:
-        se.append(INCR_CODE).append(((IncrementProperty) propChanger).getIncrement());
+        se.append(INCR_CODE)
+          .append(((IncrementProperty) propChanger).getIncrement());
         break;
       case ENUM_CODE:
-        se.append(ENUM_CODE).append(((PropertyPrompt) propChanger).getPrompt()).append(((EnumeratedPropertyPrompt) propChanger).getValidValues());
+        se.append(ENUM_CODE)
+          .append(((PropertyPrompt) propChanger).getPrompt())
+          .append(((EnumeratedPropertyPrompt) propChanger).getValidValues());
         break;
       case PLAIN_CODE:
-        se.append(PLAIN_CODE).append(((PropertySetter) propChanger).getRawValue());
+        se.append(PLAIN_CODE)
+          .append(((PropertySetter) propChanger).getRawValue());
       }
     }
     return se.getValue();

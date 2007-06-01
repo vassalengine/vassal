@@ -24,13 +24,10 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
-
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-
 import VASSAL.configure.Configurer;
 import VASSAL.tools.SequenceEncoder;
 
@@ -44,9 +41,11 @@ public class LocaleConfigurer extends Configurer {
 
   protected static final String ANY_COUNTRY = "<Any Country>";
   protected Box panel;
-  protected static HashMap languages = new HashMap();
+  protected static HashMap<String,String> languages =
+    new HashMap<String,String>();
   protected static String[] languageList;
-  protected static HashMap countries = new HashMap();
+  protected static HashMap<String,String> countries =
+    new HashMap<String,String>();
   protected static String[] countryList;
 
   protected JComboBox langBox;
@@ -130,8 +129,8 @@ public class LocaleConfigurer extends Configurer {
   }
   
   protected void updateValue() {
-    String language = (String) languages.get(langBox.getSelectedItem());
-    String country = (String) countries.get(countryBox.getSelectedItem());
+    String language = languages.get(langBox.getSelectedItem());
+    String country = countries.get(countryBox.getSelectedItem());
     
     setValue(language + "," + country);
   }
@@ -139,14 +138,15 @@ public class LocaleConfigurer extends Configurer {
    protected String[] getLanguageList() {
     if (languageList == null) {
       String[] langs = Locale.getISOLanguages();
-      ArrayList sortedLangs = new ArrayList();
+      ArrayList<String> sortedLangs = new ArrayList<String>();
       for (int i = 0; i < langs.length; i++) {
-        String lang = ((new Locale(langs[i])).getDisplayLanguage(Locale.getDefault()));
+        String lang =
+          (new Locale(langs[i])).getDisplayLanguage(Locale.getDefault());
         languages.put(lang, langs[i]);
         sortedLangs.add(lang);
       }
       Collections.sort(sortedLangs, Collator.getInstance(Locale.getDefault()));
-      languageList = (String[]) sortedLangs.toArray(new String[0]);
+      languageList = sortedLangs.toArray(new String[sortedLangs.size()]);
     }
     return languageList;
   }
@@ -154,20 +154,18 @@ public class LocaleConfigurer extends Configurer {
   protected String[] getCountryList() {
     if (countryList == null) {
       String[] c = Locale.getISOCountries();
-      ArrayList sortedCountries = new ArrayList();
+      ArrayList<String> sortedCountries = new ArrayList<String>();
       for (int i = 0; i < c.length; i++) {
-        String country = ((new Locale("en", c[i])).getDisplayCountry(Locale.getDefault()));
+        String country =
+          (new Locale("en", c[i])).getDisplayCountry(Locale.getDefault());
         countries.put(country, c[i]);
         sortedCountries.add(country);
       }
+      Collections.sort(sortedCountries,
+                       Collator.getInstance(Locale.getDefault()));
       countries.put(ANY_COUNTRY, "");
-      Collections.sort(sortedCountries, Collator.getInstance(Locale.getDefault()));
-      countryList = new String[sortedCountries.size()+1];
-      int index = 0;
-      countryList[index++] = ANY_COUNTRY;
-      for (Iterator i = sortedCountries.iterator(); i.hasNext(); countryList[index++] = (String) i.next()) {
-        ;
-      }
+      sortedCountries.add(0, ANY_COUNTRY);
+      countryList = sortedCountries.toArray(new String[sortedCountries.size()]);
     }
     return countryList;
   }
@@ -180,5 +178,4 @@ public class LocaleConfigurer extends Configurer {
   public static String localeToString(Locale l) {
     return l.getLanguage() + "," + l.getCountry();
   }
-
 }

@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Set;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.command.Command;
@@ -40,7 +39,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
   private static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "EXT\t"; //$NON-NLS-1$
 
-  private Set loadedExtensions = new HashSet();
+  private HashSet<String> loadedExtensions = new HashSet<String>();
 
   public void addTo(GameModule mod) {
     if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
@@ -58,24 +57,22 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
   }
 
   private void addExtensions() {
-    String[] extensions = getExtensionNames();
-    if (extensions != null) {
-      for (int i = 0; i < extensions.length; ++i) {
-        if (!loadedExtensions.contains(extensions[i])) {
-          try {
-            ModuleExtension ext = new ModuleExtension(new DataArchive(extensions[i]));
-            ext.build();
-            String msg = Resources.getString("ExtensionsLoader.extension_loaded", ext.getName(), ext.getVersion()); //$NON-NLS-1$
-            loadedExtensions.add(extensions[i]);
-            GameModule.getGameModule().warn(msg);
-            System.err.println(msg);
-          }
-          catch (IOException e) {
-            reportBuildError(e, extensions[i]);
-          }
-          catch (IllegalBuildException e) {
-            reportBuildError(e, extensions[i]);
-          }
+    for (String extname : getExtensionNames()) {
+      if (!loadedExtensions.contains(extname)) {
+        try {
+          ModuleExtension ext =
+            new ModuleExtension(new DataArchive(extname));
+          ext.build();
+          String msg = Resources.getString("ExtensionsLoader.extension_loaded", ext.getName(), ext.getVersion()); //$NON-NLS-1$
+          loadedExtensions.add(extname);
+          GameModule.getGameModule().warn(msg);
+          System.err.println(msg);
+        }
+        catch (IOException e) {
+          reportBuildError(e, extname);
+        }
+        catch (IllegalBuildException e) {
+          reportBuildError(e, extname);
         }
       }
     }

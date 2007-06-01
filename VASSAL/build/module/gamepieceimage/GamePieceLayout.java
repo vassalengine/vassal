@@ -30,7 +30,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -73,7 +72,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   public static final String[] LOCATIONS = new String[]{CENTER, N, S, E, W, NE, NW, SE, SW};
   public static final int[] X_POS = new int[]{POS_C, POS_C, POS_C, POS_R, POS_L, POS_R, POS_L, POS_R, POS_L};
   public static final int[] Y_POS = new int[]{POS_C, POS_T, POS_B, POS_C, POS_C, POS_T, POS_T, POS_B, POS_B};
-  protected static Map compass = new HashMap();
+  protected static Map<String,String> compass = new HashMap<String,String>();
   static {
     compass.put(N,"N");
     compass.put(S,"S");
@@ -87,7 +86,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public static String getCompassPoint(String location) {
-    return (String) compass.get(location);
+    return compass.get(location);
   }
 
   public Point getPosition(Item item) {
@@ -125,7 +124,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   protected String border = BORDER_3D;
   protected GamePieceImage imageDefn;
   protected Image visImage;
-  protected ArrayList items = new ArrayList();
+  protected ArrayList<Item> items = new ArrayList<Item>();
 
   public GamePieceLayout() {
     super();
@@ -265,13 +264,11 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   protected Item getItem(int n) {
-    return (Item) items.get(n);
+    return items.get(n);
   }
 
   protected Item getItem(String name) {
-    Iterator i = items.iterator();
-    while (i.hasNext()) {
-      Item item = (Item) i.next();
+    for (Item item : items) {
       if (item.getConfigureName().equals(name)) {
         return item;
       }
@@ -288,7 +285,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public void moveItem(int from, int to) {
-    Item temp = (Item) items.get(to);
+    Item temp = items.get(to);
     items.set(to, items.get(from));
     items.set(from, temp);
   }
@@ -344,9 +341,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     }
 
     // layer each item over the top
-    Iterator i = items.iterator();
-    while (i.hasNext()) {
-      Item item = (Item) i.next();
+    for (Item item : items) {
       if (item != null) {
         item.draw(g, defn);
       }
@@ -380,10 +375,8 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
 
   protected String encodeItemList() {
     String[] list = new String[getItemCount()];
-    Iterator it = items.iterator();
     int i = 0;
-    while (it.hasNext()) {
-      Item item = (Item) it.next();
+    for (Item item : items) {
       list[i++] = item.encode();
     }
     SequenceEncoder se = new SequenceEncoder('#');

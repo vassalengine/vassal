@@ -616,7 +616,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
   }
 
   /** @deprecated use #selectMovablePieces(MouseEvent) */
-  protected void selectMovablePieces(Point point) {
+  @Deprecated protected void selectMovablePieces(Point point) {
     GamePiece p = map.findPiece(point, dragTargetSelector);
     dragBegin = point;
     selectionProcessor.accept(p);

@@ -206,7 +206,7 @@ public class DragBuffer {
   /**
    * @deprecated Use {@link #sort(Comparator)} instead.
    */ 
-  public void sort(VASSAL.tools.Sort.Comparator comp) {
+  @Deprecated public void sort(VASSAL.tools.Sort.Comparator comp) {
     sort((Comparator) comp);
   }
 }

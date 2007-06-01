@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -20,8 +21,6 @@ package VASSAL.chat.node;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
@@ -29,7 +28,8 @@ import java.util.logging.Logger;
 import VASSAL.tools.SequenceEncoder;
 
 public class ServerNode extends Node {
-  private static final Logger logger = Logger.getLogger(ServerNode.class.getName());
+  private static final Logger logger =
+    Logger.getLogger(ServerNode.class.getName());
   private SendContentsTask sendContents;
 
   public ServerNode() {
@@ -50,24 +50,23 @@ public class ServerNode extends Node {
     while (st.hasMoreTokens()) {
       String childId = st.nextToken();
       if ("*".equals(childId)) { //$NON-NLS-1$
-        ArrayList l = new ArrayList();
-        for (int i = 0; i < target.length; ++i) {
-          l.addAll(Arrays.asList(target[i].getChildren()));
+        ArrayList<Node> l = new ArrayList<Node>();
+        for (Node node : target) {
+          l.addAll(Arrays.asList(node.getChildren()));
         }
-        target = (Node[]) l.toArray(new Node[l.size()]);
+        target = l.toArray(new Node[l.size()]);
       }
       else if (childId.startsWith("~")) { //$NON-NLS-1$
         childId = childId.substring(1);
-        ArrayList l = new ArrayList();
-        for (int i = 0; i < target.length; ++i) {
-          Node[] children = target[i].getChildren();
-          for (int j = 0; j < children.length; ++j) {
-            if (!childId.equals(children[j].getId())) {
-              l.add(children[j]);
+        ArrayList<Node> l = new ArrayList<Node>();
+        for (Node node : target) {
+          for (Node child : node.getChildren()) {
+            if (!childId.equals(child.getId())) {
+              l.add(child);
             }
           }
         }
-        target = (Node[]) l.toArray(new Node[l.size()]);
+        target = l.toArray(new Node[l.size()]);
       }
       else {
         int i = 0;
@@ -162,7 +161,8 @@ public class ServerNode extends Node {
   }
 
   private static class SendContentsTask extends TimerTask {
-    private Set modules = new HashSet();
+// FIXME: should modules be wrapped by Collections.synchronizedMap()?
+    private HashSet<Node> modules = new HashSet<Node>();
 
     public void markChanged(Node module) {
       synchronized (modules) {
@@ -171,12 +171,13 @@ public class ServerNode extends Node {
     }
 
     public void run() {
-      Set s = new HashSet();
+      HashSet<Node> s = new HashSet<Node>();
+
       synchronized (modules) {
         s.addAll(modules);
       }
-      for (Iterator it = s.iterator(); it.hasNext();) {
-        Node module = (Node) it.next();
+
+      for (Node module : s) {
         logger.fine("Sending contents of " + module.getId()); //$NON-NLS-1$
         Node[] players = module.getLeafDescendants();
         Node[] rooms = module.getChildren();
@@ -187,11 +188,10 @@ public class ServerNode extends Node {
         module.send(roomInfo);
         logger.finer(roomInfo);
       }
+
       synchronized (modules) {
         modules.clear();
       }
     }
-
   }
-
 }

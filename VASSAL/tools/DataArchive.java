@@ -107,7 +107,7 @@ public class DataArchive extends SecureClassLoader {
   /**
    * @deprecated Use {@link getImage} instead.
    */
-  public static Image findImage(File zip, String file) throws IOException {
+  @Deprecated public static Image findImage(File zip, String file) throws IOException {
     return getImage(getFileStream(zip, file));
   }
 
@@ -125,7 +125,7 @@ public class DataArchive extends SecureClassLoader {
   /**
    * @deprecated Use {@link getImage} instead.
    */
-  public static Image findImage(File dir, String zip, String file)
+  @Deprecated public static Image findImage(File dir, String zip, String file)
       throws IOException {
     /*
      ** Looks for entry "file" in ZipFile "zip" in directory "dir"
@@ -305,7 +305,7 @@ public class DataArchive extends SecureClassLoader {
   /**
    * @deprecated Don't use this. Regular scaling is just as good now.
    */
-  public Image improvedScaling(Image img, int width, int height) {
+  @Deprecated public Image improvedScaling(Image img, int width, int height) {
     ImageFilter filter;
 
     filter = new ImprovedAveragingScaleFilter(img.getWidth(null),
@@ -415,7 +415,7 @@ public class DataArchive extends SecureClassLoader {
   /**
    * @deprecated Use {@link #clearTransformedImageCache()} instead.
    */ 
-  public void clearScaledImageCache() {
+  @Deprecated public void clearScaledImageCache() {
     clearTransformedImageCache();
   }
 

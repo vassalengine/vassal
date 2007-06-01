@@ -1,20 +1,3 @@
-package VASSAL.build.module.gamepieceimage;
-
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import java.util.Iterator;
-import org.w3c.dom.Element;
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.SingleChildInstance;
-
 /*
  * $Id$
  *
@@ -33,6 +16,22 @@ import VASSAL.configure.SingleChildInstance;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+package VASSAL.build.module.gamepieceimage;
+
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import org.w3c.dom.Element;
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.SingleChildInstance;
 
 /**
  * Container for definitions of Generic Color Definitions
@@ -45,7 +44,8 @@ public class FontManager extends AbstractConfigurable {
     return instance;
   }
     
-  protected HashMap fontStyles = new HashMap();
+  protected HashMap<String,FontStyle> fontStyles =
+    new HashMap<String,FontStyle>();
 
   public static final String DIALOG = "Dialog"; //$NON-NLS-1$
   public static final String SERIF = "Serif"; //$NON-NLS-1$
@@ -77,7 +77,7 @@ public class FontManager extends AbstractConfigurable {
   }
 
   protected FontStyle getFontStyle(String name) {
-    FontStyle fs = (FontStyle) fontStyles.get(name);
+    FontStyle fs = fontStyles.get(name);
     return fs == null ? DEFAULT_STYLE : fs;
   }
 
@@ -125,8 +125,9 @@ public class FontManager extends AbstractConfigurable {
       def.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            fontStyles.remove(evt.getOldValue());
-            fontStyles.put(evt.getNewValue(), evt.getSource());
+            fontStyles.remove((String) evt.getOldValue());
+            fontStyles.put((String) evt.getNewValue(),
+                           (FontStyle) evt.getSource());
           }
         }
       });
@@ -148,13 +149,11 @@ public class FontManager extends AbstractConfigurable {
   }
 
   public String[] getFontNames() {
-    String[] names = new String[fontStyles.size()];
-    Iterator i = fontStyles.values().iterator();
-    int j = 0;
-    while (i.hasNext()) {
-      names[j++] = ((FontStyle) i.next()).getConfigureName();
+    ArrayList<String> names = new ArrayList<String>(fontStyles.size());
+    for (FontStyle fs : fontStyles.values()) {
+      names.add(fs.getConfigureName());
     }
-    return names;
+    return names.toArray(new String[names.size()]);
   }
 
 }

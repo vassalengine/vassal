@@ -31,7 +31,6 @@ import java.awt.geom.Area;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -356,8 +355,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   public KeyCommand[] myGetKeyCommands() {
-      
-    List l = new ArrayList();
+    ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
     GamePiece outer = Decorator.getOutermost(this);
       
     // Hide Command
@@ -380,15 +378,13 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       l.add(peek);
     }
       
-    commandsWithPeek = (KeyCommand[]) l.toArray(new KeyCommand[l.size()]);
+    commandsWithPeek = l.toArray(new KeyCommand[l.size()]);
 
-    if (obscuredToOthers() && isMaskable() && displayStyle == PEEK && peekKey != null) {
-      return commandsWithPeek;
-    }
-    else {
-      return commandsWithoutPeek;
-    }
-    
+    return obscuredToOthers() &&
+           isMaskable() &&
+           displayStyle == PEEK &&
+           peekKey != null ?
+           commandsWithPeek : commandsWithoutPeek;
   }
 
   /** 
@@ -396,7 +392,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    * @param id ignored
    * @deprecated 
    */
-  public boolean isMaskableBy(String id) {
+  @Deprecated public boolean isMaskableBy(String id) {
     return isMaskable();
   }
 
@@ -471,7 +467,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    * @param allHidden
    * @deprecated
    */
-  public static void setAllHidden(boolean allHidden) {
+  @Deprecated public static void setAllHidden(boolean allHidden) {
     if (allHidden) {
       PieceAccess.GlobalAccess.hideAll();
     }

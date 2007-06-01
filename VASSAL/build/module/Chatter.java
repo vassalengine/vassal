@@ -123,11 +123,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
 
   /** @deprecated use GlobalOptions.getPlayerId() */
-  public void setHandle(String s) {
+  @Deprecated public void setHandle(String s) {
   }
 
   /** @deprecated use GlobalOptions.getPlayerId() */
-  public String getHandle() {
+  @Deprecated public String getHandle() {
     return GlobalOptions.getInstance().getPlayerId();
   }
 

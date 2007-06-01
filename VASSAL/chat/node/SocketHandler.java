@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -19,7 +20,7 @@ package VASSAL.chat.node;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Vector;
+import java.util.LinkedList;
 
 /**
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
@@ -28,7 +29,7 @@ import java.util.Vector;
 public abstract class SocketHandler {
   protected Socket sock;
   protected SocketWatcher handler;
-  private Vector writeQueue = new Vector();
+  private LinkedList<String> writeQueue = new LinkedList<String>();
   private boolean isOpen = true;
   private Thread readThread;
   private Thread writeThread;
@@ -118,7 +119,7 @@ public abstract class SocketHandler {
 
   public void writeLine(String pMessage) {
     synchronized (writeQueue) {
-      writeQueue.addElement(pMessage);
+      writeQueue.addLast(pMessage);
       writeQueue.notifyAll();
     }
   }
@@ -146,7 +147,7 @@ public abstract class SocketHandler {
 
   private String getLine() {
     synchronized (writeQueue) {
-      if (writeQueue.size() == 0) {
+      if (writeQueue.isEmpty()) {
         try {
           writeQueue.wait();
         }
@@ -154,9 +155,8 @@ public abstract class SocketHandler {
         }
       }
       String message = ""; //$NON-NLS-1$
-      if (writeQueue.size() > 0) {
-        message = (String) writeQueue.elementAt(0);
-        writeQueue.removeElementAt(0);
+      if (!writeQueue.isEmpty()) {
+        message = writeQueue.removeFirst();
       }
       return message;
     }

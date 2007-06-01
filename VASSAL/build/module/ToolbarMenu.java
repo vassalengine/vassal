@@ -164,12 +164,13 @@ public class ToolbarMenu extends AbstractConfigurable
     }
     buttonsToMenuMap.clear();
     menu.removeAll();
-    java.util.Map m = new HashMap();
+    HashMap<String,JButton> m = new HashMap<String,JButton>();
     if (toolbar != null) {
       for (int i = 0, n = toolbar.getComponentCount(); i < n; ++i) {
         if (toolbar.getComponentAtIndex(i) instanceof JButton) {
           JButton b = ((JButton) toolbar.getComponentAtIndex(i));
-          String text = (String) b.getClientProperty(LaunchButton.UNTRANSLATED_TEXT);
+          String text =
+            (String) b.getClientProperty(LaunchButton.UNTRANSLATED_TEXT);
           if (text == null) {
             text = b.getText();
           }
@@ -179,20 +180,22 @@ public class ToolbarMenu extends AbstractConfigurable
     }
     
     for (String item : menuItems) {
-      final JButton b = (JButton) m.get(item);
+      final JButton b = m.get(item);
       if (b != null) {
         Object property = b.getClientProperty(MENU_PROPERTY);
         b.addPropertyChangeListener(this);
         b.setVisible(false);
         if (property instanceof JPopupMenu) {
-          // This button corresponds to another ToolbarMenu button. Turn it into a submenu
+          // This button corresponds to another ToolbarMenu button.
+          // Turn it into a submenu.
           JPopupMenu toolbarMenu = (JPopupMenu) property;
           toolbarMenu.addContainerListener(this);
           JMenu subMenu = new JMenu(b.getText());
           Component[] items = toolbarMenu.getComponents();
           for (int i = 0; i < items.length; i++) {
             final JMenuItem otherItem = (JMenuItem) items[i];
-            JMenuItem myItem = new JMenuItem(otherItem.getText(), otherItem.getIcon());
+            JMenuItem myItem =
+              new JMenuItem(otherItem.getText(), otherItem.getIcon());
             myItem.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent e) {
                 otherItem.doClick();

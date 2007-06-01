@@ -27,7 +27,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -141,8 +140,9 @@ public class PieceAccessConfigurer extends Configurer {
       return SideAccess.getInstance();
     }
     else if (s != null && s.startsWith(SIDES)) {
-      SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s.substring(SIDES.length()), ':');
-      List l = new ArrayList();
+      SequenceEncoder.Decoder sd =
+        new SequenceEncoder.Decoder(s.substring(SIDES.length()), ':');
+      ArrayList<String> l = new ArrayList<String>();
       while (sd.hasMoreTokens()) {
         l.add(sd.nextToken());
       }
@@ -160,7 +160,8 @@ public class PieceAccessConfigurer extends Configurer {
     }
     else if (p instanceof SpecifiedSideAccess) {
       SequenceEncoder se = new SequenceEncoder(':');
-      for (Iterator it = ((SpecifiedSideAccess)p).getSides().iterator(); it.hasNext();) {
+      for (Iterator it = ((SpecifiedSideAccess)p).getSides().iterator();
+           it.hasNext();) {
         String side = (String) it.next();
         se.append(side);
       }

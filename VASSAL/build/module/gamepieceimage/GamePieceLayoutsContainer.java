@@ -1,17 +1,3 @@
-package VASSAL.build.module.gamepieceimage;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import java.util.Iterator;
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.SingleChildInstance;
-
 /*
  * $Id$
  *
@@ -30,17 +16,30 @@ import VASSAL.configure.SingleChildInstance;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+package VASSAL.build.module.gamepieceimage;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.SingleChildInstance;
 
 /**
  * Container for definitions of Generic Counter Definitions.
- * Actual definition is in inner class {@link VASSAL.build.module.gamepieceimage.GamePieceLayout}
+ * Actual definition is in inner class
+ * {@link VASSAL.build.module.gamepieceimage.GamePieceLayout}.
  */
 public class GamePieceLayoutsContainer extends AbstractConfigurable {
-  
-  protected HashMap definitions = new HashMap();
+  protected HashMap<String,GamePieceLayout> definitions =
+    new HashMap<String,GamePieceLayout>();
   
   protected GamePieceLayout getDefinition(String name) {
-    return (GamePieceLayout) definitions.get(name);
+    return definitions.get(name);
   }
   
   public String[] getAttributeDescriptions() {
@@ -87,8 +86,9 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
       def.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            definitions.remove(evt.getOldValue());
-            definitions.put(evt.getNewValue(), evt.getSource());
+            definitions.remove((String) evt.getOldValue());
+            definitions.put((String) evt.getNewValue(),
+                            (GamePieceLayout) evt.getSource());
           }
         }
       });
@@ -110,15 +110,12 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
   }
 
   public GamePieceImage getGenericDefn(String defnName) {
-
-    GamePieceImage defn = null;
-    
-    Iterator i = definitions.values().iterator();
-    while (i.hasNext() && defn == null) {
-      defn = ((GamePieceLayout) i.next()).getGenericDefn(defnName);
+    for (GamePieceLayout d : definitions.values()) {
+      if (d != null) {
+        return d.getGenericDefn(defnName);
+      }
     }
-    
-    return defn;
+    return null;
   }
 }
 

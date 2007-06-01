@@ -26,7 +26,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import javax.swing.Box;
 import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
@@ -93,14 +92,16 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     key = sd.nextToken("name");
     decodeConstraints(sd.nextToken(""));
     keyCommandListConfig.setValue(sd.nextToken(""));
-    keyCommands = (DynamicKeyCommand[]) keyCommandListConfig.getListValue().toArray(new DynamicKeyCommand[keyCommandListConfig.getListValue().size()]);
-    List l = new ArrayList();
-    for (int i = 0; i < keyCommands.length; i++) {
-      if (keyCommands[i].getName() != null && keyCommands[i].getName().length() > 0) {
-        l.add(keyCommands[i]);
+    keyCommands = (DynamicKeyCommand[])
+      keyCommandListConfig.getListValue().toArray(
+        new DynamicKeyCommand[keyCommandListConfig.getListValue().size()]);
+    ArrayList<DynamicKeyCommand> l = new ArrayList<DynamicKeyCommand>();
+    for (DynamicKeyCommand dkc : keyCommands) {
+      if (dkc.getName() != null && dkc.getName().length() > 0) {
+        l.add(dkc);
       }
     }
-    menuCommands = (DynamicKeyCommand[]) l.toArray(new DynamicKeyCommand[l.size()]);
+    menuCommands = l.toArray(new DynamicKeyCommand[l.size()]);
   }
 
   protected void decodeConstraints(String s) {

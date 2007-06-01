@@ -1,18 +1,3 @@
-package VASSAL.build.module;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Enumeration;
-import java.util.HashMap;
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.SingleChildInstance;
-import VASSAL.i18n.ComponentI18nData;
-
 /*
  * $Id$
  *
@@ -31,14 +16,30 @@ import VASSAL.i18n.ComponentI18nData;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+package VASSAL.build.module;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Enumeration;
+import java.util.HashMap;
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.SingleChildInstance;
+import VASSAL.i18n.ComponentI18nData;
 
 /**
  * Container for definitions of Game Piece prototypes.
- * Actual definition is in inner class {@link VASSAL.build.module.PrototypeDefinition}
+ * Actual definition is in inner class
+ * {@link VASSAL.build.module.PrototypeDefinition}
  */
 public class PrototypesContainer extends AbstractConfigurable {
   private static PrototypesContainer instance;
-  private HashMap definitions = new HashMap();
+  private HashMap<String,PrototypeDefinition> definitions =
+    new HashMap<String,PrototypeDefinition>();
 
   public String[] getAttributeDescriptions() {
     return new String[0];
@@ -83,8 +84,9 @@ public class PrototypesContainer extends AbstractConfigurable {
       def.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            definitions.remove(evt.getOldValue());
-            definitions.put(evt.getNewValue(), evt.getSource());
+            definitions.remove((String) evt.getOldValue());
+            definitions.put((String) evt.getNewValue(),
+                            (PrototypeDefinition) evt.getSource());
           }
         }
       });
@@ -108,7 +110,7 @@ public class PrototypesContainer extends AbstractConfigurable {
         return null;
       }
     }
-    return (PrototypeDefinition) instance.definitions.get(name);
+    return instance.definitions.get(name);
   }
   
   public ComponentI18nData getI18nData() {

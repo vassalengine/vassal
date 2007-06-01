@@ -1,20 +1,3 @@
-package VASSAL.build.module.gamepieceimage;
-
-import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
-import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.configure.Configurer;
-import VASSAL.configure.SingleChildInstance;
-
 /*
  * $Id$
  *
@@ -33,6 +16,22 @@ import VASSAL.configure.SingleChildInstance;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+package VASSAL.build.module.gamepieceimage;
+
+import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.Configurer;
+import VASSAL.configure.SingleChildInstance;
 
 /**
  * Container for definitions of Generic Color Definitions
@@ -106,14 +105,15 @@ public class ColorManager extends AbstractConfigurable {
   /**
    * User defined Colors
    */
-  protected HashMap userColors = new HashMap();
+  protected HashMap<String,ColorSwatch> userColors =
+    new HashMap<String,ColorSwatch>();
   
   public ColorManager() {
     instance = this;
   }
   
   public ColorSwatch getColorSwatch(String name) {
-    ColorSwatch c = (ColorSwatch) userColors.get(name);
+    ColorSwatch c = userColors.get(name);
     if (c == null) {
       c = new ColorSwatch(name, getStandardColor(name));
     }
@@ -126,15 +126,14 @@ public class ColorManager extends AbstractConfigurable {
     if (color == null) {
       return new ColorSwatch("CLEAR", null);
     }
-    
-    Iterator i = userColors.values().iterator();
-    while (i.hasNext() && swatch == null) {
-      ColorSwatch cs = (ColorSwatch) i.next();
+   
+    for (ColorSwatch cs : userColors.values()) {
+      if (swatch == null) break;
       if (cs.getColor().equals(color)) {
         swatch = cs;
       }
     }
-    
+
     if (swatch == null) {
       for (int j = 0; j < standardColors.length && swatch == null; j++) {
         if (standardColors[j] != null && standardColors[j].equals(color)) {
@@ -193,8 +192,9 @@ public class ColorManager extends AbstractConfigurable {
       def.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            userColors.remove(evt.getOldValue());
-            userColors.put(evt.getNewValue(), evt.getSource());
+            userColors.remove((String) evt.getOldValue());
+            userColors.put((String) evt.getNewValue(),
+                           (ColorSwatch) evt.getSource());
           }
         }
       });
@@ -228,22 +228,17 @@ public class ColorManager extends AbstractConfigurable {
   }
   
   public String[] getColorNames() {
-
-    String[] names = new String[userColors.size() + standardColors.length];
-    ArrayList a = new ArrayList();
-    Iterator i = userColors.values().iterator();
-    while (i.hasNext()) {
-      a.add ((ColorSwatch) i.next());
-    }
+    ArrayList<ColorSwatch> a = new ArrayList<ColorSwatch>(userColors.values());
     Collections.sort(a);
-    i = a.iterator();
-    int j = 0;
-    while (i.hasNext()) {
-      names[j++] = ((ColorSwatch) i.next()).getConfigureName();
+
+    ArrayList<String> names =
+      new ArrayList<String>(a.size() + standardColors.length);
+    
+    for (ColorSwatch cs : a ) {
+      names.add(cs.getConfigureName());
     }
-    for (int k = 0; k < standardColorNames.length; k++) {
-      names[j++] = standardColorNames[k];
-    }
-    return names;
+
+    names.addAll(Arrays.asList(standardColorNames));
+    return names.toArray(new String[names.size()]);
   }
 }

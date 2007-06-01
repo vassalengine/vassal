@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2007 by Brent Easton
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.i18n;
 
 import java.awt.Component;
@@ -8,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -86,12 +103,9 @@ public class TranslateVassalWindow extends TranslateWindow {
 
   protected void newTranslation() {
     ((VassalTranslation) target).clearProperties();
-    ArrayList keyList = new ArrayList();
-    for (Enumeration e = Resources.getVassalKeys(); e.hasMoreElements(); keyList.add(e.nextElement())) {
-      ;
-    }
+    ArrayList<String> keyList = Collections.list(Resources.getVassalKeys());
     Collections.sort(keyList);
-    keys = (String[]) keyList.toArray(new String[keyList.size()]);
+    keys = keyList.toArray(new String[keyList.size()]);
     copyButtons = new CopyButton[keys.length];
     ((MyTableModel) keyTable.getModel()).update();
   }

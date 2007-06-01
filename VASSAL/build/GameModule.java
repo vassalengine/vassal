@@ -240,7 +240,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * or zero if the versions are the same.
    *
    */
-  public static int compareVersions(String v1, String v2) {
+  @Deprecated public static int compareVersions(String v1, String v2) {
     return Info.compareVersions(v1, v2);
   }
 
@@ -543,7 +543,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * @deprecated Use {@link #getFileChooser} instead.
    */
-  public FileDialog getFileDialog() {
+  @Deprecated public FileDialog getFileDialog() {
     if (fileDialog == null) {
       getPrefs().addOption(null, new DirectoryConfigurer(SAVE_DIR, null));
       fileDialog = new FileDialog(getFrame());

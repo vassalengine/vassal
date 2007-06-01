@@ -25,7 +25,7 @@ import java.io.ByteArrayOutputStream;
  *
  * @deprecated Use java.net.URLDecoder instead. 
  */
-public class Decoder {
+@Deprecated public class Decoder {
 
   public static String URLdecode(String s) {
     ByteArrayOutputStream out = new ByteArrayOutputStream(s.length());

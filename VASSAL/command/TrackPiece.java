@@ -28,7 +28,7 @@ import VASSAL.counters.GamePiece;
  * the new state is the state of the GamePiece at finalization.
  * @deprecated Use {@link ChangeTracker}
  */
-public class TrackPiece extends ChangePiece {
+@Deprecated public class TrackPiece extends ChangePiece {
   private GamePiece piece;
 
   public TrackPiece(GamePiece p) {

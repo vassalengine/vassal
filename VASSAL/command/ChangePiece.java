@@ -50,7 +50,7 @@ public class ChangePiece extends Command {
    * to that of the piece when this Command is executed.
    * @deprecated
    */
-  public ChangePiece(String id, String newState) {
+  @Deprecated public ChangePiece(String id, String newState) {
     this(id, null, newState);
   }
 

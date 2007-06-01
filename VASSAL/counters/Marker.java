@@ -20,6 +20,7 @@ package VASSAL.counters;
 
 import java.awt.Component;
 import java.awt.Shape;
+import java.util.Arrays;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -56,15 +57,13 @@ public class Marker extends Decorator implements EditablePiece {
   public void mySetType(String s) {
     s = s.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    ArrayList v = new ArrayList();
+    ArrayList<String> l = new ArrayList<String>();
     while (st.hasMoreTokens()) {
-      v.add(st.nextToken());
+      l.add(st.nextToken());
     }
-    keys = (String[]) v.toArray(new String[v.size()]);
+    keys = l.toArray(new String[l.size()]);
     values = new String[keys.length];
-    for (int i = 0; i < keys.length; ++i) {
-      values[i] = "";
-    }
+    Arrays.fill(values, "");
   }
 
   public void draw(java.awt.Graphics g, int x, int y, java.awt.Component obs, double zoom) {

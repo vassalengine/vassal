@@ -1,4 +1,5 @@
-/*
+/* 
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -21,7 +22,11 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * Performs Get and Post operations to a given URL
@@ -69,7 +74,7 @@ public class HttpRequestWrapper {
       out.write(buffer,0,length);
     }
     in.close();
-    ArrayList l = new ArrayList();
+    ArrayList<String> l = new ArrayList<String>();
     StringTokenizer st = new StringTokenizer(new String(out.toByteArray(),"UTF-8"),"\n\r"); //$NON-NLS-1$ //$NON-NLS-2$
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
@@ -107,12 +112,12 @@ public class HttpRequestWrapper {
     out.close();
     BufferedReader input = new BufferedReader
       (new InputStreamReader(conn.getInputStream(),"UTF-8")); //$NON-NLS-1$
-    Vector v = new Vector();
+    ArrayList<String> l = new ArrayList<String>();
     for (String line = input.readLine();
          line != null; line = input.readLine()) {
-      v.addElement(line);
+      l.add(line);
     }
     input.close();
-    return v.elements();
+    return Collections.enumeration(l);
   }
 }

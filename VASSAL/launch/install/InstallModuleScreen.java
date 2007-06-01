@@ -1,4 +1,4 @@
-/*
+/* $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -20,7 +20,6 @@ package VASSAL.launch.install;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,7 +38,7 @@ public class InstallModuleScreen extends InstallJnlpScreen {
     NodeList l = doc.getElementsByTagName("application-desc"); //$NON-NLS-1$
     if (l.getLength() > 0) {
       Node desc = l.item(0);
-      ArrayList argList = new ArrayList();
+      ArrayList<Node> argList = new ArrayList<Node>();
       NodeList args = doc.getElementsByTagName("argument"); //$NON-NLS-1$
       for (int i = 0; i < args.getLength(); i++) {
         Node arg = args.item(i);
@@ -47,8 +46,7 @@ public class InstallModuleScreen extends InstallJnlpScreen {
           argList.add(arg);
         }
       }
-      for (Iterator it = argList.iterator(); it.hasNext();) {
-        Node arg = (Node) it.next();
+      for (Node arg : argList) {
         desc.removeChild(arg);
       }
       Element arg = doc.createElement("argument"); //$NON-NLS-1$

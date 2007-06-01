@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2003 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.counters;
 
 import java.awt.Color;
@@ -28,25 +46,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 
-/*
- * $Id$
- *
- * Copyright (c) 2003 by Rodney Kinney
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License (LGPL) as published by the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available
- * at http://www.opensource.org.
- */
-
 /**
  * A trait for assigning an arbitrary shape to a {@link GamePiece}
  * 
@@ -54,7 +53,8 @@ import VASSAL.command.Command;
  */
 public class NonRectangular extends Decorator implements EditablePiece {
   public static final String ID = "nonRect;";
-  private static HashMap shapeCache = new HashMap();
+  private static HashMap<String,GeneralPath> shapeCache =
+    new HashMap<String,GeneralPath>();
   private String type;
   private Shape shape;
 
@@ -113,7 +113,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
   }
 
   private GeneralPath buildPath(String spec) {
-    GeneralPath path = (GeneralPath) shapeCache.get(spec);
+    GeneralPath path = shapeCache.get(spec);
     if (path == null && !shapeCache.containsKey(spec)) {
       StringTokenizer st = new StringTokenizer(spec, ",");
       if (st.hasMoreTokens()) {

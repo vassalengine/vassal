@@ -18,9 +18,10 @@
 package VASSAL.chat;
 
 /**
- * Represents an occupant of a chat room, i.e. a VASSAL user connected to the server
- * @author rkinney
+ * Represents an occupant of a chat room, i.e. a VASSAL user connected to
+ * the server
  *
+ * @author rkinney
  */
 public interface Player {
   /** Unique identifier for this player */

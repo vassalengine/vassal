@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2004 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.build.module.noteswindow;
 
 import java.awt.Dialog;
@@ -12,9 +30,6 @@ import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -46,31 +61,13 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
-/*
- * $Id$
- *
- * Copyright (c) 2004 by Rodney Kinney
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License (LGPL) as published by the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available
- * at http://www.opensource.org.
- */
 public class SecretNotesController implements GameComponent, CommandEncoder, AddSecretNoteCommand.Interface {
   public static final String COMMAND_PREFIX = "SNOTE\t"; //$NON-NLS-1$
 
   private Controls controls;
   private JPanel panel;
-  private ArrayList notes;
-  private List lastSavedNotes;
+  private ArrayList<SecretNote> notes;
+  private ArrayList<SecretNote> lastSavedNotes;
 
   // Secret Note display table columns
   public static final int COL_HANDLE = 0;
@@ -87,14 +84,13 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault());
 
   public SecretNotesController() {
-    notes = new ArrayList();
+    notes = new ArrayList<SecretNote>();
     controls = new Controls();
   }
 
   public Command getRestoreCommand() {
     Command comm = null;
-    for (Iterator iterator = notes.iterator(); iterator.hasNext();) {
-      SecretNote note = (SecretNote) iterator.next();
+    for (SecretNote note : notes) {
       Command c = new AddSecretNoteCommand(this, note);
       if (comm == null) {
         comm = c;
@@ -184,11 +180,10 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
   public Command save() {
     Command comm = null;
-    for (Iterator iterator = notes.iterator(); iterator.hasNext();) {
-      SecretNote secretNote = (SecretNote) iterator.next();
+    for (SecretNote secretNote : notes) {
       int index = lastSavedNotes.indexOf(secretNote);
-      if (index < 0
-          || ((SecretNote) lastSavedNotes.get(index)).isHidden() != secretNote.isHidden()) {
+      if (index < 0 ||
+          lastSavedNotes.get(index).isHidden() != secretNote.isHidden()) {
         Command c = new AddSecretNoteCommand(this, secretNote);
         if (comm == null) {
           comm = c;
@@ -212,7 +207,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   }
 
   public void captureState() {
-    lastSavedNotes = (List) notes.clone();
+    lastSavedNotes = new ArrayList<SecretNote>(notes);
   }
 
   public void restoreState() {
@@ -329,7 +324,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       }
 
       public Object getValueAt(int row, int col) {
-        SecretNote note = (SecretNote) notes.get(row);
+        SecretNote note = notes.get(row);
         switch (col) {
           case COL_HANDLE:
             return note.getHandle();
@@ -463,14 +458,11 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   }
 
   public SecretNote getNoteForName(String s) {
-    ListIterator e = notes.listIterator();
-    while (e.hasNext()) {
-      SecretNote next = (SecretNote) e.next();
-      if (next.getName().equals(s)) {
-        return next;
+    for (SecretNote n : notes) {
+      if (n.getName().equals(s)) {
+        return n;
       }
     }
     return null;
   }
-
 }

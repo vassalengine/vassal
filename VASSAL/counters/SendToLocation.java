@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2003 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.counters;
 
 import java.awt.Component;
@@ -13,7 +31,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -41,26 +58,6 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
-
-/*
- * $Id$
- *
- * Copyright (c) 2003 by Rodney Kinney
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License (LGPL) as published by the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available
- * at http://www.opensource.org.
- */
-
 /**
  * This trait adds a command that sends a piece to another location. Options for the
  * target location are:
@@ -159,21 +156,24 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     if (command == null) {
       sendCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
       backCommand = new KeyCommand(backCommandName, backKey, Decorator.getOutermost(this), this);
-      List l = new ArrayList();
+      ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
       if (commandName.length() > 0 && key != null) {
         l.add(sendCommand);
       }
       if (backCommandName.length() > 0 && backKey != null) {
         l.add(backCommand);
       }
-      command = (KeyCommand[]) l.toArray(new KeyCommand[l.size()]);
+      command = l.toArray(new KeyCommand[l.size()]);
     }
-    for (int i = 0; i < command.length; i++) {
-      if (command[i].getName().equals(backCommandName)) {
-        command[i].setEnabled(getMap() != null && getProperty(BACK_MAP) != null && getProperty(BACK_POINT) != null);
+
+    for (KeyCommand c : command ) {
+      if (c.getName().equals(backCommandName)) {
+        c.setEnabled(getMap() != null &&
+                     getProperty(BACK_MAP) != null &&
+                     getProperty(BACK_POINT) != null);
       }
       else {
-        command[i].setEnabled(getMap() != null);
+        c.setEnabled(getMap() != null);
       }
     }
     return command;
