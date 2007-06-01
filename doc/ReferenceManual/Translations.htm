@@ -1,46 +1,66 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
+
+  
+
+
+  
   <title>VASSAL Reference Manual - Module Updater</title>
-
-
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-
 </head>
 
 
 <body>
 
+
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
 
   <tbody>
 
+
     <tr align="center">
 
+
       <td valign="top">
+      
       <h1>VASSAL Reference Manual</h1>
+
 
       <small><a href="index.htm">Home</a>
 &gt; <b>Translations</b></small><br>
 
+
       <br>
+
 
       </td>
 
+
     </tr>
+
 
     <tr>
 
+
       <td valign="top">
+      
       <hr size="2" width="100%">
+      
       <h2>Translations</h2>
+
 
 VASSAL supports languages other than English. &nbsp; Support is
 divided into two areas:<br>
 
+
       <br>
 
+
+      
       <ul>
+
 
         <li>The core application (i.e. the menus, preferences,
 dialog messages, etc.) supports a certain set of languages, depending
@@ -50,20 +70,29 @@ the VASSAL Application</a> instructions. &nbsp;You will need
 to submit your translation to the VASSAL development team for inclusion
 in the next release.</li>
 
+
         <li>Individual modules (i.e. the button and menu text,
 Map and GamePiece names, and other strings specified via the module
 editor) can be translated into any language, even if the core
 application does not support that language. &nbsp;Follow the <a href="#module">Translating a VASSAL Module</a> instructions to translate a module. </li>
 
+
+      
       </ul>
+
 
       <br>
 
+
       <a name="application"></a><font style="font-style: italic;" size="+1">Translating the
 VASSAL&nbsp;Application</font>
+      
       <div style="text-align: center;"><img alt="" src="images/TranslateVassal.png"><br>
 
+
+      
       <div style="text-align: left;"><br>
+
 To translate the core VASSAL application, edit any module and select <span style="font-style: italic;">Translate-&gt;Translate VASSAL User Interface</span>
 from the edit window menu bar. &nbsp;In the resulting dialog window,
 select the language (and optional country) that you are creating a
@@ -73,21 +102,56 @@ button to save the translation file. &nbsp;The default location is the
 VASSAL home directory. &nbsp;When you restart, VASSAL will look in its
 home directory for a translation file corresponding to your computer's
 locale.<br>
+
       <br>
+
 When your translation file is complete, send it by email to <span style="font-style: italic;">support@vassalengine.org</span>. &nbsp;It will be bundled with the next VASSAL release for use by other players worldwide!<br>
+
+      
       <hr style="width: 100%; height: 2px;"><br>
+
       <br>
+
       <font style="font-style: italic;" size="+1"><a name="module"></a>Translating a
-VASSAL Module</font></div>
+VASSAL Module<br>
+      </font>
+      <div style="text-align: center;"><img style="width: 804px; height: 613px;" alt="" src="images/TranslateModule.png"><br>
+      <div style="text-align: left;">You can translate a module into
+another language by editing the module or by creating a module
+extension. &nbsp;Right-click on the Module folder in the edit window
+and select <span style="font-style: italic;">Translate</span>. &nbsp;In the resulting dialog window, click the <span style="font-style: italic;">Add Translation</span>
+button and select the language/country combination that you are
+creating a translation for. &nbsp;The upper part of the window shows
+the module structure. &nbsp;Any components with phrases requiring
+translation are highlighted in red. &nbsp;Navigate to any component and
+enter the phrase translations in the lower part of the window.<br>
+      <br>
+When your translation is complete, save the module or module extension.
+&nbsp;When a user loads the module, VASSAL will use the translation
+appropriate for the user's computer. &nbsp;It is not necessary for
+module translations to be bundled into a VASSAL release, and an
+extension containing a translation can be distributed independently of
+the module itself.<br>
+      <br>
+      <span style="font-style: italic;">Note: &nbsp;A module is not translated when opened in edit mode. &nbsp;Module translations are only applied in play mode.</span></div>
+      </div>
+      </div>
+
 
       </div>
+
       <br>
+
       </td>
+
 
     </tr>
 
+
+  
   </tbody>
 </table>
+
 
 </body>
 </html>
