@@ -132,7 +132,7 @@ public class Language extends AbstractConfigurable {
         addBundle(t.getBundle());
       }
       if (masterBundle != null) {
-        setTranslationInProgress(true);
+        translationInProgress = true;
         for (TranslatableAttribute attr : translatableItems) {
           if (attr.isTranslatable()) {
             String key = attr.getKey();
@@ -145,8 +145,8 @@ public class Language extends AbstractConfigurable {
             }
           }
         }
-        setTranslationInProgress(false);
-        setTranslationComplete(true);
+        translationInProgress = false;
+        translationComplete = true;
       }
       translatableItems.clear();
     }
@@ -182,16 +182,8 @@ public class Language extends AbstractConfigurable {
   protected static boolean translationInProgress = false;
   protected static boolean translationComplete = false;
 
-  public static void setTranslationInProgress(boolean b) {
-    translationInProgress = b;
-  }
-
   public static boolean isTranslationInProgress() {
     return translationInProgress;
-  }
-
-  public static void setTranslationComplete(boolean b) {
-    translationComplete = b;
   }
 
   public static boolean isTranslationComplete() {

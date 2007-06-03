@@ -7,7 +7,6 @@ import java.util.HashMap;
 import javax.swing.Box;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -27,7 +26,6 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PieceEditor;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.TranslatablePieceContainer;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
 
@@ -49,7 +47,7 @@ import VASSAL.tools.UniqueIdManager;
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-public class PrototypeDefinition extends AbstractConfigurable implements UniqueIdManager.Identifyable, ValidityChecker, TranslatablePieceContainer {
+public class PrototypeDefinition extends AbstractConfigurable implements UniqueIdManager.Identifyable, ValidityChecker {
   private String name = "Prototype"; //$NON-NLS-1$
   private java.util.Map pieces = new HashMap();
   private String pieceDefinition;

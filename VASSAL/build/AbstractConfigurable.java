@@ -30,12 +30,12 @@ import VASSAL.i18n.Language;
 import VASSAL.i18n.Translatable;
 
 /**
- * An abstract implementation of the Configurable interface.  Takes care of
- * most of the Configurable functionality
+ * An abstract implementation of the Configurable interface. Takes care of most of the Configurable functionality
  */
 public abstract class AbstractConfigurable extends AbstractBuildable implements AutoConfigurable {
   protected PropertyChangeSupport changeSupport;
-  protected String name;
+  protected String name; // Language-independent name used for programmatic identification
+  protected String localizedName; // Locale-sensitive name for on-screen display
   protected Configurer config;
   protected ComponentI18nData myI18nData;
 
@@ -47,17 +47,11 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   }
 
   public String getConfigureName() {
-    if (Language.isTranslationComplete()) {
-      String n = getI18nData().getUntranslatedConfigureName();
-      return n == null ? name : n;
-    }
-    else {
-      return getLocalizedConfigureName();
-    }
-  }
-  
-  public String getLocalizedConfigureName() {
     return name;
+  }
+
+  public String getLocalizedConfigureName() {
+    return localizedName;
   }
 
   /**
@@ -65,35 +59,39 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
    */
   public void setConfigureName(String s) {
     String oldName = name;
-    name = s;
     if (changeSupport != null) {
-      changeSupport.firePropertyChange(NAME_PROPERTY, oldName, name);
+      changeSupport.firePropertyChange(NAME_PROPERTY, oldName, s);
     }
     if (Language.isTranslationInProgress()) {
-      getI18nData().setUntranslatedConfigureName(oldName);
+      localizedName = s;
+    }
+    else if (Language.isTranslationComplete()) {
+      name = s;
+    }
+    else {
+      name = s;
+      localizedName = s;
     }
   }
 
   /**
-   * Return an array of Strings describing the attributes
-   * of this object.  These strings are used as prompts in
-   * the Properties window for this object.  The order of
-   * descriptions should be the same as the order of names
-   * in {@link AbstractBuildable#getAttributeNames}
+   * Return an array of Strings describing the attributes of this object. These strings are used as prompts in the
+   * Properties window for this object. The order of descriptions should be the same as the order of names in
+   * {@link AbstractBuildable#getAttributeNames}
    */
   public abstract String[] getAttributeDescriptions();
 
   /**
-   * Return the Class for the attributes of this object.
-   * Valid classes are:  String, Integer, Double, Boolean, Image,
+   * Return the Class for the attributes of this object. Valid classes are: String, Integer, Double, Boolean, Image,
    * Color, and KeyStroke
-   *
-   * The order of classes should be the same as the order of names
-   * in {@link AbstractBuildable#getAttributeNames} */
+   * 
+   * The order of classes should be the same as the order of names in {@link AbstractBuildable#getAttributeNames}
+   */
   public abstract Class[] getAttributeTypes();
 
   /**
    * By default, all attributes are visible
+   * 
    * @param name
    * @return
    */
@@ -103,49 +101,47 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
 
   /**
    * Return the i18n data for this component
-   */ 
+   */
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
       myI18nData = new ComponentI18nData(this, getI18nPrefix());
     }
     return myI18nData;
   }
-  
+
   /**
-   * Generate a standard prefix for i18n keys for attributes
-   * of this component - Classname.attributeName 
+   * Generate a standard prefix for i18n keys for attributes of this component - Classname.attributeName
    */
   protected String getI18nPrefix() {
     String key = getClass().getSimpleName();
-    if (getConfigureName() != null && getConfigureName().length() > 0 ) {
+    if (getConfigureName() != null && getConfigureName().length() > 0) {
       key += "." + getConfigureName();
     }
-    return key;
+    return key + ".";
   }
-  
+
   /**
-   * Over-ride the default attribute translatability. This is called
-   * by inidivdual components to force specific attributes to be
-   * translatable or not translatable
+   * Over-ride the default attribute translatability. This is called by inidivdual components to force specific
+   * attributes to be translatable or not translatable
    */
   protected void setAttributeTranslatable(String attr, boolean b) {
     getI18nData().setAttributeTranslatable(attr, b);
   }
-  
+
   protected void setAllAttributesUntranslatable() {
     getI18nData().setAllAttributesUntranslatable();
   }
-  
+
   /**
    * Set the owning translatable of this component
-   */ 
+   */
   public void add(Buildable b) {
     super.add(b);
     if (b instanceof Translatable) {
       ((Translatable) b).getI18nData().setOwningComponent(this);
     }
   }
-  
+
   public void addPropertyChangeListener(PropertyChangeListener l) {
     if (changeSupport == null) {
       changeSupport = new PropertyChangeSupport(this);
@@ -158,10 +154,10 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
       changeSupport.removePropertyChangeListener(l);
     }
   }
-  
+
   public Configurable[] getConfigureComponents() {
     ArrayList<Configurable> l = new ArrayList<Configurable>();
-    for (Enumeration e = getBuildComponents(); e.hasMoreElements(); ) {
+    for (Enumeration e = getBuildComponents(); e.hasMoreElements();) {
       Buildable b = (Buildable) e.nextElement();
       if (b instanceof Configurable) {
         l.add((Configurable) b);

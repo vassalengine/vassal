@@ -49,7 +49,6 @@ public class ComponentI18nData {
   protected Map<String, Property> translatableProperties = new TreeMap<String, Property>();
   protected Map<String, Property> allProperties = new TreeMap<String, Property>();
   protected List<Translatable> children = new ArrayList<Translatable>();
-  protected String untranslatedConfigureName = null;
 
   /**
    * Build from an AbstractConfigurable. The parent will be set from AbstractConfigurable.add(). untranslatedValues will
@@ -316,25 +315,6 @@ public class ComponentI18nData {
    */
   public void setUntranslatedValue(String attr, String value) {
     allProperties.get(attr).setUntranslatedValue(value);
-  }
-
-  /**
-   * Save the untranslated ConfigureName for this component
-   * 
-   * @param name
-   *          untranslated configure name
-   */
-  public void setUntranslatedConfigureName(String name) {
-    untranslatedConfigureName = name;
-  }
-
-  /**
-   * Return the untranslated Configure name for this component
-   * 
-   * @return untranslated configure name
-   */
-  public String getUntranslatedConfigureName() {
-    return untranslatedConfigureName;
   }
 
   /*

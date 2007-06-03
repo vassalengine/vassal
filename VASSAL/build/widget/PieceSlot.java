@@ -54,7 +54,6 @@ import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.TranslatablePieceContainer;
 
 /**
  * A Component that displays a GamePiece.
@@ -63,7 +62,7 @@ import VASSAL.i18n.TranslatablePieceContainer;
  * a PieceSlot is forwarded to the {@link GamePiece#keyEvent} method for the
  * PieceSlot's GamePiece. Clicking on a PieceSlot initiates a drag
  */
-public class PieceSlot extends Widget implements MouseListener, KeyListener, TranslatablePieceContainer {
+public class PieceSlot extends Widget implements MouseListener, KeyListener {
   private GamePiece c;
   private String name;
   private String pieceDefinition;
