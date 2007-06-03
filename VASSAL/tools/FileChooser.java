@@ -25,6 +25,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import VASSAL.configure.FileConfigurer;
 
 /**
  *  FileChooser provides a wrapper for {@link javax.swing.JFileChooser}
@@ -35,6 +36,7 @@ import javax.swing.SwingUtilities;
  */
 public abstract class FileChooser {
    protected Component parent;
+   protected FileConfigurer prefs;
 
    public final static int APPROVE_OPTION = JFileChooser.APPROVE_OPTION;
    public final static int CANCEL_OPTION = JFileChooser.CANCEL_OPTION;
@@ -45,26 +47,32 @@ public abstract class FileChooser {
    public final static int FILES_AND_DIRECTORIES =
                                          JFileChooser.FILES_AND_DIRECTORIES;
 
-   private FileChooser(Component parent) {
+   private FileChooser(Component parent, FileConfigurer pref) {
       this.parent = parent;
+      this.prefs = pref;
+   }
+
+   public static FileChooser createFileChooser(Component parent) {
+     return createFileChooser(parent,null);
    }
 
    /**
     * Creates a FileChooser appropriate for the user's OS.
     *
     * @param parent The Component over which the FileChooser should appear.
+    * @param prefs A FileConfigure that stores the preferred starting directory of the FileChooser in preferences
     */
-   public static FileChooser createFileChooser(Component parent) {
+   public static FileChooser createFileChooser(Component parent, FileConfigurer prefs) {
       // determine what OS this is
       String os = System.getProperty("os.name");
       if (os != null && (os.startsWith("Windows") ||
                          os.startsWith("Mac OS"))) {
          // use a native file chooser on Windows and Mac OS
-         return new NativeFileChooser(parent);
+         return new NativeFileChooser(parent, prefs);
       }
       else {
          // use a Swing file chooser anywhere without a good native one
-         return new SwingFileChooser(parent);
+         return new SwingFileChooser(parent, prefs);
       }
    }
 
@@ -117,12 +125,21 @@ public abstract class FileChooser {
    public int showSaveDialog() {
       return showSaveDialog(parent);
    }
+   
+   protected void updateDirectoryPreference() {
+     if (prefs != null && getCurrentDirectory() != null && !getCurrentDirectory().equals(prefs.getFileValue())) {
+       prefs.setValue(getCurrentDirectory());
+     }
+   }
 
    private static class SwingFileChooser extends FileChooser {
       private JFileChooser fc = new JFileChooser();
 
-      public SwingFileChooser(Component parent) {
-         super(parent);
+      public SwingFileChooser(Component parent, FileConfigurer prefs) {
+         super(parent, prefs);
+         if (prefs != null && prefs.getFileValue() != null) {
+           setCurrentDirectory(prefs.getFileValue());
+         }
       }
 
       public File getCurrentDirectory() {
@@ -162,7 +179,9 @@ public abstract class FileChooser {
       }
    
       public int showOpenDialog(Component parent) {
-         return fc.showOpenDialog(parent);
+         int value = fc.showOpenDialog(parent);
+         updateDirectoryPreference();
+         return value;
       }
 
       public int showSaveDialog(Component parent) {
@@ -175,6 +194,7 @@ public abstract class FileChooser {
                    JOptionPane.YES_NO_OPTION)) {
            value = CANCEL_OPTION;
          }
+         updateDirectoryPreference();
          return value;
       }
    
@@ -205,8 +225,11 @@ public abstract class FileChooser {
       private String title;
       private FileFilter filter;
 
-      public NativeFileChooser(Component parent) {
-         super(parent);
+      public NativeFileChooser(Component parent, FileConfigurer prefs) {
+         super(parent, prefs);
+         if (prefs != null && prefs.getFileValue() != null) {
+           setCurrentDirectory(prefs.getFileValue());
+         }
       }
 
       public File getCurrentDirectory() {
@@ -266,23 +289,33 @@ public abstract class FileChooser {
          fd.setMode(FileDialog.LOAD);
          fd.setVisible(true);
          
+         int value;
+         
          if (fd.getFile() != null) {
             cur = new File(fd.getDirectory(), fd.getFile());
-            return FileChooser.APPROVE_OPTION;
+            value = FileChooser.APPROVE_OPTION;
          }
-         else return FileChooser.CANCEL_OPTION;
+         else {
+           value = FileChooser.CANCEL_OPTION;
+         }
+         updateDirectoryPreference();
+         return value;
       }
   
       public int showSaveDialog(Component parent) {
          FileDialog fd = awt_file_dialog_init(parent);
          fd.setMode(FileDialog.SAVE);
          fd.setVisible(true);
-
+         int value; 
          if (fd.getFile() != null) {
             cur = new File(fd.getDirectory(), fd.getFile());
-            return FileChooser.APPROVE_OPTION;
+            value = FileChooser.APPROVE_OPTION;
          }
-         else return FileChooser.CANCEL_OPTION;
+         else {
+           value = FileChooser.CANCEL_OPTION;
+         }
+         updateDirectoryPreference();
+         return value;
       }
 
       public FileFilter getFileFilter() {

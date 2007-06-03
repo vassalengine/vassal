@@ -18,7 +18,7 @@
  */
 package VASSAL.configure;
 
-import VASSAL.build.module.Documentation;
+import VASSAL.build.GameModule;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.AudioFileFilter;
 import VASSAL.tools.FileChooser;
@@ -31,13 +31,7 @@ import VASSAL.tools.FileChooser;
  * 
  */
 public class AudioClipConfigurer extends FileConfigurer {
-  private static final FileChooser fc;
-
-  static {
-    fc = FileChooser.createFileChooser(null);
-    fc.setCurrentDirectory(Documentation.getDocumentationBaseDir());
-    fc.setFileFilter(new AudioFileFilter());
-  }
+  protected static FileConfigurer resourceDirPref;
 
   public AudioClipConfigurer(String key, String name, ArchiveWriter archive) {
     super(key, name);
@@ -45,6 +39,12 @@ public class AudioClipConfigurer extends FileConfigurer {
   }
 
   protected FileChooser initFileChooser() {
+    if (resourceDirPref == null) {
+      resourceDirPref = new FileConfigurer("audioDir", null);
+      GameModule.getGameModule().getPrefs().addOption(null,resourceDirPref);
+    }
+    FileChooser fc = FileChooser.createFileChooser(GameModule.getGameModule().getFrame(),resourceDirPref);
+    fc.setFileFilter(new AudioFileFilter());
     return fc;
   }
 

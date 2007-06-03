@@ -25,7 +25,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import VASSAL.build.module.Documentation;
+import VASSAL.build.GameModule;
+import VASSAL.launch.Main;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.FileChooser;
 
@@ -33,9 +34,7 @@ import VASSAL.tools.FileChooser;
  * A Configurer for java.io.File values
  */
 public class FileConfigurer extends Configurer {
-  private FileChooser globalFileChooser;
   protected VASSAL.tools.ArchiveWriter archive;
-
   protected JPanel p;
   protected JTextField tf;
   protected FileChooser fc;
@@ -49,18 +48,16 @@ public class FileConfigurer extends Configurer {
   }
 
   protected FileChooser initFileChooser() {
-    if (globalFileChooser == null) {
-      globalFileChooser = FileChooser.createFileChooser(null);
-      globalFileChooser.setCurrentDirectory(
-         Documentation.getDocumentationBaseDir());
+    FileChooser fc = FileChooser.createFileChooser(null);
+    if (GameModule.getGameModule() != null) {
+      fc.setCurrentDirectory((File) GameModule.getGameModule().getGlobalPrefs().getValue(Main.MODULES_DIR_PREF));
     }
-    return globalFileChooser;
+    return fc;
   }
 
-  /**
-   * If a non-null {@link ArchiveWriter} is used in the constructor, then
-   * invoking {@link #setValue} on this FileConfigurer will automatically add
-   * the file to the archive
+  /** 
+   * If a non-null {@link ArchiveWriter} is used in the constructor, then invoking {@link #setValue} on this
+   * FileConfigurer will automatically add the file to the archive
    */
   public FileConfigurer(String key, String name, ArchiveWriter archive) {
     this(key, name);
@@ -69,19 +66,19 @@ public class FileConfigurer extends Configurer {
 
   public String getValueString() {
     if (archive == null) {
-      return fileValue() == null ? "null" : fileValue().getPath();
+      return getFileValue() == null ? "null" : getFileValue().getPath();
     }
     else {
-      return fileValue() == null ? "null" : fileValue().getName();
+      return getFileValue() == null ? "null" : getFileValue().getName();
     }
   }
 
   public void setValue(Object o) {
     File f = (File) o;
     if (f != null && f.exists()) {
-    	if (archive != null) {
-    		addToArchive(f);
-    	}
+      if (archive != null) {
+        addToArchive(f);
+      }
     }
     super.setValue(f);
     if (tf != null && !noUpdate) {
@@ -126,7 +123,7 @@ public class FileConfigurer extends Configurer {
 
         public void update() {
           String text = tf.getText();
-          File f = text != null && text.length() > 0  && !"null".equals(text) ? new File(text) : null;
+          File f = text != null && text.length() > 0 && !"null".equals(text) ? new File(text) : null;
           noUpdate = true;
           setValue(f);
           noUpdate = false;
@@ -151,7 +148,7 @@ public class FileConfigurer extends Configurer {
     }
   }
 
-  protected File fileValue() {
+  public File getFileValue() {
     return (File) value;
   }
 

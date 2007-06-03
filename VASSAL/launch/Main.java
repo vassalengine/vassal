@@ -66,6 +66,7 @@ import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ui.ShowServerStatusAction;
+import VASSAL.configure.FileConfigurer;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
@@ -82,6 +83,7 @@ public class Main {
   public static final String BUILT_IN = "auto";  //$NON-NLS-1$
   public static final String EXTENSION_LIST = "autoExtensions";  //$NON-NLS-1$
   public static final String LOCAL_INSTALL = "localInstall";  //$NON-NLS-1$
+  public static final String MODULES_DIR_PREF = "modulesDir"; //$NON_NLS-1$
   protected Properties properties;
   protected PrefsEditor editor;
   protected boolean isFirstTime;
@@ -122,6 +124,8 @@ public class Main {
   
     editor = new PrefsEditor(new ArchiveWriter(prefsFile.getPath()));
     globalPrefs = new Prefs(editor, "VASSAL");  //$NON-NLS-1$
+    FileConfigurer moduleDir = new FileConfigurer(MODULES_DIR_PREF,null);
+    globalPrefs.addOption(null, moduleDir);
     final String[] extract = getExtractTargets(args);
     final PropertyChangeListener l = new PropertyChangeListener() {
       protected int next = 0;
@@ -190,7 +194,6 @@ public class Main {
   protected void edit(File moduleFile) throws IOException {
     ArchiveWriter archive = new ArchiveWriter(new ZipFile(moduleFile.getPath()));
     BasicModule mod = new BasicModule(archive, globalPrefs);
-    mod.setGlobalPrefs(globalPrefs);
     GameModule.init(mod);
     new VASSAL.configure.ModuleEditWindow().setVisible(true);
   }
@@ -528,12 +531,7 @@ public class Main {
       java.awt.Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
       setLocation(d.width / 2 - getSize().width / 2,
                   d.height / 2 - getSize().height / 2);
-      String baseDir = globalPrefs.getStoredValue(Documentation.DOCS_DIR);
-      if (baseDir == null) {
-        baseDir = System.getProperty("user.home");  //$NON-NLS-1$
-      }
-      fc = FileChooser.createFileChooser(this);
-      fc.setCurrentDirectory(new File(baseDir));
+      fc = FileChooser.createFileChooser(this, (FileConfigurer) globalPrefs.getOption(MODULES_DIR_PREF));
     }
 
     protected void initComponents() {

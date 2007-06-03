@@ -35,8 +35,8 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.Documentation;
-import VASSAL.tools.FileChooser;
+import VASSAL.configure.FileConfigurer;
+import VASSAL.launch.Main;
 
 /**
  * An ArchiveWriter is a writeable DataArchive. New files may be added with the
@@ -211,8 +211,7 @@ public class ArchiveWriter extends DataArchive {
   public void write() throws IOException {
     if (archiveName == null) {
       FileChooser fc = FileChooser.createFileChooser(
-        GameModule.getGameModule().getFrame());
-      fc.setCurrentDirectory(Documentation.getDocumentationBaseDir());
+        GameModule.getGameModule().getFrame(), (FileConfigurer) GameModule.getGameModule().getGlobalPrefs().getOption(Main.MODULES_DIR_PREF));
       if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;
       archiveName = fc.getSelectedFile().getPath();
     }

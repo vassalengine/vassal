@@ -19,26 +19,24 @@
 package VASSAL.configure;
 
 import java.io.File;
-import VASSAL.build.module.Documentation;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.DirectoryFileFilter;
+import VASSAL.tools.FileChooser;
 
 /**
  * A Configurer for picking file directories
  */
 public class DirectoryConfigurer extends FileConfigurer {
-  private static final FileChooser fc;
-
-  static {
-    fc = FileChooser.createFileChooser(null);
-    fc.setFileFilter(new DirectoryFileFilter());
-    fc.setFileSelectionMode(FileChooser.DIRECTORIES_ONLY);
-  }
 
   public DirectoryConfigurer(String key, String name) {
     super(key, name);
     setValue(new File(System.getProperty("user.home")));
-    fc.setCurrentDirectory(Documentation.getDocumentationBaseDir());
+  }
+  
+  protected FileChooser initFileChooser() {
+    FileChooser fc = super.initFileChooser();
+    fc.setFileFilter(new DirectoryFileFilter());
+    fc.setFileSelectionMode(FileChooser.DIRECTORIES_ONLY);
+    return fc;
   }
 
   public void setValue(Object o) {
