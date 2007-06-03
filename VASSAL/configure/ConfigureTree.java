@@ -843,11 +843,11 @@ public class ConfigureTree extends JTree
    * Build an AddAction and execute it to request a new
    * component from the user 
    * 
-   * @param c Target Parent
+   * @param parent Target Parent
    * @param type Type to add
    */
-  public void externalInsert(Configurable c,Configurable child) {
-    insert(c, child, getTreeNode(c).getChildCount());
+  public void externalInsert(Configurable parent, Configurable child) {
+    insert(parent, child, getTreeNode(parent).getChildCount());
   }
   
   public Action getHelpAction() {

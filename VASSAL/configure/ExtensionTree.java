@@ -74,6 +74,13 @@ public class ExtensionTree extends ConfigureTree {
     }
     return path;
   }
+  
+  public void externalInsert(Configurable parent, Configurable child) {
+    super.externalInsert(parent, child);
+    if (!isEditable(parent)) {
+      extension.add(new ExtensionElement(child, getPath(getTreeNode(parent))));
+    }
+  }
 
   protected Action buildAddAction(final Configurable target, final Class newConfig) {
     AbstractAction action = new AbstractAction("Add " + getConfigureName(newConfig)) {
