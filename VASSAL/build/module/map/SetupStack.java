@@ -38,7 +38,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Iterator;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -346,11 +345,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
  
   protected PieceSlot getTopPiece() {
-    Enumeration e = getAllDescendantComponents(PieceSlot.class);
-    if (e.hasMoreElements()) {
-      return (PieceSlot) e.nextElement();
-    }
-    return null;
+    Iterator<PieceSlot> i =
+      getAllDescendantComponentsOf(PieceSlot.class).iterator();
+    return i.hasNext() ? i.next() : null;
   }
   
   /* 

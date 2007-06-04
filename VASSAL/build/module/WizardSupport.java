@@ -83,8 +83,10 @@ import VASSAL.launch.BasicModule;
 import VASSAL.tools.SplashScreen;
 
 /**
- * Provides support for two different wizards. The WelcomeWizard is the initial screen shown to the user when loading a
- * module in play mode. The GameSetupWizard is shown whenever the user starts a new game. on- or off-line
+ * Provides support for two different wizards. The WelcomeWizard is the
+ * initial screen shown to the user when loading a module in play mode.
+ * The GameSetupWizard is shown whenever the user starts a new game
+ * on- or off-line.
  * 
  * @author rkinney
  */
@@ -189,6 +191,7 @@ public class WizardSupport {
         new Rectangle(0, 0, logoSize.width+400, logoSize.height));
     }
   }
+
   /**
    * This is a hack to avoid stretching the image used as a background for
    * the wizard step outline in the dialog
@@ -273,6 +276,7 @@ public class WizardSupport {
       return new InitialWelcomeSteps(new String[]{ACTION_KEY}, new String[]{Resources.getString("WizardSupport.SelectPlayMode")}); //$NON-NLS-1$
     }
   }
+
   /**
    * Wizard pages for the welcome wizard (initial module load). Prompts for username/password if not yet specified, and
    * prompts to load a saved game or start a new one
@@ -444,6 +448,7 @@ public class WizardSupport {
       this.tutorial = tutorial;
     }
   }
+
   /**
    * Wizard pages for starting a new game offline
    * 
@@ -541,6 +546,7 @@ public class WizardSupport {
       return w;
     }
   }
+
   /**
    * Loads a saved game in the background.
    * Add a branch to the wizard if the loaded game has unfinished

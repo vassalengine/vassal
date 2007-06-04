@@ -21,7 +21,6 @@ package VASSAL.tools;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import VASSAL.build.Configurable;
@@ -62,15 +61,17 @@ public class SavedGameUpdater {
       catch (InterruptedException e) {
       }
     }
-    for (Enumeration e = GameModule.getGameModule().getGameState().getPieces(); e.hasMoreElements();) {
-      GamePiece p = (GamePiece) e.nextElement();
+    for (GamePiece p :
+         GameModule.getGameModule().getGameState().getAllPieces()) {
       if (!(p instanceof Stack)) {
         String slotId = pieceSlot.getProperty(p.getType());
         if (slotId != null) {
           Configurable[] path = null;
           try {
             path = ComponentPathBuilder.getInstance().getPath(slotId);
-            if (path != null && path.length > 0 && path[path.length - 1] instanceof PieceSlot) {
+            if (path != null &&
+                path.length > 0 &&
+                path[path.length - 1] instanceof PieceSlot) {
               final PieceSlot slot = (PieceSlot) path[path.length - 1];
               if (!slot.getPiece().getType().equals(p.getType())) {
                 ReplaceTrait r = new ReplaceTrait(p,slot.getPiece());

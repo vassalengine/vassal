@@ -26,8 +26,9 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
@@ -77,12 +78,16 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
           l.setFont(new Font("Dialog",Font.PLAIN,48)); //$NON-NLS-1$
           l.setBackground(Color.white);
           l.setForeground(Color.black);
-          l.setBorder(new BevelBorder(BevelBorder.RAISED,Color.lightGray,Color.darkGray));
+          l.setBorder(new BevelBorder(
+            BevelBorder.RAISED, Color.lightGray, Color.darkGray));
           w.getContentPane().add(l);
           w.pack();
           Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-          w.setLocation(d.width/2-w.getSize().width/2,d.height/2-w.getSize().height/2);
-          final Vector finished = new Vector();
+          w.setLocation(d.width/2-w.getSize().width/2,
+                        d.height/2-w.getSize().height/2);
+
+          final List<JWindow> finished =
+            Collections.synchronizedList(new ArrayList<JWindow>());
           Runnable runnable = new Runnable() {
             public void run() {
               try {
@@ -293,8 +298,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
 
   private void scaleBoards(double zoom) {
-    for (Enumeration e = map.getAllBoards(); e.hasMoreElements();) {
-      Board b = (Board) e.nextElement();
+    for (Board b : map.getBoards()) {
       b.getScaledImage(zoom, map.getView());
     }
   }

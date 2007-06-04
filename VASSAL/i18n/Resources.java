@@ -49,11 +49,11 @@ public class Resources {
 
 	protected static String VASSAL_BUNDLE = "VASSAL.i18n.VASSAL"; //$NON-NLS-1$
 
-	public static Enumeration getVassalKeys() {
+	public static Enumeration<String> getVassalKeys() {
 		return vassalBundle.getKeys();
 	}
 
-	public static Enumeration getEditorKeys() {
+	public static Enumeration<String> getEditorKeys() {
 		return editorBundle.getKeys();
 	}
 

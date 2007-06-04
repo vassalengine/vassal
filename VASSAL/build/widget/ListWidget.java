@@ -20,7 +20,6 @@ package VASSAL.build.widget;
 
 import java.awt.CardLayout;
 import java.awt.Component;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BoxLayout;
@@ -74,8 +73,8 @@ public class ListWidget extends Widget
       panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
       multiPanel.setLayout(layout);
 
-      for (Enumeration e = getBuildComponents(); e.hasMoreElements();) {
-        Widget w = (Widget) e.nextElement();
+      for (Buildable b : getBuildables()) {
+        Widget w = (Widget) b;
         multiPanel.add(getKey(w), w.getComponent());
       }
 

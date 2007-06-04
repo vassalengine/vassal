@@ -21,7 +21,6 @@ package VASSAL.build;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.VisibilityCondition;
@@ -157,8 +156,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
 
   public Configurable[] getConfigureComponents() {
     ArrayList<Configurable> l = new ArrayList<Configurable>();
-    for (Enumeration e = getBuildComponents(); e.hasMoreElements();) {
-      Buildable b = (Buildable) e.nextElement();
+    for (Buildable b : getBuildables()) {
       if (b instanceof Configurable) {
         l.add((Configurable) b);
       }

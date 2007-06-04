@@ -234,8 +234,9 @@ public class PieceMover extends AbstractBuildable
           // If clicking on a stack with a selected piece, put all selected
           // pieces in other stacks into the drag buffer
           KeyBuffer.getBuffer().sort(PieceMover.this);
-          for (Enumeration e = KeyBuffer.getBuffer().getPieces(); e.hasMoreElements();) {
-            GamePiece piece = (GamePiece) e.nextElement();
+          for (Enumeration<GamePiece> e = KeyBuffer.getBuffer().getPieces();
+               e.hasMoreElements();) {
+            GamePiece piece = e.nextElement();
             if (piece.getParent() != s) {
               DragBuffer.getBuffer().add(piece);
             }
@@ -250,9 +251,9 @@ public class PieceMover extends AbstractBuildable
           // If clicking on a selected piece, put all selected pieces into the
           // drag buffer
           KeyBuffer.getBuffer().sort(PieceMover.this);
-          for (Enumeration e = KeyBuffer.getBuffer().getPieces(); e.hasMoreElements();) {
-            GamePiece piece = (GamePiece) e.nextElement();
-            DragBuffer.getBuffer().add(piece);
+          for (Enumeration<GamePiece> e = KeyBuffer.getBuffer().getPieces();
+               e.hasMoreElements();) {
+            DragBuffer.getBuffer().add(e.nextElement());
           }
         }
         else {
@@ -450,8 +451,9 @@ public class PieceMover extends AbstractBuildable
     Command c = new NullCommand();
     if (!hasMoved || shouldMarkMoved()) {
       if (p instanceof Stack) {
-        for (Enumeration e = ((Stack) p).getPieces(); e.hasMoreElements();) {
-          c.append(markMoved((GamePiece) e.nextElement(), hasMoved));
+        for (Enumeration<GamePiece> e = ((Stack) p).getPieces();
+             e.hasMoreElements();) {
+          c.append(markMoved(e.nextElement(), hasMoved));
         }
       }
       else if (p.getProperty(Properties.MOVED) != null) {

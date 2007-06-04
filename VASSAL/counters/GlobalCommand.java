@@ -125,8 +125,8 @@ public class GlobalCommand {
 		}
 
     public Object visitStack(Stack s) {
-      for (Enumeration e = s.getPieces(); e.hasMoreElements();) {
-        apply((GamePiece) e.nextElement());
+      for (Enumeration<GamePiece> e = s.getPieces(); e.hasMoreElements();) {
+        apply(e.nextElement());
       }
       return null;
     }

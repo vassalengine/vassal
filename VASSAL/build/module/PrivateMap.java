@@ -33,6 +33,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +46,7 @@ import javax.swing.WindowConstants;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.ValidationReport;
@@ -179,8 +181,6 @@ public class PrivateMap extends Map {
       return d;
     }
   }
-  
-  
 
   public void sideChanged(String oldSide, String newSide) {
     super.sideChanged(oldSide, newSide);
@@ -222,6 +222,18 @@ public class PrivateMap extends Map {
     launchButton.setEnabled(isVisibleTo(PlayerRoster.getMySide()));
   }
 
+  @Override
+  public void setBoards(Collection<Board> c) {
+    if (surrogate != null) {
+      c = surrogate.getBoards();
+      edgeBuffer = surrogate.getEdgeBuffer();
+    }
+    super.setBoards(c);
+  }
+
+  /** @deprecated Use {@link #setBoards(Collection<Board>)} instead. */
+  @Override
+  @Deprecated
   public void setBoards(Enumeration boardList) {
     if (surrogate != null) {
       boardList = surrogate.getAllBoards();

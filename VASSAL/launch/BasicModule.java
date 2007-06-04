@@ -248,13 +248,13 @@ protected void initServer() {
     }
   }
 
-  protected void ensureComponent(Class componentClass) {
-    if (!getComponents(componentClass).hasMoreElements()) {
+  protected <T> void ensureComponent(Class<T> componentClass) {
+    if (getComponentsOf(componentClass).isEmpty()) {
       addComponent(componentClass);
     }
   }
 
-  protected void addComponent(Class componentClass) {
+  protected <T> void addComponent(Class<T> componentClass) {
     try {
       Buildable child = (Buildable) componentClass.newInstance();
       child.build(null);

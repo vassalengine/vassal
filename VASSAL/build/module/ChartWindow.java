@@ -80,13 +80,8 @@ public class ChartWindow extends Widget {
    */
   public void addTo(Buildable b) {
     rebuild();
-    int count = 0;
-    for (java.util.Enumeration e =
-        GameModule.getGameModule().getComponents(ChartWindow.class);
-         e.hasMoreElements();) {
-      count++;
-      e.nextElement();
-    }
+    int count =
+      GameModule.getGameModule().getComponentsOf(ChartWindow.class).size();
 
     launch.setAlignmentY(0.0F);
     GameModule.getGameModule().getToolBar().add(launch);

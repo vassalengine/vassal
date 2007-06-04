@@ -31,6 +31,7 @@ import java.awt.event.HierarchyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -350,27 +351,30 @@ public class BoardPicker implements ActionListener,
   public void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
   }
 
-  public void setBoards(Enumeration bdEnum) {
+  public void setBoards(Collection<Board> c) {
     reset();
-    ArrayList<Board> l = new ArrayList<Board>();
-    while (bdEnum.hasMoreElements()) {
-      l.add((Board) bdEnum.nextElement());
-    }
-    for (Board b : l) {
+    for (Board b : c) {
       if (b.relativePosition().x > nx - 1)
         addColumn();
       if (b.relativePosition().y > ny - 1)
         addRow();
     }
-    for (Board b : l) {
+    for (Board b : c) {
       getSlot(b.relativePosition().x + nx * b.relativePosition().y).setBoard(b);
     }
     pack();
   }
 
+  /** @deprecated Use {@link #setBoards(Collection<Board>)} instead. */
+  @Deprecated
+  @SuppressWarnings("unchecked")
+  public void setBoards(Enumeration bdEnum) {
+    setBoards(Collections.list(bdEnum));
+  }
+
   protected void selectBoards() {
     if (currentBoards != null) {
-      setBoards(Collections.enumeration(currentBoards));
+      setBoards(currentBoards);
     }
     else {
       reset();
@@ -384,13 +388,27 @@ public class BoardPicker implements ActionListener,
   }
 
   /**
-   * @return an Enumeration of boards that have been selected either by
+   * @return a Collection of boards that have been selected either by
    * the user via the dialog or from reading a savefile
    */
+  public Collection<Board> getSelectedBoards() {
+    if (currentBoards == null) {
+      List<Board> empty = Collections.emptyList();
+      return empty;
+    }
+    else {
+      return Collections.unmodifiableCollection(currentBoards);
+    }
+  }
+
+  /**
+   * @return an Enumeration of boards that have been selected either by
+   * the user via the dialog or from reading a savefile
+   * @deprecated Use {@link #getSelectedBoards()} instead.
+   */
+  @Deprecated
   public Enumeration getCurrentBoards() {
-    return currentBoards == null ?
-           Collections.enumeration(Collections.emptyList()) :
-           Collections.enumeration(currentBoards);
+    return Collections.enumeration(getSelectedBoards());
   }
 
   /**
@@ -449,7 +467,7 @@ public class BoardPicker implements ActionListener,
           }
         }
       }
-      map.setBoards(getCurrentBoards());
+      map.setBoards(getSelectedBoards());
     }
     else {
       currentBoards = null;
@@ -458,7 +476,7 @@ public class BoardPicker implements ActionListener,
 
   public void finish() {
     currentBoards = new ArrayList<Board>(getBoardsFromControls());
-    map.setBoards(getCurrentBoards());
+    map.setBoards(getSelectedBoards());
   }
 
   public Component getControls() {
@@ -475,8 +493,8 @@ public class BoardPicker implements ActionListener,
   }
 
   /**
-   * The restore command of a BoardPicker, when executed, sets the boards of its {@link Map} to
-   * {@link #getCurrentBoards}
+   * The restore command of a BoardPicker, when executed, sets the boards
+   * of its {@link Map} to {@link #getSelectedBoards}
    */
   public Command getRestoreCommand() {
     return new SetBoards(this, currentBoards);
@@ -744,7 +762,7 @@ public class BoardPicker implements ActionListener,
     protected void executeCommand() {
       target.currentBoards = boards;
       if (GameModule.getGameModule().getGameState().isGameStarted()) {
-        target.map.setBoards(target.getCurrentBoards());
+        target.map.setBoards(target.getSelectedBoards());
         target.map.getView().revalidate();
       }
     }

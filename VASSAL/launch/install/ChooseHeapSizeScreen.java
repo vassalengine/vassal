@@ -68,8 +68,9 @@ public class ChooseHeapSizeScreen implements Screen, Constants {
   }
 
   public void next(InstallWizard wiz) {
-    for (Enumeration e = group.getElements();e.hasMoreElements();) {
-      AbstractButton b = (AbstractButton) e.nextElement();
+    for (Enumeration<AbstractButton> e = group.getElements();
+         e.hasMoreElements();) {
+      AbstractButton b = e.nextElement();
       if (b.isSelected()) {
         wiz.put(Constants.HEAP_SIZE,(String) b.getClientProperty(HEAP_SIZE));
         break;

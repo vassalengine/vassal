@@ -967,8 +967,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       ArrayList<String> imageNames = new ArrayList<String>();
       ArrayList<String> commonNames = new ArrayList<String>();
       int i = 0;
-      for (Enumeration e = images.getImageNames(); e.hasMoreElements();) {
-        imageNames.add((String) e.nextElement());
+      for (Enumeration<String> e = images.getImageNames();
+           e.hasMoreElements();) {
+        imageNames.add(e.nextElement());
         String commonName = names.get(i);
         if (commonName != null && commonName.length() > 0) {
           if (PREFIX.equals(isPrefix.get(i))) {
@@ -1032,8 +1033,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     public String oldgetType() {
       SequenceEncoder imageList = new SequenceEncoder(';');
       int i = 0;
-      for (Enumeration e = images.getImageNames(); e.hasMoreElements();) {
-        String imageName = (String) e.nextElement();
+      for (Enumeration<String> e = images.getImageNames();
+           e.hasMoreElements();) {
+        String imageName = e.nextElement();
         String commonName = names.get(i);
         if (names.get(i) != null && commonName != null && commonName.length() > 0) {
           SequenceEncoder sub = new SequenceEncoder(imageName, ',');

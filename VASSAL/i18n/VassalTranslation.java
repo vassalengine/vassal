@@ -87,8 +87,9 @@ public class VassalTranslation extends Translation {
 // FIXME: What is the purpose of descList? Looks like we build it but then
 // throw it away.
       ArrayList<String> descList = new ArrayList<String>();
-      for (Enumeration e = Resources.getVassalKeys(); e.hasMoreElements(); ) {
-        String s = (String)e.nextElement();
+      for (Enumeration<String> e = Resources.getVassalKeys();
+           e.hasMoreElements(); ) {
+        String s = e.nextElement();
         keyList.add(s);
         descList.add(Resources.getVassalString(s));
       }

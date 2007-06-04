@@ -110,8 +110,9 @@ public class MovementReporter {
     Command c = null;
     if (p instanceof Stack) {
       c = new NullCommand();
-      for (Enumeration e = ((Stack) p).getPieces(); e.hasMoreElements();) {
-        c.append(markMoved((GamePiece) e.nextElement()));
+      for (Enumeration<GamePiece> e = ((Stack) p).getPieces();
+           e.hasMoreElements();) {
+        c.append(markMoved(e.nextElement()));
       }
     }
     else if (p.getProperty(Properties.MOVED) != null) {

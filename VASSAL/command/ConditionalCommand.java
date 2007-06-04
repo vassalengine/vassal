@@ -16,7 +16,9 @@
  */
 package VASSAL.command;
 
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
@@ -69,8 +71,15 @@ public class ConditionalCommand extends Command {
     private String property;
     /** To pass the check the value of the property
      * must match one of these values. */
-    private Vector allowed;
+    private List<String> allowed;
 
+    public Eq(String property, List<String> allowed) {
+      this.property = property;
+      this.allowed = allowed;      
+    }
+
+    @Deprecated
+    @SuppressWarnings("unchecked")
     public Eq(String property, Vector allowed) {
       this.property = property;
       this.allowed = allowed;
@@ -80,12 +89,19 @@ public class ConditionalCommand extends Command {
       return property;
     }
 
+    public List<String> getValueList() {
+      return Collections.unmodifiableList(allowed);
+    }
+
+    /** @deprecated Use {@link #getValueList()} instead. */
+    @Deprecated
     public Enumeration getValues() {
-      return allowed.elements();
+      return Collections.enumeration(allowed);
     }
 
     public boolean isSatisfied() {
-      String propertyValue = GameModule.getGameModule().getAttributeValueString(property);
+      String propertyValue =
+        GameModule.getGameModule().getAttributeValueString(property);
       return allowed.contains(propertyValue);
     }
   }
@@ -124,7 +140,8 @@ public class ConditionalCommand extends Command {
     }
 
     public boolean isSatisfied() {
-      String propertyValue = GameModule.getGameModule().getAttributeValueString(property);
+      String propertyValue =
+        GameModule.getGameModule().getAttributeValueString(property);
       return VASSAL.Info.compareVersions(propertyValue, value) < 0;
     }
   }
@@ -147,7 +164,8 @@ public class ConditionalCommand extends Command {
     }
 
     public boolean isSatisfied() {
-      String propertyValue = GameModule.getGameModule().getAttributeValueString(property);
+      String propertyValue =
+        GameModule.getGameModule().getAttributeValueString(property);
       return Info.compareVersions(propertyValue, value) > 0;
     }
   }

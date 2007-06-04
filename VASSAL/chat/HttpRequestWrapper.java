@@ -18,13 +18,18 @@
  */
 package VASSAL.chat;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -38,7 +43,7 @@ public class HttpRequestWrapper {
     this.baseURL = baseURL;
   }
 
-  public Enumeration doGet(Properties p) throws IOException {
+  public List<String> doGet(Properties p) throws IOException {
     return doGet("",p); //$NON-NLS-1$
   }
 
@@ -46,15 +51,15 @@ public class HttpRequestWrapper {
    * Perform a GET request
    * @param url the URL relative to the base URL
    * @param props additional query parameters
-   * @return an Enumeration of Strings, one for each line in the response
+   * @return a List of Strings, one for each line in the response
    * @throws IOException
    */
-  public Enumeration doGet(String url, Properties props) throws IOException {
+  public List<String> doGet(String url,
+                            Properties props) throws IOException {
     url = baseURL + url;
     if (props != null) {
        url += "?"; //$NON-NLS-1$
-      for (Enumeration e = props.keys();
-           e.hasMoreElements();) {
+      for (Enumeration e = props.keys(); e.hasMoreElements();) {
         String key = (String) e.nextElement();
         String value = props.getProperty(key);
         url += key + "=" + URLEncoder.encode(value,"UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -79,19 +84,19 @@ public class HttpRequestWrapper {
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
-    return Collections.enumeration(l);
+    return l;
   }
 
-  public Enumeration doPost(Properties p) throws IOException {
+  public List<String> doPost(Properties p) throws IOException {
     return doPost("",p); //$NON-NLS-1$
   }
 
-  public Enumeration doPost(String url, Properties props) throws IOException {
+  public List<String> doPost(String url,
+                             Properties props) throws IOException {
     url = baseURL + url;
     String content = ""; //$NON-NLS-1$
     if (props != null) {
-      for (Enumeration e = props.keys();
-           e.hasMoreElements();) {
+      for (Enumeration e = props.keys(); e.hasMoreElements();) {
         String key = (String) e.nextElement();
         String value = props.getProperty(key);
         content += key + "=" + URLEncoder.encode(value,"UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -118,6 +123,6 @@ public class HttpRequestWrapper {
       l.add(line);
     }
     input.close();
-    return Collections.enumeration(l);
+    return l;
   }
 }

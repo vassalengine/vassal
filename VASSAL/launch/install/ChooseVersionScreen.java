@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -20,7 +21,6 @@ package VASSAL.launch.install;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.io.IOException;
-import java.util.Enumeration;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -41,9 +41,9 @@ public class ChooseVersionScreen implements Screen {
     controls.add(new JLabel(Resources.getString("Install.select_version"))); //$NON-NLS-1$
     HttpRequestWrapper req = new HttpRequestWrapper("http://www.vassalengine.org/util/getAllVersionNumbers"); //$NON-NLS-1$
     try {
-    DefaultComboBoxModel m = new DefaultComboBoxModel(); 
-      for (Enumeration e = req.doGet(null);e.hasMoreElements();) {
-        m.insertElementAt(e.nextElement(),0);
+    DefaultComboBoxModel m = new DefaultComboBoxModel();
+      for (String s : req.doGet(null)) { 
+        m.insertElementAt(s,0);
       }
       choice.setModel(m);
       controls.add(choice);

@@ -60,22 +60,23 @@ public class KeyBuffer {
   }
 
   public void clear() {
-// FIXME: Is this inefficient? Better to call clear()?
-    while (!pieces.isEmpty()) {
-      remove(pieces.get(pieces.size() - 1));
+    for (GamePiece p : pieces) {
+      p.setProperty(Properties.SELECTED, null);
     }
+    pieces.clear();
   }
 
   public void remove(GamePiece p) {
     if (p != null) {
-      pieces.remove(p);
       p.setProperty(Properties.SELECTED, null);
+      pieces.remove(p);
     }
   }
 
   public boolean contains(GamePiece p) {
     if (p instanceof Stack) {
-      for (Enumeration e = ((Stack) p).getPieces(); e.hasMoreElements();) {
+      for (Enumeration<GamePiece> e = ((Stack) p).getPieces();
+           e.hasMoreElements();) {
         if (!pieces.contains(e.nextElement())) {
           return false;
         }
@@ -111,7 +112,7 @@ public class KeyBuffer {
     return comm;
   }
 
-  public Enumeration getPieces() {
+  public Enumeration<GamePiece> getPieces() {
     return Collections.enumeration(pieces);
   }
 
@@ -125,8 +126,8 @@ public class KeyBuffer {
    * @return true if a child of the specified Stack is selected
    */
   public boolean containsChild(Stack stack) {
-    for (Enumeration e = stack.getPieces(); e.hasMoreElements();) {
-      if (contains((GamePiece) e.nextElement())) {
+    for (Enumeration<GamePiece> e = stack.getPieces(); e.hasMoreElements();) {
+      if (contains(e.nextElement())) {
         return true;
       }
     }

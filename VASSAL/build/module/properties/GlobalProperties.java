@@ -1,6 +1,5 @@
 package VASSAL.build.module.properties;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JToolBar;
@@ -105,8 +104,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   
    public GlobalProperty getMutableProperty(String name) {
    GlobalProperty property = null;
-    for (Enumeration e = getComponents(GlobalProperty.class);e.hasMoreElements() && property == null;) {
-      GlobalProperty prop = (GlobalProperty) e.nextElement();
+    for (GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
       if (prop.getConfigureName().equals(name)) {
         property = prop;
       }

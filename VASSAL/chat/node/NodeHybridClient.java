@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -18,7 +19,7 @@
 package VASSAL.chat.node;
 
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.DynamicClient;
@@ -99,11 +100,11 @@ public class NodeHybridClient extends DynamicClient {
     Properties p = new Properties();
     p.put("module",info.getModuleName());  //$NON-NLS-1$
     p.put("vassalVersion",VASSAL.Info.getVersion());  //$NON-NLS-1$
-    Enumeration e = r.doGet(p);
-    if (!e.hasMoreElements()) {
+    List<String> l = r.doGet(p);
+    if (l.isEmpty()) {
       throw new IOException(Resources.getString("Server.empty_response"));  //$NON-NLS-1$
     }
-    return (String) e.nextElement();
+    return l.get(0);
   }
 
   public ServerStatus getStatusServer() {

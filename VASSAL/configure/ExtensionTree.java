@@ -23,7 +23,6 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.util.Enumeration;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
@@ -53,8 +52,8 @@ public class ExtensionTree extends ConfigureTree {
 
   private boolean isEditable(DefaultMutableTreeNode node) {
     if (node != null) {
-      for (Enumeration e = extension.getComponents(ExtensionElement.class); e.hasMoreElements();) {
-        ExtensionElement el = (ExtensionElement) e.nextElement();
+      for (ExtensionElement el :
+           extension.getComponentsOf(ExtensionElement.class)) {
         if (el.getExtension() == node.getUserObject()) {
           return true;
         }
@@ -266,8 +265,8 @@ public class ExtensionTree extends ConfigureTree {
           boolean removed = remove(parent, target);
           if (removed && !isEditable(parent)) {
             // We've removed an ExtensionElement
-            for (Enumeration e = extension.getComponents(ExtensionElement.class); e.hasMoreElements();) {
-              ExtensionElement el = (ExtensionElement) e.nextElement();
+            for (ExtensionElement el :
+                 extension.getComponentsOf(ExtensionElement.class)) {
               if (el.getExtension() == target) {
                 extension.remove(el);
                 break;

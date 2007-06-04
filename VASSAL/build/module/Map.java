@@ -51,6 +51,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -450,13 +451,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			addChild(new CounterDetailViewer());
 			setMapName("Main Map");
 		}
-		if (!getComponents(GlobalProperties.class).hasMoreElements()) {
+		if (getComponentsOf(GlobalProperties.class).isEmpty()) {
 			addChild(new GlobalProperties());
 		}
-    if (!getComponents(SelectionHighlighters.class).hasMoreElements()) {
+    if (getComponentsOf(SelectionHighlighters.class).isEmpty()) {
       addChild(new SelectionHighlighters());
     }
-    if (!getComponents(HighlightLastMoved.class).hasMoreElements()) {
+    if (getComponentsOf(HighlightLastMoved.class).isEmpty()) {
       addChild(new HighlightLastMoved());
     }
 		setup(false);
@@ -523,8 +524,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * Every map must include a {@link StackMetrics} as one of its build components, which governs the stacking behavior
-   * of GamePieces on the map
+   * Every map must include a {@link StackMetrics} as one of its build
+   * components, which governs the stacking behavior of GamePieces on the map
    * 
    * @return the StackMetrics for this map
    */
@@ -572,9 +573,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * Expects to be added to a {@link GameModule}. Determines a unique id for this map. Registers itself as
-   * {@link KeyStrokeSource}. Registers itself as a {@link GameComponent}. Registers itself as a drop target and drag
-   * source
+   * Expects to be added to a {@link GameModule}. Determines a unique id for
+   * this Map. Registers itself as {@link KeyStrokeSource}. Registers itself
+   * as a {@link GameComponent}. Registers itself as a drop target and drag
+   * source.
    * 
    * @see #getId
    * @see DragBuffer
@@ -636,17 +638,28 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * Set the boards for this map. Each map may contain more than one {@link Board}
+   * Set the boards for this map. Each map may contain more than one
+   * {@link Board}.
    */
+  public synchronized void setBoards(Collection<Board> c) {
+    boards.clear();
+    System.gc();
+    for (Board b : c) {
+      b.setMap(this);
+      boards.add(b);
+    }
+    setBoardBoundaries();
+  }
+
+	/**
+   * Set the boards for this map. Each map may contain more than one
+   * {@link Board}.
+   * @deprecated Use {@link #setBoards(Collection<Board>)} instead.
+   */
+  @Deprecated
+  @SuppressWarnings("unchecked")
 	public synchronized void setBoards(Enumeration boardList) {
-		boards.clear();
-		System.gc();
-		while (boardList.hasMoreElements()) {
-			Board board = (Board) boardList.nextElement();
-			board.setMap(this);
-			boards.add(board);
-		}
-		setBoardBoundaries();
+    setBoards(Collections.list(boardList));
 	}
 
 	public Command getRestoreCommand() {
@@ -688,9 +701,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   public Zone findZone(String name) {
     for (Board b : boards) {
-      for (Enumeration e = b.getAllDescendantComponents(ZonedGrid.class);
-           e.hasMoreElements(); ) {
-        ZonedGrid zg = (ZonedGrid) e.nextElement();
+      for (ZonedGrid zg : b.getAllDescendantComponentsOf(ZonedGrid.class)) {
         Zone z = zg.findZone(name);
         if (z != null) {
           return z;
@@ -707,9 +718,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   public Region findRegion(String name) {
     for (Board b : boards) {
-      for (Enumeration e = b.getAllDescendantComponents(RegionGrid.class);
-           e.hasMoreElements(); ) {
-        RegionGrid rg = (RegionGrid) e.nextElement();
+      for (RegionGrid rg : b.getAllDescendantComponentsOf(RegionGrid.class)) {
         Region r = rg.findRegion(name);
         if (r != null) {
           return r;
@@ -937,9 +946,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	public String getDeckNameContaining(Point p) {
 		String deck = null;
 		if (p != null) {
-			Enumeration e = getComponents(DrawPile.class);
-			while (e.hasMoreElements()) {
-				DrawPile d = (DrawPile) e.nextElement();
+      for (DrawPile d : getComponentsOf(DrawPile.class)) {
 				Rectangle box = d.boundingBox();
 				if (box != null && box.contains(p)) {
 					deck = d.getConfigureName();
@@ -959,9 +966,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	public String getDeckNameAt(Point p) {
 		String deck = null;
 		if (p != null) {
-			Enumeration e = getComponents(DrawPile.class);
-			while (e.hasMoreElements()) {
-				DrawPile d = (DrawPile) e.nextElement();
+      for (DrawPile d : getComponentsOf(DrawPile.class)) {
 				if (d.getPosition().equals(p)) {
 					deck = d.getConfigureName();
 					break;
@@ -974,9 +979,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public String getLocalizedDeckNameAt(Point p) {
     String deck = null;
     if (p != null) {
-      Enumeration e = getComponents(DrawPile.class);
-      while (e.hasMoreElements()) {
-        DrawPile d = (DrawPile) e.nextElement();
+      for (DrawPile d : getComponentsOf(DrawPile.class)) {
         if (d.getPosition().equals(p)) {
           deck = d.getLocalizedConfigureName();
           break;
@@ -1366,9 +1369,18 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   }
 
 	/**
-   * @return an Enumeration of all {@link Board}s on the map
+   * @return a Collection of all {@link Board}s on the Map
    */
-	public Enumeration getAllBoards() {
+  public Collection<Board> getBoards() {
+    return Collections.unmodifiableCollection(boards);
+  }
+
+	/**
+   * @return an Enumeration of all {@link Board}s on the map
+   * @deprecated Use {@link #getBoards()} instead.
+   */
+  @Deprecated
+	public Enumeration<Board> getAllBoards() {
 		return Collections.enumeration(boards);
 	}
 
@@ -1616,8 +1628,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		boolean shouldDock = false;
 		if (GlobalOptions.getInstance().isUseSingleWindow() && !useLaunchButton) {
 			shouldDock = true;
-			for (Enumeration e = GameModule.getGameModule().getComponents(Map.class); e.hasMoreElements();) {
-				Map m = (Map) e.nextElement();
+      for (Map m : GameModule.getGameModule().getComponentsOf(Map.class)) {
 				if (m == this) {
 					break;
 				}
@@ -2067,16 +2078,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * 
    * @return
    */
+// FIXME: should return a Collection<Map> instead
 	public static Iterator getAllMaps() {
-		ArrayList<Map> l =
-      Collections.list(GameModule.getGameModule().getComponents(Map.class));
-		for (Enumeration charts = GameModule.getGameModule()
-                                        .getComponents(ChartWindow.class);
-         charts.hasMoreElements();) {
-			ChartWindow w = (ChartWindow) charts.nextElement();
-			for (Enumeration e = w.getAllDescendantComponents(MapWidget.class);
-           e.hasMoreElements();) {
-				l.add(((MapWidget) e.nextElement()).getMap());
+		Collection<Map> l = GameModule.getGameModule().getComponentsOf(Map.class);
+		for (ChartWindow cw :
+          GameModule.getGameModule().getComponentsOf(ChartWindow.class)) {
+      for (MapWidget mw : cw.getAllDescendantComponentsOf(MapWidget.class)) {
+				l.add(mw.getMap());
 			}
 		}
 		return l.iterator();

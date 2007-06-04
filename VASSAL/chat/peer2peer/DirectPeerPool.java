@@ -21,7 +21,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -76,9 +76,9 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
   private String discoverMyIpAddressFromRemote() throws IOException {
     String theIp = null;
     HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
-    Enumeration e = r.doGet(null);
-    if (e.hasMoreElements()) {
-      theIp = (String) e.nextElement();
+    List<String> l = r.doGet(null);
+    if (!l.isEmpty()) {
+      theIp = l.get(0);
     }
     else {
       throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$

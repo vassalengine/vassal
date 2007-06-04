@@ -96,7 +96,9 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ScrollPane;
 
-public class Inventory extends AbstractConfigurable implements GameComponent,PlayerRoster.SideChangeListener {
+public class Inventory extends AbstractConfigurable
+                       implements GameComponent,
+                                  PlayerRoster.SideChangeListener {
   protected LaunchButton launch;
   protected CounterInventory results;
   protected JTree tree;
@@ -419,7 +421,8 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       new Counter(this.getConfigureName()), path, sortPieces);
 
     PieceIterator pi = new PieceIterator(
-      GameModule.getGameModule().getGameState().getPieces(),
+      Collections.enumeration(
+        GameModule.getGameModule().getGameState().getAllPieces()),
       piecePropertiesFilter);
 
     while (pi.hasMoreElements()) {

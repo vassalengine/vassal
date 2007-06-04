@@ -20,8 +20,8 @@ package VASSAL.build.module;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -103,9 +103,12 @@ public class PrototypesContainer extends AbstractConfigurable {
 
   public static PrototypeDefinition getPrototype(String name) {
     if (instance == null) {
-      Enumeration e = GameModule.getGameModule().getComponents(PrototypesContainer.class);
-      if (e.hasMoreElements()) {
-        instance = (PrototypesContainer) e.nextElement();
+      Iterator<PrototypesContainer> i =
+        GameModule.getGameModule()
+                  .getComponentsOf(PrototypesContainer.class)
+                  .iterator();
+      if (i.hasNext()) {
+        instance = i.next();
       }
       else {
         return null;

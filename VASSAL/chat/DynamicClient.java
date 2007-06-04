@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -19,7 +20,7 @@ package VASSAL.chat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
@@ -60,14 +61,14 @@ public class DynamicClient extends HybridClient {
     Properties p = new Properties();
     p.put("module", GameModule.getGameModule() == null ? "Test" : GameModule.getGameModule().getGameName()); //$NON-NLS-1$ //$NON-NLS-2$
     p.put("vassalVersion", VASSAL.Info.getVersion()); //$NON-NLS-1$
-    Enumeration e = r.doGet(p);
-    if (!e.hasMoreElements()) {
+    List<String> l = r.doGet(p);
+    if (l.isEmpty()) {
       throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$
     }
     p = new Properties();
     StringBuffer buff = new StringBuffer();
-    while (e.hasMoreElements()) {
-      buff.append(e.nextElement()).append('\n');
+    for (String s : l) {
+      buff.append(s).append('\n');
     }
     p.load(new ByteArrayInputStream(buff.toString().getBytes()));
     return p;

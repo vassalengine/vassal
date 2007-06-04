@@ -26,19 +26,22 @@ import VASSAL.build.Buildable;
  * exist within a target component
  */
 public class MandatoryComponent implements ValidityChecker {
-  private Class requiredChildClass;
+  private Class<?> requiredChildClass;
   private AbstractConfigurable target;
 
-  public MandatoryComponent(AbstractConfigurable target, Class requiredChildClass) {
+  public MandatoryComponent(AbstractConfigurable target,
+                            Class<?> requiredChildClass) {
     this.requiredChildClass = requiredChildClass;
     this.target = target;
   }
 
   public void validate(Buildable b, ValidationReport report) {
-    if (b == this.target) {
-      if (!target.getComponents(requiredChildClass).hasMoreElements()) {
-        report.addWarning(ConfigureTree.getConfigureName(target)+" must contain at least one "+ConfigureTree.getConfigureName(requiredChildClass));
-      }
+    if (b == this.target &&
+        target.getComponentsOf(requiredChildClass).isEmpty()) {
+      report.addWarning(
+        ConfigureTree.getConfigureName(target) +
+        " must contain at least one " +
+        ConfigureTree.getConfigureName(requiredChildClass));
     }
   }
 }

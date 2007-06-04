@@ -62,10 +62,10 @@ public class DragBuffer {
         !pieces.contains(p) &&
         !Boolean.TRUE.equals(p.getProperty(Properties.RESTRICTED))) {
       if (p instanceof Stack) {
-        for (Enumeration e = ((Stack) p).getPieces(); e.hasMoreElements();) {
+        for (Enumeration<GamePiece> e = ((Stack) p).getPieces();
+             e.hasMoreElements();) {
           if (Boolean.TRUE.equals(
-              ((GamePiece) e.nextElement())
-                            .getProperty(Properties.RESTRICTED))) {
+                e.nextElement().getProperty(Properties.RESTRICTED))) {
             return;
           }
         }

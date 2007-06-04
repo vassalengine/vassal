@@ -30,7 +30,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -211,13 +210,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       if (destination.equals(DEST_COUNTER.substring(0, 1))) {
         GamePiece target = null;
         // Find first counter matching the properties
-        for (Enumeration e = GameModule.getGameModule().getGameState().getPieces(); e.hasMoreElements() && target==null; ) {
-          GamePiece piece = (GamePiece) e.nextElement();
+        for (GamePiece piece :
+             GameModule.getGameModule().getGameState().getAllPieces()) {
           if (piece instanceof Stack) {
             Stack s = (Stack) piece;
-            for (int i=0; i < s.getPieceCount() && target == null; i++) {
+            for (int i = 0; i < s.getPieceCount(); i++) {
               if (propertyFilter.accept(s.getPieceAt(i))) {
                 target = s.getPieceAt(i);
+                if (target != null) break;
               }
             }
           }
@@ -226,6 +226,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
               target = piece;
             }
           }
+          if (target != null) break;
         }
         // Determine target's position
         if (target != null) {

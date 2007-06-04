@@ -29,6 +29,7 @@ import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -258,8 +259,8 @@ public class ConfigureTree extends JTree
     l.add(buildMoveAction(target));
     addActionGroup(popup, l);
 
-    for (Enumeration e = buildAddActions(target); e.hasMoreElements();) {
-      addAction(popup, (Action) e.nextElement());
+    for (Action a : buildAddActionsFor(target)) {
+      addAction(popup, a);
     }
     addAction(popup, buildImportAction(target));
     return popup;
@@ -439,7 +440,7 @@ public class ConfigureTree extends JTree
     return a;
   }
 
-  protected Enumeration buildAddActions(final Configurable target) {
+  protected Collection<Action> buildAddActionsFor(final Configurable target) {
     ArrayList<Action> l = new ArrayList<Action>();
     Class[] allow = target.getAllowableConfigureComponents();
     for (int i = 0; i < allow.length; ++i) {
@@ -447,11 +448,21 @@ public class ConfigureTree extends JTree
       Action action = buildAddAction(target, newConfig);
       l.add(action);
     }
-    return Collections.enumeration(l);
+    return l;
   }
 
-  protected Action buildAddAction(final Configurable target, final Class newConfig) {
-    AbstractAction action = new AbstractAction("Add " + getConfigureName(newConfig)) {
+  /**
+   * @deprecated Use {@link #buildAddActionsFor(final Configurable)} instead.
+   */
+  @Deprecated
+  protected Enumeration<Action> buildAddActions(final Configurable target) {
+    return Collections.enumeration(buildAddActionsFor(target));
+  }
+
+  protected Action buildAddAction(final Configurable target,
+                                  final Class newConfig) {
+    AbstractAction action =
+        new AbstractAction("Add " + getConfigureName(newConfig)) {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {

@@ -28,7 +28,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.Enumeration;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -95,9 +94,8 @@ public class AboutScreen extends AbstractConfigurable {
         Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
         GameModule.getGameModule().getGameName(),
         GameModule.getGameModule().getGameVersion())));
-    Enumeration e = GameModule.getGameModule().getComponents(ModuleExtension.class);
-    while (e.hasMoreElements()){
-      ModuleExtension ext = (ModuleExtension) e.nextElement();
+    for (ModuleExtension ext :
+         GameModule.getGameModule().getComponentsOf(ModuleExtension.class)) {
       w.getContentPane().add(createLabel(
           Resources.getString("AboutScreen.extension_version", ext.getName(), ext.getVersion()))); //$NON-NLS-1$
     }

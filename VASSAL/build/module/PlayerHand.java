@@ -28,7 +28,6 @@ package VASSAL.build.module;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.util.Enumeration;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.HandMetrics;
@@ -40,15 +39,12 @@ public class PlayerHand extends PrivateMap {
   public void build(org.w3c.dom.Element el) {
     super.build(el);
     if (el == null) {
-      Enumeration e = getComponents(StackExpander.class);
-      while (e.hasMoreElements()) {
-        StackExpander se = (StackExpander) e.nextElement();
+      for (StackExpander se : getComponentsOf(StackExpander.class)) {
         remove(se);
         removeLocalMouseListener(se);
       }
-      e = getComponents(CounterDetailViewer.class);
-      while (e.hasMoreElements()) {
-        CounterDetailViewer cdv = (CounterDetailViewer) e.nextElement();
+      for (CounterDetailViewer cdv :
+              getComponentsOf(CounterDetailViewer.class)) {
         remove(cdv);
         cdv.removeFrom(this);
       }

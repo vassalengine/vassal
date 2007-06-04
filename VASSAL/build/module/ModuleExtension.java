@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Enumeration;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -325,9 +324,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
     protected void executeCommand() {
       boolean containsExtension = false;
       String msg = null;
-      Enumeration e = GameModule.getGameModule().getComponents(ModuleExtension.class);
-      while (e.hasMoreElements()) {
-        final ModuleExtension ext = (ModuleExtension) e.nextElement();
+      for (ModuleExtension ext :
+           GameModule.getGameModule().getComponentsOf(ModuleExtension.class)) {
         if (ext.getName().equals(name)) {
           containsExtension = true;
           if (Info.compareVersions(ext.getVersion(), version) < 0) {

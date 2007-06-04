@@ -340,7 +340,7 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
       scroll.setPreferredSize(getViewableSize());
     }
 
-    if (show && map.getComponents(CounterDetailViewer.class).hasMoreElements()) {
+    if (show && !map.getComponentsOf(CounterDetailViewer.class).isEmpty()) {
       view.addMouseMotionListener(mouseOverViewer);
       f.addKeyListener(mouseOverViewer);
     }

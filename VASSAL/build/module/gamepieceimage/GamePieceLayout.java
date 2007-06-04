@@ -28,7 +28,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -358,8 +357,8 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
 
   protected void invalidate() {
     imageDefn.rebuildVisualizerImage();
-    for (Enumeration e = getComponents(GamePieceImage.class); e.hasMoreElements();) {
-      ((GamePieceImage) e.nextElement()).rebuildVisualizerImage();
+    for (GamePieceImage i : getComponentsOf(GamePieceImage.class)) {
+      i.rebuildVisualizerImage();
     }
   }
 
@@ -404,16 +403,14 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public GamePieceImage getGenericDefn(String defnName) {
-    GamePieceImage defn = null;
-    Enumeration e = getBuildComponents();
-    while (e.hasMoreElements() && defn == null) {
-      Object o = e.nextElement();
-      if (o instanceof GamePieceImage) {
-        if (((GamePieceImage) o).getConfigureName().equals(defnName)) {
-          return (GamePieceImage) o;
+    for (Buildable b : getBuildables()) {
+      if (b instanceof GamePieceImage) {
+        GamePieceImage gpi = (GamePieceImage) b;
+        if (gpi.getConfigureName().equals(defnName)) {
+          return gpi;
         }
       }
     }
-    return defn;
+    return null;
   }
 }

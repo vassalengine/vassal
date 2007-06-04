@@ -66,7 +66,7 @@ public class Stack implements GamePiece, StateMergeable {
    *         is a clone of the contents so add/remove operations during read
    *         won't affect it.
    */
-  public Enumeration getPieces() {
+  public Enumeration<GamePiece> getPieces() {
     return new AllPieceEnum();
   }
 
@@ -75,7 +75,7 @@ public class Stack implements GamePiece, StateMergeable {
    * 
    * @return
    */
-  public Enumeration getPiecesInReverseOrder() {
+  public Enumeration<GamePiece> getPiecesInReverseOrder() {
     return new ReversePieceEnum();
   }
 
@@ -84,7 +84,7 @@ public class Stack implements GamePiece, StateMergeable {
    * topmost first In other words, selected pieces first, then unselected pieces
    * from the top to the bottom
    */
-  public Enumeration getPiecesInVisibleOrder() {
+  public Enumeration<GamePiece> getPiecesInVisibleOrder() {
     return new VisibleOrderEnum();
   }
 
@@ -498,8 +498,8 @@ public class Stack implements GamePiece, StateMergeable {
    * @param val
    */
   public void setPropertyOnContents(Object key, Object val) {
-    for (Enumeration e = getPieces(); e.hasMoreElements();) {
-      ((GamePiece) e.nextElement()).setProperty(key, val);
+    for (Enumeration<GamePiece> e = getPieces(); e.hasMoreElements();) {
+      e.nextElement().setProperty(key, val);
     }
   }
 
@@ -556,7 +556,7 @@ public class Stack implements GamePiece, StateMergeable {
     return defaultMetrics;
   }
 
-  private class VisibleOrderEnum implements Enumeration {
+  private class VisibleOrderEnum implements Enumeration<GamePiece> {
     private GamePiece next;
     private int index;
     private boolean doingSelected;
@@ -571,8 +571,8 @@ public class Stack implements GamePiece, StateMergeable {
       return next != null;
     }
 
-    public Object nextElement() {
-      Object value = next;
+    public GamePiece nextElement() {
+      GamePiece value = next;
       next = findNext();
       return value;
     }
@@ -595,7 +595,7 @@ public class Stack implements GamePiece, StateMergeable {
     }
   }
 
-  private class AllPieceEnum implements Enumeration {
+  private class AllPieceEnum implements Enumeration<GamePiece> {
     private int index;
     private GamePiece[] p;
 
@@ -609,12 +609,12 @@ public class Stack implements GamePiece, StateMergeable {
       return index < p.length;
     }
 
-    public Object nextElement() {
+    public GamePiece nextElement() {
       return p[index++];
     }
   }
 
-  private class ReversePieceEnum implements Enumeration {
+  private class ReversePieceEnum implements Enumeration<GamePiece> {
     private int index;
     private GamePiece[] clone;
 
@@ -628,7 +628,7 @@ public class Stack implements GamePiece, StateMergeable {
       return index >= 0;
     }
 
-    public Object nextElement() {
+    public GamePiece nextElement() {
       return clone[index--];
     }
   }

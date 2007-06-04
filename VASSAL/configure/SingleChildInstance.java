@@ -18,7 +18,6 @@
  */
 package VASSAL.configure;
 
-import java.util.Enumeration;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 
@@ -28,22 +27,21 @@ import VASSAL.build.Buildable;
  */
 public class SingleChildInstance implements ValidityChecker {
   private AbstractConfigurable target;
-  private Class childClass;
+  private Class<?> childClass;
 
-  public SingleChildInstance(AbstractConfigurable target, Class childClass) {
+  public SingleChildInstance(AbstractConfigurable target,
+                             Class<?> childClass) {
     this.childClass = childClass;
     this.target = target;
   }
 
   public void validate(Buildable b, ValidationReport report) {
-    if (b == target) {
-      Enumeration e = target.getComponents(childClass);
-      if (e.hasMoreElements()) {
-        e.nextElement();
-        if (e.hasMoreElements()) {
-          report.addWarning("No more than one "+ConfigureTree.getConfigureName(childClass)+" allowed in "+ConfigureTree.getConfigureName(target));
-        }
-      }
+    if (b == target && target.getComponentsOf(childClass).size() > 1) {
+      report.addWarning(
+        "No more than one " +
+        ConfigureTree.getConfigureName(childClass) +
+        " allowed in " +
+        ConfigureTree.getConfigureName(target));
     }
   }
 }

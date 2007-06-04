@@ -28,7 +28,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -582,8 +581,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     else {
       frame.setTitle(frame.getTitle() + s);
     }
-    for (Enumeration e = getComponents(Map.class); e.hasMoreElements();) {
-      ((Map) e.nextElement()).appendToTitle(s);
+    for (Map m : getComponentsOf(Map.class)) {
+      m.appendToTitle(s);
     }
   }
 
@@ -614,8 +613,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
           }
         }
         else if (getArchiveWriter() != null) {
-          for (Enumeration e = getComponents(ModuleExtension.class); e.hasMoreElements();) {
-            ModuleExtension ext = (ModuleExtension) e.nextElement();
+          for (ModuleExtension ext : getComponentsOf(ModuleExtension.class)) {
             cancelled = !ext.confirmExit();
           }
         }

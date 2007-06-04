@@ -171,31 +171,18 @@ public class DrawPile extends SetupStack {
      * looks for the names of all decks already defined
      */
     public String[] getValidValues(AutoConfigurable target) {
-      String[] values;
-      DrawPile dp;
-      GameComponent g;
-      Map m;
-
       ArrayList<String> l = new ArrayList<String>();
       l.add(NONE);
-      for (Enumeration e = GameModule.getGameModule()
-                                     .getGameState().getGameComponentsEnum();
-           e.hasMoreElements();) {
-        g = (GameComponent) e.nextElement();
-        if (g != null && g instanceof Map) {
-          m = (Map) g;
-          if (m != null) {
-            for (Enumeration e1 = m.getComponents(DrawPile.class);
-                 e1.hasMoreElements();) {
-              dp = (DrawPile) e1.nextElement();
-              if (dp.getConfigureName() != null)
-                l.add(dp.getConfigureName());
-            }
+      for (GameComponent g :
+           GameModule.getGameModule().getGameState().getGameComponents()) {
+        if (g instanceof Map) {
+          for (DrawPile dp : ((Map) g).getComponentsOf(DrawPile.class)) {
+            if (dp.getConfigureName() != null)
+              l.add(dp.getConfigureName());
           }
         }
       }
-      values = l.toArray(new String[l.size()]);
-      return values;
+      return l.toArray(new String[l.size()]);
     }
   }
 
@@ -547,8 +534,8 @@ public class DrawPile extends SetupStack {
   protected Stack initializeContents() {
     Stack s = super.initializeContents();
     myDeck = new Deck(getDeckType());
-    for (Enumeration e = s.getPieces(); e.hasMoreElements();) {
-      myDeck.add((GamePiece) e.nextElement());
+    for (Enumeration<GamePiece> e = s.getPieces(); e.hasMoreElements();) {
+      myDeck.add(e.nextElement());
     }
     myDeck.setFaceDown(!Deck.NEVER.equals(dummy.getFaceDownOption()));
     return myDeck;

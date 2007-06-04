@@ -339,7 +339,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   
   public void build(Element e) {
     super.build(e);
-    if (!getComponents(ZonedGridHighlighter.class).hasMoreElements()) {
+    if (getComponentsOf(ZonedGridHighlighter.class).isEmpty()) {
       addChild(new ZonedGridHighlighter());
     }
   }

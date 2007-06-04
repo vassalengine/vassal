@@ -32,6 +32,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -69,8 +70,8 @@ import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * A collection of pieces that behaves like a deck, i.e.: Doesn't move. Can't be
- * expanded. Can be shuffled. Can be turned face-up and face-down
+ * A collection of pieces that behaves like a deck, i.e.: Doesn't move.
+ * Can't be expanded. Can be shuffled. Can be turned face-up and face-down.
  */
 public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public static final String ID = "deck;"; //$NON-NLS-1$
@@ -187,8 +188,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       expressionProperties.get(index).setPropertyValue("0"); //$NON-NLS-1$
     }
     //Increase all of the pieces with expressions specified in this deck
-    for (Enumeration e = getPieces(); e.hasMoreElements();) {
-      GamePiece p = (GamePiece) e.nextElement();
+    for (Enumeration<GamePiece> e = getPieces(); e.hasMoreElements();) {
+      GamePiece p = e.nextElement();
       if (p != null) {
         updateCounts(p,true);
       }
@@ -576,7 +577,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       indices.remove(i);
       newContents.add(getPieceAt(index));
     }
-    return setContents(newContents.iterator()).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
+    return setContents(newContents).append(reportCommand(shuffleMsgFormat, Resources.getString("Deck.shuffle"))); //$NON-NLS-1$
   }
 
   /**
@@ -612,10 +613,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         }
       }
       else {
-        Enumeration e = getPiecesInReverseOrder();
+        Enumeration<GamePiece> e = getPiecesInReverseOrder();
         while (count-- > 0 && e.hasMoreElements()) {
-          GamePiece p = (GamePiece) e.nextElement();
-          pieces.add(p);
+          pieces.add(e.nextElement());
         }
       }
       it = pieces.iterator();
@@ -633,7 +633,21 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     };
   }
 
-  /** Set the contents of this Deck to an Enumeration of GamePieces */
+  /** Set the contents of this Deck to a Collection of GamePieces */
+  protected Command setContents(Collection<GamePiece> c) {
+    ChangeTracker track = new ChangeTracker(this);
+    removeAll();
+    for (GamePiece child : c) {
+      insertChild(child, pieceCount);
+    }
+    return track.getChangeCommand();
+  }
+
+  /**
+   * Set the contents of this Deck to an Iterator of GamePieces
+   * @deprecated Use {@link #setContents(Collection<GamePiece>)} instead.
+   */
+  @Deprecated
   protected Command setContents(Iterator it) {
     ChangeTracker track = new ChangeTracker(this);
     removeAll();
@@ -649,9 +663,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$
     se.append(faceDown);
     SequenceEncoder se2 = new SequenceEncoder(',');
-    for (Enumeration e = getPieces(); e.hasMoreElements();) {
-      GamePiece p = (GamePiece) e.nextElement();
-      se2.append(p.getId());
+    for (Enumeration<GamePiece> e = getPieces(); e.hasMoreElements();) {
+      se2.append(e.nextElement().getId());
     }
     if (se2.getValue() != null) {
       se.append(se2.getValue());
@@ -691,7 +704,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         }
       }
     }
-    setContents(l.iterator());
+    setContents(l);
     commands = null; // Force rebuild of popup menu
   }
 
@@ -705,7 +718,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /** Reverse the order of the contents of the Deck */
   public Command reverse() {
     ArrayList<GamePiece> list = Collections.list(getPiecesInReverseOrder());
-    return setContents(list.iterator()).append(reportCommand(reverseMsgFormat, Resources.getString("Deck.reverse"))); //$NON-NLS-1$
+    return setContents(list).append(reportCommand(reverseMsgFormat, Resources.getString("Deck.reverse"))); //$NON-NLS-1$
   }
 
   public boolean isDrawOutline() {
@@ -1108,10 +1121,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     Command comm = new LoadDeckCommand(null);
 
     FileWriter dest = new FileWriter(f);
-    for (Enumeration e = getPieces(); e.hasMoreElements();) {
-      GamePiece p = (GamePiece) e.nextElement();
-      comm = comm.append(new AddPiece(p));
-
+    for (Enumeration<GamePiece> e = getPieces(); e.hasMoreElements();) {
+      comm = comm.append(new AddPiece(e.nextElement()));
     }
     GameModule.getGameModule().addCommandEncoder(commandEncoder);
     dest.write(GameModule.getGameModule().encode(comm));

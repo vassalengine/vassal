@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -117,8 +118,8 @@ public class GameState implements CommandEncoder {
   }
 
   /**
-   * @return true if the game state is different from when it was
-   * last saved     */
+   * @return true if the game state is different from when it was last saved
+   */
   public boolean isModified() {
     String s = saveString();
     return s != null && !s.equals(lastSave);
@@ -126,23 +127,36 @@ public class GameState implements CommandEncoder {
 
   /**
    * Add a {@link GameComponent} to the list of objects that will
-   * be notified when a game is started/ended     */
+   * be notified when a game is started/ended
+   */
   public void addGameComponent(GameComponent theComponent) {
     gameComponents.add(theComponent);
   }
 
   /**
    * Remove a {@link GameComponent} from the list of objects that will
-   * be notified when a game is started/ended     */
+   * be notified when a game is started/ended
+   */
   public void removeGameComponent(GameComponent theComponent) {
     gameComponents.remove(theComponent);
   }
   
   /**
    * @return an enumeration of all {@link GameComponent} objects
-   * that have been added to this GameState */
+   * that have been added to this GameState
+   * @deprecated Use {@link #getGameComponents()} instead.
+   */
+  @Deprecated
   public Enumeration getGameComponentsEnum() {
     return Collections.enumeration(gameComponents);
+  }
+
+  /**
+   * @return a Collection of all {@link GameComponent} objects
+   * that have been added to this GameState
+   */
+  public Collection<GameComponent> getGameComponents() {
+    return Collections.unmodifiableCollection(gameComponents);
   }
 
   /** Add a {@link GameSetupStep} */
@@ -350,9 +364,18 @@ public class GameState implements CommandEncoder {
     }
   }
 
-  /**     * @return an Enumeration of all {@link GamePiece}s in the game.     */
-  public Enumeration getPieces() {
+  /**
+   * @return an Enumeration of all {@link GamePiece}s in the game
+   * @deprecated Use {@link #getAllPieces()} instead.
+   */
+  @Deprecated
+  public Enumeration<GamePiece> getPieces() {
     return Collections.enumeration(pieces.values());
+  }
+
+  /** @return a Collection of all {@link GamePiece}s in the game */
+  public Collection<GamePiece> getAllPieces() {
+    return pieces.values();
   }
 
   public static class SetupCommand extends Command {

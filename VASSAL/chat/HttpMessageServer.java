@@ -52,9 +52,8 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     Command motd = new NullCommand();
     try {
       if (GameModule.getGameModule() != null) {
-        for (Enumeration e = welcomeURL.doGet(prepareInfo());
-             e.hasMoreElements();) {
-          motd = motd.append(GameModule.getGameModule().decode((String) e.nextElement()));
+        for (String s : welcomeURL.doGet(prepareInfo())) {
+          motd = motd.append(GameModule.getGameModule().decode(s));
         }
       }
     }
@@ -66,9 +65,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   public Message[] getMessages() {
     ArrayList<Message> msgList = new ArrayList<Message>();
     try {
-      for (Enumeration e = getMessagesURL.doGet(prepareInfo());
-           e.hasMoreElements();) {
-        String msg = (String) e.nextElement();
+      for (String msg : getMessagesURL.doGet(prepareInfo())) {
         StringTokenizer st = new StringTokenizer(msg, "&"); //$NON-NLS-1$
         String s = st.nextToken();
         String sender = s.substring(s.indexOf("=") + 1); //$NON-NLS-1$

@@ -19,8 +19,6 @@ package VASSAL.chat;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,8 +62,7 @@ public class CgiServerStatus implements ServerStatus {
     HashMap<String,ServerStatus.ModuleSummary> entries =
       new HashMap<String,ServerStatus.ModuleSummary>();
     try {
-      for (Enumeration e = request.doGet("getCurrentConnections", new Properties()); e.hasMoreElements();) { //$NON-NLS-1$
-        String s = (String) e.nextElement();
+      for (String s : request.doGet("getCurrentConnections", new Properties())) { //$NON-NLS-1$
         SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
         try {
           String moduleName = st.nextToken();
@@ -152,8 +149,7 @@ public class CgiServerStatus implements ServerStatus {
   private List<String> retrieveHistory() {
     if (cachedQuery == null) {
       try {
-        cachedQuery = Collections.list(
-          request.doGet("getConnectionHistory", new Properties())); //$NON-NLS-1$
+        cachedQuery = request.doGet("getConnectionHistory", new Properties()); //$NON-NLS-1$
       }
       catch (IOException e) {
         e.printStackTrace();

@@ -19,6 +19,7 @@
 package VASSAL.build;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -103,37 +104,59 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 
 	/**
 	 * @return all build components that are an instance of the given class
+   * @deprecated Use {@link #getComponentsOf(Class<T>)} instead.
 	 */
-	public Enumeration getComponents(Class target) {
-		ArrayList<Buildable> l = new ArrayList<Buildable>();
-		for (Buildable b : buildComponents) {
-			if (target.isInstance(b)) {
-				l.add(b);
-			}
-		}
-		return Collections.enumeration(l);
-	}
+  @Deprecated
+  public <T> Enumeration<T> getComponents(Class<T> target) {
+    return Collections.enumeration(getComponentsOf(target));
+  }
 
+	/**
+	 * @return all build components that are an instance of the given class
+	 */
+  public <T> Collection<T> getComponentsOf(Class<T> target) {
+    ArrayList<T> l = new ArrayList<T>();
+    for (Buildable b : buildComponents) {
+      if (target.isInstance(b)) {
+        l.add(target.cast(b));
+      }
+    }
+    return l;
+  }
+ 
 	/**
 	 * Recursively descend the build tree and return an enumeration of all
 	 * components that are instances of the given class
 	 * 
 	 * @param target
 	 * @return
+   * @deprecated Use {@link #getAllDescendantComponentsOf(Class<T>)} instead.
 	 */
-	public Enumeration getAllDescendantComponents(Class target) {
-		ArrayList<Buildable> l = new ArrayList<Buildable>();
-		addComponents(target, l);
-		return Collections.enumeration(l);
+  @Deprecated
+	public <T> Enumeration<T> getAllDescendantComponents(Class<T> target) {
+		return Collections.enumeration(getAllDescendantComponentsOf(target));
 	}
 
-	private void addComponents(Class target, ArrayList<Buildable> l) {
+	/**
+	 * Recursively descend the build tree and return a Collection of all
+	 * components that are instances of the given class
+	 * 
+	 * @param target
+	 * @return
+	 */
+  public <T> Collection<T> getAllDescendantComponentsOf(Class<T> target) {
+		ArrayList<T> l = new ArrayList<T>();
+		addComponents(target, l);
+		return l;
+  }
+
+	private <T> void addComponents(Class<T> target, ArrayList<T> l) {
 		if (target.isInstance(this)) {
-			l.add(this);
+			l.add(target.cast(this));
 		}
 		for (Buildable b : buildComponents) {
 			if (target.isInstance(b)) {
-				l.add(b);
+				l.add(target.cast(b));
 			}
 			else if (b instanceof AbstractBuildable) {
 				((AbstractBuildable) b).addComponents(target, l);
@@ -150,9 +173,9 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 				el.setAttribute(names[i], val);
 			}
 		}
-		Enumeration e = getBuildComponents();
-		while (e.hasMoreElements()) {
-			el.appendChild(((Buildable) e.nextElement()).getBuildElement(doc));
+
+    for (Buildable b : getBuildables()) {
+			el.appendChild(b.getBuildElement(doc));
 		}
 		return el;
 	}
@@ -169,10 +192,23 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 	 * of this object in the Buildable containment hierarchy. The
 	 * {@link #getBuildElement} method uses these objects to construct the XML
 	 * element from which this object can be built.
+   *
+   * @deprecated Use {@link #getBuildables()} instead.
 	 */
-	public Enumeration getBuildComponents() {
+  @Deprecated
+	public Enumeration<Buildable> getBuildComponents() {
 		return Collections.enumeration(buildComponents);
 	}
+
+	/**
+	 * Returns a Collection of Buildable objects which are the direct children
+	 * of this object in the Buildable containment hierarchy. The
+	 * {@link #getBuildElement} method uses these objects to construct the XML
+	 * element from which this object can be built.
+	 */
+  public Collection<Buildable> getBuildables() {
+    return Collections.unmodifiableCollection(buildComponents);
+  }
 
 	public void validate(Buildable target, ValidationReport report) {
 		if (validator != null) {

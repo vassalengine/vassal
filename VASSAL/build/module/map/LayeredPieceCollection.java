@@ -18,7 +18,6 @@
  */
 package VASSAL.build.module.map;
 
-import java.util.Enumeration;
 import javax.swing.JToolBar;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -118,9 +117,8 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
   public void removeFrom(Buildable parent) {
     map.setPieceCollection(new DefaultPieceCollection());
-    Enumeration e = this.getComponents(LayerControl.class); 
-    while (e.hasMoreElements()) {
-     ((LayerControl) e.nextElement()).removeFrom(this);
+    for (LayerControl lc : this.getComponentsOf(LayerControl.class)) {
+      lc.removeFrom(this);
     }
   }
   

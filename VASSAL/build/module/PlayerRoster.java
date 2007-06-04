@@ -25,7 +25,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
@@ -214,9 +213,9 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   protected static PlayerRoster getInstance() {
     PlayerRoster r = null;
-    Enumeration e = GameModule.getGameModule().getComponents(PlayerRoster.class);
-    if (e.hasMoreElements()) {
-      r = (PlayerRoster) e.nextElement();
+    for (PlayerRoster pr :
+         GameModule.getGameModule().getComponentsOf(PlayerRoster.class)) {
+      r = pr;
     }
     return r;
   }

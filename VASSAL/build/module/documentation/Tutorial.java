@@ -168,6 +168,7 @@ public class Tutorial extends AbstractConfigurable {
     }
   }
 
+  @SuppressWarnings("fallthrough")
   public void addTo(Buildable parent) {
     item = ((Documentation) parent).getHelpMenu().add(launch);
     final String key = "viewedTutorial" + getConfigureName(); //$NON-NLS-1$

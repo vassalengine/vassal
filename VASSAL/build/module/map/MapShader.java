@@ -36,7 +36,6 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
@@ -442,9 +441,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
     if (boardClip == null) {
       boardClip = new Area();
-      Enumeration e = map.getAllBoards();
-      while (e.hasMoreElements()) {
-        Board b = (Board) e.nextElement();
+      for (Board b : map.getBoards()) {
         String boardName = b.getName();
         boolean doShade = false;
         if (boardSelection.equals(ALL_BOARDS)) {

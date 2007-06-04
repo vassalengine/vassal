@@ -108,9 +108,9 @@ public interface PieceFinder {
         shapes = new Shape[s.getPieceCount()];
       }
       map.getStackMetrics().getContents(s, null, shapes, null, s.getPosition().x, s.getPosition().y);
-      for (Enumeration e = s.getPiecesInVisibleOrder();
+      for (Enumeration<GamePiece> e = s.getPiecesInVisibleOrder();
            e.hasMoreElements();) {
-        GamePiece child = (GamePiece) e.nextElement();
+        GamePiece child = e.nextElement();
         if (shapes[s.indexOf(child)].contains(pt)) {
           selected = s.isExpanded() ? child : s;
           break;
