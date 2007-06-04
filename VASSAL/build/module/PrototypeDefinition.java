@@ -44,15 +44,12 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PieceEditor;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.TranslatablePieceContainer;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
 
 public class PrototypeDefinition extends AbstractConfigurable
                                  implements UniqueIdManager.Identifyable,
-                                            ValidityChecker,
-                                            TranslatablePieceContainer {
+                                            ValidityChecker {
   private String name = "Prototype"; //$NON-NLS-1$
   private java.util.Map<String,GamePiece> pieces =
     new HashMap<String,GamePiece>();

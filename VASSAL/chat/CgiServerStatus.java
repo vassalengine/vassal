@@ -18,7 +18,6 @@
 package VASSAL.chat;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -28,7 +27,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.TimeZone;
-
 import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 
