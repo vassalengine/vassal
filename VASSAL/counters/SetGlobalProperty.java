@@ -25,7 +25,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
@@ -34,6 +33,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -87,8 +87,7 @@ public class SetGlobalProperty extends DynamicProperty {
     key = sd.nextToken("name");
     decodeConstraints(sd.nextToken(""));
     keyCommandListConfig.setValue(sd.nextToken(""));
-    keyCommands = (DynamicKeyCommand[])
-      keyCommandListConfig.getListValue().toArray(
+    keyCommands = keyCommandListConfig.getListValue().toArray(
         new DynamicKeyCommand[keyCommandListConfig.getListValue().size()]);
     ArrayList<DynamicKeyCommand> l = new ArrayList<DynamicKeyCommand>();
     for (DynamicKeyCommand dkc : keyCommands) { 
@@ -170,7 +169,8 @@ public class SetGlobalProperty extends DynamicProperty {
         MutableProperty prop = null;
         String propertyName = (new FormattedString(key)).getText(Decorator.getOutermost(this));
         
-        List propertyContainers = new ArrayList();
+        ArrayList<MutablePropertiesContainer> propertyContainers =
+          new ArrayList<MutablePropertiesContainer>();
         propertyContainers.add(0, GameModule.getGameModule());
         Map map = getMap();
         if (NAMED_MAP.equals(propertyLevel)) {
@@ -193,8 +193,8 @@ public class SetGlobalProperty extends DynamicProperty {
         }
         prop = MutableProperty.Util.findMutableProperty(propertyName, propertyContainers);
         /*
-         * Debugging could be painful, so print a useful message in the Chat Window if no property can be found to
-         * update
+         * Debugging could be painful, so print a useful message in the
+         * Chat Window if no property can be found to update
          */
         if (prop == null) {
           String s = "Set Global Property (" + description + "): Unable to locate Global Property named " + propertyName;

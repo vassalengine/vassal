@@ -130,7 +130,7 @@ public class SVGManager {
     * @param path
     *          the path of the file to check for external references 
     */
-   public List getExternalReferences(String path) {
+   public List<String> getExternalReferences(String path) {
       ArrayList<String> reflist = new ArrayList<String>();
       reflist.add(path);
       return getExternalReferences(path, reflist);

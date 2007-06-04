@@ -92,8 +92,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     key = sd.nextToken("name");
     decodeConstraints(sd.nextToken(""));
     keyCommandListConfig.setValue(sd.nextToken(""));
-    keyCommands = (DynamicKeyCommand[])
-      keyCommandListConfig.getListValue().toArray(
+    keyCommands = keyCommandListConfig.getListValue().toArray(
         new DynamicKeyCommand[keyCommandListConfig.getListValue().size()]);
     ArrayList<DynamicKeyCommand> l = new ArrayList<DynamicKeyCommand>();
     for (DynamicKeyCommand dkc : keyCommands) {

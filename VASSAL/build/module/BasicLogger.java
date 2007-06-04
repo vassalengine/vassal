@@ -44,8 +44,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public static final String PROMPT_NEW_LOG_END = "PromptNewLogEnd";  //$NON-NLS-1$
   protected static final String STEP_ICON = "/images/StepForward16.gif";  //$NON-NLS-1$
   protected static final String UNDO_ICON = "/images/Undo16.gif";  //$NON-NLS-1$
-  protected List logInput;
-  protected List logOutput;
+  protected List<Command> logInput;
+  protected List<Command> logOutput;
   protected int nextInput = 0;
   protected int nextUndo = -1;
   protected Command beginningState;
@@ -58,17 +58,18 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undoAction.setEnabled(false);
     endLogAction.setEnabled(false);
     newLogAction.setEnabled(false);
-    logInput = new ArrayList();
-    logOutput = new ArrayList();
+    logInput = new ArrayList<Command>();
+    logOutput = new ArrayList<Command>();
   }
 
   public void build(org.w3c.dom.Element e) {
   }
 
   /**
-   * Expects to be added to a {@link GameModule}. Adds <code>Undo</code>, <code>Step</code>, and
-   * <code>End Log</code> buttons to the the control window toolbar. Registers {@link KeyStrokeListener}s for hotkey
-   * equivalents of each button
+   * Expects to be added to a {@link GameModule}. Adds <code>Undo</code>,
+   * <code>Step</code>, and <code>End Log</code> buttons to the the control
+   * window toolbar. Registers {@link KeyStrokeListener}s for hotkey
+   * equivalents of each button.
    */
   public void addTo(Buildable b) {
     GameModule.getGameModule().addCommandEncoder(this);
@@ -172,7 +173,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   protected void step() {
-    Command c = (Command) logInput.get(nextInput++);
+    Command c = logInput.get(nextInput++);
     c.execute();
     GameModule.getGameModule().sendAndLog(c);
     stepAction.setEnabled(nextInput < logInput.size());
@@ -220,10 +221,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * 
    */
   public void write() throws IOException {
-    if (logOutput.size() > 0) {
+    if (!logOutput.isEmpty()) {
       Command log = beginningState;
-      for (int i = 0; i < logOutput.size(); ++i) {
-        log.append(new LogCommand((Command) logOutput.get(i), logInput, stepAction));
+      for (Command c : logOutput) {
+        log.append(new LogCommand(c, logInput, stepAction));
       }
       String s = GameModule.getGameModule().encode(log);
       ArchiveWriter saver = new ArchiveWriter(outputFile.getPath());
@@ -262,18 +263,19 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   protected void undo() {
-    Command lastOutput = (Command) logOutput.get(nextUndo);
-    Command lastInput = (nextInput > logInput.size() || nextInput < 1) ? null : (Command) logInput.get(nextInput - 1);
+    Command lastOutput = logOutput.get(nextUndo);
+    Command lastInput = (nextInput > logInput.size() || nextInput < 1) ?
+      null : logInput.get(nextInput - 1);
     if (lastInput == lastOutput) {
       while (nextInput-- > 0) {
         stepAction.setEnabled(true);
-        if (((Command) logInput.get(nextInput)).getUndoCommand() != null) {
+        if (logInput.get(nextInput).getUndoCommand() != null) {
           break;
         }
       }
     }
     while (nextUndo-- > 0) {
-      if (((Command) logOutput.get(nextUndo)).getUndoCommand() != null) {
+      if (logOutput.get(nextUndo).getUndoCommand() != null) {
         break;
       }
     }
@@ -350,9 +352,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       beginOutput();
     }
   };
+
   public static class LogCommand extends Command {
     protected Command logged;
-    protected List logInput;
+    protected List<Command> logInput;
     protected Action stepAction;
 
     public LogCommand(Command c, List logInput, Action stepAction) {

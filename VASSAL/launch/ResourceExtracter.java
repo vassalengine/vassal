@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2003 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.launch;
 
 import VASSAL.configure.DirectoryConfigurer;
@@ -16,7 +34,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.zip.*;
@@ -287,18 +304,19 @@ public class ResourceExtracter {
     }
   }
 
-  /** Extract a list of resources specified by {@link #getResourceList} into the destination directory */
+  /**
+   * Extract a list of resources specified by {@link #getResourceList} into
+   * the destination directory
+   */
   private void extractResourceList() throws IOException {
     label.setText(Resources.getString("ResourceExtracter.unpacking"));  //$NON-NLS-1$
-    List resources = getListedResources();
-    String nextResource;
+    List<String> resources = getListedResources();
     bar.setMaximum(resources.size());
     InputStream in = null;
     int copyCount = 0;
     byte[] buffer = new byte[10000];
     int readCount = 0;
-    for (Iterator it = resources.iterator(); it.hasNext();) {
-      nextResource = (String) it.next();
+    for (String nextResource : resources) {
       label.setText(nextResource);
       bar.setValue(++copyCount);
       File local = new File(destinationDir, nextResource);
@@ -312,7 +330,7 @@ public class ResourceExtracter {
     }
   }
 
-  protected List getListedResources() throws IOException {
+  protected List<String> getListedResources() throws IOException {
     BufferedReader resourceList = new BufferedReader(
       new InputStreamReader(getClass().getResourceAsStream(getResourceList())));
     ArrayList<String> resources = new ArrayList<String>();
@@ -327,18 +345,20 @@ public class ResourceExtracter {
     return props.getProperty(RESOURCE_LIST);
   }
 
-  /** Pack the resources specified in {@link #getResourceList} into a Zip file specified by {@link #getAssembleTarget} */
+  /** 
+   * Pack the resources specified in {@link #getResourceList} into a Zip
+   * file specified by {@link #getAssembleTarget}
+   */
   private void packResourceList() throws IOException {
     label.setText(Resources.getString("ResourceExtracter.unpacking"));  //$NON-NLS-1$
     File tmp = File.createTempFile("Vdata", ".zip");   //$NON-NLS-1$ //$NON-NLS-2$
     ZipOutputStream out =
         new ZipOutputStream(new FileOutputStream(tmp));
     File target = getAssembleTarget();
-    List resources = getListedResources();
+    List<String> resources = getListedResources();
     int count = 0;
     bar.setMaximum(resources.size());
-    for (Iterator it = resources.iterator(); it.hasNext();) {
-      String nextResource = (String) it.next();
+    for (String nextResource : resources) {
       label.setText(nextResource);
       byte[] contents = DataArchive.getBytes(getClass().getResourceAsStream("/" + nextResource));  //$NON-NLS-1$
       ZipEntry entry = new ZipEntry(nextResource);

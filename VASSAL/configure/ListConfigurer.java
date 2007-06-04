@@ -58,8 +58,8 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
     }
     Configurer c = buildChildConfigurer();
     SequenceEncoder se = new SequenceEncoder(',');
-    for (Iterator iter = getListValue().iterator(); iter.hasNext();) {
-      c.setValue(iter.next());
+    for (Object value : getListValue()) {
+      c.setValue(value);
       se.append(c.getValueString());
     }
     return se.getValue();
@@ -80,7 +80,7 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
 
   protected void updateValue() {
     noUpdate = true;
-    ArrayList newArray = new ArrayList();
+    ArrayList<Object> newArray = new ArrayList<Object>();
     for (Configurer c : configurers) {
       newArray.add(c.getValue());
     }
@@ -90,7 +90,7 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
 
   public void setValue(Object o) {
     if (o == null) {
-      o = new ArrayList();
+      o = new ArrayList<Object>();
     }
     super.setValue(o);
     if (!noUpdate) {
@@ -118,8 +118,8 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
     return controls;
   }
 
-  public List getListValue() {
-    return (List) getValue();
+  public List<Object> getListValue() {
+    return (List<Object>) getValue();
   }
 
   /**
@@ -141,8 +141,7 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
       configurers.clear();
       configControls.removeAll();
 
-      for (Iterator iter = getListValue().iterator(); iter.hasNext();) {
-        Object value = iter.next();
+      for (Object value : getListValue()) {
         final Configurer c = buildChildConfigurer();
         c.addPropertyChangeListener(this);
         c.setValue(value);

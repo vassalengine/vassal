@@ -1,39 +1,53 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2007 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.chat.peer2peer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 import VASSAL.chat.Player;
+import VASSAL.chat.Room;
 
 /**
  * Tracks players entering/exiting a room
  */
 public class RoomTracker {
-  private List joinedPlayers;
-  private List leftPlayers;
+  private ArrayList<Player> joinedPlayers;
+  private ArrayList<Player> leftPlayers;
 
   public RoomTracker() {
-    joinedPlayers = new ArrayList();
-    leftPlayers = new ArrayList();
+    joinedPlayers = new ArrayList<Player>();
+    leftPlayers = new ArrayList<Player>();
   }
 
-  public void init(VASSAL.chat.Room r) {
+  public void init(Room r) {
     joinedPlayers.clear();
     leftPlayers.clear();
-    Player[] p = (Player[]) r.getPlayerList().toArray();
-    for (int i = 0; i < p.length; ++i) {
-      leftPlayers.add(p[i]);
-    }
+    leftPlayers.addAll(r.getPlayerList());
   }
 
-  public void finalize(VASSAL.chat.Room r) {
-    Player[] players = (Player[]) r.getPlayerList().toArray();
-    for (int i = 0; i < players.length; ++i) {
-      if (!leftPlayers.contains(players[i])) {
-        joinedPlayers.add(players[i]);
+  public void finalize(Room r) {
+    for (Player p : r.getPlayerList()) {
+      if (!leftPlayers.contains(p)) {
+        joinedPlayers.add(p);
       }
-      leftPlayers.remove(players[i]);
+      leftPlayers.remove(p);
     }
   }
 
