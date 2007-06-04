@@ -41,6 +41,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -117,8 +119,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   protected boolean isUpdating;
 
   protected String state;
-  protected HashMap properties = new HashMap();
-  protected ArrayList<JComponent> m_fields;
+  protected Map<String,Object> properties = new HashMap<String,Object>();
+  protected List<JComponent> m_fields;
 
 
   static final char TYPE_DELIMITOR = ';';
@@ -960,9 +962,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     private JTextField valField;
     private JTextField maxField;
     private TickLabel ticks;
-    private ArrayList<ActionListener> actionListeners =
+    private List<ActionListener> actionListeners =
       new ArrayList<ActionListener>();
-    private ArrayList<DocumentListener> documentListeners =
+    private List<DocumentListener> documentListeners =
       new ArrayList<DocumentListener>();
 
     public TickPanel(String value, int type) {
@@ -1150,7 +1152,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     private int numTicks = 0;
     private int maxTicks = 0;
     protected int panelType;
-    private ArrayList<ActionListener> actionListeners =
+    private List<ActionListener> actionListeners =
       new ArrayList<ActionListener>();
 
     public int getNumTicks() {

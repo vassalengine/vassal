@@ -19,6 +19,7 @@
 package VASSAL.chat;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents the history and current state of connections to the chat
@@ -40,7 +41,7 @@ public interface ServerStatus {
 
   public static class ModuleSummary {
     private String moduleName;
-    private HashMap<String,Room> rooms = new HashMap<String,Room>();
+    private Map<String,Room> rooms = new HashMap<String,Room>();
 
     public ModuleSummary(String moduleName, Room[] rooms) {
       this.moduleName = moduleName;

@@ -28,7 +28,9 @@ package VASSAL.build.module;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
@@ -45,7 +47,7 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
   private static ObscurableOptions instance;
   public static final String COMMAND_ID = "UNMASK\t"; //$NON-NLS-1$
   public static final String PREFS_KEY = "OpponentUnmaskable"; //$NON-NLS-1$
-  private Vector allowed = new Vector();
+  private List<String> allowed = new ArrayList<String>();
   private Boolean override;
 
   private ObscurableOptions() {
@@ -77,7 +79,8 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
             ObscurableOptions.getInstance().disallow(side);
           }
         }
-        GameModule.getGameModule().getServer().sendToOthers(new SetAllowed(instance.allowed));
+        GameModule.getGameModule()
+                  .getServer().sendToOthers(new SetAllowed(instance.allowed));
       }
     });
     if (Boolean.TRUE.equals(c.getValue())) {
@@ -108,23 +111,23 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
   public void allow(String id) {
     if (!allowed.contains(id)) {
-      allowed.addElement(id);
+      allowed.add(id);
     }
   }
 
   public void disallow(String id) {
-    allowed.removeElement(id);
+    allowed.remove(id);
   }
 
   public Command decode(String command) {
     if (command.startsWith(COMMAND_ID)) {
       command = command.substring(COMMAND_ID.length());
-      Vector v = new Vector();
+      ArrayList<String> l = new ArrayList<String>();
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
       while (st.hasMoreTokens()) {
-        v.addElement(st.nextToken());
+        l.add(st.nextToken());
       }
-      return new SetAllowed(v);
+      return new SetAllowed(l);
     }
     else {
       return null;
@@ -133,14 +136,14 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
   public String encode(Command c) {
     if (c instanceof SetAllowed) {
-      Vector v = ((SetAllowed) c).getAllowedIds();
-      if (v.size() == 0) {
+      List<String> l = ((SetAllowed) c).getAllowedIds();
+      if (l.isEmpty()) {
         return COMMAND_ID;
       }
       else {
         SequenceEncoder se = new SequenceEncoder('\t');
-        for (Enumeration e = v.elements(); e.hasMoreElements();) {
-          se.append((String) e.nextElement());
+        for (String s : l) {
+          se.append(s);
         }
         return COMMAND_ID + se.getValue();
       }
@@ -156,31 +159,37 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
 
   public void setup(boolean gameStarting) {
     if (!gameStarting) {
-      allowed.removeAllElements();
+      allowed.clear();
     }
-    else if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(PREFS_KEY))) {
+    else if (Boolean.TRUE.equals(
+               GameModule.getGameModule().getPrefs().getValue(PREFS_KEY))) {
       allow(GameModule.getUserId());
     }
   }
 
-  /** Return true if pieces belonging to the given id are unmaskable by other players */
+  /**
+   * @return true if pieces belonging to the given id are unmaskable by
+   * other players
+   */
   public boolean isUnmaskable(String id) {
-    if (override != null) {
-      return override.booleanValue();
-    }
-    else {
-      return allowed.contains(id);
-    }
+    return override != null ? override.booleanValue() : allowed.contains(id);
   }
 
   public static class SetAllowed extends Command {
-    private Vector allowed = new Vector();
+    private List<String> allowed;
 
+    public SetAllowed(List<String> allowed) {
+      this.allowed = allowed;
+    }
+
+    /** @deprecated Use {@link #SetAllowed(List<String>)} instead. */
+    @Deprecated
+    @SuppressWarnings("unchecked")
     public SetAllowed(Vector allowed) {
       this.allowed = allowed;
     }
 
-    public Vector getAllowedIds() {
+    public List<String> getAllowedIds() {
       return allowed;
     }
 

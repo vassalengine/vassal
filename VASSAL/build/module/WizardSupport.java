@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -99,8 +100,7 @@ public class WizardSupport {
   public static final String PLAY_OFFLINE_ACTION = "offline"; //$NON-NLS-1$
   public static final String LOAD_GAME_ACTION = "loadGame"; //$NON-NLS-1$
   protected Dimension logoSize = new Dimension(200,200);
-  protected ArrayList<PredefinedSetup> setups =
-    new ArrayList<PredefinedSetup>();
+  protected List<PredefinedSetup> setups = new ArrayList<PredefinedSetup>();
   protected Tutorial tutorial;
 
   public WizardSupport() {
@@ -169,7 +169,7 @@ public class WizardSupport {
       if (!ps.isMenu()) l.add(ps);
     } 
 
-    if (l.size() == 0) {
+    if (l.isEmpty()) {
       return GameSetupPanels.newInstance();
     }
     else {
@@ -179,28 +179,34 @@ public class WizardSupport {
   }
 
   /**
-   * Show a wizard that prompts the user to specify information for unfinished {@link GameSetupStep}s
-   * 
+   * Show a wizard that prompts the user to specify information for
+   * unfinished {@link GameSetupStep}s
    */
   public void showGameSetupWizard() {
     GameSetupPanels panels = GameSetupPanels.newInstance();
     if (panels != null) {
-      WizardDisplayer.showWizard(panels.newWizard(logoSize), new Rectangle(0, 0, logoSize.width+400, logoSize.height));
+      WizardDisplayer.showWizard(panels.newWizard(logoSize),
+        new Rectangle(0, 0, logoSize.width+400, logoSize.height));
     }
   }
   /**
-   * This is a hack to avoid stretching the image used as a background for the wizard step outline in the dialog
+   * This is a hack to avoid stretching the image used as a background for
+   * the wizard step outline in the dialog
    * 
    * @author rkinney
    * 
    */
-  protected static class InstructionsPanelLayoutFix implements HierarchyListener, WizardObserver {
+  protected static class InstructionsPanelLayoutFix
+    implements HierarchyListener, WizardObserver {
+
     private final Component page;
     private JLabel proxy;
     private Wizard wizard;
     private Dimension logoSize;
 
-    protected InstructionsPanelLayoutFix(Wizard wizard, Component page, Dimension logoSize) {
+    protected InstructionsPanelLayoutFix(Wizard wizard,
+                                         Component page,
+                                         Dimension logoSize) {
       this.page = page;
       this.wizard = wizard;
       this.logoSize = logoSize;
@@ -505,7 +511,11 @@ public class WizardSupport {
       }
     }
   }
-  /** Branches the wizard by forwarding to the Wizard stored in the wizard settings under a specified key */
+
+  /**
+   * Branches the wizard by forwarding to the Wizard stored in the wizard
+   * settings under a specified key
+   */
   public static class BranchingWizard extends WizardBranchController {
     private String wizardKey;
 
@@ -532,8 +542,9 @@ public class WizardSupport {
     }
   }
   /**
-   * Loads a saved game in the background. Add a branch to the wizard if the loaded game has unfinished
-   * {@link GameSetupStep}s. Otherwise, enable the finish button
+   * Loads a saved game in the background.
+   * Add a branch to the wizard if the loaded game has unfinished
+   * {@link GameSetupStep}s. Otherwise, enable the finish button.
    * 
    * @author rkinney
    * 
@@ -544,7 +555,8 @@ public class WizardSupport {
     private InputStream in;
     private String wizardKey;
 
-    public SavedGameLoader(WizardController controller, Map settings, InputStream in, String wizardKey) {
+    public SavedGameLoader(WizardController controller,
+                           Map settings, InputStream in, String wizardKey) {
       super();
       this.controller = controller;
       this.settings = settings;
@@ -575,6 +587,7 @@ public class WizardSupport {
       }
     }
   }
+
   /**
    * Wizard pages for loading a saved game
    * 
@@ -642,6 +655,7 @@ public class WizardSupport {
       UIManager.put("wizard.sidebar.image", buffIm); //$NON-NLS-1$
     }
   }
+
   /**
    * Wizard pages for starting a new game. One page will be added for each unfinished {@link GameSetupStep}
    * 
@@ -650,9 +664,12 @@ public class WizardSupport {
    */
   public static class GameSetupPanels extends WizardPanelProvider implements WizardResultProducer {
     private WizardPage[] pages;
-    private List setupSteps;
+    private List<GameSetupStep> setupSteps;
 
-    private GameSetupPanels(String[] steps, String[] descriptions, WizardPage[] pages, List setupSteps) {
+    private GameSetupPanels(String[] steps,
+                            String[] descriptions,
+                            WizardPage[] pages,
+                            List<GameSetupStep> setupSteps) {
       super(steps, descriptions);
       this.pages = pages;
       this.setupSteps = setupSteps;
@@ -660,30 +677,34 @@ public class WizardSupport {
 
     public static GameSetupPanels newInstance() {
       GameSetupPanels panels = null;
-      List pages = new ArrayList();
-      List setupSteps = new ArrayList();
-      for (Iterator it = GameModule.getGameModule().getGameState().getUnfinishedSetupSteps(); it.hasNext();) {
+      ArrayList<SetupStepPage> pages = new ArrayList<SetupStepPage>();
+      ArrayList<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
+      for (Iterator it = GameModule.getGameModule()
+                                   .getGameState()
+                                   .getUnfinishedSetupSteps(); it.hasNext();) {
         GameSetupStep step = (GameSetupStep) it.next();
         setupSteps.add(step);
         SetupStepPage page = new SetupStepPage(step);
         pages.add(page);
       }
-      if (pages.size() > 0) {
-        WizardPage[] wizardPages = (WizardPage[]) pages.toArray(new WizardPage[pages.size()]);
+      if (!pages.isEmpty()) {
+        WizardPage[] wizardPages = pages.toArray(new WizardPage[pages.size()]);
         String[] steps = new String[setupSteps.size()];
         String[] desc = new String[setupSteps.size()];
         for (int i = 0, n = setupSteps.size(); i < n; i++) {
           steps[i] = String.valueOf(i);
-          desc[i] = ((GameSetupStep) setupSteps.get(i)).getStepTitle();
+          desc[i] = setupSteps.get(i).getStepTitle();
         }
         panels = new GameSetupPanels(steps, desc, wizardPages, setupSteps);
       }
       return panels;
     }
 
-    protected JComponent createPanel(WizardController controller, String id, Map settings) {
+    protected JComponent createPanel(WizardController controller,
+                                     String id, Map settings) {
       int index = indexOfStep(id);
-      controller.setForwardNavigationMode(index == pages.length - 1 ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+      controller.setForwardNavigationMode(index == pages.length - 1 ?
+        WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
       return pages[index];
     }
 
@@ -693,8 +714,7 @@ public class WizardSupport {
     }
 
     public Object finish(Map wizardData) throws WizardException {
-      for (Iterator it = setupSteps.iterator(); it.hasNext();) {
-        GameSetupStep step = (GameSetupStep) it.next();
+      for (GameSetupStep step : setupSteps) {
         step.finish();
       }
       return wizardData;

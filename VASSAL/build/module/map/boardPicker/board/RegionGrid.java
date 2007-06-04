@@ -58,6 +58,8 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -93,7 +95,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   // AreaList is the table of Map areas
   // pointList is a cross-reference of points to Area names
 
-  protected HashMap<Point,Region> regionList = new HashMap<Point,Region>();
+  protected Map<Point,Region> regionList = new HashMap<Point,Region>();
   protected GridContainer container;
   protected boolean visible = false;
   protected static boolean inConfig = false;
@@ -431,13 +433,13 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     protected JScrollPane scroll;
     protected JPopupMenu myPopup;
 
-    protected ArrayList<Region> selectedRegions = new ArrayList<Region>();
+    protected List<Region> selectedRegions = new ArrayList<Region>();
     protected Region lastClickedRegion = null;
     protected Point lastClick;
     protected Rectangle selectionRect = null;
     protected Point anchor;
     
-    protected ArrayList<Region> saveRegions;
+    protected List<Region> saveRegions;
     
     protected boolean dirty = false;
 

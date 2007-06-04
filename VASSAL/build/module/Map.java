@@ -54,7 +54,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -180,7 +179,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	protected MouseListener multicaster = null;
 	protected ArrayList<MouseListener> mouseListenerStack =
     new ArrayList<MouseListener>();
-	protected Vector boards = new Vector();
+	protected ArrayList<Board> boards = new ArrayList<Board>();
 	protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
 	protected PieceCollection pieces = new DefaultPieceCollection();
@@ -640,12 +639,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * Set the boards for this map. Each map may contain more than one {@link Board}
    */
 	public synchronized void setBoards(Enumeration boardList) {
-		boards.removeAllElements();
+		boards.clear();
 		System.gc();
 		while (boardList.hasMoreElements()) {
 			Board board = (Board) boardList.nextElement();
 			board.setMap(this);
-			boards.addElement(board);
+			boards.add(board);
 		}
 		setBoardBoundaries();
 	}
@@ -658,8 +657,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return the {@link Board} on this map containing the argument point
    */
 	public Board findBoard(Point p) {
-		for (int i = 0; i < boards.size(); ++i) {
-			Board b = (Board) boards.elementAt(i);
+    for (Board b : boards) {
 			if (b.bounds().contains(p))
 				return b;
 		}
@@ -689,15 +687,17 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return Located zone
    */
   public Zone findZone(String name) {
-    Zone z = null;
-    for (Iterator it = boards.iterator(); it.hasNext() && z==null;) {
-      Board b = (Board) it.next();
-      for (Enumeration e = b.getAllDescendantComponents(ZonedGrid.class); e.hasMoreElements() && z==null; ) {
+    for (Board b : boards) {
+      for (Enumeration e = b.getAllDescendantComponents(ZonedGrid.class);
+           e.hasMoreElements(); ) {
         ZonedGrid zg = (ZonedGrid) e.nextElement();
-        z = zg.findZone(name);
+        Zone z = zg.findZone(name);
+        if (z != null) {
+          return z;
+        }
       }
     }
-    return z;
+    return null;
   }
 
   /**
@@ -706,16 +706,19 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return Located region
    */
   public Region findRegion(String name) {
-    Region r = null;
-    for (Iterator it = boards.iterator(); it.hasNext() && r==null;) {
-      Board b = (Board) it.next();
-      for (Enumeration e = b.getAllDescendantComponents(RegionGrid.class); e.hasMoreElements() && r==null; ) {
+    for (Board b : boards) {
+      for (Enumeration e = b.getAllDescendantComponents(RegionGrid.class);
+           e.hasMoreElements(); ) {
         RegionGrid rg = (RegionGrid) e.nextElement();
-        r = rg.findRegion(name);
+        Region r = rg.findRegion(name);
+        if (r != null) {
+          return r;
+        }
       }
     }
-    return r;
+    return null;
   }
+
 	/**
    * Return the board with the given name
    * 
@@ -723,32 +726,30 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return null if no such board found
    */
 	public Board getBoardByName(String name) {
-		Board board = null;
-		if (name != null) {
-			for (Enumeration e = getAllBoards(); e.hasMoreElements();) {
-				Board b = (Board) e.nextElement();
-				if (name.equals(b.getName())) {
-					board = b;
-					break;
-				}
-			}
-		}
-		return board;
+    if (name != null) {
+      for (Board b : boards) {    
+        if (name.equals(b.getName())) {
+          return b;
+        }
+      }
+    }
+    return null;
 	}
 
 	public Dimension getPreferredSize() {
-		return new Dimension((int) (getZoom() * mapSize().width), (int) (getZoom() * mapSize().height));
+		return new Dimension((int) (getZoom() * mapSize().width),
+                         (int) (getZoom() * mapSize().height));
 	}
 
 	/**
-   * @return the size of the map in pixels at 100% zoom, including the edge buffer
+   * @return the size of the map in pixels at 100% zoom,
+   * including the edge buffer
    */
 	public synchronized Dimension mapSize() {
 		Rectangle r = new Rectangle(0, 0);
-		for (int i = 0; i < boards.size(); ++i) {
-			Board b = (Board) boards.elementAt(i);
-			r = r.union(b.bounds());
-		}
+    for (Board b : boards) {
+      r = r.union(b.bounds());
+    }
 		r.width += edgeBuffer.width;
 		r.height += edgeBuffer.height;
 		return r.getSize();
@@ -811,7 +812,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * The buffer of empty space around the boards in the Map window, in component coordinates at 100% zoom
+   * The buffer of empty space around the boards in the Map window,
+   * in component coordinates at 100% zoom
    */
 	public Dimension getEdgeBuffer() {
 		return new Dimension(edgeBuffer);
@@ -1276,8 +1278,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	public void drawBoardsInRegion(Graphics g, Rectangle visibleRect) {
-		for (int i = 0; i < boards.size(); ++i) {
-			Board b = (Board) boards.elementAt(i);
+    for (Board b : boards) {
 			Point p = getLocation(b, getZoom());
 			b.drawRegion(g, p, visibleRect, getZoom(), theMap);
 		}
@@ -1368,7 +1369,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return an Enumeration of all {@link Board}s on the map
    */
 	public Enumeration getAllBoards() {
-		return boards.elements();
+		return Collections.enumeration(boards);
 	}
 
 	public int getBoardCount() {
@@ -1455,7 +1456,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	protected void clearMapBorder(Graphics g) {
-		if (clearFirst || boards.size() == 0) {
+		if (clearFirst || boards.isEmpty()) {
 			g.clearRect(0, 0, theMap.getSize().width, theMap.getSize().height);
 			clearFirst = false;
 		}
@@ -1469,29 +1470,28 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * Adjusts the bounds() rectangle to account for the Board's relative position to other boards. In other words, if
-   * Board A is N pixels wide and Board B is to the right of Board A, then the origin of Board B will be adjusted N
-   * pixels to the right.
+   * Adjusts the bounds() rectangle to account for the Board's relative
+   * position to other boards. In other words, if Board A is N pixels wide
+   * and Board B is to the right of Board A, then the origin of Board B
+   * will be adjusted N pixels to the right.
    */
 	protected void setBoardBoundaries() {
 		int maxX = 0;
 		int maxY = 0;
-		for (int i = 0, n = boards.size(); i < n; ++i) {
-			Point relPos = ((Board) boards.get(i)).relativePosition();
+    for (Board b : boards) {
+			Point relPos = b.relativePosition();
 			maxX = Math.max(maxX, relPos.x);
 			maxY = Math.max(maxY, relPos.y);
 		}
 		boardWidths = new int[maxX + 1][maxY + 1];
 		boardHeights = new int[maxX + 1][maxY + 1];
-		for (int i = 0, n = boards.size(); i < n; ++i) {
-			Board b = (Board) boards.get(i);
+    for (Board b : boards) {
 			Point relPos = b.relativePosition();
 			boardWidths[relPos.x][relPos.y] = b.bounds().width;
 			boardHeights[relPos.x][relPos.y] = b.bounds().height;
 		}
 		Point offset = new Point(edgeBuffer.width, edgeBuffer.height);
-		for (int i = 0, n = boards.size(); i < n; ++i) {
-			Board b = (Board) boards.get(i);
+    for (Board b : boards) {
 			Point relPos = b.relativePosition();
 			Point location = getLocation(relPos.x, relPos.y, 1.0);
 			b.setLocation(location.x, location.y);
@@ -1525,11 +1525,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * Draw the boards of the map at the given point and zoom factor onto the given Graphics object
+   * Draw the boards of the map at the given point and zoom factor onto
+   * the given Graphics object
    */
 	public void drawBoards(Graphics g, int xoffset, int yoffset, double zoom, Component obs) {
-		for (int i = 0; i < boards.size(); ++i) {
-			Board b = (Board) boards.elementAt(i);
+    for (Board b : boards) {
 			Point p = getLocation(b, zoom);
 			p.translate(xoffset, yoffset);
 			b.draw(g, p.x, p.y, zoom, obs);
@@ -1631,8 +1631,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * When a game is started, create a top-level window, if none exists. When a game is ended, remove all boards from the
-   * map
+   * When a game is started, create a top-level window, if none exists.
+   * When a game is ended, remove all boards from the map.
    * 
    * @see GameComponent
    */
@@ -1676,7 +1676,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		else {
 			pieces.clear();
-			boards.removeAllElements();
+			boards.clear();
 			System.gc();
 			if (mainWindowDock != null) {
 				if (mainWindowDock.getHideableComponent().isVisible()) {
@@ -1975,8 +1975,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		else {
 			String val = "$" + PIECE_NAME + "$ created in $" + LOCATION + "$"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			if (boards.size() > 0) {
-				Board b = (Board) boards.firstElement();
+			if (!boards.isEmpty()) {
+				Board b = boards.get(0);
 				if (b.getGrid() == null || b.getGrid().getGridNumbering() == null) {
 					val = ""; //$NON-NLS-1$
 				}
@@ -1995,8 +1995,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		else {
 			String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-			if (boards.size() > 0) {
-				Board b = (Board) boards.firstElement();
+			if (!boards.isEmpty()) {
+				Board b = boards.get(0);
 				if (b.getGrid() == null || b.getGrid().getGridNumbering() != null) {
 					val = ""; //$NON-NLS-1$
 				}
@@ -2011,8 +2011,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		else {
 			String val = "$" + PIECE_NAME + "$" + " moves $" + OLD_LOCATION + "$ -> $" + LOCATION + "$ *"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-			if (boards.size() > 0) {
-				Board b = (Board) boards.firstElement();
+			if (!boards.isEmpty()) {
+				Board b = boards.get(0);
 				if (b.getGrid() == null) {
 					val = ""; //$NON-NLS-1$
 				}

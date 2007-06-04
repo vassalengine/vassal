@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -166,7 +167,7 @@ public class ComponentSplitter {
     public static final int HIDE_BOTTOM = 1;
     public static final int HIDE_LEFT = 2;
     public static final int HIDE_RIGHT = 3;
-    private ArrayList<SplitPane> showingTransverseComponents =
+    private List<SplitPane> showingTransverseComponents =
       new ArrayList<SplitPane>();
     private int transverseHiddenSize;
 

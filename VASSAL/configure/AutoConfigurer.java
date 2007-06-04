@@ -25,6 +25,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JPanel;
@@ -43,8 +45,8 @@ public class AutoConfigurer extends Configurer
   implements PropertyChangeListener {
   protected JPanel p;
   protected AutoConfigurable target;
-  protected ArrayList<Configurer> configurers = new ArrayList<Configurer>();
-  protected HashMap<String,VisibilityCondition> conditions;
+  protected List<Configurer> configurers = new ArrayList<Configurer>();
+  protected Map<String,VisibilityCondition> conditions;
 
   public AutoConfigurer(AutoConfigurable c) {
     super(null, c.getConfigureName());

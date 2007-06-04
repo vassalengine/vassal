@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -124,7 +125,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   protected String border = BORDER_3D;
   protected GamePieceImage imageDefn;
   protected Image visImage;
-  protected ArrayList<Item> items = new ArrayList<Item>();
+  protected List<Item> items = new ArrayList<Item>();
 
   public GamePieceLayout() {
     super();
@@ -143,7 +144,8 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   public static class LayoutConfig implements ConfigurerFactory {
     protected static LayoutConfigurer configurer;
 
-    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+    public Configurer getConfigurer(AutoConfigurable c,
+                                    String key, String name) {
       configurer = new LayoutConfigurer(key, name, (GamePieceLayout) c);
       return configurer;
     }
@@ -255,7 +257,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     return border;
   }
 
-  public ArrayList getItems() {
+  public List<Item> getItems() {
     return items;
   }
 

@@ -29,6 +29,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import org.w3c.dom.Element;
 
 import VASSAL.build.AbstractConfigurable;
@@ -47,7 +48,7 @@ import VASSAL.configure.Configurer;
  * Map Grid that contains any number of {@link VASSAL.build.module.map.boardPicker.board.mapgrid.Zone}s against a background {@link MapGrid}
  */
 public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, GridContainer {
-  protected ArrayList<Zone> zones = new ArrayList<Zone>();
+  protected List<Zone> zones = new ArrayList<Zone>();
   protected MapGrid background;
   protected GridContainer container;
   protected ZonedGridHighlighter zoneHighlighters;

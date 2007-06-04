@@ -24,6 +24,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import org.w3c.dom.Element;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -44,8 +45,7 @@ public class FontManager extends AbstractConfigurable {
     return instance;
   }
     
-  protected HashMap<String,FontStyle> fontStyles =
-    new HashMap<String,FontStyle>();
+  protected Map<String,FontStyle> fontStyles = new HashMap<String,FontStyle>();
 
   public static final String DIALOG = "Dialog"; //$NON-NLS-1$
   public static final String SERIF = "Serif"; //$NON-NLS-1$

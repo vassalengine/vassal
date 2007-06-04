@@ -22,6 +22,7 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -51,7 +52,7 @@ public class ListWidget extends Widget
   private CardLayout layout;
   private JPanel multiPanel;
 
-  private HashMap<Object,String> keys = new HashMap<Object,String>();
+  private Map<Object,String> keys = new HashMap<Object,String>();
   private int count = 0;
 
   public ListWidget() {

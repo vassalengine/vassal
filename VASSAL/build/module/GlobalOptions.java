@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import org.w3c.dom.Attr;
@@ -83,8 +84,8 @@ public class GlobalOptions extends AbstractConfigurable {
   private String autoReport = NEVER;
   private String markMoved = NEVER;
 
-  private HashMap<String,Object> properties = new HashMap<String,Object>();
-  private java.util.Map<String,Configurer> optionConfigurers =
+  private Map<String,Object> properties = new HashMap<String,Object>();
+  private Map<String,Configurer> optionConfigurers =
     new LinkedHashMap<String,Configurer>();
   private Properties optionInitialValues = new Properties();
 

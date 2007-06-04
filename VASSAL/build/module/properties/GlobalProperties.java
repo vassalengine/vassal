@@ -2,6 +2,7 @@ package VASSAL.build.module.properties;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JToolBar;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -19,7 +20,7 @@ import VASSAL.tools.ToolBarComponent;
 public class GlobalProperties extends AbstractConfigurable implements MutablePropertiesContainer, ToolBarComponent, PropertySource {
   private TemporaryToolBar tempToolbar = new TemporaryToolBar();
   private PropertySource propertySource;
-  private HashMap<String,MutableProperty> initialValues =
+  private Map<String,MutableProperty> initialValues =
     new HashMap<String,MutableProperty>();
   private MutablePropertiesContainer parent;
 

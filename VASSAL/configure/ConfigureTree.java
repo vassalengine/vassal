@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -76,7 +77,7 @@ public class ConfigureTree extends JTree
                                       TreeSelectionListener {
   private static final long serialVersionUID = 1L;
 
-  protected HashMap<Configurable,DefaultMutableTreeNode> nodes =
+  protected Map<Configurable,DefaultMutableTreeNode> nodes =
     new HashMap<Configurable,DefaultMutableTreeNode>();
   protected DefaultMutableTreeNode copyData;
   protected DefaultMutableTreeNode cutData;
@@ -119,7 +120,8 @@ public class ConfigureTree extends JTree
   protected JMenuItem propertiesItem;
   protected JMenuItem translateItem;
 
-  public static java.awt.Font POPUP_MENU_FONT = new java.awt.Font("Dialog", 0, 11);
+  public static java.awt.Font POPUP_MENU_FONT =
+    new java.awt.Font("Dialog", 0, 11);
 
   /** Creates new ConfigureTree */
   public ConfigureTree(Configurable root, HelpWindow helpWindow) {
@@ -663,7 +665,7 @@ public class ConfigureTree extends JTree
     public Renderer() {
     }
 
-    public java.awt.Component getTreeCellRendererComponent(javax.swing.JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+    public java.awt.Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
       Configurable c = null;
       if (value instanceof DefaultMutableTreeNode) {
         c = (Configurable) ((DefaultMutableTreeNode) value).getUserObject();
@@ -678,9 +680,10 @@ public class ConfigureTree extends JTree
     }
   }
 
-  public static String getConfigureName(Class c) {
+  public static String getConfigureName(Class<?> c) {
     try {
-      return (String) c.getMethod("getConfigureTypeName", new Class[0]).invoke(null, new Object[0]);
+      return (String) c.getMethod("getConfigureTypeName", new Class[0])
+                       .invoke(null, new Object[0]);
     }
     catch (Exception err) {
       return c.getName().substring(c.getName().lastIndexOf(".") + 1);

@@ -86,7 +86,7 @@ public class BoardPicker implements ActionListener,
                                     ValidityChecker {
   private static final long serialVersionUID = 1L;
   public static final String ID = "BoardPicker"; //$NON-NLS-1$
-  protected ArrayList<Board> possibleBoards = new ArrayList<Board>();
+  protected List<Board> possibleBoards = new ArrayList<Board>();
   protected List<Board> currentBoards = null;
   protected Dimension psize = new Dimension(350, 125);
   protected double slotScale = 0.2;
@@ -531,8 +531,8 @@ public class BoardPicker implements ActionListener,
   /**
    * @deprecated use {@link #getBoardsFromControls()}
    */
-  @Deprecated public Vector pickBoards() {
-    return new Vector(getBoardsFromControls());
+  @Deprecated public Vector<Board> pickBoards() {
+    return new Vector<Board>(getBoardsFromControls());
   }
 
   /**
@@ -734,7 +734,9 @@ public class BoardPicker implements ActionListener,
     }
 
     /** @deprecated Use {@link #SetBoards(BoardPicker,List<Board>)}. */
-    @Deprecated public SetBoards(BoardPicker target, Vector boards) {
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public SetBoards(BoardPicker target, Vector boards) {
       this.target = target;
       this.boards = boards;
     }

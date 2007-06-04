@@ -43,12 +43,14 @@ import java.security.CodeSource;
 import java.security.PermissionCollection;
 import java.security.SecureClassLoader;
 import java.security.cert.Certificate;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -67,7 +69,7 @@ import VASSAL.configure.BooleanConfigurer;
  */
 public class DataArchive extends SecureClassLoader {
   protected ZipFile archive = null;
-  protected ArrayList<DataArchive> extensions = new ArrayList<DataArchive>();
+  protected List<DataArchive> extensions = new ArrayList<DataArchive>();
   private HashMap<String,Image> imageCache =
     new HashMap<String,Image>();
   private HashMap<String,AudioClip> soundCache =
@@ -648,31 +650,27 @@ public class DataArchive extends SecureClassLoader {
 
   public String[] getImageNames() {
     if (isNameCacheStale()) {
-// FIXME: could we do this more efficiently with a SortedSet?
-      Collection<String> allNames = new HashSet<String>(); 
-      listImageNames(allNames);
-      ArrayList<String> l = new ArrayList<String>(allNames);
-      Collections.sort(l, String.CASE_INSENSITIVE_ORDER);
-      imageNames = l.toArray(new String[l.size()]);
+      Set<String> s = setOfImageNames();
+      imageNames = s.toArray(new String[s.size()]);
+      Arrays.sort(imageNames, String.CASE_INSENSITIVE_ORDER);
     }
     return imageNames;
   }
 
   protected boolean isNameCacheStale() {
-    boolean isStale = imageNames == null;
-    for (Iterator<DataArchive> i = extensions.iterator();
-         i.hasNext() && !isStale; ) {
-      isStale = i.next().imageNames == null;
+    if (imageNames == null) return true;
+    for (DataArchive ext : extensions) {
+      if (ext.imageNames == null) return true;
     }
-    return isStale;
+    return false;
   }
 
   /**
-   * Place the names of the image files stored in this DataArchive into the argument Collection
-   * @param l
+   * @return the names of the image files stored in this DataArchive
+   * and its extensions
    */
-  protected void listImageNames(Collection l) {
-    l.addAll(imageSources.keySet());
+  protected Set<String> setOfImageNames() {
+    HashSet<String> s = new HashSet<String>();
     if (archive != null) {
       try {
         ZipInputStream zis
@@ -681,7 +679,7 @@ public class DataArchive extends SecureClassLoader {
         ZipEntry entry = null;
         while ((entry = zis.getNextEntry()) != null) {
           if (entry.getName().startsWith(IMAGE_DIR)) {
-            l.add(entry.getName().substring(IMAGE_DIR.length()));
+            s.add(entry.getName().substring(IMAGE_DIR.length()));
           }
         }
       }
@@ -690,8 +688,21 @@ public class DataArchive extends SecureClassLoader {
       }
     }
     for (DataArchive ext : extensions) {
-      ext.listImageNames(l);
+      s.addAll(ext.setOfImageNames());
     }
+    return s;
+  }
+
+  /**
+   * Place the names of the image files stored in this DataArchive into
+   * the argument Collection
+   * @param l
+   * @deprecated Use {@link #listImageNames()} instead.
+   */
+  @Deprecated
+  @SuppressWarnings("unchecked")
+  protected void listImageNames(Collection l) {
+    l.addAll(setOfImageNames());    
   }
 
   /** 

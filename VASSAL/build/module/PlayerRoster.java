@@ -26,6 +26,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -61,11 +62,11 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   public static final String TOOL_TIP = "buttonToolTip"; //$NON-NLS-1$
   public static final String SIDES = "sides"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "PLAYER\t"; //$NON-NLS-1$
-  protected ArrayList<PlayerInfo> players = new ArrayList<PlayerInfo>();
-  protected ArrayList<String> sides = new ArrayList<String>();
+  protected List<PlayerInfo> players = new ArrayList<PlayerInfo>();
+  protected List<String> sides = new ArrayList<String>();
   protected String[] untranslatedSides;
   protected LaunchButton retireButton;
-  protected ArrayList<SideChangeListener> sideChangeListeners =
+  protected List<SideChangeListener> sideChangeListeners =
     new ArrayList<SideChangeListener>();
 
   public PlayerRoster() {

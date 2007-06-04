@@ -36,6 +36,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -711,8 +712,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private JTextField name = new JTextField(8);
 
     private JPanel controls;
-    private ArrayList<String> names;
-    private ArrayList<Integer> isPrefix;
+    private List<String> names;
+    private List<Integer> isPrefix;
     private static final Integer NEITHER = new Integer(0);
     private static final Integer PREFIX = new Integer(1);
     private static final Integer SUFFIX = new Integer(2);

@@ -25,6 +25,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -165,7 +166,7 @@ public class TableConfigurer extends Configurer implements ActionListener  {
   protected class Column {
     protected Class type;
     protected String name;
-    protected ArrayList<Configurer> configurers = new ArrayList<Configurer>();
+    protected List<Configurer> configurers = new ArrayList<Configurer>();
     protected Box controls;
     protected JPanel contents;
     
@@ -193,6 +194,5 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     public int getRowCount() {
       return configurers.size();
     }
-    
   }
 }

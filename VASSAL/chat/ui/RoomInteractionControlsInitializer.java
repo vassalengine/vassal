@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -42,9 +43,9 @@ import VASSAL.chat.SimpleRoom;
  */
 public class RoomInteractionControlsInitializer implements ChatControlsInitializer {
   public static final Font POPUP_MENU_FONT = new Font("Dialog", 0, 10); //$NON-NLS-1$
-  private ArrayList<PlayerActionFactory> playerActionFactories =
+  private List<PlayerActionFactory> playerActionFactories =
     new ArrayList<PlayerActionFactory>();
-  private ArrayList<RoomActionFactory> roomActionFactories =
+  private List<RoomActionFactory> roomActionFactories =
     new ArrayList<RoomActionFactory>();
   protected ChatServerConnection client;
   private MouseAdapter currentRoomPopupBuilder;

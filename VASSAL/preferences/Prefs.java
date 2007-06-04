@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
@@ -33,7 +34,7 @@ import VASSAL.i18n.Resources;
  * writing the preferences to disk
  */
 public class Prefs {
-  private HashMap<String,Configurer> options = new HashMap<String,Configurer>();
+  private Map<String,Configurer> options = new HashMap<String,Configurer>();
   private Properties storedValues = new Properties();
   private PrefsEditor editor;
   private String name;

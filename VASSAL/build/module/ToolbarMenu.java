@@ -28,6 +28,8 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -65,8 +67,8 @@ public class ToolbarMenu extends AbstractConfigurable
   public static final String MENU_ITEMS = "menuItems"; //$NON-NLS-1$
   /** Buttons where this property contains a JPopupMenu will turn into sub-menus */
   public static final String MENU_PROPERTY = "ToolbarMenu.popup"; //$NON-NLS-1$
-  protected ArrayList<String> menuItems = new ArrayList<String>();
-  protected HashMap<AbstractButton,JMenuItem> buttonsToMenuMap =
+  protected List<String> menuItems = new ArrayList<String>();
+  protected Map<AbstractButton,JMenuItem> buttonsToMenuMap =
     new HashMap<AbstractButton,JMenuItem>();
   protected LaunchButton launch;
   protected JToolBar toolbar;

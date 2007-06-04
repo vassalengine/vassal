@@ -35,6 +35,7 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -253,10 +254,10 @@ public class PrivateMap extends Map {
   public static class View extends Map.View {
     private static final long serialVersionUID = 1L;
 
-    private ArrayList<KeyListener> keyListeners = new ArrayList<KeyListener>();
-    private ArrayList<MouseListener> mouseListeners =
+    private List<KeyListener> keyListeners = new ArrayList<KeyListener>();
+    private List<MouseListener> mouseListeners =
       new ArrayList<MouseListener>();
-    private ArrayList<MouseMotionListener> mouseMotionListeners =
+    private List<MouseMotionListener> mouseMotionListeners =
       new ArrayList<MouseMotionListener>();
     private DropTarget dropTarget;
 

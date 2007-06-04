@@ -99,7 +99,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   private Stack parent;
   private Point pos = new Point(0, 0);
   private String id;
-  private HashMap<Object,Object> props;
+  private java.util.Map<Object,Object> props;
 
   private char cloneKey, deleteKey; // Moved into independent traits, but retained for backward compatibility
   protected String imageName;

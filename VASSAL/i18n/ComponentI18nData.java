@@ -33,26 +33,31 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PlaceMarker;
 
 /**
- * Object encapsulating the internationalization information for a component. The majority of translatable components
- * subclass AbstractConfigurable, but some extend JFrame or JDialog and implement Configurable or AutoConfigurable.
+ * Object encapsulating the internationalization information for a component.
+ * The majority of translatable components subclass AbstractConfigurable,
+ * but some extend JFrame or JDialog and implement Configurable or
+ * AutoConfigurable.
  * 
- * AbstractConfigurable components are almost completely handled within the AbstractConfigurable base class.
- * AutoConfigurable/Configurable components must call a different constructor and supply additional information
+ * AbstractConfigurable components are almost completely handled within the
+ * AbstractConfigurable base class. AutoConfigurable/Configurable components
+ * must call a different constructor and supply additional information.
  * 
  * @author Brent Easton
- * 
  */
 public class ComponentI18nData {
   protected String prefix;
   protected Translatable parent;
   protected Configurable myComponent;
-  protected Map<String, Property> translatableProperties = new TreeMap<String, Property>();
-  protected Map<String, Property> allProperties = new TreeMap<String, Property>();
+  protected Map<String, Property> translatableProperties =
+    new TreeMap<String, Property>();
+  protected Map<String, Property> allProperties =
+    new TreeMap<String, Property>();
   protected List<Translatable> children = new ArrayList<Translatable>();
 
   /**
-   * Build from an AbstractConfigurable. The parent will be set from AbstractConfigurable.add(). untranslatedValues will
-   * be filled in as attributes are translated.
+   * Build from an AbstractConfigurable. The parent will be set from
+   * AbstractConfigurable.add(). untranslatedValues will be filled in as
+   * attributes are translated.
    * 
    * @param c
    *          AbstractConfigurable component
@@ -74,13 +79,17 @@ public class ComponentI18nData {
   public ComponentI18nData(AutoConfigurable c, String prefix) {
     this.prefix = prefix;
     parent = null;
-    init(c, prefix, c.getAttributeNames(), c.getAttributeTypes(), c.getAttributeDescriptions());
+    init(c, prefix, c.getAttributeNames(),
+         c.getAttributeTypes(), c.getAttributeDescriptions());
   }
 
-  protected void init(Configurable c, String pfx, String[] names, Class[] types, String[] descriptions) {
+  protected void init(Configurable c, String pfx, String[] names,
+                      Class<?>[] types, String[] descriptions) {
     boolean[] translatable = new boolean[types.length];
     for (int i = 0; i < types.length; i++) {
-      translatable[i] = types[i] != null && (types[i].equals(String.class) || types[i].isAssignableFrom(TranslatableConfigurerFactory.class));
+      translatable[i] = types[i] != null &&
+        (types[i].equals(String.class) ||
+         types[i].isAssignableFrom(TranslatableConfigurerFactory.class));
     }
     init(c, pfx, names, descriptions, translatable);
   }
@@ -101,8 +110,9 @@ public class ComponentI18nData {
   }
 
   /**
-   * Build from a Configurable. Configurable does not support getAttributeNames() getAttributeTypes() or
-   * getAttributeValueString(), so more information must be supplied.
+   * Build from a Configurable. Configurable does not support
+   * getAttributeNames() getAttributeTypes() or getAttributeValueString(),
+   * so more information must be supplied.
    * 
    * @param c
    *          Component

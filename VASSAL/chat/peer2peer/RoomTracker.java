@@ -19,6 +19,7 @@
 package VASSAL.chat.peer2peer;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
 import java.util.Enumeration;
 import VASSAL.chat.Player;
@@ -28,8 +29,8 @@ import VASSAL.chat.Room;
  * Tracks players entering/exiting a room
  */
 public class RoomTracker {
-  private ArrayList<Player> joinedPlayers;
-  private ArrayList<Player> leftPlayers;
+  private List<Player> joinedPlayers;
+  private List<Player> leftPlayers;
 
   public RoomTracker() {
     joinedPlayers = new ArrayList<Player>();

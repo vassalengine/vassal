@@ -20,6 +20,7 @@ package VASSAL.chat;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -31,8 +32,8 @@ import VASSAL.i18n.Resources;
 public class PrivateChatManager {
   private ChatServerConnection client;
 
-  private ArrayList<Entry> chatters;
-  private ArrayList<Player> banned;
+  private List<Entry> chatters;
+  private List<Player> banned;
 
   public PrivateChatManager(ChatServerConnection client) {
     chatters = new ArrayList<Entry>();

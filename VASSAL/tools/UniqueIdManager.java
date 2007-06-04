@@ -20,6 +20,7 @@ package VASSAL.tools;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import VASSAL.build.Buildable;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.ValidationReport;
@@ -46,7 +47,7 @@ import VASSAL.configure.ValidityChecker;
  * and can use {@link #findInstance} to look up a component by id.
  */
 public class UniqueIdManager implements ValidityChecker {
-  private ArrayList<Identifyable> instances = new ArrayList<Identifyable>();
+  private List<Identifyable> instances = new ArrayList<Identifyable>();
   private String prefix;
 
   public UniqueIdManager(String prefix) {

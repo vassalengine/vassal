@@ -358,7 +358,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     protected List<Command> logInput;
     protected Action stepAction;
 
-    public LogCommand(Command c, List logInput, Action stepAction) {
+    public LogCommand(Command c, List<Command> logInput, Action stepAction) {
       if (c instanceof LogCommand) {
         throw new RuntimeException(Resources.getString("BasicLogger.cant_log"));  //$NON-NLS-1$
       }

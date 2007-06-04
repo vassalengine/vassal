@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -17,6 +18,8 @@
  */
 package VASSAL.chat.messageboard;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -38,30 +41,31 @@ public class MessageViewer extends JPanel {
   private JTable msgTable;
   private DefaultTableModel model;
   private JTextArea msgText;
-  private Vector msgList = new Vector();
+  private List<Message> msgList = new ArrayList<Message>();
 
   public MessageViewer() {
     initComponents();
   }
 
   public void setMessages(Enumeration msgEnum) {
-    msgList.removeAllElements();
+    msgList.clear();
     msgText.setText("");  //$NON-NLS-1$
-    Vector rows = new Vector();
-    Vector names = new Vector();
+    Vector<Vector<String>> rows = new Vector<Vector<String>>();
+    Vector<String> names = new Vector<String>();
     names.addElement(Resources.getString("Chat.sender"));  //$NON-NLS-1$
     names.addElement(Resources.getString("Chat.date"));  //$NON-NLS-1$
     while (msgEnum.hasMoreElements()) {
       Message msg = (Message) msgEnum.nextElement();
-      msgList.addElement(msg);
-      Vector cols = new Vector();
+      msgList.add(msg);
+      Vector<String> cols = new Vector<String>();
       cols.addElement(msg.getSender());
-      cols.addElement(Resources.getString(Resources.DATE_DISPLAY, msg.getDate()));
+      cols.addElement(
+        Resources.getString(Resources.DATE_DISPLAY, msg.getDate()));
       rows.addElement(cols);
     }
     model = new DefaultTableModel(rows,names);
     msgTable.setModel(model);
-    if (msgList.size() > 0) {
+    if (!msgList.isEmpty()) {
       msgTable.getSelectionModel().setSelectionInterval(0,0);
     }
   }
@@ -89,9 +93,8 @@ public class MessageViewer extends JPanel {
   private class ShowMsgText implements ListSelectionListener {
     public void valueChanged(ListSelectionEvent evt) {
       int index = msgTable.getSelectedRow();
-      if (index >=0 && index < msgList.size()) {
-      Message msg = (Message) msgList.elementAt(index);
-        msgText.setText(msg.getText());
+      if (index >= 0 && index < msgList.size()) {
+        msgText.setText(msgList.get(index).getText());
       }
       else {
         msgText.setText("");  //$NON-NLS-1$

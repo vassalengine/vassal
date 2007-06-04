@@ -26,10 +26,8 @@ import java.util.Comparator;
  * If in different Stacks order by Stack position on the Map
  * If in the same Stack, order by position within the Stack
  */
-public class PieceSorter implements Comparator {
-  public int compare(Object o1, Object o2) {
-    GamePiece p1 = (GamePiece) o1;
-    GamePiece p2 = (GamePiece) o2;
+public class PieceSorter implements Comparator<GamePiece> {
+  public int compare(GamePiece p1, GamePiece p2) {
     if (p1.getMap() == null && p2.getMap() == null) {
       return 0;
     }

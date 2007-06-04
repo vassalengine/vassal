@@ -121,7 +121,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   public static final String SUM = "sum(propertyName)";
 
-  protected KeyStroke hotkey = KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK);
+  protected KeyStroke hotkey =
+    KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK);
   protected Map map;
   protected Thread delayThread;
   protected int delay = 700;
@@ -157,7 +158,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   protected Rectangle bounds;
   protected boolean mouseInView = true;
-  protected ArrayList<GamePiece> displayablePieces = null;
+  protected List<GamePiece> displayablePieces = null;
 
   public CounterDetailViewer() {
   }
@@ -410,7 +411,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    * Build an ArrayList of pieces to be displayed in order from bottom up, based
    * on selection criteria setup in config.
    */
-  protected ArrayList<GamePiece> getDisplayablePieces() {
+  protected List<GamePiece> getDisplayablePieces() {
     GamePiece[] allPieces = map.getPieces(); // All pieces from bottom up
 
     Visitor visitor = new Visitor(new Filter(), map,
@@ -520,7 +521,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
    * pieces we are interested in.
    */
   protected static class Visitor extends PieceFinder.Movable {
-    protected ArrayList<GamePiece> pieces;
+    protected List<GamePiece> pieces;
     protected Filter filter = null;
     protected CompoundPieceCollection collection;
     protected int lastLayer = -1;
@@ -596,7 +597,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       }
     }
 
-    public ArrayList<GamePiece> getPieces() {
+    public List<GamePiece> getPieces() {
       return pieces;
     }
   }

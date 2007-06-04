@@ -20,6 +20,7 @@ package VASSAL.counters;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import VASSAL.build.Configurable;
 import VASSAL.build.widget.PieceSlot;
 
@@ -29,7 +30,7 @@ import VASSAL.build.widget.PieceSlot;
 public class MassPieceDefiner extends PieceDefiner {
   private static final long serialVersionUID = 1L;
 
-  private ArrayList<Entry> definers;
+  private List<Entry> definers;
 
   public MassPieceDefiner(Configurable top) {
     super();
@@ -37,7 +38,7 @@ public class MassPieceDefiner extends PieceDefiner {
     init(top);
     if (!definers.isEmpty()) {
       setPiece(definers.get(0).slot.getPiece());
-      ArrayList<Class> template = getTemplate();
+      List<Class> template = getTemplate();
 
       for (int i = 0; i < definers.size(); ++i) {
         GamePiece p = definers.get(i).definer.getPiece();
@@ -60,7 +61,7 @@ public class MassPieceDefiner extends PieceDefiner {
     }
   }
 
-  private ArrayList<Class> getTemplate() {
+  private List<Class> getTemplate() {
     GamePiece p = definers.get(0).definer.getPiece();
     ArrayList<Class> types = new ArrayList<Class>();
     while (p instanceof Decorator) {
@@ -71,7 +72,7 @@ public class MassPieceDefiner extends PieceDefiner {
     return types;
   }
 
-  private boolean matchesTemplate(GamePiece p, ArrayList<Class> template) {
+  private boolean matchesTemplate(GamePiece p, List<Class> template) {
     Iterator<Class> i = template.iterator();
     while (p instanceof Decorator && i.hasNext()) {
       if (p.getClass() != i.next()) {

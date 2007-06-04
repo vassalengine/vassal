@@ -32,7 +32,8 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.tools.ArchiveWriter;
 
-public class Translation extends AbstractConfigurable implements Comparable {
+public class Translation extends AbstractConfigurable
+                         implements Comparable<Translation> {
   protected static final String LOCALE = "locale"; //$NON-NLS-1$
   protected Locale locale;
   protected boolean dirty = false;
@@ -244,7 +245,7 @@ public class Translation extends AbstractConfigurable implements Comparable {
     return getBundleName() + ".properties"; //$NON-NLS-1$
   }
 
-  public int compareTo(Object o) {
-    return getDescription().compareTo(((Translation) o).getDescription());
+  public int compareTo(Translation o) {
+    return getDescription().compareTo(o.getDescription());
   }
 }

@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.command.Command;
@@ -39,7 +40,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
   private static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "EXT\t"; //$NON-NLS-1$
 
-  private HashSet<String> loadedExtensions = new HashSet<String>();
+  private Set<String> loadedExtensions = new HashSet<String>();
 
   public void addTo(GameModule mod) {
     if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$

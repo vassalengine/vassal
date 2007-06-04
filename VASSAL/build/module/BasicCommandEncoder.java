@@ -20,6 +20,7 @@ package VASSAL.build.module;
 
 import java.awt.Point;
 import java.util.HashMap;
+import java.util.Map;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
@@ -81,9 +82,9 @@ import VASSAL.tools.SequenceEncoder;
  * {@link GamePiece} classes.
  */
 public class BasicCommandEncoder implements CommandEncoder, Buildable {
-  private HashMap<String,BasicPieceFactory> basicFactories =
+  private Map<String,BasicPieceFactory> basicFactories =
     new HashMap<String,BasicPieceFactory>();
-  private HashMap<String,DecoratorFactory> decoratorFactories =
+  private Map<String,DecoratorFactory> decoratorFactories =
     new HashMap<String,DecoratorFactory>();
 
   public BasicCommandEncoder() {

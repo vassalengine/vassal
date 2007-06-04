@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultRoom.java,v 1.2 2006-12-09 22:49:23 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *
@@ -19,6 +19,7 @@
 package VASSAL.chat;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.List;
  */
 public class SimpleRoom implements Room {
   private String name;
-  private ArrayList<Player> players = new ArrayList<Player>();
+  private List<Player> players = new ArrayList<Player>();
 
   public SimpleRoom() {
   }

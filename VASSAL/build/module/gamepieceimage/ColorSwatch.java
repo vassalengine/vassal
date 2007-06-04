@@ -30,7 +30,8 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
-public class ColorSwatch extends AbstractConfigurable implements Comparable {
+public class ColorSwatch extends AbstractConfigurable
+                         implements Comparable<ColorSwatch> {
 
   protected static final String NAME = "name"; //$NON-NLS-1$
   protected static final String COLOR = "color"; //$NON-NLS-1$
@@ -160,7 +161,7 @@ public class ColorSwatch extends AbstractConfigurable implements Comparable {
   /* (non-Javadoc)
    * @see java.lang.Comparable#compareTo(java.lang.Object)
    */
-  public int compareTo(Object c) {
-    return name.compareTo(((ColorSwatch) c).name);
+  public int compareTo(ColorSwatch c) {
+    return name.compareTo(c.name);
   }
 }

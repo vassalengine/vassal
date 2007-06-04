@@ -28,13 +28,14 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ColoredBorder implements Highlighter {
   protected Color c;
   protected int thickness;
   
   // Additional Highlighters
-  protected ArrayList<Highlighter> highlighters = new ArrayList<Highlighter>();
+  protected List<Highlighter> highlighters = new ArrayList<Highlighter>();
 
   public ColoredBorder() {
     this(Color.black, 3);

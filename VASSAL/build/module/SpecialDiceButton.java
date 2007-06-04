@@ -28,6 +28,7 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -62,7 +63,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   protected static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t"; //$NON-NLS-1$
 
-  protected ArrayList<SpecialDie> dice = new ArrayList<SpecialDie>();
+  protected List<SpecialDie> dice = new ArrayList<SpecialDie>();
   protected java.util.Random ran;
   protected boolean reportResultAsText = true;
   protected boolean reportResultInWindow = false;

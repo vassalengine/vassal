@@ -50,8 +50,9 @@ import VASSAL.i18n.Resources;
 /**
  * @author rkinney
  */
-public class InstallJnlpScreen extends InstallProgressScreen implements Constants {
-  protected List resources = new ArrayList();
+public class InstallJnlpScreen extends InstallProgressScreen
+                               implements Constants {
+  protected List<URL> resources = new ArrayList<URL>();
   protected File installFile;
   protected String jnlpURL;
   protected String internalResources;

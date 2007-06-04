@@ -27,6 +27,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import javax.swing.Box;
 import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
@@ -176,9 +177,9 @@ public class ActionButton extends Decorator implements EditablePiece {
    * click falls within the button's boundaries
    */
   protected static class ButtonPusher {
-    private HashSet<Map> maps = new HashSet<Map>();
-    private HashMap<Component,ComponentMouseListener> componentMouseListeners =
-      new HashMap<Component,ComponentMouseListener>();
+    private Set<Map> maps = new HashSet<Map>();
+    private java.util.Map<Component,ComponentMouseListener>
+      componentMouseListeners = new HashMap<Component,ComponentMouseListener>();
 
     public void register(Map map) {
       if (map != null) {

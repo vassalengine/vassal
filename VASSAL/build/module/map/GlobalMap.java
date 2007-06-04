@@ -33,6 +33,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -431,12 +432,12 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
       }
     }
 
-    protected ArrayList<GamePiece> getDisplayablePieces() {
+    protected List<GamePiece> getDisplayablePieces() {
       Point oldPoint = currentMousePosition.getPoint();
       Point mapPoint = GlobalMap.this.map.componentCoordinates(mapCoordinates(oldPoint));
 
       currentMousePosition.translatePoint(mapPoint.x - oldPoint.x, mapPoint.y - oldPoint.y);
-      ArrayList<GamePiece> l = super.getDisplayablePieces();
+      List<GamePiece> l = super.getDisplayablePieces();
       currentMousePosition.translatePoint(oldPoint.x - mapPoint.x, oldPoint.y - mapPoint.y);
       return l;
     }

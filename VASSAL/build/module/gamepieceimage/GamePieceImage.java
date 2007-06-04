@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import javax.imageio.ImageIO;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -52,7 +53,8 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   public static final String BG_COLOR = "bgColor"; //$NON-NLS-1$
   public static final String BORDER_COLOR = "borderColor"; //$NON-NLS-1$
 
-  protected ArrayList instances = new ArrayList(5);
+// FIXME: Why size 5? Comment this to indicate the reason.
+  protected List<ItemInstance> instances = new ArrayList<ItemInstance>(5);
   protected InstanceConfigurer defnConfig = null;
   protected GamePieceLayout layout;
   protected ColorSwatch bgColor = ColorSwatch.getWhite();
@@ -86,10 +88,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     this.layout = defn.getLayout();
     this.bgColor = defn.getBgColor();
     this.borderColor = defn.getBorderColor();
-    Iterator i = defn.getInstances().iterator();
-    while (i.hasNext()) {
-      this.instances.add(i.next());
-    }
+    this.instances.addAll(defn.getInstances());
   }
 
   /*
@@ -99,7 +98,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     return new GamePieceImage(this);
   }
 
-  public ArrayList getInstances() {
+  public List<ItemInstance> getInstances() {
     return instances;
   }
 
@@ -178,7 +177,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       if (value instanceof String) {
         value = InstanceConfigurer.StringToProperties((String) value, this);
       }
-      instances = (ArrayList) value;
+      instances = (ArrayList<ItemInstance>) value;
       if (defnConfig != null) {
         rebuildInstances();
         defnConfig.visualizer.rebuild();
@@ -326,9 +325,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public ItemInstance getInstance(String name) {
-    Iterator i = instances.iterator();
-    while (i.hasNext()) {
-      ItemInstance instance = (ItemInstance) i.next();
+    for (ItemInstance instance : instances) {
       if (name.equals(instance.getName())) {
         return instance;
       }
@@ -337,9 +334,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public TextItemInstance getTextInstance(String name) {
-    Iterator i = instances.iterator();
-    while (i.hasNext()) {
-      ItemInstance instance = (ItemInstance) i.next();
+    for (ItemInstance instance : instances) {
       if (instance instanceof TextItemInstance) {
         if (name.equals(instance.getName())) {
           return (TextItemInstance) instance;
@@ -350,9 +345,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public TextBoxItemInstance getTextBoxInstance(String name) {
-    Iterator i = instances.iterator();
-    while (i.hasNext()) {
-      ItemInstance instance = (ItemInstance) i.next();
+    for (ItemInstance instance : instances) {
       if (instance instanceof TextBoxItemInstance) {
         if (name.equals(instance.getName())) {
           return (TextBoxItemInstance) instance;
@@ -363,9 +356,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public SymbolItemInstance getSymbolInstance(String name) {
-    Iterator i = instances.iterator();
-    while (i.hasNext()) {
-      ItemInstance instance = (ItemInstance) i.next();
+    for (ItemInstance instance : instances) {
       if (instance instanceof SymbolItemInstance) {
         if (name.equals(instance.getName())) {
           return (SymbolItemInstance) instance;
@@ -376,9 +367,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public ShapeItemInstance getShapeInstance(String name) {
-    Iterator i = instances.iterator();
-    while (i.hasNext()) {
-      ItemInstance instance = (ItemInstance) i.next();
+    for (ItemInstance instance : instances) {
       if (instance instanceof ShapeItemInstance) {
         if (name.equals(instance.getName())) {
           return (ShapeItemInstance) instance;
@@ -389,9 +378,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public ImageItemInstance getImageInstance(String name) {
-    Iterator i = instances.iterator();
-    while (i.hasNext()) {
-      ItemInstance instance = (ItemInstance) i.next();
+    for (ItemInstance instance : instances) {
       if (instance instanceof ImageItemInstance) {
         if (name.equals(instance.getName())) {
           return (ImageItemInstance) instance;
@@ -405,12 +392,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
    * Reconcile our current elements with the elements in the owning scheme.
    */
   protected void rebuildInstances() {
+    ArrayList<ItemInstance> newInstances = new ArrayList<ItemInstance>();
 
-    ArrayList newInstances = new ArrayList();
-
-    Iterator e = instances.iterator();
-    while (e.hasNext()) {
-      ItemInstance prop = (ItemInstance) e.next();
+    for (ItemInstance prop : instances) {
       Item item = layout.getItem(prop.getName());
       if (item != null && item.getType().equals(prop.getType())) {
         prop.setLocation(item.getLocation());
@@ -418,22 +402,20 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       }
     }
 
-    Iterator i = layout.getItems().iterator();
-    while (i.hasNext()) {
-      Item item = (Item) i.next();
+    for (Item item : layout.getItems()) {
       String name = item.getConfigureName();
       String type = item.getType();
       String location = item.getLocation();
 
       boolean found = false;
-      e = instances.iterator();
-      while (e.hasNext() && !found) {
-        ItemInstance prop = (ItemInstance) e.next();
+      for (Iterator i = instances.iterator(); i.hasNext() && !found; ) {
+        ItemInstance prop = (ItemInstance) i.next();
         found = name.equals(prop.getName());
       }
 
       if (!found) {
-        ItemInstance instance = ItemInstance.newDefaultInstance(name, type, location);
+        ItemInstance instance =
+          ItemInstance.newDefaultInstance(name, type, location);
         instance.addTo(this);
         newInstances.add(instance);
       }
@@ -445,5 +427,4 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
     rebuildVisualizerImage();
   }
-
 }

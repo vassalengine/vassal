@@ -22,6 +22,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GlobalOptions;
@@ -44,8 +45,8 @@ import VASSAL.tools.FormattedString;
 public class MovementReporter {
   private FormattedString format = new FormattedString();
 
-  private ArrayList<MoveSummary> movesToReport = new ArrayList<MoveSummary>();
-  private ArrayList<MoveSummary> movesToMark = new ArrayList<MoveSummary>();
+  private List<MoveSummary> movesToReport = new ArrayList<MoveSummary>();
+  private List<MoveSummary> movesToMark = new ArrayList<MoveSummary>();
 
   public MovementReporter(Command moveCommand) {
     extractMoveCommands(moveCommand);

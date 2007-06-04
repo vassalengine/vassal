@@ -23,6 +23,7 @@
 package VASSAL.chat.node;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
 
@@ -40,7 +41,7 @@ public class Node implements MsgSender {
   private String id;
   private String info;
   private Node parent;
-  private ArrayList<Node> children = new ArrayList<Node>();
+  private List<Node> children = new ArrayList<Node>();
 
   public Node(Node parent, String id, String info) {
     this.parent = parent;
@@ -211,7 +212,7 @@ public class Node implements MsgSender {
     return node;
   }
 
-  private ArrayList<Node> getPathList() {
+  private List<Node> getPathList() {
     ArrayList<Node> path = new ArrayList<Node>();
     for (Node n = this; n != null && n.getId() != null; n = n.getParent()) {
       path.add(n);
@@ -222,7 +223,7 @@ public class Node implements MsgSender {
   public String getPath() {
     synchronized (children) {
       SequenceEncoder se = new SequenceEncoder('/');
-      ArrayList<Node> path = getPathList();
+      List<Node> path = getPathList();
       for (ListIterator<Node> i = path.listIterator(path.size()-1);
            i.hasPrevious(); ) {
         se.append(i.previous().getId());
@@ -238,7 +239,7 @@ public class Node implements MsgSender {
   public String getPathAndInfo() {
     synchronized (children) {
       SequenceEncoder se = new SequenceEncoder('/');
-      ArrayList<Node> path = getPathList();
+      List<Node> path = getPathList();
       for (ListIterator<Node> i = path.listIterator(path.size()-1);
            i.hasPrevious(); ) {
         Node n = i.previous();

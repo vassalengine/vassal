@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2004 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.build.module;
 
 import java.awt.Component;
@@ -26,30 +44,18 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PieceEditor;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.TranslatablePieceContainer;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
 
-/*
- * $Id$
- *
- * Copyright (c) 2004 by Rodney Kinney
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License (LGPL) as published by the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available
- * at http://www.opensource.org.
- */
-public class PrototypeDefinition extends AbstractConfigurable implements UniqueIdManager.Identifyable, ValidityChecker {
+public class PrototypeDefinition extends AbstractConfigurable
+                                 implements UniqueIdManager.Identifyable,
+                                            ValidityChecker,
+                                            TranslatablePieceContainer {
   private String name = "Prototype"; //$NON-NLS-1$
-  private java.util.Map pieces = new HashMap();
+  private java.util.Map<String,GamePiece> pieces =
+    new HashMap<String,GamePiece>();
   private String pieceDefinition;
   private static UniqueIdManager idMgr = new UniqueIdManager("prototype-"); //$NON-NLS-1$
   private PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
@@ -125,7 +131,7 @@ public class PrototypeDefinition extends AbstractConfigurable implements UniqueI
   }
 
   protected GamePiece getPiece(String def) {
-    GamePiece piece = (GamePiece) pieces.get(def);
+    GamePiece piece = pieces.get(def);
     if (piece == null && def != null) {
       AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
       if (comm == null) {

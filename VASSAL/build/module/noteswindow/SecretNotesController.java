@@ -30,6 +30,7 @@ import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -66,8 +67,8 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
   private Controls controls;
   private JPanel panel;
-  private ArrayList<SecretNote> notes;
-  private ArrayList<SecretNote> lastSavedNotes;
+  private List<SecretNote> notes;
+  private List<SecretNote> lastSavedNotes;
 
   // Secret Note display table columns
   public static final int COL_HANDLE = 0;

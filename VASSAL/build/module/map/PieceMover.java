@@ -96,7 +96,10 @@ import VASSAL.tools.LaunchButton;
 /**
  * This is a MouseListener that moves pieces onto a Map window
  */
-public class PieceMover extends AbstractBuildable implements MouseListener, GameComponent, Comparator {
+public class PieceMover extends AbstractBuildable
+                        implements MouseListener,
+                                   GameComponent,
+                                   Comparator<GamePiece> {
   /** The Preferences key for autoreporting moves. */
   public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
   public static final String NAME = "name";
@@ -114,7 +117,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
   protected PieceVisitorDispatcher selectionProcessor; // Processes drag target
   // after having been
   // selected
-  protected Comparator pieceSorter = new PieceSorter();
+  protected Comparator<GamePiece> pieceSorter = new PieceSorter();
 
   public void addTo(Buildable b) {
     dragTargetSelector = createDragTargetSelector();
@@ -491,14 +494,16 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     Point offset = null;
     Command comm = new NullCommand();
     BoundsTracker tracker = new BoundsTracker();
-    // Map of Point->List<GamePiece> of pieces to merge with at a given location
-    // There is potentially one piece for each Game Piece Layer
-    HashMap mergeTargets = new HashMap();
+    // Map of Point->List<GamePiece> of pieces to merge with at a given
+    // location. There is potentially one piece for each Game Piece Layer.
+    HashMap<Point,List<GamePiece>> mergeTargets =
+      new HashMap<Point,List<GamePiece>>();
     while (it.hasMoreElements()) {
       dragging = it.nextPiece();
       tracker.addPiece(dragging);
       /*
-       * Take a copy of the pieces in dragging. If it is a stack, it is cleared by the merging process
+       * Take a copy of the pieces in dragging.
+       * If it is a stack, it is cleared by the merging process.
        */
       GamePiece[] draggedPieces;
       if (dragging instanceof Stack) {
@@ -517,13 +522,13 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
       if (offset != null) {
         p = new Point(dragging.getPosition().x + offset.x, dragging.getPosition().y + offset.y);
       }
-      List mergeCandidates = (List) mergeTargets.get(p);
+      List<GamePiece> mergeCandidates = mergeTargets.get(p);
       GamePiece mergeWith = null;
       // Find an already-moved piece that we can merge with at the destination
       // point
       if (mergeCandidates != null) {
         for (int i = 0, n = mergeCandidates.size(); i < n; ++i) {
-          GamePiece candidate = (GamePiece) mergeCandidates.get(i);
+          GamePiece candidate = mergeCandidates.get(i);
           if (map.getPieceCollection().canMerge(candidate, dragging)) {
             mergeWith = candidate;
             mergeCandidates.set(i, dragging);
@@ -538,10 +543,11 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
           p = map.snapTo(p);
         }
         if (offset == null) {
-          offset = new Point(p.x - dragging.getPosition().x, p.y - dragging.getPosition().y);
+          offset = new Point(p.x - dragging.getPosition().x,
+                             p.y - dragging.getPosition().y);
         }
         if (mergeWith != null && map.getStackMetrics().isStackingEnabled()) {
-          mergeCandidates = new ArrayList();
+          mergeCandidates = new ArrayList<GamePiece>();
           mergeCandidates.add(mergeWith);
           mergeTargets.put(p, mergeCandidates);
         }
@@ -574,11 +580,13 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     return comm;
   }
 
-  protected void applyKeyAfterMove(GamePiece[] pieces, Command comm, KeyStroke key) {
+  protected void applyKeyAfterMove(GamePiece[] pieces,
+                                   Command comm, KeyStroke key) {
     for (int i = 0; i < pieces.length; i++) {
       GamePiece piece = pieces[i];
       if (piece.getProperty(Properties.SNAPSHOT) == null) {
-        piece.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(piece));
+        piece.setProperty(Properties.SNAPSHOT,
+                          PieceCloner.getInstance().clonePiece(piece));
       }
       comm.append(piece.keyEvent(key));
     }
@@ -687,15 +695,18 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
   }
 
   /**
-   * Implement Comparator to sort the contents of the drag buffer before completing the drag. This sorts the contents to
-   * be in the same order as the pieces were in their original parent stack.
+   * Implement Comparator to sort the contents of the drag buffer before
+   * completing the drag. This sorts the contents to be in the same order
+   * as the pieces were in their original parent stack.
    */
-  public int compare(Object o1, Object o2) {
-    return pieceSorter.compare(o1, o2);
+  public int compare(GamePiece p1, GamePiece p2) {
+    return pieceSorter.compare(p1, p2);
   }
+
   /**
-   * Implements a psudo-cursor that follows the mouse cursor when user drags gamepieces. Supports map zoom by resizing
-   * cursor when it enters a drop target of type Map.View
+   * Implements a psudo-cursor that follows the mouse cursor when user
+   * drags gamepieces. Supports map zoom by resizing cursor when it enters
+   * a drop target of type Map.View.
    * 
    * @author Jim Urbas
    * @version 0.4.2
@@ -729,7 +740,8 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
     // Seems there can be only one DropTargetListener a drop target. After we
     // process a drop target
     // event, we manually pass the event on to this listener.
-    java.util.Map dropTargetListeners = new java.util.HashMap();
+    java.util.Map<Component,DropTargetListener> dropTargetListeners =
+      new HashMap<Component,DropTargetListener>();
 
     /** returns the singleton DragHandler instance */
     static public DragHandler getTheDragHandler() {
@@ -745,7 +757,8 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
      */
     static public DropTarget makeDropTarget(Component theComponent, int dndContants, DropTargetListener dropTargetListener) {
       if (dropTargetListener != null) {
-        DragHandler.getTheDragHandler().dropTargetListeners.put(theComponent, dropTargetListener);
+        DragHandler.getTheDragHandler()
+                   .dropTargetListeners.put(theComponent, dropTargetListener);
       }
       DropTarget dropTarget = new DropTarget(theComponent, dndContants, DragHandler.getTheDragHandler());
       return dropTarget;
@@ -757,7 +770,7 @@ public class PieceMover extends AbstractBuildable implements MouseListener, Game
 
     protected DropTargetListener getListener(DropTargetEvent event) {
       Component component = event.getDropTargetContext().getComponent();
-      return (DropTargetListener) dropTargetListeners.get(component);
+      return dropTargetListeners.get(component);
     }
 
     /** CTOR */

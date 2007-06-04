@@ -21,6 +21,7 @@ package VASSAL.build.module.gamepieceimage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.Map;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -35,7 +36,7 @@ import VASSAL.configure.SingleChildInstance;
  * {@link VASSAL.build.module.gamepieceimage.GamePieceLayout}.
  */
 public class GamePieceLayoutsContainer extends AbstractConfigurable {
-  protected HashMap<String,GamePieceLayout> definitions =
+  protected Map<String,GamePieceLayout> definitions =
     new HashMap<String,GamePieceLayout>();
   
   protected GamePieceLayout getDefinition(String name) {

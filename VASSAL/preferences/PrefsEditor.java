@@ -30,6 +30,8 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -48,9 +50,9 @@ import VASSAL.tools.SplashScreen;
 
 public class PrefsEditor {
   private JDialog dialog;
-  private ArrayList<Configurer> options = new ArrayList<Configurer>();
-  private HashMap<Configurer,Object> savedValues;
-  private ArrayList<Prefs> prefs;
+  private List<Configurer> options = new ArrayList<Configurer>();
+  private Map<Configurer,Object> savedValues;
+  private List<Prefs> prefs;
   private JButton save, cancel;
   private JTabbedPane optionsTab;
   private JDialog setupDialog;

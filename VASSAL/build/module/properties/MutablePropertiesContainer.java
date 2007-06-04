@@ -20,6 +20,7 @@
 package VASSAL.build.module.properties;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A component that can contain mutable (updateable) properties
@@ -50,7 +51,7 @@ public interface MutablePropertiesContainer {
    *
    */
   public static class Impl implements MutablePropertiesContainer {
-    private HashMap<String,MutableProperty> props =
+    private Map<String,MutableProperty> props =
       new HashMap<String,MutableProperty>();
 
     public void addMutableProperty(String key, MutableProperty p) {

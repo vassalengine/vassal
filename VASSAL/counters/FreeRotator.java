@@ -93,8 +93,9 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   protected double[] validAngles = new double[] {0.0};
   protected int angleIndex = 0;
 
-  protected HashMap<Double,Image> images = new HashMap<Double,Image>();
-  protected HashMap<Double,Rectangle> bounds = new HashMap<Double,Rectangle>();
+  protected java.util.Map<Double,Image> images = new HashMap<Double,Image>();
+  protected java.util.Map<Double,Rectangle> bounds =
+    new HashMap<Double,Rectangle>();
   protected PieceImage unrotated;
 
   protected double tempAngle, startAngle;

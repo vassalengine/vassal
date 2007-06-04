@@ -35,6 +35,7 @@ import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -66,7 +67,7 @@ public class Footprint extends MovementMarkable {
   protected boolean globalVisibility = false;  // Shared trail visibility (if globallyVisible == true)
   protected String startMapId = "";            // Map Id trail started on
                                                // List of points
-  protected ArrayList<Point> pointList = new ArrayList<Point>();
+  protected List<Point> pointList = new ArrayList<Point>();
 
   // Type Variables (Configured in Ed)
   protected KeyStroke trailKey;	               // Control Key to invoke

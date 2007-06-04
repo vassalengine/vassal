@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
@@ -359,10 +360,10 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     private static final String NEW_ROOM = "newRoom";
     private static final String OLD_ROOM = "oldRoom";
     private MultiUserChat monitorRoom;
-    private HashMap<String,String> playerToRoom = new HashMap<String,String>();
-    private HashMap<String,JabberRoom> jidToRoom =
+    private Map<String,String> playerToRoom = new HashMap<String,String>();
+    private Map<String,JabberRoom> jidToRoom =
       new HashMap<String,JabberRoom>();
-    private HashMap<String,JabberPlayer> jidToPlayer =
+    private Map<String,JabberPlayer> jidToPlayer =
       new HashMap<String,JabberPlayer>();
 
     private Comparator<Room> roomSortOrder = new Comparator<Room>() {

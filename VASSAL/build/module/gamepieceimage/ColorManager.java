@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -105,7 +106,7 @@ public class ColorManager extends AbstractConfigurable {
   /**
    * User defined Colors
    */
-  protected HashMap<String,ColorSwatch> userColors =
+  protected Map<String,ColorSwatch> userColors =
     new HashMap<String,ColorSwatch>();
   
   public ColorManager() {
@@ -234,7 +235,7 @@ public class ColorManager extends AbstractConfigurable {
     ArrayList<String> names =
       new ArrayList<String>(a.size() + standardColors.length);
     
-    for (ColorSwatch cs : a ) {
+    for (ColorSwatch cs : a) {
       names.add(cs.getConfigureName());
     }
 

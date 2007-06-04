@@ -23,6 +23,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -34,8 +35,7 @@ import VASSAL.tools.SequenceEncoder;
  * Configures an array of keystrokes
  */
 public class KeyStrokeArrayConfigurer extends Configurer {
-  private ArrayList<HotKeyConfigurer> configs =
-    new ArrayList<HotKeyConfigurer>();
+  private List<HotKeyConfigurer> configs = new ArrayList<HotKeyConfigurer>();
   private Box controls;
 
   public KeyStrokeArrayConfigurer(String key, String name) {

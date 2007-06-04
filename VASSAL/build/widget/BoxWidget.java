@@ -25,6 +25,8 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -48,10 +50,10 @@ public class BoxWidget extends Widget
   private DefaultComboBoxModel widgets = new DefaultComboBoxModel();
   private CardLayout layout = new CardLayout();
   private JPanel multiPanel = new JPanel();
-  private ArrayList<Widget> built = new ArrayList<Widget>();
+  private List<Widget> built = new ArrayList<Widget>();
   private Dimension size = new Dimension();
 
-  private HashMap<Object,String> keys = new HashMap<Object,String>();
+  private Map<Object,String> keys = new HashMap<Object,String>();
   private int count = 0;
 
   public BoxWidget() {

@@ -331,12 +331,14 @@ public class ZoneHighlight extends AbstractConfigurable  {
 
       slider.setMajorTickSpacing(10);
       slider.setPaintTicks(true);
-      slider.setLabelTable(new Hashtable(labelTable));
+      // Note: JSlider uses the outdated Hashtable. Eventually Hashtable
+      // will be deprecated and we'll be able to use the HashMap directly.
+      slider.setLabelTable(new Hashtable<Integer,JLabel>(labelTable));
       slider.setPaintLabels(true);
       slider.setBorder(javax.swing.BorderFactory.createTitledBorder(name));
       slider.addChangeListener(new ChangeListener() {
         public void stateChanged(ChangeEvent e) {
-          JSlider source = (JSlider)e.getSource();
+          JSlider source = (JSlider) e.getSource();
           if (!source.getValueIsAdjusting()) {    
             opacity = source.getValue();
           }

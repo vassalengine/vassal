@@ -31,7 +31,7 @@ import VASSAL.counters.GamePiece;
  */
 public class PieceI18nData {
   protected GamePiece piece;
-  protected ArrayList<Property> properties = new ArrayList<Property>();
+  protected List<Property> properties = new ArrayList<Property>();
 
   public PieceI18nData(GamePiece piece) {
     this.piece = piece;

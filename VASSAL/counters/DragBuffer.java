@@ -29,12 +29,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import javax.swing.JFrame;
 import VASSAL.build.module.Map;
 
 public class DragBuffer {
   private static DragBuffer theBuffer;
-  private ArrayList<GamePiece> pieces;
+  private List<GamePiece> pieces;
   private MouseEvent lastRelease;
   private Component dropTarget;
   private MouseListener dropHandler;
@@ -195,7 +196,7 @@ public class DragBuffer {
     return c;
   }
 
-  public void sort(Comparator comp) {
+  public void sort(Comparator<GamePiece> comp) {
     try {
       Collections.sort(pieces, comp);
     }
@@ -206,7 +207,9 @@ public class DragBuffer {
   /**
    * @deprecated Use {@link #sort(Comparator)} instead.
    */ 
-  @Deprecated public void sort(VASSAL.tools.Sort.Comparator comp) {
+  @Deprecated
+  @SuppressWarnings("unchecked")
+  public void sort(VASSAL.tools.Sort.Comparator comp) {
     sort((Comparator) comp);
   }
 }

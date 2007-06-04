@@ -19,14 +19,14 @@
 package VASSAL.configure;
 
 import java.util.ArrayList;
+import java.util.List;
 import VASSAL.build.Buildable;
 
 /**
  * Combines multiple instances of ValidityChecker
  */
 public class CompoundValidityChecker implements ValidityChecker {
-  private ArrayList<ValidityChecker> checkers =
-    new ArrayList<ValidityChecker>();
+  private List<ValidityChecker> checkers = new ArrayList<ValidityChecker>();
 
   public CompoundValidityChecker(ValidityChecker checker1,
                                  ValidityChecker checker2) {

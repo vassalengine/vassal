@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Set;
@@ -39,13 +40,13 @@ public class Language extends AbstractConfigurable {
   protected static String moduleBundle;
   protected static String languageBundle;
   protected static String countryBundle;
-  protected static ArrayList<Translation> moduleTranslations =
+  protected static List<Translation> moduleTranslations =
     new ArrayList<Translation>();
-  protected static ArrayList<Translation> languageTranslations =
+  protected static List<Translation> languageTranslations =
     new ArrayList<Translation>();
-  protected static ArrayList<Translation> countryTranslations =
+  protected static List<Translation> countryTranslations =
     new ArrayList<Translation>();
-  protected static ArrayList<Translation> translations =
+  protected static List<Translation> translations =
     new ArrayList<Translation>();
   protected static Language instance;
   /*
@@ -111,14 +112,15 @@ public class Language extends AbstractConfigurable {
   }
 
   /**
-   * Translate the module. The module and all extensions have now been built, so all Translations are available and all
-   * attributes that need to be translated have been recorded. There may be multiple translations that match this
-   * Locale, merge them in order - Country over-rides Language over-rides default. NB - You cannot create a default
-   * translation (Module.properties) using the VASSAL editor, but a default file can be placed into a module or
-   * extension manually.
+   * Translate the module. The module and all extensions have now been built,
+   * so all Translations are available and all attributes that need to be
+   * translated have been recorded. There may be multiple translations that
+   * match this Locale, merge them in order - Country over-rides Language
+   * over-rides default. NB - You cannot create a default translation
+   * (Module.properties) using the VASSAL editor, but a default file can be
+   * placed into a module or extension manually.
    * 
    * @throws IOException
-   * 
    */
   public static void translate() throws IOException {
     if (GameModule.getGameModule().isLocalizationEnabled()) {
@@ -206,17 +208,18 @@ public class Language extends AbstractConfigurable {
   }
 
   /**
-   * Called whenever a Translation is added to a module or extension. Check if the translation macthes our locale. If
-   * so, add it to the list of translations to use. There may multiple matching translations at Country, Language and
-   * Module level from different extensions.
+   * Called whenever a Translation is added to a module or extension.
+   * Check if the translation macthes our locale. If so, add it to the list
+   * of translations to use. There may multiple matching translations at
+   * Country, Language and Module level from different extensions.
    * 
-   * @param t
-   *          Translation
+   * @param t Translation
    */
   public void addTranslation(Translation t) {
     /*
-     * Play and Translate mode - keep a record of all translations that match our locale from various extensions. These
-     * will be merged into one after all are loaded.
+     * Play and Translate mode - keep a record of all translations that
+     * match our locale from various extensions. These will be merged
+     * into one after all are loaded.
      */
     if (GameModule.getGameModule().isLocalizationEnabled()) {
       if (moduleBundle.equals(t.getBundleFileName())) {
@@ -230,7 +233,8 @@ public class Language extends AbstractConfigurable {
       }
     }
     /*
-     * Edit mode, keep a list of all translations available in this Module or Extension to use in drop-down lists
+     * Edit mode, keep a list of all translations available in this
+     * Module or Extension to use in drop-down lists
      */
     else {
       translations.add(t);

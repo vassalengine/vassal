@@ -74,7 +74,7 @@ public class CreateInstallerAction extends AbstractAction {
   public static final String I18N_PROPERTIES = "VASSAL/i18n/VASSAL.properties"; //$NON-NLS-1$
   private static final String[] HEAP_SIZES = new String[]{"256M", "512M", "758M", "1024M", "1536M"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
   private static final String[] HEAP_SIZES_PLAIN_TEXT = new String[]{Resources.getString("Install.256_mb"), Resources.getString("Install.512_mb"), Resources.getString("Install.768_mb"), Resources.getString("Install.1_gb"), Resources.getString("Install.1.5_gb")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-  private static Map heapSizes = new HashMap();
+  private static Map<String,String> heapSizes = new HashMap<String,String>();
   static {
     for (int i = 0; i < HEAP_SIZES_PLAIN_TEXT.length; i++) {
       heapSizes.put(HEAP_SIZES_PLAIN_TEXT[i], HEAP_SIZES[i]);
@@ -108,7 +108,8 @@ public class CreateInstallerAction extends AbstractAction {
     });
     ok.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        CreateInstallerAction.this.heapSize = (String) heapSizes.get(heapSizeConfigurer.getValue());
+        CreateInstallerAction.this.heapSize =
+          heapSizes.get(heapSizeConfigurer.getValue());
         FileChooser c = FileChooser.createFileChooser(parent);
         if (c.showSaveDialog() == FileChooser.APPROVE_OPTION) {
           File destFile = c.getSelectedFile();

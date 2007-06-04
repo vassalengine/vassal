@@ -103,7 +103,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected boolean persistable;
   protected MutableProperty.Impl countProperty =
     new MutableProperty.Impl("",this);
-  protected ArrayList<MutableProperty.Impl> expressionProperties =
+  protected List<MutableProperty.Impl> expressionProperties =
     new ArrayList<MutableProperty.Impl>();
 
   protected String deckName;
@@ -114,9 +114,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected int maxStack = 10;
   protected CountExpression[] countExpressions;
   protected boolean expressionCounting = false;
-  protected ArrayList<GamePiece> nextDraw = null;
+  protected List<GamePiece> nextDraw = null;
   protected KeyCommand[] commands;
-  protected ArrayList<DeckGlobalKeyCommand> globalCommands =
+  protected List<DeckGlobalKeyCommand> globalCommands =
     new ArrayList<DeckGlobalKeyCommand>();
 
   protected CommandEncoder commandEncoder = new CommandEncoder() {

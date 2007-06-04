@@ -28,7 +28,7 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import VASSAL.build.AbstractConfigurable;
@@ -60,8 +60,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public static final String COLOR = "color";
   public static final String REVERSIBLE = "reversible";
   protected Image boardImage;
-  /** @deprecated */
-  @Deprecated protected Hashtable scaledCache = new Hashtable();
   protected Point pos = new Point(0, 0);
   protected Rectangle boundaries = new Rectangle(0, 0, 500, 500);
   protected String imageFile;
@@ -420,7 +418,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
    */
   public static class Cleanup implements GameComponent {
     private static Cleanup instance;
-    private HashSet<Board> toClean = new HashSet<Board>();
+    private Set<Board> toClean = new HashSet<Board>();
     private boolean gameStarted = false;
 
     public static void init() {

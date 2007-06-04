@@ -20,6 +20,7 @@ package VASSAL.build.widget;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
@@ -37,7 +38,7 @@ import VASSAL.build.Widget;
 public class TabWidget extends Widget
   implements ChangeListener, PropertyChangeListener {
   private JTabbedPane tab = null;
-  private ArrayList<Widget> widgets = new ArrayList<Widget>();
+  private List<Widget> widgets = new ArrayList<Widget>();
 
   public TabWidget() {
   }

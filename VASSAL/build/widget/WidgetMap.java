@@ -20,7 +20,7 @@ public class WidgetMap extends Map {
     }
     else {
       pieces.clear();
-      boards.removeAllElements();
+      boards.clear();
       toolBar.setVisible(false);
       System.gc();
     }

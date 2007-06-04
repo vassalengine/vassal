@@ -22,6 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -38,7 +39,7 @@ import VASSAL.i18n.ComponentI18nData;
  */
 public class PrototypesContainer extends AbstractConfigurable {
   private static PrototypesContainer instance;
-  private HashMap<String,PrototypeDefinition> definitions =
+  private Map<String,PrototypeDefinition> definitions =
     new HashMap<String,PrototypeDefinition>();
 
   public String[] getAttributeDescriptions() {

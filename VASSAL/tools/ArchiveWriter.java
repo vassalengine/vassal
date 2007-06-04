@@ -26,9 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -39,13 +38,13 @@ import VASSAL.configure.FileConfigurer;
 import VASSAL.launch.Main;
 
 /**
- * An ArchiveWriter is a writeable DataArchive. New files may be added with the
- * {@link #addFile} and {@link #addImage} methods.
+ * An ArchiveWriter is a writeable DataArchive. New files may be added
+ * with the {@link #addFile} and {@link #addImage} methods.
  */
 public class ArchiveWriter extends DataArchive {
-  private Hashtable images = new Hashtable();
-  private Hashtable sounds = new Hashtable();
-  private Hashtable files = new Hashtable();
+  private HashMap<String,Object> images = new HashMap<String,Object>();
+  private HashMap<String,Object> sounds = new HashMap<String,Object>();
+  private HashMap<String,Object> files = new HashMap<String,Object>();
   private String archiveName;
 
   /**
@@ -92,9 +91,8 @@ public class ArchiveWriter extends DataArchive {
     if (name.toLowerCase().endsWith(".svg")) {
       if (svgManager == null) svgManager = new SVGManager(this);
 
-      for (Iterator i = svgManager.getExternalReferences(path).iterator();
-       i.hasNext();) {
-         File f = new File((String) i.next());
+      for (String s : svgManager.getExternalReferences(path)) {
+         File f = new File(s);
          String n = f.getName();
          unCacheImage(n);
          images.put(IMAGE_DIR + n, f.getPath());
@@ -116,7 +114,7 @@ public class ArchiveWriter extends DataArchive {
   }
   
   public void addSound(String file, String name) {
-    sounds.put(SOUNDS_DIR+name,file);
+    sounds.put(SOUNDS_DIR+name, file);
   }
 
   public boolean isImageAdded(String name) {
@@ -185,7 +183,8 @@ public class ArchiveWriter extends DataArchive {
     return stream;
   }
 
-  private InputStream getAddedStream(Hashtable table, String name) throws IOException {
+  private InputStream getAddedStream(HashMap<String,Object> table,
+                                     String name) throws IOException {
     InputStream stream = null;
     Object file = table.get(name);
     if (file instanceof String) {
@@ -280,14 +279,12 @@ public class ArchiveWriter extends DataArchive {
     archive = new ZipFile(archiveName);
   }
 
-  private void writeEntries(Hashtable h, int method, ZipOutputStream out)
-    throws IOException {
-
+  private void writeEntries(HashMap<String,Object> h, int method,
+                            ZipOutputStream out) throws IOException {
     byte[] contents;
     ZipEntry entry;
 
-    for (Enumeration e = h.keys(); e.hasMoreElements();) {
-      String name = (String) e.nextElement();
+    for (String name : h.keySet()) {
       Object o = h.get(name);
       if (o instanceof String) {
         if (name.toLowerCase().endsWith(".svg")) {
@@ -316,14 +313,20 @@ public class ArchiveWriter extends DataArchive {
     }
   }
 
-  protected void listImageNames(Collection v) {
-    super.listImageNames(v);
-    for (Enumeration e = images.keys(); e.hasMoreElements();) {
-      String name = (String) e.nextElement();
+  protected Set<String> setOfImageNames() {
+    Set<String> s = super.setOfImageNames();
+    for (String name : images.keySet()) {
       if (name.startsWith(IMAGE_DIR)) {
-        v.add(name.substring(IMAGE_DIR.length()));
+        s.add(name.substring(IMAGE_DIR.length()));
       }
     }
+    return s;
   }
 
+  /** @deprecated Use {@link #setofImageNames()} instead. */
+  @Deprecated
+  @SuppressWarnings("unchecked")
+  protected void listImageNames(Collection v) {
+    v.addAll(setOfImageNames());
+  }
 }

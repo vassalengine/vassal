@@ -50,9 +50,9 @@ import VASSAL.tools.SequenceEncoder;
  * 
  * @author Brent Easton
  * 
- * A trait that allows counters to manipulate the value of Global properties. Uses the Property manipulation
- * functionality of DynamicPropert, but applies them to Global Properties.
- * 
+ * A trait that allows counters to manipulate the value of Global properties.
+ * Uses the Property manipulation functionality of DynamicPropert, but
+ * applies them to Global Properties.
  */
 public class SetGlobalProperty extends DynamicProperty {
   protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -239,7 +239,8 @@ public class SetGlobalProperty extends DynamicProperty {
           return new DynamicKeyCommandConfigurer(m);
         }
       };
-      keyCommandListConfig.setValue(new ArrayList(Arrays.asList(m.keyCommands)));
+      keyCommandListConfig.setValue(
+        new ArrayList<DynamicKeyCommand>(Arrays.asList(m.keyCommands)));
       PropertyChangeListener l = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           boolean isNumeric = numericConfig.booleanValue().booleanValue();

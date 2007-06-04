@@ -30,6 +30,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -355,10 +357,10 @@ public class Translate extends Decorator implements TranslatablePiece {
    * be merged with other moving pieces until they've been moved.
    */
   public static class MoveExecuter implements Runnable {
-    private ArrayList<Move> moves = new ArrayList<Move>();
-    private HashSet<GamePiece> pieces = new HashSet<GamePiece>();
+    private List<Move> moves = new ArrayList<Move>();
+    private Set<GamePiece> pieces = new HashSet<GamePiece>();
     private KeyStroke stroke;
-    private ArrayList<GamePiece> innerPieces = new ArrayList<GamePiece>();
+    private List<GamePiece> innerPieces = new ArrayList<GamePiece>();
 
     public void run() {
       mover = null;

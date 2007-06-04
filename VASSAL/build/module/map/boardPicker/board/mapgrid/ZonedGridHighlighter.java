@@ -20,6 +20,7 @@ package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
@@ -33,7 +34,7 @@ import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
  */
 public class ZonedGridHighlighter extends AbstractConfigurable  {
 
-  protected ArrayList<ZoneHighlight> highlightList;
+  protected List<ZoneHighlight> highlightList;
   protected String currentColorName;
   protected Color currentColor ;
 

@@ -39,13 +39,14 @@ import VASSAL.tools.SequenceEncoder;
  * @author rkinney
  * 
  */
-public abstract class ListConfigurer extends Configurer implements PropertyChangeListener {
+public abstract class ListConfigurer extends Configurer
+                                     implements PropertyChangeListener {
   protected Box controls;
   protected Box configControls;
-  protected ArrayList<Configurer> configurers = new ArrayList<Configurer>();
+  protected List<Configurer> configurers = new ArrayList<Configurer>();
 
   public ListConfigurer(String key, String name) {
-    super(key, name, new ArrayList());
+    super(key, name, new ArrayList<Object>());
   }
 
   public ListConfigurer(String key, String name, List val) {

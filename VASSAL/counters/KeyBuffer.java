@@ -22,15 +22,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.List;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 
 
 public class KeyBuffer {
   private static KeyBuffer theBuffer;
-  private ArrayList<GamePiece> pieces;
+  private List<GamePiece> pieces;
   private BoundsTracker bounds;
-  private Comparator pieceSorter = new PieceSorter();
+  private Comparator<GamePiece> pieceSorter = new PieceSorter();
 
   private KeyBuffer() {
     pieces = new ArrayList<GamePiece>();
@@ -114,7 +115,7 @@ public class KeyBuffer {
     return Collections.enumeration(pieces);
   }
 
-  public void sort(Comparator comp) {
+  public void sort(Comparator<GamePiece> comp) {
     Collections.sort(pieces, comp);
   }
 

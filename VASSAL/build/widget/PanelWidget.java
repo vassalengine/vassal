@@ -23,6 +23,7 @@ import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -38,7 +39,7 @@ import VASSAL.configure.VisibilityCondition;
  */
 public class PanelWidget extends Widget {
   private JPanel panel;
-  private ArrayList<Widget> widgets = new ArrayList<Widget>();
+  private List<Widget> widgets = new ArrayList<Widget>();
   private int nColumns = 3;
   private boolean vertical = false;
   private boolean fixed = false;

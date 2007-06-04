@@ -19,6 +19,8 @@ package VASSAL.build.module;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.DefaultListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -46,8 +48,8 @@ import VASSAL.tools.FormattedString;
 
 public class DieManager extends AbstractConfigurable {
 
-  private HashMap<String,DieServer> servers;
-  private ArrayList<InternetDiceButton> dieButtons =
+  private Map<String,DieServer> servers;
+  private List<InternetDiceButton> dieButtons =
     new ArrayList<InternetDiceButton>();
   private String desc = "Die Manager";
   private boolean useMultiRoll;

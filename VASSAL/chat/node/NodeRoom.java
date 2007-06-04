@@ -1,4 +1,5 @@
 /*
+ * $Id: NodeRoom.java,v 1.7 2006-12-12 06:39:41 rkinney Exp $
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -14,12 +15,6 @@
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
- */
-/*
- * $Id: NodeRoom.java,v 1.7 2006-12-12 06:39:41 rkinney Exp $
- *
- * Copyright (c) 2004 by Rodney Kinney
- *
  */
 package VASSAL.chat.node;
 
@@ -82,8 +77,8 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
    * Set the members to be the list of players currently in the room
    */
   public void setMembersToCurrentPlayers() {
-    List l = getPlayerList();
-    NodePlayer[] p = (NodePlayer[]) l.toArray(new NodePlayer[l.size()]);
+    List<Player> l = getPlayerList();
+    NodePlayer[] p = l.toArray(new NodePlayer[l.size()]);
     members = new String[p.length];
     for (int i = 0; i < p.length; i++) {
       members[i] = p[i].getId();

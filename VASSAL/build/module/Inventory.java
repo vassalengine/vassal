@@ -38,6 +38,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.Box;
@@ -880,7 +882,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     // The gamepiece is stored here to allow dynamic changes of name, location
     // and so forth
     protected GamePiece piece;
-    protected ArrayList groups;
+    protected List<String> groups;
     protected int value;
     // Only used when no piece is defined
     protected String localName;
@@ -893,7 +895,8 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       this.localName = name;
     }
 
-    public Counter(GamePiece piece, ArrayList groups, int value, String format, String sortFormat) {
+    public Counter(GamePiece piece, List<String> groups, int value,
+                   String format, String sortFormat) {
       this.piece = piece;
       this.value = value;
       this.groups = groups;
@@ -920,10 +923,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     }
 
     public String[] getPath() {
-      String[] retString = new String[groups.size()];
-      for (int i = 0; i < groups.size(); i++)
-        retString[i] = (String) groups.get(i);
-      return retString;
+      return groups.toArray(new String[groups.size()]);
     }
 
     public int getValue() {
@@ -1036,10 +1036,10 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
    * @author spindler
    * 
    */
-  public class CounterNode implements Comparable {
+  public class CounterNode implements Comparable<CounterNode> {
     protected final String entry;
     protected final Counter counter;
-    protected ArrayList<CounterNode> children;
+    protected List<CounterNode> children;
     protected int level;
 
     // protected int depth;
@@ -1172,7 +1172,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
       return counter.getValue();
     }
 
-    public Iterator iterator() {
+    public Iterator<CounterNode> iterator() {
       return children.iterator();
     }
 
@@ -1201,9 +1201,8 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
     /**
      * Compare this CounterNode to another one based on the respective SortKeys.
      */
-    public int compareTo(Object node) {
-      CounterNode other = (CounterNode) node;
-      return this.toSortKey().compareTo(other.toSortKey());
+    public int compareTo(CounterNode node) {
+      return this.toSortKey().compareTo(node.toSortKey());
     }
 
     /**
@@ -1261,17 +1260,16 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
   
     /**
      * Compare two CounterNodes based on the alphanumerical order of their
-     *  SortKeys.
+     * SortKeys.
      *
      * @author spindler
      */
-    protected class Alpha extends CompareCounterNodes implements Comparator {
+    protected class Alpha extends CompareCounterNodes
+                          implements Comparator<CounterNode> {
 
-      public int compare(Object arg0, Object arg1) {
-        if (!argsOK(arg0, arg1))
-          return compareStrangeArgs(arg0, arg1);
-        CounterNode left = (CounterNode) arg0;
-        CounterNode right = (CounterNode) arg1;
+      public int compare(CounterNode left, CounterNode right) {
+        if (!argsOK(left, right))
+          return compareStrangeArgs(left, right);
   
         return left.compareTo(right);
       }  
@@ -1285,7 +1283,7 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
      * @author spindler
      */
     protected class Numerical extends CompareCounterNodes
-                              implements Comparator {
+                              implements Comparator<CounterNode> {
       protected final String regex =  "\\d+"; //$NON-NLS-1$
       protected final Pattern p = Pattern.compile(regex);
 
@@ -1322,11 +1320,9 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
        * Compare two CounterNodes based on the first integer found in their
        * SortKeys.
        */
-      public int compare(Object arg0, Object arg1) {
-        if (!argsOK(arg0, arg1))
-          return compareStrangeArgs(arg0, arg1);
-        CounterNode left = (CounterNode) arg0;
-        CounterNode right = (CounterNode) arg1;
+      public int compare(CounterNode left, CounterNode right) {
+        if (!argsOK(left, right))
+          return compareStrangeArgs(left, right);
   
          int l = getInt(left.toSortKey());
          int r = getInt(right.toSortKey());
@@ -1347,12 +1343,10 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
      * @author spindler
      */
     protected class LengthAlpha extends CompareCounterNodes
-                                implements Comparator {
-      public int compare(Object arg0, Object arg1) {
-        if (!argsOK(arg0, arg1))
-          return compareStrangeArgs(arg0, arg1);
-        CounterNode left = (CounterNode) arg0;
-        CounterNode right = (CounterNode) arg1;
+                                implements Comparator<CounterNode> {
+      public int compare(CounterNode left, CounterNode right) {
+        if (!argsOK(left, right))
+          return compareStrangeArgs(left, right);
         
         int leftLength = left.toSortKey().length();
         int rightLength = right.toSortKey().length();
@@ -1368,22 +1362,22 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
   public class CounterInventory implements TreeModel {
     // Needed for TreeModel
-    protected ArrayList<TreeModelListener> treeModelListeners =
+    protected List<TreeModelListener> treeModelListeners =
       new ArrayList<TreeModelListener>();
     // This contains shortcuts to the nodes of the tree
-    protected HashMap<String,CounterNode> inventory;
+    protected Map<String,CounterNode> inventory;
     // The start of the tree
     protected CounterNode root;
     // Text view of the tree
     protected String resultString;
     // The path determines where a counter is found in the tree
-    protected ArrayList path;
+    protected List<String> path;
     // Small speed up, only update values in tree when something has changed
     protected boolean changed;
     // Sort the tree
     protected boolean sort;
 
-    public CounterInventory(Counter c, ArrayList path, boolean sort) {
+    public CounterInventory(Counter c, List<String> path, boolean sort) {
       this.root = new CounterNode(c.getName(), c);
       this.path = path;
       this.inventory = new HashMap<String,CounterNode>();
@@ -1496,7 +1490,6 @@ public class Inventory extends AbstractConfigurable implements GameComponent,Pla
 
     public void valueForPathChanged(TreePath path, Object newValue) {
       throw new RuntimeException("No idea what to do!");
-
     }
   }
 }

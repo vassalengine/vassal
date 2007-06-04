@@ -25,6 +25,7 @@ package VASSAL.chat.node;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import VASSAL.chat.HttpRequestWrapper;
@@ -60,7 +61,7 @@ public class AsynchronousServerNode extends ServerNode {
 
   public static class ReportContentsThread extends Thread {
     private AsynchronousServerNode server;
-    private HashSet<Node> changed;
+    private Set<Node> changed;
     private long lastGlobalUpdate;
     private static final long GLOBAL_UPDATE_INTERVAL = 1000L * 120L;
 

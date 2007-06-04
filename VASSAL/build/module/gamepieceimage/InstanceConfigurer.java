@@ -24,7 +24,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -68,7 +68,7 @@ public class InstanceConfigurer extends Configurer {
   }
 
   public String getValueString() {
-    return PropertiesToString((ArrayList) value);
+    return PropertiesToString((List<ItemInstance>) value);
   }
   
   public ArrayList getValueArrayList() {
@@ -110,18 +110,17 @@ public class InstanceConfigurer extends Configurer {
     return panel;
   }
 
-  public static String PropertiesToString(ArrayList props) {
+  public static String PropertiesToString(List<ItemInstance> props) {
     String[] p = new String[props.size()];
-    Iterator e = props.iterator();
     int i = 0;
-    while (e.hasNext()) {
-      ItemInstance prop = (ItemInstance) e.next();
+    for (ItemInstance prop : props) {
       p[i++] = prop.encode();
     }
     return StringArrayConfigurer.arrayToString(p);
   }
   
-  public static ArrayList StringToProperties(String s, GamePieceImage defn) {
+  public static List<ItemInstance> StringToProperties(String s,
+                                                      GamePieceImage defn) {
     ArrayList<ItemInstance> props = new ArrayList<ItemInstance>();
     String[] p = StringArrayConfigurer.stringToArray(s);
     for (int i = 0; i < p.length; i++) {

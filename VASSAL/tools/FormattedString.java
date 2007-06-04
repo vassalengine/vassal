@@ -8,6 +8,7 @@
 package VASSAL.tools;
 
 import java.util.HashMap;
+import java.util.Map;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.GamePiece;
@@ -15,7 +16,7 @@ import VASSAL.counters.GamePiece;
 public class FormattedString {
 
   protected String formatString;
-  protected HashMap<String,String> props = new HashMap<String,String>();
+  protected Map<String,String> props = new HashMap<String,String>();
   protected PropertySource defaultProperties;
 
   public FormattedString() {

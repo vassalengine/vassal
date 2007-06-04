@@ -32,6 +32,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.swing.JMenuItem;
@@ -58,11 +60,9 @@ import VASSAL.tools.Obfuscator;
  * Only one game can be open at once.
  * @see GameModule#getGameState */
 public class GameState implements CommandEncoder {
-  protected HashMap<String,GamePiece> pieces = new HashMap<String,GamePiece>();
-  protected ArrayList<GameComponent> gameComponents =
-    new ArrayList<GameComponent>();
-  protected ArrayList<GameSetupStep> setupSteps =
-    new ArrayList<GameSetupStep>();
+  protected Map<String,GamePiece> pieces = new HashMap<String,GamePiece>();
+  protected List<GameComponent> gameComponents = new ArrayList<GameComponent>();
+  protected List<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
   protected JMenuItem loadGame, saveGame, newGame, closeGame;
   protected String lastSave;
 

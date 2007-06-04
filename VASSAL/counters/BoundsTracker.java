@@ -19,6 +19,7 @@
 package VASSAL.counters;
 
 import java.util.HashSet;
+import java.util.Set;
 import VASSAL.build.module.Map;
 
 /**
@@ -28,7 +29,7 @@ import VASSAL.build.module.Map;
  * added pieces belonged.
  */
 public class BoundsTracker {
-  private HashSet<Map> maps;
+  private Set<Map> maps;
 
   public BoundsTracker() {
     maps = new HashSet<Map>();

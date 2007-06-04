@@ -19,6 +19,7 @@
 package VASSAL.chat.node;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import VASSAL.i18n.Resources;
 
@@ -26,7 +27,7 @@ import VASSAL.i18n.Resources;
  * Limits connections to the server to one per registered username
  */
 public class ConnectionLimiter {
-  private HashMap<String,SocketHandler> connections =
+  private Map<String,SocketHandler> connections =
     new HashMap<String,SocketHandler>();
 
   public synchronized void register(String name, SocketHandler handler) {

@@ -59,7 +59,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
   protected PropertyExpression propertyMatch = new PropertyExpression();
   protected KeyStroke[] watchKeys = new KeyStroke[0];
   protected KeyStroke[] actionKeys = new KeyStroke[0];
-  protected Set triggeredKeys; // Safeguard against infinite loops
+  protected Set<KeyStroke> triggeredKeys; // Safeguard against infinite loops
 
   public TriggerAction() {
     this(ID, null);
@@ -120,8 +120,9 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
 
   public Command myKeyEvent(KeyStroke stroke) {
     if (triggeredKeys == null) {
-      // Keep track of the keystrokes that we've already responded to within this event loop
-      triggeredKeys = new HashSet();
+      // Keep track of the keystrokes that we've already responded to
+      // within this event loop
+      triggeredKeys = new HashSet<KeyStroke>();
       Runnable runnable = new Runnable() {
         public void run() {
           triggeredKeys = null;
@@ -142,8 +143,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
     }
 
     for (int i = 0; i < watchKeys.length && !seen; i++) {
-      if (stroke.equals(watchKeys[i])
-          && !triggeredKeys.contains(watchKeys[i])) {
+      if (stroke.equals(watchKeys[i]) &&
+          !triggeredKeys.contains(watchKeys[i])) {
         seen = true;
         triggeredKeys.add(watchKeys[i]);
       }

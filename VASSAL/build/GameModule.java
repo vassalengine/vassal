@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -139,9 +140,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   
   protected WizardSupport wizardSupport = new WizardSupport();
 
-  protected ArrayList<KeyStrokeSource> keyStrokeSources =
+  protected List<KeyStrokeSource> keyStrokeSources =
     new ArrayList<KeyStrokeSource>();
-  protected ArrayList<KeyStrokeListener> keyStrokeListeners =
+  protected List<KeyStrokeListener> keyStrokeListeners =
     new ArrayList<KeyStrokeListener>();
   protected CommandEncoder[] commandEncoders = new CommandEncoder[0];
 

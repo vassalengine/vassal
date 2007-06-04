@@ -21,6 +21,7 @@ package VASSAL.chat.node;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
@@ -162,7 +163,7 @@ public class ServerNode extends Node {
 
   private static class SendContentsTask extends TimerTask {
 // FIXME: should modules be wrapped by Collections.synchronizedMap()?
-    private HashSet<Node> modules = new HashSet<Node>();
+    private Set<Node> modules = new HashSet<Node>();
 
     public void markChanged(Node module) {
       synchronized (modules) {

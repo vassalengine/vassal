@@ -21,6 +21,7 @@ package VASSAL.build;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -36,7 +37,7 @@ import VASSAL.i18n.Translatable;
  * handled automatically.
  */
 public abstract class AbstractBuildable implements Buildable, ValidityChecker {
-	protected ArrayList<Buildable> buildComponents = new ArrayList<Buildable>();
+	protected List<Buildable> buildComponents = new ArrayList<Buildable>();
 
 	protected ValidityChecker validator; // Sub-classes can set this
 

@@ -21,6 +21,7 @@ package VASSAL.build.module;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -29,11 +30,12 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
-public class EventLog extends AbstractBuildable implements CommandEncoder, GameComponent {
+public class EventLog extends AbstractBuildable
+                      implements CommandEncoder, GameComponent {
   public static final String EVENT_LIST = "Events"; //$NON-NLS-1$
 
-  private ArrayList<Event> myEvents;
-  private ArrayList<Event> savedEvents;
+  private List<Event> myEvents;
+  private List<Event> savedEvents;
 
   public void addTo(Buildable b) {
     GameModule mod = GameModule.getGameModule();

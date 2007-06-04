@@ -32,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JButton;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -47,7 +48,9 @@ import VASSAL.configure.VisibilityCondition;
 /**
  * A Hexgrid is a map grid composed of hexes.
  */
-public class HexGrid extends AbstractConfigurable implements GeometricGrid, GridEditor.EditableGrid {
+public class HexGrid extends AbstractConfigurable
+                     implements GeometricGrid,
+                                GridEditor.EditableGrid {
   protected Point origin = new Point(0, 32);
 
   protected double dx;
@@ -63,7 +66,7 @@ public class HexGrid extends AbstractConfigurable implements GeometricGrid, Grid
   protected boolean cornersLegal = false;
   protected Color color = Color.black;
   protected boolean sideways = false;
-  protected HashMap<Integer,Area> shapeCache = new HashMap<Integer,Area>();
+  protected Map<Integer,Area> shapeCache = new HashMap<Integer,Area>();
   protected HexGridEditor gridEditor;
 
   public static final String X0 = "x0";

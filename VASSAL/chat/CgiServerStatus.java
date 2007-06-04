@@ -23,6 +23,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.TimeZone;
@@ -42,7 +44,7 @@ public class CgiServerStatus implements ServerStatus {
   public static final String LAST_WEEK = "Server.last_week"; //$NON-NLS-1$
   public static final String LAST_MONTH = "Server.last_month"; //$NON-NLS-1$
   
-  private HashMap<String,Long> timeRanges = new HashMap<String,Long>();
+  private Map<String,Long> timeRanges = new HashMap<String,Long>();
   
   private String[] times = new String[]{
     Resources.getString(LAST_DAY),
@@ -51,7 +53,7 @@ public class CgiServerStatus implements ServerStatus {
   };
 
   private HttpRequestWrapper request;
-  private ArrayList<String> cachedQuery;
+  private List<String> cachedQuery;
 
   public CgiServerStatus() {
     request = new HttpRequestWrapper("http://www.vassalengine.org/util/"); //$NON-NLS-1$
@@ -149,7 +151,7 @@ public class CgiServerStatus implements ServerStatus {
     return entry;
   }
 
-  private ArrayList<String> retrieveHistory() {
+  private List<String> retrieveHistory() {
     if (cachedQuery == null) {
       try {
         cachedQuery = Collections.list(

@@ -30,11 +30,11 @@ import VASSAL.build.module.PlayerRoster;
  * 
  */
 public class SpecifiedSideAccess implements PieceAccess {
-	private List sides;
+	private List<String> sides;
 
-	public SpecifiedSideAccess(List sides) {
-		this.sides = Collections.unmodifiableList(sides);
-	}
+  public SpecifiedSideAccess(List<String> sides) {
+    this.sides = Collections.unmodifiableList(sides);
+  }
 
 	public String getCurrentPlayerId() {
 		return PlayerRoster.getMySide();
@@ -52,7 +52,7 @@ public class SpecifiedSideAccess implements PieceAccess {
 	  }
   }
 
-	public List getSides() {
+	public List<String> getSides() {
 		return sides;
 	}
 
