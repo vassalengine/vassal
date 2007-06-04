@@ -1217,11 +1217,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		int dx = 0, dy = 0;
 		if (p.x < dist && p.x >= 0)
 			dx = -1;
-		if (p.x >= scroll.getViewport().getSize().width - dist && p.x < scroll.getViewport().getSize().width)
+		if (p.x >= scroll.getViewport().getWidth() - dist && p.x < scroll.getViewport().getWidth())
 			dx = 1;
 		if (p.y < dist && p.y >= 0)
 			dy = -1;
-		if (p.y >= scroll.getViewport().getSize().height - dist && p.y < scroll.getViewport().getSize().height)
+		if (p.y >= scroll.getViewport().getHeight() - dist && p.y < scroll.getViewport().getHeight())
 			dy = 1;
 		scroll_dx = dx;
 		scroll_dy = dy;
@@ -1469,15 +1469,15 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
 	protected void clearMapBorder(Graphics g) {
 		if (clearFirst || boards.isEmpty()) {
-			g.clearRect(0, 0, theMap.getSize().width, theMap.getSize().height);
+			g.clearRect(0, 0, theMap.getWidth(), theMap.getHeight());
 			clearFirst = false;
 		}
 		else {
 			Dimension buffer = new Dimension((int) (getZoom() * edgeBuffer.width), (int) (getZoom() * edgeBuffer.height));
 			g.clearRect(0, 0, buffer.width, theMap.getSize().height);
-			g.clearRect(0, 0, theMap.getSize().width, buffer.height);
-			g.clearRect(theMap.getSize().width - buffer.width, 0, buffer.width, theMap.getSize().height);
-			g.clearRect(0, theMap.getSize().height - buffer.height, theMap.getSize().width, buffer.height);
+			g.clearRect(0, 0, theMap.getWidth(), buffer.height);
+			g.clearRect(theMap.getWidth() - buffer.width, 0, buffer.width, theMap.getHeight());
+			g.clearRect(0, theMap.getHeight() - buffer.height, theMap.getWidth(), buffer.height);
 		}
 	}
 
@@ -1654,7 +1654,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 				int height = ((Integer) GameModule.getGameModule().getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT)).intValue();
 				if (height > 0) {
 					Container top = mainWindowDock.getTopLevelAncestor();
-					top.setSize(top.getSize().width, height);
+					top.setSize(top.getWidth(), height);
 				}
 				if (toolBar.getParent() == null) {
 					GameModule.getGameModule().getToolBar().addSeparator();
@@ -1690,9 +1690,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			boards.clear();
 			System.gc();
 			if (mainWindowDock != null) {
-				if (mainWindowDock.getHideableComponent().isVisible()) {
+				if (mainWindowDock.getHideableComponent().isShowing()) {
 					GameModule.getGameModule().getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
-							.setValue(new Integer(mainWindowDock.getTopLevelAncestor().getSize().height));
+							.setValue(new Integer(mainWindowDock.getTopLevelAncestor().getHeight()));
 				}
 				mainWindowDock.hideComponent();
 				toolBar.setVisible(false);
@@ -1868,7 +1868,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	public void centerAt(Point p, int dx, int dy) {
 		if (scroll != null) {
 			p = componentCoordinates(p);
-			p.translate(-scroll.getViewport().getSize().width / 2, -scroll.getViewport().getSize().height / 2);
+			p.translate(-scroll.getViewport().getWidth() / 2, -scroll.getViewport().getHeight() / 2);
 			Rectangle r = new Rectangle(p, scroll.getViewport().getSize());
 			r.width = dx > r.width ? 0 : r.width - dx;
 			r.height = dy > r.height ? 0 : r.height - dy;
