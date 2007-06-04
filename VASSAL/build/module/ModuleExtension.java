@@ -32,7 +32,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+
 import org.w3c.dom.Document;
+
 import VASSAL.Info;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
@@ -41,6 +43,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
@@ -56,9 +59,12 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
   public static final String BASE_MODULE_VERSION = "moduleVersion"; //$NON-NLS-1$
   public static final String VERSION = "version"; //$NON-NLS-1$
   public static final String VASSAL_VERSION_CREATED = "vassalVersion"; //$NON-NLS-1$
+  // NB The following key MUST sort before the other keys for universal modules to load
+  public static final String UNIVERSAL = "anyModule"; //$NON-NLS-1$ 
 
   private DataArchive archive;
   private String version = "0.0"; //$NON-NLS-1$
+  protected boolean universal = false;
 
   private String lastSave;
   private String vassalVersionCreated;
@@ -106,7 +112,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
       lastSave = buildString();
     }
   }
-
+  
   public Command getRestoreCommand() {
     return new RegCmd(getName(), version);
   }
@@ -115,7 +121,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
   }
 
   public String[] getAttributeNames() {
-    return new String[]{VERSION, BASE_MODULE_NAME, BASE_MODULE_VERSION, VASSAL_VERSION_CREATED};
+    return new String[]{UNIVERSAL, VERSION, BASE_MODULE_NAME, BASE_MODULE_VERSION, VASSAL_VERSION_CREATED};
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -167,18 +173,21 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
     else if (VASSAL_VERSION_CREATED.equals(key)) {
       s = vassalVersionCreated;
     }
+    else if (UNIVERSAL.equals(key)) {
+      s = String.valueOf(universal);
+    }
     return s;
   }
 
   public void setAttribute(String key, Object value) {
     if (BASE_MODULE_NAME.equals(key)) {
-      if (!GameModule.getGameModule().getGameName().equals(value)) {
+      if (!universal && !GameModule.getGameModule().getGameName().equals(value)) {
         throw new IllegalBuildException(Resources.getString("ModuleExtension.extension_built", getName(), (String) value)); //$NON-NLS-1$
       }
     }
     else if (BASE_MODULE_VERSION.equals(key)) {
       String version = (String) value;
-      if (Info.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
+      if (!universal && Info.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
         GameModule.getGameModule().warn(
             Resources.getString("ModuleExtension.wrong_module_version", 
                 new String[] {getName(), version, GameModule.getGameModule().getGameVersion(), 
@@ -195,6 +204,12 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
     }
     else if (VERSION.equals(key)) {
       version = (String) value;
+    }
+    else if (UNIVERSAL.equals(key)) {
+      if (value instanceof String) {
+        value = new Boolean((String) value);
+      }
+      universal = ((Boolean) value).booleanValue();
     }
   }
 
@@ -260,14 +275,19 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
   public Action getEditAction(final JDialog d) {
     if (editAction == null) {
       d.setName(getName());
-      final StringConfigurer config = new StringConfigurer(VERSION, "Version", version);
+      final StringConfigurer config = new StringConfigurer(VERSION, "Version:  ", version);
       d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
       d.getContentPane().add(config.getControls());
+      
+      final BooleanConfigurer uconfig = new BooleanConfigurer(UNIVERSAL, "Allow loading with any module?", universal);
+      d.getContentPane().add(uconfig.getControls());
+      
       Box b = Box.createHorizontalBox();
       JButton ok = new JButton("Save");
       ok.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           setAttribute(VERSION, config.getValue());
+          setAttribute(UNIVERSAL, uconfig.getValue());
           d.dispose();
         }
       });
