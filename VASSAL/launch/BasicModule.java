@@ -240,12 +240,6 @@ protected void initServer() {
     warn(mess);
     System.err.println("-- " + mess); //$NON-NLS-1$
     frame.setTitle(gameName);
-    if (getArchiveWriter() == null) {
-      getWizardSupport().showWelcomeWizard();
-    }
-    else {
-      frame.setVisible(true);
-    }
   }
 
   protected <T> void ensureComponent(Class<T> componentClass) {

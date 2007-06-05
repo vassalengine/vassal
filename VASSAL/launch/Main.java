@@ -188,6 +188,7 @@ public class Main {
 
   protected void newModule() throws IOException {
     GameModule.init(new BasicModule(new ArchiveWriter((String) null), globalPrefs));
+    GameModule.getGameModule().getFrame().setVisible(true);
     new VASSAL.configure.ModuleEditWindow().setVisible(true);
   }
 
@@ -195,6 +196,7 @@ public class Main {
     ArchiveWriter archive = new ArchiveWriter(new ZipFile(moduleFile.getPath()));
     BasicModule mod = new BasicModule(archive, globalPrefs);
     GameModule.init(mod);
+    GameModule.getGameModule().getFrame().setVisible(true);
     new VASSAL.configure.ModuleEditWindow().setVisible(true);
   }
 
@@ -330,7 +332,11 @@ public class Main {
                 try {
                   loadModule(archive, true, properties);
                   if (saveFile != null) {
+                    GameModule.getGameModule().getFrame().setVisible(true);
                     GameModule.getGameModule().getGameState().loadGameInBackground(new File(saveFile));
+                  }
+                  else {
+                    GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
                   }
                 }
                 catch (IOException e) {
@@ -451,6 +457,7 @@ public class Main {
         f.dispose();
         try {
           GameModule.init(new BasicModule(initArchive(tourMod), globalPrefs));
+          GameModule.getGameModule().getFrame().setVisible(true);
           GameModule.getGameModule().getGameState().loadGameInBackground(tourLog);
         }
         catch (Exception e) {
@@ -570,6 +577,7 @@ public class Main {
             if (f != null) {
               loadModule(initArchive(f), true, properties);
               if (GameModule.getGameModule() != null) {
+                GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
                 dispose();
               }
             }
@@ -650,6 +658,7 @@ public class Main {
             File f = chooseFile();
             if (f != null) {
               loadModule(initArchive(f), false, properties);
+              GameModule.getGameModule().getFrame().setVisible(true);
               loadModule.setEnabled(false);
               loadExtension.setEnabled(true);
               newExtension.setEnabled(true);
