@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-	private static final String VERSION = "3.0b1"; //$NON-NLS-1$
+	private static final String VERSION = "3.0b2"; //$NON-NLS-1$
 
 	private static File homeDir;
 
