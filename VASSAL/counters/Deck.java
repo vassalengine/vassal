@@ -113,7 +113,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected boolean faceDown;
   protected int dragCount = 0;
   protected int maxStack = 10;
-  protected CountExpression[] countExpressions;
+  protected CountExpression[] countExpressions = new CountExpression[0];
   protected boolean expressionCounting = false;
   protected List<GamePiece> nextDraw = null;
   protected KeyCommand[] commands;
@@ -300,7 +300,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     reshuffleCommand = st.nextToken(""); //$NON-NLS-1$
     reshuffleTarget = st.nextToken(""); //$NON-NLS-1$
     reshuffleMsgFormat = st.nextToken(""); //$NON-NLS-1$
-    deckName = st.nextToken("Deck");
+    setDeckName(st.nextToken("Deck"));
     shuffleMsgFormat = st.nextToken(""); //$NON-NLS-1$
     reverseMsgFormat = st.nextToken(""); //$NON-NLS-1$
     faceDownMsgFormat = st.nextToken(""); //$NON-NLS-1$
