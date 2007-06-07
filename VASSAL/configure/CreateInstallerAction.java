@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.swing.AbstractAction;
@@ -69,7 +68,7 @@ public class CreateInstallerAction extends AbstractAction {
                                                    ChooseHeapSizeScreen.class, ChooseVersionScreen.class, Constants.class, FailureScreen.class,
                                                    InstallJnlpScreen.class, InstallProgressScreen.class, InstallModuleScreen.class, InstallWizard.class,
                                                    Screen.class, SuccessScreen.class, WizardDialog.class, Resources.class,
-                                                   Resources.VassalPropertyClassLoader.class};
+                                                   Resources.VassalPropertyClassLoader.class, Info.class};
   private Frame parent;
   public static final String I18N_PROPERTIES = "VASSAL/i18n/VASSAL.properties"; //$NON-NLS-1$
   private static final String[] HEAP_SIZES = new String[]{"256M", "512M", "758M", "1024M", "1536M"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
@@ -178,8 +177,7 @@ public class CreateInstallerAction extends AbstractAction {
     p.put(ChooseDirScreen.NEXT_SCREEN, InstallModuleScreen.class.getName());
     p.put(Constants.HEAP_SIZE, heapSize);
     String jnlpURL = "http://www.vassalengine.org/ws/vassal-"; //$NON-NLS-1$
-    StringTokenizer st = new StringTokenizer(Info.getVersion(), ".b"); //$NON-NLS-1$
-    jnlpURL += st.nextToken() + "." + st.nextToken() + ".jnlp"; //$NON-NLS-1$ //$NON-NLS-2$
+    jnlpURL += Info.getMinorVersion() + ".jnlp"; //$NON-NLS-1$ //$NON-NLS-2$
     p.put(Constants.JNLP_URL, jnlpURL);
     File f = new File(GameModule.getGameModule().getDataArchive().getArchive().getName());
     p.put(Constants.MODULE_FILE, f.getName());
