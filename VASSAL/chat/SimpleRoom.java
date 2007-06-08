@@ -97,6 +97,8 @@ public class SimpleRoom implements Room {
     }
   }
 
+  /** @deprecated Use {@link #getPlayerList()} instead. */
+  @Deprecated
   public Iterator<Player> getPlayers() {
     return players.iterator();
   }
