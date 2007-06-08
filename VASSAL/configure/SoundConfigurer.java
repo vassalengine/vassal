@@ -97,9 +97,12 @@ public class SoundConfigurer extends Configurer {
         });
         controls.add(b);
         textField = new JTextField();
-        textField.setMaximumSize(new Dimension(textField.getMaximumSize().width, textField.getPreferredSize().height));
+        textField.setMaximumSize(
+          new Dimension(textField.getMaximumSize().width,
+                        textField.getPreferredSize().height));
         textField.setEditable(false);
-        textField.setText(DEFAULT.equals(clipName) ? defaultResource : clipName);
+        textField.setText(DEFAULT.equals(clipName) ?
+                          defaultResource : clipName);
         controls.add(textField);
       }
     }
@@ -163,7 +166,6 @@ public class SoundConfigurer extends Configurer {
   }
 
   public void chooseClip() {
-    // FIXME: add a file filter here?
     FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.setFileFilter(new AudioFileFilter());    
 

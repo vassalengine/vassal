@@ -24,6 +24,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
@@ -34,8 +35,7 @@ import javax.swing.JWindow;
 public class SplashScreen extends JWindow {
   private static final long serialVersionUID = 1L;
 
-  private static ArrayList<SplashScreen> instances =
-    new ArrayList<SplashScreen>();
+  private static List<SplashScreen> instances = new ArrayList<SplashScreen>();
 
   public SplashScreen(Image im) {
     instances.add(this);

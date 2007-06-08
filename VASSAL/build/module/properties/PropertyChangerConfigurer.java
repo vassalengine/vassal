@@ -22,6 +22,7 @@ import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
@@ -31,8 +32,9 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * Configurer instance that allows a module editor to specify a PropertyChanger, i.e. the way in which a dynamic
- * property will be updated by a player during a game
+ * Configurer instance that allows a module editor to specify a
+ * PropertyChanger, i.e. the way in which a dynamic property will be
+ * updated by a player during a game
  * 
  * @author rkinney
  * 
@@ -46,11 +48,11 @@ public class PropertyChangerConfigurer extends Configurer {
   protected static final char PROMPT_CODE = 'R';
   protected static final char ENUM_CODE = 'E';
   protected static final char INCR_CODE = 'I';
-  protected static final HashMap<Class,Character> typeToCode =
+  protected static final Map<Class,Character> typeToCode =
     new HashMap<Class,Character>();
-  protected static final HashMap<Class,String> typeToDescription =
+  protected static final Map<Class,String> typeToDescription =
     new HashMap<Class,String>();
-  protected static final HashMap<String,Character> descriptionToCode =
+  protected static final Map<String,Character> descriptionToCode =
     new HashMap<String,Character>();
   static {
     typeToCode.put(PropertySetter.class, new Character(PLAIN_CODE));

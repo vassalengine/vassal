@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -41,11 +42,9 @@ public class LocaleConfigurer extends Configurer {
 
   protected static final String ANY_COUNTRY = "<Any Country>";
   protected Box panel;
-  protected static HashMap<String,String> languages =
-    new HashMap<String,String>();
+  protected static Map<String,String> languages = new HashMap<String,String>();
   protected static String[] languageList;
-  protected static HashMap<String,String> countries =
-    new HashMap<String,String>();
+  protected static Map<String,String> countries = new HashMap<String,String>();
   protected static String[] countryList;
 
   protected JComboBox langBox;

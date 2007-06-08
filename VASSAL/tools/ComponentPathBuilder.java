@@ -19,6 +19,7 @@
 package VASSAL.tools;
 
 import java.util.ArrayList;
+import java.util.List;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 
@@ -75,7 +76,7 @@ public class ComponentPathBuilder {
 
   private void addToPath(Configurable parent,
                          SequenceEncoder.Decoder st,
-                         ArrayList<Configurable> path)
+                         List<Configurable> path)
                          throws PathFormatException {
     if (st.hasMoreTokens()) {
       String id = st.nextToken();

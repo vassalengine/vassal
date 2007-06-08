@@ -107,7 +107,7 @@ public class BoardPicker implements ActionListener,
   protected String addColumnButtonText = Resources.getString("BoardPicker.add_column"); //$NON-NLS-1$
   protected String boardPrompt = Resources.getString("BoardPicker.select_board"); //$NON-NLS-1$
   protected String defaultSetup;
-  protected ArrayList<JButton> multipleButtons;
+  protected List<JButton> multipleButtons;
   public static final String SCALE = "slotScale"; //$NON-NLS-1$
   public static final String SLOT_HEIGHT = "slotHeight"; //$NON-NLS-1$
   public static final String SLOT_WIDTH = "slotWidth"; //$NON-NLS-1$

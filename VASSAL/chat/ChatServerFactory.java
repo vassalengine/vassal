@@ -19,6 +19,7 @@
 package VASSAL.chat;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Properties;
 public abstract class ChatServerFactory {
   public static final String TYPE_KEY = "type"; //$NON-NLS-1$
   public static final String DEFAULT_TYPE = "default"; //$NON-NLS-1$
-  private static HashMap<String, ChatServerFactory> factories =
+  private static Map<String, ChatServerFactory> factories =
     new HashMap<String,ChatServerFactory>();
 
   public abstract ChatServerConnection buildServer(Properties param);

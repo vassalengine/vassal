@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -42,9 +43,9 @@ import VASSAL.launch.Main;
  * with the {@link #addFile} and {@link #addImage} methods.
  */
 public class ArchiveWriter extends DataArchive {
-  private HashMap<String,Object> images = new HashMap<String,Object>();
-  private HashMap<String,Object> sounds = new HashMap<String,Object>();
-  private HashMap<String,Object> files = new HashMap<String,Object>();
+  private Map<String,Object> images = new HashMap<String,Object>();
+  private Map<String,Object> sounds = new HashMap<String,Object>();
+  private Map<String,Object> files = new HashMap<String,Object>();
   private String archiveName;
 
   /**
@@ -183,7 +184,7 @@ public class ArchiveWriter extends DataArchive {
     return stream;
   }
 
-  private InputStream getAddedStream(HashMap<String,Object> table,
+  private InputStream getAddedStream(Map<String,Object> table,
                                      String name) throws IOException {
     InputStream stream = null;
     Object file = table.get(name);
@@ -279,7 +280,7 @@ public class ArchiveWriter extends DataArchive {
     archive = new ZipFile(archiveName);
   }
 
-  private void writeEntries(HashMap<String,Object> h, int method,
+  private void writeEntries(Map<String,Object> h, int method,
                             ZipOutputStream out) throws IOException {
     byte[] contents;
     ZipEntry entry;

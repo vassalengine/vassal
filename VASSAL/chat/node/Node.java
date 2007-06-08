@@ -143,7 +143,7 @@ public class Node implements MsgSender {
     return l.toArray(new Node[l.size()]);
   }
 
-  private void addLeaves(Node base, ArrayList<Node> l) {
+  private void addLeaves(Node base, List<Node> l) {
     if (base.isLeaf()) {
       l.add(base);
     }

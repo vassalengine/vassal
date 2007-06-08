@@ -211,7 +211,7 @@ public class MovementReporter {
   public static class MoveSummary {
     private String oldMapId, newMapId;
     private Point oldPosition, newPosition;
-    private ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
+    private List<GamePiece> pieces = new ArrayList<GamePiece>();
 
     public MoveSummary(AddPiece c) {
       GamePiece target = c.getTarget();

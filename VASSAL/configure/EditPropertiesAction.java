@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.AbstractAction;
 
 import VASSAL.build.Configurable;
@@ -37,7 +38,7 @@ public class EditPropertiesAction extends AbstractAction {
 
   protected Configurable target;
   protected HelpWindow helpWindow;
-  protected static HashMap<Configurable,PropertiesWindow> openWindows =
+  protected static Map<Configurable,PropertiesWindow> openWindows =
     new HashMap<Configurable,PropertiesWindow>();
   protected Frame dialogOwner;
   protected ConfigureTree tree;

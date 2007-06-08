@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -69,13 +70,11 @@ import VASSAL.configure.BooleanConfigurer;
 public class DataArchive extends SecureClassLoader {
   protected ZipFile archive = null;
   protected List<DataArchive> extensions = new ArrayList<DataArchive>();
-  private HashMap<String,Image> imageCache =
-    new HashMap<String,Image>();
-  private HashMap<String,AudioClip> soundCache =
-    new HashMap<String,AudioClip>();
-  private HashMap<TransformedCacheKey,Image> transImageCache =
+  private Map<String,Image> imageCache = new HashMap<String,Image>();
+  private Map<String,AudioClip> soundCache = new HashMap<String,AudioClip>();
+  private Map<TransformedCacheKey,Image> transImageCache =
     new HashMap<TransformedCacheKey,Image>();
-  private HashMap<String,ImageSource> imageSources =
+  private Map<String,ImageSource> imageSources =
     new HashMap<String,ImageSource>();
   protected String[] imageNames;
   public static final String IMAGE_DIR = "images/";

@@ -90,8 +90,6 @@ public class Main {
   protected boolean builtInModule;
   protected Prefs globalPrefs;
   public Main(final String[] args) {
-    System.setProperty("swing.aatext", "true");   //$NON-NLS-1$ //$NON-NLS-2$
-    System.setProperty("swing.boldMetal", "false");   //$NON-NLS-1$ //$NON-NLS-2$
     initProperties();
     System.err.println("-- OS " + System.getProperty("os.name"));   //$NON-NLS-1$ //$NON-NLS-2$
     System.err.println("-- Java version " + System.getProperty("java.version"));   //$NON-NLS-1$ //$NON-NLS-2$
@@ -235,6 +233,10 @@ public class Main {
         && System.getProperty("proxyPort") != null) {  //$NON-NLS-1$
       System.setProperty("http.proxyPort", System.getProperty("proxyPort"));   //$NON-NLS-1$ //$NON-NLS-2$
     }
+
+    System.setProperty("swing.aatext", "true");  //$NON-NLS-1$ //$NON-NLS-2$
+    System.setProperty("swing.boldMetal", "false");  //$NON-NLS-1$ //$NON-NLS-2$
+    System.setProperty("awt.useSystemAAFontSettings", "on");  //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   protected void showLicense() {

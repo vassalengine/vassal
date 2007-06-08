@@ -150,7 +150,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 		return l;
   }
 
-	private <T> void addComponents(Class<T> target, ArrayList<T> l) {
+	private <T> void addComponents(Class<T> target, List<T> l) {
 		if (target.isInstance(this)) {
 			l.add(target.cast(this));
 		}

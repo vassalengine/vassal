@@ -64,11 +64,26 @@ import VASSAL.tools.FileChooser;
 public class CreateInstallerAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private static final Class[] installerClasses = {HttpRequestWrapper.class, ChooseDirScreen.class, ChooseDirScreen.DirectoryFilter.class,
-                                                   ChooseHeapSizeScreen.class, ChooseVersionScreen.class, Constants.class, FailureScreen.class,
-                                                   InstallJnlpScreen.class, InstallProgressScreen.class, InstallModuleScreen.class, InstallWizard.class,
-                                                   Screen.class, SuccessScreen.class, WizardDialog.class, Resources.class,
-                                                   Resources.VassalPropertyClassLoader.class, Info.class};
+  private static final Class[] installerClasses = {
+    HttpRequestWrapper.class,
+    ChooseDirScreen.class,
+    ChooseDirScreen.DirectoryFilter.class,
+    ChooseHeapSizeScreen.class,
+    ChooseVersionScreen.class,
+    Constants.class,
+    FailureScreen.class,
+    InstallJnlpScreen.class,
+    InstallProgressScreen.class,
+    InstallModuleScreen.class,
+    InstallWizard.class,
+    Screen.class,
+    SuccessScreen.class,
+    WizardDialog.class,
+    Resources.class,
+    Resources.VassalPropertyClassLoader.class,
+    Info.class
+  };
+
   private Frame parent;
   public static final String I18N_PROPERTIES = "VASSAL/i18n/VASSAL.properties"; //$NON-NLS-1$
   private static final String[] HEAP_SIZES = new String[]{"256M", "512M", "758M", "1024M", "1536M"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
