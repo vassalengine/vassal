@@ -642,7 +642,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
   
   protected String getLocalizedCommonName(int i) {
-    String name = commonName[i]+"";
+    String name = commonName[i];
+    if (name == null) return null;
     String translation = getTranslation(strip(name));
     if (name.startsWith("+")) {
       return "+" + translation;
