@@ -90,6 +90,10 @@ public class Marker extends Decorator implements EditablePiece {
     }
     return super.getProperty(key);
   }
+  
+  public Object getLocalizedProperty(Object key) {
+    return getProperty(key);
+  }
 
   public void setProperty(Object key, Object value) {
     for (int i = 0; i < keys.length; ++i) {

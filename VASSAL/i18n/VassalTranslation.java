@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
@@ -80,18 +81,23 @@ public class VassalTranslation extends Translation {
     initkeys();
     return allKeys;
   }
+  
+  public Class[] getAttributeTypes() {
+    initkeys();
+    Class[] types = new Class[allKeys.length];
+    Arrays.fill(types, String.class);
+    return types;
+  }
+
+
 
   protected void initkeys() {
     if (allKeys == null) {
       ArrayList<String> keyList = new ArrayList<String>();
-// FIXME: What is the purpose of descList? Looks like we build it but then
-// throw it away.
-      ArrayList<String> descList = new ArrayList<String>();
       for (Enumeration<String> e = Resources.getVassalKeys();
            e.hasMoreElements(); ) {
         String s = e.nextElement();
         keyList.add(s);
-        descList.add(Resources.getVassalString(s));
       }
       allKeys = keyList.toArray(new String[keyList.size()]);
     }
