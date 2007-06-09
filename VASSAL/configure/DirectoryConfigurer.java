@@ -29,7 +29,6 @@ public class DirectoryConfigurer extends FileConfigurer {
 
   public DirectoryConfigurer(String key, String name) {
     super(key, name);
-    setValue(new File(System.getProperty("user.home")));
   }
   
   protected FileChooser initFileChooser() {

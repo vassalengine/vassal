@@ -31,7 +31,7 @@ import VASSAL.tools.FileChooser;
  * 
  */
 public class AudioClipConfigurer extends FileConfigurer {
-  protected static FileConfigurer resourceDirPref;
+  protected static DirectoryConfigurer resourceDirPref;
 
   public AudioClipConfigurer(String key, String name, ArchiveWriter archive) {
     super(key, name);
@@ -40,7 +40,7 @@ public class AudioClipConfigurer extends FileConfigurer {
 
   protected FileChooser initFileChooser() {
     if (resourceDirPref == null) {
-      resourceDirPref = new FileConfigurer("audioDir", null);
+      resourceDirPref = new DirectoryConfigurer("audioDir", null);
       GameModule.getGameModule().getPrefs().addOption(null,resourceDirPref);
     }
     FileChooser fc = FileChooser.createFileChooser(GameModule.getGameModule().getFrame(),resourceDirPref);

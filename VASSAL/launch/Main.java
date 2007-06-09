@@ -42,7 +42,6 @@ import java.util.Observer;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.zip.ZipFile;
-
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -57,7 +56,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
-
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
@@ -66,7 +64,7 @@ import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ui.ShowServerStatusAction;
-import VASSAL.configure.FileConfigurer;
+import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
@@ -122,7 +120,7 @@ public class Main {
   
     editor = new PrefsEditor(new ArchiveWriter(prefsFile.getPath()));
     globalPrefs = new Prefs(editor, "VASSAL");  //$NON-NLS-1$
-    FileConfigurer moduleDir = new FileConfigurer(MODULES_DIR_PREF,null);
+    DirectoryConfigurer moduleDir = new DirectoryConfigurer(MODULES_DIR_PREF,null);
     globalPrefs.addOption(null, moduleDir);
     final String[] extract = getExtractTargets(args);
     final PropertyChangeListener l = new PropertyChangeListener() {
@@ -540,7 +538,7 @@ public class Main {
       java.awt.Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
       setLocation(d.width / 2 - getSize().width / 2,
                   d.height / 2 - getSize().height / 2);
-      fc = FileChooser.createFileChooser(this, (FileConfigurer) globalPrefs.getOption(MODULES_DIR_PREF));
+      fc = FileChooser.createFileChooser(this, (DirectoryConfigurer) globalPrefs.getOption(MODULES_DIR_PREF));
     }
 
     protected void initComponents() {

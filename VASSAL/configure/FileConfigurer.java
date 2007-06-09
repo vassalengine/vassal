@@ -39,17 +39,29 @@ public class FileConfigurer extends Configurer {
   protected JTextField tf;
   protected FileChooser fc;
   protected boolean editable;
+  protected DirectoryConfigurer startingDirectory;
 
   public FileConfigurer(String key, String name) {
+    this(key, name, (DirectoryConfigurer)null);  
+  }
+  
+  /**
+   * 
+   * @param key
+   * @param name
+   * @param startingDirectory If non-null, points to a preferences setting that specifies the starting directory for the "Select" button
+   */
+  public FileConfigurer(String key, String name, DirectoryConfigurer startingDirectory) {
     super(key, name);
     setValue(null);
-    fc = initFileChooser();
     editable = true;
+    this.startingDirectory = startingDirectory;
+    fc = initFileChooser();
   }
 
   protected FileChooser initFileChooser() {
-    FileChooser fc = FileChooser.createFileChooser(null);
-    if (GameModule.getGameModule() != null) {
+    FileChooser fc = FileChooser.createFileChooser(null, startingDirectory);
+    if (startingDirectory == null && GameModule.getGameModule() != null) {
       fc.setCurrentDirectory((File) GameModule.getGameModule().getGlobalPrefs().getValue(Main.MODULES_DIR_PREF));
     }
     return fc;

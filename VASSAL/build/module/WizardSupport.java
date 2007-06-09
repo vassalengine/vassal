@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -58,7 +57,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JRadioButton;
 import javax.swing.UIManager;
-
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.modules.wizard.InstructionsPanel;
 import org.netbeans.spi.wizard.Wizard;
@@ -69,7 +67,6 @@ import org.netbeans.spi.wizard.WizardObserver;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPanelProvider;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
-
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.Tutorial;
 import VASSAL.chat.ui.ChatServerControls;
@@ -83,10 +80,8 @@ import VASSAL.launch.BasicModule;
 import VASSAL.tools.SplashScreen;
 
 /**
- * Provides support for two different wizards. The WelcomeWizard is the
- * initial screen shown to the user when loading a module in play mode.
- * The GameSetupWizard is shown whenever the user starts a new game
- * on- or off-line.
+ * Provides support for two different wizards. The WelcomeWizard is the initial screen shown to the user when loading a
+ * module in play mode. The GameSetupWizard is shown whenever the user starts a new game on- or off-line.
  * 
  * @author rkinney
  */
@@ -101,7 +96,7 @@ public class WizardSupport {
   public static final String PLAY_ONLINE_ACTION = "online"; //$NON-NLS-1$
   public static final String PLAY_OFFLINE_ACTION = "offline"; //$NON-NLS-1$
   public static final String LOAD_GAME_ACTION = "loadGame"; //$NON-NLS-1$
-  protected Dimension logoSize = new Dimension(200,200);
+  protected Dimension logoSize = new Dimension(200, 200);
   protected List<PredefinedSetup> setups = new ArrayList<PredefinedSetup>();
   protected Tutorial tutorial;
 
@@ -137,9 +132,9 @@ public class WizardSupport {
   public void showWelcomeWizard() {
     WizardBranchController c = createWelcomeWizard();
     Wizard welcomeWizard = c.createWizard();
-    HashMap<String,Wizard> props = new HashMap<String,Wizard>();
+    HashMap<String, Wizard> props = new HashMap<String, Wizard>();
     props.put(WELCOME_WIZARD_KEY, welcomeWizard);
-    Object result = WizardDisplayer.showWizard(welcomeWizard, new Rectangle(0, 0, logoSize.width+400, logoSize.height), null, props);
+    Object result = WizardDisplayer.showWizard(welcomeWizard, new Rectangle(0, 0, logoSize.width + 400, logoSize.height), null, props);
     if (result instanceof Map) {
       Map m = (Map) result;
       Object action = m.get(ACTION_KEY);
@@ -168,9 +163,9 @@ public class WizardSupport {
   public WizardPanelProvider createPlayOfflinePanels() {
     ArrayList<PredefinedSetup> l = new ArrayList<PredefinedSetup>();
     for (PredefinedSetup ps : setups) {
-      if (!ps.isMenu()) l.add(ps);
-    } 
-
+      if (!ps.isMenu())
+        l.add(ps);
+    }
     if (l.isEmpty()) {
       return GameSetupPanels.newInstance();
     }
@@ -181,35 +176,27 @@ public class WizardSupport {
   }
 
   /**
-   * Show a wizard that prompts the user to specify information for
-   * unfinished {@link GameSetupStep}s
+   * Show a wizard that prompts the user to specify information for unfinished {@link GameSetupStep}s
    */
   public void showGameSetupWizard() {
     GameSetupPanels panels = GameSetupPanels.newInstance();
     if (panels != null) {
-      WizardDisplayer.showWizard(panels.newWizard(logoSize),
-        new Rectangle(0, 0, logoSize.width+400, logoSize.height));
+      WizardDisplayer.showWizard(panels.newWizard(logoSize), new Rectangle(0, 0, logoSize.width + 400, logoSize.height));
     }
   }
-
   /**
-   * This is a hack to avoid stretching the image used as a background for
-   * the wizard step outline in the dialog
+   * This is a hack to avoid stretching the image used as a background for the wizard step outline in the dialog
    * 
    * @author rkinney
    * 
    */
-  protected static class InstructionsPanelLayoutFix
-    implements HierarchyListener, WizardObserver {
-
+  protected static class InstructionsPanelLayoutFix implements HierarchyListener, WizardObserver {
     private final Component page;
     private JLabel proxy;
     private Wizard wizard;
     private Dimension logoSize;
 
-    protected InstructionsPanelLayoutFix(Wizard wizard,
-                                         Component page,
-                                         Dimension logoSize) {
+    protected InstructionsPanelLayoutFix(Wizard wizard, Component page, Dimension logoSize) {
       this.page = page;
       this.wizard = wizard;
       this.logoSize = logoSize;
@@ -269,14 +256,13 @@ public class WizardSupport {
   public InitialWelcomeSteps createInitialWelcomeSteps() {
     Object realName = GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
     if (realName == null || realName.equals(Resources.getString("Prefs.newbie"))) {
-      return new InitialWelcomeSteps(
-          new String[]{InitialWelcomeSteps.NAME_STEP, ACTION_KEY}, new String[]{Resources.getString("WizardSupport.WizardSupport.EnterName"), Resources.getString("WizardSupport.WizardSupport.SelectPlayMode")}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      return new InitialWelcomeSteps(new String[]{InitialWelcomeSteps.NAME_STEP, ACTION_KEY},
+          new String[]{Resources.getString("WizardSupport.WizardSupport.EnterName"), Resources.getString("WizardSupport.WizardSupport.SelectPlayMode")}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
     else {
       return new InitialWelcomeSteps(new String[]{ACTION_KEY}, new String[]{Resources.getString("WizardSupport.SelectPlayMode")}); //$NON-NLS-1$
     }
   }
-
   /**
    * Wizard pages for the welcome wizard (initial module load). Prompts for username/password if not yet specified, and
    * prompts to load a saved game or start a new one
@@ -448,7 +434,6 @@ public class WizardSupport {
       this.tutorial = tutorial;
     }
   }
-
   /**
    * Wizard pages for starting a new game offline
    * 
@@ -516,10 +501,8 @@ public class WizardSupport {
       }
     }
   }
-
   /**
-   * Branches the wizard by forwarding to the Wizard stored in the wizard
-   * settings under a specified key
+   * Branches the wizard by forwarding to the Wizard stored in the wizard settings under a specified key
    */
   public static class BranchingWizard extends WizardBranchController {
     private String wizardKey;
@@ -546,10 +529,8 @@ public class WizardSupport {
       return w;
     }
   }
-
   /**
-   * Loads a saved game in the background.
-   * Add a branch to the wizard if the loaded game has unfinished
+   * Loads a saved game in the background. Add a branch to the wizard if the loaded game has unfinished
    * {@link GameSetupStep}s. Otherwise, enable the finish button.
    * 
    * @author rkinney
@@ -561,8 +542,7 @@ public class WizardSupport {
     private InputStream in;
     private String wizardKey;
 
-    public SavedGameLoader(WizardController controller,
-                           Map settings, InputStream in, String wizardKey) {
+    public SavedGameLoader(WizardController controller, Map settings, InputStream in, String wizardKey) {
       super();
       this.controller = controller;
       this.settings = settings;
@@ -593,7 +573,6 @@ public class WizardSupport {
       }
     }
   }
-
   /**
    * Wizard pages for loading a saved game
    * 
@@ -608,27 +587,30 @@ public class WizardSupport {
     }
 
     protected JComponent createPanel(final WizardController controller, String id, final Map settings) {
-      fileConfig = new FileConfigurer(null, Resources.getString("WizardSupport.SavedGame")); //$NON-NLS-1$
-      fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          final File f = (File) evt.getNewValue();
-          if (f == null || !f.exists()) {
-            controller.setProblem(Resources.getString("WizardSupport.NoSuchFile")); //$NON-NLS-1$
-          }
-          else if (f.isDirectory()) {
-            controller.setProblem(""); //$NON-NLS-1$
-          }
-          else {
-            try {
-              new SavedGameLoader(controller, settings, new FileInputStream(f), POST_LOAD_GAME_WIZARD).start();
+      if (fileConfig == null) {
+        fileConfig = new FileConfigurer(null,
+            Resources.getString("WizardSupport.SavedGame"), GameModule.getGameModule().getGameState().getSavedGameDirectoryPreference()); //$NON-NLS-1$
+        fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            final File f = (File) evt.getNewValue();
+            if (f == null || !f.exists()) {
+              controller.setProblem(Resources.getString("WizardSupport.NoSuchFile")); //$NON-NLS-1$
             }
-            catch (IOException e) {
-              controller.setProblem(Resources.getString("WizardSupport.UnableToLoad")); //$NON-NLS-1$
+            else if (f.isDirectory()) {
+              controller.setProblem(""); //$NON-NLS-1$
+            }
+            else {
+              try {
+                new SavedGameLoader(controller, settings, new FileInputStream(f), POST_LOAD_GAME_WIZARD).start();
+              }
+              catch (IOException e) {
+                controller.setProblem(Resources.getString("WizardSupport.UnableToLoad")); //$NON-NLS-1$
+              }
             }
           }
-        }
-      });
-      controller.setProblem(Resources.getString("WizardSupport.SelectSavedGame")); //$NON-NLS-1$
+        });
+        controller.setProblem(Resources.getString("WizardSupport.SelectSavedGame")); //$NON-NLS-1$
+      }
       return (JComponent) fileConfig.getControls();
     }
   }
@@ -661,7 +643,6 @@ public class WizardSupport {
       UIManager.put("wizard.sidebar.image", buffIm); //$NON-NLS-1$
     }
   }
-
   /**
    * Wizard pages for starting a new game. One page will be added for each unfinished {@link GameSetupStep}
    * 
@@ -672,10 +653,7 @@ public class WizardSupport {
     private WizardPage[] pages;
     private List<GameSetupStep> setupSteps;
 
-    private GameSetupPanels(String[] steps,
-                            String[] descriptions,
-                            WizardPage[] pages,
-                            List<GameSetupStep> setupSteps) {
+    private GameSetupPanels(String[] steps, String[] descriptions, WizardPage[] pages, List<GameSetupStep> setupSteps) {
       super(steps, descriptions);
       this.pages = pages;
       this.setupSteps = setupSteps;
@@ -685,9 +663,7 @@ public class WizardSupport {
       GameSetupPanels panels = null;
       ArrayList<SetupStepPage> pages = new ArrayList<SetupStepPage>();
       ArrayList<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
-      for (Iterator it = GameModule.getGameModule()
-                                   .getGameState()
-                                   .getUnfinishedSetupSteps(); it.hasNext();) {
+      for (Iterator it = GameModule.getGameModule().getGameState().getUnfinishedSetupSteps(); it.hasNext();) {
         GameSetupStep step = (GameSetupStep) it.next();
         setupSteps.add(step);
         SetupStepPage page = new SetupStepPage(step);
@@ -706,11 +682,9 @@ public class WizardSupport {
       return panels;
     }
 
-    protected JComponent createPanel(WizardController controller,
-                                     String id, Map settings) {
+    protected JComponent createPanel(WizardController controller, String id, Map settings) {
       int index = indexOfStep(id);
-      controller.setForwardNavigationMode(index == pages.length - 1 ?
-        WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+      controller.setForwardNavigationMode(index == pages.length - 1 ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
       return pages[index];
     }
 

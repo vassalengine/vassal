@@ -25,6 +25,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.FileConfigurer;
 
 /**
@@ -62,7 +63,7 @@ public abstract class FileChooser {
     * @param parent The Component over which the FileChooser should appear.
     * @param prefs A FileConfigure that stores the preferred starting directory of the FileChooser in preferences
     */
-   public static FileChooser createFileChooser(Component parent, FileConfigurer prefs) {
+   public static FileChooser createFileChooser(Component parent, DirectoryConfigurer prefs) {
       // determine what OS this is
       String os = System.getProperty("os.name");
       if (os != null && (os.startsWith("Windows") ||
@@ -135,7 +136,7 @@ public abstract class FileChooser {
    private static class SwingFileChooser extends FileChooser {
       private JFileChooser fc = new JFileChooser();
 
-      public SwingFileChooser(Component parent, FileConfigurer prefs) {
+      public SwingFileChooser(Component parent, DirectoryConfigurer prefs) {
          super(parent, prefs);
          if (prefs != null && prefs.getFileValue() != null) {
            setCurrentDirectory(prefs.getFileValue());
@@ -225,7 +226,7 @@ public abstract class FileChooser {
       private String title;
       private FileFilter filter;
 
-      public NativeFileChooser(Component parent, FileConfigurer prefs) {
+      public NativeFileChooser(Component parent, DirectoryConfigurer prefs) {
          super(parent, prefs);
          if (prefs != null && prefs.getFileValue() != null) {
            setCurrentDirectory(prefs.getFileValue());

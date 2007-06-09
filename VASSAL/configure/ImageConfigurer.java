@@ -29,7 +29,7 @@ import VASSAL.tools.ImageFileFilter;
  * image file and writes it to a {@link ArchiveWriter}.
  */
 public class ImageConfigurer extends FileConfigurer {
-   protected static FileConfigurer resourceDirPref;
+   protected static DirectoryConfigurer resourceDirPref;
 
    public ImageConfigurer(String key, String name, ArchiveWriter archive) {
       super(key, name);
@@ -39,7 +39,7 @@ public class ImageConfigurer extends FileConfigurer {
   
   protected FileChooser initFileChooser() {
     if (resourceDirPref == null) {
-      resourceDirPref = new FileConfigurer("imageDir", null);
+      resourceDirPref = new DirectoryConfigurer("imageDir", null);
       GameModule.getGameModule().getPrefs().addOption(null,resourceDirPref);
     }
     FileChooser fc = FileChooser.createFileChooser(GameModule.getGameModule().getFrame(),resourceDirPref);

@@ -73,7 +73,6 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
 import VASSAL.configure.CompoundValidityChecker;
-import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
@@ -517,17 +516,13 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return s;
   }
 
-  private static final String SAVE_DIR = "SaveDir"; //$NON-NLS-1$
-
   /**
    * @return a common FileChooser so that recent file locations
    * can be remembered
    */
   public FileChooser getFileChooser() {
     if (fileChooser == null) {
-      DirectoryConfigurer directoryConfigurer = new DirectoryConfigurer(SAVE_DIR, null);
-      getPrefs().addOption(null, directoryConfigurer);
-      fileChooser = FileChooser.createFileChooser(getFrame(), directoryConfigurer);
+      fileChooser = FileChooser.createFileChooser(getFrame(), getGameState().getSavedGameDirectoryPreference());
     }
     else {
       fileChooser.resetChoosableFileFilters();
@@ -542,9 +537,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   @Deprecated public FileDialog getFileDialog() {
     if (fileDialog == null) {
-      getPrefs().addOption(null, new DirectoryConfigurer(SAVE_DIR, null));
       fileDialog = new FileDialog(getFrame());
-      File f = (File) getPrefs().getValue(SAVE_DIR);
+      File f = getGameState().getSavedGameDirectoryPreference().getFileValue();
       if (f != null) {
         fileDialog.setDirectory(f.getPath());
       }
@@ -595,10 +589,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       getGameState().setup(false);
       cancelled = getGameState().isGameStarted();
       if (!cancelled) {
-        if (fileChooser != null) {
-          getPrefs().getOption(SAVE_DIR)
-                    .setValue(fileChooser.getCurrentDirectory());
-        }
         getPrefs().write();
         if (getDataArchive() instanceof ArchiveWriter
             && !buildString().equals(lastSavedConfiguration)) {

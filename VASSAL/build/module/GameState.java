@@ -48,6 +48,7 @@ import VASSAL.command.CommandFilter;
 import VASSAL.command.ConditionalCommand;
 import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
@@ -66,6 +67,7 @@ public class GameState implements CommandEncoder {
   protected List<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
   protected JMenuItem loadGame, saveGame, newGame, closeGame;
   protected String lastSave;
+  protected DirectoryConfigurer savedGameDirectoryPreference;
 
   public GameState() {
   }
@@ -556,5 +558,13 @@ public class GameState implements CommandEncoder {
       }
     }
     throw new IOException("Invalid saveFile format");
+  }
+
+  public DirectoryConfigurer getSavedGameDirectoryPreference() {
+    if (savedGameDirectoryPreference == null) {
+      savedGameDirectoryPreference = new DirectoryConfigurer("savedGameDir", null);
+      GameModule.getGameModule().getPrefs().addOption(null,savedGameDirectoryPreference);
+    }
+    return savedGameDirectoryPreference;
   }
 }
