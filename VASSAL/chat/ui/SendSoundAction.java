@@ -27,6 +27,7 @@ import VASSAL.chat.Player;
 import VASSAL.chat.SoundEncoder;
 import VASSAL.configure.SoundConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
 
 /**
  * Copyright (c) 2003 by Rodney Kinney. All rights reserved. Date: Jul 29, 2003
@@ -51,7 +52,7 @@ public class SendSoundAction extends AbstractAction {
 
   public static PlayerActionFactory factory(final ChatServerConnection client, final String name, final String soundKey, final String defaultSoundFile) {
     if (GameModule.getGameModule() != null) {
-      GameModule.getGameModule().getGlobalPrefs().addOption(Resources.getString("Prefs.sounds_tab"), new SoundConfigurer(soundKey, name, defaultSoundFile)); //$NON-NLS-1$
+      Prefs.getGlobalPrefs().addOption(Resources.getString("Prefs.sounds_tab"), new SoundConfigurer(soundKey, name, defaultSoundFile)); //$NON-NLS-1$
     }
     return new PlayerActionFactory() {
       public Action getAction(Player p, JTree tree) {

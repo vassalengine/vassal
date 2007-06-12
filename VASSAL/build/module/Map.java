@@ -141,6 +141,7 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.KeyStrokeSource;
@@ -597,7 +598,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		GameModule.getGameModule().getToolBar().add(launchButton);
 		if (shouldDockIntoMainWindow()) {
 			IntConfigurer config = new IntConfigurer(MAIN_WINDOW_HEIGHT, null, new Integer(-1));
-			GameModule.getGameModule().getGlobalPrefs().addOption(null, config);
+			Prefs.getGlobalPrefs().addOption(null, config);
 			root = new JPanel(new BorderLayout());
 			root.add(scroll, BorderLayout.CENTER);
 			ComponentSplitter splitter = new ComponentSplitter();
@@ -1651,7 +1652,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		if (show) {
 			if (shouldDockIntoMainWindow()) {
 				mainWindowDock.showComponent();
-				int height = ((Integer) GameModule.getGameModule().getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT)).intValue();
+				int height = ((Integer) Prefs.getGlobalPrefs().getValue(MAIN_WINDOW_HEIGHT)).intValue();
 				if (height > 0) {
 					Container top = mainWindowDock.getTopLevelAncestor();
 					top.setSize(top.getWidth(), height);
@@ -1691,7 +1692,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			System.gc();
 			if (mainWindowDock != null) {
 				if (mainWindowDock.getHideableComponent().isShowing()) {
-					GameModule.getGameModule().getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
+          Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
 							.setValue(new Integer(mainWindowDock.getTopLevelAncestor().getHeight()));
 				}
 				mainWindowDock.hideComponent();

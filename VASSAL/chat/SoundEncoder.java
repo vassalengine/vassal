@@ -17,10 +17,10 @@
  */
 package VASSAL.chat;
 
-import VASSAL.command.CommandEncoder;
 import VASSAL.command.Command;
+import VASSAL.command.CommandEncoder;
 import VASSAL.configure.SoundConfigurer;
-import VASSAL.build.GameModule;
+import VASSAL.preferences.Prefs;
 
 /**
  * Encodes commands that play sounds
@@ -56,7 +56,7 @@ public class SoundEncoder implements CommandEncoder {
     }
 
     protected void executeCommand() {
-      SoundConfigurer c = (SoundConfigurer) GameModule.getGameModule().getGlobalPrefs().getOption(soundKey);
+      SoundConfigurer c = (SoundConfigurer) Prefs.getGlobalPrefs().getOption(soundKey);
       if (c != null) {
         c.play();
       }

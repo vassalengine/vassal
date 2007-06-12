@@ -26,7 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import VASSAL.build.GameModule;
-import VASSAL.launch.Main;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.FileChooser;
 
@@ -62,7 +62,7 @@ public class FileConfigurer extends Configurer {
   protected FileChooser initFileChooser() {
     FileChooser fc = FileChooser.createFileChooser(null, startingDirectory);
     if (startingDirectory == null && GameModule.getGameModule() != null) {
-      fc.setCurrentDirectory((File) GameModule.getGameModule().getGlobalPrefs().getValue(Main.MODULES_DIR_PREF));
+      fc.setCurrentDirectory((File) Prefs.getGlobalPrefs().getValue(Prefs.MODULES_DIR_KEY));
     }
     return fc;
   }

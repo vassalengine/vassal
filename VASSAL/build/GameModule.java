@@ -128,7 +128,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected GameState theState;
   protected DataArchive archive;
   protected Prefs preferences;
-  protected Prefs globalPrefs;
   protected Logger logger;
   protected Chatter chat;
   protected Random RNG;
@@ -349,7 +348,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public Prefs getPrefs() {
     if (preferences == null) {
-      setPrefs(new Prefs(globalPrefs.getEditor(), gameName));
+      setPrefs(new Prefs(Prefs.getGlobalPrefs().getEditor(), gameName));
     }
     return preferences;
   }
@@ -358,8 +357,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * A set of preferences that applies to all modules
    * @return
    */
+  @Deprecated
   public Prefs getGlobalPrefs() {
-    return globalPrefs;
+    return Prefs.getGlobalPrefs();
   }
 
   /**
@@ -475,8 +475,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     preferences.getEditor().initDialog(getFrame());
   }
 
+  @Deprecated
   public void setGlobalPrefs(Prefs p) {
-    globalPrefs = p;
   }
 
   /**

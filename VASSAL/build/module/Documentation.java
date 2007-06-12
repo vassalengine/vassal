@@ -33,14 +33,14 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
 
 /**
  * Represents the <code>Help</code> menu of the controls window
  */
 public class Documentation extends AbstractConfigurable {
   /** Preferences key for the directory where VASSAL documentation is stored */
-  public static final String DOCS_DIR = "docsDirectory";  //$NON-NLS-1$
-
+  public static final String DOCS_DIR = "docsDirectory"; //$NON-NLS-1$
   private javax.swing.JMenu controls;
 
   public Documentation() {
@@ -55,18 +55,17 @@ public class Documentation extends AbstractConfigurable {
     if (el == null) {
       try {
         AboutScreen about = new AboutScreen();
-        about.setAttribute(AboutScreen.TITLE, Resources.getString("Documentation.about_vassal"));  //$NON-NLS-1$
-        about.setAttribute(AboutScreen.FILE, "/images/Splash.gif");  //$NON-NLS-1$
+        about.setAttribute(AboutScreen.TITLE, Resources.getString("Documentation.about_vassal")); //$NON-NLS-1$
+        about.setAttribute(AboutScreen.FILE, "/images/Splash.gif"); //$NON-NLS-1$
         about.addTo(this);
         add(about);
       }
       catch (Exception err) {
         err.printStackTrace();
       }
-
       HelpFile intro = new HelpFile();
-      intro.setAttribute(HelpFile.TITLE, Resources.getString("Documentation.quick_start"));  //$NON-NLS-1$
-      intro.setAttribute(HelpFile.FILE, "/help/Intro.html");  //$NON-NLS-1$
+      intro.setAttribute(HelpFile.TITLE, Resources.getString("Documentation.quick_start")); //$NON-NLS-1$
+      intro.setAttribute(HelpFile.FILE, "/help/Intro.html"); //$NON-NLS-1$
       intro.setAttribute(HelpFile.TYPE, HelpFile.RESOURCE);
       intro.addTo(this);
       add(intro);
@@ -78,23 +77,18 @@ public class Documentation extends AbstractConfigurable {
 
   public static File getDocumentationBaseDir() {
     File f = null;
-    if (GameModule.getGameModule() != null
-        && GameModule.getGameModule().getGlobalPrefs() != null) {
-      String storedValue = GameModule.getGameModule().getGlobalPrefs().getStoredValue(DOCS_DIR);
-      if (storedValue != null) {
-        f = new File(storedValue);
-      }
+    String storedValue = Prefs.getGlobalPrefs().getStoredValue(DOCS_DIR);
+    if (storedValue != null) {
+      f = new File(storedValue);
     }
     return f;
   }
 
   public void addTo(Buildable b) {
     // Moved following line to Resources.getString() as it is needed earlier
-    // GameModule.getGameModule().getGlobalPrefs().addOption(null, new DirectoryConfigurer(DOCS_DIR, null));   
+    // GameModule.getGameModule().getGlobalPrefs().addOption(null, new DirectoryConfigurer(DOCS_DIR, null));
     GameModule.getGameModule().getFrame().getJMenuBar().add(controls);
-    validator = new CompoundValidityChecker
-        (new MandatoryComponent(this, AboutScreen.class),
-         new SingleChildInstance(GameModule.getGameModule(), getClass()));
+    validator = new CompoundValidityChecker(new MandatoryComponent(this, AboutScreen.class), new SingleChildInstance(GameModule.getGameModule(), getClass()));
   }
 
   public void removeFrom(Buildable b) {
@@ -117,7 +111,7 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Documentation.component_type");  //$NON-NLS-1$
+    return Resources.getString("Editor.Documentation.component_type"); //$NON-NLS-1$
   }
 
   public String getConfigureName() {
@@ -126,9 +120,9 @@ public class Documentation extends AbstractConfigurable {
 
   public HelpFile getHelpFile() {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
-    dir = new File(dir, "ReferenceManual");  //$NON-NLS-1$
+    dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
-      return new HelpFile(null, new File(dir, "HelpMenu.htm"));  //$NON-NLS-1$
+      return new HelpFile(null, new File(dir, "HelpMenu.htm")); //$NON-NLS-1$
     }
     catch (MalformedURLException ex) {
       return null;

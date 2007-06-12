@@ -48,9 +48,8 @@ public class BasicModule extends GameModule {
   private static char COMMAND_SEPARATOR = (char) java.awt.event.KeyEvent.VK_ESCAPE;
   protected ChatServerControls serverControls;
 
-  public BasicModule(DataArchive archive, Prefs globalPrefs) {
+  public BasicModule(DataArchive archive) {
     super(archive);
-    setGlobalPrefs(globalPrefs);
   }
 
   protected void build() throws IOException {
@@ -136,8 +135,8 @@ protected void initServer() {
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
     ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
     server = new HybridClient();
-    ServerConfigurer config = new ServerConfigurer("ServerImpl", "Server", (HybridClient) server); //$NON-NLS-1$ //$NON-NLS-2$
-    GameModule.getGameModule().getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
+    ServerConfigurer config = new ServerConfigurer("ServerImpl", "Server", (HybridClient) server);
+    Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);
   }

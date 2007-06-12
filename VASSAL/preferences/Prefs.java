@@ -19,14 +19,17 @@
 package VASSAL.preferences;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import VASSAL.Info;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ArchiveWriter;
 
 /**
  * A set of preferences.  Each set of preferences is identified by a name, and
@@ -34,6 +37,9 @@ import VASSAL.i18n.Resources;
  * writing the preferences to disk
  */
 public class Prefs {
+  /** Preferences key for the directory containing modules */
+  public static final String MODULES_DIR_KEY = "modulesDir"; //$NON_NLS-1$
+  private static Prefs globalPrefs;
   private Map<String,Configurer> options = new HashMap<String,Configurer>();
   private Properties storedValues = new Properties();
   private PrefsEditor editor;
@@ -151,5 +157,17 @@ public class Prefs {
   /** Save these preferences and write to disk */
   public void write() throws IOException {
     editor.write();
+  }
+  
+  /**
+   * A global set of preferences that exists independent of any individual module
+   * @return
+   */
+  public static Prefs getGlobalPrefs() {
+    if (globalPrefs == null) {
+      File prefsFile = new File(Info.getHomeDir(), "Preferences");  //$NON-NLS-1$
+      globalPrefs = new Prefs(new PrefsEditor(new ArchiveWriter(prefsFile.getPath())), "VASSAL");  //$NON-NLS-1$
+    }
+    return globalPrefs;
   }
 }

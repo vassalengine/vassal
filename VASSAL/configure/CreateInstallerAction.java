@@ -53,8 +53,6 @@ import VASSAL.launch.install.InstallWizard;
 import VASSAL.launch.install.Screen;
 import VASSAL.launch.install.SuccessScreen;
 import VASSAL.launch.install.WizardDialog;
-import VASSAL.preferences.Prefs;
-import VASSAL.preferences.PrefsEditor;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.FileChooser;
 
@@ -215,8 +213,7 @@ public class CreateInstallerAction extends AbstractAction {
   }
 
   public static void main(String[] args) throws Exception {
-    Prefs globalPrefs = new Prefs(new PrefsEditor(new ArchiveWriter("pref")), "VASSAL"); //$NON-NLS-1$ //$NON-NLS-2$
-    GameModule.init(new BasicModule(new ArchiveWriter(args[0]), globalPrefs));
+    GameModule.init(new BasicModule(new ArchiveWriter(args[0])));
     new CreateInstallerAction(null).actionPerformed(null);
     System.exit(0);
   }

@@ -96,6 +96,7 @@ public class WizardSupport {
   public static final String PLAY_ONLINE_ACTION = "online"; //$NON-NLS-1$
   public static final String PLAY_OFFLINE_ACTION = "offline"; //$NON-NLS-1$
   public static final String LOAD_GAME_ACTION = "loadGame"; //$NON-NLS-1$
+  public static final String WELCOME_WIZARD_ENABLED = "showWelcomeWizard"; //$NON-NLS-1$ 
   protected Dimension logoSize = new Dimension(200, 200);
   protected List<PredefinedSetup> setups = new ArrayList<PredefinedSetup>();
   protected Tutorial tutorial;
