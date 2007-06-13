@@ -21,6 +21,7 @@ package VASSAL.build.module;
 import java.io.File;
 import java.net.MalformedURLException;
 import org.w3c.dom.Element;
+import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -33,14 +34,12 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.i18n.Resources;
-import VASSAL.preferences.Prefs;
 
 /**
  * Represents the <code>Help</code> menu of the controls window
  */
 public class Documentation extends AbstractConfigurable {
   /** Preferences key for the directory where VASSAL documentation is stored */
-  public static final String DOCS_DIR = "docsDirectory"; //$NON-NLS-1$
   private javax.swing.JMenu controls;
 
   public Documentation() {
@@ -76,12 +75,8 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public static File getDocumentationBaseDir() {
-    File f = null;
-    String storedValue = Prefs.getGlobalPrefs().getStoredValue(DOCS_DIR);
-    if (storedValue != null) {
-      f = new File(storedValue);
-    }
-    return f;
+    File dir = new File(Info.getHomeDir(),Info.getMinorVersion());
+    return new File(dir,"docs");
   }
 
   public void addTo(Buildable b) {

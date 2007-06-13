@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 import java.util.Properties;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -39,6 +40,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -46,6 +48,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
+import VASSAL.Info;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
@@ -79,24 +82,22 @@ public class ResourceExtracter {
   public static final String SUCCESSFUL = "successful"; //$NON-NLS-1$
   public static final String FAILED = "failed"; //$NON-NLS-1$
   private String versionIdKey;
-  private String installDirKey;
   private JLabel label;
   private File destinationDir;
+  private Observer obs;
 
-  public ResourceExtracter(Prefs prefs, Properties props) {
+  public ResourceExtracter(Prefs prefs, Properties props, Observer obs) {
     this.prefs = prefs;
     this.props = props;
     versionIdKey = props.getProperty(VERSION_ID_PROPERTY);
     if (props.getProperty(INSTALL_DIR_VALUE) != null) {
-      installDirChooser = new FixedDir(new File(props.getProperty(INSTALL_DIR_VALUE)));
+      installDirChooser = new FixedDir(new File(Info.getHomeDir(), props.getProperty(INSTALL_DIR_VALUE)));
     }
     else {
       installDirChooser = new PromptForDir();
     }
     prefs.addOption(null, new StringConfigurer(versionIdKey, null));
-    DirectoryConfigurer config = new DirectoryConfigurer(installDirKey, null);
-    config.setValue((Object) null);
-    prefs.addOption(null, config);
+    this.obs = obs;
   }
 
   protected String getPromptMessage() {
@@ -119,7 +120,7 @@ public class ResourceExtracter {
     boolean upToDate = false;
     String checksum = props.getProperty(VERSION_ID, ""); //$NON-NLS-1$
     if (checksum.equals(prefs.getValue(versionIdKey))) {
-      File f = (File) prefs.getValue(installDirKey);
+      File f = installDirChooser.getLastInstallDir();
       if (f != null && f.exists()) {
         if (props.getProperty(REQUIRED) != null) {
           upToDate = new File(f, props.getProperty(REQUIRED)).exists();
@@ -140,13 +141,16 @@ public class ResourceExtracter {
   /**
    * Initiate full installation procedure: Check version id, prompt for install directory and extract contents in
    * background thread
-   * @throws IOException 
+   * 
+   * @throws IOException
    */
   public void install() throws IOException {
     if (isUpToDate()) {
+      notifyInstallComplete();
       return;
     }
     if (!confirmInstall()) {
+      notifyInstallComplete();
       return;
     }
     destinationDir = installDirChooser.getInstallDir();
@@ -186,12 +190,6 @@ public class ResourceExtracter {
       };
       Thread thread = new Thread(runnable);
       thread.start();
-      try {
-        thread.join();
-      }
-      catch (InterruptedException e) {
-        e.printStackTrace();
-      }
       if (ex[0] != null) {
         throw ex[0];
       }
@@ -219,13 +217,19 @@ public class ResourceExtracter {
 
   protected void storeInstallInfo() throws IOException {
     prefs.getOption(versionIdKey).setValue(props.getProperty(VERSION_ID));
-    prefs.getOption(installDirKey).setValue(destinationDir);
     prefs.write();
   }
 
   protected void installSucceeded() {
     if (monitor != null) {
       monitor.dispose();
+    }
+    notifyInstallComplete();
+  }
+
+  private void notifyInstallComplete() {
+    if (obs != null) {
+      obs.update(null, this);
     }
   }
 
@@ -387,21 +391,28 @@ public class ResourceExtracter {
     }
     dir.mkdir();
   }
-  
   public static interface InstallDirChooser {
     public File getInstallDir();
+
+    /** The directory from the last install, if any */
+    public File getLastInstallDir();
   }
-  
   private class PromptForDir implements InstallDirChooser {
+    private String installDirKey;
+
+    private PromptForDir() {
+      installDirKey = props.getProperty(INSTALL_DIR_PROPERTY);
+      prefs.addOption(null, new DirectoryConfigurer(installDirKey, null));
+    }
+
     /** Prompt user for installation directory */
     public File getInstallDir() {
-      String installDirKey = props.getProperty(INSTALL_DIR_PROPERTY);
       FileChooser fc = FileChooser.createFileChooser(null, (DirectoryConfigurer) prefs.getOption(installDirKey));
       fc.setFileSelectionMode(FileChooser.DIRECTORIES_ONLY);
       boolean cancelable = !isInitialInstall();
       File f = null;
       while (f == null) {
-        if (fc.showOpenDialog(null) == JFileChooser.CANCEL_OPTION && cancelable) {
+        if (fc.showOpenDialog(new JFrame()) == JFileChooser.CANCEL_OPTION && cancelable) {
           f = null;
           break;
         }
@@ -433,9 +444,10 @@ public class ResourceExtracter {
       return f;
     }
 
-
+    public File getLastInstallDir() {
+      return (File) prefs.getValue(installDirKey);
+    }
   }
-  
   public static class FixedDir implements InstallDirChooser {
     private File installDir;
 
@@ -443,11 +455,14 @@ public class ResourceExtracter {
       super();
       this.installDir = installDir;
     }
+
     public File getInstallDir() {
       return installDir;
     }
 
-    
+    public File getLastInstallDir() {
+      return installDir;
+    }
   }
 
   /*
@@ -463,12 +478,12 @@ public class ResourceExtracter {
   public static void main(String[] args) throws IOException {
     final Properties p = new Properties();
     p.load(new FileInputStream("test")); //$NON-NLS-1$
-    p.put(INSTALL_DIR_VALUE,System.getProperty("user.dir"));
+    p.put(INSTALL_DIR_VALUE, System.getProperty("user.dir"));
     final Prefs prefs = new Prefs(new PrefsEditor(new ArchiveWriter("prefs")), Resources.getString(Resources.VASSAL)); //$NON-NLS-1$
     Runnable runnable = new Runnable() {
       public void run() {
         try {
-          new ResourceExtracter(prefs, p).install();
+          new ResourceExtracter(prefs, p, null).install();
         }
         catch (IOException e) {
           e.printStackTrace();
@@ -478,4 +493,3 @@ public class ResourceExtracter {
     runnable.run();
   }
 }
- 

@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Properties;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -58,8 +60,7 @@ public class Main {
           public void run() {
             try {
               Main.this.configure(args);
-              Main.this.extractResources();
-              Main.this.launch();
+              Main.this.extractResourcesAndLaunch(0);
             }
             catch (IOException e) {
               reportError(e);
@@ -72,9 +73,26 @@ public class Main {
     t.start();
   }
 
-  protected void extractResources() throws IOException {
-    for (String target : extractTargets) {
-      extractResource(target);
+  protected void extractResourcesAndLaunch(final int resourceIndex) throws IOException {
+    if (resourceIndex >= extractTargets.size()) {
+      launch();
+    }
+    else {
+      Properties props = new Properties();
+      InputStream resource = Main.class.getResourceAsStream(extractTargets.get(resourceIndex));
+      if (resource != null) {
+        props.load(resource);
+      }
+      new ResourceExtracter(Prefs.getGlobalPrefs(), props, new Observer() {
+        public void update(Observable o, Object arg) {
+          try {
+            extractResourcesAndLaunch(resourceIndex+1);
+          }
+          catch (IOException e) {
+            reportError(e);
+          }
+        }
+      }).install();
     }
   }
 
@@ -85,15 +103,6 @@ public class Main {
       msg = e.getClass().getSimpleName();
     }
     JOptionPane.showMessageDialog(null, msg, Resources.getString("ResourceExtracter.install_failed"), JOptionPane.ERROR_MESSAGE);
-  }
-
-  public void extractResource(String infoResourceName) throws IOException {
-    Properties props = new Properties();
-    InputStream resource = Main.class.getResourceAsStream(infoResourceName);
-    if (resource != null) {
-      props.load(resource);
-    }
-    new ResourceExtracter(Prefs.getGlobalPrefs(), props).install();
   }
 
   protected void initSystemProperties() {

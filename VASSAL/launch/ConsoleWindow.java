@@ -40,7 +40,7 @@ public class ConsoleWindow {
   protected void initComponents() {
     frame = new JFrame("VASSAL");
     frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
-    JLabel label = new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().getImage("images/Splash.gif")));
+    JLabel label = new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().getImage(ConsoleWindow.class.getResource("/images/Splash.gif"))));
     label.setAlignmentX(Box.CENTER_ALIGNMENT);
     frame.getContentPane().add(label);
     frame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
