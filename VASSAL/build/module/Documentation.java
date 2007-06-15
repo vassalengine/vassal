@@ -80,8 +80,6 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public void addTo(Buildable b) {
-    // Moved following line to Resources.getString() as it is needed earlier
-    // GameModule.getGameModule().getGlobalPrefs().addOption(null, new DirectoryConfigurer(DOCS_DIR, null));
     GameModule.getGameModule().getFrame().getJMenuBar().add(controls);
     validator = new CompoundValidityChecker(new MandatoryComponent(this, AboutScreen.class), new SingleChildInstance(GameModule.getGameModule(), getClass()));
   }

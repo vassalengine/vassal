@@ -82,6 +82,11 @@ public class DrawPile extends SetupStack {
       return dummy.doesExpressionCounting();
     }
   };
+  private VisibilityCondition hotkeyOnEmptyVisibleCondition = new VisibilityCondition() {
+    public boolean shouldBeVisible() {
+      return dummy.isHotkeyOnEmpty();
+    }
+  };
   protected static UniqueIdManager idMgr = new UniqueIdManager("Deck");
 
   public void addTo(Buildable parent) {
@@ -143,6 +148,8 @@ public class DrawPile extends SetupStack {
   public static final String RESHUFFLE_HOTKEY = "reshuffleHotkey";
   public static final String REPORT_FORMAT = "reportFormat";
   public static final String CAN_SAVE = "canSave";
+  public static final String HOTKEY_ON_EMPTY = "hotkeyOnEmpty";
+  public static final String EMPTY_HOTKEY = "emptyHotkey"; 
 
   public static final String ALWAYS = "Always";
   public static final String NEVER = "Never";
@@ -189,7 +196,7 @@ public class DrawPile extends SetupStack {
   public String[] getAttributeNames() {
     return new String[]{NAME, OWNING_BOARD, X_POSITION, Y_POSITION, WIDTH, HEIGHT, ALLOW_MULTIPLE,
                         ALLOW_SELECT, FACE_DOWN, DRAW_FACE_UP, FACE_DOWN_REPORT_FORMAT, SHUFFLE, SHUFFLE_REPORT_FORMAT,
-                        SHUFFLE_HOTKEY, REVERSIBLE, REVERSE_REPORT_FORMAT, DRAW, COLOR,
+                        SHUFFLE_HOTKEY, REVERSIBLE, REVERSE_REPORT_FORMAT, DRAW, COLOR, HOTKEY_ON_EMPTY, EMPTY_HOTKEY,
                         RESHUFFLABLE, RESHUFFLE_COMMAND, RESHUFFLE_MESSAGE, RESHUFFLE_HOTKEY, RESHUFFLE_TARGET,CAN_SAVE,
                         MAXSTACK,EXPRESSIONCOUNTING,COUNTEXPRESSIONS};
   }
@@ -213,6 +220,8 @@ public class DrawPile extends SetupStack {
                         "Reverse Report Format:  ",
                         "Draw Outline when empty?",
                         "Color:  ",
+                        "Send Hotkey when empty?",
+                        "Hot Key to send when Deck empties:  ",
                         "Include command to send entire deck to another deck?",
                         "Send Menu text:  ",
                         "Send Report Format:  ",
@@ -243,6 +252,8 @@ public class DrawPile extends SetupStack {
                        FormattedStringConfig.class,
                        Boolean.class,
                        Color.class,
+                       Boolean.class,
+                       KeyStroke.class,
                        Boolean.class,
                        String.class,
                        FormattedStringConfig.class,
@@ -330,6 +341,12 @@ public class DrawPile extends SetupStack {
     }
     else if (CAN_SAVE.equals(key)) {
       return String.valueOf(dummy.isPersistable());
+    }
+    else if (HOTKEY_ON_EMPTY.equals(key)) {
+      return String.valueOf(dummy.isHotkeyOnEmpty());
+    }
+    else if (EMPTY_HOTKEY.equals(key)) {
+      return HotKeyConfigurer.encode(dummy.getEmptyKey());
     }
     else {
       return super.getAttributeValueString(key);
@@ -473,6 +490,20 @@ public class DrawPile extends SetupStack {
       dummy.setDeckName((String) value);
       super.setAttribute(key, value);
     }
+    else if (HOTKEY_ON_EMPTY.equals(key)) {
+      if (value instanceof Boolean) {
+        dummy.setHotkeyOnEmpty(Boolean.TRUE.equals(value));
+      }
+      else {
+        dummy.setHotkeyOnEmpty("true".equals(value));
+      }
+    }
+    else if (EMPTY_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = HotKeyConfigurer.decode((String) value);
+      }
+      dummy.setEmptyKey((KeyStroke) value);
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -500,6 +531,9 @@ public class DrawPile extends SetupStack {
     }
     else if (COUNTEXPRESSIONS.equals(name)) {
       return expressionCountingVisibleCondition;
+    }
+    else if (EMPTY_HOTKEY.equals(name)) {
+      return hotkeyOnEmptyVisibleCondition;
     }
     else {
       return null;

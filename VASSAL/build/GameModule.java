@@ -55,6 +55,7 @@ import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.MultiActionButton;
 import VASSAL.build.module.NotesWindow;
 import VASSAL.build.module.PieceWindow;
+import VASSAL.build.module.PlaySoundButton;
 import VASSAL.build.module.PlayerHand;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.PredefinedSetup;
@@ -274,6 +275,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
                   PrototypesContainer.class,
                   ToolbarMenu.class,
                   MultiActionButton.class,
+                  PlaySoundButton.class,
                   DiceButton.class,
                   GlobalKeyCommand.class,
                   Inventory.class,

@@ -119,6 +119,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected KeyCommand[] commands;
   protected List<DeckGlobalKeyCommand> globalCommands =
     new ArrayList<DeckGlobalKeyCommand>();
+  protected boolean hotkeyOnEmpty;
+  protected KeyStroke emptyKey;
 
   protected CommandEncoder commandEncoder = new CommandEncoder() {
     public Command decode(String command) {
@@ -265,9 +267,13 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   protected void removePieceAt(int index) {
+    int startCount = pieceCount;
     updateCounts(index,false);
     super.removePieceAt(index);
     fireNumCardsProperty();
+    if (hotkeyOnEmpty && emptyKey != null && startCount > 0 && pieceCount == 0) {
+      GameModule.getGameModule().fireKeyStroke(emptyKey);
+    }
   }
 
   public void removeAll() {
@@ -312,6 +318,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     setCountExpressions(st.nextStringArray(0));
     expressionCounting = st.nextBoolean(false);
     setGlobalCommands(st.nextStringArray(0));
+    hotkeyOnEmpty = st.nextBoolean(false);
+    emptyKey = st.nextKeyStroke(null);
     
     if (shuffleListener == null) {
       shuffleListener = new KeyStrokeListener(new ActionListener() {
@@ -550,6 +558,22 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public void setReshuffleMsgFormat(String reshuffleMsgFormat) {
     this.reshuffleMsgFormat = reshuffleMsgFormat;
   }
+  
+  public boolean isHotkeyOnEmpty() {
+    return hotkeyOnEmpty;
+  }
+  
+  public void setHotkeyOnEmpty(boolean b) {
+    hotkeyOnEmpty = b;
+  }
+  
+  public KeyStroke getEmptyKey() {
+    return emptyKey;
+  }
+  
+  public void setEmptyKey(KeyStroke k) {
+    emptyKey = k;
+  }
 
   public String getType() {
     SequenceEncoder se = new SequenceEncoder(';');
@@ -558,7 +582,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         String.valueOf(reversible)).append(reshuffleCommand).append(reshuffleTarget).append(reshuffleMsgFormat).append(deckName).append(shuffleMsgFormat)
         .append(reverseMsgFormat).append(faceDownMsgFormat).append(drawFaceUp).append(persistable).append(shuffleKey).append(reshuffleKey).append(String.valueOf(maxStack))
         .append(getCountExpressions()).append(expressionCounting)
-        .append(getGlobalCommands());
+        .append(getGlobalCommands()).append(hotkeyOnEmpty).append(emptyKey);
     return ID + se.getValue();
   }
 
