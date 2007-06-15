@@ -22,7 +22,6 @@ import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 
 public class MapWidget extends Widget {
-
   protected JPanel panel;
   protected JScrollPane mapScroll;
   protected WidgetMap map;
@@ -53,24 +52,22 @@ public class MapWidget extends Widget {
       super.build(e);
     }
     /*
-     * Maps must be built prior to game start, so force a rebuild
-     * immediately. Default for widgets is to defer build until
-     * first call to getComponent()
+     * Maps must be built prior to game start, so force a rebuild immediately. Default for widgets is to defer build
+     * until first call to getComponent()
      */
     rebuild();
   }
-  
+
   /*
-   * Parent Widget has now completed building, so set up Drag Target
-   * handling if our parent is a TabWidget
+   * Parent Widget has now completed building, so set up Drag Target handling if our parent is a TabWidget
    */
   public Component getComponent() {
     if (tab == null && parent instanceof TabWidget) {
       tab = (JTabbedPane) ((TabWidget) parent).getComponent();
       if (tab.getClientProperty(TabSwitcher.class) == null) {
         TabSwitcher switcher = new TabSwitcher(tab);
-        tab.putClientProperty(TabSwitcher.class,switcher);
-        tab.setDropTarget(new DropTarget(tab,DnDConstants.ACTION_MOVE,switcher));
+        tab.putClientProperty(TabSwitcher.class, switcher);
+        tab.setDropTarget(new DropTarget(tab, DnDConstants.ACTION_MOVE, switcher));
       }
     }
     return panel;
@@ -80,7 +77,7 @@ public class MapWidget extends Widget {
     super.addTo(b);
     parent = b;
   }
-  
+
   public void add(Buildable b) {
     if (b instanceof WidgetMap) {
       if (mapScroll != null) {
@@ -118,15 +115,15 @@ public class MapWidget extends Widget {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Name:  "};
+    return new String[]{"Name:  "};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class};
+    return new Class[]{String.class};
   }
 
   public String[] getAttributeNames() {
-    return new String[] {NAME};
+    return new String[]{NAME};
   }
 
   public void setAttribute(String key, Object value) {
@@ -145,10 +142,9 @@ public class MapWidget extends Widget {
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }
-  
   protected static class TabSwitcher implements DropTargetListener {
     protected JTabbedPane tab;
-    
+
     public TabSwitcher(JTabbedPane tab) {
       this.tab = tab;
     }
@@ -163,7 +159,7 @@ public class MapWidget extends Widget {
         }
       }
     }
-    
+
     public void dragEnter(DropTargetDragEvent e) {
     }
 
@@ -177,8 +173,7 @@ public class MapWidget extends Widget {
     }
   }
 
-public WidgetMap getMap() {
-	return map;
-}
-
+  public WidgetMap getMap() {
+    return map;
+  }
 }

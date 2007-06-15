@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 import VASSAL.Info;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 
@@ -167,6 +168,9 @@ public class Prefs {
     if (globalPrefs == null) {
       File prefsFile = new File(Info.getHomeDir(), "Preferences");  //$NON-NLS-1$
       globalPrefs = new Prefs(new PrefsEditor(new ArchiveWriter(prefsFile.getPath())), "VASSAL");  //$NON-NLS-1$
+      DirectoryConfigurer c = new DirectoryConfigurer(MODULES_DIR_KEY, null);
+      c.setValue(new File(System.getProperty("user.home")));
+      globalPrefs.addOption(c);
     }
     return globalPrefs;
   }

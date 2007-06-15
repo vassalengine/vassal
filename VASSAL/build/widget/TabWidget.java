@@ -114,17 +114,7 @@ public class TabWidget extends Widget
     }
     return tab;
   }
-
-  /*
-  public Configurer[] getAttributeConfigurers() {
-    Configurer config[] = new Configurer[1];
-    config[0] = new StringConfigurer
-    (NAME,"Name");
-    config[0].setValue(getConfigureName());
-	listenTo(config[0]);
-    return config;
-  }
-  */
+  
   public String[] getAttributeNames() {
     return new String[]{NAME};
   }
