@@ -286,6 +286,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (map != getMap()) {
       countProperty.removeFromContainer();
       countProperty.addTo(map);
+      for (MutableProperty.Impl prop : expressionProperties) {
+        prop.removeFromContainer();
+        prop.addTo(map);
+      }
     }
     super.setMap(map);
     updateCountsAll();
