@@ -399,16 +399,15 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
   
   protected String getTurnString() {
+    turnFormat.clearProperties();
+    ArrayList turnDesc = getLevelStrings();
+    for (int i = 0; i < turnDesc.size(); i++) {
+      turnFormat.setProperty(LEVEL+(i+1), (String) turnDesc.get(i));
+    }
+    for (int i = turnDesc.size(); i < 10; i++) {
+      turnFormat.setProperty(LEVEL+(i+1), null);
+    }
     return turnFormat.getText(GameModule.getGameModule());
-//    turnFormat.clearProperties();
-//    ArrayList turnDesc = getLevelStrings();
-//    for (int i = 0; i < turnDesc.size(); i++) {
-//      turnFormat.setProperty(LEVEL+(i+1), (String) turnDesc.get(i));
-//    }
-//    for (int i = turnDesc.size(); i < 10; i++) {
-//      turnFormat.setProperty(LEVEL+(i+1), null);
-//    }
-//    return turnFormat.getText();
   }
   
   protected ArrayList getLevelStrings() {
@@ -694,10 +693,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       
       turnLabel.setText(s);
       pack();
-      
-//      TextLayout layout = new TextLayout(getLongestTurn(), turnLabel.getFont(), new FontRenderContext(new AffineTransform(), true, false));
-//      turnLabel.setPreferredSize(new Dimension((int) layout.getBounds().getWidth()+10, (int) layout.getBounds().getHeight()+10));
-//      turnLabel.repaint();
     }
            
     public void mouseClicked(MouseEvent e) {

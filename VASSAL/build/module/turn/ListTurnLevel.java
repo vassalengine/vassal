@@ -60,7 +60,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   
   public ListTurnLevel() {
     super();
-    turnFormat = new FormattedString("$" + TURN_NAME + "$ - $" + TURN_TEXT + "$");
+    turnFormat = new FormattedString("$" + LEVEL_VALUE + "$");
   }
 
   /*

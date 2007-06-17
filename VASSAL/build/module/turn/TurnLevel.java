@@ -47,8 +47,7 @@ public abstract class TurnLevel extends TurnComponent {
   protected static final String NAME = "name";
   protected static final String TURN_FORMAT = "turnFormat";
 
-  protected static final String TURN_NAME = "turnName";
-  protected static final String TURN_TEXT = "turnText";
+  protected static final String LEVEL_VALUE = "value";
 
   protected TurnTracker turn;
   protected JDialog setDialog;
@@ -79,7 +78,7 @@ public abstract class TurnLevel extends TurnComponent {
 
   public TurnLevel() {
     super();
-    turnFormat = new FormattedString("$" + TURN_TEXT + "$");
+    turnFormat = new FormattedString("$" + LEVEL_VALUE + "$");
   }
 
   protected boolean hasSubLevelRolledOver() {
@@ -133,8 +132,7 @@ public abstract class TurnLevel extends TurnComponent {
 
   // Return the description of this turn
   public String getTurnString() {
-    turnFormat.setProperty(TURN_NAME, getConfigureName());
-    turnFormat.setProperty(TURN_TEXT, getValueString());
+    turnFormat.setProperty(LEVEL_VALUE, getValueString());
     return turnFormat.getText();
   }
 
@@ -328,7 +326,7 @@ public abstract class TurnLevel extends TurnComponent {
 
   public static class TurnFormatConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new FormattedStringConfigurer(key, name, new String[] { TURN_NAME, TURN_TEXT });
+      return new FormattedStringConfigurer(key, name, new String[] { LEVEL_VALUE });
     }
   }
 
