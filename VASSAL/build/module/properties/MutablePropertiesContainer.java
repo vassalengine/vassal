@@ -65,9 +65,5 @@ public interface MutablePropertiesContainer {
     public MutableProperty removeMutableProperty(String key) {
       return props.remove(key);
     }
-
-    public void setProperty2(String key, String value) {
-      // TODO Delete this method
-    }
   }
 }

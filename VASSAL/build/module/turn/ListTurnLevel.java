@@ -25,14 +25,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.configure.BooleanConfigurer;
@@ -59,7 +57,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   protected JDialog configDialog;
   protected Component setControls;
-
+  
   public ListTurnLevel() {
     super();
     turnFormat = new FormattedString("$" + TURN_NAME + "$ - $" + TURN_TEXT + "$");
@@ -131,6 +129,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     for (int i = 0; i < getTurnLevelCount(); i++) {
       getTurnLevel(i).setState(sd.nextToken(""));
     }
+    myValue.setPropertyValue(getValueString());
   }
 
   protected String getValueString() {
@@ -183,7 +182,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
         rolledOver = true;
       }
     }
-
+    myValue.setPropertyValue(getValueString());
   }
 
   protected void retreat() {
@@ -204,7 +203,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       }
       current = idx;
     }
-    
+    myValue.setPropertyValue(getValueString());
   }
 
   /* A list turn level is active only if at least one item is active */
@@ -235,7 +234,6 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   public void actionPerformed(ActionEvent arg0) {
     configDialog = new ConfigDialog();
     configDialog.setVisible(true);
-
   }
 
   protected Component getSetControl() {
@@ -248,6 +246,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
         for (int i = 0; i < list.length; i++) {
           if (option.equals(list[i])) {
             current = i;
+            myValue.setPropertyValue(getValueString());
           }
         }
       }

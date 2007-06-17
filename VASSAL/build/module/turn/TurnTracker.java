@@ -63,6 +63,7 @@ import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
+import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.ColorConfigurer;
@@ -144,9 +145,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected int currentLevel = 0;
   protected String id;
   
-  protected ArrayList propertyValues = new ArrayList();
-  protected ArrayList propertyNames = new ArrayList();
-  protected String lastCommand = "";
+  protected MutableProperty.Impl lastCommand = new MutableProperty.Impl(SET,this);
 
   public TurnTracker() {
     
@@ -201,7 +200,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     if (NAME.equals(key)) {
       clearGlobalProperties();
       setConfigureName((String) value);
-      updateGlobalProperties(SET);
+      lastCommand.setPropertyName(getConfigureName()+PROP_COMMAND);
     }
     else if (REPORT_FORMAT.equals(key)) {
       reportFormat.setFormat((String) value);
@@ -344,7 +343,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
  
     //Global Property support
 //    propertyChangeSupport.addPropertyChangeListener(((MutablePropertiesContainer) b).getPropertyListener());
-    updateGlobalProperties(SET);
+    lastCommand.addTo((MutablePropertiesContainer) b);
     
     //Create the turn window
     turnWindow = new TurnWindow();    
@@ -357,7 +356,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     GameModule.getGameModule().getToolBar().remove(launch);
     GameModule.getGameModule().removeCommandEncoder(this);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
-//    propertyChangeSupport.removePropertyChangeListener(((GlobalPropertiesContainer) b).getPropertyListener());
+    lastCommand.removeFromContainer();
     clearGlobalProperties();
   }
 
@@ -400,16 +399,16 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
   
   protected String getTurnString() {
-
-    turnFormat.clearProperties();
-    ArrayList turnDesc = getLevelStrings();
-    for (int i = 0; i < turnDesc.size(); i++) {
-      turnFormat.setProperty(LEVEL+(i+1), (String) turnDesc.get(i));
-    }
-    for (int i = turnDesc.size(); i < 10; i++) {
-      turnFormat.setProperty(LEVEL+(i+1), null);
-    }
-    return turnFormat.getText();
+    return turnFormat.getText(GameModule.getGameModule());
+//    turnFormat.clearProperties();
+//    ArrayList turnDesc = getLevelStrings();
+//    for (int i = 0; i < turnDesc.size(); i++) {
+//      turnFormat.setProperty(LEVEL+(i+1), (String) turnDesc.get(i));
+//    }
+//    for (int i = turnDesc.size(); i < 10; i++) {
+//      turnFormat.setProperty(LEVEL+(i+1), null);
+//    }
+//    return turnFormat.getText();
   }
   
   protected ArrayList getLevelStrings() {
@@ -522,57 +521,14 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
 
   protected void updateTurnDisplay(String command) {
-    
-    updateGlobalProperties(command);
+    this.lastCommand.setPropertyValue(command);
     turnWindow.setControls();
     turnWindow.setColor(color);
     turnWindow.repaint();
   }
 
-  protected void updateGlobalProperties(String command) {
-    ArrayList newValues = getLevelValues();
-    ArrayList newNames = getLevelNames();
-    
-    for (int i=0; i < Math.max(propertyValues.size(), newValues.size()); i++) {
-      String oldValue, newValue, oldName, newName;
-      if (i >= propertyValues.size()) {
-        oldValue = null;
-        oldName = null;
-      }
-      else {
-        oldValue = (String) propertyValues.get(i);
-        oldName = (String) propertyNames.get(i);        
-      }
-      
-      if (i >= newValues.size()) {
-        newValue = null;
-        newName = null;
-      }
-      else {
-        newValue = (String) newValues.get(i);
-        newName = (String) newNames.get(i);
-      }
-      propertyChangeSupport.firePropertyChange(getConfigureName()+PROP_VALUE+(i+1), oldValue, newValue);
-      propertyChangeSupport.firePropertyChange(getConfigureName()+PROP_NAME+(i+1), oldName, newName);
-    }
-    
-    propertyValues = newValues;
-    propertyNames = newNames;
-    
-    propertyChangeSupport.firePropertyChange(getConfigureName()+PROP_COMMAND, lastCommand, command);
-    lastCommand = command;
-  }
-
   protected void clearGlobalProperties() {
-    for (int i=0; i < propertyValues.size(); i++) {
-      propertyChangeSupport.firePropertyChange(getConfigureName()+PROP_VALUE+(i+1), propertyValues.get(i), null);
-      propertyChangeSupport.firePropertyChange(getConfigureName()+PROP_NAME+(i+1), propertyNames.get(i), null);
-    }
-    propertyValues = new ArrayList();
-    propertyNames = new ArrayList();
-    
-    propertyChangeSupport.firePropertyChange(getConfigureName()+PROP_COMMAND, lastCommand, null);
-    lastCommand = "";
+    lastCommand.setPropertyValue(null);
   }
   
   public Command decode(String command) {
@@ -600,7 +556,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   public void setup(boolean gameStarting) {
     launch.setEnabled(gameStarting);
     if (gameStarting) {
-      updateGlobalProperties(SET);
+      lastCommand.setPropertyValue(SET);
     }
     else {
       turnWindow.setVisible(false);
@@ -759,12 +715,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
 
     public void mousePressed(MouseEvent e) {
-//      dragging = true;
-//      lastDrag = e.getPoint();
     }
 
     public void mouseReleased(MouseEvent e) {
-//      dragging = false;
     }
     
     public void doPopup(Point p) {

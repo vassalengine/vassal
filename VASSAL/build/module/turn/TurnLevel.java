@@ -25,17 +25,17 @@ import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
-
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
@@ -63,6 +63,7 @@ public abstract class TurnLevel extends TurnComponent {
 
   protected boolean subLevelRolledOver = false;
   protected boolean rolledOver = false;
+  protected MutableProperty.Impl myValue = new MutableProperty.Impl("",this);
 
   protected FormattedString turnFormat;
 
@@ -262,6 +263,7 @@ public abstract class TurnLevel extends TurnComponent {
       currentSubLevel = 0;
       getTurnLevel(currentSubLevel).setLow();
     }
+    myValue.setPropertyValue(getValueString());
   }
 
   protected void setHigh() {
@@ -269,6 +271,7 @@ public abstract class TurnLevel extends TurnComponent {
       currentSubLevel = getTurnLevelCount() - 1;
       getTurnLevel(currentSubLevel).setHigh();
     }
+    myValue.setPropertyValue(getValueString());
   }
 
   public String[] getAttributeDescriptions() {
@@ -286,6 +289,7 @@ public abstract class TurnLevel extends TurnComponent {
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
+      myValue.setPropertyName(getConfigureName());
     }
     else if (TURN_FORMAT.equals(key)) {
       turnFormat.setFormat((String) value);
@@ -306,10 +310,12 @@ public abstract class TurnLevel extends TurnComponent {
 
   public void addTo(Buildable parent) {
     ((TurnComponent) parent).addLevel(this);
+    myValue.addTo(GameModule.getGameModule());
   }
 
   public void removeFrom(Buildable parent) {
     ((TurnComponent) parent).removeLevel(this);
+    myValue.removeFromContainer();
   }
 
   public HelpFile getHelpFile() {

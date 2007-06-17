@@ -86,6 +86,7 @@ public class CounterTurnLevel extends TurnLevel {
     for (int i = 0; i < getTurnLevelCount(); i++) {
       getTurnLevel(i).setState(sd.nextToken(""));
     }
+    myValue.setPropertyValue(getValueString());
   }
 
   protected String getValueString() {
@@ -132,7 +133,8 @@ public class CounterTurnLevel extends TurnLevel {
         current = loopLimit;
         setRolledOver(true);
       }
-    }    
+    }  
+    myValue.setPropertyValue(getValueString());
   }
 
   protected Component getSetControl() {
@@ -141,14 +143,10 @@ public class CounterTurnLevel extends TurnLevel {
     config.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         current = ((Integer) ((IntConfigurer) e.getSource()).getValue()).intValue();
+        myValue.setPropertyValue(getValueString());
       }});
     
     return config.getControls();
-    
-//    if (getTurnLevelCount() > 0) {
-//      p.add(getTurnLevel(currentSubLevel).getSetControls(turn));
-//    }
-
   }
 
   public String[] getAttributeDescriptions() {
@@ -186,6 +184,7 @@ public class CounterTurnLevel extends TurnLevel {
       }
       start = ((Integer) value).intValue();
       current = start;
+      myValue.setPropertyValue(getValueString());
     }
     else if (INCR.equals(key)) {
       if (value instanceof String) {
