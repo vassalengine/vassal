@@ -41,9 +41,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -365,9 +367,14 @@ public class WizardSupport {
           GameModule.getGameModule().getGameState().setup(false);
           settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
           final WizardPanelProvider panels = createPlayOfflinePanels();
-          Wizard wiz = new BranchingWizard(panels, POST_PLAY_OFFLINE_WIZARD).createWizard();
-          settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
-          controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+          if (panels == null) {
+            controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
+          }
+          else {
+            Wizard wiz = new BranchingWizard(panels, POST_PLAY_OFFLINE_WIZARD).createWizard();
+            settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
+            controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
+          }
         }
       });
       return b;
@@ -592,6 +599,7 @@ public class WizardSupport {
         fileConfig = new FileConfigurer(null,
             Resources.getString("WizardSupport.SavedGame"), GameModule.getGameModule().getGameState().getSavedGameDirectoryPreference()); //$NON-NLS-1$
         fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
+          private Set<File> processing = new HashSet<File>();
           public void propertyChange(PropertyChangeEvent evt) {
             final File f = (File) evt.getNewValue();
             if (f == null || !f.exists()) {
@@ -600,9 +608,15 @@ public class WizardSupport {
             else if (f.isDirectory()) {
               controller.setProblem(""); //$NON-NLS-1$
             }
-            else {
+            else if (!processing.contains(f) ) { // Sometimes the FileConfigurer fires more than one event for the same file
+              processing.add(f);
               try {
-                new SavedGameLoader(controller, settings, new FileInputStream(f), POST_LOAD_GAME_WIZARD).start();
+                new SavedGameLoader(controller, settings, new FileInputStream(f), POST_LOAD_GAME_WIZARD) {
+                  public void run() {
+                    super.run();
+                    processing.remove(f);
+                  }
+                }.start();
               }
               catch (IOException e) {
                 controller.setProblem(Resources.getString("WizardSupport.UnableToLoad")); //$NON-NLS-1$

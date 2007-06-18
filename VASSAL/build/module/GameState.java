@@ -209,6 +209,7 @@ public class GameState implements CommandEncoder {
     if (!gameStarting) {
       pieces.clear();
     }
+    newGame.setEnabled(!gameStarting);
     saveGame.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
     if (gameStarting) {

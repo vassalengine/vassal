@@ -25,6 +25,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+import VASSAL.build.GameModule;
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ui.ShowServerStatusAction;
 import VASSAL.configure.DirectoryConfigurer;
@@ -51,6 +52,7 @@ public class ConsoleControls {
   protected java.awt.Color fgColor = java.awt.Color.black;
   protected Runnable closeConsoleWindow;
   protected Runnable translateModule;
+  protected Runnable showWelcomeWizard;
 
   public ConsoleControls(ConsoleWindow c) {
     this.console = c;
@@ -67,6 +69,11 @@ public class ConsoleControls {
         catch (IOException e) {
           e.printStackTrace();
         }
+      }
+    };
+    showWelcomeWizard = new Runnable() {
+      public void run() {
+        GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
       }
     };
     initComponents();

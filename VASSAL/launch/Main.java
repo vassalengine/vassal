@@ -151,9 +151,12 @@ public class Main {
         new ExtensionsLoader().addTo(GameModule.getGameModule());
       }
       Language.translate();
-      GameModule.getGameModule().getFrame().setVisible(true);
       if (savedGame != null) {
+        GameModule.getGameModule().getFrame().setVisible(true);
         GameModule.getGameModule().getGameState().loadGameInBackground(savedGame);
+      }
+      else {
+        GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
       }
     }
   }
