@@ -45,14 +45,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.tools.SavedGameUpdater;
 import VASSAL.tools.ScrollPane;
 
 public class SavedGameUpdaterDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  private HelpWindow helpWindow;
   private DefaultListModel savedGamesModel;
   private SavedGameUpdater updater = new SavedGameUpdater();
   private Properties oldPieceInfo;
@@ -62,9 +60,8 @@ public class SavedGameUpdaterDialog extends JDialog {
   private JButton updateButton;
   private JTextField versionField;
 
-  public SavedGameUpdaterDialog(Frame owner, HelpWindow helpWindow) throws HeadlessException {
+  public SavedGameUpdaterDialog(Frame owner) throws HeadlessException {
     super(owner, false);
-    this.helpWindow = helpWindow;
     setTitle("Update Saved Games");
     initComponents();
     fc = new JFileChooser();
@@ -145,7 +142,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     }
     catch (MalformedURLException ex) {
     }
-    helpButton.addActionListener(new ShowHelpAction(helpWindow, hf, null));
+    helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
     buttonsBox.add(helpButton);
     JButton closeButton = new JButton("Close");
     closeButton.addActionListener(new ActionListener() {

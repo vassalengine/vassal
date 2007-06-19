@@ -70,7 +70,7 @@ public class TranslateVassalWindow extends TranslateWindow {
   protected Component getButtonPanel() {
     JPanel buttonBox = new JPanel();
     JButton helpButton = new JButton(Resources.getString(Resources.HELP));
-    helpButton.addActionListener(new ShowHelpAction(null,HelpFile.getReferenceManualPage("Translations.htm#application"),null));;
+    helpButton.addActionListener(new ShowHelpAction(HelpFile.getReferenceManualPage("Translations.htm#application").getContents(),null));;
     JButton loadButton = new JButton(Resources.getString(Resources.LOAD));
     loadButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {

@@ -138,14 +138,14 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
     JMenuItem mi = new JMenuItem(Resources.getString("Editor.ModuleEditor.create_module_updater")); //$NON-NLS-1$
     mi.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        new ModuleUpdaterDialog(ModuleEditWindow.this, helpWindow).setVisible(true);
+        new ModuleUpdaterDialog(ModuleEditWindow.this).setVisible(true);
       }
     });
     updaterMenu.add(mi);
     mi = new JMenuItem(Resources.getString("Editor.ModuleEditor.update_saved")); //$NON-NLS-1$
     mi.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        new SavedGameUpdaterDialog(ModuleEditWindow.this, helpWindow).setVisible(true);
+        new SavedGameUpdaterDialog(ModuleEditWindow.this).setVisible(true);
       }
     });
     updaterMenu.add(mi);

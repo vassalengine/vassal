@@ -127,7 +127,7 @@ public class BasicModule extends GameModule {
     GameModule.setUserId(user.getValueString());
   }
 
-protected void initServer() {
+  protected void initServer() {
     DynamicClientFactory dynamicClientFactory = new DynamicClientFactory();
     ChatServerFactory.register(ChatServerFactory.DEFAULT_TYPE, dynamicClientFactory);
     ChatServerFactory.register(NodeClientFactory.NODE_TYPE, NodeClientFactory.getInstance());

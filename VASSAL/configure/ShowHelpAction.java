@@ -36,6 +36,10 @@ public class ShowHelpAction extends AbstractAction {
   private HelpWindow helpWindow;
   private URL contents;
 
+  public ShowHelpAction(URL contents, URL iconURL) {
+    this(null,contents,iconURL);
+  }
+  
   public ShowHelpAction(HelpWindow helpWindow, HelpFile contents, URL iconURL) {
     this(helpWindow, contents == null ? null : contents.getContents(), iconURL);
     setEnabled(contents != null);
@@ -53,7 +57,7 @@ public class ShowHelpAction extends AbstractAction {
   }
   public void actionPerformed(ActionEvent e) {
     if (contents != null) {
-      if ("file".equals(contents.getProtocol())) {
+      if (helpWindow == null) {
         BrowserSupport.openURL(contents);
       }
       else {

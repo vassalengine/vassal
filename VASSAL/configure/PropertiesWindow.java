@@ -103,7 +103,7 @@ public class PropertiesWindow extends JDialog {
     buttonBox.add(cancelButton);
 
     if (target.getHelpFile() != null) {
-      Action helpAction = new ShowHelpAction(helpWindow, target.getHelpFile(), null); 
+      Action helpAction = new ShowHelpAction(target.getHelpFile().getContents(), null); 
       JButton helpButton = new JButton(helpAction);
       buttonBox.add(helpButton);
       pack();

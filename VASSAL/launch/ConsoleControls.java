@@ -17,6 +17,8 @@
 package VASSAL.launch;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -26,9 +28,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ui.ShowServerStatusAction;
 import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
@@ -53,6 +57,8 @@ public class ConsoleControls {
   protected Runnable closeConsoleWindow;
   protected Runnable translateModule;
   protected Runnable showWelcomeWizard;
+  protected Runnable showModuleControls;
+  protected Runnable loadExtensions;
 
   public ConsoleControls(ConsoleWindow c) {
     this.console = c;
@@ -74,6 +80,16 @@ public class ConsoleControls {
     showWelcomeWizard = new Runnable() {
       public void run() {
         GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
+      }
+    };
+    showModuleControls = new Runnable() {
+      public void run() {
+        GameModule.getGameModule().getFrame().setVisible(true);
+      }
+    };
+    loadExtensions = new Runnable() {
+      public void run() {
+        new ExtensionsLoader().addTo(GameModule.getGameModule());
       }
     };
     initComponents();
@@ -99,11 +115,21 @@ public class ConsoleControls {
     LoadModuleAction loadModuleAction = new LoadModuleAction(controls);
     loadModuleAction.addAction(closeConsoleWindow);
     loadModuleAction.addAction(translateModule);
+    loadModuleAction.addAction(showWelcomeWizard);
+    loadModuleAction.addAction(loadExtensions);
     openButton = new javax.swing.JButton(loadModuleAction);
     box.add(openButton);
     Action showStatusAction = new ShowServerStatusAction(new CgiServerStatus(), null);
     JButton statusButton = new JButton(showStatusAction);
     box.add(statusButton);
+    JButton help;
+    try {
+      help = new JButton(new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null));
+      box.add(help);
+    }
+    catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
     controls.add(box);
     box = Box.createHorizontalBox();
     EditModuleAction editModuleAction = new EditModuleAction(controls);
@@ -120,6 +146,7 @@ public class ConsoleControls {
     p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
     loadModuleAction = new LoadModuleAction(controls);
     loadModuleAction.putValue(Action.NAME, Resources.getString("Main.load_module"));
+    loadModuleAction.addAction(showModuleControls);
     EditExtensionAction editExtensionAction = new EditExtensionAction(controls);
     editExtensionAction.addAction(closeConsoleWindow);
     editExtensionAction.setEnabled(false);

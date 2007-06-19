@@ -34,18 +34,14 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.ZipUpdater;
 
 public class ModuleUpdaterDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  private HelpWindow helpWindow;
-
-  public ModuleUpdaterDialog(Frame owner, HelpWindow w) throws HeadlessException {
+  public ModuleUpdaterDialog(Frame owner) throws HeadlessException {
     super(owner, false);
-    this.helpWindow = w;
     setTitle("Module Updater");
     getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     final FileConfigurer fileConfig = new FileConfigurer(null, "File containing older version:  ");
@@ -97,7 +93,7 @@ public class ModuleUpdaterDialog extends JDialog {
     catch (MalformedURLException ex) {
     }
 
-    helpButton.addActionListener(new ShowHelpAction(helpWindow, hf, null));
+    helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
     b.add(saveButton);
     b.add(helpButton);
     b.add(cancelButton);

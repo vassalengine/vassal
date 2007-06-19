@@ -21,6 +21,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -30,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
+import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 
@@ -58,8 +61,10 @@ public class FirstTimeUserPanel {
     Box b = Box.createHorizontalBox();
     JButton tour = new JButton(Resources.getString("Main.tour"));  //$NON-NLS-1$
     JButton jump = new JButton(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
+    JButton help = new JButton(Resources.getString(Resources.HELP));
     b.add(tour);
     b.add(jump);
+    b.add(help);
     JPanel p = new JPanel();
     p.add(b);
     panel.add(p);
@@ -90,6 +95,12 @@ public class FirstTimeUserPanel {
         console.getFrame().setVisible(true);
       }
     });
+    try {
+      help.addActionListener(new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null));
+    }
+    catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
   }
 
 

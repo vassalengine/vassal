@@ -21,7 +21,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.FileChooser;
@@ -50,7 +49,5 @@ public class LoadModuleAction extends GameModuleAction {
 
   protected void loadModule(File f) throws IOException {
     GameModule.init(new BasicModule(new DataArchive(f.getPath())));
-    new ExtensionsLoader().addTo(GameModule.getGameModule());
-    GameModule.getGameModule().getFrame().setVisible(true);
   }
 }

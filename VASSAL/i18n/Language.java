@@ -20,6 +20,8 @@ package VASSAL.i18n;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +51,8 @@ public class Language extends AbstractConfigurable {
   protected static List<Translation> translations =
     new ArrayList<Translation>();
   protected static Language instance;
+  
+  protected static final Collection<Locale> supportedLocales = Arrays.asList(new Locale[]{Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, Locale.ITALIAN});
   /*
    * Master translation property list
    */
@@ -56,6 +60,10 @@ public class Language extends AbstractConfigurable {
 
   public static Language getInstance() {
     return instance;
+  }
+  
+  public static Collection<Locale> getSupportedLocales() {
+    return supportedLocales;
   }
 
   /**

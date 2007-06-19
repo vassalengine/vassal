@@ -39,6 +39,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.imageio.ImageIO;
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -76,6 +79,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandFilter;
 import VASSAL.configure.FileConfigurer;
 import VASSAL.configure.PasswordConfigurer;
+import VASSAL.configure.ShowHelpAction;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
@@ -137,7 +141,14 @@ public class WizardSupport {
     Wizard welcomeWizard = c.createWizard();
     HashMap<String, Wizard> props = new HashMap<String, Wizard>();
     props.put(WELCOME_WIZARD_KEY, welcomeWizard);
-    Object result = WizardDisplayer.showWizard(welcomeWizard, new Rectangle(0, 0, logoSize.width + 400, logoSize.height), null, props);
+    Action help = null;
+    try {
+      help = new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null);
+    }
+    catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
+    Object result = WizardDisplayer.showWizard(welcomeWizard, new Rectangle(0, 0, logoSize.width + 400, logoSize.height), help, props);
     if (result instanceof Map) {
       Map m = (Map) result;
       Object action = m.get(ACTION_KEY);

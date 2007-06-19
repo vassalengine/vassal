@@ -257,7 +257,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   protected Component getButtonPanel() {
     JPanel buttonBox = new JPanel();
     JButton helpButton = new JButton(Resources.getString(Resources.HELP));
-    helpButton.addActionListener(new ShowHelpAction(null,HelpFile.getReferenceManualPage("Translations.htm#module"),null));;
+    helpButton.addActionListener(new ShowHelpAction(HelpFile.getReferenceManualPage("Translations.htm#module").getContents(),null));;
     buttonBox.add(helpButton);
     JButton okButton = new JButton(Resources.getString(Resources.OK));
     okButton.addActionListener(new ActionListener() {
