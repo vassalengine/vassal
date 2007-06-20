@@ -17,17 +17,22 @@
 package VASSAL.launch;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import VASSAL.build.GameModule;
@@ -101,6 +106,25 @@ public class FirstTimeUserPanel {
     catch (MalformedURLException e) {
       e.printStackTrace();
     }
+    b = Box.createHorizontalBox();
+    b.add(new JLabel(Resources.getString("Prefs.language")+":  "));
+    final JComboBox box = new JComboBox(Resources.getSupportedLocales().toArray());
+    box.setRenderer(new DefaultListCellRenderer() {
+      public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        setText(((Locale)value).getDisplayName());
+        return this;
+      }
+    });
+    box.setSelectedItem(Resources.getLocale());
+    box.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Resources.setLocale((Locale) box.getSelectedItem());
+        console.setControls(new FirstTimeUserPanel(console).getControls());
+      }
+    });
+    b.add(box);
+    panel.add(b);
   }
 
 

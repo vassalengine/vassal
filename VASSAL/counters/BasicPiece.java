@@ -47,7 +47,7 @@ import VASSAL.command.AddPiece;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.DataArchive;
@@ -410,7 +410,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
 
   public String getLocalizedName() {
     String key = TranslatablePiece.PREFIX + getName();
-    return Language.translate(key, getName());
+    return Localization.getInstance().translate(key, getName());
   }
   
   public Command keyEvent(KeyStroke stroke) {

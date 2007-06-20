@@ -22,7 +22,7 @@ import java.awt.Point;
 import javax.swing.KeyStroke;
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
@@ -344,6 +344,6 @@ public abstract class Decorator implements GamePiece, StateMergeable {
   
   protected String getTranslation(String key) {
     String fullKey = TranslatablePiece.PREFIX + key;
-    return Language.translate(fullKey, key);
+    return Localization.getInstance().translate(fullKey, key);
   }
 }

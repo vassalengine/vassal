@@ -125,6 +125,7 @@ public class BasicModule extends GameModule {
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
     GameModule.setUserId(user.getValueString());
+
   }
 
   protected void initServer() {
@@ -241,15 +242,15 @@ public class BasicModule extends GameModule {
     frame.setTitle(gameName);
   }
 
-  protected <T> void ensureComponent(Class<T> componentClass) {
+  protected void ensureComponent(Class<? extends Buildable> componentClass) {
     if (getComponentsOf(componentClass).isEmpty()) {
       addComponent(componentClass);
     }
   }
 
-  protected <T> void addComponent(Class<T> componentClass) {
+  protected void addComponent(Class<? extends Buildable> componentClass) {
     try {
-      Buildable child = (Buildable) componentClass.newInstance();
+      Buildable child = componentClass.newInstance();
       child.build(null);
       child.addTo(this);
       add(child);

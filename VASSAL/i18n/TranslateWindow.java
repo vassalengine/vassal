@@ -125,7 +125,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   protected Component getHeaderPanel() {
     JPanel langPanel = new JPanel();
     langPanel.add(new JLabel("Language:  "));
-    langBox = new JComboBox(Language.getTranslationList());
+    langBox = new JComboBox(Localization.getInstance().getTranslationList());
     langPanel.add(langBox);
     boxListener = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -135,7 +135,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       }
     };
     langBox.addActionListener(boxListener);
-    if (Language.getTranslationList().length > 0) {
+    if (Localization.getInstance().getTranslationList().length > 0) {
       langBox.setSelectedIndex(0);
     }
     langPanel.setMinimumSize(new Dimension(800, 0));
@@ -167,9 +167,9 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * @param target new Translation
    */
   protected void refreshTranslationList(Configurable target) {
-    myConfigureTree.externalInsert(Language.getInstance(), target);
+    myConfigureTree.externalInsert(Localization.getInstance(), target);
     langBox.removeAllItems();
-    String[] langs = Language.getTranslationList();
+    String[] langs = Localization.getInstance().getTranslationList();
     for (int i=0; i < langs.length; i++) {
       langBox.addItem(langs[i]);
     }
@@ -310,7 +310,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
         }
       }
     }
-    currentTranslation = Language.getTranslation(selectedTranslation);
+    currentTranslation = Localization.getInstance().getTranslation(selectedTranslation);
     lastSelectedLangIndex = langBox.getSelectedIndex();
     if (keyTable != null) {
       ((MyTableModel) keyTable.getModel()).update();

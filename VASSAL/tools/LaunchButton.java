@@ -27,7 +27,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.StringConfigurer;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 
 /**
@@ -116,7 +116,7 @@ public class LaunchButton extends JButton {
   public void setAttribute(String key, Object value) {
     if (key != null) {
       if (key.equals(nameAtt)) {
-        if (Language.isTranslationInProgress()) {
+        if (Localization.getInstance().isTranslationInProgress()) {
           putClientProperty(UNTRANSLATED_TEXT, getText());
         }
         setText((String) value);

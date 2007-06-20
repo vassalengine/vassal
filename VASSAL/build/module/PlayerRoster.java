@@ -47,7 +47,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
@@ -93,7 +93,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       for (int i = 0; i < attributes.getLength(); ++i) {
         Attr att = (Attr) attributes.item(i);
         retireButton.setAttribute(att.getName(), att.getValue());
-        Language.saveTranslatableAttribute(this, att.getName(), att.getValue());
+        Localization.getInstance().saveTranslatableAttribute(this, att.getName(), att.getValue());
       }
       NodeList n = e.getElementsByTagName("*"); //$NON-NLS-1$
       sides.clear();
@@ -101,7 +101,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         Element el = (Element) n.item(i);
         sides.add(Builder.getText(el));
       }
-      Language.saveTranslatableAttribute(this, SIDES, getSidesAsString());
+      Localization.getInstance().saveTranslatableAttribute(this, SIDES, getSidesAsString());
     }
   }
 

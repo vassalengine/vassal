@@ -25,7 +25,7 @@ import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Translatable;
 
 /**
@@ -61,10 +61,10 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
     if (changeSupport != null) {
       changeSupport.firePropertyChange(NAME_PROPERTY, oldName, s);
     }
-    if (Language.isTranslationInProgress()) {
+    if (Localization.getInstance().isTranslationInProgress()) {
       localizedName = s;
     }
-    else if (Language.isTranslationComplete()) {
+    else if (Localization.getInstance().isTranslationComplete()) {
       name = s;
     }
     else {

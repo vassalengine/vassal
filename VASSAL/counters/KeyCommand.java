@@ -23,7 +23,7 @@ import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 
@@ -131,7 +131,7 @@ public class KeyCommand extends AbstractAction {
           }
         }
         if (key != null) {
-          localizedName = Language.translate(key, name); 
+          localizedName = Localization.getInstance().translate(key, name); 
         }
       }
       localizedMenuText = stroke == null ? localizedName : localizedName + "  " + HotKeyConfigurer.getString(stroke);

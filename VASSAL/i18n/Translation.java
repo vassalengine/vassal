@@ -92,22 +92,17 @@ public class Translation extends AbstractConfigurable
   }
 
   public void removeFrom(Buildable parent) {
-    ((Language) parent).removeTranslation(this);
+    Localization.getInstance().removeTranslation(this);
   }
 
   public void addTo(Buildable parent) {
-    ((Language) parent).addTranslation(this);
+    Localization.getInstance().addTranslation(this);
     if (!GameModule.getGameModule().isLocalizationEnabled()) {
       try {
         loadProperties();
       }
       catch (IOException e) {
         // Fail quietly - This error will occur when adding a new translation
-//        String msg = e.getMessage();
-//        if (msg == null) {
-//          msg = "IOException";
-//        }
-//        throw new IllegalArgumentException(msg,e);   
       }
     }
   }

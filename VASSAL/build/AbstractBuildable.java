@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Translatable;
 
 /**
@@ -63,7 +63,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
          * cannot be built. 
          */
         if (this instanceof Translatable) {
-          Language.saveTranslatableAttribute((Translatable) this, att.getName(), att.getValue());
+          Localization.getInstance().saveTranslatableAttribute((Translatable) this, att.getName(), att.getValue());
         }
 			}
 			Builder.build(e, this);

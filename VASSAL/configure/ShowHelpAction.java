@@ -25,6 +25,7 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 
 /**
@@ -52,7 +53,7 @@ public class ShowHelpAction extends AbstractAction {
       putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
     }
     else {
-      putValue(Action.NAME, "Help");
+      putValue(Action.NAME, Resources.getString(Resources.HELP));
     }
   }
   public void actionPerformed(ActionEvent e) {

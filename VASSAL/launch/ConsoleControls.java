@@ -33,7 +33,7 @@ import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ui.ShowServerStatusAction;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.ShowHelpAction;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.FileChooser;
@@ -70,7 +70,7 @@ public class ConsoleControls {
     translateModule = new Runnable() {
       public void run() {
         try {
-          Language.translate();
+          Localization.getInstance().translate();
         }
         catch (IOException e) {
           e.printStackTrace();

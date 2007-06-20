@@ -32,7 +32,7 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
@@ -150,7 +150,7 @@ public class Main {
         GameModule.init(new BasicModule(new DataArchive(moduleFile.getPath())));
         new ExtensionsLoader().addTo(GameModule.getGameModule());
       }
-      Language.translate();
+      Localization.getInstance().translate();
       if (savedGame != null) {
         GameModule.getGameModule().getFrame().setVisible(true);
         GameModule.getGameModule().getGameState().loadGameInBackground(savedGame);

@@ -61,7 +61,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
@@ -494,7 +494,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public void setDeckName(String n) {
-    if (Language.isTranslationInProgress()) {
+    if (Localization.getInstance().isTranslationInProgress()) {
       untranslatedDeckName = deckName;
     }
     deckName = n;

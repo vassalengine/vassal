@@ -67,7 +67,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
 import VASSAL.i18n.ComponentI18nData;
-import VASSAL.i18n.Language;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translatable;
 import VASSAL.tools.SequenceEncoder;
@@ -260,8 +260,8 @@ public class BoardPicker implements ActionListener,
       }
       
       // Record attributes for later translation
-      Language.saveTranslatableAttribute(this, BOARD_PROMPT, boardPrompt);
-      Language.saveTranslatableAttribute(this, DIALOG_TITLE, title);
+      Localization.getInstance().saveTranslatableAttribute(this, BOARD_PROMPT, boardPrompt);
+      Localization.getInstance().saveTranslatableAttribute(this, DIALOG_TITLE, title);
     }
   }
 
