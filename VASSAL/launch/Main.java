@@ -131,7 +131,14 @@ public class Main {
   }
 
   protected void launch() throws IOException {
-    if (moduleFile == null) {
+    if (builtInModule) {
+      GameModule.init(new BasicModule(new JarArchive()));
+      for (String ext : autoExtensions) {
+        new ModuleExtension(new JarArchive(ext)).build();
+      }
+      GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
+    }
+    else if (moduleFile == null) {
       ConsoleWindow w = new ConsoleWindow();
       w.setControls(isFirstTime ? new FirstTimeUserPanel(w).getControls() : new ConsoleControls(w).getControls());
       w.getFrame().setVisible(true);
@@ -140,16 +147,8 @@ public class Main {
       new EditModuleAction(null).loadModule(moduleFile);
     }
     else {
-      if (builtInModule) {
-        GameModule.init(new BasicModule(new JarArchive()));
-        for (String ext : autoExtensions) {
-          new ModuleExtension(new JarArchive(ext)).build();
-        }
-      }
-      else {
-        GameModule.init(new BasicModule(new DataArchive(moduleFile.getPath())));
-        new ExtensionsLoader().addTo(GameModule.getGameModule());
-      }
+      GameModule.init(new BasicModule(new DataArchive(moduleFile.getPath())));
+      new ExtensionsLoader().addTo(GameModule.getGameModule());
       Localization.getInstance().translate();
       if (savedGame != null) {
         GameModule.getGameModule().getFrame().setVisible(true);
