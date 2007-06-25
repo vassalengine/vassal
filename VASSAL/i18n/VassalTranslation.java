@@ -19,7 +19,6 @@
 package VASSAL.i18n;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,8 +108,7 @@ public class VassalTranslation extends Translation {
     dirty = false;
   }
 
-  protected void loadProperties(File file) throws IOException {
-    InputStream in = new FileInputStream(file);
+  protected void loadProperties(InputStream in) throws IOException {
     localProperties.load(in);
     dirty = false;
   }

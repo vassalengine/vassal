@@ -22,8 +22,12 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -63,6 +67,30 @@ public class TranslateVassalWindow extends TranslateWindow {
   protected Component getHeaderPanel() {
     JPanel headPanel = new JPanel();
     localeConfig = new LocaleConfigurer(null, "", new Locale(Locale.getDefault().getLanguage()));
+    localeConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        Locale l = localeConfig.getValueLocale();
+        if (!Resources.getSupportedLocales().contains(l)) {
+          l = new Locale(l.getLanguage());
+        }
+        if (Resources.getSupportedLocales().contains(l)) {
+          InputStream in = getClass().getResourceAsStream("VASSAL_"+l+".properties");
+          if (in != null) { 
+            try {
+              ((VassalTranslation)target).loadProperties(in);
+              ((MyTableModel) keyTable.getModel()).fireTableDataChanged();
+            }
+            catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+        else {
+          ((VassalTranslation) target).clearProperties();
+          ((MyTableModel) keyTable.getModel()).fireTableDataChanged();
+        }
+      }
+    });
     headPanel.add(localeConfig.getControls());
     return headPanel;
   }
@@ -141,7 +169,7 @@ public class TranslateVassalWindow extends TranslateWindow {
       localeConfig.setValue(locale);
     }
     try {
-      ((VassalTranslation) target).loadProperties(file);
+      ((VassalTranslation) target).loadProperties(new FileInputStream(file));
     }
     catch (IOException e) {
       e.printStackTrace();
