@@ -45,6 +45,7 @@ import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.DiceButton;
+import VASSAL.build.module.DoActionButton;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalKeyCommand;
@@ -55,7 +56,6 @@ import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.MultiActionButton;
 import VASSAL.build.module.NotesWindow;
 import VASSAL.build.module.PieceWindow;
-import VASSAL.build.module.PlaySoundButton;
 import VASSAL.build.module.PlayerHand;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.PredefinedSetup;
@@ -70,6 +70,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
+import VASSAL.build.module.turn.TurnTracker;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
@@ -275,7 +276,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
                   PrototypesContainer.class,
                   ToolbarMenu.class,
                   MultiActionButton.class,
-                  PlaySoundButton.class,
+                  DoActionButton.class,
                   DiceButton.class,
                   GlobalKeyCommand.class,
                   Inventory.class,
@@ -286,7 +287,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
                   ChartWindow.class,
                   PrivateMap.class,
                   PlayerHand.class,
-                  NotesWindow.class
+                  NotesWindow.class,
+                  TurnTracker.class
                 };
     return c;
   }

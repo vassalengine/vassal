@@ -44,15 +44,17 @@ import VASSAL.tools.FormattedString;
 
 public abstract class TurnLevel extends TurnComponent {
 
-  protected static final String NAME = "name";
-  protected static final String TURN_FORMAT = "turnFormat";
-
-  protected static final String LEVEL_VALUE = "value";
+  protected static final String NAME = "name"; //$NON-NLS-1$
+  protected static final String PROP = "property"; //$NON-NLS-1$
+  protected static final String TURN_FORMAT = "turnFormat"; //$NON-NLS-1$
+  protected static final String LEVEL_VALUE = "value"; //$NON-NLS-1$
 
   protected TurnTracker turn;
   protected JDialog setDialog;
   protected JPanel levelSetControls = null;
   protected Component childSetControls = null;
+  protected TurnComponent parent = null;
+  protected String propertyName;
 
   protected int start = 0; // Counter Start value
 
@@ -62,7 +64,7 @@ public abstract class TurnLevel extends TurnComponent {
 
   protected boolean subLevelRolledOver = false;
   protected boolean rolledOver = false;
-  protected MutableProperty.Impl myValue = new MutableProperty.Impl("",this);
+  protected MutableProperty.Impl myValue = new MutableProperty.Impl("",this); //$NON-NLS-1$
 
   protected FormattedString turnFormat;
 
@@ -78,7 +80,7 @@ public abstract class TurnLevel extends TurnComponent {
 
   public TurnLevel() {
     super();
-    turnFormat = new FormattedString("$" + LEVEL_VALUE + "$");
+    turnFormat = new FormattedString("$" + LEVEL_VALUE + "$"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   protected boolean hasSubLevelRolledOver() {
@@ -273,21 +275,24 @@ public abstract class TurnLevel extends TurnComponent {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { "Name:  ", "Turn Format:  " };
+    return new String[] { "Description:  ", "Property Name:  ", "Turn Level Format:  " };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] { String.class, TurnFormatConfig.class };
+    return new Class[] { String.class, String.class, TurnFormatConfig.class };
   }
 
   public String[] getAttributeNames() {
-    return new String[] { NAME, TURN_FORMAT };
+    return new String[] { NAME, PROP, TURN_FORMAT };
   }
 
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
-      myValue.setPropertyName(getConfigureName());
+    }
+    else if (PROP.equals(key)) {
+      propertyName = (String) value;
+      myValue.setPropertyName(propertyName);
     }
     else if (TURN_FORMAT.equals(key)) {
       turnFormat.setFormat((String) value);
@@ -301,12 +306,16 @@ public abstract class TurnLevel extends TurnComponent {
     else if (TURN_FORMAT.equals(key)) {
       return turnFormat.getFormat();
     }
+    else if (PROP.equals(key)) {
+      return propertyName;
+    }
     else {
-      return "";
+      return ""; //$NON-NLS-1$
     }
   }
 
   public void addTo(Buildable parent) {
+    this.parent = (TurnComponent) parent;
     ((TurnComponent) parent).addLevel(this);
     myValue.addTo(GameModule.getGameModule());
   }

@@ -143,8 +143,8 @@ public abstract class ListConfigurer extends Configurer
 
       for (Object value : getListValue()) {
         final Configurer c = buildChildConfigurer();
-        c.addPropertyChangeListener(this);
         c.setValue(value);
+        c.addPropertyChangeListener(this);
         configurers.add(c);
         final Box b = Box.createHorizontalBox();
         JButton delButton = new JButton("Remove");

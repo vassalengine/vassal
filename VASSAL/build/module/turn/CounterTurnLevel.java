@@ -29,10 +29,10 @@ import VASSAL.tools.SequenceEncoder;
 
 public class CounterTurnLevel extends TurnLevel {
 
-  protected static final String START = "start";
-  protected static final String INCR = "incr";
-  protected static final String LOOP = "loop";
-  protected static final String LOOP_LIMIT = "loopLimit";
+  protected static final String START = "start"; //$NON-NLS-1$
+  protected static final String INCR = "incr"; //$NON-NLS-1$
+  protected static final String LOOP = "loop"; //$NON-NLS-1$
+  protected static final String LOOP_LIMIT = "loopLimit"; //$NON-NLS-1$
   
   protected int incr = 1;
   protected boolean loop = false;
@@ -84,20 +84,20 @@ public class CounterTurnLevel extends TurnLevel {
     loop = sd.nextBoolean(false);
     loopLimit = sd.nextInt(-1);
     for (int i = 0; i < getTurnLevelCount(); i++) {
-      getTurnLevel(i).setState(sd.nextToken(""));
+      getTurnLevel(i).setState(sd.nextToken("")); //$NON-NLS-1$
     }
     myValue.setPropertyValue(getValueString());
   }
 
   protected String getValueString() {
-    return current + "";
+    return current + ""; //$NON-NLS-1$
   }
 
   /* (non-Javadoc)
    * @see turn.TurnLevel#getLongestValueName()
    */
   protected String getLongestValueName() {
-    return start < 10000 ? "9999" : start+"";
+    return start < 10000 ? "9999" : start+""; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   /* 
@@ -139,7 +139,7 @@ public class CounterTurnLevel extends TurnLevel {
 
   protected Component getSetControl() {
     
-    IntConfigurer config = new IntConfigurer("", " "+getConfigureName()+":  ", new Integer(current));
+    IntConfigurer config = new IntConfigurer("", " "+getConfigureName()+":  ", new Integer(current)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     config.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         current = ((Integer) ((IntConfigurer) e.getSource()).getValue()).intValue();
@@ -212,16 +212,16 @@ public class CounterTurnLevel extends TurnLevel {
 
   public String getAttributeValueString(String key) {
     if (START.equals(key)) {
-      return start + "";
+      return start + ""; //$NON-NLS-1$
     }
     else if (INCR.equals(key)) {
-      return incr + "";
+      return incr + ""; //$NON-NLS-1$
     }
     else if (LOOP.equals(key)) {
-      return loop + "";
+      return loop + ""; //$NON-NLS-1$
     }
     else if (LOOP_LIMIT.equals(key)) {
-      return loopLimit + "";
+      return loopLimit + ""; //$NON-NLS-1$
     }
     else
       return super.getAttributeValueString(key);
