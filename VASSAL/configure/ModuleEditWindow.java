@@ -117,7 +117,7 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
     fileMenu.add(mi);
     fileMenu.add(new CreateInstallerAction(this));
     mb.add(fileMenu);    
-    mb.add(tree.buildEditMenu());    
+    mb.add(tree.getEditMenu());    
     if (helpAction != null) {
       JMenu helpMenu = new JMenu(Resources.getString(Resources.HELP));
       mi = new JMenuItem(Resources.getString("Editor.ModuleEditor.reference_manual")); //$NON-NLS-1$
