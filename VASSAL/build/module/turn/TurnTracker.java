@@ -40,6 +40,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -478,14 +479,13 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
     
     captureState();
-
   }
   
   protected String getTurnString() {
     turnFormat.clearProperties();
-    ArrayList turnDesc = getLevelStrings();
+    List<String> turnDesc = getLevelStrings();
     for (int i = 0; i < turnDesc.size(); i++) {
-      turnFormat.setProperty(LEVEL+(i+1), (String) turnDesc.get(i));
+      turnFormat.setProperty(LEVEL+(i+1), turnDesc.get(i));
     }
     for (int i = turnDesc.size(); i < 10; i++) {
       turnFormat.setProperty(LEVEL+(i+1), null);
@@ -493,8 +493,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     return turnFormat.getText(GameModule.getGameModule());
   }
   
-  protected ArrayList getLevelStrings() {
-    ArrayList turnDesc = new ArrayList(5);
+  protected List<String> getLevelStrings() {
+    ArrayList<String> turnDesc = new ArrayList<String>(5);
     TurnLevel level = getTurnLevel(currentLevel);
     if (level != null) {
       level.getTurnStrings(turnDesc);
@@ -502,8 +502,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     return turnDesc;
   }
   
-  protected ArrayList getLevelValues() {
-    ArrayList turnDesc = new ArrayList(5);
+  protected List<String> getLevelValues() {
+    ArrayList<String> turnDesc = new ArrayList<String>(5);
     TurnLevel level = getTurnLevel(currentLevel);
     if (level != null) {
       level.getTurnValues(turnDesc);
@@ -511,8 +511,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     return turnDesc;
   }
   
-  protected ArrayList getLevelNames() {
-    ArrayList turnDesc = new ArrayList(5);
+  protected List<String> getLevelNames() {
+    ArrayList<String> turnDesc = new ArrayList<String>(5);
     TurnLevel level = getTurnLevel(currentLevel);
     if (level != null) {
       level.getTurnNames(turnDesc);

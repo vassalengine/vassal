@@ -138,21 +138,21 @@ public abstract class TurnLevel extends TurnComponent {
     return turnFormat.getText();
   }
 
-  public void getTurnStrings(ArrayList desc) {
+  public void getTurnStrings(ArrayList<String> desc) {
     desc.add(getTurnString());
     if (getTurnLevelCount() > 0) {
       getTurnLevel(currentSubLevel).getTurnStrings(desc);
     }
   }
   
-  public void getTurnValues(ArrayList desc) {
+  public void getTurnValues(ArrayList<String> desc) {
     desc.add(getValueString());
     if (getTurnLevelCount() > 0) {
       getTurnLevel(currentSubLevel).getTurnValues(desc);
     }
   }
 
-  public void getTurnNames(ArrayList desc) {
+  public void getTurnNames(ArrayList<String> desc) {
     desc.add(getConfigureName());
     if (getTurnLevelCount() > 0) {
       getTurnLevel(currentSubLevel).getTurnNames(desc);

@@ -50,7 +50,7 @@ public class ServerConfigurer extends Configurer {
   private static final String DISCONNECTED = Resources.getString("Server.select_server_type"); //$NON-NLS-1$
   private static final String BUTTON = "Button"; //$NON-NLS-1$
   private static final String DYNAMIC_BUTTON = Resources.getString("Server.default"); //$NON-NLS-1$
-  private static final String JABBER_BUTTON = Resources.getString("Server.jabber"); //$NON-NLS-1$
+  private static final String JABBER_BUTTON = "Jabber"; //$NON-NLS-1$
   private static final String DIRECT_BUTTON = Resources.getString("Server.direct"); //$NON-NLS-1$
   private static final String ENCODING = "ISO-8859-1"; //$NON-NLS-1$
   private Box controls;

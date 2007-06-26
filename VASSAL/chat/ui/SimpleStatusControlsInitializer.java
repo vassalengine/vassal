@@ -41,7 +41,7 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
   }
 
   public void initializeControls(final ChatServerControls controls) {
-    lookingBox = new JButton(Resources.getString("Chat.looking_for_game")); //$NON-NLS-1$
+    lookingBox = new JButton(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
     lookingBox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         if (client != null) {

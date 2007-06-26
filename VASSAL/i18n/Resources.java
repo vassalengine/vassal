@@ -47,7 +47,7 @@ public class Resources {
   protected static String EDITOR_BUNDLE = "VASSAL.i18n.Editor"; //$NON-NLS-1$
   protected static String VASSAL_BUNDLE = "VASSAL.i18n.VASSAL"; //$NON-NLS-1$
   public static final String LOCALE_PREF_KEY = "Locale"; // Preferences key for the user's Locale
-  protected static final Collection<Locale> supportedLocales = Arrays.asList(new Locale[]{Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, Locale.ITALIAN});
+  protected static final Collection<Locale> supportedLocales = Arrays.asList(new Locale[]{Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, Locale.ITALIAN, Locale.JAPANESE});
   /*
    * Format a string with options. Convenience methods for most common case of one or two parameters. Will be heavily
    * used, so try and minimise the number of Object arrays being created

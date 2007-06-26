@@ -21,6 +21,7 @@ package VASSAL.build.module.turn;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -31,7 +32,7 @@ import VASSAL.build.module.documentation.HelpFile;
  */
 public class TurnComponent extends AbstractConfigurable {
 
-  protected ArrayList levels = new ArrayList();
+  protected List<TurnLevel> levels = new ArrayList<TurnLevel>();
   
   public void addLevel(TurnLevel t) {
     levels.add(t);
@@ -49,7 +50,7 @@ public class TurnComponent extends AbstractConfigurable {
     if (i >= levels.size()) {
       return null;
     }
-    return (TurnLevel) levels.get(i);
+    return levels.get(i);
   }
 
   protected int getTurnLevelCount() {
