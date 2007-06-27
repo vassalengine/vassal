@@ -96,6 +96,9 @@ public class PrefsEditor {
     buttonPanel.add(save);
     buttonPanel.add(cancel);
     optionsTab = new JTabbedPane();
+    JPanel pan = new JPanel();
+    pan.setLayout(new BoxLayout(pan, BoxLayout.Y_AXIS));
+    optionsTab.addTab(Resources.getString("Prefs.general_tab"), pan);
   }
 
   public void initDialog(Frame parent) {

@@ -18,19 +18,26 @@
  */
 package VASSAL.i18n;
 
+import java.awt.Component;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.swing.Action;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.UIManager;
 import VASSAL.Info;
-import VASSAL.configure.StringConfigurer;
+import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
 import VASSAL.preferences.Prefs;
 
 public class Resources {
@@ -58,14 +65,38 @@ public class Resources {
   protected static Locale locale = Locale.getDefault();
 
   static {
-    StringConfigurer localeConfig = new StringConfigurer(Resources.LOCALE_PREF_KEY, null, Resources.getLocale().getLanguage());
-    Prefs.getGlobalPrefs().addOption(null, localeConfig);
+    List<String> languages = new ArrayList<String>();
+    for (Locale l : getSupportedLocales()) {
+      languages.add(l.getLanguage());
+    }
+    StringEnumConfigurer localeConfig = new StringEnumConfigurer(Resources.LOCALE_PREF_KEY, Resources.getString("Prefs.language"), languages.toArray(new String[languages.size()])) {
+      public Component getControls() {
+        if (box == null) {
+          Component c = super.getControls();
+          box.setRenderer(new DefaultListCellRenderer() {
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+              JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+              l.setText(new Locale((String)value).getDisplayLanguage());
+              return l;
+            }
+          });
+          return c;
+        }
+        else {
+          return super.getControls();
+        }
+      }
+    };
+    localeConfig.setValue(Resources.getLocale().getLanguage());
+    Prefs.getGlobalPrefs().addOption(localeConfig);
     Locale l = new Locale(localeConfig.getValueString());
     if (!Resources.getSupportedLocales().contains(l)) {
       l = Locale.ENGLISH;
       localeConfig.setValue(l.toString());
     }
     Resources.setLocale(l);
+    // Because the global prefs editor was initialized before the locale, we have to localize the "Edit Preferences" action by hand
+    Prefs.getGlobalPrefs().getEditor().getEditAction().putValue(Action.NAME, getString("Prefs.edit_preferences"));
   }
 
   public static Collection<Locale> getSupportedLocales() {
