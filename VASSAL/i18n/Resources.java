@@ -31,7 +31,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -69,7 +68,13 @@ public class Resources {
     for (Locale l : getSupportedLocales()) {
       languages.add(l.getLanguage());
     }
-    StringEnumConfigurer localeConfig = new StringEnumConfigurer(Resources.LOCALE_PREF_KEY, Resources.getString("Prefs.language"), languages.toArray(new String[languages.size()])) {
+    String savedLocale = Prefs.getGlobalPrefs().getStoredValue(LOCALE_PREF_KEY);
+    Locale preferredLocale = new Locale(savedLocale == null ? Locale.getDefault().getLanguage() : savedLocale);
+    if (!Resources.getSupportedLocales().contains(preferredLocale)) {
+      preferredLocale = Locale.ENGLISH;
+    }
+    Resources.setLocale(preferredLocale);
+    StringEnumConfigurer localeConfig = new StringEnumConfigurer(Resources.LOCALE_PREF_KEY, getString("Prefs.language"), languages.toArray(new String[languages.size()])) {
       public Component getControls() {
         if (box == null) {
           Component c = super.getControls();
@@ -88,15 +93,7 @@ public class Resources {
       }
     };
     localeConfig.setValue(Resources.getLocale().getLanguage());
-    Prefs.getGlobalPrefs().addOption(localeConfig);
-    Locale l = new Locale(localeConfig.getValueString());
-    if (!Resources.getSupportedLocales().contains(l)) {
-      l = Locale.ENGLISH;
-      localeConfig.setValue(l.toString());
-    }
-    Resources.setLocale(l);
-    // Because the global prefs editor was initialized before the locale, we have to localize the "Edit Preferences" action by hand
-    Prefs.getGlobalPrefs().getEditor().getEditAction().putValue(Action.NAME, getString("Prefs.edit_preferences"));
+    Prefs.getGlobalPrefs().addOption(getString("Prefs.general_tab"),localeConfig);
   }
 
   public static Collection<Locale> getSupportedLocales() {

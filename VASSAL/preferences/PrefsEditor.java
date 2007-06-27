@@ -65,19 +65,6 @@ public class PrefsEditor {
     savedValues = new HashMap<Configurer,Object>();
     this.archive = archive;
 
-    editAction = new AbstractAction(Resources.getString("Prefs.edit_preferences")) { //$NON-NLS-1$
-      private static final long serialVersionUID = 1L;
-
-      public void actionPerformed(ActionEvent e) {
-        storeValues();
-        dialog.pack();
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        dialog.setLocation(d.width / 2 - dialog.getWidth() / 2, 0);
-        dialog.setVisible(true);
-      }
-    };
-    editAction.putValue(Action.MNEMONIC_KEY, new Integer('P'));
-
     prefs = new ArrayList<Prefs>();
 
     save = new JButton(Resources.getString(Resources.OK));
@@ -96,9 +83,6 @@ public class PrefsEditor {
     buttonPanel.add(save);
     buttonPanel.add(cancel);
     optionsTab = new JTabbedPane();
-    JPanel pan = new JPanel();
-    pan.setLayout(new BoxLayout(pan, BoxLayout.Y_AXIS));
-    optionsTab.addTab(Resources.getString("Prefs.general_tab"), pan);
   }
 
   public void initDialog(Frame parent) {
@@ -227,6 +211,20 @@ public class PrefsEditor {
   }
 
   public Action getEditAction() {
+    if (editAction == null) {
+      editAction = new AbstractAction(Resources.getString("Prefs.edit_preferences")) { //$NON-NLS-1$
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          storeValues();
+          dialog.pack();
+          Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+          dialog.setLocation(d.width / 2 - dialog.getWidth() / 2, 0);
+          dialog.setVisible(true);
+        }
+      };
+      editAction.putValue(Action.MNEMONIC_KEY, new Integer('P'));
+    }
     return editAction;
   }
 
