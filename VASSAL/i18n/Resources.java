@@ -26,8 +26,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -64,7 +64,7 @@ public class Resources {
   protected static Locale locale = Locale.getDefault();
 
   static {
-    List<String> languages = new ArrayList<String>();
+    ArrayList<String> languages = new ArrayList<String>();
     for (Locale l : getSupportedLocales()) {
       languages.add(l.getLanguage());
     }
@@ -100,14 +100,14 @@ public class Resources {
     return supportedLocales;
   }
 
-
-  public static Enumeration<String> getVassalKeys() {
-    return vassalBundle.getKeys();
+  public static Collection<String> getVassalKeys() {
+    return Collections.list(vassalBundle.getKeys());
   }
 
-  public static Enumeration<String> getEditorKeys() {
-    return editorBundle.getKeys();
+  public static Collection<String> getEditorKeys() {
+    return Collections.list(editorBundle.getKeys());
   }
+
   /*
    * Translation of individual modules is handled differently. There may be multiple Module.properties file active -
    * Potentially one in the module plus one in each Extension loaded. These will be read into UberProperties structures

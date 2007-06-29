@@ -23,9 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -51,8 +49,6 @@ public class VassalTranslation extends Translation {
     }
   }
   
-  
-
   protected String getI18nPrefix() {
     return "";
   }
@@ -88,17 +84,9 @@ public class VassalTranslation extends Translation {
     return types;
   }
 
-
-
   protected void initkeys() {
     if (allKeys == null) {
-      ArrayList<String> keyList = new ArrayList<String>();
-      for (Enumeration<String> e = Resources.getVassalKeys();
-           e.hasMoreElements(); ) {
-        String s = e.nextElement();
-        keyList.add(s);
-      }
-      allKeys = keyList.toArray(new String[keyList.size()]);
+      allKeys = Resources.getVassalKeys().toArray(new String[0]);
     }
   }
 
