@@ -66,22 +66,6 @@ public class PrefsEditor {
     this.archive = archive;
 
     prefs = new ArrayList<Prefs>();
-
-    save = new JButton(Resources.getString(Resources.OK));
-    save.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        save();
-      }
-    });
-    cancel = new JButton(Resources.getString(Resources.CANCEL));
-    cancel.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
-
-    buttonPanel.add(save);
-    buttonPanel.add(cancel);
     optionsTab = new JTabbedPane();
   }
 
@@ -98,6 +82,22 @@ public class PrefsEditor {
         }
       });
 
+      save = new JButton(Resources.getString(Resources.OK));
+      save.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          save();
+        }
+      });
+      cancel = new JButton(Resources.getString(Resources.CANCEL));
+      cancel.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          cancel();
+        }
+      });
+
+      buttonPanel.add(save);
+      buttonPanel.add(cancel);
+      
       dialog.getContentPane().setLayout
           (new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
       dialog.getContentPane().add(optionsTab);

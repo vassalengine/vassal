@@ -26,6 +26,8 @@ import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import VASSAL.i18n.Resources;
+
 /**
  * Configurer for {@link Color} values
  */
@@ -68,7 +70,7 @@ public class ColorConfigurer extends Configurer {
       cp.setMinimumSize(new java.awt.Dimension(40, 40));
       cp.setSize(new java.awt.Dimension(40, 40));
       p.add(cp);
-      JButton b = new JButton("Select");
+      JButton b = new JButton(Resources.getString(Resources.SELECT));
       p.add(b);
       b.addActionListener
           (new java.awt.event.ActionListener() {

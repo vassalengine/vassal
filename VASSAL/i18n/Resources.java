@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.swing.DefaultListCellRenderer;
@@ -79,6 +78,7 @@ public class Resources {
         if (box == null) {
           Component c = super.getControls();
           box.setRenderer(new DefaultListCellRenderer() {
+            private static final long serialVersionUID = 1L;
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
               JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
               l.setText(new Locale((String)value).getDisplayLanguage());
@@ -140,6 +140,7 @@ public class Resources {
   public static final String DATE_DISPLAY = "General.date_display"; //$NON-NLS-1$
   public static final String NEXT = "General.next"; //$NON-NLS-1$
   public static final String REFRESH = "General.refresh"; //$NON-NLS-1$
+  public static final String SELECT = "General.select"; //$NON-NLS-1$
   /*
    * All i18n keys for the Module Editor must commence with "Editor.", This allows us to use a single
    * Resources.getString() call for both resource bundles.

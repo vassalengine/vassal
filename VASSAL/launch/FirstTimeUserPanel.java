@@ -110,6 +110,7 @@ public class FirstTimeUserPanel {
     b.add(new JLabel(Resources.getString("Prefs.language")+":  "));
     final JComboBox box = new JComboBox(Resources.getSupportedLocales().toArray());
     box.setRenderer(new DefaultListCellRenderer() {
+      private static final long serialVersionUID = 1L;
       public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         setText(((Locale)value).getDisplayName());

@@ -28,6 +28,8 @@ import VASSAL.tools.ArchiveWriter;
  *
  */
 public class NewExtensionAction extends GameModuleAction {
+  private static final long serialVersionUID = 1L;
+
   public NewExtensionAction(Component comp) {
     super(Resources.getString(Resources.NEW), comp);
   }

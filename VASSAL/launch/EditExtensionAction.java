@@ -31,6 +31,8 @@ import VASSAL.tools.ArchiveWriter;
  *
  */
 public class EditExtensionAction extends LoadModuleAction {
+  private static final long serialVersionUID = 1L;
+  
   public EditExtensionAction(Component comp) {
     super(comp);
     putValue(NAME,Resources.getString(Resources.EDIT));

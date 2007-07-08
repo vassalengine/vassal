@@ -24,6 +24,8 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 
 public class CreateModuleAction extends GameModuleAction {
+  private static final long serialVersionUID = 1L;
+  
   public CreateModuleAction(Component comp) {
     super(Resources.getString("Main.new_module"), comp);
   }
