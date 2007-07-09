@@ -179,7 +179,23 @@ public class Labeler extends Decorator implements TranslatablePiece {
     else {
       nameFormat.setProperty(PIECE_NAME, piece.getName());
       nameFormat.setProperty(LABEL, getLabel());
-      return nameFormat.getLocalizedText(Decorator.getOutermost(this));
+      return nameFormat.getText(Decorator.getOutermost(this));
+    }
+  }
+  
+  public String getLocalizedName() {
+    if (label.length() == 0) {
+      return piece.getLocalizedName();
+    }
+    else {
+      nameFormat.setProperty(PIECE_NAME, piece.getLocalizedName());
+      nameFormat.setProperty(LABEL, getLocalizedLabel());
+      FormattedString f = new FormattedString(getTranslation(nameFormat.getFormat()));
+      String result = f.getLocalizedText(Decorator.getOutermost(this));
+//    Ensure Property values stay unlocalized
+      nameFormat.setProperty(PIECE_NAME, piece.getName()); 
+      nameFormat.setProperty(LABEL, getLabel());
+      return result;
     }
   }
 
@@ -258,7 +274,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
 
   protected void updateCachedImage() {
-    String label = getLabel();
+    String label = getLocalizedLabel();
     if (label != null
         && !label.equals(lastCachedLabel)) {
       labelImage = null;
@@ -335,7 +351,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
 
   protected Image createImage(Component obs) {
-    lastCachedLabel = getLabel();
+    lastCachedLabel = getLocalizedLabel();
     lbl.setText(lastCachedLabel);
     lbl.setSize(lbl.getPreferredSize());
     int width = lbl.getWidth();
@@ -352,7 +368,12 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
 
   public String getLabel() {
-    return labelFormat.getLocalizedText(Decorator.getOutermost(this));
+    return labelFormat.getText(Decorator.getOutermost(this));
+  }
+  
+  public String getLocalizedLabel() {
+    FormattedString f = new FormattedString(getTranslation(labelFormat.getFormat()));
+    return f.getLocalizedText(Decorator.getOutermost(this));
   }
 
   public Rectangle boundingBox() {
@@ -624,6 +645,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
   
   public PieceI18nData getI18nData() {
-    return getI18nData(menuCommand, "Change Label Command");
+    return getI18nData(
+        new String[] {labelFormat.getFormat(), nameFormat.getFormat(), menuCommand}, 
+        new String[] {"Label Text", "Label Format", "Change Label Command"});
   }
 }

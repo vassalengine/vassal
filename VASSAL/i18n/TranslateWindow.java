@@ -167,7 +167,10 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * @param target new Translation
    */
   protected void refreshTranslationList(Configurable target) {
-    myConfigureTree.externalInsert(Localization.getInstance(), target);
+    Language language = GameModule.getGameModule().getComponentsOf(Language.class).iterator().next();
+    if (language != null) {
+      myConfigureTree.externalInsert(language, target);
+    }
     langBox.removeAllItems();
     String[] langs = Localization.getInstance().getTranslationList();
     for (int i=0; i < langs.length; i++) {
