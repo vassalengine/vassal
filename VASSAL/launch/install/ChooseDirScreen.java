@@ -39,7 +39,7 @@ import VASSAL.i18n.Resources;
 public class ChooseDirScreen implements Screen, ActionListener, Runnable {
   public static final String NEXT_SCREEN = "ChooseDirScreen.next";
   private JTextField tf = new JTextField(36);
-  private JButton select = new JButton(Resources.getString("Install.select")); //$NON-NLS-1$
+  private JButton select = new JButton(Resources.getString(Resources.SELECT));
   private Box controls;
 
   public ChooseDirScreen() {

@@ -128,14 +128,14 @@ public class DoActionButton extends AbstractConfigurable {
   
   public static class HotkeyConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new HotkeyListConfigurer(key, name);
+      return new HotkeyListConfigurer(key, name, ((DoActionButton) c).hotkeys);
     }
   }
   
   public static class HotkeyListConfigurer extends ListConfigurer {
 
-    public HotkeyListConfigurer(String key, String name) {
-      super(key, name);
+    public HotkeyListConfigurer(String key, String name, List<KeyStroke> list) {
+      super(key, name, list);
     }
 
     protected Configurer buildChildConfigurer() {

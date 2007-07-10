@@ -206,7 +206,7 @@ public class ResourceExtracter {
         JOptionPane.showOptionDialog(null, prompt,
             Resources.getString("ResourceExtracter.install"), JOptionPane.DEFAULT_OPTION //$NON-NLS-1$
             , JOptionPane.QUESTION_MESSAGE, null,
-            new String[]{Resources.getString("ResourceExtracter.select")}, Resources.getString("ResourceExtracter.select")); //$NON-NLS-1$ //$NON-NLS-2$
+            new String[]{Resources.getString(Resources.SELECT)}, Resources.getString("ResourceExtracter.select")); //$NON-NLS-1$
       }
       return true;
     }
