@@ -275,7 +275,7 @@ public abstract class TurnLevel extends TurnComponent {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { "Description:  ", "Property Name:  ", "Turn Level Format:  " };
+    return new String[] { "Description:  ", "Property Name:  ", "Turn Level Format ($levelx$):  " };
   }
 
   public Class[] getAttributeTypes() {
@@ -319,7 +319,7 @@ public abstract class TurnLevel extends TurnComponent {
     ((TurnComponent) parent).addLevel(this);
     myValue.addTo(GameModule.getGameModule());
   }
-
+  
   public void removeFrom(Buildable parent) {
     ((TurnComponent) parent).removeLevel(this);
     myValue.removeFromContainer();

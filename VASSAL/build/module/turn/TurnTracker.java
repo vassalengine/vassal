@@ -99,6 +99,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   public static final String PREV_HOT_KEY = "prevhotkey"; //$NON-NLS-1$
   public static final String ICON = "icon"; //$NON-NLS-1$
   public static final String BUTTON_TEXT = "buttonText"; //$NON-NLS-1$
+  public static final String BUTTON_TOOLTIP = "buttonTooltip"; //$NON-NLS-1$
   public static final String TURN_FORMAT = "turnFormat"; //$NON-NLS-1$
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
   public static final String TOOLTIP = "tooltip"; //$NON-NLS-1$
@@ -163,7 +164,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       }
     };
     setConfigureName(Resources.getString("TurnTracker.turn")); //$NON-NLS-1$
-    launch = new LaunchButton(Resources.getString("TurnTracker.turn"), BUTTON_TEXT, HOT_KEY, ICON, al); //$NON-NLS-1$
+    launch = new LaunchButton(Resources.getString("TurnTracker.turn"), BUTTON_TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al); //$NON-NLS-1$
     launch.setToolTipText(Resources.getString("TurnTracker.turn_tracker")); //$NON-NLS-1$
     
     SET_COMMAND = Resources.getString("TurnTracker.set_turn"); //$NON-NLS-1$
@@ -247,7 +248,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
    * Module level Configuration stuff
    */
   public String[] getAttributeNames() {
-    return new String[] { NAME, BUTTON_TEXT, ICON, HOT_KEY, NEXT_HOT_KEY, PREV_HOT_KEY, TURN_FORMAT, REPORT_FORMAT, TOOLTIP, LENGTH };
+    return new String[] { NAME, BUTTON_TEXT, ICON, BUTTON_TOOLTIP, HOT_KEY, NEXT_HOT_KEY, PREV_HOT_KEY, TURN_FORMAT, REPORT_FORMAT, TOOLTIP, LENGTH };
   }
 
   public void setAttribute(String key, Object value) {
@@ -364,12 +365,12 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
   
   public String[] getAttributeDescriptions() {
-    return new String[] { "Name:  ", "Button text:  ", "Button Icon:  ", "Show/hide Hotkey:  ", "Next Turn Hotkey:  ", "Previous Turn Hotkey:  ",
+    return new String[] { "Name:  ", "Button text:  ", "Button Icon:  ", "Button Tooltip:  ", "Show/hide Hotkey:  ", "Next Turn Hotkey:  ", "Previous Turn Hotkey:  ",
         "Turn Name Format:  ", "Report Format:  ", "Turn Label Tooltip Text:  ", "Turn label Display length (Pixels, 0 for variable):  " };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] { String.class, String.class, IconConfig.class, KeyStroke.class, KeyStroke.class, KeyStroke.class, 
+    return new Class[] { String.class, String.class, IconConfig.class, String.class, KeyStroke.class, KeyStroke.class, KeyStroke.class, 
         TurnFormatConfig.class, ReportFormatConfig.class, String.class, Integer.class };
   }
 

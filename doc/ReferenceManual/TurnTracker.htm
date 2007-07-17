@@ -42,22 +42,32 @@
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
         <tbody>
-
+				   
+		  <tr> 
+		  	<td colspan="2">	 
+			A Turn counter allows the current turn and phase of a game to be tracked and displayed in either
+			a small floating window, or docked into the toolbar.<br>
+			
+			<br><br>
+			</td>
+		  </tr>
           <tr>
 
-            <td valign="top">A Turn counter allows the current turn and phase of a game to be tracked. The current turn
-			can be displayed in a small floating window, or docked into the toolbar<br>
-
-            <br>
-
+            <td valign="top">
 			<span style="font-weight: bold;">Name:&nbsp; </span>An identifying name for this Turn Counter.<br>			
             <span style="font-weight: bold;">Button text:&nbsp; </span>The text of the button to be added to the toolbar.&nbsp;<br>
-            <span style="font-weight: bold;">Tooltip text:&nbsp; </span>The tooltip text of the button to be added to the toolbar.&nbsp;<br>
-            <span style="font-weight: bold;">Hotkey:&nbsp; </span>Keyboard shortcut for the toolbar button.<br>
-            <span style="font-weight: bold;">Button Icon:&nbsp; </span>Icon for the toolbar button.<br>
+			<span style="font-weight: bold;">Button Icon:&nbsp; </span>Icon for the toolbar button.<br>
+            <span style="font-weight: bold;">Button Tooltip:&nbsp; </span>The tooltip text of the button to be added to the toolbar.&nbsp;<br>
+            <span style="font-weight: bold;">Show/hide Hotkey:&nbsp; </span>Keyboard shortcut to hide or show the Turn Counter.<br>
+            <span style="font-weight: bold;">Next Turn Hotkey:&nbsp; </span>Keyboard shortcut to advance the Turn Counter one step.<br>
+			<span style="font-weight: bold;">Previous Turn Hotkey:&nbsp; </span>Keyboard shortcut to return the Turn Counter to the previous step.<br>
+			<span style="font-weight: bold;">Turn Name Format:&nbsp; </span><a href="MessageFormat.htm">Message Format</a> to format the display of the current turn.<br>
+          	<span style="font-weight: bold;">Report Format:&nbsp; </span><a href="MessageFormat.htm">Message Format</a> to display a message in the Chat Window whenever the turn changes.<br>
+           	<span style="font-weight: bold;">Turn Label Tooltip Text:&nbsp; </span>Tooltip text for the Turn Display.<br>
+			<span style="font-weight: bold;">Turn Label Display Length:&nbsp; </span>Set the number of pixels wide the turn display label should be, or use 0 to let it float to suit the current turn display.<br>
             </td>
 
-            <td valign="top"><img src="images/TurnTracker.png" alt=""> <br>
+            <td valign="top"><img src="images/TurnCounter.png" alt=""> <br>
 
             </td>
 
@@ -82,7 +92,14 @@
 
   
   </tbody>
-</table>
+</table>  
+
+<hr/>
+<h2>Sub-Components<br/></h2>
+<br/>
+<h3>Counter Turn Level<br/></h3>
+<br/>
+<h3>List Turn Level<br/></h3>
 
 </body>
 </html>
