@@ -124,6 +124,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     yOffset.setFormat(st.nextToken("0"));
     description = st.nextToken("");
     destination = st.nextToken(DEST_LOCATION.substring(0,1));
+    if (destination.length() == 0) {
+      destination = DEST_LOCATION.substring(0,1);
+    }
     zone.setFormat(st.nextToken(""));
     region.setFormat(st.nextToken(""));
     propertyFilter.setExpression(st.nextToken(""));
