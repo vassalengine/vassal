@@ -86,7 +86,6 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     public void paint(Graphics g) {
       PieceSlot.this.paint(g);
-
     }
 
     public Dimension getPreferredSize() {

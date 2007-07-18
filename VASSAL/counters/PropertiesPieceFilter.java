@@ -37,9 +37,9 @@ public class PropertiesPieceFilter {
 
   private static final Pattern AND = Pattern.compile("&&");
   private static final Pattern OR = Pattern.compile("\\|\\|");
-  private static PieceFilter NULL_FILTER = new PieceFilter() {
+  private static PieceFilter ACCEPT_ALL = new PieceFilter() {
     public boolean accept(GamePiece piece) {
-      return false;
+      return true;
     }
   };
 
@@ -52,7 +52,7 @@ public class PropertiesPieceFilter {
   public static PieceFilter parse(String expression) {
     if (expression == null
         || expression.length() == 0) {
-      return NULL_FILTER;
+      return ACCEPT_ALL;
     }
     String[] s = OR.split(expression);
     PieceFilter f = null;
@@ -111,7 +111,7 @@ public class PropertiesPieceFilter {
           }
         }
         if (f == null) {
-          f = NULL_FILTER;
+          f = ACCEPT_ALL;
         }
       }
     }

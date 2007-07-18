@@ -25,6 +25,7 @@ public class PropertyExpression implements PieceFilter {
 
   public void setExpression(String expression) {
     this.expression = expression;
+    filter = null;
   }
 
   public String getExpression() {

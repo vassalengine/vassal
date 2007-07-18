@@ -25,6 +25,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.zip.ZipException;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.command.Command;
@@ -68,6 +70,9 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
           loadedExtensions.add(extname);
           GameModule.getGameModule().warn(msg);
           System.err.println(msg);
+        }
+        catch (ZipException e) {
+          // Not a zip file.  Ignore
         }
         catch (IOException e) {
           reportBuildError(e, extname);
