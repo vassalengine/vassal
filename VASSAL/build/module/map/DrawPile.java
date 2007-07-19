@@ -24,8 +24,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -37,6 +39,7 @@ import VASSAL.build.widget.CardSlot;
 import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
@@ -87,6 +90,11 @@ public class DrawPile extends SetupStack {
       return dummy.isHotkeyOnEmpty();
     }
   };
+  private VisibilityCondition selectionAllowedVisibleCondition = new VisibilityCondition() {
+    public boolean shouldBeVisible() {
+      return dummy.isAllowSelectDraw();
+    }
+  };
   protected static UniqueIdManager idMgr = new UniqueIdManager("Deck");
 
   public void addTo(Buildable parent) {
@@ -128,6 +136,8 @@ public class DrawPile extends SetupStack {
   public final static String HEIGHT = "height";
   public static final String ALLOW_MULTIPLE = "allowMultiple";
   public static final String ALLOW_SELECT = "allowSelect";
+  public static final String SELECT_DISPLAY_PROPERTY = "selectDisplayProperty";
+  public static final String SELECT_SORT_PROPERTY = "selectSortProperty";
   public static final String FACE_DOWN = "faceDown";
   public static final String DRAW_FACE_UP = "drawFaceUp";
   public static final String FACE_DOWN_REPORT_FORMAT = "faceDownFormat";
@@ -195,7 +205,7 @@ public class DrawPile extends SetupStack {
 
   public String[] getAttributeNames() {
     return new String[]{NAME, OWNING_BOARD, X_POSITION, Y_POSITION, WIDTH, HEIGHT, ALLOW_MULTIPLE,
-                        ALLOW_SELECT, FACE_DOWN, DRAW_FACE_UP, FACE_DOWN_REPORT_FORMAT, SHUFFLE, SHUFFLE_REPORT_FORMAT,
+                        ALLOW_SELECT, SELECT_DISPLAY_PROPERTY, SELECT_SORT_PROPERTY, FACE_DOWN, DRAW_FACE_UP, FACE_DOWN_REPORT_FORMAT, SHUFFLE, SHUFFLE_REPORT_FORMAT,
                         SHUFFLE_HOTKEY, REVERSIBLE, REVERSE_REPORT_FORMAT, DRAW, COLOR, HOTKEY_ON_EMPTY, EMPTY_HOTKEY,
                         RESHUFFLABLE, RESHUFFLE_COMMAND, RESHUFFLE_MESSAGE, RESHUFFLE_HOTKEY, RESHUFFLE_TARGET,CAN_SAVE,
                         MAXSTACK,EXPRESSIONCOUNTING,COUNTEXPRESSIONS};
@@ -210,6 +220,8 @@ public class DrawPile extends SetupStack {
                         "Height:  ",
                         "Allow Multiple Cards to be Drawn?",
                         "Allow Specific Cards to be Drawn?",
+                        "When selecting, list cards using",
+                        "When selecting, sort cards by",
                         "Contents are Face-down:  ",
                         "Draw new cards face up?",
                         "Face-down Report Format:  ",
@@ -242,6 +254,8 @@ public class DrawPile extends SetupStack {
                        Integer.class,
                        Boolean.class,
                        Boolean.class,
+                       PiecePropertyConfig.class,
+                       String.class,
                        Prompt.class,
                        Boolean.class,
                        FormattedStringConfig.class,
@@ -272,6 +286,11 @@ public class DrawPile extends SetupStack {
     }
   }
 
+  public static class PiecePropertyConfig implements TranslatableConfigurerFactory {
+    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+      return new GamePieceFormattedStringConfigurer(key, name);
+    }
+  }
   public String getAttributeValueString(String key) {
     if (WIDTH.equals(key)) {
       return "" + dummy.getSize().width;
@@ -296,6 +315,12 @@ public class DrawPile extends SetupStack {
     }
     else if (ALLOW_SELECT.equals(key)) {
       return "" + dummy.isAllowSelectDraw();
+    }
+    else if (SELECT_DISPLAY_PROPERTY.equals(key)) {
+      return dummy.getSelectDisplayProperty();
+    }
+    else if (SELECT_SORT_PROPERTY.equals(key)) {
+      return dummy.getSelectSortProperty();
     }
     else if (DRAW.equals(key)) {
       return "" + dummy.isDrawOutline();
@@ -416,6 +441,12 @@ public class DrawPile extends SetupStack {
         dummy.setAllowSelectDraw("true".equals(value));
       }
     }
+    else if (SELECT_DISPLAY_PROPERTY.equals(key)) {
+      dummy.setSelectDisplayProperty((String)value);
+    }
+    else if (SELECT_SORT_PROPERTY.equals(key)) {
+      dummy.setSelectSortProperty((String)value);
+    }
     else if (DRAW.equals(key)) {
       if (value instanceof Boolean) {
         dummy.setDrawOutline(Boolean.TRUE.equals(value));
@@ -534,6 +565,9 @@ public class DrawPile extends SetupStack {
     }
     else if (EMPTY_HOTKEY.equals(name)) {
       return hotkeyOnEmptyVisibleCondition;
+    }
+    else if (SELECT_DISPLAY_PROPERTY.equals(name) || SELECT_SORT_PROPERTY.equals(name)) {
+      return selectionAllowedVisibleCondition;
     }
     else {
       return null;

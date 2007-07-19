@@ -32,6 +32,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -102,6 +103,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected String faceDownMsgFormat;
   protected boolean drawFaceUp;
   protected boolean persistable;
+  protected FormattedString selectDisplayProperty = new FormattedString("$"+BasicPiece.BASIC_NAME+"$");
+  protected String selectSortProperty = "";
   protected MutableProperty.Impl countProperty =
     new MutableProperty.Impl("",this);
   protected List<MutableProperty.Impl> expressionProperties =
@@ -324,6 +327,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     setGlobalCommands(st.nextStringArray(0));
     hotkeyOnEmpty = st.nextBoolean(false);
     emptyKey = st.nextKeyStroke(null);
+    selectDisplayProperty.setFormat(st.nextToken("$"+BasicPiece.BASIC_NAME+"$"));
+    selectSortProperty = st.nextToken("");
     
     if (shuffleListener == null) {
       shuffleListener = new KeyStrokeListener(new ActionListener() {
@@ -586,7 +591,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         String.valueOf(reversible)).append(reshuffleCommand).append(reshuffleTarget).append(reshuffleMsgFormat).append(deckName).append(shuffleMsgFormat)
         .append(reverseMsgFormat).append(faceDownMsgFormat).append(drawFaceUp).append(persistable).append(shuffleKey).append(reshuffleKey).append(String.valueOf(maxStack))
         .append(getCountExpressions()).append(expressionCounting)
-        .append(getGlobalCommands()).append(hotkeyOnEmpty).append(emptyKey);
+        .append(getGlobalCommands()).append(hotkeyOnEmpty).append(emptyKey).append(selectDisplayProperty.getFormat()).append(selectSortProperty);
     return ID + se.getValue();
   }
 
@@ -627,8 +632,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       int count = Math.max(dragCount, Math.min(1, getPieceCount()));
       ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
       if (ALWAYS.equals(shuffleOption)) {
-// FIXME: replace with Collections.shuffle()?
-        ArrayList<Integer> indices = new ArrayList<Integer>();
+        // Instead of shuffling the entire deck, just pick <b>count</b> random elements 
+        List<Integer> indices = new ArrayList<Integer>();
         for (int i = 0; i < getPieceCount(); ++i) {
           indices.add(i);
         }
@@ -1012,9 +1017,52 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView()), true);
     d.setTitle(Resources.getString("Deck.draw")); //$NON-NLS-1$
     d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
-    final String[] pieces = new String[getPieceCount()];
+    class AvailablePiece implements Comparable {
+      private GamePiece piece;
+
+      public AvailablePiece(GamePiece piece) {
+        super();
+        this.piece = piece;
+      }
+
+      public int compareTo(Object o) {
+        int val = 0;
+        AvailablePiece other = (AvailablePiece) o;
+        if (other == null) {
+          val = 1;
+        }
+        else {
+          String otherProperty = (String) other.piece.getProperty(selectSortProperty);
+          if (otherProperty == null) {
+            val = 1;
+          }
+          else {
+            String myProperty = (String) piece.getProperty(selectSortProperty);
+            if (myProperty == null) {
+              val = -1;
+            }
+            else {
+              val = -otherProperty.compareTo(myProperty);
+            }
+          }
+        }
+        return val;
+      }
+      
+      public String toString() {
+        return selectDisplayProperty.getText(piece);
+      }
+      
+      public boolean equals(Object o) {
+        return ((AvailablePiece)o).piece.equals(piece);
+      }
+    }
+    final AvailablePiece[] pieces = new AvailablePiece[getPieceCount()];
     for (int i = 0; i < pieces.length; ++i) {
-      pieces[pieces.length - i - 1] = Decorator.getInnermost(getPieceAt(i)).getName();
+      pieces[pieces.length - i - 1] = new AvailablePiece(getPieceAt(i));
+    }
+    if (selectSortProperty != null && selectSortProperty.length() > 0) {
+      Arrays.sort(pieces);
     }
     final JList list = new JList(pieces);
     list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -1029,7 +1077,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         if (selection.length > 0) {
           nextDraw = new ArrayList<GamePiece>();
           for (int i = 0; i < selection.length; ++i) {
-            nextDraw.add(getPieceAt(pieces.length - selection[i] - 1));
+            nextDraw.add(pieces[selection[i]].piece);
           }
         }
         else {
@@ -1304,4 +1352,20 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
      public void setDragCount(int dragCount) {
        this.dragCount = dragCount;
      }
+
+    public void setSelectDisplayProperty(String promptDisplayProperty) {
+      this.selectDisplayProperty.setFormat(promptDisplayProperty);
+    }
+
+    public void setSelectSortProperty(String promptSortProperty) {
+      this.selectSortProperty = promptSortProperty;
+    }
+
+    public String getSelectDisplayProperty() {
+      return selectDisplayProperty.getFormat();
+    }
+
+    public String getSelectSortProperty() {
+      return selectSortProperty;
+    }
 }

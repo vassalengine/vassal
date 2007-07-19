@@ -20,11 +20,11 @@ package VASSAL.configure;
 
 import VASSAL.counters.BasicPiece;
 
-/** Convenience class that provdes prompts for the properties found in a BasicPiece */
+/** Convenience class that provides prompts for the properties found in a BasicPiece */
 public class GamePieceFormattedStringConfigurer extends FormattedStringConfigurer {
   public GamePieceFormattedStringConfigurer(String key, String name) {
     super(key, name);
-    String[] allOptions = new String[] {BasicPiece.PIECE_NAME, BasicPiece.LOCATION_NAME, BasicPiece.CURRENT_MAP, BasicPiece.CURRENT_BOARD,
+    String[] allOptions = new String[] {BasicPiece.PIECE_NAME, BasicPiece.BASIC_NAME, BasicPiece.LOCATION_NAME, BasicPiece.CURRENT_MAP, BasicPiece.CURRENT_BOARD,
         BasicPiece.CURRENT_ZONE};
     setOptions(allOptions);
   }
