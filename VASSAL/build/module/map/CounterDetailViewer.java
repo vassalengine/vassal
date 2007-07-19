@@ -152,7 +152,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected FormattedString emptyHexReportFormat = new FormattedString("$" + BasicPiece.LOCATION_NAME + "$");
   protected String version = "";
   protected Color fgColor = Color.black;
-  protected Color bgColor = Color.white;
+  protected Color bgColor;
   protected int fontSize = 9;
   protected PropertyExpression propertyFilter = new PropertyExpression();
 
@@ -942,7 +942,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       if (value instanceof String) {
         value = ColorConfigurer.stringToColor((String) value);
       }
-      fgColor = (Color) value;
+      fgColor = value == null ? Color.black : (Color) value;
     }
     else if (BG_COLOR.equals(name)) {
       if (value instanceof String) {

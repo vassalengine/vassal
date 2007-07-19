@@ -457,7 +457,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildHelpAction(final Configurable target) {
-    Action showHelp = new ShowHelpAction(helpWindow, target.getHelpFile(), null);
+    Action showHelp = new ShowHelpAction(target.getHelpFile().getContents(), null);
     return showHelp;
   }
 
