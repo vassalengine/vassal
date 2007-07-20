@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -56,10 +57,12 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
@@ -457,7 +460,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildHelpAction(final Configurable target) {
-    Action showHelp = new ShowHelpAction(target.getHelpFile().getContents(), null);
+    Action showHelp;
+    HelpFile helpFile = target.getHelpFile();
+    if (helpFile == null) {
+      showHelp = new ShowHelpAction(null,null);
+      showHelp.setEnabled(false);
+    }
+    else {
+      showHelp = new ShowHelpAction(helpFile.getContents(), null);
+    }
     return showHelp;
   }
 

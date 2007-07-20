@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.0b6"; //$NON-NLS-1$
+  private static final String VERSION = "3.0b7"; //$NON-NLS-1$
   private static File homeDir;
   private static Boolean is2dEnabled;
   private static Boolean isDndEnabled;
@@ -40,7 +40,7 @@ public final class Info {
   }
 
   /**
-   * A valid verson format is "w.x.[y|bz]", where 'w','x','y', and 'z' are integers. In the version number, w.x are the
+   * A valid version format is "w.x.[y|bz]", where 'w','x','y', and 'z' are integers. In the version number, w.x are the
    * major/minor release number, y is the bug-fix release number, and the 'b' indicates a beta release, e.g. 3.0b2
    * 
    * @return the version of the VASSAL engine.
