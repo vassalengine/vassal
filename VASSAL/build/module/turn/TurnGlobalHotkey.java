@@ -108,7 +108,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
       GameModule.getGameModule().fireKeyStroke(hotkey);
       String reportText = format.getLocalizedText();
       if (reportText.length() > 0) {
-        Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "*" + reportText);
+        Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + reportText);
         c.execute();
         GameModule.getGameModule().sendAndLog(c);
       }

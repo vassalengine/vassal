@@ -2,6 +2,9 @@
 <html>
 <head>
 
+
+  
+  
   
   
   <title>Deck</title>
@@ -11,40 +14,59 @@
 
 <body>
 
+
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
 
   <tbody>
 
+
     <tr align="center">
+
 
       <td valign="top">
       
+      
       <h1>VASSAL Reference Manual</h1>
+
 
       <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
 &gt; <a href="Map.htm">Map</a> &gt; <b>Deck</b></small><br>
 
+
       <br>
+
 
       </td>
 
+
     </tr>
+
 
     <tr>
 
+
       <td valign="top">
+      
       
       <hr size="2" width="100%">
       
+      
       <h2>Deck</h2>
+
 
       <br>
 
+
+      
       
       <div align="center"><img alt="" src="images/Deck.png">&nbsp;<br>
 
+
       <br>
 
+
+      
       
       <div align="left">A Deck functions like a deck of playing
 cards.&nbsp; Each game begins with the contents of the Deck as
@@ -55,22 +77,31 @@ mouse.&nbsp; This removes the card from the Deck and assigns ownership
 to the dragging player. &nbsp;Dragging a card onto the deck adds it
 back
 to the Deck.<br>
-      <br>
-The number of cards in the deck is exposed as a Map-level <a href="Properties.htm">Property</a> with the name &lt;name&gt;_numPieces.<br>
-The number of card types in the deck can be exposed as a Map-level <a href="Properties.htm">Property</a> with the name &lt;name&gt;_&lt;type&gt; (see Perform Counting of Piece Types below).<br>
 
       <br>
+
+The number of cards in the deck is exposed as a Map-level <a href="Properties.htm">Property</a> with the name &lt;name&gt;_numPieces.<br>
+
+The number of card types in the deck can be exposed as a Map-level <a href="Properties.htm">Property</a> with the name &lt;name&gt;_&lt;type&gt; (see Perform Counting of Piece Types below).<br>
+
+
+      <br>
+
 
 In previous versions, a Deck was used for fixed pools of standard
 counters as well.&nbsp; The <a href="SetupStack.htm">At-Start Stack</a>
 component is now recommended for this use.<br>
 
+
       <br>
+
 
       <b>Name:</b>&nbsp; The name of a Deck is not used during game
 play.&nbsp; It is just used for identification in the module editor.<br>
 
+
       <br>
+
 
       <b>Belongs to board:</b> &nbsp;If a name is selected, the Deck
 will appear on that particular Board. &nbsp;If a game does not use that
@@ -79,39 +110,61 @@ then
 the Deck will always appear at the given position, regardless of the
 boards in use.<br>
 
+
       <br>
+
 
       <b>X,Y position:</b> &nbsp;The position in the Map Window of the
 center of the deck. &nbsp;If this Deck belongs to a Board, the position
 is relative to the Board's position in the Map Window.<br>
 
+
       <br>
+
 
       <b>Width, Height:</b> &nbsp;The size of the "tray" holding the
 cards. &nbsp;If the Deck is empty, this determines the area into which
 players may drag cards to add them back to the Deck. &nbsp;It should be
 set to the same size as the cards the Deck will hold<br>
 
+
       <br>
+
 
       <b>Allow Multiple Cards to be Drawn:</b> &nbsp;Adds a right-click
 menu entry that prompts the user to specify the number of cards to be
 drawn from the deck with the next drag.<br>
 
+
       <br>
+
 
       <b>Allow Specific Cards to be Drawn:</b> &nbsp;Adds a right-click
 menu entry that prompts the user to examine the deck and select exactly
 which cards will be drawn from the deck with the next drag.<br>
 
+
+      <br>
+      <b>When selecting, list cards using:</b> &nbsp;When the user is prompted to select specific cards from the deck, individual cards will be listed using the specified <a href="MessageFormat.htm">Message Format</a>.<br>
+
+
       <br>
 
+
+      <b>When selecting, sort cards by:</b> &nbsp;When the user is
+prompted to select specific cards from the deck, the cards can
+optionally be sorted (alphabetically) using the listed property.
+&nbsp;Leave blank to list cards by their curring position in the deck.
+&nbsp;<span style="font-style: italic;">Example: &nbsp;cards in a deck can use a <a href="PropertyMarker.htm">Marker</a></span><span style="font-style: italic;"> trait to specify a card number (001,002, etc.) and always list cards in order of their assigned number.</span> <br>
+      <br>
       <b>Contents are Face-down:</b> &nbsp;Determines whether cards in
 the deck are
 always face-down, always face-up, or can be switched from face-up to
 face-down with a right-click menu entry.<br>
 
+
       <br>
+
 
       <b>Face Down Report Format:</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that is echoed to the chat
 text window whenever a player selects the "Face Down" menu item (if
@@ -119,14 +172,18 @@ enabled above):&nbsp; <span style="font-style: italic;">deckName</span>
 is the name of this deck, <span style="font-style: italic;">commandName</span>
 is the name of the menu item.<br>
 
+
       <br>
+
 
       <b>Draw new cards face up:</b>&nbsp; If checked, then cards drawn
 from this deck will be placed face-up on the playing area.&nbsp; If
 un-checked, then cards in a face-down deck are drawn face down and
 owned by the drawing player.<br>
 
+
       <br>
+
 
       <b>Re-shuffle:</b> &nbsp;If set to "Never" then cards remain in
 their original order; cards are drawn from and added to the top.
@@ -134,7 +191,9 @@ their original order; cards are drawn from and added to the top.
 deck. &nbsp;If set to "Via right-click menu" then a "Shuffle" entry is
 added to the Deck's right-click menu.<br>
 
+
       <br>
+
 
       <b>Re-shuffle Report Format:</b>&nbsp; A <a href="MessageFormat.htm">Message Format</a> that is echoed to the chat
 text window whenever a player selects the "Shuffle" menu item (if
@@ -142,19 +201,25 @@ enabled above):&nbsp; <span style="font-style: italic;">deckName</span>
 is the name of this deck, <span style="font-style: italic;">commandName</span>
 is the name of the menu item.<br>
 
+
       <br>
+
 
       <b>Reversible:</b> &nbsp;Adds an entry to the right-click menu
 that reverses the order of cards in the deck.<br>
 
+
       <br>
+
 
       <b>Reverse Report Format:</b>&nbsp; A <a href="MessageFormat.htm">Message
 Format</a> that is echoed to the chat text window whenever a player
 selects the "Reverse" menu item (if enabled above):&nbsp; <span style="font-style: italic;">deckName</span> is the name of this deck, <span style="font-style: italic;">commandName</span> is the name of the menu
 item.<br>
 
+
       <br>
+
 
       <b>Draw Outline When Empty?</b> &nbsp;Whether to draw the "tray"
 for the cards. &nbsp;The "tray" is a rectangle of size <b>width,height</b>
@@ -164,20 +229,28 @@ deck, to indicate where to drag cards to place them back in the Deck.
 &nbsp;May not be necessary if the Map Window contains a board onto
 which the tray is already drawn.<br>
 
+
       <br>
+
 
       <b>Color:</b> &nbsp;The color of the rectangle representing the
 "tray" above.<br>
 
+
       <br>
+
 	  	  
 	  <b>Send Hotkey when empty?</b>&nbsp;Select this option to send a Global Hotkey whenever the Deck is emptied.<br>
+
 	  
 	  <br>
+
 	  
 	  <b>Hot Key to send when Deck empties:</b>&nbsp;Select the Hot Key combination to send whenever enough cards are removed from the Deck to empty it.<br>
+
 	  
 	  <br>
+
 
       <b>Include command to send entire deck to another deck:</b>&nbsp;
 If checked, the popup menu for this deck will include a command that
@@ -185,24 +258,32 @@ sends every piece in this deck to a designated deck.&nbsp; For example,
 this can be used to reshuffle a discard pile into its original
 deck.&nbsp; The following three attributes all refer to this option.<br>
 
+
       <br>
+
 
       <span style="font-weight: bold;">Menu Text:</span>&nbsp; The text
 that appears in the popup menu.<br>
 
+
       <span style="font-weight: bold;"><br>
+
 
 Report Format:</span>&nbsp; A <a href="MessageFormat.htm">Message
 Format</a> that is echoed to the chat text window whenever a player
 selects the "send to another deck" menu item (if enabled above):&nbsp; <span style="font-style: italic;">deckName</span> is the name of this deck, <span style="font-style: italic;">commandName</span> is the name of the menu
 item.<br>
 
+
       <span style="font-weight: bold;"><br>
+
 
 Name of deck to send to:</span>&nbsp; The name of the deck that the
 contents will be sent to.<br>
 
+
       <span style="font-weight: bold;"><br>
+
 
 Can be saved-to/loaded-from a file:</span>&nbsp; If selected, the
 right-click menu will include "Save" and "Load" actions. The "Save"
@@ -213,7 +294,9 @@ used to save the deck. This option is useful for collectible card
 games, in which a player may prepare a deck offline in preparation for
 a game<br>
 
+
       <br>
+
 
       <b>Maximum Cards to be Displayed in Stack:</b>&nbsp;
 This defines the maximum number of cards to graphically display in the
@@ -223,18 +306,23 @@ drops below 10.&nbsp; Then the deck will visually start to shrink as
 cards are removed.&nbsp; If set to 1, the deck will appear flat like a
 single card.<br>
 
+
       <br>
+
 
       <b>Perform Counting of property expressions:</b>&nbsp;
 Enable processing of property expression counting.&nbsp; Expressions
 must be defined.<br>
 
+
       <br>
+
 
       <b>Expressions to count:</b>&nbsp;
 Specify expressions to be counted within the deck.
 These can be whatever you like and must be in the format of:
-<pre>&lt;expression name&gt; : &lt;expression&gt;</pre>
+      <pre>&lt;expression name&gt; : &lt;expression&gt;</pre>
+
 For each expression, a map-level property called 
 &lt;deckName&gt;_&lt;expression name&gt; is exposed.
 The exposed value is number of pieces for which that expression
@@ -244,7 +332,9 @@ the only "dynamic" property which can be used in counting expressions
 is playerSide.  Other dynamic properties will most likely not update
 if they change after pieces move into a deck.<br>
 
+
       <br>
+
 
       <b>EXAMPLE: &nbsp;</b>An ordinary deck of playing cards
 for, say, Crazy Eights would be set to: &nbsp;Allow Multiple = false,
@@ -253,14 +343,18 @@ Reversible = false. &nbsp;The discard pile would be: &nbsp;Allow
 Multiple = false, Allow Specific = false, Face Down = Never, Re-shuffle
 = Never, Reversible = false.<br>
 
+
       <br>
+
 
 A Deck may contain any kind of Game Piece, so it can also be used for
 draw piles of chits or counters that are drawn randomly and whose total
 number are limited by the game.&nbsp; If the counters do not need to be
 selected randomly, use an <a href="SetupStack.htm">At-Start Stack</a>.<br>
 
+
 &nbsp;<br>
+
 
       <b>EXAMPLE: </b>&nbsp; A strategic game in which a nationality
 has a fixed force pool of variable-strength Infantry, Armor, etc.
@@ -273,13 +367,15 @@ false, Face Down = Never, Re-shuffle = Never, Reversible = false.
 fixed, the Clone and Delete functions of the Infantry and Armor
 counters should be disabled.<br>
 
+
       <br>
+
       <b>EXAMPLE: </b>&nbsp; 
 You want to create a deck of playing cards, and display the number of red
 cards, the number of black cards, the number of face cards, and the total
 number of cards in the deck.&nbsp; Create the deck, check "Perform counting
 of expressions".&nbsp; Add the expressions of "red: color = red" and
-"black: color = black".&nbsp; Also add the expression "facecards: value > 10".
+"black: color = black".&nbsp; Also add the expression "facecards: value &gt; 10".
 When creating your cards, give them a Marker named "color" with the values
 of "red" or "black".&nbsp;  Also give your cards a Marker named "value" with
 the numeric value of the card.
@@ -288,50 +384,73 @@ Then, you can refer to the counts with the map-level properties of
 "&lt;deckname&gt;_facecards".&nbsp; The total can be referenced by the
 map-level property of "&lt;deckname&gt;_numPieces".
 
-<br>
+      <br>
+
 
       <br>
 
-      </div>
 
       </div>
 
+
+      </div>
+
+
+      
       
       <hr size="2" width="100%">
       
+      
       <h2>Sub-Components</h2>
 
+
+      
       
       <h3><a href="GamePiece.htm">Card</a></h3>
+
 
 A Card is identical to a GamePiece, but is initialized with a Mask
 trait appropriate for a playing card.<br>
 
-<br>
 
+      <br>
+
+
+      
       <h3><a href="DeckGlobalKeyCommand.htm">Global Key Command</a></h3>
+
 
 Global Key Commands can be added to a Deck and will appear in the Right-click menu of the Deck. 
 The Global Key Command will be applied only to pieces contained in the Deck.<br>
 
 
+
       </td>
 
+
     </tr>
+
 
     <tr>
 
+
     </tr>
 
+
+  
   
   </tbody>
 </table>
 
-<br>
 
 <br>
 
+
 <br>
+
+
+<br>
+
 
 </body>
 </html>

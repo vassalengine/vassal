@@ -2,6 +2,9 @@
 <html>
 <head>
 
+
+  
+  
   
   
   <title>Turn Counter</title>
@@ -11,95 +14,171 @@
 
 <body>
 
+
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
 
   <tbody>
 
+
     <tr align="center">
+
 
       <td valign="top">
       
+      
       <h1>VASSAL Reference Manual</h1>
+
 
       <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
 &gt; <b>Turn Counter</b></small><br>
 
+
       </td>
+
 
     </tr>
 
+
     <tr>
+
 
       <td valign="top">
       
+      
       <hr size="2" width="100%">
+      
       
       <h2>Turn Counter<br>
 
+
       </h2>
 
+
+      
       
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
+
         <tbody>
+
 				   
-		  <tr> 
-		  	<td colspan="2">	 
-			A Turn counter allows the current turn and phase of a game to be tracked and displayed in either
-			a small floating window, or docked into the toolbar.<br>
-			
-			<br><br>
+		  <tr>
+ 
+		  	<td colspan="2">
+            <div class="level2">
+
+            <p>A Turn Counter keeps track of the current
+turn/phase/sub-phase, etc. of a game. &nbsp;Players can advance the
+turn forward or backward, or optionally jump directly to a turn.
+</p>
+
+
+            <p>
+            <a href="http://www.vassalengine.org/wiki/lib/exe/detail.php?id=turn%3Aturntracker&amp;cache=cache&amp;media=turn:turn_sample.gif" class="media" title="turn:turn_sample.gif"><img src="../../../../../../../private/tmp/downloads/turntracker_files/fetch.gif" class="media" alt=""></a>
+            </p>
+
+
+            <p>The Turn Counter is defined as a series of nested
+levels. &nbsp;Advancing the turn moves the deepest level forward.
+&nbsp;When a child level wraps around, the next child level under the
+same parent advances forward. &nbsp;When the last child level has
+wrapped around, the parent level advances forward.</p>
+            <p><span style="font-style: italic;">Example: &nbsp;a level
+representing the Month may contain a level representing the Day, which
+contains a level representing Morning/Evening. &nbsp;Advancing the turn
+moves from morning to evening, then to morning of the next day, etc.</span></p>
+            <p>Each level of the Turn Counter exposes its value as a module <a href="GlobalProperties.htm">Global Property</a>. &nbsp;A <a href="Map.htm#GlobalKeyCommand">Global Key Command</a> can be configured to trigger when a certain combination of levels is reached.</p>
+            </div>
+            <br>
+            <br>
+
 			</td>
+
 		  </tr>
+
           <tr>
+
 
             <td valign="top">
-			<span style="font-weight: bold;">Name:&nbsp; </span>An identifying name for this Turn Counter.<br>			
+			<span style="font-weight: bold;">Name:&nbsp; </span>An identifying name for this Turn Counter.<br>
+			
             <span style="font-weight: bold;">Button text:&nbsp; </span>The text of the button to be added to the toolbar.&nbsp;<br>
+
 			<span style="font-weight: bold;">Button Icon:&nbsp; </span>Icon for the toolbar button.<br>
+
             <span style="font-weight: bold;">Button Tooltip:&nbsp; </span>The tooltip text of the button to be added to the toolbar.&nbsp;<br>
+
             <span style="font-weight: bold;">Show/hide Hotkey:&nbsp; </span>Keyboard shortcut to hide or show the Turn Counter.<br>
+
             <span style="font-weight: bold;">Next Turn Hotkey:&nbsp; </span>Keyboard shortcut to advance the Turn Counter one step.<br>
+
 			<span style="font-weight: bold;">Previous Turn Hotkey:&nbsp; </span>Keyboard shortcut to return the Turn Counter to the previous step.<br>
+
 			<span style="font-weight: bold;">Turn Name Format:&nbsp; </span><a href="MessageFormat.htm">Message Format</a> to format the display of the current turn.<br>
+
           	<span style="font-weight: bold;">Report Format:&nbsp; </span><a href="MessageFormat.htm">Message Format</a> to display a message in the Chat Window whenever the turn changes.<br>
+
            	<span style="font-weight: bold;">Turn Label Tooltip Text:&nbsp; </span>Tooltip text for the Turn Display.<br>
+
 			<span style="font-weight: bold;">Turn Label Display Length:&nbsp; </span>Set the number of pixels wide the turn display label should be, or use 0 to let it float to suit the current turn display.<br>
-            </td>
-
-            <td valign="top"><img src="images/TurnCounter.png" alt=""> <br>
 
             </td>
+
+
+            <td valign="top"><img style="width: 652px; height: 316px;" src="images/TurnTracker.png" alt=""> <br>
+
+
+            </td>
+
 
           </tr>
+
 
           <tr>
 
+
           </tr>
 
+
+        
         
         </tbody>
       
+      
       </table>
+
 
       </td>
 
+
     </tr>
+
 
     <tr>
 
+
     </tr>
 
+
+  
   
   </tbody>
-</table>  
+</table>
+  
 
-<hr/>
-<h2>Sub-Components<br/></h2>
-<br/>
-<h3>Counter Turn Level<br/></h3>
-<br/>
-<h3>List Turn Level<br/></h3>
+<hr>
+<h2>Sub-Components<br>
+</h2>
+
+<br>
+
+<h3>Counter</h3>
+<br>
+
+<h3>List<br>
+</h3>
+
 
 </body>
 </html>

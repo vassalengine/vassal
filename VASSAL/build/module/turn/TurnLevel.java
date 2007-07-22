@@ -25,6 +25,8 @@ import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -56,9 +58,9 @@ public abstract class TurnLevel extends TurnComponent {
   protected TurnComponent parent = null;
   protected String propertyName;
 
-  protected int start = 0; // Counter Start value
+  protected int start = 1; // Counter Start value
 
-  protected int current = 0; // Current counter pointer
+  protected int current = 1; // Current counter pointer
 
   protected int currentSubLevel = 0; // sub-level pointer
 
@@ -137,26 +139,15 @@ public abstract class TurnLevel extends TurnComponent {
     turnFormat.setProperty(LEVEL_VALUE, getValueString());
     return turnFormat.getText();
   }
-
-  public void getTurnStrings(ArrayList<String> desc) {
-    desc.add(getTurnString());
-    if (getTurnLevelCount() > 0) {
-      getTurnLevel(currentSubLevel).getTurnStrings(desc);
-    }
-  }
   
-  public void getTurnValues(ArrayList<String> desc) {
-    desc.add(getValueString());
+  public List<TurnLevel> getActiveChildLevels() {
+    ArrayList<TurnLevel> children = new ArrayList<TurnLevel>();
     if (getTurnLevelCount() > 0) {
-      getTurnLevel(currentSubLevel).getTurnValues(desc);
+      TurnLevel activeChild = getTurnLevel(currentSubLevel);
+      children.add(activeChild);
+      children.addAll(activeChild.getActiveChildLevels());
     }
-  }
-
-  public void getTurnNames(ArrayList<String> desc) {
-    desc.add(getConfigureName());
-    if (getTurnLevelCount() > 0) {
-      getTurnLevel(currentSubLevel).getTurnNames(desc);
-    }
+    return children;
   }
   
   protected void buildConfigMenu(JMenu menu) {

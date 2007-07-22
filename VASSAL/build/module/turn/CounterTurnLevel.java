@@ -118,7 +118,7 @@ public class CounterTurnLevel extends TurnLevel {
         setRolledOver(true);
       }
     }
-    
+    myValue.setPropertyValue(getValueString());
   }
 
   protected void retreat() {
@@ -151,7 +151,7 @@ public class CounterTurnLevel extends TurnLevel {
 
   public String[] getAttributeDescriptions() {
     String a[] = super.getAttributeDescriptions();
-    String b[] = new String[] { "Start Value:  ", "Increment By:  ", "Loop?", "Loop at:  " };
+    String b[] = new String[] { "Start Value:  ", "Increment By:  ", "Loop?", "Maximum value:  " };
     String c[]= new String[a.length + b.length];
     System.arraycopy(a, 0, c, 0, a.length);
     System.arraycopy(b, 0, c, a.length, b.length);

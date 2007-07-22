@@ -232,6 +232,7 @@ public class GameState implements CommandEncoder {
     lastSave = gameStarting ? saveString() : null;
   }
 
+  /** Return true if a game is currently in progress */
   public boolean isGameStarted() {
     return gameStarted;
   }
