@@ -87,10 +87,6 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
     return new Class[0];
   }
 
-  public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("TurnTracker.htm","GlobalKey"); //$NON-NLS-1$ //$NON-NLS-2$
-  }
-
   public void removeFrom(Buildable parent) {
     
   }
@@ -103,6 +99,10 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
     return "Global Hotkey";
   }
   
+  public HelpFile getHelpFile() {
+    return HelpFile.getReferenceManualPage("TurnTracker.htm","Hotkey"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
+
   public void apply() {
     if (match.isNull() || match.accept(checkPiece)) {
       GameModule.getGameModule().fireKeyStroke(hotkey);

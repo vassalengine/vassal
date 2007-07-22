@@ -33,10 +33,10 @@ import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
@@ -314,10 +314,6 @@ public abstract class TurnLevel extends TurnComponent {
   public void removeFrom(Buildable parent) {
     ((TurnComponent) parent).removeLevel(this);
     myValue.removeFromContainer();
-  }
-
-  public HelpFile getHelpFile() {
-    return null;
   }
 
   public Class[] getAllowableConfigureComponents() {

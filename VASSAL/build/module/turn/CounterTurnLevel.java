@@ -23,6 +23,7 @@ import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.SequenceEncoder;
@@ -231,6 +232,10 @@ public class CounterTurnLevel extends TurnLevel {
     return "Counter";
   }
   
+  public HelpFile getHelpFile() {
+    return HelpFile.getReferenceManualPage("TurnTracker.htm","Counter"); //$NON-NLS-1$ //$NON-NLS-2$
+  }
+
   public VisibilityCondition getAttributeVisibility(String name) {
     if (LOOP_LIMIT.equals(name)) {
       return loopCond;

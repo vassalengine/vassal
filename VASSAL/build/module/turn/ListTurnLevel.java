@@ -33,6 +33,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
@@ -331,6 +332,10 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
   public static String getConfigureTypeName() {
     return "List";
+  }
+  
+  public HelpFile getHelpFile() {
+    return HelpFile.getReferenceManualPage("TurnTracker.htm","List"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {
