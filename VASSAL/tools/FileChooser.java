@@ -225,6 +225,7 @@ public abstract class FileChooser {
       private File cur;
       private String title;
       private FileFilter filter;
+      private int mode = FILES_ONLY;
 
       public NativeFileChooser(Component parent, DirectoryConfigurer prefs) {
          super(parent, prefs);
@@ -253,10 +254,11 @@ public abstract class FileChooser {
       }
 
       public int getFileSelectionMode() {
-         return FILES_ONLY;
+         return mode;
       }
 
       public void setFileSelectionMode(int mode) {
+        this.mode = mode;
       }
 
       public String getDialogTitle() {
@@ -281,7 +283,7 @@ public abstract class FileChooser {
                fd.setFile(cur.getName());
             }
          }
-      
+         System.setProperty("apple.awt.fileDialogForDirectories", String.valueOf(mode == DIRECTORIES_ONLY));      
          return fd;
       }
 
