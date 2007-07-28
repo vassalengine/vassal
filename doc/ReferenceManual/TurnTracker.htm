@@ -3,6 +3,9 @@
 <head>
 
 
+
+  
+  
   
   
   
@@ -15,246 +18,361 @@
 <body>
 
 
+
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
 
 
   <tbody>
 
 
+
     <tr align="center">
+
 
 
       <td valign="top">
       
       
+      
       <h1>VASSAL Reference Manual</h1>
+
 
 
       <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
 &gt; <b>Turn Counter</b></small><br>
 
 
+
       </td>
+
 
 
     </tr>
 
 
+
     <tr>
+
 
 
       <td valign="top">
       
       
+      
       <hr size="2" width="100%">
+      
       
       
       <h2>Turn Counter<br>
 
 
+
       </h2>
 
 
+
+      
       
       
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
 
+
         <tbody>
+
 
 				   
 		  <tr>
+
  
 		  	<td colspan="2">
+            
             <div class="level2">
 
+            
             <p>A Turn Counter keeps track of the current
 turn/phase/sub-phase, etc. of a game. &nbsp;Players can advance the
 turn forward or backward, or optionally jump directly to a turn.
-</p>
-
-
-            <p>
-            <a href="http://www.vassalengine.org/wiki/lib/exe/detail.php?id=turn%3Aturntracker&amp;cache=cache&amp;media=turn:turn_sample.gif" class="media" title="turn:turn_sample.gif"><img src="../../../../../../../private/tmp/downloads/turntracker_files/fetch.gif" class="media" alt=""></a>
             </p>
 
 
+
+            
+            <p>
+            <a href="http://www.vassalengine.org/wiki/lib/exe/detail.php?id=turn%3Aturntracker&amp;cache=cache&amp;media=turn:turn_sample.gif" class="media" title="turn:turn_sample.gif"><img style="border: 0px solid ; width: 244px; height: 63px;" src="images/TurnTrackerTurnWindow.gif" class="media" alt=""></a>
+            </p>
+
+
+
+            
             <p>The Turn Counter is defined as a series of nested
 levels. &nbsp;Advancing the turn moves the deepest level forward.
 &nbsp;When a child level wraps around, the next child level under the
 same parent advances forward. &nbsp;When the last child level has
 wrapped around, the parent level advances forward.</p>
+
+            
             <p><span style="font-style: italic;">Example: &nbsp;a level
 representing the Month may contain a level representing the Day, which
 contains a level representing Morning/Evening. &nbsp;Advancing the turn
 moves from morning to evening, then to morning of the next day, etc.</span></p>
+
+            
             <p>Each level of the Turn Counter exposes its value as a module&nbsp;<a href="Properties.htm">Property</a>. &nbsp;A hotkey can be configured to fire when a certain combination of levels is reached.</p>
+
 The Turn Counter controls can be docked into the Main Controls toolbar,
 or can be opened in a separate window that is shown/hidden via a button
 on the toolbar. &nbsp;Whether the controls are docked is controlled by
 the player's preferences.</div>
+
             <br>
+
             <br>
+
 
 			</td>
 
+
 		  </tr>
+
 
           <tr>
 
 
+
             <td valign="top">
 			<span style="font-weight: bold;">Name:&nbsp; </span>A name for display in the Module Edit Window<br>
+
 			
             <span style="font-weight: bold;">Button text:&nbsp; </span>The text of the toolbar button to show/hide the controls when un-docked<br>
 
+
 			<span style="font-weight: bold;">Button Icon:&nbsp; </span>Icon for the toolbar button.<br>
+
 
             <span style="font-weight: bold;">Button Tooltip:&nbsp; </span>The tooltip text of the button.<br>
 
+
             <span style="font-weight: bold;">Show/hide Hotkey:&nbsp; </span>Keyboard shortcut to hide or show the Turn Counter window when un-docked.<br>
+
 
             <span style="font-weight: bold;">Next Turn Hotkey:&nbsp; </span>Keyboard shortcut to advance the Turn Counter one step.<br>
 
+
 			<span style="font-weight: bold;">Previous Turn Hotkey:&nbsp; </span>Keyboard shortcut to return the Turn Counter to the previous step.<br>
+
 
 			<span style="font-weight: bold;">Turn Name Format:&nbsp; </span><a href="MessageFormat.htm">Message Format</a> to format the display of the current turn. &nbsp;All module-level <a href="Properties.htm">Properties</a>
 will be substituted. &nbsp;In particular, the properties exposed by any
 child Counters&nbsp;or Lists can be used. &nbsp;In addition, the
 special properties <span style="font-style: italic;">level1, level2</span>, etc. can be used to represent the values of the active Counter or List within the Turn Counter. &nbsp;<span style="font-style: italic;">Example: &nbsp;If the Turn Counter contains a Month level that contains a Day level, then </span>level1<span style="font-style: italic;"> gives the value of the Month and </span>level2<span style="font-style: italic;"> gives the Day.</span><br>
 
+
           	<span style="font-weight: bold;">Report Format:&nbsp; </span><a href="MessageFormat.htm">Message Format</a> to display a message in the Chat Window whenever the turn changes.<br>
+
 
            	<span style="font-weight: bold;">Turn Label Tooltip Text:&nbsp; </span>Tooltip text for the Turn Display.<br>
 
+
 			<span style="font-weight: bold;">Turn Label Display Length:&nbsp; </span>Set the number of pixels wide the turn display label should be, or use 0 to let it float to suit the current turn display.<br>
 
+
             </td>
+
 
 
             <td valign="top"><img style="width: 588px; height: 320px;" src="images/TurnTracker.png" alt=""> <br>
 
 
+
             </td>
 
 
+
           </tr>
+
 
 
           <tr>
 
 
+
           </tr>
 
 
+
+        
         
         
         </tbody>
       
       
+      
       </table>
+
 
 
       </td>
 
 
+
     </tr>
+
 
 
     <tr>
 
 
+
     </tr>
 
 
+
+  
   
   
   </tbody>
 </table>
+
   
 
 <hr>
 <h2>Sub-Components<br>
+
 </h2>
+
 
 <br>
 
+
 <h3><a name="List"></a>List</h3>
+
 A List is a level that cycles through a specified list of text strings.
 <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+
   <tbody>
+
     <tr>
+
       <td><span style="font-weight: bold;">Description:&nbsp; </span>A name for display in the Module Edit Window<br>
+
 			
             <span style="font-weight: bold;">Property Name:&nbsp; </span>The name of the global <a href="Properties.htm">Property</a> that will hold the value of this level.<br>
 
+
 			<span style="font-weight: bold;">Turn Level Format: &nbsp; </span>A<span style="font-weight: bold;"> </span><a href="MessageFormat.htm">Message Format</a> that gives the value of the <span style="font-style: italic;">level1, level2, </span>etc property for use in the Turn Counter's Turn Name Format property.<br>
+
 
             <span style="font-weight: bold;">List of Items:&nbsp; </span>A list of text strings that the level will cycle through.<br>
 
+
             <span style="font-weight: bold;">Allow players to hide items in this list:&nbsp; </span>If selected, then player will be allowed to disable items in this list at game time.<br>
+
 
             <span style="font-weight: bold;">Allow players to change which item goes first:</span>
 &nbsp;If selected, then players will be allowed to change which should
 be the beginning&nbsp;item in the list, i.e. the item at which the
 parent level will be advanced. &nbsp;<span style="font-style: italic;">Example: &nbsp;If a List represents sides in a game, but the order in which sides move is not always fixed.</span><br>
 
+
 			<span style="font-weight: bold;"></span><span style="font-weight: bold;"><br>
+
       </span></td>
+
       <td><img style="width: 418px; height: 249px;" alt="" src="images/TurnTrackerList.png"></td>
+
     </tr>
+
+  
   </tbody>
 </table>
+
 <h3><a name="Counter"></a>Counter</h3>
+
 A Counter is a numerical level that advances by incrementing the number
 by a fixed value. &nbsp;It can optionally loop when it reaches a
 maximum value.<br>
+
 <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+
   <tbody>
+
     <tr>
+
       <td><span style="font-weight: bold;">Description:&nbsp; </span>A name for display in the Module Edit Window<br>
+
 			
             <span style="font-weight: bold;">Property Name:&nbsp; </span>The name of the global <a href="Properties.htm">Property</a> that will hold the value of this level.<br>
 
+
 			<span style="font-weight: bold;">Turn Level Format: &nbsp; </span>A<span style="font-weight: bold;"> </span><a href="MessageFormat.htm">Message Format</a> that gives the value of the <span style="font-style: italic;">level1, level2, </span>etc property for use in the Turn Counter's Turn Name Format property.<br>
+
 
             <span style="font-weight: bold;">Start Value:&nbsp; </span>The initial/minimum numeric value.<br>
 
+
             <span style="font-weight: bold;">Increment By:&nbsp; </span>The amount by which the numeric value increases when the level advances.<br>
+
 
             <span style="font-weight: bold;">Loop:</span> &nbsp;If selected, the level will return to its starting value after reaching the maximum value.<br>
 
+
 			<span style="font-weight: bold;">Maximum value:&nbsp; </span>The maximum value at which the level will loop.<br>
+
       <span style="font-weight: bold;"><br>
+
       </span></td>
+
       <td><img alt="" src="images/TurnTrackerCounter.png"></td>
+
     </tr>
+
+  
   </tbody>
 </table>
 
+
 <br>
+
 <h3><a name="Hotkey"></a>Global Hotkey</h3>
+
 A Global Hotkey fires a key sequence whenever a certain state of the Turn Counter is reached.<br>
+
 <br>
+
 <span style="font-style: italic;">Example: &nbsp;When the Refit phase is reached, a hotkey can fire that corresponds to the keyboard shortcut of a <a href="Map.htm#GlobalKeyCommand">Global Key Command</a> that removes all Damage counters from pieces on the map.</span>
 <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+
   <tbody>
+
     <tr>
+
       <td><span style="font-weight: bold;">Description:&nbsp; </span>A name for display in the Module Edit Window<br>
+
 			
             <span style="font-weight: bold;">Global Hotkey:&nbsp; </span>The keyboard shortcut to fire. &nbsp;The program will respond exactly as if one of the players had typed this key sequence.<br>
+
 
 			<span style="font-weight: bold;">Match Properties: &nbsp; </span>A <a href="Properties.htm">Property Expression</a>
 that specifies when to fire the hotkey. &nbsp;If the expression is true
 after any level of the Turn Counter advances, the hotkey will fire.<br>
 
+
             <span style="font-weight: bold;">Report Format:&nbsp; </span><span style="font-weight: bold;"> </span>A<span style="font-weight: bold;"> </span><a href="MessageFormat.htm">Message Format</a> that will be echoed to the Chat Window when the hotkey fires.<br>
+
       <span style="font-weight: bold;"><br>
+
       </span></td>
+
       <td><img style="width: 367px; height: 144px;" alt="" src="images/TurnTrackerGlobalHotkey.png"></td>
+
     </tr>
+
+  
   </tbody>
 </table>
+
 
 
 </body>
