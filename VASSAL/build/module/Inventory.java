@@ -235,7 +235,7 @@ public class Inventory extends AbstractConfigurable
       public void valueChanged(TreeSelectionEvent e) {
         if (centerOnPiece) {
           GamePiece piece = getSelectedCounter();
-          if (piece != null)
+          if (piece != null && piece.getMap() != null)
             piece.getMap().centerAt(piece.getPosition());
         }
       }

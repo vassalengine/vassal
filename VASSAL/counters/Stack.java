@@ -275,7 +275,8 @@ public class Stack implements GamePiece, StateMergeable {
   public Shape getShape() {
     Area a = new Area();
     Shape[] childBounds = new Shape[getPieceCount()];
-    getMap().getStackMetrics().getContents(this, null, childBounds, null, 0, 0);
+    StackMetrics metrics = getMap() == null ? getDefaultMetrics() : getMap().getStackMetrics();
+    metrics.getContents(this, null, childBounds, null, 0, 0);
     PieceIterator visibleFilter = PieceIterator.visible(getPieces());
     while (visibleFilter.hasMoreElements()) {
       GamePiece p = visibleFilter.nextPiece();
