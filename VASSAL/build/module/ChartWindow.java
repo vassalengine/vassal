@@ -145,6 +145,7 @@ public class ChartWindow extends Widget {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return new Class[]{VASSAL.build.widget.Chart.class, VASSAL.build.widget.HtmlChart.class, TabWidget.class, PanelWidget.class, BoxWidget.class,
                        ListWidget.class, MapWidget.class};
@@ -176,6 +177,7 @@ public class ChartWindow extends Widget {
     return new String[]{"Name:  ", "Button text:  ", "Tooltip text:  ", "Button icon:  ", "Hotkey:  "};
   }
 
+  @SuppressWarnings("unchecked")
   public Class[] getAttributeTypes() {
     return new Class[]{String.class, String.class, String.class, IconConfig.class, KeyStroke.class};
   }

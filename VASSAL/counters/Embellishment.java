@@ -378,7 +378,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      ArrayList<KeyCommand> l = new ArrayList();
+      ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
       GamePiece outer = Decorator.getOutermost(this);
       if (activateCommand.length() > 0 && activateKey.length() > 0) {
         l.add(new KeyCommand(activateCommand,

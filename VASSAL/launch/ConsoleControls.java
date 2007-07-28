@@ -115,8 +115,8 @@ public class ConsoleControls {
     LoadModuleAction loadModuleAction = new LoadModuleAction(controls);
     loadModuleAction.addAction(closeConsoleWindow);
     loadModuleAction.addAction(translateModule);
-    loadModuleAction.addAction(showWelcomeWizard);
     loadModuleAction.addAction(loadExtensions);
+    loadModuleAction.addAction(showWelcomeWizard);
     openButton = new javax.swing.JButton(loadModuleAction);
     box.add(openButton);
     Action showStatusAction = new ShowServerStatusAction(new CgiServerStatus(), null);

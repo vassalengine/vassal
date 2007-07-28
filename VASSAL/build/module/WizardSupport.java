@@ -477,7 +477,15 @@ public class WizardSupport {
         public void actionPerformed(ActionEvent e) {
           if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
             PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
-            loadSetup(setup, controller, settings);
+            if (setup.isUseFile() && setup.getFileName() != null) {
+              loadSetup(setup, controller, settings);
+            }
+            else {
+              final GameSetupPanels panels = GameSetupPanels.newInstance();
+              settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
+              controller.setProblem(null);
+              controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
+            }
           }
           else {
             controller.setProblem(description);

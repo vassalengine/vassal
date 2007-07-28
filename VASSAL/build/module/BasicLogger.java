@@ -243,7 +243,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   
   protected void beginOutput() {
     FileChooser fd = GameModule.getGameModule().getFileChooser();
-    String name = fd.getSelectedFile().getName();
+    String name = fd.getSelectedFile() == null ? null : fd.getSelectedFile().getName();
     if (name != null) {
       int index = name.lastIndexOf('.');
       if (index > 0) {

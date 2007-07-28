@@ -205,6 +205,7 @@ public class DiceButton extends AbstractConfigurable {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public Class[] getAttributeTypes() {
     return new Class[]{String.class,
                        String.class,
@@ -346,6 +347,7 @@ public class DiceButton extends AbstractConfigurable {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }

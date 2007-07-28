@@ -81,6 +81,7 @@ public abstract class Widget extends AbstractConfigurable {
    * The allowable Configurable components of a Widget are the same
    * as its parent
    */
+  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return parent.getAllowableConfigureComponents();
   }

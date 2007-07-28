@@ -74,6 +74,7 @@ public class PredefinedSetup extends AbstractConfigurable {
     return new String[]{"Name:  ", "Contains sub-menus?", "Use pre-defined file?", "Saved Game:  "};
   }
 
+  @SuppressWarnings("unchecked")
   public Class[] getAttributeTypes() {
     return new Class[]{String.class, Boolean.class, Boolean.class, File.class};
   }
@@ -220,5 +221,13 @@ public class PredefinedSetup extends AbstractConfigurable {
 
   public boolean isMenu() {
     return isMenu;
+  }
+
+  public boolean isUseFile() {
+    return useFile;
+  }
+
+  public String getFileName() {
+    return fileName;
   }
 }
