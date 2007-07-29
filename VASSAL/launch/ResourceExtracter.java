@@ -407,8 +407,7 @@ public class ResourceExtracter {
 
     /** Prompt user for installation directory */
     public File getInstallDir() {
-      FileChooser fc = FileChooser.createFileChooser(null, (DirectoryConfigurer) prefs.getOption(installDirKey));
-      fc.setFileSelectionMode(FileChooser.DIRECTORIES_ONLY);
+      FileChooser fc = FileChooser.createFileChooser(null, (DirectoryConfigurer) prefs.getOption(installDirKey), FileChooser.DIRECTORIES_ONLY);
       boolean cancelable = !isInitialInstall();
       File f = null;
       while (f == null) {

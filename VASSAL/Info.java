@@ -120,6 +120,10 @@ public final class Info {
     return os.toLowerCase().indexOf("mac") >= 0 //$NON-NLS-1$
         && os.toLowerCase().indexOf("x") > 0; //$NON-NLS-1$
   }
+  
+  public static boolean isWindows() {
+    return System.getProperty("os.name").toLowerCase().startsWith("windows");
+  }
 
   /**
    * 

@@ -19,7 +19,9 @@
 package VASSAL.configure;
 
 import java.io.File;
-import VASSAL.tools.DirectoryFileFilter;
+
+import VASSAL.build.GameModule;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.FileChooser;
 
 /**
@@ -32,9 +34,10 @@ public class DirectoryConfigurer extends FileConfigurer {
   }
   
   protected FileChooser initFileChooser() {
-    FileChooser fc = super.initFileChooser();
-    fc.setFileFilter(new DirectoryFileFilter());
-    fc.setFileSelectionMode(FileChooser.DIRECTORIES_ONLY);
+    FileChooser fc = FileChooser.createFileChooser(null, startingDirectory, FileChooser.DIRECTORIES_ONLY);
+    if (startingDirectory == null && GameModule.getGameModule() != null) {
+      fc.setCurrentDirectory((File) Prefs.getGlobalPrefs().getValue(Prefs.MODULES_DIR_KEY));
+    }
     return fc;
   }
 
