@@ -42,4 +42,8 @@ public class JabberPlayer extends SimplePlayer {
   public int hashCode() {
     return jid.hashCode();
   }
+  
+  public String toString() {
+    return name+" ("+jid+")";
+  }
 }

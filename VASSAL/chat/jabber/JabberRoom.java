@@ -18,6 +18,7 @@
 package VASSAL.chat.jabber;
 
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.RoomInfo;
@@ -89,7 +90,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   }
   
   public static JabberRoom createLocal(JabberClient client, String name) {
-    String jid = JabberClient.escapeNode(client.getModule() + "/" + name).toLowerCase()+"@"+client.getConferenceService();
+    String jid = StringUtils.escapeNode(client.getModule() + "/" + name).toLowerCase()+"@"+client.getConferenceService();
     return new JabberRoom(client,name,jid,null);
   }
 }
