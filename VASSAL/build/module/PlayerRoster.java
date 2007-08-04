@@ -183,7 +183,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
                          Resources.getString("PlayerRoster.become_observer"), Resources.getString("PlayerRoster.join_another_side"), Resources.getString(Resources.CANCEL)}; //$NON-NLS-1$ //$NON-NLS-2$
       final int CANCEL = options.length - 1;
       int option = (JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(),
-          Resources.getString("PlayerRoster.give_up_position", mySide), Resources.getString("PlayerRoster.retire"), //$NON-NLS-1$ //$NON-NLS-2$
+          Resources.getString("PlayerRoster.give_up_position", getMyLocalizedSide()), Resources.getString("PlayerRoster.retire"), //$NON-NLS-1$ //$NON-NLS-2$
           JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, Resources.getString("PlayerRoster.become_observer"))); //$NON-NLS-1$
       if (option == 0) {
         String oldSide = getMySide();
@@ -309,7 +309,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
 
   public void finish() {
-    String newSide = sideConfig.getValueString();
+    String newSide = untranslateSide(sideConfig.getValueString());
     if (newSide != null) {
       Add a = new Add(this, GameModule.getUserId(), GlobalOptions.getInstance().getPlayerId(), newSide);
       a.execute();

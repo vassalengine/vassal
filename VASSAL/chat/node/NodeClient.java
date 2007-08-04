@@ -67,7 +67,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected NodePlayer me;
   protected SimpleRoom currentRoom;
-  protected String defaultRoomName = Resources.getString("Chat.main_room");  //$NON-NLS-1$
+  protected String defaultRoomName = "Main Room";  //$NON-NLS-1$
   protected NodeRoom[] allRooms = new NodeRoom[0];
   protected MessageBoard msgSvr;
   protected WelcomeMessageServer welcomer;
