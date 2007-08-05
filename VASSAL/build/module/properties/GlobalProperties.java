@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.swing.JToolBar;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.tools.TemporaryToolBar;
@@ -70,6 +71,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     }
     tempToolbar.setDelegate((ToolBarComponent) parent);
     propertySource = (PropertySource) parent;
+    GameModule.getGameModule().addCommandEncoder(new ChangePropertyCommandEncoder(this));
   }
   
   public void addMutableProperty(String key, MutableProperty p) {

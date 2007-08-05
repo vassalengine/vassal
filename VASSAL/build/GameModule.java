@@ -67,6 +67,7 @@ import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
@@ -186,6 +187,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     validator = new CompoundValidityChecker
         (new MandatoryComponent(this, Documentation.class),
          new MandatoryComponent(this, GlobalOptions.class));
+    
+    addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }
 
   /**

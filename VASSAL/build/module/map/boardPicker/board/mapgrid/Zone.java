@@ -55,6 +55,7 @@ import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
@@ -146,6 +147,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     parentGrid = (ZonedGrid) b;
     parentGrid.addZone(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
+    GameModule.getGameModule().addCommandEncoder(new ChangePropertyCommandEncoder(this));
     setAttributeTranslatable(HIGHLIGHT_PROPERTY, false);
   }
 

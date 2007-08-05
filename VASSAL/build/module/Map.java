@@ -106,6 +106,7 @@ import VASSAL.build.module.map.boardPicker.board.Region;
 import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
 import VASSAL.build.module.properties.GlobalProperties;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
@@ -584,6 +585,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
 	public void addTo(Buildable b) {
 		idMgr.add(this);
+    GameModule.getGameModule().addCommandEncoder(new ChangePropertyCommandEncoder(this));
 		validator = new CompoundValidityChecker(new MandatoryComponent(this, BoardPicker.class), new MandatoryComponent(this, StackMetrics.class)).append(idMgr);
 		DragGestureListener dgl = new DragGestureListener() {
 			public void dragGestureRecognized(DragGestureEvent dge) {

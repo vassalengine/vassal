@@ -177,7 +177,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
   
   /**
-   * A String that identifies this property in an encoded Commadn
+   * A String that identifies this property in an encoded Command
    * @return
    */
   protected String getPropertyId() {
@@ -274,18 +274,6 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     return "Global Property";
   }
   
-  public class Property extends MutableProperty.Impl {
-
-    public Property(String propertyName, Object source) {
-      super(propertyName, source);
-    }
-
-    protected Command getChangeCommand(String oldValue, String newValue) {
-      return new GlobalProperty.SetGlobalProperty(GlobalProperty.this, oldValue, newValue);
-    }
-    
-  }
-
   public void addMutablePropertyChangeListener(PropertyChangeListener l) {
     property.addMutablePropertyChangeListener(l);
   }

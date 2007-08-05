@@ -20,8 +20,8 @@ package VASSAL.build.module.properties;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Iterator;
 import java.util.List;
+
 import VASSAL.command.Command;
 
 /**
@@ -45,11 +45,13 @@ public interface MutableProperty {
      * @param propertyContainers
      * @return
      */
-    public static MutableProperty findMutableProperty(String propertyName, List propertyContainers) {
+    public static MutableProperty findMutableProperty(String propertyName, List<MutablePropertiesContainer> propertyContainers) {
       MutableProperty p = null;
-      for (Iterator it = propertyContainers.iterator(); it.hasNext() && p == null;) {
-        MutablePropertiesContainer c = (MutablePropertiesContainer) it.next();
+      for (MutablePropertiesContainer c : propertyContainers) {
         p = (c == null ? null : c.getMutableProperty(propertyName));
+        if (p != null) {
+          break;
+        }
       }
       return p;
     }
@@ -110,7 +112,7 @@ public interface MutableProperty {
     }
 
     protected Command getChangeCommand(String oldValue, String newValue) {
-      return null;
+      return new ChangePropertyCommand(this,propertyName, oldValue, newValue);
     }
 
     public Command setPropertyValue(String newValue) {
