@@ -188,13 +188,10 @@ public class Labeler extends Decorator implements TranslatablePiece {
       return piece.getLocalizedName();
     }
     else {
-      nameFormat.setProperty(PIECE_NAME, piece.getLocalizedName());
-      nameFormat.setProperty(LABEL, getLocalizedLabel());
       FormattedString f = new FormattedString(getTranslation(nameFormat.getFormat()));
+      f.setProperty(PIECE_NAME, piece.getLocalizedName());
+      f.setProperty(LABEL, getLocalizedLabel());
       String result = f.getLocalizedText(Decorator.getOutermost(this));
-//    Ensure Property values stay unlocalized
-      nameFormat.setProperty(PIECE_NAME, piece.getName()); 
-      nameFormat.setProperty(LABEL, getLabel());
       return result;
     }
   }
