@@ -45,6 +45,7 @@ import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.muc.HostedRoom;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.ParticipantStatusListener;
+import org.jivesoftware.smackx.packet.VCard;
 
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
@@ -151,8 +152,13 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
             catch (XMPPException e) {
               // Create the account if it doesn't exist
               if (e.getXMPPError().getCode() == 401) {
-                conn.getAccountManager().createAccount(username, password);
+                Map<String, String> attributes = new HashMap<String, String>();
+                attributes.put("name", me.getName());
+                conn.getAccountManager().createAccount(username, password, attributes);
                 conn.login(username, password);
+                VCard c = new VCard();
+                c.setNickName(me.getName());
+                c.save(conn);
               }
               else {
                 throw e;
@@ -316,6 +322,13 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   public static String unescapeNode(String node) {
     return StringUtils.unescapeNode(node);
   }
+  /**
+   * VASSAL clients join a common room, named for the module, from which they communicate information about which
+   * players have joined which rooms, etc.
+   * 
+   * @author rodneykinney
+   * 
+   */
   private class MonitorRooms implements PacketListener, ParticipantStatusListener {
     private static final String NEW_ROOM = "newRoom";
     private static final String OLD_ROOM = "oldRoom";
@@ -343,7 +356,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       this.monitorRoom = new MultiUserChat(conn, StringUtils.escapeNode(getModule()) + "@" + getConferenceService());
       // monitorRoom.addParticipantListener(this);
       // monitorRoom.create(getNickName(currentRoom));
-      monitorRoom.join(username);
+      monitorRoom.join(StringUtils.parseName(conn.getUser()));
       try {
         // This is necessary to create the room if it doesn't already exist
         monitorRoom.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
@@ -394,8 +407,6 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       }
       m.setBody(ROOM_CHANGE_ACTION);
       monitorRoom.sendMessage(m);
-      // Don't know why trying this messses things up so badly.
-      // updateRooms(monitorRoom.getRoom()+"/"+monitorRoom.getNickname());
     }
 
     public void disconnect() {
@@ -403,6 +414,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     }
 
     public void updateRooms(String jid) throws XMPPException {
+      String absJID = StringUtils.parseResource(jid) + "@" + host+"/Smack";
       removeFromCurrentRoom(jid);
       String newRoomJID = null;
       for (Iterator iter = MultiUserChat.getJoinedRooms(conn, jid); iter.hasNext();) {
@@ -414,6 +426,8 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       if (newRoomJID != null) {
         addToRoom(jid, newRoomJID);
       }
+      VCard c = new VCard();
+      c.load(conn, absJID);
     }
 
     private void addToRoom(String jid, String newRoomJID) throws XMPPException {
@@ -597,6 +611,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   }
 
   public static void main(String[] args) {
+    XMPPConnection.DEBUG_ENABLED = true;
     CommandEncoder c = new CommandEncoder() {
       public Command decode(String command) {
         System.err.println(command);
@@ -607,7 +622,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
         return null;
       }
     };
-    JabberClient client = new JabberClient(c, "63.144.41.3", 5222, "test", "test");
+    JabberClient client = new JabberClient(c, "63.144.41.3", 5222, "test2", "test");
     client.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         System.err.println(evt.getPropertyName() + "=" + evt.getNewValue());
