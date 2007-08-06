@@ -20,7 +20,9 @@ package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.KeyStroke;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -29,6 +31,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.MutableProperty.Impl;
+import VASSAL.command.Command;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
@@ -157,8 +160,10 @@ public class DiceButton extends AbstractConfigurable {
       val += total;
 
     String report = formatResult(val);
-    GameModule.getGameModule().getChatter().send(report);
-    property.setPropertyValue(val);
+    Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(),report);
+    c.execute();
+    c.append(property.setPropertyValue(val));
+    GameModule.getGameModule().sendAndLog(c);
   }
 
   /**
