@@ -99,12 +99,13 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     roomControls = new LockableRoomControls(this);
     roomControls.addPlayerActionFactory(ShowProfileAction.factory());
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
-    roomControls.addPlayerActionFactory(PrivateMessageAction.factory(this, new PrivateChatManager(this)));
+    PrivateChatManager privateChatManager = new PrivateChatManager(this);
+    roomControls.addPlayerActionFactory(PrivateMessageAction.factory(this, privateChatManager));
     roomControls.addPlayerActionFactory(SendSoundAction.factory(this, Resources.getString("Chat.send_wakeup"), "wakeUpSound", "phone1.wav")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     serverStatusControls = new ServerStatusControlsInitializer(serverStatus);
     playerStatusControls = new SimpleStatusControlsInitializer(this);
     synchEncoder = new SynchEncoder(this, this);
-    privateChatEncoder = new PrivateChatEncoder(this, new PrivateChatManager(this));
+    privateChatEncoder = new PrivateChatEncoder(this, privateChatManager);
     soundEncoder = new SoundEncoder();
     nameChangeListener = new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
