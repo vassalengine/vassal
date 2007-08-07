@@ -55,7 +55,7 @@ public class Documentation extends AbstractConfigurable {
       try {
         AboutScreen about = new AboutScreen();
         about.setAttribute(AboutScreen.TITLE, Resources.getString("Documentation.about_vassal")); //$NON-NLS-1$
-        about.setAttribute(AboutScreen.FILE, "/images/Splash.gif"); //$NON-NLS-1$
+        about.setAttribute(AboutScreen.FILE, "/images/Splash.png"); //$NON-NLS-1$
         about.addTo(this);
         add(about);
       }

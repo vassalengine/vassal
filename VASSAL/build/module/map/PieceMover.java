@@ -1019,25 +1019,7 @@ public class PieceMover extends AbstractBuildable
       /* 
        * Ensure the user has dragged on a counter before starting the drag. 
        */
-      Point dragOrigin = dge.getDragOrigin();
-      boolean isDragOnPiece = false;
-      for (PieceIterator i = DragBuffer.getBuffer().getIterator(); i.hasMoreElements() && !isDragOnPiece; ) {
-        GamePiece piece = i.nextPiece();
-        Rectangle r = piece.boundingBox();
-        Point o = piece.getPosition();
-        r.translate(o.x, o.y);
-        Stack parent = piece.getParent();
-        // Take stacking into account
-        Point offset = new Point(0, 0);
-        if (parent != null) {
-          offset = piece.getMap().getStackMetrics().relativePosition(piece.getParent(), piece);
-          r.translate(offset.x, offset.y);
-        }
-        if (r.contains(dragOrigin)) {
-          isDragOnPiece = true;
-        }
-      }
-      if (isDragOnPiece && DragBuffer.getBuffer().getIterator().hasMoreElements()) {
+      if (!DragBuffer.getBuffer().isEmpty()) {
         Map map = dge.getComponent() instanceof Map.View ? ((Map.View) dge.getComponent()).getMap() : null;
         GamePiece piece = DragBuffer.getBuffer().getIterator().nextPiece();
         Point mousePosition = map == null ? dge.getDragOrigin() : map.componentCoordinates(dge.getDragOrigin());
