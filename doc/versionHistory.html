@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>VASSAL Version History</title>
+</head>
+<body>
+
+<div align="center">
+<h1>VASSAL Version History</h1>
+
+</div>
+Version 3.0:
+<ul>
+  <li>Choose between central server and direct peer-to-peer connection</li>
+  <li>Internationalization support:  Modules can be translated into any language via module extensions</li>
+  <li>Create standalone installers for a module: installed executable
+will launch module directly in play mode using the correct version of
+VASSAL</li>
+  <li>Support for Scalable Vector Graphics (SVG) images</li>
+  <li>Improved HelpFiles: display in external browser window.  Create HelpFiles by bundling the contents of a folder</li>
+  <li>Add arbitrary Global Key Commands to the right-click menu of a Deck</li>
+  <li>Copy/Paste traits when editing a GamePiece</li>
+  <li>Preferences to auto-prompt to start log files at Start and End of a Replay.</li>
+  <li>LOS thread enhancements:  snap to grid, report action, echo on opponent's window</li>
+  <li>Make delay before scrolling at map edge configurable</li>
+  <li>All toolbar buttons have configurable tooltip text</li>
+  <li>Configurable text for the "Mark Moved" button</li>
+  <li>A Moving stack should not pick up other counters from stacks</li>
+  <li>Layer option to automatically track a Property value</li>
+  <li>Allow Layer Reset command to reference $..$ properties</li>
+  <li>New tabs for Notes Window</li>
+  <li>Enable 'Last move Highlighter' by default in all modules</li>
+  <li>Allow Transparent Border/Bg color in Mouse Over Stack Viewer</li>
+  <li>Send To Location - specify Zone, other piece's location</li>
+  <li>Shift clicking on map should not deselect counters</li>
+</ul>
+
+Version 2.9:
+<ul>
+  <li>GlobalHotKey trait fires toolbar hotkeys from a Game Piece menu</li>
+  <li>SetGlobalProperty trait changes a Global Property from a Game Piece</li>
+  <li>Define Global Properties for Zones</li>
+  <li>Overlay a Zone with semi-tranparent patterns based on a Zone's properties</li>
+  <li>Combine multiple toolbar actions into a single button</li>
+  <li>New properties:  last die-roll, number of cards in deck</li>
+  <li>Apply Global Key Commands to a portion of a deck (Allows single-click dealing of decks)</li>
+  <li>Define customizable highlighter for selected pieces, based on GamePiece properties</li>
+  <li>Graphical editor for placing At-Start Stacks</li>
+</ul>
+
+Version 2.8:
+<ul>
+  <li>Play Sound trait plays an audible sound triggered by a Game Piece action.</li>
+  <li>Action Button trait places a virtual button on a piece, letting you invoke an arbitrary action by clicking with the mouse.</li>
+  <li>Mouse-over Stack Viewer can draw pieces as if they were not rotated</li>
+  <li>Global Preferences let you set global properties whose value can be specified by the player during game time.</li>
+</ul>
+
+Version 2.7:
+<ul>
+  <li>Game Piece Inventory window component shows the pieces in play organized by location, or any other grouping you choose.</li>
+  <li>Place multiple maps within a single window using tabs.</li>
+  <li>Restricted Commands trait removes or disable commands under certain conditions that you define.</li>
+  <li>Decks can be saved to and loaded from a file to support Collectible Card Games.</li>
+</ul>
+
+Version 2.6:
+<ul>
+  <li>New Toolbar Menu component lets you move organize buttons from the toolbar into customizable drop-down menus.</li>
+  <li>Global Properties let you define properties globally on a Map or Module</li>
+  <li>Dynamic Properties trait lets you define keyboard commands to change properties on game pieces</li>
+  <li>Game Piece Layer Control lets you to enable/disable/cycle-through the Layers that hold pieces on a Map</li>
+  <li>Ability to enable/disable Game Piece Layers</li>
+  <li>Greater control over the mouse-over stack viewer</li>
+  <li>Share Invisible/Masked pieces between sides</li>
+  <li>"Send back" command for "Send to Location" trait</li>
+  <li>Improved editor for configuring map grids</li>
+  <li>Automatically invoke specified keyboard commands on a piece placed on the map via a "Place Marker" command</li>
+</ul>
+
+Version 2.5:
+<ul>
+  <li>Game Piece Images:  a flexible and convenient way to build images from scratch for use in game pieces.</li>
+  <li>New 'Last Move Highlighter' component highlights the last piece moved on a map.</li>
+  <li>Non-stacking pieces can be made selectable but not movable</li>
+</ul>
+
+Version 2.4:
+<ul>
+  <li>New Map Shading component for overlaying a map with
+semi-transparent color or image. Usable in combination with Area of
+Effect trait.</li>
+  <li>Trigger Action trait fires multiple key events in response to a single key event.</li>
+  <li>Right-click menu commands apply to all selected pieces</li>
+</ul>
+
+Version 2.3:
+<ul>
+  <li>New tool for updating saved games to be compatible with a new module version</li>
+  <li>Module updater accessible through module edit window</li>
+</ul>
+
+Version 2.2:
+<ul>
+  <li>Rotate pieces to a random facing</li>
+  <li>Select random level within a Layer</li>
+  <li>Make pieces transparent when showing the Line of Sight thread</li>
+</ul>
+
+Version 2.1:
+<ul>
+  <li>Global Key Commands that are much more powerful. Apply to
+all maps at once. Place them in the right-click menus of individual
+pieces. Select targets based on level value in a Layer, map position,
+and more.</li>
+  <li>Customizable buttons for step/undo/server-controls buttons in toolbar.</li>
+  <li>'Replace With' trait will match label values, Layer status, etc. with the original piece.</li>
+  <li>'Area of Effect' trait highlights an area surrounding a game piece, for showing zones of control, etc.</li>
+</ul>
+
+Version 2.0:
+<ul>
+  <li>Any key combination (not just CTRL-) can now be used to manipulate counters.</li>
+  <li>Dragging the mouse now selects all pieces in a region, which can be moved as a group.</li>
+  <li>Trait to draw a movement trail for a piece</li>
+  <li>Pieces that can be moved using keyboard shortcuts</li>
+  <li>Pieces that pivot around a fixed point</li>
+  <li>Change offset and orientation of grid numbering</li>
+  <li>Fix positioning of rotated counters within a stack</li>
+</ul>
+Version 1.9:
+<ul>
+  <li>Create predefined setups accessible from the File menu</li>
+  <li>Multi-zoned grids define sub-regions of a board with their own grid</li>
+  <li>Keyboard command to reset a Layer to a particular level</li>
+  <li>Customize title of "Choose Boards" dialog</li>
+  <li>Use HTML to format Text Labels</li>
+  <li>Default "Mark Moved" icon</li>
+  <li>Scale thickness of highlight in overview map</li>
+  <li>New windows don't go off screen</li>
+  <li></li>
+</ul>
+
+Version 1.8:
+<ul>
+  <li>Ability to lock rooms on the server, preventing new players from joining</li>
+  <li>Server now supports full international character sets</li>
+  <li>Create your own tutorials in Help</li>
+  <li>Transparent background for text labels.</li>
+  <li>Reduced memory usage for rotated images</li>
+  <li>Bug fix:  undo delete counters</li>
+  <li>Bug fix:  clone counters on maps with stacking-disabled</li>
+  <li>Bug fix:  unable to disable "send deck to other deck" command</li>
+  <li>Bug fix:  recenter map when right-clicking on shift-to-select piece</li>
+</ul>
+
+Version 1.7:
+<ul>
+  <li>Define layers for ordering pieces on maps.</li>
+  <li>Toolbar wraps when buttons reach edge of screen</li>
+  <li>For gridless boards, Line of Sight Thread can define range in raw pixels.</li>
+  <li>Button to shift all pieces to be recentered on a map.</li>
+  <li>Specify auto-report format for changes to piece on a map-by-map basis</li>
+</ul>
+
+Version 1.6:
+<ul>
+  <li>Ability to group right-click menu items for game pieces into
+sub-menus.</li>
+  <li>Place Marker and Replace with Other traits can specify an offset
+and optionally match rotation angle with the original piece.</li>
+</ul>
+
+Version 1.5:
+<ul>
+  <li>Fully configurable auto-report messages:  Specify the exact
+format for reporting movement of pieces on/between map windows, dice
+rolls, keyboard/right-click commands on pieces, etc.</li>
+  <li>Symbolic dice:  configure with any number of images and select
+one at random to display in a dedicated window</li>
+  <li>Replace with Other trait now supports "circular" replacements:  A
+-&gt; B and B -&gt; A</li>
+</ul>
+
+Version 1.4:
+<ul>
+  <li>Improvements to Decks:  Menu item that shuffles entire deck into
+another deck.  Bug fixes: undo/redo, drawing</li>
+  <li>Non-standard dice:  any distribution of numbers or select a
+random string from a list </li>
+  <li>Set default zoom factor</li>
+  <li>Improvements to irregular grids for area-movement games</li>
+  <li>Counters with the Place Marker trait can specify text to
+automatically echo to chat area</li>
+  <li>Internet Dice Button stores opponent's email address with the
+saved game.&nbsp; <br>
+  </li>
+</ul>
+
+</body>
+</html>
