@@ -23,8 +23,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Locale;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -35,6 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
@@ -101,7 +102,8 @@ public class FirstTimeUserPanel {
       }
     });
     try {
-      help.addActionListener(new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null));
+      File readme = new File (Documentation.getDocumentationBaseDir(),"README.html");
+      help.addActionListener(new ShowHelpAction(readme.toURL(), null));
     }
     catch (MalformedURLException e) {
       e.printStackTrace();

@@ -16,9 +16,10 @@
  */
 package VASSAL.launch;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
+
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,7 +28,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ui.ShowServerStatusAction;
@@ -124,7 +127,8 @@ public class ConsoleControls {
     box.add(statusButton);
     JButton help;
     try {
-      help = new JButton(new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null));
+      File readme = new File (Documentation.getDocumentationBaseDir(),"README.html");
+      help = new JButton(new ShowHelpAction(readme.toURL(), null));
       box.add(help);
     }
     catch (MalformedURLException e) {
