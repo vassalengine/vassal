@@ -18,6 +18,7 @@ public class MultiActionButton extends ToolbarMenu {
 		super();
 		setAttribute(BUTTON_TEXT, "Multi-Action");
     setAttribute(TOOLTIP, ""); //$NON-NLS-1$
+    launch.putClientProperty(MENU_PROPERTY, null);
 	}
 	
   public String[] getAttributeDescriptions() {

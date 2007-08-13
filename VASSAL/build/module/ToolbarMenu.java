@@ -166,7 +166,7 @@ public class ToolbarMenu extends AbstractConfigurable
     }
     buttonsToMenuMap.clear();
     menu.removeAll();
-    HashMap<String,JButton> m = new HashMap<String,JButton>();
+    HashMap<String,JButton> nameToButton = new HashMap<String,JButton>();
     if (toolbar != null) {
       for (int i = 0, n = toolbar.getComponentCount(); i < n; ++i) {
         if (toolbar.getComponentAtIndex(i) instanceof JButton) {
@@ -176,13 +176,13 @@ public class ToolbarMenu extends AbstractConfigurable
           if (text == null) {
             text = b.getText();
           }
-          m.put(text, b);
+          nameToButton.put(text, b);
         }
       }
     }
     
     for (String item : menuItems) {
-      final JButton b = m.get(item);
+      final JButton b = nameToButton.get(item);
       if (b != null) {
         Object property = b.getClientProperty(MENU_PROPERTY);
         b.addPropertyChangeListener(this);
