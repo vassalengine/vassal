@@ -137,6 +137,15 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     }
     return super.getProperty(key);
   }
+  
+  public Object getLocalizedProperty(Object key) {
+    if (key.equals(getKey())) {
+      return getValue();
+    }
+    else {
+      return super.getLocalizedProperty(key);
+    }
+  }
 
   public void setProperty(Object key, Object value) {
     if (key.equals(getKey())) {
