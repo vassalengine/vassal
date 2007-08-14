@@ -17,16 +17,18 @@
  */
 package VASSAL.chat.jabber;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jivesoftware.smack.util.StringUtils;
+
 import VASSAL.chat.SimplePlayer;
 
 public class JabberPlayer extends SimplePlayer {
   private String jid;
+  private JabberRoom joinedRoom;
 
-  public JabberPlayer() {
-    super();
-  }
-
-  public JabberPlayer(String name, String jid) {
+  private JabberPlayer(String name, String jid) {
     super(name);
     this.jid = jid;
   }
@@ -45,5 +47,42 @@ public class JabberPlayer extends SimplePlayer {
   
   public String toString() {
     return name+" ("+jid+")";
+  }
+  
+  public void join(JabberRoom room) {
+    if (joinedRoom != null) {
+      joinedRoom.removePlayer(this);
+      if (joinedRoom.getPlayerList().size() == 0) {
+        JabberRoom.deleteRoom(joinedRoom.getJID());
+      }
+    }
+    room.addPlayer(this);
+    joinedRoom = room;
+  }
+  
+  private static Map<String, JabberPlayer> jidToPlayer = new HashMap<String, JabberPlayer>();
+
+  public static JabberPlayer getPlayer(String jid) {
+    if (jid == null) {
+      return null;
+    }
+    JabberPlayer p = jidToPlayer.get(jid);
+    if (p == null) {
+      p = new JabberPlayer(StringUtils.parseResource(jid), jid);
+      jidToPlayer.put(jid, p);
+    }
+    return p;
+  }
+  
+  public static JabberPlayer getPlayerByName(JabberClient client, String name) {
+    return getPlayer(StringUtils.escapeNode(name) + "@" + client.getHost() + "/VASSAL");
+  }
+
+  public JabberRoom getJoinedRoom() {
+    return joinedRoom;
+  }
+
+  public static void deletePlayer(String jid) {
+    jidToPlayer.remove(jid);
   }
 }
