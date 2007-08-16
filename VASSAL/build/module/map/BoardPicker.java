@@ -21,6 +21,7 @@ package VASSAL.build.module.map;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Window;
@@ -37,13 +38,18 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Vector;
+
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -73,18 +79,11 @@ import VASSAL.i18n.Translatable;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * This class is responsible for maintaining the {@link Board}s on a
- * {@link Map}. As a {@link CommandEncoder}, it recognizes {@link Command}s
- * that specify the set of boards to be used on a map. As a
- * {@link GameComponent} it reacts to the start of a game by prompting the
- * player to select boards if none have been specified.
+ * This class is responsible for maintaining the {@link Board}s on a {@link Map}. As a {@link CommandEncoder}, it
+ * recognizes {@link Command}s that specify the set of boards to be used on a map. As a {@link GameComponent} it reacts
+ * to the start of a game by prompting the player to select boards if none have been specified.
  */
-public class BoardPicker implements ActionListener,
-                                    GameComponent,
-                                    GameSetupStep,
-                                    Configurable,
-                                    CommandEncoder,
-                                    ValidityChecker {
+public class BoardPicker implements ActionListener, GameComponent, GameSetupStep, Configurable, CommandEncoder, ValidityChecker {
   private static final long serialVersionUID = 1L;
   public static final String ID = "BoardPicker"; //$NON-NLS-1$
   protected List<Board> possibleBoards = new ArrayList<Board>();
@@ -153,14 +152,17 @@ public class BoardPicker implements ActionListener,
       Runnable r = new Runnable() {
         public void run() {
           Dimension d = controls.getParent().getSize();
-          slotScroll.setSize(Math.min(d.width-(controls.getWidth()-slotScroll.getWidth()), slotScroll.getWidth()),Math.min(d.height,slotScroll.getHeight()));
-          controls.setLocation(0,0);
+          slotScroll.setSize(Math.min(d.width - (controls.getWidth() - slotScroll.getWidth()), slotScroll.getWidth()), Math.min(d.height, slotScroll
+              .getHeight()));
+          controls.setLocation(0, 0);
           slotPanel.revalidate();
           scheduled = false;
         }
       };
+
       public void ancestorMoved(HierarchyEvent e) {
       }
+
       public void ancestorResized(HierarchyEvent e) {
         if (!scheduled) {
           SwingUtilities.invokeLater(r);
@@ -189,7 +191,6 @@ public class BoardPicker implements ActionListener,
   }
 
   public void addTo(Buildable b) {
-// FIXME: warn about adding non-Boards?
     map = (Map) b;
     map.setBoardPicker(this);
     for (Board board : possibleBoards) {
@@ -221,8 +222,7 @@ public class BoardPicker implements ActionListener,
         Builder.build(e, this);
       }
       try {
-        psize = new Dimension(Integer.parseInt(e.getAttribute(SLOT_WIDTH)),
-                              Integer.parseInt(e.getAttribute(SLOT_HEIGHT)));
+        psize = new Dimension(Integer.parseInt(e.getAttribute(SLOT_WIDTH)), Integer.parseInt(e.getAttribute(SLOT_HEIGHT)));
       }
       catch (Exception ex) {
       }
@@ -241,24 +241,17 @@ public class BoardPicker implements ActionListener,
       if (value != null && value.length() > 0) {
         title = value;
       }
- /* 
-  *      'Add Row' and 'Add Column' text are no longer configurable, just use
-  *      the standard (possibly translated) text
-  *      
-  *      value = e.getAttribute(ADD_ROW_BUTTON_TEXT);
-  *      if (value != null && value.length() > 0) {
-  *        addRowButtonText = value;
-  *      }
-  *      value = e.getAttribute(ADD_COLUMN_BUTTON_TEXT);
-  *      if (value != null && value.length() > 0) {
-  *        addColumnButtonText = value;
-  *      }
-  */
+      /*
+       * 'Add Row' and 'Add Column' text are no longer configurable, just use the standard (possibly translated) text
+       * 
+       * value = e.getAttribute(ADD_ROW_BUTTON_TEXT); if (value != null && value.length() > 0) { addRowButtonText =
+       * value; } value = e.getAttribute(ADD_COLUMN_BUTTON_TEXT); if (value != null && value.length() > 0) {
+       * addColumnButtonText = value; }
+       */
       value = e.getAttribute(BOARD_PROMPT);
       if (value != null && value.length() > 0) {
         boardPrompt = value;
       }
-      
       // Record attributes for later translation
       Localization.getInstance().saveTranslatableAttribute(this, BOARD_PROMPT, boardPrompt);
       Localization.getInstance().saveTranslatableAttribute(this, DIALOG_TITLE, title);
@@ -296,11 +289,9 @@ public class BoardPicker implements ActionListener,
    * Add a board to the list of those available for the user to choose from
    */
   public void add(Buildable b) {
-// FIXME: warn on non-Boards?
     if (b instanceof Board) {
       possibleBoards.add((Board) b);
     }
-
     if (b instanceof Translatable) {
       ((Translatable) b).getI18nData().setOwningComponent(this);
     }
@@ -310,7 +301,6 @@ public class BoardPicker implements ActionListener,
    * Remove a board from the list of those available for the user to choose from
    */
   public void remove(Buildable b) {
-// FIXME: warn on non-Boards?
     if (b instanceof Board) {
       possibleBoards.remove(b);
     }
@@ -372,24 +362,39 @@ public class BoardPicker implements ActionListener,
     setBoards(Collections.list(bdEnum));
   }
 
-  protected void selectBoards() {
-    if (currentBoards != null) {
-      setBoards(currentBoards);
-    }
-    else {
-      reset();
-    }
-    if (currentBoards != null && !currentBoards.isEmpty()) {
-      defaultSetup = encode(new SetBoards(this, currentBoards));
-    }
-    else {
-      defaultSetup = null;
-    }
+  protected void selectBoards(Component c) {
+    reset();
+    final JDialog d = new JDialog((Frame) null, true);
+    d.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    Box b = Box.createVerticalBox();
+    Box buttons = Box.createHorizontalBox();
+    JButton ok = new JButton(Resources.getString(Resources.OK));
+    ok.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        List<Board> l = getBoardsFromControls();
+        defaultSetup = l.isEmpty() ? null : encode(new SetBoards(BoardPicker.this, l));
+        d.dispose();
+      }
+    });
+    buttons.add(ok);
+    JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
+    cancel.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        d.dispose();
+      }
+    });
+    buttons.add(cancel);
+    b.add(controls);
+    b.add(buttons);
+    d.getContentPane().add(b);
+    d.pack();
+    d.setLocationRelativeTo(c);
+    d.setVisible(true);
+    currentBoards = new ArrayList<Board>(getBoardsFromControls());
   }
 
   /**
-   * @return a Collection of boards that have been selected either by
-   * the user via the dialog or from reading a savefile
+   * @return a Collection of boards that have been selected either by the user via the dialog or from reading a savefile
    */
   public Collection<Board> getSelectedBoards() {
     if (currentBoards == null) {
@@ -402,8 +407,8 @@ public class BoardPicker implements ActionListener,
   }
 
   /**
-   * @return an Enumeration of boards that have been selected either by
-   * the user via the dialog or from reading a savefile
+   * @return an Enumeration of boards that have been selected either by the user via the dialog or from reading a
+   *         savefile
    * @deprecated Use {@link #getSelectedBoards()} instead.
    */
   @Deprecated
@@ -421,7 +426,7 @@ public class BoardPicker implements ActionListener,
     }
     return s.toArray(new String[s.size()]);
   }
-  
+
   public String[] getAllowableLocalizedBoardNames() {
     ArrayList<String> s = new ArrayList<String>(possibleBoards.size());
     for (Board b : possibleBoards) {
@@ -436,11 +441,11 @@ public class BoardPicker implements ActionListener,
   public Board getBoard(String boardName) {
     return getBoard(boardName, false);
   }
-  
+
   public Board getLocalizedBoard(String localizedBoardName) {
     return getBoard(localizedBoardName, true);
   }
-  
+
   protected Board getBoard(String boardName, boolean localized) {
     for (Board b : possibleBoards) {
       String checkName = localized ? b.getLocalizedName() : b.getName();
@@ -493,8 +498,8 @@ public class BoardPicker implements ActionListener,
   }
 
   /**
-   * The restore command of a BoardPicker, when executed, sets the boards
-   * of its {@link Map} to {@link #getSelectedBoards}
+   * The restore command of a BoardPicker, when executed, sets the boards of its {@link Map} to
+   * {@link #getSelectedBoards}
    */
   public Command getRestoreCommand() {
     return new SetBoards(this, currentBoards);
@@ -549,7 +554,8 @@ public class BoardPicker implements ActionListener,
   /**
    * @deprecated use {@link #getBoardsFromControls()}
    */
-  @Deprecated public Vector<Board> pickBoards() {
+  @Deprecated
+  public Vector<Board> pickBoards() {
     return new Vector<Board>(getBoardsFromControls());
   }
 
@@ -626,8 +632,7 @@ public class BoardPicker implements ActionListener,
   }
 
   public BoardSlot getSlot(int i) {
-    return i >= 0 && i < slotPanel.getComponentCount() ?
-      (BoardSlot) slotPanel.getComponent(i) : null;
+    return i >= 0 && i < slotPanel.getComponentCount() ? (BoardSlot) slotPanel.getComponent(i) : null;
   }
 
   public void repaintAll() {
@@ -671,17 +676,14 @@ public class BoardPicker implements ActionListener,
     el.setAttribute(ADD_ROW_BUTTON_TEXT, addRowButtonText);
     el.setAttribute(ADD_COLUMN_BUTTON_TEXT, addColumnButtonText);
     el.setAttribute(BOARD_PROMPT, boardPrompt);
-  
     if (maxColumns > 0) {
       el.setAttribute(MAX_COLUMNS, String.valueOf(maxColumns));
     }
-  
-   if (defaultSetup != null) {
+    if (defaultSetup != null) {
       Element setupEl = doc.createElement(SETUP);
       setupEl.appendChild(doc.createTextNode(defaultSetup));
       el.appendChild(setupEl);
     }
-     
     for (Board b : possibleBoards) {
       el.appendChild(b.getBuildElement(doc));
     }
@@ -689,14 +691,12 @@ public class BoardPicker implements ActionListener,
   }
 
   public Command decode(String command) {
-    if (command.startsWith(map.getId() + ID) ||
-        command.startsWith(map.getConfigureName() + ID)) {
+    if (command.startsWith(map.getId() + ID) || command.startsWith(map.getConfigureName() + ID)) {
       ArrayList<Board> bds = new ArrayList<Board>();
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
       st.nextToken();
       while (st.hasMoreTokens()) {
-        SequenceEncoder.Decoder st2 =
-          new SequenceEncoder.Decoder(st.nextToken(), '/');
+        SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(st.nextToken(), '/');
         String name = st2.nextToken();
         boolean reversed = false;
         if (st2.hasMoreTokens()) {
@@ -721,8 +721,7 @@ public class BoardPicker implements ActionListener,
   }
 
   public String encode(Command c) {
-    if (c instanceof SetBoards && map != null &&
-        ((SetBoards) c).target == this) {
+    if (c instanceof SetBoards && map != null && ((SetBoards) c).target == this) {
       SequenceEncoder se = new SequenceEncoder(map.getIdentifier() + ID, '\t');
       List<Board> bds = ((SetBoards) c).boards;
       if (bds != null) {
@@ -741,7 +740,6 @@ public class BoardPicker implements ActionListener,
       return null;
     }
   }
-
   public static class SetBoards extends Command {
     private BoardPicker target;
     private List<Board> boards;
@@ -771,7 +769,6 @@ public class BoardPicker implements ActionListener,
       return null;
     }
   }
-
   private class Config extends Configurer {
     private JPanel controls;
     private JButton selectButton;
@@ -833,7 +830,7 @@ public class BoardPicker implements ActionListener,
       selectButton = new JButton(Resources.getString("BoardPicker.select_default")); //$NON-NLS-1$
       selectButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          selectBoards();
+          selectBoards(e.getSource() instanceof Component ? (Component)e.getSource() : null);
         }
       });
       controls.add(selectButton);
@@ -850,17 +847,16 @@ public class BoardPicker implements ActionListener,
     public void setValue(String s) {
     }
   }
-  
+
   /*
    * Record which attributes are translatable
    */
   public ComponentI18nData getI18nData() {
     if (myI18nData == null) {
       myI18nData = new ComponentI18nData(this, "", null, //$NON-NLS-1$
-          new String[] {DIALOG_TITLE, BOARD_PROMPT},
-          new boolean[] {true, true},
-          new String[] {Resources.getString("Editor.BoardPicker.dialog_title"), Resources.getString("Editor.BoardPicker.board_prompt") //$NON-NLS-1$ //$NON-NLS-2$
-      });
+          new String[]{DIALOG_TITLE, BOARD_PROMPT}, new boolean[]{true, true},
+          new String[]{Resources.getString("Editor.BoardPicker.dialog_title"), Resources.getString("Editor.BoardPicker.board_prompt") //$NON-NLS-1$ //$NON-NLS-2$
+          });
     }
     return myI18nData;
   }
