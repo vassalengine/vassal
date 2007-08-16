@@ -19,7 +19,7 @@ package VASSAL.build.module.properties;
 import VASSAL.command.Command;
 
 /**
- * Command to change the value of a MutableProperty
+ * Command to change the value of a {@link MutableProperty}
  * 
  * @author rodneykinney
  * 

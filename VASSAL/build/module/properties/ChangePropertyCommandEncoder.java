@@ -21,7 +21,7 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * Encoder for ChangePropertyCommands
+ * Encoder for {@link ChangePropertyCommand}s
  * 
  * @author rodneykinney
  * 

@@ -66,7 +66,7 @@ public interface MutableProperty {
    */
   public static class Impl implements MutableProperty {
     private PropertyChangeSupport propSupport;
-    private String value;
+    private String value="";
     private String propertyName;
     private MutablePropertiesContainer parent;
 
@@ -116,6 +116,9 @@ public interface MutableProperty {
     }
 
     public Command setPropertyValue(String newValue) {
+      if (newValue == null) {
+        newValue = "";
+      }
       String oldValue = value;
       Command c = getChangeCommand(value, newValue);
       value = newValue;
