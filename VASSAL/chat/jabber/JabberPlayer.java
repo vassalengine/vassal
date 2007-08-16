@@ -20,9 +20,11 @@ package VASSAL.chat.jabber;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
 import VASSAL.chat.SimplePlayer;
+import VASSAL.chat.SimpleStatus;
 
 public class JabberPlayer extends SimplePlayer {
   private String jid;
@@ -36,53 +38,70 @@ public class JabberPlayer extends SimplePlayer {
   public String getJid() {
     return jid;
   }
-  
+
   public boolean equals(Object o) {
-    return o instanceof JabberPlayer && jid.equals(((JabberPlayer)o).jid);
+    return o instanceof JabberPlayer && jid.equals(((JabberPlayer) o).jid);
   }
-  
+
   public int hashCode() {
     return jid.hashCode();
   }
-  
+
   public String toString() {
-    return name+" ("+jid+")";
+    return name + " (" + jid + ")";
   }
-  
+
   public void join(JabberRoom room) {
     if (joinedRoom != null) {
       joinedRoom.removePlayer(this);
-      if (joinedRoom.getPlayerList().size() == 0) {
-        JabberRoom.deleteRoom(joinedRoom.getJID());
-      }
     }
     room.addPlayer(this);
     joinedRoom = room;
-  }
-  
-  private static Map<String, JabberPlayer> jidToPlayer = new HashMap<String, JabberPlayer>();
-
-  public static JabberPlayer getPlayer(String jid) {
-    if (jid == null) {
-      return null;
-    }
-    JabberPlayer p = jidToPlayer.get(jid);
-    if (p == null) {
-      p = new JabberPlayer(StringUtils.parseResource(jid), jid);
-      jidToPlayer.put(jid, p);
-    }
-    return p;
-  }
-  
-  public static JabberPlayer getPlayerByName(JabberClient client, String name) {
-    return getPlayer(StringUtils.escapeNode(name) + "@" + client.getHost() + "/VASSAL");
   }
 
   public JabberRoom getJoinedRoom() {
     return joinedRoom;
   }
 
-  public static void deletePlayer(String jid) {
-    jidToPlayer.remove(jid);
+  public Presence.Mode getAvailability() {
+    Presence.Mode mode = Presence.Mode.available;
+    if (status instanceof SimpleStatus) {
+      SimpleStatus s = (SimpleStatus) status;
+      if (s.isAway()) {
+        mode = Presence.Mode.xa;
+      }
+      else if (s.isLooking()) {
+        mode = Presence.Mode.chat;
+      }
+    }
+    return mode;
+  }
+  
+  public static class Manager {
+    private Map<String, JabberPlayer> jidToPlayer = new HashMap<String, JabberPlayer>();
+
+    public JabberPlayer getPlayer(String jid) {
+      if (jid == null) {
+        return null;
+      }
+      JabberPlayer p = jidToPlayer.get(jid);
+      if (p == null) {
+        p = new JabberPlayer(StringUtils.parseResource(jid), jid);
+        jidToPlayer.put(jid, p);
+      }
+      return p;
+    }
+
+    public JabberPlayer getPlayerByName(JabberClient client, String name) {
+      return getPlayer(StringUtils.escapeNode(name) + "@" + client.getHost() + "/VASSAL");
+    }
+
+    public synchronized void deletePlayer(String jid) {
+      jidToPlayer.remove(jid);
+    }
+    
+    public synchronized void clear() {
+      jidToPlayer.clear();
+    }
   }
 }

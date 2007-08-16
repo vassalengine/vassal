@@ -85,44 +85,50 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   public int hashCode() {
     return jid.hashCode();
   }
-  
+
   public boolean isOwnedByMe() {
     return ownedByMe;
   }
-  private static Map<String, JabberRoom> jidToRoom = new HashMap<String, JabberRoom>();
+  public static class Manager {
+    private Map<String, JabberRoom> jidToRoom = new HashMap<String, JabberRoom>();
 
-  public static JabberRoom getRoomByJID(JabberClient client, String jid) {
-    if (jid == null) {
-      return null;
-    }
-    JabberRoom newRoom = jidToRoom.get(jid);
-    if (newRoom == null) {
-      String subject = "<no name>";
-      RoomInfo info = null;
-      try {
-        info = MultiUserChat.getRoomInfo(client.getConnection(), jid);
-        subject = info.getSubject();
+    public synchronized JabberRoom getRoomByJID(JabberClient client, String jid) {
+      if (jid == null) {
+        return null;
       }
-      catch (XMPPException e) {
-        e.printStackTrace();
+      JabberRoom newRoom = jidToRoom.get(jid);
+      if (newRoom == null) {
+        String subject = "<no name>";
+        RoomInfo info = null;
+        try {
+          info = MultiUserChat.getRoomInfo(client.getConnection(), jid);
+          subject = info.getSubject();
+        }
+        catch (XMPPException e) {
+          e.printStackTrace();
+        }
+        newRoom = new JabberRoom(subject, jid, info);
+        jidToRoom.put(jid, newRoom);
       }
-      newRoom = new JabberRoom(subject, jid, info);
-      jidToRoom.put(jid, newRoom);
+      return newRoom;
     }
-    return newRoom;
-  }
 
-  public static JabberRoom getRoomByName(JabberClient client, String name) {
-    String jid = StringUtils.escapeNode(client.getModule() + "/" + name).toLowerCase() + "@" + client.getConferenceService();
-    JabberRoom room = jidToRoom.get(jid);
-    if (room == null) {
-      room = new JabberRoom(name, jid, null);
-      jidToRoom.put(jid, room);
+    public synchronized JabberRoom getRoomByName(JabberClient client, String name) {
+      String jid = StringUtils.escapeNode(client.getModule() + "/" + name).toLowerCase() + "@" + client.getConferenceService();
+      JabberRoom room = jidToRoom.get(jid);
+      if (room == null) {
+        room = new JabberRoom(name, jid, null);
+        jidToRoom.put(jid, room);
+      }
+      return room;
     }
-    return room;
-  }
 
-  public static void deleteRoom(String jid) {
-    jidToRoom.remove(jid);
+    public void deleteRoom(String jid) {
+      jidToRoom.remove(jid);
+    }
+    
+    public synchronized void clear() {
+      jidToRoom.clear();
+    }
   }
 }
