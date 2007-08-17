@@ -20,11 +20,9 @@ package VASSAL.chat.jabber;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
 import VASSAL.chat.SimplePlayer;
-import VASSAL.chat.SimpleStatus;
 
 public class JabberPlayer extends SimplePlayer {
   private String jid;
@@ -63,20 +61,6 @@ public class JabberPlayer extends SimplePlayer {
     return joinedRoom;
   }
 
-  public Presence.Mode getAvailability() {
-    Presence.Mode mode = Presence.Mode.available;
-    if (status instanceof SimpleStatus) {
-      SimpleStatus s = (SimpleStatus) status;
-      if (s.isAway()) {
-        mode = Presence.Mode.xa;
-      }
-      else if (s.isLooking()) {
-        mode = Presence.Mode.chat;
-      }
-    }
-    return mode;
-  }
-  
   public static class Manager {
     private Map<String, JabberPlayer> jidToPlayer = new HashMap<String, JabberPlayer>();
 

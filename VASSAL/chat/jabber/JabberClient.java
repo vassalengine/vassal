@@ -25,10 +25,12 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,6 +48,8 @@ import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Presence.Mode;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.muc.HostedRoom;
@@ -301,9 +305,8 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   }
 
   public void setUserInfo(Player p) {
-    me.setStatus(p.getStatus());
     if (monitor != null) {
-      monitor.sendStatus();
+      monitor.sendStatus(new JabberStatus((SimpleStatus) p.getStatus()));
     }
   }
 
@@ -383,8 +386,10 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
           throw ex;
         }
       }
-      RoomMonitor r = new RoomMonitor();
+      TrackRooms r = new TrackRooms();
       conn.addPacketListener(r, r);
+      TrackStatus s = new TrackStatus();
+      conn.addPacketListener(s, s);
       for (Iterator it = monitorRoom.getOccupants(); it.hasNext();) {
         String jid = (String) it.next();
         JabberPlayer player = playerMgr.getPlayer(getAbsolutePlayerJID(jid));
@@ -395,20 +400,32 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       monitorRoom.addParticipantStatusListener(this);
     }
 
-    public void sendStatus() {
-      monitorRoom.changeAvailabilityStatus("", me.getAvailability());
+    public void sendStatus(JabberStatus s) {
+      Mode availability = s.getAvailability();
+      monitorRoom.changeAvailabilityStatus("", availability);
     }
 
     public Room[] getAvailableRooms() {
-      Set<Room> rooms = new HashSet<Room>();
+      Map<JabberRoom, List<JabberPlayer>> occupants = new HashMap<JabberRoom, List<JabberPlayer>>();
       for (JabberPlayer p : players) {
         JabberRoom room = p.getJoinedRoom();
         if (room != null) {
-          rooms.add(room);
+          List<JabberPlayer> l = occupants.get(room);
+          if (l == null) {
+            l = new ArrayList<JabberPlayer>();
+            occupants.put(room, l);
+          }
+          l.add(p);
         }
       }
-      if (!rooms.contains(defaultRoom)) {
-        rooms.add(defaultRoom);
+      if (!occupants.containsKey(defaultRoom)) {
+        List<JabberPlayer> l = Collections.emptyList();
+        occupants.put(defaultRoom, l);
+      }
+      Set<JabberRoom> rooms = occupants.keySet();
+      for (JabberRoom room : rooms) {
+        List<JabberPlayer> l = occupants.get(room);
+        room.setPlayers(l.toArray(new JabberPlayer[l.size()]));
       }
       Room[] roomArray = rooms.toArray(new Room[rooms.size()]);
       Arrays.sort(roomArray, roomSortOrder);
@@ -507,25 +524,56 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     public void nicknameChanged(String participant, String newNickname) {
       System.out.println(participant + ":" + newNickname);
     }
-    private class RoomMonitor implements PacketListener, PacketFilter {
-      private boolean initialized = false;
+    private class TrackStatus implements PacketListener, PacketFilter {
+      public boolean accept(Packet packet) {
+        boolean accept = false;
+        if (packet instanceof Presence) {
+          Presence p = (Presence) packet;
+          if (p.getType() == Presence.Type.available) {
+            accept = true;
+          }
+        }
+        return accept;
+      }
+
+      public void processPacket(Packet packet) {
+        Presence p = (Presence) packet;
+        JabberPlayer player = playerMgr.getPlayer(getAbsolutePlayerJID(p.getFrom()));
+        SimpleStatus status = (SimpleStatus) player.getStatus();
+        switch (p.getMode()) {
+        case away:
+          status = new SimpleStatus(false, false, status.getProfile());
+          break;
+        case chat:
+          status = new SimpleStatus(true, false, status.getProfile());
+          break;
+        case xa:
+          status = new SimpleStatus(false, true, status.getProfile());
+          break;
+        }
+        player.setStatus(status);
+        fireRoomsUpdated();
+      }
+    }
+    private class TrackRooms implements PacketListener, PacketFilter {
+      private boolean initialized = true;
       private PacketFilter filter = new AndFilter(new IQTypeFilter(IQ.Type.RESULT), new PacketTypeFilter(DiscoverItems.class));
 
-      public RoomMonitor() {
+      public TrackRooms() {
         // When we first create this listener, we expect a flood of updates from all the players already connected to
         // the server
         // Instead of updating the list of rooms for each player on the server, we sleep and send one event
-        new Thread() {
-          public void run() {
-            try {
-              Thread.sleep(3000);
-            }
-            catch (InterruptedException e) {
-            }
-            initialized = true;
-            fireRoomsUpdated();
-          }
-        }.start();
+        // new Thread() {
+        // public void run() {
+        // try {
+        // Thread.sleep(3000);
+        // }
+        // catch (InterruptedException e) {
+        // }
+        // initialized = true;
+        // fireRoomsUpdated();
+        // }
+        // }.start();
       }
 
       public void processPacket(Packet packet) {
@@ -607,7 +655,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   }
 
   public static void main(String[] args) {
-//    XMPPConnection.DEBUG_ENABLED = true;
+    XMPPConnection.DEBUG_ENABLED = true;
     CommandEncoder c = new CommandEncoder() {
       public Command decode(String command) {
         System.err.println(command);
