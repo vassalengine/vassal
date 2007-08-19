@@ -25,7 +25,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 
-import VASSAL.i18n.Resources;
 
 /**
  * @author rkinney

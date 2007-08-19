@@ -17,7 +17,6 @@
  */
 package VASSAL.launch.install;
 
-import VASSAL.i18n.Resources;
 
 /**
  * @author rkinney

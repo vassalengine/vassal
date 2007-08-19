@@ -27,7 +27,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import VASSAL.chat.HttpRequestWrapper;
-import VASSAL.i18n.Resources;
 
 /**
  * @author rkinney

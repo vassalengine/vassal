@@ -30,12 +30,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.chat.HttpRequestWrapper;
@@ -77,8 +79,7 @@ public class CreateInstallerAction extends AbstractAction {
     Screen.class,
     SuccessScreen.class,
     WizardDialog.class,
-    Resources.class,
-    Resources.VassalPropertyClassLoader.class,
+    VASSAL.launch.install.Resources.class,
     Info.class
   };
 

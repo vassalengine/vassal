@@ -31,7 +31,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
-import VASSAL.i18n.Resources;
 
 /**
  * @author rkinney

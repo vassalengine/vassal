@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import VASSAL.i18n.Resources;
 
 /**
  * Walks the user through a wizard interface. The user may choose between an auto-updating (networked jnlp) or purely

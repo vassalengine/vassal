@@ -23,7 +23,6 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
-import VASSAL.i18n.Resources;
 
 /**
  * @author rkinney

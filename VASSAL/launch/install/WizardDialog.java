@@ -25,7 +25,6 @@ import java.awt.event.WindowListener;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import VASSAL.i18n.Resources;
 
 /**
  * @author rkinney
