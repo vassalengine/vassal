@@ -79,7 +79,7 @@ public class CreateInstallerAction extends AbstractAction {
     Screen.class,
     SuccessScreen.class,
     WizardDialog.class,
-    VASSAL.launch.install.Resources.class,
+    VASSAL.i18n.BundleHelper.class,
     Info.class
   };
 

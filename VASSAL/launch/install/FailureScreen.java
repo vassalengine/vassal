@@ -33,7 +33,7 @@ public class FailureScreen extends SuccessScreen {
       msg = t.getClass().getName();
       msg = msg.substring(msg.lastIndexOf('.'));
     }
-    setMessage(Resources.getString("Install.installation_failed", msg)); //$NON-NLS-1$
+    setMessage(InstallWizard.getResources().getString("Install.installation_failed", msg)); //$NON-NLS-1$
   }
 
   public void next() {

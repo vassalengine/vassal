@@ -76,9 +76,9 @@ public abstract class Builder {
             JOptionPane.showMessageDialog
               (null,
                Resources.getString("Builder.create_error",  //$NON-NLS-1$
-                   new String[] {((Element) child).getTagName(),
+                   ((Element) child).getTagName(),
                                  GameModule.getGameModule().getDataArchive().getName(),
-                                 msg }), 
+                                 msg ), 
                Resources.getString("Builder.error"), //$NON-NLS-1$
                JOptionPane.ERROR_MESSAGE);
           }

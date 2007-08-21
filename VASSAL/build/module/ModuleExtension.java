@@ -190,8 +190,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
       if (!universal && Info.compareVersions(GameModule.getGameModule().getGameVersion(), version) < 0) {
         GameModule.getGameModule().warn(
             Resources.getString("ModuleExtension.wrong_module_version", 
-                new String[] {getName(), version, GameModule.getGameModule().getGameVersion(), 
-                               GameModule.getGameModule().getGameName()}));
+                getName(), version, GameModule.getGameModule().getGameVersion(), 
+                               GameModule.getGameModule().getGameName()));
       }
     }
     else if (VASSAL_VERSION_CREATED.equals(key)) {
@@ -199,7 +199,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
       String runningVersion = Info.getVersion();
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
         GameModule.getGameModule().warn(Resources.getString("ModuleExtension.wrong_vassal_version", //$NON-NLS-1$ 
-            new String[] {getName(), (String) value, runningVersion} ));
+            getName(), (String) value, runningVersion ));
       }
     }
     else if (VERSION.equals(key)) {
@@ -350,7 +350,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
           containsExtension = true;
           if (Info.compareVersions(ext.getVersion(), version) < 0) {
             msg = Resources.getString("ModuleExtension.wrong_extension_version", //$NON-NLS-1$
-                      new String[] {version, name, ext.getVersion()});
+                      version, name, ext.getVersion());
             GameModule.getGameModule().warn(msg);
           }
           break;

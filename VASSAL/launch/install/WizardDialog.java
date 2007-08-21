@@ -42,7 +42,7 @@ public class WizardDialog extends JDialog implements ActionListener, WindowListe
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(this);
     Box buttonBox = Box.createHorizontalBox();
-    JButton b = new JButton(Resources.getString(Resources.NEXT));
+    JButton b = new JButton(InstallWizard.getResources().getString("General.next"));
     b.addActionListener(this);
     buttonBox.add(Box.createHorizontalGlue());
     buttonBox.add(b);

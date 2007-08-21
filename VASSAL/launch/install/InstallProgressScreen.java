@@ -35,7 +35,7 @@ public abstract class InstallProgressScreen implements Screen, Runnable {
   public InstallProgressScreen() {
     super();
     controls = Box.createVerticalBox();
-    status = new JLabel(Resources.getString("Install.downloading_files")); //$NON-NLS-1$
+    status = new JLabel(InstallWizard.getResources().getString("Install.downloading_files")); //$NON-NLS-1$
     progress = new JProgressBar();
     progress.setIndeterminate(true);
     controls.add(status);

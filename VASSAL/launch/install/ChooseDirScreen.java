@@ -38,7 +38,7 @@ import javax.swing.filechooser.FileFilter;
 public class ChooseDirScreen implements Screen, ActionListener, Runnable {
   public static final String NEXT_SCREEN = "ChooseDirScreen.next";
   private JTextField tf = new JTextField(36);
-  private JButton select = new JButton(Resources.getString(Resources.SELECT));
+  private JButton select = new JButton(InstallWizard.getResources().getString("General.select"));
   private Box controls;
 
   public ChooseDirScreen() {
@@ -51,7 +51,7 @@ public class ChooseDirScreen implements Screen, ActionListener, Runnable {
     hBox.add(select);
     select.addActionListener(this);
     controls = Box.createVerticalBox();
-    controls.add(new JLabel(Resources.getString("Install.select_install_directory"))); //$NON-NLS-1$
+    controls.add(new JLabel(InstallWizard.getResources().getString("Install.select_install_directory"))); //$NON-NLS-1$
     controls.add(hBox);
   }
 
@@ -93,7 +93,7 @@ public class ChooseDirScreen implements Screen, ActionListener, Runnable {
     }
 
     public String getDescription() {
-      return Resources.getString("Install.directories"); //$NON-NLS-1$
+      return InstallWizard.getResources().getString("Install.directories"); //$NON-NLS-1$
     }
   }
 }

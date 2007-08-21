@@ -37,7 +37,7 @@ public class ChooseVersionScreen implements Screen {
   private Box controls;
   public ChooseVersionScreen() {
     controls = Box.createHorizontalBox();
-    controls.add(new JLabel(Resources.getString("Install.select_version"))); //$NON-NLS-1$
+    controls.add(new JLabel(InstallWizard.getResources().getString("Install.select_version"))); //$NON-NLS-1$
     HttpRequestWrapper req = new HttpRequestWrapper("http://www.vassalengine.org/util/getAllVersionNumbers"); //$NON-NLS-1$
     try {
     DefaultComboBoxModel m = new DefaultComboBoxModel();

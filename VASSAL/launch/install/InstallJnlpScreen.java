@@ -63,28 +63,28 @@ public class InstallJnlpScreen extends InstallProgressScreen
     prepareInstall(wizard);
     doInstall();
     wizard.getDialog().setScreen(new SuccessScreen(
-        "<html>" + Resources.getString("Install.install_successful") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                   Resources.getString("Install.to_get_started", installFile.toString()) + "</html>")); //$NON-NLS-1$ //$NON-NLS-2$
+        "<html>" + InstallWizard.getResources().getString("Install.install_successful") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                   InstallWizard.getResources().getString("Install.to_get_started", installFile.toString()) + "</html>")); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   protected void prepareInstall(final InstallWizard wizard) throws IOException {
     if (wizard.get(INSTALL_DIR) == null) {
-      throw new IOException(Resources.getString("Install.error_install_dir")); //$NON-NLS-1$
+      throw new IOException(InstallWizard.getResources().getString("Install.error_install_dir")); //$NON-NLS-1$
     }
     installDir = new File(wizard.get(INSTALL_DIR));
     if (installDir.exists() && !installDir.isDirectory()) {
-      throw new IOException(Resources.getString("Install.error_not_a_directory", installDir.toString())); //$NON-NLS-1$
+      throw new IOException(InstallWizard.getResources().getString("Install.error_not_a_directory", installDir.toString())); //$NON-NLS-1$
     }
     if (!installDir.exists() && !installDir.mkdir()) {
-      throw new IOException(Resources.getString("Install.error_unable_to_create", installDir.toString())); //$NON-NLS-1$
+      throw new IOException(InstallWizard.getResources().getString("Install.error_unable_to_create", installDir.toString())); //$NON-NLS-1$
     }
     installLibDir = new File(installDir, "lib"); //$NON-NLS-1$
     if (!installLibDir.exists() && !installLibDir.mkdir()) {
-      throw new IOException(Resources.getString("Install.error_unable_to_create", installLibDir.toString())); //$NON-NLS-1$
+      throw new IOException(InstallWizard.getResources().getString("Install.error_unable_to_create", installLibDir.toString())); //$NON-NLS-1$
     }
     jnlpURL = wizard.get(JNLP_URL);
     if (jnlpURL == null) {
-      throw new IOException(Resources.getString("Install.error_no_version")); //$NON-NLS-1$
+      throw new IOException(InstallWizard.getResources().getString("Install.error_no_version")); //$NON-NLS-1$
     }
     String file = new URL(jnlpURL).getPath();
     file = file.substring(file.lastIndexOf('/') + 1);
@@ -170,7 +170,7 @@ public class InstallJnlpScreen extends InstallProgressScreen
     writeXmlDocument(doc, file);
     for (Iterator it = resources.iterator(); it.hasNext();) {
       URL resource = (URL) it.next();
-      setStatus(Resources.getString("Install.downloading", getFileName(resource))); //$NON-NLS-1$
+      setStatus(InstallWizard.getResources().getString("Install.downloading", getFileName(resource))); //$NON-NLS-1$
       downloadResource(resource);
     }
   }

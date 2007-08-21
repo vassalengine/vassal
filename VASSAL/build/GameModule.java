@@ -210,7 +210,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
         JOptionPane.showMessageDialog
             (null,
-             Resources.getString("GameModule.version_error", runningVersion, vassalVersionCreated),  //$NON-NLS-1$
+             Resources.getString("GameModule.version_error", vassalVersionCreated, runningVersion),  //$NON-NLS-1$
              Resources.getString("GameModule.version_error_short"),  //$NON-NLS-1$
              JOptionPane.ERROR_MESSAGE);
       }

@@ -19,7 +19,11 @@ package VASSAL.launch.install;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.ResourceBundle;
+
+import VASSAL.i18n.BundleHelper;
 
 
 /**
@@ -30,6 +34,7 @@ import java.util.Properties;
  * @author rkinney
  */
 public class InstallWizard implements Constants {
+  private static BundleHelper bundle = new BundleHelper(ResourceBundle.getBundle("VASSAL.i18n.VASSAL", Locale.getDefault()));
   private WizardDialog dialog;
   private Properties properties;
   public void start() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
@@ -40,7 +45,7 @@ public class InstallWizard implements Constants {
     }
     properties = new Properties(p);
     dialog = new WizardDialog(this);
-    dialog.setTitle(properties.getProperty(TITLE,Resources.getString("Install.install_vassal"))); //$NON-NLS-1$ //$NON-NLS-2$
+    dialog.setTitle(properties.getProperty(TITLE,InstallWizard.getResources().getString("Install.install_vassal"))); //$NON-NLS-1$ //$NON-NLS-2$
     dialog.setScreen((Screen) Class.forName(p.getProperty(INITIAL_SCREEN, ChooseVersionScreen.class.getName())).newInstance());
     dialog.setVisible(true);
   }
@@ -87,5 +92,9 @@ public class InstallWizard implements Constants {
 
   public WizardDialog getDialog() {
     return dialog;
+  }
+  
+  public static BundleHelper getResources() {
+    return bundle;
   }
 }

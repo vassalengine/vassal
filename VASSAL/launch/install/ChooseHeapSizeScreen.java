@@ -31,16 +31,16 @@ import javax.swing.JRadioButton;
  */
 public class ChooseHeapSizeScreen implements Screen, Constants {
   private Box controls = Box.createVerticalBox();
-  private JRadioButton b128M = new JRadioButton(Resources.getString("Install.128_mb")); //$NON-NLS-1$
-  private JRadioButton b256M = new JRadioButton(Resources.getString("Install.256_mb")); //$NON-NLS-1$
-  private JRadioButton b512M = new JRadioButton(Resources.getString("Install.512_mb")); //$NON-NLS-1$
-  private JRadioButton b768M = new JRadioButton(Resources.getString("Install.768_mb")); //$NON-NLS-1$
-  private JRadioButton b1000M = new JRadioButton(Resources.getString("Install.1_gb")); //$NON-NLS-1$
-  private JRadioButton b1500M = new JRadioButton(Resources.getString("Install.1.5_gb")); //$NON-NLS-1$
+  private JRadioButton b128M = new JRadioButton(InstallWizard.getResources().getString("Install.128_mb")); //$NON-NLS-1$
+  private JRadioButton b256M = new JRadioButton(InstallWizard.getResources().getString("Install.256_mb")); //$NON-NLS-1$
+  private JRadioButton b512M = new JRadioButton(InstallWizard.getResources().getString("Install.512_mb")); //$NON-NLS-1$
+  private JRadioButton b768M = new JRadioButton(InstallWizard.getResources().getString("Install.768_mb")); //$NON-NLS-1$
+  private JRadioButton b1000M = new JRadioButton(InstallWizard.getResources().getString("Install.1_gb")); //$NON-NLS-1$
+  private JRadioButton b1500M = new JRadioButton(InstallWizard.getResources().getString("Install.1.5_gb")); //$NON-NLS-1$
   private ButtonGroup group = new ButtonGroup();
   
   public ChooseHeapSizeScreen() {
-    controls.add(new JLabel(Resources.getString("Install.select_memory_size"))); //$NON-NLS-1$
+    controls.add(new JLabel(InstallWizard.getResources().getString("Install.select_memory_size"))); //$NON-NLS-1$
     b128M.putClientProperty(HEAP_SIZE, "128m"); //$NON-NLS-1$
     group.add(b128M);
     controls.add(b128M);

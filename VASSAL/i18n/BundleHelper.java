@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -15,30 +14,44 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.launch.install;
+package VASSAL.i18n;
 
 import java.text.MessageFormat;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Resources class with minimal dependencies for use with the installer
- * @author rkinney
+ * Utility class for extracting strings from a ResourceBundle
+ * 
+ * @author rodneykinney
+ * 
  */
-public class Resources {
-  public static final String NEXT = "General.next"; //$NON-NLS-1$
-  public static final String SELECT = "General.select"; //$NON-NLS-1$
-  private static ResourceBundle theBundle;
-  private static String VASSAL_BUNDLE = "VASSAL.i18n.VASSAL"; //$NON-NLS-1$
+public class BundleHelper {
+  private ResourceBundle bundle;
 
-  public static String getString(String id) {
-    if (theBundle == null) {
-      theBundle = ResourceBundle.getBundle(VASSAL_BUNDLE, Locale.getDefault());
-    }
-    return theBundle.getString(id);
+  public BundleHelper(ResourceBundle bundle) {
+    this.bundle = bundle;
   }
 
-  public static String getString(String id, String param) {
-    return new MessageFormat(getString(id)).format(new Object[]{param});
+  public String getString(String id) {
+    String s = null;
+    try {
+      s = bundle.getString(id);
+    }
+    catch (Exception ex) {
+      System.err.println("No Translation: " + id);
+    }
+    // 2. Worst case, return the key
+    if (s == null) {
+      s = id;
+    }
+    return s;
+  }
+
+  public String getString(String id, Object... args) {
+    return new MessageFormat(getString(id)).format(args);
+  }
+
+  public ResourceBundle getResourceBundle() {
+    return bundle;
   }
 }

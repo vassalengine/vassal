@@ -66,7 +66,7 @@ public class InstallModuleScreen extends InstallJnlpScreen {
   protected void prepareInstall(InstallWizard wizard) throws IOException {
     moduleFile = wizard.get(MODULE_FILE);
     if (moduleFile == null) {
-      throw new IOException(Resources.getString("Install.module_not_specified")); //$NON-NLS-1$
+      throw new IOException(InstallWizard.getResources().getString("Install.module_not_specified")); //$NON-NLS-1$
     }
     title = wizard.get(JNLP_TITLE);
     super.prepareInstall(wizard);

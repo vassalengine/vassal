@@ -231,10 +231,9 @@ public class GlobalOptions extends AbstractConfigurable {
               JOptionPane.showMessageDialog
                 (null,
                  Resources.getString("GlobalOptions.create_error",  //$NON-NLS-1$
-                     new String[] {
                            ((Element) b).getTagName(),
                            GameModule.getGameModule().getDataArchive().getName(),
-                           msg }),
+                           msg),
                  Resources.getString("GlobalOptions.error"), //$NON-NLS-1$
                  JOptionPane.ERROR_MESSAGE);
             }
