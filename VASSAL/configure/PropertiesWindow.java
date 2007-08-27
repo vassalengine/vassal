@@ -34,10 +34,10 @@ import javax.swing.JDialog;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpWindow;
-import VASSAL.build.module.documentation.HelpWindowExtension;
 
 /**
  * Window for editing properties of a {@link Configurable} object
@@ -73,10 +73,6 @@ public class PropertiesWindow extends JDialog {
     }
     getContentPane().setLayout(new BoxLayout(getContentPane(),BoxLayout.Y_AXIS));
     configurer = target.getConfigurer();
-    if (helpWindow != null
-      && configurer instanceof HelpWindowExtension) {
-      ((HelpWindowExtension)configurer).setBaseWindow(helpWindow);
-    }
     target.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {

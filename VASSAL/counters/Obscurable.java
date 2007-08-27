@@ -408,8 +408,11 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (!obscuredToMe()) {
       return super.keyEvent(stroke);
     }
-    else {
+    else if (isMaskable()){
       return myKeyEvent(stroke);
+    }
+    else {
+      return null;
     }
   }
 

@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -40,11 +41,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.tools.BrowserSupport;
 
 /**
  * This is the GamePiece designer dialog.  It appears when you edit
@@ -58,7 +61,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   protected ListCellRenderer r;
   protected PieceSlot slot;
   private GamePiece piece;
-  private HelpWindow helpWindow;
   protected static Decorator clipBoard;
 
   /** Creates new form test */
@@ -138,8 +140,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     refresh();
   }
 
+  @Deprecated
   public void setBaseWindow(HelpWindow w) {
-    helpWindow = w;
   }
 
   private void refresh() {
@@ -482,13 +484,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     Object o = availableList.getSelectedValue();
     if (o instanceof EditablePiece) {
       HelpFile h = ((EditablePiece) o).getHelpFile();
-      if (helpWindow != null) {
-        helpWindow.update(h.getContents());
-        helpWindow.setVisible(true);
-      }
-      else {
-        h.showWindow();
-      }
+      BrowserSupport.openURL(h.getContents());
     }
   }
 

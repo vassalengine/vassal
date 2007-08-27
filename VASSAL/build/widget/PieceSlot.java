@@ -377,8 +377,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       definer.setPiece(slot.getPiece());
     }
 
+    @Deprecated
     public void setBaseWindow(HelpWindow w) {
-      definer.setBaseWindow(w);
     }
 
     public String getValueString() {
