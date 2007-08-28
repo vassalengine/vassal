@@ -527,7 +527,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected Action buildEditPiecesAction(final Configurable target) {
     if (canContainGamePiece(target)) {
-      return new EditContainedPiecesAction(target, helpWindow);
+      return new EditContainedPiecesAction(target);
     }
     else {
       return null;

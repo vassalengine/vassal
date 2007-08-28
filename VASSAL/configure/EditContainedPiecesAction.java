@@ -21,7 +21,6 @@ package VASSAL.configure;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import VASSAL.build.Configurable;
-import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.counters.MassPieceDefiner;
 
 /**
@@ -31,12 +30,10 @@ public class EditContainedPiecesAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
   private Configurable target;
-  private HelpWindow helpWindow;
 
-  public EditContainedPiecesAction(Configurable target, HelpWindow helpWindow) {
+  public EditContainedPiecesAction(Configurable target) {
     super("Edit All Contained Pieces");
     this.target = target;
-    this.helpWindow = helpWindow;
   }
 
   public void actionPerformed(ActionEvent evt) {
@@ -53,7 +50,6 @@ public class EditContainedPiecesAction extends AbstractAction {
         return "";
       }
     };
-    mass.setBaseWindow(helpWindow);
     new ConfigurerWindow(c).setVisible(true);
     mass.save();
   }
