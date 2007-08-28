@@ -1,176 +1,224 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
+
+  
+  
   <title>Layer</title>
-  <meta http-equiv="content-type"
- content="text/html; charset=ISO-8859-1">
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 </head>
+
+
 <body>
+
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
   <tbody>
+
     <tr align="center">
+
       <td valign="top">
+      
       <h1>VASSAL Reference Manual</h1>
+
       <small><a href="index.htm">Home</a> &gt; <a href="GameModule.htm">Module</a>
 &gt; <a href="PieceWindow.htm">Game
 Piece Palette</a></small> <small>&gt;<b> </b><a href="GamePiece.htm">Game
 Piece</a></small> <small>&gt; <b>Layer</b></small><br>
+
       </td>
+
     </tr>
+
     <tr>
+
       <td valign="top">
+      
       <hr size="2" width="100%">
+      
       <h2>Layer<br>
+
       </h2>
+
+      
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
+
         <tbody>
+
           <tr>
-            <td valign="top"><img alt="" src="images/Layer.png">
-<img alt="" src="images/Layer2.png"><br>
+
+            <td valign="top">&nbsp;<br>
+            <table style="width: 100%; text-align: left; margin-left: auto; margin-right: auto;" border="0" cellpadding="2" cellspacing="2">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;"><img alt="" src="images/Layer.png"></td>
+                  <td style="text-align: center;"><img alt="" src="images/Layer2.png"></td>
+                </tr>
+              </tbody>
+            </table>
+            <br>
 A Layer is the basic method for adding functionality to game pieces in
 VASSAL.&nbsp;
 A Layer consists of a number of 'levels,' each of which has an image
 and
 a name.&nbsp; The Layer can be activated with a keyboard command, and
-two
-other keyboard commands cycle through the levels. If the "Loop through
-levels" option is checked, then increasing the level past the last one
-will loop through to the first level and vice versa. &nbsp; A "reset"
-command resets the Layer to a particular level.&nbsp; A "randomize" command selects a random level. The image from
+players can change the current level during play. &nbsp;The image from
 the
 current level will be drawn whenever the Layer is activated.&nbsp; The
 Layer
-is drawn on top the traits that appear before it in the list of traits,
-but
-if the "Underneath when highlighted" box is checked, the Layer will be
-drawn
-on the bottom when the counter has been highlighted (by clicking on it).<br>
+is drawn on top the traits that appear before it in the list of traits<br>
             <br>
-A Layer can be given a name, which is used only for identification
-within the editor.&nbsp; Each level can be given an individual name,
-which is used for reporting changes to the piece during game play.<br>
-            <br>
-            <b>EXAMPLE:</b>&nbsp; To implement a two-sided counter, add
-a
-layer, and select an image that represents the reverse side.&nbsp;
-Change
-"Activate" to "Flip" and set the key to "F".&nbsp; The resulting
-counter
-will show the reverse side when the user hits CTRL-F, and the counter's
-help
-window will list the "Flip" command with the proper key.<br>
-            <br>
-For Layers with more than a single level, two additional commands
-(increase/decrease)
-are used to select the level. <br>
-            <br>
-            <b>EXAMPLE:</b> To implement an army counter that has four
-fatigue
-levels, select four images that represent the levels&nbsp; Change
-"Increase"
-to "Increase Fatigue" and "Decrease" to "Decrease Fatigue".&nbsp; <br>
-            <br>
-A "Reset" command can be specified to reset the Layer to a particular
-level.&nbsp; ('1' is the first level, etc.)&nbsp; This does not
-automatically activate the Layer.<br>
-            <br>
-            <b>EXAMPLE:</b> A command named "Rest" using CTRL-R could
-be used to bring the Army counter back to full strength.<br>
-            <br>
-The text name of a GamePiece can also change when the Layer is
-active.&nbsp;
-Fill in the "Level name" box to use a different name when that level of
-the
-Layer is activated.<br>
-            <br>
-            <b>EXAMPLE:</b>&nbsp; We can add level names for the four
-fatigue levels above. Suppose the name of the Basic Piece is "Army".
-&nbsp; By checking "is suffix" and naming the levels " (fatigue 1)"
-etc., the counter will be reported as "Army (fatigue 1)" etc. when
-being moved.<br>
-            <br>
+            <span style="font-weight: bold;"><span style="font-weight: bold;">Name:</span></span> The name of this Layer, used for reference during editing and as the prefix for the name of any <a href="Properties.htm">Properties</a> defined by this Layer. <br>
+            <span style="font-weight: bold;"><span style="font-weight: bold;"></span>Always Active: &nbsp;</span>If
+checked, then this layer is always active. &nbsp;I.e., the current
+layer will always be displayed. &nbsp;If unchecked, then the layer must
+be activated (by the specified keyboard command) in order to display
+the current layer.<br>
+            <span style="font-weight: bold;">Underneath when highlighted<span style="font-weight: bold;">:</span></span>
+&nbsp;If checked, then this layer will be drawn underneath the rest of
+the piece when the counter has been highlighted (by clicking on it). <br>
+            <span style="font-weight: bold;">Loop through levels:</span>
+&nbsp;If checked, then increasing the level past the last one
+will loop through to the first level and vice versa. &nbsp;Otherwise,
+increasing the level has no effect if the current level is the last
+level.<br>
+            <span style="font-weight: bold;">Offset:</span> &nbsp;
 The images of a level are drawn with their center offset from the
 center
-of the base image by a number of pixels specified by the "offset"
+of the underlying piece by a number of pixels specified by the "offset"
 boxes,
-with positive numbers giving an offset down and to the right.<br>
-            <br>
-            <b>EXAMPLE:</b>&nbsp; If a layer image is 40x40 pixels and
+with positive numbers giving an offset down and to the right. &nbsp;For example, if a layer image is 40x40 pixels and
 you
 want it to be drawn so that the lower-left corner is at the center of
 the
 GamePiece, set the offset to 20,-20. <br>
+            <span style="font-weight: bold;">Levels follow Property Value:</span> &nbsp;If selected, then you can specify the name of a <a href="Properties.htm">Property</a>
+that will determine the active level, rather than responding directly
+to keyboard events. &nbsp;A typical use will use the name of a <a href="DynamicProperty.htm">Dynamic Property</a>. &nbsp;You can also specify the numeric value of the property that should correspond to the first level of this Layer.<br>
+            <span style="font-weight: bold;">Activate/Increase/Decrease:</span>
+&nbsp;Specify the keyboard commands and right-click menu text that will
+activate the Layer and increase or decrease the current level.
+&nbsp;The Activate keyboard shortcut can specify a string
+of characters, such that the layer is activated only when all the
+corresponding keys have been pressed. &nbsp;The Increase/Decrease
+keyboard shortcuts can also
+specify a string of characters, such that the level is
+increased/decreased when&nbsp;<span style="font-style: italic;">any one</span> of the keys is pressed.<br>
+            <span style="font-weight: bold;">Reset to level:</span>
+&nbsp;Specifies a keyboard command that resets the Layer to a specified
+level. &nbsp;This does not automatically activate the Layer.<br>
+            <span style="font-weight: bold;">Randomize:</span> &nbsp;Specifies a keyboard command that sets the Layer to a random level.<br>
+            <span style="font-weight: bold;">Level Images:</span>
+&nbsp;Specify the image to be shown for each layer by double-clicking
+or selecting from the drop-down menu. &nbsp;An image can be left blank
+to display nothing for that level. &nbsp;Using transparency in the
+images can be very useful.<br>
+            <span style="font-weight: bold;">Level Name:</span>
+&nbsp;Each level can be given an individual name,
+which is used to change the name of the piece for reporting purposes
+during play. &nbsp;The level's name either replaces the piece's normal
+name, or else modifies the piece's normal name as a prefix or suffix.<br>
             <br>
-            <b>Advanced Tricks:</b> <br>
+Note: <br>
+
+            
             <ul>
-              <li>Taking advantage of transparency in your images can
-be very useful.</li>
               <li>Leaving the menu-command field blank means no entry
 appears in the right-click menu, but you can still use a keyboard
 shortcut.</li>
               <li>Keyboard shortcuts can be the same as those used by
 other traits.&nbsp; Typing the key will perform all corresponding
-actions.<br>
-              </li>
-              <li>The Activate keyboard shortcut can specify a string
-of characters, such that the layer is activated only when all the
-corresponding keys have been pressed.&nbsp; For example, a counter may
-have a Berserk Status and a Wound status, where the Wound status only
-applies to Berserk units.&nbsp; The counter could have a Berserk layer
-activated by 'B' and a Wound layer activated by 'BW'.<br>
-              </li>
-              <li>The Increase/Decrease keyboard shortcuts can also
-specify a string of characters, such that the level is
-increased/decreased when _any_one_ of the keys is pressed.</li>
-              <br>
+actions.</li>
             </ul>
-            <hr />A Layer defines a
+
+            <span style="font-weight: bold;">EXAMPLES:</span><br>
+            <ul>
+              <li><span style="font-style: italic;"></span>For a basic two-sided counter, add
+a Layer, and select an image that represents the reverse side.&nbsp;
+Change
+"Activate" to "Flip" and set the key to "F".&nbsp;<span style="font-style: italic;"></span></li>
+              <li><span style="font-style: italic;"></span>To represent fatigue in an Army counter, give it a Layer named "Fatigue." &nbsp;Select "Always Active", choose four images that represent the levels, and change
+"Increase"
+to "Increase Fatigue" and "Decrease" to "Decrease Fatigue". &nbsp;&nbsp;A
+Reset command named "Rest" using CTRL-R could
+be used to bring the Army counter back to full strength. &nbsp;Name the
+levels " (fatigue 1)", etc., and check "is suffix" to append the
+current fatigue level to the piece's name.</li>
+            </ul>
+            <hr>A Layer defines a
 number of <a href="Properties.htm">Properties</a>.&nbsp; In the name
 of the properties, <span style="font-style: italic;">&lt;layer_name&gt;</span>
 is the name of the overall Layer as specified in the top field of the
 properties.<br>
+
+            
             <ul>
+
               <li><span style="font-style: italic;">&lt;layer_name&gt;_Image
                 </span>returns the name of the currently-active level's
-image file<span style="font-style: italic;"></span><span
- style="font-style: italic;"></span></li>
+image file<span style="font-style: italic;"></span><span style="font-style: italic;"></span></li>
+
               <li><span style="font-style: italic;">&lt;layer_name&gt;_Name
                 </span>returns
 the name of the currently-active level<a href="Map.htm"></a></li>
+
               <li><span style="font-style: italic;">&lt;layer_name&gt;_Level
                 </span>returns
-the number of the current level<span style="text-decoration: underline;"></span><a
- href="Map.htm"></a></li>
+the number of the current level<span style="text-decoration: underline;"></span><a href="Map.htm"></a></li>
+
               <li><span style="font-style: italic;">&lt;layer_name&gt;_Active
                 </span>returns <span style="font-style: italic;">true</span>
 if the Layer is active, <span style="font-style: italic;">false</span>
 otherwise</li>
+
+            
             </ul>
-            <b>EXAMPLE:</b>&nbsp; A Layer named <span
- style="font-style: italic;">Manpower</span> that is active and showing
+
+            <b>EXAMPLE:</b>&nbsp; A Layer named <span style="font-style: italic;">Manpower</span> that is active and showing
 level 4 defined with image <span style="font-style: italic;">Man04.gif</span>
 and name <span style="font-style: italic;">(strength 4)</span> would
 have the following properties:<br>
+
+            
             <ul>
+
               <li style="font-style: italic;">Manpower_Image = Man04.gif</li>
+
               <li style="font-style: italic;">Manpower_Name = (strength
 4)</li>
+
               <li style="font-style: italic;">Manpower_Level = 4</li>
+
               <li><span style="font-style: italic;">Manpower_Active =
 true</span></li>
+
+            
             </ul>
+
 These properties could be used in a <a href="GlobalKeyCommand.htm">Global
 Key Command</a> to automatically remove all counters whose manpower was
 zero.<br>
+
             </td>
+
           </tr>
+
+        
         </tbody>
+      
       </table>
+
       </td>
+
     </tr>
+
     <tr>
+
     </tr>
+
+  
   </tbody>
 </table>
+
 </body>
 </html>

@@ -822,7 +822,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       Box levelBox = Box.createHorizontalBox();
       propertyConfig = new StringConfigurer(null, "Property Name:  ");
       levelBox.add(propertyConfig.getControls());
-      firstLevelConfig = new IntConfigurer(null, " Level 1 = ");
+      firstLevelConfig = new IntConfigurer(null, " Level 1 = ", e.firstLevelValue);
       levelBox.add(firstLevelConfig.getControls());
       checkBoxes.add(levelBox);
       followConfig.addPropertyChangeListener(new PropertyChangeListener() {
