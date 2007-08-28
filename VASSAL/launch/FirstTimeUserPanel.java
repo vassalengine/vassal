@@ -103,7 +103,7 @@ public class FirstTimeUserPanel {
     });
     try {
       File readme = new File (Documentation.getDocumentationBaseDir(),"README.html");
-      help.addActionListener(new ShowHelpAction(readme.toURL(), null));
+      help.addActionListener(new ShowHelpAction(readme.toURI().toURL(), null));
     }
     catch (MalformedURLException e) {
       e.printStackTrace();

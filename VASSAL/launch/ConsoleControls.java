@@ -128,7 +128,7 @@ public class ConsoleControls {
     JButton help;
     try {
       File readme = new File (Documentation.getDocumentationBaseDir(),"README.html");
-      help = new JButton(new ShowHelpAction(readme.toURL(), null));
+      help = new JButton(new ShowHelpAction(readme.toURI().toURL(), null));
       box.add(help);
     }
     catch (MalformedURLException e) {
