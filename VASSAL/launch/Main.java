@@ -40,13 +40,13 @@ import VASSAL.tools.ErrorLog;
 import VASSAL.tools.JarArchive;
 
 public class Main {
-  private boolean isFirstTime;
-  private boolean builtInModule;
-  private File moduleFile;
-  private boolean editMode;
-  private File savedGame;
-  private List<String> extractTargets = new ArrayList<String>();
-  private List<String> autoExtensions = new ArrayList<String>();
+  protected boolean isFirstTime;
+  protected boolean builtInModule;
+  protected File moduleFile;
+  protected boolean editMode;
+  protected File savedGame;
+  protected List<String> extractTargets = new ArrayList<String>();
+  protected List<String> autoExtensions = new ArrayList<String>();
 
   public Main(final String[] args) {
     initSystemProperties();
@@ -96,7 +96,7 @@ public class Main {
     }
   }
 
-  private void reportError(Exception e) {
+  protected void reportError(Exception e) {
     e.printStackTrace();
     String msg = e.getMessage();
     if (msg == null) {
@@ -132,9 +132,9 @@ public class Main {
 
   protected void launch() throws IOException {
     if (builtInModule) {
-      GameModule.init(new BasicModule(new JarArchive()));
+      GameModule.init(createModule(createDataArchive()));
       for (String ext : autoExtensions) {
-        new ModuleExtension(new JarArchive(ext)).build();
+        createExtension(ext).build();
       }
       GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
     }
@@ -147,7 +147,7 @@ public class Main {
       new EditModuleAction(null).loadModule(moduleFile);
     }
     else {
-      GameModule.init(new BasicModule(new DataArchive(moduleFile.getPath())));
+      GameModule.init(createModule(createDataArchive()));
       new ExtensionsLoader().addTo(GameModule.getGameModule());
       Localization.getInstance().translate();
       if (savedGame != null) {
@@ -158,6 +158,23 @@ public class Main {
         GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
       }
     }
+  }
+  
+  protected ModuleExtension createExtension(String name) {
+    return new ModuleExtension(new JarArchive(name));
+  }
+  
+  protected DataArchive createDataArchive() throws IOException {
+    if (builtInModule) {
+      return new JarArchive();
+    }
+    else {
+      return new DataArchive(moduleFile.getPath());
+    }
+  }
+  
+  protected GameModule createModule(DataArchive archive) {
+    return new BasicModule(archive);
   }
 
   protected String getVersion() {
