@@ -34,15 +34,12 @@ import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.DataArchive;
 
 /**
- * A Chart is used for displaying charts and tables for the module.  The
- * charts are loaded as images stored in the DataArchive.  As a subclass of
- * Widget, a Chart may be added to any Widget,
- * but it may not contains children of its own
+ * A Chart is used for displaying charts and tables for the module. The charts are loaded as images stored in the
+ * DataArchive. As a subclass of Widget, a Chart may be added to any Widget, but it may not contains children of its own
  */
 public class Chart extends Widget {
   public static final String NAME = "chartName";
   public static final String FILE = "fileName";
-
   private Component chart;
   private String fileName;
   private JLabel label;
@@ -54,8 +51,9 @@ public class Chart extends Widget {
     if (chart == null) {
       label = new JLabel();
       try {
-        label.setIcon(new ImageIcon
-          (GameModule.getGameModule().getDataArchive().getCachedImage(fileName)));
+        Image image = GameModule.getGameModule().getDataArchive().getCachedImage(fileName);
+        ImageIcon icon = image == null ? null : new ImageIcon(image);
+        label.setIcon(icon);
       }
       catch (IOException ex) {
         label.setText("Image " + fileName + " not found");
@@ -99,8 +97,9 @@ public class Chart extends Widget {
       fileName = (String) val;
       if (label != null) {
         try {
-          label.setIcon(new ImageIcon
-            (GameModule.getGameModule().getDataArchive().getCachedImage(fileName)));
+          Image image = GameModule.getGameModule().getDataArchive().getCachedImage(fileName);
+          ImageIcon icon = image == null ? null : new ImageIcon(image);
+          label.setIcon(icon);
           label.revalidate();
         }
         catch (IOException ex) {
@@ -110,31 +109,30 @@ public class Chart extends Widget {
   }
 
   /*
-  public Configurer[] getAttributeConfigurers() {
-      Configurer config[] = new Configurer[2];
-      config[0] = new StringConfigurer(NAME,"Name");
-      config[0].setValue(getConfigureName());
-      listenTo(config[0]);
-
-      config[1] = new ImageConfigurer
-      (FILE,"Image",
-      GameModule.getGameModule().getArchiveWriter());
-      config[1].setValue(fileName);
-      listenTo(config[1]);
-
-      return config;
-  }
-  */
-
+   * public Configurer[] getAttributeConfigurers() { Configurer config[] = new Configurer[2]; config[0] = new
+   * StringConfigurer(NAME,"Name"); config[0].setValue(getConfigureName()); listenTo(config[0]);
+   * 
+   * config[1] = new ImageConfigurer (FILE,"Image", GameModule.getGameModule().getArchiveWriter());
+   * config[1].setValue(fileName); listenTo(config[1]);
+   * 
+   * return config; }
+   */
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
   /**
    * The Attributes of a Chart are:
+   * 
    * <pre>
-   * <code>NAME</code> for the name of the chart
-   * <code>FILE</code> for the name of the image in the {@link DataArchive}
+   * <code>
+   * NAME
+   * </code>
+   *  for the name of the chart
+   * <code>
+   * FILE
+   * </code>
+   *  for the name of the image in the {@link DataArchive}
    * </pre>
    */
   public String[] getAttributeNames() {

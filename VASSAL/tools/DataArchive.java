@@ -149,6 +149,9 @@ public class DataArchive extends SecureClassLoader {
    * Once an image is found, cache it in our HashMap.
    */
   public Image getCachedImage(String name) throws IOException {
+    if (name == null) {
+      return null;
+    }
     String path = IMAGE_DIR + name;
     String gifPath = path + ".gif";
     Image image = imageCache.get(path);
