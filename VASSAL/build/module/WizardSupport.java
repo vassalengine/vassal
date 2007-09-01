@@ -148,7 +148,8 @@ public class WizardSupport {
     catch (MalformedURLException e) {
       e.printStackTrace();
     }
-    Object result = WizardDisplayer.showWizard(welcomeWizard, new Rectangle(0, 0, logoSize.width + 400, logoSize.height), help, props);
+//    Object result = WizardDisplayer.showWizard(welcomeWizard, new Rectangle(0, 0, logoSize.width + 400, logoSize.height), help, props);
+    Object result = WizardDisplayer.showWizard(welcomeWizard, null, help, props);
     if (result instanceof Map) {
       Map m = (Map) result;
       Object action = m.get(ACTION_KEY);
@@ -214,7 +215,8 @@ public class WizardSupport {
       this.page = page;
       this.wizard = wizard;
       this.logoSize = logoSize;
-      page.addHierarchyListener(this);
+      // FIXME disabled LayoutFix
+//      page.addHierarchyListener(this);
     }
 
     public void hierarchyChanged(HierarchyEvent e) {
@@ -305,7 +307,7 @@ public class WizardSupport {
       else {
         throw new IllegalArgumentException("Illegal step: " + id); //$NON-NLS-1$
       }
-      new InstructionsPanelLayoutFix((Wizard) settings.get(WELCOME_WIZARD_KEY), c, logoSize);
+//      new InstructionsPanelLayoutFix((Wizard) settings.get(WELCOME_WIZARD_KEY), c, logoSize);
       SplashScreen.disposeAll();
       return c;
     }
@@ -659,6 +661,7 @@ public class WizardSupport {
 
     public SetupStepPage(GameSetupStep step) {
       super(step.getStepTitle());
+      setLayout(new BorderLayout());
       add(step.getControls());
       putWizardData(step, step);
     }
@@ -736,7 +739,7 @@ public class WizardSupport {
 
     public Wizard newWizard(Dimension logoSize) {
       Wizard w = createWizard();
-      new InstructionsPanelLayoutFix(w, pages[0], logoSize);
+//      new InstructionsPanelLayoutFix(w, pages[0], logoSize);
       return w;
     }
   }

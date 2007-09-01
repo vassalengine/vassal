@@ -141,7 +141,6 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
           t.stop();
           setSize(getPreferredSize());
           revalidate();
-          picker.pack();
           repaint();
         }
       }.start();
@@ -151,7 +150,6 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
       reverseCheckBox.setVisible(false);
       revalidate();
       setSize(getPreferredSize());
-      picker.pack();
       repaint();
     }
   }

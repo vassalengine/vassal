@@ -19,16 +19,14 @@
 package VASSAL.build.module.map;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.HierarchyBoundsListener;
-import java.awt.event.HierarchyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -43,16 +41,17 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -90,7 +89,9 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   protected List<Board> currentBoards = null;
   protected Dimension psize = new Dimension(350, 125);
   protected double slotScale = 0.2;
+  @Deprecated
   protected JTextField status;
+  protected JLabel statusLabel;
   protected Map map;
   protected JPanel slotPanel;
   protected String version = "0.0"; //$NON-NLS-1$
@@ -128,8 +129,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   protected void initComponents() {
     multipleButtons = new ArrayList<JButton>();
     controls = new JPanel(new BorderLayout());
-    status = new JTextField(""); //$NON-NLS-1$
-    status.setEditable(false);
+    statusLabel = new JLabel(""); //$NON-NLS-1$
+    statusLabel.setForeground(Color.BLUE);
     slotPanel = new JPanel();
     toolbar = new JToolBar();
     toolbar.setFloatable(false);
@@ -141,35 +142,12 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     clearButton = addButton(Resources.getString("BoardPicker.clear")); //$NON-NLS-1$
     multipleButtons.add(clearButton);
     setAllowMultiple(allowMultiple);
-    controls.add("North", status); //$NON-NLS-1$
+    controls.add(BorderLayout.NORTH, statusLabel);
     JPanel pp = new JPanel();
     pp.add(toolbar);
-    controls.add("West", pp); //$NON-NLS-1$
+    controls.add(BorderLayout.WEST, pp);
     slotScroll = new JScrollPane(slotPanel);
-    controls.add("Center", slotScroll); //$NON-NLS-1$
-    controls.addHierarchyBoundsListener(new HierarchyBoundsListener() {
-      boolean scheduled = false;
-      Runnable r = new Runnable() {
-        public void run() {
-          Dimension d = controls.getParent().getSize();
-          slotScroll.setSize(Math.min(d.width - (controls.getWidth() - slotScroll.getWidth()), slotScroll.getWidth()), Math.min(d.height, slotScroll
-              .getHeight()));
-          controls.setLocation(0, 0);
-          slotPanel.revalidate();
-          scheduled = false;
-        }
-      };
-
-      public void ancestorMoved(HierarchyEvent e) {
-      }
-
-      public void ancestorResized(HierarchyEvent e) {
-        if (!scheduled) {
-          SwingUtilities.invokeLater(r);
-          scheduled = true;
-        }
-      }
-    });
+    controls.add(BorderLayout.CENTER, slotScroll);
     reset();
   }
 
@@ -185,8 +163,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   public void warn(String s) {
-    if (status != null) {
-      status.setText(s);
+    if (statusLabel != null) {
+      statusLabel.setText(s);
     }
   }
 
@@ -644,8 +622,6 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   protected void removeAllBoards() {
-    // for(int n=slotPanel.getComponentCount()-1;n>=0;--n)
-    // slotPanel.remove(slotPanel.getComponent(n));
     slotPanel.removeAll();
     slotPanel.setLayout(new GridLayout(1, 1));
     nx = ny = 1;
@@ -830,7 +806,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       selectButton = new JButton(Resources.getString("BoardPicker.select_default")); //$NON-NLS-1$
       selectButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          selectBoards(e.getSource() instanceof Component ? (Component)e.getSource() : null);
+          selectBoards(e.getSource() instanceof Component ? (Component) e.getSource() : null);
         }
       });
       controls.add(selectButton);
@@ -886,12 +862,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     }
   }
 
+  @Deprecated
   public void pack() {
-    if (controls != null) {
-      Window w = SwingUtilities.getWindowAncestor(controls);
-      if (w != null) {
-        w.pack();
-      }
-    }
   }
 }
