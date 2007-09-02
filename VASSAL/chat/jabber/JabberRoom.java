@@ -50,7 +50,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
 
   public MultiUserChat join(JabberClient client, JabberPlayer me) throws XMPPException {
     MultiUserChat chat = new MultiUserChat(client.getConnection(), getJID());
-    chat.join(me.getJid());
+    chat.join(StringUtils.parseName(me.getJid()));
     try {
       // This is necessary to create the room if it doesn't already exist
       chat.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));

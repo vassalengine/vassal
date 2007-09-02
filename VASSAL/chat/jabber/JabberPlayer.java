@@ -17,6 +17,7 @@
  */
 package VASSAL.chat.jabber;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,7 +76,7 @@ public class JabberPlayer extends SimplePlayer {
       }
       return p;
     }
-
+    
     public JabberPlayer getPlayerByName(JabberClient client, String name) {
       return getPlayer(StringUtils.escapeNode(name) + "@" + client.getHost() + "/VASSAL");
     }
@@ -86,6 +87,10 @@ public class JabberPlayer extends SimplePlayer {
     
     public synchronized void clear() {
       jidToPlayer.clear();
+    }
+    
+    public Collection<JabberPlayer> getAllPlayers() {
+      return jidToPlayer.values();
     }
   }
 }

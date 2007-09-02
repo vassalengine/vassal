@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,6 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Presence.Mode;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.muc.HostedRoom;
@@ -306,7 +304,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
 
   public void setUserInfo(Player p) {
     if (monitor != null) {
-      monitor.sendStatus(new JabberStatus((SimpleStatus) p.getStatus()));
+      monitor.sendStatus((SimpleStatus) p.getStatus());
     }
   }
 
@@ -356,7 +354,6 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
    */
   private class MonitorRooms implements PacketListener, ParticipantStatusListener {
     private static final String ROOM_CHANGE_ACTION = "changedRoom";
-    private Set<JabberPlayer> players = new HashSet<JabberPlayer>();
     private MultiUserChat monitorRoom;
     private Comparator<Room> roomSortOrder = new Comparator<Room>() {
       public int compare(Room o1, Room o2) {
@@ -393,21 +390,29 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       for (Iterator it = monitorRoom.getOccupants(); it.hasNext();) {
         String jid = (String) it.next();
         JabberPlayer player = playerMgr.getPlayer(getAbsolutePlayerJID(jid));
-        players.add(player);
         sendRoomQuery(player.getJid());
       }
       monitorRoom.addMessageListener(this);
       monitorRoom.addParticipantStatusListener(this);
     }
 
-    public void sendStatus(JabberStatus s) {
-      Mode availability = s.getAvailability();
-      monitorRoom.changeAvailabilityStatus("", availability);
+    public void sendStatus(SimpleStatus s) {
+      sendStatus(s,null);
+    }
+
+    public void sendStatus(SimpleStatus s, String recipient) {
+      Presence p = new Presence(Presence.Type.available);
+      p.setStatus("");
+      p.setMode(Presence.Mode.chat);
+      p.setProperty("looking", s.isLooking());
+      p.setProperty("away", s.isAway());
+      p.setTo(recipient == null ? monitorRoom.getRoom() : recipient);
+      conn.sendPacket(p);
     }
 
     public Room[] getAvailableRooms() {
       Map<JabberRoom, List<JabberPlayer>> occupants = new HashMap<JabberRoom, List<JabberPlayer>>();
-      for (JabberPlayer p : players) {
+      for (JabberPlayer p : playerMgr.getAllPlayers()) {
         JabberRoom room = p.getJoinedRoom();
         if (room != null) {
           List<JabberPlayer> l = occupants.get(room);
@@ -469,19 +474,19 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     public void processPacket(Packet packet) {
       Message m = (Message) packet;
       if (ROOM_CHANGE_ACTION.equals(m.getBody())) {
-        sendRoomQuery(getAbsolutePlayerJID(packet.getFrom()));
+        String jid = getAbsolutePlayerJID(packet.getFrom());
+        playerMgr.getPlayer(getAbsolutePlayerJID(packet.getFrom()));
+        sendRoomQuery(jid);
       }
     }
 
     public void joined(String participant) {
-      players.add(playerMgr.getPlayer(getAbsolutePlayerJID(participant)));
+      sendStatus((SimpleStatus) me.getStatus());
     }
 
     public void left(String participant) {
       String jid = getAbsolutePlayerJID(participant);
       playerMgr.deletePlayer(jid);
-      JabberPlayer player = playerMgr.getPlayer(jid);
-      players.remove(player);
       fireRoomsUpdated();
     }
 
@@ -540,17 +545,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
         Presence p = (Presence) packet;
         JabberPlayer player = playerMgr.getPlayer(getAbsolutePlayerJID(p.getFrom()));
         SimpleStatus status = (SimpleStatus) player.getStatus();
-        switch (p.getMode()) {
-        case away:
-          status = new SimpleStatus(false, false, status.getProfile());
-          break;
-        case chat:
-          status = new SimpleStatus(true, false, status.getProfile());
-          break;
-        case xa:
-          status = new SimpleStatus(false, true, status.getProfile());
-          break;
-        }
+        status = new SimpleStatus((Boolean)p.getProperty("looking"), (Boolean)p.getProperty("away"),status.getProfile());
         player.setStatus(status);
         fireRoomsUpdated();
       }
@@ -668,7 +663,8 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     };
     String username = args.length == 0 ? "test" : args[0];
     String password = args.length == 0 ? "test" : args[1];
-    JabberClient client = new JabberClient(c, "63.144.41.3", 5222, username, password);
+//    JabberClient client = new JabberClient(c, "63.144.41.3", 5222, username, password);
+    JabberClient client = new JabberClient(c, "localhost", 5222, username, password);
     client.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         System.err.println(evt.getPropertyName() + "=" + evt.getNewValue());
