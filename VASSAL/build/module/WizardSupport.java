@@ -22,16 +22,14 @@ import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -48,13 +46,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.imageio.ImageIO;
+
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -62,16 +59,16 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JRadioButton;
 import javax.swing.UIManager;
+
 import org.netbeans.api.wizard.WizardDisplayer;
-import org.netbeans.modules.wizard.InstructionsPanel;
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardBranchController;
 import org.netbeans.spi.wizard.WizardController;
 import org.netbeans.spi.wizard.WizardException;
-import org.netbeans.spi.wizard.WizardObserver;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPanelProvider;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.Tutorial;
 import VASSAL.chat.ui.ChatServerControls;
@@ -199,75 +196,6 @@ public class WizardSupport {
       WizardDisplayer.showWizard(panels.newWizard(logoSize), new Rectangle(0, 0, logoSize.width + 400, logoSize.height));
     }
   }
-  /**
-   * This is a hack to avoid stretching the image used as a background for the wizard step outline in the dialog
-   * 
-   * @author rkinney
-   * 
-   */
-  protected static class InstructionsPanelLayoutFix implements HierarchyListener, WizardObserver {
-    private final Component page;
-    private JLabel proxy;
-    private Wizard wizard;
-    private Dimension logoSize;
-
-    protected InstructionsPanelLayoutFix(Wizard wizard, Component page, Dimension logoSize) {
-      this.page = page;
-      this.wizard = wizard;
-      this.logoSize = logoSize;
-      // FIXME disabled LayoutFix
-//      page.addHierarchyListener(this);
-    }
-
-    public void hierarchyChanged(HierarchyEvent e) {
-      page.removeHierarchyListener(this);
-      Container parent = e.getChangedParent().getParent();
-      if (parent.getComponentCount() > 0 && parent.getComponent(0) instanceof InstructionsPanel) {
-        final InstructionsPanel panel = (InstructionsPanel) parent.getComponent(0);
-        panel.setSize(panel.getPreferredSize());
-        parent.remove(panel);
-        proxy = new JLabel(new Icon() {
-          public int getIconHeight() {
-            return panel.getPreferredSize().height;
-          }
-
-          public int getIconWidth() {
-            return panel.getPreferredSize().width;
-          }
-
-          public void paintIcon(Component c, Graphics g, int x, int y) {
-            BufferedImage img = (BufferedImage) UIManager.get("wizard.sidebar.image"); //$NON-NLS-1$
-            if (img == null) {
-              try {
-                img = ImageIO.read(InstructionsPanel.class.getResourceAsStream("defaultWizard.png")); //$NON-NLS-1$
-              }
-              catch (IOException e) {
-                e.printStackTrace();
-                img = new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR);
-              }
-            }
-            panel.setSize(img.getWidth(), img.getHeight());
-            panel.paintComponent(g);
-          }
-        });
-        proxy.setPreferredSize(new Dimension(Math.min(logoSize.width, proxy.getPreferredSize().width), proxy.getPreferredSize().height));
-        parent.add(proxy, BorderLayout.WEST);
-        wizard.addWizardObserver(this);
-      }
-    }
-
-    public void navigabilityChanged(Wizard wizard) {
-      proxy.repaint();
-    }
-
-    public void selectionChanged(Wizard wizard) {
-      proxy.repaint();
-    }
-
-    public void stepsChanged(Wizard wizard) {
-      proxy.repaint();
-    }
-  }
 
   public InitialWelcomeSteps createInitialWelcomeSteps() {
     Object realName = GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME);
@@ -288,9 +216,9 @@ public class WizardSupport {
    */
   public class InitialWelcomeSteps extends WizardPanelProvider {
     public static final String NAME_STEP = "name"; //$NON-NLS-1$
-    private JComponent nameControls;
-    private JComponent actionControls;
-    private Tutorial tutorial;
+    protected JComponent nameControls;
+    protected JComponent actionControls;
+    protected Tutorial tutorial;
 
     public InitialWelcomeSteps(String[] steps, String[] stepDescriptions) {
       super(Resources.getString("WizardSupport.Welcome"), steps, stepDescriptions); //$NON-NLS-1$
@@ -307,7 +235,6 @@ public class WizardSupport {
       else {
         throw new IllegalArgumentException("Illegal step: " + id); //$NON-NLS-1$
       }
-//      new InstructionsPanelLayoutFix((Wizard) settings.get(WELCOME_WIZARD_KEY), c, logoSize);
       SplashScreen.disposeAll();
       return c;
     }
@@ -316,14 +243,31 @@ public class WizardSupport {
       if (actionControls == null) {
         Box box = Box.createVerticalBox();
         ButtonGroup group = new ButtonGroup();
+        JRadioButton tutorialButton = null;
+        if (tutorial != null && tutorial.isFirstRun()) {
+          tutorialButton = createTutorialButton(controller, settings);
+          addButton(tutorialButton, group, box);
+          box.add(Box.createVerticalStrut(20));
+        }
         final JRadioButton b = createPlayOfflineButton(controller, settings);
         b.doClick();
         addButton(b, group, box);
         settings.put(ACTION_KEY, PLAY_OFFLINE_ACTION);
         addButton(createPlayOnlineButton(controller, settings), group, box);
         addButton(createLoadSavedGameButton(controller, settings), group, box);
-        if (tutorial != null) {
-          addButton(createTutorialButton(controller, settings), group, box);
+        if (tutorialButton != null) {
+          tutorialButton.doClick();
+          tutorialButton.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+              if (e.getStateChange() == ItemEvent.DESELECTED) {
+                tutorial.markAsViewed();
+              }
+            }
+          });
+        }
+        else if (tutorial != null) {
+          tutorialButton = createTutorialButton(controller, settings);
+          addButton(tutorialButton, group, box);
         }
         actionControls = box;
       }
@@ -398,7 +342,7 @@ public class WizardSupport {
       group.add(button);
     }
 
-    private JComponent getNameControls(final WizardController controller, final Map settings) {
+    protected JComponent getNameControls(final WizardController controller, final Map settings) {
       if (nameControls == null) {
         Box box = Box.createVerticalBox();
         box.add(Box.createVerticalGlue());
@@ -582,15 +526,7 @@ public class WizardSupport {
     public void run() {
       try {
         controller.setProblem(Resources.getString("WizardSupport.LoadingGame")); //$NON-NLS-1$
-        Command setupCommand = GameModule.getGameModule().getGameState().decodeSavedGame(in);
-        if (setupCommand == null) {
-          throw new IOException(Resources.getString("WizardSupport.InvalidSavefile")); //$NON-NLS-1$
-        }
-        setupCommand = new CommandFilter() {
-          protected boolean accept(Command c) {
-            return !(c instanceof GameState.SetupCommand) || !((GameState.SetupCommand) c).isGameStarting();
-          }
-        }.apply(setupCommand);
+        Command setupCommand = loadSavedGame();
         setupCommand.execute();
         controller.setProblem(null);
         final GameSetupPanels panels = GameSetupPanels.newInstance();
@@ -600,6 +536,20 @@ public class WizardSupport {
       catch (IOException e) {
         controller.setProblem(Resources.getString("WizardSupport.UnableToLoad")); //$NON-NLS-1$
       }
+    }
+
+    protected Command loadSavedGame() throws IOException {
+      Command setupCommand = GameModule.getGameModule().getGameState().decodeSavedGame(in);
+      if (setupCommand == null) {
+        throw new IOException(Resources.getString("WizardSupport.InvalidSavefile")); //$NON-NLS-1$
+      }
+      // Strip out the setup(true) command.  This will be applied when the "Finish" button is pressed
+      setupCommand = new CommandFilter() {
+        protected boolean accept(Command c) {
+          return !(c instanceof GameState.SetupCommand) || !((GameState.SetupCommand) c).isGameStarting();
+        }
+      }.apply(setupCommand);
+      return setupCommand;
     }
   }
   /**
@@ -739,7 +689,6 @@ public class WizardSupport {
 
     public Wizard newWizard(Dimension logoSize) {
       Wizard w = createWizard();
-//      new InstructionsPanelLayoutFix(w, pages[0], logoSize);
       return w;
     }
   }

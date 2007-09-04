@@ -138,7 +138,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   protected JFrame frame = new JFrame();
   
-  protected WizardSupport wizardSupport = new WizardSupport();
+  protected WizardSupport wizardSupport;
 
   protected List<KeyStrokeSource> keyStrokeSources =
     new ArrayList<KeyStrokeSource>();
@@ -154,6 +154,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
   
   public WizardSupport getWizardSupport() {
+    if (wizardSupport == null) {
+      wizardSupport = new WizardSupport();
+    }
     return wizardSupport;
   }
 

@@ -22,11 +22,11 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -52,6 +52,7 @@ public class Tutorial extends AbstractConfigurable {
   private boolean launchOnFirstStartup;
   private String welcomeMessage = Resources.getString("Tutorial.instructions"); //$NON-NLS-1$
   private String promptMessage = Resources.getString("Tutorial.load_tutorial"); //$NON-NLS-1$
+  protected BooleanConfigurer hasViewedTutorial;
 
   public Tutorial() {
     launch = new AbstractAction(Resources.getString("Tutorial.tutorial")) { //$NON-NLS-1$
@@ -168,29 +169,12 @@ public class Tutorial extends AbstractConfigurable {
     }
   }
 
-  @SuppressWarnings("fallthrough")
   public void addTo(Buildable parent) {
     item = ((Documentation) parent).getHelpMenu().add(launch);
     final String key = "viewedTutorial" + getConfigureName(); //$NON-NLS-1$
-    GameModule.getGameModule().getPrefs().addOption(null, new BooleanConfigurer(key, null, Boolean.FALSE));
+    hasViewedTutorial = new BooleanConfigurer(key, null, Boolean.FALSE);
+    GameModule.getGameModule().getPrefs().addOption(null, hasViewedTutorial);
     GameModule.getGameModule().getWizardSupport().setTutorial(this);
-    if (launchOnFirstStartup
-        && !Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(key))) {
-      Runnable runnable = new Runnable() {
-        public void run() {
-          String[] options = new String[]{Resources.getString(Resources.YES),Resources.getString(Resources.NO), Resources.getString("Tutorial.dont_ask")}; //$NON-NLS-1$
-          switch (JOptionPane.showOptionDialog(GameModule.getGameModule().getFrame(), promptMessage, getConfigureName(),
-              JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0])) {
-            case 0: // Yes
-              launch();
-            case 2: // Don't ask again
-              GameModule.getGameModule().getPrefs().setValue(key, Boolean.TRUE);
-              break;
-          }
-        }
-      };
-      SwingUtilities.invokeLater(runnable);
-    }
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -218,5 +202,21 @@ public class Tutorial extends AbstractConfigurable {
 
   public InputStream getTutorialContents() throws IOException {
     return GameModule.getGameModule().getDataArchive().getFileStream(fileName);
+  }
+
+  public boolean isFirstRun() {
+    return launchOnFirstStartup
+        && !hasViewedTutorial.booleanValue();
+  }
+  
+  /**
+   * Mark this tutorial as having been viewed 
+   */
+  public void markAsViewed() {
+    hasViewedTutorial.setValue(Boolean.TRUE);
+  }
+
+  public String getWelcomeMessage() {
+    return welcomeMessage;
   }
 }
