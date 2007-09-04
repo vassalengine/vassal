@@ -59,7 +59,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
     addExtensions();
   }
 
-  private void addExtensions() {
+  protected void addExtensions() {
     for (String extname : getExtensionNames()) {
       if (!loadedExtensions.contains(extname)) {
         try {
