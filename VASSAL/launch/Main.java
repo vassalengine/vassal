@@ -86,7 +86,7 @@ public class Main {
       new ResourceExtracter(Prefs.getGlobalPrefs(), props, new Observer() {
         public void update(Observable o, Object arg) {
           try {
-            extractResourcesAndLaunch(resourceIndex+1);
+            extractResourcesAndLaunch(resourceIndex + 1);
           }
           catch (IOException e) {
             reportError(e);
@@ -159,11 +159,11 @@ public class Main {
       }
     }
   }
-  
+
   protected ModuleExtension createExtension(String name) {
     return new ModuleExtension(new JarArchive(name));
   }
-  
+
   protected DataArchive createDataArchive() throws IOException {
     if (builtInModule) {
       return new JarArchive();
@@ -172,7 +172,7 @@ public class Main {
       return new DataArchive(moduleFile.getPath());
     }
   }
-  
+
   protected GameModule createModule(DataArchive archive) {
     return new BasicModule(archive);
   }
@@ -193,8 +193,10 @@ public class Main {
       else if ("-extract".equals(arg)) {
         extractTargets.add(args[++n]);
       }
-      else if ("-autoExtension".equals(arg)) {
-        autoExtensions.add(args[++n]);
+      else if ("-autoextensions".equals(arg)) {
+        for (String ext : args[++n].split(",")) {
+          autoExtensions.add(ext.replace("_"," "));
+        }
       }
       else if ("-edit".equals(arg)) {
         editMode = true;

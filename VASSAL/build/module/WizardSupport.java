@@ -74,6 +74,7 @@ import VASSAL.build.module.documentation.Tutorial;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.command.CommandFilter;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.FileConfigurer;
 import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.ShowHelpAction;
@@ -280,7 +281,7 @@ public class WizardSupport {
         public void actionPerformed(ActionEvent e) {
           controller.setProblem(Resources.getString("WizardSupport.LoadingTutorial")); //$NON-NLS-1$
           try {
-            new SavedGameLoader(controller, settings, tutorial.getTutorialContents(), POST_INITIAL_STEPS_WIZARD).start();
+            new TutorialLoader(controller, settings, tutorial.getTutorialContents(), POST_INITIAL_STEPS_WIZARD, tutorial).start();
           }
           catch (IOException e1) {
             e1.printStackTrace();
@@ -550,6 +551,21 @@ public class WizardSupport {
         }
       }.apply(setupCommand);
       return setupCommand;
+    }
+  }
+  
+  public static class TutorialLoader extends SavedGameLoader {
+    private Tutorial tutorial;
+    public TutorialLoader(WizardController controller, Map settings, InputStream in, String wizardKey, Tutorial tutorial) {
+      super(controller, settings, in, wizardKey);
+      this.tutorial = tutorial;
+    }
+
+    protected Command loadSavedGame() throws IOException {
+      String msg = tutorial.getWelcomeMessage();
+      Command c = msg == null ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(),msg);
+      c = c.append(super.loadSavedGame());
+      return c;
     }
   }
   /**
