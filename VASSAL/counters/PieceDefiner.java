@@ -61,7 +61,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   protected ListCellRenderer r;
   protected PieceSlot slot;
   private GamePiece piece;
-  protected static Decorator clipBoard;
+  protected static TraitClipboard clipBoard;
 
   /** Creates new form test */
   public PieceDefiner() {
@@ -391,16 +391,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       public void actionPerformed(ActionEvent evt) {
         pasteButton.setEnabled(true);
         int index = inUseList.getSelectedIndex();
-        Decorator target = (Decorator) inUseModel.get(index);
-        try {
-          String type = target.myGetType();
-          String state = target.myGetState();
-          clipBoard = (Decorator) GameModule.getGameModule().createPiece(type, null);
-          clipBoard.mySetState(state);
-        } 
-        catch (Exception e) {
-          clipBoard = null;
-        }
+        clipBoard = new TraitClipboard((Decorator) inUseModel.get(index));
       }});
     moveUpDownPanel.add(copyButton);
 
@@ -408,10 +399,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     pasteButton.setEnabled(clipBoard != null);
     pasteButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
-        Decorator c = (Decorator) GameModule.getGameModule().createPiece(clipBoard.myGetType(), null);
-        c.mySetState(clipBoard.myGetState());
-        c.setInner((GamePiece) inUseModel.lastElement());
-        inUseModel.addElement(c);
+        if (clipBoard != null) {
+          Decorator c = (Decorator) GameModule.getGameModule().createPiece(clipBoard.getType(), null);
+          c.setInner((GamePiece) inUseModel.lastElement());
+          inUseModel.addElement(c);
+          c.mySetState(clipBoard.getState());
+        }
       }});
     moveUpDownPanel.add(pasteButton);
     
@@ -622,6 +615,26 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         setText(s.substring(s.lastIndexOf(".") + 1));
       }
       return this;
+    }
+  }
+  
+  /**
+   * Contents of the Copy/Paste buffer for traits in the editor
+   * @author rkinney
+   *
+   */
+  private static class TraitClipboard {
+    private String type;
+    private String state;
+    public TraitClipboard(Decorator copy) {
+      type = copy.myGetType();
+      state = copy.myGetState();
+    }
+    public String getType() {
+      return type;
+    }
+    public String getState() {
+      return state;
     }
   }
 }
