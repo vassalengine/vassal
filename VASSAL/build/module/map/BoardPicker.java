@@ -330,7 +330,6 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     for (Board b : c) {
       getSlot(b.relativePosition().x + nx * b.relativePosition().y).setBoard(b);
     }
-    pack();
   }
 
   /** @deprecated Use {@link #setBoards(Collection<Board>)} instead. */
@@ -500,7 +499,6 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       slotPanel.add(new BoardSlot(this, boardPrompt), -1);
     }
     slotPanel.revalidate();
-    pack();
   }
 
   protected void addColumn() {
@@ -509,7 +507,6 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       slotPanel.add(new BoardSlot(this, boardPrompt), (j + 1) * nx - 1);
     }
     slotPanel.revalidate();
-    pack();
   }
 
   public void actionPerformed(ActionEvent e) {
@@ -572,7 +569,6 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       slotPanel.add(new BoardSlot(this, boardPrompt), 0);
     }
     controls.revalidate();
-    pack();
   }
 
   public int getRowCount() {
