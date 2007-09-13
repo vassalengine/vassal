@@ -18,6 +18,8 @@
  */
 package VASSAL.tools;
 
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -79,8 +81,13 @@ public class LaunchButton extends JButton {
   }
 
   protected void fireActionPerformed(ActionEvent event) {
+    // Return focus to the previously-focused component
+    // This prevents annoying change of focus after hitting the hotkey for this LaunchButton
+    Component c = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
     super.fireActionPerformed(event);
-    GameModule.getGameModule().getChatter().getInputField().requestFocus();
+    if (c != null) {
+      c.requestFocus();
+    }
   }
 
   public String getNameAttribute() {
