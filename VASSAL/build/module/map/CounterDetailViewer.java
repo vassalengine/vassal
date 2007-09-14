@@ -1,7 +1,8 @@
 /*
  * $Id$
  *
- * Copyright (c) 2003-2006 by David Sullivan, Rodney Kinney and Brent Easton.
+ * Copyright (c) 2003-2007 by David Sullivan, Rodney Kinney,
+ * Brent Easton, and Joel Uckelman.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -160,11 +161,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected boolean mouseInView = true;
   protected List<GamePiece> displayablePieces = null;
 
+  /** the JComponent which is repainted when the detail viewer changes */
+  protected JComponent view;
+
   public CounterDetailViewer() {
   }
 
   public void addTo(Buildable b) {
     map = (Map) b;
+    view = map.getView();
     validator = new SingleChildInstance(map, getClass());
     map.addDrawComponent(this);
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
@@ -172,17 +177,19 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
         new IntConfigurer(PREFERRED_DELAY, Resources.getString("CounterDetailViewer.delay_prompt"), new Integer(delay)));
 
-    map.getView().addMouseMotionListener(this);
-    map.getView().addMouseListener(this);
-    map.getView().addKeyListener(this);
+    view.addMouseMotionListener(this);
+    view.addMouseListener(this);
+    view.addKeyListener(this);
+
     setAttributeTranslatable(VERSION, false);
     setAttributeTranslatable(SUMMARY_REPORT_FORMAT, true);
-    setAttributeTranslatable(COUNTER_REPORT_FORMAT, true);
+    setAttributeTranslatable(COUNTER_REPORT_FORMAT, true);    
   }
 
   public void draw(Graphics g, Map map) {
-    if (currentMousePosition != null && map.getView().getVisibleRect().contains(currentMousePosition.getPoint())) {
-      draw(g, currentMousePosition.getPoint(), map.getView());
+    if (currentMousePosition != null &&
+        view.getVisibleRect().contains(currentMousePosition.getPoint())) {
+      draw(g, currentMousePosition.getPoint(), view);
     }
   }
 
@@ -799,7 +806,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   public void removeFrom(Buildable parent) {
     map.removeDrawComponent(this);
-    map.getView().removeMouseMotionListener(this);
+    view.removeMouseMotionListener(this);
   }
 
   public void setAttribute(String name, Object value) {

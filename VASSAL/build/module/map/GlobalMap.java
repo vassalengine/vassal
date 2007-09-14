@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2007 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,28 +18,26 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.HierarchyBoundsAdapter;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JWindow;
+import javax.swing.JScrollBar;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
 import org.w3c.dom.Element;
 import VASSAL.build.AutoConfigurable;
@@ -64,64 +62,47 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ScrollPane;
 
 /**
- * This is scaled version of a {@link Map}that gives an overview. Users can
- * navigate around the Map by clicking on the GlobalMap, which draws a square
- * indicating the current viewable area in the map window
+ * This is scaled version of a {@link Map} that gives an overview.
+ * Users can navigate around the Map by clicking on the GlobalMap, which
+ * draws a rectangular region of interest (ROI) indicating the current
+ * viewable area in the map window.
  */
-public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent, Drawable {
-  private static final long serialVersionUID = 1L;
+public class GlobalMap implements AutoConfigurable,
+                                  GameComponent,
+                                  Drawable {
+  private static final long serialVersionUID = 2L;
 
   protected Map map;
   protected double scale = 0.19444444; // Zoom factor
   protected Color rectColor = Color.black;
-  protected LaunchButton launch;
+  protected final LaunchButton launch;
 
-  protected JWindow f;
   protected CounterDetailViewer mouseOverViewer;
-  protected View view;
-  protected JPanel borderPanel;
-  protected JScrollPane scroll;
-  protected boolean scrollVisible;
+  protected final ScrollPane scroll;
+  protected final View view;
   protected ComponentI18nData myI18nData;
 
   public GlobalMap() {
-    ActionListener al = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        setWindowVisible(!f.isVisible());
-      }
-    };
-    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON_NAME, al);
-    launch.setAttribute(TOOLTIP, "Show/Hide overview window");
-    launch.setAttribute(HOTKEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
-
     view = new View();
     view.addMouseListener(view);
 
-    scroll = new ScrollPane(view);
-    borderPanel = new JPanel(new BorderLayout());
-    borderPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-    borderPanel.add(scroll, BorderLayout.CENTER);
+    scroll = new GlobalMapScrollPane(view);
+    scroll.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+    scroll.setAlignmentX(0.0f);
+    scroll.setAlignmentY(0.0f);
 
-  }
-
-  private void initWindow() {
-    f = new JWindow(SwingUtilities.getWindowAncestor(map.getView()));
-    f.getContentPane().add(borderPanel);
-
-    view.setSize(getPreferredSize());
-    view.setPreferredSize(getPreferredSize());
-
-    scroll.setPreferredSize(getViewableSize());
-    f.pack();
-    map.getView().addHierarchyBoundsListener(new HierarchyBoundsAdapter() {
-      public void ancestorMoved(HierarchyEvent e) {
-        adjustWindowLocation();
+    ActionListener al = new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        scroll.setVisible(!scroll.isVisible());
       }
+    };
 
-      public void ancestorResized(HierarchyEvent e) {
-        adjustWindowLocation();
-      }
-    });
+    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT,
+                              HOTKEY, ICON_NAME, al);
+    launch.setAttribute(TOOLTIP, "Show/Hide overview window");
+    launch.setAttribute(HOTKEY,
+      KeyStroke.getKeyStroke(KeyEvent.VK_O,
+                             KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
   }
 
   /**
@@ -135,31 +116,17 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
 
     GameModule.getGameModule().getGameState().addGameComponent(this);
 
-    GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(view, JComponent.WHEN_FOCUSED));
+    GameModule.getGameModule().addKeyStrokeSource(
+      new KeyStrokeSource(view, JComponent.WHEN_FOCUSED));
 
     map.addDrawComponent(this);
-
     map.getToolBar().add(launch);
     
     if (b instanceof Translatable) {
       getI18nData().setOwningComponent((Translatable) b);
     }
 
-    if (SwingUtilities.getWindowAncestor(map.getView()) != null) {
-      initWindow();
-    }
-    else {
-      f = new JWindow(); // Dummy window until the parent map is added to a
-      // Window of its own
-      map.getView().addHierarchyListener(new HierarchyListener() {
-        public void hierarchyChanged(HierarchyEvent e) {
-          if (SwingUtilities.getWindowAncestor(map.getView()) != null) {
-            initWindow();
-            map.getView().removeHierarchyListener(this);
-          }
-        }
-      });
-    }
+    map.getLayeredPane().add(scroll, JLayeredPane.PALETTE_LAYER);
   }
 
   public void add(Buildable b) {
@@ -173,9 +140,8 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
     map.removeDrawComponent(this);
     map.getToolBar().remove(launch);
     GameModule.getGameModule().getGameState().removeGameComponent(this);
-    if (f != null) {
-      f.dispose();
-    }
+
+    map.getLayeredPane().remove(scroll);
   }
 
   public void build(Element e) {
@@ -191,7 +157,14 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
   protected static final String DEFAULT_ICON = "/images/overview.gif";
 
   public String[] getAttributeNames() {
-    return new String[] {TOOLTIP, BUTTON_TEXT, ICON_NAME, HOTKEY, SCALE, COLOR};
+    return new String[] {
+      TOOLTIP,
+      BUTTON_TEXT,
+      ICON_NAME,
+      HOTKEY,
+      SCALE,
+      COLOR
+    };
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -229,15 +202,30 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Tooltip text", "Button text", "Button icon", "Hotkey to show/hide", "Scale factor", "Visible rectangle highlight color"};
+    return new String[] {
+      "Tooltip text",
+      "Button text",
+      "Button icon",
+      "Hotkey to show/hide",
+      "Scale factor",
+      "Visible rectangle highlight color"
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, IconConfig.class, KeyStroke.class, Double.class, Color.class};
+    return new Class[] {
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class,
+      Double.class,
+      Color.class
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {
-    public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
+    public Configurer getConfigurer(AutoConfigurable c,
+                                    String key, String name) {
       return new IconConfigurer(key, name, DEFAULT_ICON);
     }
   }
@@ -247,7 +235,7 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
   }
 
   public boolean drawAboveCounters() {
-    return false;
+    return true;
   }
 
   /**
@@ -258,10 +246,8 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
    * @return
    */
   public Point componentCoordinates(Point p) {
-    p = new Point(p.x - map.getEdgeBuffer().width, p.y - map.getEdgeBuffer().height);
-    p.x *= scale;
-    p.y *= scale;
-    return p;
+    return new Point((int) ((p.x - map.getEdgeBuffer().width) * scale),
+                     (int) ((p.y - map.getEdgeBuffer().height) * scale));
   }
 
   /**
@@ -272,9 +258,9 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
    * @return
    */
   public Point mapCoordinates(Point p) {
-    p = new Point((int) Math.round(p.x / scale), (int) Math.round(p.y / scale));
-    p.translate(map.getEdgeBuffer().width, map.getEdgeBuffer().height);
-    return p;
+    return new Point(
+      (int) Math.round(p.x / scale) + map.getEdgeBuffer().width,
+      (int) Math.round(p.y / scale) + map.getEdgeBuffer().height);
   }
 
   public String getToolTipText(MouseEvent e) {
@@ -285,107 +271,23 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
     return null;
   }
 
-  /*
-   * Return the display size of the entire zoomed overview map
-   */
-  public Dimension getPreferredSize() {
-    return new Dimension((int) ((map.mapSize().width - 2 * map.getEdgeBuffer().width) * scale),
-        (int) ((map.mapSize().height - 2 * map.getEdgeBuffer().height) * scale));
-  }
-
-  /*
-   * Return the maximum size we have to display the overview map, keeping it
-   * inside the main control window and taking into account the width of the
-   * border on the panel enclosing the map.
-   */
-  public Dimension getViewableSize() {
-    Dimension d = getPreferredSize();
-    Rectangle r = map.getView().getVisibleRect();
-    r.width -= 2 * borderPanel.getBorder().getBorderInsets(borderPanel).right;
-    r.height -= 2 * borderPanel.getBorder().getBorderInsets(borderPanel).bottom;
-    setScrollVisible(false);
-    if (r.width > 0 && r.width < d.width) {
-      d.width = r.width;
-      setScrollVisible(true);
-    }
-    else {
-      d.width += 1 - map.getBoardPicker().getColumnCount();
-      ;
-    }
-
-    if (r.height > 0 && r.height < d.height) {
-      d.height = r.height;
-      setScrollVisible(true);
-    }
-    else {
-      d.height += 1 - map.getBoardPicker().getRowCount();
-    }
-
-    return d;
-  }
-
-  public boolean isScrollVisible() {
-    return scrollVisible;
-  }
-
-  public void setScrollVisible(boolean b) {
-    scrollVisible = b;
-  }
-
   public void setup(boolean show) {
-    if (!show) {
-      f.setVisible(false);
+    if (show) {
+      scroll.setMaximumSize(scroll.getPreferredSize());
     }
     else {
-      scroll.setPreferredSize(getViewableSize());
+      scroll.setVisible(false);
     }
 
     if (show && !map.getComponentsOf(CounterDetailViewer.class).isEmpty()) {
+      view.addMouseListener(mouseOverViewer);
       view.addMouseMotionListener(mouseOverViewer);
-      f.addKeyListener(mouseOverViewer);
+      scroll.addKeyListener(mouseOverViewer);
     }
     else {
+      view.removeMouseListener(mouseOverViewer);
       view.removeMouseMotionListener(mouseOverViewer);
-      f.removeKeyListener(mouseOverViewer);
-    }
-  }
-
-  public void setWindowVisible(final boolean visible) {
-    if (visible) {
-      adjustWindowLocation();
-    }
-    f.setVisible(visible);
-  }
-
-  /*
-   * The main map window has either moved or resized. Recalculate the size of
-   * all components. JScrollPane AS_NEEDED scroll bar policy forces scroll bars
-   * to appear when client is exactly the right size, so need to override this
-   * and force Scrollbar visiblity off when entire minimap is showing.
-   */
-  protected void adjustWindowLocation() {
-    if (map.getView().isShowing()) {
-      Point p = map.getView().getLocationOnScreen();
-      p.translate(map.getView().getVisibleRect().x, map.getView().getVisibleRect().y);
-      f.setLocation(p);
-      f.setSize(getViewableSize());
-
-      view.setSize(getPreferredSize());
-      view.setPreferredSize(getPreferredSize());
-
-      scroll.setPreferredSize(getViewableSize());
-      scroll.setSize(getViewableSize());
-
-      if (isScrollVisible()) {
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-      }
-      else {
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-      }
-      f.invalidate();
-      f.pack();
+      scroll.removeKeyListener(mouseOverViewer);
     }
   }
 
@@ -423,54 +325,145 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
   protected class CounterViewer extends CounterDetailViewer {
     public CounterViewer() {
       this.map = GlobalMap.this.map;
-    }
-
-    public void draw(Graphics g, Map map) {
-      if (currentMousePosition != null) {
-        this.draw(g, currentMousePosition.getPoint(), GlobalMap.this);
-      }
+      this.view = GlobalMap.this.view;
     }
 
     protected List<GamePiece> getDisplayablePieces() {
-      Point oldPoint = currentMousePosition.getPoint();
-      Point mapPoint = GlobalMap.this.map.componentCoordinates(mapCoordinates(oldPoint));
+      final Point oldPoint = currentMousePosition.getPoint();
+      final Point mapPoint =
+        GlobalMap.this.map.componentCoordinates(mapCoordinates(oldPoint));
 
-      currentMousePosition.translatePoint(mapPoint.x - oldPoint.x, mapPoint.y - oldPoint.y);
-      List<GamePiece> l = super.getDisplayablePieces();
-      currentMousePosition.translatePoint(oldPoint.x - mapPoint.x, oldPoint.y - mapPoint.y);
+      currentMousePosition.translatePoint(mapPoint.x - oldPoint.x,
+                                          mapPoint.y - oldPoint.y);
+      final List<GamePiece> l = super.getDisplayablePieces();
+      currentMousePosition.translatePoint(oldPoint.x - mapPoint.x,
+                                          oldPoint.y - mapPoint.y);
       return l;
     }
 
     protected double getZoom() {
       return scale;
     }
-
   }
 
-  /*
-   * Map view that appears inside the Scrollpane
+  /**
+   * The scroll pane in which the map {@link View} is displayed.
+   */
+  protected class GlobalMapScrollPane extends ScrollPane {
+    private static final long serialVersionUID = 1L;
+
+    public GlobalMapScrollPane(Component view) {
+      super(view, ScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                  ScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    }
+
+    /**
+     * @return The display size of the entire zoomed overview map
+     */
+    public Dimension getPreferredSize() {
+      final Dimension d = view.getPreferredSize();
+      final Insets i = getInsets();    
+      d.width += i.left + i.right;
+      d.height += i.top + i.bottom;
+      return d;
+    }
+
+    /**
+     * @return The maximum size of the zoomed overview map and scroll pane
+     */
+    public Dimension getMaximumSize() {
+      final Dimension d = getPreferredSize();
+
+      if (verticalScrollBar.isVisible()) {
+        d.width += verticalScrollBar.getPreferredSize().width;
+      }
+      if (horizontalScrollBar.isVisible()) {
+        d.height += horizontalScrollBar.getPreferredSize().height;
+      }
+
+      return d;
+    }
+
+    public void setBounds(Rectangle r) {
+      final Dimension availSize = map.getView().getParent().getSize();
+      final Dimension viewSize = view.getPreferredSize();
+      final Insets i = getInsets();    
+      viewSize.width += i.left + i.right;
+      viewSize.height += i.top + i.bottom;
+
+      final boolean hsbNeeded = availSize.width < viewSize.width;
+      final boolean vsbNeeded = availSize.height < viewSize.height;
+
+      final Dimension realSize = new Dimension();
+  
+      if (availSize.width < viewSize.width) {
+        realSize.width = availSize.width;     
+      }
+      else if (vsbNeeded) {
+        realSize.width = Math.min(availSize.width,
+          viewSize.width + verticalScrollBar.getPreferredSize().width);
+      }
+      else {
+        realSize.width = viewSize.width;
+      }
+
+      if (availSize.height < viewSize.height) {
+        realSize.height = availSize.height;     
+      }
+      else if (hsbNeeded) {
+        realSize.height = Math.min(availSize.height,
+        viewSize.height + horizontalScrollBar.getPreferredSize().height);
+      }
+      else {
+        realSize.height = viewSize.height;
+      }
+
+      super.setBounds(0,0,realSize.width,realSize.height);
+    }
+  
+    /**
+     * This funcion is overridden to make sure that the parent layout
+     * is redone when the GlobalMap is shown.
+     */
+    public void setVisible(boolean visible) {
+      super.setVisible(visible);
+      if (visible) {
+        final LayoutManager l = getParent().getLayout();
+        if (l instanceof Map.InsetLayout) {
+          l.layoutContainer(getParent());
+        }
+      }
+    }
+  }
+
+  /**
+   * The Map view that appears inside the ScrollPane
    */
   protected class View extends JPanel implements MouseListener {
     private static final long serialVersionUID = 1L;
 
-    public void paint(Graphics g) {
-      g.clearRect(0, 0, getViewableSize().width, getViewableSize().height);
-      map.drawBoards(g, -Math.round((float) scale * map.getEdgeBuffer().width), -Math.round((float) scale * map.getEdgeBuffer().height), scale, this);
-      GamePiece stack[] = map.getPieces();
-      for (int i = 0; i < stack.length; i++) {
-        Point p = componentCoordinates(stack[i].getPosition());
-        stack[i].draw(g, p.x, p.y, this, scale);
+    protected void paintComponent(Graphics g) {
+      map.drawBoards(g,
+                     -Math.round((float) scale * map.getEdgeBuffer().width),
+                     -Math.round((float) scale * map.getEdgeBuffer().height),
+                     scale, this);
+
+      for (GamePiece gp : map.getPieces()) {
+        Point p = componentCoordinates(gp.getPosition());
+        gp.draw(g, p.x, p.y, this, scale);
       }
+
       mouseOverViewer.draw(g, map);
 
+// FIXME: use a Graphics2D for this
       // Draw a rectangle indicating the present viewing area
       g.setColor(rectColor);
 
-      Rectangle r = map.getView().getVisibleRect();
-      Point ul = map.mapCoordinates(r.getLocation());
-      ul = componentCoordinates(ul);
-      int w = (int) (scale * r.width / map.getZoom());
-      int h = (int) (scale * r.height / map.getZoom());
+      final Rectangle r = map.getView().getVisibleRect();
+      final Point ul =
+        componentCoordinates(map.mapCoordinates(r.getLocation()));
+      final int w = (int) (scale * r.width / map.getZoom());
+      final int h = (int) (scale * r.height / map.getZoom());
       g.drawRect(ul.x, ul.y, w, h);
       g.drawRect(ul.x - 1, ul.y - 1, w + 2, h + 2);
     }
@@ -489,9 +482,13 @@ public class GlobalMap extends JPanel implements AutoConfigurable, GameComponent
 
     public void mouseReleased(MouseEvent e) {
       map.centerAt(mapCoordinates(e.getPoint()));
-      map.repaint();
     }
 
+    public Dimension getPreferredSize() {
+      return new Dimension(
+        (int)((map.mapSize().width - 2*map.getEdgeBuffer().width) * scale),
+        (int)((map.mapSize().height - 2*map.getEdgeBuffer().height) * scale));
+    }
   }
   
   public ComponentI18nData getI18nData() {

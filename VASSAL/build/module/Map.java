@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2007 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -29,6 +29,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Window;
@@ -58,10 +59,12 @@ import java.util.Iterator;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.OverlayLayout;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -166,6 +169,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected static UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
 	protected JPanel theMap;
   protected ArrayList<Drawable> drawComponents = new ArrayList<Drawable>();
+  protected JLayeredPane layeredPane;
 	protected JScrollPane scroll;
 	protected ComponentSplitter.SplitPane mainWindowDock;
 	protected BoardPicker picker;
@@ -190,7 +194,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected ArrayList<Highlighter> highlighters = new ArrayList<Highlighter>();
   protected boolean clearFirst = false; // Whether to clear the display before
 	// drawing the map
-  protected boolean hideCounters = false;// Option to hide counters to see
+  protected boolean hideCounters = false; // Option to hide counters to see
 	// map
 	protected float pieceOpacity = 1.0f;
   protected boolean allowMultiple = false;
@@ -201,7 +205,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected String createFormat;
   protected String changeFormat = "$" + MESSAGE + "$"; //$NON-NLS-1$ //$NON-NLS-2$
 	protected KeyStroke moveKey;
-	protected JPanel root;
 	protected PropertyChangeListener globalPropertyListener;
   protected String tooltip = ""; //$NON-NLS-1$
   protected MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
@@ -601,14 +604,11 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		if (shouldDockIntoMainWindow()) {
 			IntConfigurer config = new IntConfigurer(MAIN_WINDOW_HEIGHT, null, new Integer(-1));
 			Prefs.getGlobalPrefs().addOption(null, config);
-			root = new JPanel(new BorderLayout());
-			root.add(scroll, BorderLayout.CENTER);
 			ComponentSplitter splitter = new ComponentSplitter();
-			mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGameModule().getControlPanel(), -1), root, true);
+			mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGameModule().getControlPanel(), -1), layeredPane, true);
 			GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_FOCUSED));
 		}
 		else {
-			GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_IN_FOCUSED_WINDOW));
 		}
 		PlayerRoster.addSideChangeListener(this);
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
@@ -2133,25 +2133,80 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		return UniqueIdManager.getIdentifier(this);
 	}
 
-	/** Return the AWT component representing the map */
+	/** @return the Swing component representing the map */
 	public JComponent getView() {
 		if (theMap == null) {
 			theMap = new View(this);
+
 			scroll = new AdjustableSpeedScrollPane(
-            theMap,
-            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(
-            KeyEvent.VK_PAGE_DOWN, 0));
-			scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(
-            KeyEvent.VK_PAGE_UP, 0));
+        theMap,
+        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scroll.unregisterKeyboardAction(
+        KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
+			scroll.unregisterKeyboardAction(
+        KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0));
+      scroll.setAlignmentX(0.0f);
+      scroll.setAlignmentY(0.0f);
+
+      layeredPane = new JLayeredPane();
+      layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
+      layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
 		}
 		return theMap;
 	}
+
+  /** @return the JLayeredPane holding map insets */
+  public JLayeredPane getLayeredPane() {
+    // FIXME: maybe move some of getView() into a private init method?
+    if (theMap == null) getView();
+    return layeredPane;
+  }
+
+
+  /**
+   * The Layout responsible for arranging insets which overlay the Map
+   * InsetLayout currently is responsible for keeping the {@link GlobalMap}
+   * in the upper-left corner of the {@link Map.View}.
+   */
+  public static class InsetLayout extends OverlayLayout {
+    private static final long serialVersionUID = 1L;
+
+    private final JScrollPane base;
+
+    public InsetLayout(Container target, JScrollPane base) {
+      super(target);
+      this.base = base;
+    }
+
+    public void layoutContainer(Container target) {
+      super.layoutContainer(target);
+      base.getLayout().layoutContainer(base);
+
+      final Dimension viewSize = base.getViewport().getSize();
+      final Insets insets = base.getInsets();
+      viewSize.width += insets.left;
+      viewSize.height += insets.top;
+
+      // prevent non-base components from overlapping the base's scrollbars
+      final int n = target.getComponentCount();
+      for (int i = 0; i < n; ++i) {
+        Component c = target.getComponent(i);
+        if (c != base && c.isVisible()) {
+          final Rectangle b = c.getBounds();
+          b.width = Math.min(b.width, viewSize.width);
+          b.height = Math.min(b.height, viewSize.height);
+          c.setBounds(b);
+        }
+      }
+    }
+  }
+
 	/**
-   * Implements default logic for merging pieces at a given location within a map Returns a {@link Command} that merges
-   * the input {@link GamePiece} with an existing piece at the input position, provided the pieces are stackable,
-   * visible, in the same layer, etc.
+   * Implements default logic for merging pieces at a given location within
+   * a map Returns a {@link Command} that merges the input {@link GamePiece}
+   * with an existing piece at the input position, provided the pieces are
+   * stackable, visible, in the same layer, etc.
    */
 	public static class Merger implements DeckVisitor {
 		private Point pt;
