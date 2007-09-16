@@ -156,7 +156,6 @@ public class ResourceExtracter {
     destinationDir = installDirChooser.getInstallDir();
     if (destinationDir != null) {
       bar = new JProgressBar(0, 1);
-      bar.setPreferredSize(new Dimension(400, bar.getPreferredSize().height));
       bar.setAlignmentX(0.0F);
       monitor = new JWindow();
       JPanel panel = new JPanel();
@@ -171,6 +170,7 @@ public class ResourceExtracter {
       panel.add(bar);
       panel.setBorder(new BevelBorder(BevelBorder.RAISED, Color.lightGray, Color.darkGray));
       monitor.getContentPane().add(panel);
+      bar.setPreferredSize(new Dimension(400, bar.getPreferredSize().height));
       monitor.pack();
       Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       monitor.setLocation(d.width / 2 - monitor.getWidth() / 2, d.height / 2 - monitor.getHeight() / 2);
