@@ -130,14 +130,21 @@ public class PrototypeDefinition extends AbstractConfigurable
   protected GamePiece getPiece(String def) {
     GamePiece piece = pieces.get(def);
     if (piece == null && def != null) {
-      AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
-      if (comm == null) {
-        System.err.println("Couldn't build piece " + def); //$NON-NLS-1$
-        def = null;
+      try {
+        AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
+        if (comm == null) {
+          System.err.println("Couldn't build piece " + def); //$NON-NLS-1$
+          def = null;
+        }
+        else {
+          piece = comm.getTarget();
+          piece.setState(comm.getState());
+        }
       }
-      else {
-        piece = comm.getTarget();
-        piece.setState(comm.getState());
+      catch (RuntimeException e) {
+        e.printStackTrace();
+        def = null;
+        piece = null;
       }
     }
     return piece;
