@@ -63,6 +63,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected Point pos = new Point(0, 0);
   protected Rectangle boundaries = new Rectangle(0, 0, 500, 500);
   protected String imageFile;
+  @Deprecated
   protected String boardName = "Board 1";
   protected boolean reversible = false;
   protected boolean reversed = false;
@@ -81,7 +82,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   public Board() {
-    setConfigureName(boardName);
   }
 
   public String getLocalizedName() {
@@ -156,8 +156,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   public void setAttribute(String key, Object val) {
     if (NAME.equals(key)) {
-      boardName = (String) val;
-      setConfigureName(boardName);
+      setConfigureName((String) val);
     }
     else if (IMAGE.equals(key)) {
       if (val instanceof File) {
