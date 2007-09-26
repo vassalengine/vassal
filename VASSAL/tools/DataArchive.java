@@ -221,7 +221,7 @@ public class DataArchive extends SecureClassLoader {
    */
   protected Image createTransformedInstance(Image im, double zoom,
     double theta, boolean forceSmoothing) {
-    if (zoom == 1 && theta == 0) return im;
+    if (zoom == 1.0 && theta == 0.0) return im;
 
     // get smoothing preferences
     if (smoothPrefs == null) {
@@ -237,33 +237,83 @@ public class DataArchive extends SecureClassLoader {
       });
     }
     
+    final boolean smooth = Boolean.TRUE.equals(smoothPrefs.getValue());
+
     if (im instanceof SVGManager.SVGBufferedImage) {
+      // render SVG
       return ((SVGManager.SVGBufferedImage) im)
         .getTransformedInstance(zoom, theta);
     }
+    else if (smooth) {
+      // do high-quality scaling
+      if (theta != 0.0) {
+        final Rectangle ubox = getImageBounds(im);
+
+        final AffineTransform t = new AffineTransform();
+        t.rotate(-Math.PI/180*theta, ubox.getCenterX(), ubox.getCenterY());
+        
+        final Rectangle rbox = t.createTransformedShape(ubox).getBounds();
+
+        final BufferedImage rot =
+          new BufferedImage(rbox.width, rbox.height,
+                            BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g = rot.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
+
+        final AffineTransform tx = new AffineTransform();
+        tx.translate(-rbox.x, -rbox.y);
+        tx.rotate(-Math.PI/180*theta, ubox.getCenterX(), ubox.getCenterY());
+        tx.translate(ubox.x, ubox.y);
+
+        g.drawImage(im, tx, null);
+        g.dispose();
+        im = rot;
+      }
+
+      if (!(im instanceof BufferedImage) ||
+          ((BufferedImage) im).getType() != BufferedImage.TYPE_INT_ARGB) {
+        final BufferedImage tmp =
+          new BufferedImage(im.getWidth(null), im.getHeight(null),
+                            BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g = tmp.createGraphics();
+        g.drawImage(im, 0, 0, null);
+        g.dispose();
+        im = tmp;
+      }
+
+      final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
+      final Rectangle sbox =
+        t.createTransformedShape(getImageBounds(im)).getBounds();
+      return GeneralFilter.zoom(sbox, (BufferedImage) im,
+                                new GeneralFilter.Lanczos3Filter());
+    }
     else {
-      Rectangle ubox = getImageBounds(im);
-      AffineTransform bt = new AffineTransform();
+      // do fast scaling
+      final Rectangle ubox = getImageBounds(im);
+      final AffineTransform bt = new AffineTransform();
       bt.rotate(-Math.PI/180 * theta, ubox.getCenterX(), ubox.getCenterY());
       bt.scale(zoom, zoom);
 
-      Rectangle tbox = bt.createTransformedShape(ubox).getBounds();
+      final Rectangle tbox = bt.createTransformedShape(ubox).getBounds();
 
-      BufferedImage trans = new BufferedImage(tbox.width,
-                                              tbox.height,
-                                              BufferedImage.TYPE_4BYTE_ABGR);
-      Graphics2D g2d = trans.createGraphics();
-      g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
-      AffineTransform t = new AffineTransform();
+      final BufferedImage trans =
+        new BufferedImage(tbox.width, tbox.height,
+                          BufferedImage.TYPE_4BYTE_ABGR);
+      final Graphics2D g = trans.createGraphics();
+      g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                         RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
+      final AffineTransform t = new AffineTransform();
       t.translate(-tbox.x, -tbox.y);
       t.rotate(-Math.PI/180 * theta, ubox.getCenterX(), ubox.getCenterY());
       t.scale(zoom, zoom);
       t.translate(ubox.x, ubox.y);
 
-      g2d.drawImage(im, t, null);
+      g.drawImage(im, t, null);
       return trans;
     }
   }
@@ -276,7 +326,7 @@ public class DataArchive extends SecureClassLoader {
    * @return
    */
   public Image getScaledImage(Image base, double scale) {
-    return getTransformedImage(base, scale, 0, true);
+    return getTransformedImage(base, scale, 0.0, true);
   }
 
   /**
@@ -291,7 +341,7 @@ public class DataArchive extends SecureClassLoader {
   public Image getScaledImage(Image base, double scale, boolean reversed,
                               boolean forceSmoothing) {
     return getTransformedImage(base, scale,
-                               reversed ? 180 : 0, forceSmoothing);
+                               reversed ? 180.0 : 0.0, forceSmoothing);
   }
 
   /**
@@ -306,9 +356,10 @@ public class DataArchive extends SecureClassLoader {
   }
 
   /**
-   * @deprecated Don't use this. Regular scaling is just as good now.
+   * @deprecated Don't use this. We've switched to Lanczos scaling.
    */
-  @Deprecated public Image improvedScaling(Image img, int width, int height) {
+  @Deprecated
+  public Image improvedScaling(Image img, int width, int height) {
     ImageFilter filter;
 
     filter = new ImprovedAveragingScaleFilter(img.getWidth(null),

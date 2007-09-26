@@ -222,6 +222,8 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     else {
       Image rotated = getRotatedImage(getAngle(), obs);
       if (rotated != null) {
+// FIXME: Ugly, ugly, ugly. Should let the cache hold all of these rotated
+// and scaled instances.
         Rectangle r = getRotatedBounds();
         Image zoomed = GameModule.getGameModule().getDataArchive().getScaledImage(rotated, zoom);
         g.drawImage(zoomed, x + (int) (zoom * r.x), y + (int) (zoom * r.y), obs);
@@ -496,6 +498,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       rotated = null;
     }
     if (rotated == null) {
+/*
       Rectangle rotatedBounds;
       Rectangle unrotatedBounds = piece.boundingBox();
       rotatedBounds = boundingBox();
@@ -521,8 +524,17 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
         bounds.put(angle, rotatedBounds);
       }
       else {
-          rotated = null;
+        rotated = null;
       }
+*/
+      final Rectangle unrotatedBounds = piece.boundingBox();
+      final Rectangle rotatedBounds = boundingBox();
+      rotated = GameModule.getGameModule()
+                          .getDataArchive()
+                          .getTransformedImage(unrotated.getImage(obs),
+                                               1.0, angle, true);
+      images.put(angle, rotated);
+      bounds.put(angle, rotatedBounds);
     }
     return rotated;
   }
