@@ -501,7 +501,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       rotated = GameModule.getGameModule()
                           .getDataArchive()
                           .getTransformedImage(unrotated.getImage(obs),
-                                               1.0, angle, true);
+                                               1.0, angle);
       images.put(angle, rotated);
       bounds.put(angle, rotatedBounds);
     }
