@@ -21,13 +21,12 @@ package VASSAL.tools;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
-//import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.File;
+
 import javax.imageio.ImageIO;
 
 /*
@@ -603,9 +602,12 @@ public final class GeneralFilter {
     }
 
 //    WritableRaster dst = null;
+    @SuppressWarnings("unused")
     BufferedImage dst = null;
 
+    @SuppressWarnings("unused")
     final int dx0 = 0;
+    @SuppressWarnings("unused")
     final int dy0 = 0;
     final int dw = newwidth; 
     final int dh = newheight; 

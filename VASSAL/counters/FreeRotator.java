@@ -33,7 +33,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -498,36 +497,6 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       rotated = null;
     }
     if (rotated == null) {
-/*
-      Rectangle rotatedBounds;
-      Rectangle unrotatedBounds = piece.boundingBox();
-      rotatedBounds = boundingBox();
-      if (rotatedBounds.width > 0 && rotatedBounds.height > 0) {
-        rotated = new BufferedImage(rotatedBounds.width,
-                                    rotatedBounds.height,
-                                    BufferedImage.TYPE_4BYTE_ABGR);
-        ((BufferedImage) rotated).setRGB(0, 0,
-                                         rotatedBounds.width,
-                                         rotatedBounds.height,
-            new int[rotatedBounds.width * rotatedBounds.height], 0,
-                                         rotatedBounds.width);
-        Graphics2D g2d = ((BufferedImage) rotated).createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                             RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        AffineTransform t = AffineTransform
-            .getTranslateInstance(-rotatedBounds.x, -rotatedBounds.y);
-        t.rotate(-PI_180 * angle, centerX(), centerY()); 
-        t.translate(unrotatedBounds.x, unrotatedBounds.y);
-
-        g2d.drawImage(unrotated.getImage(obs), t, obs);
-        images.put(angle, rotated);
-        bounds.put(angle, rotatedBounds);
-      }
-      else {
-        rotated = null;
-      }
-*/
-      final Rectangle unrotatedBounds = piece.boundingBox();
       final Rectangle rotatedBounds = boundingBox();
       rotated = GameModule.getGameModule()
                           .getDataArchive()
