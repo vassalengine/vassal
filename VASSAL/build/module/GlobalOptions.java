@@ -93,7 +93,6 @@ public class GlobalOptions extends AbstractConfigurable {
 
   private static GlobalOptions instance;
   private boolean useSingleWindow;
-  private boolean scalerAlgorithm;
 
   public void addTo(Buildable parent) {
     instance = this;
@@ -101,10 +100,6 @@ public class GlobalOptions extends AbstractConfigurable {
     BooleanConfigurer config = new BooleanConfigurer(SINGLE_WINDOW, Resources.getString("GlobalOptions.use_combined"), Boolean.TRUE); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(config);
     useSingleWindow = !Boolean.FALSE.equals(config.getValue());
-
-    config = new BooleanConfigurer(SCALER_ALGORITHM, Resources.getString("GlobalOptions.smooth_scaling"), Boolean.TRUE); //$NON-NLS-1$
-    GameModule.getGameModule().getPrefs().addOption(config);
-    scalerAlgorithm = !Boolean.FALSE.equals(config.getValue());
 
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
@@ -120,8 +115,9 @@ public class GlobalOptions extends AbstractConfigurable {
     return useSingleWindow;
   }
 
+  @Deprecated
   public boolean isAveragedScaling() {
-    return scalerAlgorithm;
+    return true;
   }
 
   public static String getConfigureTypeName() {

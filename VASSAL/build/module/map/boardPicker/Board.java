@@ -230,7 +230,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
   public synchronized Image getScaledImage(double zoom, Component obs) {
     fixImage();
-    return GameModule.getGameModule().getDataArchive().getScaledImage(boardImage, zoom, reversed, false);
+    return GameModule.getGameModule().getDataArchive().getTransformedImage(boardImage, zoom,
+     reversed ? 180.0 : 0.0);
   }
 
   public void setReversed(boolean val) {
