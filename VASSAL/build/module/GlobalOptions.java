@@ -101,6 +101,9 @@ public class GlobalOptions extends AbstractConfigurable {
     GameModule.getGameModule().getPrefs().addOption(config);
     useSingleWindow = !Boolean.FALSE.equals(config.getValue());
 
+    config = new BooleanConfigurer(SCALER_ALGORITHM, Resources.getString("GlobalOptions.smooth_scaling"), Boolean.TRUE); //$NON-NLS-1$
+    GameModule.getGameModule().getPrefs().addOption(config);
+
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 

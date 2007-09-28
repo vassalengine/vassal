@@ -30,6 +30,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,7 +61,10 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.swing.ImageIcon;
 
 import sun.applet.AppletAudioClip;
+import VASSAL.build.GameModule;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.BooleanConfigurer;
 
 /**
  * Wrapper around a Zip archive with methods to cache images
@@ -76,6 +81,7 @@ public class DataArchive extends SecureClassLoader {
   protected String[] imageNames;
   public static final String IMAGE_DIR = "images/";
   public static final String SOUNDS_DIR = "sounds/";
+  private BooleanConfigurer smoothPrefs;
   private CodeSource cs;
   protected SVGManager svgManager;
 
@@ -245,12 +251,28 @@ public class DataArchive extends SecureClassLoader {
     double theta) {
     if (zoom == 1.0 && theta == 0.0) return im;
 
+    // get smoothing preferences
+    if (smoothPrefs == null) {
+      smoothPrefs = (BooleanConfigurer) GameModule.getGameModule()
+        .getPrefs().getOption(GlobalOptions.SCALER_ALGORITHM);
+      if (smoothPrefs == null) {
+        smoothPrefs = new BooleanConfigurer(null, null, Boolean.FALSE);
+      }
+      smoothPrefs.addPropertyChangeListener(new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          clearTransformedImageCache();
+        }
+      });
+    }
+    
+    final boolean smooth = Boolean.TRUE.equals(smoothPrefs.getValue());
+
     if (im instanceof SVGManager.SVGBufferedImage) {
       // render SVG
       return ((SVGManager.SVGBufferedImage) im)
         .getTransformedInstance(zoom, theta);
     }
-    else {
+    else if (smooth) {
       // do high-quality scaling
       if (theta != 0.0) {
         final Rectangle ubox = getImageBounds(im);
@@ -295,6 +317,32 @@ public class DataArchive extends SecureClassLoader {
         t.createTransformedShape(getImageBounds(im)).getBounds();
       return GeneralFilter.zoom(sbox, (BufferedImage) im,
                                 new GeneralFilter.Lanczos3Filter());
+    }
+    else {
+      // do fast scaling
+      final Rectangle ubox = getImageBounds(im);
+      final AffineTransform bt = new AffineTransform();
+      bt.rotate(-Math.PI/180 * theta, ubox.getCenterX(), ubox.getCenterY());
+      bt.scale(zoom, zoom);
+
+      final Rectangle tbox = bt.createTransformedShape(ubox).getBounds();
+
+      final BufferedImage trans =
+        new BufferedImage(tbox.width, tbox.height,
+                          BufferedImage.TYPE_4BYTE_ABGR);
+      final Graphics2D g = trans.createGraphics();
+      g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                         RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
+      final AffineTransform t = new AffineTransform();
+      t.translate(-tbox.x, -tbox.y);
+      t.rotate(-Math.PI/180 * theta, ubox.getCenterX(), ubox.getCenterY());
+      t.scale(zoom, zoom);
+      t.translate(ubox.x, ubox.y);
+
+      g.drawImage(im, t, null);
+      return trans;
     }
   }
 
