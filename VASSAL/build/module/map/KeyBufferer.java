@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2007 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -47,9 +47,14 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 
 /**
- * This component listens for mouse clicks on a map and draws the selection rectangle. If the user clicks on a
- * {@link GamePiece}, that piece is added to the {@link KeyBuffer}. {@link #draw(Graphics, Map)} is responsible for
- * drawing the mouse selection rectangle.
+ * This component listens for mouse clicks on a map and draws the selection
+ * rectangle. 
+ *
+ * If the user clicks on a {@link GamePiece}, that piece is added to the
+ * {@link KeyBuffer}. {@link #draw(Graphics, Map)} is responsible for
+ * drawing the mouse selection rectangle, and
+ * {@link #mouseDragged(MouseEvent)} is responsible for triggering repaint
+ * events as the selection rectangle is moved.
  * 
  * @see Map#addLocalMouseListener
  */
@@ -160,19 +165,21 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
         KeyBuffer.getBuffer().clear();
       }
       map.apply(d);
+      repaintSelectionRect();
     }
     selection = null;
   }
 
   /**
-   * This PieceVisitorDispatcher determines what to do with pieces on the map when the player finished dragging a
-   * rectangle to select pieces
+   * This PieceVisitorDispatcher determines what to do with pieces on the
+   * map when the player finished dragging a rectangle to select pieces
    * 
    * @return
    */
   protected PieceVisitorDispatcher createDragSelector(boolean selecting) {
     return new PieceVisitorDispatcher(new KBDeckVisitor(selecting));
   }
+
   public class KBDeckVisitor implements DeckVisitor {
     boolean selecting = false;
 
@@ -228,13 +235,70 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
     }
   }
 
+  protected void repaintSelectionRect() {
+    /* 
+     * Repaint strategy: There is no reason to repaint the interior of
+     * the selection rectangle, as we didn't paint over it in the first
+     * place. Instead, we repaint only the four (slender) rectangles
+     * which the stroke of the selection rectangle filled. We have to
+     * call a repaint on both the old selection rectangle and the new
+     * in order to prevent drawing artifacts. The KeyBuffer handles
+     * repainting pieces which have been (de)selected, so we don't
+     * worry about those.
+     * 
+     * Area drawn: 
+     *                selection.x     
+     *                     |              
+     *                  ___________________
+     *   selection.y __ |__|__|_____|__|__| __
+     *                  |__|__|_____|__|__|   |
+     *                  |  |  |     |  |  |   |
+     *                  |  |  |     |  |  |   | selection.height
+     *                  |__|__|_____|__|__|   |
+     * ~thickness/2 --{ |__|__|_____|__|__| __|
+     * ~thickness/2 --{ |__|__|_____|__|__|
+     *                    
+     *                     |___________|  
+     *                    selection.width
+     */
+    final int ht = thickness / 2 + thickness % 2;
+    final int ht2 = 2*ht;
+      
+    // left
+    map.getView().repaint(selection.x - ht,
+                          selection.y - ht,
+                          ht2,
+                          selection.height + ht2);
+    // right
+    map.getView().repaint(selection.x + selection.width - ht,
+                          selection.y - ht,
+                          ht2,
+                          selection.height + ht2);
+    // top 
+    map.getView().repaint(selection.x - ht,
+                          selection.y - ht,
+                          selection.width + ht2,
+                          ht2);
+    // bottom
+    map.getView().repaint(selection.x - ht,
+                          selection.y + selection.width - ht,
+                          selection.width + ht2,
+                          ht2);
+  }
+
+  /** 
+   * Sets the new location of the selection rectangle.
+   */
   public void mouseDragged(MouseEvent e) {
     if (selection != null) {
+      repaintSelectionRect();
+
       selection.x = Math.min(e.getX(), anchor.x);
       selection.y = Math.min(e.getY(), anchor.y);
       selection.width = Math.abs(e.getX() - anchor.x);
       selection.height = Math.abs(e.getY() - anchor.y);
-      map.repaint();
+
+      repaintSelectionRect();
     }
   }
 
@@ -243,8 +307,8 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
   public void draw(Graphics g, Map map) {
     if (selection != null) {
-      Graphics2D g2d = (Graphics2D) g;
-      Stroke str = g2d.getStroke();
+      final Graphics2D g2d = (Graphics2D) g;
+      final Stroke str = g2d.getStroke();
       g2d.setStroke(new BasicStroke(thickness));
       g2d.setColor(color);
       g2d.drawRect(selection.x, selection.y, selection.width, selection.height);
