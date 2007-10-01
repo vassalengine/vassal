@@ -16,7 +16,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-
 package VASSAL.tools;
 
 import java.awt.Graphics;
@@ -26,7 +25,6 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.File;
-
 import javax.imageio.ImageIO;
 
 /*
@@ -36,7 +34,7 @@ import javax.imageio.ImageIO;
    ruin our hard-won performance.
   
    Profiling information:
-     java VASSAL.tools.GeneralFilter cc.png 0.406
+     java -Xmx1024M GeneralFilter cc.png 0.406
   
    cc.png is a 3100x2500 32-bit image.
   
@@ -47,6 +45,7 @@ import javax.imageio.ImageIO;
       727   r41   double -> float
       678   r45   copy scr part from src to Raster (not BufferedImage)
       659   r55   let zoom() create destination BufferedImage
+      777   r65   downsampling narrow, short images fixed; upsampling fixed
 */  
 
 /** 
@@ -127,17 +126,16 @@ public final class GeneralFilter {
   /** A Lanczos filter with radius 3. */ 
   public static final class Lanczos3Filter extends Filter {
     private float sinc(float t) {
-      if (t != 0.0f) {
-        t *= Math.PI;
-        return (float)(Math.sin(t)/t); 
-        // NB: casting sin(t) to float first is much slower.
-      }
-      else return 1.0f;
+      if (t == 0.0f) return 1.0f;
+      t *= Math.PI;
+      return (float)(Math.sin(t)/t);
     }
 
     public float apply(float t) {
-      if (t < 0.0f) t = -t;
-      return t < 3.0f ? sinc(t) * sinc(t/3.0f) : 0.0f;
+      if (t < -3.0f) return 0.0f;
+      if (t <  0.0f) return sinc(-t) * sinc(-t/3.0f);
+      if (t <  3.0f) return sinc( t) * sinc( t/3.0f);
+      return 0.0f;
     }
 
     public float getSamplingRadius() { return 3.0f; }
@@ -147,24 +145,20 @@ public final class GeneralFilter {
   public static final class MitchellFilter extends Filter {
     private static final float B = 1.0f/3.0f;
     private static final float C = 1.0f/3.0f;
+    private static final float P0 = (  6.0f- 2.0f*B        )/6.0f;
+    private static final float P2 = (-18.0f+12.0f*B+ 6.0f*C)/6.0f;
+    private static final float P3 = ( 12.0f- 9.0f*B- 6.0f*C)/6.0f;
+    private static final float Q0 = (        8.0f*B+24.0f*C)/6.0f;
+    private static final float Q1 = (      -12.0f*B-48.0f*C)/6.0f;
+    private static final float Q2 = (        6.0f*B+30.0f*C)/6.0f;
+    private static final float Q3 = (      - 1.0f*B- 6.0f*C)/6.0f;
 
     public float apply(float t) {
-      float tt = t * t;
-      
-      if (t < 0.0f) t = -t;
-      if (t < 1.0f) {
-        t = (((12.0f - 9.0f * B - 6.0f * C) * (t * tt))
-           + ((-18.0f + 12.0f * B + 6.0f * C) * tt)
-           + (6.0f - 2.0f * B));
-        return(t / 6.0f);
-      }
-      else if (t < 2.0f) {
-        t = (((-1.0f * B - 6.0f * C) * (t * tt))
-           + ((6.0f * B + 30.0f * C) * tt)
-           + ((-12.0f * B - 48.0f * C) * t)
-           + (8.0f * B + 24.0f * C));
-        return(t / 6.0f);
-      }
+      if (t < -2.0f) return 0.0f;
+      if (t < -1.0f) return Q0-t*(Q1-t*(Q2-t*Q3));
+      if (t <  0.0f) return P0+t*t*(P2-t*P3);
+      if (t <  1.0f) return P0+t*t*(P2+t*P3);
+      if (t <  2.0f) return Q0+t*(Q1+t*(Q2+t*Q3));
       return 0.0f;
     }
 
@@ -288,12 +282,12 @@ public final class GeneralFilter {
     final int dst_data[] = ((DataBufferInt) dstR.getDataBuffer()).getData();
 
     final CList[] ycontrib =
-      calc_ycontrib(dh, fwidth, yscale, dy0, sy0, srcHeight, filter);
+      calc_ycontrib(dh, fwidth, yscale, dy0, sy0, sh, filter);
     final CList xcontrib = new CList();
     
     // apply the filter 
     for (int xx = 0; xx < dw; xx++) {
-      calc_xcontrib(xscale, fwidth, xcontrib, xx, dx0, filter, srcWidth, sx0);
+      calc_xcontrib(xscale, fwidth, xcontrib, xx, dx0, sx0, sw, filter);
       apply_horizontal(sh, xcontrib, src_data, sw, work);
       apply_vertical(dh, ycontrib, work, dst_data, xx, dw);
     }
@@ -304,67 +298,39 @@ public final class GeneralFilter {
                                        final float yscale,
                                        final int dy0,
                                        final int sy0,
-                                       final int srcHeight,
+                                       final int sh,
                                        final Filter filter) {
     // Calculate filter contributions for each destination column
     final CList[] ycontrib = new CList[dh];
     for (int i = 0; i < ycontrib.length; i++) { ycontrib[i] = new CList(); }
 
-    if (yscale < 1.0f) {
-      // Vertical sub-sampling, reduces image height
-      final float width = fwidth / yscale;
-      final float fscale = 1.0f / yscale;
-      final int numContributors = (int)(width * 2.0f + 1);
-      for (int i = 0; i < dh; i++) {
-        ycontrib[i].n = 0;
-        ycontrib[i].pixel = new int[numContributors];
-        ycontrib[i].weight = new float[numContributors];
+    final float blur = 1.0f;
+    final float scale = 1.0f/(blur*Math.max(1.0f/yscale, 1.0f));
+    final float width = fwidth / scale;
 
-        final float center = (i+dy0) / yscale;
-        final int left = (int) Math.floor(center - width);
-        final int right = (int) Math.ceil(center + width);
+    for (int i = 0; i < dh; i++) {
+      final float center = (i+dy0+0.5f) / yscale;
+      final int start = (int) Math.max(center-width+0.5f, sy0);
+      final int stop = (int) Math.min(center+width+0.5f, sy0+sh);
+      final int numContrib = stop - start;
+     
+      ycontrib[i].n = numContrib;
+      ycontrib[i].pixel = new int[numContrib];
+      ycontrib[i].weight = new float[numContrib];
 
-        for (int j = left; j <= right; j++) {
-          final float weight = filter.apply((center - j) / fscale) / fscale;
-          if (weight == 0.0f) continue;
-
-          final int n;
-          if (j < 0) n = -j;
-          else if (j >= srcHeight) n = srcHeight - j + srcHeight - 1;
-          else n = j;
-
-          final int k = ycontrib[i].n++;
-          ycontrib[i].pixel[k] = n - sy0;
-          ycontrib[i].weight[k] = weight;
+      float density = 0.0f;
+      for (int n = 0; n < numContrib; n++) {
+        ycontrib[i].pixel[n] = start + n - sy0;
+        ycontrib[i].weight[n] = filter.apply(scale*(start+n-center+0.5f));
+        density += ycontrib[i].weight[n];
+      } 
+ 
+      if (density != 0.0f && density != 1.0f) {
+        density = 1.0f/density;
+        for (int j = 0; j < numContrib; j++) {
+          ycontrib[i].weight[j] *= density;
         }
-      }
-    }
-    else {
-      // Vertical super-sampling, increases image height
-      final int numContributors = (int)(fwidth * 2.0f + 1);
-      for (int i = 0; i < dh; i++) {
-        ycontrib[i].n = 0;
-        ycontrib[i].pixel = new int[numContributors];
-        ycontrib[i].weight = new float[numContributors];
-
-        final float center = (i+dy0) / yscale;
-        final int left = (int) Math.floor(center - fwidth);
-        final int right = (int) Math.ceil(center + fwidth);
-
-        for (int j = left; j <= right; j++) {
-          final float weight = filter.apply(center - j);
-          if (weight == 0.0f) continue;
-
-          final int n;
-          if (j < 0) n = -j;
-          else if (j >= srcHeight) n = (srcHeight - j) + srcHeight - 1;
-          else n = j;
-
-          final int k = ycontrib[i].n++;
-          ycontrib[i].pixel[k] = n - sy0;
-          ycontrib[i].weight[k] = weight;
-        }
-      }
+      } 
     }
 
     return ycontrib;
@@ -375,59 +341,34 @@ public final class GeneralFilter {
                                     final CList xcontrib,
                                     final int xx,
                                     final int dx0,
-                                    final Filter filter,
-                                    final int srcWidth, 
-                                    final int sx0) {
+                                    final int sx0,
+                                    final int sw,
+                                    final Filter filter) {
     // Calculate filter contributions a destination row
-    if (xscale < 1.0f) {
-      // Horizontal sub-sampling, reduces image width
-      final float width = fwidth / xscale;
-      final float fscale = 1.0f / xscale;
-      final int numPixels = (int)(width * 2.0f + 1);
+    final float blur = 1.0f;
+    final float scale = 1.0f/(blur*Math.max(1.0f/xscale, 1.0f));
+    final float width = fwidth / scale;
 
-      xcontrib.n = 0;
-      xcontrib.pixel = new int[numPixels];
-      xcontrib.weight = new float[numPixels];
+    final float center = (xx+dx0+0.5f) / xscale;
+    final int start = (int) Math.max(center-width+0.5f, sx0);
+    final int stop = (int) Math.min(center+width+0.5f, sx0+sw);
+    final int numContrib = stop - start;
 
-      final float center = (xx+dx0) / xscale;
-      final int left = (int) Math.floor(center - width);
-      final int right = (int) Math.ceil(center + width);
-      for (int j = left; j <= right; j++) {
-        final float weight = filter.apply((center - j) / fscale) / fscale;
-        if (weight == 0.0f) continue;
+    xcontrib.n = numContrib;
+    xcontrib.pixel = new int[numContrib];
+    xcontrib.weight = new float[numContrib];
 
-        final int n;
-        if (j < 0) n = -j;
-        else if (j >= srcWidth) n = (srcWidth - j) + srcWidth - 1;
-        else n = j;
+    float density = 0.0f;
+    for (int n = 0; n < numContrib; n++) {
+      xcontrib.pixel[n] = start + n - sx0;
+      xcontrib.weight[n] = filter.apply(scale*(start+n-center+0.5f));
+      density += xcontrib.weight[n];
+    } 
 
-        final int k = xcontrib.n++;
-        xcontrib.pixel[k] = n - sx0;
-        xcontrib.weight[k] = weight;
-      }
-    }
-    else {
-      // Horizontal super-sampling, increases image width
-      final int numPixels = (int)(fwidth * 2.0f + 1);
-      xcontrib.n = 0;
-      xcontrib.pixel = new int[numPixels];
-      xcontrib.weight = new float[numPixels];
-
-      final float center = (xx+dx0) / xscale;
-      final int left = (int) Math.floor(center - fwidth);
-      final int right = (int) Math.ceil(center + fwidth);
-      for (int j = left; j <= right; j++) {
-        final float weight = filter.apply(center - j);
-        if (weight == 0.0f) continue;
-
-        final int n;
-        if (j < 0) n = -j;
-        else if (j >= srcWidth) n = srcWidth - j + srcWidth - 1;
-        else n = j;
-          
-        final int k = xcontrib.n++;
-        xcontrib.pixel[k] = n - sx0;
-        xcontrib.weight[k] = weight;
+    if (density != 0.0f && density != 1.0f) {
+      density = 1.0f/density;
+      for (int i = 0; i < numContrib; i++) {
+        xcontrib.weight[i] *= density;
       }
     }
   }
@@ -460,7 +401,7 @@ public final class GeneralFilter {
       }
 
       if (bPelDelta) {
-        // There is a color change from 0 to max; we need to compute weights.
+        // There is a color change from 0 to max; we need to use weights.
         for (int j = 0; j < max; j++) {
           final float w = c.weight[j];
           if (w == 0.0f) continue;
@@ -516,7 +457,7 @@ public final class GeneralFilter {
       }
 
       if (bPelDelta) {
-        // There is a color change from 0 to max; we need to compute weights.
+        // There is a color change from 0 to max; we need to use weights.
         for (int j = 0; j < max; j++) {
           final float w = c.weight[j];
           if (w == 0.0f) continue;
@@ -601,26 +542,17 @@ public final class GeneralFilter {
       src = tmp;
     }
 
-//    WritableRaster dst = null;
-    @SuppressWarnings("unused")
     BufferedImage dst = null;
 
-    @SuppressWarnings("unused")
-    final int dx0 = 0;
-    @SuppressWarnings("unused")
-    final int dy0 = 0;
     final int dw = newwidth; 
     final int dh = newheight; 
 
+    final Filter filter = new Lanczos3Filter();
+//    final Filter filter = new MitchellFilter();
+
     for (int i = 0; i < 40; ++i) {
       long start = System.currentTimeMillis();
-/*
-      dst =
-        (new BufferedImage(newwidth, newheight, BufferedImage.TYPE_INT_ARGB))
-          .getData().createCompatibleWritableRaster(dx0, dy0, dw, dh);
-      GeneralFilter.zoom(dst, dst.getBounds(), src, new Lanczos3Filter());
-*/
-      dst = zoom(new Rectangle(0, 0, dw, dh), src, new Lanczos3Filter());
+      dst = zoom(new Rectangle(0, 0, dw, dh), src, filter);
       System.out.println(System.currentTimeMillis() - start);
     }
 
@@ -631,13 +563,7 @@ public final class GeneralFilter {
     long time = 0;
     for (int i = 0; i < 10; ++i) {
       long start = System.currentTimeMillis();
-/*
-      dst =
-        (new BufferedImage(newwidth, newheight, BufferedImage.TYPE_INT_ARGB))
-          .getData().createCompatibleWritableRaster(dx0, dy0, dw, dh);
-      GeneralFilter.zoom(dst, dst.getBounds(), src, new Lanczos3Filter());
-*/
-      dst = zoom(new Rectangle(0, 0, dw, dh), src, new Lanczos3Filter());
+      dst = zoom(new Rectangle(0, 0, dw, dh), src, filter);
       time += System.currentTimeMillis() - start;
     }
     
