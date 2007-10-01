@@ -364,7 +364,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   public static void main(String[] args) {
     Chatter chat = new Chatter();
     JFrame f = new JFrame();
-    f.getContentPane().add(chat);
+    f.add(chat);
     f.pack();
     f.setVisible(true);
   }

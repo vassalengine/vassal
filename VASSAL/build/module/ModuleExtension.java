@@ -276,11 +276,11 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
     if (editAction == null) {
       d.setName(getName());
       final StringConfigurer config = new StringConfigurer(VERSION, "Version:  ", version);
-      d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
-      d.getContentPane().add(config.getControls());
+      d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
+      d.add(config.getControls());
       
       final BooleanConfigurer uconfig = new BooleanConfigurer(UNIVERSAL, "Allow loading with any module?", universal);
-      d.getContentPane().add(uconfig.getControls());
+      d.add(uconfig.getControls());
       
       Box b = Box.createHorizontalBox();
       JButton ok = new JButton("Save");
@@ -299,7 +299,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
         }
       });
       b.add(cancel);
-      d.getContentPane().add(b);
+      d.add(b);
       d.pack();
       d.setLocationRelativeTo(d.getParent());
       editAction = new AbstractAction() {

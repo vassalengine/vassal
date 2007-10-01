@@ -39,10 +39,10 @@ public class ConsoleWindow {
 
   protected void initComponents() {
     frame = new JFrame("VASSAL");
-    frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
+    frame.setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
     JLabel label = new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().getImage(ConsoleWindow.class.getResource("/images/Splash.png"))));
     label.setAlignmentX(Box.CENTER_ALIGNMENT);
-    frame.getContentPane().add(label);
+    frame.add(label);
     frame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     frame.addWindowListener(new java.awt.event.WindowAdapter() {
       public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -55,9 +55,9 @@ public class ConsoleWindow {
   
   public void setControls(JComponent c) {
     while (frame.getContentPane().getComponentCount() > 1) {
-      frame.getContentPane().remove(frame.getContentPane().getComponentCount()-1);
+      frame.remove(frame.getContentPane().getComponentCount()-1);
     }
-    frame.getContentPane().add(c);
+    frame.add(c);
     c.setAlignmentX(Box.CENTER_ALIGNMENT);
     frame.pack();
     frame.setLocationRelativeTo(null);

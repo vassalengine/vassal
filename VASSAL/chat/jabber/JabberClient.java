@@ -673,7 +673,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     ChatServerControls controls = new ChatServerControls();
     controls.setClient(client);
     JFrame f = new JFrame(username);
-    f.getContentPane().add(controls.getControls());
+    f.add(controls.getControls());
     f.pack();
     f.setVisible(true);
     f.addWindowListener(new WindowAdapter() {

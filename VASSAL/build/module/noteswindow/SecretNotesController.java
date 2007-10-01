@@ -389,9 +389,9 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       d.setTitle(Resources.getString("Notes.delayed_note")); //$NON-NLS-1$
       final StringConfigurer name = new StringConfigurer(null, Resources.getString("Notes.name")); //$NON-NLS-1$
       final TextConfigurer text = new TextConfigurer(null, Resources.getString("Notes.text")); //$NON-NLS-1$
-      d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
-      d.getContentPane().add(name.getControls());
-      d.getContentPane().add(text.getControls());
+      d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
+      d.add(name.getControls());
+      d.add(text.getControls());
       Box buttonPanel = Box.createHorizontalBox();
       final JButton okButton = new JButton(Resources.getString(Resources.OK));
       okButton.addActionListener(new ActionListener() {
@@ -425,7 +425,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
           d.dispose();
         }
       });
-      d.getContentPane().add(buttonPanel);
+      d.add(buttonPanel);
       d.pack();
       d.setLocationRelativeTo(d.getOwner());
       d.setVisible(true);

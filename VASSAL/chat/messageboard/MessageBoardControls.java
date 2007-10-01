@@ -70,8 +70,8 @@ public class MessageBoardControls {
 
     msgFrame = new JFrame(Resources.getString("Chat.message_board"));  //$NON-NLS-1$
     msgFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-    msgFrame.getContentPane().setLayout(new BoxLayout(msgFrame.getContentPane(), BoxLayout.Y_AXIS));
-    msgFrame.getContentPane().add(viewer);
+    msgFrame.setLayout(new BoxLayout(msgFrame.getContentPane(), BoxLayout.Y_AXIS));
+    msgFrame.add(viewer);
 
     Box box = Box.createHorizontalBox();
     JButton b = new JButton(Resources.getString("Chat.refresh"));  //$NON-NLS-1$
@@ -89,7 +89,7 @@ public class MessageBoardControls {
       }
     });
     box.add(b);
-    msgFrame.getContentPane().add(box);
+    msgFrame.add(box);
 
     msgComposer = new Comp();
 
@@ -142,7 +142,7 @@ public class MessageBoardControls {
 
     private Comp() {
       super(Resources.getString("Chat.message_composer"));  //$NON-NLS-1$
-      getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+      setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       final JTextArea msgArea = new JTextArea(15, 60);
       Box b = Box.createHorizontalBox();
@@ -165,8 +165,8 @@ public class MessageBoardControls {
 
       b.add(okButton);
       b.add(cancelButton);
-      getContentPane().add(new JScrollPane(msgArea));
-      getContentPane().add(b);
+      add(new JScrollPane(msgArea));
+      add(b);
 
       pack();
       setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 2 - getSize().width / 2, 0);

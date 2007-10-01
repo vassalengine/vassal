@@ -182,7 +182,7 @@ public class Base64
                 javax.swing.ImageIcon iicon = new javax.swing.ImageIcon( bytes );
                 javax.swing.JLabel jlabel = new javax.swing.JLabel( "Read from test.gif.b64", iicon,0 ); //$NON-NLS-1$
                 javax.swing.JFrame jframe = new javax.swing.JFrame();
-                jframe.getContentPane().add( jlabel );
+                jframe.add( jlabel );
                 jframe.pack();
                 jframe.setVisible(true);
 
@@ -209,7 +209,7 @@ public class Base64
                 javax.swing.JScrollPane jsp = new javax.swing.JScrollPane( jta );
                 jframe = new javax.swing.JFrame();
                 jframe.setTitle( "Read from test.gif_out" ); //$NON-NLS-1$
-                jframe.getContentPane().add( jsp );
+                jframe.add( jsp );
                 jframe.pack();
                 jframe.setVisible(true);
 
@@ -232,7 +232,7 @@ public class Base64
                 iicon = new javax.swing.ImageIcon( edbytes );
                 jlabel = new javax.swing.JLabel( "Read from test.gif.b64_out", iicon,0 ); //$NON-NLS-1$
                 jframe = new javax.swing.JFrame();
-                jframe.getContentPane().add( jlabel );
+                jframe.add( jlabel );
                 jframe.pack();
                 jframe.setVisible(true);
             }   // end: Test Input Stream
@@ -276,7 +276,7 @@ public class Base64
                 javax.swing.JScrollPane jsp = new javax.swing.JScrollPane( jta );
                 javax.swing.JFrame jframe = new javax.swing.JFrame();
                 jframe.setTitle( "Read from test.gif.b64_out2" ); //$NON-NLS-1$
-                jframe.getContentPane().add( jsp );
+                jframe.add( jsp );
                 jframe.pack();
                 jframe.setVisible(true);
                
@@ -288,7 +288,7 @@ public class Base64
                 javax.swing.ImageIcon iicon = new javax.swing.ImageIcon( "test.gif_out2" ); //$NON-NLS-1$
                 javax.swing.JLabel jlabel = new javax.swing.JLabel( "Read from test.gif_out2", iicon,0 ); //$NON-NLS-1$
                 jframe = new javax.swing.JFrame();
-                jframe.getContentPane().add( jlabel );
+                jframe.add( jlabel );
                 jframe.pack();
                 jframe.setVisible(true);
                

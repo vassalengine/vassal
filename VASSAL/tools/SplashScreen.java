@@ -39,7 +39,7 @@ public class SplashScreen extends JWindow {
 
   public SplashScreen(Image im) {
     instances.add(this);
-    getContentPane().add(new JLabel(new ImageIcon(im)));
+    add(new JLabel(new ImageIcon(im)));
     pack();
     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
     setLocation(d.width / 2 - getSize().width / 2,

@@ -89,7 +89,7 @@ public class ChartWindow extends Widget {
     frame = new JDialog(GameModule.getGameModule().getFrame());
     GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(frame.getRootPane(), JComponent.WHEN_IN_FOCUSED_WINDOW));
     while (root.getComponentCount() > 0) {
-      frame.getContentPane().add(root.getComponent(0));
+      frame.add(root.getComponent(0));
     }
     root = frame.getContentPane();
     frame.setTitle(launch.getAttributeValueString(DEPRECATED_NAME));

@@ -315,9 +315,9 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       }
     });
     JFrame f = new JFrame();
-    f.getContentPane().setLayout(new BorderLayout());
-    f.getContentPane().add(w.getControls());
-    f.getContentPane().add(tf,BorderLayout.SOUTH);
+    f.setLayout(new BorderLayout());
+    f.add(w.getControls());
+    f.add(tf,BorderLayout.SOUTH);
     f.pack();
     f.setVisible(true);
   }

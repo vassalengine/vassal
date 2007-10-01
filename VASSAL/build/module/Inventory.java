@@ -214,9 +214,9 @@ public class Inventory extends AbstractConfigurable
     frame.setTitle(getConfigureName());
     String key = "Inventory." + getConfigureName(); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(new PositionOption(key, frame));
-    frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-    frame.getContentPane().add(initTree());
-    frame.getContentPane().add(initButtons());
+    frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+    frame.add(initTree());
+    frame.add(initButtons());
     frame.setSize(250, 350);
   }
 

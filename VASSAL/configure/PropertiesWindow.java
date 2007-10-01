@@ -71,7 +71,7 @@ public class PropertiesWindow extends JDialog {
       }
       child = nextChild;
     }
-    getContentPane().setLayout(new BoxLayout(getContentPane(),BoxLayout.Y_AXIS));
+    setLayout(new BoxLayout(getContentPane(),BoxLayout.Y_AXIS));
     configurer = target.getConfigurer();
     target.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
@@ -80,7 +80,7 @@ public class PropertiesWindow extends JDialog {
         }
       }
     });
-    getContentPane().add(configurer.getControls());
+    add(configurer.getControls());
     setTitle(VASSAL.configure.ConfigureTree.getConfigureName(target));
     Box buttonBox = Box.createHorizontalBox();
     JButton okButton = new JButton("Ok");
@@ -105,7 +105,7 @@ public class PropertiesWindow extends JDialog {
       pack();
     }
 
-    getContentPane().add(buttonBox);
+    add(buttonBox);
     pack();
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);

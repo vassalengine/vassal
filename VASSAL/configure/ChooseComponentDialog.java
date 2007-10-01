@@ -49,7 +49,7 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     super(owner, true);
     this.targetClass = targetClass;
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     tree =
      new VASSAL.configure.ConfigureTree(GameModule.getGameModule(), null) {
       private static final long serialVersionUID = 1L;
@@ -58,7 +58,7 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
       }
     };
     tree.addTreeSelectionListener(this);
-    getContentPane().add(new ScrollPane(tree));
+    add(new ScrollPane(tree));
     Box b = Box.createHorizontalBox();
     okButton = new JButton("Ok");
     okButton.setEnabled(false);
@@ -76,7 +76,7 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     });
     b.add(okButton);
     b.add(cancelButton);
-    getContentPane().add(b);
+    add(b);
     pack();
   }
 

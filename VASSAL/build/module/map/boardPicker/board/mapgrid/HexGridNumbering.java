@@ -401,7 +401,7 @@ public class HexGridNumbering extends RegularGridNumbering {
       }
     }
     JFrame f = new JFrame();
-    f.getContentPane().add(new TestPanel());
+    f.add(new TestPanel());
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     screenSize.height -= 100;
     screenSize.width -= 100;

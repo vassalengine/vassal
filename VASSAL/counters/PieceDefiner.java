@@ -534,8 +534,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     private void initialize(final EditablePiece p) {
       ed = p.getEditor();
-      getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-      getContentPane().add(ed.getControls());
+      setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+      add(ed.getControls());
       JButton b = new JButton("Ok");
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -552,7 +552,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
       });
       panel.add(b);
-      getContentPane().add(panel);
+      add(panel);
       pack();
       setLocationRelativeTo(getOwner());
     }

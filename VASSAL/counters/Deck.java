@@ -1016,7 +1016,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected void promptForNextDraw() {
     final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView()), true);
     d.setTitle(Resources.getString("Deck.draw")); //$NON-NLS-1$
-    d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
+    d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
     class AvailablePiece implements Comparable {
       private GamePiece piece;
 
@@ -1066,9 +1066,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     final JList list = new JList(pieces);
     list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    d.getContentPane().add(new ScrollPane(list));
-    d.getContentPane().add(new JLabel(Resources.getString("Deck.select_cards"))); //$NON-NLS-1$
-    d.getContentPane().add(new JLabel(Resources.getString("Deck.then_click"))); //$NON-NLS-1$
+    d.add(new ScrollPane(list));
+    d.add(new JLabel(Resources.getString("Deck.select_cards"))); //$NON-NLS-1$
+    d.add(new JLabel(Resources.getString("Deck.then_click"))); //$NON-NLS-1$
     Box box = Box.createHorizontalBox();
     JButton b = new JButton(Resources.getString(Resources.OK));
     b.addActionListener(new ActionListener() {
@@ -1094,7 +1094,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
     });
     box.add(b);
-    d.getContentPane().add(box);
+    d.add(box);
     d.pack();
     d.setLocationRelativeTo(d.getOwner());
     d.setVisible(true);

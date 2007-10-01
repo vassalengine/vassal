@@ -43,9 +43,9 @@ public class ModuleUpdaterDialog extends JDialog {
   public ModuleUpdaterDialog(Frame owner) throws HeadlessException {
     super(owner, false);
     setTitle("Module Updater");
-    getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     final FileConfigurer fileConfig = new FileConfigurer(null, "File containing older version:  ");
-    getContentPane().add(fileConfig.getControls());
+    add(fileConfig.getControls());
     Box b = Box.createHorizontalBox();
     final JButton saveButton = new JButton("Create Updater");
     saveButton.setEnabled(false);
@@ -85,7 +85,7 @@ public class ModuleUpdaterDialog extends JDialog {
       }
     });
     JButton helpButton = new JButton("Help");
-    getContentPane().add(b);
+    add(b);
     HelpFile hf = null;
     try {
       hf = new HelpFile(null, new File(new File(VASSAL.build.module.Documentation.getDocumentationBaseDir(), "ReferenceManual"), "ModuleUpdater.htm"));
@@ -97,7 +97,7 @@ public class ModuleUpdaterDialog extends JDialog {
     b.add(saveButton);
     b.add(helpButton);
     b.add(cancelButton);
-    getContentPane().add(b);
+    add(b);
     pack();
     setLocationRelativeTo(getOwner());
   }

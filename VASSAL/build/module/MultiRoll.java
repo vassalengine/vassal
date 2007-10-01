@@ -251,8 +251,8 @@ public class MultiRoll extends JDialog implements ActionListener {
     buttonPanel.add(canButton);
     buttonPanel.add(emailButton);
 
-    getContentPane().add(topPanel, BorderLayout.PAGE_START);
-    getContentPane().add(buttonPanel, BorderLayout.PAGE_END);
+    add(topPanel, BorderLayout.PAGE_START);
+    add(buttonPanel, BorderLayout.PAGE_END);
 
     pack();
   }

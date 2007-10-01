@@ -474,7 +474,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       scroll.setPreferredSize(new Dimension(800, 600));
 
-      getContentPane().add(scroll, BorderLayout.CENTER);
+      add(scroll, BorderLayout.CENTER);
 
       Box bottomPanel = Box.createVerticalBox();
       JPanel buttonPanel = new JPanel();
@@ -500,7 +500,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       bottomPanel.add(mess);
       bottomPanel.add(buttonPanel);
       
-      getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+      add(bottomPanel, BorderLayout.SOUTH);
 
       board.fixImage();
       scroll.revalidate();

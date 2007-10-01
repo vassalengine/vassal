@@ -159,7 +159,7 @@ public class ImageSaver extends AbstractConfigurable {
       text.setForeground(Color.black);
       text.setBorder(new BevelBorder(BevelBorder.RAISED, Color.lightGray, Color.darkGray));
       w.getContentPane().setBackground(Color.white);
-      w.getContentPane().add(text);
+      w.add(text);
       w.pack();
       Rectangle r = map.getView().getTopLevelAncestor().getBounds();
       w.setLocation(r.x + r.width / 2 - w.getSize().width / 2, r.y + r.height / 2 - w.getSize().height / 2);

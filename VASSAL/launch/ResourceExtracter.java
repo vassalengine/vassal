@@ -169,7 +169,7 @@ public class ResourceExtracter {
       panel.add(label);
       panel.add(bar);
       panel.setBorder(new BevelBorder(BevelBorder.RAISED, Color.lightGray, Color.darkGray));
-      monitor.getContentPane().add(panel);
+      monitor.add(panel);
       bar.setPreferredSize(new Dimension(400, bar.getPreferredSize().height));
       monitor.pack();
       Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

@@ -349,7 +349,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         JScrollPane scroll =
           new JScrollPane(pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        frame.getContentPane().add(scroll);
+        frame.add(scroll);
 
         // set up Apply button
         if (commitStyle == COMMIT_ON_APPLY) {

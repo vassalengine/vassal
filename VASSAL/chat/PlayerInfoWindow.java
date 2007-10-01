@@ -29,7 +29,7 @@ public class PlayerInfoWindow extends JDialog {
 
   public PlayerInfoWindow(java.awt.Frame f, SimplePlayer p) {
     super(f, p.getName());
-    getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     Box b = Box.createHorizontalBox();
     JTextField tf = new JTextField(p.getName().length());
     tf.setText(p.getName());
@@ -38,23 +38,23 @@ public class PlayerInfoWindow extends JDialog {
                                              tf.getPreferredSize().height));
     b.add(new JLabel(Resources.getString("Chat.real_name"))); //$NON-NLS-1$
     b.add(tf);
-    getContentPane().add(b);
+    add(b);
 
     JCheckBox box = new JCheckBox(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
     box.setSelected(((SimpleStatus)p.getStatus()).isLooking());
     box.setEnabled(false);
-    getContentPane().add(box);
+    add(box);
 
     box = new JCheckBox(Resources.getString("Chat.away_from_keyboard")); //$NON-NLS-1$
     box.setSelected(((SimpleStatus)p.getStatus()).isAway());
     box.setEnabled(false);
-    getContentPane().add(box);
+    add(box);
 
-    getContentPane().add(new JLabel(Resources.getString("Chat.personal_info"))); //$NON-NLS-1$
+    add(new JLabel(Resources.getString("Chat.personal_info"))); //$NON-NLS-1$
     JTextArea ta = new JTextArea();
     ta.setText(((SimpleStatus)p.getStatus()).getProfile());
     ta.setEditable(false);
-    getContentPane().add(new JScrollPane(ta));
+    add(new JScrollPane(ta));
 
     pack();
   }

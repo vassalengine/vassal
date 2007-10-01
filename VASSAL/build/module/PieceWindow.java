@@ -84,7 +84,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   private Window initFrame() {
     if (GlobalOptions.getInstance().isUseSingleWindow()) {
       final JDialog d = new JDialog(GameModule.getGameModule().getFrame());
-      d.getContentPane().add(root);
+      d.add(root);
       d.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       d.setTitle(getConfigureName());
       addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -99,7 +99,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     }
     else {
       final JFrame d = new JFrame();
-      d.getContentPane().add(root);
+      d.add(root);
       d.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       d.setTitle(getConfigureName());
       addPropertyChangeListener(new java.beans.PropertyChangeListener() {

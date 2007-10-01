@@ -116,7 +116,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
     scroll.setPreferredSize(new Dimension(800, 600));
-    getContentPane().add(scroll, BorderLayout.CENTER);
+    add(scroll, BorderLayout.CENTER);
 
     Box textPanel = Box.createVerticalBox();
     textPanel.add(new JLabel("Arrow Keys - Move Grid"));
@@ -180,7 +180,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     controlPanel.add(textPanel);
     controlPanel.add(buttonPanel);
     
-    getContentPane().add(controlPanel, BorderLayout.SOUTH);
+    add(controlPanel, BorderLayout.SOUTH);
 
     board.fixImage();
     scroll.revalidate();

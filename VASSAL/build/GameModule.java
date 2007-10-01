@@ -170,7 +170,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       }
     });
 
-    frame.getContentPane().setLayout(new BorderLayout());
+    frame.setLayout(new BorderLayout());
     frame.setJMenuBar(new JMenuBar());
 
     fileMenu.setMnemonic('F');
@@ -179,13 +179,13 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     toolBar.setLayout(new VASSAL.tools.WrapLayout(FlowLayout.LEFT, 0, 0));
     toolBar.setAlignmentX(0.0F);
     toolBar.setFloatable(false);
-    frame.getContentPane().add(toolBar, BorderLayout.NORTH);
+    frame.add(toolBar, BorderLayout.NORTH);
     controlPanel.setLayout(new BorderLayout());
     addKeyStrokeSource
         (new KeyStrokeSource
             (frame.getRootPane(),
              JComponent.WHEN_IN_FOCUSED_WINDOW));
-    frame.getContentPane().add(controlPanel, BorderLayout.CENTER);
+    frame.add(controlPanel, BorderLayout.CENTER);
 
     validator = new CompoundValidityChecker
         (new MandatoryComponent(this, Documentation.class),

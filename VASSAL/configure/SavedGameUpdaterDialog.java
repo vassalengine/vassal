@@ -69,7 +69,7 @@ public class SavedGameUpdaterDialog extends JDialog {
   }
 
   private void initComponents() {
-    getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     Box versionBox = Box.createHorizontalBox();
     versionBox.add(new JLabel("Module version of saved games:  "));
     versionField = new JTextField(8);
@@ -83,7 +83,7 @@ public class SavedGameUpdaterDialog extends JDialog {
       }
     });
     versionBox.add(importButton);
-    getContentPane().add(versionBox);
+    add(versionBox);
     JButton exportButton = new JButton("Export GamePiece info");
     exportButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -93,7 +93,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     Box importExportBox = Box.createHorizontalBox();
     importExportBox.add(importButton);
     importExportBox.add(exportButton);
-    getContentPane().add(importExportBox);
+    add(importExportBox);
 
     Box savedGamesBox = Box.createHorizontalBox();
     Box left = Box.createVerticalBox();
@@ -124,7 +124,7 @@ public class SavedGameUpdaterDialog extends JDialog {
       }
     });
     savedGamesBox.add(new ScrollPane(savedGamesList));
-    getContentPane().add(savedGamesBox);
+    add(savedGamesBox);
 
     Box buttonsBox = Box.createHorizontalBox();
     updateButton = new JButton("Update games");
@@ -151,7 +151,7 @@ public class SavedGameUpdaterDialog extends JDialog {
       }
     });
     buttonsBox.add(closeButton);
-    getContentPane().add(buttonsBox);
+    add(buttonsBox);
     pack();
     setLocationRelativeTo(getOwner());
   }

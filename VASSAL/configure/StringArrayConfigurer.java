@@ -246,7 +246,7 @@ public class StringArrayConfigurer extends Configurer {
       }
     });
     c.setValue("Rack,Shack,Benny");
-    f.getContentPane().add(c.getControls());
+    f.add(c.getControls());
     f.pack();
     f.setVisible(true);
   }

@@ -166,7 +166,7 @@ public class ChatServerControls extends AbstractBuildable {
       else {
         JFrame frame = new JFrame(Resources.getString("Chat.server"));  //$NON-NLS-1$
         frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        frame.getContentPane().add(controlPanel);
+        frame.add(controlPanel);
         String key = "BoundsOfClientWindow";  //$NON-NLS-1$
         PositionOption pos = new VisibilityOption(key, frame);
         GameModule.getGameModule().getPrefs().addOption(pos);

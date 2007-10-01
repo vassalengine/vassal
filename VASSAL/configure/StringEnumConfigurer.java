@@ -122,7 +122,7 @@ public class StringEnumConfigurer extends Configurer {
         System.err.println(evt.getPropertyName() + " = " + evt.getNewValue());
       }
     });
-    f.getContentPane().add(c.getControls());
+    f.add(c.getControls());
     f.pack();
     f.setVisible(true);
   }

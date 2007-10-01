@@ -57,7 +57,7 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
     pane.setEditorKit(myHTMLEditorKit);
     
     JScrollPane scroll = new ScrollPane(pane);
-    getContentPane().add(scroll);
+    add(scroll);
     update(contents);
     pack();
     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

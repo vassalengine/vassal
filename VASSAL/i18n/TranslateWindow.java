@@ -111,7 +111,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     mainPanel.add(getHeaderPanel(), BorderLayout.PAGE_START);
     mainPanel.add(buildMainPanel(), BorderLayout.CENTER);
     mainPanel.add(getButtonPanel(), BorderLayout.PAGE_END);
-    getContentPane().add(mainPanel);
+    add(mainPanel);
     pack();
     setLocationRelativeTo(getParent());
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);

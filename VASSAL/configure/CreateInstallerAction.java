@@ -102,16 +102,16 @@ public class CreateInstallerAction extends AbstractAction {
 
   public void actionPerformed(ActionEvent e) {
     final JDialog d = new JDialog(parent, Resources.getString("Install.create_installer"), true); //$NON-NLS-1$
-    d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
+    d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
     final StringEnumConfigurer heapSizeConfigurer = new StringEnumConfigurer(null, "Memory Allocation", HEAP_SIZES_PLAIN_TEXT); //$NON-NLS-1$
     heapSizeConfigurer.setValue(HEAP_SIZES_PLAIN_TEXT[0]);
-    d.getContentPane().add(heapSizeConfigurer.getControls());
+    d.add(heapSizeConfigurer.getControls());
     final JButton ok = new JButton(Resources.getString("General.create")); //$NON-NLS-1$
     JButton cancel = new JButton(Resources.getString("General.cancel")); //$NON-NLS-1$
     Box b = Box.createHorizontalBox();
     b.add(ok);
     b.add(cancel);
-    d.getContentPane().add(b);
+    d.add(b);
     d.pack();
     d.setLocationRelativeTo(parent);
     cancel.addActionListener(new ActionListener() {

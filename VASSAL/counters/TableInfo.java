@@ -160,7 +160,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
         table.setTableHeader(null);
         JScrollPane scroll = new ScrollPane(table);
         scroll.getViewport().setPreferredSize(table.getPreferredSize());
-        frame.getContentPane().add(scroll);
+        frame.add(scroll);
         Point p = GameModule.getGameModule().getFrame().getLocation();
         if (getMap() != null) {
           p = getMap().getView().getLocationOnScreen();

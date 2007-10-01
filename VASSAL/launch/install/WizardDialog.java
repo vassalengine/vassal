@@ -46,8 +46,8 @@ public class WizardDialog extends JDialog implements ActionListener, WindowListe
     b.addActionListener(this);
     buttonBox.add(Box.createHorizontalGlue());
     buttonBox.add(b);
-    getContentPane().add("South", buttonBox); //$NON-NLS-1$
-    getContentPane().add(screenBox);
+    add("South", buttonBox); //$NON-NLS-1$
+    add(screenBox);
     setSize(600,400);
     setLocationRelativeTo(null);
   }

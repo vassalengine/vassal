@@ -42,8 +42,8 @@ public class ConfigurerWindow extends JDialog {
   public ConfigurerWindow(final Configurer c, boolean modal) {
     super((JFrame) null, modal);
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-    getContentPane().add(c.getControls());
+    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    add(c.getControls());
     c.addPropertyChangeListener
       (new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -60,7 +60,7 @@ public class ConfigurerWindow extends JDialog {
         dispose();
       }
     });
-    getContentPane().add(okButton);
+    add(okButton);
     pack();
   }
 }

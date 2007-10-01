@@ -108,12 +108,12 @@ public class FontConfigurer extends Configurer {
 
   public static void main(String args[]) {
     final JFrame f = new JFrame();
-    f.getContentPane().setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
+    f.setLayout(new BoxLayout(f.getContentPane(), BoxLayout.Y_AXIS));
     FontConfigurer c = new FontConfigurer("a", "Font: ", null, new int[]{4, 5, 6, 13});
-    f.getContentPane().add(c.getControls());
+    f.add(c.getControls());
     final JTextArea tf = new JTextArea();
     tf.setText("The quick brown fox jumps over the lazy dog.");
-    f.getContentPane().add(new ScrollPane(tf));
+    f.add(new ScrollPane(tf));
     c.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
       public void propertyChange(java.beans.PropertyChangeEvent evt) {
         Font font = (Font) evt.getNewValue();
@@ -127,6 +127,5 @@ public class FontConfigurer extends Configurer {
     f.pack();
     f.setVisible(true);
   }
-
 }
 

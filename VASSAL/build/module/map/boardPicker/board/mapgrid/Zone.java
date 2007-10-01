@@ -492,7 +492,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         }
       };
       frame = new JDialog((Frame) null, zone.getConfigureName(), true);
-      frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+      frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
       JPanel labels = new JPanel();
       labels.setLayout(new GridLayout(2, 2));
       labels.add(new JLabel("Drag to create initial shape"));
@@ -500,7 +500,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       labels.add(new JLabel("Left-click to move points"));
       labels.add(new JLabel("DEL to remove point"));
       labels.setAlignmentX(0.0f);
-      frame.getContentPane().add(labels);
+      frame.add(labels);
       JButton direct = new JButton("Set Coordinates directly");
       direct.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -522,10 +522,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         }
       });
       direct.setAlignmentX(0.0f);
-      frame.getContentPane().add(direct);
+      frame.add(direct);
       scroll = new AdjustableSpeedScrollPane(editor);
       editor.setScroll(scroll);
-      frame.getContentPane().add(scroll);
+      frame.add(scroll);
       JPanel buttonPanel = new JPanel();
       JButton closeButton = new JButton("Ok");
       closeButton.addActionListener(new ActionListener() {
@@ -536,7 +536,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         }
       });
       buttonPanel.add(closeButton);
-      frame.getContentPane().add(buttonPanel);
+      frame.add(buttonPanel);
     }
 
     private void init(Zone zone) {

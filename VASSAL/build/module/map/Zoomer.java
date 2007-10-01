@@ -80,7 +80,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
           l.setForeground(Color.black);
           l.setBorder(new BevelBorder(
             BevelBorder.RAISED, Color.lightGray, Color.darkGray));
-          w.getContentPane().add(l);
+          w.add(l);
           w.pack();
           Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
           w.setLocation(d.width/2-w.getSize().width/2,

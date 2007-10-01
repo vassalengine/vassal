@@ -432,7 +432,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       scroll.setPreferredSize(DEFAULT_SIZE);
 
-      getContentPane().add(scroll, BorderLayout.CENTER);
+      add(scroll, BorderLayout.CENTER);
 
       Box textPanel = Box.createVerticalBox();
       textPanel.add(new JLabel("Arrow Keys - Move Stack"));
@@ -480,7 +480,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       mainPanel.add(controlPanel);
       mainPanel.add(okPanel);
       
-      getContentPane().add(mainPanel, BorderLayout.SOUTH);
+      add(mainPanel, BorderLayout.SOUTH);
 
       board.fixImage();
       scroll.revalidate();

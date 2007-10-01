@@ -20,11 +20,11 @@
 package VASSAL.build.module.turn;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -32,6 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BooleanConfigurer;
@@ -369,8 +370,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
 
     public ConfigDialog() {
       super(GameModule.getGameModule().getFrame(), Resources.getString("TurnTracker.configure2", getConfigureName())); //$NON-NLS-1$ 
-      Container pane = getContentPane();
-      pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+      setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
       if (configFirst) {
         if (prompt == null) {
@@ -388,12 +388,12 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
             }
           }
         });
-        pane.add(firstItem.getControls());
+        add(firstItem.getControls());
       }
 
       if (configList) {
-        
-        pane.add(new JLabel(Resources.getString("TurnTracker.turn_off"))); //$NON-NLS-1$ 
+      
+        add(new JLabel(Resources.getString("TurnTracker.turn_off"))); //$NON-NLS-1$ 
         for (int i = 0; i < list.length; i++) {
 
           BooleanConfigurer b = new BooleanConfigurer(null, list[i], new Boolean(active[i]));
@@ -408,7 +408,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
               }
             }
           });
-          pane.add(b.getControls());
+          add(b.getControls());
         }
       }
 
@@ -432,9 +432,8 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       });
       p.add(cancelButton);
 
-      pane.add(p);
+      add(p);
       pack();
     }
-
   }
 }

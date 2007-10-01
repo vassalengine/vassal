@@ -44,9 +44,9 @@ public class ValidationReportDialog extends JDialog {
     setTitle("Problems found in module");
     this.callback = cb;
     Box reportBox = Box.createVerticalBox();
-    getContentPane().add(reportBox);
+    add(reportBox);
     JPanel buttonPanel = new JPanel();
-    getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+    add(buttonPanel, BorderLayout.SOUTH);
     List warnings = report.getWarnings();
     switch (warnings.size()) {
       case 0:

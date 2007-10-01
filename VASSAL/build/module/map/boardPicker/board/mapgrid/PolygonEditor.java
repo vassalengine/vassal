@@ -273,7 +273,7 @@ public class PolygonEditor extends JPanel {
 
   public static void main(String[] args) {
     JFrame f = new JFrame();
-    f.getContentPane().add(new PolygonEditor(null));
+    f.add(new PolygonEditor(null));
     f.setSize(500, 500);
     f.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {

@@ -252,7 +252,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         public void actionPerformed(ActionEvent e) {
           final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ConfigureTree.this), true);
           d.setTitle(target.getConfigureName() == null ? moveCmd : moveCmd + " " + target.getConfigureName());
-          d.getContentPane().setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
+          d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
           Box box = Box.createHorizontalBox();
           box.add(new JLabel("Move to position"));
           box.add(Box.createHorizontalStrut(10));
@@ -280,8 +280,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               d.dispose();
             }
           });
-          d.getContentPane().add(box);
-          d.getContentPane().add(ok);
+          d.add(box);
+          d.add(ok);
           d.pack();
           d.setLocationRelativeTo(d.getParent());
           d.setVisible(true);

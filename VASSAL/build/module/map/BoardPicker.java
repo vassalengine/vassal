@@ -363,7 +363,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     buttons.add(cancel);
     b.add(controls);
     b.add(buttons);
-    d.getContentPane().add(b);
+    d.add(b);
     d.pack();
     d.setLocationRelativeTo(c);
     d.setVisible(true);

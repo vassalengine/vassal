@@ -965,7 +965,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
     
     protected void initComponents() {
-      getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+      setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent e) {
@@ -976,7 +976,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-      getContentPane().add(panel);
+      add(panel);
 
       JPanel p = new JPanel();
 
@@ -1000,7 +1000,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       });
       p.add(cancelButton);
       
-      getContentPane().add(p);
+      add(p);
     }
 
     public void setControls(TurnTracker turn) {

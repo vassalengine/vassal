@@ -110,16 +110,16 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     }
     frame = new JDialog(owner,Resources.getString("Peer2Peer.direct_connection")); //$NON-NLS-1$
     frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-    frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-    frame.getContentPane().add(createLabel(Resources.getString("Peer2Peer.your_ip_address", myIp, String.valueOf(me.getInfo().getPort())))); //$NON-NLS-1$
-    frame.getContentPane().add(createLabel(Resources.getString("Peer2Peer.other_players_address"))); //$NON-NLS-1$
+    frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+    frame.add(createLabel(Resources.getString("Peer2Peer.your_ip_address", myIp, String.valueOf(me.getInfo().getPort())))); //$NON-NLS-1$
+    frame.add(createLabel(Resources.getString("Peer2Peer.other_players_address"))); //$NON-NLS-1$
     Box b = Box.createHorizontalBox();
     b.setAlignmentX(0.0f);
     JButton invite = new JButton(Resources.getString("Peer2Peer.invite")); //$NON-NLS-1$
     b.add(invite);
     final JTextField tf = new JTextField(Resources.getString("Peer2Peer.address_port")); //$NON-NLS-1$
     b.add(tf);
-    frame.getContentPane().add(b);
+    frame.add(b);
     ActionListener al = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         PeerInfo info = PeerInfo.deFormat(tf.getText());

@@ -73,7 +73,7 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
   }
 
   protected void initComponents(Component view) {
-    getContentPane().add(view);
+    add(view);
     toolbar = new JToolBar();
     toolbar.setFloatable(false);
     SaveAction saveAction = new SaveAction() {
@@ -103,7 +103,7 @@ public class ModuleEditWindow extends JFrame implements WindowListener {
     catch (MalformedURLException e) {
       e.printStackTrace();
     }
-    getContentPane().add(toolbar, BorderLayout.NORTH);
+    add(toolbar, BorderLayout.NORTH);
     JMenuBar mb = new JMenuBar();
     JMenuItem mi;
     JMenu fileMenu = new JMenu(Resources.getString(Resources.FILE));

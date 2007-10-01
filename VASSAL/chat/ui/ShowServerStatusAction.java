@@ -73,13 +73,13 @@ public class ShowServerStatusAction extends AbstractAction {
       super(Resources.getString("Chat.server_status")); //$NON-NLS-1$
       view = new ServerStatusView(status);
       view.addPropertyChangeListener(ServerStatusView.SELECTION_PROPERTY,this);
-      getContentPane().add(view);
+      add(view);
       messageMgr = new MessageBoardControls();
       JToolBar toolbar = new JToolBar();
       toolbar.setFloatable(false);
       toolbar.add(messageMgr.getCheckMessagesAction());
       toolbar.add(messageMgr.getPostMessageAction());
-      getContentPane().add(toolbar, BorderLayout.NORTH);
+      add(toolbar, BorderLayout.NORTH);
       pack();
       setSize(Math.max(getSize().width,400),Math.max(getSize().height,300));
       Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

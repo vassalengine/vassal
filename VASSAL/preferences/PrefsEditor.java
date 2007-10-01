@@ -98,10 +98,10 @@ public class PrefsEditor {
       buttonPanel.add(save);
       buttonPanel.add(cancel);
       
-      dialog.getContentPane().setLayout
-          (new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
-      dialog.getContentPane().add(optionsTab);
-      dialog.getContentPane().add(buttonPanel);
+      dialog.setLayout(
+        new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
+      dialog.add(optionsTab);
+      dialog.add(buttonPanel);
     }
   }
 
@@ -118,8 +118,8 @@ public class PrefsEditor {
       if (setupDialog == null) {
         setupDialog = new JDialog((Frame) null, true);
         setupDialog.setTitle(Resources.getString("Prefs.initial_setup")); //$NON-NLS-1$
-        setupDialog.getContentPane().setLayout
-            (new BoxLayout(setupDialog.getContentPane(), BoxLayout.Y_AXIS));
+        setupDialog.setLayout(
+          new BoxLayout(setupDialog.getContentPane(), BoxLayout.Y_AXIS));
         setupDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setupDialog.addComponentListener(new ComponentAdapter() {
           public void componentShown(ComponentEvent e) {
@@ -129,8 +129,8 @@ public class PrefsEditor {
       }
       JPanel p = new JPanel();
       p.add(new JLabel(prompt));
-      setupDialog.getContentPane().add(p);
-      setupDialog.getContentPane().add(c.getControls());
+      setupDialog.add(p);
+      setupDialog.add(c.getControls());
       JButton b = new JButton(Resources.getString(Resources.OK));
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -139,13 +139,13 @@ public class PrefsEditor {
       });
       p = new JPanel();
       p.add(b);
-      setupDialog.getContentPane().add(p);
+      setupDialog.add(p);
       setupDialog.pack();
       Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       setupDialog.setLocation(d.width / 2 - setupDialog.getSize().width / 2,
                               d.height / 2 - setupDialog.getSize().height / 2);
       setupDialog.setVisible(true);
-      setupDialog.getContentPane().removeAll();
+      setupDialog.removeAll();
     }
     addOption(category, c);
   }

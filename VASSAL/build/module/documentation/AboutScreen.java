@@ -86,20 +86,20 @@ public class AboutScreen extends AbstractConfigurable {
     ImageIcon icon = new ImageIcon(image);
     JWindow w = new JWindow(GameModule.getGameModule() != null ? GameModule.getGameModule().getFrame() : null);
     w.getContentPane().setBackground(Color.black);
-    w.getContentPane().setLayout(new BoxLayout(w.getContentPane(), BoxLayout.Y_AXIS));
+    w.setLayout(new BoxLayout(w.getContentPane(), BoxLayout.Y_AXIS));
     JLabel l = new JLabel(icon);
     l.setAlignmentX(0.5F);
-    w.getContentPane().add(l);
-    w.getContentPane().add(createLabel(
+    w.add(l);
+    w.add(createLabel(
         Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
         GameModule.getGameModule().getGameName(),
         GameModule.getGameModule().getGameVersion())));
     for (ModuleExtension ext :
          GameModule.getGameModule().getComponentsOf(ModuleExtension.class)) {
-      w.getContentPane().add(createLabel(
+      w.add(createLabel(
           Resources.getString("AboutScreen.extension_version", ext.getName(), ext.getVersion()))); //$NON-NLS-1$
     }
-    w.getContentPane().add(createLabel(
+    w.add(createLabel(
         Resources.getString("AboutScreen.vassal_version", Info.getVersion()))); //$NON-NLS-1$
     w.pack();
     Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

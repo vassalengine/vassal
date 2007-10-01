@@ -138,7 +138,7 @@ public class NotesWindow extends AbstractConfigurable
     }
 
     protected void initComponents() {
-      getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+      setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent e) {
@@ -150,7 +150,7 @@ public class NotesWindow extends AbstractConfigurable
       scenarioNotes = new TextConfigurer(null, null);
       publicNotes = new TextConfigurer(null, null);
       JTabbedPane tab = new JTabbedPane();
-      getContentPane().add(tab);
+      add(tab);
 
       Box b = Box.createVerticalBox();
       b.add(new JLabel(Resources.getString("Notes.visible_to_all"))); //$NON-NLS-1$
@@ -183,7 +183,7 @@ public class NotesWindow extends AbstractConfigurable
         }
       });
       p.add(cancelButton);
-      getContentPane().add(p);
+      add(p);
     }
   }
 

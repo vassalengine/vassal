@@ -106,7 +106,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     dialog = new JDialog(GameModule.getGameModule().getFrame());
     dialogLabel = new JLabel();
     dialogLabel.setIcon(resultsIcon);
-    dialog.getContentPane().add(dialogLabel);
+    dialog.add(dialogLabel);
 
     ActionListener rollAction = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
