@@ -542,6 +542,7 @@ public final class GeneralFilter {
       src = tmp;
     }
 
+    @SuppressWarnings("unused")
     BufferedImage dst = null;
 
     final int dw = newwidth; 

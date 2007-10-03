@@ -3,20 +3,19 @@ package VASSAL.build.widget;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.Window;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
+
 import org.w3c.dom.Element;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
