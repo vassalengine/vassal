@@ -42,6 +42,8 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -611,7 +613,21 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_FOCUSED));
 		}
 		else {
+		  GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_IN_FOCUSED_WINDOW));
 		}
+    // Fix for bug 1630993: toolbar buttons not appearing
+    toolBar.addHierarchyListener(new HierarchyListener() {
+      public void hierarchyChanged(HierarchyEvent e) {
+        Window w;
+        if ((w = SwingUtilities.getWindowAncestor(toolBar)) != null) {
+          w.validate();
+        }
+        if (toolBar.getSize().width > 0) {
+          toolBar.removeHierarchyListener(this);
+        }
+      }
+    });
+
 		PlayerRoster.addSideChangeListener(this);
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"), //$NON-NLS-1$
         new IntConfigurer(PREFERRED_EDGE_DELAY, Resources.getString("Map.scroll_delay_preference"), new Integer(PREFERRED_EDGE_SCROLL_DELAY))); //$NON-NLS-1$
@@ -1681,7 +1697,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 						}
 					});
 					((RootPaneContainer) topWindow).getContentPane().add("North", getToolBar()); //$NON-NLS-1$
-					((RootPaneContainer) topWindow).getContentPane().add("Center", scroll); //$NON-NLS-1$
+					((RootPaneContainer) topWindow).getContentPane().add("Center", layeredPane); //$NON-NLS-1$
 					topWindow.setSize(600, 400);
 					PositionOption option = new PositionOption(PositionOption.key + getIdentifier(), topWindow);
 					GameModule.getGameModule().getPrefs().addOption(option);
@@ -1689,6 +1705,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 				theMap.getTopLevelAncestor().setVisible(!useLaunchButton);
 				theMap.revalidate();
 			}
+			
 		}
 		else {
 			pieces.clear();

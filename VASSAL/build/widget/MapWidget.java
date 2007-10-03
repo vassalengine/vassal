@@ -88,18 +88,6 @@ public class MapWidget extends Widget {
       mapScroll = map.getScroll();
       panel.add(mapScroll, BorderLayout.CENTER);
       panel.add(map.getToolBar(), BorderLayout.NORTH);
-      // Fix for bug 1630993: toolbar buttons not appearing
-      map.getToolBar().addHierarchyListener(new HierarchyListener() {
-        public void hierarchyChanged(HierarchyEvent e) {
-          Window w;
-          if ((w = SwingUtilities.getWindowAncestor(map.getToolBar())) != null) {
-            w.validate();
-          }
-          if (map.getToolBar().getSize().width > 0) {
-            map.getToolBar().removeHierarchyListener(this);
-          }
-        }
-      });
       panel.revalidate();
     }
     super.add(b);
