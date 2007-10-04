@@ -46,10 +46,9 @@ public class BooleanPreference extends BasicPreference {
 
   public void setDefaultValue(Object value) {
     if (value instanceof String) {
-      value = new Boolean((String) value);
+      value = Boolean.valueOf((String) value);
     }
     defaultValue = ((Boolean) value).booleanValue();
-      
   }
 
   public Configurer getPreferenceConfigurer() {

@@ -43,7 +43,7 @@ public class BooleanConfigurer extends Configurer {
   public void setValue(Object o) {
     super.setValue(o);
     if (box != null
-      && !o.equals(new Boolean(box.isSelected()))) {
+      && !o.equals(Boolean.valueOf(box.isSelected()))) {
       box.setSelected(booleanValue().booleanValue());
     }
   }
@@ -65,7 +65,7 @@ public class BooleanConfigurer extends Configurer {
       box.setSelected(booleanValue().booleanValue());
       box.addItemListener(new java.awt.event.ItemListener() {
         public void itemStateChanged(java.awt.event.ItemEvent e) {
-          setValue(new Boolean(box.isSelected()));
+          setValue(Boolean.valueOf(box.isSelected()));
         }
       });
     }

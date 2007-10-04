@@ -334,7 +334,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
           case COL_NAME:
             return note.getName();
           case COL_REVEALED:
-            return new Boolean(!note.isHidden());
+            return Boolean.valueOf(!note.isHidden());
           default:
             return null;
         }

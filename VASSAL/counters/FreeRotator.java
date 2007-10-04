@@ -570,7 +570,8 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       // random rotate
       rndKeyConfig = new HotKeyConfigurer(null, "Command to rotate randomly:  ", p.rotateRNDKey);
       // end random rotate
-      anyConfig = new BooleanConfigurer(null, "Allow arbitrary rotations", new Boolean(p.validAngles.length == 1));
+      anyConfig = new BooleanConfigurer(null, "Allow arbitrary rotations",
+        Boolean.valueOf(p.validAngles.length == 1));
       anyKeyConfig = new HotKeyConfigurer(null, "Command to rotate:  ", p.setAngleKey);
       facingsConfig = new IntConfigurer(null, "Number of allowed facings:  ", new Integer(p.validAngles.length == 1 ? 6 : p.validAngles.length));
 

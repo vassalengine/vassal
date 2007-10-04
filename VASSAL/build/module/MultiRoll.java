@@ -301,11 +301,11 @@ public class MultiRoll extends JDialog implements ActionListener {
     String address = e.getActionCommand();
     Prefs prefs = GameModule.getGameModule().getPrefs();
     if (address.equals(EMAIL_OFF)) {
-      prefs.setValue(DieManager.USE_EMAIL, new Boolean(false));
+      prefs.setValue(DieManager.USE_EMAIL, Boolean.FALSE);
     }
     else {
       prefs.setValue(DieManager.SECONDARY_EMAIL, address);
-      prefs.setValue(DieManager.USE_EMAIL, new Boolean(true));
+      prefs.setValue(DieManager.USE_EMAIL, Boolean.TRUE);
     }
     setEmailHeader();
   }

@@ -210,9 +210,13 @@ public class TextBoxItem extends TextItem {
     FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
     Font f = fs.getFont();
     l.setFont(f);
-    BufferedImage bi = new BufferedImage(Math.max(l.getWidth(), 1), Math.max(l.getHeight(), 1), BufferedImage.TYPE_4BYTE_ABGR);
-    Graphics big = bi.getGraphics();
+    BufferedImage bi = new BufferedImage(Math.max(l.getWidth(), 1),
+                                         Math.max(l.getHeight(), 1),
+                                         BufferedImage.TYPE_INT_ARGB);
+    Graphics2D big = bi.createGraphics();
     l.paint(big);
+    big.dispose();
+
     g.drawImage(bi, origin.x+1, origin.y+1, null);
   }
   

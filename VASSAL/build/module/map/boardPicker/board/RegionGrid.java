@@ -794,16 +794,18 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         drawOffset.move(dragStart.x - boundingBox.x, dragStart.y - boundingBox.y);
         
         BufferedImage cursorImage = new BufferedImage(boundingBox.width, boundingBox.height, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics2D graphics = cursorImage.createGraphics();
+        Graphics2D g = cursorImage.createGraphics();
  
-        graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
          // Draw each region into the drag cursor in the correct place
         for (Region r : config.selectedRegions) {
           int x = -boundingBox.x*2;
           int y = -boundingBox.y*2;
-          r.draw(graphics, boundingBox, getVisibleRect(), 1.0f, false, x, y);
+          r.draw(g, boundingBox, getVisibleRect(), 1.0f, false, x, y);
         }
-        
+  
+        g.dispose();       
+ 
         dragCursor.setSize(boundingBox.width, boundingBox.height);
 
         // store the bitmap in the cursor

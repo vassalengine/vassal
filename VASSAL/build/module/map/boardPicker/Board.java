@@ -188,7 +188,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
     else if (REVERSIBLE.equals(key)) {
       if (val instanceof String) {
-        val = new Boolean("true".equals(val));
+        val = Boolean.valueOf((String) val);
       }
       reversible = ((Boolean) val).booleanValue();
     }

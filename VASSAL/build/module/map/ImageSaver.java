@@ -22,7 +22,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Rectangle;
@@ -241,8 +241,10 @@ public class ImageSaver extends AbstractConfigurable {
       }
 
       Image output = map.getView().createImage(totalWidth, height);
-      Graphics gg = output.getGraphics();
-      map.paint(gg, -(int) (map.getZoom() * buffer.width), -(int) (map.getZoom() * buffer.height) + height * i);
+      Graphics2D gg = (Graphics2D) output.getGraphics();
+      map.paint(gg, -(int) (map.getZoom() * buffer.width),
+                    -(int) (map.getZoom() * buffer.height) + height * i);
+      gg.dispose();
       try {
         MediaTracker t = new MediaTracker(map.getView());
         t.addImage(output, 0);

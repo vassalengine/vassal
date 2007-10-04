@@ -20,6 +20,7 @@ package VASSAL.counters;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.FilteredImageSource;
@@ -65,8 +66,9 @@ public class Transparent {
       filter.setAlpha(0.0, trans);
       im = opaque.getImage(obs);
       Image im2 = obs.createImage(im.getWidth(obs), im.getHeight(obs));
-      Graphics gg = im2.getGraphics();
-      gg.drawImage(  im, 0, 0, obs);
+      Graphics2D gg = (Graphics2D) im2.getGraphics();
+      gg.drawImage(im, 0, 0, obs);
+      gg.dispose();
       im = obs.createImage(new FilteredImageSource
         (im2.getSource(), filter));
       offset = new Point(piece.boundingBox().x,

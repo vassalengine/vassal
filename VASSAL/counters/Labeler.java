@@ -354,13 +354,17 @@ public class Labeler extends Decorator implements TranslatablePiece {
     int width = lbl.getWidth();
     int height = lbl.getHeight();
     BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-    Graphics g = im.createGraphics();
-    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+    Graphics2D g = im.createGraphics();
+    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                       RenderingHints.VALUE_ANTIALIAS_ON);
     if (textBg != null) {
       g.setColor(textBg);
       g.fillRect(0, 0, width, height);
     }
     lbl.paint(g);
+
+    g.dispose();
+
     return im;
   }
 
@@ -493,10 +497,12 @@ public class Labeler extends Decorator implements TranslatablePiece {
       b.add(fontSize.getControls());
       b.add(new JLabel("  Bold?"));
       int fontStyle = l.font.getStyle();
-      bold = new BooleanConfigurer(null, "", new Boolean(fontStyle != Font.PLAIN && fontStyle != Font.ITALIC));
+      bold = new BooleanConfigurer(null, "",
+        Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.ITALIC));
       b.add(bold.getControls());
       b.add(new JLabel("  Italic?"));
-      italic = new BooleanConfigurer(null, "", new Boolean(fontStyle != Font.PLAIN && fontStyle != Font.BOLD));
+      italic = new BooleanConfigurer(null, "",
+        Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.BOLD));
       b.add(italic.getControls());
       controls.add(b);
 

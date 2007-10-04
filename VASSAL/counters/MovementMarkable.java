@@ -115,7 +115,8 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     if (stroke != null && stroke.equals(key)) {
       ChangeTracker c = new ChangeTracker(this);
       // Set the property on the entire piece so all traits can respond
-      Decorator.getOutermost(this).setProperty(Properties.MOVED, new Boolean(!hasMoved));
+      Decorator.getOutermost(this)
+               .setProperty(Properties.MOVED, Boolean.valueOf(!hasMoved));
       return c.getChangeCommand();
     }
     else {

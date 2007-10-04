@@ -85,8 +85,8 @@ public class Footprint extends MovementMarkable {
   // Defaults for Type variables
   protected static final char DEFAULT_TRAIL_KEY = 'T';
   protected static final String DEFAULT_MENU_COMMAND = "Movement Trail";
-  protected static final Boolean DEFAULT_INITIALLY_VISIBLE = new Boolean(false);
-  protected static final Boolean DEFAULT_GLOBALLY_VISIBLE = new Boolean(false);
+  protected static final Boolean DEFAULT_INITIALLY_VISIBLE = Boolean.FALSE;
+  protected static final Boolean DEFAULT_GLOBALLY_VISIBLE = Boolean.FALSE;
   protected static final int DEFAULT_CIRCLE_RADIUS = 10;
   protected static final Color DEFAULT_FILL_COLOR = Color.WHITE;
   protected static final Color DEFAULT_LINE_COLOR = Color.BLACK;
@@ -630,10 +630,12 @@ public class Footprint extends MovementMarkable {
       mc = new StringConfigurer(null, "Menu Command:  ", p.menuCommand);
       controls.add(mc.getControls());
 
-      iv = new BooleanConfigurer(null, "Trails start visible?", new Boolean(p.initiallyVisible));
+      iv = new BooleanConfigurer(null, "Trails start visible?",
+                                 Boolean.valueOf(p.initiallyVisible));
       controls.add(iv.getControls());
 
-      gv = new BooleanConfigurer(null, "Trails are visible to all players?", new Boolean(p.globallyVisible));
+      gv = new BooleanConfigurer(null, "Trails are visible to all players?",
+                                 Boolean.valueOf(p.globallyVisible));
       controls.add(gv.getControls());
 
       cr = new IntConfigurer(null, "Circle Radius:  ", new Integer(p.circleRadius));

@@ -132,7 +132,8 @@ public class ZoneHighlight extends AbstractConfigurable  {
           ImageIcon i = new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(imageName));
           BufferedImage bi = new BufferedImage(i.getIconWidth(), i.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
           Graphics2D big = bi.createGraphics();
-          big.drawImage(i.getImage(), 0, 0, null);          
+          big.drawImage(i.getImage(), 0, 0, null);
+          big.dispose();
           paint = new TexturePaint(bi, new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
         }
         catch (IOException e) {
@@ -150,6 +151,8 @@ public class ZoneHighlight extends AbstractConfigurable  {
           big.drawLine(0, 5, 5, 0);
           big.drawLine(1, 0, 5, 4);
         }
+        big.dispose();
+
         Rectangle r = new Rectangle(0,0,6,6);
         paint = new TexturePaint(bi, r);
       }

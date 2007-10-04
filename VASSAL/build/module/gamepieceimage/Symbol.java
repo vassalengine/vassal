@@ -435,9 +435,8 @@ public class Symbol {
       int count = option.getCount();
       
       BufferedImage bi = createImage(count, sym_w, sym_h, gap);
-      Graphics g = bi.getGraphics();
-      Graphics2D g2 = (Graphics2D) g;
-      g2.setBackground(null);
+      Graphics2D g = bi.createGraphics();
+      g.setBackground(null);
       g.setColor(Color.BLACK);
       return buildSizeImage(g, count, type, sym_w, sym_h, gap);
     }
@@ -460,12 +459,11 @@ public class Symbol {
       else {
         bi = createImage(count, sym_w, sym_h, gap);
       }
-      Graphics big = bi.getGraphics();
-      Graphics2D big2 = (Graphics2D) big;
-      big.setColor(g.getColor());
-      big2.setBackground(null);
+      Graphics2D big = bi.createGraphics();
+      big.setColor(g2.getColor());
+      big.setBackground(null);
    
-      big2.setStroke(g2.getStroke());
+      big.setStroke(g2.getStroke());
       //big2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
       int x_pos = 0;
@@ -493,13 +491,14 @@ public class Symbol {
         }
         x_pos += sym_w + gap;
       }
-      
-      return bi;
-      
+     
+      big.dispose();
+ 
+      return bi;      
     }
-
   }
 }
+
   class SizeOption {
     String name;
     String type;
@@ -523,5 +522,3 @@ public class Symbol {
       return count;
     }
   }
-  
-

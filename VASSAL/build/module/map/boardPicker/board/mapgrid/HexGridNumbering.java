@@ -97,7 +97,7 @@ public class HexGridNumbering extends RegularGridNumbering {
   public void setAttribute(String key, Object value) {
     if (STAGGER.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       stagger = ((Boolean) value).booleanValue();
     }

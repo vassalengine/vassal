@@ -132,7 +132,7 @@ public class StackMetrics extends AbstractConfigurable {
     }
     else if (DISABLED.equals(name)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       disabled = ((Boolean) value).booleanValue();
     }

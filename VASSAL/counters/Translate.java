@@ -288,7 +288,8 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add(xDist.getControls());
       yDist = new StringConfigurer(null, "Distance upwards:  ", t.yDist.getFormat());
       controls.add(yDist.getControls());
-      moveStack = new BooleanConfigurer(null, "Move entire stack?", new Boolean(t.moveStack));
+      moveStack = new BooleanConfigurer(null, "Move entire stack?",
+                                        Boolean.valueOf(t.moveStack));
       controls.add(moveStack.getControls());
       
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);

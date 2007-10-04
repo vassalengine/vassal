@@ -638,11 +638,12 @@ public class WizardSupport {
       ImageIcon icon = new ImageIcon(image);
       logoSize = new Dimension(icon.getIconWidth(), icon.getIconHeight());
       BufferedImage buffIm = new BufferedImage(logoSize.width, logoSize.height, BufferedImage.TYPE_4BYTE_ABGR);
-      Graphics2D g = (Graphics2D) buffIm.getGraphics();
+      Graphics2D g = buffIm.createGraphics();
       g.setColor(Color.white);
       g.fillRect(0, 0, icon.getIconWidth(), icon.getIconHeight());
       g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
       icon.paintIcon(null, g, 0, 0);
+      g.dispose();
       UIManager.put("wizard.sidebar.image", buffIm); //$NON-NLS-1$
     }
   }

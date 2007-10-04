@@ -167,10 +167,10 @@ public class Immobilized extends Decorator implements EditablePiece {
       return Boolean.TRUE;
     }
     else if (Properties.TERRAIN.equals(key)) {
-      return new Boolean(moveIfSelected || neverMove);
+      return Boolean.valueOf(moveIfSelected || neverMove);
     }
     else if (Properties.IGNORE_GRID.equals(key)) {
-      return new Boolean(ignoreGrid);
+      return Boolean.valueOf(ignoreGrid);
     }
     else if (Properties.SELECT_EVENT_FILTER.equals(key)) {
       return selectFilter;

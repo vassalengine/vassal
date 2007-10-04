@@ -21,7 +21,7 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
@@ -84,12 +84,14 @@ public class SwatchComboBox extends JComboBox {
 
       //Set the icon and text. If icon was null, say so.
       //String name = (String) list.get
-      BufferedImage bi = new BufferedImage(25, 12, BufferedImage.TYPE_INT_RGB);
-      Graphics g = bi.getGraphics();
+      BufferedImage bi = new BufferedImage(25, 12, BufferedImage.TYPE_INT_ARGB);
+      Graphics2D g = bi.createGraphics();
       g.setColor(swatch.getColor());
       g.fillRect(0, 0, 25, 12);
       g.setColor(Color.black);
       g.drawRect(0, 0, 24, 11);
+      g.dispose();
+
       ImageIcon icon = new ImageIcon(bi);
 
       setIcon(icon);
@@ -132,12 +134,14 @@ public class SwatchComboBox extends JComboBox {
 
       //Set the icon and text. If icon was null, say so.
       //String name = (String) list.get
-      BufferedImage bi = new BufferedImage(25, 12, BufferedImage.TYPE_INT_RGB);
-      Graphics g = bi.getGraphics();
+      BufferedImage bi = new BufferedImage(25, 12, BufferedImage.TYPE_INT_ARGB);
+      Graphics2D g = bi.createGraphics();
       g.setColor(swatch.getColor());
       g.fillRect(0, 0, 25, 12);
       g.setColor(Color.black);
       g.drawRect(0, 0, 24, 11);
+      g.dispose();
+
       ImageIcon icon = new ImageIcon(bi);
 
       setIcon(icon);

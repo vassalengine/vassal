@@ -266,10 +266,13 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
         }
         else {
           Icon icon = new ImageIcon(im);
-          if (icon.getIconWidth() > 0
-              && icon.getIconHeight() > 0) {
-            shadePattern = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-            shadePattern.createGraphics().drawImage(im, 0, 0, null);
+          if (icon.getIconWidth() > 0 && icon.getIconHeight() > 0) {
+            shadePattern = new BufferedImage(icon.getIconWidth(),
+                                             icon.getIconHeight(),
+                                             BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = shadePattern.createGraphics();
+            g.drawImage(im, 0, 0, null);
+            g.dispose();
           }
         }
       }
@@ -277,27 +280,29 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       }
     }
     if (shadePattern == null) {
-      shadePattern = new BufferedImage(2, 2, BufferedImage.TYPE_4BYTE_ABGR);
-      Graphics2D g2 = shadePattern.createGraphics();
-      g2.setColor(color);
+      shadePattern = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
+      Graphics2D g = shadePattern.createGraphics();
+      g.setColor(color);
       if (pattern.equals(TYPE_25_PERCENT)) {
-        g2.drawLine(0, 0, 0, 0);
+        g.drawLine(0, 0, 0, 0);
       }
       else if (pattern.equals(TYPE_50_PERCENT)) {
-        g2.drawLine(0, 0, 0, 0);
-        g2.drawLine(1, 1, 1, 1);
+        g.drawLine(0, 0, 0, 0);
+        g.drawLine(1, 1, 1, 1);
       }
       else if (pattern.equals(TYPE_75_PERCENT)) {
-        g2.drawLine(0, 0, 1, 0);
-        g2.drawLine(1, 1, 1, 1);
+        g.drawLine(0, 0, 1, 0);
+        g.drawLine(1, 1, 1, 1);
       }
       else {
-        g2.drawLine(0, 0, 1, 0);
-        g2.drawLine(0, 1, 1, 1);
+        g.drawLine(0, 0, 1, 0);
+        g.drawLine(0, 1, 1, 1);
       }
+      g.dispose();
     }
 
-    patternRect = new Rectangle(0, 0, shadePattern.getWidth(), shadePattern.getHeight());
+    patternRect =
+      new Rectangle(0, 0, shadePattern.getWidth(), shadePattern.getHeight());
   }
 
   protected BasicStroke getStroke(double zoom) {
@@ -500,7 +505,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (ALWAYS_ON.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       alwaysOn = ((Boolean) value).booleanValue();
       setLaunchButtonVisibility();
@@ -508,7 +513,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (STARTS_ON.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       startsOn = ((Boolean) value).booleanValue();
       setLaunchButtonVisibility();
@@ -528,7 +533,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (DRAW_OVER.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       drawOver = ((Boolean) value).booleanValue();
     }
@@ -555,7 +560,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (BORDER.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       border = ((Boolean) value).booleanValue();
     }

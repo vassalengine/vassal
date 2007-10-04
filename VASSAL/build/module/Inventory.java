@@ -625,7 +625,7 @@ public class Inventory extends AbstractConfigurable
    */
   protected boolean getBooleanValue(Object o) {
     if (o instanceof String) {
-      o = new Boolean((String) o);
+      o = Boolean.valueOf((String) o);
     }
     return ((Boolean) o).booleanValue();
   }

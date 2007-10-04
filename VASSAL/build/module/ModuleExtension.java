@@ -207,7 +207,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
     }
     else if (UNIVERSAL.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       universal = ((Boolean) value).booleanValue();
     }

@@ -218,11 +218,12 @@ public class ImageItem extends Item {
     }
     else if(iName.trim().length() == 0) {
       image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
-      Graphics bg = image.getGraphics();
+      Graphics2D bg = (Graphics2D) image.getGraphics();
       bg.setColor(Color.black);
       bg.drawRect(0, 0, 9, 9);
       bg.drawLine(0, 0, 9, 9);
       bg.drawLine(0, 9, 9, 0);
+      bg.dispose();
       imageBounds = new Rectangle(-5, -5, 10, 10);
     }
     else {

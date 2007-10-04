@@ -118,7 +118,7 @@ public abstract class Item extends AbstractConfigurable {
     }
     else if (ADVANCED.equals(key)) {
       if (o instanceof String) {
-        o = new Boolean(Boolean.getBoolean((String) o));
+        o = Boolean.valueOf((String) o);
       }
       advanced = ((Boolean) o).booleanValue();
     }
@@ -130,7 +130,7 @@ public abstract class Item extends AbstractConfigurable {
     }
     else if (ANTIALIAS.equals(key)) {
       if (o instanceof String) {
-        o = new Boolean(Boolean.getBoolean((String) o));
+        o = Boolean.valueOf((String) o);
       }
       antialias = ((Boolean) o).booleanValue();
     }

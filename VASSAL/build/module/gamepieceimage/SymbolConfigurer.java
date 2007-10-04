@@ -21,7 +21,7 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
@@ -93,14 +93,16 @@ public class SymbolConfigurer extends StringEnumConfigurer {
           setForeground(list.getForeground());
         }
 
-        BufferedImage bi = new BufferedImage(sample_w, sample_h, BufferedImage.TYPE_INT_RGB);
-        Graphics g = bi.getGraphics();
+        BufferedImage bi =
+          new BufferedImage(sample_w, sample_h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = bi.createGraphics();
 
         String symbol1 = (String) value;
         String symbol2 = Symbol.NatoUnitSymbolSet.NONE;
         Rectangle bounds = new Rectangle(0, 0, sample_w-1, sample_h-1);   
         Symbol.NatoUnitSymbolSet.draw(symbol1, symbol2, g, bounds, Color.BLACK, Color.WHITE, Color.BLACK, 1.0f, ""); //$NON-NLS-1$
-        
+        g.dispose();       
+ 
         ImageIcon icon = new ImageIcon(bi);
 
         setIcon(icon);

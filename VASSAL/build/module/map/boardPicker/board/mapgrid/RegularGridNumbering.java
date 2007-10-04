@@ -187,13 +187,13 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
     else if (H_DESCEND.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       hDescending = ((Boolean) value).booleanValue();
     }
     else if (V_DESCEND.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       vDescending = ((Boolean) value).booleanValue();
     }
@@ -211,7 +211,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
     else if (VISIBLE.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       visible = ((Boolean) value).booleanValue();
     }

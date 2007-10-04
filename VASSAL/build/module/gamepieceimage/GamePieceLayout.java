@@ -22,7 +22,6 @@ package VASSAL.build.module.gamepieceimage;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
@@ -308,8 +307,10 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
 
   public Image buildImage(GamePieceImage defn) {
     // Create our base image
-    Image image = new BufferedImage(Math.max(width,1), Math.max(height,1), BufferedImage.TYPE_INT_ARGB);
-    Graphics g = image.getGraphics();
+    BufferedImage image = new BufferedImage(Math.max(width,1),
+                                            Math.max(height,1),
+                                            BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = image.createGraphics();
 
     // Fill in the sample Background color
     Color bgColor = defn.getBgColor().getColor();
@@ -325,12 +326,15 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
       if (getBorder().equals(BORDER_PLAIN) || getBorder().equals(BORDER_FANCY)) {
         Color bg = bgColor == null ? Color.WHITE : bgColor;
         g.setColor(defn.getBorderColor().getColor());
-        ((Graphics2D) g).setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g.drawRect(0, 0, width - 1, height - 1);
         if (getBorder().equals(BORDER_FANCY)) {
-          Color lt = new Color(bg.getRed() / 2, bg.getGreen() / 2, bg.getBlue() / 2);
-          Color dk = new Color(bg.getRed() + (255 - bg.getRed()) / 2, bg.getGreen()
-                                                                      + (255 - bg.getGreen()) / 2, bg.getBlue() + (255 - bg.getBlue()) / 2);
+          Color lt = new Color(bg.getRed()   / 2,
+                               bg.getGreen() / 2,
+                               bg.getBlue()  / 2);
+          Color dk = new Color(bg.getRed()   + (255 - bg.getRed())   / 2,
+                               bg.getGreen() + (255 - bg.getGreen()) / 2,
+                               bg.getBlue()  + (255 - bg.getBlue())  / 2);
           g.setColor(dk);
           g.drawLine(1, 1, width - 3, 1);
           g.drawLine(1, 2, 1, height - 3);
@@ -347,6 +351,9 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
         item.draw(g, defn);
       }
     }
+
+    g.dispose();
+
     return image;
   }
 

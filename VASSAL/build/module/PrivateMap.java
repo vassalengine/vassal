@@ -98,7 +98,7 @@ public class PrivateMap extends Map {
   public void setAttribute(String key, Object value) {
     if (VISIBLE.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       visibleToAll = ((Boolean) value).booleanValue();
     }

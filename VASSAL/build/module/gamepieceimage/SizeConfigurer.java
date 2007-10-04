@@ -21,7 +21,7 @@ package VASSAL.build.module.gamepieceimage;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
@@ -98,7 +98,7 @@ public class SizeConfigurer extends StringEnumConfigurer {
         final int h = sample_h+1;
         
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-        Graphics g = image.getGraphics();
+        Graphics2D g = image.createGraphics();
         g.setColor(Color.white);
         g.fillRect(0, 0, w, h);
         g.setColor(Color.black);
@@ -106,8 +106,9 @@ public class SizeConfigurer extends StringEnumConfigurer {
         
         BufferedImage bi = Symbol.NatoUnitSymbolSet.buildSizeImage((String) value, sample_w, sample_h, sample_g);
         int x = (w/2) - (bi.getWidth()/2);
-        g.drawImage(bi, x, 0, null);       
-        
+        g.drawImage(bi, x, 0, null);
+        g.dispose();       
+ 
         ImageIcon icon = new ImageIcon(image);
 
         setIcon(icon);

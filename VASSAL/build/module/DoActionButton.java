@@ -175,7 +175,7 @@ public class DoActionButton extends AbstractConfigurable {
     }
     else if (DO_REPORT.equals(key)) {
       if (o instanceof String) {
-        o = new Boolean((String) o);
+        o = Boolean.valueOf((String) o);
       }
       doReport = ((Boolean) o).booleanValue();
     }
@@ -184,7 +184,7 @@ public class DoActionButton extends AbstractConfigurable {
     }
     else if (DO_SOUND.equals(key)) {
       if (o instanceof String) {
-        o = new Boolean((String) o);
+        o = Boolean.valueOf((String) o);
       }
       doSound = ((Boolean) o).booleanValue();
     }
@@ -196,7 +196,7 @@ public class DoActionButton extends AbstractConfigurable {
     }
     else if (DO_HOTKEY.equals(key)) {
       if (o instanceof String) {
-        o = new Boolean((String) o);
+        o = Boolean.valueOf((String) o);
       }
       doHotkey = ((Boolean) o).booleanValue();
     }

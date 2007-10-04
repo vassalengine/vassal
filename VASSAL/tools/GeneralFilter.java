@@ -18,7 +18,7 @@
  */
 package VASSAL.tools;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -535,7 +535,7 @@ public final class GeneralFilter {
       BufferedImage tmp = new BufferedImage(src.getWidth(),
                                             src.getHeight(),
                                             BufferedImage.TYPE_INT_ARGB);
-      Graphics g = tmp.getGraphics();
+      Graphics2D g = tmp.createGraphics();
       g.drawImage(src, 0, 0, null);
       g.dispose();
  

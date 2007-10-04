@@ -155,7 +155,7 @@ public class LayerControl extends AbstractConfigurable {
     }
     else if (SKIP.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       skip = ((Boolean) value).booleanValue();
     }

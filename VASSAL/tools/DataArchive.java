@@ -342,6 +342,7 @@ public class DataArchive extends SecureClassLoader {
       t.translate(ubox.x, ubox.y);
 
       g.drawImage(im, t, null);
+      g.dispose();
       return trans;
     }
   }

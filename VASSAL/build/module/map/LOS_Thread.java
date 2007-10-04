@@ -240,7 +240,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   public void setAttribute(String key, Object value) {
     if (DRAW_RANGE.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       drawRange = ((Boolean) value).booleanValue();
     }
@@ -263,7 +263,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
     else if (HIDE_COUNTERS.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       hideCounters = ((Boolean) value).booleanValue();
     }
@@ -294,13 +294,13 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
     else if (SNAP_START.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       snapStart = ((Boolean) value).booleanValue();
     }
     else if (SNAP_END.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       snapEnd = ((Boolean) value).booleanValue();
     }

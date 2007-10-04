@@ -521,12 +521,15 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
      */
     public BufferedImage getDummyImage() {
       if (dummyImage == null) {
-        dummyImage = new BufferedImage(dummySize.width*2, dummySize.height*2, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = dummyImage.getGraphics();
+        dummyImage = new BufferedImage(dummySize.width*2,
+                                       dummySize.height*2,
+                                       BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = dummyImage.createGraphics();
         g.setColor(Color.white);
         g.fillRect(0, 0, dummySize.width, dummySize.height);
         g.setColor(Color.black);
         g.drawRect(0, 0, dummySize.width, dummySize.height);
+        g.dispose();
       }
       return dummyImage;
     }

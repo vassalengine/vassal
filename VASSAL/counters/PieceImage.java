@@ -19,6 +19,7 @@
 package VASSAL.counters;
 
 import java.awt.Component;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -43,7 +44,9 @@ public class PieceImage {
       im = new BufferedImage(Math.max(bbox.width,1), Math.max(bbox.height,1), BufferedImage.TYPE_4BYTE_ABGR);
       ((BufferedImage) im).setRGB(0, 0, bbox.width, bbox.height, new int[bbox.width * bbox.height], 0, bbox.width);
 
-      piece.draw(((BufferedImage) im).createGraphics(), -bbox.x, -bbox.y, obs, 1.0);
+      Graphics2D g = (Graphics2D) im.getGraphics();
+      piece.draw(g, -bbox.x, -bbox.y, obs, 1.0);
+      g.dispose();
     }
     return im;
   }

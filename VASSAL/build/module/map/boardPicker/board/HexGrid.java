@@ -332,31 +332,31 @@ public class HexGrid extends AbstractConfigurable
     }
     else if (CORNERS.equals(key)) {
       if (val instanceof String) {
-        val = new Boolean((String) val);
+        val = Boolean.valueOf((String) val);
       }
       cornersLegal = ((Boolean) val).booleanValue();
     }
     else if (EDGES.equals(key)) {
       if (val instanceof String) {
-        val = new Boolean((String) val);
+        val = Boolean.valueOf((String) val);
       }
       edgesLegal = ((Boolean) val).booleanValue();
     }
     else if (SIDEWAYS.equals(key)) {
       if (val instanceof String) {
-        val = new Boolean((String) val);
+        val = Boolean.valueOf((String) val);
       }
       sideways = ((Boolean) val).booleanValue();
     }
     else if (VISIBLE.equals(key)) {
       if (val instanceof String) {
-        val = new Boolean((String) val);
+        val = Boolean.valueOf((String) val);
       }
       visible = ((Boolean) val).booleanValue();
     }
     else if (DOTS_VISIBLE.equals(key)) {
       if (val instanceof String) {
-        val = new Boolean((String) val);
+        val = Boolean.valueOf((String) val);
       }
       dotsVisible = ((Boolean) val).booleanValue();
     }

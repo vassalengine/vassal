@@ -239,7 +239,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
       b.add(yOff.getControls());
       controls.add(b);
 
-      fixedAngle = new BooleanConfigurer(null, "Pivot through fixed angle?", new Boolean(p.fixedAngle));
+      fixedAngle = new BooleanConfigurer(null, "Pivot through fixed angle?",
+                                         Boolean.valueOf(p.fixedAngle));
       controls.add(fixedAngle.getControls());
 
       angle = new DoubleConfigurer(null, "Angle:  ", new Double(p.angle));

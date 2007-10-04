@@ -299,7 +299,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		else if (ALLOW_MULTIPLE.equals(key)) {
 			if (value instanceof String) {
-				value = new Boolean((String) value);
+				value = Boolean.valueOf((String) value);
 			}
 			allowMultiple = ((Boolean) value).booleanValue();
 			if (picker != null) {
@@ -324,14 +324,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		else if (USE_LAUNCH_BUTTON.equals(key)) {
 			if (value instanceof String) {
-				value = new Boolean((String) value);
+				value = Boolean.valueOf((String) value);
 			}
 			useLaunchButton = ((Boolean) value).booleanValue();
 			launchButton.setVisible(useLaunchButton);
 		}
 		else if (SUPPRESS_AUTO.equals(key)) {
 			if (value instanceof String) {
-				value = new Boolean((String) value);
+				value = Boolean.valueOf((String) value);
 			}
 			if (Boolean.TRUE.equals(value)) {
 				moveWithinFormat = ""; //$NON-NLS-1$

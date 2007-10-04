@@ -1141,7 +1141,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       yOffInput.setText("" + e.yOff);
       images.setImageList(e.imageName);
 
-      followConfig.setValue(new Boolean(e.followProperty));
+      followConfig.setValue(Boolean.valueOf(e.followProperty));
       propertyConfig.setValue(e.propertyName);
 
       /** Add at least one level if none defined */

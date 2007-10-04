@@ -157,7 +157,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     }
     else if (key.equals(USE_IMAGE)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       useImage = ((Boolean) value).booleanValue();
 

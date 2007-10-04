@@ -425,7 +425,7 @@ public class MassKeyCommand extends AbstractConfigurable {
     }
     else if (REPORT_SINGLE.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       globalCommand.setReportSingle(((Boolean) value).booleanValue());
     }

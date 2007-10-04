@@ -881,13 +881,15 @@ public class PieceMover extends AbstractBuildable
       int width = boundingBox.width + EXTRA_BORDER * 2;
       int height = boundingBox.height + EXTRA_BORDER * 2;
       dragImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-      Graphics2D graphics = dragImage.createGraphics();
+      Graphics2D g = dragImage.createGraphics();
       int index = 0;
       for (dragContents = DragBuffer.getBuffer().getIterator(); dragContents.hasMoreElements();) {
         GamePiece piece = dragContents.nextPiece();
         Point pos = relativePositions.get(index++);
-        piece.draw(graphics, EXTRA_BORDER - boundingBox.x + pos.x, EXTRA_BORDER - boundingBox.y + pos.y, null, zoom);
+        piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x, EXTRA_BORDER - boundingBox.y + pos.y, null, zoom);
       }
+      g.dispose();
+
       // Make bitmap 50% transparent
       WritableRaster alphaRaster = dragImage.getAlphaRaster();
       int size = width * height;
@@ -964,13 +966,15 @@ public class PieceMover extends AbstractBuildable
       int width = boundingBox.width + EXTRA_BORDER * 2;
       int height = boundingBox.height + EXTRA_BORDER * 2;
       BufferedImage cursorImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-      Graphics2D graphics = cursorImage.createGraphics();
+      Graphics2D g = cursorImage.createGraphics();
       int index = 0;
       for (dragContents = DragBuffer.getBuffer().getIterator(); dragContents.hasMoreElements();) {
         GamePiece piece = dragContents.nextPiece();
         Point pos = relativePositions.get(index++);
-        piece.draw(graphics, EXTRA_BORDER - boundingBox.x + pos.x, EXTRA_BORDER - boundingBox.y + pos.y, dragCursor, zoom);
+        piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x, EXTRA_BORDER - boundingBox.y + pos.y, dragCursor, zoom);
       }
+      g.dispose();
+
       dragCursor.setSize(width, height);
       // Make bitmap 50% transparent
       WritableRaster alphaRaster = cursorImage.getAlphaRaster();

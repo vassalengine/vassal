@@ -230,10 +230,10 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   public Object getProperty(Object key) {
     if (Properties.OBSCURED_TO_ME.equals(key)) {
-      return new Boolean(obscuredToMe());
+      return Boolean.valueOf(obscuredToMe());
     }
     else if (Properties.OBSCURED_TO_OTHERS.equals(key)) {
-      return new Boolean(obscuredToOthers());
+      return Boolean.valueOf(obscuredToOthers());
     }
     else if (ID.equals(key)) {
       return obscuredBy;

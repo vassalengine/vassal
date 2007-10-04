@@ -18,6 +18,10 @@
  */
 package VASSAL.tools;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RGBImageFilter;
 
@@ -63,11 +67,13 @@ public class TransparentFilter extends RGBImageFilter {
    * For the given input color, return the color that this color
    * will map to in an offscreen image created by the given Component
    */
-  public static int getOffscreenEquivalent(int color, java.awt.Component obs) {
-    java.awt.Image im = obs.createImage(1, 1);
-    java.awt.Graphics g = im.getGraphics();
+  public static int getOffscreenEquivalent(int color, Component obs) {
+    Image im = obs.createImage(1, 1);
+    Graphics2D g = (Graphics2D) im.getGraphics();
     g.setColor(new java.awt.Color(color));
     g.fillRect(0, 0, 1, 1);
+    g.dispose();
+
     int[] bg = new int[1];
     PixelGrabber pg = new PixelGrabber(im, 0, 0, 1, 1, bg, 0, 1);
     try {
@@ -79,7 +85,7 @@ public class TransparentFilter extends RGBImageFilter {
     return bg[0];
   }
 
-  public void setAlpha(double alpha, java.awt.Color c) {
+  public void setAlpha(double alpha, Color c) {
     setAlpha(alpha, c.getRGB());
   }
 

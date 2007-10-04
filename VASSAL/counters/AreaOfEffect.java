@@ -350,7 +350,8 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       transparencyValue = new IntConfigurer(null, "Opacity (%):  ", new Integer((int) (trait.transparencyLevel * 100)));
       panel.add(transparencyValue.getControls());
       
-      fixedRadius = new BooleanConfigurer(null, "Fixed Radius?", new Boolean(trait.fixedRadius));
+      fixedRadius = new BooleanConfigurer(null, "Fixed Radius?", 
+                                          Boolean.valueOf(trait.fixedRadius));
       fixedRadius.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           updateRangeVisibility();

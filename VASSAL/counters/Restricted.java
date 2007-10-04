@@ -112,7 +112,7 @@ public class Restricted extends Decorator implements EditablePiece {
 
   public Object getProperty(Object key) {
     if (Properties.RESTRICTED.equals(key)) {
-      return new Boolean(isRestricted());
+      return Boolean.valueOf(isRestricted());
     }
     else {
       return super.getProperty(key);

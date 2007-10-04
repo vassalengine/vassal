@@ -164,7 +164,7 @@ public class PanelWidget extends Widget {
     }
     else if (FIXED.equals(name)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       fixed = ((Boolean) value).booleanValue();
     }
@@ -176,7 +176,7 @@ public class PanelWidget extends Widget {
     }
     else if (VERTICAL.equals(name)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       vertical = ((Boolean) value).booleanValue();
     }
