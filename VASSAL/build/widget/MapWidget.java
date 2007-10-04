@@ -10,8 +10,8 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import org.w3c.dom.Element;
@@ -22,7 +22,7 @@ import VASSAL.build.module.documentation.HelpFile;
 
 public class MapWidget extends Widget {
   protected JPanel panel;
-  protected JScrollPane mapScroll;
+  protected JComponent mapHolder;
   protected WidgetMap map;
   protected Buildable parent;
   protected JTabbedPane tab;
@@ -79,13 +79,13 @@ public class MapWidget extends Widget {
 
   public void add(Buildable b) {
     if (b instanceof WidgetMap) {
-      if (mapScroll != null) {
-        panel.remove(mapScroll);
-        mapScroll = null;
+      if (mapHolder != null) {
+        panel.remove(mapHolder);
+        mapHolder = null;
       }
       map = (WidgetMap) b;
-      mapScroll = map.getScroll();
-      panel.add(mapScroll, BorderLayout.CENTER);
+      mapHolder = map.getLayeredPane();
+      panel.add(mapHolder, BorderLayout.CENTER);
       panel.add(map.getToolBar(), BorderLayout.NORTH);
       panel.revalidate();
     }
@@ -94,9 +94,9 @@ public class MapWidget extends Widget {
 
   public void remove(Buildable b) {
     if (b instanceof WidgetMap) {
-      panel.remove(mapScroll);
+      panel.remove(mapHolder);
       panel.remove(map.getToolBar());
-      mapScroll = null;
+      mapHolder = null;
     }
     super.remove(b);
   }

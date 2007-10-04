@@ -173,7 +173,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected static UniqueIdManager idMgr = new UniqueIdManager("Map"); //$NON-NLS-1$
 	protected JPanel theMap;
   protected ArrayList<Drawable> drawComponents = new ArrayList<Drawable>();
-  protected JLayeredPane layeredPane;
+  protected JLayeredPane layeredPane = new JLayeredPane();
 	protected JScrollPane scroll;
 	protected ComponentSplitter.SplitPane mainWindowDock;
 	protected BoardPicker picker;
@@ -2168,7 +2168,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       scroll.setAlignmentX(0.0f);
       scroll.setAlignmentY(0.0f);
 
-      layeredPane = new JLayeredPane();
       layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
       layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
 		}
@@ -2177,11 +2176,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   /** @return the JLayeredPane holding map insets */
   public JLayeredPane getLayeredPane() {
-    // FIXME: maybe move some of getView() into a private init method?
-    if (theMap == null) getView();
     return layeredPane;
   }
-
 
   /**
    * The Layout responsible for arranging insets which overlay the Map

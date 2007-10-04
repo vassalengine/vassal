@@ -40,6 +40,7 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
@@ -149,6 +150,9 @@ public class PrivateMap extends Map {
             KeyEvent.VK_PAGE_DOWN, 0));
       scroll.unregisterKeyboardAction(KeyStroke.getKeyStroke(
             KeyEvent.VK_PAGE_UP, 0));
+
+      layeredPane.setLayout(new InsetLayout(layeredPane, scroll));
+      layeredPane.add(scroll, JLayeredPane.DEFAULT_LAYER);
     }
     return theMap;
   }
