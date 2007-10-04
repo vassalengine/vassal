@@ -276,7 +276,7 @@ public class PieceMover extends AbstractBuildable
       public Object visitDeck(Deck d) {
         Point pos = d.getPosition();
         Point p = new Point(pt.x - pos.x, pt.y - pos.y);
-        if (d.getShape().contains(p)) {
+        if (d.getShape().contains(p) && d.getPieceCount() > 0) {
           return d;
         }
         else {
