@@ -157,7 +157,9 @@ public class ComponentI18nData {
         }
       }
       if (p instanceof PlaceMarker) {
-        children.add(new TranslatableMarker((PlaceMarker) p));
+        if (((PlaceMarker)p).isMarkerStandalone()) {
+          children.add(new TranslatableMarker((PlaceMarker) p));
+        }
       }
       if (p instanceof BasicPiece) {
         p = null;

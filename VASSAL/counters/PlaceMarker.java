@@ -205,7 +205,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       return null;
     }
     GamePiece piece = null;
-    if (markerSpec.startsWith(BasicCommandEncoder.ADD)) {
+    if (isMarkerStandalone()) {
       AddPiece comm = (AddPiece) GameModule.getGameModule().decode(markerSpec);
       piece = comm.getTarget();
       piece.setState(comm.getState());
@@ -221,6 +221,13 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       }
     }
     return piece;
+  }
+
+  /**
+   * @return true if the marker is defined from scratch.  Return false if the marker is defined as a component in the Game Piece Palette
+   */
+  public boolean isMarkerStandalone() {
+    return markerSpec.startsWith(BasicCommandEncoder.ADD);
   }
 
   public void mySetState(String newState) {
