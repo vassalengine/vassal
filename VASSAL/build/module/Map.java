@@ -786,7 +786,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	}
 
 	/**
-   * @return true if the given point may not be a local location. I.e., if this grid will attempt to snap it to the
+   * @return true if the given point may not be a legal location. I.e., if this grid will attempt to snap it to the
    *         nearest grid location
    */
 	public boolean isLocationRestricted(Point p) {

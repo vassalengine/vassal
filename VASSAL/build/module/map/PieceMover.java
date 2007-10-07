@@ -177,8 +177,10 @@ public class PieceMover extends AbstractBuildable
         GamePiece selected = null;
         if (this.map.getStackMetrics().isStackingEnabled() && this.map.getPieceCollection().canMerge(dragging, s) && !DragBuffer.getBuffer().contains(s)
             && s.topPiece() != null) {
-          if (this.map.isLocationRestricted(pt) && s.getPosition().equals(this.map.snapTo(pt))) {
-            selected = s;
+          if (this.map.isLocationRestricted(pt)) {
+            if (s.getPosition().equals(this.map.snapTo(pt))) {
+              selected = s; 
+            }
           }
           else {
             selected = (GamePiece) super.visitStack(s);
