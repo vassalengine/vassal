@@ -632,7 +632,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       return s.substring(1);
     }
     if (s.endsWith("+")) {
-      return s.substring(0, s.length() - 2);
+      return s.substring(0, s.length() - 1);
     }
     return s;
   }

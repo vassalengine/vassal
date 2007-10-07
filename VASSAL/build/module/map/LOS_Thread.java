@@ -648,10 +648,11 @@ public class LOS_Thread extends AbstractConfigurable implements
       }
       arrow = map.mapCoordinates(p);
       
-      String location = map.locationName(p); 
+      String location = map.locationName(arrow); 
       if (!checkList.contains(location) && !location.equals(anchorLocation)) {
         checkList.add(location);
         lastLocation = location;
+        System.out.println("Dragged to "+lastLocation);
       }
       
       Point mapAnchor = map.mapCoordinates(lastAnchor);
