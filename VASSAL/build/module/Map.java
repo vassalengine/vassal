@@ -260,11 +260,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		}
 		else if (MARK_UNMOVED_ICON.equals(key)) {
 			markUnmovedIcon = (String) value;
+      if (pieceMover != null) {
+        pieceMover.setAttribute(key, value);
+      }
 		}
     else if (MARK_UNMOVED_TEXT.equals(key)) {
       markUnmovedText = (String) value;
       if (pieceMover != null) {
-        pieceMover.setAttribute(MARK_UNMOVED_TEXT, markUnmovedText);
+        pieceMover.setAttribute(key, value);
       }
     }
     else if (MARK_UNMOVED_TOOLTIP.equals(key)) {
