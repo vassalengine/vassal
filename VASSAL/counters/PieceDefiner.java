@@ -404,6 +404,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
           c.setInner((GamePiece) inUseModel.lastElement());
           inUseModel.addElement(c);
           c.mySetState(clipBoard.getState());
+          refresh();
         }
       }});
     moveUpDownPanel.add(pasteButton);

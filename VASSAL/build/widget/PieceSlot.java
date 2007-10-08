@@ -262,6 +262,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
         height = 60;
       }
       pieceDefinition = Builder.getText(e);
+      c = null;
     }
   }
 
