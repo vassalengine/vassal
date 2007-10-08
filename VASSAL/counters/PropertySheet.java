@@ -342,6 +342,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
             parent = (Frame) topWin;
           }
         }
+        else {
+          parent = GameModule.getGameModule().getFrame();
+        }
 
         frame = new PropertySheetDialog(parent);
         
