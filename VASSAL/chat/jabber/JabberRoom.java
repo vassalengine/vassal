@@ -62,12 +62,12 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         throw e;
       }
     }
-    try {
-      chat.changeSubject(getName());
-    }
-    catch (XMPPException e) {
-      // Room already exists but we're not the owner
-    }
+//    try {
+//      chat.changeSubject(getName());
+//    }
+//    catch (XMPPException e) {
+//      // Room already exists but we're not the owner
+//    }
     chat.addMessageListener(client);
     return chat;
   }

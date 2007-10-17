@@ -24,6 +24,7 @@ import java.util.Map;
 import org.jivesoftware.smack.util.StringUtils;
 
 import VASSAL.chat.SimplePlayer;
+import VASSAL.chat.SimpleStatus;
 
 public class JabberPlayer extends SimplePlayer {
   private String jid;
@@ -47,7 +48,7 @@ public class JabberPlayer extends SimplePlayer {
   }
 
   public String toString() {
-    return name + " (" + jid + ")";
+    return name + " (" + jid + ") "+"["+((SimpleStatus)status).isLooking()+","+((SimpleStatus)status).isAway()+"]";
   }
 
   public void join(JabberRoom room) {
