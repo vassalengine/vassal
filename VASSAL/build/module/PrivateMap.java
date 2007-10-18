@@ -270,6 +270,7 @@ public class PrivateMap extends Map {
   public static class View extends Map.View {
     private static final long serialVersionUID = 1L;
 
+    private boolean listenersActive;
     private List<KeyListener> keyListeners = new ArrayList<KeyListener>();
     private List<MouseListener> mouseListeners =
       new ArrayList<MouseListener>();
@@ -288,15 +289,30 @@ public class PrivateMap extends Map {
     }
 
     public synchronized void addKeyListener(KeyListener l) {
-      keyListeners.add(l);
+      if (listenersActive) {
+        super.addKeyListener(l);
+      }
+      else {
+        keyListeners.add(l);
+      }
     }
 
     public synchronized void addMouseListener(MouseListener l) {
-      mouseListeners.add(l);
+      if (listenersActive) {
+        super.addMouseListener(l);
+      }
+      else {
+        mouseListeners.add(l);
+      }
     }
 
     public synchronized void addMouseMotionListener(MouseMotionListener l) {
-      mouseMotionListeners.add(l);
+      if (listenersActive) {
+        super.addMouseMotionListener(l);
+      }
+      else {
+        mouseMotionListeners.add(l);
+      }
     }
 
     /**
@@ -313,6 +329,7 @@ public class PrivateMap extends Map {
         removeMouseMotionListener(l);
       }
       super.setDropTarget(null);
+      listenersActive = false;
     }
 
     /**
@@ -329,6 +346,7 @@ public class PrivateMap extends Map {
         super.addMouseMotionListener(l);
       }
       super.setDropTarget(dropTarget);
+      listenersActive = true;
     }
   }
 }
