@@ -55,7 +55,7 @@ public class ConsoleWindow {
   
   public void setControls(JComponent c) {
     while (frame.getContentPane().getComponentCount() > 1) {
-      frame.remove(frame.getContentPane().getComponentCount()-1);
+      frame.getContentPane().remove(frame.getContentPane().getComponentCount()-1);
     }
     frame.add(c);
     c.setAlignmentX(Box.CENTER_ALIGNMENT);
