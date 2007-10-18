@@ -181,10 +181,9 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
             }
           }
           monitor = new MonitorRooms();
+          monitor.init();
           propSupport.firePropertyChange(CONNECTED, null, Boolean.TRUE);
           setRoom(defaultRoom);
-          // poll = new Timer();
-          // poll.scheduleAtFixedRate(new PollRoomsThread(),1000,30000);
         }
         catch (XMPPException e) {
           reportXMPPException(e);
@@ -370,7 +369,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       }
     };
 
-    public MonitorRooms() throws XMPPException {
+    public void init() throws XMPPException {
       new TrackRooms().addTo(conn);
       new TrackStatus(getMonitorRoomJID().toLowerCase()).addTo(conn);
       monitorRoom = new MultiUserChat(conn, getMonitorRoomJID());
@@ -479,10 +478,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     }
 
     public void joined(String participant) {
-      // sendStatus((SimpleStatus) me.getStatus());
-      System.out.println(participant + " joined the monitor room");
-      JabberPlayer player = playerMgr.getPlayer(getAbsolutePlayerJID(participant));
-      // sendRoomQuery(player.getJid());
+      playerMgr.getPlayer(getAbsolutePlayerJID(participant));
     }
 
     public void left(String participant) {
