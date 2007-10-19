@@ -29,18 +29,24 @@ import java.awt.event.HierarchyListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.properties.MutablePropertiesContainer;
+import VASSAL.build.module.properties.MutableProperty;
+import VASSAL.build.module.properties.MutableProperty.Impl;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
@@ -54,7 +60,6 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 
-
 /**
  * ...
  */
@@ -62,7 +67,6 @@ import VASSAL.tools.UniqueIdManager;
 public class SpecialDiceButton extends AbstractConfigurable implements CommandEncoder, UniqueIdManager.Identifyable {
   protected static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t"; //$NON-NLS-1$
-
   protected List<SpecialDie> dice = new ArrayList<SpecialDie>();
   protected java.util.Random ran;
   protected boolean reportResultAsText = true;
@@ -71,16 +75,15 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   private LaunchButton launch;
   protected String id;
   protected String sMapName;
-
   protected JDialog dialog; // Dialog to show results graphical
   protected JLabel dialogLabel;
   protected Color bgColor;
   protected ResultsIcon resultsIcon = new ResultsIcon();
-
   protected FormattedString format = new FormattedString();
   protected String chatResultFormat = "** $" + NAME + "$ = [$result1$] *** <$" + GlobalOptions.PLAYER_NAME + "$>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   protected String windowTitleResultFormat = "$" + NAME + "$"; //$NON-NLS-1$ //$NON-NLS-2$
   protected String tooltip = ""; //$NON-NLS-1$
+  protected MutableProperty.Impl property = new Impl("",this);
 
   public static final String BUTTON_TEXT = "text";
   public static final String TOOLTIP = "tooltip";
@@ -99,7 +102,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   public static final String DICE_SET = "diceSet";
   public static final String HOTKEY = "hotkey";
   public static final String NONE = "<none>";
-
   private static final int[] EMPTY = new int[0];
 
   public SpecialDiceButton() {
@@ -107,7 +109,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     dialogLabel = new JLabel();
     dialogLabel.setIcon(resultsIcon);
     dialog.add(dialogLabel);
-
     ActionListener rollAction = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         DR();
@@ -132,18 +133,18 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   /**
    * The text reported after the results of the roll;
+   * 
    * @deprecated
    */
-  @Deprecated protected String getReportSuffix() {
+  @Deprecated
+  protected String getReportSuffix() {
     return " ***  <" //$NON-NLS-1$
         + GameModule.getGameModule().getChatter().getHandle() + ">"; //$NON-NLS-1$
   }
 
   /**
-   * Forwards the result of the roll to the {@link Chatter#send}
-   * method of the {@link Chatter} of the {@link GameModule}.  Format is
-   * prefix+[comma-separated roll list]+suffix
-   * additionally a command for every die is generated
+   * Forwards the result of the roll to the {@link Chatter#send} method of the {@link Chatter} of the {@link GameModule}.
+   * Format is prefix+[comma-separated roll list]+suffix additionally a command for every die is generated
    */
   protected void DR() {
     int[] results = new int[dice.size()];
@@ -160,7 +161,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   private Command reportResults(int[] results) {
     resultsIcon.setResults(results);
-
     if (reportResultInWindow) {
       dialog.setVisible(true);
       format.setFormat(windowTitleResultFormat);
@@ -175,95 +175,63 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   private Command reportTextResults(int[] results) {
     format.setProperty(NAME, getLocalizedConfigureName());
-
     int total = 0;
     for (int i = 0; i < dice.size(); ++i) {
       SpecialDie die = dice.get(i);
       format.setProperty("result" + (i + 1), die.getTextValue(results[i])); //$NON-NLS-1$
       total += die.getIntValue(results[i]);
     }
-    format.setProperty(RESULT_TOTAL, "" + total); //$NON-NLS-1$
+    format.setProperty(RESULT_TOTAL, String.valueOf(total)); //$NON-NLS-1$
     format.setFormat(chatResultFormat);
     String msg = format.getLocalizedText();
-    if (msg.startsWith("*")) { //$NON-NLS-1$
-      msg = "*" + msg; //$NON-NLS-1$
+    if (msg.length() > 0) {
+      if (msg.startsWith("*")) { //$NON-NLS-1$
+        msg = "*" + msg; //$NON-NLS-1$
+      }
+      else {
+        msg = "* " + msg; //$NON-NLS-1$
+      }
     }
-    else {
-      msg = "* " + msg; //$NON-NLS-1$
-    }
-    Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
+    Command c = msg.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
     c.execute();
+    c.append(property.setPropertyValue(String.valueOf(total)));
     return c;
   }
 
   /**
    * The Attributes of a DiceButton are:
-   *
-   * <code>BUTTON_TEXT</code> the label of the button in the toolbar
-   * <code>ICON</code> the icon of the button in the toolbar
-   * <code>HOTKEY</code> the hotkey equivalent of the button
-   * <code>DICE_SET</code> list of dice sets, an entry can be:
-   *                       [number]name of die[+|-modifier]
-   *                       "name of die" must be SpecialDie
-   *                       "modifier" is added/subtracted to/from total of dice
-   *                       [number]Dnumber of sides (e.g. 2D6)
-   * <code>NUMERIC</code> result of all dice is numeric
-   * <code>REPORT_TOTAL</code> If numeric and true, add the results of the dice together and report the total.  Otherwise, report the individual results
-   * <code>SORT</code> if true sort results per die by numeric value
-   * <code>RESULT_CHATTER</code> if true report results in chatter
-   * <code>RESULT_WINDOW</code> if true show result graphical in extra window
-   * <code>WINDOW_X</code> width of window or button
-   * <code>WINDOW_Y</code> height of window or button
-   * <code>RESULT_MAP</code> :TODO: if true show result in special area in map
-   * <code>MAP_NAME</code> :TODO: name of map
-   * <code>RESULT_BUTTON</code> if true show result graphical in button
+   * 
+   * <code>BUTTON_TEXT</code> the label of the button in the toolbar <code>ICON</code> the icon of the button in the
+   * toolbar <code>HOTKEY</code> the hotkey equivalent of the button <code>DICE_SET</code> list of dice sets, an
+   * entry can be: [number]name of die[+|-modifier] "name of die" must be SpecialDie "modifier" is added/subtracted
+   * to/from total of dice [number]Dnumber of sides (e.g. 2D6) <code>NUMERIC</code> result of all dice is numeric
+   * <code>REPORT_TOTAL</code> If numeric and true, add the results of the dice together and report the total.
+   * Otherwise, report the individual results <code>SORT</code> if true sort results per die by numeric value
+   * <code>RESULT_CHATTER</code> if true report results in chatter <code>RESULT_WINDOW</code> if true show result
+   * graphical in extra window <code>WINDOW_X</code> width of window or button <code>WINDOW_Y</code> height of
+   * window or button <code>RESULT_MAP</code> :TODO: if true show result in special area in map <code>MAP_NAME</code>
+   * :TODO: name of map <code>RESULT_BUTTON</code> if true show result graphical in button
    */
   public String[] getAttributeNames() {
-    String s[] = {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY,
-                  RESULT_CHATTER, CHAT_RESULT_FORMAT,
-                  RESULT_WINDOW, WINDOW_TITLE_RESULT_FORMAT,
-                  RESULT_BUTTON, WINDOW_X, WINDOW_Y, BACKGROUND_COLOR};
+    String s[] = {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, RESULT_CHATTER, CHAT_RESULT_FORMAT, RESULT_WINDOW, WINDOW_TITLE_RESULT_FORMAT, RESULT_BUTTON,
+                  WINDOW_X, WINDOW_Y, BACKGROUND_COLOR};
     return s;
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ",
-                        "Button text:  ",
-                        "Tooltip text:  ",
-                        "Button icon:  ",
-                        "Hotkey:  ",
-                        "Report results as text?",
-                        "Report format:  ",
-                        "Show result in window?",
-                        "Window title format:  ",
-                        "Show result in button?",
-                        "Width:  ",
-                        "Heidght:  ",
-                        "Background color:  "};
+    return new String[]{"Name:  ", "Button text:  ", "Tooltip text:  ", "Button icon:  ", "Hotkey:  ", "Report results as text?", "Report format:  ",
+                        "Show result in window?", "Window title format:  ", "Show result in button?", "Width:  ", "Heidght:  ", "Background color:  "};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class,
-                       String.class,
-                       String.class,
-                       IconConfig.class,
-                       KeyStroke.class,
-                       Boolean.class,
-                       ReportFormatConfig.class,
-                       Boolean.class,
-                       ReportFormatConfig.class,
-                       Boolean.class,
-                       Integer.class,
-                       Integer.class,
-                       Color.class};
+    return new Class[]{String.class, String.class, String.class, IconConfig.class, KeyStroke.class, Boolean.class, ReportFormatConfig.class, Boolean.class,
+                       ReportFormatConfig.class, Boolean.class, Integer.class, Integer.class, Color.class};
   }
-
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/die.gif"); //$NON-NLS-1$
     }
   }
-
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{NAME, RESULT_N, RESULT_TOTAL});
@@ -271,10 +239,8 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {
-// get size only when output in window or on button
-    if (WINDOW_X.equals(name)
-        || WINDOW_Y.equals(name)
-        || BACKGROUND_COLOR.equals(name)) {
+    // get size only when output in window or on button
+    if (WINDOW_X.equals(name) || WINDOW_Y.equals(name) || BACKGROUND_COLOR.equals(name)) {
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
           return reportResultInWindow || reportResultInButton;
@@ -308,12 +274,11 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   /**
-   * Expects to be added to a SymbolDice.  Adds the button to the
-   * control window's toolbar and registers itself as a {@link
-   * KeyStrokeListener} */
+   * Expects to be added to a SymbolDice. Adds the button to the control window's toolbar and registers itself as a
+   * {@link KeyStrokeListener}
+   */
   public void addTo(Buildable parent) {
     resultsIcon.setResults(new int[dice.size()]);
-
     launch.addHierarchyListener(new HierarchyListener() {
       public void hierarchyChanged(HierarchyEvent e) {
         if (launch.isShowing()) {
@@ -322,23 +287,17 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         }
       }
     });
-
-
     GameModule mod = GameModule.getGameModule();
     ran = mod.getRNG();
-
     mod.getToolBar().add(launch);
-
     idMgr.add(this);
-
     mod.addCommandEncoder(this);
+    property.addTo((MutablePropertiesContainer)parent);
   }
-
 
   public void removeFrom(Buildable b) {
     GameModule mod = GameModule.getGameModule();
     mod.removeCommandEncoder(this);
-
     mod.getToolBar().remove(launch);
     mod.getToolBar().revalidate();
   }
@@ -352,9 +311,10 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   /**
-   * Make a best gues for a unique identifier for the target.
-   * Use {@link VASSAL.tools.UniqueIdManager.Identifyable#getConfigureName if non-null, otherwise
-   * use {@link VASSAL.tools.UniqueIdManager.Identifyable#getId
+   * Make a best gues for a unique identifier for the target. Use
+   * {@link VASSAL.tools.UniqueIdManager.Identifyable#getConfigureName if non-null, otherwise use
+   * {@link VASSAL.tools.UniqueIdManager.Identifyable#getId
+   * 
    * @param target
    * @return
    */
@@ -364,8 +324,10 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   /**
    * get boolean value of object
-   * @param o object as input for setAttribute()
-   * @return  boolean value of object
+   * 
+   * @param o
+   *          object as input for setAttribute()
+   * @return boolean value of object
    */
   private boolean getBoolVal(Object o) {
     if (o instanceof Boolean) {
@@ -382,6 +344,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
       setConfigureName((String) o);
+      property.setPropertyName(getConfigureName()+"_result");
       launch.setToolTipText((String) o);
     }
     else if (RESULT_CHATTER.equals(key)) {
@@ -478,7 +441,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   /**
    * create String from int array
-   * @param ia int-array
+   * 
+   * @param ia
+   *          int-array
    * @return encoded String
    */
   public static String intArrayToString(int[] ia) {
@@ -494,12 +459,13 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   /**
    * get int array from string
-   * @param s string with encoded int array
+   * 
+   * @param s
+   *          string with encoded int array
    * @return int array
    */
   public static int[] stringToIntArray(String s) {
-    if (s == null
-        || s.length() == 0) {
+    if (s == null || s.length() == 0) {
       return EMPTY;
     }
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
@@ -513,7 +479,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     }
     return val;
   }
-
 
   public String encode(Command c) {
     if (c instanceof ShowResults) {
@@ -531,8 +496,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   public Command decode(String s) {
     SequenceEncoder.Decoder st = null;
-    if (s.startsWith(SHOW_RESULTS_COMMAND + getConfigureName())
-        || s.startsWith(SHOW_RESULTS_COMMAND + getId())) {
+    if (s.startsWith(SHOW_RESULTS_COMMAND + getConfigureName()) || s.startsWith(SHOW_RESULTS_COMMAND + getId())) {
       st = new SequenceEncoder.Decoder(s, '\t');
       st.nextToken();
       st.nextToken();
@@ -557,7 +521,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return null;
     }
   }
-
   /**
    * Command for displaying the results of a roll of the dice
    */
@@ -579,7 +542,6 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return null;
     }
   }
-
   /** Icon class for graphical display of a dice roll */
   private class ResultsIcon implements Icon {
     private int width, height;
@@ -623,7 +585,5 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     public int getIconHeight() {
       return height;
     }
-
-  }  // end class SpecialDiceIcon
-
+  } // end class SpecialDiceIcon
 }

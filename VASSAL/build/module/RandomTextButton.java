@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.StringArrayConfigurer;
@@ -125,8 +127,12 @@ public class RandomTextButton extends DiceButton {
     if (reportTotal && isNumeric)
       result.append(total);
 
-    String msg = formatResult(result.toString());
-    GameModule.getGameModule().getChatter().send(msg);
+    String report = formatResult(result.toString());
+    Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(),report);
+    c.execute();
+    c.append(property.setPropertyValue(result.toString()));
+    GameModule.getGameModule().sendAndLog(c);
+
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {

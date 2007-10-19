@@ -35,6 +35,7 @@ import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.MutableProperty.Impl;
 import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
@@ -159,7 +160,7 @@ public class DiceButton extends AbstractConfigurable {
       val += total;
 
     String report = formatResult(val);
-    Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(),report);
+    Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(),report);
     c.execute();
     c.append(property.setPropertyValue(val));
     GameModule.getGameModule().sendAndLog(c);
@@ -174,7 +175,10 @@ public class DiceButton extends AbstractConfigurable {
     reportFormat.setProperty(REPORT_NAME, getLocalizedConfigureName());
     reportFormat.setProperty(RESULT, result);
     String text = reportFormat.getLocalizedText();
-    String report = text.startsWith("*") ? "*" + text : "* " + text; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    String report = text;
+    if (text.length() > 0) {
+      report = text.startsWith("*") ? "*" + text : "* " + text; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
     return report;
   }
 
