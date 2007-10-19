@@ -223,6 +223,13 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       }
       super.setProperty(key, val);
     }
+    else if (Properties.OBSCURED_TO_OTHERS.equals(key)) {
+      String owner = null;
+      if (Boolean.TRUE.equals(val)) {
+        owner = access.getCurrentPlayerId();
+      }
+      obscuredBy = owner;
+    }
     else {
       super.setProperty(key, val);
     }

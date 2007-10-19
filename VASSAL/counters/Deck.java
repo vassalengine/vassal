@@ -780,7 +780,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public Command pieceRemoved(GamePiece p) {
     ChangeTracker tracker = new ChangeTracker(p);
-    p.setProperty(Properties.OBSCURED_BY, isFaceDown() && !isDrawFaceUp() ? GameModule.getUserId() : null);
+    p.setProperty(Properties.OBSCURED_TO_OTHERS, Boolean.valueOf(isFaceDown() && !isDrawFaceUp()));
     return tracker.getChangeCommand();
   }
 
