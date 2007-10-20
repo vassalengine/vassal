@@ -246,6 +246,9 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
         report.addWarning(Resources.getString("BoardPicker.more_than_one", b.getName(), ConfigureTree.getConfigureName(map))); //$NON-NLS-1$
       }
       names.add(b.getName());
+      if (b.getName() == null) {
+        report.addWarning(Resources.getString("BoardPicker.no_name",ConfigureTree.getConfigureName(map)));
+      }
       b.validate(b, report);
     }
   }
@@ -698,12 +701,14 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       List<Board> bds = ((SetBoards) c).boards;
       if (bds != null) {
         for (Board b : bds) {
-          SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
-          if (b.isReversed()) {
-            se2.append("rev"); //$NON-NLS-1$
+          if (b.getName() != null) {
+            SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
+            if (b.isReversed()) {
+              se2.append("rev"); //$NON-NLS-1$
+            }
+            se.append(se2.getValue());
+            se.append("" + b.relativePosition().x).append("" + b.relativePosition().y); //$NON-NLS-1$ //$NON-NLS-2$
           }
-          se.append(se2.getValue());
-          se.append("" + b.relativePosition().x).append("" + b.relativePosition().y); //$NON-NLS-1$ //$NON-NLS-2$
         }
       }
       return se.getValue();
