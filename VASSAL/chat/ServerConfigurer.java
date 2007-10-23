@@ -130,7 +130,9 @@ public class ServerConfigurer extends Configurer {
       });
       box.add(jabberHost);
 //    Disable Jabber server until next release
-//      controls.add(box);
+      if ("true".equals(System.getProperty("enableJabber"))) {
+        controls.add(box);
+      }
       directButton = new JRadioButton(DIRECT_BUTTON);
       directButton.setAlignmentX(0.0f);
       directButton.addItemListener(new ItemListener() {

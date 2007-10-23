@@ -17,10 +17,16 @@
  */
 package VASSAL.chat.jabber;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Properties;
+
+import javax.swing.SwingUtilities;
+
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
+import VASSAL.command.Command;
 
 /**
  * @author rkinney
@@ -43,8 +49,28 @@ public class JabberClientFactory extends ChatServerFactory {
     catch (NumberFormatException e) {
       e.printStackTrace();
     }
-    String login = serverConfig.getProperty(JABBER_LOGIN, "anonymous"); //$NON-NLS-1$
-    String password = serverConfig.getProperty(JABBER_PWD);
-    return new JabberClient(GameModule.getGameModule(), host, port, login, password);
+    ModuleAccountInfo account = new ModuleAccountInfo();
+    JabberClient client = new JabberClient(GameModule.getGameModule(), host, port, account);
+    account.init(client);
+    client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        GameModule.getGameModule().warn((String) evt.getNewValue());
+      }
+    });
+    client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new PropertyChangeListener() {
+      public void propertyChange(final PropertyChangeEvent evt) {
+        final Command c = GameModule.getGameModule().decode((String) evt.getNewValue());
+        if (c != null) {
+          Runnable runnable = new Runnable() {
+            public void run() {
+              c.execute();
+              GameModule.getGameModule().getLogger().log(c);
+            }
+          };
+          SwingUtilities.invokeLater(runnable);
+        }
+      }
+    });
+    return client;
   }
 }

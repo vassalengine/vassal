@@ -54,7 +54,7 @@ public class SimplePlayer implements VASSAL.chat.Player {
 
   public boolean equals(Object o) {
     if (o instanceof Player) {
-      return id != null && id.equals(((SimplePlayer) o).id);
+      return id != null && id.equals(((Player) o).getId());
     }
     else {
       return false;

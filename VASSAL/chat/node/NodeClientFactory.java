@@ -72,9 +72,7 @@ public class NodeClientFactory extends ChatServerFactory {
     GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
-        if (GameModule.getGameModule().getChatter() != null) {
-          GameModule.getGameModule().getChatter().show((String) evt.getNewValue());
-        }
+        GameModule.getGameModule().warn((String) evt.getNewValue());
       }
     });
     server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new PropertyChangeListener() {

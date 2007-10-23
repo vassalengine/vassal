@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jivesoftware.smack.util.StringUtils;
 
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleStatus;
@@ -30,8 +29,8 @@ public class JabberPlayer extends SimplePlayer {
   private String jid;
   private JabberRoom joinedRoom;
 
-  private JabberPlayer(String name, String jid) {
-    super(name);
+  private JabberPlayer(String jid) {
+    super(jid,"???",new SimpleStatus());
     this.jid = jid;
   }
 
@@ -72,14 +71,14 @@ public class JabberPlayer extends SimplePlayer {
       }
       JabberPlayer p = jidToPlayer.get(jid);
       if (p == null) {
-        p = new JabberPlayer(StringUtils.parseResource(jid), jid);
+        p = new JabberPlayer(jid);
         jidToPlayer.put(jid, p);
       }
       return p;
     }
     
-    public JabberPlayer getPlayerByName(JabberClient client, String name) {
-      return getPlayer(StringUtils.escapeNode(name) + "@" + client.getHost() + "/VASSAL");
+    public JabberPlayer getPlayerByLogin(JabberClient client, String login) {
+      return getPlayer(login + "@" + client.getHost() + "/VASSAL");
     }
 
     public synchronized void deletePlayer(String jid) {
