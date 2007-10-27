@@ -60,11 +60,13 @@ import org.jivesoftware.smackx.packet.VCard;
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
+import VASSAL.chat.PlayerEncoder;
 import VASSAL.chat.PrivateChatManager;
 import VASSAL.chat.Room;
 import VASSAL.chat.ServerStatus;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleStatus;
+import VASSAL.chat.SynchEncoder;
 import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
@@ -80,7 +82,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
 
-public class JabberClient implements ChatServerConnection, PacketListener, ServerStatus, ChatControlsInitializer {
+public class JabberClient implements ChatServerConnection, PacketListener, ServerStatus, ChatControlsInitializer, PlayerEncoder {
   private static final String QUERY_ROOMS = "http://jabber.org/protocol/muc#rooms";
   private MessageBoard msgSvr;
   private XMPPConnection conn;
@@ -94,6 +96,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   private final JabberRoom defaultRoom;
   private MultiUserChat currentChat;
   private AccountInfo account;
+  private SynchEncoder synchEncoder;
   protected MessageBoardControlsInitializer messageBoardControls;
   protected RoomInteractionControlsInitializer roomControls;
   // protected ServerStatusControlsInitializer serverStatusControls;
@@ -116,6 +119,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     roomControls.addPlayerActionFactory(SendSoundAction.factory(this, Resources.getString("Chat.send_wakeup"), "wakeUpSound", "phone1.wav")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     // serverStatusControls = new ServerStatusControlsInitializer(serverStatus);
     playerStatusControls = new SimpleStatusControlsInitializer(this);
+    synchEncoder = new SynchEncoder(this,this);
   }
 
   public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
@@ -234,7 +238,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     messageBoardControls.initializeControls(controls);
     roomControls.initializeControls(controls);
     // serverStatusControls.initializeControls(controls);
-    // GameModule.getGameModule().addCommandEncoder(synchEncoder);
+    GameModule.getGameModule().addCommandEncoder(synchEncoder);
     // GameModule.getGameModule().addCommandEncoder(privateChatEncoder);
     // GameModule.getGameModule().addCommandEncoder(soundEncoder);
     controls.getRoomTree().setCellRenderer(new LockableRoomTreeRenderer());
@@ -245,7 +249,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     roomControls.uninitializeControls(controls);
     playerStatusControls.uninitializeControls(controls);
     // serverStatusControls.uninitializeControls(controls);
-    // GameModule.getGameModule().removeCommandEncoder(synchEncoder);
+    GameModule.getGameModule().removeCommandEncoder(synchEncoder);
     // GameModule.getGameModule().removeCommandEncoder(privateChatEncoder);
     // GameModule.getGameModule().removeCommandEncoder(soundEncoder);
   }
@@ -711,5 +715,13 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
 
   public String getHost() {
     return host;
+  }
+
+  public String playerToString(Player p) {
+    return ((JabberPlayer)p).getJid();
+  }
+
+  public Player stringToPlayer(String s) {
+    return playerMgr.getPlayer(s);
   }
 }
