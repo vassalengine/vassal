@@ -101,6 +101,16 @@ public class KeyBuffer {
     // Copy contents into new list, because contents may change
     // as a result of key commands
     ArrayList<GamePiece> targets = new ArrayList<GamePiece>(pieces);
+    // Reverse the order if this is a "Move Up" or "Move to Bottom" keystroke
+    if (targets.size() > 0) {
+      GamePiece top = targets.get(0);
+      if (top.getMap() != null) {
+        if (stroke.equals(top.getMap().getStackMetrics().getMoveBottomKey())
+            || stroke.equals(top.getMap().getStackMetrics().getMoveUpKey())) {
+          Collections.reverse(targets);
+        }
+      }
+    }
     for (GamePiece p : targets) {
       bounds.addPiece(p);
       p.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(p)); // save state prior to command
