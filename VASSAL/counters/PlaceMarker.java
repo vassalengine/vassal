@@ -71,9 +71,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   protected KeyStroke key;
   protected String markerSpec;
   protected String markerText = "";
-  protected int xOffset=0;
-  protected int yOffset=0;
-  protected boolean matchRotation=false;
+  protected int xOffset = 0;
+  protected int yOffset = 0;
+  protected boolean matchRotation = false;
   protected KeyCommand[] commands;
   protected KeyStroke afterBurnerKey;
   protected String description = "";
@@ -100,8 +100,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   }
 
   protected KeyCommand[] myGetKeyCommands() {
-    command.setEnabled(getMap() != null
-                       && markerSpec != null);
+    command.setEnabled(getMap() != null && markerSpec != null);
     return commands;
   }
 
@@ -138,23 +137,23 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     if (marker != null) {
       GamePiece outer = getOutermost(this);
       Point p = getPosition();
-      p.translate(xOffset,-yOffset);
+      p.translate(xOffset, -yOffset);
       if (matchRotation) {
-        FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(outer,FreeRotator.class);
-        FreeRotator markerRotation = (FreeRotator) Decorator.getDecorator(marker,FreeRotator.class);
-        if (myRotation != null
-          && markerRotation != null) {
+        FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(outer, FreeRotator.class);
+        FreeRotator markerRotation = (FreeRotator) Decorator.getDecorator(marker, FreeRotator.class);
+        if (myRotation != null && markerRotation != null) {
           markerRotation.setAngle(myRotation.getAngle());
           Point2D myPosition = getPosition().getLocation();
           Point2D markerPosition = p.getLocation();
-          markerPosition = AffineTransform.getRotateInstance(myRotation.getAngleInRadians(),myPosition.getX(), myPosition.getY()).transform(markerPosition,null);
-          p = new Point((int)markerPosition.getX(),(int)markerPosition.getY());
+          markerPosition = AffineTransform.getRotateInstance(myRotation.getAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(markerPosition,
+              null);
+          p = new Point((int) markerPosition.getX(), (int) markerPosition.getY());
         }
       }
       if (!Boolean.TRUE.equals(marker.getProperty(Properties.IGNORE_GRID))) {
         p = getMap().snapTo(p);
       }
-      c = getMap().placeOrMerge(marker,p);
+      c = getMap().placeOrMerge(marker, p);
       if (afterBurnerKey != null) {
         marker.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(marker));
         c.append(marker.keyEvent(afterBurnerKey));
@@ -166,12 +165,12 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         KeyBuffer.getBuffer().add(marker);
       }
       if (markerText != null && getMap() != null) {
-        if (!Boolean.TRUE.equals(outer.getProperty(Properties.OBSCURED_TO_OTHERS))
-            && !Boolean.TRUE.equals(outer.getProperty(Properties.OBSCURED_TO_ME))
+        if (!Boolean.TRUE.equals(outer.getProperty(Properties.OBSCURED_TO_OTHERS)) && !Boolean.TRUE.equals(outer.getProperty(Properties.OBSCURED_TO_ME))
             && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
           String location = getMap().locationName(getPosition());
           if (location != null) {
-            Command display = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), " * " + location + ":  " + outer.getName() + " " + markerText + " * ");
+            Command display = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), " * " + location + ":  " + outer.getName() + " " + markerText
+                + " * ");
             display.execute();
             c = c == null ? display : c.append(display);
           }
@@ -183,6 +182,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
   /**
    * The marker, with prototypes fully expanded
+   * 
    * @return
    */
   protected GamePiece createMarker() {
@@ -198,6 +198,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
   /**
    * The marker, with prototypes unexpanded
+   * 
    * @return
    */
   public GamePiece createBaseMarker() {
@@ -224,10 +225,11 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   }
 
   /**
-   * @return true if the marker is defined from scratch.  Return false if the marker is defined as a component in the Game Piece Palette
+   * @return true if the marker is defined from scratch. Return false if the marker is defined as a component in the
+   *         Game Piece Palette
    */
   public boolean isMarkerStandalone() {
-    return markerSpec.startsWith(BasicCommandEncoder.ADD);
+    return markerSpec != null && markerSpec.startsWith(BasicCommandEncoder.ADD);
   }
 
   public void mySetState(String newState) {
@@ -279,11 +281,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   public PieceEditor getEditor() {
     return new Ed(this);
   }
-  
+
   public PieceI18nData getI18nData() {
     return getI18nData(command.getName(), getCommandDescription(description, "Place Marker command"));
   }
-
   protected static class Ed implements PieceEditor {
     private HotKeyConfigurer keyInput;
     private StringConfigurer commandInput;
@@ -292,8 +293,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     private String markerSlotPath;
     protected JButton defineButton = new JButton("Define Marker");
     protected JButton selectButton = new JButton("Select");
-    protected IntConfigurer xOffsetConfig = new IntConfigurer(null,"Horizontal offset:  ");
-    protected IntConfigurer yOffsetConfig = new IntConfigurer(null,"Vertical offset:  ");
+    protected IntConfigurer xOffsetConfig = new IntConfigurer(null, "Horizontal offset:  ");
+    protected IntConfigurer yOffsetConfig = new IntConfigurer(null, "Vertical offset:  ");
     protected BooleanConfigurer matchRotationConfig;
     protected HotKeyConfigurer afterBurner;
     protected StringConfigurer descConfig;
@@ -301,14 +302,12 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     protected Ed(PlaceMarker piece) {
       matchRotationConfig = createMatchRotationConfig();
       descConfig = new StringConfigurer(null, "Description:  ", piece.description);
-      keyInput = new HotKeyConfigurer(null,"Keyboard Command:  ",piece.key);
+      keyInput = new HotKeyConfigurer(null, "Keyboard Command:  ", piece.key);
       afterBurner = new HotKeyConfigurer(null, "Keystroke to apply after placement:  ", piece.afterBurnerKey);
       commandInput = new StringConfigurer(null, "Command:  ", piece.command.getName());
       GamePiece marker = piece.createBaseMarker();
       pieceInput = new PieceSlot(marker);
-
       markerSlotPath = piece.markerSpec;
-
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
       p.add(descConfig.getControls());
@@ -350,7 +349,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     }
 
     protected BooleanConfigurer createMatchRotationConfig() {
-      return new BooleanConfigurer(null,"Match Rotation?");
+      return new BooleanConfigurer(null, "Match Rotation?");
     }
 
     public Component getControls() {
@@ -364,7 +363,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(commandInput.getValueString());
-      se.append((KeyStroke)keyInput.getValue());
+      se.append((KeyStroke) keyInput.getValue());
       if (pieceInput.getPiece() == null) {
         se.append("null");
       }
@@ -375,15 +374,15 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         String spec = GameModule.getGameModule().encode(new AddPiece(pieceInput.getPiece()));
         se.append(spec);
       }
-      se.append("null"); // Older versions specified a text message to echo.  Now performed by the ReportState trait, but we remain backward-compatible.
+      se.append("null"); // Older versions specified a text message to echo. Now performed by the ReportState trait,
+                          // but we remain backward-compatible.
       se.append(xOffsetConfig.getValueString());
       se.append(yOffsetConfig.getValueString());
       se.append(matchRotationConfig.getValueString());
-      se.append((KeyStroke)afterBurner.getValue());
+      se.append((KeyStroke) afterBurner.getValue());
       se.append(descConfig.getValueString());
       return ID + se.getValue();
     }
-
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
       private static final long serialVersionUID = 1L;
 
