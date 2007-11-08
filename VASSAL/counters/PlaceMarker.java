@@ -159,10 +159,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         c.append(marker.keyEvent(afterBurnerKey));
       }
       if (marker.getProperty(Properties.SELECT_EVENT_FILTER) == null) {
-        if (marker.getParent() == null || !marker.getParent().equals(getParent())) {
-          KeyBuffer.getBuffer().clear();
+        if (marker.getParent() != null && marker.getParent().equals(getParent())) {
+          KeyBuffer.getBuffer().add(marker);
         }
-        KeyBuffer.getBuffer().add(marker);
       }
       if (markerText != null && getMap() != null) {
         if (!Boolean.TRUE.equals(outer.getProperty(Properties.OBSCURED_TO_OTHERS)) && !Boolean.TRUE.equals(outer.getProperty(Properties.OBSCURED_TO_ME))
