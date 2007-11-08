@@ -55,6 +55,10 @@ public class Replace extends PlaceMarker {
     c.append(remove);
     return c;
   }
+  
+  protected void selectMarker(GamePiece marker) {
+    KeyBuffer.getBuffer().add(marker);
+  }
 
   public String getDescription() {
     String d = "Replace with Other";
