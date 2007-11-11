@@ -561,6 +561,7 @@ public class PieceMover extends AbstractBuildable
         }
         if (mergeWith != null && map.getStackMetrics().isStackingEnabled()) {
           mergeCandidates = new ArrayList<GamePiece>();
+          mergeCandidates.add(dragging);
           mergeCandidates.add(mergeWith);
           mergeTargets.put(p, mergeCandidates);
         }
