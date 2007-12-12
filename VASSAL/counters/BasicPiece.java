@@ -438,7 +438,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
         KeyBuffer.getBuffer().add(newPiece);
 
         if (GlobalOptions.getInstance().autoReportEnabled()) {
-          String s = "* " + outer.getName();
+          String s = "* " + outer.getLocalizedName();
           String loc = getMap().locationName(outer.getPosition());
           if (loc != null) {
             s += " cloned in " + loc + " * ";
@@ -456,7 +456,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
       comm = new RemovePiece(outer);
 
       if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled()) {
-        String s = "* " + outer.getName();
+        String s = "* " + outer.getLocalizedName();
         String loc = getMap().locationName(outer.getPosition());
         if (loc != null) {
           s += " deleted from " + loc + " * ";
