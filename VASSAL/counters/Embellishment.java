@@ -638,10 +638,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return s;
   }
   
+  /** Get the name of this level (alone) */
   protected String getCommonName(boolean localized, int i) {
     return localized ? getLocalizedCommonName(i) : commonName[i];
   }
   
+  /** Get the localized name of this level (alone) */
   protected String getLocalizedCommonName(int i) {
     String name = commonName[i];
     if (name == null) return null;

@@ -148,7 +148,7 @@ public class Main {
     }
     else {
       GameModule.init(createModule(createDataArchive()));
-      new ExtensionsLoader().addTo(GameModule.getGameModule());
+      createExtensionsLoader().addTo(GameModule.getGameModule());
       Localization.getInstance().translate();
       if (savedGame != null) {
         GameModule.getGameModule().getFrame().setVisible(true);
@@ -158,6 +158,10 @@ public class Main {
         GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
       }
     }
+  }
+
+  protected ExtensionsLoader createExtensionsLoader() {
+    return new ExtensionsLoader();
   }
 
   protected ModuleExtension createExtension(String name) {

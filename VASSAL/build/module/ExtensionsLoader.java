@@ -64,7 +64,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
       if (!loadedExtensions.contains(extname)) {
         try {
           ModuleExtension ext =
-            new ModuleExtension(new DataArchive(extname));
+            createExtension(extname);
           ext.build();
           String msg = Resources.getString("ExtensionsLoader.extension_loaded", ext.getName(), ext.getVersion()); //$NON-NLS-1$
           loadedExtensions.add(extname);
@@ -82,6 +82,10 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
         }
       }
     }
+  }
+
+  protected ModuleExtension createExtension(String extname) throws IOException {
+    return new ModuleExtension(new DataArchive(extname));
   }
 
   private void reportBuildError(Exception e, String name) {
