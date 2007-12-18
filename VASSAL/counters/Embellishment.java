@@ -262,7 +262,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   
   public String getName(boolean localized) {
     String name = null;
-    String commonName = getCommonName(localized, value - 1);
+    String commonName = value > 0 ? getCommonName(localized, value - 1) : null;
     if (value > 0 && commonName != null && commonName.length() > 0) {
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(commonName, '+');
       String first = st.nextToken();
