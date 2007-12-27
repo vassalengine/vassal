@@ -437,7 +437,8 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
         KeyBuffer.getBuffer().remove(outer);
         KeyBuffer.getBuffer().add(newPiece);
 
-        if (GlobalOptions.getInstance().autoReportEnabled()) {
+        if (GlobalOptions.getInstance().autoReportEnabled()
+            && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
           String s = "* " + outer.getLocalizedName();
           String loc = getMap().locationName(outer.getPosition());
           if (loc != null) {
@@ -455,7 +456,8 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     else if (KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK).equals(stroke)) {
       comm = new RemovePiece(outer);
 
-      if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled()) {
+      if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled()
+          && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
         String s = "* " + outer.getLocalizedName();
         String loc = getMap().locationName(outer.getPosition());
         if (loc != null) {
