@@ -136,6 +136,8 @@ public class Main {
       for (String ext : autoExtensions) {
         createExtension(ext).build();
       }
+      createExtensionsLoader().addTo(GameModule.getGameModule());
+      Localization.getInstance().translate();
       GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
     }
     else if (moduleFile == null) {
