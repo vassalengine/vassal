@@ -39,6 +39,7 @@ import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -51,6 +52,7 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -62,15 +64,19 @@ import VASSAL.build.module.NewGameIndicator;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
+import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringEnum;
+import VASSAL.configure.ValidationReport;
+import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.UniqueIdManager;
 
@@ -114,10 +120,102 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   
   protected StackConfigurer stackConfigurer;
   protected JButton configureButton;
+  protected String location;
+  protected boolean useGridLocation;
+  public static final String LOCATION = "location";
+  public static final String USE_GRID_LOCATION = "useGridLocation";
+ 
+  @Override
+  public VisibilityCondition getAttributeVisibility(String name) {
+	  if (USE_GRID_LOCATION.equals(name)) {
+		  return new VisibilityCondition() {
+			  public boolean shouldBeVisible() {
+				  Board b = getConfigureBoard();
+				  if (b == null)
+					  return false;
+				  else
+					  return b.getGrid() != null;
+			  }
+		  };
+	  }
+	  else if (LOCATION.equals(name)) {
+		  return new VisibilityCondition() {
+			  public boolean shouldBeVisible() {
+				  return isUseGridLocation();
+			  }			  
+		  };
+	  }
+	  else if (X_POSITION.equals(name) || Y_POSITION.equals(name)) {
+		  return new VisibilityCondition() {
+			  public boolean shouldBeVisible() {
+				  return !isUseGridLocation();
+			  }
+		  };
+	  }
+	  else
+		  return super.getAttributeVisibility(name);
+  }
+
+  // must have a useable board with a grid
+  protected boolean isUseGridLocation() {
+	  if (!useGridLocation)
+		  return false;
+	  Board b = getConfigureBoard();
+	  if (b == null)
+		  return false;
+	  MapGrid g = b.getGrid();
+	  if (g == null)
+		  return false;
+	  else
+		  return true;
+  }
+  
+  // only update the position if we're using the location name
+  protected void updatePosition() {
+	  if (isUseGridLocation() && location != null && !location.equals("")) {
+		  try {
+        pos = getConfigureBoard().getGrid().getLocation(location);
+      }
+      catch (BadCoords e) {
+      }
+	  }
+  }
+  
+  @Override
+  public void validate(Buildable target, ValidationReport report) {
+	  if (isUseGridLocation()) {
+		  if (location == null)
+			  report.addWarning(getConfigureName() + Resources.getString("SetupStack.null_location"));
+		  else {
+		    try {
+          getConfigureBoard().getGrid().getLocation(location);
+        }
+        catch (BadCoords e) {
+          String msg = "Bad location name "+location+" in "+getConfigureName();
+          if (e.getMessage() != null) {
+            msg += ":  "+e.getMessage();
+          }
+          report.addWarning(msg);
+        }
+		  }
+	  }
+	  
+	  super.validate(target, report);
+  }
+
+  protected void updateLocation() {
+	  Board b = getConfigureBoard();
+	  if (b != null) {
+		  MapGrid g = b.getGrid();
+		  if (g != null)
+			  location = g.locationName(pos);
+	  }
+  }
 
   public void setup(boolean gameStarting) {
     if (gameStarting && indicator.isNewGame() && isOwningBoardActive()) {
       Stack s = initializeContents();
+      updatePosition();
       Point p = new Point(pos);
       if (owningBoardName != null) {
         Rectangle r = map.getBoardByName(owningBoardName).bounds();
@@ -146,15 +244,15 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Belongs to Board:  ", "X position:  ", "Y position:  "};
+    return new String[]{"Name:  ", "Belongs to Board:  ", "Use Grid Location:  ", "Location:  ", "X position:  ", "Y position:  "};
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, OwningBoardPrompt.class, Integer.class, Integer.class};
+    return new Class[]{String.class, OwningBoardPrompt.class, Boolean.class, String.class, Integer.class, Integer.class};
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, OWNING_BOARD, X_POSITION, Y_POSITION};
+    return new String[]{NAME, OWNING_BOARD, USE_GRID_LOCATION, LOCATION , X_POSITION, Y_POSITION};
   }
 
   public String getAttributeValueString(String key) {
@@ -163,6 +261,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
     else if (OWNING_BOARD.equals(key)) {
       return owningBoardName;
+    }
+    else if (USE_GRID_LOCATION.equals(key)) {
+    	return Boolean.toString(useGridLocation);
+    }
+    else if (LOCATION.equals(key)) {
+    	return location;
     }
     else if (X_POSITION.equals(key)) {
       return "" + pos.x;
@@ -187,6 +291,15 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         owningBoardName = (String) value;
       }
       updateConfigureButton();
+    }
+    else if (USE_GRID_LOCATION.equals(key)) {
+    	if (value instanceof String) {
+    		value = new Boolean((String) value);
+    	}
+    	useGridLocation = ((Boolean) value).booleanValue();
+    }
+    else if (LOCATION.equals(key)) {
+    	location = (String) value;
     }
     else if (X_POSITION.equals(key)) {
       if (value instanceof String) {
@@ -275,6 +388,43 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     return id;
   }
 
+//  public static class GridPrompt extends StringEnum {
+//	  public static final String NONE = "<none>";
+//	  public static final String ZONE = "(Zone)";
+//	  public static final String BOARD = "(Board)";
+//	  
+//	  public GridPrompt() {		  
+//	  }
+//
+//	@Override
+//	public String[] getValidValues(AutoConfigurable target) {
+//		ArrayList<String> values = new ArrayList<String>();
+//		values.add(NONE);
+//		if (target instanceof SetupStack) {
+//			SetupStack stack = (SetupStack) target;
+//			BoardPicker bp = stack.map.getBoardPicker();
+//			if (stack.owningBoardName != null) {
+//				Board b = bp.getBoard(stack.owningBoardName);
+//				MapGrid grid = b.getGrid();
+//				if (grid != null) {
+//					GridNumbering gn = grid.getGridNumbering();
+//					if (gn != null)
+//						values.add(BOARD + " " + b.getName());
+//					if (grid instanceof ZonedGrid) {
+//						ZonedGrid zg = (ZonedGrid) grid;
+//						for (Iterator i = zg.getZones(); i.hasNext(); ) {
+//							Zone z = (Zone) i.next();						
+//							if (!z.isUseParentGrid() && z.getGrid() != null && z.getGrid().getGridNumbering() != null)
+//								values.add(ZONE + " " + z.getName());
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return values.toArray(new String[values.size()]);
+//	}
+//  }
+//  
   public static class OwningBoardPrompt extends StringEnum {
     public static final String ANY = "<any>";
 
@@ -305,27 +455,25 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       return values;
     }
   }
-  
+
+
   /*
    *  GUI Stack Placement Configurer
    */  
-  protected Configurer xConfig, yConfig;
+  protected Configurer xConfig, yConfig, locationConfig;
   
   public Configurer getConfigurer() {
     config = null; // Don't cache the Configurer so that the list of available boards won't go stale
     Configurer c = super.getConfigurer();
     xConfig = ((AutoConfigurer) c).getConfigurer(X_POSITION);
     yConfig = ((AutoConfigurer) c).getConfigurer(Y_POSITION);
-    updateConfigureButton();
+    locationConfig = ((AutoConfigurer) c).getConfigurer(LOCATION);
+	updateConfigureButton();
     ((Container) c.getControls()).add(configureButton);
     
     return c;
   }
   
-  /*
-   * We can only configure stacks that have at least one component and there is
-   * at least one board defined to configure them on.
-   */
   protected void updateConfigureButton() {
     if (configureButton == null) {
       configureButton = new JButton("Reposition Stack");
@@ -398,6 +546,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       if (mySlot != null) {
         myPiece = mySlot.getPiece();
       }
+      myStack.updatePosition();
       savePosition = new Point(myStack.pos);
       if (stack instanceof DrawPile) {
         dummySize = new Dimension(((DrawPile) stack).getSize());
@@ -457,6 +606,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           // Update the Component configurer to reflect the change
           xConfig.setValue(String.valueOf(myStack.pos.x));
           yConfig.setValue(String.valueOf(myStack.pos.y));
+          updateLocation();
+          locationConfig.setValue(location);
         }
       });
       JPanel okPanel = new JPanel();
@@ -979,7 +1130,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         }
       }
     }
-
   }
 
 

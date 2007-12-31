@@ -183,6 +183,17 @@ public class SquareGridNumbering extends RegularGridNumbering {
     }
   }
 
+  @Override
+  public Point getCenterPoint(int col, int row) {
+	  if (vDescending)
+		  row = getMaxRows() - row;
+	  if (hDescending)
+		  col = getMaxColumns() - col;
+	  
+	  // TODO: invoke grid.snapTo
+	  return new Point((int) (col * grid.getDx() + grid.getOrigin().x),
+			  (int) (row * grid.getDy() + grid.getOrigin().y));
+  }
 
   public void removeFrom(Buildable parent) {
     grid.setGridNumbering(null);

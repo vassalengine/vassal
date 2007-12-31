@@ -30,6 +30,7 @@ import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.w3c.dom.Element;
 
 import VASSAL.build.AbstractConfigurable;
@@ -206,13 +207,16 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     return background != null ? background.getGridNumbering() : null;
   }
 
-  public Point getLocation(String location) throws MapGrid.BadCoords {
-    if (background != null) {
-      return background.getLocation(location);
-    }
-    else {
-      throw new MapGrid.BadCoords("No naming scheme defined");
-    }
+  public Point getLocation(String location) throws BadCoords {
+	  for (Zone zone : zones) {
+		  Point p = zone.getLocation(location);
+		  if (p != null && zone.contains(p))
+			  return p;
+	  }
+	  if (background != null)
+		  return background.getLocation(location);
+	  else
+		  return null;
   }
 
   public boolean isVisible() {

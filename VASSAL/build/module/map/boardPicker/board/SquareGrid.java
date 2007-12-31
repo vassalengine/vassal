@@ -32,7 +32,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.JButton;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -300,8 +302,11 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     return new Class[]{SquareGridNumbering.class};
   }
 
-  public Point getLocation(String name) throws MapGrid.BadCoords {
-    throw new MapGrid.BadCoords("No naming scheme specified");
+  public Point getLocation(String location) throws BadCoords {
+	  if (gridNumbering == null)
+		  return null;
+	  else
+		  return gridNumbering.getLocation(location);
   }
 
   public int range(Point p1, Point p2) {

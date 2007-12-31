@@ -269,8 +269,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return new Class[]{Region.class};
   }
 
-  public Point getLocation(String name) throws MapGrid.BadCoords {
-    throw new MapGrid.BadCoords("No naming scheme specified");
+  public Point getLocation(String name) {
+	  Region reg = findRegion(name);
+	  if (reg == null)
+		  return null;
+	  else
+		  return new Point(reg.getOrigin());
   }
 
   public int range(Point p1, Point p2) {

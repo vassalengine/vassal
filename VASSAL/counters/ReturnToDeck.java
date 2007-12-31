@@ -25,13 +25,22 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+
+import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.DrawPile;
@@ -39,7 +48,9 @@ import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 
@@ -50,6 +61,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   public static final String ID = "return;";
   protected String deckId;
   protected String returnCommand;
+  protected String selectDeckPrompt="Select destination";
   protected KeyStroke returnKey;
   protected DrawPile deck;
 
@@ -57,7 +69,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   protected KeyCommand myCommand;
 
   public ReturnToDeck() {
-    this(ID + "Return to Deck;R;null", null);
+    this(ID + "Return to Deck;R;", null);
   }
 
   public ReturnToDeck(String type, GamePiece inner) {
@@ -88,28 +100,31 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     returnCommand = st.nextToken();
     returnKey = st.nextKeyStroke(null);
-    deckId = st.nextToken();
+    deckId = st.nextToken("");
+    selectDeckPrompt = st.nextToken(selectDeckPrompt);
   }
 
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
-    return ID + se.append(returnCommand).append(returnKey).append(deckId).getValue();
+    return ID + se.append(returnCommand).append(returnKey).append(deckId).append(selectDeckPrompt).getValue();
   }
 
   public Command myKeyEvent(KeyStroke stroke) {
     myGetKeyCommands();
     Command comm = null;
     if (myCommand.matches(stroke)) {
-      if (deck == null) {
-        findDeck();
-      }
-      comm = deck.addToContents(Decorator.getOutermost(this));
+    	DrawPile pile = deck;
+    	if (pile == null)
+    		pile = findDeck();
+    	if (pile == null)
+    		return null;
+      comm = pile.addToContents(Decorator.getOutermost(this));
       // Apply Auto-move key
-      Map m = deck.getMap();
+      Map m = pile.getMap();
       if (m != null && m.getMoveKey() != null) {
         comm.append(Decorator.getOutermost(this).keyEvent(m.getMoveKey()));
       }
-      deck.getMap().repaint();
+      pile.getMap().repaint();
     }
     return comm;
   }
@@ -130,12 +145,74 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     return piece.getShape();
   }
 
-  private void findDeck() {
+  private DrawPile findDeck() {
     DrawPile pile = DrawPile.findDrawPile(deckId);
-    if (pile == null) {
-      throw new IllegalArgumentException("Could not find deck "+deckId);
-    }
+    if (pile == null)
+    	return promptForDrawPile();
+    // cache
     deck = pile;
+    return pile;
+  }
+  
+  private DrawPile promptForDrawPile() {
+	  final JDialog d = new JDialog(GameModule.getGameModule().getFrame(), true);
+	  d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
+	  d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
+	  
+	  class AvailableDeck {
+		  private DrawPile pile;
+
+		  public AvailableDeck(DrawPile pile) {
+			  this.pile = pile;
+		  }
+
+		  public String toString() {
+			  return pile.getConfigureName();
+		  }
+	  }
+	  
+	  final Collection<DrawPile> piles = GameModule.getGameModule().getAllDescendantComponentsOf(DrawPile.class);
+	  if (piles.size() == 0)
+		  throw new IllegalArgumentException("No decks in module.");
+	  
+	  final AvailableDeck[] decks = new AvailableDeck[piles.size()];
+	  int i = 0;
+	  for (DrawPile p : piles)
+		  decks[i++] = new AvailableDeck(p);
+
+	  final JList list = new JList(decks);
+	  list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    JLabel prompt = new JLabel(selectDeckPrompt);
+    prompt.setAlignmentX(0.5f);
+    d.add(prompt); //$NON-NLS-1$
+	  d.add(new ScrollPane(list));
+	  Box box = Box.createHorizontalBox();
+	  box.setAlignmentX(0.5F);
+	  JButton b = new JButton(Resources.getString(Resources.OK));
+	  b.addActionListener(new ActionListener() {
+		  public void actionPerformed(ActionEvent e) {
+			  AvailableDeck selection = (AvailableDeck) list.getSelectedValue();
+			  if (selection != null)
+				  deck = selection.pile;
+			  d.dispose();
+		  }
+	  });
+	  box.add(b);
+	  b = new JButton(Resources.getString(Resources.CANCEL));
+	  b.addActionListener(new ActionListener() {
+		  public void actionPerformed(ActionEvent e) {
+			  d.dispose();
+		  }
+	  });
+	  box.add(b);
+	  d.add(box);
+	  d.pack();
+	  d.setLocationRelativeTo(d.getOwner());
+	  d.setVisible(true);
+	  // don't cache -- ask again next time
+	  DrawPile pile = deck;
+	  deck = null;
+	  return pile;
   }
 
   public void mySetState(String newState) {
@@ -170,6 +247,8 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     private JPanel controls;
     private String deckId;
     private final JTextField tf = new JTextField(12);
+    private StringConfigurer promptText;
+    private JCheckBox prompt;
 
     public Ed(ReturnToDeck p) {
       controls = new JPanel();
@@ -193,10 +272,23 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
           }
         }
       });
-      Box box = Box.createHorizontalBox();
+      final Box box = Box.createHorizontalBox();
       box.add(select);
       box.add(tf);
       controls.add(box);
+      promptText = new StringConfigurer(null,"Prompt for destination deck:  ",p.selectDeckPrompt);
+      prompt = new JCheckBox("Choose destination deck at game time");
+      controls.add(prompt);
+      controls.add(promptText.getControls());
+      promptText.getControls().setVisible(p.deckId == null || p.deckId.length() == 0);
+      box.setVisible(p.deckId != null && p.deckId.length() > 0);
+      prompt.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          box.setVisible(!prompt.isSelected());
+          promptText.getControls().setVisible(prompt.isSelected());
+        }
+      });
+      prompt.setSelected(p.deckId == null || p.deckId.length() == 0);
     }
 
     private void updateDeckName() {
@@ -214,7 +306,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
-      return ID + se.append(menuName.getValueString()).append((KeyStroke)menuKey.getValue()).append(deckId).getValue();
+      return ID + se.append(menuName.getValueString()).append((KeyStroke)menuKey.getValue()).append(prompt.isSelected() ? "" : deckId).append(promptText.getValueString()).getValue();
     }
   }
 }

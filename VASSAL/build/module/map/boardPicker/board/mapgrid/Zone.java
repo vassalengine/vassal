@@ -37,12 +37,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -55,6 +59,7 @@ import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.RegionGrid;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 import VASSAL.build.module.properties.ChangePropertyCommandEncoder;
 import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
@@ -68,6 +73,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.SequenceEncoder;
 
 public class Zone extends AbstractConfigurable implements GridContainer, MutablePropertiesContainer, PropertySource, GameComponent {
   public static final String NAME = "name";
@@ -243,6 +249,65 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       existing.removeMutablePropertyChangeListener(repaintOnPropertyChange);
     }
     return existing;
+  }
+
+  public Point getLocation(String location) throws BadCoords {
+
+	  SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
+	  boolean isProperty = true;
+	  StringBuffer regex = new StringBuffer();
+	  int groupCount = 0;
+	  
+	  while (se.hasMoreTokens()) {
+		  String token = se.nextToken();
+		  isProperty = !isProperty;
+		  if (token.length() > 0) {
+			  if (!isProperty || !se.hasMoreTokens())
+				  regex.append(Pattern.quote(token));
+			  else if (token.equals(NAME))
+				  regex.append(Pattern.quote(getConfigureName()));
+			  else if (token.equals(GRID_LOCATION) && getGrid() != null) {
+				  regex.append("(.*)");
+				  ++groupCount;
+			  }
+		  }
+	  }
+	  
+	  if (regex.length() == 0)
+		  return null; // nothing to match!
+	  Pattern pattern = Pattern.compile(regex.toString());
+	  Matcher matcher = pattern.matcher(location);
+	  if (!matcher.matches())
+		  return null;
+	  assert(matcher.groupCount() == groupCount);
+	  
+	  Point p = null;
+	  if (groupCount > 0) {
+		  String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));	  
+		  p = getGrid().getLocation(locationName);
+		  if (p == null || !contains(p))
+			  return null;
+		  else
+			  return p;
+	  }
+	  else { 
+		  // no grid to match against
+		  // try the geographic mean
+		  p = new Point(0, 0);
+		  for (int i = 0; i < myPolygon.npoints; ++i)
+			  p.translate(myPolygon.xpoints[i], myPolygon.ypoints[i]);
+		  p.x /= myPolygon.npoints;
+		  p.y /= myPolygon.npoints;
+		  if (contains(p))
+			  return p;
+		  else {
+			  // concave polygon
+			  // default to the first point
+			  p.x = myPolygon.xpoints[0];
+			  p.y = myPolygon.ypoints[0];
+			  return p;
+		  }
+	  }
   }
 
   public String locationName(Point p) {

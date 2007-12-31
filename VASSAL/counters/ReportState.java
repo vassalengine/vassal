@@ -130,11 +130,11 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
     GamePiece oldPiece = (GamePiece) getProperty(Properties.SNAPSHOT);
 
-    boolean wasVisible = !Boolean.TRUE.equals(oldPiece.getProperty(Properties.INVISIBLE_TO_OTHERS));
+    boolean wasVisible = oldPiece != null && !Boolean.TRUE.equals(oldPiece.getProperty(Properties.INVISIBLE_TO_OTHERS));
     boolean isVisible = !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS));
 
     PieceAccess.GlobalAccess.hideAll();
-    String oldUnitName = oldPiece.getLocalizedName();
+    String oldUnitName = oldPiece == null ? null : oldPiece.getLocalizedName();
     format.setProperty(OLD_UNIT_NAME, oldUnitName);
     String newUnitName = outer.getLocalizedName();
     format.setProperty(NEW_UNIT_NAME, newUnitName);

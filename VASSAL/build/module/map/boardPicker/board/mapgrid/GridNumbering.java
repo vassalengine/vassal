@@ -28,6 +28,8 @@ package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
 import java.awt.Point;
 
+import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
+
 /**
  * Provides methods for assigning names to locations on a MapGrid, and drawing those locations when drawing a grid
  */
@@ -38,4 +40,5 @@ public interface GridNumbering {
     public void draw(java.awt.Graphics g, java.awt.Rectangle bounds, java.awt.Rectangle visibleRect, double scale, boolean reversed);
 
     public boolean isVisible();
+	  public Point getLocation(String location) throws BadCoords;
 }

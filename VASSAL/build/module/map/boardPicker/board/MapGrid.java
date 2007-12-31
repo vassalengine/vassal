@@ -43,7 +43,8 @@ public interface MapGrid {
   public String localizedLocationName(Point p);
 
   /**
-   * @return A point p such that locationName(p).equals(location)
+   * @return A point p such that locationName(p).equals(location). 
+   * @throws BadCoords if the location is not valid or formatted incorrectly.
    */
   public Point getLocation(String location) throws BadCoords;
 

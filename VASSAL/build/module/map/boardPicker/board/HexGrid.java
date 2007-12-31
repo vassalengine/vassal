@@ -33,7 +33,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.JButton;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
@@ -381,8 +383,11 @@ public class HexGrid extends AbstractConfigurable
     return numbering == null ? null : numbering.localizedLocationName(p);
   }
 
-  public Point getLocation(String hex) throws MapGrid.BadCoords {
-    throw new MapGrid.BadCoords("No naming scheme specified");
+  public Point getLocation(String location) throws BadCoords {
+	  if (numbering == null)
+		  return null;
+	  else
+		  return numbering.getLocation(location);
   }
 
   public Point snapTo(Point p) {

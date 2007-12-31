@@ -32,10 +32,15 @@ import java.awt.Point;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.JComponent;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
@@ -44,6 +49,7 @@ import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * Abstract base class for grid numbering classes for hexagonal and rectangular grids
@@ -392,6 +398,82 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
   }
 
+  // This appears to be the most efficient way to accomplish this without
+  // using groups. It also helps when there is no separator between alphabetic
+  // coordinates (as long as both coordinates don't use the same letter).
+  // AAFF is not ambiguous, but AAAA is.  Coordinates like 04AB will fail.
+  static final String ALPHABETIC_MATCH = "-?(?:A+|B+|C+|D+|E+|F+|G+|H+|I+|J+|K+|L+|M+|N+|O+|P+|Q+|R+|S+|T+|U+|V+|W+|X+|Y+|Z+)";
+  
+  protected String getMatchingPattern(char type, int leading) {
+	  if (type == 'A')
+		  return ALPHABETIC_MATCH;
+	  else
+		  return "-?[0-9]{" + (leading+1) + ",}";
+  }
+  
+  public Point getLocation(String location) throws BadCoords {
+
+	  SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
+	  boolean isProperty = true;
+	  StringBuffer regex = new StringBuffer();
+	  int colGroup = 0;
+	  int rowGroup = 0;
+	  int groupCount = 0;
+	  while (se.hasMoreTokens()) {
+		  String token = se.nextToken();
+		  isProperty = !isProperty;
+		  if (token.length() > 0) {
+			  if (!isProperty || !se.hasMoreTokens()) {
+				  regex.append(Pattern.quote(token));
+			  }
+			  else if (token.equals(GRID_LOCATION)) {
+				  if (first == 'H') {
+					  regex.append('(').append(getMatchingPattern(hType, hLeading)).append(')');
+					  colGroup = ++groupCount;
+					  if (sep.length() > 0)
+						  regex.append(Pattern.quote(sep));
+					  regex.append('(').append(getMatchingPattern(vType, vLeading)).append(')');
+					  rowGroup = ++groupCount;
+				  }
+				  else {
+					  regex.append('(').append(getMatchingPattern(vType, vLeading)).append(')');
+					  rowGroup = ++groupCount;
+					  regex.append(Pattern.quote(sep));
+					  regex.append('(').append(getMatchingPattern(hType, hLeading)).append(')');
+					  colGroup = ++groupCount;
+				  }
+			  }
+			  else if (token.equals(ROW)) {
+				  regex.append('(').append(getMatchingPattern(vType, vLeading)).append(')');
+				  rowGroup = ++groupCount;
+			  }
+			  else if (token.equals(COLUMN)) {
+				  regex.append('(').append(getMatchingPattern(hType, hLeading)).append(')');
+				  colGroup = ++groupCount;
+			  }
+		  }
+	  }
+
+	  if (regex.length() == 0 || colGroup == 0 || rowGroup == 0)
+		  return null;
+	  
+	  Pattern pattern = Pattern.compile(regex.toString());
+	  Matcher matcher = pattern.matcher(location);
+	  if (!matcher.matches()) {
+	    throw new BadCoords();
+	  }
+	  assert(matcher.groupCount() == groupCount && groupCount >= 2);
+	  
+	  String rowName = location.substring(matcher.start(rowGroup), matcher.end(rowGroup));
+	  String colName = location.substring(matcher.start(colGroup), matcher.end(colGroup));
+	  int row = parseName(rowName, vType);
+	  int col = parseName(colName, hType);
+	  
+	  return getCenterPoint(col-hOff, row-vOff);
+  }
+
+  public abstract Point getCenterPoint(int col, int row);
+
   public String locationName(Point pt) {
     int row = getRow(pt);
     int col = getColumn(pt);
@@ -408,6 +490,33 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   public static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+  protected int parseName(String name, char type) {
+	  int value = 0;
+	  switch (type) {
+	  case 'A': // Alphabetic
+		  int index = 0;
+		  boolean negative = false;
+		  if (name.startsWith("-")) {
+			  negative = true;
+			  ++index;	  
+		  }	  
+		  while (index < name.length() && Character.isUpperCase(name.charAt(index))) {
+			  if (index < name.length()-1)
+				  value += 26;
+			  else
+				  value += ALPHABET.indexOf(name.charAt(index));
+			  ++index;
+		  }
+		  if (negative)
+			  value *= -1;
+		  break;
+	  default: // Numeric
+		  value = Integer.parseInt(name);
+	  }
+	  
+	  return value;
+  }
+  
   protected String getName(int rowOrColumn, char type, int leading) {
     String val = rowOrColumn < 0 ? "-" : "";
     rowOrColumn = Math.abs(rowOrColumn);
