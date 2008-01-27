@@ -68,8 +68,10 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   protected static UniqueIdManager idMgr = new UniqueIdManager("GamePieceImage"); //$NON-NLS-1$
   protected String nameInUse;
-  
-  protected static Image NULL_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR); // empty image for images scaled to zero size
+ 
+  // empty image for images scaled to zero size
+  protected static final Image NULL_IMAGE =
+    new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
   protected SourceOp srcOp;
 

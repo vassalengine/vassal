@@ -274,7 +274,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   public Point getLocation(String location) throws BadCoords {
-	  SequenceEncoder.Decoder se =
+	  final SequenceEncoder.Decoder se =
       new SequenceEncoder.Decoder(locationFormat, '$');
 	  boolean isProperty = true;
 	  final StringBuilder regex = new StringBuilder();

@@ -266,11 +266,13 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       Color.class
     };
   }
+
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/die.gif"); //$NON-NLS-1$
     }
   }
+
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[]{NAME, RESULT_N, RESULT_TOTAL});
@@ -579,6 +581,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return null;
     }
   }
+
   /** Icon class for graphical display of a dice roll */
   private class ResultsIcon implements Icon {
 // FIXME: how does this work? where are width and height set?

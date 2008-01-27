@@ -111,7 +111,7 @@ public class SVGManager {
 
       // render the image
       return new SVGBufferedImage(doc, width, height,
-                                  BufferedImage.TYPE_4BYTE_ABGR);
+                                  BufferedImage.TYPE_INT_ARGB);
    }
 
    public Dimension getImageSize(String file, InputStream fileStream)
