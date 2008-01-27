@@ -75,10 +75,6 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   protected SourceOp srcOp;
 
-  // empty image for images scaled to zero size
-  protected static final Image NULL_IMAGE =
-    new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-
   public GamePieceImage() {
     super();
     setConfigureName(""); //$NON-NLS-1$
