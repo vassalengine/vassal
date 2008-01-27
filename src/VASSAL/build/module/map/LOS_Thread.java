@@ -683,8 +683,8 @@ public class LOS_Thread extends AbstractConfigurable implements
     Point mapAnchor = map.componentCoordinates(anchor);
     g.setColor(Color.black);
     g.setFont(RANGE_FONT);
-    FontMetrics fm = g.getFontMetrics();
-    StringBuffer buffer = new StringBuffer();
+    final FontMetrics fm = g.getFontMetrics();
+    final StringBuilder buffer = new StringBuilder();
     int dummy = range;
     while (dummy >= 1) {
       dummy = dummy / 10;

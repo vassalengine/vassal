@@ -1196,16 +1196,25 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public void saveDeck(File f) throws IOException {
     Command comm = new LoadDeckCommand(null);
 
-    FileWriter dest = new FileWriter(f);
-    for (Enumeration<GamePiece> e = getPieces(); e.hasMoreElements();) {
-      GamePiece p = e.nextElement();
-      p.setMap(null);
-      comm = comm.append(new AddPiece(p));
+    final FileWriter dest = new FileWriter(f);
+    try {
+      for (Enumeration<GamePiece> e = getPieces(); e.hasMoreElements();) {
+        final GamePiece p = e.nextElement();
+        p.setMap(null);
+        comm = comm.append(new AddPiece(p));
+      }
+      GameModule.getGameModule().addCommandEncoder(commandEncoder);
+      dest.write(GameModule.getGameModule().encode(comm));
+      GameModule.getGameModule().removeCommandEncoder(commandEncoder);
     }
-    GameModule.getGameModule().addCommandEncoder(commandEncoder);
-    dest.write(GameModule.getGameModule().encode(comm));
-    GameModule.getGameModule().removeCommandEncoder(commandEncoder);
-    dest.close();
+    finally {
+      try {
+        dest.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   private File getLoadFileName() {
@@ -1237,14 +1246,24 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public Command loadDeck(File f) throws IOException {
-    FileReader src = new FileReader(f);
-    char[] data = new char[10000];
-    StringBuffer buffer = new StringBuffer();
-    int len;
-    while ((len = src.read(data)) > 0) {
-      buffer.append(data, 0, len);
+    final StringBuilder buffer = new StringBuilder();
+    final FileReader src = new FileReader(f);
+    try {
+      final char[] data = new char[10000];
+      int len;
+      while ((len = src.read(data)) > 0) {
+        buffer.append(data, 0, len);
+      }
     }
-    src.close();
+    finally {
+      try {
+        src.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     GameModule.getGameModule().addCommandEncoder(commandEncoder);
     Command c = GameModule.getGameModule().decode(buffer.toString());
     GameModule.getGameModule().removeCommandEncoder(commandEncoder);

@@ -1,3 +1,22 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2000 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available 
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.build.module;
 
 import java.awt.Event;
@@ -7,8 +26,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +48,9 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.BridgeStream;
 import VASSAL.tools.FileChooser;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.Obfuscator;
 
@@ -162,9 +181,14 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       undoAction.setEnabled(false);
       endLogAction.setEnabled(false);
       stepAction.setEnabled(false);
+      outputFile = null;
     }
   }
 
+  public boolean isLogging() {
+    return outputFile != null;
+  }
+  
   public Command getRestoreCommand() {
     return null;
   }
@@ -188,6 +212,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public void queryNewLogFile(boolean atStart) {
     String prefName;
     String prompt;
+    if (isLogging()) {
+      return;
+    }
+
     if (atStart) {
       prefName = PROMPT_NEW_LOG_START;
       prompt = Resources.getString("BasicLogger.replay_commencing");  //$NON-NLS-1$
@@ -222,19 +250,19 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    */
   public void write() throws IOException {
     if (!logOutput.isEmpty()) {
-      Command log = beginningState;
+      final Command log = beginningState;
       for (Command c : logOutput) {
         log.append(new LogCommand(c, logInput, stepAction));
       }
-      String s = GameModule.getGameModule().encode(log);
-      ArchiveWriter saver = new ArchiveWriter(outputFile.getPath());
-      byte[] contents = s.getBytes("UTF-8");   //$NON-NLS-1$
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      new Obfuscator(contents).write(out);
-      out.close();
-      contents = out.toByteArray();
-      saver.addFile("savedGame", new ByteArrayInputStream(contents));  //$NON-NLS-1$
+
+      final String s = GameModule.getGameModule().encode(log);
+      final BridgeStream out = new BridgeStream();
+      new Obfuscator(s.getBytes("UTF-8")).write(out); //$NON-NLS-1$    
+
+      final ArchiveWriter saver = new ArchiveWriter(outputFile.getPath());
+      saver.addFile("savedGame", out.toInputStream()); //$NON-NLS-1$
       saver.write();
+
       GameModule.getGameModule().getGameState().setModified(false);
       undoAction.setEnabled(false);
       endLogAction.setEnabled(false);
@@ -335,6 +363,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         GameModule.getGameModule().warn(Resources.getString("BasicLogger.logfile_written"));  //$NON-NLS-1$
         newLogAction.setEnabled(true);
         GameModule.getGameModule().appendToTitle(null);
+        outputFile = null;
       }
       catch (IOException ex) {
         String msg = Resources.getString("BasicLogger.unable_to_write", outputFile.toString());  //$NON-NLS-1$

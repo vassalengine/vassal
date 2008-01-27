@@ -14,12 +14,12 @@ import VASSAL.tools.HashCode;
  * @since 3.1.0
  * @author Joel Uckelman
  */
-public class SourceTileOp extends AbstractTileOp {
+public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
   private final ImageOp sop;
   private final int x0, y0, x1, y1;
   private final int hash;
  
-  public SourceTileOp(ImageOp sop, int tileX, int tileY) {
+  public SourceTileOpBitmapImpl(ImageOp sop, int tileX, int tileY) {
     if (sop == null) throw new IllegalArgumentException();
 
     if (tileX < 0 || tileX >= sop.getNumXTiles() ||
@@ -50,7 +50,7 @@ public class SourceTileOp extends AbstractTileOp {
     hash = result;
   }
 
-  protected Image apply() throws Exception {
+  public Image apply() throws Exception {
     final BufferedImage dst =
       new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
 
@@ -63,13 +63,17 @@ public class SourceTileOp extends AbstractTileOp {
   }
 
   protected void fixSize() { }
+
+  public ImageOp getSource() {
+    return null;
+  }
  
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof SourceTileOp)) return false;
+    if (o == null || !(o instanceof SourceTileOpBitmapImpl)) return false;
 
-    final SourceTileOp op = (SourceTileOp) o;
+    final SourceTileOpBitmapImpl op = (SourceTileOpBitmapImpl) o;
     return x0 == op.x0 &&
            y0 == op.y0 &&
            x1 == op.x1 &&

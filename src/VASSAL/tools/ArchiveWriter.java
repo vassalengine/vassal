@@ -19,7 +19,6 @@
 package VASSAL.tools;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -152,7 +151,7 @@ public class ArchiveWriter extends DataArchive {
    */
   public void addFile(String name, InputStream stream) {
     try {
-      files.put(name, getBytes(stream));
+      files.put(name, IOUtils.getBytes(stream));
     }
     catch (IOException ex) {
       ex.printStackTrace();
@@ -230,46 +229,69 @@ public class ArchiveWriter extends DataArchive {
     }
     temp = temp + n + ".zip";
 
-    int count;
-    final byte[] buffer = new byte[1024];
-
     final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(temp));
-    if (archive != null) {
-      /* Copy old non-overwritten entries into temp file */
-      ZipEntry entry = null;
-      final ZipInputStream zis =
-        new ZipInputStream(new FileInputStream(archive.getName()));
-
-      while ((entry = zis.getNextEntry()) != null) {
-        if (!images.containsKey(entry.getName()) &&
-            !sounds.containsKey(entry.getName()) &&
-            !files.containsKey(entry.getName())) {
-          /* System.err.println("Copying "+entry.getName()); */
-          final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-          while ((count = zis.read(buffer, 0, 1024)) >= 0) {
-            outStream.write(buffer, 0, count);
+    try {
+      if (archive != null) {
+        try {
+          // Copy old non-overwritten entries into temp file
+          final ZipInputStream zis =
+            new ZipInputStream(new FileInputStream(archive.getName()));
+          try { 
+            ZipEntry entry = null;
+            while ((entry = zis.getNextEntry()) != null) {
+              if (!images.containsKey(entry.getName()) &&
+                  !sounds.containsKey(entry.getName()) &&
+                  !files.containsKey(entry.getName())) {
+                // System.err.println("Copying "+entry.getName());
+    
+                // FIXME: can we do this wihout getting the whole contents
+                // of zis in memory at once? Could be very large.
+                final byte[] contents = IOUtils.toByteArray(zis);
+                final ZipEntry newEntry = new ZipEntry(entry.getName());
+                newEntry.setMethod(entry.getMethod());
+                if (newEntry.getMethod() == ZipEntry.STORED) {
+                  newEntry.setSize(contents.length);
+                  final CRC32 checksum = new CRC32();
+                  checksum.update(contents);
+                  newEntry.setCrc(checksum.getValue());
+                }
+                out.putNextEntry(newEntry);
+                out.write(contents, 0, contents.length);
+              }
+            }
           }
-          final byte[] contents = outStream.toByteArray();
-          final ZipEntry newEntry = new ZipEntry(entry.getName());
-          newEntry.setMethod(entry.getMethod());
-          if (newEntry.getMethod() == ZipEntry.STORED) {
-            newEntry.setSize(contents.length);
-            final CRC32 checksum = new CRC32();
-            checksum.update(contents);
-            newEntry.setCrc(checksum.getValue());
+          finally {
+            try {
+              zis.close();
+            }
+            catch (IOException e) {
+              e.printStackTrace();
+            }
           }
-          out.putNextEntry(newEntry);
-          out.write(contents, 0, contents.length);
+        }
+        finally {
+          try {
+            archive.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
         }
       }
-      zis.close();
-      archive.close();
+
+      // Write new entries into temp file
+      writeEntries(images, ZipEntry.STORED, out);
+      writeEntries(sounds, ZipEntry.STORED, out);
+      writeEntries(files, ZipEntry.DEFLATED, out);
     }
-    /* Write new entries into temp file */
-    writeEntries(images, ZipEntry.STORED, out);
-    writeEntries(sounds, ZipEntry.STORED, out);
-    writeEntries(files, ZipEntry.DEFLATED, out);
-    out.close();
+    finally {
+      try {
+        out.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
     final File original = new File(archiveName);
     if (original.exists()) {
@@ -278,16 +300,21 @@ public class ArchiveWriter extends DataArchive {
                               "\nData stored in " + temp);
       }
     }
+
     final File f = new File(temp);
     if (!f.renameTo(original)) {
       throw new IOException("Unable to write to " + archiveName +
                             "\nData stored in " + temp);
     }
+
     archive = new ZipFile(archiveName);
   }
 
   private void writeEntries(Map<String,Object> h, int method,
                             ZipOutputStream out) throws IOException {
+    // Note: This method does not close the ouput stream. The caller
+    // is expected to handle that.
+
     byte[] contents;
     ZipEntry entry;
 
@@ -298,7 +325,7 @@ public class ArchiveWriter extends DataArchive {
           if (svgManager == null) svgManager = new SVGManager(this);
           contents = svgManager.relativizeExternalReferences((String) o);   
         }
-        else contents = getBytes(new FileInputStream((String) o));
+        else contents = IOUtils.getBytes(new FileInputStream((String) o));
       }
       else if (o instanceof byte[]) {
         contents = (byte[]) o;

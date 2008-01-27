@@ -73,22 +73,32 @@ public class UnitTest implements UserDialog {
     ActivePeerManager apm = new ActivePeerManager(myInfo,d,ppm);
     PeerInfo info = new PeerInfo("Server","localhost",5555);
 */
-    Socket s = new Socket("localhost",5555); //$NON-NLS-1$
-    PeerReader reader = new PeerReader(s.getInputStream());
-    System.err.println("Created reader "+reader); //$NON-NLS-1$
-    PeerWriter writer = new PeerWriter(s.getOutputStream());
-    System.err.println("Created writer"+writer); //$NON-NLS-1$
-//    ActivePeer peer = new ActivePeer(myInfo,d, apm, ppm, info, reader, writer);
-//    peer.sendCHAT("A message");
-    writer.writeLine("A message"); //$NON-NLS-1$
-    Thread.sleep(2000);
-    reader.close();
-    writer.close();
+    final Socket s = new Socket("localhost",5555); //$NON-NLS-1$
+
+    final PeerReader reader = new PeerReader(s.getInputStream());
+    System.err.println("Created reader " + reader); //$NON-NLS-1$
+    try {
+      final PeerWriter writer = new PeerWriter(s.getOutputStream());
+      System.err.println("Created writer"+writer); //$NON-NLS-1$
+//      ActivePeer peer = new ActivePeer(myInfo,d, apm, ppm, info, reader, writer);
+//      peer.sendCHAT("A message");
+
+      try {
+         writer.writeLine("A message"); //$NON-NLS-1$
+         Thread.sleep(2000); 
+      }
+      finally {
+        writer.close();
+      }
+    }
+    finally {
+      reader.close();
+    }
   }
 
   private static void startSocketReader(final int port) throws InterruptedException {
     final Object lock = new Object();
-    Runnable runnable = new Runnable() {
+    final Runnable runnable = new Runnable() {
       public void run() {
         try {
           ServerSocket server;
@@ -96,16 +106,22 @@ public class UnitTest implements UserDialog {
             server = new ServerSocket(port);
             lock.notifyAll();
           }
-          Socket s = server.accept();
-          PeerReader reader = new PeerReader(s.getInputStream());
-          while (true) {
-            String msg = reader.readLine();
-            System.err.println("" + msg); //$NON-NLS-1$
-            if (msg == null) {
-              break;
+
+          final Socket s = server.accept();
+          final PeerReader reader = new PeerReader(s.getInputStream());
+          try {
+            while (true) {
+              final String msg = reader.readLine();
+              System.err.println("" + msg); //$NON-NLS-1$
+              if (msg == null) {
+                break;
+              }
             }
+            System.err.println("Done"); //$NON-NLS-1$
           }
-          System.err.println("Done"); //$NON-NLS-1$
+          finally {
+            reader.close();
+          }
         }
         catch (IOException e) {
           e.printStackTrace();

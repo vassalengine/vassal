@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -62,19 +63,23 @@ import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
+import VASSAL.build.module.Plugin;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 
 /**
- * This is the Configuration Tree that appears in the Configuration window when editing a VASSAL module. Each node in
- * the tree structure is a {@link VASSAL.build.Configurable} object, whose child nodes are obtained via
- * {@link VASSAL.build.Configurable#getConfigureComponents}.
+ * This is the Configuration Tree that appears in the Configuration window
+ * when editing a VASSAL module. Each node in the tree structure is a
+ * {@link VASSAL.build.Configurable} object, whose child nodes are obtained
+ * via {@link VASSAL.build.Configurable#getConfigureComponents}.
  */
 public class ConfigureTree extends JTree implements PropertyChangeListener, MouseListener, MouseMotionListener, TreeSelectionListener {
   private static final long serialVersionUID = 1L;
-  protected Map<Configurable, DefaultMutableTreeNode> nodes = new HashMap<Configurable, DefaultMutableTreeNode>();
+
+  protected Map<Configurable, DefaultMutableTreeNode> nodes =
+    new HashMap<Configurable, DefaultMutableTreeNode>();
   protected DefaultMutableTreeNode copyData;
   protected DefaultMutableTreeNode cutData;
   protected HelpWindow helpWindow;
@@ -111,9 +116,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected JMenuItem moveItem;
   protected JMenuItem propertiesItem;
   protected JMenuItem translateItem;
-  public static java.awt.Font POPUP_MENU_FONT = new java.awt.Font("Dialog", 0, 11);
+  public static java.awt.Font POPUP_MENU_FONT =
+    new java.awt.Font("Dialog", 0, 11);
   protected JMenu editMenu;
-
+  protected static List<AdditionalComponent> additionalComponents =
+    new ArrayList<AdditionalComponent>();
+  
   /** Creates new ConfigureTree */
   public ConfigureTree(Configurable root, HelpWindow helpWindow) {
     toggleClickCount = 3;
@@ -191,10 +199,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected DefaultMutableTreeNode buildTreeNode(Configurable c) {
     c.addPropertyChangeListener(this);
-    DefaultMutableTreeNode node = new DefaultMutableTreeNode(c);
-    Configurable[] child = c.getConfigureComponents();
-    for (int i = 0; i < child.length; ++i) {
-      node.add(buildTreeNode(child[i]));
+    final DefaultMutableTreeNode node = new DefaultMutableTreeNode(c);
+    final Configurable[] children = c.getConfigureComponents();
+    for (Configurable child : children) {
+      if (! (child instanceof Plugin)) { // Hide Plug-ins
+        node.add(buildTreeNode(child));
+      }
     }
     nodes.put(c, node);
     return node;
@@ -208,9 +218,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   private void addActionGroup(JPopupMenu menu, ArrayList<Action> l) {
     boolean empty = true;
-    for (int i = 0; i < l.size(); ++i) {
-      if (l.get(i) != null) {
-        menu.add(l.get(i)).setFont(POPUP_MENU_FONT);
+    for (Action a : l) {
+      if (a != null) {
+        menu.add(a).setFont(POPUP_MENU_FONT);
         empty = false;
       }
     }
@@ -221,8 +231,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected JPopupMenu buildPopupMenu(final Configurable target) {
-    JPopupMenu popup = new JPopupMenu();
-    ArrayList<Action> l = new ArrayList<Action>();
+    final JPopupMenu popup = new JPopupMenu();
+    final ArrayList<Action> l = new ArrayList<Action>();
     l.add(buildEditAction(target));
     l.add(buildEditPiecesAction(target));
     addActionGroup(popup, l);
@@ -403,12 +413,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Collection<Action> buildAddActionsFor(final Configurable target) {
-    ArrayList<Action> l = new ArrayList<Action>();
-    Class[] allow = target.getAllowableConfigureComponents();
-    for (int i = 0; i < allow.length; ++i) {
-      final Class newConfig = allow[i];
-      Action action = buildAddAction(target, newConfig);
+    final ArrayList<Action> l = new ArrayList<Action>();
+    for (Class newConfig : target.getAllowableConfigureComponents()) {
+      final Action action = buildAddAction(target, newConfig);
       l.add(action);
+    }
+
+    for (AdditionalComponent add : additionalComponents) {
+      if (target.getClass().equals(add.getParent())) {
+        final Class newConfig = add.getChild();
+        final Action action = buildAddAction(target, newConfig);
+        l.add(action);
+      }
     }
     return l;
   }
@@ -896,5 +912,33 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Configurable getParent(Configurable target) {
     DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) getTreeNode(target).getParent();
     return (Configurable) parentNode.getUserObject();
+  }
+  
+  /**
+   * Record additional available components to add to the popup menu.
+   * 
+   * @param parent
+   * @param child
+   */
+  public static void addAdditionalComponent(Class parent, Class child) {
+    additionalComponents.add(new AdditionalComponent(parent, child));
+  }
+  
+  protected static class AdditionalComponent {
+    Class parent;
+    Class child;
+    
+    public AdditionalComponent(Class p, Class c) {
+      parent = p;
+      child = c;
+    }
+    
+    public Class getParent() {
+      return parent;
+    }
+    
+    public Class getChild() {
+      return child;
+    }     
   }
 }

@@ -48,6 +48,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
+
 import VASSAL.Info;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -55,8 +56,8 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.PrefsEditor;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.FileChooser;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -106,7 +107,7 @@ public class ResourceExtracter {
       return prompt;
     }
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(prompt, '|');
-    StringBuffer buffer = new StringBuffer();
+    final StringBuilder buffer = new StringBuilder();
     while (st.hasMoreTokens()) {
       buffer.append(st.nextToken());
       if (st.hasMoreTokens()) {
@@ -252,38 +253,69 @@ public class ResourceExtracter {
   }
 
   /**
-   * Extract a list of resources specified by {@link #getResourceList} into the destination directory
+   * Extract a list of resources specified by {@link #getResourceList}
+   * into the destination directory.
    */
   private void extractResourceList() throws IOException {
     label.setText(Resources.getString("ResourceExtracter.unpacking")); //$NON-NLS-1$
-    List<String> resources = getListedResources();
+    final List<String> resources = getListedResources();
     bar.setMaximum(resources.size());
-    InputStream in = null;
     int copyCount = 0;
-    byte[] buffer = new byte[10000];
-    int readCount = 0;
+
     for (String nextResource : resources) {
       label.setText(nextResource);
       bar.setValue(++copyCount);
-      File local = new File(destinationDir, nextResource);
+      final File local = new File(destinationDir, nextResource);
       createDir(local.getParentFile());
-      in = getClass().getResourceAsStream("/" + nextResource); //$NON-NLS-1$
-      FileOutputStream out = new FileOutputStream(local);
-      while ((readCount = in.read(buffer)) > 0) {
-        out.write(buffer, 0, readCount);
+
+      final InputStream in =
+        getClass().getResourceAsStream("/" + nextResource); //$NON-NLS-1$
+      if (in == null)
+        throw new IOException("Resource not found: " + nextResource);
+      try {
+        final FileOutputStream out = new FileOutputStream(local);
+        try {
+          IOUtils.copy(in, out);
+        }
+        finally {
+          try {
+            out.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
-      out.close();
+      finally {
+        try {
+          in.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 
   protected List<String> getListedResources() throws IOException {
-    BufferedReader resourceList = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(getResourceList())));
-    ArrayList<String> resources = new ArrayList<String>();
-    String nextResource = null;
-    while ((nextResource = resourceList.readLine()) != null) {
-      resources.add(nextResource);
+    final BufferedReader resourceList = new BufferedReader(
+      new InputStreamReader(getClass().getResourceAsStream(getResourceList())));
+    try {
+      final ArrayList<String> resources = new ArrayList<String>();
+      String nextResource = null;
+      while ((nextResource = resourceList.readLine()) != null) {
+        resources.add(nextResource);
+      }
+      return resources;
     }
-    return resources;
+    finally {
+      try {
+        resourceList.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   protected String getResourceList() {
@@ -295,32 +327,49 @@ public class ResourceExtracter {
    */
   private void packResourceList() throws IOException {
     label.setText(Resources.getString("ResourceExtracter.unpacking")); //$NON-NLS-1$
-    File tmp = File.createTempFile("Vdata", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(tmp));
-    File target = getAssembleTarget();
-    List<String> resources = getListedResources();
-    int count = 0;
-    bar.setMaximum(resources.size());
-    for (String nextResource : resources) {
-      label.setText(nextResource);
-      byte[] contents = DataArchive.getBytes(getClass().getResourceAsStream("/" + nextResource)); //$NON-NLS-1$
-      ZipEntry entry = new ZipEntry(nextResource);
-      entry.setMethod(ZipEntry.STORED);
-      entry.setSize(contents.length);
-      CRC32 checksum = new CRC32();
-      checksum.update(contents);
-      entry.setCrc(checksum.getValue());
-      out.putNextEntry(entry);
-      out.write(contents);
-      bar.setValue(++count);
+    final File tmp =
+      File.createTempFile("Vdata", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+    File target = null;
+    
+    final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(tmp));
+    try {
+      target = getAssembleTarget();
+      final List<String> resources = getListedResources();
+      int count = 0;
+      bar.setMaximum(resources.size());
+      for (String nextResource : resources) {
+        label.setText(nextResource);
+        final byte[] contents = IOUtils.getBytes(
+          getClass().getResourceAsStream("/" + nextResource)); //$NON-NLS-1$
+
+        final ZipEntry entry = new ZipEntry(nextResource);
+        entry.setMethod(ZipEntry.STORED);
+        entry.setSize(contents.length);
+        CRC32 checksum = new CRC32();
+        checksum.update(contents);
+        entry.setCrc(checksum.getValue());
+        out.putNextEntry(entry);
+        out.write(contents);
+        bar.setValue(++count);
+      }
     }
+    finally {
+      try {
+        out.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     label.setText(Resources.getString("ResourceExtracter.saving")); //$NON-NLS-1$
-    out.close();
+
     if (target.exists()) {
       if (!target.renameTo(getBackupAssembleTarget())) {
         throw new IOException(Resources.getString("ResourceExtracter.unable_to_back_up", target.getPath())); //$NON-NLS-1$
       }
     }
+
     if (!tmp.renameTo(target)) {
       throw new IOException(Resources.getString("ResourceExtracter.unable_to_create", target.getPath(), tmp.getPath())); //$NON-NLS-1$
     }
@@ -342,38 +391,86 @@ public class ResourceExtracter {
     return new File(target.getParentFile(), newName);
   }
 
-  /** Extract the contents of a Zip file specified by {@link #getZipResource} into the destination directory */
+  /** 
+   * Extract the contents of a Zip file specified by {@link #getZipResource}
+   * into the destination directory
+   */
   private void extractZipContents() throws IOException {
     label.setText(Resources.getString("ResourceExtracter.unpacking")); //$NON-NLS-1$
-    File tmp = File.createTempFile("Vdata", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-    byte[] buffer = new byte[100000];
-    InputStream in = this.getClass().getResourceAsStream(getZipResource());
-    OutputStream out = new FileOutputStream(tmp);
-    int count = 0;
-    while ((count = in.read(buffer)) > 0) {
-      out.write(buffer, 0, count);
-    }
-    in.close();
-    out.close();
-    ZipInputStream zip = new ZipInputStream(new FileInputStream(tmp));
-    bar.setMaximum(new ZipFile(tmp).size());
-    ZipEntry entry;
-    int entriesCopied = 0;
-    while ((entry = zip.getNextEntry()) != null) {
-      label.setText(entry.getName());
-      bar.setValue(++entriesCopied);
-      File local = new File(destinationDir, entry.getName());
-      if (entry.isDirectory()) {
-        createDir(local);
+    final File tmp =
+      File.createTempFile("Vdata", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+//    final byte[] buffer = new byte[100000];
+
+    final InputStream in =
+      this.getClass().getResourceAsStream(getZipResource());
+    if (in == null)
+      throw new IOException("Resource not found: " + getZipResource());
+    try {    
+      final FileOutputStream out = new FileOutputStream(tmp);
+      try {
+        IOUtils.copy(in, out);
+//        int count = 0;
+//        while ((count = in.read(buffer)) > 0) {
+//          out.write(buffer, 0, count);
+//        }
       }
-      else {
-        createDir(local.getParentFile());
-        out = new FileOutputStream(local);
-        count = 0;
-        while ((count = zip.read(buffer)) > 0) {
-          out.write(buffer, 0, count);
+      finally {
+        try {
+          out.close();
         }
-        out.close();
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    finally {
+      try {
+        in.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    final ZipInputStream zip = new ZipInputStream(new FileInputStream(tmp)); 
+    try {
+      bar.setMaximum(new ZipFile(tmp).size());
+      ZipEntry entry;
+      int entriesCopied = 0;
+      while ((entry = zip.getNextEntry()) != null) {
+        label.setText(entry.getName());
+        bar.setValue(++entriesCopied);
+        final File local = new File(destinationDir, entry.getName());
+        if (entry.isDirectory()) {
+          createDir(local);
+        }
+        else {
+          createDir(local.getParentFile());
+          final FileOutputStream out = new FileOutputStream(local);
+          try {
+            IOUtils.copy(zip, out);
+//            int count = 0;
+//            while ((count = zip.read(buffer)) > 0) {
+//              out.write(buffer, 0, count);
+//            }
+          }
+          finally {
+            try {
+              out.close();
+            }
+            catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+    }
+    finally {
+      try {
+        zip.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
       }
     }
   }

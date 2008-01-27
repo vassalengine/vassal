@@ -415,7 +415,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
 	  SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
 	  boolean isProperty = true;
-	  StringBuffer regex = new StringBuffer();
+	  final StringBuilder regex = new StringBuilder();
 	  int colGroup = 0;
 	  int rowGroup = 0;
 	  int groupCount = 0;

@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2006 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -25,11 +24,10 @@ import java.io.OutputStream;
 import java.util.Random;
 
 /**
- * Utility class that handles simple obfuscation of a file's contents, to prevent the casual cheat of hand-editing a
- * logfile
+ * Utility class that handles simple obfuscation of a file's contents,
+ * to prevent the casual cheat of hand-editing a logfile.
  * 
  * @author rkinney
- * 
  */
 public class Obfuscator {
   public static final String HEADER = "!VCSK";
@@ -39,7 +37,7 @@ public class Obfuscator {
 
   public Obfuscator(byte[] contents) {
     key = (byte) rand.nextInt(256);
-    StringBuffer buffer = new StringBuffer(HEADER);
+    final StringBuilder buffer = new StringBuilder(HEADER);
     appendAsHex(buffer,key);
     for (int i = 0; i < contents.length; ++i) {
       appendAsHex(buffer,(byte) (contents[i] ^ key));
@@ -47,7 +45,7 @@ public class Obfuscator {
     encrypted = buffer.toString();
   }
   
-  private void appendAsHex(StringBuffer buffer, byte b) {
+  private void appendAsHex(StringBuilder buffer, byte b) {
     buffer.append(Integer.toHexString((b & 0xf0) >>> 4).charAt(0));
     buffer.append(Integer.toHexString(b & 0x0f).charAt(0));
   }
@@ -59,19 +57,21 @@ public class Obfuscator {
   // Convert a plain text file to an obfuscated file
   public static void main(String[] args) throws Exception {
     System.out.println("Encoding " + args[0]);
-    byte[] data = new byte[0];
-    byte[] buffer = new byte[10000];
-    int count = 0;
-    int length = 0;
-    InputStream in = new FileInputStream(args[0]);
-    while ((count = in.read(buffer)) > 0) {
-      length += count;
-      byte[] temp = new byte[length];
-      System.arraycopy(data, 0, temp, 0, length - count);
-      System.arraycopy(buffer, 0, temp, length - count, count);
-      data = temp;
+
+    final InputStream in = new FileInputStream(args[0]);
+    final byte[] data;
+    try {
+      data = IOUtils.toByteArray(in);
     }
-    in.close();
+    finally {
+      try {
+        in.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     Obfuscator o = new Obfuscator(data);
     o.write(new FileOutputStream(args[0]));
     System.out.println("Done!");

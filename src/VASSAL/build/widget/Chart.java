@@ -31,6 +31,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -55,7 +56,7 @@ public class Chart extends Widget {
     if (chart == null) {
       label = new JLabel();
       srcOp = fileName == null || fileName.trim().isEmpty()
-            ? null : new SourceOp(fileName);
+            ? null : Op.load(fileName);
       if (srcOp != null) {
         label.setIcon(new OpIcon(srcOp));
       }
@@ -118,7 +119,7 @@ public class Chart extends Widget {
         }
 */
         srcOp = fileName == null || fileName.trim().isEmpty()
-              ? null : new SourceOp(fileName);
+              ? null : Op.load(fileName);
         if (srcOp != null) {
           label.setIcon(new OpIcon(srcOp));
           label.revalidate();

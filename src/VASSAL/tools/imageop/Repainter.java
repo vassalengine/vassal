@@ -32,11 +32,11 @@ import java.awt.Rectangle;
  * @author Joel Uckelman
  */
 public class Repainter implements ImageOpObserver {
-  private final Component c;
-  private final int x;
-  private final int y;
-  private final int w;
-  private final int h;
+  protected final Component c;
+  protected final int x;
+  protected final int y;
+  protected final int w;
+  protected final int h;
 
   /**
    * Creates a <code>Repainter</code> for the specified component and

@@ -26,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
 import java.util.zip.CRC32;
@@ -35,6 +34,8 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import static VASSAL.tools.IterableEnumeration.iterate;
 
 /**
  * Automatically builds a .jar file that will update a Zip archive.
@@ -66,13 +67,24 @@ public class ZipUpdater implements Runnable {
       crc = entry.getCrc();
       if (crc < 0) {
         CRC32 checksum = new CRC32();
-        InputStream in = file.getInputStream(entry);
-        byte[] buffer = new byte[1024];
-        int count;
-        while ((count = in.read(buffer)) > 0) {
-          checksum.update(buffer, 0, count);
+
+        final InputStream in = file.getInputStream(entry);
+        try {
+          final byte[] buffer = new byte[1024];
+          int count;
+          while ((count = in.read(buffer)) > 0) {
+            checksum.update(buffer, 0, count);
+          }
+          crc = checksum.getValue();
         }
-        crc = checksum.getValue();
+        finally {
+          try {
+            in.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
     }
     return crc;
@@ -83,24 +95,31 @@ public class ZipUpdater implements Runnable {
   }
 
   private long replaceEntry(ZipOutputStream output, ZipEntry newEntry) throws IOException {
-    InputStream newContents = getClass().getResourceAsStream("/" + ENTRIES_DIR + newEntry.getName());
+    final InputStream newContents =
+      getClass().getResourceAsStream("/" + ENTRIES_DIR + newEntry.getName());
     if (newContents == null) {
       throw new IOException("This updater was created with an original that differs from the file you're trying to update.\nLocal entry does not match original:  "+newEntry.getName());
     }
-    else {
+
+    try {
       return writeEntry(newContents, output, newEntry);
+    }
+    finally {
+      try {
+        newContents.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
     }
   }
 
+
   private long writeEntry(InputStream zis, ZipOutputStream output, ZipEntry newEntry) throws IOException {
-    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-    int count = 0;
-    byte[] buffer = new byte[1024];
-    while ((count = zis.read(buffer, 0, 1024)) >= 0) {
-      byteStream.write(buffer, 0, count);
-    }
-    byte[] contents = byteStream.toByteArray();
-    CRC32 checksum = new CRC32();
+    // FIXME: is there a better way to do this, so that the whole input
+    // stream isn't in memory at once?
+    final byte[] contents = IOUtils.toByteArray(zis);
+    final CRC32 checksum = new CRC32();
     checksum.update(contents);
     if (newEntry.getMethod() == ZipEntry.STORED) {
       newEntry.setSize(contents.length);
@@ -113,37 +132,66 @@ public class ZipUpdater implements Runnable {
 
   public void write(File destination) throws IOException {
     checkSums = new Properties();
-    checkSums.load(ZipUpdater.class.getResourceAsStream("/" + CHECKSUM_RESOURCE));
 
-    oldZipFile = new ZipFile(oldFile.getPath());
-
-    File tempFile = File.createTempFile("VSL", ".zip");
-    ZipOutputStream output = new ZipOutputStream(new FileOutputStream(tempFile));
-    for (Enumeration e = checkSums.keys(); e.hasMoreElements();) {
-      String entryName = (String) e.nextElement();
-      long targetSum;
+    final InputStream in =
+      ZipUpdater.class.getResourceAsStream("/" + CHECKSUM_RESOURCE);
+    if (in == null)
+      throw new IOException("Resource not found: " + CHECKSUM_RESOURCE);
+    try {
+      checkSums.load(in);
+    }
+    finally {
       try {
-        targetSum = Long.parseLong(checkSums.getProperty(entryName, "<none>"));
+        in.close();
       }
-      catch (NumberFormatException invalid) {
-        throw new IOException("Invalid checksum " + checkSums.getProperty(entryName, "<none>") + " for entry " + entryName);
-      }
-      ZipEntry entry = oldZipFile.getEntry(entryName);
-      ZipEntry newEntry = new ZipEntry(entryName);
-      newEntry.setMethod(entry != null ? entry.getMethod() : ZipEntry.DEFLATED);
-      if (targetSum == getCrc(oldZipFile, entry)) {
-        if (targetSum != copyEntry(output, newEntry)) {
-          throw new IOException("Checksum mismatch for entry " + entry.getName());
-        }
-      }
-      else {
-        if (targetSum != replaceEntry(output, newEntry)) {
-          throw new IOException("Checksum mismatch for entry " + entry.getName());
-        }
+      catch (IOException e) {
+        e.printStackTrace();
       }
     }
-    oldZipFile.close();
-    output.close();
+
+    final File tempFile = File.createTempFile("VSL", ".zip");
+
+    oldZipFile = new ZipFile(oldFile.getPath());
+    try {
+      final ZipOutputStream output =
+        new ZipOutputStream(new FileOutputStream(tempFile));
+      try {
+        for (String entryName : checkSums.stringPropertyNames()) {
+          long targetSum;
+          try {
+            targetSum =
+              Long.parseLong(checkSums.getProperty(entryName, "<none>"));
+          }
+          catch (NumberFormatException invalid) {
+            throw new IOException("Invalid checksum " + checkSums.getProperty(entryName, "<none>") + " for entry " + entryName);
+          }
+          final ZipEntry entry = oldZipFile.getEntry(entryName);
+          final ZipEntry newEntry = new ZipEntry(entryName);
+          newEntry.setMethod(entry != null ? entry.getMethod() : ZipEntry.DEFLATED);
+          if (targetSum == getCrc(oldZipFile, entry)) {
+            if (targetSum != copyEntry(output, newEntry)) {
+              throw new IOException("Checksum mismatch for entry " + entry.getName());
+            }
+          }
+          else {
+            if (targetSum != replaceEntry(output, newEntry)) {
+              throw new IOException("Checksum mismatch for entry " + entry.getName());
+            }
+          }
+        }
+      }
+      finally {
+        try {
+          output.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      } 
+    }
+    finally {
+      oldZipFile.close();
+    }
 
     if (destination.getName().equals(oldFile.getName())) {
       String updatedName = destination.getName();
@@ -174,53 +222,125 @@ public class ZipUpdater implements Runnable {
 
   public void createUpdater(File newFile, File updaterFile) throws IOException {
     if (!updaterFile.getName().endsWith(".jar")) {
-      String newName = updaterFile.getName().replace('.','_')+".jar";
+      final String newName = updaterFile.getName().replace('.','_')+".jar";
       updaterFile = new File(updaterFile.getParentFile(),newName);
     }
     checkSums = new Properties();
-    oldZipFile = new ZipFile(oldFile);
-    String inputArchiveName = oldFile.getName();
-    ZipFile goal = new ZipFile(newFile);
-    JarOutputStream out = new JarOutputStream(new FileOutputStream(updaterFile));
-    for (Enumeration e = goal.entries(); e.hasMoreElements();) {
-      ZipEntry entry = (ZipEntry) e.nextElement();
-      long goalCrc = getCrc(goal, entry);
-      long inputCrc = getCrc(oldZipFile, oldZipFile.getEntry(entry.getName()));
-      if (goalCrc != inputCrc) {
-        ZipEntry outputEntry = new ZipEntry(ENTRIES_DIR + entry.getName());
-        outputEntry.setMethod(entry.getMethod());
-        writeEntry(goal.getInputStream(entry), out, outputEntry);
+
+    try {
+      oldZipFile = new ZipFile(oldFile);
+      final String inputArchiveName = oldFile.getName();
+
+      final ZipFile goal = new ZipFile(newFile);
+      try {
+        final JarOutputStream out =
+          new JarOutputStream(new FileOutputStream(updaterFile));
+        try {
+          for (ZipEntry entry : iterate(goal.entries())) {
+            final long goalCrc = getCrc(goal, entry);
+            final long inputCrc =
+              getCrc(oldZipFile, oldZipFile.getEntry(entry.getName()));
+            if (goalCrc != inputCrc) {
+              final ZipEntry outputEntry =
+                new ZipEntry(ENTRIES_DIR + entry.getName());
+              outputEntry.setMethod(entry.getMethod());
+
+              final InputStream gis = goal.getInputStream(entry);
+              try {
+                writeEntry(gis, out, outputEntry);
+              }
+              finally {
+                try {
+                  gis.close();
+                }
+                catch (IOException ex) {
+                  ex.printStackTrace();
+                }
+              }
+            }
+            checkSums.put(entry.getName(), goalCrc + "");
+          }
+
+          final ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF");
+          manifestEntry.setMethod(ZipEntry.DEFLATED);
+          final StringBuilder buffer = new StringBuilder();
+          buffer.append("Manifest-Version: 1.0\n")
+                .append("Main-Class: VASSAL.tools.ZipUpdater\n");
+          writeEntry(
+            new ByteArrayInputStream(buffer.toString().getBytes("UTF-8")),
+            out,
+            manifestEntry);
+
+          final ZipEntry nameEntry = new ZipEntry(TARGET_ARCHIVE);
+          nameEntry.setMethod(ZipEntry.DEFLATED);
+          writeEntry(
+            new ByteArrayInputStream(inputArchiveName.getBytes("UTF-8")),
+            out,
+            nameEntry);
+
+          final ZipEntry updatedEntry = new ZipEntry(UPDATED_ARCHIVE_NAME);
+          updatedEntry.setMethod(ZipEntry.DEFLATED);
+          writeEntry(
+            new ByteArrayInputStream(newFile.getName().getBytes("UTF-8")),
+            out,
+            updatedEntry);
+
+          final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+          checkSums.store(byteOut, null);
+          final ZipEntry sumEntry = new ZipEntry(CHECKSUM_RESOURCE);
+          sumEntry.setMethod(ZipEntry.DEFLATED);
+          writeEntry(
+            new ByteArrayInputStream(byteOut.toByteArray()),
+            out,
+            sumEntry);
+
+          final String className =
+            getClass().getName().replace('.', '/') + ".class";
+          final ZipEntry classEntry = new ZipEntry(className);
+          classEntry.setMethod(ZipEntry.DEFLATED);
+
+          final InputStream is =
+            getClass().getResourceAsStream("/" + className); 
+          if (is == null)
+            throw new IOException("Resource not found: " + className);
+          try {
+            writeEntry(is, out, classEntry);
+          }
+          finally {
+            try {
+              is.close();
+            }
+            catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+        finally {
+          try {
+            out.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
-      checkSums.put(entry.getName(), goalCrc + "");
+      finally {
+        try {
+          goal.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
-
-    ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF");
-    manifestEntry.setMethod(ZipEntry.DEFLATED);
-    StringBuffer buffer = new StringBuffer();
-    buffer.append("Manifest-Version: 1.0\n")
-        .append("Main-Class: VASSAL.tools.ZipUpdater\n");
-    writeEntry(new ByteArrayInputStream(buffer.toString().getBytes("UTF-8")), out, manifestEntry);
-
-    ZipEntry nameEntry = new ZipEntry(TARGET_ARCHIVE);
-    nameEntry.setMethod(ZipEntry.DEFLATED);
-    writeEntry(new ByteArrayInputStream(inputArchiveName.getBytes("UTF-8")), out, nameEntry);
-
-    ZipEntry updatedEntry = new ZipEntry(UPDATED_ARCHIVE_NAME);
-    updatedEntry.setMethod(ZipEntry.DEFLATED);
-    writeEntry(new ByteArrayInputStream(newFile.getName().getBytes("UTF-8")), out, updatedEntry);
-
-    ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-    checkSums.store(byteOut, null);
-    ZipEntry sumEntry = new ZipEntry(CHECKSUM_RESOURCE);
-    sumEntry.setMethod(ZipEntry.DEFLATED);
-    writeEntry(new ByteArrayInputStream(byteOut.toByteArray()), out, sumEntry);
-
-    String className = getClass().getName().replace('.', '/') + ".class";
-    ZipEntry classEntry = new ZipEntry(className);
-    classEntry.setMethod(ZipEntry.DEFLATED);
-    writeEntry(getClass().getResourceAsStream("/" + className), out, classEntry);
-
-    out.close();
+    finally {
+      try {
+        oldZipFile.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   private String fileName;
@@ -247,12 +367,35 @@ public class ZipUpdater implements Runnable {
         updater.createUpdater(new File(goal));
       }
       else {
-        BufferedReader r = new BufferedReader(new InputStreamReader(ZipUpdater.class.getResourceAsStream("/" + TARGET_ARCHIVE)));
-        oldArchiveName = r.readLine();
-        r = new BufferedReader(new InputStreamReader(ZipUpdater.class.getResourceAsStream("/" + UPDATED_ARCHIVE_NAME)));
-        String newArchiveName = r.readLine();
-        ZipUpdater updater = new ZipUpdater(new File(oldArchiveName));
-        updater.write(new File(newArchiveName));
+        BufferedReader r = new BufferedReader(new InputStreamReader(
+          ZipUpdater.class.getResourceAsStream("/" + TARGET_ARCHIVE)));
+        try {
+          oldArchiveName = r.readLine();
+        }
+        finally {
+          try {
+            r.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+
+        r = new BufferedReader(new InputStreamReader(
+          ZipUpdater.class.getResourceAsStream("/" + UPDATED_ARCHIVE_NAME)));
+        try {
+          final String newArchiveName = r.readLine();
+          final ZipUpdater updater = new ZipUpdater(new File(oldArchiveName));
+          updater.write(new File(newArchiveName));
+        }
+        finally {
+          try {
+            r.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
     }
     catch (final IOException e) {
@@ -265,5 +408,4 @@ public class ZipUpdater implements Runnable {
       }
     }
   }
-
 }

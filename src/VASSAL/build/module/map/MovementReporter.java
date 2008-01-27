@@ -286,7 +286,7 @@ public class MovementReporter {
     }
 
     public String getPieceName() {
-      StringBuffer names = new StringBuffer();
+      final StringBuilder names = new StringBuilder();
       for (Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
         names.append(i.next().getLocalizedName());
         if (i.hasNext()) {

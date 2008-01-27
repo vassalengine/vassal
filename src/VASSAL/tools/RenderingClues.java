@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007 by Joel Uckelman
+ * Copyright (c) 2007-2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,12 +20,7 @@
 package VASSAL.tools;
 
 import java.awt.RenderingHints;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GlobalOptions;
-import VASSAL.configure.BooleanConfigurer;
+import java.util.Map;
 
 /**
  * Adds additional hints to {@link RenderingHints}.
@@ -62,38 +57,13 @@ public class RenderingClues extends RenderingHints {
     super(null);
   }
 
-  private static BooleanConfigurer smoothPref;
-
   /**
-   * Returns the default <code>RenderingClues</code>.
+   *  Constructs a collection of <code>RenderingClues</code> from 
+   *  the given <code>Map</code>.
    *
-   * @return the default <code>RenderingClues</code>
+   *  @param init a map of key/value pairs to initialize the hints
    */
-  public static RenderingClues getDefault() {
-    RenderingClues rc = new RenderingClues();
-
-// FIXME: does this really belong here?
-    if (smoothPref == null) {
-      smoothPref = (BooleanConfigurer)
-        GameModule.getGameModule()
-                  .getPrefs()
-                  .getOption(GlobalOptions.SCALER_ALGORITHM);
-      if (smoothPref == null) {
-        smoothPref = new BooleanConfigurer(null, null, Boolean.FALSE);
-      }
-      smoothPref.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          // FIXME: a little overbroad?
-//          ImageCache.clear();
-        }
-      });
-    }
-
-    rc.put(KEY_EXT_INTERPOLATION, Boolean.TRUE.equals(smoothPref.getValue()) ? 
-                                  VALUE_INTERPOLATION_LANCZOS_MITCHELL 
-                                : VALUE_INTERPOLATION_BILINEAR);
-    rc.put(KEY_INTERPOLATION,     VALUE_INTERPOLATION_BILINEAR);
-    rc.put(KEY_ANTIALIASING,      VALUE_ANTIALIAS_ON);
-    return rc;
+  public RenderingClues(Map<Key,?> init) {
+    super(init);
   }
 }

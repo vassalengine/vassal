@@ -21,12 +21,14 @@ package VASSAL.tools.imageop;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
-import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorLog;
 
 /**
  * An implementation of {@link Icon} using an {@link ImageOp} as a source.
@@ -34,7 +36,7 @@ import VASSAL.tools.ErrorDialog;
  * @since 3.1.0
  * @author Joel Uckelman
  */
-public class OpIcon implements Icon {
+public class OpIcon extends ImageIcon implements Icon {
   protected ImageOp sop;
 
   /**
@@ -63,32 +65,61 @@ public class OpIcon implements Icon {
    * @param x {@inheritDoc}
    * @param y {@inheritDoc}
    */
+  @Override
   public void paintIcon(Component c, Graphics g, int x, int y) {
     if (sop != null) {
       try {
         g.drawImage(sop.getImage(new Repainter(c, g.getClipBounds())), x, y, c);
       }
       catch (CancellationException e) {
-        e.printStackTrace();
-        ErrorDialog.raise(e, e.getMessage());
+        ErrorLog.warn(e);
       }
       catch (InterruptedException e) {
-        e.printStackTrace();
-        ErrorDialog.raise(e, e.getMessage());
+        ErrorLog.warn(e);
       }
       catch (ExecutionException e) {
-        e.printStackTrace();
-        ErrorDialog.raise(e, e.getMessage());
+        ErrorLog.warn(e);
       }
     }
   }
 
   /** {@inheritDoc} */
+  @Override
+  public Image getImage() {
+    if (sop != null) {
+      try {
+        return sop.getImage(null);
+      }
+      catch (CancellationException e) {
+        ErrorLog.warn(e);
+      }
+      catch (InterruptedException e) {
+        ErrorLog.warn(e);
+      }
+      catch (ExecutionException e) {
+        ErrorLog.warn(e);
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * This method does nothing. It is overridden to prevent the
+   * image from being set this way.
+   */
+  @Override
+  public void setImage(Image img) {
+  }
+  
+  /** {@inheritDoc} */
+  @Override
   public int getIconWidth() {
     return sop == null ? -1 : sop.getWidth();
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getIconHeight() {
     return sop == null ? -1 : sop.getHeight();
   }

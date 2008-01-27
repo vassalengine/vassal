@@ -240,7 +240,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     }
 
     public String getState() {
-      StringBuffer buf = new StringBuffer();
+      final StringBuilder buf = new StringBuilder();
       int n = ((Integer) rowConfig.getValue()).intValue()
         * ((Integer) colConfig.getValue()).intValue();
       while (--n > 0) {

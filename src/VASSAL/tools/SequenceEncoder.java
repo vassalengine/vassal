@@ -52,7 +52,7 @@ import VASSAL.configure.StringArrayConfigurer;
  * </pre>
  */
 public class SequenceEncoder {
-  private StringBuffer buffer;
+  private StringBuilder buffer;
   private char delimit;
 
   public SequenceEncoder(char delimiter) {
@@ -68,7 +68,7 @@ public class SequenceEncoder {
 
   public SequenceEncoder append(String s) {
     if (buffer == null) {
-      buffer = new StringBuffer();
+      buffer = new StringBuilder();
       appendEscapedString(s);
     }
     else {
@@ -154,7 +154,7 @@ public class SequenceEncoder {
         val = null;
       }
       else {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         int begin = 0;
         int end = i;
         while (begin < end) {

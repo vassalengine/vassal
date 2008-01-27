@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: AbstractTileOp.java 2734 2007-12-21 14:30:36Z uckelman $
  *
  * Copyright (c) 2007 by Joel Uckelman
  *
@@ -36,7 +36,7 @@ import java.util.concurrent.Future;
  * @since 3.1.0
  * @author Joel Uckelman
  */
-public abstract class AbstractTileOp extends ImageOp {
+public abstract class AbstractTileOpImpl extends AbstractOpImpl {
   /**
    * {@inheritDoc}
    *
@@ -113,7 +113,6 @@ public abstract class AbstractTileOp extends ImageOp {
 
     return getFutureImage(obs);
   }
-  
 
   /**
    * {@inheritDoc}

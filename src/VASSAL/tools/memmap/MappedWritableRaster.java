@@ -44,31 +44,15 @@ public class MappedWritableRaster extends WritableRaster {
     super(sm, db, origin);
   }
 
-  /** {@inheritDoc} */
-  public static WritableRaster createPackedRaster(DataBuffer dataBuffer,
-                                                  int w, int h,
-                                                  int scanlineStride,
-                                                  int[] bandMasks,
-                                                  Point location) {
-    if (dataBuffer == null) {
+  public static WritableRaster createWritableRaster(SampleModel sm,
+                                                    DataBuffer db,
+                                                    Point loc) {
+    if (sm == null)
+      throw new NullPointerException("SampleModel cannot be null");
+   
+    if (db == null)
       throw new NullPointerException("DataBuffer cannot be null");
-    }
-    if (location == null) {
-      location = new Point(0,0);
-    }
 
-    int dataType = dataBuffer.getDataType();
-
-    SampleModel sm = new MappedSinglePixelPackedSampleModel(
-      dataType, w, h, scanlineStride, bandMasks);
-
-    switch(dataType) {
-    case DataBuffer.TYPE_INT:
-      return new MappedWritableRaster(sm, dataBuffer, location);      
-
-    default:
-      throw new IllegalArgumentException("Unsupported data type " +
-                                         dataType);
-    }
+    return new MappedWritableRaster(sm, db, loc);
   }
 }

@@ -40,6 +40,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.ImageSource;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.SourceOp;
 
 /**
@@ -303,7 +304,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       return NULL_IMAGE;
     }
 */
-    srcOp = new SourceOp(getConfigureName());
+    srcOp = Op.load(getConfigureName());
 
     try {
       return srcOp.getImage(null);

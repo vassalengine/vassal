@@ -147,8 +147,15 @@ public class ChartWindow extends Widget {
 
   @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
-    return new Class[]{VASSAL.build.widget.Chart.class, VASSAL.build.widget.HtmlChart.class, TabWidget.class, PanelWidget.class, BoxWidget.class,
-                       ListWidget.class, MapWidget.class};
+    return new Class[]{
+      VASSAL.build.widget.Chart.class,
+      VASSAL.build.widget.HtmlChart.class,
+      TabWidget.class,
+      PanelWidget.class,
+      BoxWidget.class,
+      ListWidget.class,
+      MapWidget.class
+    };
   }
 
   public void add(Buildable b) {
@@ -174,13 +181,26 @@ public class ChartWindow extends Widget {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Button text:  ", "Tooltip text:  ", "Button icon:  ", "Hotkey:  "};
+    return new String[]{
+      "Name:  ",
+      "Button text:  ",
+      "Tooltip text:  ",
+      "Button icon:  ",
+      "Hotkey:  "
+    };
   }
 
   @SuppressWarnings("unchecked")
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, String.class, String.class, IconConfig.class, KeyStroke.class};
+    return new Class[]{
+      String.class,
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class
+    };
   }
+
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/chart.gif"); //$NON-NLS-1$

@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -89,12 +90,24 @@ public class MultiImagePicker extends JPanel {
     return imageList;
   }
 
-  public Enumeration<String> getImageNames() {
-    ArrayList<String> l = new ArrayList<String>();
-    for (int i = 0, j = imageListElements.size(); i < j; ++i) {
-      l.add((((ImagePicker) multiPanel.getComponent(i)).getImageName()));
+  /**
+   * Returns a list of image names in this picker. 
+   *
+   * @return the list of image names
+   */
+  public List<String> getImageNameList() {
+    final int size = imageListElements.size();
+    final ArrayList<String> names = new ArrayList<String>(size);
+    for (int i = 0; i < size; ++i) {
+      names.add((((ImagePicker) multiPanel.getComponent(i)).getImageName()));
     }
-    return Collections.enumeration(l);
+    return names;
+  }
+
+  /** Use {@link #getImageNameList()} instead. */  
+  @Deprecated
+  public Enumeration<String> getImageNames() {
+    return Collections.enumeration(getImageNameList());
   }
 
   public void removeEntryAt(int index) {

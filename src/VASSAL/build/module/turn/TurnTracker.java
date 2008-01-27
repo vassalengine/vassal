@@ -639,8 +639,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
   
   public String updateString(String str, String[] from, String[] to) {
-    
-    StringBuffer s = new StringBuffer(str);
+    final StringBuilder s = new StringBuilder(str);
   
     for (int i = 0; i < from.length; i++) {
       replace(s, from[i], to[i]);
@@ -649,8 +648,17 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     return s.toString();
   }
   
+  public void replace(StringBuilder s, String from, String to) {
+    int i = s.indexOf(from);
+    while (i >= 0) {
+      s = s.replace(i, i+2, to);
+      i = s.indexOf(from);
+    }
+  }
+
+  /** @deprecated Use {@link #replace(StringBuilder,String,String)} instead. */
+  @Deprecated
   public void replace(StringBuffer s, String from, String to) {
-    
     int i = s.indexOf(from);
     while (i >= 0) {
       s = s.replace(i, i+2, to);

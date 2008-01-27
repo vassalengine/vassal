@@ -39,6 +39,7 @@ import VASSAL.build.GameModule;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.ImageFileFilter;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -95,7 +96,7 @@ public class ImagePicker extends JPanel
       add(noImage,0);
     }
     else {
-      icon.setOp(new SourceOp(imageName));
+      icon.setOp(Op.load(imageName));
       Dimension d = new Dimension(icon.getIconWidth(), icon.getIconHeight());
       if (d.width > 400) d.width = 400;
       if (d.height > 400) d.height = 400;

@@ -40,13 +40,14 @@ import java.util.List;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.css.engine.CSSImportedElementRoot;
+//import org.apache.batik.css.engine.CSSImportedElementRoot;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
-import org.apache.batik.dom.svg.XMLBaseSupport;
+//import org.apache.batik.dom.svg.XMLBaseSupport;
 import org.apache.batik.dom.util.DOMUtilities;
 import org.apache.batik.dom.util.SAXDocumentFactory;
 import org.apache.batik.dom.util.XLinkSupport;
+import org.apache.batik.dom.util.XMLSupport;
 import org.apache.batik.ext.awt.image.GraphicsUtil;
 import org.apache.batik.gvt.renderer.ConcreteImageRendererFactory;
 import org.apache.batik.gvt.renderer.ImageRenderer;
@@ -93,7 +94,13 @@ public class SVGManager {
       throws IOException {
           
       // get the SVG
-      Document doc = factory.createDocument(file, fileStream);
+      Document doc;
+      try {
+        doc = factory.createDocument(file, fileStream);
+      }
+      finally {
+        if (fileStream != null) fileStream.close();
+      }
 
       // get the default image width and height
       Element root = doc.getDocumentElement();
@@ -111,7 +118,13 @@ public class SVGManager {
       throws IOException {
       
       // get the SVG
-      Document doc = factory.createDocument(file, fileStream);
+      Document doc;
+      try {
+        doc = factory.createDocument(file, fileStream);
+      }
+      finally {
+        if (fileStream != null) fileStream.close();
+      }
 
       // get the default image width and height
       Element root = doc.getDocumentElement();
@@ -155,8 +168,11 @@ public class SVGManager {
          NodeList usenodes = doc.getElementsByTagName("use");
          for (int i = 0; i < usenodes.getLength(); ++i) { 
             Element e = (Element) usenodes.item(i);
-            URL url = new URL(new URL(XMLBaseSupport.getCascadedXMLBase(e)),
-                                        XLinkSupport.getXLinkHref(e));
+//            URL url = new URL(new URL(XMLBaseSupport.getCascadedXMLBase(e)),
+//                                        XLinkSupport.getXLinkHref(e));
+
+            URL url = new URL(new URL(e.getBaseURI()),
+                              XLinkSupport.getXLinkHref(e));
             // balk (for now) unless file is available on our filesystem
             if (url.getProtocol().equals("file")) {
                String refpath = url.getPath();
@@ -227,7 +243,9 @@ public class SVGManager {
 //   this is fixed Batik 1.7:
 //            URL url = new URL(new URL(XMLBaseSupport.getCascadedXMLBase(e)),
 //                                        XLinkSupport.getXLinkHref(e));
-            URL url = new URL(doc_url, XLinkSupport.getXLinkHref(e));
+            URL url = new URL(new URL(e.getBaseURI()),
+                              XLinkSupport.getXLinkHref(e));
+//            URL url = new URL(doc_url, XLinkSupport.getXLinkHref(e));
             String anchor = url.getRef();
             String name = new File(url.getPath()).getName();
             XLinkSupport.setXLinkHref(e, name + '#' + anchor);
@@ -240,13 +258,14 @@ public class SVGManager {
       }
 
       // remove xml:base attribute if there is one
-      e.removeAttributeNS(XMLBaseSupport.XML_NAMESPACE_URI, "base");
+      e.removeAttributeNS(XMLSupport.XML_NAMESPACE_URI, "base");
    }
  
    /**
     * Lifted from org.apache.batik.dom.svg.XMLBaseSupport.getCascadedXMLBase().
     * Pitch this and use the version from Batik 1.7 once it's released.
     */ 
+/*
    public String getCascadedXMLBase(Element elt) {
       String base = null;
       Node n = elt.getParentNode();
@@ -277,6 +296,7 @@ public class SVGManager {
       }
       return base;
    }
+*/
 
    /**
     * Renders SVG to a BufferedImage.
@@ -292,7 +312,7 @@ public class SVGManager {
 
       public BufferedImage createImage(int width, int height) {
          return new BufferedImage(width, height,
-        		                  BufferedImage.TYPE_4BYTE_ABGR);    	      	  
+                                  BufferedImage.TYPE_INT_ARGB);
       }
       
       public void writeImage(BufferedImage image, TranscoderOutput output) {
@@ -376,7 +396,19 @@ public class SVGManager {
        throws MalformedURLException, IOException {
          String file = DataArchive.IMAGE_DIR +
             (new File((new URL(uri)).getPath())).getName();
-         return loadDocument(uri, archive.getFileStream(file));
+
+         final InputStream in = archive.getFileStream(file);
+         try {
+           return loadDocument(uri, in);
+         }
+         finally {
+           try {
+             in.close();
+           }
+           catch (IOException e) {
+             e.printStackTrace();
+           }
+         }
       }
    }
 

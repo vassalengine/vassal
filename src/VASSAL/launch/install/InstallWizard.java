@@ -25,11 +25,11 @@ import java.util.ResourceBundle;
 
 import VASSAL.i18n.BundleHelper;
 
-
 /**
- * Walks the user through a wizard interface. The user may choose between an auto-updating (networked jnlp) or purely
- * local installation (jnlp on local filesystem) installations, and can also select the particular version of VASSAL to
- * install
+ * Walks the user through a wizard interface. The user may choose between an
+ * auto-updating (networked jnlp) or purely local installation (jnlp on
+ * local filesystem) installations, and can also select the particular
+ * version of VASSAL to install.
  * 
  * @author rkinney
  */
@@ -37,12 +37,26 @@ public class InstallWizard implements Constants {
   private static BundleHelper bundle = new BundleHelper(ResourceBundle.getBundle("VASSAL.i18n.VASSAL", Locale.getDefault()));
   private WizardDialog dialog;
   private Properties properties;
+
   public void start() throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-    Properties p = new Properties();
-    InputStream in = getClass().getResourceAsStream("/"+INSTALL_PROPERTIES);
+    final Properties p = new Properties();
+  
+    final InputStream in =
+      getClass().getResourceAsStream("/"+INSTALL_PROPERTIES);
     if (in != null) {
-      p.load(in);
+      try {
+        p.load(in);
+      }
+      finally {
+        try {
+          in.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
+
     properties = new Properties(p);
     dialog = new WizardDialog(this);
     dialog.setTitle(properties.getProperty(TITLE,InstallWizard.getResources().getString("Install.install_vassal"))); //$NON-NLS-1$ //$NON-NLS-2$

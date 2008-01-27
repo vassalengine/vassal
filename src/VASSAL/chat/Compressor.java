@@ -30,43 +30,59 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import VASSAL.tools.IOUtils;
+
 public abstract class Compressor {
   public static byte[] compress(byte[] in) throws IOException {
-    ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-    ZipOutputStream zipOut = new ZipOutputStream(byteOut);
-    zipOut.putNextEntry(new ZipEntry("Dummy")); //$NON-NLS-1$
-    zipOut.write(in);
-    zipOut.close();
-    return byteOut.toByteArray();
-  }
-
-  public static byte[] decompress(byte[] in) throws IOException {
-    ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-    ZipInputStream zipIn = new ZipInputStream(new ByteArrayInputStream(in));
-    zipIn.getNextEntry();
-    byte[] buffer = new byte[4096];
-    int count = 0;
-    while ((count = zipIn.read(buffer)) > 0) {
-      byteOut.write(buffer, 0, count);
+    final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+    final ZipOutputStream zipOut = new ZipOutputStream(byteOut);
+    try {
+      zipOut.putNextEntry(new ZipEntry("Dummy")); //$NON-NLS-1$
+      zipOut.write(in);
+    }
+    finally {
+      try {
+        zipOut.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
     }
     return byteOut.toByteArray();
   }
 
+  public static byte[] decompress(byte[] in) throws IOException {
+    final ZipInputStream zipIn =
+      new ZipInputStream(new ByteArrayInputStream(in));
+    try {
+      zipIn.getNextEntry();
+      return IOUtils.toByteArray(zipIn);
+    }
+    finally {
+      try {
+        zipIn.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
   public static void main(String args[]) throws Exception {
     if (args.length == 0) {
-      Frame f = new Frame();
-      TextField tf = new TextField(60);
+      final Frame f = new Frame();
+      final TextField tf = new TextField(60);
       f.add(tf);
       f.pack();
       f.setVisible(true);
       tf.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
           try {
-            String s = evt.getActionCommand();
+            final String s = evt.getActionCommand();
             System.err.println("Input (" + s.length() + ") = " + s); //$NON-NLS-1$ //$NON-NLS-2$
-            String comp = new String(compress(s.getBytes()));
+            final String comp = new String(compress(s.getBytes()));
             System.err.println("Compressed (" + comp.length() + ") = " + comp); //$NON-NLS-1$ //$NON-NLS-2$
-            String decomp = new String(decompress(comp.getBytes()));
+            final String decomp = new String(decompress(comp.getBytes()));
             System.err.println("Decompressed (" + decomp.length() + ") = " + decomp); //$NON-NLS-1$ //$NON-NLS-2$
           }
           catch (IOException ex) {
@@ -76,30 +92,58 @@ public abstract class Compressor {
       });
     }
     else {
-      ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-      FileInputStream file = new FileInputStream(args[0]);
-      byte[] b = new byte[4096];
-      int len = 0;
-      while ((len = file.read(b)) > 0) {
-        byteOut.write(b, 0, len);
+      final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+      final FileInputStream file = new FileInputStream(args[0]);
+      try {
+        IOUtils.copy(file, byteOut);
       }
-      file.close();
-      byte[] contents = byteOut.toByteArray();
+      finally {
+        try {
+          file.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+
+      final byte[] contents = byteOut.toByteArray();
       if (contents[0] == 'P' && contents[1] == 'K') {
-        byte[] uncompressed = Compressor.decompress(contents);
-        FileOutputStream out = new FileOutputStream(args[0] + ".uncompressed"); //$NON-NLS-1$
-        out.write(uncompressed);
-        out.close();
-        byte[] recompressed = Compressor.compress(uncompressed);
+        final byte[] uncompressed = Compressor.decompress(contents);
+        final FileOutputStream out =
+          new FileOutputStream(args[0] + ".uncompressed"); //$NON-NLS-1$
+        try {
+          out.write(uncompressed);
+        }
+        finally {
+          try {
+            out.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+
+        final byte[] recompressed = Compressor.compress(uncompressed);
         if (!Arrays.equals(recompressed,contents)) {
           throw new RuntimeException("Compression failed"); //$NON-NLS-1$
         }
       }
       else {
-        byte[] compressed = Compressor.compress(contents);
-        FileOutputStream out = new FileOutputStream(args[0] + ".compressed"); //$NON-NLS-1$
-        out.write(compressed);
-        out.close();
+        final byte[] compressed = Compressor.compress(contents);
+        final FileOutputStream out =
+          new FileOutputStream(args[0] + ".compressed"); //$NON-NLS-1$
+        try {
+          out.write(compressed);
+        }
+        finally {
+          try {
+            out.close();
+          } 
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+
         if (!Arrays.equals(Compressor.decompress(compressed),contents)) {
           throw new RuntimeException("Compression failed"); //$NON-NLS-1$
         }

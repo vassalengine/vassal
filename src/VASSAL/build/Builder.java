@@ -18,10 +18,12 @@
  */
 package VASSAL.build;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import javax.swing.JOptionPane;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -111,14 +113,25 @@ public abstract class Builder {
   /**
    * Read an XML document from an InputStream
    */
-  public static Document createDocument
-    (java.io.InputStream inStream) throws java.io.IOException {
+  public static Document createDocument(InputStream in)
+                                        throws IOException {
     try {
-      return javax.xml.parsers.DocumentBuilderFactory.newInstance()
-        .newDocumentBuilder().parse(inStream);
+      try {
+        return DocumentBuilderFactory.newInstance()
+                                     .newDocumentBuilder()
+                                     .parse(in);
+      }
+      finally {
+        try {
+          if (in != null) in.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
     catch (Exception e) {
-      throw new java.io.IOException(e.getMessage());
+      throw new IOException(e);
     }
   }
 
@@ -127,8 +140,9 @@ public abstract class Builder {
    */
   public static Document createNewDocument() {
     try {
-      return javax.xml.parsers.DocumentBuilderFactory.newInstance()
-        .newDocumentBuilder().newDocument();
+      return DocumentBuilderFactory.newInstance()
+                                   .newDocumentBuilder()
+                                   .newDocument();
     }
     catch (Exception ex) {
       return null;
@@ -163,7 +177,7 @@ public abstract class Builder {
    * Return the decoded text contents of an Element node
    */
   public static String getText(Element e) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     org.w3c.dom.NodeList sub = e.getChildNodes();
     for (int i = 0; i < sub.getLength(); ++i) {
       if (sub.item(i).getNodeType()
@@ -209,8 +223,8 @@ public abstract class Builder {
     e.appendChild(e3);
     doc.appendChild(e);
     System.err.println(toString(doc));
-    System.err.println("StringBuffer"); //$NON-NLS-1$
-    StringBuffer buf = new StringBuffer(300000);
+    System.err.println("StringBuilder"); //$NON-NLS-1$
+    StringBuilder buf = new StringBuilder(300000);
     for (int i = 0; i < 500000; ++i) {
       buf.append("  "); //$NON-NLS-1$
       if (i % 10000 == 0) {
@@ -219,7 +233,3 @@ public abstract class Builder {
     }
   }
 }
-
-
-
-

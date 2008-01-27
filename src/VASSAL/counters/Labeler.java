@@ -20,6 +20,7 @@ package VASSAL.counters;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -31,6 +32,8 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -41,6 +44,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -54,9 +58,17 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.HashCode;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.imageop.AbstractTileOpImpl;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.ImageOpObserver;
+import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.ScaleOp;
 
-/** * Displays a text label, with content specified by the user at runtime */
+/**
+ * Displays a text label, with content specified by the user at runtime.
+ */
 public class Labeler extends Decorator implements TranslatablePiece {
   public static final String ID = "label;";
   protected Color textBg = Color.black;
@@ -83,6 +95,9 @@ public class Labeler extends Decorator implements TranslatablePiece {
   private static final String LABEL = "label";
 
   private Image labelImage;
+  private LabelOp srcOp;
+  private ScaleOp scaleOp;
+
   private JLabel lbl;
   private char verticalJust = 'b';
   private char horizontalJust = 'c';
@@ -106,11 +121,11 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
   public void mySetType(String type) {
     commands = null;
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     labelKey = st.nextKeyStroke(null);
     menuCommand = st.nextToken("Change Label");
-    int fontSize = st.nextInt(10);
+    final int fontSize = st.nextInt(10);
     textBg = st.nextColor(null);
     textFg = st.nextColor(Color.black);
     verticalPos = st.nextChar('t');
@@ -120,8 +135,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
     verticalJust = st.nextChar('b');
     horizontalJust = st.nextChar('c');
     nameFormat.setFormat(st.nextToken("$" + PIECE_NAME + "$ ($" + LABEL + "$)"));
-    String fontFamily = st.nextToken("Dialog");
-    int fontStyle = st.nextInt(Font.PLAIN);
+    final String fontFamily = st.nextToken("Dialog");
+    final int fontStyle = st.nextInt(Font.PLAIN);
     font = new Font(fontFamily, fontStyle, fontSize);
     rotateDegrees = st.nextInt(0);
     propertyName = st.nextToken("TextLabel");
@@ -142,25 +157,25 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
 
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
-    se.append(labelKey);
-    se.append(menuCommand);
-    se.append(font.getSize());
+    final SequenceEncoder se = new SequenceEncoder(';');
+    se.append(labelKey)
+      .append(menuCommand)
+      .append(font.getSize());
     String s = ColorConfigurer.colorToString(textBg);
     se.append(s == null ? "" : s);
     s = ColorConfigurer.colorToString(textFg);
-    se.append(s == null ? "" : s);
-    se.append(String.valueOf(verticalPos));
-    se.append(String.valueOf(verticalOffset));
-    se.append(String.valueOf(horizontalPos));
-    se.append(String.valueOf(horizontalOffset));
-    se.append(String.valueOf(verticalJust));
-    se.append(String.valueOf(horizontalJust));
-    se.append(nameFormat.getFormat());
-    se.append(font.getFamily());
-    se.append(font.getStyle());
-    se.append(String.valueOf(rotateDegrees));
-    se.append(propertyName);
+    se.append(s == null ? "" : s)
+      .append(String.valueOf(verticalPos))
+      .append(String.valueOf(verticalOffset))
+      .append(String.valueOf(horizontalPos))
+      .append(String.valueOf(horizontalOffset))
+      .append(String.valueOf(verticalJust))
+      .append(String.valueOf(horizontalJust))
+      .append(nameFormat.getFormat())
+      .append(font.getFamily())
+      .append(font.getStyle())
+      .append(String.valueOf(rotateDegrees))
+      .append(propertyName);
     return ID + se.getValue();
   }
 
@@ -188,11 +203,11 @@ public class Labeler extends Decorator implements TranslatablePiece {
       return piece.getLocalizedName();
     }
     else {
-      FormattedString f = new FormattedString(getTranslation(nameFormat.getFormat()));
+      final FormattedString f =
+        new FormattedString(getTranslation(nameFormat.getFormat()));
       f.setProperty(PIECE_NAME, piece.getLocalizedName());
       f.setProperty(LABEL, getLocalizedLabel());
-      String result = f.getLocalizedText(Decorator.getOutermost(this));
-      return result;
+      return f.getLocalizedText(Decorator.getOutermost(this));
     }
   }
 
@@ -202,8 +217,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
     g.setFont(f);
-    int width = g.getFontMetrics().stringWidth(text + "  ");
-    int height = g.getFontMetrics().getHeight();
+    final int width = g.getFontMetrics().stringWidth(text + "  ");
+    final int height = g.getFontMetrics().getHeight();
     int x0 = x;
     int y0 = y;
     switch (hAlign) {
@@ -231,53 +246,87 @@ public class Labeler extends Decorator implements TranslatablePiece {
       g.drawRect(x0, y0, width, height);
     }
     g.setColor(fgColor);
-    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-    g.drawString(" " + text + " ", x0, y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
+    ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                      RenderingHints.VALUE_ANTIALIAS_ON);
+    g.drawString(" " + text + " ", x0,
+      y0 + g.getFontMetrics().getHeight() - g.getFontMetrics().getDescent());
   }
 
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     updateCachedImage();
     piece.draw(g, x, y, obs, zoom);
 
-    if (labelImage != null) {
-      Point p = getLabelPosition();
-      int labelX = x + (int) (zoom * p.x);
-      int labelY = y + (int) (zoom * p.y);
+// FIXME: We should be drawing the text at the right size, not scaling it!
+    if (srcOp != null) {
+//    if (labelImage != null) {
+      final Point p = getLabelPosition();
+      final int labelX = x + (int) (zoom * p.x);
+      final int labelY = y + (int) (zoom * p.y);
 
       AffineTransform saveXForm = null;
-      Graphics2D g2d = (Graphics2D) g;
+      final Graphics2D g2d = (Graphics2D) g;
 
       if (rotateDegrees != 0) {
         saveXForm = g2d.getTransform();
-        AffineTransform newXForm =
-            AffineTransform.getRotateInstance(Math.toRadians(rotateDegrees), x, y);
+        final AffineTransform newXForm = AffineTransform.getRotateInstance(
+          Math.toRadians(rotateDegrees), x, y);
         g2d.transform(newXForm);
       }
 
-      if (zoom != 1.0) {
-        Image scaled = labelImage;
-        scaled = GameModule.getGameModule().getDataArchive().getScaledImage(labelImage, zoom);
-        g.drawImage(scaled, labelX, labelY, obs);
+      if (zoom == 1.0) {
+        try {
+          g2d.drawImage(srcOp.getImage(null), labelX, labelY, obs);
+        }
+        catch (CancellationException e) {
+          e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        catch (ExecutionException e) {
+          e.printStackTrace();
+        }
       }
       else {
-        g.drawImage(labelImage, labelX, labelY, obs);
+        if (scaleOp == null || scaleOp.getScale() != zoom) {
+          scaleOp = Op.scale(srcOp, zoom);
+        }
+        
+        try {
+          g2d.drawImage(scaleOp.getImage(null), labelX, labelY, obs);
+        }
+        catch (CancellationException e) {
+          e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        catch (ExecutionException e) {
+          e.printStackTrace();
+        }
+/*
+        Image scaled = labelImage;
+        scaled = GameModule.getGameModule().getDataArchive().getScaledImage(labelImage, zoom);
+        g2d.drawImage(scaled, labelX, labelY, obs);
+*/
       }
 
       if (rotateDegrees != 0) {
         g2d.setTransform(saveXForm);
       }
-
     }
   }
 
   protected void updateCachedImage() {
-    String label = getLocalizedLabel();
-    if (label != null
-        && !label.equals(lastCachedLabel)) {
-      labelImage = null;
+    final String label = getLocalizedLabel();
+    if (label != null && !label.equals(lastCachedLabel)) {
+//      labelImage = null;
+      srcOp = null;
     }
-    if (labelImage == null && label != null && label.length() > 0) {
-      labelImage = createImage(null);
+//    if (labelImage == null && label != null && label.length() > 0) {
+    if (srcOp == null && label != null && label.length() > 0) {
+//      labelImage = createImage(null);
+      srcOp = new LabelOp(getLocalizedLabel(), lbl, textBg);
     }
   }
 
@@ -326,16 +375,19 @@ public class Labeler extends Decorator implements TranslatablePiece {
     }
     int index = s.indexOf("$" + propertyName + "$");
     while (index >= 0) {
-      s = s.substring(0, index) + s.substring(index + propertyName.length() + 2);
+      s = s.substring(0, index) +
+          s.substring(index + propertyName.length() + 2);
       index = s.indexOf("$" + propertyName + "$");
     }
     label = s;
     labelFormat.setFormat(label);
     if (getMap() != null && label != null && label.length() > 0) {
-      labelImage = createImage(getMap().getView());
+//      labelImage = createImage(getMap().getView());
+      srcOp = new LabelOp(getLocalizedLabel(), lbl, textBg);
     }
     else {
-      labelImage = null;
+//      labelImage = null;
+      srcOp = null;
     }
   }
 
@@ -347,14 +399,84 @@ public class Labeler extends Decorator implements TranslatablePiece {
     this.textFg = textFg;
   }
 
+  protected class LabelOp extends AbstractTileOpImpl {
+    private final String txt;
+    private final JLabel lab;
+    private final Color bg;
+    private final int hash;
+    private Dimension size = null;
+    
+    public LabelOp(String txt, JLabel lab, Color bg) {
+      if (lab == null) throw new IllegalArgumentException();
+      this.txt = txt;
+      this.lab = lab;
+      this.bg = bg;
+      hash = HashCode.hash(txt) ^
+             HashCode.hash(lab) ^
+             HashCode.hash(bg);
+    }
+
+// FIXME: not implementing asynchronicity; maybe no point, here.
+    public Image apply() throws Exception {
+      lab.setText(txt);
+      lab.setSize(lab.getPreferredSize());
+      
+      final int width = lab.getWidth();
+      final int height = lab.getHeight();
+      final BufferedImage im =
+        new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+      final Graphics2D g = im.createGraphics();
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
+      if (bg != null) {
+        g.setColor(bg);
+        g.fillRect(0, 0, width, height);
+      }
+      lab.paint(g);
+      g.dispose();
+      return im;
+    }
+
+    protected void fixSize() {
+      if ((size = getSizeFromCache()) == null) {
+        lab.setText(txt);
+        lab.setSize(lab.getPreferredSize());
+        size = lab.getSize();
+      }
+    }
+
+    public ImageOp getSource() {
+      return null; 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof LabelOp)) return false;
+      LabelOp lop = (LabelOp) o;
+      return lab.equals(lop.lab) &&
+             ((txt != null && txt.equals(lop.txt)) ||
+              (txt == null && lop.txt == null)) &&
+             ((bg != null && bg.equals(lop.txt)) ||
+              (bg == null && lop.bg == null));
+    }
+
+    @Override
+    public int hashCode() {
+      return hash;
+    }
+  }
+
+/*
   protected Image createImage(Component obs) {
     lastCachedLabel = getLocalizedLabel();
     lbl.setText(lastCachedLabel);
     lbl.setSize(lbl.getPreferredSize());
-    int width = lbl.getWidth();
-    int height = lbl.getHeight();
-    BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-    Graphics2D g = im.createGraphics();
+    final int width = lbl.getWidth();
+    final int height = lbl.getHeight();
+    BufferedImage im =
+      new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D g = im.createGraphics();
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                        RenderingHints.VALUE_ANTIALIAS_ON);
     if (textBg != null) {
@@ -367,23 +489,25 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
     return im;
   }
+*/
 
   public String getLabel() {
     return labelFormat.getText(Decorator.getOutermost(this));
   }
   
   public String getLocalizedLabel() {
-    FormattedString f = new FormattedString(getTranslation(labelFormat.getFormat()));
+    final FormattedString f =
+      new FormattedString(getTranslation(labelFormat.getFormat()));
     return f.getLocalizedText(Decorator.getOutermost(this));
   }
 
   public Rectangle boundingBox() {
     lbl.setText(getLabel());
     lbl.setSize(lbl.getPreferredSize());
-    Rectangle r = piece.boundingBox();
-    Rectangle r2 = piece.getShape().getBounds();
-    Point p2 = getLabelPosition();
-    Rectangle r3 = new Rectangle(p2, lbl.getSize());
+    final Rectangle r = piece.boundingBox();
+    final Rectangle r2 = piece.getShape().getBounds();
+    final Point p2 = getLabelPosition();
+    final Rectangle r3 = new Rectangle(p2, lbl.getSize());
     return r.union(r2).union(r3);
   }
 
@@ -392,8 +516,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
       return piece.getShape();
     }
     else {
-      Area a = new Area(piece.getShape());
-      Rectangle r = new Rectangle(getLabelPosition(), lbl.getSize());
+      final Area a = new Area(piece.getShape());
+      final Rectangle r = new Rectangle(getLabelPosition(), lbl.getSize());
       a.add(new Area(r));
       return a;
     }
@@ -419,7 +543,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
     Command c = null;
     if (menuKeyCommand.matches(stroke)) {
       ChangeTracker tracker = new ChangeTracker(this);
-      String s = (String) JOptionPane.showInputDialog
+      final String s = (String) JOptionPane.showInputDialog
           (getMap() == null ? null : getMap().getView().getTopLevelAncestor(),
            menuKeyCommand.getName(),
            null,
@@ -484,7 +608,9 @@ public class Labeler extends Decorator implements TranslatablePiece {
       Box b = Box.createHorizontalBox();
       b.add(new JLabel("Font:  "));
       fontFamily = new JComboBox();
-      String[] s = new String[]{"Serif", "SansSerif", "Monospaced", "Dialog", "DialogInput"};
+      final String[] s = new String[]{
+        "Serif", "SansSerif", "Monospaced", "Dialog", "DialogInput"
+      };
       for (int i = 0; i < s.length; ++i) {
         fontFamily.addItem(s[i]);
       }
@@ -496,7 +622,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
       fontSize = new IntConfigurer(null, "Font size:  ", new Integer(l.font.getSize()));
       b.add(fontSize.getControls());
       b.add(new JLabel("  Bold?"));
-      int fontStyle = l.font.getStyle();
+      final int fontStyle = l.font.getStyle();
       bold = new BooleanConfigurer(null, "",
         Boolean.valueOf(fontStyle != Font.PLAIN && fontStyle != Font.ITALIC));
       b.add(bold.getControls());
@@ -516,13 +642,13 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
       renderer = new MyRenderer();
 
-      Character[] rightLeft = new Character[]{new Character('c'),
-                                              new Character('r'),
-                                              new Character('l')};
+      final Character[] rightLeft = new Character[]{new Character('c'),
+                                                    new Character('r'),
+                                                    new Character('l')};
 
-      Character[] topBottom = new Character[]{new Character('c'),
-                                              new Character('t'),
-                                              new Character('b')};
+      final Character[] topBottom = new Character[]{new Character('c'),
+                                                    new Character('t'),
+                                                    new Character('b')};
 
       b = Box.createHorizontalBox();
       b.add(new JLabel("Vertical position:  "));
@@ -572,43 +698,44 @@ public class Labeler extends Decorator implements TranslatablePiece {
     }
 
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
-      se.append((KeyStroke) labelKeyInput.getValue());
-      se.append(command.getValueString());
+      final SequenceEncoder se = new SequenceEncoder(';');
+      se.append((KeyStroke) labelKeyInput.getValue())
+        .append(command.getValueString());
 
       Integer i = (Integer) fontSize.getValue();
       if (i == null
           || i.intValue() <= 0) {
         i = new Integer(10);
       }
-      se.append(i.toString());
-      se.append(bg.getValueString());
-      se.append(fg.getValueString());
-      se.append(vPos.getSelectedItem().toString());
+      se.append(i.toString())
+        .append(bg.getValueString())
+        .append(fg.getValueString())
+        .append(vPos.getSelectedItem().toString());
       i = (Integer) vOff.getValue();
       if (i == null) {
         i = new Integer(0);
       }
-      se.append(i.toString());
-      se.append(hPos.getSelectedItem().toString());
+      se.append(i.toString())
+        .append(hPos.getSelectedItem().toString());
       i = (Integer) hOff.getValue();
       if (i == null) {
         i = new Integer(0);
       }
-      se.append(i.toString());
-      se.append(vJust.getSelectedItem().toString());
-      se.append(hJust.getSelectedItem().toString());
-      se.append(format.getValueString());
-      se.append(fontFamily.getSelectedItem().toString());
-      int style = Font.PLAIN + (bold.booleanValue().booleanValue() ? Font.BOLD : 0)
-          + (italic.booleanValue().booleanValue() ? Font.ITALIC : 0);
+      se.append(i.toString())
+        .append(vJust.getSelectedItem().toString())
+        .append(hJust.getSelectedItem().toString())
+        .append(format.getValueString())
+        .append(fontFamily.getSelectedItem().toString());
+      final int style = Font.PLAIN +
+        (bold.booleanValue().booleanValue() ? Font.BOLD : 0) +
+        (italic.booleanValue().booleanValue() ? Font.ITALIC : 0);
       se.append(style + "");
       i = (Integer) rotate.getValue();
       if (i == null) {
         i = new Integer(0);
       }
-      se.append(i.toString());
-      se.append(propertyNameConfig.getValueString());
+      se.append(i.toString())
+        .append(propertyNameConfig.getValueString());
 
       return ID + se.getValue();
     }

@@ -101,15 +101,30 @@ public class ImageSaver extends AbstractConfigurable {
   protected static final String ICON_NAME = "icon";
 
   public String[] getAttributeNames() {
-    return new String[] {BUTTON_TEXT, TOOLTIP, ICON_NAME, HOTKEY};
+    return new String[] {
+      BUTTON_TEXT,
+      TOOLTIP,
+      ICON_NAME,
+      HOTKEY
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button Text:  ", "Tooltip Text:  ", "Button icon:  ", "Hotkey:  "};
+    return new String[] {
+      "Button Text:  ",
+      "Tooltip Text:  ",
+      "Button icon:  ",
+      "Hotkey:  "
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, IconConfig.class, KeyStroke.class};
+    return new Class[] {
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {
@@ -133,7 +148,7 @@ public class ImageSaver extends AbstractConfigurable {
   public void writeMapAsImage() {
     int sections = 1;
     if (promptToSplit) {
-      String s = JOptionPane.showInputDialog("Divide map into how many sections?\n(Using more sections requires less memory)");
+      final String s = JOptionPane.showInputDialog("Divide map into how many sections?\n(Using more sections requires less memory)");
       if (s == null) {
         return;
       }
@@ -144,7 +159,7 @@ public class ImageSaver extends AbstractConfigurable {
       }
     }
 
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.setSelectedFile(
       new File(fc.getCurrentDirectory(),
                GameModule.getGameModule().getGameName() + "Map.png"));
@@ -168,20 +183,36 @@ public class ImageSaver extends AbstractConfigurable {
 
         public void doFirst() {
           try {
-            FileOutputStream[] p = new FileOutputStream[sectionCount];
-            for (int i = 0; i < sectionCount; ++i) {
-              String sectionName = fileName;
-              if (sectionCount > 1) {
-                if (fileName.lastIndexOf(".") >= 0) {
-                  sectionName = fileName.substring(0, fileName.lastIndexOf(".")) + (i + 1) + fileName.substring(fileName.lastIndexOf("."));
+            // FIXME: Don't open all of the file handles at once.
+            // Open, write, close, repeat instead.
+            final FileOutputStream[] p = new FileOutputStream[sectionCount];
+            try {
+              for (int i = 0; i < sectionCount; ++i) {
+                String sectionName = fileName;
+                if (sectionCount > 1) {
+                  if (fileName.lastIndexOf(".") >= 0) {
+                    sectionName =
+                      fileName.substring(0, fileName.lastIndexOf(".")) +
+                      (i + 1) + fileName.substring(fileName.lastIndexOf("."));
+                  }
+                  else {
+                    sectionName = fileName + (i + 1);
+                  }
                 }
-                else {
-                  sectionName = fileName + (i + 1);
+                p[i] = new FileOutputStream(sectionName);
+              }
+              writeImage(p);
+            }
+            finally {
+              for (FileOutputStream out : p) {
+                try {
+                  out.close();
+                }
+                catch (IOException e) {
+                  e.printStackTrace();
                 }
               }
-              p[i] = new FileOutputStream(sectionName);
             }
-            writeImage(p);
           }
           catch (Throwable err) {
             error = err;
@@ -207,7 +238,8 @@ public class ImageSaver extends AbstractConfigurable {
           w.dispose();
         }
       };
-      Timer t = new Timer(1000, new ActionListener() {
+
+      final Timer t = new Timer(1000, new ActionListener() {
         boolean toggle;
 
         public void actionPerformed(ActionEvent e) {
@@ -220,6 +252,7 @@ public class ImageSaver extends AbstractConfigurable {
           toggle = !toggle;
         }
       });
+
       w.setVisible(true);
       task.start();
       t.start();
@@ -253,8 +286,18 @@ public class ImageSaver extends AbstractConfigurable {
       catch (Exception e) {
         e.printStackTrace();
       }
-      writePNG(output, out[i]);
-      out[i].close();
+
+      try {
+        writePNG(output, out[i]);
+      }
+      finally {
+        try {
+          out[i].close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 

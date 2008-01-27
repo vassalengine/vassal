@@ -108,8 +108,9 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   }
 
   private String removePercent(String input) {
-    StringBuffer buff = new StringBuffer();
-    StringTokenizer st = new StringTokenizer(input, "%#", true); //$NON-NLS-1$
+    final StringBuilder buff = new StringBuilder();
+    final StringTokenizer st =
+      new StringTokenizer(input, "%#", true); //$NON-NLS-1$
     while (st.hasMoreTokens()) {
       String s = st.nextToken();
       switch (s.charAt(0)) {

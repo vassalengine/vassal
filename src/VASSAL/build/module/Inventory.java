@@ -354,7 +354,7 @@ public class Inventory extends AbstractConfigurable
    * TODO rework text display of Inventory
    */
   protected void inventoryToText() {
-    StringBuffer output = new StringBuffer(""); //$NON-NLS-1$
+    final StringBuilder output = new StringBuilder(""); //$NON-NLS-1$
     FileChooser fc = GameModule.getGameModule().getFileChooser();
     if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) {
       return;
@@ -366,14 +366,20 @@ public class Inventory extends AbstractConfigurable
     output.append(results.getResultString()); 
     // .substring(1).replaceAll(
   //      mapSeparator, System.getProperty("line.separator"));
+ 
     try {
-      PrintWriter p = new PrintWriter(new FileOutputStream(fc
-          .getSelectedFile().getPath()));
-      p.print(output);
-      p.close();
+      final PrintWriter p =
+        new PrintWriter(new FileOutputStream(fc.getSelectedFile().getPath()));
+      try {
+        p.print(output);
         Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString("Inventory.wrote", fc.getSelectedFile().getName())); //$NON-NLS-1$
         c.execute();
-    } catch (IOException e) {
+      }
+      finally {
+        p.close();
+      }
+    }
+    catch (IOException e) {
       JOptionPane.showMessageDialog(null, e.getMessage());
     }
   }
@@ -1075,7 +1081,7 @@ public class Inventory extends AbstractConfigurable
      * @return
      */
     protected String separator() {
-      StringBuffer sep = new StringBuffer();
+      final StringBuilder sep = new StringBuilder();
 
       if (getLevel() > 0)
         sep.append(mapSeparator);
@@ -1085,7 +1091,7 @@ public class Inventory extends AbstractConfigurable
     }
 
     public String toResultString() {
-      StringBuffer name = new StringBuffer();
+      final StringBuilder name = new StringBuilder();
 
       name.append(separator());
 
@@ -1394,8 +1400,8 @@ public class Inventory extends AbstractConfigurable
      * @param counter
      */
     public void insert(Counter counter) {
-      String[] path = counter.getPath();
-      StringBuffer hash = new StringBuffer();
+      final String[] path = counter.getPath();
+      final StringBuilder hash = new StringBuilder();
 
       CounterNode insertNode = root;
       CounterNode newNode = null;

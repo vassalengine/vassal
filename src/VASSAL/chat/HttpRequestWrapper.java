@@ -20,9 +20,9 @@ package VASSAL.chat;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -32,6 +32,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
+import VASSAL.tools.IOUtils;
 
 /**
  * Performs Get and Post operations to a given URL
@@ -71,16 +73,23 @@ public class HttpRequestWrapper {
     URL base = new URL(url);
     URLConnection conn = base.openConnection();
     conn.setUseCaches(false);
-    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    byte[] buffer = new byte[100000];
-    int length;
-    while ((length = in.read(buffer)) > 0) {
-      out.write(buffer,0,length);
+
+    final InputStream in = conn.getInputStream();
+    final String s;
+    try {
+      s = IOUtils.toString(in, "UTF-8");
     }
-    in.close();
-    ArrayList<String> l = new ArrayList<String>();
-    StringTokenizer st = new StringTokenizer(new String(out.toByteArray(),"UTF-8"),"\n\r"); //$NON-NLS-1$ //$NON-NLS-2$
+    finally {
+      try {
+        in.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    final ArrayList<String> l = new ArrayList<String>();
+    final StringTokenizer st = new StringTokenizer(s,"\n\r"); //$NON-NLS-1$
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
@@ -111,18 +120,37 @@ public class HttpRequestWrapper {
     conn.setDoOutput(true);
     conn.setUseCaches(false);
     //	    conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-    DataOutputStream out = new DataOutputStream(conn.getOutputStream());
-    out.writeBytes(content);
-    out.flush();
-    out.close();
-    BufferedReader input = new BufferedReader
-      (new InputStreamReader(conn.getInputStream(),"UTF-8")); //$NON-NLS-1$
-    ArrayList<String> l = new ArrayList<String>();
-    for (String line = input.readLine();
-         line != null; line = input.readLine()) {
-      l.add(line);
+
+    final DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+    try {
+      out.writeBytes(content);
     }
-    input.close();
-    return l;
+    finally {
+      try {
+        out.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    final BufferedReader input = new BufferedReader(
+      new InputStreamReader(conn.getInputStream(), "UTF-8")); //$NON-NLS-1$
+    try {
+      final ArrayList<String> l = new ArrayList<String>();
+      for (String line = input.readLine();
+           line != null; line = input.readLine()) {
+        l.add(line);
+      }
+      return l;
+    }
+    finally {
+      try {
+        input.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

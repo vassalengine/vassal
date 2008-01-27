@@ -336,7 +336,7 @@ public class Footprint extends MovementMarkable {
     final Graphics2D g2d = (Graphics2D) g;
     final boolean selected = Boolean.TRUE.equals(
       Decorator.getOutermost(this).getProperty(Properties.SELECTED));
-    final int transparencyPercent = Math.min(0, Math.max(100,
+    final int transparencyPercent = Math.max(0, Math.min(100,
       selected ? selectedTransparency : unSelectedTransparency));
     final float transparency = transparencyPercent / 100.0f;
     final Composite oldComposite = g2d.getComposite();
@@ -439,7 +439,7 @@ public class Footprint extends MovementMarkable {
           }
           else {
             Image scaled =
-              ImageUtils.transform((BufferedImage) image, 0.0, zoom);
+              ImageUtils.transform((BufferedImage) image, zoom, 0.0);
             g.drawImage(scaled, x1, y1, obs);
           }
         }

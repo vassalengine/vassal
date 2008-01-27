@@ -80,11 +80,23 @@ public class Main {
       launch();
     }
     else {
-      Properties props = new Properties();
-      InputStream resource = Main.class.getResourceAsStream(extractTargets.get(resourceIndex));
-      if (resource != null) {
-        props.load(resource);
+      final Properties props = new Properties();
+      final InputStream in =
+        Main.class.getResourceAsStream(extractTargets.get(resourceIndex));
+      if (in != null) {
+        try {
+          props.load(in);
+        }
+        finally {
+          try {
+            in.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
+
       new ResourceExtracter(Prefs.getGlobalPrefs(), props, new Observer() {
         public void update(Observable o, Object arg) {
           try {

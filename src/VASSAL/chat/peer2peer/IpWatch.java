@@ -45,7 +45,7 @@ public class IpWatch implements Runnable {
     private String findIp() {
         try {
             InetAddress a[] = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
-            StringBuffer buff = new StringBuffer();
+            final StringBuilder buff = new StringBuilder();
             for (int i = 0; i < a.length; ++i) {
                 buff.append(a[i].getHostAddress());
                 if (i < a.length - 1) {

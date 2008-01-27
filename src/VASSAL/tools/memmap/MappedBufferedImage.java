@@ -19,10 +19,14 @@
 
 package VASSAL.tools.memmap;
 
+import java.awt.Point;
 import java.awt.image.ColorModel;
+import java.awt.image.ComponentSampleModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DirectColorModel;
 import java.awt.image.BufferedImage;
+import java.awt.image.SampleModel;
+import java.awt.image.SinglePixelPackedSampleModel;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 
@@ -31,36 +35,75 @@ import java.io.IOException;
  * <code>MappedBufferedImage</code>s are useful for storing images
  * on disk which are too large to keep in RAM long-term but for which
  * decoding them at each access would be too slow. The image data
- * is held by a {@link MappedWritableRaster}, which in turn stores the
- * data in a {@link MappedDataBufferInt}. A <code>MappedBufferedImage</code>
- * acts as though it has type {@link #TYPE_INT_ARGB}.
+ * is held by a {@link MappedWritableRaster}.
  *
  * @since 3.1.0
  * @author Joel Uckelman
- * @see MappedDataBufferInt
  * @see MappedWritableRaster
- * @see MappedSinglePixelPackedSampleModel
  */
 public class MappedBufferedImage extends BufferedImage {
-  /** 
-   * Constructs a <code>MappedBufferedImage</code> with the given
-   * width and height.
-   *
-   * @param w width of the created image
-   * @param h height of the created image
-   * @throws IOException if creating the memory-mapped file fails.
-   */
-  public MappedBufferedImage(int w, int h) throws IOException {
-    super(new DirectColorModel(32, 0x00ff0000, 0x0000ff00,
-                                   0x000000ff, 0xff000000),
-          MappedWritableRaster.createPackedRaster(
-                               new MappedDataBufferInt(4*w*h),
-                               w, h, w,
-                               new int[]{0x00ff0000, 0x0000ff00,
-                                         0x000000ff, 0xff000000},
-                               null),
-          false,
-          null
+  private MappedBufferedImage(ColorModel cm, WritableRaster raster) {
+    super(cm, raster, cm.isAlphaPremultiplied(), null);
+  }
+
+  public static BufferedImage createMemoryMappedImage(ColorModel cm,
+                                                      SampleModel sm)
+                                                      throws IOException {
+    // determine how many banks the DataBuffer should have
+    int maxBank = 0;
+    if (sm instanceof ComponentSampleModel) {
+      final int numBands = sm.getNumBands();
+      if (numBands != 1) {
+        final int[] bankIndices = ((ComponentSampleModel) sm).getBankIndices();
+        for (int i = 0; i < numBands; ++i) {
+          if (bankIndices[i]  > maxBank) maxBank = bankIndices[i];
+        }
+      }
+    }
+  
+    final int w = sm.getWidth();
+    final int h = sm.getHeight();
+
+    final int banks = maxBank + 1;
+    final int size = w*h*sm.getNumDataElements()/banks;        
+
+    // create the mapped DataBuffer
+    DataBuffer db = null;
+    switch (sm.getDataType()) {
+    case DataBuffer.TYPE_BYTE:
+      db = new MappedDataBufferByte(banks, size);
+      break;
+    case DataBuffer.TYPE_USHORT:
+      db = new MappedDataBufferUShort(banks, size);
+      break;
+    case DataBuffer.TYPE_INT:
+      db = new MappedDataBufferInt(banks, size);
+      break;
+    case DataBuffer.TYPE_SHORT:
+    case DataBuffer.TYPE_FLOAT:
+    case DataBuffer.TYPE_DOUBLE:
+    default:
+      assert false;
+    }
+
+    final WritableRaster raster =
+      MappedWritableRaster.createWritableRaster(sm, db, new Point(0,0)); 
+    
+    return new MappedBufferedImage(cm ,raster);
+  }
+
+  public static BufferedImage createIntARGBMemoryMappedImage(int w, int h)
+      throws IOException {
+    return createMemoryMappedImage(
+      new DirectColorModel(
+        32,
+        0x00ff0000,
+        0x0000ff00,
+        0x000000ff,
+        0xff000000),
+      new SinglePixelPackedSampleModel(
+        DataBuffer.TYPE_INT, w, h,
+        new int[] { 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 })
     );
   }
 }

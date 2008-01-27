@@ -18,6 +18,8 @@
  */
 package VASSAL.build.widget;
 
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +38,11 @@ import VASSAL.build.Widget;
  * (via {@link Configurable#getConfigureName})
  */
 public class TabWidget extends Widget
-  implements ChangeListener, PropertyChangeListener {
+    implements ChangeListener, PropertyChangeListener {
   private JTabbedPane tab = null;
   private List<Widget> widgets = new ArrayList<Widget>();
 
-  public TabWidget() {
-  }
+  public TabWidget() { }
 
   public static String getConfigureTypeName() {
     return "Tabbed Panel";
@@ -56,7 +57,7 @@ public class TabWidget extends Widget
 
   public void add(Buildable b) {
     if (b instanceof Widget) {
-      Widget w = (Widget) b;
+      final Widget w = (Widget) b;
       widgets.add(w);
       if (tab != null) {
         tab.removeChangeListener(this);
@@ -75,20 +76,22 @@ public class TabWidget extends Widget
 
   public void remove(Buildable b) {
     if (b instanceof Widget) {
-      Widget w = (Widget) b;
+      final Widget w = (Widget) b;
       if (tab != null) {
+        tab.removeChangeListener(this);   // prevent bad recursion
         tab.removeTabAt(widgets.indexOf(w));
+        w.removePropertyChangeListener(this);
+        tab.addChangeListener(this);      // restore listener
       }
       widgets.remove(w);
     }
     super.remove(b);
   }
 
-  public void propertyChange
-    (java.beans.PropertyChangeEvent evt) {
+  public void propertyChange(PropertyChangeEvent evt) {
     if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-      Widget src = (Widget) evt.getSource();
-      int index = widgets.indexOf(src);
+      final Widget src = (Widget) evt.getSource();
+      final int index = widgets.indexOf(src);
       String name = src.getConfigureName();
       if (name == null) {
         name = "";
@@ -97,12 +100,12 @@ public class TabWidget extends Widget
     }
   }
 
-  public java.awt.Component getComponent() {
+  public Component getComponent() {
     if (tab == null) {
       rebuild();
       tab = new JTabbedPane();
       for (int i = 0; i < widgets.size(); ++i) {
-        Widget w = widgets.get(i);
+        final Widget w = widgets.get(i);
         w.addPropertyChangeListener(this);
         tab.addTab(w.getConfigureName(), new JPanel());
       }

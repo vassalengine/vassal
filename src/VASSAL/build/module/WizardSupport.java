@@ -513,10 +513,12 @@ public class WizardSupport {
   public static class SavedGameLoader extends Thread {
     private WizardController controller;
     private Map settings;
+// FIXME: this is a bad design---when can we safely close this stream?
     private InputStream in;
     private String wizardKey;
 
-    public SavedGameLoader(WizardController controller, Map settings, InputStream in, String wizardKey) {
+    public SavedGameLoader(WizardController controller, Map settings,
+                           InputStream in, String wizardKey) {
       super();
       this.controller = controller;
       this.settings = settings;

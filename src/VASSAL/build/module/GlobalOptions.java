@@ -50,6 +50,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
@@ -57,6 +58,7 @@ import VASSAL.preferences.BooleanPreference;
 import VASSAL.preferences.DoublePreference;
 import VASSAL.preferences.EnumPreference;
 import VASSAL.preferences.IntegerPreference;
+import VASSAL.preferences.Prefs;
 import VASSAL.preferences.StringPreference;
 import VASSAL.preferences.TextPreference;
 import VASSAL.tools.FormattedString;
@@ -71,7 +73,8 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String NEVER = "Never";
   public static final String PROMPT = "Use Preferences Setting";
   public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
-  public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$
+  public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
+  public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
 
   public static final String PLAYER_NAME = "playerName"; //$NON-NLS-1$
   public static final String PLAYER_SIDE = "playerSide"; //$NON-NLS-1$
@@ -91,26 +94,37 @@ public class GlobalOptions extends AbstractConfigurable {
 
   private FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$"); //$NON-NLS-1$ //$NON-NLS-2$
 
-  private static GlobalOptions instance;
+  private static GlobalOptions instance = new GlobalOptions();
   private boolean useSingleWindow;
 
   public void addTo(Buildable parent) {
     instance = this;
 
-    BooleanConfigurer config = new BooleanConfigurer(SINGLE_WINDOW, Resources.getString("GlobalOptions.use_combined"), Boolean.TRUE); //$NON-NLS-1$
-    GameModule.getGameModule().getPrefs().addOption(config);
-    useSingleWindow = !Boolean.FALSE.equals(config.getValue());
+    final BooleanConfigurer combConf = new BooleanConfigurer(
+      SINGLE_WINDOW,
+      Resources.getString("GlobalOptions.use_combined"),  //$NON-NLS-1$
+      Boolean.TRUE);
+    GameModule.getGameModule().getPrefs().addOption(combConf);
+    useSingleWindow = !Boolean.FALSE.equals(combConf.getValue());
 
-    config = new BooleanConfigurer(SCALER_ALGORITHM, Resources.getString("GlobalOptions.smooth_scaling"), Boolean.TRUE); //$NON-NLS-1$
-    GameModule.getGameModule().getPrefs().addOption(config);
+    final IntConfigurer initHeapConf = new IntConfigurer(
+      INITIAL_HEAP,
+      Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
+      Integer.valueOf(256));
+    Prefs.getGlobalPrefs().addOption(initHeapConf);
+//    GameModule.getGameModule().getPrefs().addOption(initHeapConf);
 
+    final IntConfigurer maxHeapConf = new IntConfigurer(
+      MAXIMUM_HEAP,
+      Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
+      Integer.valueOf(512));
+    Prefs.getGlobalPrefs().addOption(maxHeapConf);
+//    GameModule.getGameModule().getPrefs().addOption(maxHeapConf);
+    
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
   public static GlobalOptions getInstance() {
-    if (instance == null) {
-      instance = new GlobalOptions();
-    }
     return instance;
   }
 

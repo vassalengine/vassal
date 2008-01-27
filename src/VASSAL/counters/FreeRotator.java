@@ -61,6 +61,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.RotateScaleOp;
 
 /**
@@ -130,7 +131,7 @@ public class FreeRotator extends Decorator
   }
 
   public void setInner(GamePiece p) {
-    gpOp = p == null ? null : new GamePieceOp(p);
+    gpOp = p == null ? null : Op.piece(p);
     super.setInner(p);
   }
 
@@ -140,7 +141,7 @@ public class FreeRotator extends Decorator
   }
 
   private double centerY() {
-    // The center is not on vertex for pieces with odd heights.
+    // The center is not on a vertex for pieces with odd heights.
     return (piece.boundingBox().height % 2) / 2.0;
   }
 
@@ -154,16 +155,11 @@ public class FreeRotator extends Decorator
 
     Rectangle r;
     if (gpOp.isChanged() || (r = bounds.get(angle)) == null) {
-/*
+
       r = AffineTransform.getRotateInstance(getAngleInRadians(),
                                             centerX(),
                                             centerY())
                          .createTransformedShape(b).getBounds();
-      bounds.put(angle, r);
-*/
-// FIXME!
-      RotateScaleOp op = new RotateScaleOp(gpOp, angle, 1.0);
-      r = ImageUtils.getBounds(op.getSize());
       bounds.put(angle, r);
     }
     return new Rectangle(r);
@@ -250,26 +246,23 @@ public class FreeRotator extends Decorator
       piece.draw(g, x, y, obs, zoom);
     }
     else {
-/*
-      Image rotated = getRotatedImage(getAngle(), obs);
-      if (rotated != null) {
-// FIXME: Ugly, ugly, ugly. Should let the cache hold all of these rotated
-// and scaled instances.
-        Rectangle r = getRotatedBounds();
-        Image zoomed = GameModule.getGameModule().getDataArchive().getScaledImage(rotated, zoom);
-        g.drawImage(zoomed, x + (int) (zoom * r.x), y + (int) (zoom * r.y), obs);
-      }
-*/
       final double angle = getAngle();
+      RotateScaleOp op;
 
-      RotateScaleOp op = rotOp.get(angle);
-      if (op == null || op.getScale() != zoom) {
-        op = new RotateScaleOp(gpOp, angle, zoom);
+      if (gpOp.isChanged()) {
+        gpOp = Op.piece(piece);
+        op = Op.rotateScale(gpOp, angle, zoom);        
         rotOp.put(angle, op);
       }
-        
-      final Rectangle r = boundingBox();
+      else {
+        op = rotOp.get(angle);
+        if (op == null || op.getScale() != zoom) {
+          op = Op.rotateScale(gpOp, angle, zoom);
+          rotOp.put(angle, op);
+        }
+      }
 
+      final Rectangle r = boundingBox();
       try {
         g.drawImage(op.getImage(null),
                     x + (int) (zoom * r.x),
@@ -558,8 +551,10 @@ public class FreeRotator extends Decorator
   public Image getRotatedImage(double angle, Component obs) {
     if (gpOp == null) return null;
 
+    if (gpOp.isChanged()) gpOp = Op.piece(piece);
+
     try {
-      return (new RotateScaleOp(gpOp, angle, 1.0)).getImage(null);
+      return (Op.rotateScale(gpOp, angle, 1.0)).getImage(null);
     }
     catch (CancellationException e) {
       e.printStackTrace();

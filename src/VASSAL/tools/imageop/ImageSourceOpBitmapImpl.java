@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: ImageSourceOp.java 2734 2007-12-21 14:30:36Z uckelman $
  *
  * Copyright (c) 2007 by Joel Uckelman
  *
@@ -34,7 +34,8 @@ import java.awt.Rectangle;
  * @since 3.1.0
  * @author Joel Uckelman
  */
-public class ImageSourceOp extends AbstractTiledOp {
+public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
+                                     implements SourceOp {
   private final Image image;
   private final int hash;
 
@@ -45,14 +46,14 @@ public class ImageSourceOp extends AbstractTiledOp {
    * @param image the source image
    * @throws IllegalArgumentException if <code>image == null</code>.
    */
-  public ImageSourceOp(Image image) {
+  public ImageSourceOpBitmapImpl(Image image) {
     if (image == null) throw new IllegalArgumentException();
     this.image = image;
     hash = image.hashCode();
   }
 
   /** {@inheritDoc} */
-  protected Image apply() {
+  public Image apply() {
     return image;
   }
 
@@ -73,10 +74,18 @@ public class ImageSourceOp extends AbstractTiledOp {
     ImageOp top = tiles[tileY*numXTiles + tileX];
     if (top == null) {
       top = tiles[tileY*numXTiles + tileX]
-          = new SourceTileOp(this, tileX, tileY);
+          = new SourceTileOpBitmapImpl(this, tileX, tileY);
     }
 
     return top;
+  }
+
+  public ImageOp getSource() {
+    return null;
+  }
+
+  public String getName() {
+    return null;
   }
 
   /** {@inheritDoc} */
@@ -84,7 +93,7 @@ public class ImageSourceOp extends AbstractTiledOp {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || o.getClass() != this.getClass()) return false;
-    return image.equals(((ImageSourceOp) o).image);
+    return image.equals(((ImageSourceOpBitmapImpl) o).image);
   }
 
   /** {@inheritDoc} */

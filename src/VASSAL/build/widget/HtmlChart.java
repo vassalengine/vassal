@@ -39,11 +39,14 @@ import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -83,19 +86,23 @@ public class HtmlChart extends Widget implements MouseListener {
     if (fname == null) {
       return null;
     }
-    try {
-      final InputStream stream = GameModule.getGameModule().getDataArchive().getFileStream(fname);
-      final byte[] bytes = new byte[stream.available()];
-      final int totalBytes = stream.available();
-      int numRead = 0;
-      int iBytes = 0;
-      while (iBytes < totalBytes && ((numRead = stream.read(bytes, iBytes, totalBytes - iBytes)) > 0)) {
-        iBytes += numRead;
+
+    try {      
+      final InputStream stream =
+        GameModule.getGameModule().getDataArchive().getFileStream(fname);
+      try {
+        return IOUtils.toString(stream, "UTF-8");
       }
-      stream.close();
-      return new String(bytes, "UTF-8");
+      finally {
+        try {
+          stream.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
-    catch (IOException ex) {
+    catch (IOException e) {
       return "Page " + fname + " not found";
     }
   }
@@ -286,7 +293,7 @@ public class HtmlChart extends Widget implements MouseListener {
           imageName = (String) e.getAttributes()
                                 .getAttribute(HTML.Attribute.SRC);
           srcOp = imageName == null || imageName.trim().isEmpty()
-                ? null : new SourceOp(imageName);
+                ? null : Op.load(imageName);
         }
 
         protected Component createComponent() {

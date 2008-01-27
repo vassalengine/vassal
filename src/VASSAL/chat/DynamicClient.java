@@ -66,7 +66,8 @@ public class DynamicClient extends HybridClient {
       throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$
     }
     p = new Properties();
-    StringBuffer buff = new StringBuffer();
+
+    final StringBuilder buff = new StringBuilder();
     for (String s : l) {
       buff.append(s).append('\n');
     }

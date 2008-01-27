@@ -22,6 +22,7 @@ import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.PlayerRoster;
+import VASSAL.build.module.PluginsLoader;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
 import VASSAL.build.module.properties.GlobalProperties;
@@ -53,30 +54,44 @@ public class BasicModule extends GameModule {
   }
 
   protected void build() throws IOException {
-    String fileName = "buildFile"; //$NON-NLS-1$
-    InputStream inStream = null;
+    final String fileName = "buildFile"; //$NON-NLS-1$
+
+    InputStream in = null;
     try {
-      inStream = getDataArchive().getFileStream(fileName);
-    }
-    catch (IOException ex) {
+      in = getDataArchive().getFileStream(fileName);
+    }    
+    catch (IOException e) {
       if (new File(getDataArchive().getName()).exists()) {
-        throw new IOException(Resources.getString("BasicModule.not_a_module")); //$NON-NLS-1$
+        throw new IOException(
+          Resources.getString("BasicModule.not_a_module")); //$NON-NLS-1$
       }
     }
+
     try {
-      if (inStream == null) {
+      if (in == null) {
         build(null);
       }
       else {
-        Document doc = Builder.createDocument(inStream);
-        build(doc.getDocumentElement());
+        try {
+          final Document doc = Builder.createDocument(in);
+          build(doc.getDocumentElement());
+        }
+        finally {
+          try {
+            in.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
     }
     catch (IOException ex) {
       throw new IllegalArgumentException(ex.getMessage());
     }
+
     getFileMenu().add(getPrefs().getEditor().getEditAction());
-    JMenuItem q = new JMenuItem(Resources.getString(Resources.QUIT));
+    final JMenuItem q = new JMenuItem(Resources.getString(Resources.QUIT));
     q.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         quit();
@@ -100,6 +115,7 @@ public class BasicModule extends GameModule {
     initGameState();
     initLogger();
     initServer();
+    new PluginsLoader().addTo(this);
     if (e != null) {
       super.build(e);
       ensureComponent(GamePieceImageDefinitions.class);

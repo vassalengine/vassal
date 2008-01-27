@@ -2,7 +2,9 @@ package VASSAL.build.module.dice;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
@@ -134,7 +136,8 @@ public abstract class DieServer {
    * The text reported after the results of the roll;
    * @deprecated
    */
-  @Deprecated protected String getReportSuffix() {
+  @Deprecated
+  protected String getReportSuffix() {
     return " ***  <" + GameModule.getGameModule().getChatter().getHandle() + ">";
   }
 
@@ -248,35 +251,40 @@ public abstract class DieServer {
   }
 
   public void doIRoll(RollSet toss) throws IOException {
-
-    String[] rollString = buildInternetRollString(toss);
-    ArrayList<String> returnString = new ArrayList<String>();
+    final String[] rollString = buildInternetRollString(toss);
+    final ArrayList<String> returnString = new ArrayList<String>();
     //            rollString[0] =
     //                "number1=2&type1=6&number2=2&type2=30&number3=2&type3=30"
     //                    + "&number4=0&type4=2&number5=0&type5=2&number6=0&type6=2&number7=0&type7=2"
     //                    + "&number8=0&type8=2&number9=0&type9=2&number10=0&type10=2"
     //                    + "&emails=&email=b.easton@uws.edu.au&password=IG42506&Submit=Throw+Dice";
-    URL url = new URL(serverURL);
+    final URL url = new URL(serverURL);
 
-    URLConnection connection = url.openConnection();
+    final URLConnection connection = url.openConnection();
     connection.setDoOutput(true);
 
-    PrintWriter out = new PrintWriter(connection.getOutputStream());
-    for (int i = 0; i < rollString.length; i++) {
-      out.println(rollString[i]);
+    final PrintWriter out = new PrintWriter(connection.getOutputStream());
+    try {
+      for (String s : rollString) out.println(s);
     }
-
-    out.close();
-
-    BufferedReader in =
+    finally {
+      out.close();
+    }
+  
+    final BufferedReader in =
       new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-    String inputLine;
-
-    while ((inputLine = in.readLine()) != null)
-      returnString.add(inputLine);
-
-    in.close();
+    try {
+      String inputLine;
+      while ((inputLine = in.readLine()) != null) returnString.add(inputLine);
+    }
+    finally {
+      try {
+        in.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
 
     parseInternetRollString(toss, new Vector(returnString));
   }

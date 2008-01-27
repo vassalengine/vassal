@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import VASSAL.build.GameModule;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.ImageFileFilter;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -57,6 +58,7 @@ public class IconConfigurer extends Configurer {
   public void setValue(String s) {
     icon = null;
     imageName = s == null ? "" : s;
+
 /*
     if (imageName.startsWith("/")) {
       final URL imageURL = getClass().getResource(imageName);
@@ -65,9 +67,11 @@ public class IconConfigurer extends Configurer {
       }
     }
 */
+
     if (imageName.length() > 0) {
-      icon = new OpIcon(new SourceOp(imageName));
+      icon = new OpIcon(Op.load(imageName));
     }
+
     setValue((Object)imageName);
   }
 

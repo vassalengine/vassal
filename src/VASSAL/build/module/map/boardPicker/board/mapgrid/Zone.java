@@ -274,10 +274,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   public Point getLocation(String location) throws BadCoords {
-
-	  SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(locationFormat, '$');
+	  SequenceEncoder.Decoder se =
+      new SequenceEncoder.Decoder(locationFormat, '$');
 	  boolean isProperty = true;
-	  StringBuffer regex = new StringBuffer();
+	  final StringBuilder regex = new StringBuilder();
 	  int groupCount = 0;
 	  
 	  while (se.hasMoreTokens()) {
@@ -602,7 +602,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           String newShape = JOptionPane.showInputDialog(frame, "Enter x,y coordinates of polygon vertices,\nseparated by spaces", PolygonEditor
               .polygonToString(editor.getPolygon()).replace(';', ' '));
           if (newShape != null) {
-            final StringBuffer buffer = new StringBuffer();
+            final StringBuilder buffer = new StringBuilder();
             final StringTokenizer st = new StringTokenizer(newShape);
             while (st.hasMoreTokens()) {
               buffer.append(st.nextToken());

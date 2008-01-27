@@ -55,14 +55,16 @@ public class LaunchButton extends JButton {
     this(text,textAttribute,hotkeyAttribute,null,al);
   }
 
-  public LaunchButton(String text, String tooltipAttribute, String textAttribute,
-      String hotkeyAttribute, String iconAttribute, final ActionListener al) {
+  public LaunchButton(String text, String tooltipAttribute,
+                      String textAttribute, String hotkeyAttribute,
+                      String iconAttribute, final ActionListener al) {
     this(text, textAttribute, hotkeyAttribute, iconAttribute, al);
     tooltipAtt = tooltipAttribute;
   }
   
   public LaunchButton(String text, String textAttribute,
-                      String hotkeyAttribute, String iconAttribute, final ActionListener al) {
+                      String hotkeyAttribute, String iconAttribute,
+                      final ActionListener al) {
     super(text);
     nameAtt = textAttribute;
     keyAtt = hotkeyAttribute;

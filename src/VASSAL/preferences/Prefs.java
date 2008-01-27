@@ -18,11 +18,11 @@
  */
 package VASSAL.preferences;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -119,20 +119,32 @@ public class Prefs {
 
   public void init(String moduleName) {
     name = moduleName;
+
     try {
-      InputStream in = editor.getArchive().getFileStream(name);
-      storedValues.clear();
-      storedValues.load(in);
-      for (Enumeration e = storedValues.keys(); e.hasMoreElements();) {
-        String key = (String) e.nextElement();
-        String value = storedValues.getProperty(key);
-        Configurer c = options.get(key);
-        if (c != null) {
-          c.setValue(value);
+      final InputStream in = editor.getArchive().getFileStream(name);
+      try {
+        storedValues.clear();
+        storedValues.load(in);
+      }
+      finally {
+        try {
+          in.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
         }
       }
     }
-    catch (java.io.IOException e) {
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    for (String key : storedValues.stringPropertyNames()) {    
+      String value = storedValues.getProperty(key);
+      Configurer c = options.get(key);
+      if (c != null) {
+        c.setValue(value);
+      }
     }
   }
 
@@ -152,7 +164,7 @@ public class Prefs {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     storedValues.store(out, null);
     editor.getArchive()
-          .addFile(name, new java.io.ByteArrayInputStream(out.toByteArray()));
+          .addFile(name, new ByteArrayInputStream(out.toByteArray()));
   }
 
   /** Save these preferences and write to disk */

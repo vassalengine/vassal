@@ -23,7 +23,7 @@ import java.io.ByteArrayOutputStream;
 /**
  * Utility class for decoding URL-encoded strings
  *
- * @deprecated Use java.net.URLDecoder instead. 
+ * @deprecated Use {@link java.net.URLDecoder} instead. 
  */
 @Deprecated public class Decoder {
 

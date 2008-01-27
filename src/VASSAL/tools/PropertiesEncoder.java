@@ -64,17 +64,16 @@ public class PropertiesEncoder {
   }
 
   private Properties decode(String s) throws IOException {
-    Properties p = new Properties();
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s,'|');
-    StringBuffer buffer = new StringBuffer();
+    final Properties p = new Properties();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s,'|');
+    final StringBuilder buffer = new StringBuilder();
     while (st.hasMoreTokens()) {
       buffer.append(st.nextToken());
       if (st.hasMoreTokens()) {
         buffer.append('\n');
       }
     }
-    ByteArrayInputStream in = new ByteArrayInputStream(buffer.toString().getBytes("UTF-8"));
-    p.load(in);
+    p.load(new ByteArrayInputStream(buffer.toString().getBytes("UTF-8")));
     return p;
   }
 

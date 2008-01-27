@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -44,6 +43,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import VASSAL.tools.IOUtils;
 
 
 /**
@@ -154,16 +155,31 @@ public class InstallJnlpScreen extends InstallProgressScreen
   }
 
   protected void downloadResource(URL resource) throws IOException {
-    byte[] buffer = new byte[100000];
-    int readCount = 0;
-    String path = getFileName(resource);
-    File local = new File(new File(installDir, "lib"), path); //$NON-NLS-1$
-    FileOutputStream out = new FileOutputStream(local);
-    InputStream in = resource.openStream();
-    while ((readCount = in.read(buffer)) > 0) {
-      out.write(buffer, 0, readCount);
+    final String path = getFileName(resource);
+    final File local = new File(new File(installDir, "lib"), path); //$NON-NLS-1$
+    final FileOutputStream out = new FileOutputStream(local);
+    try {
+      final InputStream in = resource.openStream();
+      try {
+        IOUtils.copy(in, out);
+      }
+      finally {
+        try {
+          in.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
-    out.close();
+    finally {
+      try {
+        out.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }    
   }
 
   protected void downloadFiles(Document doc, File file) throws IOException {
@@ -176,13 +192,14 @@ public class InstallJnlpScreen extends InstallProgressScreen
   }
 
   protected void writeXmlDocument(Document doc, File file) throws IOException {
-    Writer writer = new FileWriter(file);
+    final Writer writer = new FileWriter(file);
     try {
-      Source source = new DOMSource(doc);
+      final Source source = new DOMSource(doc);
       // Prepare the output file
-      Result result = new StreamResult(writer);
+      final Result result = new StreamResult(writer);
       // Write the DOM document to the file
-      Transformer xformer = TransformerFactory.newInstance().newTransformer();
+      final Transformer xformer =
+        TransformerFactory.newInstance().newTransformer();
       xformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
       xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2"); //$NON-NLS-1$ //$NON-NLS-2$
       xformer.transform(source, result);
@@ -193,7 +210,14 @@ public class InstallJnlpScreen extends InstallProgressScreen
     catch (TransformerFactoryConfigurationError e) {
       throw new IOException(e.getMessage());
     }
-    writer.close();
+    finally {
+      try {
+        writer.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   protected void modifyDocument(Document doc) throws IOException {
@@ -221,11 +245,21 @@ public class InstallJnlpScreen extends InstallProgressScreen
   }
 
   public Document getJNLPDoc(URL url) throws IOException {
-    Document d;
     try {
-      DocumentBuilderFactory f = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+      final DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
       f.setIgnoringElementContentWhitespace(true);
-      d = f.newDocumentBuilder().parse(url.openStream());
+      final InputStream in = url.openStream();
+      try {
+        return f.newDocumentBuilder().parse(in);
+      }
+      finally {
+        try {
+          in.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
     catch (SAXException e) {
       throw new IOException("SAXException:  " + e.getMessage()); //$NON-NLS-1$
@@ -236,6 +270,5 @@ public class InstallJnlpScreen extends InstallProgressScreen
     catch (FactoryConfigurationError e) {
       throw new IOException("FactoryConfigurationError:  " + e.getMessage()); //$NON-NLS-1$
     }
-    return d;
   }
 }

@@ -45,9 +45,8 @@ import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.ImageSourceOp;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
-import VASSAL.tools.imageop.SourceOp;
 
 /**
  * Places an entry in the <code>Help</code> menu.  Selecting the entry
@@ -80,7 +79,7 @@ public class AboutScreen extends AbstractConfigurable {
   @Deprecated
   public AboutScreen(Image i) {
     this();
-    this.op = new ImageSourceOp(i);
+    this.op = Op.load(i);
   }
 
   public void launch() {
@@ -201,7 +200,7 @@ public class AboutScreen extends AbstractConfigurable {
       if (fileName != null) {
         fileName = fileName.trim();
         if (!fileName.isEmpty()) {
-          op = new SourceOp(fileName);
+          op = Op.load(fileName);
           
           try {
             // FIXME: get the wizard to cache

@@ -226,7 +226,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
     zoomPickButton = new LaunchButton(null, PICK_TOOLTIP, PICK_BUTTON_TEXT,
       ZOOM_PICK, PICK_ICON_NAME, zoomPick); 
-    zoomPickButton.setAttribute(PICK_TOOLTIP, "Select Zoom");
+    zoomPickButton.setAttribute(PICK_TOOLTIP,
+      Resources.getString("Zoomer.zoom_select")); //$NON-NLS-1$
     zoomPickButton.setAttribute(PICK_ICON_NAME, PICK_DEFAULT_ICON);
 
     zoomInButton = new LaunchButton(null, IN_TOOLTIP, IN_BUTTON_TEXT,
@@ -325,7 +326,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       return new IconConfigurer(key, name, OUT_DEFAULT_ICON);
     }
   }
-  
+
   protected static final String ZOOM_START = "zoomStart"; //$NON-NLS-1$
   protected static final String ZOOM_LEVELS = "zoomLevels"; //$NON-NLS-1$
   
@@ -362,9 +363,15 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
   public String getAttributeValueString(String key) {
     if (ZOOM_START.equals(key)) {
-      // note that ZOOM_START is one-based, not zero-based
-      // FIXME: and this is BAD!
-      return String.valueOf(state.getInitialLevel()+1);
+      // Notes:
+      //
+      // 1. ZOOM_START is one-based, not zero-based.
+      // 2. The levels in state run from zoomed out to zoomed in,
+      // while the levels coming from outside Zoomer run from 
+      // zoomed in to zoomed out. Hence we reverse the initial
+      // zoom level being returned here.
+      //
+      return String.valueOf(state.getLevelCount() - state.getInitialLevel());
     }
     else if (ZOOM_LEVELS.equals(key)) {
       final double[] levels = state.getLevels();
@@ -394,12 +401,27 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       }
 
       if (val != null) {
-        // note that ZOOM_START is one-based, not zero-based
+        // Notes:
+        //
+        // 1. ZOOM_START is one-based, not zero-based.
+        // 2. The levels in state run from zoomed out to zoomed in,
+        // while the levels coming from outside Zoomer run from 
+        // zoomed in to zoomed out. Hence we reverse the initial
+        // zoom level being set here.
+        //
         final double[] levels = state.getLevels();
         final int initial =
-          Math.min(Math.max(1, (Integer) val), levels.length) - 1;
+          Math.max(0, Math.min(levels.length-1, levels.length-(Integer) val));
 
-        state = new State(levels, initial); 
+        state = new State(levels, initial);
+
+        if (deprecatedFactor > 0 && deprecatedMax > 0) {
+          state = new State(levels, initial-1);
+          
+          // zero these so this block is run only once
+          deprecatedFactor = 0.0;
+          deprecatedMax = 0;  
+        }
 
         zoomInButton.setEnabled(state.hasHigherLevel());
         zoomPickButton.setEnabled(true);
@@ -434,14 +456,56 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         zoomMenu.initZoomItems();
       }
     }
+    else if (FACTOR.equals(key)) {  // deprecated
+      if (val instanceof String) {
+        val = new Double((String) val);
+      }
+
+      if (val != null) {
+        deprecatedFactor = (Double) val;
+
+        if (deprecatedFactor > 0 && deprecatedMax > 0) {
+          adjustStateForFactorAndMax();
+        }
+      }
+    }
+    else if (MAX.equals(key)) {     // deprecated
+      if (val instanceof String) {
+        val = new Integer((String) val);
+      }
+  
+      if (val != null) {
+        deprecatedMax = (Integer) val;
+
+        if (deprecatedFactor > 0 && deprecatedMax > 0) {
+          adjustStateForFactorAndMax();
+        }
+      }
+    }
     else {
       // FIXME: does having this as an extremal case cause weird behavior for
       // unrecognized keys?
       zoomInButton.setAttribute(key, val);
+      zoomPickButton.setAttribute(key, val);
       zoomOutButton.setAttribute(key, val);
     }
   }
-  
+
+  // begin deprecated keys
+  private static final String FACTOR = "factor"; //$NON-NLS-1$
+  private static final String MAX = "max"; //$NON-NLS-1$
+
+  private int deprecatedMax = -1;
+  private double deprecatedFactor = -1.0;
+
+  private void adjustStateForFactorAndMax() {
+    final double[] levels = new double[deprecatedMax+1];
+    for (int i = 0; i < levels.length; ++i)
+      levels[i] = Math.pow(deprecatedFactor, -(i-1));
+    state = new State(levels, state.getInitialLevel());
+  }
+  // end deprecated keys
+
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }
@@ -458,42 +522,49 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     return state.getZoom();
   }
 
-  protected void updateZoomer() {
+  protected Point getMapCenter() {
     final Rectangle r = map.getView().getVisibleRect();
-    final Point center =
-      map.mapCoordinates(new Point(r.x + r.width/2, r.y + r.height/2));
-  
+    return map.mapCoordinates(new Point(r.x + r.width/2, r.y + r.height/2));
+  }
+
+  protected void updateZoomer(Point center) {
     zoomInButton.setEnabled(state.hasHigherLevel());
     zoomOutButton.setEnabled(state.hasLowerLevel());
 
     zoomMenu.updateZoom();
-    
+
+    final Dimension d = map.getPreferredSize();
+    map.getView().setBounds(0,0,d.width,d.height);  // calls revalidate()
+
     map.centerAt(center);
     map.repaint(true);
-    map.getView().revalidate();
   }
 
   public void setZoomLevel(int l) {
+    final Point center = getMapCenter();
     state.setLevel(l);
-    updateZoomer();
+    updateZoomer(center);
   }
 
   public void setZoomFactor(double z) {
+    final Point center = getMapCenter();
     state.setZoom(z);
-    updateZoomer();
+    updateZoomer(center);
   }
 
   public void zoomIn() {
     if (state.hasHigherLevel()) {
+      final Point center = getMapCenter();
       state.higherLevel();
-      updateZoomer(); 
+      updateZoomer(center); 
     }
   }
 
   public void zoomOut() {
     if (state.hasLowerLevel()) {
+      final Point center = getMapCenter();
       state.lowerLevel();
-      updateZoomer();
+      updateZoomer(center);
     }
   }
 
@@ -522,6 +593,11 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     protected final JPopupMenu.Separator sep;
     protected final ButtonGroup bg;
 
+    private static final String OTHER = "Other...";
+    private static final String FIT_WIDTH = "Fit Width";
+    private static final String FIT_HEIGHT = "Fit Height";
+    private static final String FIT_VISIBLE = "Fit Visible";
+
     public static final long serialVersionUID = 1L;
 
     public ZoomMenu() {
@@ -532,26 +608,30 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       bg = new ButtonGroup();
 
-      other = new JRadioButtonMenuItem("Other...");
-      other.setActionCommand("Other...");
+      other = new JRadioButtonMenuItem(
+        Resources.getString("Zoomer.ZoomMenu.other"));
+      other.setActionCommand(OTHER);
       other.addActionListener(this);
       bg.add(other);
       add(other);
 
       addSeparator();
 
-      final JMenuItem fw = new JMenuItem("Fit Width");
-      fw.setActionCommand("Fit Width");
+      final JMenuItem fw = new JMenuItem(
+        Resources.getString("Zoomer.ZoomMenu.fit_width"));
+      fw.setActionCommand(FIT_WIDTH);
       fw.addActionListener(this);
       add(fw);
 
-      final JMenuItem fh = new JMenuItem("Fit Height");
-      fh.setActionCommand("Fit Height");
+      final JMenuItem fh = new JMenuItem(
+        Resources.getString("Zoomer.ZoomMenu.fit_height"));
+      fh.setActionCommand(FIT_HEIGHT);
       fh.addActionListener(this);
       add(fh);
 
-      final JMenuItem fv = new JMenuItem("Fit Visible");
-      fv.setActionCommand("Fit Visible");
+      final JMenuItem fv = new JMenuItem(
+        Resources.getString("Zoomer.ZoomMenu.fit_visible"));
+      fv.setActionCommand(FIT_VISIBLE);
       fv.addActionListener(this);
       add(fv);
     }
@@ -566,7 +646,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         item.setActionCommand(Integer.toString(i));
         item.addActionListener(this);
         bg.add(item);
-        zoomMenu.insert(item, 0);
+        insert(item, 0);
       }
 
       ((JRadioButtonMenuItem) getComponent(
@@ -581,10 +661,12 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       catch (NumberFormatException e) {
       }
       
-      if (a.getActionCommand().equals("Other...")) {      
+      final String cmd = a.getActionCommand();
+
+      if (OTHER.equals(cmd)) {      
         final ZoomDialog dialog = new ZoomDialog((Frame)
           SwingUtilities.getAncestorOfClass(Frame.class, map.getView()),
-          "Select Zoom Ratio", true);
+          Resources.getString("Zoomer.ZoomDialog.title"), true);
         dialog.setVisible(true);
 
         final double z = dialog.getResult()/100.0;
@@ -593,25 +675,25 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         }
       }
       // FIXME: should be map.getSize() for consistency?
-      else if (a.getActionCommand().equals("Fit Width")) {
+      else if (FIT_WIDTH.equals(cmd)) {
         final Dimension vd = map.getView().getVisibleRect().getSize();
         final Dimension md = map.mapSize();
         setZoomFactor(vd.getWidth()/md.getWidth());
       }
-      else if (a.getActionCommand().equals("Fit Height")) {
+      else if (FIT_HEIGHT.equals(cmd)) {
         final Dimension vd = map.getView().getVisibleRect().getSize();
         final Dimension md = map.mapSize();
         setZoomFactor(vd.getHeight()/md.getHeight());
       }
-      else if (a.getActionCommand().equals("Fit Visible")) {
+      else if (FIT_VISIBLE.equals(cmd)) {
         final Dimension vd = map.getView().getVisibleRect().getSize();
         final Dimension md = map.mapSize();
         setZoomFactor(Math.min(vd.getWidth()/md.getWidth(),
                                vd.getHeight()/md.getHeight()));
       }
       else {
-        // this cannot happen!
-        throw new IllegalStateException();
+        // this should not happen!
+        assert false;
       }
     }
 
@@ -655,7 +737,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       final Insets linset = new Insets(0, 0, 11, 11);
       final Insets dinset = new Insets(0, 0, 0, 0);
 
-      final JLabel ratioLabel = new JLabel("Zoom Ratio:");
+      final JLabel ratioLabel = new JLabel(
+        Resources.getString("Zoomer.ZoomDialog.zoom_ratio"));
       c.gridx = 0;
       c.gridy = 0;
       c.weightx = 0;
@@ -691,7 +774,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       ratioDenominatorSpinner.addChangeListener(this);
       ratioBox.add(ratioDenominatorSpinner);
 
-      final JLabel percentLabel = new JLabel("Zoom:");
+      final JLabel percentLabel = new JLabel(
+        Resources.getString("Zoomer.ZoomDialog.zoom_percent"));
       c.gridx = 0;
       c.gridy = 1;
       c.weightx = 0;
@@ -726,14 +810,15 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       final Box buttonBox = new Box(BoxLayout.X_AXIS);
       buttonBox.add(Box.createHorizontalGlue());
 
-      okButton = new JButton("Ok");
+      okButton = new JButton(Resources.getString("General.ok"));
       okButton.addActionListener(this);
       getRootPane().setDefaultButton(okButton);
       buttonBox.add(okButton);
 
       buttonBox.add(Box.createHorizontalStrut(hsep));
  
-      final JButton cancelButton = new JButton("Cancel");
+      final JButton cancelButton = new JButton(
+        Resources.getString("General.cancel"));
       cancelButton.addActionListener(this);
       buttonBox.add(cancelButton);
 

@@ -824,14 +824,17 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   }
   
   public PieceI18nData getI18nData() {
-    ArrayList<String> items = new ArrayList<String>();
-    SequenceEncoder.Decoder defDecoder = new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
+    final ArrayList<String> items = new ArrayList<String>();
+    final SequenceEncoder.Decoder defDecoder =
+      new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
     while (defDecoder.hasMoreTokens()) {
-      String item = defDecoder.nextToken();
-      items.add(item.substring(1));
+      final String item = defDecoder.nextToken();
+//      items.add(item.substring(1));
+      items.add(item.isEmpty() ? "" : item.substring(1));
     }
-    String[] menuNames = new String[items.size()+1];
-    String[] descriptions = new String[items.size()+1];
+
+    final String[] menuNames = new String[items.size()+1];
+    final String[] descriptions = new String[items.size()+1];
     menuNames[0]  = menuName;
     descriptions[0] = "Property Sheet command";
     int j = 1;
@@ -906,7 +909,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       }
 
       SequenceEncoder defEncoder = new SequenceEncoder(DEF_DELIMITOR);
-//      StringBuffer definition = new StringBuffer();
+//      StringBuilder definition = new StringBuilder();
 //      int numRows = propertyTable.getRowCount();
       for (int iRow = 0; iRow < propertyTable.getRowCount(); ++iRow) {
         String typeString = (String) propertyTable.getValueAt(iRow, 1);
@@ -946,7 +949,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     /** returns a default value-string for the given definition */
     public String getState() {
-      StringBuffer buf = new StringBuffer();
+      final StringBuilder buf = new StringBuilder();
       for (int i = 0; i < propertyTable.getRowCount(); ++i) {
         buf.append(STATE_DELIMITOR);
       }

@@ -66,9 +66,10 @@ import VASSAL.counters.Stack;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.UniqueIdManager;
-import VASSAL.tools.imageop.AbstractTileOp;
+import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ImageOpObserver;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.SourceOp;
 
 /**
@@ -291,7 +292,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   protected void buildShadePattern() {
     srcOp = pattern.equals(TYPE_IMAGE) && imageName != null
-          ? new SourceOp(imageName) : new PatternOp(color, pattern);
+          ? Op.load(imageName) : new PatternOp(color, pattern);
     patternRect = new Rectangle(srcOp.getSize());
 
 //    shadePattern = null;
@@ -351,7 +352,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 //      new Rectangle(0, 0, shadePattern.getWidth(), shadePattern.getHeight());
   }
 
-  private static class PatternOp extends AbstractTileOp {
+  private static class PatternOp extends AbstractTileOpImpl {
     private final Color color;
     private final String pattern;
     private final int hash;
@@ -364,7 +365,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       hash = HashCode.hash(color) ^ HashCode.hash(pattern);
     }
 
-    protected Image apply() throws Exception {
+    public Image apply() throws Exception {
       final BufferedImage im =
         new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
       final Graphics2D g = im.createGraphics();
@@ -403,6 +404,10 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     @Override
     public int getHeight() {
       return 2;
+    }
+
+    public ImageOp getSource() {
+      return null;
     }
 
     @Override

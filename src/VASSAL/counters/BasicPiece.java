@@ -54,6 +54,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.ImageUtils;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -134,7 +135,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     imageName = st.nextToken();
     commonName = st.nextToken();
     srcOp = imageName == null || imageName.trim().isEmpty() 
-          ? null : new SourceOp(imageName);
+          ? null : Op.load(imageName);
     commands = null;
   }
 
@@ -330,7 +331,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
       }
       else {
         if (scaleOp == null || scaleOp.getScale() != zoom) {
-          scaleOp = new ScaleOp(srcOp, zoom);
+          scaleOp = Op.scale(srcOp, zoom);
         }
         
         try {
@@ -478,7 +479,9 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
         KeyBuffer.getBuffer().remove(outer);
         KeyBuffer.getBuffer().add(newPiece);
 
-        if (GlobalOptions.getInstance().autoReportEnabled()) {
+        if (GlobalOptions.getInstance().autoReportEnabled() &&
+            !Boolean.TRUE.equals(
+              outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
           String s = "* " + outer.getLocalizedName();
           final String loc = getMap().locationName(outer.getPosition());
           if (loc != null) {
@@ -497,7 +500,10 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     else if (KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK).equals(stroke)) {
       comm = new RemovePiece(outer);
 
-      if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled()) {
+      if (getMap() != null &&
+          GlobalOptions.getInstance().autoReportEnabled() &&
+          !Boolean.TRUE.equals(
+            outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
         String s = "* " + outer.getLocalizedName();
         final String loc = getMap().locationName(outer.getPosition());
         if (loc != null) {

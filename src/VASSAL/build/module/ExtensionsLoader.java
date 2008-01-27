@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipException;
 
+import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.command.Command;
@@ -42,11 +43,11 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
   private static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
   public static final String COMMAND_PREFIX = "EXT\t"; //$NON-NLS-1$
 
-  private Set<String> loadedExtensions = new HashSet<String>();
+  protected Set<String> loadedExtensions = new HashSet<String>();
 
   public void addTo(GameModule mod) {
     if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
-      DirectoryConfigurer config = new DirectoryConfigurer(EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory")); //$NON-NLS-1$
+      final DirectoryConfigurer config = new DirectoryConfigurer(EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory")); //$NON-NLS-1$
       config.setValue((Object) null);
       GameModule.getGameModule().getPrefs().addOption(Resources.getString("ExtensionsLoader.extensions_tab"), config); //$NON-NLS-1$
       config.addPropertyChangeListener(new PropertyChangeListener() {
@@ -60,41 +61,55 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
   }
 
   protected void addExtensions() {
+    for (String extname : getGlobalExtensionNames()) {
+      addExtension(extname);
+    }
     for (String extname : getExtensionNames()) {
-      if (!loadedExtensions.contains(extname)) {
-        try {
-          ModuleExtension ext =
-            createExtension(extname);
-          ext.build();
-          String msg = Resources.getString("ExtensionsLoader.extension_loaded", ext.getName(), ext.getVersion()); //$NON-NLS-1$
-          loadedExtensions.add(extname);
-          GameModule.getGameModule().warn(msg);
-          System.err.println(msg);
-        }
-        catch (ZipException e) {
-          // Not a zip file.  Ignore
-        }
-        catch (IOException e) {
-          reportBuildError(e, extname);
-        }
-        catch (IllegalBuildException e) {
-          reportBuildError(e, extname);
-        }
-      }
+      addExtension(extname);
     }
   }
 
-  protected ModuleExtension createExtension(String extname) throws IOException {
+  protected void addExtension(String extname) {
+    if (!loadedExtensions.contains(extname)) {
+      try {
+        final ModuleExtension ext = createExtension(extname);
+        ext.build();
+        final String msg = getLoadedMessage(ext.getName(), ext.getVersion());
+        loadedExtensions.add(extname);
+        GameModule.getGameModule().warn(msg);
+        System.err.println(msg);
+      }
+      catch (ZipException e) {
+        // Not a zip file.  Ignore
+      }
+      catch (IOException e) {
+        reportBuildError(e, extname);
+      }
+      catch (IllegalBuildException e) {
+        reportBuildError(e, extname);
+      }
+    }    
+  }
+  
+  protected ModuleExtension createExtension(String extname) throws ZipException, IOException, IllegalBuildException {
     return new ModuleExtension(new DataArchive(extname));
   }
 
+  protected String getLoadedMessage(String name, String version) {
+    return Resources.getString("ExtensionsLoader.extension_loaded", name, version); //$NON-NLS-1$
+  }
+  
   private void reportBuildError(Exception e, String name) {
     String msg = e.getMessage();
     if (msg == null || msg.length() == 0) {
       msg = e.getClass().getName();
       msg = msg.substring(msg.lastIndexOf('.'));
     }
-    GameModule.getGameModule().warn(Resources.getString("ExtensionsLoader.unable_to_load", name , msg)); //$NON-NLS-1$
+    GameModule.getGameModule().warn(getErrorMessage(name , msg)); //$NON-NLS-1$
+  }
+
+  protected String getErrorMessage(String name, String msg) {
+    return Resources.getString("ExtensionsLoader.unable_to_load", name , msg);
   }
 
   public Command decode(String command) {
@@ -128,12 +143,22 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
    */
   public boolean accept(File dir, String name) {
 	  File fileCandidate = new File(dir, name);
-	  
 	  return !fileCandidate.isHidden() && !fileCandidate.isDirectory();
   }
   
-  private String[] getExtensionNames() {
-    String extensionDirectoryPath = getExtensionDirectory();
+  protected String[] getExtensionNames() {
+    return getExtensionNames(getExtensionDirectory());
+  }
+
+  /*
+   * Global extensions live in installDir/ext and are loaded for every
+   * module. They must be Universal extensions or they will not load.
+   */
+  protected String[] getGlobalExtensionNames() {
+    return getExtensionNames((new File(Info.getHomeDir(), "ext")).getAbsolutePath());  //$NON-NLS-1$
+  }
+  
+  protected String[] getExtensionNames(String extensionDirectoryPath) {
     File dir = new File(extensionDirectoryPath);
     
     File[] extensionFiles = dir.listFiles(this);

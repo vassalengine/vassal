@@ -58,8 +58,8 @@ import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
-import VASSAL.tools.imageop.SourceOp;
 
 /**
  * ...
@@ -602,7 +602,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         }
 */
 // FIXME: not really correct, should have a way to catch failure
-        icons[i] = new OpIcon(new SourceOp(imageName));
+        icons[i] = new OpIcon(Op.load(imageName));
       }
     }
 

@@ -81,7 +81,7 @@ public class ShadowDiceDieServer extends DieServer {
   public String hexify(String s) {
 
     final String hexyChars = "~!$%^&()+`={}[]|:;'<>,?/\\\"";
-    StringBuffer b = new StringBuffer();
+    final StringBuilder b = new StringBuilder();
 
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);

@@ -45,6 +45,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
 import VASSAL.tools.ImageUtils;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -97,7 +98,7 @@ public class SelectionHighlighter extends AbstractConfigurable
         }
         else {
           if (scaleOp == null || scaleOp.getScale() != zoom) {
-            scaleOp = new ScaleOp(srcOp, zoom);
+            scaleOp = Op.scale(srcOp, zoom);
           }
 
           try {
@@ -257,7 +258,7 @@ public class SelectionHighlighter extends AbstractConfigurable
     else if (key.equals(IMAGE)) {
       imageName = (String) value;
       srcOp = imageName == null || imageName.trim().isEmpty() 
-            ? null : new SourceOp(imageName);
+            ? null : Op.load(imageName);
     }
     else if (key.equals(X_OFFSET)) {
       if (value instanceof String) {

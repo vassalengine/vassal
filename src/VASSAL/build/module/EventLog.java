@@ -21,6 +21,7 @@ package VASSAL.build.module;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
@@ -44,10 +45,9 @@ public class EventLog extends AbstractBuildable
     mod.getPrefs().addOption(new StringConfigurer(EVENT_LIST, null));
     myEvents = new ArrayList<Event>();
     savedEvents = new ArrayList<Event>();
-    for (Enumeration e = decodeEvents((String) mod.getPrefs().getValue(EVENT_LIST));
-         e.hasMoreElements();) {
-      myEvents.add((Event) e.nextElement());
-    }
+
+    for (Event e : decodedEvents((String) mod.getPrefs().getValue(EVENT_LIST)))
+      myEvents.add(e); 
   }
 
   public void clearSaved() {
@@ -63,7 +63,7 @@ public class EventLog extends AbstractBuildable
     GameModule.getGameModule()
               .getPrefs()
               .getOption(EVENT_LIST)
-              .setValue(encodeEvents(Collections.enumeration(myEvents)));
+              .setValue(encodedEvents(myEvents));
   }
 
   public Command decode(String s) {
@@ -91,10 +91,43 @@ public class EventLog extends AbstractBuildable
   }
 
   public Command getRestoreCommand() {
-    return new StoreEvents(this,
-      encodeEvents(Collections.enumeration(savedEvents)));
+    return new StoreEvents(this, encodedEvents(savedEvents));
+  }
+  
+  /**
+   * Decodes a <code>String</code> into a sequence of <code>Event</code>s.
+   *
+   * @param s the event string
+   * @return the events represented by the string
+   */
+  public static Iterable<Event> decodedEvents(final String s) {
+    return new Iterable<Event>() {
+      public Iterator<Event> iterator() {
+        return new Iterator<Event>() {
+          private final SequenceEncoder.Decoder se =
+            new SequenceEncoder.Decoder(s, '|');
+
+          public boolean hasNext() {
+            return se.hasMoreTokens();
+          }
+  
+          public Event next() {
+            final SequenceEncoder.Decoder sub =
+              new SequenceEncoder.Decoder(se.nextToken(), ',');
+            return new Event(Long.parseLong(sub.nextToken()),
+                             sub.nextToken(), sub.nextToken());
+          }
+      
+          public void remove() {
+            throw new UnsupportedOperationException();
+          }
+        };
+      }
+    };
   }
 
+  /** Use {@link #decodedEvents()} instead. */
+  @Deprecated
   public static Enumeration decodeEvents(String s) {
     ArrayList<Event> l = new ArrayList<Event>();
     SequenceEncoder.Decoder se = new SequenceEncoder.Decoder(s, '|');
@@ -107,6 +140,26 @@ public class EventLog extends AbstractBuildable
     return Collections.enumeration(l);
   }
 
+  /**
+   * Encodes a sequence of <code>Event</code>s into a <code>String</code>.
+   *
+   * @param events the sequence of events
+   * @return the string representing the events
+   */
+  public static String encodedEvents(Iterable<Event> events) {
+    final SequenceEncoder se = new SequenceEncoder('|');
+    for (Event e : events) {
+      final SequenceEncoder sub = new SequenceEncoder(',');
+      sub.append("" + e.getTime()) //$NON-NLS-1$
+         .append(e.getUser())
+         .append(e.getAction());
+      se.append(sub.getValue());
+    }
+    return se.getValue();
+  }
+
+  /** Use {@link #encodedEvents(Iterable<Event>)} instead. */
+  @Deprecated
   public static String encodeEvents(Enumeration e) {
     SequenceEncoder se = new SequenceEncoder('|');
     while (e.hasMoreElements()) {
@@ -159,10 +212,7 @@ public class EventLog extends AbstractBuildable
 
     public void executeCommand() {
       log.clearSaved();
-      for (Enumeration e = decodeEvents(events);
-           e.hasMoreElements();) {
-        log.store((Event) e.nextElement());
-      }
+      for (Event e : decodedEvents(events)) log.store(e);
     }
 
     public Command myUndoCommand() {

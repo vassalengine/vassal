@@ -36,7 +36,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -65,6 +64,7 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -196,7 +196,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       srcOp = new SourceOp[imageName.length];
       for (int i = 0; i < imageName.length; ++i) {
         srcOp[i] = imageName[i] == null || imageName[i].trim().isEmpty()
-                 ? null : new SourceOp(imageName[i]);
+                 ? null : Op.load(imageName[i]);
       }
     }
 
@@ -265,7 +265,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         new SequenceEncoder.Decoder(sub, ',');
       imageName[i] = subSt.nextToken();
       srcOp[i] = imageName[i] == null || imageName[i].trim().isEmpty()
-               ? null : new SourceOp(imageName[i]);
+               ? null : Op.load(imageName[i]);
       if (subSt.hasMoreTokens()) {
         commonName[i] = subSt.nextToken();
       }
@@ -408,7 +408,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
       else {
         if (scaleOp[i] == null || scaleOp[i].getScale() != zoom) {
-          scaleOp[i] = new ScaleOp(srcOp[i], zoom);
+          scaleOp[i] = Op.scale(srcOp[i], zoom);
         }
 
         try {
@@ -1070,9 +1070,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final ArrayList<String> imageNames = new ArrayList<String>();
       final ArrayList<String> commonNames = new ArrayList<String>();
       int i = 0;
-      for (Enumeration<String> e = images.getImageNames();
-           e.hasMoreElements();) {
-        imageNames.add(e.nextElement());
+      for (String n : images.getImageNameList()) {
+        imageNames.add(n);
         String commonName = names.get(i);
         if (commonName != null && commonName.length() > 0) {
           if (PREFIX.equals(isPrefix.get(i))) {
@@ -1136,9 +1135,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     public String oldgetType() {
       final SequenceEncoder imageList = new SequenceEncoder(';');
       int i = 0;
-      for (Enumeration<String> e = images.getImageNames();
-           e.hasMoreElements();) {
-        final String imageName = e.nextElement();
+      for (String imageName : images.getImageNameList()) {
         String commonName = names.get(i);
         if (names.get(i) != null && commonName != null && commonName.length() > 0) {
           SequenceEncoder sub = new SequenceEncoder(imageName, ',');
@@ -1254,8 +1251,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       followConfig.setValue(Boolean.valueOf(e.followProperty));
       propertyConfig.setValue(e.propertyName);
 
-      /** Add at least one level if none defined */
-      if (!images.getImageNames().hasMoreElements()) {
+      // Add at least one level if none defined
+      if (images.getImageNameList().isEmpty()) {
         names.add(null);
         isPrefix.add(null);
         images.addEntry();

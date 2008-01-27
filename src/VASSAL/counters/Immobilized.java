@@ -199,7 +199,7 @@ public class Immobilized extends Decorator implements EditablePiece {
   }
 
   public String myGetType() {
-    StringBuffer buffer = new StringBuffer(ID);
+    final StringBuilder buffer = new StringBuilder(ID);
     if (neverSelect) {
       buffer.append(NEVER_SELECT);
     }

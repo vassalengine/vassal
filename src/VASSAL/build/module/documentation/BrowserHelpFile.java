@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -48,6 +47,7 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.IOUtils;
 
 /**
  * Unpacks a zipped directory stored in the module and displays it in an external browser window
@@ -96,39 +96,62 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     try {
       ZipInputStream in = null;
       try {
-        in = new ZipInputStream(GameModule.getGameModule().getDataArchive().getFileStream("help/" + getContentsResource())); //$NON-NLS-1$
-      }
-      catch (IOException e) {
-        // The help file was created with empty contents.  Assume an absolute URL as the starting page
-        url = new URL(startingPage);
-        return;
-      }
-      File tmp = File.createTempFile("VASSAL", "help"); //$NON-NLS-1$ //$NON-NLS-2$
-      File output = tmp.getParentFile();
-      tmp.delete();
-      output = new File(output, "VASSAL"); //$NON-NLS-1$
-      output = new File(output, "help"); //$NON-NLS-1$
-      output = new File(output, getContentsResource());
-      if (output.exists()) {
-        recursiveDelete(output);
-      }
-      output.mkdirs();
-      ZipEntry entry;
-      int count;
-      byte[] buffer = new byte[1024];
-      while ((entry = in.getNextEntry()) != null) {
-        if (entry.isDirectory()) {
-          new File(output, entry.getName()).mkdirs();
+        try {
+        
+          in = new ZipInputStream(GameModule.getGameModule().getDataArchive()
+           .getFileStream("help/" + getContentsResource())); //$NON-NLS-1$
         }
-        else {
-          OutputStream outStream = new FileOutputStream(new File(output, entry.getName()));
-          while ((count = in.read(buffer, 0, 1024)) >= 0) {
-            outStream.write(buffer, 0, count);
+        catch (IOException e) {
+          // The help file was created with empty contents.
+          // Assume an absolute URL as the starting page.
+          url = new URL(startingPage);
+          return;
+        }
+        
+        final File tmp = File.createTempFile("VASSAL", "help"); //$NON-NLS-1$ //$NON-NLS-2$
+        File output = tmp.getParentFile();
+        tmp.delete();
+        output = new File(output, "VASSAL"); //$NON-NLS-1$
+        output = new File(output, "help"); //$NON-NLS-1$
+        output = new File(output, getContentsResource());
+        if (output.exists()) {
+          recursiveDelete(output);
+        }
+  
+        output.mkdirs();
+        ZipEntry entry;
+  
+        while ((entry = in.getNextEntry()) != null) {
+          if (entry.isDirectory()) {
+            new File(output, entry.getName()).mkdirs();
           }
-          outStream.close();
+          else {
+            FileOutputStream fos =
+              new FileOutputStream(new File(output, entry.getName()));
+            try {
+              IOUtils.copy(in, fos);
+            }
+            finally {
+              try {
+                fos.close();
+              }
+              catch (IOException e) {
+                e.printStackTrace();
+              }
+            }
+          }
+        }
+  
+        url = new File(output, startingPage).toURI().toURL();
+      }
+      finally {
+        try {
+          in.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
         }
       }
-      url = new File(output, startingPage).toURI().toURL();
     }
     catch (IOException e) {
       e.printStackTrace();
@@ -137,9 +160,8 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
   protected void recursiveDelete(File output) {
     if (output.isDirectory()) {
-      File[] dir = output.listFiles();
-      for (int i = 0; i < dir.length; i++) {
-        recursiveDelete(dir[i]);
+      for (File f : output.listFiles()) {
+        recursiveDelete(f);
       }
     }
     else {
@@ -259,14 +281,26 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     public void packContents() {
       if (dir != null) {
         try {
-          File packed = File.createTempFile("VASSALhelp", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-          ZipOutputStream out = new ZipOutputStream(new FileOutputStream(packed));
-          File[] files = dir.listFiles();
-          for (int i = 0; i < files.length; i++) {
-            packFile(files[i], "", out); //$NON-NLS-1$
+          final File packed = File.createTempFile("VASSALhelp", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+          final ZipOutputStream out =
+            new ZipOutputStream(new FileOutputStream(packed));
+          try {
+            for (File f : dir.listFiles()) {
+              packFile(f, "", out); //$NON-NLS-1$
+            }
           }
-          out.close();
-          GameModule.getGameModule().getArchiveWriter().addFile(packed.getPath(), "help/"+BrowserHelpFile.this.getContentsResource()); //$NON-NLS-1$
+          finally {
+            try {
+              out.close();
+            }
+            catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+
+          GameModule.getGameModule().getArchiveWriter().addFile(
+            packed.getPath(),
+            "help/"+BrowserHelpFile.this.getContentsResource()); //$NON-NLS-1$
         }
         catch (IOException e) {
           e.printStackTrace();
@@ -276,23 +310,29 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
     protected void packFile(File packed, String prefix, ZipOutputStream out) throws IOException {
       if (packed.isDirectory()) {
-        ZipEntry entry = new ZipEntry(packed.getName()+"/"); //$NON-NLS-1$
+        final ZipEntry entry = new ZipEntry(packed.getName()+"/"); //$NON-NLS-1$
         out.putNextEntry(entry);
-        File[] dir = packed.listFiles();
-        for (int i = 0; i < dir.length; i++) {
-          packFile(dir[i],prefix+packed.getName()+"/",out); //$NON-NLS-1$
+
+        for (File f : packed.listFiles()) {
+          packFile(f, prefix + packed.getName() + "/", out); //$NON-NLS-1$
         }
       }
       else {
-        ZipEntry entry = new ZipEntry(prefix + packed.getName());
+        final ZipEntry entry = new ZipEntry(prefix + packed.getName());
         out.putNextEntry(entry);
-        InputStream in = new FileInputStream(packed);
-        byte[] buffer = new byte[1024];
-        int n;
-        while ((n = in.read(buffer)) > 0) {
-          out.write(buffer, 0, n);
+
+        final FileInputStream in = new FileInputStream(packed); 
+        try {
+          IOUtils.copy(in, out);
         }
-        in.close();
+        finally {
+          try {
+            in.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
     }
 

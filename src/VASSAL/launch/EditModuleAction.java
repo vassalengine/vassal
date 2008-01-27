@@ -39,6 +39,4 @@ public class EditModuleAction extends LoadModuleAction {
     GameModule.getGameModule().getFrame().setVisible(true);
     new VASSAL.configure.ModuleEditWindow().setVisible(true);
   }
-  
-  
 }

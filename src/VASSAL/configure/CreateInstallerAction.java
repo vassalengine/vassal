@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -57,6 +56,7 @@ import VASSAL.launch.install.SuccessScreen;
 import VASSAL.launch.install.WizardDialog;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.FileChooser;
+import VASSAL.tools.IOUtils;
 
 /**
  * @author rkinney
@@ -85,14 +85,31 @@ public class CreateInstallerAction extends AbstractAction {
 
   private Frame parent;
   public static final String I18N_PROPERTIES = "VASSAL/i18n/VASSAL.properties"; //$NON-NLS-1$
-  private static final String[] HEAP_SIZES = new String[]{"256M", "512M", "758M", "1024M", "1536M"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-  private static final String[] HEAP_SIZES_PLAIN_TEXT = new String[]{Resources.getString("Install.256_mb"), Resources.getString("Install.512_mb"), Resources.getString("Install.768_mb"), Resources.getString("Install.1_gb"), Resources.getString("Install.1.5_gb")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+
+  private static final String[] HEAP_SIZES = new String[]{
+    "256M",  //$NON-NLS-1$
+    "512M",  //$NON-NLS-1$
+    "758M",  //$NON-NLS-1$
+    "1024M", //$NON-NLS-1$
+    "1536M"  //$NON-NLS-1$
+  };
+
+  private static final String[] HEAP_SIZES_PLAIN_TEXT = new String[]{
+    Resources.getString("Install.256_mb"), //$NON-NLS-1$
+    Resources.getString("Install.512_mb"), //$NON-NLS-1$
+    Resources.getString("Install.768_mb"), //$NON-NLS-1$
+    Resources.getString("Install.1_gb"),   //$NON-NLS-1$
+    Resources.getString("Install.1.5_gb")  //$NON-NLS-1$
+  };
+  
   private static Map<String,String> heapSizes = new HashMap<String,String>();
+
   static {
     for (int i = 0; i < HEAP_SIZES_PLAIN_TEXT.length; i++) {
       heapSizes.put(HEAP_SIZES_PLAIN_TEXT[i], HEAP_SIZES[i]);
     }
   }
+
   private String heapSize = "256M"; //$NON-NLS-1$
 
   public CreateInstallerAction(Frame parent) {
@@ -106,45 +123,57 @@ public class CreateInstallerAction extends AbstractAction {
     final StringEnumConfigurer heapSizeConfigurer = new StringEnumConfigurer(null, "Memory Allocation", HEAP_SIZES_PLAIN_TEXT); //$NON-NLS-1$
     heapSizeConfigurer.setValue(HEAP_SIZES_PLAIN_TEXT[0]);
     d.add(heapSizeConfigurer.getControls());
+
     final JButton ok = new JButton(Resources.getString("General.create")); //$NON-NLS-1$
-    JButton cancel = new JButton(Resources.getString("General.cancel")); //$NON-NLS-1$
-    Box b = Box.createHorizontalBox();
+    final JButton cancel = new JButton(Resources.getString("General.cancel")); //$NON-NLS-1$
+    final Box b = Box.createHorizontalBox();
     b.add(ok);
     b.add(cancel);
     d.add(b);
     d.pack();
     d.setLocationRelativeTo(parent);
+
     cancel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         d.dispose();
       }
     });
+
     ok.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         CreateInstallerAction.this.heapSize =
           heapSizes.get(heapSizeConfigurer.getValue());
-        FileChooser c = FileChooser.createFileChooser(parent);
+        final FileChooser c = FileChooser.createFileChooser(parent);
         if (c.showSaveDialog() == FileChooser.APPROVE_OPTION) {
-          File destFile = c.getSelectedFile();
+          final File destFile = c.getSelectedFile();
           if (!destFile.getName().endsWith(".jar")) { //$NON-NLS-1$
             JOptionPane.showMessageDialog(parent, Resources.getString("Install.require_jar_extension")); //$NON-NLS-1$
           }
           else {
-            File tempFile;
             try {
-              tempFile = File.createTempFile("installer", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-              ZipOutputStream output = new ZipOutputStream(new FileOutputStream(tempFile));
-              writeInstallerClasses(output);
-              writeInstallerProperties(output);
-              writeManifest(output);
-              writeResources(output);
-              output.close();
-              if (!tempFile.renameTo(destFile)) {
-                throw new IOException(Resources.getString("BasicLogger.unable_to_write", destFile.getPath())); //$NON-NLS-1$
+              final File tempFile = File.createTempFile("installer", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+              final ZipOutputStream zipOut =
+                new ZipOutputStream(new FileOutputStream(tempFile));
+              try {
+                writeInstallerClasses(zipOut);
+                writeInstallerProperties(zipOut);
+                writeManifest(zipOut);
+                writeResources(zipOut);
+                if (!tempFile.renameTo(destFile)) {
+                  throw new IOException(Resources.getString("BasicLogger.unable_to_write", destFile.getPath())); //$NON-NLS-1$
+                }
+              }
+              finally {
+                try {
+                  zipOut.close();
+                }
+                catch (IOException ex) {
+                  ex.printStackTrace();
+                }
               }
             }
-            catch (IOException e1) {
-              JOptionPane.showMessageDialog(parent, Resources.getString("Install.error_saving_file") + e1.getMessage()); //$NON-NLS-1$
+            catch (IOException ex) {
+              JOptionPane.showMessageDialog(parent, Resources.getString("Install.error_saving_file") + ex.getMessage()); //$NON-NLS-1$
             }
             finally {
               d.dispose();
@@ -153,39 +182,60 @@ public class CreateInstallerAction extends AbstractAction {
         }
       }
     });
+
     d.setVisible(true);
   }
 
   private void writeResources(ZipOutputStream output) throws IOException {
     ZipEntry e = new ZipEntry(I18N_PROPERTIES);
     output.putNextEntry(e);
-    InputStream input = getClass().getResourceAsStream("/" + I18N_PROPERTIES); //$NON-NLS-1$
-    writeEntry(output, input);
-    File module = new File(GameModule.getGameModule().getDataArchive().getName());
+
+    InputStream input =
+      getClass().getResourceAsStream("/" + I18N_PROPERTIES); //$NON-NLS-1$
+    try {
+      IOUtils.copy(input, output);
+    }
+    finally {
+      try {
+        input.close();
+      }
+      catch (IOException ex) {
+        ex.printStackTrace();
+      }
+    }
+
+    final File module =
+      new File(GameModule.getGameModule().getDataArchive().getName());
     e = new ZipEntry(module.getName());
     output.putNextEntry(e);
-    writeEntry(output, new FileInputStream(module));
-  }
 
-  private void writeEntry(ZipOutputStream output, InputStream input) throws IOException {
-    byte[] buffer = new byte[1024];
-    int n;
-    while ((n = input.read(buffer)) > 0) {
-      output.write(buffer, 0, n);
+    input = new FileInputStream(module);
+    try {
+      IOUtils.copy(input, output);
+    }
+    finally {
+      try {
+        input.close();
+      }
+      catch (IOException ex) {
+        ex.printStackTrace();
+      }
     }
   }
 
   private void writeManifest(ZipOutputStream output) throws IOException {
-    ZipEntry manifestEntry = new ZipEntry("META-INF/MANIFEST.MF"); //$NON-NLS-1$
+    final ZipEntry manifestEntry =
+      new ZipEntry("META-INF/MANIFEST.MF"); //$NON-NLS-1$
     manifestEntry.setMethod(ZipEntry.DEFLATED);
-    StringBuffer buffer = new StringBuffer();
-    buffer.append("Manifest-Version: 1.0\n").append("Main-Class: " + InstallWizard.class.getName() + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    final StringBuilder buffer = new StringBuilder();
+    buffer.append("Manifest-Version: 1.0\n")  //$NON-NLS-1$
+          .append("Main-Class: " + InstallWizard.class.getName() + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
     output.putNextEntry(manifestEntry);
     output.write(buffer.toString().getBytes());
   }
 
   private void writeInstallerProperties(ZipOutputStream output) throws IOException {
-    Properties p = new Properties();
+    final Properties p = new Properties();
     p.put(Constants.TITLE, "Install " + GameModule.getGameModule().getGameName()); //$NON-NLS-1$
     p.put(Constants.INITIAL_SCREEN, ChooseDirScreen.class.getName());
     p.put(ChooseDirScreen.NEXT_SCREEN, InstallModuleScreen.class.getName());
@@ -193,23 +243,37 @@ public class CreateInstallerAction extends AbstractAction {
     String jnlpURL = "http://www.vassalengine.org/ws/vassal-"; //$NON-NLS-1$
     jnlpURL += Info.getMinorVersion() + ".jnlp"; //$NON-NLS-1$ //$NON-NLS-2$
     p.put(Constants.JNLP_URL, jnlpURL);
-    File f = new File(GameModule.getGameModule().getDataArchive().getArchive().getName());
+    final File f = new File(GameModule.getGameModule().getDataArchive().getArchive().getName());
     p.put(Constants.MODULE_FILE, f.getName());
     p.put(Constants.JNLP_TITLE, GameModule.getGameModule().getGameName());
     p.put(Constants.INTERNAL_RESOURCES, I18N_PROPERTIES + "," + f.getName()); //$NON-NLS-1$
-    ZipEntry e = new ZipEntry(InstallWizard.INSTALL_PROPERTIES);
+    final ZipEntry e = new ZipEntry(InstallWizard.INSTALL_PROPERTIES);
     output.putNextEntry(e);
     p.store(output, null);
   }
 
   private void writeInstallerClasses(ZipOutputStream output) throws IOException {
     for (int i = 0; i < installerClasses.length; i++) {
-      String className = installerClasses[i].getName().replace('.', '/') + ".class"; //$NON-NLS-1$
-      ZipEntry classEntry = new ZipEntry(className);
+      final String className = installerClasses[i].getName().replace('.', '/') + ".class"; //$NON-NLS-1$
+      final ZipEntry classEntry = new ZipEntry(className);
       classEntry.setMethod(ZipEntry.DEFLATED);
       output.putNextEntry(classEntry);
-      InputStream input = getClass().getResourceAsStream("/" + className); //$NON-NLS-1$
-      writeEntry(output, input);
+
+      final InputStream input =
+        getClass().getResourceAsStream("/" + className); //$NON-NLS-1$
+      if (input == null)
+        throw new IOException("Resource not found: " + className);
+      try {
+        IOUtils.copy(input, output);
+      }
+      finally {
+        try {
+          input.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 

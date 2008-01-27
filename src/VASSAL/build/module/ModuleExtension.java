@@ -20,6 +20,7 @@ package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,7 +55,7 @@ import VASSAL.tools.DataArchive;
  * Like a GameModule, it is built from scratch from a 'buildFile' in a DataArchive
  * The components described in the buildFile are appended to components in the base DataArchive
  */
-public class ModuleExtension extends AbstractBuildable implements GameComponent {
+public class ModuleExtension extends AbstractBuildable implements GameComponent, PluginsLoader.PluginElement {
   public static final String BASE_MODULE_NAME = "module"; //$NON-NLS-1$
   public static final String BASE_MODULE_VERSION = "moduleVersion"; //$NON-NLS-1$
   public static final String VERSION = "version"; //$NON-NLS-1$
@@ -83,29 +84,40 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
   }
 
   public void build() {
-    String fileName = "buildFile"; //$NON-NLS-1$
+    final String fileName = "buildFile"; //$NON-NLS-1$
 
-    InputStream inStream = null;
-    if (archive != null) {
-      try {
-        inStream = archive.getFileStream(fileName);
-      }
-      catch (IOException ex) {
-      }
-    }
     GameModule.getGameModule().getDataArchive().addExtension(archive);
+
+    InputStream in = null;
     try {
-      if (inStream == null) {
+      in = archive.getFileStream(fileName);
+    }
+    catch (IOException e) {
+    }
+
+    try {
+      if (in == null) {
         build(null);
       }
       else {
-        Document doc = Builder.createDocument(inStream);
-        build(doc.getDocumentElement());
+        try {
+          final Document doc = Builder.createDocument(in);
+          build(doc.getDocumentElement());
+        }
+        finally {
+          try {
+            in.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
     }
-    catch (IOException ex) {
-      throw new IllegalBuildException(ex.getMessage());
+    catch (IOException e) {
+      throw new IllegalBuildException(e.getMessage());
     }
+
     GameModule.getGameModule().add(this);
     GameModule.getGameModule().getGameState().addGameComponent(this);
     if (archive instanceof ArchiveWriter) {
@@ -121,7 +133,13 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
   }
 
   public String[] getAttributeNames() {
-    return new String[]{UNIVERSAL, VERSION, BASE_MODULE_NAME, BASE_MODULE_VERSION, VASSAL_VERSION_CREATED};
+    return new String[]{
+      UNIVERSAL,
+      VERSION,
+      BASE_MODULE_NAME,
+      BASE_MODULE_VERSION,
+      VASSAL_VERSION_CREATED
+    };
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -244,7 +262,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
       String save = buildString();
       ((ArchiveWriter) archive).addFile
           ("buildFile", //$NON-NLS-1$
-           new java.io.ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
+           new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
       ((ArchiveWriter) archive).write();
       lastSave = save;
     }
@@ -259,7 +277,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
       String save = buildString();
       ((ArchiveWriter) archive).addFile
           ("buildFile", //$NON-NLS-1$
-           new java.io.ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
+           new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
       ((ArchiveWriter) archive).saveAs();
       lastSave = save;
     }
@@ -349,17 +367,23 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent 
         if (ext.getName().equals(name)) {
           containsExtension = true;
           if (Info.compareVersions(ext.getVersion(), version) < 0) {
-            msg = Resources.getString("ModuleExtension.wrong_extension_version", //$NON-NLS-1$
-                      version, name, ext.getVersion());
-            GameModule.getGameModule().warn(msg);
+             GameModule.getGameModule().warn(getVersionErrorMsg(ext.getVersion()));
           }
           break;
         }
       }
       if (!containsExtension) {
-        msg = Resources.getString("ModuleExtension.load_extension", name, ExtensionsLoader.getExtensionDirectory()); //$NON-NLS-1$
-        GameModule.getGameModule().warn(msg);
+        GameModule.getGameModule().warn(getNotLoadedMsg());
       }
+    }
+    
+    protected String getVersionErrorMsg(String v) {
+      return Resources.getString("ModuleExtension.wrong_extension_version", //$NON-NLS-1$
+          version, name, v);
+    }
+    
+    protected String getNotLoadedMsg() {
+      return Resources.getString("ModuleExtension.load_extension", name, ExtensionsLoader.getExtensionDirectory()); //$NON-NLS-1$ 
     }
 
     protected Command myUndoCommand() {

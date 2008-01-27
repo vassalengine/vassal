@@ -62,7 +62,7 @@ public class TextClient {
   }
 
   public static String report(VASSAL.chat.Room[] r) {
-    StringBuffer buffer = new StringBuffer();
+    final StringBuilder buffer = new StringBuilder();
     for (int i = 0; i < r.length; ++i) {
       buffer.append(r[i].getName() + ": "); //$NON-NLS-1$
       VASSAL.chat.Player[] p = (VASSAL.chat.Player[]) r[i].getPlayerList().toArray();
@@ -177,7 +177,7 @@ public class TextClient {
             else if (s.startsWith("!")) {
               try {
                 int length = Integer.parseInt(s.substring(1));
-                StringBuffer msg = new StringBuffer();
+                StringBuilder msg = new StringBuilder();
                 msg.append("CHAT<" + client.getClient().getUserInfo().getName()
                                            + "> ("+length+" chars) -");
                 for (int i=0;i<length;++i) {

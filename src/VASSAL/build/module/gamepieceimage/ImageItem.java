@@ -38,9 +38,10 @@ import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.imageop.AbstractTileOp;
+import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ImageOpObserver;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.SourceOp;
 
 public class ImageItem extends Item {
@@ -245,7 +246,7 @@ public class ImageItem extends Item {
       catch (IOException e) {
       }
 */
-        srcOp = new SourceOp(iName);
+        srcOp = Op.load(iName);
       }
       imageBounds = ImageUtils.getBounds(srcOp.getSize());
     }
@@ -254,12 +255,12 @@ public class ImageItem extends Item {
     }
   }
  
-  protected static final class BaseOp extends AbstractTileOp {
+  protected static final class BaseOp extends AbstractTileOpImpl {
     private BaseOp() { }
 
     private static final BaseOp op = new BaseOp();
 
-    protected Image apply() throws Exception {
+    public Image apply() throws Exception {
       final BufferedImage im =
         new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
       final Graphics2D bg = im.createGraphics();
@@ -286,6 +287,10 @@ public class ImageItem extends Item {
     @Override
     public int getHeight() {
       return 10;
+    }
+
+    public ImageOp getSource() {
+      return null;
     }
 
     // NB: This ImageOp doesn't need custom equals() or hashCode()

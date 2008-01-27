@@ -134,7 +134,7 @@ public class PolygonEditor extends JPanel {
   }
 
   public static String polygonToString(Polygon p) {
-    StringBuffer s = new StringBuffer();
+    final StringBuilder s = new StringBuilder();
     for (int i = 0; i < p.npoints; i++) {
       s.append(Math.round(p.xpoints[i])).append(',').append(Math.round(p.ypoints[i]));
       if (i < (p.npoints - 1)) {

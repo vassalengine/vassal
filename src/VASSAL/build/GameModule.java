@@ -40,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
+
 import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.ChartWindow;
@@ -58,6 +59,7 @@ import VASSAL.build.module.NotesWindow;
 import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.PlayerHand;
 import VASSAL.build.module.PlayerRoster;
+import VASSAL.build.module.Plugin;
 import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.PrivateMap;
 import VASSAL.build.module.PrototypesContainer;
@@ -92,11 +94,12 @@ import VASSAL.tools.ToolBarComponent;
  * The GameModule class is the base class for a VASSAL module.  It is
  * the root of the {@link Buildable} containment hierarchy.
  * Components which are added directly to the GameModule are contained
- * in the <code>VASSAL.build.module</code> package
+ * in the <code>VASSAL.build.module</code> package.
  *
- * It is a singleton, and contains access points for many other classes,
+ * <p>It is a singleton, and contains access points for many other classes,
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger},
- * and {@link Prefs} */
+ * and {@link Prefs}.</p>
+ */
 public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer {
   protected static final String DEFAULT_NAME = "Unnamed module";  //$NON-NLS-1$
   public static final String MODULE_NAME = "name";  //$NON-NLS-1$
@@ -145,6 +148,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected List<KeyStrokeListener> keyStrokeListeners =
     new ArrayList<KeyStrokeListener>();
   protected CommandEncoder[] commandEncoders = new CommandEncoder[0];
+  protected List<String> deferredChat = new ArrayList<String>();
 
   /**
    * @return the top-level frame of the controls window
@@ -441,10 +445,16 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
   
   /**
-   * Display the given text in the control window's status line
+   * Display the given text in the control window's status line.
+   * Save the messages for later if the Chatter has not been initialised yet
    */
   public void warn(String s) {
-    chat.show(" - " + s); //$NON-NLS-1$
+    if (chat == null) {
+      deferredChat.add(s);
+    }
+    else {
+      chat.show(" - " + s); //$NON-NLS-1$
+    }
   }
 
   /**
@@ -465,10 +475,17 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * set the object that displays chat text
+   * Set the object that displays chat text. Display any warning
+   * messages deferred during earlier initialisation
    */
   public void setChatter(Chatter c) {
     chat = c;
+    if (deferredChat.size() > 0) {
+      for (String msg : deferredChat) {
+        warn(msg);
+      }
+      deferredChat.clear();
+    }
   }
 
   public JComponent getControlPanel() {
@@ -604,14 +621,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         getPrefs().write();
         if (getDataArchive() instanceof ArchiveWriter
             && !buildString().equals(lastSavedConfiguration)) {
-          switch (JOptionPane.showConfirmDialog
-              (frame, Resources.getString("GameModule.save_module"),  //$NON-NLS-1$
+          switch (JOptionPane.showConfirmDialog(frame,
+            Resources.getString("GameModule.save_module"),  //$NON-NLS-1$
                "", JOptionPane.YES_NO_CANCEL_OPTION)) {  //$NON-NLS-1$
-            case JOptionPane.YES_OPTION:
-              save();
-              break;
-            case JOptionPane.CANCEL_OPTION:
-              cancelled = true;
+          case JOptionPane.YES_OPTION:
+            save();
+            break;
+          case JOptionPane.CANCEL_OPTION:
+            cancelled = true;
           }
         }
         else if (getArchiveWriter() != null) {
@@ -684,9 +701,17 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         throw e;
       }
     }
-
+    
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
       theModule.lastSavedConfiguration = theModule.buildString();
+    }
+    
+    /*
+     * Tell any Plugin components that the build is complete so that they
+     * can finish initialization.
+     */
+    for (Plugin plugin : theModule.getComponentsOf(Plugin.class)) {
+      plugin.init();
     }
   }
 

@@ -16,10 +16,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Who                 Date   Req Id Details
- * Brent Easton   12-Mar-04   914553 Use correct maps when coomparing clicks
- */
 package VASSAL.build.module.map;
 
 import java.awt.Component;
@@ -82,6 +78,7 @@ import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.DragBuffer;
 import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Highlighter;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceFinder;
@@ -92,6 +89,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -345,7 +343,7 @@ public class PieceMover extends AbstractBuildable
         markUnmovedButton =
           new LaunchButton("", NAME, null, Map.MARK_UNMOVED_ICON, al );
         if (iconName != null && iconName.length() > 0) {
-          markUnmovedButton.setIcon(new OpIcon(new SourceOp(iconName)));
+          markUnmovedButton.setIcon(new OpIcon(Op.load(iconName)));
 /*
           try {
             markUnmovedButton.setIcon(new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(iconName)));
@@ -357,7 +355,7 @@ public class PieceMover extends AbstractBuildable
         }
 
         if (markUnmovedButton.getIcon() == null) {
-          Icon icon = new OpIcon(new SourceOp(markUnmovedIcon));
+          Icon icon = new OpIcon(Op.load(markUnmovedIcon));
           markUnmovedButton.setIcon(icon);        
 /*
           Icon icon = null;
@@ -775,7 +773,10 @@ public class PieceMover extends AbstractBuildable
    */
   // NOTE: DragSource.isDragImageSupported() returns false for j2sdk1.4.2_02 on
   // Windows 2000
-  static public class DragHandler implements DragGestureListener, DragSourceListener, DragSourceMotionListener, DropTargetListener {
+  static public class DragHandler implements DragGestureListener,
+                                             DragSourceListener,
+                                             DragSourceMotionListener,
+                                             DropTargetListener {
     final int CURSOR_ALPHA = 127; // psuedo cursor is 50% transparent
     final int EXTRA_BORDER = 4; // psuedo cursor is includes a 4 pixel border
     static private DragHandler theDragHandler = null; // singleton pattern
@@ -813,8 +814,9 @@ public class PieceMover extends AbstractBuildable
     }
 
     /**
-     * Creates a new DropTarget and hooks us into the beginning of a DropTargetListener chain. DropTarget events are not
-     * multicast; there can be only one "true" listener
+     * Creates a new DropTarget and hooks us into the beginning of a
+     * DropTargetListener chain. DropTarget events are not multicast;
+     * there can be only one "true" listener.
      */
     static public DropTarget makeDropTarget(Component theComponent, int dndContants, DropTargetListener dropTargetListener) {
       if (dropTargetListener != null) {
@@ -913,84 +915,19 @@ public class PieceMover extends AbstractBuildable
     private BufferedImage makeDragImage(double zoom) {
 // FIXME: Should be an ImageOp.
       dragCursorZoom = zoom;
-      currentPieceOffsetX =
-        (int) (originalPieceOffsetX / dragPieceOffCenterZoom * zoom + 0.5);
-      currentPieceOffsetY =
-        (int) (originalPieceOffsetY / dragPieceOffCenterZoom * zoom + 0.5);
-      // get the piece(s) our cursor will be based on
-      PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
-      final ArrayList<Point> relativePositions = new ArrayList<Point>();
-      final GamePiece firstPiece = dragContents.nextPiece();
-      // Record sizing info and resize our cursor
-      boundingBox = firstPiece.getShape().getBounds();
-      boundingBox.width *= zoom;
-      boundingBox.height *= zoom;
-      boundingBox.x *= zoom;
-      boundingBox.y *= zoom;
-      relativePositions.add(new Point(0, 0));
-      while (dragContents.hasMoreElements()) {
-        final GamePiece nextPiece = dragContents.nextPiece();
-        final Rectangle r = nextPiece.getShape().getBounds();
-        r.width *= zoom;
-        r.height *= zoom;
-        r.x *= zoom;
-        r.y *= zoom;
-        final Point p = new Point(
-          (int) Math.round(zoom *
-            (nextPiece.getPosition().x - firstPiece.getPosition().x)),
-          (int) Math.round(zoom *
-            (nextPiece.getPosition().y - firstPiece.getPosition().y)));
-        r.translate(p.x, p.y);
-        boundingBox.add(r);
-        relativePositions.add(p);
-      }
 
+      final ArrayList<Point> relativePositions = new ArrayList<Point>();
+      buildBoundingBox(relativePositions, zoom, false);
+      
       final int width = boundingBox.width + EXTRA_BORDER * 2;
       final int height = boundingBox.height + EXTRA_BORDER * 2;
-      dragImage =
-        new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-      final Graphics2D g = dragImage.createGraphics();
-      int index = 0;
-      for (dragContents = DragBuffer.getBuffer().getIterator();
-           dragContents.hasMoreElements(); ) {
-        final GamePiece piece = dragContents.nextPiece();
-        final Point pos = relativePositions.get(index++);
-// FIXME: This causes Repainters with null Components to be created.
-        piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x,
-                      EXTRA_BORDER - boundingBox.y + pos.y, null, zoom);
-      }
-      g.dispose();
-
-      // Make bitmap 50% transparent
-      final WritableRaster alphaRaster = dragImage.getAlphaRaster();
-      final int size = width * height;
-      int[] alphaArray = new int[size];
-      alphaArray = alphaRaster.getPixels(0, 0, width, height, alphaArray);
-      for (int i = 0; i < size; ++i) {
-        if (alphaArray[i] == 255)
-          alphaArray[i] = CURSOR_ALPHA;
-      }
-      // ... feather the cursor, since traits can extend arbitraily far out from bounds
-      final int FEATHER_WIDTH = EXTRA_BORDER;
-      for (int f = 0; f < FEATHER_WIDTH; ++f) {
-        final int alpha = CURSOR_ALPHA * (f + 1) / FEATHER_WIDTH;
-        final int limRow = (f + 1) * width - f; // for horizontal runs
-        for (int i = f * (width + 1); i < limRow; ++i) {
-          if (alphaArray[i] > 0) // North
-            alphaArray[i] = alpha;
-          if (alphaArray[size - i - 1] > 0) // South
-            alphaArray[size - i - 1] = alpha;
-        }
-        final int limVert = size - (f + 1) * width; // for vertical runs
-        for (int i = (f + 1) * width + f; i < limVert; i += width) {
-          if (alphaArray[i] > 0) // West
-            alphaArray[i] = alpha;
-          if (alphaArray[size - i - 1] > 0) // East
-            alphaArray[size - i - 1] = alpha;
-        }
-      }
-      // ... apply the alpha to the image
-      alphaRaster.setPixels(0, 0, width, height, alphaArray);
+      
+      dragImage = new BufferedImage(width, height,
+                                    BufferedImage.TYPE_4BYTE_ABGR);
+      
+      drawDragImage(dragImage, null, relativePositions, zoom);
+      featherDragImage(dragImage, width, height);
+      
       // return the image
       return dragImage;
     }
@@ -1009,22 +946,45 @@ public class PieceMover extends AbstractBuildable
         dragCursor.setVisible(false);
       }
       dragCursorZoom = zoom;
+
+      final ArrayList<Point> relativePositions = new ArrayList<Point>();
+      buildBoundingBox(relativePositions, zoom, true);
+      
+      final int width = boundingBox.width + EXTRA_BORDER * 2;
+      final int height = boundingBox.height + EXTRA_BORDER * 2;
+      
+      final BufferedImage cursorImage =
+        new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+      drawDragImage(cursorImage, dragCursor, relativePositions, zoom);
+
+      dragCursor.setSize(width, height);
+      
+      featherDragImage(cursorImage, width, height);
+      dragCursor.setIcon(new ImageIcon(cursorImage));
+    }
+    
+    private void buildBoundingBox(List<Point> relativePositions,
+                                  double zoom, boolean doOffset) {
+      final PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
+      final GamePiece firstPiece = dragContents.nextPiece();
+      GamePiece lastPiece = firstPiece;
+        
       currentPieceOffsetX =
         (int) (originalPieceOffsetX / dragPieceOffCenterZoom * zoom + 0.5);
       currentPieceOffsetY =
         (int) (originalPieceOffsetY / dragPieceOffCenterZoom * zoom + 0.5);
-      // get the piece(s) our cursor will be based on
-      PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
-      final ArrayList<Point> relativePositions = new ArrayList<Point>();
-      final GamePiece firstPiece = dragContents.nextPiece();
-      // Record sizing info and resize our cursor
+
       boundingBox = firstPiece.getShape().getBounds();
       boundingBox.width *= zoom;
       boundingBox.height *= zoom;
       boundingBox.x *= zoom;
       boundingBox.y *= zoom;
-      calcDrawOffset();
-      relativePositions.add(new Point(0, 0));
+      if (doOffset) {
+        calcDrawOffset();
+      }
+
+      relativePositions.add(new Point(0,0));
+      int stackCount = 0;
       while (dragContents.hasMoreElements()) {
         final GamePiece nextPiece = dragContents.nextPiece();
         final Rectangle r = nextPiece.getShape().getBounds();
@@ -1032,44 +992,89 @@ public class PieceMover extends AbstractBuildable
         r.height *= zoom;
         r.x *= zoom;
         r.y *= zoom;
+        
         final Point p = new Point(
-          (int) Math.round(zoom *
-            (nextPiece.getPosition().x - firstPiece.getPosition().x)),
-          (int) Math.round(zoom
-            * (nextPiece.getPosition().y - firstPiece.getPosition().y)));
+          (int) Math.round(
+            zoom * (nextPiece.getPosition().x - firstPiece.getPosition().x)),
+          (int) Math.round(
+            zoom * (nextPiece.getPosition().y - firstPiece.getPosition().y)));
         r.translate(p.x, p.y);
+          
+        if (nextPiece.getPosition().equals(lastPiece.getPosition())) {
+          stackCount++;
+          final StackMetrics sm = getStackMetrics(nextPiece);
+          r.translate(sm.unexSepX*stackCount,-sm.unexSepY*stackCount);
+        }
+
         boundingBox.add(r);
         relativePositions.add(p);
+        lastPiece = nextPiece;
       }
-
-      final int width = boundingBox.width + EXTRA_BORDER * 2;
-      final int height = boundingBox.height + EXTRA_BORDER * 2;
-      final BufferedImage cursorImage =
-        new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-      final Graphics2D g = cursorImage.createGraphics();
+    }
+    
+    private void drawDragImage(BufferedImage image, Component target,
+                               List<Point> relativePositions, double zoom) {
+      final Graphics2D g = image.createGraphics();
       int index = 0;
-      for (dragContents = DragBuffer.getBuffer().getIterator();
-           dragContents.hasMoreElements(); ) {
+      Point lastPos = null;
+      int stackCount = 0;
+      for (PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
+           dragContents.hasMoreElements();) {
         final GamePiece piece = dragContents.nextPiece();
         final Point pos = relativePositions.get(index++);
-System.out.println("dragCursor: " + (dragCursor != null));
-        piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x,
-                      EXTRA_BORDER - boundingBox.y + pos.y, dragCursor, zoom);
-      }
+        if (piece instanceof Stack){
+          stackCount = 0;
+          piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x,
+                        EXTRA_BORDER - boundingBox.y + pos.y,
+            piece.getMap() == null ? target : piece.getMap().getView(), zoom);
+        }
+        else {
+          final Point offset = new Point(0,0);
+          if (pos.equals(lastPos)) {
+            stackCount++;
+            final StackMetrics sm = getStackMetrics(piece);
+            offset.x = sm.unexSepX * stackCount;
+            offset.y = sm.unexSepY * stackCount;
+          }     
+          else {
+            stackCount = 0;
+          }
+          final int x = EXTRA_BORDER - boundingBox.x + pos.x + offset.x;
+          final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
+          piece.draw(g, x, y,
+            piece.getMap() == null ? target : piece.getMap().getView(), zoom);
+          Highlighter highlighter = piece.getMap() == null ?
+             BasicPiece.getHighlighter() : piece.getMap().getHighlighter();
+          highlighter.draw(piece, g, x, y, null, zoom);
+        }
+        lastPos = pos;
+      }  
       g.dispose();
-
-      dragCursor.setSize(width, height);
+    }
+    
+    private StackMetrics getStackMetrics(GamePiece piece) {
+      StackMetrics sm = null;
+      final Map map = piece.getMap();
+      if (map != null) {
+        sm = map.getStackMetrics();      
+      }
+      if (sm == null) {
+        sm = new StackMetrics();
+      }
+      return sm;
+    }
+    
+    private void featherDragImage(BufferedImage image, int width, int height) {
       // Make bitmap 50% transparent
-      final WritableRaster alphaRaster = cursorImage.getAlphaRaster();
+      final WritableRaster alphaRaster = image.getAlphaRaster();
       final int size = width * height;
       int[] alphaArray = new int[size];
       alphaArray = alphaRaster.getPixels(0, 0, width, height, alphaArray);
       for (int i = 0; i < size; ++i) {
-        if (alphaArray[i] == 255)
-          alphaArray[i] = CURSOR_ALPHA;
+        if (alphaArray[i] == 255) alphaArray[i] = CURSOR_ALPHA;
       }
-      // ... feather the cursor, since traits can extend arbitraily far out from
-      // bounds
+      // ... feather the cursor, since traits can extend
+      // arbitrarily far out from bounds
       final int FEATHER_WIDTH = EXTRA_BORDER;
       for (int f = 0; f < FEATHER_WIDTH; ++f) {
         final int alpha = CURSOR_ALPHA * (f + 1) / FEATHER_WIDTH;
@@ -1089,18 +1094,16 @@ System.out.println("dragCursor: " + (dragCursor != null));
         }
       }
       // ... apply the alpha to the image
-      alphaRaster.setPixels(0, 0, width, height, alphaArray);
-      // store the bitmap in the cursor
-      dragCursor.setIcon(new ImageIcon(cursorImage));
+      alphaRaster.setPixels(0, 0, width, height, alphaArray); 
     }
-
-    // ///////////////////////////////////////////////////////////////////////////////////
+    
+    ///////////////////////////////////////////////////////////////////////////
     // DRAG GESTURE LISTENER INTERFACE
     //
     // EVENT uses SCALED, DRAG-SOURCE coordinate system.
     // PIECE uses SCALED, OWNER (arbitrary) coordinate system
     //
-    // ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /** Fires after user begins moving the mouse several pixels over a map. */
     public void dragGestureRecognized(DragGestureEvent dge) {
       /* 
@@ -1148,10 +1151,10 @@ System.out.println("dragCursor: " + (dragCursor != null));
         final BufferedImage dragImage = makeDragImage(dragPieceOffCenterZoom);
         // begin dragging
         try {
-        	final Point dragPointOffset = new Point(
+          final Point dragPointOffset = new Point(
             boundingBox.x + currentPieceOffsetX - EXTRA_BORDER,
             boundingBox.y + currentPieceOffsetY - EXTRA_BORDER);
-        	dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
+          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
                         dragImage, dragPointOffset,
                         new StringSelection(""), this); //$NON-NLS-1$
           dge.getDragSource().addDragSourceMotionListener(this);
@@ -1162,10 +1165,10 @@ System.out.println("dragCursor: " + (dragCursor != null));
       }
     }
 
-    // ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     // DRAG SOURCE LISTENER INTERFACE
     //
-    // ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     public void dragDropEnd(DragSourceDropEvent e) {
       if (!DragSource.isDragImageSupported()) {
         removeDragCursor();
@@ -1184,12 +1187,12 @@ System.out.println("dragCursor: " + (dragCursor != null));
     public void dropActionChanged(DragSourceDragEvent e) {
     }
 
-    // ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     // DRAG SOURCE MOTION LISTENER INTERFACE
     //
     // EVENT uses UNSCALED, SCREEN coordinate system
     //
-    // ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     // Used to check for real mouse movement.
     // Warning: dragMouseMoved fires 8 times for each point on development
     // system (Win2k)
@@ -1208,11 +1211,11 @@ System.out.println("dragCursor: " + (dragCursor != null));
       }
     }
 
-    // ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     // DROP TARGET INTERFACE
     //
     // EVENT uses UNSCALED, DROP-TARGET coordinate system
-    // ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /** switches current drawWin when mouse enters a new DropTarget */
     public void dragEnter(DropTargetDragEvent event) {
       if (!DragSource.isDragImageSupported()) {

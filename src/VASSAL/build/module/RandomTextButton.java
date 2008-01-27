@@ -99,7 +99,7 @@ public class RandomTextButton extends DiceButton {
    * method of the {@link Chatter} of the {@link GameModule}.  Format is
    * prefix+[comma-separated roll list]+suffix */
   protected void DR() {
-    StringBuffer result = new StringBuffer();
+    final StringBuilder result = new StringBuilder();
     int total = 0;
     for (int i = 0; i < nDice; ++i) {
       int roll = (int) (ran.nextFloat() * nSides + 1);

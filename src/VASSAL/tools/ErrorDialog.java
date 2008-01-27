@@ -1,3 +1,22 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2008 by Joel Uckelman
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.tools;
 
 import java.awt.Component;
@@ -5,10 +24,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -20,21 +44,16 @@ import javax.swing.UIManager;
 import VASSAL.build.GameModule;
 
 public class ErrorDialog {
-//  static boolean disabled = false;
+  private static JOptionPane pane;
 
-  private static final Set<Class<? extends Exception>> disabled =
-    new HashSet<Class<? extends Exception>>();
-
-  public static void raise(Exception e, String msg) {
-    if (disabled.contains(e.getClass())) return;
-
+  private static JDialog createDialog(String message, int severity) {
     final JButton okButton = new JButton("Ok");
-//    final JButton disableButton = new JButton("Don't show this dialog again");
 
     final JCheckBox disableCheck =
       new JCheckBox("Do not show this dialog again");
-
-    final JLabel msgLabel = new JLabel(msg);
+    
+    final JLabel msgLabel = new JLabel(
+      "<html>" + message.replace("\n", "<p>") + "</html>");
 
     final Box msgBox = new Box(BoxLayout.Y_AXIS);
     msgBox.add(msgLabel);
@@ -42,14 +61,11 @@ public class ErrorDialog {
       msgLabel.getFontMetrics(msgLabel.getFont()).getHeight()));
     msgBox.add(disableCheck);
     
-    final JOptionPane pane = new JOptionPane(
-//      msg,
+    pane = new JOptionPane(
       msgBox,
       JOptionPane.DEFAULT_OPTION,
       JOptionPane.ERROR_MESSAGE,
       UIManager.getIcon("OptionPane.errorIcon"),
-//      new Object[]{okButton, disableButton},
-//      new Object[]{disableCheck, okButton},
       new Object[]{okButton},
       okButton
     );
@@ -57,46 +73,102 @@ public class ErrorDialog {
     final Component comp = GameModule.getGameModule() == null
                          ? null : GameModule.getGameModule().getFrame();
 
-    final JDialog dialog = pane.createDialog(comp, "Error");
+    final JDialog d = pane.createDialog(comp, "Error");
     
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent evt) {
         pane.setValue(!disableCheck.isSelected());
-        dialog.dispose();
       }
     });
 
-    dialog.addWindowListener(new WindowAdapter() {
+    d.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent evt) {
         pane.setValue(!disableCheck.isSelected());
-        dialog.dispose();
       }
     });
 
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    dialog.pack();
+    d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    d.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
+    d.pack();
+    
+    return d;
+  }
 
-//    disableButton.addActionListener(new ActionListener() {
-/*
-    disableCheck.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        pane.setValue(Boolean.TRUE);
-        dialog.dispose();
-      }
-    });
-*/
+  private static class Message {
+    public final String text;
+    public final Class<? extends Throwable> tclass;
+    public final int severity;
 
-    final Class<? extends Exception> exceptionClass = e.getClass();
+    public Message(Class<? extends Throwable> tclass,
+                   String text, int severity) {
+      this.tclass = tclass;
+      this.text = text;
+      this.severity = severity;
+    }
+  }
 
-    final Runnable runnable = new Runnable() {
+  private static final BlockingQueue<Message> queue =
+    new LinkedBlockingQueue<Message>();
+
+  private static final Set<Class<? extends Throwable>> disabled =
+    Collections.synchronizedSet(new HashSet<Class<? extends Throwable>>());
+
+  public static final int ERROR = 0;
+  public static final int WARNING = 1;
+
+  public static void error(Throwable t, String message) {
+    raise(t, message, ERROR);
+  }
+
+  public static void warning(Throwable t, String message) {
+    raise(t, message, WARNING);
+  }
+
+  public static void raise(Throwable t, String message, int severity) {
+    final Class<? extends Throwable> throwableClass = t.getClass();
+    if (ErrorDialog.isDisabled(throwableClass)) return;
+    queue.add(new Message(throwableClass, message, severity));
+  }
+
+  // We start a Thread to consume Messages as they queue up. This
+  // thread blocks on closing of the dialog to prevent the user
+  // from being presented with more than one error dialog at a time.
+  static {
+    new Thread() {
+      @Override
       public void run() {
-        dialog.setVisible(true);
-        if (Boolean.FALSE.equals(pane.getValue())) {
-          disabled.add(exceptionClass);
+        try {
+          while (true) {
+            final Message m = queue.take();
+
+            if (ErrorDialog.isDisabled(m.tclass)) return;
+            final JDialog dialog = createDialog(m.text, m.severity); 
+  
+            SwingUtilities.invokeAndWait(new Runnable() {
+              @Override
+              public void run() {
+                dialog.setVisible(true);
+                if (Boolean.FALSE.equals(pane.getValue())) {
+                  disabled.add(m.tclass);
+                }
+                dialog.dispose();
+              }
+            });
+          }
+        }
+        catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        catch (InvocationTargetException e) {
+          e.printStackTrace();
         }
       }
-    };
-    SwingUtilities.invokeLater(runnable);
+    }.start();
+  }
+
+  public static boolean isDisabled(Class<? extends Throwable> c) {
+    return disabled.contains(c);
   }
 }

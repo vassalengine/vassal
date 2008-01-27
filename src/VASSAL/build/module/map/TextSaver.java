@@ -117,16 +117,19 @@ public class TextSaver extends AbstractConfigurable {
     if (fc.showSaveDialog(map.getView()) != FileChooser.APPROVE_OPTION) return;
 
     try {
-      PrintWriter p = new PrintWriter
-          (new FileOutputStream(fc.getSelectedFile().getPath()));
-      GamePiece stack[] = map.getPieces();
-      for (int i = 0; i < stack.length; ++i) {
-        String s = stack[i].getName();
-        if (s.length() > 0) {
-          p.println(map.locationName(stack[i].getPosition()) + ": " + s);
+      final PrintWriter p =
+        new PrintWriter(new FileOutputStream(fc.getSelectedFile().getPath()));
+      try {
+        for (GamePiece gp : map.getPieces()) {
+          final String s = gp.getName();
+          if (s.length() > 0) {
+            p.println(map.locationName(gp.getPosition()) + ": " + s);
+          }
         }
       }
-      p.close();
+      finally {
+        p.close();
+      }
     }
     catch (IOException e) {
       JOptionPane.showMessageDialog(null, e.getMessage());

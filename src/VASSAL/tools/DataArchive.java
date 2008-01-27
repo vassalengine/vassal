@@ -60,7 +60,6 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
-import javax.imageio.event.IIOReadProgressListener;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.swing.ImageIcon;
@@ -71,9 +70,9 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BooleanConfigurer;
-import VASSAL.tools.imageop.ImageSourceOp;
-import VASSAL.tools.imageop.RotateScaleOp;
-import VASSAL.tools.imageop.SourceOp;
+import VASSAL.tools.imageop.Op;
+
+import static VASSAL.tools.IterableEnumeration.iterate;
 
 /**
  * Wrapper around a Zip archive with methods to cache images
@@ -89,7 +88,7 @@ public class DataArchive extends SecureClassLoader {
   private final Map<String,ImageSource> imageSources =
     new HashMap<String,ImageSource>();
 
-  protected SortedSet<String> localImages = new TreeSet<String>();
+  protected SortedSet<String> localImages = null;
 
   public static final String IMAGE_DIR = "images/";
   public static final String SOUNDS_DIR = "sounds/";
@@ -117,7 +116,7 @@ public class DataArchive extends SecureClassLoader {
     String path = SOUNDS_DIR + name;
     AudioClip clip = soundCache.get(path);
     if (clip == null) {
-      clip = new AppletAudioClip(getBytes(getFileStream(path)));
+      clip = new AppletAudioClip(IOUtils.getBytes(getFileStream(path)));
       soundCache.put(path,clip);
     }
     return clip;
@@ -146,14 +145,38 @@ public class DataArchive extends SecureClassLoader {
     else if (name.toLowerCase().endsWith(".svg")) {
       if (svgManager == null) svgManager = new SVGManager(this);
 
-      return svgManager.getImageSize("jar:file://" +
-         (archive != null ? archive.getName() : "null") + "!/" + path,
-        getFileStream(path));
+      return svgManager.getImageSize(getArchiveURL() + path,
+                                     getFileStream(path));
     }
     else {
-      InputStream is = null;
-      try {
+      return ImageUtils.getImageSize(getImageInputStream(name));
+    }
+  }
 
+  public Image getImage(String name) throws IOException {
+    final String path = IMAGE_DIR + name;
+    final ImageSource src;
+
+// FIXME: this is a mess
+    if (name.charAt(0) == '/') {
+// FIXME: This gives a null stream to getImage if the resource can't be found!
+      return ImageUtils.getImage(getClass().getResourceAsStream(name)); 
+    }
+    else if ((src = imageSources.get(name)) != null) {
+      return src.getImage();
+    }
+    else if (name.toLowerCase().endsWith(".svg")) {
+      if (svgManager == null) svgManager = new SVGManager(this);
+
+      return svgManager.loadSVGImage(getArchiveURL() + path,
+                                     getFileStream(path));
+    }
+    else {
+      return ImageUtils.getImage(getImageInputStream(name));
+    }
+  }
+
+  public InputStream getImageInputStream(String name) throws IOException {
 // FIXME: This is a big, ugly mess. We should have a clearly documented
 // standard for image locations.
 //
@@ -161,28 +184,26 @@ public class DataArchive extends SecureClassLoader {
 // GIFs by appending ".gif" to them. In general, a way of marking obsolete
 // features would be good---something which pops up a dialog alerting the
 // user when a module calls a deprecated method, maybe.
- 
-        if (name.charAt(0) == '/') {
-          is = getClass().getResourceAsStream(name); 
-        }
-        else {
-          try {
-            is = getFileStream(path);
-          }
-          catch (IOException e) {
-            is = getFileStream(path + ".gif");
-          }
-        }
-
-        final ImageInputStream in = new MemoryCacheImageInputStream(is);
-        final ImageReader reader = ImageIO.getImageReaders(in).next();
-        reader.setInput(in);
-        return new Dimension(reader.getWidth(0), reader.getHeight(0));
+    if (name.charAt(0) == '/') {
+      final InputStream in = getClass().getResourceAsStream(name);
+      if (in == null)
+        throw new IOException("Resource not found: " + name);
+      return in;
+    }
+    else {
+      final String path = IMAGE_DIR + name;
+      try {
+        return getFileStream(path);
       }
-      finally {
-        if (is != null) is.close();
+      catch (IOException e) {
+        return getFileStream(path + ".gif");
       }
     }
+  }
+
+  public String getArchiveURL() {
+    return "jar:file://" + 
+           (archive != null ? archive.getName() : "null") + "!/";
   }
 
 /*
@@ -222,81 +243,6 @@ public class DataArchive extends SecureClassLoader {
   }
 */
 
-  public Image getImage(String name) throws IOException {
-    final String path = IMAGE_DIR + name;
-    final String gifPath = path + ".gif";
-    final ImageSource src;
-    Image image = null;
-
-    if (name.charAt(0) == '/') {
-      image = getImage(getClass().getResourceAsStream(name)); 
-    }
-    else if ((src = imageSources.get(name)) != null) {
-      image = src.getImage();
-    }
-    else if (name.toLowerCase().endsWith(".svg")) {
-      if (svgManager == null) svgManager = new SVGManager(this);
-
-      image = svgManager.loadSVGImage("jar:file://" +
-         (archive != null ? archive.getName() : "null") + "!/" + path,
-        getFileStream(path));
-    }
-    else {
-      try {
-        image = getImage(getFileStream(path));
-      }
-      catch (IOException e) {
-        image = getImage(getFileStream(gifPath));
-      }
-    }
-    return image;
-  }
-  
-  public static Image getImage(InputStream in) throws IOException {
-    ImageInputStream stream = null;
-    try {
-      stream = new MemoryCacheImageInputStream(in);
-      final ImageReader reader = ImageIO.getImageReaders(stream).next();
-      reader.setInput(stream);
-      reader.addIIOReadProgressListener(new IIOReadProgressListener() {
-        public void imageComplete(ImageReader source) {
-          System.out.print("\n");
-        }
-
-        public void imageProgress(ImageReader source, float percentageDone) {
-          System.out.print(".");
-        }
-
-        public void imageStarted(ImageReader soruce, int imageIndex) {
-          System.out.println("");
-        }
- 
-        public void readAborted(ImageReader source) { }
-
-        public void sequenceComplete(ImageReader source) { }
-
-        public void sequenceStarted(ImageReader source, int minIndex) { }
-
-        public void thumbnailComplete(ImageReader source) { }
-
-        public void thumbnailProgress(ImageReader source,
-                                      float percentageDone) { }
-
-        public void thumbnailStarted(ImageReader source, int imageIndex,
-                                     int thumbnailIndex) { }
-      });
-
-      return reader.read(0);
-    }
-    finally {
-      if (stream != null) stream.close();
-    }
-//    return ImageIO.read(in);
-
-// FIXME: maybe convert all images to TYPE_INT_ARGB here?
-//    return Toolkit.getDefaultToolkit().createImage(getBytes(in));
-  }
-
   /**
    * Add an ImageSource under the given name, but only if no source is
    * yet registered under this name.
@@ -331,10 +277,9 @@ public class DataArchive extends SecureClassLoader {
   }
 
   protected void getImageNamesRecursively(SortedSet<String> s) {
-    if (localImages == null) {
-      localImages = getLocalImageNames();
-    }
+    if (localImages == null) localImages = getLocalImageNames();
     s.addAll(localImages);
+
     for (DataArchive ext : extensions) {
       ext.getImageNamesRecursively(s);
     }
@@ -347,59 +292,13 @@ public class DataArchive extends SecureClassLoader {
     s.addAll(imageSources.keySet());
 
     if (archive != null) {
-      ZipInputStream zis = null;
-      try {
-        zis = new ZipInputStream(new FileInputStream(archive.getName()));
-
-        ZipEntry entry = null;
-        while ((entry = zis.getNextEntry()) != null) {
-          if (entry.getName().startsWith(IMAGE_DIR)) {
-            s.add(entry.getName().substring(IMAGE_DIR.length()));
-          }
-        }
-      }
-      catch (IOException e) {
-        e.printStackTrace();
-      }
-      finally {
-        if (zis != null) {
-          try {
-            zis.close();
-          }
-          catch (IOException e) {
-            e.printStackTrace();
-          }
+      for (ZipEntry entry : iterate(archive.entries())) {
+        if (entry.getName().startsWith(IMAGE_DIR)) {
+          s.add(entry.getName().substring(IMAGE_DIR.length()));
         }
       }
     }
     return s;
-  }
-
-  /**
-   * Read all available bytes from the given InputStream
-   */
-  public static byte[] getBytes(InputStream in) throws IOException {
-    final BufferedInputStream bufIn = new BufferedInputStream(in);
-    final int nLen = bufIn.available();
-    int nCurBytes = 0;
-    byte buffer[] = null;
-    final byte abyte0[] = new byte[nLen];
-
-    while ((nCurBytes = bufIn.read(abyte0, 0, abyte0.length)) > 0) {
-      if (buffer == null) {
-        buffer = new byte[nCurBytes];
-        System.arraycopy(abyte0, 0, buffer, 0, nCurBytes);
-      }
-      else {
-        byte oldbuf[] = buffer;
-
-        buffer = new byte[oldbuf.length + nCurBytes];
-
-        System.arraycopy(oldbuf, 0, buffer, 0, oldbuf.length);
-        System.arraycopy(abyte0, 0, buffer, oldbuf.length, nCurBytes);
-      }
-    }
-    return buffer != null ? buffer : new byte[0];
   }
 
   public URL getURL(String fileName) throws IOException {
@@ -481,7 +380,8 @@ public class DataArchive extends SecureClassLoader {
     }
 
     if (stream == null) {
-      throw new IOException("\'" + file + "\' not found in " + archive.getName());
+      throw new IOException(
+        "\'" + file + "\' not found in " + archive.getName());
     }
     return stream;
   }
@@ -493,44 +393,25 @@ public class DataArchive extends SecureClassLoader {
       try {
         stream = ext.getFileStream(file);
       }
-      catch (IOException e) {
-        // Not found in this extension.  Try the next.
+      catch (IOException e0) {
+        // Not found in this extension. Try the next.
+        if (stream != null) {
+          try {
+            stream.close();
+          }
+          catch (IOException e1) {
+            ErrorLog.warn(e1);
+          }
+        }
       }
     }
     return stream;
   }
 
-// FIXME: could these two getFileStream methods be combined?
-  public static InputStream getFileStream(File dir, String zipName, String file) {
-    try {
-      if ((new File(dir, zipName)).exists()) {
-        final ZipFile zip = new ZipFile(new File(dir, zipName));
-        return zip.getInputStream(zip.getEntry(file));
-      }
-      else {
-        return new FileInputStream(new File(dir, file));
-      }
-    }
-    catch (Exception e) {
-      return null;
-    }
-  }
-
-  public static InputStream getFileStream(File zip, String file)
-      throws IOException {
-    try {
-      final ZipFile z = new ZipFile(zip);
-      return z.getInputStream(z.getEntry(file));
-    }
-    catch (Exception e) {
-      throw new IOException("Couldn't locate " + file + " in " + zip.getName()
-                            + ": " + e.getMessage());
-    }
-  }
-
-  public synchronized Class loadClass(String name, boolean resolve)
-                                      throws ClassNotFoundException {
-    Class c;
+  @Override
+  public synchronized Class<?> loadClass(String name, boolean resolve)
+                                         throws ClassNotFoundException {
+    Class<?> c;
     try {
 //      c = findSystemClass(name);
       c = Class.forName(name);
@@ -547,20 +428,21 @@ public class DataArchive extends SecureClassLoader {
     return c;
   }
 
+  @Override
   protected PermissionCollection getPermissions(CodeSource codesource) {
     final PermissionCollection p = super.getPermissions(codesource);
     p.add(new AllPermission());
     return p;
   }
 
-  protected Class findClass(String name) throws ClassNotFoundException {
+  @Override
+  protected Class<?> findClass(String name) throws ClassNotFoundException {
     if (cs == null) {
       cs = new CodeSource((URL) null, (Certificate[]) null);
     }
     try {
       final String slashname = name.replace('.', '/');
-      final InputStream in = getFileStream(slashname + ".class");
-      final byte[] data = getBytes(in);
+      final byte[] data = IOUtils.getBytes(getFileStream(slashname + ".class"));
       return defineClass(name, data, 0, data.length, cs);
     }
     catch (IOException e) {
@@ -657,7 +539,7 @@ public class DataArchive extends SecureClassLoader {
   public Image getCachedImage(String name) throws IOException {
     // An ugly hack, but nothing should be using this method anyway.
     try {
-      return new SourceOp(name).getImage(null);
+      return Op.load(name).getImage(null);
     }
     catch (CancellationException e) {
       throw new IOException(e); 
@@ -683,8 +565,7 @@ public class DataArchive extends SecureClassLoader {
   public Image getTransformedImage(Image base, double scale, double theta) {
     // An ugly hack, but nothing should be using this method anyway.
     try {
-      return new RotateScaleOp(
-        new ImageSourceOp(base), theta, scale).getImage(null);
+      return Op.rotateScale(Op.load(base), theta, scale).getImage(null);
     }
     catch (CancellationException e) {
       return null;
@@ -770,6 +651,56 @@ public class DataArchive extends SecureClassLoader {
       throw new IOException("Image " + file + " not found in " + dir
                             + File.separator + zip);
     }
+  }
+
+  /**
+   * @deprecated Use {@link #getFileStream(String)} instead.
+   */
+  @Deprecated
+  public static InputStream getFileStream(File zip, String file)
+      throws IOException {
+    try {
+      final ZipFile z = new ZipFile(zip);
+      return z.getInputStream(z.getEntry(file));
+    }
+    catch (Exception e) {
+      throw new IOException("Couldn't locate " + file + " in " + zip.getName()
+                            + ": " + e.getMessage());
+    }
+  }
+
+  /**
+   * @deprecated Use {@link #getFileStream(String)} instead.
+   */  
+  @Deprecated
+  public static InputStream getFileStream(File dir, String zipName, String file) {
+    try {
+      if ((new File(dir, zipName)).exists()) {
+        final ZipFile zip = new ZipFile(new File(dir, zipName));
+        return zip.getInputStream(zip.getEntry(file));
+      }
+      else {
+        return new FileInputStream(new File(dir, file));
+      }
+    }
+    catch (Exception e) {
+      return null;
+    }
+  }
+
+  /** Use {@link ImageUtils.getImage(InputStream)} instead. */
+  @Deprecated  
+  public static Image getImage(InputStream in) throws IOException {
+    return ImageUtils.getImage(in);
+  }
+
+  /**
+   * Read all available bytes from the given InputStream.
+   * @deprecated Use {@link IOUtils.getBytes(InputStream)} instead.
+   */
+  @Deprecated
+  public static byte[] getBytes(InputStream in) throws IOException {
+    return IOUtils.getBytes(in);
   }
 
   /**

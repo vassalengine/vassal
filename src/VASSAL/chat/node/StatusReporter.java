@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -46,13 +45,18 @@ public class StatusReporter implements Runnable {
     if (reportStatus == null) {
       return;
     }
-    StringBuffer buffer = new StringBuffer();
-    for (int i = 0; i < players.length; ++i) {
-      Node mod = server.getModule(players[i]);
+    final StringBuilder buffer = new StringBuilder();
+    for (Node pl : players) {
+      Node mod = server.getModule(pl);
       try {
-        String name = new PropertiesEncoder(players[i].getInfo()).getProperties().getProperty(NodePlayer.NAME);
+        final String name = new PropertiesEncoder(pl.getInfo()).getProperties().getProperty(NodePlayer.NAME);
         if (name != null) {
-          buffer.append(mod.getId()).append('\t').append(players[i].getParent().getId()).append('\t').append(name).append('\n');
+          buffer.append(mod.getId())
+                .append('\t')
+                .append(pl.getParent().getId())
+                .append('\t')
+                .append(name)
+                .append('\n');
         }
       }
       catch (IOException e) {

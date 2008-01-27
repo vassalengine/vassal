@@ -116,12 +116,12 @@ public class Translation extends AbstractConfigurable
    *          property value
    */
   public void setProperty(String key, String value) {
-	if (value == null || value.length() == 0) {
-      getProperties().remove(key);	
-	}
-	else {
+  if (value == null || value.length() == 0) {
+      getProperties().remove(key);  
+  }
+  else {
       getProperties().setProperty(key, value);
-	}
+  }
     dirty = true;
   }
 
@@ -153,27 +153,51 @@ public class Translation extends AbstractConfigurable
    */
   protected void loadProperties() throws IOException {
     String bundle = getBundleName() + ".properties"; //$NON-NLS-1$
-    InputStream in = null;
     if (localProperties == null) {
       localProperties = new Properties();
     }
-	try {
-		in = GameModule.getGameModule().getDataArchive().getFileStream(bundle);
-	} catch (IOException e) {
-		// properties have not been saved yet
-	}    
-	if (in != null) {
-	  localProperties.load(in);
-	  in.close();
-	}
+
+    InputStream in = null;
+    try {
+      in = GameModule.getGameModule().getDataArchive().getFileStream(bundle);
+    }
+    catch (IOException e) {
+      // properties have not been saved yet
+    }
+
+    if (in != null) {
+      try {
+        localProperties.load(in);
+      }
+      finally {
+        try {
+          in.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+      
     dirty = false;
   }
 
   protected VassalResourceBundle getBundle() throws IOException {
     String bundle = getBundleName() + ".properties"; //$NON-NLS-1$
-    InputStream in = null;
-    in = GameModule.getGameModule().getDataArchive().getFileStream(bundle);
-    return new VassalResourceBundle(in);
+
+    final InputStream in =
+      GameModule.getGameModule().getDataArchive().getFileStream(bundle);
+    try {
+      return new VassalResourceBundle(in);
+    }
+    finally {
+      try {
+        in.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**

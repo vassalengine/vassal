@@ -83,8 +83,9 @@ public class FormattedString {
   }
   
   protected String getText(PropertySource ps, boolean localized) {
-    StringBuffer buffer = new StringBuffer();
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(formatString, '$');
+    final StringBuilder buffer = new StringBuilder();
+    final SequenceEncoder.Decoder st =
+      new SequenceEncoder.Decoder(formatString, '$');
     boolean isProperty = true;
     while (st.hasMoreTokens()) {
       String token = st.nextToken();

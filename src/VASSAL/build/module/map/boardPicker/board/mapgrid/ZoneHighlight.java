@@ -52,6 +52,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.SourceOp;
 
 /**
@@ -339,7 +340,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     else if (IMAGE.equals(key)) {
       imageName = (String) val;
       srcOp = imageName == null || imageName.trim().isEmpty()
-            ? null : new SourceOp(imageName);
+            ? null : Op.load(imageName);
     }
   }
 

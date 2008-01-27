@@ -28,24 +28,33 @@ import java.util.Locale;
 import java.util.Properties;
 
 /**
- * Utility class to allow translation of VASSAL using the Component Translation mechanism
+ * Utility class to allow translation of VASSAL using the Component
+ * Translation mechanism.
  * 
  * @author Brent Easton
- * 
  */
 public class VassalTranslation extends Translation {
-
   protected String[] allKeys;
   
   protected Properties baseValues = new Properties();
 
   public VassalTranslation() {
     setConfigureName("VASSAL");
+    final InputStream in = getClass().getResourceAsStream("VASSAL.properties");
     try {
-      baseValues.load(getClass().getResourceAsStream("VASSAL.properties"));
+      if (in == null) throw new IOException("Resource not found");
+      baseValues.load(in);
     }
     catch (IOException e) {
       e.printStackTrace();
+    }
+    finally {
+      try {
+        in.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
     }
   }
   
@@ -79,7 +88,7 @@ public class VassalTranslation extends Translation {
   
   public Class[] getAttributeTypes() {
     initkeys();
-    Class[] types = new Class[allKeys.length];
+    final Class[] types = new Class[allKeys.length];
     Arrays.fill(types, String.class);
     return types;
   }
@@ -91,13 +100,33 @@ public class VassalTranslation extends Translation {
   }
 
   public void saveProperties(File file, Locale locale) throws IOException {
-    OutputStream out = new FileOutputStream(file);
-    localProperties.store(out, locale.getDisplayName());
-    dirty = false;
+    final FileOutputStream out = new FileOutputStream(file);
+    try {
+      localProperties.store(out, locale.getDisplayName());
+      dirty = false;
+    }
+    finally {
+      try {
+        out.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   protected void loadProperties(InputStream in) throws IOException {
-    localProperties.load(in);
-    dirty = false;
+    try { 
+      localProperties.load(in);
+      dirty = false;
+    }
+    finally {
+      try {
+        in.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

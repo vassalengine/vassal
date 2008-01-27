@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2003, 2008 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,86 +18,64 @@
  */
 package VASSAL.tools;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import VASSAL.build.GameModule;
+import java.util.concurrent.ExecutionException;
 
 /**
- * Warns the user when an uncaught Exception occurs
- * See Java code in  EventDispatchThread.handleException()
+ * Warns the user when an uncaught Exception occurs.
+ * See Java code in {@link EventDispatchThread.handleException()}.
  */
 public class ErrorLog {
-  private static boolean disabled = false;
   static {
-    System.getProperties().put("sun.awt.exception.handler", "VASSAL.tools.ErrorLog");   //$NON-NLS-1$ //$NON-NLS-2$
+    System.getProperties().put("sun.awt.exception.handler", //$NON-NLS-1$
+                               "VASSAL.tools.ErrorLog");    //$NON-NLS-1$
+  }
+
+  public static void warn(Throwable t) {
+    t.printStackTrace();
+
+    // replace ExecutionExceptions with their causes
+    if (t instanceof ExecutionException && t.getCause() != null)
+      t = t.getCause();
+
+    ErrorDialog.warning(t, t.getMessage());
   }
 
   public void handle(Throwable t) {
-    String logFile = System.getProperty("stderr");
-    if (!disabled && logFile != null) {
-      String type = t.getClass().getName().substring(t.getClass().getName().lastIndexOf(".") + 1);
-      String msg = t.getMessage();
-      if (msg == null
-          || msg.length() == 0) {
-        msg = type;
-      }
-      else {
-        msg = type + "\n" + msg;
-      }
-      JButton okButton = new JButton("Ok");
-      JButton disableButton = new JButton("Don't show this dialog again");
-      String text = "An untrapped error has occurred.\n"
-          + msg + "\n"
-          + "Please send a report to support@vassalengine.org and attach the log file.\n" + logFile;
+    t.printStackTrace();
+
+    final String logFile = System.getProperty("stderr");  //$NON-NLS-1$
+    if (!ErrorDialog.isDisabled(t.getClass())) {
+      String text = null;
+
       if (t instanceof OutOfMemoryError) {
-        String s = t.getMessage();
+        final String s = t.getMessage();
         text = "The application has run out of memory.\n";
         if (s != null) {
           text += s+"\n";
         }
-        text += "To decrease memory usage, try reducing the number of colors in your display.";
       }
-      final JOptionPane pane = new JOptionPane
-          (text,
-           JOptionPane.DEFAULT_OPTION,
-           JOptionPane.ERROR_MESSAGE,
-           UIManager.getIcon("OptionPane.errorIcon"),
-           new Object[]{okButton, disableButton},
-           okButton);
-      Component comp = GameModule.getGameModule() == null ? null : GameModule.getGameModule().getFrame();
-      final JDialog dialog = pane.createDialog(comp, "Error");
-      okButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-          pane.setValue(Boolean.FALSE);
-          dialog.dispose();
+      else {
+        final String type = t.getClass().getSimpleName();
+        String msg = t.getMessage();
+        if (msg == null || msg.length() == 0) {
+          msg = type;
         }
-      });
-      disableButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-          pane.setValue(Boolean.TRUE);
-          dialog.dispose();
+        else {
+          msg = type + "\n" + msg;
         }
-      });
-      Runnable runnable = new Runnable() {
-        public void run() {
-          dialog.setVisible(true);
-          disabled = Boolean.TRUE.equals(pane.getValue());
-        }
-      };
-      SwingUtilities.invokeLater(runnable);
+
+        text = "An untrapped error has occurred:\n\n" +
+               msg + "\n\n" +
+               "Please send a report to support@vassalengine.org and attach the log file.\n" + logFile;
+      }
+
+      ErrorDialog.error(t, text);
     }
-    t.printStackTrace();
   }
 
   public static void main(String[] args) {
-    ErrorLog log = new ErrorLog();
-    while (!disabled) {
+    final ErrorLog log = new ErrorLog();
+    while (!ErrorDialog.isDisabled(RuntimeException.class)) {
       log.handle(new RuntimeException("Warning!!!"));
     }
   }

@@ -203,14 +203,26 @@ public class SavedGameUpdaterDialog extends JDialog {
   private void exportPieceInfo() {
     fc.setMultiSelectionEnabled(false);
     if (JFileChooser.CANCEL_OPTION != fc.showSaveDialog(this)) {
-      Properties p = updater.getPieceSlotsMap();
+      final Properties p = updater.getPieceSlotsMap();
       p.put(MODULE_NAME_KEY, GameModule.getGameModule().getGameName());
       p.put(VERSION_KEY, GameModule.getGameModule().getGameVersion());
+
       try {
-        p.store(new FileOutputStream(fc.getSelectedFile()),null);
+        final FileOutputStream out = new FileOutputStream(fc.getSelectedFile());
+        try {
+          p.store(out, null);
+        }
+        finally {
+          try {
+            out.close();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
       }
       catch (IOException e) {
-        showErrorMessage(e,"Export failed","Unable to write info");
+        showErrorMessage(e, "Export failed","Unable to write info");
       }
     }
   }
@@ -219,8 +231,17 @@ public class SavedGameUpdaterDialog extends JDialog {
     fc.setMultiSelectionEnabled(false);
     if (JFileChooser.CANCEL_OPTION != fc.showOpenDialog(this)) {
       oldPieceInfo = new Properties();
+
       try {
-        oldPieceInfo.load(new FileInputStream(fc.getSelectedFile()));
+        FileInputStream in = null;
+        try {
+          in = new FileInputStream(fc.getSelectedFile());
+          oldPieceInfo.load(in);
+        }
+        finally {
+          if (in != null) in.close();
+        }
+
         String moduleVersion = oldPieceInfo.getProperty(VERSION_KEY);
         String moduleName = oldPieceInfo.getProperty(MODULE_NAME_KEY);
         if (!GameModule.getGameModule().getGameName().equals(moduleName)) {

@@ -65,23 +65,36 @@ public class TranslateVassalWindow extends TranslateWindow {
   }
 
   protected Component getHeaderPanel() {
-    JPanel headPanel = new JPanel();
-    localeConfig = new LocaleConfigurer(null, "", new Locale(Locale.getDefault().getLanguage()));
+    final JPanel headPanel = new JPanel();
+    localeConfig =
+      new LocaleConfigurer(null, "",
+        new Locale(Locale.getDefault().getLanguage()));
+
     localeConfig.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         Locale l = localeConfig.getValueLocale();
         if (!Resources.getSupportedLocales().contains(l)) {
           l = new Locale(l.getLanguage());
         }
+
         if (Resources.getSupportedLocales().contains(l)) {
-          InputStream in = getClass().getResourceAsStream("VASSAL_"+l+".properties");
-          if (in != null) { 
+          final InputStream in =
+            getClass().getResourceAsStream("VASSAL_"+l+".properties");
+          if (in != null) {
             try {
               ((VassalTranslation)target).loadProperties(in);
               ((MyTableModel) keyTable.getModel()).fireTableDataChanged();
             }
             catch (IOException e) {
               e.printStackTrace();
+            }
+            finally {
+              try {
+                in.close();
+              }
+              catch (IOException e) {
+                e.printStackTrace();
+              }
             }
           }
         }
@@ -150,26 +163,40 @@ public class TranslateVassalWindow extends TranslateWindow {
         return;
       }
     }
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
-    fc.setFileFilter(new ExtensionFileFilter("Property Files", new String[]{".properties"}));
-    if (fc.showOpenDialog(this) != FileChooser.APPROVE_OPTION)
-      return;
-    File file = fc.getSelectedFile();
+
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    fc.setFileFilter(new ExtensionFileFilter("Property Files",
+                     new String[]{".properties"}));
+    if (fc.showOpenDialog(this) != FileChooser.APPROVE_OPTION) return;
+
+    final File file = fc.getSelectedFile();
     if (!file.getName().endsWith(".properties")) {
       loadError("Module Properties files must end in '.properties'.");
       return;
     }
     else {
-      String language = file.getName().substring(7, 9);
+      final String language = file.getName().substring(7, 9);
       String country = "";
       if (file.getName().charAt(9) == '_') {
         country = file.getName().substring(10, 12);
       }
-      Locale locale = new Locale(language, country);
+      final Locale locale = new Locale(language, country);
       localeConfig.setValue(locale);
     }
+
     try {
-      ((VassalTranslation) target).loadProperties(new FileInputStream(file));
+      final FileInputStream in = new FileInputStream(file);
+      try {
+        ((VassalTranslation) target).loadProperties(in);
+      }
+      finally {
+        try {
+          in.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
     catch (IOException e) {
       e.printStackTrace();
@@ -179,6 +206,7 @@ public class TranslateVassalWindow extends TranslateWindow {
       }
       loadError(msg);
     }
+
     ((MyTableModel) keyTable.getModel()).fireTableDataChanged();
   }
 

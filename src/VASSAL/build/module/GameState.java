@@ -20,8 +20,6 @@ package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -53,14 +51,17 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BackgroundTask;
+import VASSAL.tools.BridgeStream;
 import VASSAL.tools.Deobfuscator;
 import VASSAL.tools.FileChooser;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.Obfuscator;
 
 /**
  * The GameState represents the state of the game currently being played.
  * Only one game can be open at once.
- * @see GameModule#getGameState */
+ * @see GameModule#getGameState
+ */
 public class GameState implements CommandEncoder {
   protected Map<String,GamePiece> pieces = new HashMap<String,GamePiece>();
   protected List<GameComponent> gameComponents = new ArrayList<GameComponent>();
@@ -193,25 +194,32 @@ public class GameState implements CommandEncoder {
   /**
    * Start/end a game.  Prompt to save if the game state has been
    * modified since last save.  Invoke {@link GameComponent#setup}
-   * on all registered {@link GameComponent} objects */
+   * on all registered {@link GameComponent} objects.
+   */
   public void setup(boolean gameStarting) {
     if (!gameStarting && gameStarted && isModified()) {
-      switch (JOptionPane.showConfirmDialog
-          (GameModule.getGameModule().getFrame(), Resources.getString("GameState.save_game_query"), Resources.getString("GameState.game_modified"), JOptionPane.YES_NO_CANCEL_OPTION)) {  //$NON-NLS-1$ //$NON-NLS-2$
-        case JOptionPane.YES_OPTION:
-          saveGame();
-          break;
-        case JOptionPane.CANCEL_OPTION:
-          return;
+      switch (JOptionPane.showConfirmDialog(
+        GameModule.getGameModule().getFrame(),
+        Resources.getString("GameState.save_game_query"), //$NON-NLS-1$
+        Resources.getString("GameState.game_modified"),   //$NON-NLS-1$
+        JOptionPane.YES_NO_CANCEL_OPTION)) {
+      case JOptionPane.YES_OPTION:
+        saveGame();
+        break;
+      case JOptionPane.CANCEL_OPTION:
+        return;
       }
     }
+
     this.gameStarting = gameStarting;
     if (!gameStarting) {
       pieces.clear();
     }
+
     newGame.setEnabled(!gameStarting);
     saveGame.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
+
     if (gameStarting) {
       loadGame.setText(Resources.getString("GameState.load_continuation"));  //$NON-NLS-1$
       GameModule.getGameModule().getWizardSupport().showGameSetupWizard();
@@ -225,6 +233,7 @@ public class GameState implements CommandEncoder {
     for (GameComponent gc : gameComponents) {
       gc.setup(this.gameStarting);
     }
+
     if (gameStarting) {
 // FIXME: what is the purpose of this?
 //      GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
@@ -242,12 +251,13 @@ public class GameState implements CommandEncoder {
    * Read the game from a savefile.  The contents of the file is
    * sent to {@link GameModule#decode} and translated into a
    * {@link Command}, which is then executed.  The command read from the
-   * file should be that returned by {@link #getRestoreCommand} */
+   * file should be that returned by {@link #getRestoreCommand}.
+   */
   public void loadGame() {
     FileChooser fc = GameModule.getGameModule().getFileChooser();
     if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
 
-    File f = fc.getSelectedFile();
+    final File f = fc.getSelectedFile();
     if (f.exists()) {
       try {
         if (gameStarted) {
@@ -464,13 +474,13 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    String save = saveString();
+    final BridgeStream out = new BridgeStream();
+    final String save = saveString();
     new Obfuscator(save.getBytes("UTF-8")).write(out);  //$NON-NLS-1$
-    out.close();
     lastSave = save;
-    ArchiveWriter saver = new ArchiveWriter(f.getPath());
-    saver.addFile(SAVEFILE_ZIP_ENTRY, new ByteArrayInputStream(out.toByteArray()));
+
+    final ArchiveWriter saver = new ArchiveWriter(f.getPath());
+    saver.addFile(SAVEFILE_ZIP_ENTRY, out.toInputStream());
     saver.write();
     if (saver.getArchive() != null) {
       saver.getArchive().close();
@@ -481,12 +491,13 @@ public class GameState implements CommandEncoder {
     try {
       loadGameInBackground(f.getName(), new FileInputStream(f));
     }
-    catch (FileNotFoundException e) {
+    catch (IOException e) {
       GameModule.getGameModule().warn(Resources.getString("GameState.invalid_savefile", f.getPath()));
     }
   }
 
-  public void loadGameInBackground(final String shortName, final InputStream in)  {
+  public void loadGameInBackground(final String shortName,
+                                   final InputStream in)  {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
 
@@ -496,7 +507,18 @@ public class GameState implements CommandEncoder {
 
       public void doFirst() {
         try {
-          loadCommand = decodeSavedGame(in);
+          try {
+            loadCommand = decodeSavedGame(in);
+          }
+          finally {
+            try {
+              in.close();
+            }
+            catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+
           if (loadCommand != null) {
             msg = Resources.getString("GameState.loaded", shortName);  //$NON-NLS-1$
           }
@@ -555,13 +577,25 @@ public class GameState implements CommandEncoder {
   }
   
   public Command decodeSavedGame(InputStream in) throws IOException {
-    ZipInputStream zipInput = new ZipInputStream(in);
-    for (ZipEntry entry = zipInput.getNextEntry(); entry != null; entry = zipInput.getNextEntry()) {
-      if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
-        byte b[] = new Deobfuscator(zipInput).getPlainText();
-        return GameModule.getGameModule().decode(new String(b, "UTF-8").trim());
+    final ZipInputStream zipInput = new ZipInputStream(in);
+    try {
+      for (ZipEntry entry = zipInput.getNextEntry(); entry != null;
+           entry = zipInput.getNextEntry()) {
+        if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
+          return GameModule.getGameModule().decode(
+            new Deobfuscator(zipInput).getString());
+        }
       }
     }
+    finally {
+      try {
+        zipInput.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     throw new IOException("Invalid saveFile format");
   }
 

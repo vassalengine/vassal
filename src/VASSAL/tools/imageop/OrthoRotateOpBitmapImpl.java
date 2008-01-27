@@ -3,16 +3,19 @@ package VASSAL.tools.imageop;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import VASSAL.tools.HashCode;
+import VASSAL.tools.ImageUtils;
 
-public class OrthoRotateOp extends AbstractTiledOp {
+public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
+                                     implements RotateOp {
   private final ImageOp sop;
   private final int angle;
   private final int hash;
 
-  public OrthoRotateOp(ImageOp sop, int angle) {
+  public OrthoRotateOpBitmapImpl(ImageOp sop, int angle) {
     if (sop == null) throw new IllegalArgumentException();
 
     angle = (360 + (angle % 360)) % 360;  // put angle in [0,360)
@@ -26,7 +29,7 @@ public class OrthoRotateOp extends AbstractTiledOp {
     hash = HashCode.hash(sop) ^ HashCode.hash(angle);
   }
 
-  protected Image apply() throws Exception {
+  public Image apply() throws Exception {
     if (size == null) fixSize();
 
     final BufferedImage dst =
@@ -57,8 +60,16 @@ public class OrthoRotateOp extends AbstractTiledOp {
     tiles = new ImageOp[numXTiles*numYTiles];
   }
 
-  public int getAngle() {
+  public ImageOp getSource() {
+    return sop;
+  }
+
+  public double getAngle() {
     return angle * 90;
+  }
+
+  public RenderingHints getHints() {
+    return ImageUtils.getDefaultHints();
   }
 
   protected ImageOp getTileOp(int tileX, int tileY) {
@@ -71,12 +82,12 @@ public class OrthoRotateOp extends AbstractTiledOp {
     return top;
   }
 
-  private static class TileOp extends AbstractTileOp {
+  private static class TileOp extends AbstractTileOpImpl {
     private final ImageOp sop;
     private final int angle;
     private final int hash;
  
-    public TileOp(OrthoRotateOp rop, int tileX, int tileY) {
+    public TileOp(OrthoRotateOpBitmapImpl rop, int tileX, int tileY) {
       if (rop == null) throw new IllegalArgumentException();
 
       if (tileX < 0 || tileX >= rop.getNumXTiles() ||
@@ -123,12 +134,12 @@ public class OrthoRotateOp extends AbstractTiledOp {
 
       size = new Dimension(sx1-sx0, sy1-sy0);
 
-      this.sop = new CropOp(rop.sop, sx0, sy0, sx1, sy1);
+      this.sop = new CropOpBitmapImpl(rop.sop, sx0, sy0, sx1, sy1);
                             
       hash = HashCode.hash(sop) ^ HashCode.hash(angle);
     }
 
-    protected Image apply() throws Exception {
+    public Image apply() throws Exception {
       final BufferedImage dst =
         new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
 
@@ -141,7 +152,11 @@ public class OrthoRotateOp extends AbstractTiledOp {
     }
 
     protected void fixSize() { }
-   
+  
+    public ImageOp getSource() {
+      return sop;
+    }
+ 
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
@@ -161,10 +176,10 @@ public class OrthoRotateOp extends AbstractTiledOp {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof OrthoRotateOp)) return false;
+    if (o == null || !(o instanceof RotateOp)) return false;
     
-    final OrthoRotateOp op = (OrthoRotateOp) o;
-    return angle == op.angle && sop.equals(op.sop);
+    final RotateOp op = (RotateOp) o;
+    return angle == op.getAngle() && sop.equals(op.getSource());
   }
 
   @Override

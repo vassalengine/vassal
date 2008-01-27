@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -83,44 +82,56 @@ public class Server extends Thread {
       });
       handler.start();
       handler.writeLine(Protocol.encodeRegisterCommand("rk", "test/Main Room", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-      BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-      String line;
-      while ((line = reader.readLine()) != null) {
-        if (line.startsWith("JOIN")) { //$NON-NLS-1$
-          String room = line.substring("JOIN".length()).trim(); //$NON-NLS-1$
-          handler.writeLine(Protocol.encodeJoinCommand("test/" + room)); //$NON-NLS-1$
-        }
-        else if (line.startsWith("BYE")) { //$NON-NLS-1$
-          handler.close();
-        }
-        else if (line.startsWith("HELLO")) { //$NON-NLS-1$
-          soc = new Socket("localHost", port); //$NON-NLS-1$
-          handler = new BufferedSocketHandler(soc, new SocketWatcher() {
-            public void handleMessage(String msg) {
-              System.err.println(msg);
-            }
 
-            public void socketClosed(SocketHandler handler) {
-            }
-          });
-          handler.start();
-          handler.writeLine(Protocol.encodeRegisterCommand("rk", "test/Main Room", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-        else if (line.startsWith("*")) { //$NON-NLS-1$
-          int length = Integer.parseInt(line.substring(1));
-          StringBuffer buffer = new StringBuffer();
-          for (int i=0;i<length;++i) {
-            char c = (char) ('a' + i%10);
-            if (c == 'a') {
-              c = 'A';
-            }
-            buffer.append(c);
+      final BufferedReader reader =
+        new BufferedReader(new InputStreamReader(System.in));
+      try {
+        String line;
+        while ((line = reader.readLine()) != null) {
+          if (line.startsWith("JOIN")) { //$NON-NLS-1$
+            final String room = line.substring("JOIN".length()).trim(); //$NON-NLS-1$
+            handler.writeLine(Protocol.encodeJoinCommand("test/" + room)); //$NON-NLS-1$
           }
-          String msg = Protocol.encodeForwardCommand("test/*",buffer.toString()); //$NON-NLS-1$
-          handler.writeLine(msg);
+          else if (line.startsWith("BYE")) { //$NON-NLS-1$
+            handler.close();
+          }
+          else if (line.startsWith("HELLO")) { //$NON-NLS-1$
+            soc = new Socket("localHost", port); //$NON-NLS-1$
+            handler = new BufferedSocketHandler(soc, new SocketWatcher() {
+              public void handleMessage(String msg) {
+                System.err.println(msg);
+              }
+  
+              public void socketClosed(SocketHandler handler) {
+              }
+            });
+            handler.start();
+            handler.writeLine(Protocol.encodeRegisterCommand("rk", "test/Main Room", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          }
+          else if (line.startsWith("*")) { //$NON-NLS-1$
+            int length = Integer.parseInt(line.substring(1));
+            final StringBuilder buffer = new StringBuilder();
+            for (int i=0;i<length;++i) {
+              char c = (char) ('a' + i%10);
+              if (c == 'a') {
+                c = 'A';
+              }
+              buffer.append(c);
+            }
+            String msg = Protocol.encodeForwardCommand("test/*",buffer.toString()); //$NON-NLS-1$
+            handler.writeLine(msg);
+          }
+          else {
+            handler.writeLine(line);
+          }
         }
-        else {
-          handler.writeLine(line);
+      }
+      finally {
+        try {
+          reader.close();
+        }
+        catch (IOException e) {
+          e.printStackTrace();
         }
       }
     }

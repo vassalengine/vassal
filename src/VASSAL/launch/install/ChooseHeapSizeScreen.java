@@ -1,5 +1,4 @@
 /*
- *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -18,13 +17,13 @@
 package VASSAL.launch.install;
 
 import java.awt.Component;
-import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 
+import static VASSAL.tools.IterableEnumeration.iterate;
 
 /**
  * @author rkinney
@@ -67,9 +66,7 @@ public class ChooseHeapSizeScreen implements Screen, Constants {
   }
 
   public void next(InstallWizard wiz) {
-    for (Enumeration<AbstractButton> e = group.getElements();
-         e.hasMoreElements();) {
-      AbstractButton b = e.nextElement();
+    for (AbstractButton b : iterate(group.getElements())) {
       if (b.isSelected()) {
         wiz.put(Constants.HEAP_SIZE,(String) b.getClientProperty(HEAP_SIZE));
         break;
