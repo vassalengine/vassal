@@ -26,9 +26,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 /**
- * The window with controls for VASSAL prior to loading a particular module
- * @author rodneykinney
- *
+ * The window with controls for VASSAL prior to loading a particular module.
+ * @author Rodney Kinney
  */
 public class ConsoleWindow {
   protected JFrame frame;
@@ -40,18 +39,13 @@ public class ConsoleWindow {
   protected void initComponents() {
     frame = new JFrame("VASSAL");
     frame.setLayout(new BoxLayout(frame.getContentPane(),BoxLayout.Y_AXIS));
-    JLabel label = new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().getImage(ConsoleWindow.class.getResource("/images/Splash.png"))));
+
+    final JLabel label = new JLabel(new ImageIcon(Toolkit.getDefaultToolkit()
+      .getImage(ConsoleWindow.class.getResource("/images/Splash.png"))));
     label.setAlignmentX(Box.CENTER_ALIGNMENT);
     frame.add(label);
-    frame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-    frame.addWindowListener(new java.awt.event.WindowAdapter() {
-      public void windowClosing(java.awt.event.WindowEvent evt) {
-        System.exit(0);
-      }
-    }
-    );
-
-   }
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  }
   
   public void setControls(JComponent c) {
     while (frame.getContentPane().getComponentCount() > 1) {

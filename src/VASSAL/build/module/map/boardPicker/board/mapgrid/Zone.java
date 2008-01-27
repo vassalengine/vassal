@@ -128,16 +128,38 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
   
   public String[] getAttributeNames() {
-    return new String[]{NAME, LOCATION_FORMAT, PATH, USE_PARENT_GRID, USE_HIGHLIGHT, HIGHLIGHT_PROPERTY};
+    return new String[]{
+      NAME,
+      LOCATION_FORMAT,
+      PATH,
+      USE_PARENT_GRID,
+      USE_HIGHLIGHT,
+      HIGHLIGHT_PROPERTY
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Location Format:  ", "Shape", "Use board's grid?", "Use Highlighting?", "Highlight Property:  "};
+    return new String[]{
+      "Name:  ",
+      "Location Format:  ",
+      "Shape",
+      "Use board's grid?",
+      "Use Highlighting?",
+      "Highlight Property:  "
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, LocationFormatConfig.class, ShapeEditor.class, Boolean.class, Boolean.class, String.class};
+    return new Class[]{
+      String.class,
+      LocationFormatConfig.class,
+      ShapeEditor.class,
+      Boolean.class,
+      Boolean.class,
+      String.class
+    };
   }
+
   public static class LocationFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[]{NAME, GRID_LOCATION});
@@ -244,7 +266,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   public MutableProperty removeMutableProperty(String key) {
-    MutableProperty existing = propsContainer.removeMutableProperty(key);
+    final MutableProperty existing = propsContainer.removeMutableProperty(key);
     if (existing != null) {
       existing.removeMutablePropertyChangeListener(repaintOnPropertyChange);
     }
@@ -389,8 +411,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   public Rectangle getBounds() {
-    Rectangle r = myPolygon.getBounds();
-    return r;
+    return myPolygon.getBounds();
   }
 
   public void setHighlight(ZoneHighlight h) {
@@ -402,10 +423,10 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    */
   public void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
     if ((getGrid() != null && getGrid().isVisible()) || highlighter != null) {
-      Graphics2D g2d = (Graphics2D) g;
-      Shape oldClip = g2d.getClip();
-      Area newClip = new Area(visibleRect);
-      Shape s = getCachedShape(myPolygon, bounds.x, bounds.y, scale);
+      final Graphics2D g2d = (Graphics2D) g;
+      final Shape oldClip = g2d.getClip();
+      final Area newClip = new Area(visibleRect);
+      final Shape s = getCachedShape(myPolygon, bounds.x, bounds.y, scale);
       newClip.intersect(new Area(s));
       g2d.setClip(newClip);
       if (getGrid() != null && getGrid().isVisible()) {
@@ -425,7 +446,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     if (scale == lastScale && lastPolygon == myPolygon && lastScaledShape != null) {
       return lastScaledShape;
     }
-    AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+    final AffineTransform transform =
+      AffineTransform.getScaleInstance(scale, scale);
     lastScaledShape = transform.createTransformedShape(myPolygon);
     lastScale = scale;
     lastPolygon = myPolygon;
@@ -436,11 +458,16 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    * Calculate and cache the scaled, translated zone shape
    */
   protected Shape getCachedShape(Polygon poly, int x, int y, double scale) {
-    if (poly.equals(lastPolygon) && x == lastBoundsX && y == lastBoundsY && scale == lastScale) {
+    if (poly.equals(lastPolygon) &&
+        x == lastBoundsX &&
+        y == lastBoundsY &&
+        scale == lastScale) {
       return lastTransformedShape;
     }
-    Shape scaled = getScaledShape(myPolygon, scale);
-    AffineTransform transform = AffineTransform.getTranslateInstance(x, y);
+
+    final Shape scaled = getScaledShape(myPolygon, scale);
+    final AffineTransform transform =
+      AffineTransform.getTranslateInstance(x, y);
     lastTransformedShape = transform.createTransformedShape(scaled);
     lastPolygon = myPolygon;
     lastBoundsX = x;
@@ -456,7 +483,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    */
   public Object getProperty(Object key) {
     Object value = null;
-    MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
+    final MutableProperty p =
+      propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
       value = p.getPropertyValue();
     }
@@ -468,7 +496,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
   public Object getLocalizedProperty(Object key) {
     Object value = null;
-    MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
+    final MutableProperty p =
+      propsContainer.getMutableProperty(String.valueOf(key));
     if (p != null) {
       value = p.getPropertyValue();
     }
@@ -477,6 +506,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     }
     return value;
   }
+
   /*
    * Return a named Global Property
    * 
@@ -558,7 +588,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       };
       frame = new JDialog((Frame) null, zone.getConfigureName(), true);
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-      JPanel labels = new JPanel();
+      final JPanel labels = new JPanel();
       labels.setLayout(new GridLayout(2, 2));
       labels.add(new JLabel("Drag to create initial shape"));
       labels.add(new JLabel("Right-click to add point"));
@@ -566,14 +596,14 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       labels.add(new JLabel("DEL to remove point"));
       labels.setAlignmentX(0.0f);
       frame.add(labels);
-      JButton direct = new JButton("Set Coordinates directly");
+      final JButton direct = new JButton("Set Coordinates directly");
       direct.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           String newShape = JOptionPane.showInputDialog(frame, "Enter x,y coordinates of polygon vertices,\nseparated by spaces", PolygonEditor
               .polygonToString(editor.getPolygon()).replace(';', ' '));
           if (newShape != null) {
-            StringBuffer buffer = new StringBuffer();
-            StringTokenizer st = new StringTokenizer(newShape);
+            final StringBuffer buffer = new StringBuffer();
+            final StringTokenizer st = new StringTokenizer(newShape);
             while (st.hasMoreTokens()) {
               buffer.append(st.nextToken());
               if (st.hasMoreTokens()) {
@@ -591,13 +621,13 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       scroll = new AdjustableSpeedScrollPane(editor);
       editor.setScroll(scroll);
       frame.add(scroll);
-      JPanel buttonPanel = new JPanel();
-      JButton closeButton = new JButton("Ok");
+      final JPanel buttonPanel = new JPanel();
+      final JButton closeButton = new JButton("Ok");
       closeButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           setValue((Object) getValueString());
           frame.setVisible(false);
-          GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
+//          GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
         }
       });
       buttonPanel.add(closeButton);
@@ -606,18 +636,20 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
     private void init(Zone zone) {
       board = zone.getBoard();
+/*
       if (board != null) {
         board.fixImage();
       }
+*/
       editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);
-      Rectangle polyBounds = editor.getPolygon().getBounds();
-      Point polyCenter = new Point(polyBounds.x + polyBounds.width/2,
+      final Rectangle polyBounds = editor.getPolygon().getBounds();
+      final Point polyCenter = new Point(polyBounds.x + polyBounds.width/2,
           polyBounds.y + polyBounds.height/2);
       if (!editor.getVisibleRect().contains(polyCenter)) {
         editor.center(polyCenter);
       }
       frame.pack();
-      Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+      final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
       frame.setSize(Math.min(frame.getWidth(), d.width * 2 / 3), Math.min(frame.getHeight(), d.height * 2 / 3));
       frame.setVisible(true);
     }

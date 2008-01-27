@@ -1,5 +1,5 @@
 /*
- * $Id: TranslateWindow.java 1814 2007-03-06 13:28:24 +0000 (Tue, 06 Mar 2007) rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney, Brent Easton
  *

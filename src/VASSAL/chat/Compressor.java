@@ -1,5 +1,5 @@
 /*
- * $Id: Compressor.java,v 1.2 2006-01-17 06:15:04 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *

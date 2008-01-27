@@ -28,17 +28,18 @@ import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.OverlayLayout;
 import VASSAL.build.module.map.BoardPicker;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.BackgroundTask;
 
 public class BoardSlot extends JPanel implements Icon, ActionListener {
   private static final long serialVersionUID = 1L;
 
-  private String prompt = Resources.getString("BoardPicker.select_board"); //$NON-NLS-1$
+  private String prompt =
+    Resources.getString("BoardPicker.select_board"); //$NON-NLS-1$
 
   protected BoardPicker picker;
   protected Board board = null;
@@ -49,19 +50,22 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
   public BoardSlot(BoardPicker bp) {
     this(bp,Resources.getString("BoardPicker.select_board")); //$NON-NLS-1$
   }
+
   public BoardSlot(BoardPicker bp, String prompt) {
     this.prompt = prompt;
     picker = bp;
     boards = new JComboBox();
     boards.addItem(prompt);
-    String s[] = picker.getAllowableLocalizedBoardNames();
-    for (int i = 0; i < s.length; ++i) {
-      boards.addItem(s[i]);
+
+    final String lbn[] = picker.getAllowableLocalizedBoardNames();
+    for (String s : lbn) {
+      boards.addItem(s);
     }
-    boards.setSelectedIndex(s.length == 1 ? 1 : 0);
+    boards.setSelectedIndex(lbn.length == 1 ? 1 : 0);
     boards.addActionListener(this);
 
-    reverseCheckBox = new JCheckBox(Resources.getString("BoardPicker.flip")); //$NON-NLS-1$
+    reverseCheckBox =
+      new JCheckBox(Resources.getString("BoardPicker.flip")); //$NON-NLS-1$
     reverseCheckBox.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         if (getBoard() != null) {
@@ -74,14 +78,15 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     reverseCheckBox.setVisible(false);
 
     setLayout(new OverlayLayout(this));
-    JPanel p = new JPanel();
-    Box b = Box.createHorizontalBox();
+
+    final JPanel p = new JPanel();
+    final Box b = Box.createHorizontalBox();
     b.add(boards);
     b.add(reverseCheckBox);
     p.add(b);
     p.setOpaque(false);
     p.setAlignmentX(0.5F);
-    JLabel l = new JLabel(this);
+    final JLabel l = new JLabel(this);
     l.setAlignmentX(0.5F);
 
     add(p);
@@ -109,12 +114,19 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
 
   public void setBoard(final Board b) {
     board = b;
-    System.gc();
     if (b != null) {
-      reverseCheckBox.setVisible("true".equals(b.getAttributeValueString(Board.REVERSIBLE))); //$NON-NLS-1$
+      reverseCheckBox.setVisible("true".equals(
+        b.getAttributeValueString(Board.REVERSIBLE))); //$NON-NLS-1$
       reverseCheckBox.setSelected(b.isReversed());
 
       board = b;
+
+      setSize(getPreferredSize());
+      revalidate();
+      repaint();
+
+// FIXME: do something in case the image fails to load
+/*
       picker.warn(Resources.getString("BoardPicker.loading", b.getLocalizedName())); //$NON-NLS-1$
       final javax.swing.Timer t = new javax.swing.Timer(1000, new ActionListener() {
         boolean toggle = false;
@@ -131,9 +143,9 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
       });
       new BackgroundTask() {
         public void doFirst() {
-          if (board != null) {
-            board.fixImage();
-          }
+//          if (board != null) {
+//            board.fixImage();
+//          }
         }
 
         public void doLater() {
@@ -145,23 +157,23 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
         }
       }.start();
       t.start();
+*/
     }
     else {
       reverseCheckBox.setVisible(false);
+// FIXME: does the order of these three matter? They're not the same above?
       revalidate();
       setSize(getPreferredSize());
       repaint();
     }
   }
-  
-  
 
+// FIXME: This is confusing. The Icon should be an internal object.
   public int getIconHeight() {
     if (board != null) {
       return (int)(picker.getSlotScale() * board.bounds().height);
     }
-    else if (this == picker.getSlot(0)
-      || picker.getSlot(0) == null) {
+    else if (this == picker.getSlot(0) || picker.getSlot(0) == null) {
       return picker.getDefaultSlotSize().height;
     }
     else {
@@ -173,8 +185,7 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
     if (board != null) {
       return (int)(picker.getSlotScale() * board.bounds().width);
     }
-    else if (this == picker.getSlot(0)
-      || picker.getSlot(0) == null) {
+    else if (this == picker.getSlot(0) || picker.getSlot(0) == null) {
       return picker.getDefaultSlotSize().width;
     }
     else {

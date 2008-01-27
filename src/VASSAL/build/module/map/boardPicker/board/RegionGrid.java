@@ -139,7 +139,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   public static final String FONT_SIZE = "fontsize";
 
   public String[] getAttributeNames() {
-    return new String[]{SNAPTO, VISIBLE, FONT_SIZE};
+    return new String[]{
+      SNAPTO,
+      VISIBLE,
+      FONT_SIZE
+    };
   }
 
   public String[] getAttributeDescriptions() {
@@ -150,14 +154,18 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{Boolean.class, Boolean.class, Integer.class};
+    return new Class[]{
+      Boolean.class,
+      Boolean.class,
+      Integer.class
+    };
   }
 
   public Configurer getConfigurer() {
-    boolean buttonExists = config != null;
-    Configurer c = super.getConfigurer();
+    final boolean buttonExists = config != null;
+    final Configurer c = super.getConfigurer();
     if (!buttonExists) {
-      JButton b = new JButton("Define Regions");
+      final JButton b = new JButton("Define Regions");
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           configureRegions();
@@ -234,13 +242,14 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
       fontSize = ((Integer) val).intValue();
     }
-	else if (SNAPTO.equals(key)) {
-		if (val instanceof Boolean) {
-			snapTo = ((Boolean) val).booleanValue();
-		} else if (val instanceof String) {
-			snapTo = "true".equals(val);
-		}
-	}
+	  else if (SNAPTO.equals(key)) {
+  		if (val instanceof Boolean) {
+  			snapTo = ((Boolean) val).booleanValue();
+  		} 
+      else if (val instanceof String) {
+  			snapTo = "true".equals(val);
+  		}
+  	}
   }
 
   public void configureRegions() {
@@ -304,7 +313,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   // Internal routine to find closest point for region name reporting
   //
   protected Point doSnap(Point p) {
-	  double distSq, minDistSq = 999999999;
+	  double distSq, minDistSq = Double.MAX_VALUE;
   	Point snapPoint = p;
 
     // Iterate over each grid point and determine the closest.
@@ -339,7 +348,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     	checkPoint = doSnap(p);
     }
 
-    Region region = regionList.get(checkPoint);
+    final Region region = regionList.get(checkPoint);
     return region != null ? region.getName() : null;
 
   }
@@ -362,7 +371,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       checkPoint = doSnap(p);
     }
 
-    Region region = regionList.get(checkPoint);
+    final Region region = regionList.get(checkPoint);
     return region != null ? region.getLocalizedName() : null;
 
   }
@@ -480,10 +489,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       add(scroll, BorderLayout.CENTER);
 
-      Box bottomPanel = Box.createVerticalBox();
-      JPanel buttonPanel = new JPanel();
+      final Box bottomPanel = Box.createVerticalBox();
+      final JPanel buttonPanel = new JPanel();
       
-      JButton okButton = new JButton(Resources.getString(Resources.OK)); //$NON-NLS-1$
+      final JButton okButton =
+        new JButton(Resources.getString(Resources.OK)); //$NON-NLS-1$
       okButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           close();
@@ -491,7 +501,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       });
       buttonPanel.add(okButton);
       
-      JButton canButton = new JButton(Resources.getString(Resources.CANCEL)); //$NON-NLS-1$
+      final JButton canButton =
+        new JButton(Resources.getString(Resources.CANCEL)); //$NON-NLS-1$
       canButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           doCancel();
@@ -499,14 +510,13 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       });
       buttonPanel.add(canButton);
       
-      JLabel mess = new JLabel("Drag and Drop selected regions to move, or use ctrl-arrows/ctrl-shift-arrows for precise movement.");
+      final JLabel mess = new JLabel("Drag and Drop selected regions to move, or use ctrl-arrows/ctrl-shift-arrows for precise movement.");
       mess.setAlignmentY(CENTER_ALIGNMENT);
       bottomPanel.add(mess);
       bottomPanel.add(buttonPanel);
       
       add(bottomPanel, BorderLayout.SOUTH);
 
-      board.fixImage();
       scroll.revalidate();
       pack();
       repaint();
@@ -584,7 +594,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
      * @param evtPt
      */
     protected void scrollAtEdge(Point evtPt, int dist) {
-      Point p =
+      final Point p =
           new Point(
               evtPt.x - scroll.getViewport().getViewPosition().x,
               evtPt.y - scroll.getViewport().getViewPosition().y);
@@ -643,12 +653,13 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         Rectangle b = getVisibleRect();
         g.clearRect(b.x, b.y, b.width, b.height);
         myBoard.draw(g, 0, 0, 1.0, this);
-        Rectangle bounds = new Rectangle(new Point(),myBoard.bounds().getSize());
+        final Rectangle bounds =
+          new Rectangle(new Point(),myBoard.bounds().getSize());
         grid.forceDraw(g,bounds,bounds,1.0,false);
-        Rectangle selection = config.getSelectionRect();
+        final Rectangle selection = config.getSelectionRect();
         if (selection != null) {
-          Graphics2D g2d = (Graphics2D) g;
-          Stroke str = g2d.getStroke();
+          final Graphics2D g2d = (Graphics2D) g;
+          final Stroke str = g2d.getStroke();
           g2d.setStroke(new BasicStroke(2.0f));
           g2d.setColor(Color.RED);
           g2d.drawRect(selection.x, selection.y, selection.width, selection.height);
@@ -678,7 +689,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       public void drop(DropTargetDropEvent event) {
         removeDragCursor();
-        Point dragEnd = event.getLocation();
+        final Point dragEnd = event.getLocation();
         int x = dragEnd.x - dragStart.x;
         int y = dragEnd.y - dragStart.y;
         
@@ -694,9 +705,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       public void dragGestureRecognized(DragGestureEvent dge) {
         
-        Point mousePosition = dge.getDragOrigin();
+        final Point mousePosition = dge.getDragOrigin();
         dragStart = new Point(mousePosition);
-        Region r = grid.getRegion(mousePosition);
+        final Region r = grid.getRegion(mousePosition);
         if (r == null) {
           return;
         }
@@ -770,7 +781,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
       
       protected void setDragCursor() {
-        JRootPane rootWin = SwingUtilities.getRootPane(this);
+        final JRootPane rootWin = SwingUtilities.getRootPane(this);
         if (rootWin != null) {
           // remove cursor from old window
           if (dragCursor.getParent() != null) {
@@ -784,6 +795,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
       
       private void makeDragCursor() {
+// FIXME: make this an ImageOp?
         // create the cursor if necessary
         if (dragCursor == null) {
           dragCursor = new JLabel();
@@ -797,11 +809,16 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         boundingBox = config.getSelectedBox();        
         drawOffset.move(dragStart.x - boundingBox.x, dragStart.y - boundingBox.y);
         
-        BufferedImage cursorImage = new BufferedImage(boundingBox.width, boundingBox.height, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics2D g = cursorImage.createGraphics();
+        final BufferedImage cursorImage =
+          new BufferedImage(boundingBox.width,
+                            boundingBox.height,
+                            BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g = cursorImage.createGraphics();
  
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-         // Draw each region into the drag cursor in the correct place
+        g.setComposite(
+          AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+
+        // Draw each region into the drag cursor in the correct place
         for (Region r : config.selectedRegions) {
           int x = -boundingBox.x*2;
           int y = -boundingBox.y*2;
@@ -814,7 +831,6 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
         // store the bitmap in the cursor
         dragCursor.setIcon(new ImageIcon(cursorImage));
-        
       }
     }
     /* ------------------------------------------------------------------
@@ -827,7 +843,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     // Mouse clicked, see if it is on a Region Point
     public void mouseClicked(MouseEvent e) {
-      Point p = e.getPoint();
+      final Point p = e.getPoint();
       lastClick = p;
 
       if (e.isMetaDown()) { // Right click...menu
@@ -837,7 +853,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
         if (e.getClickCount() >= 2) { // Double click show properties
           if (lastClickedRegion.getConfigurer() != null) {
-            Action a = new EditPropertiesAction(lastClickedRegion, null, this);
+            final Action a =
+              new EditPropertiesAction(lastClickedRegion, null, this);
             if (a != null) {
               a.actionPerformed(
                   new ActionEvent(
@@ -874,7 +891,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       menuItem.setEnabled(lastClickedRegion != null);
       myPopup.add(menuItem);
 
-      Point p = e.getPoint();
+      final Point p = e.getPoint();
 
       myPopup
           .addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
@@ -897,7 +914,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
     public void actionPerformed(ActionEvent e) {
 
-      String command = e.getActionCommand();
+      final String command = e.getActionCommand();
 
       if (command.equals("close")) {
         this.setVisible(false);
@@ -907,13 +924,14 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         view.repaint();
       }
       else if (command.equals("Add Region")) {
-        Region r = new Region(lastClick);
+        final Region r = new Region(lastClick);
         r.addTo(grid);
         grid.add(r);
         select(r);
         lastClickedRegion = r;
         setDirty(true);
-        Action a = new EditPropertiesAction(lastClickedRegion, null, this);
+        final Action a =
+          new EditPropertiesAction(lastClickedRegion, null, this);
         if (a != null) {
           a.actionPerformed(
               new ActionEvent(
@@ -935,7 +953,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
       else if (command.equals("Properties")) {
         if (lastClickedRegion != null) {
-          Action a = new EditRegionAction(lastClickedRegion, null, this);
+          final Action a =
+            new EditRegionAction(lastClickedRegion, null, this);
           if (a != null) {
             a.actionPerformed(
                 new ActionEvent(
@@ -1023,7 +1042,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     public Rectangle getSelectedBox() {
       Rectangle rect = null;
       for (Region r : selectedRegions) {
-        Rectangle sel = r.getSelectionRect();
+        final Rectangle sel = r.getSelectionRect();
         if (rect == null) {
           rect = sel;
         }
@@ -1041,7 +1060,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
 
     public void mousePressed(MouseEvent e) {
-      Point p = e.getPoint();
+      final Point p = e.getPoint();
       lastClick = p;
       lastClickedRegion = grid.getRegion(p);
       
@@ -1062,7 +1081,6 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
           select(lastClickedRegion); 
         }
       }
-
     }
 
     public void mouseReleased(MouseEvent evPt) {
@@ -1091,13 +1109,16 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         scrollAtEdge(e.getPoint(), 15);
       }
       if (selectionRect != null) {
-        Rectangle repaintRect = new Rectangle(selectionRect.x-1, selectionRect.y-1, selectionRect.width+3, selectionRect.height+3);
-        
+        final Rectangle repaintRect =
+          new Rectangle(selectionRect.x-1, selectionRect.y-1,
+                        selectionRect.width+3, selectionRect.height+3);
         selectionRect.x = Math.min(e.getX(), anchor.x);
         selectionRect.y = Math.min(e.getY(), anchor.y);
         selectionRect.width = Math.abs(e.getX() - anchor.x);
         selectionRect.height = Math.abs(e.getY() - anchor.y);        
-        view.repaint(repaintRect.union(new Rectangle(selectionRect.x-1, selectionRect.y-1, selectionRect.width+3, selectionRect.height+3)));
+        view.repaint(repaintRect.union(
+          new Rectangle(selectionRect.x-1, selectionRect.y-1,
+                        selectionRect.width+3, selectionRect.height+3)));
       }
     }
 
@@ -1148,4 +1169,3 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
   }
 }
-

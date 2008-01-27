@@ -1,5 +1,5 @@
 /*
- * $Id: ServerStatus.java,v 1.5 2006-12-09 22:49:24 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *

@@ -2,19 +2,19 @@
  * $Id$
  * 
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
- * 
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Library General Public License (LGPL) as published by
- * the Free Software Foundation.
- * 
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU Library General Public License
- * along with this library; if not, copies are available at
- * http://www.opensource.org.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
  */
 
 package VASSAL.build.module.gamepieceimage;
@@ -29,13 +29,19 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.GameModule;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.DataArchive;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.imageop.AbstractTileOp;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.ImageOpObserver;
+import VASSAL.tools.imageop.SourceOp;
 
 public class ImageItem extends Item {
 
@@ -49,10 +55,10 @@ public class ImageItem extends Item {
 
   protected String imageSource = SRC_FIXED;
   protected String imageName = ""; //$NON-NLS-1$
-  protected Image image = null;
+  @Deprecated protected Image image = null;
+  protected ImageOp srcOp;
   protected Rectangle imageBounds = new Rectangle();
-  
-
+ 
   public ImageItem() {
     super();
   }
@@ -67,9 +73,9 @@ public class ImageItem extends Item {
   }
   
   public String[] getAttributeDescriptions() {
-    String a[] = new String[] { "Image:  ", "Image is:  " };
-    String b[] = super.getAttributeDescriptions();
-    String c[] = new String[a.length + b.length];
+    final String a[] = new String[] { "Image:  ", "Image is:  " };
+    final String b[] = super.getAttributeDescriptions();
+    final String c[] = new String[a.length + b.length];
     System.arraycopy(b, 0, c, 0, 2);
     System.arraycopy(a, 0, c, 2, a.length);
     System.arraycopy(b, 2, c, a.length+2, b.length-2);
@@ -77,9 +83,9 @@ public class ImageItem extends Item {
   }
 
   public Class[] getAttributeTypes() {
-    Class a[] = new Class[] { Image.class, TextSource.class };
-    Class b[] = super.getAttributeTypes();
-    Class c[] = new Class[a.length + b.length];
+    final Class a[] = new Class[] { Image.class, TextSource.class };
+    final Class b[] = super.getAttributeTypes();
+    final Class c[] = new Class[a.length + b.length];
     System.arraycopy(b, 0, c, 0, 2);
     System.arraycopy(a, 0, c, 2, a.length);
     System.arraycopy(b, 2, c, a.length+2, b.length-2);
@@ -87,9 +93,9 @@ public class ImageItem extends Item {
   }
 
   public String[] getAttributeNames() {
-    String a[] = new String[] { IMAGE, SOURCE };
-    String b[] = super.getAttributeNames();
-    String c[] = new String[a.length + b.length];
+    final String a[] = new String[] { IMAGE, SOURCE };
+    final String b[] = super.getAttributeNames();
+    final String c[] = new String[a.length + b.length];
     System.arraycopy(b, 0, c, 0, 2);
     System.arraycopy(a, 0, c, 2, a.length);
     System.arraycopy(b, 2, c, a.length+2, b.length-2);
@@ -119,8 +125,7 @@ public class ImageItem extends Item {
     
     if (layout != null) {
       layout.refresh();
-    }
-    
+    }   
   }
   
   public String getAttributeValueString(String key) {
@@ -170,13 +175,28 @@ public class ImageItem extends Item {
     Point origin = layout.getPosition(this);
     
     if (isAntialias()) {    
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                        RenderingHints.VALUE_ANTIALIAS_ON);
     } 
     else {
-      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
+      ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                        RenderingHints.VALUE_ANTIALIAS_OFF);
     }
-    if (image != null) {
-      g.drawImage(image, origin.x, origin.y, null);
+
+//    if (image != null) {
+    if (srcOp != null) {
+      try {
+        g.drawImage(srcOp.getImage(null), origin.x, origin.y, null);
+      }
+      catch (CancellationException e) {
+        e.printStackTrace();
+      }
+      catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      catch (ExecutionException e) {
+        e.printStackTrace();
+      }
     }
   }
   
@@ -193,7 +213,6 @@ public class ImageItem extends Item {
   }
   
   protected void loadImage(GamePieceImage defn) {
-    
     ImageItemInstance Ii = null;
     if (defn != null) {
       Ii = defn.getImageInstance(getConfigureName());
@@ -210,37 +229,72 @@ public class ImageItem extends Item {
       iName = Ii.getImageName();
     }
     
-    image = null;
-    imageBounds = new Rectangle();
+//    image = null;
     
-    if (iName == null) {
-      
+    if (iName != null) {
+      if (iName.trim().length() == 0) {
+        srcOp = BaseOp.op;
+      }
+      else {
+/*
+      try {
+        image = GameModule.getGameModule().getDataArchive().getCachedImage(iName);
+//        imageBounds = DataArchive.getImageBounds(image);
+        imageBounds = ImageUtils.getBounds((BufferedImage) image);
+      }
+      catch (IOException e) {
+      }
+*/
+        srcOp = new SourceOp(iName);
+      }
+      imageBounds = ImageUtils.getBounds(srcOp.getSize());
     }
-    else if(iName.trim().length() == 0) {
-      image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
-      Graphics2D bg = (Graphics2D) image.getGraphics();
+    else {
+      imageBounds = new Rectangle();
+    }
+  }
+ 
+  protected static final class BaseOp extends AbstractTileOp {
+    private BaseOp() { }
+
+    private static final BaseOp op = new BaseOp();
+
+    protected Image apply() throws Exception {
+      final BufferedImage im =
+        new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+      final Graphics2D bg = im.createGraphics();
       bg.setColor(Color.black);
       bg.drawRect(0, 0, 9, 9);
       bg.drawLine(0, 0, 9, 9);
       bg.drawLine(0, 9, 9, 0);
       bg.dispose();
-      imageBounds = new Rectangle(-5, -5, 10, 10);
+      return im;
     }
-    else {
-      try {
-        image = GameModule.getGameModule().getDataArchive().getCachedImage(iName);
-        imageBounds = DataArchive.getImageBounds(image);
-      }
-      catch (IOException e) {
-      }
+
+    protected void fixSize() { }
+
+    @Override 
+    public Dimension getSize() {
+      return new Dimension(10,10);
     }
+ 
+    @Override 
+    public int getWidth() {
+      return 10;
+    }
+
+    @Override
+    public int getHeight() {
+      return 10;
+    }
+
+    // NB: This ImageOp doesn't need custom equals() or hashCode()
+    // because it's a singleton.
   }
-  
+ 
   public static Item decode(GamePieceLayout l, String s) {
-    
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
-    
-    ImageItem item = new ImageItem(l);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');    
+    final ImageItem item = new ImageItem(l);
     
     sd.nextToken();
     item.imageName = sd.nextToken(""); //$NON-NLS-1$
@@ -250,17 +304,14 @@ public class ImageItem extends Item {
   }
   
   public String encode() {
-   
-    SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
+    final SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
     
-    se1.append(imageName+""); //$NON-NLS-1$
-    se1.append(imageSource+""); //$NON-NLS-1$
+    se1.append(imageName+"")    //$NON-NLS-1$
+       .append(imageSource+""); //$NON-NLS-1$
    
-    SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
+    final SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());
     
     return se2.getValue();
   }
-  
-  
 }

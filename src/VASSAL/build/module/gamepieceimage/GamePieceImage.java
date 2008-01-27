@@ -26,7 +26,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import javax.imageio.ImageIO;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -37,6 +40,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.ImageSource;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.imageop.SourceOp;
 
 /**
  * 
@@ -65,6 +69,12 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   protected String nameInUse;
   
   protected static Image NULL_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_4BYTE_ABGR); // empty image for images scaled to zero size
+
+  protected SourceOp srcOp;
+
+  // empty image for images scaled to zero size
+  protected static final Image NULL_IMAGE =
+    new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
   public GamePieceImage() {
     super();
@@ -103,11 +113,21 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Name:  ", "Background Color:  ", "Border Color:  ", ""}; //$NON-NLS-4$
+    return new String[] {
+      "Name:  ",
+      "Background Color:  ",
+      "Border Color:  ",
+      "" //$NON-NLS-1$
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class, BgColorSwatchConfig.class, BorderColorSwatchConfig.class, DefnConfig.class};
+    return new Class[] {
+      String.class,
+      BgColorSwatchConfig.class,
+      BorderColorSwatchConfig.class,
+      DefnConfig.class
+    };
   }
 
   public static class BgColorSwatchConfig implements ConfigurerFactory {
@@ -152,7 +172,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
-      String newName = (String) value;
+      final String newName = (String) value;
       setConfigureName(newName);
     }
     else if (BG_COLOR.equals(key)) {
@@ -275,20 +295,39 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   // Let the DataArchive cache the image
   public Image getVisualizerImage() {
+/*
     try {
       return GameModule.getGameModule().getDataArchive().getCachedImage(getConfigureName());
     }
     catch (IOException e) {
       return NULL_IMAGE;
     }
+*/
+    srcOp = new SourceOp(getConfigureName());
+
+    try {
+      return srcOp.getImage(null);
+    }
+    catch (CancellationException e) {
+        e.printStackTrace();
+    }
+    catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    catch (ExecutionException e) {
+      e.printStackTrace();
+    }
+    return NULL_IMAGE;
   }
 
   // Called by the DataArchive only when the image is needed
   // This only happens in edit mode, so we add the image data to the archive
   // here
   public Image getImage() {
-    Image i = layout.buildImage(this);
-    GameModule.getGameModule().getArchiveWriter().addImage(getConfigureName(), getEncodedImage((BufferedImage) i));
+    final Image i = layout.buildImage(this);
+    GameModule.getGameModule()
+              .getArchiveWriter()
+              .addImage(getConfigureName(), getEncodedImage((BufferedImage) i));
     return i;
   }
 
@@ -298,22 +337,28 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   public void rebuildVisualizerImage() {
     if (GameModule.getGameModule().getArchiveWriter() != null) {
       if (nameInUse != null) {
-        GameModule.getGameModule().getDataArchive().unCacheImage(nameInUse);
+//        GameModule.getGameModule().getDataArchive().unCacheImage(nameInUse);
+// FIXME: this is probably not right at all---we need to do something here!
+//        ImageCache.remove(new SourceOp(nameInUse));
         if (!nameInUse.equals(getConfigureName())) {
           GameModule.getGameModule().getDataArchive().removeImageSource(nameInUse);
           GameModule.getGameModule().getArchiveWriter().removeImage(nameInUse);
           nameInUse = null;
         }
       }
-      if (nameInUse == null && getConfigureName() != null && getConfigureName().length() > 0
-          && GameModule.getGameModule().getDataArchive().addImageSource(getConfigureName(), this)) {
+      if (nameInUse == null &&
+          getConfigureName() != null &&
+          getConfigureName().length() > 0 &&
+          GameModule.getGameModule()
+                    .getDataArchive()
+                    .addImageSource(getConfigureName(), this)) {
         nameInUse = getConfigureName();
       }
     }
   }
 
   public byte[] getEncodedImage(BufferedImage bufferedImage) {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
       ImageIO.write(bufferedImage,"png", out); //$NON-NLS-1$
     }
@@ -392,10 +437,10 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
    * Reconcile our current elements with the elements in the owning scheme.
    */
   protected void rebuildInstances() {
-    ArrayList<ItemInstance> newInstances = new ArrayList<ItemInstance>();
+    final ArrayList<ItemInstance> newInstances = new ArrayList<ItemInstance>();
 
     for (ItemInstance prop : instances) {
-      Item item = layout.getItem(prop.getName());
+      final Item item = layout.getItem(prop.getName());
       if (item != null && item.getType().equals(prop.getType())) {
         prop.setLocation(item.getLocation());
         newInstances.add(prop);
@@ -403,18 +448,18 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     }
 
     for (Item item : layout.getItems()) {
-      String name = item.getConfigureName();
-      String type = item.getType();
-      String location = item.getLocation();
+      final String name = item.getConfigureName();
+      final String type = item.getType();
+      final String location = item.getLocation();
 
       boolean found = false;
       for (Iterator i = instances.iterator(); i.hasNext() && !found; ) {
-        ItemInstance prop = (ItemInstance) i.next();
+        final ItemInstance prop = (ItemInstance) i.next();
         found = name.equals(prop.getName());
       }
 
       if (!found) {
-        ItemInstance instance =
+        final ItemInstance instance =
           ItemInstance.newDefaultInstance(name, type, location);
         instance.addTo(this);
         newInstances.add(instance);

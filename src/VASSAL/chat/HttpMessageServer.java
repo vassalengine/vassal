@@ -1,5 +1,5 @@
 /*
- * $Id: HttpMessageServer.java,v 1.3 2007-01-03 04:42:24 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

@@ -1,7 +1,7 @@
 package VASSAL.chat.node;
 
 /*
- * $Id: NodeServerInfo.java,v 1.1 2005-05-17 06:01:47 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2005 by Rodney Kinney
  *

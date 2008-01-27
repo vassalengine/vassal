@@ -1,5 +1,5 @@
 /*
- * $Id: ctionButton.java 2151 2007-06-01 13:31:10 +0000 (Fri, 01 Jun 2007) swampwallaby $
+ * $Id$
  *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *

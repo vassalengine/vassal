@@ -588,7 +588,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
           showDisplayOption.repaint();
           peekKeyInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
           imagePicker.setVisible(optionNames[3].equals(evt.getNewValue()));
-          Window w = (Window) SwingUtilities.getAncestorOfClass(Window.class, controls);
+          Window w = SwingUtilities.getWindowAncestor(controls);
           if (w != null) {
             w.pack();
           }

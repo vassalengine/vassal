@@ -200,7 +200,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
         Builder.build(e, this);
       }
       try {
-        psize = new Dimension(Integer.parseInt(e.getAttribute(SLOT_WIDTH)), Integer.parseInt(e.getAttribute(SLOT_HEIGHT)));
+        psize = new Dimension(Integer.parseInt(e.getAttribute(SLOT_WIDTH)),
+                              Integer.parseInt(e.getAttribute(SLOT_HEIGHT)));
       }
       catch (Exception ex) {
       }
@@ -346,18 +347,18 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     reset();
     final JDialog d = new JDialog((Frame) null, true);
     d.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    Box b = Box.createVerticalBox();
-    Box buttons = Box.createHorizontalBox();
-    JButton ok = new JButton(Resources.getString(Resources.OK));
+    final Box b = Box.createVerticalBox();
+    final Box buttons = Box.createHorizontalBox();
+    final JButton ok = new JButton(Resources.getString(Resources.OK));
     ok.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        List<Board> l = getBoardsFromControls();
+        final List<Board> l = getBoardsFromControls();
         defaultSetup = l.isEmpty() ? null : encode(new SetBoards(BoardPicker.this, l));
         d.dispose();
       }
     });
     buttons.add(ok);
-    JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
+    final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
     cancel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         d.dispose();
@@ -400,7 +401,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
    * @return an array of the names of all boards from which the user may choose
    */
   public String[] getAllowableBoardNames() {
-    ArrayList<String> s = new ArrayList<String>(possibleBoards.size());
+    final ArrayList<String> s = new ArrayList<String>(possibleBoards.size());
     for (Board b : possibleBoards) {
       s.add(b.getName());
     }
@@ -408,7 +409,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   public String[] getAllowableLocalizedBoardNames() {
-    ArrayList<String> s = new ArrayList<String>(possibleBoards.size());
+    final ArrayList<String> s = new ArrayList<String>(possibleBoards.size());
     for (Board b : possibleBoards) {
       s.add(b.getLocalizedName());
     }
@@ -530,7 +531,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   /**
-   * @deprecated use {@link #getBoardsFromControls()}
+   * @deprecated Use {@link #getBoardsFromControls()}.
    */
   @Deprecated
   public Vector<Board> pickBoards() {
@@ -666,7 +667,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   }
 
   public Command decode(String command) {
-    if (command.startsWith(map.getId() + ID) || command.startsWith(map.getConfigureName() + ID)) {
+    if (command.startsWith(map.getId() + ID) ||
+        command.startsWith(map.getConfigureName() + ID)) {
       ArrayList<Board> bds = new ArrayList<Board>();
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(command, '\t');
       st.nextToken();
@@ -717,6 +719,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       return null;
     }
   }
+
   public static class SetBoards extends Command {
     private BoardPicker target;
     private List<Board> boards;
@@ -746,6 +749,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       return null;
     }
   }
+
   private class Config extends Configurer {
     private JPanel controls;
     private JButton selectButton;

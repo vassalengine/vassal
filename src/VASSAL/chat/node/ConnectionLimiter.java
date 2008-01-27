@@ -1,5 +1,5 @@
 /*
- * $Id: ConnectionLimiter.java,v 1.1 2004-11-28 21:50:55 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

@@ -33,10 +33,13 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -55,12 +58,19 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.imageop.GamePieceOp;
+import VASSAL.tools.imageop.RotateScaleOp;
 
 /**
  * A Decorator that rotates a GamePiece to an arbitrary angle
  */
-public class FreeRotator extends Decorator implements EditablePiece, MouseListener, MouseMotionListener, Drawable {
+public class FreeRotator extends Decorator
+                         implements EditablePiece,
+                                    MouseListener,
+                                    MouseMotionListener,
+                                    Drawable {
   public static final String ID = "rotate;";
   
   public static final String FACING = "_Facing";
@@ -92,10 +102,14 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   protected double[] validAngles = new double[] {0.0};
   protected int angleIndex = 0;
 
-  protected java.util.Map<Double,Image> images = new HashMap<Double,Image>();
+  @Deprecated protected java.util.Map<Double,Image> images =
+    new HashMap<Double,Image>();
   protected java.util.Map<Double,Rectangle> bounds =
     new HashMap<Double,Rectangle>();
-  protected PieceImage unrotated;
+  @Deprecated protected PieceImage unrotated;
+  protected GamePieceOp gpOp;
+  protected java.util.Map<Double,RotateScaleOp> rotOp =
+    new HashMap<Double,RotateScaleOp>();
 
   protected double tempAngle, startAngle;
   protected Point pivot;
@@ -116,36 +130,47 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   }
 
   public void setInner(GamePiece p) {
-    unrotated = new PieceImage(p);
+    gpOp = p == null ? null : new GamePieceOp(p);
     super.setInner(p);
   }
 
   private double centerX() {
     // The center is not on a vertex for pieces with odd widths.
-    return (piece.boundingBox().getWidth() % 2) / 2.0;
+    return (piece.boundingBox().width % 2) / 2.0;
   }
 
   private double centerY() {
     // The center is not on vertex for pieces with odd heights.
-    return (piece.boundingBox().getHeight() % 2) / 2.0;
+    return (piece.boundingBox().height % 2) / 2.0;
   }
 
   public Rectangle boundingBox() {
-    if (getAngle() == 0.0) {
-      return piece.boundingBox();
+    final Rectangle b = piece.boundingBox();
+    final double angle = getAngle();
+
+    if (angle == 0.0) {
+      return b;
     }
-    else {
-      return AffineTransform
-         .getRotateInstance(-PI_180 * getAngle(), centerX(), centerY())
-         .createTransformedShape(piece.boundingBox()).getBounds();
+
+    Rectangle r;
+    if (gpOp.isChanged() || (r = bounds.get(angle)) == null) {
+/*
+      r = AffineTransform.getRotateInstance(getAngleInRadians(),
+                                            centerX(),
+                                            centerY())
+                         .createTransformedShape(b).getBounds();
+      bounds.put(angle, r);
+*/
+// FIXME!
+      RotateScaleOp op = new RotateScaleOp(gpOp, angle, 1.0);
+      r = ImageUtils.getBounds(op.getSize());
+      bounds.put(angle, r);
     }
+    return new Rectangle(r);
   }
 
   public double getAngle() {
-    if (useUnrotatedShape) {
-      return 0.0;
-    }
-    return validAngles[angleIndex];
+    return useUnrotatedShape ? 0.0 : validAngles[angleIndex];
   }
 
   public void setAngle(double angle) {
@@ -166,21 +191,23 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     }
   }
 
+  /** @deprecated Use {@link boundingBox()} instead. */
+  @Deprecated
   public Rectangle getRotatedBounds() {
-    Rectangle r = bounds.get(getAngle());
-    if (r == null) {
-      r = piece.boundingBox();
-    }
-    return r;
+    return boundingBox();
   }
 
   public Shape getShape() {
+    final Shape s = piece.getShape();
+
     if (getAngle() == 0.0) {
-      return piece.getShape();
+      return s;
     }
-    return AffineTransform
-      .getRotateInstance(getAngleInRadians(), centerX(), centerY()) 
-      .createTransformedShape(piece.getShape());
+
+    return AffineTransform.getRotateInstance(getAngleInRadians(),
+                                             centerX(),
+                                             centerY())
+                          .createTransformedShape(s);
   }
 
   public double getAngleInRadians() {
@@ -189,7 +216,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
 
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     validAngles = new double[Integer.parseInt(st.nextToken())];
     for (int i = 0; i < validAngles.length; ++i) {
       validAngles[i] = -i * (360.0 / validAngles.length);
@@ -214,11 +241,16 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     commands = null;
   }
 
-  public void draw(final Graphics g, final int x, final int y, final Component obs, final double zoom) {
+  public void draw(final Graphics g,
+                   final int x,
+                   final int y,
+                   final Component obs,
+                   final double zoom) {
     if (getAngle() == 0.0) {
       piece.draw(g, x, y, obs, zoom);
     }
     else {
+/*
       Image rotated = getRotatedImage(getAngle(), obs);
       if (rotated != null) {
 // FIXME: Ugly, ugly, ugly. Should let the cache hold all of these rotated
@@ -227,26 +259,52 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
         Image zoomed = GameModule.getGameModule().getDataArchive().getScaledImage(rotated, zoom);
         g.drawImage(zoomed, x + (int) (zoom * r.x), y + (int) (zoom * r.y), obs);
       }
+*/
+      final double angle = getAngle();
+
+      RotateScaleOp op = rotOp.get(angle);
+      if (op == null || op.getScale() != zoom) {
+        op = new RotateScaleOp(gpOp, angle, zoom);
+        rotOp.put(angle, op);
+      }
+        
+      final Rectangle r = boundingBox();
+
+      try {
+        g.drawImage(op.getImage(null),
+                    x + (int) (zoom * r.x),
+                    y + (int) (zoom * r.y),
+                    obs);
+      }
+      catch (CancellationException e) {
+        e.printStackTrace();
+      }
+      catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      catch (ExecutionException e) {
+        e.printStackTrace();
+      }
     }
   }
 
   public void draw(Graphics g, Map map) {
     if (drawGhost) {
-      Point p = map.componentCoordinates(getGhostPosition());
-      Graphics2D g2d = (Graphics2D) g;
-      AffineTransform t = g2d.getTransform();
+      final Point p = map.componentCoordinates(getGhostPosition());
+
+      final Graphics2D g2d = (Graphics2D) g.create();
       g2d.transform(
          AffineTransform.getRotateInstance(-PI_180 * tempAngle,
                                            p.x + centerX(),
                                            p.y + centerY()));
       g2d.setComposite(
-         AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
+         AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
       g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
       g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                            RenderingHints.VALUE_ANTIALIAS_ON);
-      piece.draw(g, p.x, p.y, map.getView(), map.getZoom());
-      g2d.setTransform(t);
+      piece.draw(g2d, p.x, p.y, map.getView(), map.getZoom());
+      g2d.dispose();
     }
   }
 
@@ -255,29 +313,33 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   }
 
   private Point getGhostPosition() {
-    AffineTransform t = 
+    final AffineTransform t = 
       AffineTransform.getRotateInstance(-PI_180 * (tempAngle - getAngle()),
                                         pivot.x + centerX(),
                                         pivot.y + centerY());
-    Point2D newPos2D = new Point2D.Float(getPosition().x, getPosition().y);
+    final Point2D newPos2D =
+      new Point2D.Float(getPosition().x, getPosition().y);
     t.transform(newPos2D, newPos2D);
     return new Point((int) Math.round(newPos2D.getX()),
                      (int) Math.round(newPos2D.getY()));
   }
 
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(validAngles.length);
     if (validAngles.length == 1) {
       se.append(setAngleKey);
       se.append(setAngleText);
     }
     else {
-      se.append(rotateCWKey).append(rotateCCWKey).append(rotateCWText).append(rotateCCWText);
+      se.append(rotateCWKey)
+        .append(rotateCCWKey)
+        .append(rotateCWText)
+        .append(rotateCCWText);
     }
     // for random rotation
-    se.append(rotateRNDKey);
-    se.append(rotateRNDText);
+    se.append(rotateRNDKey)
+      .append(rotateRNDText);
     // end for random rotation
     se.append(name);
     return ID + se.getValue();
@@ -303,8 +365,8 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
 
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
-      GamePiece outer = Decorator.getOutermost(this);
+      final ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
+      final GamePiece outer = Decorator.getOutermost(this);
       setAngleCommand = new KeyCommand(setAngleText, setAngleKey, outer);
       rotateCWCommand = new KeyCommand(rotateCWText, rotateCWKey, outer);
       rotateCCWCommand = new KeyCommand(rotateCCWText, rotateCCWKey, outer);
@@ -358,20 +420,20 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       beginInteractiveRotate();
     }
     else if (rotateCWCommand.matches(stroke)) {
-      ChangeTracker tracker = new ChangeTracker(this);
+      final ChangeTracker tracker = new ChangeTracker(this);
       angleIndex = (angleIndex + 1) % validAngles.length;
       c = tracker.getChangeCommand();
     }
     else if (rotateCCWCommand.matches(stroke)) {
-      ChangeTracker tracker = new ChangeTracker(this);
+      final ChangeTracker tracker = new ChangeTracker(this);
       angleIndex = (angleIndex - 1 + validAngles.length) % validAngles.length;
       c = tracker.getChangeCommand();
     }
     // for random rotation
     else if (rotateRNDCommand.matches(stroke)) {
-      ChangeTracker tracker = new ChangeTracker(this);
+      final ChangeTracker tracker = new ChangeTracker(this);
       // get random #
-      Random rand = GameModule.getGameModule().getRNG();
+      final Random rand = GameModule.getGameModule().getRNG();
       if (validAngles.length == 1) {
         // we are a free rotate, set angle to 0-360 use setAngle(double)
         setAngle(rand.nextDouble() * 360);
@@ -391,7 +453,8 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     getMap().pushMouseListener(this);
     getMap().addDrawComponent(this);
     getMap().getView().addMouseMotionListener(this);
-    getMap().getView().setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+    getMap().getView()
+            .setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
     pivot = getPosition();
   }
 
@@ -416,11 +479,11 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
 
   public void mouseReleased(MouseEvent e) {
     try {
-      Point ghostPosition = getGhostPosition();
+      final Point ghostPosition = getGhostPosition();
       Command c = null;
-      ChangeTracker tracker = new ChangeTracker(this);
+      final ChangeTracker tracker = new ChangeTracker(this);
       if (!getPosition().equals(ghostPosition)) {
-        GamePiece outer = Decorator.getOutermost(this);
+        final GamePiece outer = Decorator.getOutermost(this);
         outer.setProperty(Properties.MOVED, Boolean.TRUE);
         c = getMap().placeOrMerge(outer, getMap().snapTo(ghostPosition));
       }
@@ -445,21 +508,21 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
   }
 
   public Object getProperty(Object key) {
-  	if ((name+FACING).equals(key)) {
+    if ((name+FACING).equals(key)) {
       return String.valueOf(angleIndex + 1);
-	  } 
+    } 
     else if ((name+DEGREES).equals(key)) {
       return String.valueOf((int) (Math.abs(validAngles[angleIndex])));
     }
     else {
-	    return super.getProperty(key);
+      return super.getProperty(key);
     }
   }
   
   public void mouseDragged(MouseEvent e) {
     if (drawGhost) {
-      Point mousePos = getMap().mapCoordinates(e.getPoint());
-      double myAngle = getRelativeAngle(mousePos, pivot);
+      final Point mousePos = getMap().mapCoordinates(e.getPoint());
+      final double myAngle = getRelativeAngle(mousePos, pivot);
       tempAngle = getAngle() - (myAngle - startAngle)/PI_180;
     }
     getMap().repaint();
@@ -489,39 +552,25 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
    * @param angle
    * @param obs
    * @return
+   * @deprecated Use a {@link GamePieceOp} if you need this Image.
    */
+  @Deprecated
   public Image getRotatedImage(double angle, Component obs) {
-    Image rotated = getCachedUnrotatedImage(angle);
-    if (unrotated.isChanged()) {
-      clearCachedImages();
-      rotated = null;
-    }
-    if (rotated == null) {
-      final Rectangle rotatedBounds = boundingBox();
-      rotated = GameModule.getGameModule()
-                          .getDataArchive()
-                          .getTransformedImage(unrotated.getImage(obs),
-                                               1.0, angle);
-      images.put(angle, rotated);
-      bounds.put(angle, rotatedBounds);
-    }
-    return rotated;
-  }
+    if (gpOp == null) return null;
 
-  private Image getCachedUnrotatedImage(double angle) {
-    if (validAngles.length == 1) {
-      angle = validAngles[0];
+    try {
+      return (new RotateScaleOp(gpOp, angle, 1.0)).getImage(null);
     }
-    Image rotated = images.get(angle);
-    return rotated;
-  }
-
-  private void clearCachedImages() {
-    for (Image im : images.values()) {
-      GameModule.getGameModule().getDataArchive().unCacheImage(im);
+    catch (CancellationException e) {
+      e.printStackTrace();
     }
-    images.clear();
-    bounds.clear();
+    catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    catch (ExecutionException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   public String getDescription() {
@@ -541,7 +590,7 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
                        new String[] {getCommandDescription(name, "Set Angle command"), getCommandDescription(name, "Rotate CW command"), getCommandDescription(name, "Rotate CCW command"), getCommandDescription(name, "Rotate Random command")});
   }
 
-  private static class Ed implements PieceEditor, java.beans.PropertyChangeListener {
+  private static class Ed implements PieceEditor, PropertyChangeListener {
     private BooleanConfigurer anyConfig;
     private HotKeyConfigurer anyKeyConfig;
     private IntConfigurer facingsConfig;
@@ -623,8 +672,8 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
       propertyChange(null);
     }
 
-    public void propertyChange(java.beans.PropertyChangeEvent evt) {
-      boolean any = Boolean.TRUE.equals(anyConfig.getValue());
+    public void propertyChange(PropertyChangeEvent evt) {
+      final boolean any = Boolean.TRUE.equals(anyConfig.getValue());
       anyControls.setVisible(any);
       facingsConfig.getControls().setVisible(!any);
       cwControls.setVisible(!any);
@@ -637,22 +686,26 @@ public class FreeRotator extends Decorator implements EditablePiece, MouseListen
     }
 
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       if (Boolean.TRUE.equals(anyConfig.getValue())) {
-        se.append("1");
-        se.append((KeyStroke) anyKeyConfig.getValue());
-        se.append(anyCommand.getText() == null ? "" : anyCommand.getText().trim());
+        se.append("1")
+          .append((KeyStroke) anyKeyConfig.getValue())
+          .append(anyCommand.getText() == null
+                  ? "" : anyCommand.getText().trim());
       }
       else {
-        se.append(facingsConfig.getValueString());
-        se.append((KeyStroke) cwKeyConfig.getValue());
-        se.append((KeyStroke) ccwKeyConfig.getValue());
-        se.append(cwCommand.getText() == null ? "" : cwCommand.getText().trim());
-        se.append(ccwCommand.getText() == null ? "" : ccwCommand.getText().trim());
+        se.append(facingsConfig.getValueString())
+          .append((KeyStroke) cwKeyConfig.getValue())
+          .append((KeyStroke) ccwKeyConfig.getValue())
+          .append(cwCommand.getText() == null
+                  ? "" : cwCommand.getText().trim())
+          .append(ccwCommand.getText() == null
+                  ? "" : ccwCommand.getText().trim());
       }
       // random rotate
-      se.append((KeyStroke) rndKeyConfig.getValue());
-      se.append(rndCommand.getText() == null ? "" : rndCommand.getText().trim());
+      se.append((KeyStroke) rndKeyConfig.getValue())
+        .append(rndCommand.getText() == null
+                ? "" : rndCommand.getText().trim());
       // end random rotate
       se.append(nameConfig.getValueString());
       return ID + se.getValue();

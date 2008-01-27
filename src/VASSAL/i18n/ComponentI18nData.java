@@ -1,5 +1,5 @@
 /*
- * $Id: ComponentI18nData.java 1417 2006-11-03 14:57:33 +0000 (Fri, 03 Nov 2006) rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2000-2006 by Rodney Kinney, Brent Easton
  *
@@ -303,7 +303,7 @@ public class ComponentI18nData {
    * 
    * @param attr
    *          Attribute Name
-   * @returnun translated value
+   * @return untranslated value
    */
   public String getLocalUntranslatedValue(String attr) {
     String val;

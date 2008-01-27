@@ -27,7 +27,10 @@ import java.awt.image.RGBImageFilter;
 
 /**
  * Sets the transparency of colors in an image
+ * @deprecated Use a Graphics2D and an AlphaComposite, or
+ * a {@link VASSAL.tools.imageop} instead.
  */
+@Deprecated
 public class TransparentFilter extends RGBImageFilter {
   private double alpha = 1.0;
   private int[] colors = new int[0];

@@ -1,5 +1,5 @@
 /*
- * $Id: ZoneHighlight.java 965 2006-09-03 16:34:05 +0000 (Sun, 03 Sep 2006) rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2000-2006 by Brent Easton, Rodney Kinney
  *
@@ -34,9 +34,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
-
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -52,11 +52,13 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.imageop.SourceOp;
 
 /**
- * @author Brent Easton
  * A Class that defines a method of highlighting the a zone in
  * a multi-zoned grid.
+ *
+ * @author Brent Easton
  */
 public class ZoneHighlight extends AbstractConfigurable  {
 
@@ -80,6 +82,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
   protected int width = 1;
   protected String style = STYLE_PLAIN;
   protected String imageName = null;
+  protected SourceOp srcOp;
   protected int opacity = 100;
   
   protected TexturePaint paint;
@@ -94,10 +97,10 @@ public class ZoneHighlight extends AbstractConfigurable  {
   public void draw(Graphics2D g2d, Shape s, double scale) {
 
     if ((color != null && opacity > 0 ) || STYLE_IMAGE.equals(style)) {
-      Stroke oldStroke = g2d.getStroke();
-      Color oldColor = g2d.getColor();
-      Composite oldComposite = g2d.getComposite();
-      Paint oldPaint = g2d.getPaint();
+      final Stroke oldStroke = g2d.getStroke();
+      final Color oldColor = g2d.getColor();
+      final Composite oldComposite = g2d.getComposite();
+      final Paint oldPaint = g2d.getPaint();
       if (!STYLE_PLAIN.equals(style)) {
         g2d.setPaint(getPaint());
       }
@@ -105,15 +108,18 @@ public class ZoneHighlight extends AbstractConfigurable  {
         g2d.setColor(color);
       }
       
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity/100.0f));
-      g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,
-          RenderingHints.VALUE_ANTIALIAS_ON));
+      g2d.setComposite(AlphaComposite.getInstance(
+        AlphaComposite.SRC_OVER, opacity/100.0f));
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                           RenderingHints.VALUE_ANTIALIAS_ON);
       
       if (COVERAGE_FULL.equals(coverage)) {
         g2d.fill(s);
       }
       else {
-        Stroke stroke = new BasicStroke((float)(width*scale), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        final Stroke stroke = new BasicStroke((float)(width*scale),
+                                              BasicStroke.CAP_ROUND,
+                                              BasicStroke.JOIN_ROUND);
         g2d.setStroke(stroke);
         g2d.draw(s);
       }
@@ -128,10 +134,14 @@ public class ZoneHighlight extends AbstractConfigurable  {
   protected Paint getPaint() {
     if (paint == null) {
       if (style.equals(STYLE_IMAGE)) {
+/*
         try {
-          ImageIcon i = new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(imageName));
-          BufferedImage bi = new BufferedImage(i.getIconWidth(), i.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-          Graphics2D big = bi.createGraphics();
+          final ImageIcon i = new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(imageName));
+          final BufferedImage bi =
+            new BufferedImage(i.getIconWidth(),
+                              i.getIconHeight(),
+                              BufferedImage.TYPE_INT_ARGB);
+          final Graphics2D big = bi.createGraphics();
           big.drawImage(i.getImage(), 0, 0, null);
           big.dispose();
           paint = new TexturePaint(bi, new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
@@ -139,22 +149,37 @@ public class ZoneHighlight extends AbstractConfigurable  {
         catch (IOException e) {
           System.err.println("Unable to locate image " + imageName);
         }
+*/
+        try {
+          // FIXME: don't cast!
+          paint = new TexturePaint((BufferedImage) srcOp.getImage(null),
+                                   new Rectangle(srcOp.getSize()));
+        }
+        catch (CancellationException e) {
+          e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        catch (ExecutionException e) {
+          e.printStackTrace();
+        }
       }
       else {
-        BufferedImage bi = new BufferedImage(6, 6, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics2D big = bi.createGraphics();  
-        big.setColor(color);
+// FIXME: maybe make this an ImageOp?
+        final BufferedImage bi =
+          new BufferedImage(6, 6, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g = bi.createGraphics();  
+        g.setColor(color);
         if (style.equals(STYLE_STRIPES)) {
-          big.drawLine(0, 5, 5, 0);
+          g.drawLine(0, 5, 5, 0);
         }
         else if (style.equals(STYLE_CROSS)) {
-          big.drawLine(0, 5, 5, 0);
-          big.drawLine(1, 0, 5, 4);
+          g.drawLine(0, 5, 5, 0);
+          g.drawLine(1, 0, 5, 4);
         }
-        big.dispose();
-
-        Rectangle r = new Rectangle(0,0,6,6);
-        paint = new TexturePaint(bi, r);
+        g.dispose();
+        paint = new TexturePaint(bi, new Rectangle(0,0,6,6));
       }
     }
     return paint;
@@ -173,27 +198,58 @@ public class ZoneHighlight extends AbstractConfigurable  {
   }
   
   public String[] getAttributeNames() {
-    String s[] = {NAME, COLOR, COVERAGE, WIDTH, STYLE, IMAGE, OPACITY};
-    return s;
+    return new String[]{
+      NAME,
+      COLOR,
+      COVERAGE,
+      WIDTH,
+      STYLE,
+      IMAGE,
+      OPACITY
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Color:  ", "Coverage:  ", "Width:  ", "Style:  ", "Image:  ", "Opacity(%):  "};
+    return new String[]{
+      "Name:  ",
+      "Color:  ",
+      "Coverage:  ",
+      "Width:  ",
+      "Style:  ",
+      "Image:  ",
+      "Opacity(%):  "
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, Color.class, Coverage.class, Integer.class, Style.class, Icon.class, OpacityConfig.class};
+    return new Class[]{
+      String.class,
+      Color.class,
+      Coverage.class,
+      Integer.class,
+      Style.class,
+      Icon.class,
+      OpacityConfig.class
+    };
   }
 
   public static class Coverage extends StringEnum {
     public String[] getValidValues(AutoConfigurable target) {
-      return new String[]{COVERAGE_FULL, COVERAGE_BORDER};
+      return new String[]{
+        COVERAGE_FULL,
+        COVERAGE_BORDER
+      };
     }
   }
 
   public static class Style extends StringEnum {
     public String[] getValidValues(AutoConfigurable target) {
-      return new String[]{STYLE_PLAIN, STYLE_STRIPES, STYLE_CROSS, STYLE_IMAGE};
+      return new String[]{
+        STYLE_PLAIN,
+        STYLE_STRIPES,
+        STYLE_CROSS,
+        STYLE_IMAGE
+      };
     }
   }
 
@@ -282,6 +338,8 @@ public class ZoneHighlight extends AbstractConfigurable  {
     }
     else if (IMAGE.equals(key)) {
       imageName = (String) val;
+      srcOp = imageName == null || imageName.trim().isEmpty()
+            ? null : new SourceOp(imageName);
     }
   }
 
@@ -326,9 +384,9 @@ public class ZoneHighlight extends AbstractConfigurable  {
 
     public Component getControls() {
 
-      JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,opacity);
+      final JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,opacity);
 
-      HashMap<Integer,JLabel> labelTable = new HashMap<Integer,JLabel>();
+      final HashMap<Integer,JLabel> labelTable = new HashMap<Integer,JLabel>();
       labelTable.put(new Integer(0), new JLabel("Transparent"));
       labelTable.put(new Integer(100), new JLabel("Opaque"));
 
@@ -341,15 +399,13 @@ public class ZoneHighlight extends AbstractConfigurable  {
       slider.setBorder(javax.swing.BorderFactory.createTitledBorder(name));
       slider.addChangeListener(new ChangeListener() {
         public void stateChanged(ChangeEvent e) {
-          JSlider source = (JSlider) e.getSource();
+          final JSlider source = (JSlider) e.getSource();
           if (!source.getValueIsAdjusting()) {    
             opacity = source.getValue();
           }
         }});
 
       return slider;
-    }
-    
+    }   
   }
-
 }

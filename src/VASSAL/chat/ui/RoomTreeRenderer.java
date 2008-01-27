@@ -16,7 +16,7 @@
  * at http://www.opensource.org.
  */
 /*
- * $Id: RoomTreeRenderer.java,v 1.4 2006-12-10 06:34:54 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

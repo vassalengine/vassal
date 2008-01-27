@@ -31,17 +31,21 @@ import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.tools.AdjustableSpeedScrollPane;
-import VASSAL.tools.DataArchive;
+import VASSAL.tools.imageop.OpIcon;
+import VASSAL.tools.imageop.SourceOp;
 
 /**
- * A Chart is used for displaying charts and tables for the module. The charts are loaded as images stored in the
- * DataArchive. As a subclass of Widget, a Chart may be added to any Widget, but it may not contains children of its own
+ * A Chart is used for displaying charts and tables for the module.
+ * The charts are loaded as images stored in the DataArchive. As a subclass
+ * of Widget, a Chart may be added to any Widget, but it may not contain
+ * children of its own.
  */
 public class Chart extends Widget {
   public static final String NAME = "chartName";
   public static final String FILE = "fileName";
   private Component chart;
   private String fileName;
+  private SourceOp srcOp;
   private JLabel label;
 
   public Chart() {
@@ -50,6 +54,12 @@ public class Chart extends Widget {
   public Component getComponent() {
     if (chart == null) {
       label = new JLabel();
+      srcOp = fileName == null || fileName.trim().isEmpty()
+            ? null : new SourceOp(fileName);
+      if (srcOp != null) {
+        label.setIcon(new OpIcon(srcOp));
+      }
+/*
       try {
         Image image = GameModule.getGameModule().getDataArchive().getCachedImage(fileName);
         ImageIcon icon = image == null ? null : new ImageIcon(image);
@@ -58,9 +68,10 @@ public class Chart extends Widget {
       catch (IOException ex) {
         label.setText("Image " + fileName + " not found");
       }
-      Dimension d = label.getPreferredSize();
+*/
+      final Dimension d = label.getPreferredSize();
       if (d.width > 300 || d.height > 300) {
-        JScrollPane scroll = new AdjustableSpeedScrollPane(label);
+        final JScrollPane scroll = new AdjustableSpeedScrollPane(label);
         scroll.getViewport().setPreferredSize(label.getPreferredSize());
         scroll.getViewport().setAlignmentY(0.0F);
         chart = scroll;
@@ -96,6 +107,7 @@ public class Chart extends Widget {
       }
       fileName = (String) val;
       if (label != null) {
+/*
         try {
           Image image = GameModule.getGameModule().getDataArchive().getCachedImage(fileName);
           ImageIcon icon = image == null ? null : new ImageIcon(image);
@@ -103,6 +115,13 @@ public class Chart extends Widget {
           label.revalidate();
         }
         catch (IOException ex) {
+        }
+*/
+        srcOp = fileName == null || fileName.trim().isEmpty()
+              ? null : new SourceOp(fileName);
+        if (srcOp != null) {
+          label.setIcon(new OpIcon(srcOp));
+          label.revalidate();
         }
       }
     }

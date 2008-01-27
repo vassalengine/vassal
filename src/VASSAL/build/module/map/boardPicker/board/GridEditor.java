@@ -130,8 +130,10 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
       public void actionPerformed(ActionEvent e) {
         cancelSetMode();
         setVisible(false);
+/*
         GameModule.getGameModule()
                   .getDataArchive().clearTransformedImageCache();
+*/
       }
     });
     buttonPanel.add(okButton);
@@ -182,7 +184,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     
     add(controlPanel, BorderLayout.SOUTH);
 
-    board.fixImage();
     scroll.revalidate();
     pack();
     repaint();
@@ -460,7 +461,6 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
 
     public void setBoard(Board b) {
       board = b;
-      board.fixImage();
       setSize(board.getSize());
       setPreferredSize(board.getSize());
     }

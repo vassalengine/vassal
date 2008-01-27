@@ -1,5 +1,5 @@
 /*
- * $Id: ZonedGridHighlighter.java 965 2006-09-03 16:34:05 +0000 (Sun, 03 Sep 2006) rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2000-2006 by Brent Easton, Rodney Kinney
  *

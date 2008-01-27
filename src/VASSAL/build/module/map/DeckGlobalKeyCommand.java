@@ -1,5 +1,5 @@
 /*
- * $Id: DeckGlobalKeyCommand.java 1456 2006-11-15 14:36:16 +0000 (Wed, 15 Nov 2006) rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2005 by Rodney Kinney
  *

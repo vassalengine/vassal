@@ -1,23 +1,3 @@
-package VASSAL.configure;
-
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import VASSAL.build.GameModule;
-import VASSAL.tools.FileChooser;
-import VASSAL.tools.ImageFileFilter;
-
 /*
  * $Id$
  *
@@ -37,6 +17,28 @@ import VASSAL.tools.ImageFileFilter;
  * at http://www.opensource.org.
  */
 
+package VASSAL.configure;
+
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import VASSAL.build.GameModule;
+import VASSAL.tools.FileChooser;
+import VASSAL.tools.ImageFileFilter;
+import VASSAL.tools.imageop.OpIcon;
+import VASSAL.tools.imageop.SourceOp;
+
 public class IconConfigurer extends Configurer {
   private JPanel controls;
   private String imageName;
@@ -55,18 +57,16 @@ public class IconConfigurer extends Configurer {
   public void setValue(String s) {
     icon = null;
     imageName = s == null ? "" : s;
+/*
     if (imageName.startsWith("/")) {
-      URL imageURL = getClass().getResource(imageName);
+      final URL imageURL = getClass().getResource(imageName);
       if (imageURL != null) {
         icon = new ImageIcon(imageURL);
       }
     }
-    else if (imageName.length() > 0) {
-      try {
-        icon = new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(imageName));
-      }
-      catch (IOException e) {
-      }
+*/
+    if (imageName.length() > 0) {
+      icon = new OpIcon(new SourceOp(imageName));
     }
     setValue((Object)imageName);
   }
@@ -85,15 +85,17 @@ public class IconConfigurer extends Configurer {
 
         public void paint(Graphics g) {
           g.clearRect(0,0,getSize().width,getSize().height);
-          Icon i = getIconValue();
+          final Icon i = getIconValue();
           if (i != null) {
-            i.paintIcon(this,g,getSize().width/2-i.getIconWidth()/2,getSize().height/2-i.getIconHeight()/2);
+            i.paintIcon(this, g,
+                        getSize().width/2-i.getIconWidth()/2,
+                        getSize().height/2-i.getIconHeight()/2);
           }
         }
       };
       p.setPreferredSize(new Dimension(32,32));
       controls.add(p);
-      JButton reset = new JButton("Select");
+      final JButton reset = new JButton("Select");
       reset.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           selectImage();
@@ -102,7 +104,7 @@ public class IconConfigurer extends Configurer {
       });
       controls.add(reset);
       if (defaultImage != null) {
-        JButton useDefault = new JButton("Default");
+        final JButton useDefault = new JButton("Default");
         useDefault.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             setValue(defaultImage);
@@ -116,14 +118,14 @@ public class IconConfigurer extends Configurer {
   }
 
   private void selectImage() {
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.setFileFilter(new ImageFileFilter());
 
     if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {
       setValue(null);
     }
     else {
-      File f = fc.getSelectedFile();
+      final File f = fc.getSelectedFile();
       if (f != null && f.exists()) {
         GameModule.getGameModule().getArchiveWriter()
                                   .addImage(f.getPath(),f.getName());

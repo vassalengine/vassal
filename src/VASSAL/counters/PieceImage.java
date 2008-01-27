@@ -26,7 +26,10 @@ import java.awt.image.BufferedImage;
 
 /**
  * Maintains an {@link Image} built from the {@link GamePiece#draw}
- * method of a {@link GamePiece} */
+ * method of a {@link GamePiece}
+ * @deprecated Use {@link GamePieceOp} instead.
+ */
+@Deprecated
 public class PieceImage {
   private GamePiece piece;
   private String lastState = null;

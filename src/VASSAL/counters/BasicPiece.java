@@ -29,6 +29,8 @@ import java.awt.event.InputEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -50,8 +52,10 @@ import VASSAL.command.RemovePiece;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.ImageUtils;
+import VASSAL.tools.imageop.ScaleOp;
+import VASSAL.tools.imageop.SourceOp;
 
 /**
  * Basic class for representing a physical component of the game
@@ -91,9 +95,11 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   public static final String DECK_NAME = "DeckName";
 
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
-  protected Image image;
-  protected Rectangle imageBounds;
   protected JPopupMenu popup;
+
+  protected Rectangle imageBounds;
+  protected SourceOp srcOp;
+  protected ScaleOp scaleOp;
 
   private Map map;
   private KeyCommand[] commands;
@@ -102,7 +108,13 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   private String id;
   private java.util.Map<Object,Object> props;
 
-  private char cloneKey, deleteKey; // Moved into independent traits, but retained for backward compatibility
+  /** @deprecated Moved into own traits, retained for backward compatibility */
+  @Deprecated private char cloneKey;
+  /** @deprecated Moved into own traits, retained for backward compatibility */
+  @Deprecated private char deleteKey;
+  /** @deprecated Replaced by @{link #srcOp}. */
+  @Deprecated protected Image image;
+
   protected String imageName;
   private String commonName;
 
@@ -115,20 +127,24 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   }
 
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     cloneKey = st.nextChar('\0');
     deleteKey = st.nextChar('\0');
     imageName = st.nextToken();
     commonName = st.nextToken();
-    initImage();
+    srcOp = imageName == null || imageName.trim().isEmpty() 
+          ? null : new SourceOp(imageName);
     commands = null;
   }
 
   public String getType() {
-    SequenceEncoder se = new SequenceEncoder(cloneKey > 0 ? "" + cloneKey : "", ';');
+    final SequenceEncoder se =
+      new SequenceEncoder(cloneKey > 0 ? "" + cloneKey : "", ';');
     return ID + se.append(deleteKey > 0 ? "" + deleteKey : "")
-        .append(imageName).append(commonName).getValue();
+                  .append(imageName)
+                  .append(commonName)
+                  .getValue();
   }
 
   public void setMap(Map map) {
@@ -163,7 +179,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     }
     else if (CURRENT_BOARD.equals(key)) {
       if (getMap() != null) {
-        Board b = getMap().findBoard(getPosition());
+        final Board b = getMap().findBoard(getPosition());
         if (b != null) {
           return b.getName();
         }
@@ -172,7 +188,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     }
     else if (CURRENT_ZONE.equals(key)) {
       if (getMap() != null) {
-        Zone z = getMap().findZone(getPosition());
+        final Zone z = getMap().findZone(getPosition());
         if (z != null) {
           return z.getName();
         }
@@ -188,10 +204,11 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return "";
     }
+
     Object prop = props == null ? null : props.get(key);
     if (prop == null) {
-      Map map = getMap();
-      Zone zone = (map == null ? null : map.findZone(getPosition()));
+      final Map map = getMap();
+      final Zone zone = (map == null ? null : map.findZone(getPosition()));
       if (zone != null) {
         prop = zone.getProperty(key);
       }
@@ -227,7 +244,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     }
     else if (CURRENT_BOARD.equals(key)) {
       if (getMap() != null) {
-        Board b = getMap().findBoard(getPosition());
+        final Board b = getMap().findBoard(getPosition());
         if (b != null) {
           return b.getLocalizedName();
         }
@@ -236,7 +253,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     }
     else if (CURRENT_ZONE.equals(key)) {
       if (getMap() != null) {
-        Zone z = getMap().findZone(getPosition());
+        final Zone z = getMap().findZone(getPosition());
         if (z != null) {
           return z.getLocalizedName();
         }
@@ -252,10 +269,11 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return getProperty(key);
     }
+
     Object prop = props == null ? null : props.get(key);
     if (prop == null) {
-      Map map = getMap();
-      Zone zone = (map == null ? null : map.findZone(getPosition()));
+      final Map map = getMap();
+      final Zone zone = (map == null ? null : map.findZone(getPosition()));
       if (zone != null) {
         prop = zone.getLocalizedProperty(key);
       }
@@ -288,42 +306,56 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   }
 
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    initImage();
+    if (srcOp != null) {
+      if (imageBounds == null) {
+        imageBounds = boundingBox();
+      }
 
-    if (image != null) {
       if (zoom == 1.0) {
-        g.drawImage(image, x + imageBounds.x, y + imageBounds.y, obs);
+        try {
+          g.drawImage(srcOp.getImage(null),
+                      x + imageBounds.x,
+                      y + imageBounds.y,
+                      obs);
+        }
+        catch (CancellationException e) {
+          e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        catch (ExecutionException e) {
+          e.printStackTrace();
+        }
       }
       else {
-        Image scaledImage = GameModule.getGameModule().getDataArchive().getScaledImage(image, zoom);
-        g.drawImage(scaledImage,
-                    x + (int) (zoom * imageBounds.x),
-                    y + (int) (zoom * imageBounds.y),
-                    obs);
+        if (scaleOp == null || scaleOp.getScale() != zoom) {
+          scaleOp = new ScaleOp(srcOp, zoom);
+        }
+        
+        try {
+          g.drawImage(scaleOp.getImage(null),
+                      x + (int) (zoom * imageBounds.x),
+                      y + (int) (zoom * imageBounds.y),
+                      obs);
+        }
+        catch (CancellationException e) {
+          e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        catch (ExecutionException e) {
+          e.printStackTrace();
+        }
       }
-    }
-  }
-
-  private void initImage() {
-    if (imageName.trim().length() > 0) {
-      try {
-        image = GameModule.getGameModule().getDataArchive().getCachedImage(imageName);
-        imageBounds = DataArchive.getImageBounds(image);
-      }
-      catch (IOException e) {
-        imageBounds = new Rectangle();
-      }
-    }
-    else {
-      image = null;
-      imageBounds = new Rectangle();
     }
   }
 
   protected KeyCommand[] getKeyCommands() {
     if (commands == null) {
-      ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
-      GamePiece target = Decorator.getOutermost(this);
+      final ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
+      final GamePiece target = Decorator.getOutermost(this);
 
       if (cloneKey > 0) {
         l.add(new KeyCommand("Clone",
@@ -336,7 +368,8 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
 
       commands = l.toArray(new KeyCommand[l.size()]);
     }
-    GamePiece outer = Decorator.getOutermost(this);
+
+    final GamePiece outer = Decorator.getOutermost(this);
     boolean canAdjustPosition = outer.getMap() != null &&
         outer.getParent() != null
         && outer.getParent().topPiece() != getParent().bottomPiece();
@@ -394,11 +427,19 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   }
 
   public Rectangle boundingBox() {
-    return new Rectangle(imageBounds.x, imageBounds.y, imageBounds.width, imageBounds.height);
+    if (imageBounds == null) {
+      if (srcOp != null) {
+        imageBounds = ImageUtils.getBounds(srcOp.getSize());
+      }
+      else {
+        imageBounds = new Rectangle();
+      }
+    }
+    return new Rectangle(imageBounds);
   }
 
   public Shape getShape() {
-    return new Rectangle(imageBounds.x, imageBounds.y, imageBounds.width, imageBounds.height);
+    return boundingBox();
   }
 
   public boolean equals(GamePiece c) {
@@ -410,7 +451,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   }
 
   public String getLocalizedName() {
-    String key = TranslatablePiece.PREFIX + getName();
+    final String key = TranslatablePiece.PREFIX + getName();
     return Localization.getInstance().translate(key, getName());
   }
   
@@ -422,9 +463,9 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
 
     Command comm = null;
 
-    GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = Decorator.getOutermost(this);
     if (KeyStroke.getKeyStroke(cloneKey, InputEvent.CTRL_MASK).equals(stroke)) {
-      GamePiece newPiece
+      final GamePiece newPiece
           = ((AddPiece) GameModule.getGameModule().decode
           (GameModule.getGameModule().encode
            (new AddPiece(outer)))).getTarget();
@@ -437,17 +478,17 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
         KeyBuffer.getBuffer().remove(outer);
         KeyBuffer.getBuffer().add(newPiece);
 
-        if (GlobalOptions.getInstance().autoReportEnabled()
-            && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
+        if (GlobalOptions.getInstance().autoReportEnabled()) {
           String s = "* " + outer.getLocalizedName();
-          String loc = getMap().locationName(outer.getPosition());
+          final String loc = getMap().locationName(outer.getPosition());
           if (loc != null) {
             s += " cloned in " + loc + " * ";
           }
           else {
             s += "cloned *";
           }
-          Command report = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), s);
+          final Command report =
+            new Chatter.DisplayText(GameModule.getGameModule().getChatter(), s);
           report.execute();
           comm = comm.append(report);
         }
@@ -456,17 +497,17 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     else if (KeyStroke.getKeyStroke(deleteKey, InputEvent.CTRL_MASK).equals(stroke)) {
       comm = new RemovePiece(outer);
 
-      if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled()
-          && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
+      if (getMap() != null && GlobalOptions.getInstance().autoReportEnabled()) {
         String s = "* " + outer.getLocalizedName();
-        String loc = getMap().locationName(outer.getPosition());
+        final String loc = getMap().locationName(outer.getPosition());
         if (loc != null) {
           s += " deleted from " + loc + " * ";
         }
         else {
           s += " deleted *";
         }
-        Command report = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), s);
+        final Command report =
+          new Chatter.DisplayText(GameModule.getGameModule().getChatter(), s);
         comm = comm.append(report);
       }
 
@@ -475,8 +516,8 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     else if (getMap() != null &&
         stroke.equals(getMap().getStackMetrics().getMoveUpKey())) {
       if (parent != null) {
-        String oldState = parent.getState();
-        int index = parent.indexOf(outer);
+        final String oldState = parent.getState();
+        final int index = parent.indexOf(outer);
         if (index < parent.getPieceCount() - 1) {
           parent.insert(outer, index + 1);
           comm = new ChangePiece(parent.getId(), oldState, parent.getState());
@@ -492,8 +533,8 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     else if (getMap() != null &&
         stroke.equals(getMap().getStackMetrics().getMoveDownKey())) {
       if (parent != null) {
-        String oldState = parent.getState();
-        int index = parent.indexOf(outer);
+        final String oldState = parent.getState();
+        final int index = parent.indexOf(outer);
         if (index > 0) {
           parent.insert(outer, index - 1);
           comm = new ChangePiece(parent.getId(), oldState, parent.getState());
@@ -510,7 +551,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
         stroke.equals(getMap().getStackMetrics().getMoveTopKey())) {
       parent = outer.getParent();
       if (parent != null) {
-        String oldState = parent.getState();
+        final String oldState = parent.getState();
         if (parent.indexOf(outer) < parent.getPieceCount() - 1) {
           parent.insert(outer, parent.getPieceCount() - 1);
           comm = new ChangePiece(parent.getId(), oldState, parent.getState());
@@ -527,7 +568,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
         stroke.equals(getMap().getStackMetrics().getMoveBottomKey())) {
       parent = getParent();
       if (parent != null) {
-        String oldState = parent.getState();
+        final String oldState = parent.getState();
         if (parent.indexOf(outer) > 0) {
           parent.insert(outer, 0);
           comm = new ChangePiece(parent.getId(), oldState, parent.getState());
@@ -544,19 +585,19 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   }
 
   public String getState() {
-    SequenceEncoder se = new SequenceEncoder(';');
-    String mapName = map == null ? "null" : map.getIdentifier();
+    final SequenceEncoder se = new SequenceEncoder(';');
+    final String mapName = map == null ? "null" : map.getIdentifier();
     se.append(mapName);
-    Point p = getPosition();
+    final Point p = getPosition();
     se.append(p.x).append(p.y);
     return se.getValue();
   }
 
   public void setState(String s) {
-    GamePiece outer = Decorator.getOutermost(this);
-    Map oldMap = getMap();
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
-    String mapId = st.nextToken();
+    final GamePiece outer = Decorator.getOutermost(this);
+    final Map oldMap = getMap();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+    final String mapId = st.nextToken();
     Map newMap = null;
     if (!"null".equals(mapId)) {
       newMap = Map.getMapById(mapId);
@@ -565,7 +606,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
         return;
       }
     }
-    Point newPos = new Point(st.nextInt(0), st.nextInt(0));
+    final Point newPos = new Point(st.nextInt(0), st.nextInt(0));
     setPosition(newPos);
     if (newMap != oldMap) {
       if (newMap != null) {
@@ -691,10 +732,11 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     }
 
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(cloneKeyInput.getKey(), ';');
-      String type = se.append(deleteKeyInput.getKey())
-          .append(picker.getImageName())
-          .append(pieceName.getText()).getValue();
+      final SequenceEncoder se =
+        new SequenceEncoder(cloneKeyInput.getKey(), ';');
+      final String type = se.append(deleteKeyInput.getKey())
+                            .append(picker.getImageName())
+                            .append(pieceName.getText()).getValue();
       return BasicPiece.ID + type;
     }
   }
@@ -704,7 +746,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   }
 
   public PieceI18nData getI18nData() {
-    PieceI18nData data = new PieceI18nData(this);
+    final PieceI18nData data = new PieceI18nData(this);
     data.add(commonName, "Basic piece name");
     return data;
   }

@@ -29,7 +29,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,17 +39,20 @@ import VASSAL.build.GameModule;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.ImageFileFilter;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.imageop.OpIcon;
+import VASSAL.tools.imageop.SourceOp;
 
-public class ImagePicker extends javax.swing.JPanel implements MouseListener, ItemListener {
+public class ImagePicker extends JPanel
+                         implements MouseListener, ItemListener {
   private static final long serialVersionUID = 1L;
   private String imageName = " ";
   protected static Font FONT = new Font("Dialog", 0, 11);
-  private JTextArea noImage;
-  private JComboBox select;
-  private ImageIcon icon;
-  private JLabel imageView;
-  private JPanel imageViewer;
-  private JScrollPane imageScroller;
+  private final JTextArea noImage;
+  private final JComboBox select;
+  private final OpIcon icon;
+  private final JLabel imageView;
+  private final JPanel imageViewer;
+  private final JScrollPane imageScroller;
 
   public ImagePicker() {
     noImage = new JTextArea(1,10);
@@ -60,7 +62,7 @@ public class ImagePicker extends javax.swing.JPanel implements MouseListener, It
     noImage.setEditable(false);
     noImage.setLineWrap(true);
     noImage.setWrapStyleWord(true);
-    icon = new ImageIcon();
+    icon = new OpIcon();
     imageView = new JLabel(icon);
     imageView.addMouseListener(this);
     
@@ -71,7 +73,8 @@ public class ImagePicker extends javax.swing.JPanel implements MouseListener, It
       JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     imageViewer.add(imageScroller, BorderLayout.CENTER);
   
-    select = new JComboBox(GameModule.getGameModule().getDataArchive().getImageNames());
+    select = new JComboBox(
+      GameModule.getGameModule().getDataArchive().getImageNames());
     select.addItemListener(this);
     setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
     add(noImage);
@@ -83,8 +86,8 @@ public class ImagePicker extends javax.swing.JPanel implements MouseListener, It
   }
 
   protected void setViewSize() {
-    
   }
+
   public void setImageName(String name) {
     imageName = name;
     remove(0);
@@ -92,6 +95,15 @@ public class ImagePicker extends javax.swing.JPanel implements MouseListener, It
       add(noImage,0);
     }
     else {
+      icon.setOp(new SourceOp(imageName));
+      Dimension d = new Dimension(icon.getIconWidth(), icon.getIconHeight());
+      if (d.width > 400) d.width = 400;
+      if (d.height > 400) d.height = 400;
+      imageScroller.setPreferredSize(d);
+        
+      name = imageName;   // FIXME: why do this?
+      add(imageViewer,0);
+/*
       try {
         icon.setImage(getImage());
         
@@ -107,26 +119,21 @@ public class ImagePicker extends javax.swing.JPanel implements MouseListener, It
         name = null;
         add(noImage,0);
       }
+*/
     }
+
     select.removeItemListener(this);
     select.setSelectedItem(name);
-    if (name != null
-        && !name.equals(select.getSelectedItem())) {
+    if (name != null && !name.equals(select.getSelectedItem())) {
       select.setSelectedItem(name+".gif");
     }
     select.addItemListener(this);
     revalidate();
-    Window w = (Window) SwingUtilities.getAncestorOfClass(Window.class,this);
+    final Window w = SwingUtilities.getWindowAncestor(this);
     if (w != null) {
       w.pack();
     }
     repaint();
-  }
-
-  private Image getImage() throws java.io.IOException {
-    return imageName == null ? null
-      : GameModule.getGameModule()
-      .getDataArchive().getCachedImage(imageName);
   }
 
   public void mouseEntered(MouseEvent e) {
@@ -152,14 +159,15 @@ public class ImagePicker extends javax.swing.JPanel implements MouseListener, It
   }
 
   public void pickImage() {
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.setFileFilter(new ImageFileFilter());
     
     if (fc.showOpenDialog(this) == FileChooser.APPROVE_OPTION
          && fc.getSelectedFile().exists()) {
       String name = fc.getSelectedFile().getName();
-      GameModule.getGameModule().getArchiveWriter()
-        .addImage(fc.getSelectedFile().getPath(), name);
+      GameModule.getGameModule()
+                .getArchiveWriter()
+                .addImage(fc.getSelectedFile().getPath(), name);
       select.setModel(new DefaultComboBoxModel(
          GameModule.getGameModule().getDataArchive().getImageNames()));
       setImageName(name);

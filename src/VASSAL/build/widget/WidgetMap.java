@@ -22,7 +22,6 @@ public class WidgetMap extends Map {
       pieces.clear();
       boards.clear();
       toolBar.setVisible(false);
-      System.gc();
     }
   }
 

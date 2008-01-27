@@ -25,7 +25,7 @@ import VASSAL.tools.FileFilter;
 /**
  * A generic by-extension FileFilter.
  *
- * @author uckelman
+ * @author Joel Uckelman
  */
 public class ExtensionFileFilter extends FileFilter {
    private String[] types;

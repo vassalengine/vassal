@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
@@ -59,6 +58,8 @@ import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.imageop.OpIcon;
+import VASSAL.tools.imageop.SourceOp;
 
 /**
  * ...
@@ -213,19 +214,57 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * :TODO: name of map <code>RESULT_BUTTON</code> if true show result graphical in button
    */
   public String[] getAttributeNames() {
-    String s[] = {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, RESULT_CHATTER, CHAT_RESULT_FORMAT, RESULT_WINDOW, WINDOW_TITLE_RESULT_FORMAT, RESULT_BUTTON,
-                  WINDOW_X, WINDOW_Y, BACKGROUND_COLOR};
-    return s;
+    return new String[]{
+      NAME,
+      BUTTON_TEXT,
+      TOOLTIP,
+      ICON,
+      HOTKEY,
+      RESULT_CHATTER,
+      CHAT_RESULT_FORMAT,
+      RESULT_WINDOW,
+      WINDOW_TITLE_RESULT_FORMAT,
+      RESULT_BUTTON,
+      WINDOW_X,
+      WINDOW_Y,
+      BACKGROUND_COLOR
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Button text:  ", "Tooltip text:  ", "Button icon:  ", "Hotkey:  ", "Report results as text?", "Report format:  ",
-                        "Show result in window?", "Window title format:  ", "Show result in button?", "Width:  ", "Heidght:  ", "Background color:  "};
+    return new String[]{
+      "Name:  ",
+      "Button text:  ",
+      "Tooltip text:  ",
+      "Button icon:  ",
+      "Hotkey:  ",
+      "Report results as text?",
+      "Report format:  ",
+      "Show result in window?",
+      "Window title format:  ",
+      "Show result in button?",
+      "Width:  ",
+      "Height:  ",
+      "Background color:  "
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, String.class, String.class, IconConfig.class, KeyStroke.class, Boolean.class, ReportFormatConfig.class, Boolean.class,
-                       ReportFormatConfig.class, Boolean.class, Integer.class, Integer.class, Color.class};
+    return new Class[]{
+      String.class,
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class,
+      Boolean.class,
+      ReportFormatConfig.class,
+      Boolean.class,
+      ReportFormatConfig.class,
+      Boolean.class,
+      Integer.class,
+      Integer.class,
+      Color.class
+    };
   }
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
@@ -323,10 +362,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   /**
-   * get boolean value of object
+   * Get boolean value of object.
    * 
-   * @param o
-   *          object as input for setAttribute()
+   * @param o object as input for setAttribute()
    * @return boolean value of object
    */
   private boolean getBoolVal(Object o) {
@@ -431,8 +469,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   public Class[] getAllowableConfigureComponents() {
-    Class[] c = {SpecialDie.class};
-    return c;
+    return new Class[] {SpecialDie.class};
   }
 
   public HelpFile getHelpFile() {
@@ -544,6 +581,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
   /** Icon class for graphical display of a dice roll */
   private class ResultsIcon implements Icon {
+// FIXME: how does this work? where are width and height set?
     private int width, height;
     private Icon[] icons;
 
@@ -554,6 +592,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       icons = new Icon[results.length];
       for (int i = 0; i < results.length; ++i) {
         String imageName = dice.get(i).getImageName(results[i]);
+/*
         try {
           Image aImage = GameModule.getGameModule().getDataArchive().getCachedImage(imageName);
           icons[i] = new ImageIcon(aImage);
@@ -561,6 +600,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         catch (IOException e) {
           System.err.println("Unable to locate image " + imageName); //$NON-NLS-1$
         }
+*/
+// FIXME: not really correct, should have a way to catch failure
+        icons[i] = new OpIcon(new SourceOp(imageName));
       }
     }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VassalResourceBundle.java 1856 2007-03-09 04:30:49 +0000 (Fri, 09 Mar 2007) rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2007 by Rodney Kinney, Brent Easton
  *

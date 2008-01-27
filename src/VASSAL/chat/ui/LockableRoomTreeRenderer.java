@@ -1,5 +1,5 @@
 /*
- * $Id: LockableRoomTreeRenderer.java,v 1.3 2006-07-31 09:56:46 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

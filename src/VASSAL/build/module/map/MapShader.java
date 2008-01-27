@@ -3,18 +3,18 @@
  *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
  *
- * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Library General Public License (LGPL) as published by
- * the Free Software Foundation.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more
- * details.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public License
- * along with this library; if not, copies are available at
- * http://www.opensource.org.
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
  */
 
 package VASSAL.build.module.map;
@@ -23,10 +23,12 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
@@ -36,9 +38,12 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -58,8 +63,13 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
+import VASSAL.tools.HashCode;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.imageop.AbstractTileOp;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.ImageOpObserver;
+import VASSAL.tools.imageop.SourceOp;
 
 /**
  *
@@ -130,8 +140,10 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected int borderOpacity = 100;
 
   protected Area shape;
-  protected BufferedImage shadePattern = null;
+  @Deprecated protected BufferedImage shadePattern = null;
   protected Rectangle patternRect = new Rectangle();
+
+  protected ImageOp srcOp;
 
   protected TexturePaint texture = null;
   protected AlphaComposite composite = null;
@@ -144,19 +156,20 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       double zoom = map.getZoom();
       buildStroke(zoom);
 
-      Graphics2D g2 = (Graphics2D) g;
+      final Graphics2D g2 = (Graphics2D) g;
 
-      Composite oldComposite = g2.getComposite();
-      Color oldColor = g2.getColor();
-      Paint oldPaint = g2.getPaint();
-      Stroke oldStroke = g2.getStroke();
+      final Composite oldComposite = g2.getComposite();
+      final Color oldColor = g2.getColor();
+      final Paint oldPaint = g2.getPaint();
+      final Stroke oldStroke = g2.getStroke();
 
       g2.setComposite(getComposite());
       g2.setColor(getColor());
       g2.setPaint(getTexture());
       Area area = getShadeShape(map);
       if (zoom != 1.0) {
-        area = new Area(AffineTransform.getScaleInstance(zoom,zoom).createTransformedShape(area));
+        area = new Area(AffineTransform.getScaleInstance(zoom,zoom)
+                                       .createTransformedShape(area));
       }
       g2.fill(area);
       if (border) {
@@ -184,7 +197,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   protected void buildComposite() {
-    composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity / 100.0f);
+    composite =
+      AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity / 100.0f);
   }
 
   protected AlphaComposite getBorderComposite() {
@@ -195,7 +209,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   protected AlphaComposite buildBorderComposite() {
-    return AlphaComposite.getInstance(AlphaComposite.SRC_OVER, borderOpacity / 100.0f);
+    return AlphaComposite.getInstance(
+      AlphaComposite.SRC_OVER, borderOpacity / 100.0f);
   }
 
   /**
@@ -210,7 +225,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       myShape = new Area(getBoardClip());
     }
 
-    GamePiece pieces[] = map.getPieces();
+    final GamePiece pieces[] = map.getPieces();
     for (int i = 0; i < pieces.length; i++) {
       checkPiece(myShape, pieces[i]);
     }
@@ -245,10 +260,29 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    * pattern.
    */
   protected BufferedImage getShadePattern() {
+/*
     if (shadePattern == null) {
       buildShadePattern();
     }
     return shadePattern;
+*/
+    if (srcOp == null) {
+      buildShadePattern();
+    }
+
+    try {
+      return (BufferedImage) srcOp.getImage(null);
+    }
+    catch (CancellationException e) {
+      e.printStackTrace();
+    }
+    catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    catch (ExecutionException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   protected Rectangle getPatternRect() {
@@ -256,9 +290,14 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   protected void buildShadePattern() {
-    shadePattern = null;
-    if (pattern.equals(TYPE_IMAGE)
-        && imageName != null) {
+    srcOp = pattern.equals(TYPE_IMAGE) && imageName != null
+          ? new SourceOp(imageName) : new PatternOp(color, pattern);
+    patternRect = new Rectangle(srcOp.getSize());
+
+//    shadePattern = null;
+//    srcOp = null;
+//    if (pattern.equals(TYPE_IMAGE) && imageName != null) {
+/*
       try {
         Image im = GameModule.getGameModule().getDataArchive().getCachedImage(imageName);
         if (im instanceof BufferedImage) {
@@ -278,8 +317,12 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       }
       catch (IOException ex) {
       }
-    }
-    if (shadePattern == null) {
+*/
+//      srcOp = new SourceOp(imageName);
+//    }
+//    else {
+/*
+//    if (shadePattern == null) {
       shadePattern = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = shadePattern.createGraphics();
       g.setColor(color);
@@ -299,14 +342,84 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
         g.drawLine(0, 1, 1, 1);
       }
       g.dispose();
+
+      srcOp = new ImageSourceOp(shadePattern);
+*/
+//    }
+
+//    patternRect = new Rectangle(srcOp.getSize());
+//      new Rectangle(0, 0, shadePattern.getWidth(), shadePattern.getHeight());
+  }
+
+  private static class PatternOp extends AbstractTileOp {
+    private final Color color;
+    private final String pattern;
+    private final int hash;
+    
+    public PatternOp(Color color, String pattern) {
+      if (color == null || pattern == null)
+        throw new IllegalArgumentException();
+      this.color = color;
+      this.pattern = pattern;
+      hash = HashCode.hash(color) ^ HashCode.hash(pattern);
     }
 
-    patternRect =
-      new Rectangle(0, 0, shadePattern.getWidth(), shadePattern.getHeight());
+    protected Image apply() throws Exception {
+      final BufferedImage im =
+        new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
+      final Graphics2D g = im.createGraphics();
+      g.setColor(color);
+      if (TYPE_25_PERCENT.equals(pattern)) {
+        g.drawLine(0, 0, 0, 0);
+      }
+      else if (TYPE_50_PERCENT.equals(pattern)) {
+        g.drawLine(0, 0, 0, 0);
+        g.drawLine(1, 1, 1, 1);
+      }
+      else if (TYPE_75_PERCENT.equals(pattern)) {
+        g.drawLine(0, 0, 1, 0);
+        g.drawLine(1, 1, 1, 1);
+      }
+      else {
+        g.drawLine(0, 0, 1, 0);
+        g.drawLine(0, 1, 1, 1);
+      }
+      g.dispose();
+      return im;
+    }
+
+    protected void fixSize() { }
+    
+    @Override
+    public Dimension getSize() {
+      return new Dimension(2,2);
+    }
+  
+    @Override
+    public int getWidth() {
+      return 2;
+    }
+
+    @Override
+    public int getHeight() {
+      return 2;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof PatternOp)) return false;
+      return color.equals(((PatternOp) o).color) &&
+             pattern.equals(((PatternOp) o).pattern);
+    }
+
+    @Override
+    public int hashCode() {
+      return hash;
+    }
   }
 
   protected BasicStroke getStroke(double zoom) {
-
     if (stroke == null) {
       buildStroke(zoom);
     }
@@ -315,11 +428,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   protected void buildStroke(double zoom) {
-    float width = (float) (borderWidth * zoom);
-    if (width < 1.0f) {
-      width = 1.0f;
-    }
-    stroke = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+    stroke = new BasicStroke((float) Math.min(borderWidth * zoom, 1.0),
+                             BasicStroke.CAP_ROUND,
+                             BasicStroke.JOIN_ROUND);
   }
 
   public Color getBorderColor() {
@@ -352,25 +463,75 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, ALWAYS_ON, STARTS_ON, BUTTON_TEXT, TOOLTIP, ICON, HOT_KEY,
-                        BOARDS, BOARD_LIST, TYPE,
-                        DRAW_OVER, PATTERN, COLOR, IMAGE, OPACITY,
-                        BORDER, BORDER_COLOR, BORDER_WIDTH, BORDER_OPACITY};
+    return new String[]{
+      NAME,
+      ALWAYS_ON,
+      STARTS_ON,
+      BUTTON_TEXT,
+      TOOLTIP,
+      ICON,
+      HOT_KEY,
+      BOARDS,
+      BOARD_LIST,
+      TYPE,
+      DRAW_OVER,
+      PATTERN,
+      COLOR,
+      IMAGE,
+      OPACITY,
+      BORDER,
+      BORDER_COLOR,
+      BORDER_WIDTH,
+      BORDER_OPACITY
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, Boolean.class, Boolean.class, String.class, String.class, IconConfig.class, KeyStroke.class,
-                       BoardPrompt.class, String[].class, TypePrompt.class,
-                       Boolean.class, PatternPrompt.class, Color.class, Image.class, Integer.class,
-                       Boolean.class, Color.class, Integer.class, Integer.class};
+    return new Class[]{
+      String.class,
+      Boolean.class,
+      Boolean.class,
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class,
+      BoardPrompt.class,
+      String[].class,
+      TypePrompt.class,
+      Boolean.class,
+      PatternPrompt.class,
+      Color.class,
+      Image.class,
+      Integer.class,
+      Boolean.class,
+      Color.class,
+      Integer.class,
+      Integer.class
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Shading Always On?  ", "Shading Starts turned on?  ", "Button text:  ", "Tooltip Text:  ", "Button Icon:  ", "Hotkey:  ",
-                        "All boards in map get Shaded?  ", "Board List:  ", "Type:  ",
-                        "Draw Shade on top of Counters?  ", "Shade Pattern:  ", "Color:  ", "Image:  ", "Opacity(%)",
-                        "Border?  ", "Border Color:  ", "Border Width:  ", "Border opacity(%)"};
-
+    return new String[]{
+      "Name:  ",
+      "Shading Always On?  ",
+      "Shading Starts turned on?  ",
+      "Button text:  ",
+      "Tooltip Text:  ",
+      "Button Icon:  ",
+      "Hotkey:  ",
+      "All boards in map get Shaded?  ",
+      "Board List:  ",
+      "Type:  ",
+      "Draw Shade on top of Counters?  ",
+      "Shade Pattern:  ",
+      "Color:  ",
+      "Image:  ",
+      "Opacity(%)",
+      "Border?  ",
+      "Border Color:  ",
+      "Border Width:  ",
+      "Border opacity(%)"
+    };
   }
 
   public static class TypePrompt extends StringEnum {
@@ -547,7 +708,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
         value = ColorConfigurer.stringToColor((String) value);
       }
       color = (Color) value;
-      buildShadePattern();;
+      buildShadePattern();
       buildTexture();
     }
     else if (IMAGE.equals(key)) {

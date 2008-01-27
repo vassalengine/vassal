@@ -1,5 +1,5 @@
 /*
- * $Id: NodeRoom.java,v 1.7 2006-12-12 06:39:41 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *

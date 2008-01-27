@@ -21,7 +21,7 @@ import javax.swing.*;
 import VASSAL.chat.SimplePlayer;
 
 /*
- * $Id: CurrentRoomActions.java,v 1.2 2006-12-10 06:34:54 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  */

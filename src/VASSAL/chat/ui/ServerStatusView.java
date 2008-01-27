@@ -1,5 +1,5 @@
 /*
- * $Id: ServerStatusView.java,v 1.8 2006-12-10 06:34:54 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2000-2003 by Rodney Kinney
  *

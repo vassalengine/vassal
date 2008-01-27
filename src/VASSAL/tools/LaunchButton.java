@@ -52,7 +52,7 @@ public class LaunchButton extends JButton {
 
   public LaunchButton(String text, String textAttribute,
                       String hotkeyAttribute, ActionListener al) {
-                      this(text,textAttribute,hotkeyAttribute,null,al);
+    this(text,textAttribute,hotkeyAttribute,null,al);
   }
 
   public LaunchButton(String text, String tooltipAttribute, String textAttribute,
@@ -175,7 +175,7 @@ public class LaunchButton extends JButton {
   }
 
 	protected void checkVisibility() {
-		setVisible((getText() != null && getText().length() > 0) || getIcon() != null);
+		setVisible((getText() != null && getText().length() > 0) ||
+                getIcon() != null);
 	}
-
 }

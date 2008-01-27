@@ -37,14 +37,17 @@ import java.awt.image.PixelGrabber;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
-import VASSAL.build.GameModule;
+
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.tools.imageop.SourceOp;
 
 /**
  * A trait for assigning an arbitrary shape to a {@link GamePiece}
@@ -108,27 +111,29 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
   public void mySetType(String type) {
     this.type = type;
-    String shapeSpec = type.substring(ID.length());
+    final String shapeSpec = type.substring(ID.length());
     shape = buildPath(shapeSpec);
   }
 
   private GeneralPath buildPath(String spec) {
     GeneralPath path = shapeCache.get(spec);
     if (path == null && !shapeCache.containsKey(spec)) {
-      StringTokenizer st = new StringTokenizer(spec, ",");
+      final StringTokenizer st = new StringTokenizer(spec, ",");
       if (st.hasMoreTokens()) {
         path = new GeneralPath();
         while (st.hasMoreTokens()) {
-          String token = st.nextToken();
+          final String token = st.nextToken();
           switch (token.charAt(0)) {
           case 'c':
             path.closePath();
             break;
           case 'm':
-            path.moveTo(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+            path.moveTo(Integer.parseInt(st.nextToken()),
+                        Integer.parseInt(st.nextToken()));
             break;
           case 'l':
-            path.lineTo(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+            path.lineTo(Integer.parseInt(st.nextToken()),
+                        Integer.parseInt(st.nextToken()));
             break;
           }
         }
@@ -154,39 +159,56 @@ public class NonRectangular extends Decorator implements EditablePiece {
       shape = p.shape;
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
+
       final JPanel shapePanel = new JPanel() {
         private static final long serialVersionUID = 1L;
 
         public void paint(Graphics g) {
-          Graphics2D g2d = (Graphics2D) g;
-          g.setColor(Color.white);
-          g.fillRect(0, 0, getWidth(), getHeight());
+          final Graphics2D g2d = (Graphics2D) g;
+          g2d.setColor(Color.white);
+          g2d.fillRect(0, 0, getWidth(), getHeight());
           if (shape != null) {
             g2d.translate(getWidth() / 2, getHeight() / 2);
-            g.setColor(Color.black);
+            g2d.setColor(Color.black);
             g2d.fill(shape);
           }
         }
 
         public Dimension getPreferredSize() {
-          Dimension d = shape == null ? new Dimension(60, 60) : shape.getBounds().getSize();
+          final Dimension d = shape == null
+            ? new Dimension(60, 60) : shape.getBounds().getSize();
           d.width = Math.max(d.width, 60);
           d.height = Math.max(d.height, 60);
           return d;
         }
       };
       controls.add(shapePanel);
+
       final ImagePicker picker = new ImagePicker() {
         private static final long serialVersionUID = 1L;
 
         public void setImageName(String name) {
           super.setImageName(name);
           try {
+            setShapeFromImage((new SourceOp(name)).getImage(null));
+          }
+          catch (CancellationException e) {
+            e.printStackTrace();
+          }
+          catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          catch (ExecutionException e) {
+            e.printStackTrace();
+          }         
+/*
+          try {
             setShapeFromImage(GameModule.getGameModule().getDataArchive().getCachedImage(name));
           }
           catch (IOException e) {
             e.printStackTrace();
           }
+*/
         }
       };
       picker.setBorder(new TitledBorder("Use image shape"));
@@ -194,17 +216,22 @@ public class NonRectangular extends Decorator implements EditablePiece {
     }
 
     public void setShapeFromImage(Image im) {
-      controls.getTopLevelAncestor().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+      controls.getTopLevelAncestor()
+              .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+// FIXME: this part is quite outdated---replace MediaTracker and PixelGrabber
       try {
-        MediaTracker t = new MediaTracker(controls);
+        final MediaTracker t = new MediaTracker(controls);
         t.addImage(im, 0);
         t.waitForAll();
-        int width = im.getWidth(controls);
-        int height = im.getHeight(controls);
-        int[] pixels = new int[width * height];
-        PixelGrabber pg = new PixelGrabber(im, 0, 0, width, height, pixels, 0, width);
+
+        final int width = im.getWidth(controls);
+        final int height = im.getHeight(controls);
+        final int[] pixels = new int[width * height];
+        final PixelGrabber pg =
+          new PixelGrabber(im, 0, 0, width, height, pixels, 0, width);
         pg.grabPixels();
-        Area outline = new Area();
+        final Area outline = new Area();
         for (int j = 0; j < height; ++j) {
           for (int i = 0; i < width; ++i) {
             if (((pixels[i + j * width] >> 24) & 0xff) > 0) {
@@ -212,12 +239,14 @@ public class NonRectangular extends Decorator implements EditablePiece {
             }
           }
         }
-        shape = AffineTransform.getTranslateInstance(-width / 2, -height / 2).createTransformedShape(outline);
+        shape = AffineTransform.getTranslateInstance(-width / 2, -height / 2)
+                               .createTransformedShape(outline);
       }
       catch (InterruptedException e) {
         shape = null;
       }
-      Window w = SwingUtilities.getWindowAncestor(controls);
+
+      final  Window w = SwingUtilities.getWindowAncestor(controls);
       if (w != null) {
         w.pack();
       }
@@ -229,20 +258,27 @@ public class NonRectangular extends Decorator implements EditablePiece {
     }
 
     public String getType() {
-      StringBuffer buffer = null;
-      buffer = new StringBuffer();
+      final StringBuffer buffer = new StringBuffer();
       if (shape != null) {
-        PathIterator it = shape.getPathIterator(new AffineTransform());
-        float[] pts = new float[6];
+        final PathIterator it = shape.getPathIterator(new AffineTransform());
+        final float[] pts = new float[6];
         while (!it.isDone()) {
           switch (it.currentSegment(pts)) {
           case PathIterator.SEG_MOVETO:
-            buffer.append('m').append(',').append(Math.round(pts[0])).append(',').append(Math.round(pts[1]));
+            buffer.append('m')
+                  .append(',')
+                  .append(Math.round(pts[0]))
+                  .append(',')
+                  .append(Math.round(pts[1]));
             break;
           case PathIterator.SEG_LINETO:
           case PathIterator.SEG_CUBICTO:
           case PathIterator.SEG_QUADTO:
-            buffer.append('l').append(',').append(Math.round(pts[0])).append(',').append(Math.round(pts[1]));
+            buffer.append('l')
+                  .append(',')
+                  .append(Math.round(pts[0]))
+                  .append(',')
+                  .append(Math.round(pts[1]));
             break;
           case PathIterator.SEG_CLOSE:
             buffer.append('c');
@@ -261,5 +297,4 @@ public class NonRectangular extends Decorator implements EditablePiece {
       return "";
     }
   }
-
 }

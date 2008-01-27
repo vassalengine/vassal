@@ -1,5 +1,5 @@
 /*
- * $Id: TurnTracker.java 958 2006-08-09 13:14:54 +0000 (Wed, 09 Aug 2006) swampwallaby $
+ * $Id$
  *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
  *

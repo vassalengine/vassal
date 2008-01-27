@@ -157,6 +157,11 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 
+/*
+import org.jdesktop.swinghelper.layer.JXLayer;
+import org.jdesktop.swinghelper.layer.demo.DebugPainter;
+*/
+
 /**
  * The Map is the main component for displaying and containing {@link GamePiece}s during play. Pieces are displayed on
  * a Map and moved by clicking and dragging. Keyboard events are forwarded to selected pieces. Multiple map windows are
@@ -612,6 +617,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 			IntConfigurer config = new IntConfigurer(MAIN_WINDOW_HEIGHT, null, new Integer(-1));
 			Prefs.getGlobalPrefs().addOption(null, config);
 			ComponentSplitter splitter = new ComponentSplitter();
+
+/*
+final JXLayer<JComponent> jxl = new JXLayer<JComponent>(layeredPane);
+final DebugPainter<JComponent> dp = new DebugPainter<JComponent>();
+jxl.setPainter(dp);
+mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGameModule().getControlPanel(), -1), jxl, true);
+*/
+
 			mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGameModule().getControlPanel(), -1), layeredPane, true);
 			GameModule.getGameModule().addKeyStrokeSource(new KeyStrokeSource(theMap, JComponent.WHEN_FOCUSED));
 		}
@@ -667,7 +680,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    */
   public synchronized void setBoards(Collection<Board> c) {
     boards.clear();
-    System.gc();
     for (Board b : c) {
       b.setMap(this);
       boards.add(b);
@@ -1713,7 +1725,6 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 		else {
 			pieces.clear();
 			boards.clear();
-			System.gc();
 			if (mainWindowDock != null) {
 				if (mainWindowDock.getHideableComponent().isShowing()) {
           Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
@@ -1893,8 +1904,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 	public void centerAt(Point p, int dx, int dy) {
 		if (scroll != null) {
 			p = componentCoordinates(p);
-			p.translate(-scroll.getViewport().getWidth() / 2, -scroll.getViewport().getHeight() / 2);
-			Rectangle r = new Rectangle(p, scroll.getViewport().getSize());
+			p.translate(-scroll.getViewport().getWidth() / 2,
+                  -scroll.getViewport().getHeight() / 2);
+			final Rectangle r = new Rectangle(p, scroll.getViewport().getSize());
 			r.width = dx > r.width ? 0 : r.width - dx;
 			r.height = dy > r.height ? 0 : r.height - dy;
 			theMap.scrollRectToVisible(r);

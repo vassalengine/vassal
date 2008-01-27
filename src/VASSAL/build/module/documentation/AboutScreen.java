@@ -28,8 +28,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JWindow;
@@ -42,12 +44,18 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.ImageSourceOp;
+import VASSAL.tools.imageop.OpIcon;
+import VASSAL.tools.imageop.SourceOp;
 
 /**
  * Places an entry in the <code>Help</code> menu.  Selecting the entry
  * displays a window with a stored image on it.  Good for a splash
- * screen or an "about" screen.  */
+ * screen or an "about" screen.
+ */
 public class AboutScreen extends AbstractConfigurable {
+  protected ImageOp op;
   protected Image image;
   protected String title;
   protected String fileName;
@@ -63,13 +71,20 @@ public class AboutScreen extends AbstractConfigurable {
     });
   }
 
+  public AboutScreen(ImageOp op) {
+    this();
+    if (op == null) throw new IllegalArgumentException();
+    this.op = op;
+  }
+
+  @Deprecated
   public AboutScreen(Image i) {
     this();
-    image = i;
+    this.op = new ImageSourceOp(i);
   }
 
   public void launch() {
-    if (image == null) return;
+//    if (image == null) return;
 
     if (window == null) {
       initComponents();
@@ -80,14 +95,16 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   protected void initComponents() {
-    if (image == null) {
+    if (op == null) {
       return;
     }
-    ImageIcon icon = new ImageIcon(image);
-    JWindow w = new JWindow(GameModule.getGameModule() != null ? GameModule.getGameModule().getFrame() : null);
+
+    final Icon icon = new OpIcon(op);
+    final JWindow w = new JWindow(GameModule.getGameModule() != null ?
+      GameModule.getGameModule().getFrame() : null);
     w.getContentPane().setBackground(Color.black);
     w.setLayout(new BoxLayout(w.getContentPane(), BoxLayout.Y_AXIS));
-    JLabel l = new JLabel(icon);
+    final JLabel l = new JLabel(icon);
     l.setAlignmentX(0.5F);
     w.add(l);
     w.add(createLabel(
@@ -102,7 +119,7 @@ public class AboutScreen extends AbstractConfigurable {
     w.add(createLabel(
         Resources.getString("AboutScreen.vassal_version", Info.getVersion()))); //$NON-NLS-1$
     w.pack();
-    Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+    final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
     w.setLocation(d.width / 2 - w.getSize().width / 2,
                   d.height / 2 - w.getSize().height / 2);
     window = w;
@@ -114,7 +131,7 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   private JLabel createLabel(String text) {
-    JLabel l2 = new JLabel(text);
+    final JLabel l2 = new JLabel(text);
     l2.setBackground(Color.blue);
     l2.setForeground(Color.white);
     l2.setHorizontalAlignment(JLabel.CENTER);
@@ -132,19 +149,27 @@ public class AboutScreen extends AbstractConfigurable {
    * <code>TITLE</code> the text of the menu entry in the Help menu
    * <code>FILE</code> the name of an image file in the {@link
    * DataArchive}.  The image is displayed when the menu item is
-   * selected */
+   * selected
+   */
   public String[] getAttributeNames() {
-    return new String[]{TITLE, FILE};
+    return new String[]{
+      TITLE,
+      FILE
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Menu Entry:  ", //$NON-NLS-1$
-                        "Image:  "}; //$NON-NLS-1$
+    return new String[]{
+      "Menu Entry:  ", //$NON-NLS-1$
+      "Image:  " //$NON-NLS-1$
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class,
-                       Image.class};
+    return new Class[]{
+      String.class,
+      Image.class
+    };
   }
 
   public String getAttributeValueString(String key) {
@@ -171,9 +196,50 @@ public class AboutScreen extends AbstractConfigurable {
         val = ((File) val).getName();
       }
       fileName = (String) val;
-      image = getImage();
-      GameModule.getGameModule().getWizardSupport().setBackgroundImage(image);
+
+      op = null;
+      if (fileName != null) {
+        fileName = fileName.trim();
+        if (!fileName.isEmpty()) {
+          op = new SourceOp(fileName);
+          
+          try {
+            // FIXME: get the wizard to cache
+            GameModule.getGameModule()
+                      .getWizardSupport()
+                      .setBackgroundImage(op.getImage(null));
+          }
+          catch (CancellationException e) {
+// FIXME: is this possible?
+            op = null;
+            e.printStackTrace();
+          }
+          catch (InterruptedException e) {
+// FIXME: is this possible?
+            op = null;
+            e.printStackTrace();
+          }
+          catch (ExecutionException e) {
+            op = null;
+            e.printStackTrace();
+          }
+        }
+      }
+
       window = null;
+/*
+//      image = getImage();
+//      GameModule.getGameModule().getWizardSupport().setBackgroundImage(image);
+      op = fileName == null || fileName.trim().isEmpty()
+         ? null : new SourceOp(fileName); 
+// FIXME: setting the background in the wizard blows caching
+      if (op != null) {
+        GameModule.getGameModule()
+                  .getWizardSupport()
+                  .setBackgroundImage(op.getImage(null));
+      }
+      window = null;
+*/
     }
   }
 
@@ -190,13 +256,20 @@ public class AboutScreen extends AbstractConfigurable {
    * Expects to be added to a {@link Documentation}.  Adds an entry
    * to the <code>Help</code> menu */
   public void addTo(Buildable b) {
-    Documentation d = (Documentation) b;
+    final Documentation d = (Documentation) b;
     d.getHelpMenu().add(launch);
-    if (image == null && fileName != null) {
-      throw new IllegalBuildException(Resources.getString("AboutScreen.file_not_found", fileName , GameModule.getGameModule().getDataArchive().getName())); //$NON-NLS-1$
+// FIXME: need to do something to check whether op will produce non-null
+// output. Mabye in this case just skip this check, and complain later?
+// Or just load the image now?
+    if (op == null) {
+      throw new IllegalBuildException(
+        Resources.getString("AboutScreen.file_not_found", //$NON-NLS-1$
+        fileName ,
+        GameModule.getGameModule().getDataArchive().getName()));
     }
   }
 
+/*
   private Image getImage() throws IllegalBuildException {
     Image im = null;
     if (fileName != null && fileName.length() > 0) {
@@ -214,16 +287,9 @@ public class AboutScreen extends AbstractConfigurable {
     }
     return im;
   }
+*/
 
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("HelpMenu.htm", "AboutScreen"); //$NON-NLS-1$ //$NON-NLS-2$
   }
-
-  public static void main(String args[]) {
-    Image i = Toolkit.getDefaultToolkit().getImage("/Command Bunker/VASSAL!/latest source/images/Splash.gif"); //$NON-NLS-1$
-    System.err.println("" + i); //$NON-NLS-1$
-    AboutScreen as = new AboutScreen(i);
-    as.launch();
-  }
 }
-

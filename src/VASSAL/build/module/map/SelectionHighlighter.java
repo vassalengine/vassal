@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2006-2007 by Brent Easton, Joel Uckelman
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.build.module.map;
 
 import java.awt.BasicStroke;
@@ -10,6 +28,9 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -23,8 +44,12 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
+import VASSAL.tools.ImageUtils;
+import VASSAL.tools.imageop.ScaleOp;
+import VASSAL.tools.imageop.SourceOp;
 
-public class SelectionHighlighter extends AbstractConfigurable implements Highlighter {
+public class SelectionHighlighter extends AbstractConfigurable
+                                  implements Highlighter {
 
   public static final String NAME = "name";
   public static final String MATCH = "match";
@@ -44,20 +69,48 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   protected int y = 0;
 
   protected VisibilityCondition visibilityCondition;
-  protected Image image;
 
-  public void draw(GamePiece p, Graphics g, int x, int y, Component obs, double zoom) {
-    Graphics2D g2d = (Graphics2D) g;
+  @Deprecated protected Image image;
+  protected SourceOp srcOp;
+  protected ScaleOp scaleOp;
+
+  public void draw(GamePiece p, Graphics g, int x, int y,
+                   Component obs, double zoom) {
+    final Graphics2D g2d = (Graphics2D) g;
     if (accept(p)) {
-      if (useImage) {
-        if (image != null) {
-          int x1 = x - (int) (image.getWidth(null) * zoom / 2);
-          int y1 = y - (int) (image.getHeight(null) * zoom / 2);
-          if (zoom == 1.0) {
-            g2d.drawImage(image, x1, y1, null);
+      if (useImage && srcOp != null) {
+        final int x1 = x - (int) (srcOp.getWidth() * zoom / 2);
+        final int y1 = y - (int) (srcOp.getHeight() * zoom / 2);
+        if (zoom == 1.0) {
+          try {
+            g2d.drawImage(srcOp.getImage(null), x1, y1, null);
           }
-          else {
-            g2d.drawImage(GameModule.getGameModule().getDataArchive().getScaledImage(image, zoom), x1, y1, null);
+          catch (CancellationException e) {
+            e.printStackTrace();
+          }
+          catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          catch (ExecutionException e) {
+            e.printStackTrace();
+          }
+        }
+        else {
+          if (scaleOp == null || scaleOp.getScale() != zoom) {
+            scaleOp = new ScaleOp(srcOp, zoom);
+          }
+
+          try {
+            g2d.drawImage(scaleOp.getImage(null), x1, y1, null);
+          }
+          catch (CancellationException e) {
+            e.printStackTrace();
+          }
+          catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          catch (ExecutionException e) {
+            e.printStackTrace();
           }
         }
       }
@@ -65,11 +118,12 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
         if (color == null || thickness <= 0) {
           return;
         }
-        Shape s = p.getShape();
-        Stroke str = g2d.getStroke();
+
+        final Shape s = p.getShape();
+        final Stroke str = g2d.getStroke();
         g2d.setStroke(new BasicStroke(Math.max(1,Math.round(zoom*thickness))));
         g2d.setColor(color);
-        AffineTransform t = AffineTransform.getScaleInstance(zoom,zoom);
+        final AffineTransform t = AffineTransform.getScaleInstance(zoom,zoom);
         t.translate(x/zoom,y/zoom);
         g2d.draw(t.createTransformedShape(s));
         g2d.setStroke(str);
@@ -82,10 +136,8 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
 
     if (accept(p)) {
       if (useImage) {
-        if (image != null) {
-          int width = image.getWidth(null);
-          int height = image.getHeight(null);
-          r = r.union(new Rectangle(-width/2, -height/2, width, height));
+        if (srcOp != null) {
+          r = r.union(ImageUtils.getBounds(srcOp.getSize()));
         }
       }
       else {
@@ -97,11 +149,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   }
 
   protected boolean accept(GamePiece p) {
-    if (matchProperties.isNull()) {
-      return true;
-    }
-    
-    return matchProperties.accept(p);
+    return matchProperties.isNull() ? true : matchProperties.accept(p);
   }
   
   public static String getConfigureTypeName() {
@@ -109,13 +157,29 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   }
   
   public String[] getAttributeDescriptions() {
-    return new String[] {"Name:  ", "Active if Properties Match:  ", "Use Image",
-        "Border Color:  ", "Border Thickness:  ", "Image:  ", "X Offset:  ", "Y Offset:  "};
+    return new String[] {
+      "Name:  ",
+      "Active if Properties Match:  ",
+      "Use Image",
+      "Border Color:  ",
+      "Border Thickness:  ",
+      "Image:  ",
+      "X Offset:  ",
+      "Y Offset:  "
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[] {String.class, PropertyExpression.class, Boolean.class, Color.class, Integer.class,
-        IconConfig.class, Integer.class, Integer.class};
+    return new Class[] {
+      String.class,
+      PropertyExpression.class,
+      Boolean.class,
+      Color.class,
+      Integer.class,
+      IconConfig.class,
+      Integer.class,
+      Integer.class
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {
@@ -125,7 +189,16 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   }
 
   public String[] getAttributeNames() {
-    return new String[] {NAME, MATCH, USE_IMAGE, COLOR, THICKNESS, IMAGE, X_OFFSET, Y_OFFSET};
+    return new String[] {
+      NAME,
+      MATCH,
+      USE_IMAGE,
+      COLOR,
+      THICKNESS,
+      IMAGE,
+      X_OFFSET,
+      Y_OFFSET
+    };
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -136,7 +209,9 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
         }
       };
     }
-    else if (IMAGE.equals(name) || X_OFFSET.equals(name) || Y_OFFSET.equals(name)) {
+    else if (IMAGE.equals(name) ||
+             X_OFFSET.equals(name) ||
+             Y_OFFSET.equals(name)) {
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
           return useImage;
@@ -160,7 +235,6 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
         value = Boolean.valueOf((String) value);
       }
       useImage = ((Boolean) value).booleanValue();
-
     }
     else if (key.equals(COLOR)) {
       if (value instanceof String) {
@@ -182,17 +256,8 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     }
     else if (key.equals(IMAGE)) {
       imageName = (String) value;
-      if (imageName.equals("")) {
-        image = null;
-      }
-      else {        
-        try {
-          image = GameModule.getGameModule().getDataArchive().getCachedImage(imageName);
-        }
-        catch (Exception ex) {
-          image = null;
-        }
-      }
+      srcOp = imageName == null || imageName.trim().isEmpty() 
+            ? null : new SourceOp(imageName);
     }
     else if (key.equals(X_OFFSET)) {
       if (value instanceof String) {
@@ -214,7 +279,6 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       catch (NumberFormatException ex) {
       }
     }
-
   }
 
   public String getAttributeValueString(String key) {
@@ -260,5 +324,4 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   public void addTo(Buildable parent) {
     ((SelectionHighlighters) parent).addHighlighter(this);
   }
-
 }

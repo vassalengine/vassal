@@ -26,7 +26,6 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -45,6 +44,8 @@ import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.imageop.OpIcon;
+import VASSAL.tools.imageop.SourceOp;
 
 /**
  * An HtmlChart is used for displaying html information for the module. The
@@ -83,9 +84,9 @@ public class HtmlChart extends Widget implements MouseListener {
       return null;
     }
     try {
-      InputStream stream = GameModule.getGameModule().getDataArchive().getFileStream(fname);
-      byte[] bytes = new byte[stream.available()];
-      int totalBytes = stream.available();
+      final InputStream stream = GameModule.getGameModule().getDataArchive().getFileStream(fname);
+      final byte[] bytes = new byte[stream.available()];
+      final int totalBytes = stream.available();
       int numRead = 0;
       int iBytes = 0;
       while (iBytes < totalBytes && ((numRead = stream.read(bytes, iBytes, totalBytes - iBytes)) > 0)) {
@@ -164,55 +165,11 @@ public class HtmlChart extends Widget implements MouseListener {
 
   /**
    * The Attributes of a Chart are:
-   *
-   * <pre>
-   * <code>
-   * NAME
-   * </code>
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *           for the name of the chart
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   * <code>
-   * FILE
-   * </code>
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *           for the name of the HTML file in the {@link VASSAL.tools.DataArchive}
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   *
-   * </pre>
+   * <dl>
+   *  <dt><code>NAME</code></dt><dd>for the name of the chart</dd>
+   *  <dt><code>FILE</code></dt><dd>for the name of the HTML file
+   *  in the {@link VASSAL.tools.DataArchive}</dd>
+   * </dl>
    */
   public String[] getAttributeNames() {
     return new String[]{NAME, FILE};
@@ -238,8 +195,8 @@ public class HtmlChart extends Widget implements MouseListener {
 
   public void mousePressed(MouseEvent event) {
     if (event.isMetaDown()) {
-      JPopupMenu popup = new JPopupMenu();
-      JMenuItem item = new JMenuItem("Return to default page");
+      final JPopupMenu popup = new JPopupMenu();
+      final JMenuItem item = new JMenuItem("Return to default page");
 
       item.addActionListener(new ActionListener() {
         // Return to default page
@@ -285,7 +242,6 @@ public class HtmlChart extends Widget implements MouseListener {
     }
   }
 
-
   /**
    * Extended HTML Editor kit to extend the <src> tag to display images
    * from the module DataArchive where no pathname included in the image name.
@@ -293,8 +249,6 @@ public class HtmlChart extends Widget implements MouseListener {
    * ImageView cannot be used as the standard Java HTML Renderer can only
    * display Images from an external URL.
    */
-
-
   public class XTMLEditorKit extends HTMLEditorKit {
     private static final long serialVersionUID = 1L;
 
@@ -306,14 +260,13 @@ public class HtmlChart extends Widget implements MouseListener {
 
       public XTMLFactory() {
         super();
-
       }
 
       public View create(javax.swing.text.Element element) {
-        HTML.Tag kind = (HTML.Tag) (element.getAttributes().getAttribute(javax.swing.text.StyleConstants.NameAttribute));
+        final HTML.Tag kind = (HTML.Tag) (element.getAttributes().getAttribute(javax.swing.text.StyleConstants.NameAttribute));
 
         if (kind instanceof HTML.Tag && element.getName().equals("img")) {
-          String imageName = (String) element.getAttributes().getAttribute(HTML.Attribute.SRC);
+          final String imageName = (String) element.getAttributes().getAttribute(HTML.Attribute.SRC);
           if (imageName.indexOf("/") < 0) {
             return new ImageComponentView(element);
           }
@@ -322,31 +275,38 @@ public class HtmlChart extends Widget implements MouseListener {
       }
 
       public class ImageComponentView extends ComponentView {
-
         protected String imageName;
-
+        protected SourceOp srcOp;
 
         /**
-         * Very basic Attribute handling only. Expand as needed
+         * Very basic Attribute handling only. Expand as needed.
          */
         public ImageComponentView(Element e) {
           super(e);
-          imageName = (String) e.getAttributes().getAttribute(HTML.Attribute.SRC);
+          imageName = (String) e.getAttributes()
+                                .getAttribute(HTML.Attribute.SRC);
+          srcOp = imageName == null || imageName.trim().isEmpty()
+                ? null : new SourceOp(imageName);
         }
 
         protected Component createComponent() {
+/*
           try {
-            JLabel label = new JLabel();
-            ImageIcon icon = new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(imageName));
+            final JLabel label = new JLabel();
+            final ImageIcon icon = new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(imageName));
             label.setIcon(icon);
             return label;
           }
           catch (Exception e) {
             return null;
           }
+*/
+// FIXME: not really correct, should have a way of catching failure
+          final JLabel label = new JLabel();
+          label.setIcon(new OpIcon(srcOp));
+          return label;
         }
       }
     }
   }
-
 }

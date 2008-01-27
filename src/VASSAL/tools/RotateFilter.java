@@ -29,6 +29,8 @@ import java.awt.image.ImageConsumer;
 import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 
+/** @deprecated Use {@link VASSAL.tools.imageop.RotateOp} instead. */
+@Deprecated
 public class RotateFilter extends ImageFilter {
   private double angle;
   private double cos, sin;

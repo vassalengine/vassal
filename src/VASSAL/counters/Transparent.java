@@ -18,18 +18,22 @@
  */
 package VASSAL.counters;
 
+import java.awt.AlphaComposite;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.FilteredImageSource;
+
 import VASSAL.build.GameModule;
-import VASSAL.tools.TransparentFilter;
 
 /**
  * A class that draws a GamePiece with a specifyable level of transparency
+ * @deprecated No longer used by anything.
  */
+@Deprecated
+@SuppressWarnings("deprecation")
 public class Transparent {
   private double alpha = 0.2;
   private PieceImage opaque;
@@ -60,8 +64,9 @@ public class Transparent {
       return;
     }
     if (opaque.isChanged()) {
-      int trans = TransparentFilter.getOffscreenEquivalent(obs.getBackground().getRGB(), obs);
-      TransparentFilter filter = new TransparentFilter();
+
+      int trans = VASSAL.tools.TransparentFilter.getOffscreenEquivalent(obs.getBackground().getRGB(), obs);
+      VASSAL.tools.TransparentFilter filter = new VASSAL.tools.TransparentFilter();
       filter.setAlpha(alpha);
       filter.setAlpha(0.0, trans);
       im = opaque.getImage(obs);
@@ -74,7 +79,20 @@ public class Transparent {
       offset = new Point(piece.boundingBox().x,
                          piece.boundingBox().y);
 
+/*
+      im = opaque.getImage(obs);
+      final Image im2 = obs.createImage(im.getWidth(obs), im.getHeight(obs));
+      final Graphics2D gg = (Graphics2D) im2.getGraphics();
+      gg.setComposite(
+        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) alpha));
+      gg.drawImage(im, 0, 0, obs);
+      gg.dispose();
+    
+      offset = new Point(piece.boundingBox().x,
+                         piece.boundingBox().y);
+*/
     }
+
     Image scaled = im;
     if (zoom != 1.0) {
       scaled = GameModule.getGameModule().getDataArchive().getScaledImage(im,zoom);

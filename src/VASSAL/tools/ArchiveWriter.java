@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -37,15 +37,16 @@ import java.util.zip.ZipOutputStream;
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.imageop.SourceOp;
 
 /**
  * An ArchiveWriter is a writeable DataArchive. New files may be added
  * with the {@link #addFile} and {@link #addImage} methods.
  */
 public class ArchiveWriter extends DataArchive {
-  private Map<String,Object> images = new HashMap<String,Object>();
-  private Map<String,Object> sounds = new HashMap<String,Object>();
-  private Map<String,Object> files = new HashMap<String,Object>();
+  private final Map<String,Object> images = new HashMap<String,Object>();
+  private final Map<String,Object> sounds = new HashMap<String,Object>();
+  private final Map<String,Object> files = new HashMap<String,Object>();
   private String archiveName;
 
   /**
@@ -93,26 +94,27 @@ public class ArchiveWriter extends DataArchive {
       if (svgManager == null) svgManager = new SVGManager(this);
 
       for (String s : svgManager.getExternalReferences(path)) {
-         File f = new File(s);
-         String n = f.getName();
-         unCacheImage(n);
-         images.put(IMAGE_DIR + n, f.getPath());
+        final File f = new File(s);
+        final String n = f.getName();
+// FIXME: this isn't right---n might not be a displaying SVG image
+//        ImageCache.remove(new SourceOp(n));         
+        images.put(IMAGE_DIR + n, f.getPath());
       }
     }
     // otherwise just add what we were given
     else {
-       unCacheImage(name);
-       images.put(IMAGE_DIR + name, path);
+//      ImageCache.remove(new SourceOp(name));
+      images.put(IMAGE_DIR + name, path);
     }
 
-    imageNames = null;
+    localImages = null;
   }
 
   public void addImage(String name, byte[] contents) {
-    unCacheImage(name);
+//    ImageCache.remove(new SourceOp(name));
     images.put(IMAGE_DIR + name, contents);
-    imageNames = null;
-  }
+    localImages = null;
+  } 
   
   public void addSound(String file, String name) {
     sounds.put(SOUNDS_DIR+name, file);
@@ -123,8 +125,9 @@ public class ArchiveWriter extends DataArchive {
   }
 
   public void removeImage(String name) {
-    unCacheImage(name);
+//    ImageCache.remove(new SourceOp(name));
     images.remove(IMAGE_DIR + name);
+    localImages = null;
   }
 
   /**
@@ -164,6 +167,7 @@ public class ArchiveWriter extends DataArchive {
    * Overrides {@link DataArchive#getFileStream} to return streams that have
    * been added to the archive but not yet written to disk.
    */
+  @Override
   public InputStream getFileStream(String name) throws IOException {
     InputStream stream;
     stream = getAddedStream(images, name);
@@ -187,7 +191,7 @@ public class ArchiveWriter extends DataArchive {
   private InputStream getAddedStream(Map<String,Object> table,
                                      String name) throws IOException {
     InputStream stream = null;
-    Object file = table.get(name);
+    final Object file = table.get(name);
     if (file instanceof String) {
       stream = new FileInputStream((String) file);
     }
@@ -210,8 +214,10 @@ public class ArchiveWriter extends DataArchive {
    */
   public void write() throws IOException {
     if (archiveName == null) {
-      FileChooser fc = FileChooser.createFileChooser(
-        GameModule.getGameModule().getFrame(), (DirectoryConfigurer) Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
+      final FileChooser fc = FileChooser.createFileChooser(
+        GameModule.getGameModule().getFrame(),
+        (DirectoryConfigurer) Prefs.getGlobalPrefs()
+                                   .getOption(Prefs.MODULES_DIR_KEY));
       if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;
       archiveName = fc.getSelectedFile().getPath();
     }
@@ -225,13 +231,13 @@ public class ArchiveWriter extends DataArchive {
     temp = temp + n + ".zip";
 
     int count;
-    byte[] buffer = new byte[1024];
+    final byte[] buffer = new byte[1024];
 
-    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(temp));
+    final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(temp));
     if (archive != null) {
       /* Copy old non-overwritten entries into temp file */
       ZipEntry entry = null;
-      ZipInputStream zis =
+      final ZipInputStream zis =
         new ZipInputStream(new FileInputStream(archive.getName()));
 
       while ((entry = zis.getNextEntry()) != null) {
@@ -239,16 +245,16 @@ public class ArchiveWriter extends DataArchive {
             !sounds.containsKey(entry.getName()) &&
             !files.containsKey(entry.getName())) {
           /* System.err.println("Copying "+entry.getName()); */
-          ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+          final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
           while ((count = zis.read(buffer, 0, 1024)) >= 0) {
             outStream.write(buffer, 0, count);
           }
-          byte[] contents = outStream.toByteArray();
-          ZipEntry newEntry = new ZipEntry(entry.getName());
+          final byte[] contents = outStream.toByteArray();
+          final ZipEntry newEntry = new ZipEntry(entry.getName());
           newEntry.setMethod(entry.getMethod());
           if (newEntry.getMethod() == ZipEntry.STORED) {
             newEntry.setSize(contents.length);
-            CRC32 checksum = new CRC32();
+            final CRC32 checksum = new CRC32();
             checksum.update(contents);
             newEntry.setCrc(checksum.getValue());
           }
@@ -265,14 +271,14 @@ public class ArchiveWriter extends DataArchive {
     writeEntries(files, ZipEntry.DEFLATED, out);
     out.close();
 
-    File original = new File(archiveName);
+    final File original = new File(archiveName);
     if (original.exists()) {
       if (!original.delete()) {
         throw new IOException("Unable to overwrite " + archiveName +
                               "\nData stored in " + temp);
       }
     }
-    File f = new File(temp);
+    final File f = new File(temp);
     if (!f.renameTo(original)) {
       throw new IOException("Unable to write to " + archiveName +
                             "\nData stored in " + temp);
@@ -286,7 +292,7 @@ public class ArchiveWriter extends DataArchive {
     ZipEntry entry;
 
     for (String name : h.keySet()) {
-      Object o = h.get(name);
+      final Object o = h.get(name);
       if (o instanceof String) {
         if (name.toLowerCase().endsWith(".svg")) {
           if (svgManager == null) svgManager = new SVGManager(this);
@@ -305,7 +311,7 @@ public class ArchiveWriter extends DataArchive {
       entry.setMethod(method);
       if (method == ZipEntry.STORED) {
         entry.setSize(contents.length);
-        CRC32 checksum = new CRC32();
+        final CRC32 checksum = new CRC32();
         checksum.update(contents);
         entry.setCrc(checksum.getValue());
       }
@@ -314,8 +320,20 @@ public class ArchiveWriter extends DataArchive {
     }
   }
 
-  protected Set<String> setOfImageNames() {
-    Set<String> s = super.setOfImageNames();
+  public SortedSet<String> getImageNameSet() {
+    final SortedSet<String> s = super.getImageNameSet();
+    for (String name : images.keySet()) {
+      if (name.startsWith(IMAGE_DIR)) {
+        s.add(name.substring(IMAGE_DIR.length()));
+      }
+    }
+    return s;
+  }
+
+  /** @deprecated Use {@link getImageNameSet()} instead. */
+  @Deprecated
+  protected SortedSet<String> setOfImageNames() {
+    final SortedSet<String> s = super.setOfImageNames();
     for (String name : images.keySet()) {
       if (name.startsWith(IMAGE_DIR)) {
         s.add(name.substring(IMAGE_DIR.length()));

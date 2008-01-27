@@ -22,7 +22,7 @@ import javax.swing.JTree;
 import VASSAL.chat.Room;
 
 /*
- * $Id: ServerWindowActions.java,v 1.4 2006-12-09 22:49:24 rkinney Exp $
+ * $Id$
  *
  * Copyright (c) 2004 by Rodney Kinney
  *

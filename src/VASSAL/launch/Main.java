@@ -39,6 +39,8 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.JarArchive;
 
+//import org.jdesktop.swinghelper.debug.EventDispatchThreadHangMonitor;
+
 public class Main {
   protected boolean isFirstTime;
   protected boolean builtInModule;
@@ -217,6 +219,7 @@ public class Main {
   }
 
   public static void main(String[] args) {
+//EventDispatchThreadHangMonitor.initMonitoring();
     new Main(args);
   }
 }

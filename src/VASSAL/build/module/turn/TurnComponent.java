@@ -1,5 +1,5 @@
 /*
- * $Id: TurnComponent.java 919 2006-05-29 13:24:46 +0000 (Mon, 29 May 2006) swampwallaby $
+ * $Id$
  *
  * Copyright (c) 2005 by Rodney Kinney, Brent Easton
  *

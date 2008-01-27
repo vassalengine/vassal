@@ -226,7 +226,8 @@ public class GameState implements CommandEncoder {
       gc.setup(this.gameStarting);
     }
     if (gameStarting) {
-      GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
+// FIXME: what is the purpose of this?
+//      GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
     }
     gameStarted = gameStarted || this.gameStarting;
     lastSave = gameStarting ? saveString() : null;
@@ -486,7 +487,9 @@ public class GameState implements CommandEncoder {
   }
 
   public void loadGameInBackground(final String shortName, final InputStream in)  {
-    GameModule.getGameModule().warn(Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
+    GameModule.getGameModule().warn(
+      Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
+
     new BackgroundTask() {
       private String msg;
       private Command loadCommand;
