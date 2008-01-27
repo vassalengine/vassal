@@ -6,7 +6,7 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
-<arguments></arguments>
+<arguments>-extract /docsInfo</arguments>
 <classPath>lib\Vengine.jar</classPath>
 <currentDirectory>${EXECUTABLEPATH}</currentDirectory>
 <embeddedJar>false</embeddedJar>
@@ -15,7 +15,7 @@
 <mainClassName>VASSAL.launch.Main</mainClassName>
 <maximumMemoryHeap>536870912</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
-<minimumVersion>1.5</minimumVersion>
+<minimumVersion>1.5.0</minimumVersion>
 <skeletonName>Autodownload Wrapper</skeletonName>
 <skeletonProperties>
 <key>Message</key>

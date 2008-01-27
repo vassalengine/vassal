@@ -16,6 +16,7 @@ Class-Path: batik-awt-util.jar
   batik-util.jar
   batik-xml.jar
   BrowserLauncher2-10.jar
+  docs.jar
   js.jar
   pdf-transcoder.jar
   smack.jar
