@@ -31,6 +31,8 @@ import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.BoxWidget;
+import VASSAL.build.widget.Chart;
+import VASSAL.build.widget.HtmlChart;
 import VASSAL.build.widget.ListWidget;
 import VASSAL.build.widget.MapWidget;
 import VASSAL.build.widget.PanelWidget;
@@ -148,8 +150,8 @@ public class ChartWindow extends Widget {
   @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return new Class[]{
-      VASSAL.build.widget.Chart.class,
-      VASSAL.build.widget.HtmlChart.class,
+      Chart.class,
+      HtmlChart.class,
       TabWidget.class,
       PanelWidget.class,
       BoxWidget.class,

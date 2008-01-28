@@ -8,11 +8,11 @@ DISTDIR:=dist
 
 VERSION:=3.1.0-svn$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
 
-#CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
-CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':')
+CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
+JAVAPATH:=/usr/lib/jvm/java-1.6.0-sun
 
-#JAVAPATH:=/usr/lib/jvm/java-1.6.0-sun
-JAVAPATH:=/usr/lib/jvm/java-1.5.0-sun
+#CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':')
+#JAVAPATH:=/usr/lib/jvm/java-1.5.0-sun
 
 JC:=$(JAVAPATH)/bin/javac
 JCFLAGS:=-d $(CLASSDIR) -source 5 -Xlint -classpath $(CLASSPATH) \
@@ -63,7 +63,7 @@ version:
 #	$(JAR) cevf VASSAL/launch/install/InstallWizard InstallVASSAL.jar -C $(CLASSDIR) VASSAL/launch/ VASSAL/chat/HttpRequestWrapper*
 
 release: version all $(JARS)
-	mkdir -p $(TMPDIR)/VASSAL-$(VERSION) $(TMPDIR)/VASSAL-$(VERSION)/ext
+	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)/{ext,plugins} 
 	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp $(LIBDIR)/Vengine.jar $(LIBDIR)/docs.jar $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp dist/VASSAL.sh dist/VASSAL.bat dist/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)

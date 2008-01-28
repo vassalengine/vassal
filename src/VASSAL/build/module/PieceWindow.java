@@ -149,7 +149,13 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
    * PanelWidget}, a {@link BoxWidget}, a {@link ListWidget}, or a
    * {@link PieceSlot} */
   public Class[] getAllowableConfigureComponents() {
-    return new Class[]{TabWidget.class, PanelWidget.class, BoxWidget.class, ListWidget.class, PieceSlot.class};
+    return new Class[]{
+      TabWidget.class,
+      PanelWidget.class,
+      BoxWidget.class,
+      ListWidget.class,
+      PieceSlot.class
+    };
   }
 
   public void add(Buildable b) {
@@ -194,7 +200,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
         mainWindowDock = new ComponentSplitter().splitLeft(GameModule.getGameModule().getControlPanel(), root, false);
       }
       else {
-        Window w = initFrame();
+        final Window w = initFrame();
         final PositionOption pos = new VisibilityOption(key, w);
         GameModule.getGameModule().getPrefs().addOption(pos);
       }
@@ -212,11 +218,25 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Hidden? (requires restart)", "Button text:  ", "Tooltip text:  ", "Button icon:  ", "Hotkey to show/hide:  "};
+    return new String[]{
+      "Name:  ",
+      "Hidden? (requires restart)",
+      "Button text:  ",
+      "Tooltip text:  ",
+      "Button icon:  ",
+      "Hotkey to show/hide:  "
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, Boolean.class, String.class, String.class, IconConfig.class, KeyStroke.class};
+    return new Class[]{
+      String.class,
+      Boolean.class,
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {

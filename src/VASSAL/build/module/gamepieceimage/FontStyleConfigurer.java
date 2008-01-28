@@ -49,7 +49,7 @@ public class FontStyleConfigurer extends Configurer {
   }
 
   public String getValueString() {
-    return (String) value;
+    return "";
   }
 
   public Font getValueFont() {

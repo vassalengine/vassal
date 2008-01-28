@@ -447,7 +447,10 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         for (Iterator<Double> i = set.iterator(); i.hasNext() ; ++j)
           levels[j] = i.next();  
         
-        state = new State(levels, state.getInitialLevel());
+// FIXME: do something to update display when initial is changed
+        final int initial = Math.min(state.getInitialLevel(), levels.length-1);
+
+        state = new State(levels, initial);
 
         zoomInButton.setEnabled(state.hasHigherLevel());
         zoomPickButton.setEnabled(true);

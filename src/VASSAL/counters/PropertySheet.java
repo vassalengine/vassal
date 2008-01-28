@@ -829,7 +829,6 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
     while (defDecoder.hasMoreTokens()) {
       final String item = defDecoder.nextToken();
-//      items.add(item.substring(1));
       items.add(item.length() == 0 ? "" : item.substring(1));
     }
 

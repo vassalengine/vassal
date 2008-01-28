@@ -18,6 +18,7 @@
  */
 package VASSAL.build.widget;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -101,18 +102,20 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public void setPiece(GamePiece p) {
     c = p;
     if (c != null) {
-      c.setPosition(new Point(panel.getSize().width / 2, panel.getSize().height / 2));
+      c.setPosition(new Point(panel.getSize().width / 2,
+                              panel.getSize().height / 2));
       name = Decorator.getInnermost(c).getName();
     }
     panel.revalidate();
     panel.repaint();
-    pieceDefinition = c == null ? null : GameModule.getGameModule().encode(new AddPiece(c));
-
+    pieceDefinition = c == null ? null :
+      GameModule.getGameModule().encode(new AddPiece(c));
   }
 
   public GamePiece getPiece() {
     if (c == null && pieceDefinition != null) {
-      AddPiece comm = (AddPiece) GameModule.getGameModule().decode(pieceDefinition);
+      final AddPiece comm =
+        (AddPiece) GameModule.getGameModule().decode(pieceDefinition);
       if (comm == null) {
         System.err.println("Couldn't build piece " + pieceDefinition);
         pieceDefinition = null;
@@ -120,24 +123,33 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       else {
         c = comm.getTarget();
         c.setState(comm.getState());
-        c.setPosition(new Point(panel.getSize().width / 2, panel.getSize().height / 2));
+        c.setPosition(new Point(panel.getSize().width / 2,
+                                panel.getSize().height / 2));
       }
     }
     return c;
   }
 
   public void paint(Graphics g) {
-    g.clearRect(0, 0, panel.getSize().width, panel.getSize().height);
+    final Color c = g.getColor();
+    g.setColor(Color.WHITE);
+    g.fillRect(0, 0, panel.getSize().width, panel.getSize().height);
+    g.setColor(c);
+
     if (getPiece() == null) {
-      FontMetrics fm = g.getFontMetrics();
+      final FontMetrics fm = g.getFontMetrics();
       g.drawRect(0, 0, panel.getSize().width - 1, panel.getSize().height - 1);
       g.setFont(FONT);
-      g.drawString(" nil ", panel.getSize().width / 2 - fm.stringWidth(" nil ") / 2, panel.getSize().height / 2);
+      g.drawString(" nil ", 
+        panel.getSize().width/2 - fm.stringWidth(" nil ")/2,
+        panel.getSize().height/2);
     }
     else {
-      getPiece().draw(g, panel.getSize().width / 2, panel.getSize().height / 2, panel, 1.0);
+      getPiece().draw(g, panel.getSize().width / 2,
+                         panel.getSize().height / 2, panel, 1.0);
       if (Boolean.TRUE.equals(getPiece().getProperty(Properties.SELECTED))) {
-        BasicPiece.getHighlighter().draw(getPiece(), g, panel.getSize().width / 2, panel.getSize().height / 2, panel, 1.0);
+        BasicPiece.getHighlighter().draw(getPiece(), g,
+          panel.getSize().width / 2, panel.getSize().height / 2, panel, 1.0);
       }
     }
   }

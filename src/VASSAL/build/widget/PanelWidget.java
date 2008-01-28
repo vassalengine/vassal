@@ -18,6 +18,7 @@
  */
 package VASSAL.build.widget;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
@@ -57,11 +58,18 @@ public class PanelWidget extends Widget {
       panel = new JPanel();
       panel.setLayout(getLayout(panel));
       for (Widget w : widgets) {
-        Component c = w.getComponent();
+        final Component c = w.getComponent();
         if (c instanceof JComponent) {
           ((JComponent) c).setAlignmentX(0.0F);
           ((JComponent) c).setAlignmentY(0.0F);
         }
+
+        if (w instanceof PieceSlot) {
+          // prevents grey rectangles when number of
+          // pieces is not a multiple of the row length
+          panel.setBackground(Color.WHITE);
+        }
+
         panel.add(c);
       }
     }
@@ -73,21 +81,21 @@ public class PanelWidget extends Widget {
       return new GridLayout(0, nColumns);
     }
     else {
-      return new BoxLayout(c, vertical ? BoxLayout.Y_AXIS
-                              : BoxLayout.X_AXIS);
+      return new BoxLayout(c, vertical ? BoxLayout.Y_AXIS : BoxLayout.X_AXIS);
     }
   }
 
   public void add(Buildable b) {
     if (b instanceof Widget) {
-      Widget w = (Widget) b;
+      final Widget w = (Widget) b;
       widgets.add(w);
       if (panel != null) {
-        Component c = w.getComponent();
+        final Component c = w.getComponent();
         if (c instanceof JComponent) {
           ((JComponent) c).setAlignmentX(0.0F);
           ((JComponent) c).setAlignmentY(0.0F);
         }
+
         panel.add(c);
         panel.revalidate();
       }
@@ -97,7 +105,7 @@ public class PanelWidget extends Widget {
 
   public void remove(Buildable b) {
     if (b instanceof Widget) {
-      Widget w = (Widget) b;
+      final Widget w = (Widget) b;
       if (panel != null) {
         panel.remove(w.getComponent());
       }
@@ -118,22 +126,30 @@ public class PanelWidget extends Widget {
    * <code>VERTICAL</code> Uses a vertical BoxLayout if <code>true</code>.  otherwise uses a horizontal layout.  Ignored unless FIXED is false
    */
   public String[] getAttributeNames() {
-    String s[] = {NAME, FIXED, COLS, VERTICAL};
-    return s;
+    return new String[]{
+      NAME,
+      FIXED,
+      COLS,
+      VERTICAL
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ",
-                        "Fixed cell size?",
-                        "Number of columns:  ",
-                        "Vertical layout?"};
+    return new String[]{
+      "Name:  ",
+      "Fixed cell size?",
+      "Number of columns:  ",
+      "Vertical layout?"
+    };
   }
 
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class,
-                       Boolean.class,
-                       Integer.class,
-                       Boolean.class};
+    return new Class[]{
+      String.class,
+      Boolean.class,
+      Integer.class,
+      Boolean.class
+    };
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -180,6 +196,7 @@ public class PanelWidget extends Widget {
       }
       vertical = ((Boolean) value).booleanValue();
     }
+
     if (panel != null) {
       panel.setLayout(getLayout(panel));
       panel.revalidate();
