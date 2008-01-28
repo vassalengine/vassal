@@ -542,13 +542,22 @@ public class DataArchive extends SecureClassLoader {
       return Op.load(name).getImage(null);
     }
     catch (CancellationException e) {
-      throw new IOException(e); 
+      // FIXME: use chaining when we move to 1.6+
+      final IOException io = new IOException();
+      try { io.initCause(e); } catch (Throwable t) { assert false; }
+      throw io;
     }
     catch (InterruptedException e) {
-      throw new IOException(e); 
+      // FIXME: use chaining when we move to 1.6+
+      final IOException io = new IOException();
+      try { io.initCause(e); } catch (Throwable t) { assert false; }
+      throw io;
     }
     catch (ExecutionException e) {
-      throw new IOException(e); 
+      // FIXME: use chaining when we move to 1.6+
+      final IOException io = new IOException();
+      try { io.initCause(e); } catch (Throwable t) { assert false; }
+      throw io;
     }
   }
 

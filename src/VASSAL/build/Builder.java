@@ -131,7 +131,10 @@ public abstract class Builder {
       }
     }
     catch (Exception e) {
-      throw new IOException(e);
+      // FIXME: use chaining when we move to 1.6+
+      final IOException io = new IOException();
+      try { io.initCause(e); } catch (Throwable t) { assert false; }
+      throw io;
     }
   }
 

@@ -76,7 +76,6 @@ public class ErrorDialog {
     final JDialog d = pane.createDialog(comp, "Error");
     
     okButton.addActionListener(new ActionListener() {
-      @Override
       public void actionPerformed(ActionEvent evt) {
         pane.setValue(!disableCheck.isSelected());
       }
@@ -90,7 +89,9 @@ public class ErrorDialog {
     });
 
     d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    d.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
+// FIXME: setModal() is obsolete. Use setModalityType() in 1.6+.
+//    d.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
+    d.setModal(true);
     d.pack();
     
     return d;
@@ -147,7 +148,6 @@ public class ErrorDialog {
             final JDialog dialog = createDialog(m.text, m.severity); 
   
             SwingUtilities.invokeAndWait(new Runnable() {
-              @Override
               public void run() {
                 dialog.setVisible(true);
                 if (Boolean.FALSE.equals(pane.getValue())) {

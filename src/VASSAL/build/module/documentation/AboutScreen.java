@@ -199,7 +199,7 @@ public class AboutScreen extends AbstractConfigurable {
       op = null;
       if (fileName != null) {
         fileName = fileName.trim();
-        if (!fileName.isEmpty()) {
+        if (fileName.length() > 0) {
           op = Op.load(fileName);
           
           try {

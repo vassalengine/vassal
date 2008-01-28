@@ -195,7 +195,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       srcOp = new SourceOp[imageName.length];
       for (int i = 0; i < imageName.length; ++i) {
-        srcOp[i] = imageName[i] == null || imageName[i].trim().isEmpty()
+        srcOp[i] = imageName[i] == null || imageName[i].trim().length() == 0
                  ? null : Op.load(imageName[i]);
       }
     }
@@ -264,7 +264,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final SequenceEncoder.Decoder subSt =
         new SequenceEncoder.Decoder(sub, ',');
       imageName[i] = subSt.nextToken();
-      srcOp[i] = imageName[i] == null || imageName[i].trim().isEmpty()
+      srcOp[i] = imageName[i] == null || imageName[i].trim().length() == 0
                ? null : Op.load(imageName[i]);
       if (subSt.hasMoreTokens()) {
         commonName[i] = subSt.nextToken();
@@ -595,20 +595,29 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     // null or empty imageName[value-1] means that this layer has no image
     if (value <= 0 ||
         imageName[value-1] == null ||
-        imageName[value-1].isEmpty() ||
+        imageName[value-1].length() == 0 ||
         srcOp[value-1] == null) return null;
     
     try {
       return srcOp[value-1].getImage(null);
     }
     catch (CancellationException e) {
-      throw new IOException(e);
+      // FIXME: use chaining when we move to 1.6+
+      final IOException io = new IOException();
+      try { io.initCause(e); } catch (Throwable t) { assert false; }
+      throw io;
     }
     catch (InterruptedException e) {
-      throw new IOException(e);
+      // FIXME: use chaining when we move to 1.6+
+      final IOException io = new IOException();
+      try { io.initCause(e); } catch (Throwable t) { assert false; }
+      throw io;
     }
     catch (ExecutionException e) {
-      throw new IOException(e);
+      // FIXME: use chaining when we move to 1.6+
+      final IOException io = new IOException();
+      try { io.initCause(e); } catch (Throwable t) { assert false; }
+      throw io;
     }
   }
 
@@ -655,14 +664,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   public String getDescription() {
     String displayName = name;
-    if (name == null || name.isEmpty()) {
+    if (name == null || name.length() == 0) {
       if (imageName.length > 0 &&
           imageName[0] != null &&
           imageName[0].length() > 0) {
         displayName = imageName[0];
       }
     }
-    if (displayName == null || displayName.isEmpty()) {
+    if (displayName == null || displayName.length() == 0) {
       return "Layer";
     }
     else {

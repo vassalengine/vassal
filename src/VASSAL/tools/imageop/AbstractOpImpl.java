@@ -157,7 +157,8 @@ public abstract class AbstractOpImpl implements ImageOp {
 
       protected boolean tryAcquire(int acquires) {
         if (compareAndSetState(0,1)) {
-          setExclusiveOwnerThread(Thread.currentThread());
+// FIXME: reinstate this once we move to 1.6+.
+//          setExclusiveOwnerThread(Thread.currentThread());
           return true;
         }
         return false;
@@ -165,7 +166,8 @@ public abstract class AbstractOpImpl implements ImageOp {
   
       protected boolean tryRelease(int releases) {
         if (getState() == 0) throw new IllegalMonitorStateException();
-        setExclusiveOwnerThread(null);
+// FIXME: reinstate this once we move to 1.6+.
+//        setExclusiveOwnerThread(null);
         setState(0);
         return true;
       }

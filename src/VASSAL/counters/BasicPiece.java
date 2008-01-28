@@ -134,7 +134,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     deleteKey = st.nextChar('\0');
     imageName = st.nextToken();
     commonName = st.nextToken();
-    srcOp = imageName == null || imageName.trim().isEmpty() 
+    srcOp = imageName == null || imageName.trim().length() == 0 
           ? null : Op.load(imageName);
     commands = null;
   }

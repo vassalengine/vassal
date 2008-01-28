@@ -830,7 +830,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     while (defDecoder.hasMoreTokens()) {
       final String item = defDecoder.nextToken();
 //      items.add(item.substring(1));
-      items.add(item.isEmpty() ? "" : item.substring(1));
+      items.add(item.length() == 0 ? "" : item.substring(1));
     }
 
     final String[] menuNames = new String[items.size()+1];

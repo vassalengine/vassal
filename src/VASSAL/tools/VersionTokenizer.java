@@ -76,7 +76,7 @@ public class VersionTokenizer {
    * integers
    */
   public boolean hasNext() {
-    return !v.isEmpty() || state == 4;
+    return v.length() > 0 || state == 4;
   }
 
   /**
@@ -107,7 +107,7 @@ public class VersionTokenizer {
           throw new VersionFormatException(e);
         }
         v = v.substring(m.end());
-        state = v.isEmpty() ? 4 : 1;
+        state = v.length() == 0 ? 4 : 1;
         return n;
       case 1:
         // case 1 eats delimiters

@@ -257,7 +257,7 @@ public class SelectionHighlighter extends AbstractConfigurable
     }
     else if (key.equals(IMAGE)) {
       imageName = (String) value;
-      srcOp = imageName == null || imageName.trim().isEmpty() 
+      srcOp = imageName == null || imageName.trim().length() == 0 
             ? null : Op.load(imageName);
     }
     else if (key.equals(X_OFFSET)) {

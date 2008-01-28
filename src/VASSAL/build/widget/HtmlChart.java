@@ -292,7 +292,7 @@ public class HtmlChart extends Widget implements MouseListener {
           super(e);
           imageName = (String) e.getAttributes()
                                 .getAttribute(HTML.Attribute.SRC);
-          srcOp = imageName == null || imageName.trim().isEmpty()
+          srcOp = imageName == null || imageName.trim().length() == 0
                 ? null : Op.load(imageName);
         }
 

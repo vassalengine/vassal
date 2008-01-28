@@ -55,7 +55,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    *    if <code>name</code> is <code>null</code>.
    */
   public SourceOpSVGImpl(String name) {
-    if (name == null || name.isEmpty())
+    if (name == null || name.length() == 0)
       throw new IllegalArgumentException();
     this.name = name;
     hash = name.hashCode();

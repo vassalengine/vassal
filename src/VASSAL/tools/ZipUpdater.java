@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
 import java.util.zip.CRC32;
@@ -156,7 +157,10 @@ public class ZipUpdater implements Runnable {
       final ZipOutputStream output =
         new ZipOutputStream(new FileOutputStream(tempFile));
       try {
-        for (String entryName : checkSums.stringPropertyNames()) {
+// FIXME: reinstate when we move to 1.6+.
+//        for (String entryName : checkSums.stringPropertyNames()) {
+        for (Enumeration e = checkSums.keys(); e.hasMoreElements();) {
+          final String entryName = (String) e.nextElement();
           long targetSum;
           try {
             targetSum =

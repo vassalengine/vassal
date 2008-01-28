@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -139,9 +140,12 @@ public class Prefs {
       e.printStackTrace();
     }
 
-    for (String key : storedValues.stringPropertyNames()) {    
-      String value = storedValues.getProperty(key);
-      Configurer c = options.get(key);
+    // FIXME: Use stringPropertyNames() in 1.6+
+//    for (String key : storedValues.stringPropertyNames()) {   
+    for (Enumeration e = storedValues.keys(); e.hasMoreElements(); ) {
+      final String key = (String) e.nextElement(); 
+      final String value = storedValues.getProperty(key);
+      final Configurer c = options.get(key);
       if (c != null) {
         c.setValue(value);
       }
