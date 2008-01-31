@@ -202,9 +202,9 @@ public class ImportADC2Action extends LoadModuleAction {
 	}
 
 	protected final static FileFilter bitmapFileFilter = new FileExtensionFilter("bmp", "Bitmap Image");
-	protected final static FileFilter setFileFilter = new FileExtensionFilter("set", "ADC Symbol Set");
-	protected final static FileFilter mapFileFilter = new FileExtensionFilter("map", "ADC Map Board");
-	protected final static FileFilter moduleFileFilter = new FileExtensionFilter("ops", "ADC Game Module");
+	protected final static FileFilter setFileFilter = new FileExtensionFilter("set", "ADC2 Symbol Set");
+	protected final static FileFilter mapFileFilter = new FileExtensionFilter("map", "ADC2 Map Board");
+	protected final static FileFilter moduleFileFilter = new FileExtensionFilter("ops", "ADC2 Game Module");
 	
 	@Override
 	public void performAction(ActionEvent e) throws IOException {
