@@ -218,17 +218,21 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     }
     GamePiece piece = null;
     if (isMarkerStandalone()) {
-      AddPiece comm = (AddPiece) GameModule.getGameModule().decode(markerSpec);
+      final AddPiece comm =
+        (AddPiece) GameModule.getGameModule().decode(markerSpec);
       piece = comm.getTarget();
       piece.setState(comm.getState());
       newGpId = getGpId();
     }
     else {
       try {
-        Configurable[] c = ComponentPathBuilder.getInstance().getPath(markerSpec);
-        if (c[c.length - 1] instanceof PieceSlot) {
-          piece = ((PieceSlot) c[c.length - 1]).getPiece();
-          newGpId = ((PieceSlot) c[c.length - 1]).getGpId();
+        final Configurable[] c =
+          ComponentPathBuilder.getInstance().getPath(markerSpec);
+        final Configurable conf = c[c.length-1];
+
+        if (conf instanceof PieceSlot) {
+          piece = ((PieceSlot) conf).getPiece();
+          newGpId = ((PieceSlot) conf).getGpId();
         }
       }
       catch (ComponentPathBuilder.PathFormatException e) {

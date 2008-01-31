@@ -45,7 +45,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
   public static final String COMMAND_PREFIX = "EXT\t"; //$NON-NLS-1$
 
   protected Set<String> loadedExtensions = new HashSet<String>();
-  protected HashMap<String, String> loadedIds = new HashMap<String,String>();
+  protected HashMap<String,String> loadedIds = new HashMap<String,String>();
 
   public void addTo(GameModule mod) {
     if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
@@ -77,7 +77,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
         final ModuleExtension ext = createExtension(extname);
         ext.build();
         
-        String id = ext.getExtensionId();
+        final String id = ext.getExtensionId();
         String idMsg = "";
         if (id.length() > 0) {
           for (String loadedId : loadedIds.keySet()) {

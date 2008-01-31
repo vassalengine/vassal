@@ -246,11 +246,12 @@ public class ExtensionTree extends ConfigureTree {
   }
   
   protected boolean isValidPasteTarget(Configurable target) {
-    return (cutData != null
-        && super.isValidParent(target, (Configurable) cutData.getUserObject())
-        && isEditable(getParent(cutData)))
-       || (copyData != null
-           && super.isValidParent(target, (Configurable) copyData.getUserObject()));
+    return
+      (cutData != null &&
+      super.isValidParent(target, (Configurable) cutData.getUserObject()) &&
+      isEditable(getParent(cutData))) ||
+      (copyData != null &&
+      super.isValidParent(target, (Configurable) copyData.getUserObject()));
   }
 
   /**
@@ -259,14 +260,11 @@ public class ExtensionTree extends ConfigureTree {
    * @param c Configurable to update
    */
   protected void updateGpIds(Configurable c) {
-  if (c instanceof PieceSlot) {
-    ((PieceSlot) c).updateGpId(extension);
-  }
-  else {
-      Configurable[] components = c.getConfigureComponents();
-      for (int i=0; i < components.length; updateGpIds(components[i++])) {
-
-      }
+    if (c instanceof PieceSlot) {
+      ((PieceSlot) c).updateGpId(extension);
+    }
+    else {
+      for (Configurable conf : c.getConfigureComponents()) updateGpIds(conf);
     }
   }
   

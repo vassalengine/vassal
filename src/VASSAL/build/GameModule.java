@@ -291,7 +291,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public String[] getAttributeNames() {
-    return new String[]{MODULE_NAME, MODULE_VERSION, VASSAL_VERSION_CREATED, NEXT_PIECESLOT_ID};
+    return new String[]{
+      MODULE_NAME,
+      MODULE_VERSION,
+      VASSAL_VERSION_CREATED,
+      NEXT_PIECESLOT_ID
+    };
   }
 
   public String[] getAttributeDescriptions() {
@@ -300,31 +305,34 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   @SuppressWarnings("unchecked")
   public Class[] getAttributeTypes() {
-    return new Class[]{String.class, String.class};
+    return new Class[]{
+      String.class,
+      String.class
+    };
   }
 
   @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
-    Class[] c = { Map.class,
-                  PieceWindow.class,
-                  PrototypesContainer.class,
-                  ToolbarMenu.class,
-                  MultiActionButton.class,
-                  DoActionButton.class,
-                  DiceButton.class,
-                  GlobalKeyCommand.class,
-                  Inventory.class,
+    return new Class[]{
+      Map.class,
+      PieceWindow.class,
+      PrototypesContainer.class,
+      ToolbarMenu.class,
+      MultiActionButton.class,
+      DoActionButton.class,
+      DiceButton.class,
+      GlobalKeyCommand.class,
+      Inventory.class,
 //                  InternetDiceButton.class,   // Disable internet dice button until Bones server can prevent email spamming 
-                  RandomTextButton.class,
-                  SpecialDiceButton.class,
-                  PredefinedSetup.class,
-                  ChartWindow.class,
-                  PrivateMap.class,
-                  PlayerHand.class,
-                  NotesWindow.class,
-                  TurnTracker.class
-                };
-    return c;
+      RandomTextButton.class,
+      SpecialDiceButton.class,
+      PredefinedSetup.class,
+      ChartWindow.class,
+      PrivateMap.class,
+      PlayerHand.class,
+      NotesWindow.class,
+      TurnTracker.class
+    };
   }
 
   /**

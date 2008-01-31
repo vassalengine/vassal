@@ -1,7 +1,7 @@
 /*
  * $Id: TopLevelComponent.java 864 2006-03-06 05:24:24Z rodneykinney $
  *
- * Copyright (c) 2005 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2008 by Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,8 +23,8 @@ package VASSAL.build;
  * GameModule and ModuleExtension are the top-level components and must
  * provide some Namespace services for generated GamePiece Identifiers.
  * 
- * Each Extension must have a unique Namespace String. Each Pieceslot is
- * allocate a unique number in a series maintained for each top level
+ * Each Extension must have a unique Namespace String. Each PieceSlot is
+ * allocated a unique number in a series maintained for each top level
  * component.
  * 
  * Each GampePiece generated is tied to it's originating PieceSlot by the 

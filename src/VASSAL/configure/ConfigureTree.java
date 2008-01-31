@@ -371,8 +371,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected boolean isValidPasteTarget(Configurable target) {
-    return (cutData != null && isValidParent(target, (Configurable) cutData.getUserObject()))
-        || (copyData != null && isValidParent(target, (Configurable) copyData.getUserObject()));
+    return (cutData != null &&
+            isValidParent(target, (Configurable) cutData.getUserObject())) ||
+           (copyData != null &&
+            isValidParent(target, (Configurable) copyData.getUserObject()));
   }
 
   /**
@@ -381,13 +383,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * @param c Configurable to update
    */
   protected void updateGpIds(Configurable c) {
-  if (c instanceof PieceSlot) {
-    ((PieceSlot) c).updateGpId(GameModule.getGameModule());
-  }
-  else {
-      Configurable[] components = c.getConfigureComponents();
-      for (int i=0; i < components.length; updateGpIds(components[i++])) {
-      }
+    if (c instanceof PieceSlot) {
+      ((PieceSlot) c).updateGpId(GameModule.getGameModule());
+    }
+    else {
+      for (Configurable comp : c.getConfigureComponents()) updateGpIds(comp);
     }
   }
   
