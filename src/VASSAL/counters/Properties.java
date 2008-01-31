@@ -125,6 +125,9 @@ public interface Properties {
    */
 	public static final String VISIBLE_STATE = "visibleState";
 
-    /** Return Boolean.TRUE if the piece can never be moved */
-    public static final String NON_MOVABLE = "cannotMove";
+  /** Return Boolean.TRUE if the piece can never be moved */
+  public static final String NON_MOVABLE = "cannotMove";
+  
+  /** Global Piece Id */
+  public static final String PIECE_ID = "PieceId";
 }

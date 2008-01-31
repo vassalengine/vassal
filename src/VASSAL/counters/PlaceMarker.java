@@ -44,6 +44,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.TopLevelComponent;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.documentation.HelpFile;
@@ -77,6 +78,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   protected KeyCommand[] commands;
   protected KeyStroke afterBurnerKey;
   protected String description = "";
+  protected String gpId = "";
+  protected String newGpId;
+  protected TopLevelComponent topLevelComponent; // The component that generates unique Slot Id's for us
+
 
   public PlaceMarker() {
     this(ID + "Place Marker;M;null;null;null", null);
@@ -118,6 +123,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     se.append(matchRotation);
     se.append(afterBurnerKey);
     se.append(description);
+    se.append(gpId);
     return ID + se.getValue();
   }
 
@@ -192,10 +198,12 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     GamePiece piece = createBaseMarker();
     if (piece == null) {
       piece = new BasicPiece();
+      newGpId = getGpId();
     }
     else {
       piece = PieceCloner.getInstance().clonePiece(piece);
     }
+    piece.setProperty(Properties.PIECE_ID, newGpId);
     return piece;
   }
 
@@ -213,12 +221,14 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       AddPiece comm = (AddPiece) GameModule.getGameModule().decode(markerSpec);
       piece = comm.getTarget();
       piece.setState(comm.getState());
+      newGpId = getGpId();
     }
     else {
       try {
         Configurable[] c = ComponentPathBuilder.getInstance().getPath(markerSpec);
         if (c[c.length - 1] instanceof PieceSlot) {
           piece = ((PieceSlot) c[c.length - 1]).getPiece();
+          newGpId = ((PieceSlot) c[c.length - 1]).getGpId();
         }
       }
       catch (ComponentPathBuilder.PathFormatException e) {
@@ -279,6 +289,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     matchRotation = st.nextBoolean(false);
     afterBurnerKey = st.nextKeyStroke(null);
     description = st.nextToken("");
+    setGpId(st.nextToken(""));
   }
 
   public PieceEditor getEditor() {
@@ -288,6 +299,24 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   public PieceI18nData getI18nData() {
     return getI18nData(command.getName(), getCommandDescription(description, "Place Marker command"));
   }
+  
+  public String getGpId() {
+    return gpId;
+  }
+  
+  public void setGpId(String s) {
+    gpId = s;
+  }
+  
+  public void updateGpId(TopLevelComponent c) {
+    topLevelComponent = c;
+    updateGpId();
+  }
+  
+  public void updateGpId() {
+    setGpId(topLevelComponent.generateGpId());
+  }
+  
   protected static class Ed implements PieceEditor {
     private HotKeyConfigurer keyInput;
     private StringConfigurer commandInput;
@@ -301,6 +330,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     protected BooleanConfigurer matchRotationConfig;
     protected HotKeyConfigurer afterBurner;
     protected StringConfigurer descConfig;
+    private String slotId;
 
     protected Ed(PlaceMarker piece) {
       matchRotationConfig = createMatchRotationConfig();
@@ -310,6 +340,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       commandInput = new StringConfigurer(null, "Command:  ", piece.command.getName());
       GamePiece marker = piece.createBaseMarker();
       pieceInput = new PieceSlot(marker);
+      pieceInput.setGpId(piece.getGpId());
       markerSlotPath = piece.markerSpec;
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
@@ -334,6 +365,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
           }
           if (d.getPath() != null) {
             markerSlotPath = ComponentPathBuilder.getInstance().getId(d.getPath());
+            slotId = "";
           }
           else {
             markerSlotPath = null;
@@ -349,6 +381,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       matchRotationConfig.setValue(Boolean.valueOf(piece.matchRotation));
       p.add(matchRotationConfig.getControls());
       p.add(afterBurner.getControls());
+      slotId = piece.getGpId();
     }
 
     protected BooleanConfigurer createMatchRotationConfig() {
@@ -384,12 +417,13 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       se.append(matchRotationConfig.getValueString());
       se.append((KeyStroke) afterBurner.getValue());
       se.append(descConfig.getValueString());
+      se.append(slotId);
       return ID + se.getValue();
     }
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
       private static final long serialVersionUID = 1L;
 
-      public ChoosePieceDialog(Frame owner, Class targetClass) {
+      public ChoosePieceDialog(Frame owner, Class<PieceSlot> targetClass) {
         super(owner, targetClass);
       }
 

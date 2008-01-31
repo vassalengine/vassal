@@ -74,6 +74,7 @@ import VASSAL.build.module.properties.MutablePropertiesContainer;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.build.module.turn.TurnTracker;
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
@@ -100,14 +101,15 @@ import VASSAL.tools.ToolBarComponent;
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger},
  * and {@link Prefs}.</p>
  */
-public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer {
+public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer, TopLevelComponent {
   protected static final String DEFAULT_NAME = "Unnamed module";  //$NON-NLS-1$
   public static final String MODULE_NAME = "name";  //$NON-NLS-1$
   public static final String MODULE_VERSION = "version";  //$NON-NLS-1$
   public static final String VASSAL_VERSION_CREATED = "VassalVersion";  //$NON-NLS-1$
   /** The System property of this name will return a version identifier for the version of VASSAL being run */
   public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion";  //$NON-NLS-1$
-
+  public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId";
+  
   private static GameModule theModule;
 
   protected String moduleVersion = "0.0";  //$NON-NLS-1$
@@ -150,6 +152,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected CommandEncoder[] commandEncoders = new CommandEncoder[0];
   protected List<String> deferredChat = new ArrayList<String>();
 
+  protected int nextGpId = 0;
+  
+  /*
+   * Store the currently building top level component. Only meaningful while
+   * the GameModule or an Extension is actually in the process of being built
+   * during module/extension load. 
+   */
+  protected TopLevelComponent currentTopLevelComponent = null;
+  
   /**
    * @return the top-level frame of the controls window
    */
@@ -222,6 +233,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
              JOptionPane.ERROR_MESSAGE);
       }
     }
+    else if (NEXT_PIECESLOT_ID.equals(name)) {
+      try {
+        nextGpId = Integer.parseInt((String) value);
+      }
+      catch (Exception e) {
+        
+      }
+    }
   }
 
   public String getAttributeValueString(String name) {
@@ -236,6 +255,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     else if (VASSAL_VERSION_RUNNING.equals(name)) {
       return Info.getVersion();
+    }
+    else if (NEXT_PIECESLOT_ID.equals(name)) {
+      return String.valueOf(nextGpId);
     }
     return null;
   }
@@ -269,7 +291,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public String[] getAttributeNames() {
-    return new String[]{MODULE_NAME, MODULE_VERSION, VASSAL_VERSION_CREATED};
+    return new String[]{MODULE_NAME, MODULE_VERSION, VASSAL_VERSION_CREATED, NEXT_PIECESLOT_ID};
   }
 
   public String[] getAttributeDescriptions() {
@@ -693,6 +715,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     else {
       theModule = module;
+      theModule.setTopLevelComponent(theModule);
       try {
         theModule.build();
       }
@@ -704,6 +727,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
       theModule.lastSavedConfiguration = theModule.buildString();
+      /* We are editing this Module. If no gpid's have been allocated,
+       * then the module was created with a previous version of Vassal.
+       * Run through every PieceSlot and generate new gpid's.
+       */
+      if (getGameModule().nextGpId == 0) {
+        for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
+          pieceSlot.updateGpId();
+        }  
+      }
     }
     
     /*
@@ -715,6 +747,18 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  public String generateGpId() {
+    return String.valueOf(nextGpId++);
+  }
+  
+  public void setTopLevelComponent(TopLevelComponent c) {
+    currentTopLevelComponent = c;
+  }
+  
+  public TopLevelComponent getTopLevelComponent() {
+    return currentTopLevelComponent;
+  }
+  
   /**
    * @return the object which stores data for the module
    */

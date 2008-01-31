@@ -37,6 +37,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.TopLevelComponent;
 import VASSAL.build.Widget;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -53,6 +54,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceDefiner;
+import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
 
@@ -64,12 +66,15 @@ import VASSAL.i18n.ComponentI18nData;
  * PieceSlot's GamePiece. Clicking on a PieceSlot initiates a drag
  */
 public class PieceSlot extends Widget implements MouseListener, KeyListener {
+  public static final String GP_ID = "gpid";
   private GamePiece c;
   private String name;
   private String pieceDefinition;
   protected static Font FONT = new Font("Dialog", 0, 12);
   private javax.swing.JPanel panel;
   private int width, height;
+  private String gpId = ""; // Unique PieceSlot Id
+  private TopLevelComponent topLevelComponent;
 
   public PieceSlot() {
     panel = new PieceSlot.Panel();
@@ -126,6 +131,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
         c.setPosition(new Point(panel.getSize().width / 2,
                                 panel.getSize().height / 2));
       }
+    }
+    if (c != null) {
+      c.setProperty(Properties.PIECE_ID, getGpId());
     }
     return c;
   }
@@ -191,6 +199,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       KeyBuffer.getBuffer().clear();
       DragBuffer.getBuffer().clear();
       GamePiece newPiece = PieceCloner.getInstance().clonePiece(getPiece());
+      newPiece.setProperty(Properties.PIECE_ID, getGpId());
       DragBuffer.getBuffer().add(newPiece);
     }
   }
@@ -260,14 +269,16 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * PieceSlot
    */
   public void build(org.w3c.dom.Element e) {
+    topLevelComponent = GameModule.getGameModule().getTopLevelComponent();
     if (e != null) {
-      name = e.getAttribute("entryName");
+      name = e.getAttribute(NAME);
+      gpId = e.getAttribute(GP_ID) + "";
       if (name.length() == 0) {
         name = null;
       }
       try {
-        width = Integer.parseInt(e.getAttribute("width"));
-        height = Integer.parseInt(e.getAttribute("height"));
+        width = Integer.parseInt(e.getAttribute(WIDTH));
+        height = Integer.parseInt(e.getAttribute(HEIGHT));
       }
       catch (NumberFormatException ex) {
         width = 60;
@@ -294,10 +305,11 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     org.w3c.dom.Element el = doc.createElement(getClass().getName());
     String s = getConfigureName();
     if (s != null) {
-      el.setAttribute("entryName", s);
+      el.setAttribute(NAME, s);
     }
-    el.setAttribute("width", getPreferredSize().width + "");
-    el.setAttribute("height", getPreferredSize().height + "");
+    el.setAttribute(GP_ID, gpId+"");
+    el.setAttribute(WIDTH, getPreferredSize().width + "");
+    el.setAttribute(HEIGHT, getPreferredSize().height + "");
     el.appendChild(doc.createTextNode(c == null ? pieceDefinition : GameModule.getGameModule().encode(new AddPiece(c))));
     return el;
   }
@@ -335,15 +347,6 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   public void setAttribute(String name, Object value) {
   }
- 
-
-//  /**
-//   * @return an array of Configurer objects representing the attributes of this
-//   *         Configurable object
-//   */
-//  public Configurer[] getAttributeConfigurers() {
-//    return new Configurer[0];
-//  }
 
   /**
    * @return an array of Configurer objects representing the Buildable children
@@ -381,12 +384,55 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     return new MyConfigurer(this);
   }
 
+  /**
+   * Update the gpid for this PieceSlot, using the given TopLevelComponent
+   * to generate the new id.
+   */  
+  public void updateGpId(TopLevelComponent c) {
+    topLevelComponent = c;
+    updateGpId();
+  }
+  
+  /**
+   * Allocate a new gpid to this PieceSlot, plus to any PlaceMarker or
+   * Replace traits.
+   */
+  public void updateGpId() {
+    gpId = topLevelComponent.generateGpId();
+    GamePiece piece = getPiece();
+    updateGpId(piece);
+    setPiece(piece);
+  }
+  
+  /**
+   * Allocate new gpid's in the given GamePiece
+   * 
+   * @param piece GamePiece
+   */
+  public void updateGpId(GamePiece piece) {
+    if (piece == null || piece instanceof BasicPiece) {
+      return;
+    }
+    if (piece instanceof PlaceMarker) {
+      ((PlaceMarker) piece).setGpId(topLevelComponent.generateGpId());      
+    }
+    updateGpId(((Decorator) piece).getInner());
+  }
+  
+  public String getGpId() {
+    return gpId;
+  }
+
+  public void setGpId(String id) {
+    gpId = id;
+  }
+  
   private static class MyConfigurer extends Configurer implements HelpWindowExtension {
     private PieceDefiner definer;
 
     public MyConfigurer(PieceSlot slot) {
       super(null, slot.getConfigureName(), slot);
-      definer = new PieceDefiner();
+      definer = new PieceDefiner(slot.getGpId(), slot.topLevelComponent);
       definer.setPiece(slot.getPiece());
     }
 

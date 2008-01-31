@@ -35,6 +35,7 @@ import VASSAL.build.Configurable;
 import VASSAL.build.module.ExtensionElement;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.widget.PieceSlot;
 
 /**
  * The configuration tree for editing a module extension
@@ -89,6 +90,9 @@ public class ExtensionTree extends ConfigureTree {
         try {
           final Configurable child = (Configurable) newConfig.newInstance();
           child.build(null);
+          if (child instanceof PieceSlot) {
+            ((PieceSlot) child).updateGpId(extension);
+          }
           if (child.getConfigurer() != null) {
             if (insert(target, child, getTreeNode(target).getChildCount())) {
               PropertiesWindow w = new PropertiesWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, ExtensionTree.this), false, child, helpWindow) {
@@ -209,6 +213,7 @@ public class ExtensionTree extends ConfigureTree {
               Configurable clone = copyTarget.getClass().newInstance();
               clone.build(copyTarget.getBuildElement(Builder.createNewDocument()));
               if (insert(target, clone, getTreeNode(target).getChildCount())) {
+                updateGpIds(clone);
                 extension.add(new ExtensionElement(clone, getPath(getTreeNode(target))));
               }
             }
@@ -248,6 +253,23 @@ public class ExtensionTree extends ConfigureTree {
            && super.isValidParent(target, (Configurable) copyData.getUserObject()));
   }
 
+  /**
+   * Allocate new PieceSlot Id's to any PieceSlot sub-components
+   * 
+   * @param c Configurable to update
+   */
+  protected void updateGpIds(Configurable c) {
+  if (c instanceof PieceSlot) {
+    ((PieceSlot) c).updateGpId(extension);
+  }
+  else {
+      Configurable[] components = c.getConfigureComponents();
+      for (int i=0; i < components.length; updateGpIds(components[i++])) {
+
+      }
+    }
+  }
+  
   protected Action buildMoveAction(Configurable target) {
     return isEditable((DefaultMutableTreeNode) getTreeNode(target).getParent()) ? super.buildMoveAction(target) : null;
   }

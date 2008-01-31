@@ -18,6 +18,7 @@
  */
 package VASSAL.counters;
 
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.Window;
@@ -31,6 +32,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -43,6 +45,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.TopLevelComponent;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
@@ -62,6 +65,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   protected PieceSlot slot;
   private GamePiece piece;
   protected static TraitClipboard clipBoard;
+  protected String pieceId = "";
+  protected JLabel pieceIdLabel = new JLabel("");
+  protected TopLevelComponent topLevelComponent;
 
   /** Creates new form test */
   public PieceDefiner() {
@@ -71,6 +77,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     slot = new PieceSlot();
     initComponents();
     availableList.setSelectedIndex(0);
+  }
+  
+  public PieceDefiner(String id, TopLevelComponent c) {
+    this();
+    pieceId = id;
+    pieceIdLabel.setText("Id: "+id);
+    topLevelComponent = c;
   }
   
   protected static void initDefinitions() {
@@ -284,6 +297,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
       }
     });
+    addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     addRemovePanel.add(addButton);
 
     removeButton.setText("<- Remove");
@@ -300,8 +314,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       }
     }
     );
+    removeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     addRemovePanel.add(removeButton);
 
+    pieceIdLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    addRemovePanel.add(pieceIdLabel);
+    
     controls.add(addRemovePanel);
 
     inUsePanel.setLayout(new BoxLayout(inUsePanel, 1));
@@ -409,6 +427,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       public void actionPerformed(ActionEvent evt) {
         if (clipBoard != null) {
           Decorator c = (Decorator) GameModule.getGameModule().createPiece(clipBoard.getType(), null);
+          if (c instanceof PlaceMarker) {
+            ((PlaceMarker) c).updateGpId();
+          }
           c.setInner((GamePiece) inUseModel.lastElement());
           inUseModel.addElement(c);
           c.mySetState(clipBoard.getState());
@@ -582,6 +603,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   protected void addTrait(Decorator c) {
     try {
       c = c.getClass().newInstance();
+      if (c instanceof PlaceMarker) {
+        ((PlaceMarker) c).updateGpId(topLevelComponent);
+      }
       c.setInner((GamePiece) inUseModel.lastElement());
       inUseModel.addElement(c);
     }

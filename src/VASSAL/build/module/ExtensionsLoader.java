@@ -23,6 +23,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipException;
@@ -44,6 +45,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
   public static final String COMMAND_PREFIX = "EXT\t"; //$NON-NLS-1$
 
   protected Set<String> loadedExtensions = new HashSet<String>();
+  protected HashMap<String, String> loadedIds = new HashMap<String,String>();
 
   public void addTo(GameModule mod) {
     if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
@@ -74,10 +76,27 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
       try {
         final ModuleExtension ext = createExtension(extname);
         ext.build();
-        final String msg = getLoadedMessage(ext.getName(), ext.getVersion());
-        loadedExtensions.add(extname);
+        
+        String id = ext.getExtensionId();
+        String idMsg = "";
+        if (id.length() > 0) {
+          for (String loadedId : loadedIds.keySet()) {
+            if (loadedId.equals(id)) {
+              idMsg = Resources.getString("ExtensionsLoader.id_conflict", extname, id, loadedIds.get(id));              
+            }
+          }
+          loadedIds.put(id, extname);
+        }
+        
+        final String msg = getLoadedMessage(ext.getName(), ext.getVersion());        
+        loadedExtensions.add(extname);        
         GameModule.getGameModule().warn(msg);
         System.err.println(msg);
+        
+        if (idMsg.length() > 0) {
+          GameModule.getGameModule().warn(idMsg);
+          System.err.println(idMsg);
+        }
       }
       catch (ZipException e) {
         // Not a zip file.  Ignore
