@@ -42,6 +42,7 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.HexGridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.RegularGridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.SquareGridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.tools.imports.FileFormatException;
 
 /**
@@ -2455,10 +2456,11 @@ public class MapBoard {
 		// add zoom capability
 		if (zoomLevel > 0) {
 			Zoomer zoom = new Zoomer();
-			double factor = Math.sqrt((double) set
-					.getMapBoardSymbolSize(zoomLevel)
-					/ (double) set.getMapBoardSymbolSize(0));
-			zoom.setAttribute("factor", factor);
+			String[] s = new String[3];
+			int maxSize = set.getMapBoardSymbolSize();
+			for (int i = 0; i < 3; ++i)
+				s[i] = Double.toString((double) set.getMapBoardSymbolSize(i) / (double) maxSize);
+			zoom.setAttribute("zoomLevels", StringArrayConfigurer.arrayToString(s));
 			zoom.addTo(mainMap);
 			getMainMap().add(zoom);
 		}

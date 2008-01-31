@@ -680,10 +680,15 @@ class ADC2Module {
 		int header = in.readByte();
 		if (header != -2)
 			throw new FileFormatException("Invalid Player Block Header");
+				
+		/* int nplayers = */ ImportADC2Action.readBase250Word(in);
 		
-		int nplayers = ImportADC2Action.readBase250Word(in);
-		for (int i = 0; i < nplayers; ++i) {
-			String name = ImportADC2Action.readNullTerminatedString(in, 25);
+		// The last player is typically an empty string which indicates the end of
+		// the list despite the fact that the number of players is clearly
+		// indicated.
+		String name;
+		do {
+			name = ImportADC2Action.readNullTerminatedString(in, 25);
 			// byte[] password = new byte[20];
 			in.read(new byte[20]);
 			// int zoomLevel = 
@@ -698,9 +703,11 @@ class ADC2Module {
 			// int padding = 
 			in.readByte();
 			
-			ADC2Module.Player player = new Player(name, hiddenSymbol, searchRange, hiddenPieceOptions);
-			players.add(player);
-		}
+			if (name.length() > 0) {
+				ADC2Module.Player player = new Player(name, hiddenSymbol, searchRange, hiddenPieceOptions);
+				players.add(player);
+			}
+		} while (name.length() > 0);
 	}
 
 	private void readPieceBlock(DataInputStream in) throws IOException {
