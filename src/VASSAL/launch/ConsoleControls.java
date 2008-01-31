@@ -40,6 +40,7 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.FileChooser;
+import VASSAL.tools.imports.adc2.ImportADC2Action;
 
 /**
  * The starting controls from which the user may load or edit any module
@@ -54,6 +55,7 @@ public class ConsoleControls {
   protected ConsoleWindow console;
   protected javax.swing.JButton openButton;
   protected javax.swing.JButton editButton;
+  protected javax.swing.JButton importButton;
   protected javax.swing.JButton newButton;
   protected javax.swing.JLabel splash;
   protected java.awt.Color fgColor = java.awt.Color.black;
@@ -140,6 +142,10 @@ public class ConsoleControls {
     editModuleAction.addAction(closeConsoleWindow);
     editButton = new javax.swing.JButton(editModuleAction);
     box.add(editButton);
+    ImportADC2Action importModuleAction = new ImportADC2Action(controls);
+    importModuleAction.addAction(closeConsoleWindow);
+    importButton = new javax.swing.JButton(importModuleAction);
+    box.add(importButton);
     CreateModuleAction createModuleAction = new CreateModuleAction(controls);
     createModuleAction.addAction(closeConsoleWindow);
     newButton = new javax.swing.JButton(createModuleAction);
