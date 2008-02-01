@@ -983,7 +983,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     
     protected JPanel panel;
     protected JPanel controls = null;
-    protected ArrayList levelPanels = new ArrayList();
     protected JPanel levelControls = null;
     protected Component childControls = null;
     protected TurnTracker turn;
