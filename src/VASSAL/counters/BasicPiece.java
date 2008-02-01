@@ -26,7 +26,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CancellationException;
@@ -596,6 +595,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     se.append(mapName);
     final Point p = getPosition();
     se.append(p.x).append(p.y);
+    se.append(getGpId());
     return se.getValue();
   }
 
@@ -628,6 +628,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
         setMap(null);
       }
     }
+    setGpId(st.nextToken(""));
   }
 
   public void mergeState(String newState, String oldState) {
@@ -665,6 +666,15 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
 
   public String getDescription() {
     return "Basic Piece";
+  }
+  
+  public String getGpId() {
+    String id = (String) getProperty(Properties.PIECE_ID);
+    return id == null ? "" : id;
+  }
+  
+  public void setGpId(String id) {
+    setProperty(Properties.PIECE_ID, id == null ? "" : id);
   }
 
   public HelpFile getHelpFile() {
