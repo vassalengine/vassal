@@ -194,7 +194,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
    * 
    * @return
    */
-  protected GamePiece createMarker() {
+  public GamePiece createMarker() {
     GamePiece piece = createBaseMarker();
     if (piece == null) {
       piece = new BasicPiece();

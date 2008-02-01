@@ -35,7 +35,6 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -109,9 +108,7 @@ public class PrivateMap extends Map {
       owners = (String[]) value;
     }
     else if (USE_BOARDS.equals(key)) {
-      Iterator it = Map.getAllMaps();
-      while (it.hasNext()) {
-        Map m = (Map) it.next();
+      for (Map m : Map.getMapCollection()) {
         if (m.getMapName().equals(value)) {
           surrogate = m;
           break;

@@ -124,7 +124,7 @@ public class SavedGameUpdater {
       this.replacement = replacement;
     }
 
-    protected GamePiece createMarker() {
+    public GamePiece createMarker() {
       GamePiece marker = PieceCloner.getInstance().clonePiece(replacement);
       if (matchRotation) {
         matchTraits(getInner(), marker);

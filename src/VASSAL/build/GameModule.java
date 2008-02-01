@@ -28,7 +28,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import javax.swing.JComponent;
@@ -121,8 +120,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected MutablePropertiesContainer propsContainer = new Impl();
   protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
     public void propertyChange(PropertyChangeEvent evt) {
-        for (Iterator maps = Map.getAllMaps(); maps.hasNext(); ) {
-          Map map = (Map) maps.next();
+        for (Map map : Map.getMapCollection()) {
           map.repaint();            
         }
     }

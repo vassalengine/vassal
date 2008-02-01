@@ -7,7 +7,6 @@ import java.awt.Shape;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Iterator;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -187,10 +186,9 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
       }
       filter = new BooleanAndPieceFilter(filter,new RangeFilter(getMap(), getPosition(), r));
     }
-    for (Iterator it = Map.getAllMaps(); it.hasNext();) {
-        Map m = (Map) it.next();
-        c = c.append(globalCommand.apply(m, filter));
-	}
+    for (Map m : Map.getMapCollection()) {
+      c = c.append(globalCommand.apply(m, filter));
+	  }
     GameModule.getGameModule().sendAndLog(c);
   }
   

@@ -80,7 +80,7 @@ public class Replace extends PlaceMarker {
     return new Ed(this);
   }
 
-  protected GamePiece createMarker() {
+  public GamePiece createMarker() {
     GamePiece marker = super.createMarker();
     if (marker != null
         && matchRotation) {

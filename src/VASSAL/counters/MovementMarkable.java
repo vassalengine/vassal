@@ -33,7 +33,6 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
-import java.util.Iterator;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
@@ -220,8 +219,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
     public Component getControls() {
       boolean enabled = false;
-      for (Iterator it = Map.getAllMaps(); it.hasNext();) {
-        Map m = (Map) it.next();
+      for (Map m : Map.getMapCollection()) {
         String value = m.getAttributeValueString(Map.MARK_MOVED);
         enabled = enabled
             || GlobalOptions.ALWAYS.equals(value)

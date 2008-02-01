@@ -2181,11 +2181,11 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   /**
    * Utility method to return a list of all map components in the module
+   * as a Collection
    * 
    * @return
    */
-// FIXME: should return a Collection<Map> instead
-  public static Iterator getAllMaps() {
+  public static Collection<Map> getMapCollection() {
     Collection<Map> l = GameModule.getGameModule().getComponentsOf(Map.class);
     for (ChartWindow cw :
           GameModule.getGameModule().getComponentsOf(ChartWindow.class)) {
@@ -2193,7 +2193,17 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
         l.add(mw.getMap());
       }
     }
-    return l.iterator();
+    return l;
+  }
+  
+  /**
+   * Utility method to return a list of all map components in the module
+   * 
+   * @return Iterator over all maps
+   * @deprecated
+   */
+  public static Iterator getAllMaps() {
+    return getMapCollection().iterator();
   }
 
   /**
