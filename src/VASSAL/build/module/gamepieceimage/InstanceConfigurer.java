@@ -68,11 +68,17 @@ public class InstanceConfigurer extends Configurer {
   }
 
   public String getValueString() {
-    return PropertiesToString((List<ItemInstance>) value);
+    return PropertiesToString(getValueList());
   }
-  
-  public ArrayList getValueArrayList() {
-    return (ArrayList) getValue();
+ 
+  public List<ItemInstance> getValueList() {
+    return (List<ItemInstance>) getValue();
+  }
+
+  /** @deprecated Use {@link #getValueList()} instead. */
+  @Deprecated 
+  public ArrayList<ItemInstance> getValueArrayList() {
+    return (ArrayList<ItemInstance>) getValue();
   }
 
   public void setValue(String s) {
@@ -182,7 +188,7 @@ public class InstanceConfigurer extends Configurer {
       model = new SymbolTableModel();
       table = new JTable(model);
       table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      if (getValueArrayList() != null && getValueArrayList().size() > 0) {
+      if (getValueList() != null && getValueList().size() > 0) {
         table.getSelectionModel().setSelectionInterval(0, 0);
       }
       ListSelectionModel rowSM = table.getSelectionModel();
@@ -222,12 +228,12 @@ public class InstanceConfigurer extends Configurer {
         currentDetail = NO_CURRENT_ITEM;
       }
 
-      int count = getValueArrayList().size();
+      int count = getValueList().size();
       
       if (itemNo != NO_CURRENT_ITEM && count > 0 && itemNo < count) {
-        ItemInstance instance = (ItemInstance) getValueArrayList().get(itemNo);
+        final ItemInstance instance = getValueList().get(itemNo);
         instance.setConfig(me);
-        Configurer c = instance.getConfigurer();
+        final Configurer c = instance.getConfigurer();
         detailControls = c.getControls();
         detailPanel.add(detailControls);
         currentDetail = itemNo;
@@ -270,7 +276,7 @@ public class InstanceConfigurer extends Configurer {
       }
 
       public int getRowCount() {
-        return getValueArrayList() == null ? 0 : getValueArrayList().size();
+        return getValueList() == null ? 0 : getValueList().size();
       }
 
       public String getColumnName(int col) {
@@ -279,13 +285,13 @@ public class InstanceConfigurer extends Configurer {
 
       public Object getValueAt(int row, int col) {
         if (col == NAME_COL) {
-          return ((ItemInstance) getValueArrayList().get(row)).getName();
+          return getValueList().get(row).getName();
         }
         else if (col == TYPE_COL) {
-          return ((ItemInstance) getValueArrayList().get(row)).getItem().getDisplayName();
+          return getValueList().get(row).getItem().getDisplayName();
         }
         else if (col == LOC_COL) {
-          return ((ItemInstance) getValueArrayList().get(row)).getLocation();
+          return getValueList().get(row).getLocation();
         }
         else
           return null;
