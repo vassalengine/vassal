@@ -108,7 +108,7 @@ public class PrivateMap extends Map {
       owners = (String[]) value;
     }
     else if (USE_BOARDS.equals(key)) {
-      for (Map m : Map.getMapCollection()) {
+      for (Map m : Map.getMapList()) {
         if (m.getMapName().equals(value)) {
           surrogate = m;
           break;

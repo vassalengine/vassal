@@ -114,8 +114,8 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 	/**
 	 * @return all build components that are an instance of the given class
 	 */
-  public <T> Collection<T> getComponentsOf(Class<T> target) {
-    ArrayList<T> l = new ArrayList<T>();
+  public <T> List<T> getComponentsOf(Class<T> target) {
+    final ArrayList<T> l = new ArrayList<T>();
     for (Buildable b : buildComponents) {
       if (target.isInstance(b)) {
         l.add(target.cast(b));

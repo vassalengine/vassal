@@ -415,7 +415,7 @@ public class Inventory extends AbstractConfigurable
 
   private void buildTreeModel() {
     // Initialize all pieces with CurrentBoard correctly.
-    for (VASSAL.build.module.Map m : VASSAL.build.module.Map.getMapCollection()) {
+    for (VASSAL.build.module.Map m : VASSAL.build.module.Map.getMapList()) {
       m.getPieces();
     }
     

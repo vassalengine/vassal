@@ -57,6 +57,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -2180,13 +2181,13 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   /**
-   * Utility method to return a list of all map components in the module
-   * as a Collection
-   * 
-   * @return
+   * Utility method to return a {@link List} of all map components in the
+   * module.
+   *
+   * @return the list of <code>Map</code>s
    */
-  public static Collection<Map> getMapCollection() {
-    Collection<Map> l = GameModule.getGameModule().getComponentsOf(Map.class);
+  public static List<Map> getMapList() {
+    final List<Map> l = GameModule.getGameModule().getComponentsOf(Map.class);
     for (ChartWindow cw :
           GameModule.getGameModule().getComponentsOf(ChartWindow.class)) {
       for (MapWidget mw : cw.getAllDescendantComponentsOf(MapWidget.class)) {
@@ -2200,10 +2201,11 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * Utility method to return a list of all map components in the module
    * 
    * @return Iterator over all maps
-   * @deprecated
+   * @deprecated Use {@link #getMapList()} instead.
    */
+  @Deprecated
   public static Iterator getAllMaps() {
-    return getMapCollection().iterator();
+    return getMapList().iterator();
   }
 
   /**

@@ -29,8 +29,8 @@ import VASSAL.build.module.map.MassKeyCommand;
 public class GlobalKeyCommand extends MassKeyCommand {
 
   public void apply() {
-    ArrayList<Map> l = new ArrayList<Map>();
-    for (Map m :Map.getMapCollection()) {
+    final ArrayList<Map> l = new ArrayList<Map>();
+    for (Map m : Map.getMapList()) {
       l.add(m);
     }
     GameModule.getGameModule().sendAndLog(

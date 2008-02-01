@@ -441,7 +441,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           l.addAll(Arrays.asList(m.getBoardPicker().getAllowableBoardNames()));
         }
         else {
-          for (Map m2 : Map.getMapCollection()) {
+          for (Map m2 : Map.getMapList()) {
             l.addAll(
               Arrays.asList(m2.getBoardPicker().getAllowableBoardNames()));
           }

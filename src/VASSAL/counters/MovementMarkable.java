@@ -219,7 +219,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
     public Component getControls() {
       boolean enabled = false;
-      for (Map m : Map.getMapCollection()) {
+      for (Map m : Map.getMapList()) {
         String value = m.getAttributeValueString(Map.MARK_MOVED);
         enabled = enabled
             || GlobalOptions.ALWAYS.equals(value)

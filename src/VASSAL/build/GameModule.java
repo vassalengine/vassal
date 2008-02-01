@@ -120,7 +120,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected MutablePropertiesContainer propsContainer = new Impl();
   protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
     public void propertyChange(PropertyChangeEvent evt) {
-        for (Map map : Map.getMapCollection()) {
+        for (Map map : Map.getMapList()) {
           map.repaint();            
         }
     }

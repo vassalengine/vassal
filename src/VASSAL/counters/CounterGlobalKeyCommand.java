@@ -1,3 +1,22 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2003 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.counters;
 
 import java.awt.Component;
@@ -26,25 +45,6 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
-
-/*
- * $Id$
- *
- * Copyright (c) 2003 by Rodney Kinney
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License (LGPL) as published by the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available
- * at http://www.opensource.org.
- */
 
 /**
  * Adds a menu item that applies a {@link GlobalCommand} to other pieces
@@ -186,7 +186,7 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
       }
       filter = new BooleanAndPieceFilter(filter,new RangeFilter(getMap(), getPosition(), r));
     }
-    for (Map m : Map.getMapCollection()) {
+    for (Map m : Map.getMapList()) {
       c = c.append(globalCommand.apply(m, filter));
 	  }
     GameModule.getGameModule().sendAndLog(c);
