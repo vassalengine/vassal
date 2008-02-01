@@ -43,7 +43,7 @@ public class TurnComponent extends AbstractConfigurable {
   }
   
   public String[] getAttributeDescriptions() {
-    return null;
+    return new String[0];
   }
   
   protected TurnLevel getTurnLevel(int i) {
@@ -61,12 +61,12 @@ public class TurnComponent extends AbstractConfigurable {
     return levels.iterator();
   }
   
-  public Class[] getAttributeTypes() {
-    return null;
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[0];
   }
 
   public String[] getAttributeNames() {
-    return null;
+    return new String[0];
   }
 
   public void setAttribute(String key, Object value) {

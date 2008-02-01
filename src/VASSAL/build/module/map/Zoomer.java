@@ -287,8 +287,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
       Integer.class,
       String[].class,
       String.class,

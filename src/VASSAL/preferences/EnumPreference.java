@@ -67,9 +67,9 @@ public class EnumPreference extends BasicPreference {
     return b;
   }
   
-  public Class[] getAttributeTypes() {
-    Class[] a = super.getAttributeTypes();
-    Class[] b = new Class[a.length+1];
+  public Class<?>[] getAttributeTypes() {
+    Class<?>[] a = super.getAttributeTypes();
+    Class<?>[] b = new Class<?>[a.length+1];
     System.arraycopy(a, 0, b, 0, a.length);
     b[a.length] = String[].class;
     return b;

@@ -60,15 +60,16 @@ public class FontStyle extends AbstractConfigurable {
   
   public String[] getAttributeDescriptions() {
     return new String[] { 
-        "Style Name:  ", 
-        "Font Style:  "};
-    
+      "Style Name:  ", 
+      "Font Style:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] { 
-        String.class, 
-        FontStyleConfig.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] { 
+      String.class, 
+      FontStyleConfig.class
+    };
   }
 
   public static class FontStyleConfig implements ConfigurerFactory {

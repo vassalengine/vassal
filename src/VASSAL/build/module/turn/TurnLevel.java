@@ -266,15 +266,27 @@ public abstract class TurnLevel extends TurnComponent {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { "Description:  ", "Property Name:  ", "Turn Level Format ($levelx$):  " };
+    return new String[] {
+      "Description:  ",
+      "Property Name:  ",
+      "Turn Level Format ($levelx$):  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] { String.class, String.class, TurnFormatConfig.class };
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      String.class,
+      TurnFormatConfig.class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[] { NAME, PROP, TURN_FORMAT };
+    return new String[] {
+      NAME,
+      PROP,
+      TURN_FORMAT
+    };
   }
 
   public void setAttribute(String key, Object value) {

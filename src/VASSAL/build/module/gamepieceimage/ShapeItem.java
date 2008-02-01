@@ -73,10 +73,15 @@ public class ShapeItem extends Item {
     return c;
   }
 
-  public Class[] getAttributeTypes() {
-    Class a[] = new Class[] { Integer.class, Integer.class, ShapeConfig.class, Integer.class };
-    Class b[] = super.getAttributeTypes();
-    Class c[] = new Class[a.length + b.length];
+  public Class<?>[] getAttributeTypes() {
+    final Class<?> a[] = new Class<?>[] {
+      Integer.class,
+      Integer.class,
+      ShapeConfig.class,
+      Integer.class
+    };
+    final Class<?> b[] = super.getAttributeTypes();
+    final Class<?> c[] = new Class<?>[a.length + b.length];
     System.arraycopy(b, 0, c, 0, 2);
     System.arraycopy(a, 0, c, 2, a.length);
     System.arraycopy(b, 2, c, a.length+2, b.length-2);

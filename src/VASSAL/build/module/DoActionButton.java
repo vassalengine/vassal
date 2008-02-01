@@ -144,18 +144,20 @@ public class DoActionButton extends AbstractConfigurable {
     
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class,
-                       String.class,
-                       String.class,
-                       IconConfig.class,
-                       KeyStroke.class,
-                       Boolean.class,
-                       ReportFormatConfig.class,
-                       Boolean.class,
-                       SoundConfig.class,
-                       Boolean.class,
-                       HotkeyConfig.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class,
+      Boolean.class,
+      ReportFormatConfig.class,
+      Boolean.class,
+      SoundConfig.class,
+      Boolean.class,
+      HotkeyConfig.class
+    };
   }
 
   public void addTo(Buildable parent) {

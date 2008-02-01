@@ -723,45 +723,92 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   public String[] getAttributeNames() {
-    return new String[] {VERSION, DELAY, HOTKEY,  
-
-    BG_COLOR, FG_COLOR,
-
-    MINIMUM_DISPLAYABLE, ZOOM_LEVEL, DRAW_PIECES, DRAW_PIECES_AT_ZOOM, GRAPH_SINGLE_DEPRECATED, BORDER_WIDTH,
-
-    SHOW_TEXT, SHOW_TEXT_SINGLE_DEPRECATED, FONT_SIZE, SUMMARY_REPORT_FORMAT, COUNTER_REPORT_FORMAT, EMPTY_HEX_REPORT_FORMAT,
-
-    DISPLAY, LAYER_LIST, PROPERTY_FILTER,SHOW_NOSTACK, SHOW_MOVE_SELECTED, SHOW_NON_MOVABLE, UNROTATE_PIECES, SHOW_DECK};
+    return new String[] {
+      VERSION,
+      DELAY,
+      HOTKEY,  
+      BG_COLOR,
+      FG_COLOR,
+      MINIMUM_DISPLAYABLE,
+      ZOOM_LEVEL,
+      DRAW_PIECES,
+      DRAW_PIECES_AT_ZOOM,
+      GRAPH_SINGLE_DEPRECATED, 
+      BORDER_WIDTH,
+      SHOW_TEXT,
+      SHOW_TEXT_SINGLE_DEPRECATED,
+      FONT_SIZE,
+      SUMMARY_REPORT_FORMAT,
+      COUNTER_REPORT_FORMAT,
+      EMPTY_HEX_REPORT_FORMAT,
+      DISPLAY,
+      LAYER_LIST,
+      PROPERTY_FILTER,SHOW_NOSTACK,
+      SHOW_MOVE_SELECTED,
+      SHOW_NON_MOVABLE,
+      UNROTATE_PIECES,
+      SHOW_DECK
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Version", // Not displayed
-        "Recommended Delay before display (ms):  ", "Keyboard shortcut to display:  ",  
-
-        "Background color:  ","Border/text color:  ", 
-
-        "Display when at least this many pieces will be included:  ", "Always display when zoom level less than:  ","Draw pieces?", "Draw pieces using zoom factor:  ","Display unit graphics for single counter?", // Obsolete
-        "Width of gap between pieces:  ",
-
-        "Display text?", "Display text report for single counter?",// Obsolete
-        "Font size:  ", "Summary text above pieces:  ", "Text below each piece:  ","Text for empty location:  ",
-
-        "Include individual pieces:  ", "Listed layers",
-        "Piece selection property filter:  ","Include non-stacking pieces?", "Include move-when-selected pieces?", "Include non-movable pieces?", 
-        "Show pieces in un-rotated state?", "Include top piece in Deck?"};
-
+    return new String[] {
+      "Version", // Not displayed
+      "Recommended Delay before display (ms):  ",
+      "Keyboard shortcut to display:  ",  
+      "Background color:  ",
+      "Border/text color:  ", 
+      "Display when at least this many pieces will be included:  ",
+      "Always display when zoom level less than:  ",
+      "Draw pieces?",
+      "Draw pieces using zoom factor:  ",
+      "Display unit graphics for single counter?", // Obsolete
+      "Width of gap between pieces:  ",
+      "Display text?",
+      "Display text report for single counter?",// Obsolete
+      "Font size:  ",
+      "Summary text above pieces:  ",
+      "Text below each piece:  ",
+      "Text for empty location:  ",
+      "Include individual pieces:  ",
+      "Listed layers",
+      "Piece selection property filter:  ",
+      "Include non-stacking pieces?",
+      "Include move-when-selected pieces?",
+      "Include non-movable pieces?", 
+      "Show pieces in un-rotated state?",
+      "Include top piece in Deck?"
+    }; 
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {String.class, Integer.class, KeyStroke.class,
-
-    Color.class, Color.class,
-
-    MinConfig.class, Double.class, Boolean.class, Double.class, Boolean.class, Integer.class,
-
-    Boolean.class, Boolean.class, Integer.class, ReportFormatConfig.class, CounterFormatConfig.class,EmptyFormatConfig.class,
-
-    DisplayConfig.class, String[].class, PropertyExpression.class,Boolean.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      Integer.class,
+      KeyStroke.class,
+      Color.class,
+      Color.class,
+      MinConfig.class,
+      Double.class,
+      Boolean.class,
+      Double.class,
+      Boolean.class,
+      Integer.class,
+      Boolean.class,
+      Boolean.class,
+      Integer.class,
+      ReportFormatConfig.class,
+      CounterFormatConfig.class,
+      EmptyFormatConfig.class,
+      DisplayConfig.class,
+      String[].class,
+      PropertyExpression.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class
+    };
   }
 
   public static class DisplayConfig extends StringEnum {

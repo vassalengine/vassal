@@ -301,9 +301,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return new String[]{Resources.getString("Editor.GameModule.name_label"), Resources.getString("Editor.GameModule.version_label")}; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
-  @SuppressWarnings("unchecked")
-  public Class[] getAttributeTypes() {
-    return new Class[]{
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
       String.class,
       String.class
     };

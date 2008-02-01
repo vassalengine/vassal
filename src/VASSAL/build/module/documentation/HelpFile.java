@@ -214,11 +214,17 @@ public class HelpFile extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Menu Entry:  ", "Text File:  "};
+    return new String[]{
+      "Menu Entry:  ",
+      "Text File:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class, File.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      File.class
+    };
   }
 
   public Class[] getAllowableConfigureComponents() {

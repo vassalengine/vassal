@@ -86,9 +86,9 @@ public class VassalTranslation extends Translation {
     return allKeys;
   }
   
-  public Class[] getAttributeTypes() {
+  public Class<?>[] getAttributeTypes() {
     initkeys();
-    final Class[] types = new Class[allKeys.length];
+    final Class<?>[] types = new Class<?>[allKeys.length];
     Arrays.fill(types, String.class);
     return types;
   }

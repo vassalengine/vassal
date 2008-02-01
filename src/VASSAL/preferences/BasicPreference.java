@@ -62,8 +62,14 @@ public abstract class BasicPreference extends AbstractConfigurable {
     return new String[] {"","Preference Tab Name:  ", "Preference Description:  ", "Global Variable Name:  ", "Default Value:  "};
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {NoteConfig.class, String.class, String.class, String.class, getDefaultClass()};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      NoteConfig.class,
+      String.class,
+      String.class,
+      String.class,
+      getDefaultClass()
+    };
   }
   
   public static class NoteConfig implements ConfigurerFactory {

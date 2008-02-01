@@ -147,8 +147,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
       String.class,
       Image.class,
       Boolean.class,

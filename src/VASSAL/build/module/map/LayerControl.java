@@ -108,11 +108,27 @@ public class LayerControl extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button text:  ", "Tooltip text:  ", "Button Icon:  ", "Hotkey:  ", "Action:  ", "Skip layers with no counters?", "Affect which layers? (Use layer names or numbers)"};
+    return new String[] {
+      "Button text:  ",
+      "Tooltip text:  ",
+      "Button Icon:  ",
+      "Hotkey:  ",
+      "Action:  ",
+      "Skip layers with no counters?",
+      "Affect which layers? (Use layer names or numbers)"
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, Icon.class, KeyStroke.class, CommandConfig.class, Boolean.class, String[].class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      String.class,
+      Icon.class,
+      KeyStroke.class,
+      CommandConfig.class,
+      Boolean.class,
+      String[].class
+    };
   }
 
   public static class CommandConfig extends StringEnum {

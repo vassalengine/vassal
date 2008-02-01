@@ -104,12 +104,24 @@ public class Tutorial extends AbstractConfigurable {
     return new String[]{"Menu Text", "Logfile", "Launch automatically on first startup", "Auto-launch confirm message", "Welcome message"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class, File.class, Boolean.class, String.class, String.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      File.class,
+      Boolean.class,
+      String.class,
+      String.class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, FILE_NAME, LAUNCH_ON_STARTUP, PROMPT_MESSAGE, WELCOME_MESSAGE};
+    return new String[]{
+      NAME,
+      FILE_NAME,
+      LAUNCH_ON_STARTUP,
+      PROMPT_MESSAGE,
+      WELCOME_MESSAGE
+    };
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {

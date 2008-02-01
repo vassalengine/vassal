@@ -475,26 +475,78 @@ public class Inventory extends AbstractConfigurable
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Name:  ", "Button text:  ", "Tooltip text:  ","Button icon:  ", "Hotkey:  ",  // "Display", 
-        "Show only pieces matching these properties:  ", "Sort and Group By Properties",
-        "Label for folders:  ", "Show only folders?", "Label for pieces:  ",  "Sort?", "Label for sort:  ", 
-        "Sorting method:  ", "Center on selected piece?", 
-        "Forward key strokes to selected piece?", "Show right-click menu of piece?", "Draw piece images?", "Zoom factor:  ", "Available to these sides"};
+    return new String[] {
+      "Name:  ",
+      "Button text:  ",
+      "Tooltip text:  ",
+      "Button icon:  ",
+      "Hotkey:  ",
+      // "Display",
+      "Show only pieces matching these properties:  ",
+      "Sort and Group By Properties",
+      "Label for folders:  ",
+      "Show only folders?",
+      "Label for pieces:  ",
+      "Sort?",
+      "Label for sort:  ",
+      "Sorting method:  ",
+      "Center on selected piece?",
+      "Forward key strokes to selected piece?",
+      "Show right-click menu of piece?",
+      "Draw piece images?",
+      "Zoom factor:  ",
+      "Available to these sides"
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, String.class, IconConfig.class, KeyStroke.class,  // DestConfig.class, 
-        PropertyExpression.class, String[].class, String.class, Boolean.class,
-        PieceFormatConfig.class, Boolean.class, PieceFormatConfig.class, 
-        SortConfig.class, Boolean.class, Boolean.class, Boolean.class, Boolean.class, 
-        Double.class, String[].class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class,
+      // DestConfig.class, 
+      PropertyExpression.class,
+      String[].class,
+      String.class,
+      Boolean.class,
+      PieceFormatConfig.class,
+      Boolean.class,
+      PieceFormatConfig.class, 
+      SortConfig.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class, 
+      Double.class,
+      String[].class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[] {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY,  // DEST, 
-        FILTER, GROUP_BY, NON_LEAF_FORMAT, FOLDERS_ONLY, LEAF_FORMAT,
-        SORT_PIECES, SORT_FORMAT,  
-        SORTING, CENTERONPIECE, FORWARD_KEYSTROKE, SHOW_MENU, DRAW_PIECES, PIECE_ZOOM, SIDES};
+    return new String[] {
+      NAME,
+      BUTTON_TEXT,
+      TOOLTIP,
+      ICON,
+      HOTKEY,
+   // DEST, 
+      FILTER,
+      GROUP_BY,
+      NON_LEAF_FORMAT,
+      FOLDERS_ONLY,
+      LEAF_FORMAT,
+      SORT_PIECES,
+      SORT_FORMAT,  
+      SORTING,
+      CENTERONPIECE,
+      FORWARD_KEYSTROKE,
+      SHOW_MENU,
+      DRAW_PIECES,
+      PIECE_ZOOM,
+      SIDES
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {
@@ -502,6 +554,7 @@ public class Inventory extends AbstractConfigurable
       return new IconConfigurer(key, name, "/images/inventory.gif"); //$NON-NLS-1$
     }
   }
+
   public static class PieceFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new GamePieceFormattedStringConfigurer(key, name);
@@ -512,6 +565,7 @@ public class Inventory extends AbstractConfigurable
 //      return new StringEnumConfigurer(key, name, DEST_OPTIONS);
 //    }
 //  }
+
   public static class SortConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new StringEnumConfigurer(key,name,SORT_OPTIONS);

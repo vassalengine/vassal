@@ -367,13 +367,35 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
   
   public String[] getAttributeDescriptions() {
-    return new String[] { "Name:  ", "Button text:  ", "Button Icon:  ", "Button Tooltip:  ", "Show/hide Hotkey:  ", "Next Turn Hotkey:  ", "Previous Turn Hotkey:  ",
-        "Turn Name Format:  ", "Report Format:  ", "Turn Label Tooltip Text:  ", "Turn label Display length (Pixels, 0 for variable):  " };
+    return new String[] {
+      "Name:  ",
+      "Button text:  ",
+      "Button Icon:  ",
+      "Button Tooltip:  ",
+      "Show/hide Hotkey:  ",
+      "Next Turn Hotkey:  ",
+      "Previous Turn Hotkey:  ",
+      "Turn Name Format:  ",
+      "Report Format:  ",
+      "Turn Label Tooltip Text:  ",
+      "Turn label Display length (Pixels, 0 for variable):  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] { String.class, String.class, IconConfig.class, String.class, KeyStroke.class, KeyStroke.class, KeyStroke.class, 
-        TurnFormatConfig.class, ReportFormatConfig.class, String.class, Integer.class };
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      String.class,
+      IconConfig.class,
+      String.class,
+      KeyStroke.class,
+      KeyStroke.class,
+      KeyStroke.class, 
+      TurnFormatConfig.class,
+      ReportFormatConfig.class,
+      String.class,
+      Integer.class
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {

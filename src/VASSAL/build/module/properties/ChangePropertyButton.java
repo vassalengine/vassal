@@ -79,15 +79,33 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button text:  ", "Button icon:  ", "Hotkey:  ", "Report format:  ", "Options:  "};
+    return new String[] {
+      "Button text:  ",
+      "Button icon:  ",
+      "Hotkey:  ",
+      "Report format:  ",
+      "Options:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {String.class, Icon.class, KeyStroke.class, ReportFormatConfig.class, PropChangerOptions.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      Icon.class,
+      KeyStroke.class,
+      ReportFormatConfig.class,
+      PropChangerOptions.class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[] {BUTTON_TEXT, BUTTON_ICON, HOTKEY, REPORT_FORMAT, PROPERTY_CHANGER};
+    return new String[] {
+      BUTTON_TEXT,
+      BUTTON_ICON,
+      HOTKEY,
+      REPORT_FORMAT,
+      PROPERTY_CHANGER
+    };
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {

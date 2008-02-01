@@ -214,8 +214,8 @@ public class GlobalMap implements AutoConfigurable,
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
       String.class,
       String.class,
       IconConfig.class,

@@ -492,27 +492,40 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   public String[] getAttributeNames() {
-    String[] s = {DISABLED, EXSEP_X, EXSEP_Y, UNEXSEP_X, UNEXSEP_Y,
-                  COLOR, TOP_KEY, BOTTOM_KEY, UP_KEY, DOWN_KEY};
-    return s;
+    return new String[] {
+      DISABLED,
+      EXSEP_X,
+      EXSEP_Y,
+      UNEXSEP_X,
+      UNEXSEP_Y,
+      COLOR,
+      TOP_KEY,
+      BOTTOM_KEY,
+      UP_KEY,
+      DOWN_KEY
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Disable stacking?",
-                        "Horizontal separation when expanded:  ",
-                        "Vertical separation when expanded:  ",
-                        "Horizontal separation when not expanded:  ",
-                        "Vertical separation when not expanded:  ",
-                        "Color of pieces when not expanded:  "};
+    return new String[]{
+      "Disable stacking?",
+      "Horizontal separation when expanded:  ",
+      "Vertical separation when expanded:  ",
+      "Horizontal separation when not expanded:  ",
+      "Vertical separation when not expanded:  ",
+      "Color of pieces when not expanded:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{Boolean.class,
-                       Integer.class,
-                       Integer.class,
-                       Integer.class,
-                       Integer.class,
-                       Color.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      Boolean.class,
+      Integer.class,
+      Integer.class,
+      Integer.class,
+      Integer.class,
+      Color.class
+    };
   }
 
   private VisibilityCondition cond = new VisibilityCondition() {

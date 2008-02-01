@@ -323,15 +323,27 @@ public class DieManager extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Description", "Multi-roll Default Ndice", "Multi-roll Default Nsides"};
+    return new String[]{
+      "Description",
+      "Multi-roll Default Ndice",
+      "Multi-roll Default Nsides"
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class, Integer.class, Integer.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      Integer.class,
+      Integer.class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[]{DESC, DFLT_NDICE, DFLT_NSIDES};
+    return new String[]{
+      DESC,
+      DFLT_NDICE,
+      DFLT_NSIDES
+    };
   }
 
   public void setAttribute(String key, Object value) {

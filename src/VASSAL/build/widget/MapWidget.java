@@ -105,8 +105,8 @@ public class MapWidget extends Widget {
     return new String[]{"Name:  "};
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{String.class};
   }
 
   public String[] getAttributeNames() {

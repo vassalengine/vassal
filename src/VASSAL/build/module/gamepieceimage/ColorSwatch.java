@@ -69,15 +69,24 @@ public class ColorSwatch extends AbstractConfigurable
   }
   
   public String[] getAttributeDescriptions() {
-    return new String[] { "Color Name:  ", "Color:  "};
+    return new String[] {
+      "Color Name:  ",
+      "Color:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] { String.class, Color.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      Color.class
+    };
   }
   
   public String[] getAttributeNames() {
-    return new String[] { NAME, COLOR };
+    return new String[] {
+      NAME,
+      COLOR
+    };
   }
 
   public void setAttribute(String key, Object o) {

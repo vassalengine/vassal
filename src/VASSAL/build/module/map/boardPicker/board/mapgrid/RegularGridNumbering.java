@@ -310,25 +310,26 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{F.class,
-                       String.class,
-                       T.class,
-                       Integer.class,
-                       Integer.class,
-                       Boolean.class,
-                       T.class,
-                       Integer.class,
-                       Integer.class,
-                       Boolean.class,
-                       LocationFormatConfig.class,
-                       Boolean.class,
-                       Integer.class,
-                       Color.class,
-                       R.class,
-                       Integer.class,
-                       Integer.class};
-
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      F.class,
+      String.class,
+      T.class,
+      Integer.class,
+      Integer.class,
+      Boolean.class,
+      T.class,
+      Integer.class,
+      Integer.class,
+      Boolean.class,
+      LocationFormatConfig.class,
+      Boolean.class,
+      Integer.class,
+      Color.class,
+      R.class,
+      Integer.class,
+      Integer.class
+    };
   }
 
   /**

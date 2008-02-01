@@ -192,9 +192,8 @@ public class ChartWindow extends Widget {
     };
   }
 
-  @SuppressWarnings("unchecked")
-  public Class[] getAttributeTypes() {
-    return new Class[]{
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
       String.class,
       String.class,
       String.class,

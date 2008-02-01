@@ -75,22 +75,25 @@ public class TranslatableMarker extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return null;
+    return new String[0];
   }
 
-  public Class[] getAttributeTypes() {
-    return null;
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[0];
   }
 
   public String[] getAttributeNames() {
-    return null;
+    return new String[0];
   }
+
   public Class[] getAllowableConfigureComponents() {
-    return null;
+    return new Class[0];
   }
+
   public HelpFile getHelpFile() {
     return null;
   }
+
   public void removeFrom(Buildable parent) {
     
   }

@@ -86,9 +86,9 @@ public class HexGridNumbering extends RegularGridNumbering {
     return val;
   }
 
-  public Class[] getAttributeTypes() {
-    Class[] s = super.getAttributeTypes();
-    Class[] val = new Class[s.length + 1];
+  public Class<?>[] getAttributeTypes() {
+    final Class<?>[] s = super.getAttributeTypes();
+    final Class<?>[] val = new Class<?>[s.length + 1];
     System.arraycopy(s, 0, val, 0, s.length);
     val[s.length] = Boolean.class;
     return val;

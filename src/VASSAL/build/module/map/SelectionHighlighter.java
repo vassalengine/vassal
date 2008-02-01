@@ -170,8 +170,8 @@ public class SelectionHighlighter extends AbstractConfigurable
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
       String.class,
       PropertyExpression.class,
       Boolean.class,

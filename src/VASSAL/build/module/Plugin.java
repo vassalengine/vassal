@@ -88,8 +88,8 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
     return new String[0];
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[0];
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[0];
   }
 
   public String[] getAttributeNames() {

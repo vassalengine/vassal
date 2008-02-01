@@ -74,8 +74,8 @@ public class ImageItemInstance extends ItemInstance {
     return new String[] { "Image:  " };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] { Image.class, };
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] { Image.class, };
   }
 
   public String[] getAttributeNames() {

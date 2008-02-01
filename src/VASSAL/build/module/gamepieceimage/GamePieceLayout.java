@@ -132,11 +132,23 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Counter Width:  ", "Counter Height:  ", "Border Style:  ", ""}; //$NON-NLS-5$
+    return new String[]{
+      "Name:  ",
+      "Counter Width:  ",
+      "Counter Height:  ",
+      "Border Style:  ",
+      ""  //$NON-NLS-1$
+    }; 
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class, Integer.class, Integer.class, BorderConfig.class, LayoutConfig.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      Integer.class,
+      Integer.class,
+      BorderConfig.class,
+      LayoutConfig.class
+    };
   }
 
   public static class LayoutConfig implements ConfigurerFactory {

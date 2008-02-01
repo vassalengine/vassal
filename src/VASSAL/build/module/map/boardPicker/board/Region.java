@@ -86,22 +86,28 @@ public class Region extends AbstractConfigurable {
   public static final String Y = "originy";
 
   public String[] getAttributeNames() {
-    String s[] = {NAME, X, Y};
-    return s;
+    return new String[] {
+      NAME,
+      X,
+      Y
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ",
-                        "X Co-ord:  ",
-                        "Y Co-ord:  "};
+    return new String[]{
+      "Name:  ",
+      "X Co-ord:  ",
+      "Y Co-ord:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class,
-                       Integer.class,
-                       Integer.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      Integer.class,
+      Integer.class
+    };
   }
-
 
   public void addTo(Buildable b) {
     myGrid = (RegionGrid) b;

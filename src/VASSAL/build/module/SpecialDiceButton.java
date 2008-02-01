@@ -249,8 +249,8 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
       String.class,
       String.class,
       String.class,

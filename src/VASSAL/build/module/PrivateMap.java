@@ -85,10 +85,14 @@ public class PrivateMap extends Map {
     return s;
   }
 
-  public Class[] getAttributeTypes() {
-    Class[] c1 = new Class[]{String[].class, Boolean.class, String.class};
-    Class[] c2 = super.getAttributeTypes();
-    Class[] c = new Class[c1.length + c2.length];
+  public Class<?>[] getAttributeTypes() {
+    final Class<?>[] c1 = new Class<?>[]{
+      String[].class,
+      Boolean.class,
+      String.class
+    };
+    final Class<?>[] c2 = super.getAttributeTypes();
+    final Class<?>[] c = new Class<?>[c1.length + c2.length];
     System.arraycopy(c1, 0, c, 0, c1.length);
     System.arraycopy(c2, 0, c, c1.length, c2.length);
     return c;

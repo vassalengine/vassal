@@ -239,11 +239,21 @@ public class NotesWindow extends AbstractConfigurable
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button text:  ", "Tooltip text:  ", "Button Icon:  ", "Hotkey:  "};
+    return new String[] {
+      "Button text:  ",
+      "Tooltip text:  ",
+      "Button Icon:  ", 
+      "Hotkey:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, IconConfig.class, KeyStroke.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {

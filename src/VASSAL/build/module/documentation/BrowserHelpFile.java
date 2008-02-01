@@ -245,15 +245,26 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     protected File dir;
 
     public String[] getAttributeDescriptions() {
-      return new String[]{"Menu Entry:  ", "Contents:  ", "Starting Page:  "};
+      return new String[]{
+        "Menu Entry:  ", 
+        "Contents:  ",
+        "Starting Page:  "
+      };
     }
 
     public String[] getAttributeNames() {
-      return new String[]{TITLE, DIR, STARTING_PAGE};
+      return new String[]{
+        TITLE, DIR,
+        STARTING_PAGE
+      };
     }
 
-    public Class[] getAttributeTypes() {
-      return new Class[]{String.class, ContentsConfig.class, String.class};
+    public Class<?>[] getAttributeTypes() {
+      return new Class<?>[]{
+        String.class,
+        ContentsConfig.class,
+        String.class
+      };
     }
 
     public String getAttributeValueString(String key) {

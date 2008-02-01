@@ -136,37 +136,95 @@ public class MassKeyCommand extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     if (condition == null) {
-      return new String[]{"Description:  ", "Key Command:  ", "Matching properties:  ", "Apply to contents of Decks:  ", "Button text:  ", "Tooltip text:  ", "Button Icon:  ",
-                          "Hotkey:  ", "Suppress individual reports?", "Report Format:  "};
+      return new String[]{
+        "Description:  ",
+        "Key Command:  ",
+        "Matching properties:  ",
+        "Apply to contents of Decks:  ",
+        "Button text:  ",
+        "Tooltip text:  ",
+        "Button Icon:  ",
+        "Hotkey:  ",
+        "Suppress individual reports?",
+        "Report Format:  "
+      };
     }
     else {
       // Backward compatibility
-      return new String[]{"Description:  ", "Key Command:  ", "Matching properties:  ", "Apply to contents of Decks:  ", "Button text:  ", "Tooltip text:  ", "Button Icon:  ",
-                          "Hotkey:  ", "Suppress individual reports?", "Report Format:  ", "Apply Command:  "};
+      return new String[]{
+        "Description:  ",
+        "Key Command:  ",
+        "Matching properties:  ",
+        "Apply to contents of Decks:  ",
+        "Button text:  ",
+        "Tooltip text:  ",
+        "Button Icon:  ",
+        "Hotkey:  ",
+        "Suppress individual reports?",
+        "Report Format:  ",
+        "Apply Command:  "
+      };
     }
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, KEY_COMMAND, PROPERTIES_FILTER, DECK_COUNT, BUTTON_TEXT, TOOLTIP,  ICON, HOTKEY, REPORT_SINGLE, REPORT_FORMAT, CONDITION,
-                        CHECK_VALUE, CHECK_PROPERTY, AFFECTED_PIECE_NAMES};
+    return new String[]{
+      NAME,
+      KEY_COMMAND,
+      PROPERTIES_FILTER,
+      DECK_COUNT,
+      BUTTON_TEXT,
+      TOOLTIP,
+       ICON,
+      HOTKEY,
+      REPORT_SINGLE,
+      REPORT_FORMAT,
+      CONDITION,
+      CHECK_VALUE,
+      CHECK_PROPERTY,
+      AFFECTED_PIECE_NAMES
+    };
   }
+
   public static class Prompt extends StringEnum {
     public String[] getValidValues(AutoConfigurable target) {
       return new String[]{ALWAYS, IF_ACTIVE, IF_INACTIVE};
     }
   }
 
-  public Class[] getAttributeTypes() {
+  public Class<?>[] getAttributeTypes() {
     if (condition == null) {
-      return new Class[]{String.class, KeyStroke.class, PropertyExpression.class, DeckPolicyConfig.class, String.class, String.class, IconConfig.class, KeyStroke.class,
-                         Boolean.class, ReportFormatConfig.class};
+      return new Class<?>[]{
+        String.class,
+        KeyStroke.class,
+        PropertyExpression.class,
+        DeckPolicyConfig.class,
+        String.class,
+        String.class,
+        IconConfig.class,
+        KeyStroke.class,
+        Boolean.class,
+        ReportFormatConfig.class
+      };
     }
     else {
       // Backward compatibility
-      return new Class[]{String.class, KeyStroke.class, String.class, DeckPolicyConfig.class, String.class, String.class, IconConfig.class, KeyStroke.class,
-                         Boolean.class, ReportFormatConfig.class, Prompt.class};
+      return new Class<?>[]{
+        String.class,
+        KeyStroke.class,
+        String.class,
+        DeckPolicyConfig.class,
+        String.class,
+        String.class,
+        IconConfig.class,
+        KeyStroke.class,
+        Boolean.class,
+        ReportFormatConfig.class,
+        Prompt.class
+      };
     }
   }
+
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, "/images/keyCommand.gif");

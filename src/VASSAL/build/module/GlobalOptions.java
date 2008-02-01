@@ -184,8 +184,14 @@ public class GlobalOptions extends AbstractConfigurable {
     return attributes.toArray(new String[attributes.size()]);
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{Prompt.class, null, Prompt.class, Prompt.class, PlayerIdFormatConfig.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      Prompt.class,
+      null,
+      Prompt.class,
+      Prompt.class,
+      PlayerIdFormatConfig.class
+    };
   }
 
   /**

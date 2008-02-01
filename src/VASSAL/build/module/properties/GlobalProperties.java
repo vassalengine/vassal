@@ -28,8 +28,8 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
     return new String[0];
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[0];
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[0];
   }
 
   public String[] getAttributeNames() {

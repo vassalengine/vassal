@@ -149,8 +149,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
       String.class,
       LocationFormatConfig.class,
       ShapeEditor.class,

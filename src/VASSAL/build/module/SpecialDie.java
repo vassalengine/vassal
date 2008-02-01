@@ -56,8 +56,8 @@ public class SpecialDie extends AbstractConfigurable {
     return new String[]{"Name:  ", "Results format:  "};
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class, ResultFormatConfig.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{String.class, ResultFormatConfig.class};
   }
 
   public static class ResultFormatConfig implements TranslatableConfigurerFactory {

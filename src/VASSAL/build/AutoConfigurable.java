@@ -61,7 +61,7 @@ public interface AutoConfigurable extends Configurable {
    * Valid classes are:  String, Integer, Double, Boolean, Image,
    * File, Color, and KeyStroke
    */
-  public Class[] getAttributeTypes();
+  public Class<?>[] getAttributeTypes();
 
   /**
    * Because attributes are not always applicable in all cases, this method returns an interface

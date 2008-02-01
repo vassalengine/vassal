@@ -150,11 +150,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return new String[]{
       "Snap to defined point?",
       "Draw region names?",
-      "Font Size:  "};
+      "Font Size:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
       Boolean.class,
       Boolean.class,
       Integer.class

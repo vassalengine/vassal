@@ -51,15 +51,39 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name", "Initial value:  ", "Description:  ", "Is Numeric", "Minimum value:  ", "Maximum value:  ", "Wrap around"};
+    return new String[]{
+      "Name",
+      "Initial value:  ", 
+      "Description:  ",
+      "Is Numeric",
+      "Minimum value:  ",
+      "Maximum value:  ",
+      "Wrap around"
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class, String.class, String.class, Boolean.class, String.class, String.class, Boolean.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      String.class,
+      String.class,
+      Boolean.class,
+      String.class,
+      String.class,
+      Boolean.class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, INITIAL_VALUE, DESCRIPTION, NUMERIC, MIN_VALUE, MAX_VALUE, WRAP};
+    return new String[]{
+      NAME,
+      INITIAL_VALUE,
+      DESCRIPTION,
+      NUMERIC,
+      MIN_VALUE,
+      MAX_VALUE,
+      WRAP
+    };
   }
 
   public void setAttribute(String key, Object value) {

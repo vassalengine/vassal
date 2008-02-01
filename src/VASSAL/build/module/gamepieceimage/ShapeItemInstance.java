@@ -74,15 +74,24 @@ public class ShapeItemInstance extends ItemInstance {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { "Foreground Color:  ", "Border Color:  " };
+    return new String[] {
+      "Foreground Color:  ",
+      "Border Color:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] { FgColorSwatchConfig.class, BorderColorSwatchConfig.class, };
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      FgColorSwatchConfig.class,
+      BorderColorSwatchConfig.class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[] { FG_COLOR, BORDER_COLOR };
+    return new String[] {
+      FG_COLOR,
+      BORDER_COLOR
+    };
   }
 
   public void setAttribute(String key, Object o) {

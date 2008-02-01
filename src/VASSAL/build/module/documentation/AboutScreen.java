@@ -164,8 +164,8 @@ public class AboutScreen extends AbstractConfigurable {
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
       String.class,
       Image.class
     };

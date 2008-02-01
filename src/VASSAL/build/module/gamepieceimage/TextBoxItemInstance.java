@@ -81,11 +81,19 @@ public class TextBoxItemInstance extends ItemInstance {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { "Value:  ","Text Color:  ", "Background Color:  "};
+    return new String[] {
+      "Value:  ",
+      "Text Color:  ",
+      "Background Color:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] { WrappingTextConfigurer.class, FgColorSwatchConfig.class, BgColorSwatchConfig.class, };
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      WrappingTextConfigurer.class,
+      FgColorSwatchConfig.class,
+      BgColorSwatchConfig.class
+    };
   }
   
   public static class WrappingTextConfigurer implements ConfigurerFactory {

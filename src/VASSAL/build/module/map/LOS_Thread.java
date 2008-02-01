@@ -724,41 +724,45 @@ public class LOS_Thread extends AbstractConfigurable implements
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Button text:  ",
-                        "Tooltip text:  ",                        
-                        "Button Icon:  ",
-                        "Hotkey:  ",
-                        "Report Format:  ",
-                        "Persistence:  ",
-                        "Button Icon when LOS persisting:  ",
-                        "Visible to Opponent:  ",
-                        "Force start of thread to snap to grid?",
-                        "Force end of thread to snap to grid?",
-                        "Draw Range?",
-                        "Pixels per range unit (0 to use Grid calculation):  ",
-                        "Round fractions:  ",
-                        "Hide Pieces while drawing?",
-                        "Opacity of hidden pieces (0-100%):  ",
-                        "Thread color:  "};
+    return new String[]{
+      "Button text:  ",
+      "Tooltip text:  ",                        
+      "Button Icon:  ",
+      "Hotkey:  ",
+      "Report Format:  ",
+      "Persistence:  ",
+      "Button Icon when LOS persisting:  ",
+      "Visible to Opponent:  ",
+      "Force start of thread to snap to grid?",
+      "Force end of thread to snap to grid?",
+      "Draw Range?",
+      "Pixels per range unit (0 to use Grid calculation):  ",
+      "Round fractions:  ",
+      "Hide Pieces while drawing?",
+      "Opacity of hidden pieces (0-100%):  ",
+      "Thread color:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class,
-        			   String.class,
-                 IconConfig.class,
-        			   KeyStroke.class,
-                 ReportFormatConfig.class,
-                 PersistenceOptions.class,
-                 IconConfig.class,
-                 GlobalOptions.class,
-                 Boolean.class,
-                 Boolean.class,
-                 Boolean.class,
-                 Integer.class,
-                 RoundingOptions.class,
-                 Boolean.class,
-                 Integer.class,
-                 Color.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class,
+      ReportFormatConfig.class,
+      PersistenceOptions.class,
+      IconConfig.class,
+      GlobalOptions.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Integer.class,
+      RoundingOptions.class,
+      Boolean.class,
+      Integer.class,
+      Color.class
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {

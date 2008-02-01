@@ -159,10 +159,15 @@ public class CounterTurnLevel extends TurnLevel {
     return c;
   }
 
-  public Class[] getAttributeTypes() {
-    Class a[] = super.getAttributeTypes();
-    Class b[] = new Class[] { Integer.class, Integer.class, Boolean.class, Integer.class };
-    Class c[]= new Class[a.length + b.length];
+  public Class<?>[] getAttributeTypes() {
+    final Class<?> a[] = super.getAttributeTypes();
+    final Class<?> b[] = new Class<?>[] {
+      Integer.class,
+      Integer.class,
+      Boolean.class,
+      Integer.class
+    };
+    final Class<?> c[]= new Class<?>[a.length + b.length];
     System.arraycopy(a, 0, c, 0, a.length);
     System.arraycopy(b, 0, c, a.length, b.length);
     return c;

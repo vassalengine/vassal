@@ -228,8 +228,8 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
       String.class,
       Boolean.class,
       String.class,

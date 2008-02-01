@@ -491,8 +491,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
       String.class,
       Boolean.class,
       Boolean.class,

@@ -183,22 +183,35 @@ public class DiceButton extends AbstractConfigurable {
   }
 
   public String[] getAttributeNames() {
-    String s[] = {NAME, BUTTON_TEXT, TOOLTIP, ICON, N_DICE, N_SIDES, PLUS, REPORT_TOTAL, HOTKEY, PROMPT_ALWAYS, REPORT_FORMAT};
-    return s;
+    return new String[] {
+      NAME,
+      BUTTON_TEXT,
+      TOOLTIP,
+      ICON,
+      N_DICE,
+      N_SIDES,
+      PLUS,
+      REPORT_TOTAL,
+      HOTKEY,
+      PROMPT_ALWAYS,
+      REPORT_FORMAT
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ",
-                        "Button text:  ",
-                        "Tooltip text:  ",
-                        "Button icon:  ",
-                        Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
-                        Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
-                        Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
-                        "Report Total?",
-                        "Hotkey:  ",
-                        "Prompt for values when button pushed?",
-                        "Report Format:  "};
+    return new String[]{
+      "Name:  ",
+      "Button text:  ",
+      "Tooltip text:  ",
+      "Button icon:  ",
+      Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
+      Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
+      Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
+      "Report Total?",
+      "Hotkey:  ",
+      "Prompt for values when button pushed?",
+      "Report Format:  "
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {
@@ -213,19 +226,20 @@ public class DiceButton extends AbstractConfigurable {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class,
-                       String.class,
-                       String.class,
-                       IconConfig.class,
-                       Integer.class,
-                       Integer.class,
-                       Integer.class,
-                       Boolean.class,
-                       KeyStroke.class,
-                       Boolean.class,
-                       ReportFormatConfig.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      String.class,
+      String.class,
+      IconConfig.class,
+      Integer.class,
+      Integer.class,
+      Integer.class,
+      Boolean.class,
+      KeyStroke.class,
+      Boolean.class,
+      ReportFormatConfig.class
+    };
   }
 
   private VisibilityCondition cond = new VisibilityCondition() {

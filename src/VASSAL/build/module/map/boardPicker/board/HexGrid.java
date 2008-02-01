@@ -85,34 +85,48 @@ public class HexGrid extends AbstractConfigurable
   protected static final double sqrt3_2 = Math.sqrt(3) / 2.;
 
   public String[] getAttributeNames() {
-    String s[] = {SIDEWAYS, X0, Y0, DY, DX, EDGES, CORNERS, VISIBLE, DOTS_VISIBLE, COLOR};
-    return s;
+    return new String[] {
+      SIDEWAYS,
+      X0,
+      Y0,
+      DY,
+      DX,
+      EDGES,
+      CORNERS,
+      VISIBLE,
+      DOTS_VISIBLE,
+      COLOR
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Sideways (hexrows go horizontal)?",
-                        "X offset:  ",
-                        "Y offset:  ",
-                        "Hex Height:  ",
-                        "Hex Width:  ",
-                        "Edges are legal locations?",
-                        "Vertices are legal locations?",
-                        "Show grid?",
-                        "Draw center dots?",
-                        "Color:  "};
+    return new String[]{
+      "Sideways (hexrows go horizontal)?",
+      "X offset:  ",
+      "Y offset:  ",
+      "Hex Height:  ",
+      "Hex Width:  ",
+      "Edges are legal locations?",
+      "Vertices are legal locations?",
+      "Show grid?",
+      "Draw center dots?",
+      "Color:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{Boolean.class,
-                       Integer.class,
-                       Integer.class,
-                       Double.class,
-                       Double.class,
-                       Boolean.class,
-                       Boolean.class,
-                       Boolean.class,
-                       Boolean.class,
-                       Color.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      Boolean.class,
+      Integer.class,
+      Integer.class,
+      Double.class,
+      Double.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Color.class
+    };
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {

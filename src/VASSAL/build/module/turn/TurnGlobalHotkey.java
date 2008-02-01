@@ -30,11 +30,21 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
   protected BasicPiece checkPiece = new BasicPiece();
   
   public String[] getAttributeDescriptions() {
-    return new String[] {"Description:  ", "Global Hotkey:  ", "Match Properties:  ", "Report Format:  "};
+    return new String[] {
+      "Description:  ",
+      "Global Hotkey:  ",
+      "Match Properties:  ",
+      "Report Format:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {String.class, KeyStroke.class, PropertyExpression.class, ReportFormatConfig.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      KeyStroke.class,
+      PropertyExpression.class,
+      ReportFormatConfig.class
+    };
   }
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {

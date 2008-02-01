@@ -244,15 +244,36 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Belongs to Board:  ", "Use Grid Location:  ", "Location:  ", "X position:  ", "Y position:  "};
+    return new String[]{
+      "Name:  ",
+      "Belongs to Board:  ",
+      "Use Grid Location:  ",
+      "Location:  ",
+      "X position:  ",
+      "Y position:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class, OwningBoardPrompt.class, Boolean.class, String.class, Integer.class, Integer.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      OwningBoardPrompt.class,
+      Boolean.class,
+      String.class,
+      Integer.class,
+      Integer.class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, OWNING_BOARD, USE_GRID_LOCATION, LOCATION , X_POSITION, Y_POSITION};
+    return new String[]{
+      NAME,
+      OWNING_BOARD,
+      USE_GRID_LOCATION,
+      LOCATION,
+      X_POSITION,
+      Y_POSITION
+    };
   }
 
   public String getAttributeValueString(String key) {

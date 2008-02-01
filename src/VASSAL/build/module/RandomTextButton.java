@@ -179,15 +179,15 @@ public class RandomTextButton extends DiceButton {
     return l.toArray(new String[l.size()]);
   }
 
-  public Class[] getAttributeTypes() {
-    ArrayList<Class> l =
-      new ArrayList<Class>(Arrays.asList(super.getAttributeTypes()));
+  public Class<?>[] getAttributeTypes() {
+    ArrayList<Class<?>> l =
+      new ArrayList<Class<?>>(Arrays.asList(super.getAttributeTypes()));
     ArrayList<String> names =
       new ArrayList<String>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
     l.add(String[].class);
     l.add(Boolean.class);
-    return l.toArray(new Class[names.size()]);
+    return l.toArray(new Class<?>[names.size()]);
   }
 
   public void setAttribute(String key, Object value) {

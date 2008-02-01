@@ -132,34 +132,48 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
   
   public String[] getAttributeNames() {
-    String s[] = {X0, Y0, DX, DY, RANGE, EDGES, CORNERS, VISIBLE, DOTS_VISIBLE, COLOR};
-    return s;
+    return new String[] {
+      X0,
+      Y0, 
+      DX,
+      DY, 
+      RANGE,
+      EDGES,
+      CORNERS,
+      VISIBLE,
+      DOTS_VISIBLE,
+      COLOR
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"X offset:  ",
-                        "Y offset:  ",
-                        "Cell Width:  ",
-                        "Cell Height:  ",
-                        "Range Calculation Method:  ",
-                        "Edges are legal locations?",
-                        "Corners are legal locations?",
-                        "Show Grid?",
-                        "Draw Center Dots?",
-                        "Color:  "};
+    return new String[]{
+      "X offset:  ",
+      "Y offset:  ",
+      "Cell Width:  ",
+      "Cell Height:  ",
+      "Range Calculation Method:  ",
+      "Edges are legal locations?",
+      "Corners are legal locations?",
+      "Show Grid?",
+      "Draw Center Dots?",
+      "Color:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{Integer.class,
-                       Integer.class,
-                       Double.class,
-                       Double.class,
-                       RangeOptions.class,
-                       Boolean.class,
-                       Boolean.class,
-                       Boolean.class,
-                       Boolean.class,
-                       Color.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      Integer.class,
+      Integer.class,
+      Double.class,
+      Double.class,
+      RangeOptions.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Boolean.class,
+      Color.class
+    };
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {

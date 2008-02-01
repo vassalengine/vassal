@@ -55,15 +55,27 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
   }
   
   public String[] getAttributeDescriptions() {
-    return new String[]{"Enabled?", "Color:  ", "Thickness:  "};
+    return new String[]{
+      "Enabled?",
+      "Color:  ",
+      "Thickness:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{Boolean.class, Color.class, Integer.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      Boolean.class,
+      Color.class,
+      Integer.class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[]{ENABLED, COLOR, THICKNESS};
+    return new String[]{
+      ENABLED,
+      COLOR,
+      THICKNESS
+    };
   }
 
   public void setAttribute(String key, Object value) {

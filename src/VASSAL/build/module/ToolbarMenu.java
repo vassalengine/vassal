@@ -96,12 +96,24 @@ public class ToolbarMenu extends AbstractConfigurable
                          Resources.getString(Resources.HOTKEY_LABEL),Resources.getString("Editor.ToolbarMenu.menu_entries")}; //$NON-NLS-1$
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, Icon.class, KeyStroke.class, String[].class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      String.class,
+      Icon.class,
+      KeyStroke.class,
+      String[].class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[] {BUTTON_TEXT, TOOLTIP, BUTTON_ICON, BUTTON_HOTKEY, MENU_ITEMS};
+    return new String[] {
+      BUTTON_TEXT,
+      TOOLTIP,
+      BUTTON_ICON,
+      BUTTON_HOTKEY,
+      MENU_ITEMS
+    };
   }
 
   public String getAttributeValueString(String key) {

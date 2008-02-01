@@ -120,8 +120,8 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
       String.class,
       BgColorSwatchConfig.class,
       BorderColorSwatchConfig.class,

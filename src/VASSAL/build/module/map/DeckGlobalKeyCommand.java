@@ -121,18 +121,34 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   }
   
   public String[] getAttributeDescriptions() {
-    return new String[]{"Menu Command:  ", "Global Command:  ", "Matching properties:  ", "Affects:  ",
-                          "Report Format:  "};
+    return new String[]{
+      "Menu Command:  ",
+      "Global Command:  ",
+      "Matching properties:  ",
+      "Affects:  ",
+      "Report Format:  "
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[]{NAME, KEY_COMMAND, PROPERTIES_FILTER, DECK_COUNT, REPORT_FORMAT };
+    return new String[]{
+      NAME,
+      KEY_COMMAND,
+      PROPERTIES_FILTER,
+      DECK_COUNT,
+      REPORT_FORMAT
+    };
   }
 
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class, KeyStroke.class, PropertyExpression.class, DeckPolicyConfig2.class, 
-                         ReportFormatConfig.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      KeyStroke.class,
+      PropertyExpression.class,
+      DeckPolicyConfig2.class,
+      ReportFormatConfig.class
+    };
   }
   
   public static class DeckPolicyConfig2 extends DeckPolicyConfig {

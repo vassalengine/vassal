@@ -71,14 +71,27 @@ public abstract class Item extends AbstractConfigurable {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { "Name:  ", "Location:  ", "Advanced Options", 
-        "X Offset:  ", "Y Offset:  ", "Rotation (Degrees):  ", "Anti-alias?"};
-
+    return new String[] {
+      "Name:  ",
+      "Location:  ",
+      "Advanced Options", 
+      "X Offset:  ",
+      "Y Offset:  ",
+      "Rotation (Degrees):  ",
+      "Anti-alias?"
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] { String.class, LocationConfig.class,  Boolean.class,
-        Integer.class, Integer.class, Integer.class, Boolean.class };
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      LocationConfig.class,
+      Boolean.class,
+      Integer.class,
+      Integer.class,
+      Integer.class,
+      Boolean.class
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {

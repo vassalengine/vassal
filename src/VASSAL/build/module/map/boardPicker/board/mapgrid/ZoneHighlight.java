@@ -222,8 +222,8 @@ public class ZoneHighlight extends AbstractConfigurable  {
     };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
       String.class,
       Color.class,
       Coverage.class,

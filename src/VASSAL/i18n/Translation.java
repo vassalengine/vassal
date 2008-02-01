@@ -47,9 +47,12 @@ public class Translation extends AbstractConfigurable
     return new String[]{"Locale:  "};
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{LocalePrompt.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      LocalePrompt.class
+    };
   }
+
   public static class LocalePrompt implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new LocaleConfigurer(key, name, "");

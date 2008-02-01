@@ -60,15 +60,30 @@ public class TextSaver extends AbstractConfigurable {
   
 
   public String[] getAttributeNames() {
-    return new String[] {BUTTON_TEXT, TOOLTIP, ICON_NAME, HOTKEY};
+    return new String[] {
+      BUTTON_TEXT,
+      TOOLTIP,
+      ICON_NAME,
+      HOTKEY
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button Text:  ", "Tooltip Text:  ", "Button icon:  ", "Hotkey:  "};
+    return new String[] {
+      "Button Text:  ", 
+      "Tooltip Text:  ",
+      "Button icon:  ",
+      "Hotkey:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] {String.class, String.class, IconConfig.class, KeyStroke.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      String.class,
+      IconConfig.class,
+      KeyStroke.class
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {

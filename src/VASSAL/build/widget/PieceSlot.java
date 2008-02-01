@@ -341,8 +341,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     return new String[0];
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[0];
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[0];
   }
 
   public void setAttribute(String name, Object value) {

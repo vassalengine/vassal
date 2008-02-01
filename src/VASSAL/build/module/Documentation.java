@@ -91,8 +91,8 @@ public class Documentation extends AbstractConfigurable {
     return new String[0];
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[0];
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[0];
   }
 
   public Configurer getConfigurer() {
@@ -100,7 +100,12 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public Class[] getAllowableConfigureComponents() {
-    return new Class[]{BrowserHelpFile.class, AboutScreen.class, Tutorial.class, HelpFile.class};
+    return new Class[]{
+      BrowserHelpFile.class,
+      AboutScreen.class,
+      Tutorial.class,
+      HelpFile.class
+    };
   }
 
   public static String getConfigureTypeName() {

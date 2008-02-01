@@ -148,8 +148,8 @@ public abstract class ItemInstance extends AbstractConfigurable {
     return new String[0];
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[0];
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[0];
   }
 
   public String[] getAttributeNames() {

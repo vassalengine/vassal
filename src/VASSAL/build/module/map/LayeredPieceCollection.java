@@ -48,15 +48,24 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   }
   
   public String[] getAttributeDescriptions() {
-    return new String[]{"Property name for layer:  ","Layer Order"};
+    return new String[]{
+      "Property name for layer:  ",
+      "Layer Order"
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[]{String.class,String[].class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[]{
+      String.class,
+      String[].class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[]{PROPERTY_NAME,LAYER_ORDER};
+    return new String[]{
+      PROPERTY_NAME,
+      LAYER_ORDER
+    };
   }
 
   public String getAttributeValueString(String key) {

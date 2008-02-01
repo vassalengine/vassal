@@ -71,8 +71,8 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
     return new String[0];
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[0];
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[0];
   }
 
 

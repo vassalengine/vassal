@@ -112,15 +112,36 @@ public class SymbolItemInstance extends ItemInstance {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { "Unit Size:  ", "1st Symbol:  ", "2nd Symbol:  ", "Symbol Color:  ", "Background Color:  ", "Size Color:  " };
+    return new String[] { 
+      "Unit Size:  ",
+      "1st Symbol:  ",
+      "2nd Symbol:  ",
+      "Symbol Color:  ",
+      "Background Color:  ",
+      "Size Color:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] { SizeConfig.class, Symbol1Config.class, Symbol2Config.class, FgColorSwatchConfig.class, BgColorSwatchConfig.class, SizeColorSwatchConfig.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      SizeConfig.class,
+      Symbol1Config.class,
+      Symbol2Config.class,
+      FgColorSwatchConfig.class,
+      BgColorSwatchConfig.class,
+      SizeColorSwatchConfig.class
+    };
   }
   
   public String[] getAttributeNames() {
-    return new String[] { SIZE, SYMBOL1, SYMBOL2, FG_COLOR, BG_COLOR, SIZE_COLOR };
+    return new String[] {
+      SIZE,
+      SYMBOL1,
+      SYMBOL2,
+      FG_COLOR,
+      BG_COLOR,
+      SIZE_COLOR
+    };
   }
 
   public void setAttribute(String key, Object value) {

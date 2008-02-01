@@ -52,8 +52,8 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
     return "Internet Dice Button";
   }
 
-  public Class[] getAttributeTypes() {
-    Class[] c = super.getAttributeTypes();
+  public Class<?>[] getAttributeTypes() {
+    final Class<?>[] c = super.getAttributeTypes();
     for (int i = 0; i < c.length; ++i) {
       if (c[i] == ReportFormatConfig.class) {
         c[i] = InternetReportFormatConfig.class;
@@ -61,6 +61,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
     }
     return c;
   }
+
   public static class InternetReportFormatConfig extends ReportFormatConfig {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       FormattedStringConfigurer config = (FormattedStringConfigurer) super.getConfigurer(c, key, name);

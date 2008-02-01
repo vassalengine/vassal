@@ -489,11 +489,19 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
    * abstract classes for i18n.
    */
   public String[] getAttributeNames() {
-    return new String[] {BUTTON_TEXT, TOOL_TIP, SIDES};
+    return new String[] {
+      BUTTON_TEXT,
+      TOOL_TIP,
+      SIDES
+    };
   }
 
-  public Class[] getAttributeTypes() {
-     return new Class[] { String.class, String.class, String.class };
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      String.class,
+      String.class
+    };
   }
 
   public String getAttributeValueString(String key) {

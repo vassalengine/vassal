@@ -109,15 +109,30 @@ public class TextItemInstance extends ItemInstance {
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[] { "Value:  ", "Foreground Color:  ", "Background Color:  ", "Outline Color:  " };
+    return new String[] { 
+      "Value:  ", 
+      "Foreground Color:  ",
+      "Background Color:  ",
+      "Outline Color:  "
+    };
   }
 
-  public Class[] getAttributeTypes() {
-    return new Class[] { String.class, FgColorSwatchConfig.class, BgColorSwatchConfig.class, OutlineColorSwatchConfig.class};
+  public Class<?>[] getAttributeTypes() {
+    return new Class<?>[] {
+      String.class,
+      FgColorSwatchConfig.class,
+      BgColorSwatchConfig.class,
+      OutlineColorSwatchConfig.class
+    };
   }
 
   public String[] getAttributeNames() {
-    return new String[] { VALUE, FG_COLOR, BG_COLOR, OUTLINE_COLOR };
+    return new String[] {
+      VALUE,
+      FG_COLOR,
+      BG_COLOR,
+      OUTLINE_COLOR
+    };
   }
 
   public void setAttribute(String key, Object o) {
