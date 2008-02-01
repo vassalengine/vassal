@@ -667,12 +667,15 @@ public class WizardSupport {
 
     public static GameSetupPanels newInstance() {
       GameSetupPanels panels = null;
-      ArrayList<SetupStepPage> pages = new ArrayList<SetupStepPage>();
-      ArrayList<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
-      for (Iterator it = GameModule.getGameModule().getGameState().getUnfinishedSetupSteps(); it.hasNext();) {
-        GameSetupStep step = (GameSetupStep) it.next();
+      final ArrayList<SetupStepPage> pages = new ArrayList<SetupStepPage>();
+      final ArrayList<GameSetupStep> setupSteps =
+        new ArrayList<GameSetupStep>();
+      for (Iterator<GameSetupStep> i =
+           GameModule.getGameModule().getGameState().getUnfinishedSetupSteps();
+           i.hasNext();) {
+        final GameSetupStep step = i.next();
         setupSteps.add(step);
-        SetupStepPage page = new SetupStepPage(step);
+        final SetupStepPage page = new SetupStepPage(step);
         pages.add(page);
       }
       if (!pages.isEmpty()) {

@@ -176,7 +176,7 @@ public class GameState implements CommandEncoder {
    * @return an iterator of all {@link GameSetupStep}s that are not
    * yet finished
    */
-  public Iterator getUnfinishedSetupSteps() {
+  public Iterator<GameSetupStep> getUnfinishedSetupSteps() {
     ArrayList<GameSetupStep> l = new ArrayList<GameSetupStep>();
     for (GameSetupStep step : setupSteps) {
       if (!step.isFinished()) {

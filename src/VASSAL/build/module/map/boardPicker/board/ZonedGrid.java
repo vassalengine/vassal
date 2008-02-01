@@ -329,7 +329,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     zones.remove(z);
   }
 
-  public Iterator getZones() {
+  public Iterator<Zone> getZones() {
     return zones.iterator();
   }
 

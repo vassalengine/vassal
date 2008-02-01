@@ -57,7 +57,7 @@ public class TurnComponent extends AbstractConfigurable {
     return levels.size();
   }
 
-  public Iterator getTurnLevels() {
+  public Iterator<TurnLevel> getTurnLevels() {
     return levels.iterator();
   }
   
@@ -78,7 +78,6 @@ public class TurnComponent extends AbstractConfigurable {
   }
 
   public void removeFrom(Buildable parent) {
-
   }
 
   public HelpFile getHelpFile() {
@@ -90,7 +89,6 @@ public class TurnComponent extends AbstractConfigurable {
   }
 
   public void addTo(Buildable parent) {
-
   }
 }
 

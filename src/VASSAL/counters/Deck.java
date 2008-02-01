@@ -681,11 +681,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
    * @deprecated Use {@link #setContents(Collection<GamePiece>)} instead.
    */
   @Deprecated
-  protected Command setContents(Iterator it) {
+  protected Command setContents(Iterator<GamePiece> it) {
     ChangeTracker track = new ChangeTracker(this);
     removeAll();
     while (it.hasNext()) {
-      GamePiece child = (GamePiece) it.next();
+      GamePiece child = it.next();
       insertChild(child, pieceCount);
     }
     return track.getChangeCommand();

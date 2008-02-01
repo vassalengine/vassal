@@ -26,7 +26,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -160,11 +159,7 @@ public class PieceAccessConfigurer extends Configurer {
     }
     else if (p instanceof SpecifiedSideAccess) {
       SequenceEncoder se = new SequenceEncoder(':');
-      for (Iterator it = ((SpecifiedSideAccess)p).getSides().iterator();
-           it.hasNext();) {
-        String side = (String) it.next();
-        se.append(side);
-      }
+      for (String side : ((SpecifiedSideAccess)p).getSides()) se.append(side);
       s = se.getValue() == null ? SIDES : SIDES + se.getValue();
     }
     else if (p instanceof PlayerAccess) {
@@ -179,5 +174,4 @@ public class PieceAccessConfigurer extends Configurer {
       selectType.setModel(new DefaultComboBoxModel(prompts));
     }
   }
-
 }

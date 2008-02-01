@@ -24,7 +24,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -452,9 +451,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       final String location = item.getLocation();
 
       boolean found = false;
-      for (Iterator i = instances.iterator(); i.hasNext() && !found; ) {
-        final ItemInstance prop = (ItemInstance) i.next();
+      for (ItemInstance prop : instances) {
         found = name.equals(prop.getName());
+        if (found) break;
       }
 
       if (!found) {

@@ -97,7 +97,8 @@ public class PlayerNode extends Node implements SocketWatcher {
       server.updateInfo(this);
     }
     else if ((p = Protocol.decodeRoomsInfo(line)) != null) {
-      for (Iterator it = p.keySet().iterator(); it.hasNext();) {
+// FIXME: Use Properties.stringPropertyNames() in 1.6+.
+      for (Iterator<Object> it = p.keySet().iterator(); it.hasNext();) {
         String roomName = (String) it.next();
         Node target = server.getModule(this).getDescendant(roomName);
         if (target != null) {

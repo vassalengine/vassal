@@ -217,22 +217,23 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   
   
   public String getState() {
-    SequenceEncoder se = new SequenceEncoder('|');
+    final SequenceEncoder se = new SequenceEncoder('|');
     se.append(currentLevel);
-    Iterator i = getTurnLevels();
+    final Iterator<TurnLevel> i = getTurnLevels();
     while (i.hasNext()) {
-      TurnLevel level = (TurnLevel) i.next();
+      final TurnLevel level = i.next();
       se.append(level.getState());
     }
     return se.getValue();
   }
 
   public void setState(String newState) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(newState, '|');
+    final SequenceEncoder.Decoder sd =
+      new SequenceEncoder.Decoder(newState, '|');
     currentLevel = sd.nextInt(0);
-    Iterator i = getTurnLevels();
+    final Iterator<TurnLevel> i = getTurnLevels();
     while (i.hasNext()) {
-      TurnLevel level = (TurnLevel) i.next();
+      final TurnLevel level = i.next();
       level.setState(sd.nextToken("")); //$NON-NLS-1$
     }
     

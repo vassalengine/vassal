@@ -831,8 +831,8 @@ public class Inventory extends AbstractConfigurable
         pieces.add(node.getCounter().getPiece());
       }
       else {
-        for (Iterator j = node.iterator(); j.hasNext();) {
-          CounterNode childNode = (CounterNode) j.next();
+        for (Iterator<CounterNode> j = node.iterator(); j.hasNext();) {
+          final CounterNode childNode = j.next();
           if (childNode.isLeaf())
             pieces.add(childNode.getCounter().getPiece());
         }

@@ -84,7 +84,7 @@ public class UniqueIdManager implements ValidityChecker {
     return id;
   }
 
-  public Iterator getAllInstances() {
+  public Iterator<Identifyable> getAllInstances() {
     return instances.iterator();
   }
 
