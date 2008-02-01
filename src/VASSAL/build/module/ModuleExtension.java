@@ -45,8 +45,8 @@ import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
+import VASSAL.build.GpIdSupport;
 import VASSAL.build.IllegalBuildException;
-import VASSAL.build.TopLevelComponent;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
@@ -61,7 +61,7 @@ import VASSAL.tools.DataArchive;
  * Like a GameModule, it is built from scratch from a 'buildFile' in a DataArchive
  * The components described in the buildFile are appended to components in the base DataArchive
  */
-public class ModuleExtension extends AbstractBuildable implements GameComponent, PluginsLoader.PluginElement, TopLevelComponent {
+public class ModuleExtension extends AbstractBuildable implements GameComponent, PluginsLoader.PluginElement, GpIdSupport {
   public static final String BASE_MODULE_NAME = "module"; //$NON-NLS-1$
   public static final String BASE_MODULE_VERSION = "moduleVersion"; //$NON-NLS-1$
   public static final String VERSION = "version"; //$NON-NLS-1$
@@ -99,7 +99,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     final String fileName = "buildFile"; //$NON-NLS-1$
 
     GameModule.getGameModule().getDataArchive().addExtension(archive);
-    GameModule.getGameModule().setTopLevelComponent(this); // Record that we are currently building this Extension
+    GameModule.getGameModule().setGpIdSupport(this); // Record that we are currently building this Extension
 
     InputStream in = null;
     try {

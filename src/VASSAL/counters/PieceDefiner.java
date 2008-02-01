@@ -45,7 +45,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.TopLevelComponent;
+import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
@@ -67,7 +67,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   protected static TraitClipboard clipBoard;
   protected String pieceId = "";
   protected JLabel pieceIdLabel = new JLabel("");
-  protected TopLevelComponent topLevelComponent;
+  protected GpIdSupport gpidSupport;
 
   /** Creates new form test */
   public PieceDefiner() {
@@ -79,11 +79,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     availableList.setSelectedIndex(0);
   }
   
-  public PieceDefiner(String id, TopLevelComponent c) {
+  public PieceDefiner(String id, GpIdSupport s) {
     this();
     pieceId = id;
     pieceIdLabel.setText("Id: "+id);
-    topLevelComponent = c;
+    gpidSupport = s;
   }
   
   protected static void initDefinitions() {
@@ -604,7 +604,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     try {
       c = c.getClass().newInstance();
       if (c instanceof PlaceMarker) {
-        ((PlaceMarker) c).updateGpId(topLevelComponent);
+        ((PlaceMarker) c).updateGpId(gpidSupport);
       }
       c.setInner((GamePiece) inUseModel.lastElement());
       inUseModel.addElement(c);

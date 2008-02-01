@@ -100,7 +100,7 @@ import VASSAL.tools.ToolBarComponent;
  * such as {@link DataArchive}, {@link ServerConnection}, {@link Logger},
  * and {@link Prefs}.</p>
  */
-public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer, TopLevelComponent {
+public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer, GpIdSupport {
   protected static final String DEFAULT_NAME = "Unnamed module";  //$NON-NLS-1$
   public static final String MODULE_NAME = "name";  //$NON-NLS-1$
   public static final String MODULE_VERSION = "version";  //$NON-NLS-1$
@@ -153,11 +153,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected int nextGpId = 0;
   
   /*
-   * Store the currently building top level component. Only meaningful while
+   * Store the currently building GpId source. Only meaningful while
    * the GameModule or an Extension is actually in the process of being built
    * during module/extension load. 
    */
-  protected TopLevelComponent currentTopLevelComponent = null;
+  protected GpIdSupport gpidSupport = null;
   
   /**
    * @return the top-level frame of the controls window
@@ -721,7 +721,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     else {
       theModule = module;
-      theModule.setTopLevelComponent(theModule);
+      theModule.setGpIdSupport(theModule);
       try {
         theModule.build();
       }
@@ -757,12 +757,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return String.valueOf(nextGpId++);
   }
   
-  public void setTopLevelComponent(TopLevelComponent c) {
-    currentTopLevelComponent = c;
+  public void setGpIdSupport(GpIdSupport s) {
+    gpidSupport = s;
   }
   
-  public TopLevelComponent getTopLevelComponent() {
-    return currentTopLevelComponent;
+  public GpIdSupport getGpIdSupport() {
+    return gpidSupport;
   }
   
   /**

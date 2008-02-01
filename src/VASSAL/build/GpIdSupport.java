@@ -30,7 +30,7 @@ package VASSAL.build;
  * Each GampePiece generated is tied to it's originating PieceSlot by the 
  * NameSpace Id and the PieceSlot Id.
  */
-public interface TopLevelComponent {
+public interface GpIdSupport {
   
   /**
    * Generate a new PieceSlot Id, unique to this top-level component.

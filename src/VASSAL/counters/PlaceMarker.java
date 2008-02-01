@@ -44,7 +44,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
-import VASSAL.build.TopLevelComponent;
+import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.documentation.HelpFile;
@@ -80,7 +80,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   protected String description = "";
   protected String gpId = "";
   protected String newGpId;
-  protected TopLevelComponent topLevelComponent; // The component that generates unique Slot Id's for us
+  protected GpIdSupport gpidSupport; // The component that generates unique Slot Id's for us
 
 
   public PlaceMarker() {
@@ -312,13 +312,13 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     gpId = s;
   }
   
-  public void updateGpId(TopLevelComponent c) {
-    topLevelComponent = c;
+  public void updateGpId(GpIdSupport s) {
+    gpidSupport = s;
     updateGpId();
   }
   
   public void updateGpId() {
-    setGpId(topLevelComponent.generateGpId());
+    setGpId(gpidSupport.generateGpId());
   }
   
   protected static class Ed implements PieceEditor {

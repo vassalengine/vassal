@@ -37,7 +37,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
-import VASSAL.build.TopLevelComponent;
+import VASSAL.build.GpIdSupport;
 import VASSAL.build.Widget;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -74,7 +74,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   private javax.swing.JPanel panel;
   private int width, height;
   private String gpId = ""; // Unique PieceSlot Id
-  private TopLevelComponent topLevelComponent;
+  private GpIdSupport gpidSupport;
 
   public PieceSlot() {
     panel = new PieceSlot.Panel();
@@ -269,7 +269,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * PieceSlot
    */
   public void build(org.w3c.dom.Element e) {
-    topLevelComponent = GameModule.getGameModule().getTopLevelComponent();
+    gpidSupport = GameModule.getGameModule().getGpIdSupport();
     if (e != null) {
       name = e.getAttribute(NAME);
       gpId = e.getAttribute(GP_ID) + "";
@@ -385,11 +385,11 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   /**
-   * Update the gpid for this PieceSlot, using the given TopLevelComponent
+   * Update the gpid for this PieceSlot, using the given {@link GpIdSupport}
    * to generate the new id.
    */  
-  public void updateGpId(TopLevelComponent c) {
-    topLevelComponent = c;
+  public void updateGpId(GpIdSupport s) {
+    gpidSupport = s;
     updateGpId();
   }
   
@@ -398,7 +398,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * Replace traits.
    */
   public void updateGpId() {
-    gpId = topLevelComponent.generateGpId();
+    gpId = gpidSupport.generateGpId();
     GamePiece piece = getPiece();
     updateGpId(piece);
     setPiece(piece);
@@ -414,7 +414,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       return;
     }
     if (piece instanceof PlaceMarker) {
-      ((PlaceMarker) piece).setGpId(topLevelComponent.generateGpId());      
+      ((PlaceMarker) piece).setGpId(gpidSupport.generateGpId());      
     }
     updateGpId(((Decorator) piece).getInner());
   }
@@ -432,7 +432,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     public MyConfigurer(PieceSlot slot) {
       super(null, slot.getConfigureName(), slot);
-      definer = new PieceDefiner(slot.getGpId(), slot.topLevelComponent);
+      definer = new PieceDefiner(slot.getGpId(), slot.gpidSupport);
       definer.setPiece(slot.getPiece());
     }
 
