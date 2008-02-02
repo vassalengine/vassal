@@ -19,15 +19,11 @@
 
 package VASSAL.tools.imageop;
 
-import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 
-import VASSAL.tools.GeneralFilter;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.ImageUtils;
 

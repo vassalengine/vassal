@@ -1,7 +1,6 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Image;
-import java.awt.Rectangle;
 
 import VASSAL.counters.GamePiece;
 

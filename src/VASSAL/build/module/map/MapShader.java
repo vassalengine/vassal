@@ -28,7 +28,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Paint;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
@@ -37,11 +36,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
+
 import javax.swing.KeyStroke;
 
 import VASSAL.build.AbstractConfigurable;
@@ -68,9 +65,7 @@ import VASSAL.tools.LaunchButton;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.ImageOpObserver;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.SourceOp;
 
 /**
  *

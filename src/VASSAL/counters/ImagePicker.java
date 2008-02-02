@@ -21,7 +21,6 @@ package VASSAL.counters;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -41,7 +40,6 @@ import VASSAL.tools.ImageFileFilter;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
-import VASSAL.tools.imageop.SourceOp;
 
 public class ImagePicker extends JPanel
                          implements MouseListener, ItemListener {

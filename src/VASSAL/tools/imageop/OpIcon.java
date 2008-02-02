@@ -22,9 +22,9 @@ package VASSAL.tools.imageop;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -37,6 +37,7 @@ import VASSAL.tools.ErrorLog;
  * @author Joel Uckelman
  */
 public class OpIcon extends ImageIcon implements Icon {
+  private static final long serialVersionUID = 1L;
   protected ImageOp sop;
 
   /**

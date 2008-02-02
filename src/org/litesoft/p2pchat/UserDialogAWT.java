@@ -51,6 +51,7 @@ import java.util.*;
  * @version 0.1 12/27/01 Initial Version
  */
 public class UserDialogAWT extends Frame implements UserDialog {
+  private static final long serialVersionUID = 1L;
   private MyInfo zMyInfo;
   private ActivePeerManager zActivePeerManager = null;
   private TextField zChatText;

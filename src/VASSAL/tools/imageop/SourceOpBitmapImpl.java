@@ -20,14 +20,11 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.ImageUtils;
 

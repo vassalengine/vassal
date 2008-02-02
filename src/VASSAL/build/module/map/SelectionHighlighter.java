@@ -34,7 +34,6 @@ import java.util.concurrent.ExecutionException;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;

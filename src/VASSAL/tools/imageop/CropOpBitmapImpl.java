@@ -25,7 +25,6 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.Future;
 
 import VASSAL.tools.HashCode;
 

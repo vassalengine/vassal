@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,8 +34,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+
 import VASSAL.build.GameModule;
 import VASSAL.command.AddPiece;
 import VASSAL.command.AlertCommand;
@@ -54,7 +55,6 @@ import VASSAL.tools.BackgroundTask;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.Deobfuscator;
 import VASSAL.tools.FileChooser;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.Obfuscator;
 
 /**
@@ -149,6 +149,7 @@ public class GameState implements CommandEncoder {
    * that have been added to this GameState
    * @deprecated Use {@link #getGameComponents()} instead.
    */
+  @SuppressWarnings("unchecked")
   @Deprecated
   public Enumeration getGameComponentsEnum() {
     return Collections.enumeration(gameComponents);

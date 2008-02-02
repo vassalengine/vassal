@@ -129,6 +129,7 @@ public class WizardDisplayerImpl extends WizardDisplayer
             .getColor("textText")))); // NOI18N
         ttlPanel = new JPanel()
         {
+            private static final long serialVersionUID = 1L;
             public void doLayout()
             {
                 Dimension d = ttlLabel.getPreferredSize();

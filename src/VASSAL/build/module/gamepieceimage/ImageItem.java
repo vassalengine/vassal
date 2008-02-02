@@ -33,16 +33,13 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.AutoConfigurable;
-import VASSAL.build.GameModule;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.ImageOpObserver;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.SourceOp;
 
 public class ImageItem extends Item {
 

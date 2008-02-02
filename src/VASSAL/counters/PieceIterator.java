@@ -25,15 +25,15 @@ import java.util.Iterator;
  * An iterator for GamePieces.  Takes an optional PieceFilter to extract GamePiece instances from an Enumeration
  */
 public class PieceIterator {
-  private Enumeration e;
+  private Enumeration<?> e;
   private PieceFilter filter;
   private GamePiece next;
 
-  public PieceIterator(Enumeration e) {
+  public PieceIterator(Enumeration<?> e) {
     this(e, null);
   }
 
-  public PieceIterator(Enumeration e, PieceFilter f) {
+  public PieceIterator(Enumeration<?> e, PieceFilter f) {
     this(f);
     this.e = e;
     next = next();
@@ -43,8 +43,8 @@ public class PieceIterator {
     filter = f;
   }
 
-  public PieceIterator(final Iterator it) {
-    this(new Enumeration() {
+  public PieceIterator(final Iterator<?> it) {
+    this(new Enumeration<Object>() {
       public boolean hasMoreElements() {
         return it.hasNext();
       }
@@ -80,7 +80,7 @@ public class PieceIterator {
   /**
    * @return a PieceIterator containing only those GamePieces visible to the user in the given Enumeration
    */
-  public static PieceIterator visible(Enumeration e) {
+  public static PieceIterator visible(Enumeration<GamePiece> e) {
     return new PieceIterator(e, new PieceFilter() {
       public boolean accept(GamePiece piece) {
         return !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME));

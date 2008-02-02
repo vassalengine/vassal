@@ -1017,7 +1017,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView()), true);
     d.setTitle(Resources.getString("Deck.draw")); //$NON-NLS-1$
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
-    class AvailablePiece implements Comparable {
+    class AvailablePiece implements Comparable<Object> {
       private GamePiece piece;
 
       public AvailablePiece(GamePiece piece) {

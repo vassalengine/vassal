@@ -19,12 +19,10 @@
 
 package VASSAL.tools;
 
-import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;

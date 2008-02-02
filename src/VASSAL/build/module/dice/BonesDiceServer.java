@@ -20,7 +20,6 @@
 package VASSAL.build.module.dice;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -31,6 +30,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
 import VASSAL.build.module.DieRoll;
 import VASSAL.tools.FormattedString;
 

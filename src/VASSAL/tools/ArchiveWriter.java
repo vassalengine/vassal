@@ -33,10 +33,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
-import VASSAL.tools.imageop.SourceOp;
 
 /**
  * An ArchiveWriter is a writeable DataArchive. New files may be added

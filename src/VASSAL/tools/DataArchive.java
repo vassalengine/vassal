@@ -18,21 +18,16 @@
  */
 package VASSAL.tools;
 
+import static VASSAL.tools.IterableEnumeration.iterate;
+
 import java.applet.AudioClip;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,13 +39,10 @@ import java.security.PermissionCollection;
 import java.security.SecureClassLoader;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.CancellationException;
@@ -58,21 +50,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
+
 import javax.swing.ImageIcon;
 
 import sun.applet.AppletAudioClip;
-
-import VASSAL.build.GameModule;
-import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
-
-import static VASSAL.tools.IterableEnumeration.iterate;
+import VASSAL.tools.imageop.RotateScaleOp;
+import VASSAL.tools.imageop.ScaleOp;
 
 /**
  * Wrapper around a Zip archive with methods to cache images

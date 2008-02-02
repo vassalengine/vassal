@@ -20,7 +20,6 @@ package VASSAL.counters;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -45,7 +44,6 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 
-import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
@@ -62,7 +60,6 @@ import VASSAL.tools.HashCode;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.ImageOpObserver;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaleOp;
 
@@ -94,7 +91,6 @@ public class Labeler extends Decorator implements TranslatablePiece {
   private static final String PIECE_NAME = "pieceName";
   private static final String LABEL = "label";
 
-  private Image labelImage;
   private LabelOp srcOp;
   private ScaleOp scaleOp;
 
@@ -404,7 +400,6 @@ public class Labeler extends Decorator implements TranslatablePiece {
     private final JLabel lab;
     private final Color bg;
     private final int hash;
-    private Dimension size = null;
     
     public LabelOp(String txt, JLabel lab, Color bg) {
       if (lab == null) throw new IllegalArgumentException();

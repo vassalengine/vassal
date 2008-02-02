@@ -8,8 +8,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -26,11 +26,9 @@ import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.TranscodingHints;
-import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.keys.BooleanKey;
 import org.apache.batik.transcoder.keys.PaintKey;
 import org.apache.batik.util.XMLResourceDescriptor;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

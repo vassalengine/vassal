@@ -19,23 +19,18 @@
 
 package VASSAL.tools.imageop;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.IOException;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.GeneralFilter;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SVGRenderer;
-import VASSAL.tools.ErrorLog;
 
 /**
  * An {@link ImageOp} which rotates and scales its source. Rotation

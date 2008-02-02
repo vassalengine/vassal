@@ -36,8 +36,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.KeyStroke;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
@@ -50,7 +51,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.FileChooser;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.Obfuscator;
 

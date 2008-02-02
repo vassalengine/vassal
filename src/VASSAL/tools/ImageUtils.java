@@ -1,10 +1,8 @@
 package VASSAL.tools;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
@@ -28,7 +26,6 @@ import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.GlobalOptions;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.memmap.MappedBufferedImage;

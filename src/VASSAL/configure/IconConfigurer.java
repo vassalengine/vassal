@@ -25,20 +25,18 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
+
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 import VASSAL.build.GameModule;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.ImageFileFilter;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
-import VASSAL.tools.imageop.SourceOp;
 
 public class IconConfigurer extends Configurer {
   private JPanel controls;

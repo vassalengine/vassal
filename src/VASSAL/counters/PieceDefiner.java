@@ -480,7 +480,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   protected void importPiece(String className) {
     try {
-      Class c = GameModule.getGameModule().getDataArchive().loadClass(className);
+      Class<?> c = GameModule.getGameModule().getDataArchive().loadClass(className);
       Object o = c.newInstance();
       if (o instanceof GamePiece) {
         availableModel.addElement(o);

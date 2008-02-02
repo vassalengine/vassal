@@ -44,8 +44,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -87,11 +85,9 @@ import VASSAL.counters.PieceSorter;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
-import VASSAL.tools.imageop.SourceOp;
 
 /**
  * This is a MouseListener that moves pieces onto a Map window

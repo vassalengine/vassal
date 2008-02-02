@@ -25,15 +25,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import javax.swing.JMenuItem;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;

@@ -49,6 +49,7 @@ import java.awt.event.*;
  * @version 0.1 12/27/01 Initial Version
  */
 public class UserDialogPrivMsgAWT extends Frame {
+  private static final long serialVersionUID = 1L;
   private UserDialogAWT zUserDialog;
   private MyInfo zMyInfo;
   private ActivePeer zPeerListener;

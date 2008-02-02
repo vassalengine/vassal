@@ -42,7 +42,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -118,6 +117,7 @@ public class Footprint extends MovementMarkable {
   }
 
   /** @deprecated Use {@link #pointList} directly. */
+  @SuppressWarnings("unchecked")
   @Deprecated
   protected Enumeration getPointList() {
     return Collections.enumeration(pointList);

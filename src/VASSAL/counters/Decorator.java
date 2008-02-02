@@ -281,7 +281,7 @@ public abstract class Decorator implements GamePiece, StateMergeable {
    * @return the first Decorator within the given GamePiece
    * that is an instance of the given Class
    */
-  public static GamePiece getDecorator(GamePiece p, Class type) {
+  public static GamePiece getDecorator(GamePiece p, Class<?> type) {
     while (p instanceof Decorator) {
       if (type.isInstance(p)) {
         return p;

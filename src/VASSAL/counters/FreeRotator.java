@@ -58,7 +58,6 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
-import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;

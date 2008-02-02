@@ -34,7 +34,6 @@ import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.awt.image.PixelGrabber;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.concurrent.CancellationException;
@@ -48,7 +47,6 @@ import javax.swing.border.TitledBorder;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.SourceOp;
 
 /**
  * A trait for assigning an arbitrary shape to a {@link GamePiece}

@@ -22,15 +22,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
-import java.io.IOException;
-import javax.swing.ImageIcon;
+
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+
 import VASSAL.build.Buildable;
-import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.imageop.SourceOp;
