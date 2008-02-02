@@ -1017,36 +1017,26 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     final JDialog d = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView()), true);
     d.setTitle(Resources.getString("Deck.draw")); //$NON-NLS-1$
     d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
-    class AvailablePiece implements Comparable<Object> {
+    
+    class AvailablePiece implements Comparable<AvailablePiece> {
       private GamePiece piece;
 
       public AvailablePiece(GamePiece piece) {
-        super();
         this.piece = piece;
       }
 
-      public int compareTo(Object o) {
-        int val = 0;
-        AvailablePiece other = (AvailablePiece) o;
-        if (other == null) {
-          val = 1;
-        }
-        else {
-          String otherProperty = (String) other.piece.getProperty(selectSortProperty);
-          if (otherProperty == null) {
-            val = 1;
-          }
-          else {
-            String myProperty = (String) piece.getProperty(selectSortProperty);
-            if (myProperty == null) {
-              val = -1;
-            }
-            else {
-              val = -otherProperty.compareTo(myProperty);
-            }
-          }
-        }
-        return val;
+      public int compareTo(AvailablePiece other) {
+        if (other == null) return 1;
+
+        final String otherProperty =
+          (String) other.piece.getProperty(selectSortProperty);
+        if (otherProperty == null) return 1;
+
+        final String myProperty =
+          (String) piece.getProperty(selectSortProperty);
+        if (myProperty == null) return -1;
+
+        return -otherProperty.compareTo(myProperty);
       }
       
       public String toString() {
@@ -1054,16 +1044,20 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       }
       
       public boolean equals(Object o) {
+        if (! (o instanceof AvailablePiece)) return false;
         return ((AvailablePiece)o).piece.equals(piece);
       }
     }
+
     final AvailablePiece[] pieces = new AvailablePiece[getPieceCount()];
     for (int i = 0; i < pieces.length; ++i) {
       pieces[pieces.length - i - 1] = new AvailablePiece(getPieceAt(i));
     }
+
     if (selectSortProperty != null && selectSortProperty.length() > 0) {
       Arrays.sort(pieces);
     }
+
     final JList list = new JList(pieces);
     list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     d.add(new ScrollPane(list));

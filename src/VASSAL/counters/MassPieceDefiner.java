@@ -63,7 +63,8 @@ public class MassPieceDefiner extends PieceDefiner {
 
   private List<Class<? extends GamePiece>> getTemplate() {
     GamePiece p = definers.get(0).definer.getPiece();
-    ArrayList<Class<? extends GamePiece>> types = new ArrayList<Class<? extends GamePiece>>();
+    ArrayList<Class<? extends GamePiece>> types =
+      new ArrayList<Class<? extends GamePiece>>();
     while (p instanceof Decorator) {
       types.add(p.getClass());
       p = ((Decorator) p).piece;
@@ -72,7 +73,8 @@ public class MassPieceDefiner extends PieceDefiner {
     return types;
   }
 
-  private boolean matchesTemplate(GamePiece p, List<Class<? extends GamePiece>> template) {
+  private boolean matchesTemplate(GamePiece p,
+                                  List<Class<? extends GamePiece>> template) {
     Iterator<Class<? extends GamePiece>> i = template.iterator();
     while (p instanceof Decorator && i.hasNext()) {
       if (p.getClass() != i.next()) {
