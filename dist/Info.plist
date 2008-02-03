@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+  <key>CFBundleName</key>
+  <string>VASSAL</string>
+  <key>CFBundleIdentifier</key>
+  <string>org.vassalengine.VASSAL</string>
+  <key>CFBundleVersion</key>
+  <string>2911</string>
+  <key>CFBundleShortVersionString</key>
+  <string>3.1.0</string>
+  <key>NSHumanReadableCopyright</key>
+  <string>2008, The VASSAL Team</string>
+  <key>CFBundleIconFile</key>
+  <string></string>
+  <key>CFBundleExecutable</key>
+  <string>JavaApplicationStub</string>
+  <key>CFBundleAllowMixedLocalizations</key>
+  <string>true</string>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>English</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleSignature</key>
+  <string>????</string>
+  <key>CFBundleGetInfoString</key>
+  <string>VASSAL version 3.1.0-svn2911</string>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+  <key>Java</key>
+  <dict>
+    <key>WorkingDirectory</key>
+    <string>$APP_PACKAGE/Contents/Resources/Java</string>
+    <key>MainClass</key>
+    <string>VASSAL.launch.Main</string>
+    <key>JVMVersion</key>
+    <string>1.5+</string>
+    <key>ClassPath</key>
+    <array>
+      <string>$JAVAROOT/Vengine.jar</string>
+    </array>
+    <key>Arguments</key>
+    <string>-extract /docsInfo</string>
+    <key>VMOptions</key>
+    <string>-Xms256M -Xmx512M</string>
+  </dict>
+</dict>
+</plist>

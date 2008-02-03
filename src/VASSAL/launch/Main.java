@@ -131,14 +131,17 @@ public class Main {
         System.err.println("Unable to redirect stderr to " + System.getProperty("stderr")); //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
+
     if (System.getProperty("http.proxyHost") == null //$NON-NLS-1$
         && System.getProperty("proxyHost") != null) { //$NON-NLS-1$
       System.setProperty("http.proxyHost", System.getProperty("proxyHost")); //$NON-NLS-1$ //$NON-NLS-2$
     }
+
     if (System.getProperty("http.proxyPort") == null //$NON-NLS-1$
         && System.getProperty("proxyPort") != null) { //$NON-NLS-1$
       System.setProperty("http.proxyPort", System.getProperty("proxyPort")); //$NON-NLS-1$ //$NON-NLS-2$
     }
+
     System.setProperty("swing.aatext", "true"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("swing.boldMetal", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("awt.useSystemAAFontSettings", "on"); //$NON-NLS-1$ //$NON-NLS-2$
