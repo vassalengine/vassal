@@ -23,7 +23,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
@@ -634,8 +634,8 @@ public class DrawPile extends SetupStack {
   protected Stack initializeContents() {
     Stack s = super.initializeContents();
     myDeck = new Deck(getDeckType());
-    for (Enumeration<GamePiece> e = s.getPieces(); e.hasMoreElements();) {
-      myDeck.add(e.nextElement());
+    for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {
+      myDeck.add(i.next());
     }
     myDeck.setFaceDown(!Deck.NEVER.equals(dummy.getFaceDownOption()));
     return myDeck;

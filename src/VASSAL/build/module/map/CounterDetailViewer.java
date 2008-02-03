@@ -34,7 +34,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
@@ -564,8 +564,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       boolean addContents = foundPieceAt == null ?
         super.visitStack(s) != null : foundPieceAt.equals(s.getPosition());
       if (addContents) {
-        for (Enumeration<GamePiece> e = s.getPieces(); e.hasMoreElements();) {
-          apply(e.nextElement());
+        for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {
+          apply(i.next());
         }
       }
       return null;

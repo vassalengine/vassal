@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -75,9 +76,9 @@ public class KeyBuffer {
 
   public boolean contains(GamePiece p) {
     if (p instanceof Stack) {
-      for (Enumeration<GamePiece> e = ((Stack) p).getPieces();
-           e.hasMoreElements();) {
-        if (!pieces.contains(e.nextElement())) {
+      for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
+           i.hasNext();) {
+        if (!pieces.contains(i.next())) {
           return false;
         }
       }
@@ -122,6 +123,12 @@ public class KeyBuffer {
     return comm;
   }
 
+  public Iterator<GamePiece> getPiecesIterator() {
+    return pieces.iterator();
+  }
+
+  /** @deprecated Use {@link #getPiecesIterator()} instead. */
+  @Deprecated
   public Enumeration<GamePiece> getPieces() {
     return Collections.enumeration(pieces);
   }
@@ -136,8 +143,8 @@ public class KeyBuffer {
    * @return true if a child of the specified Stack is selected
    */
   public boolean containsChild(Stack stack) {
-    for (Enumeration<GamePiece> e = stack.getPieces(); e.hasMoreElements();) {
-      if (contains(e.nextElement())) {
+    for (Iterator<GamePiece> i = stack.getPiecesIterator(); i.hasNext();) {
+      if (contains(i.next())) {
         return true;
       }
     }

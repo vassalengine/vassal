@@ -18,7 +18,7 @@
  */
 package VASSAL.counters;
 
-import java.util.Enumeration;
+import java.util.Iterator;
 import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
@@ -125,8 +125,8 @@ public class GlobalCommand {
 		}
 
     public Object visitStack(Stack s) {
-      for (Enumeration<GamePiece> e = s.getPieces(); e.hasMoreElements();) {
-        apply(e.nextElement());
+      for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {
+        apply(i.next());
       }
       return null;
     }

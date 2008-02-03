@@ -46,8 +46,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -250,9 +250,9 @@ public class PieceMover extends AbstractBuildable
           // If clicking on a stack with a selected piece, put all selected
           // pieces in other stacks into the drag buffer
           KeyBuffer.getBuffer().sort(PieceMover.this);
-          for (Enumeration<GamePiece> e = KeyBuffer.getBuffer().getPieces();
-               e.hasMoreElements();) {
-            final GamePiece piece = e.nextElement();
+          for (Iterator<GamePiece> i =
+                KeyBuffer.getBuffer().getPiecesIterator(); i.hasNext();) {
+            final GamePiece piece = i.next();
             if (piece.getParent() != s) {
               DragBuffer.getBuffer().add(piece);
             }
@@ -267,9 +267,9 @@ public class PieceMover extends AbstractBuildable
           // If clicking on a selected piece, put all selected pieces into the
           // drag buffer
           KeyBuffer.getBuffer().sort(PieceMover.this);
-          for (Enumeration<GamePiece> e = KeyBuffer.getBuffer().getPieces();
-               e.hasMoreElements();) {
-            DragBuffer.getBuffer().add(e.nextElement());
+          for (Iterator<GamePiece> i =
+                KeyBuffer.getBuffer().getPiecesIterator(); i.hasNext();) {
+            DragBuffer.getBuffer().add(i.next());
           }
         }
         else {
@@ -487,9 +487,9 @@ public class PieceMover extends AbstractBuildable
     Command c = new NullCommand();
     if (!hasMoved || shouldMarkMoved()) {
       if (p instanceof Stack) {
-        for (Enumeration<GamePiece> e = ((Stack) p).getPieces();
-             e.hasMoreElements();) {
-          c.append(markMoved(e.nextElement(), hasMoved));
+        for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
+             i.hasNext();) {
+          c.append(markMoved(i.next(), hasMoved));
         }
       }
       else if (p.getProperty(Properties.MOVED) != null) {

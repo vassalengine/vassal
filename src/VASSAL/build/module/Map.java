@@ -1144,8 +1144,13 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     // Deselect any counters on the last Map with focus
     if (!this.equals(activeMap)) {
       boolean dirty = false;
-      final ArrayList<GamePiece> l =
-        Collections.list(KeyBuffer.getBuffer().getPieces());
+
+      final ArrayList<GamePiece> l = new ArrayList<GamePiece>();
+      for (Iterator<GamePiece> i = KeyBuffer.getBuffer().getPiecesIterator();
+           i.hasNext(); ) {
+        l.add(i.next());
+      }
+
       for (GamePiece p : l) {
         if (p.getMap() == activeMap) {
           KeyBuffer.getBuffer().remove(p);

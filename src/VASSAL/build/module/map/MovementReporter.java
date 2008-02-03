@@ -20,7 +20,6 @@ package VASSAL.build.module.map;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import VASSAL.build.GameModule;
@@ -110,9 +109,9 @@ public class MovementReporter {
     Command c = null;
     if (p instanceof Stack) {
       c = new NullCommand();
-      for (Enumeration<GamePiece> e = ((Stack) p).getPieces();
-           e.hasMoreElements();) {
-        c.append(markMoved(e.nextElement()));
+      for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
+           i.hasNext();) {
+        c.append(markMoved(i.next()));
       }
     }
     else if (p.getProperty(Properties.MOVED) != null) {

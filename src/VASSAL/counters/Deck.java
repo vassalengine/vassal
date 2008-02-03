@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.Action;
@@ -193,8 +192,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       expressionProperties.get(index).setPropertyValue("0"); //$NON-NLS-1$
     }
     //Increase all of the pieces with expressions specified in this deck
-    for (Enumeration<GamePiece> e = getPieces(); e.hasMoreElements();) {
-      GamePiece p = e.nextElement();
+    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
+      final GamePiece p = i.next();
       if (p != null) {
         updateCounts(p,true);
       }
@@ -630,10 +629,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     else {
       int count = Math.max(dragCount, Math.min(1, getPieceCount()));
-      ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
+      final ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
       if (ALWAYS.equals(shuffleOption)) {
         // Instead of shuffling the entire deck, just pick <b>count</b> random elements 
-        List<Integer> indices = new ArrayList<Integer>();
+        final ArrayList<Integer> indices = new ArrayList<Integer>();
         for (int i = 0; i < getPieceCount(); ++i) {
           indices.add(i);
         }
@@ -646,9 +645,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         }
       }
       else {
-        Enumeration<GamePiece> e = getPiecesInReverseOrder();
-        while (count-- > 0 && e.hasMoreElements()) {
-          pieces.add(e.nextElement());
+        final Iterator<GamePiece> i = getPiecesReverseIterator();
+        while (count-- > 0 && i.hasNext()) {
+          pieces.add(i.next());
         }
       }
       it = pieces.iterator();
@@ -692,12 +691,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public String getState() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(getMap() == null ? "null" : getMap().getIdentifier()).append(getPosition().x).append(getPosition().y); //$NON-NLS-1$
     se.append(faceDown);
-    SequenceEncoder se2 = new SequenceEncoder(',');
-    for (Enumeration<GamePiece> e = getPieces(); e.hasMoreElements();) {
-      se2.append(e.nextElement().getId());
+    final SequenceEncoder se2 = new SequenceEncoder(',');
+    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
+      se2.append(i.next().getId());
     }
     if (se2.getValue() != null) {
       se.append(se2.getValue());
@@ -750,8 +749,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /** Reverse the order of the contents of the Deck */
   public Command reverse() {
-    ArrayList<GamePiece> list = Collections.list(getPiecesInReverseOrder());
-    return setContents(list).append(reportCommand(reverseMsgFormat, Resources.getString("Deck.reverse"))); //$NON-NLS-1$
+    final ArrayList<GamePiece> list = new ArrayList<GamePiece>();
+    for (Iterator<GamePiece> i = getPiecesReverseIterator(); i.hasNext(); ) {
+      list.add(i.next());
+    }
+    return setContents(list).append(reportCommand(
+      reverseMsgFormat, Resources.getString("Deck.reverse"))); //$NON-NLS-1$
   }
 
   public boolean isDrawOutline() {
@@ -1192,8 +1195,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
     final FileWriter dest = new FileWriter(f);
     try {
-      for (Enumeration<GamePiece> e = getPieces(); e.hasMoreElements();) {
-        final GamePiece p = e.nextElement();
+      for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
+        final GamePiece p = i.next();
         p.setMap(null);
         comm = comm.append(new AddPiece(p));
       }

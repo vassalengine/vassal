@@ -20,7 +20,7 @@ package VASSAL.counters;
 
 import java.awt.Point;
 import java.awt.Shape;
-import java.util.Enumeration;
+import java.util.Iterator;
 import VASSAL.build.module.Map;
 
 /**
@@ -108,9 +108,9 @@ public interface PieceFinder {
         shapes = new Shape[s.getPieceCount()];
       }
       map.getStackMetrics().getContents(s, null, shapes, null, s.getPosition().x, s.getPosition().y);
-      for (Enumeration<GamePiece> e = s.getPiecesInVisibleOrder();
-           e.hasMoreElements();) {
-        GamePiece child = e.nextElement();
+      for (Iterator<GamePiece> i = s.getPiecesInVisibleOrderIterator();
+           i.hasNext();) {
+        GamePiece child = i.next();
         if (shapes[s.indexOf(child)].contains(pt)) {
           selected = s.isExpanded() ? child : s;
           break;

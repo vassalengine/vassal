@@ -27,7 +27,6 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.JFrame;
@@ -62,10 +61,10 @@ public class DragBuffer {
         !pieces.contains(p) &&
         !Boolean.TRUE.equals(p.getProperty(Properties.RESTRICTED))) {
       if (p instanceof Stack) {
-        for (Enumeration<GamePiece> e = ((Stack) p).getPieces();
-             e.hasMoreElements();) {
+        for (Iterator<GamePiece> i = ((Stack) p).getPiecesIterator();
+             i.hasNext();) {
           if (Boolean.TRUE.equals(
-                e.nextElement().getProperty(Properties.RESTRICTED))) {
+                i.next().getProperty(Properties.RESTRICTED))) {
             return;
           }
         }
