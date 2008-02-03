@@ -147,7 +147,7 @@ public class DragBuffer {
   }
 
   public PieceIterator getIterator() {
-    return new PieceIterator(Collections.enumeration(pieces));
+    return new PieceIterator(pieces.iterator());
   }
   
   public boolean isEmpty() {

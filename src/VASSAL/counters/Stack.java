@@ -26,11 +26,13 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.command.Command;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.EnumeratedIterator;
 
 /**
  * A collection of GamePieces which can be moved as a single unit
@@ -61,31 +63,52 @@ public class Stack implements GamePiece, StateMergeable {
     }
   }
 
+  public Iterator<GamePiece> getPiecesIterator() {
+    return new AllPieceIterator();
+  }
+
   /**
    * @return an Enumeration of the pieces in the stack, from the bottom up This
    *         is a clone of the contents so add/remove operations during read
    *         won't affect it.
+   * @deprecated 
    */
+  @Deprecated
   public Enumeration<GamePiece> getPieces() {
-    return new AllPieceEnum();
+    return new EnumeratedIterator<GamePiece>(new AllPieceIterator());
+    //    return new AllPieceEnum();
+  }
+
+  public Iterator<GamePiece> getPiecesReverseIterator() {
+    return new ReversePieceIterator();
   }
 
   /**
    * Return an enumeration of the pieces in the start, from the top down
    * 
    * @return
+   * @deprecated
    */
+  @Deprecated
   public Enumeration<GamePiece> getPiecesInReverseOrder() {
-    return new ReversePieceEnum();
+    return new EnumeratedIterator<GamePiece>(new ReversePieceIterator());
+//    return new ReversePieceEnum();
+  }
+
+  public Iterator<GamePiece> getPiecesInVisibleOrderIterator() {
+    return new VisibleOrderIterator();
   }
 
   /**
    * Returns pieces in the order in which they are visible to the player --
    * topmost first In other words, selected pieces first, then unselected pieces
-   * from the top to the bottom
+   * from the top to the bottom.
+   * @deprecated
    */
+  @Deprecated
   public Enumeration<GamePiece> getPiecesInVisibleOrder() {
-    return new VisibleOrderEnum();
+    return new EnumeratedIterator<GamePiece>(new VisibleOrderIterator());
+//    return new VisibleOrderEnum();
   }
 
   public void remove(GamePiece p) {
@@ -240,7 +263,8 @@ public class Stack implements GamePiece, StateMergeable {
    */
   public String getName(boolean localized) {
     String val = "";
-    PieceIterator visibleFilter = PieceIterator.visible(getPiecesInReverseOrder());
+    final PieceIterator visibleFilter =
+      PieceIterator.visible(getPiecesReverseIterator());
     while (visibleFilter.hasMoreElements()) {
       GamePiece p = visibleFilter.nextPiece();
       String s = localized ? p.getLocalizedName() : p.getName();
@@ -264,7 +288,8 @@ public class Stack implements GamePiece, StateMergeable {
     Rectangle r = new Rectangle();
     Rectangle[] childBounds = new Rectangle[getPieceCount()];
     getMap().getStackMetrics().getContents(this, null, null, childBounds, 0, 0);
-    PieceIterator visibleFilter = PieceIterator.visible(getPieces());
+    final PieceIterator visibleFilter =
+      PieceIterator.visible(getPiecesIterator());
     while (visibleFilter.hasMoreElements()) {
       GamePiece p = visibleFilter.nextPiece();
       r = r.union(childBounds[indexOf(p)]);
@@ -277,7 +302,8 @@ public class Stack implements GamePiece, StateMergeable {
     Shape[] childBounds = new Shape[getPieceCount()];
     StackMetrics metrics = getMap() == null ? getDefaultMetrics() : getMap().getStackMetrics();
     metrics.getContents(this, null, childBounds, null, 0, 0);
-    PieceIterator visibleFilter = PieceIterator.visible(getPieces());
+    final PieceIterator visibleFilter =
+      PieceIterator.visible(getPiecesIterator());
     while (visibleFilter.hasMoreElements()) {
       GamePiece p = visibleFilter.nextPiece();
       a.add(new Area(childBounds[indexOf(p)]));
@@ -375,7 +401,8 @@ public class Stack implements GamePiece, StateMergeable {
    */
   protected int nVisible() {
     int nv = 0;
-    PieceIterator visibleFilter = PieceIterator.visible(getPieces());
+    final PieceIterator visibleFilter =
+      PieceIterator.visible(getPiecesIterator());
     while (visibleFilter.hasMoreElements()) {
       visibleFilter.nextPiece();
       nv++;
@@ -557,80 +584,88 @@ public class Stack implements GamePiece, StateMergeable {
     return defaultMetrics;
   }
 
-  private class VisibleOrderEnum implements Enumeration<GamePiece> {
+  private class VisibleOrderIterator implements Iterator<GamePiece> {
     private GamePiece next;
-    private int index;
-    private boolean doingSelected;
+    private int index = pieceCount - 1;
+    private boolean doingSelected = true;
 
-    public VisibleOrderEnum() {
-      doingSelected = true;
-      index = pieceCount - 1;
+    public VisibleOrderIterator() {
       next = findNext();
     }
 
-    public boolean hasMoreElements() {
+    public boolean hasNext() {
       return next != null;
     }
 
-    public GamePiece nextElement() {
-      GamePiece value = next;
+    public GamePiece next() {
+      final GamePiece ret = next;
       next = findNext();
-      return value;
+      return ret;
     }
 
     private GamePiece findNext() {
-      GamePiece value = null;
+      GamePiece ret = null;
       while (index >= 0) {
-        GamePiece p = getPieceAt(index--);
-        if (doingSelected ^ !Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
-          value = p;
+        final GamePiece p = getPieceAt(index--);
+        if (doingSelected ^ !Boolean.TRUE.equals(
+                              p.getProperty(Properties.SELECTED))) {
+          ret = p;
           break;
         }
       }
-      if (value == null && doingSelected) {
+
+      if (ret == null && doingSelected) {
         doingSelected = false;
         index = pieceCount - 1;
-        value = findNext();
+        ret = findNext();
       }
-      return value;
+      return ret;
+    }
+
+    public void remove() {
+      throw new UnsupportedOperationException();
     }
   }
 
-  private class AllPieceEnum implements Enumeration<GamePiece> {
-    private int index;
-    private GamePiece[] p;
+  private class AllPieceIterator implements Iterator<GamePiece> {
+    private int index = 0;
+    private final GamePiece[] p = new GamePiece[pieceCount];
 
-    public AllPieceEnum() {
-      index = 0;
-      p = new GamePiece[pieceCount];
+    public AllPieceIterator() {
       System.arraycopy(contents, 0, p, 0, pieceCount);
     }
 
-    public boolean hasMoreElements() {
+    public boolean hasNext() {
       return index < p.length;
     }
 
-    public GamePiece nextElement() {
+    public GamePiece next() {
       return p[index++];
+    }
+
+    public void remove() {
+      throw new UnsupportedOperationException();
     }
   }
 
-  private class ReversePieceEnum implements Enumeration<GamePiece> {
-    private int index;
-    private GamePiece[] clone;
+  private class ReversePieceIterator implements Iterator<GamePiece> {
+    private int index = pieceCount - 1;
+    private final GamePiece[] p = new GamePiece[pieceCount];    
 
-    public ReversePieceEnum() {
-      clone = new GamePiece[pieceCount];
-      System.arraycopy(contents, 0, clone, 0, pieceCount);
-      index = pieceCount - 1;
+    public ReversePieceIterator() {
+      System.arraycopy(contents, 0, p, 0, pieceCount);
     }
 
-    public boolean hasMoreElements() {
+    public boolean hasNext() {
       return index >= 0;
     }
 
-    public GamePiece nextElement() {
-      return clone[index--];
+    public GamePiece next() {
+      return p[index--];
+    }
+
+    public void remove() {
+      throw new UnsupportedOperationException();
     }
   }
 }

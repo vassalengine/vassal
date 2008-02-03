@@ -21,70 +21,88 @@ package VASSAL.counters;
 import java.util.Enumeration;
 import java.util.Iterator;
 
+import VASSAL.tools.IterableEnumeration;
+
 /**
- * An iterator for GamePieces.  Takes an optional PieceFilter to extract GamePiece instances from an Enumeration
+ * An iterator for GamePieces.  Takes an optional PieceFilter to
+ * extract GamePiece instances from an Enumeration or Iterator.
  */
 public class PieceIterator {
-  private Enumeration<?> e;
+  private Iterator<? extends GamePiece> pi;
   private PieceFilter filter;
-  private GamePiece next;
 
-  public PieceIterator(Enumeration<?> e) {
-    this(e, null);
+  public PieceIterator(final Iterator<? extends GamePiece> i) {
+    pi = i;
   }
 
-  public PieceIterator(Enumeration<?> e, PieceFilter f) {
-    this(f);
-    this.e = e;
-    next = next();
+  @Deprecated
+  public <T extends GamePiece> PieceIterator(Enumeration<T> e) {
+    this(new IterableEnumeration<T>(e));
   }
 
-  public PieceIterator(PieceFilter f) {
+  public PieceIterator(final Iterator<? extends GamePiece> i, PieceFilter f) {
     filter = f;
+    pi = new Iterator<GamePiece>() {
+      private GamePiece next;
+
+      public boolean hasNext() {
+        if (next != null) return true;
+
+        while (i.hasNext()) {
+          next = i.next();
+          if (filter == null || filter.accept(next)) return true;
+        }
+
+        next = null;
+        return false;
+      }
+
+      public GamePiece next() {
+        if (next != null) {
+          final GamePiece ret = next;
+          next = null;
+          return ret;
+        }
+
+        for ( ; ; next = i.next()) {
+          if (filter == null || filter.accept(next)) {
+            final GamePiece ret = next;
+            next = null;
+            return ret;
+          }
+        }
+      }
+
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
   }
 
-  public PieceIterator(final Iterator<?> it) {
-    this(new Enumeration<Object>() {
-      public boolean hasMoreElements() {
-        return it.hasNext();
-      }
-
-      public Object nextElement() {
-        return it.next();
-      }
-    });
-  }
-
-  private GamePiece next() {
-    while (e.hasMoreElements()) {
-      Object o = e.nextElement();
-      if (o instanceof GamePiece
-        && (filter == null
-        || filter.accept((GamePiece) o))) {
-        return (GamePiece) o;
-      }
-    }
-    return null;
+  @Deprecated
+  public <T extends GamePiece> PieceIterator(Enumeration<T> e, PieceFilter f) {
+    this(new IterableEnumeration<T>(e), f);
   }
 
   public GamePiece nextPiece() {
-    GamePiece p = next;
-    next = next();
-    return p;
+    return pi.hasNext() ? pi.next() : null;
   }
 
   public boolean hasMoreElements() {
-    return next != null;
+    return pi.hasNext();
   }
 
-  /**
-   * @return a PieceIterator containing only those GamePieces visible to the user in the given Enumeration
-   */
-  public static PieceIterator visible(Enumeration<GamePiece> e) {
-    return new PieceIterator(e, new PieceFilter() {
+  public static <T extends GamePiece> PieceIterator visible(Iterator<T> i) {
+    return new PieceIterator(i, new PieceFilter() {
       public boolean accept(GamePiece piece) {
-        return !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME));
+        return !Boolean.TRUE.equals(
+          piece.getProperty(Properties.INVISIBLE_TO_ME));
       }
     });
+  }
+
+  @Deprecated
+  public static <T extends GamePiece> PieceIterator visible(Enumeration<T> e) {
+    return PieceIterator.visible(new IterableEnumeration<T>(e));
   }
 }

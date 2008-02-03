@@ -419,20 +419,20 @@ public class Inventory extends AbstractConfigurable
       m.getPieces();
     }
     
-    ArrayList<String> path = new ArrayList<String>();
+    final ArrayList<String> path = new ArrayList<String>();
     for (int i = 0; i < groupBy.length; i++)
       path.add(groupBy[i]);
     results = new CounterInventory(
       new Counter(this.getConfigureName()), path, sortPieces);
 
-    PieceIterator pi = new PieceIterator(
-      Collections.enumeration(
-        GameModule.getGameModule().getGameState().getAllPieces()),
-      piecePropertiesFilter);
+    final PieceIterator pi = new PieceIterator(
+      GameModule.getGameModule().getGameState().getAllPieces().iterator(),
+      piecePropertiesFilter
+    );
 
     while (pi.hasMoreElements()) {
-      ArrayList<String> groups = new ArrayList<String>();
-      GamePiece p = pi.nextPiece();
+      final ArrayList<String> groups = new ArrayList<String>();
+      final GamePiece p = pi.nextPiece();
 
       for (int i = 0; i < groupBy.length; i++) {
         if (groupBy[i].length() > 0) {
@@ -446,8 +446,7 @@ public class Inventory extends AbstractConfigurable
       if (nonLeafFormat.length() > 0)
         count = getTotalValue(p);
 
-      Counter c;
-      c = new Counter(p, groups, count, pieceFormat, sortFormat);
+      final Counter c = new Counter(p, groups, count, pieceFormat, sortFormat);
       // Store
       results.insert(c);
     }

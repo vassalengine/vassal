@@ -28,7 +28,7 @@ import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import javax.swing.KeyStroke;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -239,7 +239,10 @@ public class StackMetrics extends AbstractConfigurable {
     Highlighter highlighter = stack.getMap() == null ? BasicPiece.getHighlighter() : stack.getMap().getHighlighter();
     Point[] positions = new Point[stack.getPieceCount()];
     getContents(stack, positions, null, null, x, y);
-    for (PieceIterator e = new PieceIterator(stack.getPieces(), unselectedVisible); e.hasMoreElements();) {
+
+    for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
+                                             unselectedVisible);
+         e.hasMoreElements();) {
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       int nextX = x + (int) (zoom * (positions[index].x - x));
@@ -254,7 +257,10 @@ public class StackMetrics extends AbstractConfigurable {
         drawUnexpanded(next, g, nextX, nextY, obs, zoom);
       }
     }
-    for (PieceIterator e = new PieceIterator(stack.getPieces(), selectedVisible); e.hasMoreElements();) {
+
+    for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
+                                             selectedVisible);
+         e.hasMoreElements();) {
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       int nextX = x + (int) (zoom * (positions[index].x - x));
@@ -287,7 +293,10 @@ public class StackMetrics extends AbstractConfigurable {
     Point[] positions = new Point[stack.getPieceCount()];
     Rectangle[] bounds = region == null ? null : new Rectangle[stack.getPieceCount()];
     getContents(stack, positions, null, bounds, mapLocation.x, mapLocation.y);
-    for (PieceIterator e = new PieceIterator(stack.getPieces(), unselectedVisible); e.hasMoreElements();) {
+
+    for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
+                                             unselectedVisible);
+         e.hasMoreElements();) {
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       Point pt = map.componentCoordinates(positions[index]);
@@ -303,7 +312,10 @@ public class StackMetrics extends AbstractConfigurable {
         }
       }
     }
-    for (PieceIterator e = new PieceIterator(stack.getPieces(), selectedVisible); e.hasMoreElements();) {
+
+    for (PieceIterator e = new PieceIterator(stack.getPiecesIterator(),
+                                             selectedVisible);
+         e.hasMoreElements();) {
       GamePiece next = e.nextPiece();
       int index = stack.indexOf(next);
       if (bounds == null || isVisible(region, bounds[index])) {
@@ -630,10 +642,10 @@ public class StackMetrics extends AbstractConfigurable {
           comm = comm.append(new AddPiece(moving));
         }
         if (moving instanceof Stack) {
-          ArrayList<GamePiece> l =
-            Collections.list(((Stack) moving).getPieces());
-          for (GamePiece p : l) {
-            MoveTracker t = new MoveTracker(p);
+          for (Iterator<GamePiece> i = ((Stack) moving).getPiecesIterator();
+               i.hasNext(); ) {
+            final GamePiece p = i.next();
+            final MoveTracker t = new MoveTracker(p);
             fixedParent.insertChild(p, index++);
             comm = comm.append(t.getMoveCommand());
           }
