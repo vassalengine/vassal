@@ -1,6 +1,20 @@
-/**
- * 
+/*
+ * Copyright (c) 2008 by Michael Kiefte
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
  */
+
 package VASSAL.tools.imports.adc2;
 
 import java.awt.Dimension;
@@ -39,6 +53,7 @@ import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.build.widget.ListWidget;
@@ -55,8 +70,9 @@ import VASSAL.counters.ReturnToDeck;
 import VASSAL.counters.UsePrototype;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imports.FileFormatException;
+import VASSAL.tools.imports.Importer;
 
-class ADC2Module {
+public class ADC2Module extends Importer {
 	
 	private class Piece {
 
@@ -489,9 +505,7 @@ class ADC2Module {
 	
 	private String name;
 	
-	final ImportADC2Action action;
-	
-	final int zoomLevel;
+	static final int zoomLevel = 2;
 	
 	private MapBoard map = null;
 
@@ -521,16 +535,11 @@ class ADC2Module {
 		return classes.get(index);
 	}
 	
-	ADC2Module(ImportADC2Action action, int zoomLevel) {
-		this.action = action;
-		this.zoomLevel = zoomLevel;
-	}
-	
-	ADC2Module read(File f) throws IOException {
+	protected void load(File f) throws IOException {
 		DataInputStream in = new DataInputStream(new BufferedInputStream(
 				new FileInputStream(f)));
 		
-		name = ImportADC2Action.stripExtension(f.getName());
+		name = stripExtension(f.getName());
 
 		int header = in.readByte();
 		if (header != -3 && header != -2)
@@ -539,9 +548,10 @@ class ADC2Module {
 		// version information
 		in.read(new byte[2]);
 		
-		String s = ImportADC2Action.readWindowsFileName(in);
-		String mapFileName = ImportADC2Action.forceExtension(s, "map");
-		map = new MapBoard(action, zoomLevel).read(action.getCaseInsensitiveFile(new File(mapFileName), f));
+		String s = readWindowsFileName(in);
+		String mapFileName = forceExtension(s, "map");
+		map = new MapBoard();
+		map.importFile(action, action.getCaseInsensitiveFile(new File(mapFileName), f, true, null));
 		
 		try {
 			readGameTurnBlock(in);
@@ -561,27 +571,25 @@ class ADC2Module {
 		catch(EOFException e) {
 			
 		}
-		
-		return this;
 	}
 	
 	private void readFlipDefinitionBlock(DataInputStream in) throws IOException {
-		ImportADC2Action.readBlockHeader(in, "Flip Definition");
+		ADC2Utils.readBlockHeader(in, "Flip Definition");
 		
 		// unknown byte
 		in.readUnsignedByte();
 		
-		int nFlipDefs = ImportADC2Action.readBase250Word(in);
+		int nFlipDefs = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nFlipDefs; ++i) {
-			int from = ImportADC2Action.readBase250Word(in);
-			int to = ImportADC2Action.readBase250Word(in);
+			int from = ADC2Utils.readBase250Word(in);
+			int to = ADC2Utils.readBase250Word(in);
 			if (from >= 0 && from < classes.size() && to >= 0 && to < classes.size())
 				classes.get(from).setFlipClass(to);
 		}
 	}
 
 	private void readSoundSettingBlock(DataInputStream in) throws IOException {
-		ImportADC2Action.readBlockHeader(in, "Sound Settings");
+		ADC2Utils.readBlockHeader(in, "Sound Settings");
 		
 		for (int i = 0; i < 3; ++i)
 			// scrollJumpSize[i] =
@@ -593,7 +601,7 @@ class ADC2Module {
 	}
 
 	private void readFacingBlock(DataInputStream in) throws IOException {
-		ImportADC2Action.readBlockHeader(in, "Facing");
+		ADC2Utils.readBlockHeader(in, "Facing");
 		
 		int nFacing = in.readUnsignedByte();
 		allowedFacings = new int[nFacing+1];
@@ -601,7 +609,7 @@ class ADC2Module {
 		
 		for (int i = 0; i < nFacing; ++i) {
 			// String styleName = 
-			ImportADC2Action.readNullTerminatedString(in);
+			readNullTerminatedString(in);
 			
 			// int direction = 
 			in.readUnsignedByte();
@@ -637,18 +645,18 @@ class ADC2Module {
 		if (header != -2)
 			throw new FileFormatException("Invalid Stack Block Header");
 		
-		int nStackDefs = ImportADC2Action.readBase250Word(in);
+		int nStackDefs = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nStackDefs; ++i) {
 			// SymbolSet.SymbolData symbol = getSet().getGamePiece(
-			ImportADC2Action.readBase250Word(in); // );			
+			ADC2Utils.readBase250Word(in); // );			
 			// int mustContain = 
-			ImportADC2Action.readBase250Word(in); // class index
+			ADC2Utils.readBase250Word(in); // class index
 			for (int j = 0; j < 3; ++j) {// one per zoom level
 				// int atLeastNPieces = 
 				in.readUnsignedByte();
 			}
 			// int owningPlayer = 
-			ImportADC2Action.readBase250Word(in);			
+			ADC2Utils.readBase250Word(in);			
 		}
 	}
 
@@ -657,7 +665,7 @@ class ADC2Module {
 		if (header != -2)
 			throw new FileFormatException("Invalid Replay Block Header");
 		
-		int nBytes = ImportADC2Action.readBase250Integer(in);
+		int nBytes = ADC2Utils.readBase250Integer(in);
 		in.read(new byte[nBytes]);
 	}
 
@@ -666,13 +674,13 @@ class ADC2Module {
 		if (header != -2)
 			throw new FileFormatException("Invalid Force Pool Header");
 		
-		int nForcePools = ImportADC2Action.readBase250Word(in);
+		int nForcePools = ADC2Utils.readBase250Word(in);
 		forcePoolNames = new String[nForcePools];
 		for (int i = 0; i < nForcePools; ++i) {
-			forcePoolNames[i] = ImportADC2Action.readNullTerminatedString(in, 25);
+			forcePoolNames[i] = readNullTerminatedString(in, 25);
 			in.read(new byte[3]);
 			// int nUnits = 
-			ImportADC2Action.readBase250Word(in);
+			ADC2Utils.readBase250Word(in);
 		}
 	}
 
@@ -681,23 +689,23 @@ class ADC2Module {
 		if (header != -2)
 			throw new FileFormatException("Invalid Player Block Header");
 				
-		/* int nplayers = */ ImportADC2Action.readBase250Word(in);
+		/* int nplayers = */ ADC2Utils.readBase250Word(in);
 		
 		// The last player is typically an empty string which indicates the end of
 		// the list despite the fact that the number of players is clearly
 		// indicated.
 		String name;
 		do {
-			name = ImportADC2Action.readNullTerminatedString(in, 25);
+			name = readNullTerminatedString(in, 25);
 			// byte[] password = new byte[20];
 			in.read(new byte[20]);
 			// int zoomLevel = 
 			in.readByte();
 			// int position = 
-			ImportADC2Action.readBase250Word(in);
-			SymbolSet.SymbolData hiddenSymbol = getSet().getGamePiece(ImportADC2Action.readBase250Word(in));
+			ADC2Utils.readBase250Word(in);
+			SymbolSet.SymbolData hiddenSymbol = getSet().getGamePiece(ADC2Utils.readBase250Word(in));
 			// String picture = 
-			ImportADC2Action.readNullTerminatedString(in);
+			readNullTerminatedString(in);
 			int searchRange = in.readUnsignedByte();
 			int hiddenPieceOptions = in.readUnsignedByte();
 			// int padding = 
@@ -715,11 +723,11 @@ class ADC2Module {
 		if (header != -2)
 			throw new FileFormatException("Invalid Piece Block Header");
 		
-		int nPieces = ImportADC2Action.readBase250Word(in);
+		int nPieces = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nPieces; ++i) {
-			String name = ImportADC2Action.readNullTerminatedString(in, 25);
+			String name = readNullTerminatedString(in, 25);
 			
-			Class cl = getClassFromIndex(ImportADC2Action.readBase250Word(in));
+			Class cl = getClassFromIndex(ADC2Utils.readBase250Word(in));
 			if (cl == null)
 				throw new FileFormatException("Invalid Class Index");
 			
@@ -761,7 +769,7 @@ class ADC2Module {
 			
 			in.read(new byte[2]);
 			
-			int position = ImportADC2Action.readBase250Word(in);			
+			int position = ADC2Utils.readBase250Word(in);			
 			int flags = in.readUnsignedByte();
 			
 			in.readUnsignedByte();
@@ -781,7 +789,7 @@ class ADC2Module {
 			throw new FileFormatException("Invalid Class Value Block Header");
 		
 		for (int i = 0; i < classValues.length; ++i)
-			classValues[i] = ImportADC2Action.readNullTerminatedString(in, 15);			
+			classValues[i] = readNullTerminatedString(in, 15);			
 	}
 
 	private void readPieceValueBlock(DataInputStream in) throws IOException {
@@ -790,7 +798,7 @@ class ADC2Module {
 			throw new FileFormatException("Invalid Piece Value Block Header");
 		
 		for (int i = 0; i < pieceValues .length; ++i)
-			pieceValues[i] = ImportADC2Action.readNullTerminatedString(in, 15);
+			pieceValues[i] = readNullTerminatedString(in, 15);
 	}
 	
 	private void readClassBlock(DataInputStream in) throws IOException {
@@ -798,13 +806,13 @@ class ADC2Module {
 		if (header != -2)
 			throw new FileFormatException("Invalid Class Block Header");
 		
-		int nClasses = ImportADC2Action.readBase250Word(in);
+		int nClasses = ADC2Utils.readBase250Word(in);
 		
 		for (int i = 0; i < nClasses; ++i) {		
 			// TODO: if symbol is null, then there's a problem
-			SymbolSet.SymbolData symbol = getSet().getGamePiece(ImportADC2Action.readBase250Word(in));
+			SymbolSet.SymbolData symbol = getSet().getGamePiece(ADC2Utils.readBase250Word(in));
 			
-			String name = ImportADC2Action.readNullTerminatedString(in, 25);
+			String name = readNullTerminatedString(in, 25);
 			
 			int[] values = new int[8];
 			for (int j = 0; j < values.length; ++j)
@@ -833,7 +841,7 @@ class ADC2Module {
 			// belonging to all players (owner = 200)
 			int owner = in.readUnsignedByte();
 		
-			int hiddenSymbol = ImportADC2Action.readBase250Word(in);
+			int hiddenSymbol = ADC2Utils.readBase250Word(in);
 		
 			// 0 = not used. Any value appears valid even if it's out of range
 			int facing = in.readUnsignedByte();
@@ -853,7 +861,7 @@ class ADC2Module {
 		if (header != -2)
 			throw new FileFormatException("Invalid Game Turn Block Header");
 		
-		gameTurn = ImportADC2Action.readBase250Word(in);
+		gameTurn = ADC2Utils.readBase250Word(in);
 	}
 
 	private void writePrototypesToArchive() {
@@ -875,7 +883,7 @@ class ADC2Module {
 		def.setPiece(gp);		
 	}
 	
-	void writeToArchive() throws IOException {
+	public void writeToArchive() throws IOException {
 		GameModule.getGameModule().setAttribute(GameModule.MODULE_NAME, name);
 
 		// prototype definitions
@@ -1032,9 +1040,14 @@ class ADC2Module {
 			stack.setAttribute(SetupStack.X_POSITION, Integer.toString(p.x));
 			stack.setAttribute(SetupStack.Y_POSITION, Integer.toString(p.y));
 			if (z != null) {
-				stack.setAttribute(SetupStack.USE_GRID_LOCATION, true);
-				stack.setAttribute(SetupStack.LOCATION, location);
-				//assert mg.locationName(mg.getLocation(location)).equals(location);
+				try {
+					if (mg.getLocation(location) != null) {
+						assert(mg.locationName(mg.getLocation(location)).equals(location));
+						stack.setAttribute(SetupStack.USE_GRID_LOCATION, true);
+						stack.setAttribute(SetupStack.LOCATION, location);
+					}
+				}
+				catch(BadCoords e) {}
 			}
 			for (Piece pc : s) {
 				pc.writeToArchive(stack);

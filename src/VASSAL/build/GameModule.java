@@ -637,6 +637,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
+   * Deletes the current module.
+   *
+   */
+  public static void clear() {
+	  theModule = null;
+  }
+  
+  /**
    * Exit the application, prompting user to save if necessary
    */
   public void quit() {

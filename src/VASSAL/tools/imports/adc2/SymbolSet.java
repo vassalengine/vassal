@@ -17,7 +17,9 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.BitmapFileFilter;
 import VASSAL.tools.imports.FileFormatException;
+import VASSAL.tools.imports.Importer;
 
 /**
  * Game piece and terrain symbols.
@@ -25,7 +27,7 @@ import VASSAL.tools.imports.FileFormatException;
  * @author Michael Kiefte
  *
  */
-class SymbolSet {
+public class SymbolSet extends Importer{
 
 	enum Shape {
 		SQUARE, HEX
@@ -96,7 +98,7 @@ class SymbolSet {
 		 * @return   <code>this</code>.
 		 */
 		SymbolData read(DataInputStream in) throws IOException {
-			name = ImportADC2Action.readNullTerminatedString(in);
+			name = readNullTerminatedString(in);
 
 			// Have to read in all the zoom level sizes for the first one
 			// so that zooming in VASSAL can approximate the zoom behaviour of the
@@ -111,7 +113,7 @@ class SymbolSet {
 			// if (header == -3)
 			//    pict.maskIndex = in.readUnsignedByte();
 			// else
-			maskIndex = ImportADC2Action.readBase250Word(in);
+			maskIndex = ADC2Utils.readBase250Word(in);
 			for (int i = 0; i < 3; ++i) {
 				int x1 = in.readInt();
 				int y1 = in.readInt();
@@ -167,7 +169,7 @@ class SymbolSet {
 			// only gets written once. if filename is not null, then we've
 			// already been written
 			if (fileName == null) {
-				fileName = ImportADC2Action.getUniqueImageFileName(name);
+				fileName = getUniqueImageFileName(name);
 				final ByteArrayOutputStream out = new ByteArrayOutputStream();
 				ImageIO.write(getImage(), "png", out);
 				GameModule.getGameModule().getArchiveWriter().addImage(fileName, out.toByteArray());
@@ -204,9 +206,6 @@ class SymbolSet {
 		return bi;
 	}
 
-	// needed so that we can call file selection dialog
-	private final ImportADC2Action action;
-
 	/**
 	 * Unit symbols
 	 */
@@ -237,17 +236,12 @@ class SymbolSet {
 	/** 
 	 * Zoom level to import
 	 */
-	private final int zoomLevel;
+	private static final int zoomLevel = 2;
 
 	/**
 	 * Ignore mask despite specified mask indeces.  True for older configuration files.
 	 */
 	private boolean ignoreMask;
-
-	SymbolSet(ImportADC2Action action, int zoomLevel) {
-		this.action = action;
-		this.zoomLevel = zoomLevel;
-	}
 
 	/**
 	 * Read symbol images based on basename and suffix. Bitmap filenames are of the form
@@ -260,7 +254,7 @@ class SymbolSet {
 	 */
 	BufferedImage loadSymbolImage(String filename, char suffix) throws IOException {
 		final String fn = filename + '-' + suffix + (zoomLevel + 1) + ".bmp";
-		File f = action.getCaseInsensitiveFile(new File(fn), ImportADC2Action.bitmapFileFilter);
+		File f = action.getCaseInsensitiveFile(new File(fn), null, true, new BitmapFileFilter());
 		if (f == null)
 			throw new FileFormatException("Missing bitmap file: " + fn);
 		return ImageIO.read(f);
@@ -361,7 +355,7 @@ class SymbolSet {
 	/**
 	 * Read a symbol set from the specified file.
 	 */
-	SymbolSet read(File f) throws IOException {
+	protected void load(File f) throws IOException {
 		DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
 
 		// if header is -3, then mask indeces are one-byte long. Otherwise, if
@@ -399,18 +393,18 @@ class SymbolSet {
 			ignoreMask = true;
 		}
 
-		int nMapBoardSymbols = ImportADC2Action.readBase250Word(in);
+		int nMapBoardSymbols = ADC2Utils.readBase250Word(in);
 		/* terrainBMDims = */
 		readDimension(in);
-		int nGamePieceSymbols = ImportADC2Action.readBase250Word(in);
+		int nGamePieceSymbols = ADC2Utils.readBase250Word(in);
 		/* unitBMDims = */
 		readDimension(in);
-		int nMasks = ImportADC2Action.readBase250Word(in);
+		int nMasks = ADC2Utils.readBase250Word(in);
 		/* maskBMDims = */
 		readDimension(in);
 
 		// load images
-		String baseName = ImportADC2Action.stripExtension(f.getPath());
+		String baseName = stripExtension(f.getPath());
 
 		BufferedImage mapBoardImages = loadSymbolImage(baseName, 't');
 		mapBoardData = new SymbolData[nMapBoardSymbols];
@@ -440,16 +434,16 @@ class SymbolSet {
 			for (int i = 0; i < nMasks; ++i)
 				maskData[i] = new SymbolData(maskImages, true).read(in);
 		}
-
-		return this;
 	}
 
 	/**
 	 * Write all of the game pieces to the archive.  Mainly for testing or if only
 	 * the symbol set is imported.
 	 */
-	void writeToArchive() throws IOException {
+	public void writeToArchive() throws IOException {
 		for (SymbolData piece : gamePieceData)
 			piece.writeToArchive();
+//		for (SymbolData terrain : mapBoardData)
+//			terrain.writeToArchive();
 	}
 }

@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2008 by Michael Kiefte
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.tools.imports.adc2;
 
 import java.awt.BasicStroke;
@@ -44,6 +61,7 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.SquareGridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.tools.imports.FileFormatException;
+import VASSAL.tools.imports.Importer;
 
 /**
  * The map board itself.
@@ -51,7 +69,7 @@ import VASSAL.tools.imports.FileFormatException;
  * @author Michael Kiefte
  *
  */
-public class MapBoard {
+public class MapBoard extends Importer {
 
 	/**
 	 * A layout consisting of squares in a checkerboard pattern (<it>i.e.</it> each
@@ -498,9 +516,9 @@ public class MapBoard {
 		void initGridNumbering(RegularGridNumbering numbering, MapSheet sheet) {
 			// TODO: staggering doesn't appear to be handled at all!
 			super.initGridNumbering(numbering, sheet);
-			numbering.setAttribute(RegularGridNumbering.FIRST, sheet.rowsAndCols() ? 'H' : 'V');
-			numbering.setAttribute(RegularGridNumbering.H_TYPE, sheet.numericRows() ? 'N' : 'A');
-			numbering.setAttribute(RegularGridNumbering.V_TYPE, sheet.numericCols() ? 'N' : 'A');
+			numbering.setAttribute(RegularGridNumbering.FIRST, sheet.rowsAndCols() ? "H" : "V");
+			numbering.setAttribute(RegularGridNumbering.H_TYPE, sheet.numericRows() ? "N" : "A");
+			numbering.setAttribute(RegularGridNumbering.V_TYPE, sheet.numericCols() ? "N" : "A");
 		}
 
 		HorizontalLayout(int size, int columns, int rows) {
@@ -1452,7 +1470,7 @@ public class MapBoard {
 		 * @param sheet     <code>MapSheet</code> object.
 		 * 
 		 * @see VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering
-		 * @see VASSAL.launch.ImportADC2Action.MapBoard.MapSheet
+		 * @see VASSAL.launch.ADC2Utils.MapBoard.MapSheet
 		 */
 		void initGridNumbering(RegularGridNumbering numbering, MapSheet sheet) {
 			numbering.setAttribute(RegularGridNumbering.FIRST, sheet.colsAndRows() ? "H" : "V");
@@ -1716,6 +1734,8 @@ public class MapBoard {
 	// probably faster.
 	private final static HashMap<Integer, Font> defaultFonts = new HashMap<Integer, Font>();
 
+	private static final int zoomLevel = 2;
+
 	static Color getColorFromIndex(int index) {
 		assert (index >= 0 && index < defaultColorPallet.length);
 		return defaultColorPallet[index];
@@ -1751,8 +1771,6 @@ public class MapBoard {
 		}
 		return f;
 	}
-
-	private final ImportADC2Action action;
 
 	// tertiary symbols.
 	private final ArrayList<HexData> attributes = new ArrayList<HexData>();
@@ -1804,9 +1822,6 @@ public class MapBoard {
 	// symbol set associated with this map -- needed for mapboard symbols
 	private SymbolSet set;
 
-	// zoom level to import
-	private final int zoomLevel;
-
 	private int columns;
 
 	private int rows;
@@ -1823,10 +1838,7 @@ public class MapBoard {
 
 	private BoardPicker boardPicker;
 
-	MapBoard(ImportADC2Action action, int zoomLevel) {
-		this.zoomLevel = zoomLevel;
-		this.action = action;
-
+	MapBoard() {
 		mapElements.add(primaryMapBoardSymbols);
 		mapElements.add(secondaryMapBoardSymbols);
 		mapElements.add(hexSides);
@@ -1849,12 +1861,13 @@ public class MapBoard {
 			g.clearRect(0, 0, d.width, d.height);
 			
 			// See if map image file exists
-			File sml = action.getCaseInsensitiveFile(new File(ImportADC2Action.forceExtension(path, "sml")), false);
+			File sml = action.getCaseInsensitiveFile(new File(forceExtension(path, "sml")), null, false, null);
 			if (sml != null) 
 				readScannedMapLayoutFile(sml, g);
 			else {
 				// If sml file doesn't exist, see if there is a single-sheet underlay image
-				File underlay = action.getCaseInsensitiveFile(new File(ImportADC2Action.stripExtension(path) + "-Z" + (zoomLevel+1) + ".bmp"), false);
+				File underlay = action.getCaseInsensitiveFile(new File(stripExtension(path) + "-Z" + (zoomLevel+1) + ".bmp"), 
+						null, false, null);
 				if (underlay != null) {
 					BufferedImage img = ImageIO.read(underlay);
 					g.drawImage(img, null, 0, 0);
@@ -1878,10 +1891,10 @@ public class MapBoard {
 	private void readScannedMapLayoutFile(File f, Graphics2D g) throws IOException {
 		DataInputStream in = new DataInputStream(new BufferedInputStream(
 				new FileInputStream(f)));
-		int nSheets = ImportADC2Action.readBase250Word(in);
+		int nSheets = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nSheets; ++i) {
-			String name = ImportADC2Action.stripExtension(ImportADC2Action.readWindowsFileName(in));
-			File file = action.getCaseInsensitiveFile(new File(name + "-L" + (zoomLevel+1) + ".bmp"), new File(path));
+			String name = stripExtension(readWindowsFileName(in));
+			File file = action.getCaseInsensitiveFile(new File(name + "-L" + (zoomLevel+1) + ".bmp"), new File(path), true, null);
 			BufferedImage img = ImageIO.read(file);
 			int x = 0;
 			int y = 0;
@@ -1911,7 +1924,7 @@ public class MapBoard {
 		if (header != -2)
 			throw new FileFormatException("Invalid Map/Board Overlay Symbol Block");
 		
-		SymbolSet.SymbolData overlaySymbol = getSet().getMapBoardSymbol(ImportADC2Action.readBase250Word(in));
+		SymbolSet.SymbolData overlaySymbol = getSet().getMapBoardSymbol(ADC2Utils.readBase250Word(in));
 		if (overlaySymbol != null)
 			this.overlaySymbol.add(new MapBoardOverlay(overlaySymbol));
 	}
@@ -1943,11 +1956,11 @@ public class MapBoard {
 			throw new FileFormatException(
 					"Invalid Atribute Symbol Block Separator");
 
-		int nAttributes = ImportADC2Action.readBase250Word(in);
+		int nAttributes = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nAttributes; ++i) {
-			int index = ImportADC2Action.readBase250Word(in);
+			int index = ADC2Utils.readBase250Word(in);
 			SymbolSet.SymbolData symbol = set
-					.getMapBoardSymbol(ImportADC2Action
+					.getMapBoardSymbol(ADC2Utils
 							.readBase250Word(in));
 			if (onMapBoard(index) && symbol != null)
 				attributes.add(new HexData(index, symbol));
@@ -1964,19 +1977,19 @@ public class MapBoard {
 		for (int i = 0; i < count; ++i) {
 			int symbolIndex;
 
-			symbolIndex = ImportADC2Action.readBase250Word(in);
+			symbolIndex = ADC2Utils.readBase250Word(in);
 			SymbolSet.SymbolData symbol = getSet().getMapBoardSymbol(
 					symbolIndex);
 			if (symbol != null)
 				primaryMapBoardSymbols.add(new HexData(i, symbol));
 
-			symbolIndex = ImportADC2Action.readBase250Word(in);
+			symbolIndex = ADC2Utils.readBase250Word(in);
 			symbol = getSet().getMapBoardSymbol(symbolIndex);
 			if (symbol != null)
 				secondaryMapBoardSymbols.add(new HexData(i, symbol));
 
 			/* int elevation = */
-			ImportADC2Action.readBase250Word(in);
+			ADC2Utils.readBase250Word(in);
 			// flags for hexsides, lines, and placenames: completely ignored
 			/* int additionalInformation = */
 			in.readUnsignedByte();
@@ -1988,9 +2001,9 @@ public class MapBoard {
 		if (header != -2)
 			throw new FileFormatException("Invalid Hex Line Block Separator");
 
-		int nHexLines = ImportADC2Action.readBase250Word(in);
+		int nHexLines = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nHexLines; ++i) {
-			int index = ImportADC2Action.readBase250Word(in);
+			int index = ADC2Utils.readBase250Word(in);
 			int line = in.readUnsignedByte();
 			int direction = in.readUnsignedShort();
 			if (onMapBoard(index))
@@ -2003,9 +2016,9 @@ public class MapBoard {
 		if (header != -2)
 			throw new FileFormatException("Invalid Hex Size Block Separator");
 
-		int nHexSides = ImportADC2Action.readBase250Word(in);
+		int nHexSides = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nHexSides; ++i) {
-			int index = ImportADC2Action.readBase250Word(in);
+			int index = ADC2Utils.readBase250Word(in);
 			int line = in.readUnsignedByte();
 			int side = in.readUnsignedByte();
 			if (onMapBoard(index))
@@ -2031,7 +2044,7 @@ public class MapBoard {
 					size = s;
 			}
 			// String name =
-			ImportADC2Action.readNullTerminatedString(in);
+			readNullTerminatedString(in);
 			int styleByte = in.readUnsignedByte();
 			MapBoard.LineStyle style;
 			switch (styleByte) {
@@ -2085,14 +2098,14 @@ public class MapBoard {
 		if (header != -2)
 			throw new FileFormatException("Invalid Map Sheet Block Separator");
 
-		int nMapSheets = ImportADC2Action.readBase250Word(in);
+		int nMapSheets = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nMapSheets; ++i) {
-			int x1 = ImportADC2Action.readBase250Word(in);
-			int y1 = ImportADC2Action.readBase250Word(in);
-			int x2 = ImportADC2Action.readBase250Word(in);
-			int y2 = ImportADC2Action.readBase250Word(in);
+			int x1 = ADC2Utils.readBase250Word(in);
+			int y1 = ADC2Utils.readBase250Word(in);
+			int x2 = ADC2Utils.readBase250Word(in);
+			int y2 = ADC2Utils.readBase250Word(in);
 			Rectangle r = new Rectangle(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-			String name = ImportADC2Action.readNullTerminatedString(in, 10);
+			String name = readNullTerminatedString(in, 10);
 			if (name.length() < 9)
 				in.read(new byte[9 - name.length()]);
 			int style = in.readUnsignedByte();
@@ -2182,14 +2195,14 @@ public class MapBoard {
 		if (header != -2)
 			throw new FileFormatException("Invalid Place Name Block Separator");
 
-		int nNames = ImportADC2Action.readBase250Word(in);
+		int nNames = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nNames; ++i) {
-			int index = ImportADC2Action.readBase250Word(in);
+			int index = ADC2Utils.readBase250Word(in);
 			SymbolSet.SymbolData symbol = getSet().getMapBoardSymbol(
-					ImportADC2Action.readBase250Word(in));
+					ADC2Utils.readBase250Word(in));
 			if (symbol != null && onMapBoard(index))
 				placeSymbols.add(new HexData(index, symbol));
-			String text = ImportADC2Action.readNullTerminatedString(in, 25);
+			String text = readNullTerminatedString(in, 25);
 			Color color = getColorFromIndex(in.readUnsignedByte());
 
 			int size = 0;
@@ -2278,28 +2291,29 @@ public class MapBoard {
 		return set;
 	}
 
-	MapBoard read(File f) throws IOException {
+	protected void load(File f) throws IOException {
 		DataInputStream in = new DataInputStream(new BufferedInputStream(
 				new FileInputStream(f)));
 
-		baseName = ImportADC2Action.stripExtension(f.getName());
+		baseName = stripExtension(f.getName());
 		path = f.getPath();
 		int header = in.readByte();
 		if (header != -3)
 			throw new FileFormatException("Invalid Mapboard File Header");
 
+		// don't know what these do.
 		in.read(new byte[2]);
 
 		// get the symbol set
-		String s = ImportADC2Action.readWindowsFileName(in);
-		String symbolSetFileName = ImportADC2Action.forceExtension(s, "set");
-		set = new SymbolSet(action, zoomLevel).read(action
-				.getCaseInsensitiveFile(new File(symbolSetFileName), f));
+		String s = readWindowsFileName(in);
+		String symbolSetFileName = forceExtension(s, "set");
+		set = new SymbolSet();
+		set.importFile(action, action.getCaseInsensitiveFile(new File(symbolSetFileName), f, true, null));
 
 		in.readByte(); // ignored
 
-		columns = ImportADC2Action.readBase250Word(in);
-		rows = ImportADC2Action.readBase250Word(in);
+		columns = ADC2Utils.readBase250Word(in);
+		rows = ADC2Utils.readBase250Word(in);
 		// presumably, they're all the same size (and they're square)
 		int hexSize = set.getMapBoardSymbolSize();
 
@@ -2352,8 +2366,6 @@ public class MapBoard {
 			readMapItemDrawingOrderBlock(in);
 			readMapItemDrawFlagBlock(in);
 		} catch(EOFException e) {}
-		
-		return this;
 	}
 
 	Map getMainMap() {
@@ -2392,7 +2404,7 @@ public class MapBoard {
 		return p;
 	}
 	
-	void writeToArchive() throws IOException {
+	public void writeToArchive() throws IOException {
 
 		GameModule module = GameModule.getGameModule();
 
