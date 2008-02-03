@@ -114,7 +114,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     Command comm = null;
     if (myCommand.matches(stroke)) {
     	DrawPile pile = deck;
-    	if (pile == null)
+    	if (pile == null || deckId.length() == 0)
     		pile = findDeck();
     	if (pile == null)
     		return null;
@@ -146,7 +146,9 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   }
 
   private DrawPile findDeck() {
-    DrawPile pile = DrawPile.findDrawPile(deckId);
+	  DrawPile pile = null;
+	  if (deckId.length() > 0)
+		  pile = DrawPile.findDrawPile(deckId);
     if (pile == null)
     	return promptForDrawPile();
     // cache
