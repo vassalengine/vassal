@@ -81,7 +81,7 @@ public class Documentation extends AbstractConfigurable {
 
   public void addTo(Buildable b) {
     GameModule.getGameModule().getFrame().getJMenuBar().add(controls);
-    validator = new CompoundValidityChecker(new MandatoryComponent(this, AboutScreen.class), new SingleChildInstance(GameModule.getGameModule(), getClass()));
+    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
   public void removeFrom(Buildable b) {
