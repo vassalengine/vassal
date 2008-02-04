@@ -2471,7 +2471,7 @@ public class MapBoard extends Importer {
 			String[] s = new String[3];
 			int maxSize = set.getMapBoardSymbolSize();
 			for (int i = 0; i < 3; ++i)
-				s[i] = Double.toString((double) set.getMapBoardSymbolSize(i) / (double) maxSize);
+        s[i] = Double.toString(set.getZoomFactor(i));
 			zoom.setAttribute("zoomLevels", StringArrayConfigurer.arrayToString(s));
 			zoom.addTo(mainMap);
 			getMainMap().add(zoom);
