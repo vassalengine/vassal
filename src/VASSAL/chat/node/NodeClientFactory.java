@@ -21,14 +21,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Properties;
 
-import javax.swing.SwingUtilities;
-
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
+import VASSAL.chat.CommandDecoder;
 import VASSAL.chat.HttpMessageServer;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
-import VASSAL.command.Command;
 import VASSAL.i18n.Resources;
 
 /**
@@ -75,20 +73,7 @@ public class NodeClientFactory extends ChatServerFactory {
         GameModule.getGameModule().warn((String) evt.getNewValue());
       }
     });
-    server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new PropertyChangeListener() {
-      public void propertyChange(final PropertyChangeEvent evt) {
-        final Command c = GameModule.getGameModule().decode((String) evt.getNewValue());
-        if (c != null) {
-          Runnable runnable = new Runnable() {
-            public void run() {
-              c.execute();
-              GameModule.getGameModule().getLogger().log(c);
-            }
-          };
-          SwingUtilities.invokeLater(runnable);
-        }
-      }
-    });
+    server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
     return server;
   }
 

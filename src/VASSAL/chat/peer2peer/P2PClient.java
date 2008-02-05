@@ -20,29 +20,35 @@ package VASSAL.chat.peer2peer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+
 import org.litesoft.p2pchat.ActivePeer;
 import org.litesoft.p2pchat.ActivePeerManager;
 import org.litesoft.p2pchat.MyInfo;
 import org.litesoft.p2pchat.PeerInfo;
 import org.litesoft.p2pchat.PendingPeerManager;
 import org.litesoft.p2pchat.UserDialog;
+
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
+import VASSAL.chat.PlayerEncoder;
 import VASSAL.chat.Room;
 import VASSAL.chat.ServerStatus;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleRoom;
+import VASSAL.chat.SynchEncoder;
 import VASSAL.chat.WelcomeMessageServer;
 import VASSAL.chat.messageboard.Message;
 import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
+import VASSAL.chat.ui.RoomInteractionControlsInitializer;
+import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
 
-public class P2PClient implements ChatServerConnection, ChatControlsInitializer, UserDialog {
+public class P2PClient implements ChatServerConnection, ChatControlsInitializer, UserDialog, PlayerEncoder {
   private Player me;
   private PendingPeerManager ppm;
   protected ActivePeerManager peerMgr;
@@ -55,6 +61,8 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   private CommandEncoder encoder;
   private boolean connected = false;
   private ServerStatus svrStatus;
+  private RoomInteractionControlsInitializer roomControls;
+  private SynchEncoder synchEncoder;
 
   public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool) {
     this.encoder = encoder;
@@ -65,6 +73,9 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     roomMgr = new RoomManager();
     tracker = new RoomTracker();
     me = new SimplePlayer("???"); //$NON-NLS-1$
+    roomControls = new RoomInteractionControlsInitializer(this);
+    roomControls.addPlayerActionFactory(SynchAction.factory(this));
+    synchEncoder = new SynchEncoder(this, this);
   }
 
   public RoomManager getRoomMgr() {
@@ -270,12 +281,16 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   }
 
   public void initializeControls(ChatServerControls controls) {
+    roomControls.initializeControls(controls);
+    GameModule.getGameModule().addCommandEncoder(synchEncoder);
     if (pool instanceof ChatControlsInitializer) {
       ((ChatControlsInitializer)pool).initializeControls(controls);
     }
   }
 
   public void uninitializeControls(ChatServerControls controls) {
+    roomControls.uninitializeControls(controls);
+    GameModule.getGameModule().removeCommandEncoder(synchEncoder);
     if (pool instanceof ChatControlsInitializer) {
       ((ChatControlsInitializer)pool).uninitializeControls(controls);
     }

@@ -21,6 +21,7 @@ import java.util.Properties;
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
+import VASSAL.chat.CommandDecoder;
 import VASSAL.chat.HttpMessageServer;
 import VASSAL.i18n.Resources;
 
@@ -41,6 +42,8 @@ public class P2PClientFactory extends ChatServerFactory {
         }
       
     });
-    return new P2PClient(GameModule.getGameModule(),httpMessageServer,httpMessageServer,new DirectPeerPool());
+    P2PClient server = new P2PClient(GameModule.getGameModule(),httpMessageServer,httpMessageServer,new DirectPeerPool());
+    server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
+    return server;
   }
 }
