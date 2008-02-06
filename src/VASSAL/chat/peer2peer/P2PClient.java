@@ -17,6 +17,7 @@
  */
 package VASSAL.chat.peer2peer;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -63,6 +64,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   private ServerStatus svrStatus;
   private RoomInteractionControlsInitializer roomControls;
   private SynchEncoder synchEncoder;
+  private PropertyChangeListener nameChangeListener;
 
   public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool) {
     this.encoder = encoder;
@@ -76,6 +78,13 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     roomControls = new RoomInteractionControlsInitializer(this);
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
     synchEncoder = new SynchEncoder(this, this);
+    nameChangeListener = new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        SimplePlayer p = (SimplePlayer) getUserInfo();
+        p.setName((String) evt.getNewValue());
+        setUserInfo(p);
+      }
+    };
   }
 
   public RoomManager getRoomMgr() {
@@ -282,6 +291,8 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
 
   public void initializeControls(ChatServerControls controls) {
     roomControls.initializeControls(controls);
+    ((SimplePlayer)me).setName((String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
+    GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).addPropertyChangeListener(nameChangeListener);
     GameModule.getGameModule().addCommandEncoder(synchEncoder);
     if (pool instanceof ChatControlsInitializer) {
       ((ChatControlsInitializer)pool).initializeControls(controls);
@@ -290,6 +301,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
 
   public void uninitializeControls(ChatServerControls controls) {
     roomControls.uninitializeControls(controls);
+    GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).removePropertyChangeListener(nameChangeListener);
     GameModule.getGameModule().removeCommandEncoder(synchEncoder);
     if (pool instanceof ChatControlsInitializer) {
       ((ChatControlsInitializer)pool).uninitializeControls(controls);
