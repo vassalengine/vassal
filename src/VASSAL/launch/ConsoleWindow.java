@@ -28,7 +28,10 @@ import javax.swing.JLabel;
 /**
  * The window with controls for VASSAL prior to loading a particular module.
  * @author Rodney Kinney
+ * @deprecated All functionality once provided by this class is now in
+ * {@link PlayerWindow} and {@link EditorWindow}.
  */
+@Deprecated
 public class ConsoleWindow {
   protected JFrame frame;
   

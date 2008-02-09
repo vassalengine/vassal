@@ -46,8 +46,10 @@ import VASSAL.tools.imports.ImportAction;
  * The starting controls from which the user may load or edit any module
  * 
  * @author rodneykinney
- * 
+ * @deprecated All functionality once provided by this class is now in
+ * {@link PlayerWindow} and {@link EditorWindow}.
  */
+@Deprecated
 public class ConsoleControls {
   private static final long serialVersionUID = 1L;
   protected JPanel controls;
