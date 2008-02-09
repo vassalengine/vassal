@@ -81,6 +81,7 @@ import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
@@ -118,18 +119,18 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected FileChooser fileChooser;
   protected FileDialog fileDialog;
   protected MutablePropertiesContainer propsContainer = new Impl();
-  protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
+  protected PropertyChangeListener repaintOnPropertyChange =
+      new PropertyChangeListener() {
     public void propertyChange(PropertyChangeEvent evt) {
-        for (Map map : Map.getMapList()) {
-          map.repaint();            
-        }
+      for (Map map : Map.getMapList()) {
+        map.repaint();            
+      }
     }
   };
 
-  protected JPanel controlPanel = new JPanel();
-
-  protected JToolBar toolBar = new JToolBar();
-  protected JMenu fileMenu = new JMenu(Resources.getString(Resources.FILE)); 
+  protected PlayerWindow frame = PlayerWindow.getInstance();
+  protected JPanel controlPanel = frame.getControlPanel();
+  protected JToolBar toolBar = frame.getToolBar();
 
   protected GameState theState;
   protected DataArchive archive;
@@ -139,8 +140,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected Random RNG;
   protected ServerConnection server;
 
-  protected JFrame frame = new JFrame();
-  
   protected WizardSupport wizardSupport;
 
   protected List<KeyStrokeSource> keyStrokeSources =
@@ -174,31 +173,19 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   protected GameModule(DataArchive archive) {
-    frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
     this.archive = archive;
+
+    frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
         quit();
       }
     });
 
-    frame.setLayout(new BorderLayout());
-    frame.setJMenuBar(new JMenuBar());
-
-    fileMenu.setMnemonic('F');
-    frame.getJMenuBar().add(fileMenu);
-
-    toolBar.setLayout(new VASSAL.tools.WrapLayout(FlowLayout.LEFT, 0, 0));
-    toolBar.setAlignmentX(0.0F);
-    toolBar.setFloatable(false);
-    frame.add(toolBar, BorderLayout.NORTH);
-    controlPanel.setLayout(new BorderLayout());
     addKeyStrokeSource
         (new KeyStrokeSource
             (frame.getRootPane(),
              JComponent.WHEN_IN_FOCUSED_WINDOW));
-    frame.add(controlPanel, BorderLayout.CENTER);
 
     validator = new CompoundValidityChecker
         (new MandatoryComponent(this, Documentation.class),
@@ -264,13 +251,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    *
    * A valid verson format is "w.x.y[bz]", where
    * 'w','x','y', and 'z' are integers.
-   * @deprecated use {@link Info#compareVersions}
    * @return a negative number if <code>v2</code> is a later version
    * the <code>v1</code>, a positive number if an earlier version,
    * or zero if the versions are the same.
    *
+   * @deprecated use {@link Info#compareVersions}
    */
-  @Deprecated public static int compareVersions(String v1, String v2) {
+  @Deprecated
+  public static int compareVersions(String v1, String v2) {
     return Info.compareVersions(v1, v2);
   }
 
@@ -413,7 +401,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @see #encode
    */
   public void addCommandEncoder(CommandEncoder ce) {
-    CommandEncoder[] oldValue = commandEncoders;
+    final CommandEncoder[] oldValue = commandEncoders;
     commandEncoders = new CommandEncoder[oldValue.length + 1];
     System.arraycopy(oldValue, 0, commandEncoders, 0, oldValue.length);
     commandEncoders[oldValue.length] = ce;
@@ -430,7 +418,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public void removeCommandEncoder(CommandEncoder ce) {
     for (int i = 0; i < commandEncoders.length; ++i) {
       if (ce.equals(commandEncoders[i])) {
-        CommandEncoder[] oldValue = commandEncoders;
+        final CommandEncoder[] oldValue = commandEncoders;
         commandEncoders = new CommandEncoder[oldValue.length - 1];
         System.arraycopy(oldValue, 0, commandEncoders, 0, i);
         if (i < commandEncoders.length) {
@@ -578,7 +566,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public FileChooser getFileChooser() {
     if (fileChooser == null) {
-      fileChooser = FileChooser.createFileChooser(getFrame(), getGameState().getSavedGameDirectoryPreference());
+      fileChooser = FileChooser.createFileChooser(getFrame(),
+        getGameState().getSavedGameDirectoryPreference());
     }
     else {
       fileChooser.resetChoosableFileFilters();
@@ -591,7 +580,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * @deprecated Use {@link #getFileChooser} instead.
    */
-  @Deprecated public FileDialog getFileDialog() {
+  @Deprecated
+  public FileDialog getFileDialog() {
     if (fileDialog == null) {
       fileDialog = new FileDialog(getFrame());
       File f = getGameState().getSavedGameDirectoryPreference().getFileValue();
@@ -617,7 +607,21 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @return the File menu of the command window
    */
   public JMenu getFileMenu() {
-    return fileMenu;
+    return frame.getFileMenu();
+  }
+
+  /**
+   * @return the Tools menu of the command window
+   */
+  public JMenu getToolsMenu() {
+    return frame.getToolsMenu();
+  }
+
+  /**
+   * @return the Help menu of the command window
+   */
+  public JMenu getHelpMenu() {
+    return frame.getHelpMenu();
   }
 
   /**

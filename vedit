@@ -1,0 +1,7 @@
+#!/bin/bash
+
+JAVAPATH=/usr/lib/jvm/java-1.6.0-sun/bin
+
+$JAVAPATH/java -Xms256M -Xmx512M -classpath classes:lib/* -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dswing.boldMetal=false -Dswing.aatext=true -Dsun.java2d.opengl=True -Dawt.useSystemAAFontSettings=on VASSAL.launch.Main -edit "$@"
+
+#$JAVAPATH/java -Xms256M -Xmx512M -classpath classes:lib/* -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel -Dswing.boldMetal=false -Dswing.aatext=true -Dsun.java2d.opengl=True -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel VASSAL.launch.Main

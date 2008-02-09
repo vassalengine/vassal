@@ -20,6 +20,7 @@ package VASSAL.build.module;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import javax.swing.JMenu;
 import org.w3c.dom.Element;
 import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
@@ -39,15 +40,11 @@ import VASSAL.i18n.Resources;
  * Represents the <code>Help</code> menu of the controls window
  */
 public class Documentation extends AbstractConfigurable {
-  /** Preferences key for the directory where VASSAL documentation is stored */
-  private javax.swing.JMenu controls;
-
   public Documentation() {
-    controls = new javax.swing.JMenu(Resources.getString(Resources.HELP));
   }
 
-  public javax.swing.JMenu getHelpMenu() {
-    return controls;
+  public JMenu getHelpMenu() {
+    return GameModule.getGameModule().getHelpMenu();
   }
 
   public void build(Element el) {
@@ -80,7 +77,6 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public void addTo(Buildable b) {
-    GameModule.getGameModule().getFrame().getJMenuBar().add(controls);
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 

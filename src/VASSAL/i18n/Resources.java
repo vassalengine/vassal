@@ -127,6 +127,7 @@ public class Resources {
   public static final String EDIT = "General.edit"; //$NON-NLS-1$
   public static final String NEW = "General.new"; //$NON-NLS-1$
   public static final String FILE = "General.file"; //$NON-NLS-1$
+  public static final String TOOLS = "General.tools"; //$NON-NLS-1$
   public static final String HELP = "General.help"; //$NON-NLS-1$
   public static final String CLOSE = "General.close"; //$NON-NLS-1$
   public static final String DATE_DISPLAY = "General.date_display"; //$NON-NLS-1$

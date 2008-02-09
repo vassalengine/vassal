@@ -31,13 +31,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -48,6 +50,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.PlayerWindow;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.FileChooser;
@@ -81,8 +84,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     logOutput = new ArrayList<Command>();
   }
 
-  public void build(org.w3c.dom.Element e) {
-  }
+  public void build(Element e) { }
 
   /**
    * Expects to be added to a {@link GameModule}. Adds <code>Undo</code>,
@@ -91,21 +93,30 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * equivalents of each button.
    */
   public void addTo(Buildable b) {
-    GameModule.getGameModule().addCommandEncoder(this);
-    GameModule.getGameModule().getGameState().addGameComponent(this);
-    GameModule.getGameModule().getFileMenu().add(newLogAction).setMnemonic('B');
-    JButton button = GameModule.getGameModule().getToolBar().add(undoAction);
+    final GameModule mod = GameModule.getGameModule();
+
+    mod.addCommandEncoder(this);
+    mod.getGameState().addGameComponent(this);
+
+    final PlayerWindow pw = PlayerWindow.getInstance();
+    pw.setMenuItem(PlayerWindow.MenuKey.NEW_LOG, newLogAction).setMnemonic('B');
+    pw.setMenuItem(PlayerWindow.MenuKey.END_LOG, endLogAction).setMnemonic('E');
+
+    JButton button = mod.getToolBar().add(undoAction);
     button.setToolTipText(Resources.getString("BasicLogger.undo_last_move"));  //$NON-NLS-1$
     button.setAlignmentY((float) 0.0);
-    button = GameModule.getGameModule().getToolBar().add(stepAction);
+
+    button = mod.getToolBar().add(stepAction);
     button.setToolTipText(Resources.getString("BasicLogger.step_forward_tooltip"));  //$NON-NLS-1$
     button.setAlignmentY((float) 0.0);
-    GameModule.getGameModule().getFileMenu().add(endLogAction).setMnemonic('E');
+
     final KeyStrokeListener stepKeyListener = new KeyStrokeListener(stepAction, KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
-    GameModule.getGameModule().addKeyStrokeListener(stepKeyListener);
-    KeyStrokeListener newLogKeyListener = new KeyStrokeListener(newLogAction, KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.ALT_MASK));
-    GameModule.getGameModule().addKeyStrokeListener(newLogKeyListener);
-    GameModule.getGameModule().getFrame().addComponentListener(new ComponentAdapter() {
+    mod.addKeyStrokeListener(stepKeyListener);
+
+    final KeyStrokeListener newLogKeyListener = new KeyStrokeListener(newLogAction, KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.ALT_MASK));
+    mod.addKeyStrokeListener(newLogKeyListener);
+
+    mod.getFrame().addComponentListener(new ComponentAdapter() {
       public void componentShown(ComponentEvent e) {
         GameModule.getGameModule().getFrame().removeComponentListener(this);
         final IconConfigurer stepIconConfig = new IconConfigurer("stepIcon", Resources.getString("BasicLogger.step_forward_button"), STEP_ICON); //$NON-NLS-1$ //$NON-NLS-2$
@@ -137,12 +148,15 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         stepKeyConfig.fireUpdate();
       }
     });
-    BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, Resources.getString("BasicLogger.prompt_new_log_before"), Boolean.FALSE);  //$NON-NLS-1$
-    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionStart); //$NON-NLS-1$
-    BooleanConfigurer logOptionEnd = new BooleanConfigurer(PROMPT_NEW_LOG_END, Resources.getString("BasicLogger.prompt_new_log_after"), Boolean.TRUE);  //$NON-NLS-1$
-    GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionEnd);  } //$NON-NLS-1$
 
-  public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
+    BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, Resources.getString("BasicLogger.prompt_new_log_before"), Boolean.FALSE);  //$NON-NLS-1$
+    mod.getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionStart); //$NON-NLS-1$
+
+    BooleanConfigurer logOptionEnd = new BooleanConfigurer(PROMPT_NEW_LOG_END, Resources.getString("BasicLogger.prompt_new_log_after"), Boolean.TRUE);  //$NON-NLS-1$
+    mod.getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionEnd); //$NON-NLS-1$
+  }
+
+  public Element getBuildElement(Document doc) {
     return doc.createElement(getClass().getName());
   }
 

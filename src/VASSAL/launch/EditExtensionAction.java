@@ -35,7 +35,7 @@ public class EditExtensionAction extends LoadModuleAction {
   
   public EditExtensionAction(Component comp) {
     super(comp);
-    putValue(NAME,Resources.getString(Resources.EDIT));
+    putValue(NAME,Resources.getString("Editor.edit_extension"));
   }
   
   protected void loadModule(File f) throws IOException {

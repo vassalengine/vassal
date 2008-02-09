@@ -84,8 +84,8 @@ $(TMPDIR)/VASSAL-$(VERSION).dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 $(TMPDIR)/VASSAL-$(VERSION).zip: version all $(JARS)
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)/{ext,plugins} 
 	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
-	cp $(LIBDIR)/Vengine.jar $(LIBDIR)/docs.jar $(TMPDIR)/VASSAL-$(VERSION)/lib
-	cp dist/VASSAL.sh dist/VASSAL.bat dist/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
+	cp $(LIBDIR)/{Vengine.jar,docs.jar} $(TMPDIR)/VASSAL-$(VERSION)/lib
+	cp dist/VASSAL{Editor,}.{sh,bat,exe} $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv VASSAL-$(VERSION).zip VASSAL-$(VERSION) ; cd ..
 
 release-macosx: $(TMPDIR)/VASSAL-$(VERSION).dmg

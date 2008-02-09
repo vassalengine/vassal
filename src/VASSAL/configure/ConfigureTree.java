@@ -170,6 +170,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     getActionMap().put(pasteCmd, pasteAction);
     this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
   }
+
   class KeyAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
     protected String actionName;

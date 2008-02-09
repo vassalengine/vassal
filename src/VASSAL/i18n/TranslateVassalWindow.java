@@ -36,7 +36,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import VASSAL.Info;
-import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
@@ -48,7 +47,13 @@ public class TranslateVassalWindow extends TranslateWindow {
   private static final long serialVersionUID = 1L;
   protected LocaleConfigurer localeConfig;
 
-  public TranslateVassalWindow(Frame owner, boolean modal, Translatable target, HelpWindow helpWindow, ConfigureTree tree) {
+  protected FileChooser fileChooser;
+
+  public TranslateVassalWindow(Frame owner,
+                               boolean modal,
+                               Translatable target,
+                               HelpWindow helpWindow,
+                               ConfigureTree tree) {
     super(owner, modal, target, helpWindow, tree);
   }
 
@@ -57,6 +62,17 @@ public class TranslateVassalWindow extends TranslateWindow {
     currentTranslation = (Translation) target;
     keyTable.setEnabled(true);
     newTranslation();
+  }
+
+  protected FileChooser getFileChooser() {
+    if (fileChooser == null) {
+      fileChooser = FileChooser.createFileChooser(this, null);
+    }
+    else {
+      fileChooser.resetChoosableFileFilters();
+      fileChooser.rescanCurrentDirectory();
+    }
+    return fileChooser;
   }
 
   protected Component buildMainPanel() {
@@ -164,9 +180,10 @@ public class TranslateVassalWindow extends TranslateWindow {
       }
     }
 
-    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = getFileChooser();
     fc.setFileFilter(new ExtensionFileFilter("Property Files",
                      new String[]{".properties"}));
+    fc.setCurrentDirectory(Info.getHomeDir());
     if (fc.showOpenDialog(this) != FileChooser.APPROVE_OPTION) return;
 
     final File file = fc.getSelectedFile();
@@ -216,7 +233,7 @@ public class TranslateVassalWindow extends TranslateWindow {
   }
 
   protected boolean saveTranslation() {
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = getFileChooser();
     Locale l = localeConfig.getValueLocale();
     String bundle = "VASSAL_" + l.getLanguage();
     if (l.getCountry() != null && l.getCountry().length() > 0) {
@@ -236,7 +253,7 @@ public class TranslateVassalWindow extends TranslateWindow {
         msg = "Unable to save translation";
       }
       e.printStackTrace();
-      JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg);
+      JOptionPane.showMessageDialog(this, msg);
       return false;
     }
     return true;

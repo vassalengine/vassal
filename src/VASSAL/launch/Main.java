@@ -16,6 +16,8 @@
  */
 package VASSAL.launch;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,11 +28,15 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
@@ -50,6 +56,8 @@ public class Main {
   protected List<String> extractTargets = new ArrayList<String>();
   protected List<String> autoExtensions = new ArrayList<String>();
 
+  protected JFrame frame = null;
+
   public Main(final String[] args) {
     initSystemProperties();
     System.err.println("-- OS " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -60,6 +68,22 @@ public class Main {
       public void run() {
         Runnable runnable = new Runnable() {
           public void run() {
+            final String showSplash =
+              Prefs.getGlobalPrefs().getStoredValue(GlobalOptions.SHOW_SPLASH);
+            // Be sure to show splash if there is no recorded pref, as this
+            // means VASSAL is being run for the first time.
+            if (showSplash == null || showSplash.equals("true")) {
+              final AboutVASSAL w = new AboutVASSAL();
+              w.setAlwaysOnTop(true);
+              w.setFocusableWindowState(false);
+              w.setVisible(true);
+              new Timer(2000, new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                  w.dispose();
+                }
+              }).start();
+            }
+
             try {
               Main.this.configure(args);
               Main.this.extractResourcesAndLaunch(0);
@@ -158,9 +182,29 @@ public class Main {
       GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
     }
     else if (moduleFile == null) {
+      if (editMode) {
+        frame = EditorWindow.getInstance();
+        frame.setSize(250,400);
+        frame.setVisible(true);
+      }
+      else {
+/*
       ConsoleWindow w = new ConsoleWindow();
       w.setControls(isFirstTime ? new FirstTimeUserPanel(w).getControls() : new ConsoleControls(w).getControls());
       w.getFrame().setVisible(true);
+*/
+        frame = PlayerWindow.getInstance();
+        frame.setSize(800,600);
+        frame.setVisible(true);
+
+        if (isFirstTime) {
+          final JDialog d = new JDialog(PlayerWindow.getInstance(), true);
+          d.setLocationRelativeTo(PlayerWindow.getInstance());
+          d.add(new FirstTimeUserPanel(null).getControls());
+          d.pack();
+          d.setVisible(true);
+        }
+      }
     }
     else if (editMode) {
       new EditModuleAction(null).loadModule(moduleFile);
@@ -207,6 +251,7 @@ public class Main {
   protected void configure(final String[] args) {
     File prefsFile = new File(Info.getHomeDir(), "Preferences");
     isFirstTime = !prefsFile.exists();
+//    isFirstTime = true;
     int n = -1;
     while (++n < args.length) {
       String arg = args[n];

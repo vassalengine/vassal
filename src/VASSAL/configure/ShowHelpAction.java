@@ -52,9 +52,8 @@ public class ShowHelpAction extends AbstractAction {
     if (iconURL != null) {
       putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
     }
-    else {
-      putValue(Action.NAME, Resources.getString(Resources.HELP));
-    }
+
+    putValue(Action.NAME, Resources.getString(Resources.HELP));
   }
   public void actionPerformed(ActionEvent e) {
     if (contents != null) {

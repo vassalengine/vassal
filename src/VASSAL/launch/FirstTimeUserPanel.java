@@ -77,11 +77,11 @@ public class FirstTimeUserPanel {
     tour.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         try {
-          console.getFrame().setVisible(false);
+//          console.getFrame().setVisible(false);
           GameModule.init(new BasicModule(new DataArchive(tourModule.getPath())));
           GameModule.getGameModule().getFrame().setVisible(true);
           GameModule.getGameModule().getGameState().loadGameInBackground(tourLogFile);
-          console.getFrame().dispose();
+//          console.getFrame().dispose();
         }
         catch (Exception e) {
           e.printStackTrace();
@@ -90,15 +90,15 @@ public class FirstTimeUserPanel {
                e.getMessage(),
                Resources.getString("Main.open_error"),  //$NON-NLS-1$
                JOptionPane.ERROR_MESSAGE);
-          console.setControls(new ConsoleControls(console).getControls());
-          console.getFrame().setVisible(true);
+//          console.setControls(new ConsoleControls(console).getControls());
+//          console.getFrame().setVisible(true);
         }
       }
     });
     jump.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
-        console.setControls(new ConsoleControls(console).getControls());
-        console.getFrame().setVisible(true);
+//        console.setControls(new ConsoleControls(console).getControls());
+//        console.getFrame().setVisible(true);
       }
     });
     try {
@@ -123,7 +123,7 @@ public class FirstTimeUserPanel {
     box.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         Resources.setLocale((Locale) box.getSelectedItem());
-        console.setControls(new FirstTimeUserPanel(console).getControls());
+//        console.setControls(new FirstTimeUserPanel(console).getControls());
       }
     });
     b.add(box);
