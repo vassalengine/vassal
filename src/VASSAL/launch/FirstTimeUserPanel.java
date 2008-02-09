@@ -49,7 +49,7 @@ public class FirstTimeUserPanel {
 //  private ConsoleWindow console;
   
   public FirstTimeUserPanel(ConsoleWindow console) {
-    this.console = console;
+//    this.console = console;
     tourModule = new File(Documentation.getDocumentationBaseDir(), "tour.mod");  //$NON-NLS-1$
     tourLogFile = new File(Documentation.getDocumentationBaseDir(), "tour.log");  //$NON-NLS-1$
     initComponents();
