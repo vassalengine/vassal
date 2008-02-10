@@ -174,7 +174,7 @@ public class AutoConfigurer extends Configurer
     return p;
   }
 
-  public void propertyChange(final java.beans.PropertyChangeEvent evt) {
+  public void propertyChange(final PropertyChangeEvent evt) {
     target.setAttribute(evt.getPropertyName(), evt.getNewValue());
     checkVisibility();
   }

@@ -19,6 +19,7 @@
 package VASSAL.configure;
 
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * A property editor class.  Wraps an Object value and provides
@@ -39,7 +40,7 @@ public abstract class Configurer {
   protected String name;
   /** The value */
   protected Object value;
-  protected java.beans.PropertyChangeSupport changeSupport;
+  protected PropertyChangeSupport changeSupport;
   /** When noUpdate is true, setting the value programmatically will not
    * result in an update of the GUI Component */
   protected boolean noUpdate = false;
@@ -54,7 +55,7 @@ public abstract class Configurer {
   public Configurer(String key, String name, Object val) {
     this.key = key;
     this.name = name;
-    changeSupport = new java.beans.PropertyChangeSupport(this);
+    changeSupport = new PropertyChangeSupport(this);
     setValue(val);
   }
 
@@ -135,7 +136,7 @@ public abstract class Configurer {
   /**
    * Add a listener to be notified when the Object state changes
    */
-  public void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
+  public void addPropertyChangeListener(PropertyChangeListener l) {
     changeSupport.addPropertyChangeListener(l);
   }
   
