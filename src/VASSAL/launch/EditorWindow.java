@@ -51,10 +51,15 @@ import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.tools.imports.ImportAction;
 
 public class EditorWindow extends JFrame {
-  protected static final EditorWindow instance = new EditorWindow();
+  protected static EditorWindow instance = null;
 
   public static EditorWindow getInstance() {
+    if (instance == null) instance = new EditorWindow();
     return instance;
+  }
+
+  public static boolean hasInstance() {
+    return instance != null;
   }
 
   protected final HelpWindow helpWindow = new HelpWindow(
@@ -162,9 +167,6 @@ public class EditorWindow extends JFrame {
   protected EditorWindow() {
     setTitle("VASSAL Editor");
 
-// FIXME: connect with PlayerWindow quit after module is loaded
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     setLayout(new BorderLayout());
     setJMenuBar(menuBar);
     
@@ -245,6 +247,7 @@ public class EditorWindow extends JFrame {
    
     quit.setMnemonic('Q');
     menuItems.put(MenuKey.QUIT, fileMenu.add(quit));
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 /*
     // build Edit menu

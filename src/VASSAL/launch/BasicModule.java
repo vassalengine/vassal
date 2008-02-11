@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2000-2007 by Rodney Kinney
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.launch;
 
 import java.awt.Rectangle;
@@ -42,6 +59,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.EditorWindow;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
@@ -98,15 +116,31 @@ public class BasicModule extends GameModule {
     pw.setMenuItem(PlayerWindow.MenuKey.EDIT_PREFS,
                    getPrefs().getEditor().getEditAction());
 
-    final JMenuItem quitItem = frame.getMenuItem(PlayerWindow.MenuKey.QUIT);
+    // setup quit items
+    final JMenuItem quitItem =
+      new JMenuItem(Resources.getString(Resources.QUIT));
     quitItem.setMnemonic('Q');
     quitItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         quit();
       }
     });
-
+ 
     pw.setMenuItem(PlayerWindow.MenuKey.QUIT, quitItem);
+
+    if (EditorWindow.hasInstance()) {
+      final EditorWindow ew = EditorWindow.getInstance();
+      final JMenuItem edQuitItem =
+        new JMenuItem(Resources.getString(Resources.QUIT));
+      edQuitItem.setMnemonic('Q');
+      edQuitItem.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          quit();
+        }
+      });
+
+      ew.setMenuItem(EditorWindow.MenuKey.QUIT, quitItem);
+    }
   }
 
   public void build(Element e) {

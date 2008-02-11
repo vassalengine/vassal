@@ -47,8 +47,10 @@ import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.tools.ScrollPane;
 
 /**
- * The editing window for a module
+ * The editing window for a module.
+ * @deprecated This functionality has been moved to {@link EditorWindow}.
  */
+@Deprecated
 public class ModuleEditWindow extends JFrame implements WindowListener {
   private static final long serialVersionUID = 1L;
 

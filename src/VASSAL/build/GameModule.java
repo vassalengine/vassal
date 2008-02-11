@@ -38,7 +38,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
 
 import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
@@ -81,6 +80,7 @@ import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.EditorWindow;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
@@ -175,12 +175,22 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected GameModule(DataArchive archive) {
     this.archive = archive;
 
-    frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
         quit();
       }
     });
+
+    if (EditorWindow.hasInstance()) {
+      final EditorWindow ew = EditorWindow.getInstance();
+      ew.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+      ew.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+          quit();
+        }
+      });
+    }
 
     addKeyStrokeSource
         (new KeyStrokeSource

@@ -255,7 +255,6 @@ public class PlayerWindow extends JFrame {
 
     quit.setMnemonic('Q');
     menuItems.put(MenuKey.QUIT, fileMenu.add(quit));
-
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // build Tools menu
