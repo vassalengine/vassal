@@ -877,7 +877,13 @@ public class ADC2Module extends Importer {
 		GamePiece gp = new BasicPiece();		
 		gp = new Delete(Delete.ID + "Delete;D", gp);
 		gp = new ReturnToDeck(ReturnToDeck.ID + "Return to Deck;R;;Select Force Pool", gp);
-		gp = new MovementMarkable(MovementMarkable.ID + "/images/moved.gif;0;0", gp);
+		SequenceEncoder se = new SequenceEncoder(';');
+		Dimension modalSize = getSet().getModalSize();
+		int xOffset = modalSize.width/2;
+		int yOffset = -modalSize.height/2;
+		String movedIcon = "/images/moved.gif";
+		se.append(movedIcon).append(xOffset).append(yOffset);
+		gp = new MovementMarkable(MovementMarkable.ID + se.getValue(), gp);
 		gp = new Footprint(Footprint.ID, gp);
 		
 		def.setPiece(gp);		
