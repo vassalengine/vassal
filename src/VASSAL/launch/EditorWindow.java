@@ -155,7 +155,9 @@ public class EditorWindow extends JFrame {
     fileMenu = new JMenu(Resources.getString("General.file"));
     fileMenu.setMnemonic(KeyEvent.VK_F);
     menuBar.add(fileMenu);
-  
+ 
+    
+ 
 //    final JMenuItem newModule = new JMenuItem("New Module");
     final CreateModuleAction createModuleAction = new CreateModuleAction(this);
     menuItems.put(MenuKey.NEW, fileMenu.add(createModuleAction));
@@ -256,7 +258,6 @@ public class EditorWindow extends JFrame {
     
     toolsMenu.addSeparator();
 
-// FIXME: does translate really depend on having a module loaded?
     final JMenuItem translateVASSAL = toolsMenu.add(Resources.getString(
         "Editor.ModuleEditor.translate_vassal")); //$NON-NLS-1$
     translateVASSAL.addActionListener(new ActionListener() {
@@ -267,6 +268,8 @@ public class EditorWindow extends JFrame {
 
     menuItems.put(MenuKey.TRANSLATE_VASSAL, translateVASSAL);
 
+// FIXME: need this for newModuleAction also
+// FIXME: need to disable "Play Module" in Player 
     editModuleAction.addAction(new Runnable() {
       public void run() {
         createModuleAction.setEnabled(false);

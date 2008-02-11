@@ -56,24 +56,26 @@ public class ColoredBorder implements Highlighter {
   
   public void draw(GamePiece p, Graphics g, int x, int y,
                    Component obs, double zoom) {
-    if (c != null || thickness > 0) {
-      if (g instanceof Graphics2D) {
-        Graphics2D g2d = (Graphics2D) g;
-        Stroke str = g2d.getStroke();
-        g2d.setStroke(new BasicStroke(Math.max(1,Math.round(zoom*thickness))));
-        g2d.setColor(c);
+    if (thickness != 0) {
+      if (c != null || thickness > 0) {
+        if (g instanceof Graphics2D) {
+          Graphics2D g2d = (Graphics2D) g;
+          Stroke str = g2d.getStroke();
+          g2d.setStroke(new BasicStroke(Math.max(1,Math.round(zoom*thickness))));
+          g2d.setColor(c);
 
-        // Find the border by outsetting the bounding box, and then scaling
-        // the shape to fill the outset.
-        Shape s = p.getShape();
-        Rectangle br = s.getBounds();
-        double xzoom = (br.getWidth()+1)/br.getWidth();
-        double yzoom = (br.getHeight()+1)/br.getHeight();
-        AffineTransform t = AffineTransform.getTranslateInstance(x,y);
-        t.scale(xzoom*zoom,yzoom*zoom);
+          // Find the border by outsetting the bounding box, and then scaling
+          // the shape to fill the outset.
+          Shape s = p.getShape();
+          Rectangle br = s.getBounds();
+          double xzoom = (br.getWidth()+1)/br.getWidth();
+          double yzoom = (br.getHeight()+1)/br.getHeight();
+          AffineTransform t = AffineTransform.getTranslateInstance(x,y);
+          t.scale(xzoom*zoom,yzoom*zoom);
 
-        g2d.draw(t.createTransformedShape(s));
-        g2d.setStroke(str);
+          g2d.draw(t.createTransformedShape(s));
+          g2d.setStroke(str);
+        }
       }
       else {
         highlightSelectionBounds(p, g, x, y, obs, zoom);
