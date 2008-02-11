@@ -35,6 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
@@ -95,12 +96,15 @@ public class FirstTimeUserPanel {
         }
       }
     });
+
     jump.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
+        SwingUtilities.getWindowAncestor(panel).dispose();
 //        console.setControls(new ConsoleControls(console).getControls());
 //        console.getFrame().setVisible(true);
       }
     });
+
     try {
       File readme = new File (Documentation.getDocumentationBaseDir(),"README.html");
       help.addActionListener(new ShowHelpAction(readme.toURI().toURL(), null));
@@ -108,6 +112,7 @@ public class FirstTimeUserPanel {
     catch (MalformedURLException e) {
       e.printStackTrace();
     }
+
     b = Box.createHorizontalBox();
     b.add(new JLabel(Resources.getString("Prefs.language")+":  "));
     final JComboBox box = new JComboBox(Resources.getSupportedLocales().toArray());
@@ -119,6 +124,7 @@ public class FirstTimeUserPanel {
         return this;
       }
     });
+
     box.setSelectedItem(Resources.getLocale());
     box.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -129,8 +135,6 @@ public class FirstTimeUserPanel {
     b.add(box);
     panel.add(b);
   }
-
-
 
   public JComponent getControls() {
     return panel;
