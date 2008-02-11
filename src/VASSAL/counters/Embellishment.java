@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -64,9 +65,8 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.ScaleOp;
-import VASSAL.tools.imageop.SourceOp;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
  * The "Layer" trait. Contains a list of images that the user may cycle through.
@@ -108,8 +108,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected String imageName[];
   protected String commonName[];
   protected Rectangle size[];
-  protected SourceOp srcOp[];
-  protected ScaleOp scaleOp[];
+  protected ScaledImagePainter imagePainter[];
   protected boolean drawUnderneathWhenSelected = false;
 
   protected String name = "";
@@ -191,12 +190,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       value = activateKey.length() > 0 ? -1 : 1;
       nValues = imageName.length;
       size = new Rectangle[imageName.length];
-      scaleOp = new ScaleOp[imageName.length];
+      imagePainter = new ScaledImagePainter[imageName.length];
 
-      srcOp = new SourceOp[imageName.length];
       for (int i = 0; i < imageName.length; ++i) {
-        srcOp[i] = imageName[i] == null || imageName[i].trim().length() == 0
-                 ? null : Op.load(imageName[i]);
+        imagePainter[i] = new ScaledImagePainter();
+        imagePainter[i].setImageName(imageName[i]);
       }
     }
 
@@ -256,16 +254,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     imageName = new String[l.size()];
     commonName = new String[l.size()];
     size = new Rectangle[imageName.length];
-    srcOp = new SourceOp[imageName.length];
-    scaleOp = new ScaleOp[imageName.length];
+    imagePainter = new ScaledImagePainter[imageName.length];
 
     for (int i = 0; i < imageName.length; ++i) {
       final String sub = l.get(i);
       final SequenceEncoder.Decoder subSt =
         new SequenceEncoder.Decoder(sub, ',');
       imageName[i] = subSt.nextToken();
-      srcOp[i] = imageName[i] == null || imageName[i].trim().length() == 0
-               ? null : Op.load(imageName[i]);
+      imagePainter[i] = new ScaledImagePainter();
+      imagePainter[i].setImageName(imageName[i]);
       if (subSt.hasMoreTokens()) {
         commonName[i] = subSt.nextToken();
       }
@@ -389,44 +386,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     final int i = value - 1;
 
-    if (srcOp[i] != null) {
+    if (imagePainter[i] != null) {
       final Rectangle r = getCurrentImageBounds();
-      
-      if (zoom == 1.0) {
-        try {
-          g.drawImage(srcOp[i].getImage(null), x + r.x, y + r.y, obs);
-        }
-        catch (CancellationException e) {
-          e.printStackTrace();
-        }
-        catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        catch (ExecutionException e) {
-          e.printStackTrace();
-        }
-      }
-      else {
-        if (scaleOp[i] == null || scaleOp[i].getScale() != zoom) {
-          scaleOp[i] = Op.scale(srcOp[i], zoom);
-        }
-
-        try {
-          g.drawImage(scaleOp[i].getImage(null),
-                      x + (int) (zoom * r.x),
-                      y + (int) (zoom * r.y),
-                      obs);
-        }
-        catch (CancellationException e) {
-          e.printStackTrace();
-        }
-        catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        catch (ExecutionException e) {
-          e.printStackTrace();
-        }
-      }  
+      imagePainter[i].draw(g, x + (int)(zoom*r.x), y + (int)(zoom*r.y), zoom, obs);
     }
 
     if (drawUnderneathWhenSelected &&
@@ -596,10 +558,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (value <= 0 ||
         imageName[value-1] == null ||
         imageName[value-1].length() == 0 ||
-        srcOp[value-1] == null) return null;
+        imagePainter[value-1] == null ||
+        imagePainter[value-1].getSource() == null) return null;
     
     try {
-      return srcOp[value-1].getImage(null);
+      return imagePainter[value-1].getSource().getImage(null);
     }
     catch (CancellationException e) {
       // FIXME: use chaining when we move to 1.6+
@@ -635,8 +598,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final int i = value - 1;
 
       if (size[i] == null) {
-        if (srcOp[i] != null) {
-          size[i] = ImageUtils.getBounds(srcOp[i].getSize());
+        if (imagePainter[i] != null) {
+          size[i] = ImageUtils.getBounds(imagePainter[i].getImageSize());
           size[i].translate(xOff, yOff);
         }
         else {

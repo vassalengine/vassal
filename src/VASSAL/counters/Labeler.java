@@ -33,6 +33,7 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -61,7 +62,7 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.ScaleOp;
+import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
  * Displays a text label, with content specified by the user at runtime.
@@ -91,8 +92,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
   private static final String PIECE_NAME = "pieceName";
   private static final String LABEL = "label";
 
-  private LabelOp srcOp;
-  private ScaleOp scaleOp;
+  protected ScaledImagePainter imagePainter = new ScaledImagePainter();
 
   private JLabel lbl;
   private char verticalJust = 'b';
@@ -253,76 +253,39 @@ public class Labeler extends Decorator implements TranslatablePiece {
     piece.draw(g, x, y, obs, zoom);
 
 // FIXME: We should be drawing the text at the right size, not scaling it!
-    if (srcOp != null) {
-//    if (labelImage != null) {
-      final Point p = getLabelPosition();
-      final int labelX = x + (int) (zoom * p.x);
-      final int labelY = y + (int) (zoom * p.y);
+    final Point p = getLabelPosition();
+    final int labelX = x + (int) (zoom * p.x);
+    final int labelY = y + (int) (zoom * p.y);
 
-      AffineTransform saveXForm = null;
-      final Graphics2D g2d = (Graphics2D) g;
+    AffineTransform saveXForm = null;
+    final Graphics2D g2d = (Graphics2D) g;
 
-      if (rotateDegrees != 0) {
-        saveXForm = g2d.getTransform();
-        final AffineTransform newXForm = AffineTransform.getRotateInstance(
-          Math.toRadians(rotateDegrees), x, y);
-        g2d.transform(newXForm);
-      }
+    if (rotateDegrees != 0) {
+      saveXForm = g2d.getTransform();
+      final AffineTransform newXForm = AffineTransform.getRotateInstance(
+        Math.toRadians(rotateDegrees), x, y);
+      g2d.transform(newXForm);
+    }
+      
+    imagePainter.draw(g, labelX, labelY, zoom, obs);    
 
-      if (zoom == 1.0) {
-        try {
-          g2d.drawImage(srcOp.getImage(null), labelX, labelY, obs);
-        }
-        catch (CancellationException e) {
-          e.printStackTrace();
-        }
-        catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        catch (ExecutionException e) {
-          e.printStackTrace();
-        }
-      }
-      else {
-        if (scaleOp == null || scaleOp.getScale() != zoom) {
-          scaleOp = Op.scale(srcOp, zoom);
-        }
-        
-        try {
-          g2d.drawImage(scaleOp.getImage(null), labelX, labelY, obs);
-        }
-        catch (CancellationException e) {
-          e.printStackTrace();
-        }
-        catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        catch (ExecutionException e) {
-          e.printStackTrace();
-        }
 /*
         Image scaled = labelImage;
         scaled = GameModule.getGameModule().getDataArchive().getScaledImage(labelImage, zoom);
         g2d.drawImage(scaled, labelX, labelY, obs);
 */
-      }
-
-      if (rotateDegrees != 0) {
-        g2d.setTransform(saveXForm);
-      }
+    if (rotateDegrees != 0) {
+      g2d.setTransform(saveXForm);
     }
   }
 
   protected void updateCachedImage() {
     final String label = getLocalizedLabel();
     if (label != null && !label.equals(lastCachedLabel)) {
-//      labelImage = null;
-      srcOp = null;
+      imagePainter.setSource(null);
     }
-//    if (labelImage == null && label != null && label.length() > 0) {
-    if (srcOp == null && label != null && label.length() > 0) {
-//      labelImage = createImage(null);
-      srcOp = new LabelOp(getLocalizedLabel(), lbl, textBg);
+    if (imagePainter.getSource() == null && label != null && label.length() > 0) {
+      imagePainter.setSource(new LabelOp(getLocalizedLabel(), lbl, textBg));
     }
   }
 
@@ -378,12 +341,10 @@ public class Labeler extends Decorator implements TranslatablePiece {
     label = s;
     labelFormat.setFormat(label);
     if (getMap() != null && label != null && label.length() > 0) {
-//      labelImage = createImage(getMap().getView());
-      srcOp = new LabelOp(getLocalizedLabel(), lbl, textBg);
+      imagePainter.setSource(new LabelOp(getLocalizedLabel(), lbl, textBg));
     }
     else {
-//      labelImage = null;
-      srcOp = null;
+      imagePainter.setSource(null);
     }
   }
 

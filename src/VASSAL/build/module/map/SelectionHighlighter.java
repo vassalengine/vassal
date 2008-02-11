@@ -43,14 +43,14 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
+import VASSAL.counters.ImagePicker;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaleOp;
+import VASSAL.tools.imageop.ScaledImagePainter;
 import VASSAL.tools.imageop.SourceOp;
 
-public class SelectionHighlighter extends AbstractConfigurable
-                                  implements Highlighter {
-
+public class SelectionHighlighter extends AbstractConfigurable implements Highlighter {
   public static final String NAME = "name";
   public static final String MATCH = "match";
   public static final String COLOR = "color";
@@ -59,7 +59,6 @@ public class SelectionHighlighter extends AbstractConfigurable
   public static final String IMAGE = "image";
   public static final String X_OFFSET = "xoffset";
   public static final String Y_OFFSET = "yoffset";
-
   protected PropertyExpression matchProperties = new PropertyExpression();
   protected Color color = Color.RED;
   protected int thickness = 3;
@@ -67,64 +66,29 @@ public class SelectionHighlighter extends AbstractConfigurable
   protected String imageName = "";
   protected int x = 0;
   protected int y = 0;
-
   protected VisibilityCondition visibilityCondition;
+  @Deprecated
+  protected Image image;
+  protected ScaledImagePainter imagePainter = new ScaledImagePainter();
 
-  @Deprecated protected Image image;
-  protected SourceOp srcOp;
-  protected ScaleOp scaleOp;
-
-  public void draw(GamePiece p, Graphics g, int x, int y,
-                   Component obs, double zoom) {
+  public void draw(GamePiece p, Graphics g, int x, int y, Component obs, double zoom) {
     final Graphics2D g2d = (Graphics2D) g;
     if (accept(p)) {
-      if (useImage && srcOp != null) {
-        final int x1 = x - (int) (srcOp.getWidth() * zoom / 2);
-        final int y1 = y - (int) (srcOp.getHeight() * zoom / 2);
-        if (zoom == 1.0) {
-          try {
-            g2d.drawImage(srcOp.getImage(null), x1, y1, null);
-          }
-          catch (CancellationException e) {
-            e.printStackTrace();
-          }
-          catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-          catch (ExecutionException e) {
-            e.printStackTrace();
-          }
-        }
-        else {
-          if (scaleOp == null || scaleOp.getScale() != zoom) {
-            scaleOp = Op.scale(srcOp, zoom);
-          }
-
-          try {
-            g2d.drawImage(scaleOp.getImage(null), x1, y1, null);
-          }
-          catch (CancellationException e) {
-            e.printStackTrace();
-          }
-          catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-          catch (ExecutionException e) {
-            e.printStackTrace();
-          }
-        }
+      if (useImage) {
+        final int x1 = x - (int) (imagePainter.getImageSize().width * zoom / 2);
+        final int y1 = y - (int) (imagePainter.getImageSize().height * zoom / 2);
+        imagePainter.draw(g, x1, y1, zoom, obs);
       }
       else {
         if (color == null || thickness <= 0) {
           return;
         }
-
         final Shape s = p.getShape();
         final Stroke str = g2d.getStroke();
-        g2d.setStroke(new BasicStroke(Math.max(1,Math.round(zoom*thickness))));
+        g2d.setStroke(new BasicStroke(Math.max(1, Math.round(zoom * thickness))));
         g2d.setColor(color);
-        final AffineTransform t = AffineTransform.getScaleInstance(zoom,zoom);
-        t.translate(x/zoom,y/zoom);
+        final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
+        t.translate(x / zoom, y / zoom);
         g2d.draw(t.createTransformedShape(s));
         g2d.setStroke(str);
       }
@@ -133,12 +97,9 @@ public class SelectionHighlighter extends AbstractConfigurable
 
   public Rectangle boundingBox(GamePiece p) {
     Rectangle r = p.getShape().getBounds();
-
     if (accept(p)) {
       if (useImage) {
-        if (srcOp != null) {
-          r = r.union(ImageUtils.getBounds(srcOp.getSize()));
-        }
+        r = r.union(ImageUtils.getBounds(imagePainter.getImageSize()));
       }
       else {
         r.translate(-thickness, -thickness);
@@ -151,37 +112,19 @@ public class SelectionHighlighter extends AbstractConfigurable
   protected boolean accept(GamePiece p) {
     return matchProperties.isNull() ? true : matchProperties.accept(p);
   }
-  
+
   public static String getConfigureTypeName() {
     return "Highlighter";
   }
-  
+
   public String[] getAttributeDescriptions() {
-    return new String[] {
-      "Name:  ",
-      "Active if Properties Match:  ",
-      "Use Image",
-      "Border Color:  ",
-      "Border Thickness:  ",
-      "Image:  ",
-      "X Offset:  ",
-      "Y Offset:  "
-    };
+    return new String[]{"Name:  ", "Active if Properties Match:  ", "Use Image", "Border Color:  ", "Border Thickness:  ", "Image:  ", "X Offset:  ",
+                        "Y Offset:  "};
   }
 
   public Class<?>[] getAttributeTypes() {
-    return new Class<?>[] {
-      String.class,
-      PropertyExpression.class,
-      Boolean.class,
-      Color.class,
-      Integer.class,
-      IconConfig.class,
-      Integer.class,
-      Integer.class
-    };
+    return new Class<?>[]{String.class, PropertyExpression.class, Boolean.class, Color.class, Integer.class, IconConfig.class, Integer.class, Integer.class};
   }
-
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new IconConfigurer(key, name, ((SelectionHighlighter) c).imageName);
@@ -189,16 +132,7 @@ public class SelectionHighlighter extends AbstractConfigurable
   }
 
   public String[] getAttributeNames() {
-    return new String[] {
-      NAME,
-      MATCH,
-      USE_IMAGE,
-      COLOR,
-      THICKNESS,
-      IMAGE,
-      X_OFFSET,
-      Y_OFFSET
-    };
+    return new String[]{NAME, MATCH, USE_IMAGE, COLOR, THICKNESS, IMAGE, X_OFFSET, Y_OFFSET};
   }
 
   public VisibilityCondition getAttributeVisibility(String name) {
@@ -209,9 +143,7 @@ public class SelectionHighlighter extends AbstractConfigurable
         }
       };
     }
-    else if (IMAGE.equals(name) ||
-             X_OFFSET.equals(name) ||
-             Y_OFFSET.equals(name)) {
+    else if (IMAGE.equals(name) || X_OFFSET.equals(name) || Y_OFFSET.equals(name)) {
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
           return useImage;
@@ -256,8 +188,7 @@ public class SelectionHighlighter extends AbstractConfigurable
     }
     else if (key.equals(IMAGE)) {
       imageName = (String) value;
-      srcOp = imageName == null || imageName.trim().length() == 0 
-            ? null : Op.load(imageName);
+      imagePainter.setImageName(imageName);
     }
     else if (key.equals(X_OFFSET)) {
       if (value instanceof String) {
@@ -314,7 +245,7 @@ public class SelectionHighlighter extends AbstractConfigurable
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("Map.htm","SelectionHighlighter");
+    return HelpFile.getReferenceManualPage("Map.htm", "SelectionHighlighter");
   }
 
   public Class[] getAllowableConfigureComponents() {

@@ -68,8 +68,7 @@ public final class Info {
 // FIXME: check where this is used. maybe we can deprecate?
     final VersionTokenizer tok = new VersionTokenizer(VERSION);
     try {
-      return Integer.toString(tok.next()) +
-             Integer.toString(tok.next()) +
+      return Integer.toString(tok.next()) + "." +
              Integer.toString(tok.next());
     }
     catch (VersionFormatException e) {
