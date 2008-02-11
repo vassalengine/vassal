@@ -228,7 +228,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected void drawGraphics(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
 
     for (int i = 0; i < pieces.size(); i++) {
-      GamePiece piece = (GamePiece) pieces.get(i);
+      GamePiece piece = pieces.get(i);
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
       Rectangle pieceBounds = piece.getShape().getBounds();
       if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
@@ -265,7 +265,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       for (int i = 0; i < pieces.size(); i++) {
         // Draw the next piece
         // pt is the location of the left edge of the piece
-        GamePiece piece = (GamePiece) pieces.get(i);
+        GamePiece piece = pieces.get(i);
         if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
         Rectangle pieceBounds = piece.getShape().getBounds();
         g.setClip(bounds.x - 3, bounds.y - 3, bounds.width + 5, bounds.height + 5);
