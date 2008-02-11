@@ -297,7 +297,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       outputFile = fd.getSelectedFile();
       logOutput.clear();
       beginningState = GameModule.getGameModule().getGameState().getRestoreCommand();
-      undoAction.setEnabled(true);
+      undoAction.setEnabled(false);
       endLogAction.setEnabled(true);
       GameModule.getGameModule().appendToTitle(Resources.getString("BasicLogger.logging_to", outputFile.getName()));  //$NON-NLS-1$
       newLogAction.setEnabled(false);
