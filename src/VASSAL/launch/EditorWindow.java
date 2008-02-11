@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.launch;
 
 import java.awt.BorderLayout;
@@ -155,14 +172,10 @@ public class EditorWindow extends JFrame {
     fileMenu = new JMenu(Resources.getString("General.file"));
     fileMenu.setMnemonic(KeyEvent.VK_F);
     menuBar.add(fileMenu);
- 
-    
- 
-//    final JMenuItem newModule = new JMenuItem("New Module");
+
     final CreateModuleAction createModuleAction = new CreateModuleAction(this);
     menuItems.put(MenuKey.NEW, fileMenu.add(createModuleAction));
 
-//    final JMenuItem openModule = new JMenuItem("Open Module");
     final EditModuleAction editModuleAction = new EditModuleAction(this);
     menuItems.put(MenuKey.OPEN, fileMenu.add(editModuleAction));
 
@@ -201,12 +214,10 @@ public class EditorWindow extends JFrame {
 
     fileMenu.addSeparator();
 
-//    final JMenuItem newExtension = new JMenuItem("New Extension");
     final NewExtensionAction newExtensionAction = new NewExtensionAction(this); 
     newExtensionAction.setEnabled(false);
     menuItems.put(MenuKey.NEW_EXTENSION, fileMenu.add(newExtensionAction));
 
-//    final JMenuItem loadExtension = new JMenuItem("Load Extension");
     final EditExtensionAction editExtensionAction =
       new EditExtensionAction(this);
     editExtensionAction.setEnabled(false);      
@@ -230,7 +241,7 @@ public class EditorWindow extends JFrame {
     menuBar.add(editMenu);
 */
 
-   // build Tools menu
+    // build Tools menu
     toolsMenu = new JMenu(Resources.getString("General.tools"));
     menuBar.add(toolsMenu);
     
@@ -268,9 +279,7 @@ public class EditorWindow extends JFrame {
 
     menuItems.put(MenuKey.TRANSLATE_VASSAL, translateVASSAL);
 
-// FIXME: need this for newModuleAction also
-// FIXME: need to disable "Play Module" in Player 
-    editModuleAction.addAction(new Runnable() {
+    final Runnable toggleItemsAfterModuleStart = new Runnable() {
       public void run() {
         createModuleAction.setEnabled(false);
         editModuleAction.setEnabled(false);
@@ -282,8 +291,15 @@ public class EditorWindow extends JFrame {
         editExtensionAction.setEnabled(true);
         createModuleUpdater.setEnabled(true);
         updateSavedGame.setEnabled(true);
+
+        PlayerWindow.getInstance()
+                    .getMenuItem(PlayerWindow.MenuKey.OPEN_MODULE)
+                    .setEnabled(false);
       }
-    });
+    };
+
+    editModuleAction.addAction(toggleItemsAfterModuleStart);
+    createModuleAction.addAction(toggleItemsAfterModuleStart);
  
     // build Help menu
     helpMenu = new JMenu(Resources.getString("General.help"));
