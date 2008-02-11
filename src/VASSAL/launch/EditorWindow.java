@@ -44,6 +44,8 @@ import VASSAL.configure.SaveAction;
 import VASSAL.configure.SaveAsAction;
 import VASSAL.configure.SavedGameUpdaterDialog;
 import VASSAL.configure.ShowHelpAction;
+import VASSAL.configure.ValidationReport;
+import VASSAL.configure.ValidationReportDialog;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.tools.imports.ImportAction;
@@ -160,6 +162,7 @@ public class EditorWindow extends JFrame {
   protected EditorWindow() {
     setTitle("VASSAL Editor");
 
+// FIXME: connect with PlayerWindow quit after module is loaded
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     setLayout(new BorderLayout());
@@ -187,7 +190,11 @@ public class EditorWindow extends JFrame {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
-//        ModuleEditWindow.this.save();
+        EditorWindow.this.saver(new Runnable() {
+          public void run() {
+            GameModule.getGameModule().save();
+          }
+        }); 
       }
     };
 
@@ -199,7 +206,11 @@ public class EditorWindow extends JFrame {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
-//        ModuleEditWindow.this.saveAs();
+        EditorWindow.this.saver(new Runnable() {
+          public void run() {
+            GameModule.getGameModule().saveAs();
+          }
+        });
       }
     };
 
@@ -310,8 +321,11 @@ public class EditorWindow extends JFrame {
     try {
       File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
       dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
-      helpAction = new ShowHelpAction(HelpFile.toURL(new File(dir, "index.htm")), helpWindow.getClass().getResource("/images/Help16.gif")); //$NON-NLS-1$ //$NON-NLS-2$
-      helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.ModuleEditor.reference_manual")); //$NON-NLS-1$
+      helpAction = new ShowHelpAction(
+        HelpFile.toURL(new File(dir, "index.htm")), //$NON-NLS-1$
+        helpWindow.getClass().getResource("/images/Help16.gif")); //$NON-NLS-1$
+      helpAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString(
+        "Editor.ModuleEditor.reference_manual")); //$NON-NLS-1$
 
       toolBar.add(helpAction);
       menuItems.put(MenuKey.HELP, helpMenu.add(helpAction));
@@ -327,6 +341,26 @@ public class EditorWindow extends JFrame {
 
     add(scrollPane, BorderLayout.CENTER);
     pack();
+  }
+
+  protected void saver(final Runnable save) {
+    final ValidationReport report = new ValidationReport();
+    GameModule.getGameModule().validate(GameModule.getGameModule(), report);
+    if (report.getWarnings().size() == 0) {
+      save.run();
+    }
+    else {
+      new ValidationReportDialog(report,
+        new ValidationReportDialog.CallBack() {
+          public void ok() {
+            save.run();
+          }
+  
+          public void cancel() {
+          }
+        }
+      ).setVisible(true);
+    }
   }
 
   public static void main(String[] args) {
