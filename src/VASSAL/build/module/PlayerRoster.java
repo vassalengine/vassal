@@ -177,8 +177,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   protected void launch() {
     String mySide = getMySide();
-    if (mySide != null || sides.size() != players.size()) {
-      String[] options = sides.size() == players.size() ? new String[]{Resources.getString(Resources.YES), Resources.getString(Resources.NO)}
+    if (mySide != null || !allSidesAllocated()) {
+      String[] options = allSidesAllocated() ? new String[]{Resources.getString(Resources.YES), Resources.getString(Resources.NO)}
           : new String[]{
                          Resources.getString("PlayerRoster.become_observer"), Resources.getString("PlayerRoster.join_another_side"), Resources.getString(Resources.CANCEL)}; //$NON-NLS-1$ //$NON-NLS-2$
       final int CANCEL = options.length - 1;
@@ -343,7 +343,21 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     return players.contains(
       new PlayerInfo(GameModule.getUserId(),
                      GlobalOptions.getInstance().getPlayerId(), null)) ||
-      sides.size() == players.size();
+      allSidesAllocated();
+  }
+
+  /**
+   * 
+   * @return true if all sides have been claimed by a player
+   */
+  protected boolean allSidesAllocated() {
+    int allocatedSideCount = 0;
+    for (PlayerInfo p : players) {
+      if (!OBSERVER.equals(p.getSide())) {
+        allocatedSideCount++;
+      }
+    }
+    return sides.size() == allocatedSideCount;
   }
 
   protected void promptForSide() {
