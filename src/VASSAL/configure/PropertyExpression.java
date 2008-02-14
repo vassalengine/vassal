@@ -48,10 +48,8 @@ public class PropertyExpression implements PieceFilter {
   }
 
   public boolean accept(GamePiece piece) {
-    if (filter == null) {
-      getFilter(null);
-    }
-    return filter.accept(piece);
+    return getFilter(piece).accept(piece);
   }
   
 }
+
