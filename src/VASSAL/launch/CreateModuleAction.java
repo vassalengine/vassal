@@ -33,6 +33,6 @@ public class CreateModuleAction extends GameModuleAction {
   public void performAction(ActionEvent e) throws IOException {
     GameModule.init(new BasicModule(new ArchiveWriter((String) null)));
     GameModule.getGameModule().getFrame().setVisible(true);
-    new VASSAL.configure.ModuleEditWindow().setVisible(true);
+    ModuleEditorWindow.getInstance().moduleLoading(GameModule.getGameModule());
   }
 }

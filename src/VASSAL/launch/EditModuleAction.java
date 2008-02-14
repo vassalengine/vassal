@@ -39,6 +39,6 @@ public class EditModuleAction extends LoadModuleAction {
     GameModule.init(new BasicModule(archive));
     GameModule.getGameModule().getFrame().setVisible(true);
 //    new ModuleEditWindow().setVisible(true);
-    EditorWindow.getInstance().moduleLoading(GameModule.getGameModule());
+    ModuleEditorWindow.getInstance().moduleLoading(GameModule.getGameModule());
   }
 }

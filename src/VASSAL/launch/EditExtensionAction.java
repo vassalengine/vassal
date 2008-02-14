@@ -32,16 +32,19 @@ import VASSAL.tools.ArchiveWriter;
  */
 public class EditExtensionAction extends LoadModuleAction {
   private static final long serialVersionUID = 1L;
+  protected Component parentEditor;
   
   public EditExtensionAction(Component comp) {
     super(comp);
     putValue(NAME,Resources.getString("Editor.edit_extension"));
+    parentEditor = comp;
   }
   
   protected void loadModule(File f) throws IOException {
     ModuleExtension ext = new ModuleExtension(new ArchiveWriter(new ZipFile(f.getPath())));
     ext.build();
     new VASSAL.configure.ExtensionEditWindow(ext).setVisible(true);
+    parentEditor.setVisible(false);
   }
 
 }

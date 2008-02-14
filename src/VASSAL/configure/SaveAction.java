@@ -29,13 +29,19 @@ import VASSAL.i18n.Resources;
  * General-purpose "Save" action
  */
 public abstract class SaveAction extends AbstractAction {
+  protected String parentType = "";
+  
   public SaveAction() {
     final URL iconURL = getClass().getResource("/images/Save16.gif");
     if (iconURL != null) {
       putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
     }
 
-    putValue(Action.NAME, Resources.getString("Editor.save"));
-    putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.save"));
+    putValue(Action.NAME, Resources.getString("Editor.save", parentType));
+    putValue(Action.SHORT_DESCRIPTION, Resources.getString("Editor.save", parentType));
+  }
+
+  public void setParent(String p) {
+    parentType = p;
   }
 }

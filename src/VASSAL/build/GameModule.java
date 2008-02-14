@@ -81,6 +81,7 @@ import VASSAL.configure.MandatoryComponent;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.EditorWindow;
+import VASSAL.launch.ModuleEditorWindow;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
@@ -183,7 +184,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     });
 
     if (EditorWindow.hasInstance()) {
-      final EditorWindow ew = EditorWindow.getInstance();
+      final EditorWindow ew = ModuleEditorWindow.getInstance();
       ew.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       ew.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent e) {

@@ -59,6 +59,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
@@ -433,14 +434,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected Collection<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<Action>();
-    for (Class newConfig : target.getAllowableConfigureComponents()) {
+    for (Class<?> newConfig : target.getAllowableConfigureComponents()) {
       final Action action = buildAddAction(target, newConfig);
       l.add(action);
     }
 
     for (AdditionalComponent add : additionalComponents) {
       if (target.getClass().equals(add.getParent())) {
-        final Class newConfig = add.getChild();
+        final Class<?> newConfig = add.getChild();
         final Action action = buildAddAction(target, newConfig);
         l.add(action);
       }
@@ -582,6 +583,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return a;
   }
 
+  @SuppressWarnings("unchecked")
   public boolean canContainGamePiece(final Configurable target) {
     boolean canContainPiece = false;
     Class[] sub = target.getAllowableConfigureComponents();
@@ -698,7 +700,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     if (className != null) {
       config = null;
       try {
-        Class c = GameModule.getGameModule().getDataArchive().loadClass(className);
+        Class<?> c = GameModule.getGameModule().getDataArchive().loadClass(className);
         Object o = c.newInstance();
         if (o instanceof Configurable) {
           config = (Configurable) o;
@@ -778,7 +780,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected boolean isValidParent(Configurable parent, Configurable child) {
     if (parent != null && child != null) {
-      Class c[] = parent.getAllowableConfigureComponents();
+      Class<?> c[] = parent.getAllowableConfigureComponents();
       for (int i = 0; i < c.length; ++i) {
         if (c[i] == child.getClass()) {
           return true;
@@ -833,25 +835,29 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return helpAction;
   }
 
+  public void buildEditMenu(JMenu menu) {
+    editMenu = menu;
+    deleteItem = new JMenuItem(deleteAction);
+    editMenu.add(deleteItem);
+    cutItem = new JMenuItem(cutAction);
+    editMenu.add(cutItem);
+    copyItem = new JMenuItem(copyAction);
+    editMenu.add(copyItem);
+    pasteItem = new JMenuItem(pasteAction);
+    editMenu.add(pasteItem);
+    moveItem = new JMenuItem(moveAction);
+    editMenu.add(moveItem);
+    editMenu.addSeparator();
+    propertiesItem = new JMenuItem(propertiesAction);
+    editMenu.add(propertiesItem);
+    translateItem = new JMenuItem(translateAction);
+    editMenu.add(translateItem);
+    updateEditMenu();
+  }
+
   public JMenu getEditMenu() {
     if (editMenu == null) {
-      editMenu = new JMenu(Resources.getString(Resources.EDIT));
-      deleteItem = new JMenuItem(deleteAction);
-      editMenu.add(deleteItem);
-      cutItem = new JMenuItem(cutAction);
-      editMenu.add(cutItem);
-      copyItem = new JMenuItem(copyAction);
-      editMenu.add(copyItem);
-      pasteItem = new JMenuItem(pasteAction);
-      editMenu.add(pasteItem);
-      moveItem = new JMenuItem(moveAction);
-      editMenu.add(moveItem);
-      editMenu.addSeparator();
-      propertiesItem = new JMenuItem(propertiesAction);
-      editMenu.add(propertiesItem);
-      translateItem = new JMenuItem(translateAction);
-      editMenu.add(translateItem);
-      updateEditMenu();
+      buildEditMenu(new JMenu(Resources.getString(Resources.EDIT)));
     }
     return editMenu;
   }
@@ -942,24 +948,24 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * @param parent
    * @param child
    */
-  public static void addAdditionalComponent(Class parent, Class child) {
+  public static void addAdditionalComponent(Class<? extends Buildable> parent, Class<? extends Buildable> child) {
     additionalComponents.add(new AdditionalComponent(parent, child));
   }
   
   protected static class AdditionalComponent {
-    Class parent;
-    Class child;
+    Class<? extends Buildable> parent;
+    Class<? extends Buildable> child;
     
-    public AdditionalComponent(Class p, Class c) {
+    public AdditionalComponent(Class<? extends Buildable> p, Class<? extends Buildable> c) {
       parent = p;
       child = c;
     }
     
-    public Class getParent() {
+    public Class<? extends Buildable> getParent() {
       return parent;
     }
     
-    public Class getChild() {
+    public Class<? extends Buildable> getChild() {
       return child;
     }     
   }

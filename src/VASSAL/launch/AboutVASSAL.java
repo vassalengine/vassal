@@ -19,6 +19,8 @@ import VASSAL.Info;
 import VASSAL.i18n.Resources;
 
 public class AboutVASSAL extends JWindow {
+  private static final long serialVersionUID = 1L;
+
   public AboutVASSAL() {
     initComponents();
   }
@@ -62,6 +64,8 @@ public class AboutVASSAL extends JWindow {
 
   public static Action getAction() {
     final Action action = new AbstractAction() {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         final AboutVASSAL about = new AboutVASSAL();
         about.setVisible(true);

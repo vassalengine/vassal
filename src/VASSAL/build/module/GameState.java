@@ -223,6 +223,9 @@ public class GameState implements CommandEncoder {
     newGame.setEnabled(!gameStarting);
     saveGame.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
+    PlayerWindow.getInstance()
+                .getMenuItem(PlayerWindow.MenuKey.EDIT_MODULE)
+                .setEnabled(!gameStarting);
 
     if (gameStarting) {
       loadGame.setText(Resources.getString("GameState.load_continuation"));  //$NON-NLS-1$

@@ -80,7 +80,7 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
    * @param parent parent of the new component
    * @param child new component
    */
-  public void registerComponent(Class parent, Class child) {
+  public void registerComponent(Class<? extends Buildable> parent, Class<? extends Buildable> child) {
     ConfigureTree.addAdditionalComponent(parent, child);
   }
   
@@ -104,6 +104,7 @@ public class Plugin extends AbstractConfigurable implements PluginsLoader.Plugin
     
   }
 
+  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }

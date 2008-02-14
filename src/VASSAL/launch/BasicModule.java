@@ -129,7 +129,7 @@ public class BasicModule extends GameModule {
     pw.setMenuItem(PlayerWindow.MenuKey.QUIT, quitItem);
 
     if (EditorWindow.hasInstance()) {
-      final EditorWindow ew = EditorWindow.getInstance();
+      final EditorWindow ew = ModuleEditorWindow.getInstance();
       final JMenuItem edQuitItem =
         new JMenuItem(Resources.getString(Resources.QUIT));
       edQuitItem.setMnemonic('Q');
@@ -139,7 +139,7 @@ public class BasicModule extends GameModule {
         }
       });
 
-      ew.setMenuItem(EditorWindow.MenuKey.QUIT, quitItem);
+      ew.setMenuItem(EditorWindow.MenuKey.QUIT, edQuitItem);
     }
   }
 

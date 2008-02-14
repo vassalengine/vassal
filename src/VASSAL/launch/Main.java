@@ -28,11 +28,12 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
+
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
@@ -55,8 +56,6 @@ public class Main {
   protected File savedGame;
   protected List<String> extractTargets = new ArrayList<String>();
   protected List<String> autoExtensions = new ArrayList<String>();
-
-  protected JFrame frame = null;
 
   public Main(final String[] args) {
     initSystemProperties();
@@ -182,28 +181,21 @@ public class Main {
       GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
     }
     else if (moduleFile == null) {
-      if (editMode) {
-        frame = EditorWindow.getInstance();
-        frame.setSize(250,400);
-        frame.setVisible(true);
-      }
-      else {
+      if (editMode)
+        ModuleEditorWindow.getInstance().setVisible(true);
 /*
       ConsoleWindow w = new ConsoleWindow();
       w.setControls(isFirstTime ? new FirstTimeUserPanel(w).getControls() : new ConsoleControls(w).getControls());
       w.getFrame().setVisible(true);
 */
-        frame = PlayerWindow.getInstance();
-        frame.setSize(800,600);
-        frame.setVisible(true);
+      PlayerWindow.getInstance().setVisible(true);
 
-        if (isFirstTime) {
-          final JDialog d = new JDialog(PlayerWindow.getInstance(), true);
-          d.setLocationRelativeTo(PlayerWindow.getInstance());
-          d.add(new FirstTimeUserPanel(null).getControls());
-          d.pack();
-          d.setVisible(true);
-        }
+      if (isFirstTime) {
+        final JDialog d = new JDialog(PlayerWindow.getInstance(), true);
+        d.setLocationRelativeTo(PlayerWindow.getInstance());
+        d.add(new FirstTimeUserPanel(null).getControls());
+        d.pack();
+        d.setVisible(true);
       }
     }
     else if (editMode) {
