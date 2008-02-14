@@ -200,21 +200,8 @@ public class PlayerWindow extends JFrame {
     final JMenuItem closeModule = new JMenuItem("Close Module");
     closeModule.setEnabled(false);
 
-    final JMenuItem editModule = new JMenuItem("Edit Module");
-    editModule.setEnabled(true);
-    editModule.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        final GameModule mod = GameModule.getGameModule();
-        if (mod != null) {
-          ModuleEditorWindow.getInstance().moduleLoading(mod);
-        }
-        ModuleEditorWindow.getInstance().setVisible(true);
-      }
-    });
-    
     menuItems.put(MenuKey.OPEN_MODULE, fileMenu.add(loadModuleAction));
     menuItems.put(MenuKey.CLOSE_MODULE, fileMenu.add(closeModule));
-    menuItems.put(MenuKey.EDIT_MODULE, fileMenu.add(editModule));
 
     fileMenu.addSeparator();
 
@@ -278,6 +265,21 @@ public class PlayerWindow extends JFrame {
 
     menuItems.put(MenuKey.SERVER_STATUS, toolsMenu.add(
       new ShowServerStatusAction(new CgiServerStatus(), null)));
+
+    final JMenuItem editModule = new JMenuItem(
+      Resources.getString("PlayerWindow.module_editor"));
+    editModule.setEnabled(true);
+    editModule.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        final GameModule mod = GameModule.getGameModule();
+        if (mod != null) {
+          ModuleEditorWindow.getInstance().moduleLoading(mod);
+        }
+        ModuleEditorWindow.getInstance().setVisible(true);
+      }
+    });
+
+    menuItems.put(MenuKey.EDIT_MODULE, toolsMenu.add(editModule));
 
     final JMenuItem editPrefs =
       new JMenuItem(Resources.getString("Prefs.edit_preferences"));
