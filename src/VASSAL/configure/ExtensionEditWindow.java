@@ -30,8 +30,8 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ScrollPane;
 
 /**
- * Editing window for a module extension
- * Functionality moved to Vassal.launch.ExtensionEditorWindow
+ * Editing window for a module extension.
+ * @deprecated Functionality moved to {@link ExtensionEditorWindow}.
  */
 @Deprecated
 public class ExtensionEditWindow extends ModuleEditWindow {
