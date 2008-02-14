@@ -25,10 +25,11 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
-import VASSAL.configure.ModuleEditWindow;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.launch.LoadModuleAction;
+import VASSAL.launch.ModuleEditorWindow;
+import VASSAL.launch.PlayerWindow;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
@@ -123,8 +124,8 @@ public final class ImportAction extends LoadModuleAction {
 					}					
 					imp.importFile(this, f);
 					imp.writeToArchive();
-					GameModule.getGameModule().getFrame().setVisible(true);
-					new ModuleEditWindow().setVisible(true);
+					PlayerWindow.getInstance().setVisible(true);
+					ModuleEditorWindow.getInstance().setVisible(true);
 				}
 				// some serious problems.
 				catch (IllegalAccessException e) {
