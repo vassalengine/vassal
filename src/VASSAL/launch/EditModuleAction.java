@@ -38,7 +38,6 @@ public class EditModuleAction extends LoadModuleAction {
     ArchiveWriter archive = new ArchiveWriter(new ZipFile(f.getPath()));
     GameModule.init(new BasicModule(archive));
     GameModule.getGameModule().getFrame().setVisible(true);
-//    new ModuleEditWindow().setVisible(true);
     ModuleEditorWindow.getInstance().moduleLoading(GameModule.getGameModule());
   }
 }

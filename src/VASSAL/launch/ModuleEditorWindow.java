@@ -34,7 +34,6 @@ public class ModuleEditorWindow extends EditorWindow {
   private static final long serialVersionUID = 1L;
   protected CreateModuleAction createModuleAction;
   protected EditModuleAction editModuleAction;
-  protected JMenuItem closeModule;
   protected ImportAction importAction;
   protected NewExtensionAction newExtensionAction;
   protected EditExtensionAction editExtensionAction;
@@ -58,7 +57,7 @@ public class ModuleEditorWindow extends EditorWindow {
     
     createModuleAction.setEnabled(false);
     editModuleAction.setEnabled(false);
-    closeModule.setEnabled(true);
+    close.setEnabled(true);
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
     importAction.setEnabled(false);
@@ -90,10 +89,7 @@ public class ModuleEditorWindow extends EditorWindow {
     editModuleAction = new EditModuleAction(this);
     addMenuItem(MenuKey.OPEN, menu.add(editModuleAction));
 
-    closeModule = new JMenuItem("Close Module");
-    closeModule.setEnabled(false);
-    addMenuItem(MenuKey.CLOSE, menu.add(closeModule));
-
+    addCloseMenuItem(menu);
     addSaveMenuItem(menu);
     addSaveAsMenuItem(menu);
 
@@ -150,6 +146,9 @@ public class ModuleEditorWindow extends EditorWindow {
         GameModule.getGameModule().saveAs();
       }
     }); 
+  }
+  
+  protected void close() {
     
   }
   

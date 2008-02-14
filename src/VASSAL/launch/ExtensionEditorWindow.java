@@ -19,7 +19,6 @@ package VASSAL.launch;
 import java.io.IOException;
 
 import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
@@ -30,7 +29,6 @@ public class ExtensionEditorWindow extends EditorWindow {
 
   private static final long serialVersionUID = 1L;
   protected static ExtensionEditorWindow instance = null;  
-  protected JMenuItem closeExtension;
   protected ModuleExtension extension;
  
   public static EditorWindow getInstance() {
@@ -51,7 +49,7 @@ public class ExtensionEditorWindow extends EditorWindow {
     
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
-    closeExtension.setEnabled(true);
+    close.setEnabled(true);
     createUpdater.setEnabled(true);
 
     pack();
@@ -69,15 +67,13 @@ public class ExtensionEditorWindow extends EditorWindow {
   }
 
   protected void populateFileMenu(JMenu menu) {
-    closeExtension = new JMenuItem("Close Extension");
-    closeExtension.setEnabled(false);
-    addMenuItem(MenuKey.CLOSE, menu.add(closeExtension));
+    addCloseMenuItem(menu);
     addSaveMenuItem(menu);
     addSaveAsMenuItem(menu);
     menu.addSeparator();
     addQuitMenuItem(menu);
   }
-
+  
   protected void populateToolsMenu(JMenu menu) {
     addUpdaterMenuItem(menu);
     menu.addSeparator();
@@ -110,4 +106,10 @@ public class ExtensionEditorWindow extends EditorWindow {
     }); 
   }
   
+  /**
+   * Close Extension and return to the Module Editor
+   */
+  protected void close() {
+    
+  }
 }

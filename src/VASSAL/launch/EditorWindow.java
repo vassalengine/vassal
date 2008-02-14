@@ -19,6 +19,7 @@ package VASSAL.launch;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -35,6 +36,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
@@ -64,6 +66,7 @@ public abstract class EditorWindow extends JFrame {
   protected SaveAsAction saveAsAction;
   protected JMenuItem componentHelpItem;
   protected JMenuItem createUpdater;
+  protected JMenuItem close;
 
   public static boolean hasInstance() {
     return instance != null;
@@ -252,8 +255,9 @@ public abstract class EditorWindow extends JFrame {
       e.printStackTrace();
     }
 
-    
-    componentHelpItem = new JMenuItem();
+    // Temporary Component Help item until the Module is loaded
+    componentHelpItem = new JMenuItem("Component help");
+    componentHelpItem.setEnabled(false);
     menu.add(componentHelpItem);
     
     menu.addSeparator();
@@ -275,6 +279,7 @@ public abstract class EditorWindow extends JFrame {
     };
 
     saveAction.setEnabled(false);
+    saveAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     addMenuItem(MenuKey.SAVE, menu.add(saveAction));
     toolBar.add(saveAction);
   }
@@ -288,15 +293,28 @@ public abstract class EditorWindow extends JFrame {
     };
 
     saveAsAction.setEnabled(false);
+    saveAsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     addMenuItem(MenuKey.SAVE_AS, menu.add(saveAsAction));
     toolBar.add(saveAsAction);
   }
   
+  protected void addCloseMenuItem(JMenu menu) {
+    close = new JMenuItem("Close " + getEditorType());
+    close.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        close();
+      }
+    });
+    close.setEnabled(false);
+    addMenuItem(MenuKey.CLOSE, menu.add(close));
+  }
+  
   /*
-   * Each component must Save and SaveAs itself
+   * Each component must Save, SaveAs and close itself
    */
   protected abstract void save();
   protected abstract void saveAs();
+  protected abstract void close();
   
   protected void addQuitMenuItem(JMenu menu) {
 
