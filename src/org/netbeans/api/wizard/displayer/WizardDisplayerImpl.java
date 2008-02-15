@@ -439,7 +439,7 @@ public class WizardDisplayerImpl extends WizardDisplayer
                 .getBorder());
             summaryComp.setBorder(b);
         }
-        setCurrentWizardPanel((JComponent) summaryComp); // XXX
+        setCurrentWizardPanel(summaryComp); // XXX
         instructions.setInSummaryPage(true);
         ttlLabel.setText(NbBridge.getString("org/netbeans/api/wizard/Bundle", // NOI18N
                                             WizardDisplayerImpl.class, "Summary")); // NOI18N

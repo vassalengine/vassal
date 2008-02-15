@@ -29,7 +29,6 @@ import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -452,7 +451,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   @SuppressWarnings("unchecked")
-  protected Collection<Action> buildAddActionsFor(final Configurable target) {
+  protected List<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<Action>();
     for (Class<? extends Buildable> newConfig :
             target.getAllowableConfigureComponents()) {

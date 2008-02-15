@@ -22,6 +22,7 @@ import java.awt.Frame;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 
 /**
@@ -32,7 +33,8 @@ public class ChooseComponentPathDialog extends ChooseComponentDialog {
 
   private Configurable[] path;
 
-  public ChooseComponentPathDialog(Frame owner, Class targetClass) {
+  public ChooseComponentPathDialog(Frame owner,
+                                   Class<? extends Buildable> targetClass) {
     super(owner, targetClass);
   }
 
