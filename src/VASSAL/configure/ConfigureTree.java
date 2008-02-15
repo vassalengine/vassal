@@ -451,18 +451,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return a;
   }
 
+  @SuppressWarnings("unchecked")
   protected Collection<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<Action>();
-    for (Class<? extends Buildable> newConfig : target.getAllowableConfigureComponents()) {
-      final Action action = buildAddAction(target, newConfig);
-      l.add(action);
+    for (Class<? extends Buildable> newConfig :
+            target.getAllowableConfigureComponents()) {
+      l.add(buildAddAction(target, newConfig));
     }
 
     for (AdditionalComponent add : additionalComponents) {
       if (target.getClass().equals(add.getParent())) {
         final Class<? extends Buildable> newConfig = add.getChild();
-        final Action action = buildAddAction(target, newConfig);
-        l.add(action);
+        l.add(buildAddAction(target, newConfig));
       }
     }
     return l;
