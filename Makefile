@@ -15,8 +15,8 @@ JAVAPATH:=/usr/lib/jvm/java-1.6.0-sun
 #JAVAPATH:=/usr/lib/jvm/java-1.5.0-sun
 
 JC:=$(JAVAPATH)/bin/javac
-JCFLAGS:=-d $(CLASSDIR) -source 5 -target 5 -Xlint -classpath $(CLASSPATH) \
-				 -sourcepath $(SRCDIR)
+JCFLAGS:=-d $(CLASSDIR) -source 5 -target 5 -Xlint -Xlint:-path \
+				 -classpath $(CLASSPATH) -sourcepath $(SRCDIR)
 
 JAR:=$(JAVAPATH)/bin/jar
 JDOC:=$(JAVAPATH)/bin/javadoc
