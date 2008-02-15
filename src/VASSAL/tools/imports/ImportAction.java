@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
+import VASSAL.launch.EditModuleAction;
 import VASSAL.launch.LoadModuleAction;
 import VASSAL.launch.ModuleEditorWindow;
 import VASSAL.launch.PlayerWindow;
@@ -51,7 +52,7 @@ import VASSAL.tools.imports.adc2.SymbolSet;
  * To add more capabilities, see the static fields DESCRIPTIONS, EXTENSIONS, and IMPORTERS.
  */
 
-public final class ImportAction extends LoadModuleAction {
+public final class ImportAction extends EditModuleAction {
 
 	private static final long serialVersionUID = 1L;
 
@@ -124,8 +125,8 @@ public final class ImportAction extends LoadModuleAction {
 					}					
 					imp.importFile(this, f);
 					imp.writeToArchive();
-					PlayerWindow.getInstance().setVisible(true);
-					ModuleEditorWindow.getInstance().setVisible(true);
+					module.getFrame().setVisible(true);
+					ModuleEditorWindow.getInstance().moduleLoading(module);
 				}
 				// some serious problems.
 				catch (IllegalAccessException e) {
