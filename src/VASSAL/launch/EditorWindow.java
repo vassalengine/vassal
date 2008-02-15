@@ -172,8 +172,7 @@ public abstract class EditorWindow extends JFrame {
   protected final JScrollPane scrollPane;
   
   protected EditorWindow() {
-    setTitle("VASSAL " + getEditorType() + " Editor");
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setTitle("VASSAL " + getEditorType() + " Editor");    
     setLayout(new BorderLayout());
     setJMenuBar(menuBar);
     
@@ -275,6 +274,7 @@ public abstract class EditorWindow extends JFrame {
       private static final long serialVersionUID = 1L;
       public void actionPerformed(ActionEvent e) {
         save();
+        treeStateChanged(false);
       }
     };
 
@@ -289,6 +289,7 @@ public abstract class EditorWindow extends JFrame {
       private static final long serialVersionUID = 1L;
       public void actionPerformed(ActionEvent e) {
         saveAs();
+        treeStateChanged(false);
       }
     };
 
@@ -372,5 +373,16 @@ public abstract class EditorWindow extends JFrame {
         }
       ).setVisible(true);
     }
+  }
+  
+  /**
+   * Called by the enclosed ConfigureTree or ExtensionTree when it's dirty
+   * state is changed. The implementing class should override this if they
+   * need to take action like changing menu availability.
+   * 
+   * @param changed true if the tree is in a changed (dirty) state
+   */
+  public void treeStateChanged(boolean changed) {
+    
   }
 }

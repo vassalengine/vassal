@@ -19,6 +19,7 @@ package VASSAL.launch;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
@@ -45,13 +46,20 @@ public class ModuleEditorWindow extends EditorWindow {
     return instance;
   }
 
+  public ModuleEditorWindow() {
+    super();
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  }
+  
   /**
    * The GameModule is loading
    */
   public void moduleLoading(GameModule mod) {
-    tree = new ConfigureTree(mod, helpWindow);
-    scrollPane.setViewportView(tree);
+    tree = new ConfigureTree(mod, helpWindow, this);
+    treeStateChanged(false);
+    scrollPane.setViewportView(tree);    
     
+    getEditMenu().removeAll();
     tree.buildEditMenu(getEditMenu());
     componentHelpItem.setAction(tree.getHelpAction());
     
@@ -61,8 +69,6 @@ public class ModuleEditorWindow extends EditorWindow {
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
     importAction.setEnabled(false);
-    newExtensionAction.setEnabled(true);
-    editExtensionAction.setEnabled(true);
     createUpdater.setEnabled(true);
     updateSavedGame.setEnabled(true);
 
@@ -152,6 +158,10 @@ public class ModuleEditorWindow extends EditorWindow {
     
   }
   
+  public void treeStateChanged(boolean changed) {
+    newExtensionAction.setEnabled(!changed);
+    editExtensionAction.setEnabled(!changed);
+  }
   
 
 }

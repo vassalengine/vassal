@@ -23,6 +23,7 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
@@ -30,12 +31,15 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
+import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.module.ExtensionElement;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.launch.EditorWindow;
 
 /**
  * The configuration tree for editing a module extension
@@ -45,8 +49,8 @@ public class ExtensionTree extends ConfigureTree {
 
   private ModuleExtension extension;
 
-  public ExtensionTree(Configurable root, HelpWindow helpWindow, ModuleExtension extention) {
-    super(root, helpWindow);
+  public ExtensionTree(Configurable root, HelpWindow helpWindow, ModuleExtension extention, EditorWindow editorWindow) {
+    super(root, helpWindow, editorWindow);
     this.extension = extention;
     setCellRenderer(new ExtensionRenderer());
   }
@@ -82,7 +86,7 @@ public class ExtensionTree extends ConfigureTree {
     }
   }
 
-  protected Action buildAddAction(final Configurable target, final Class newConfig) {
+  protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {
     AbstractAction action = new AbstractAction("Add " + getConfigureName(newConfig)) {
       private static final long serialVersionUID = 1L;
 

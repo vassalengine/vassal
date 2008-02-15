@@ -16,8 +16,11 @@
  */
 package VASSAL.launch;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 
@@ -36,14 +39,26 @@ public class ExtensionEditorWindow extends EditorWindow {
     return instance;
   }
   
+  public ExtensionEditorWindow() {
+    super();
+    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        close();
+      }
+    });
+  }
+  
   /**
    * The Extension is loading
    */
   public void moduleLoading(GameModule mod, ModuleExtension ext) {
     extension = ext;
-    tree = new ExtensionTree(mod, helpWindow, ext);
+    tree = new ExtensionTree(mod, helpWindow, ext, this);
+    treeStateChanged(false);
     scrollPane.setViewportView(tree);
     
+    getEditMenu().removeAll();
     tree.buildEditMenu(getEditMenu());
     componentHelpItem.setAction(tree.getHelpAction());
     
@@ -110,6 +125,12 @@ public class ExtensionEditorWindow extends EditorWindow {
    * Close Extension and return to the Module Editor
    */
   protected void close() {
-    
+    if (extension.confirmExit()) {
+      extension = null;
+      tree = null;      
+      setVisible(false);
+      ModuleEditorWindow.getInstance().setVisible(true);
+      dispose();
+    }
   }
 }

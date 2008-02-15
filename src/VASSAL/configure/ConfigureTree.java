@@ -70,6 +70,7 @@ import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
+import VASSAL.launch.EditorWindow;
 
 /**
  * This is the Configuration Tree that appears in the Configuration window
@@ -85,6 +86,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected DefaultMutableTreeNode copyData;
   protected DefaultMutableTreeNode cutData;
   protected HelpWindow helpWindow;
+  protected EditorWindow editorWindow;
   protected Configurable selected;
   protected int selectedRow;
   protected String moveCmd;
@@ -126,8 +128,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   
   /** Creates new ConfigureTree */
   public ConfigureTree(Configurable root, HelpWindow helpWindow) {
+    this(root, helpWindow, null);
+  }
+  
+  public ConfigureTree(Configurable root, HelpWindow helpWindow, EditorWindow editorWindow) {
     toggleClickCount = 3;
     this.helpWindow = helpWindow;
+    this.editorWindow = editorWindow;
     setShowsRootHandles(true);
     setModel(new DefaultTreeModel(buildTreeNode(root)));
     setCellRenderer(buildRenderer());
@@ -191,6 +198,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return new Renderer();
   }
 
+  /**
+   * Tell our enclosing EditorWindow that we are now clean
+   * or dirty.
+   * 
+   * @param changed true = state is not dirty
+   */
+  protected void notifyStateChanged(boolean changed) {
+    if (editorWindow != null) {
+      editorWindow.treeStateChanged(changed);
+    }
+  }
+  
   protected Configurable getTarget(int x, int y) {
     TreePath path = getPathForLocation(x, y);
     Configurable target = null;
@@ -434,14 +453,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected Collection<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<Action>();
-    for (Class<?> newConfig : target.getAllowableConfigureComponents()) {
+    for (Class<? extends Buildable> newConfig : target.getAllowableConfigureComponents()) {
       final Action action = buildAddAction(target, newConfig);
       l.add(action);
     }
 
     for (AdditionalComponent add : additionalComponents) {
       if (target.getClass().equals(add.getParent())) {
-        final Class<?> newConfig = add.getChild();
+        final Class<? extends Buildable> newConfig = add.getChild();
         final Action action = buildAddAction(target, newConfig);
         l.add(action);
       }
@@ -457,7 +476,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return Collections.enumeration(buildAddActionsFor(target));
   }
 
-  protected Action buildAddAction(final Configurable target, final Class newConfig) {
+  protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {
     AbstractAction action = new AbstractAction("Add " + getConfigureName(newConfig)) {
       private static final long serialVersionUID = 1L;
 
@@ -601,6 +620,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       child.removeFrom(parent);
       parent.remove(child);
       ((DefaultTreeModel) getModel()).removeNodeFromParent(getTreeNode(child));
+      notifyStateChanged(true);
       return true;
     }
     catch (IllegalBuildException err) {
@@ -649,6 +669,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       parent.add(c);
       c.addTo(parent);
     }
+    notifyStateChanged(true);
     return succeeded;
   }
 

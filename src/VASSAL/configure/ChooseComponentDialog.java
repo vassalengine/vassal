@@ -22,6 +22,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -30,6 +31,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
+import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ScrollPane;
@@ -41,11 +44,11 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
   private static final long serialVersionUID = 1L;
 
   private Configurable target;
-  private Class targetClass;
+  private Class<? extends Buildable> targetClass;
   private JButton okButton;
   private VASSAL.configure.ConfigureTree tree;
 
-  public ChooseComponentDialog(Frame owner, Class targetClass) {
+  public ChooseComponentDialog(Frame owner, Class<? extends Buildable> targetClass) {
     super(owner, true);
     this.targetClass = targetClass;
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);

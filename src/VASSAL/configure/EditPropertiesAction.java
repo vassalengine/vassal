@@ -73,6 +73,9 @@ public class EditPropertiesAction extends AbstractAction {
       });
       openWindows.put(target,w);
       w.setVisible(true);
+      if (tree != null) {
+        tree.notifyStateChanged(true);
+      }
     }
     w.toFront();
   }

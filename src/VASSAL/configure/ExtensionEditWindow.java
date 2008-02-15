@@ -48,7 +48,7 @@ public class ExtensionEditWindow extends ModuleEditWindow {
   }
 
   private void initExtensionComponents() {
-    tree = new ExtensionTree(GameModule.getGameModule(), helpWindow, extension);
+    //tree = new ExtensionTree(GameModule.getGameModule(), helpWindow, extension);
     super.initComponents(new ScrollPane(tree));
     toolbar.addSeparator();
     toolbar.add(extension.getEditAction(new JDialog(this)));
