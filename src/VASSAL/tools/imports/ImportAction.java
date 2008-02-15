@@ -125,7 +125,7 @@ public final class ImportAction extends EditModuleAction {
 					}					
 					imp.importFile(this, f);
 					imp.writeToArchive();
-					module.getFrame().setVisible(true);
+					PlayerWindow.getInstance().setVisible(true);
 					ModuleEditorWindow.getInstance().moduleLoading(module);
 				}
 				// some serious problems.
