@@ -26,7 +26,9 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.image.ImageObserver;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -345,6 +347,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
               }
   
               requested.remove(tile);
+
+              final ThrobberObserver tobs = throbberObservers.remove(tile);
+              if (tobs != null) tobs.stop();
             }
             else {
               if (requested.get(tile) == null) {
@@ -358,7 +363,20 @@ public class Board extends AbstractConfigurable implements GridContainer {
               g.setColor(oldColor);
   
               // draw animated throbber
-              g.drawImage(throbber, tx+tw/2-thxoff, ty+th/2-thyoff, obs);
+              ThrobberObserver tobs  = throbberObservers.get(tile);
+              if (tobs == null) {
+                tobs = throbberObservers.put(tile,
+                  new ThrobberObserver(obs, zoom));
+              }
+              else if (zoom != tobs.getZoom()) {
+                throbberObservers.remove(tobs);
+                tobs.stop();
+                tobs = throbberObservers.put(tile,
+                  new ThrobberObserver(obs, zoom));
+              }
+
+              g.drawImage(throbber, tx+tw/2-thxoff, ty+th/2-thyoff, tobs);
+//              g.drawImage(throbber, tx+tw/2-thxoff, ty+th/2-thyoff, obs);
             }
           }
           catch (CancellationException e) {
@@ -368,6 +386,15 @@ public class Board extends AbstractConfigurable implements GridContainer {
             ErrorLog.warn(e);
           }
         }
+
+        for (Point tile : requested.keySet().toArray(new Point[0])) {
+          if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
+            final Future<Image> fim = requested.remove(tile);
+            final ThrobberObserver tobs = throbberObservers.remove(tile);
+            if (tobs != null) tobs.stop();
+          }
+        }
+
 /*
         final StringBuilder sb = new StringBuilder();
         for (Point tile : requested.keySet().toArray(new Point[0])) {
@@ -406,6 +433,36 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
+  private java.util.Map<Point,ThrobberObserver> throbberObservers =
+    new ConcurrentHashMap<Point,ThrobberObserver>();
+
+  public static class ThrobberObserver implements ImageObserver {
+    private final Component c;
+    private final double zoom;
+    private boolean done = false;
+
+    public ThrobberObserver(Component c, double zoom) {
+      this.c = c;
+      this.zoom = zoom;
+    }
+
+    public double getZoom() {
+      return zoom;
+    }
+
+    public void stop() {
+      done = true;
+    }
+
+//    private static int count = 0;
+
+    public boolean imageUpdate(Image img, int flags,
+                               int x, int y, int w, int h) {
+//System.out.println((count++) + " " + done);
+      return !done && c.imageUpdate(img, flags, x, y, w, h);
+    }
+  }
+ 
   @Deprecated
   public synchronized Image getScaledImage(double zoom, Component obs) {
     try {

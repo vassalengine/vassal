@@ -191,7 +191,11 @@ public class PlayerWindow extends JFrame {
     final Runnable toggleMenuItems = new Runnable() {
       public void run() {
         loadModuleAction.setEnabled(false);
-//        closeModule.setEnabled(true);    
+//        closeModule.setEnabled(true);
+
+        if (EditorWindow.hasInstance())
+          ModuleEditorWindow.getInstance()
+                            .moduleLoading(GameModule.getGameModule());
       }
     };
 

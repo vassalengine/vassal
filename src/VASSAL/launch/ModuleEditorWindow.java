@@ -65,7 +65,7 @@ public class ModuleEditorWindow extends EditorWindow {
     
     createModuleAction.setEnabled(false);
     editModuleAction.setEnabled(false);
-    close.setEnabled(true);
+//    close.setEnabled(true);
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
     importAction.setEnabled(false);
@@ -162,6 +162,4 @@ public class ModuleEditorWindow extends EditorWindow {
     newExtensionAction.setEnabled(!changed);
     editExtensionAction.setEnabled(!changed);
   }
-  
-
 }

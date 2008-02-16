@@ -58,7 +58,7 @@ public final class ImportAction extends EditModuleAction {
 
 	public ImportAction(Component comp) {
 		super(comp);
-		putValue(NAME, Resources.getString("Main.import_module"));
+		putValue(NAME, Resources.getString("Editor.import_module"));
 	}
 
 	/*
