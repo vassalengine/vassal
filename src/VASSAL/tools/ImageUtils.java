@@ -46,14 +46,14 @@ public class ImageUtils {
 
   public static final String PREFER_MEMORY_MAPPED = "preferMemoryMapped"; //$NON-NLS-1$
   public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
-  private int largeImageLoadMethod;
   private static final int MAPPED = 0;
   private static final int RAM = 1;
+  private int largeImageLoadMethod = RAM;
 
-  private int scalingQuality;
   private static final int POOR = 0;
   private static final int MEDIUM = 1;
   private static final int GOOD = 2;
+  private int scalingQuality = GOOD;
 
   private final Map<RenderingHints.Key,Object> defaultHints =
     new HashMap<RenderingHints.Key,Object>();
