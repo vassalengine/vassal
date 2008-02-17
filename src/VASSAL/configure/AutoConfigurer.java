@@ -66,7 +66,7 @@ public class AutoConfigurer extends Configurer
 
     String[] name = c.getAttributeNames();
     String[] prompt = c.getAttributeDescriptions();
-    Class[] type = c.getAttributeTypes();
+    Class<?>[] type = c.getAttributeTypes();
 
     int n = Math.min(name.length, Math.min(prompt.length, type.length));
     for (int i = 0; i < n; ++i) {
@@ -181,11 +181,11 @@ public class AutoConfigurer extends Configurer
 
   public void setVisibility(String attribute, VisibilityCondition c) {
     if (c != null) {
-    if (conditions == null) {
-      conditions = new HashMap<String,VisibilityCondition>();
-    }
-    conditions.put(attribute, c);
-    checkVisibility();
+      if (conditions == null) {
+        conditions = new HashMap<String,VisibilityCondition>();
+      }
+      conditions.put(attribute, c);
+      checkVisibility();
     }
   }
 

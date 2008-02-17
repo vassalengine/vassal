@@ -155,7 +155,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
   }
 
   public Configurable[] getConfigureComponents() {
-    ArrayList<Configurable> l = new ArrayList<Configurable>();
+    final ArrayList<Configurable> l = new ArrayList<Configurable>();
     for (Buildable b : getBuildables()) {
       if (b instanceof Configurable) {
         l.add((Configurable) b);
