@@ -134,6 +134,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     toggleClickCount = 3;
     this.helpWindow = helpWindow;
     this.editorWindow = editorWindow;
+    this.editMenu = editorWindow.getEditMenu();
     setShowsRootHandles(true);
     setModel(new DefaultTreeModel(buildTreeNode(root)));
     setCellRenderer(buildRenderer());
@@ -855,6 +856,28 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return helpAction;
   }
 
+  public void populateEditMenu(EditorWindow ew) {
+    ew.setMenuItem(EditorWindow.MenuKey.DELETE, deleteAction);
+    ew.setMenuItem(EditorWindow.MenuKey.CUT, cutAction);
+    ew.setMenuItem(EditorWindow.MenuKey.COPY, copyAction);
+    ew.setMenuItem(EditorWindow.MenuKey.PASTE, pasteAction);
+    ew.setMenuItem(EditorWindow.MenuKey.MOVE, moveAction);
+    ew.setMenuItem(EditorWindow.MenuKey.PROPERTIES, propertiesAction);
+    ew.setMenuItem(EditorWindow.MenuKey.TRANSLATE, translateAction);
+
+    deleteItem = ew.getMenuItem(EditorWindow.MenuKey.DELETE);
+    cutItem = ew.getMenuItem(EditorWindow.MenuKey.CUT);
+    copyItem = ew.getMenuItem(EditorWindow.MenuKey.COPY);
+    pasteItem = ew.getMenuItem(EditorWindow.MenuKey.PASTE);
+    moveItem = ew.getMenuItem(EditorWindow.MenuKey.MOVE);
+    propertiesItem = ew.getMenuItem(EditorWindow.MenuKey.PROPERTIES);
+    translateItem = ew.getMenuItem(EditorWindow.MenuKey.TRANSLATE);
+
+    updateEditMenu(); 
+  }
+
+  /** @deprecated Use {@link #populateEditMenu()} instead. */
+  @Deprecated
   public void buildEditMenu(JMenu menu) {
     editMenu = menu;
     deleteItem = new JMenuItem(deleteAction);
@@ -876,9 +899,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   public JMenu getEditMenu() {
-    if (editMenu == null) {
-      buildEditMenu(new JMenu(Resources.getString(Resources.EDIT)));
-    }
     return editMenu;
   }
 
@@ -937,18 +957,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected void updateEditMenu() {
-    if (editMenu != null) {
-      deleteItem.setEnabled(selected != null);
-      cutItem.setEnabled(selected != null);
-      cutAction.setEnabled(selected != null);
-      copyItem.setEnabled(selected != null);
-      copyAction.setEnabled(selected != null);
-      pasteItem.setEnabled(selected != null && isValidPasteTarget(selected));
-      pasteAction.setEnabled(selected != null && isValidPasteTarget(selected));
-      moveItem.setEnabled(selected != null);
-      propertiesItem.setEnabled(selected != null && selected.getConfigurer() != null);
-      translateItem.setEnabled(selected != null);
-    }
+    deleteAction.setEnabled(selected != null);
+    cutAction.setEnabled(selected != null);
+    copyAction.setEnabled(selected != null);
+    pasteAction.setEnabled(selected != null && isValidPasteTarget(selected));
+    moveAction.setEnabled(selected != null);
+    propertiesAction.setEnabled(selected != null &&
+                                selected.getConfigurer() != null);
+    translateAction.setEnabled(selected != null);
   }
 
   /**

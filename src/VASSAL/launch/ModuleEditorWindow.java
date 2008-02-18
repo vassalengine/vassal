@@ -59,8 +59,7 @@ public class ModuleEditorWindow extends EditorWindow {
     treeStateChanged(false);
     scrollPane.setViewportView(tree);    
     
-    getEditMenu().removeAll();
-    tree.buildEditMenu(getEditMenu());
+    tree.populateEditMenu(this);
     componentHelpItem.setAction(tree.getHelpAction());
     
     createModuleAction.setEnabled(false);
@@ -88,7 +87,6 @@ public class ModuleEditorWindow extends EditorWindow {
   }
 
   protected void populateFileMenu(JMenu menu) {
-
     createModuleAction = new CreateModuleAction(this);
     addMenuItem(MenuKey.NEW, menu.add(createModuleAction));
 

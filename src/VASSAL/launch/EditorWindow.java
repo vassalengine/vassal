@@ -121,6 +121,13 @@ public abstract class EditorWindow extends JFrame {
     NEW_EXTENSION,
     LOAD_EXTENSION,
     QUIT,
+    DELETE,
+    CUT,
+    COPY,
+    PASTE,
+    MOVE,
+    PROPERTIES,
+    TRANSLATE,
     CREATE_MODULE_UPDATER,
     UPDATE_SAVED,
     TRANSLATE_VASSAL,
@@ -185,10 +192,10 @@ public abstract class EditorWindow extends JFrame {
     menuBar.add(fileMenu);
     populateFileMenu(fileMenu);
 
-    // Create an empty Edit Menu. It is populated by the edit Tree
-    // after the component is loaded
+    // build Edit menu 
     editMenu = new JMenu(Resources.getString("General.edit"));
     menuBar.add(editMenu);
+    populateEditMenu(editMenu);
 
     // build Tools menu
     toolsMenu = new JMenu(Resources.getString("General.tools"));
@@ -223,6 +230,58 @@ public abstract class EditorWindow extends JFrame {
    * add different options.
    */
   protected abstract void populateFileMenu(JMenu menu);
+
+  /**
+   * Add options to the Edit Menu. These are dummies entries, which
+   * the {@link ConfigureTree} will replace when a module is loaded.
+   */
+  protected void populateEditMenu(JMenu menu) {
+    final int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+
+    final JMenuItem deleteItem =
+      new JMenuItem(Resources.getString("Editor.delete"));
+    deleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+
+    final JMenuItem cutItem = new JMenuItem(Resources.getString("Editor.cut"));
+    cutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, mask));
+
+    final JMenuItem copyItem =
+      new JMenuItem(Resources.getString("Editor.copy"));
+    copyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, mask));
+
+    final JMenuItem pasteItem =
+      new JMenuItem(Resources.getString("Editor.paste"));
+    pasteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, mask));
+
+    final JMenuItem moveItem =
+      new JMenuItem(Resources.getString("Editor.move"));
+    moveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, mask));
+
+    final JMenuItem propertiesItem =
+      new JMenuItem(Resources.getString("Editor.ModuleEditor.properties"));
+    propertiesItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, mask));
+
+    final JMenuItem translateItem = new JMenuItem(
+      Resources.getString("Editor.ModuleEditor.translate"), KeyEvent.VK_T);
+    translateItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, mask));
+
+    addMenuItem(MenuKey.DELETE, menu.add(deleteItem));
+    addMenuItem(MenuKey.CUT, menu.add(cutItem));
+    addMenuItem(MenuKey.COPY, menu.add(copyItem));
+    addMenuItem(MenuKey.PASTE, menu.add(pasteItem));
+    addMenuItem(MenuKey.MOVE, menu.add(moveItem));
+    menu.addSeparator();
+    addMenuItem(MenuKey.PROPERTIES, menu.add(propertiesItem));
+    addMenuItem(MenuKey.TRANSLATE, menu.add(translateItem));
+
+    deleteItem.setEnabled(false);
+    cutItem.setEnabled(false);
+    copyItem.setEnabled(false);
+    pasteItem.setEnabled(false);
+    moveItem.setEnabled(false);
+    propertiesItem.setEnabled(false);
+    translateItem.setEnabled(false);
+  }
 
   /**
    * Add options to the Tools Menu. Different component types will 
@@ -263,7 +322,6 @@ public abstract class EditorWindow extends JFrame {
 
     final Action aboutVASSAL = AboutVASSAL.getAction();
     menuItems.put(MenuKey.ABOUT_VASSAL, menu.add(aboutVASSAL));
-    
   }
   
   /*

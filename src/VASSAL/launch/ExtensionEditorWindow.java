@@ -58,8 +58,7 @@ public class ExtensionEditorWindow extends EditorWindow {
     treeStateChanged(false);
     scrollPane.setViewportView(tree);
     
-    getEditMenu().removeAll();
-    tree.buildEditMenu(getEditMenu());
+    tree.populateEditMenu(this);
     componentHelpItem.setAction(tree.getHelpAction());
     
     saveAction.setEnabled(true);
