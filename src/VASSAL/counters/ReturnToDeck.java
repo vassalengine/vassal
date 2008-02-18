@@ -25,7 +25,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -173,7 +173,8 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 		  }
 	  }
 	  
-	  final Collection<DrawPile> piles = GameModule.getGameModule().getAllDescendantComponentsOf(DrawPile.class);
+	  final List<DrawPile> piles =
+      GameModule.getGameModule().getAllDescendantComponentsOf(DrawPile.class);
 	  if (piles.size() == 0)
 		  throw new IllegalArgumentException("No decks in module.");
 	  

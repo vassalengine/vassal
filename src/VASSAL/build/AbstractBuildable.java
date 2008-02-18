@@ -19,7 +19,6 @@
 package VASSAL.build;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -138,13 +137,13 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 	}
 
 	/**
-	 * Recursively descend the build tree and return a Collection of all
+	 * Recursively descend the build tree and return a {@link List} of all
 	 * components that are instances of the given class
 	 * 
 	 * @param target
 	 * @return
 	 */
-  public <T> Collection<T> getAllDescendantComponentsOf(Class<T> target) {
+  public <T> List<T> getAllDescendantComponentsOf(Class<T> target) {
 		ArrayList<T> l = new ArrayList<T>();
 		addComponents(target, l);
 		return l;
@@ -206,8 +205,8 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 	 * {@link #getBuildElement} method uses these objects to construct the XML
 	 * element from which this object can be built.
 	 */
-  public Collection<Buildable> getBuildables() {
-    return Collections.unmodifiableCollection(buildComponents);
+  public List<Buildable> getBuildables() {
+    return Collections.unmodifiableList(buildComponents);
   }
 
 	public void validate(Buildable target, ValidationReport report) {
