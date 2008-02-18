@@ -584,13 +584,11 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         fireContentsChanged(this, 0, z.state.getLevelCount()-1);
       }
 
-      @Override
       public Object getElementAt(int i) {
         return z.state.getLevels().get(i) + 
           (z.state.getInitialLevel() == i ? " *" : "");
       }
 
-      @Override
       public int getSize() {
         return z.state.getLevelCount();
       }

@@ -18,6 +18,7 @@ package VASSAL.launch;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,34 +48,43 @@ public class FirstTimeUserPanel {
   private JPanel panel;
   private File tourModule;
   private File tourLogFile;
-//  private ConsoleWindow console;
-  
-  public FirstTimeUserPanel(ConsoleWindow console) {
-//    this.console = console;
+ 
+  public FirstTimeUserPanel() {
     tourModule = new File(Documentation.getDocumentationBaseDir(), "tour.mod");  //$NON-NLS-1$
     tourLogFile = new File(Documentation.getDocumentationBaseDir(), "tour.log");  //$NON-NLS-1$
     initComponents();
   }
 
+  @Deprecated 
+  public FirstTimeUserPanel(ConsoleWindow console) {
+    this();
+  }
+
   protected void initComponents() {
     panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    JLabel l = new JLabel();
+
+    final JLabel l = new JLabel();
     l.setFont(new Font("SansSerif", 1, 40));  //$NON-NLS-1$
-    l.setText(Resources.getString("Main.welcome"));  //$NON-NLS-1$
+    l.setText(" " + Resources.getString("Main.welcome") + " ");  //$NON-NLS-1$
     l.setForeground(Color.black);
     l.setAlignmentX(0.5F);
     panel.add(l);
+
     Box b = Box.createHorizontalBox();
-    JButton tour = new JButton(Resources.getString("Main.tour"));  //$NON-NLS-1$
-    JButton jump = new JButton(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
-    JButton help = new JButton(Resources.getString(Resources.HELP));
+    final JButton tour =
+      new JButton(Resources.getString("Main.tour"));  //$NON-NLS-1$
+    final JButton jump =
+      new JButton(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
+    final JButton help = new JButton(Resources.getString(Resources.HELP));
     b.add(tour);
     b.add(jump);
     b.add(help);
-    JPanel p = new JPanel();
+
+    final JPanel p = new JPanel();
     p.add(b);
     panel.add(p);
+
     tour.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         try {
@@ -100,13 +110,12 @@ public class FirstTimeUserPanel {
     jump.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         SwingUtilities.getWindowAncestor(panel).dispose();
-//        console.setControls(new ConsoleControls(console).getControls());
-//        console.getFrame().setVisible(true);
       }
     });
 
     try {
-      File readme = new File (Documentation.getDocumentationBaseDir(),"README.html");
+      final File readme =
+        new File (Documentation.getDocumentationBaseDir(),"README.html");
       help.addActionListener(new ShowHelpAction(readme.toURI().toURL(), null));
     }
     catch (MalformedURLException e) {
@@ -129,7 +138,10 @@ public class FirstTimeUserPanel {
     box.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         Resources.setLocale((Locale) box.getSelectedItem());
-//        console.setControls(new FirstTimeUserPanel(console).getControls());
+        final Container parent = panel.getParent();
+        parent.remove(panel);
+        parent.add(new FirstTimeUserPanel().getControls());
+        SwingUtilities.getWindowAncestor(parent).pack();
       }
     });
     b.add(box);
