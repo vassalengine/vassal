@@ -93,6 +93,7 @@ public class TurnGlobalHotkey extends AbstractConfigurable {
     
   }
 
+  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }

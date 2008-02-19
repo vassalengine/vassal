@@ -85,6 +85,23 @@ public abstract class TurnLevel extends TurnComponent {
     turnFormat = new FormattedString("$" + LEVEL_VALUE + "$"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  public void findMaximumStrings(List<String> levels, int currentLevel) {
+    String s = getLongestFormattedValue();
+    if (levels.size() < (currentLevel+1) || levels.get(currentLevel) == null || levels.get(currentLevel).length() < s.length()) {
+      levels.add(currentLevel, s);
+    }
+    for (Buildable b : getBuildables()) {
+      if (b instanceof TurnLevel) {
+        ((TurnLevel) b).findMaximumStrings(levels, currentLevel+1);
+      }
+    }
+  }
+
+  protected String getLongestFormattedValue() {
+    turnFormat.setProperty(LEVEL_VALUE, getLongestValueName());
+    return turnFormat.getText();
+  }
+  
   protected boolean hasSubLevelRolledOver() {
     return subLevelRolledOver;
   }
@@ -317,10 +334,20 @@ public abstract class TurnLevel extends TurnComponent {
     }
   }
 
+  /*
+   * Allow TurnLevels to share global property with other TurnLevel's. Check to
+   * see if a property already exists with the same name
+   */
   public void addTo(Buildable parent) {
     this.parent = (TurnComponent) parent;
     ((TurnComponent) parent).addLevel(this);
-    myValue.addTo(GameModule.getGameModule());
+    MutableProperty.Impl existingValue = (MutableProperty.Impl) GameModule.getGameModule().getMutableProperty(propertyName);
+    if (existingValue == null) {
+      myValue.addTo(GameModule.getGameModule());
+    }
+    else {
+      myValue = existingValue;
+    }
   }
   
   public void removeFrom(Buildable parent) {
@@ -328,6 +355,7 @@ public abstract class TurnLevel extends TurnComponent {
     myValue.removeFromContainer();
   }
 
+  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return new Class[] { CounterTurnLevel.class, ListTurnLevel.class };
   }

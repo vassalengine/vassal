@@ -84,6 +84,7 @@ public class TurnComponent extends AbstractConfigurable {
     return null;
   }
 
+  @SuppressWarnings("unchecked")
   public Class[] getAllowableConfigureComponents() {
     return null;
   }
