@@ -232,6 +232,25 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   @Override
   public Point getCenterPoint(int col, int row) {
+	  if (stagger) {
+		  if (grid.isSideways()) {
+			  if (col % 2 != 0) {
+				  if (hDescending)
+					  row++;
+				  else
+					  row--;
+			  }
+		  }
+		  else {
+			  if (col % 2 != 0) {
+				  if (vDescending)
+					  row++;
+				  else
+					  row--;
+			  }
+		  }
+	  }
+	  
 	  if (grid.isSideways()) {
 		  if (vDescending)
 			  col = getMaxRows() - col;
@@ -243,25 +262,6 @@ public class HexGridNumbering extends RegularGridNumbering {
 			  col = getMaxColumns() - col;
 		  if (vDescending)
 			  row = getMaxRows() - row;
-	  }
-	  
-	  if (stagger) {
-		  if (grid.isSideways()) {
-			  if (col % 2 != 0) {
-				  if (hDescending)
-					  row--;
-				  else
-					  row++;
-			  }
-		  }
-		  else {
-			  if (col % 2 != 0) {
-				  if (vDescending)
-					  row--;
-				  else
-					  row++;
-			  }
-		  }
 	  }
 	  
 	  Point p = new Point();

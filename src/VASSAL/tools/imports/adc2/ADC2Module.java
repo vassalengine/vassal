@@ -74,32 +74,24 @@ import VASSAL.tools.imports.Importer;
 
 public class ADC2Module extends Importer {
 	
-	private class Piece {
-
+	protected class Piece {
 		private final int[] values = new int[8];
-		
-		private final ADC2Module.ValueType[] types = new ADC2Module.ValueType[8];
-		
+		private final ValueType[] types = new ValueType[8];
 		private final String name;
-		
 		private final Class cl;
-		
-		private final ADC2Module.HideState hidden;
-		
+		private final HideState hidden;
 		private final int flags;
-
 		private GamePiece gamePiece;
-
 		private PieceSlot pieceSlot;
-		
-		Piece(Class cl) {
+	
+		public Piece(Class cl) {
 			this.name = null;
 			this.cl = cl;
 			this.flags = 0;
 			this.hidden = null;
 		}
 		
-		Piece(int position, String name, Class cl, ADC2Module.HideState hidden, int flags) {
+		public Piece(int position, String name, Class cl, HideState hidden, int flags) {
 			if (name == null || name.equals(""))
 				this.name = null;
 			else
@@ -108,23 +100,23 @@ public class ADC2Module extends Importer {
 			this.flags = flags;
 			this.hidden = hidden;
 			
-			HashMap<Integer, ArrayList<Piece>> hash;
+			final HashMap<Integer, ArrayList<Piece>> hash;
 			if (inForcePool())
 				hash = forcePools;
 			else
 				hash = stacks;
 			
-			ArrayList<Piece> stack = hash.get(new Integer(position));
+			ArrayList<Piece> stack = hash.get(position);
 			if (stack == null) {
 				stack = new ArrayList<Piece>();
 				stack.add(this);
-				hash.put(new Integer(position), stack);
+				hash.put(position, stack);
 			} else {
 				stack.add(0, this);
 			}			
 		}		
 		
-		Class getPieceClass() {
+		public Class getPieceClass() {
 			return cl;
 		}
 		
@@ -138,45 +130,47 @@ public class ADC2Module extends Importer {
 				return false;
 		}
 
-		void setValue(int index, int value) {
+		protected void setValue(int index, int value) {
 			values[index] = value;
 			types[index] = ValueType.NUMERIC;
 		}
 		
-		void writeToArchive(SetupStack parent) throws IOException {
-			GamePiece gp = getGamePiece();
+		protected void writeToArchive(SetupStack parent) throws IOException {
+			final GamePiece gp = getGamePiece();
 			if (gp == null)
 				return;
+			assert(pieceSlot == null);
 			pieceSlot = new PieceSlot(gp);
 			pieceSlot.addTo(parent);
 			parent.add(pieceSlot);			
 		}
 		
-		void writeToArchive(DrawPile parent) throws IOException {
+		protected void writeToArchive(DrawPile parent) throws IOException {
 			GamePiece gp = getGamePiece();
 			if (gp == null)
 				return;
+			assert(pieceSlot == null);
 			pieceSlot = new CardSlot();
 			pieceSlot.setPiece(gp);
 			pieceSlot.addTo(parent);
 			parent.add(pieceSlot);						
 		}
 
-		ADC2Module.Player getPlayer() {
+		public Player getPlayer() {
 			return cl.getPlayer();
 		}
 		
 		private boolean inForcePool() {
-			return (flags & 0x8 ) > 0;
+			return (flags & 0x8) > 0;
 		}
 		
-		void setReplace() {
+		protected void setReplace() {
 			if (getPieceClass().getFlipClass() == null)
 				return;
 
 			// get tree configure path
-			PieceWindow pw = GameModule.getGameModule().getAllDescendantComponentsOf(PieceWindow.class).toArray(new PieceWindow[0])[0];
-			ListWidget lw = pw.getAllDescendantComponentsOf(ListWidget.class).toArray(new ListWidget[0])[0];
+			PieceWindow pw = GameModule.getGameModule().getAllDescendantComponentsOf(PieceWindow.class).iterator().next();
+			ListWidget lw = pw.getAllDescendantComponentsOf(ListWidget.class).iterator().next();
 			Piece p = getPieceClass().getFlipClass().getDefaultPiece();			
 			PieceSlot ps = p.getPieceSlot();
 			SequenceEncoder se2 = new SequenceEncoder(pw.getClass().getName(), ':');
@@ -323,34 +317,30 @@ public class ADC2Module extends Importer {
 		NOT_HIDDEN, INFO_HIDDEN, HIDDEN
 	}
 
-	private static class Player {
+	protected static class Player {
 
-		static final ADC2Module.Player ALL_PLAYERS = new Player("All Players", null, 0, 0);
-		
+		static final Player ALL_PLAYERS = new Player("All Players", null, 0, 0);
 		private final String name;
-		
 		private final SymbolSet.SymbolData hiddenSymbol;
-		
 		private final int searchRange;
-		
-		private final  int hiddenPieceOptions;
+		private final int hiddenPieceOptions;
 
-		Player(String name, SymbolSet.SymbolData hiddenSymbol, int searchRange, int hiddenPieceOptions) {
+		public Player(String name, SymbolSet.SymbolData hiddenSymbol, int searchRange, int hiddenPieceOptions) {
 			this.name = name;
 			this.hiddenSymbol = hiddenSymbol;
 			this.searchRange = searchRange > 50 ? 50 : searchRange;
 			this.hiddenPieceOptions = hiddenPieceOptions;
 		}
 		
-		boolean useHiddenPieces() {
+		public boolean useHiddenPieces() {
 			return (hiddenPieceOptions & 0x1) > 0;
 		}
 		
-		boolean hiddenWhenPlaced() {
+		public boolean hiddenWhenPlaced() {
 			return (hiddenPieceOptions & 0x2) > 0;
 		}
-		
-		boolean hiddenInForcePools() {
+				
+		public boolean hiddenInForcePools() {
 			return (hiddenPieceOptions & 0x4) > 0;
 		}
 
@@ -363,27 +353,23 @@ public class ADC2Module extends Importer {
 		}
 	}
 
-	private class Class {
+	/**
+	 * A general class for a game piece.  Typically all pieces that appear to be identical blong to the
+	 * same class.
+	 */
+	protected class Class {
 		
 		private final int[] values = new int[8];
-		
-		private final ADC2Module.ValueType[] types = new ADC2Module.ValueType[8];
-		
+		private final ValueType[] types = new ValueType[8];
 		private final String name;
-		
 		private final SymbolSet.SymbolData symbol;
-		
 		private final int owner;
-		
 		private final int hiddenSymbol;
-		
 		private final int facing;
-
 		private Class flipClass;
-
 		private Piece defaultPiece;
 		
-		Class(String name, SymbolSet.SymbolData symbol, int owner, int hiddenSymbol, int facing) {
+		public Class(String name, SymbolSet.SymbolData symbol, int owner, int hiddenSymbol, int facing) {
 			this.name = name;
 			this.symbol = symbol;
 			this.owner = owner;
@@ -391,19 +377,19 @@ public class ADC2Module extends Importer {
 			this.facing = facing;
 		}
 
-		void setValue(int index, int value) {
+		protected void setValue(int index, int value) {
 			values[index] = value;
 			types[index] = ValueType.NUMERIC;
 		}
 		
-		protected int getAllowedFacings() {
+		public int getAllowedFacings() {
 			if (allowedFacings == null)
 				return 1;
 			else
 				return allowedFacings[facing];
 		}
 
-		SymbolSet.SymbolData getHiddenSymbol() {
+		public SymbolSet.SymbolData getHiddenSymbol() {
 			if (hiddenSymbol == 30000)
 				return getPlayer().getHiddenSymbol();
 			else if (hiddenSymbol == 30001)
@@ -418,18 +404,18 @@ public class ADC2Module extends Importer {
 				return symbol.getFileName();
 		}
 		
-		public ADC2Module.Player getPlayer() {
+		public Player getPlayer() {
 			return players.get(owner);
 		}
 		
-		public ADC2Module.Player getOwner() {
+		public Player getOwner() {
 			if (owner == 200)
 				return Player.ALL_PLAYERS;
 			else
 				return players.get(owner);
 		}
 
-		void setFlipClass(int to) {
+		protected void setFlipClass(int to) {
 			if (to >= 0 && to < classes.size())
 				flipClass = classes.get(to);
 		}
@@ -438,11 +424,11 @@ public class ADC2Module extends Importer {
 			return flipClass;
 		}
 
-		String getName() {
+		public String getName() {
 			return name;
 		}
 		
-		void setValue(int index, String value) {
+		protected void setValue(int index, String value) {
 			byte[] b = value.getBytes();
 			int result = 0;
 			for (int i = 0; i < 4; ++i)
@@ -451,7 +437,7 @@ public class ADC2Module extends Importer {
 			types[index] = ValueType.TEXT;
 		}
 		
-		void setValue(int index, boolean value) {
+		protected void setValue(int index, boolean value) {
 			if (value)
 				values[index] = 1;
 			else
@@ -459,11 +445,11 @@ public class ADC2Module extends Importer {
 			types[index] = ValueType.YESNO;
 		}
 		
-		private int getValueAsInt(int index) {
+		public int getValueAsInt(int index) {
 			return values[index];
 		}
 		
-		private String getValueAsString(int index) {
+		public String getValueAsString(int index) {
 			byte[] b = new byte[4];
 			int mask = 0x7f000000;
 			for (int i = 0; i < b.length; ++i) {
@@ -473,11 +459,11 @@ public class ADC2Module extends Importer {
 			return new String(b);
 		}
 		
-		private boolean getValueAsBoolean(int index) {
+		public boolean getValueAsBoolean(int index) {
 			return values[index] > 0 ? true : false;
 		}
 		
-		Object getValue(int index) {
+		public Object getValue(int index) {
 			switch(types[index]) {
 			case NUMERIC:
 				return getValueAsInt(index);
@@ -490,54 +476,40 @@ public class ADC2Module extends Importer {
 			}
 		}
 
-		void writeToArchive(ListWidget list) throws IOException {
+		protected void writeToArchive(ListWidget list) throws IOException {
 			getDefaultPiece().writeToArchive(list);
 		}
 
-		Piece getDefaultPiece() {
+		protected Piece getDefaultPiece() {
 			if (defaultPiece == null)
 				defaultPiece = new Piece(this);
 			return defaultPiece;
 		}		
 	}
 
-	static final String COMMON_PROPERTIES = "Common Properties";
-	
+	private static final String COMMON_PROPERTIES = "Common Properties";
 	private String name;
-	
-	static final int zoomLevel = 2;
-	
 	private MapBoard map = null;
-
 	private int gameTurn = -1;
-	
 	private final ArrayList<Class> classes = new ArrayList<Class>();
-	
 	private final ArrayList<Piece> pieces = new ArrayList<Piece>();
-	
-	private final ArrayList<ADC2Module.Player> players = new ArrayList<ADC2Module.Player>();
-
+	private final ArrayList<Player> players = new ArrayList<Player>();
 	private final HashMap<Integer,ArrayList<Piece>> stacks = new HashMap<Integer,ArrayList<Piece>>();
-	
 	private final HashMap<Integer, ArrayList<Piece>> forcePools = new HashMap<Integer,ArrayList<Piece>>();
-	
 	private String[] forcePoolNames;
-	
 	private final String[] classValues = new String[8];
-
 	private final String[] pieceValues = new String[8];
-	
 	private int allowedFacings[]; 
 	
-	Class getClassFromIndex(int index) {
+	protected Class getClassFromIndex(int index) {
 		if (index < 0 || index >= classes.size())
 			return null;
 		return classes.get(index);
 	}
 	
+	@Override
 	protected void load(File f) throws IOException {
-		DataInputStream in = new DataInputStream(new BufferedInputStream(
-				new FileInputStream(f)));
+		DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
 		
 		name = stripExtension(f.getName());
 
@@ -553,6 +525,7 @@ public class ADC2Module extends Importer {
 		map = new MapBoard();
 		map.importFile(action, action.getCaseInsensitiveFile(new File(mapFileName), f, true, null));
 		
+		// bail if any of these block reads fall of the end of the file, but preserve all of the information to that point.
 		try {
 			readGameTurnBlock(in);
 			readClassBlock(in);
@@ -573,13 +546,12 @@ public class ADC2Module extends Importer {
 		}
 	}
 	
-	private void readFlipDefinitionBlock(DataInputStream in) throws IOException {
+	protected void readFlipDefinitionBlock(DataInputStream in) throws IOException {
 		ADC2Utils.readBlockHeader(in, "Flip Definition");
+				
+		in.readUnsignedByte(); // unknown byte
 		
-		// unknown byte
-		in.readUnsignedByte();
-		
-		int nFlipDefs = ADC2Utils.readBase250Word(in);
+		final int nFlipDefs = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nFlipDefs; ++i) {
 			int from = ADC2Utils.readBase250Word(in);
 			int to = ADC2Utils.readBase250Word(in);
@@ -588,64 +560,52 @@ public class ADC2Module extends Importer {
 		}
 	}
 
-	private void readSoundSettingBlock(DataInputStream in) throws IOException {
+	protected void readSoundSettingBlock(DataInputStream in) throws IOException {
 		ADC2Utils.readBlockHeader(in, "Sound Settings");
 		
 		for (int i = 0; i < 3; ++i)
-			// scrollJumpSize[i] =
-			in.readUnsignedByte();
-		// unknown
-		in.read(new byte[3]);
-		// soundOn =
-		in.readUnsignedByte();
+			/* scrollJumpSize[i] = */ in.readUnsignedByte();
+		in.read(new byte[3]); // unknown
+		/* soundOn = */	in.readUnsignedByte();
 	}
 
-	private void readFacingBlock(DataInputStream in) throws IOException {
+	// ADC2 uses a very boroque method for indicating facing. Most of this is not applicable to VASSAL.
+	protected void readFacingBlock(DataInputStream in) throws IOException {
 		ADC2Utils.readBlockHeader(in, "Facing");
 		
-		int nFacing = in.readUnsignedByte();
+		final int nFacing = in.readUnsignedByte();
 		allowedFacings = new int[nFacing+1];
 		allowedFacings[0] = 1;
 		
 		for (int i = 0; i < nFacing; ++i) {
-			// String styleName = 
-			readNullTerminatedString(in);
-			
-			// int direction = 
-			in.readUnsignedByte();
+			/* String styleName = */ readNullTerminatedString(in);			
+			/* int direction = */ in.readUnsignedByte();
 			allowedFacings[i+1] = 2 * getMap().getNFaces();
 			
-			// int display = 
-			in.readUnsignedByte();
-			// int fillColor = 
-			in.readUnsignedByte();
-			// int outlineColor = 
-			in.readUnsignedByte();
+			/* int display = */ in.readUnsignedByte();
+			/* int fillColor = */ in.readUnsignedByte();
+			/* int outlineColor = */ in.readUnsignedByte();
 			// zoom sizes
 			in.read(new byte[3]);
 		}
 	}
 
-	private void readFastZoomBlock(DataInputStream in) throws IOException {
-		int header = in.readByte();
-		if (header != -2)
-			throw new FileFormatException("Invalid Fast Zoom Block Header");
+	// mostly not applicable to VASSAL.
+	protected void readFastZoomBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Fast Zoom");
 		
-		// int fastZoom =
-		in.readUnsignedByte();
+		/* int fastZoom = */ in.readUnsignedByte();
 		
 		int classCombatSummaryValues = in.readUnsignedByte();
 		int pieceCombatSummaryValues = in.readUnsignedByte();
-		// int fastDraw = 
-		in.readUnsignedByte();
+		/* int fastDraw = */ in.readUnsignedByte();
 	}
 
-	private void readStackBlock(DataInputStream in) throws IOException {
-		int header = in.readByte();
-		if (header != -2)
-			throw new FileFormatException("Invalid Stack Block Header");
+	// I'm not even clear on what these do in ADC2.
+	protected void readStackBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Stack");
 		
-		int nStackDefs = ADC2Utils.readBase250Word(in);
+		final int nStackDefs = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nStackDefs; ++i) {
 			// SymbolSet.SymbolData symbol = getSet().getGamePiece(
 			ADC2Utils.readBase250Word(in); // );			
@@ -659,36 +619,31 @@ public class ADC2Module extends Importer {
 			ADC2Utils.readBase250Word(in);			
 		}
 	}
-
-	private void readReplayBlock(DataInputStream in) throws IOException {
-		int header = in.readByte();
-		if (header != -2)
-			throw new FileFormatException("Invalid Replay Block Header");
+	
+	// TODO: this is a big job to implement.
+	protected void readReplayBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Replay");
 		
 		int nBytes = ADC2Utils.readBase250Integer(in);
 		in.read(new byte[nBytes]);
 	}
 
-	private void readForcePoolBlock(DataInputStream in) throws IOException {
-		int header = in.readByte();
-		if (header != -2)
-			throw new FileFormatException("Invalid Force Pool Header");
+	protected void readForcePoolBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Force Pool");
 		
-		int nForcePools = ADC2Utils.readBase250Word(in);
+		final int nForcePools = ADC2Utils.readBase250Word(in);
 		forcePoolNames = new String[nForcePools];
 		for (int i = 0; i < nForcePools; ++i) {
 			forcePoolNames[i] = readNullTerminatedString(in, 25);
-			in.read(new byte[3]);
-			// int nUnits = 
-			ADC2Utils.readBase250Word(in);
+			in.read(new byte[3]); // not sure what these do
+			/* int nUnits = */ ADC2Utils.readBase250Word(in);
 		}
 	}
 
-	private void readPlayerBlock(DataInputStream in) throws IOException {
-		int header = in.readByte();
-		if (header != -2)
-			throw new FileFormatException("Invalid Player Block Header");
+	protected void readPlayerBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Player");
 				
+		// file format doesn't actually care how many players it says there is.
 		/* int nplayers = */ ADC2Utils.readBase250Word(in);
 		
 		// The last player is typically an empty string which indicates the end of
@@ -697,31 +652,30 @@ public class ADC2Module extends Importer {
 		String name;
 		do {
 			name = readNullTerminatedString(in, 25);
+			// someday we may try to crack this, but since it doesn't actually encrypt anything
+			// there's no real point.
 			// byte[] password = new byte[20];
 			in.read(new byte[20]);
-			// int zoomLevel = 
-			in.readByte();
-			// int position = 
-			ADC2Utils.readBase250Word(in);
+			/* int startingZoomLevel = */ in.readByte();
+			/* int startingPosition = */ ADC2Utils.readBase250Word(in);
 			SymbolSet.SymbolData hiddenSymbol = getSet().getGamePiece(ADC2Utils.readBase250Word(in));
-			// String picture = 
-			readNullTerminatedString(in);
+			/* String picture = */ readNullTerminatedString(in);
+			
+			// we don't do anything with this yet.
 			int searchRange = in.readUnsignedByte();
+			
 			int hiddenPieceOptions = in.readUnsignedByte();
-			// int padding = 
-			in.readByte();
+			in.readByte(); // padding
 			
 			if (name.length() > 0) {
-				ADC2Module.Player player = new Player(name, hiddenSymbol, searchRange, hiddenPieceOptions);
+				Player player = new Player(name, hiddenSymbol, searchRange, hiddenPieceOptions);
 				players.add(player);
 			}
 		} while (name.length() > 0);
 	}
 
-	private void readPieceBlock(DataInputStream in) throws IOException {
-		int header = in.readByte();
-		if (header != -2)
-			throw new FileFormatException("Invalid Piece Block Header");
+	protected void readPieceBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Piece");
 		
 		int nPieces = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nPieces; ++i) {
@@ -735,7 +689,7 @@ public class ADC2Module extends Importer {
 			for (int j = 0; j < values.length; ++j)
 				values[j] = in.readInt();
 			
-			ADC2Module.ValueType types[] = new ADC2Module.ValueType[8];
+			ValueType types[] = new ValueType[8];
 			for (int j = 0; j < types.length; ++j) {
 				int t = in.readUnsignedByte();
 				switch (t) {
@@ -754,7 +708,8 @@ public class ADC2Module extends Importer {
 				}
 			}
 			
-			ADC2Module.HideState hidden;
+			// TODO: need to do something with this hidden state stuff
+			HideState hidden;
 			switch(in.readUnsignedByte()) {
 			case 0:
 				hidden = HideState.NOT_HIDDEN;
@@ -772,7 +727,7 @@ public class ADC2Module extends Importer {
 			int position = ADC2Utils.readBase250Word(in);			
 			int flags = in.readUnsignedByte();
 			
-			in.readUnsignedByte();
+			in.readUnsignedByte(); // ignored?
 			
 			Piece p = new Piece(position, name, cl, hidden, flags);			
 			for (int j = 0; j < values.length; ++j) {
@@ -783,28 +738,22 @@ public class ADC2Module extends Importer {
 		}			
 	}
 
-	private void readClassValueBlock(DataInputStream in) throws IOException {
-		int header = in.readByte();
-		if (header != -2)
-			throw new FileFormatException("Invalid Class Value Block Header");
+	protected void readClassValueBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Class Value");
 		
 		for (int i = 0; i < classValues.length; ++i)
 			classValues[i] = readNullTerminatedString(in, 15);			
 	}
 
-	private void readPieceValueBlock(DataInputStream in) throws IOException {
-		int header = in.readByte();
-		if (header != -2)
-			throw new FileFormatException("Invalid Piece Value Block Header");
+	protected void readPieceValueBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Piece Value");
 		
 		for (int i = 0; i < pieceValues .length; ++i)
 			pieceValues[i] = readNullTerminatedString(in, 15);
 	}
 	
-	private void readClassBlock(DataInputStream in) throws IOException {
-		int header = in.readByte();
-		if (header != -2)
-			throw new FileFormatException("Invalid Class Block Header");
+	protected void readClassBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Class");
 		
 		int nClasses = ADC2Utils.readBase250Word(in);
 		
@@ -818,7 +767,7 @@ public class ADC2Module extends Importer {
 			for (int j = 0; j < values.length; ++j)
 				values[j] = in.readInt();
 			
-			ADC2Module.ValueType[] types = new ADC2Module.ValueType[8];
+			ValueType[] types = new ValueType[8];
 			for (int j = 0; j < types.length; ++j) {
 				int t = in.readUnsignedByte();
 				switch (t) {
@@ -841,8 +790,10 @@ public class ADC2Module extends Importer {
 			// belonging to all players (owner = 200)
 			int owner = in.readUnsignedByte();
 		
+			// TODO: handle hidden symbols
 			int hiddenSymbol = ADC2Utils.readBase250Word(in);
 		
+			// TODO: handle facing. Is this even appropriate?
 			// 0 = not used. Any value appears valid even if it's out of range
 			int facing = in.readUnsignedByte();
 			
@@ -856,18 +807,15 @@ public class ADC2Module extends Importer {
 		}			
 	}
 
-	private void readGameTurnBlock(DataInputStream in) throws IOException {
-		int header = in.readByte();
-		if (header != -2)
-			throw new FileFormatException("Invalid Game Turn Block Header");
-		
+	protected void readGameTurnBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Game Turn");
 		gameTurn = ADC2Utils.readBase250Word(in);
 	}
 
-	private void writePrototypesToArchive() {
+	protected void writePrototypesToArchive() {
 		GameModule module = GameModule.getGameModule();
 
-		PrototypesContainer container = module.getAllDescendantComponentsOf(PrototypesContainer.class).toArray(new PrototypesContainer[0])[0];
+		PrototypesContainer container = module.getAllDescendantComponentsOf(PrototypesContainer.class).iterator().next();
 		PrototypeDefinition def = new PrototypeDefinition();
 		def.addTo(container);
 		container.add(def);
@@ -876,7 +824,7 @@ public class ADC2Module extends Importer {
 		// set common properties
 		GamePiece gp = new BasicPiece();		
 		gp = new Delete(Delete.ID + "Delete;D", gp);
-		gp = new ReturnToDeck(ReturnToDeck.ID + "Return to Deck;R;;Select Force Pool", gp);
+		gp = new ReturnToDeck(ReturnToDeck.ID + "Return to Force Pool;R;;Select Force Pool", gp);
 		SequenceEncoder se = new SequenceEncoder(';');
 		Dimension modalSize = getSet().getModalSize();
 		int xOffset = modalSize.width/2;
@@ -889,6 +837,7 @@ public class ADC2Module extends Importer {
 		def.setPiece(gp);		
 	}
 	
+	@Override
 	public void writeToArchive() throws IOException {
 		GameModule.getGameModule().setAttribute(GameModule.MODULE_NAME, name);
 
@@ -902,11 +851,10 @@ public class ADC2Module extends Importer {
 		writePlayersToArchive();
 	}
 
-	private void writeClassesToArchive() throws IOException {
+	protected void writeClassesToArchive() throws IOException {
 		GameModule module = GameModule.getGameModule();
-		PieceWindow win = module.getAllDescendantComponentsOf(PieceWindow.class).toArray(new PieceWindow[0])[0];
+		PieceWindow win = module.getAllDescendantComponentsOf(PieceWindow.class).iterator().next();
 
-//		win.setAttribute(PieceWindow.BUTTON_TEXT, "Classes");
 		win.setAttribute(PieceWindow.NAME, "Add New Pieces");
 		
 		ListWidget list = new ListWidget();
@@ -920,20 +868,25 @@ public class ADC2Module extends Importer {
 			c.getDefaultPiece().setReplace();
 	}
 
-	private void writePlayersToArchive() {
-		PlayerRoster roster = GameModule.getGameModule().getAllDescendantComponentsOf(PlayerRoster.class).toArray(new PlayerRoster[0])[0];
-		SequenceEncoder se = new SequenceEncoder(',');
-		for (ADC2Module.Player player : players)
+	protected void writePlayersToArchive() {
+		final PlayerRoster roster = GameModule.getGameModule().getAllDescendantComponentsOf(PlayerRoster.class).iterator().next();
+		final SequenceEncoder se = new SequenceEncoder(',');
+		for (Player player : players)
 			se.append(player.getName());
 		roster.setAttribute(PlayerRoster.SIDES, se.getValue());
 	}
 
-	private void writeForcePoolsToArchive() throws IOException {
+	/**
+	 * Creates a board with deck stacks in which force pools are kept.
+	 * 
+	 * @throws IOException
+	 */
+	protected void writeForcePoolsToArchive() throws IOException {
 		if (forcePoolNames == null || forcePoolNames.length == 0)
 			return;
 		
-		GameModule module = GameModule.getGameModule();
-		Map forcePoolMap = new Map();
+		final GameModule module = GameModule.getGameModule();
+		final Map forcePoolMap = new Map();
 		forcePoolMap.build(null);
 		forcePoolMap.addTo(module);
 		module.add(forcePoolMap);
@@ -943,18 +896,18 @@ public class ADC2Module extends Importer {
 		forcePoolMap.setAttribute(Map.USE_LAUNCH_BUTTON, Boolean.TRUE);
 		forcePoolMap.setAttribute(Map.BUTTON_NAME, "Counter Tray");
 		
-		BoardPicker boardPicker = forcePoolMap.getBoardPicker();
+		final BoardPicker boardPicker = forcePoolMap.getBoardPicker();
 		
 		// write force pool board
-		Dimension modalSize = getSet().getModalSize();
-		JPanel panel = new JPanel();
-		JPanel[] deckPanels = new JPanel[forcePoolNames.length];
-		GridBagConstraints c = new GridBagConstraints();
+		final Dimension modalSize = getSet().getModalSize();
+		final JPanel panel = new JPanel();
+		final JPanel[] deckPanels = new JPanel[forcePoolNames.length];
+		final GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(5, 5, 5, 5);
 		panel.setLayout(new GridBagLayout());
 		panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		int nForcePools = forcePoolNames.length;
-		int nRows = (nForcePools+3)/4;
+		final int nForcePools = forcePoolNames.length;
+		final int nRows = (nForcePools+3)/4;
 		for (int i = 0; i < nForcePools; ++i) {
 			deckPanels[i] = new JPanel();
 			deckPanels[i].setPreferredSize(modalSize);
@@ -973,29 +926,29 @@ public class ADC2Module extends Importer {
 			c.insets.bottom = 5;
 			panel.add(label, c);
 		}		
-		Dimension d = panel.getPreferredSize();		
+		final Dimension d = panel.getPreferredSize();		
 		panel.setSize(d);
 		panel.doLayout();
-		BufferedImage forcePool = new BufferedImage(d.width, d.height, BufferedImage.TYPE_3BYTE_BGR);
-		Graphics2D g = forcePool.createGraphics();
+		final BufferedImage forcePool = new BufferedImage(d.width, d.height, BufferedImage.TYPE_3BYTE_BGR);
+		final Graphics2D g = forcePool.createGraphics();
 		panel.setBackground(getMap().getTableColor());
 		panel.printAll(g);
 		
 		// write the map image
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ImageIO.write(forcePool, "png", out);
-		byte[] imageDataArray = out.toByteArray();
-		String forcePoolImageName = "forcePool.png";
+		final byte[] imageDataArray = out.toByteArray();
+		final String forcePoolImageName = "forcePool.png";
 		module.getArchiveWriter().addImage(forcePoolImageName, imageDataArray);
 		
-		Board board = new Board();
+		final Board board = new Board();
 		board.addTo(boardPicker);
 		boardPicker.add(board);
 		board.setConfigureName("Force Pools");
 		board.setAttribute(Board.IMAGE, forcePoolImageName);
 		
 		// create decks
-		Rectangle rv = new Rectangle();
+		final Rectangle rv = new Rectangle();
 		for (int i = 0; i < forcePoolNames.length; ++i) {
 			DrawPile pile = new DrawPile();
 			pile.addTo(forcePoolMap);
@@ -1011,7 +964,7 @@ public class ADC2Module extends Importer {
 			pile.setAttribute(DrawPile.DRAW_FACE_UP, Boolean.TRUE);
 			pile.setAttribute(DrawPile.SHUFFLE, Deck.NEVER);
 			pile.setAttribute(DrawPile.REVERSIBLE, Boolean.FALSE);
-			pile.setAttribute(DrawPile.ALLOW_MULTIPLE, Boolean.TRUE);
+			pile.setAttribute(DrawPile.ALLOW_MULTIPLE, Boolean.FALSE);
 			pile.setAttribute(DrawPile.RESHUFFLABLE, Boolean.FALSE);
 			pile.setAttribute(DrawPile.NAME, forcePoolNames[i]);
 			
@@ -1023,9 +976,9 @@ public class ADC2Module extends Importer {
 		}
 	}
 
-	private void writeSetupStacksToArchive() throws IOException {
-		Map mainMap = getMap().getMainMap();
-		Point offset = getMap().getCenterOffset();
+	protected void writeSetupStacksToArchive() throws IOException {
+		final Map mainMap = getMap().getMainMap();
+		final Point offset = getMap().getCenterOffset();
 		for (int hex : stacks.keySet()) {
 			Point p = getMap().indexToPosition(hex);
 			if (p == null)
@@ -1047,8 +1000,8 @@ public class ADC2Module extends Importer {
 			stack.setAttribute(SetupStack.Y_POSITION, Integer.toString(p.y));
 			if (z != null) {
 				try {
-					if (mg.getLocation(location) != null) {
-						assert(mg.locationName(mg.getLocation(location)).equals(location));
+					if (mg.getLocation(location) != null) {						
+						//assert(mg.locationName(mg.getLocation(location)).equals(location));
 						stack.setAttribute(SetupStack.USE_GRID_LOCATION, true);
 						stack.setAttribute(SetupStack.LOCATION, location);
 					}
@@ -1062,11 +1015,11 @@ public class ADC2Module extends Importer {
 		}
 	}
 	
-	MapBoard getMap() {
+	protected MapBoard getMap() {
 		return map;
 	}
 	
-	SymbolSet getSet() {
+	protected SymbolSet getSet() {
 		return getMap().getSet();
 	}
 }
