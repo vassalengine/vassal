@@ -68,8 +68,8 @@ version:
 
 $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS)
 	mkdir -p $@/Contents/{MacOS,Resources}
-	cp dist/{PkgInfo,Info.plist} $@/Contents
-	cp dist/JavaApplicationStub $@/Contents/MacOS
+	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
+	cp dist/macosx/JavaApplicationStub $@/Contents/MacOS
 	svn export $(LIBDIR) $@/Contents/Resources/Java
 	cp $(LIBDIR)/{Vengine.jar,docs.jar} $@/Contents/Resources/Java
 
@@ -84,11 +84,21 @@ $(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS)
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
 	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp $(LIBDIR)/{Vengine.jar,docs.jar} $(TMPDIR)/VASSAL-$(VERSION)/lib
-	cp dist/VASSAL.{sh,bat,exe} $(TMPDIR)/VASSAL-$(VERSION)
+	cp dist/VASSAL.sh dist/windows/VASSAL.{bat,exe} $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
 $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-generic
-	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/VASSAL.nsi
+	rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.sh
+	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
+		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
+			sed -e 's/tmp\/VASSAL-3.1.0-svn3128\/\?//' -e 's/\//\\\/g'`\" ; \
+		find $$i -maxdepth 1 -type f -printf 'File "%p"\n' ; \
+	done >$(TMPDIR)/install_files.inc
+	sed -e 's/^SetOutPath/RMDir/' \
+			-e 's/^File "$(TMPDIR)\/VASSAL-$(VERSION)/Delete "$$INSTDIR/' \
+			-e 's/\//\\/g' <$(TMPDIR)/install_files.inc | \
+		tac	>$(TMPDIR)/uninstall_files.inc
+	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/VASSAL.nsi
 
 release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
 

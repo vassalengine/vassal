@@ -32,7 +32,7 @@ import VASSAL.tools.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-svn3103"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-svn3133"; //$NON-NLS-1$
   private static File homeDir;
   private static Boolean is2dEnabled;
   private static Boolean isDndEnabled;

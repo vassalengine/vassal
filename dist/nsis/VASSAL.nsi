@@ -38,12 +38,7 @@ Section "Base Files" BaseFiles
   SectionIn RO
 
   ; set the files to bundle
-  SetOutPath "$INSTDIR"
-  File "${SRCDIR}/*.exe"
-  File "${SRCDIR}/*.bat"
-    
-  SetOutPath "$INSTDIR\lib"
-  File /r "${SRCDIR}/lib/*"
+  !include "${TMPDIR}/install_files.inc"
 
   ; write keys to the registry
   WriteRegStr HKLM "SOFTWARE\vassalengine.org\VASSAL-${VERSION}" "" "$INSTDIR"
@@ -83,14 +78,15 @@ Section Uninstall
   Delete "$DESKTOP\VASSAL-${VERSION}.lnk"
 
   ; delete the Start menu items
-  RMDir /r "$SMPROGRAMS\VASSAL\VASSAL-${VERSION}"
+  Delete "$SMPROGRAMS\VASSAL\VASSAL-${VERSION}\VASSAL.lnk"
+  RMDir "$SMPROGRAMS\VASSAL\VASSAL-${VERSION}"
 
   ; delete registry keys
   DeleteRegKey HKLM "SOFTWARE\vassalengine.org\VASSAL-${VERSION}"
   DeleteRegKey HKLM ${UROOT}
 
-  ; delete the install director
-  RMDir /r "$INSTDIR"
+  ; delete the installed files and directories
+  !include "${TMPDIR}/uninstall_files.inc"
 
   ; delete VASSAL if empty
   RMDir "$PROGRAMFILES\VASSAL" 
