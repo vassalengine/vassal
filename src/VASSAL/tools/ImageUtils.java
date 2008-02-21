@@ -50,6 +50,7 @@ public class ImageUtils {
   private static final int RAM = 1;
   private int largeImageLoadMethod = RAM;
 
+  @SuppressWarnings("unused")
   private static final int POOR = 0;
   private static final int MEDIUM = 1;
   private static final int GOOD = 2;

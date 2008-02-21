@@ -28,8 +28,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -43,12 +41,8 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
-import VASSAL.counters.ImagePicker;
 import VASSAL.tools.ImageUtils;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
-import VASSAL.tools.imageop.SourceOp;
 
 public class SelectionHighlighter extends AbstractConfigurable implements Highlighter {
   public static final String NAME = "name";

@@ -115,6 +115,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
      private final ImageOp sop;
      private final int dx0, dy0, dw, dh;
      private final double scale;
+     @SuppressWarnings("unused")
      private final RenderingHints hints;
      private final int hash;
  

@@ -28,7 +28,6 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.launch.EditModuleAction;
-import VASSAL.launch.LoadModuleAction;
 import VASSAL.launch.ModuleEditorWindow;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.tools.ArchiveWriter;

@@ -20,8 +20,11 @@ package VASSAL.build.module;
 
 import java.io.File;
 import java.net.MalformedURLException;
+
 import javax.swing.JMenu;
+
 import org.w3c.dom.Element;
+
 import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -30,9 +33,7 @@ import VASSAL.build.module.documentation.AboutScreen;
 import VASSAL.build.module.documentation.BrowserHelpFile;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.Tutorial;
-import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.MandatoryComponent;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.i18n.Resources;
 

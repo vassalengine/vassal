@@ -389,7 +389,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
         for (Point tile : requested.keySet().toArray(new Point[0])) {
           if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
-            final Future<Image> fim = requested.remove(tile);
+            requested.remove(tile);
             final ThrobberObserver tobs = throbberObservers.remove(tile);
             if (tobs != null) tobs.stop();
           }

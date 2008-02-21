@@ -103,6 +103,7 @@ public class SVGRenderer {
     px.scale(scale, scale);
 
     final Rectangle2D rect = new Rectangle2D.Float(0, 0, defaultW, defaultH);
+    @SuppressWarnings("unused")
     final Rectangle2D b = px.createTransformedShape(rect).getBounds2D();
 
 //    r.addTranscodingHint(Rasterizer.KEY_WIDTH, (float) b.getWidth());

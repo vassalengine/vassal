@@ -79,7 +79,8 @@ public class ADC2Module extends Importer {
 		private final ValueType[] types = new ValueType[8];
 		private final String name;
 		private final Class cl;
-		private final HideState hidden;
+		@SuppressWarnings("unused")
+    private final HideState hidden;
 		private final int flags;
 		private GamePiece gamePiece;
 		private PieceSlot pieceSlot;
@@ -222,15 +223,18 @@ public class ADC2Module extends Importer {
 			return (flags & 0x1) > 0;
 		}
 		
-		private boolean hasDefended() {
+		@SuppressWarnings("unused")
+    private boolean hasDefended() {
 			return !hasAttacked() && (flags & 0x2) > 0;
 		}
 		
-		private boolean hasMoved() {
+		@SuppressWarnings("unused")
+    private boolean hasMoved() {
 			return (flags & 0x4) > 0;
 		}
 		
-		private boolean drawOnTopOfOthers() {
+		@SuppressWarnings("unused")
+    private boolean drawOnTopOfOthers() {
 			return (flags & 0x10) > 0;
 		}
 
@@ -241,7 +245,8 @@ public class ADC2Module extends Importer {
 				return getPieceClass().getName() + " " + name;
 		}
 
-		private boolean anyUsedProperties() {
+		@SuppressWarnings("unused")
+    private boolean anyUsedProperties() {
 			for (int i = 0; i < 8; ++i)
 				if (getValue(i) != null)
 					return true;
@@ -322,7 +327,8 @@ public class ADC2Module extends Importer {
 		static final Player ALL_PLAYERS = new Player("All Players", null, 0, 0);
 		private final String name;
 		private final SymbolSet.SymbolData hiddenSymbol;
-		private final int searchRange;
+		@SuppressWarnings("unused")
+    private final int searchRange;
 		private final int hiddenPieceOptions;
 
 		public Player(String name, SymbolSet.SymbolData hiddenSymbol, int searchRange, int hiddenPieceOptions) {
@@ -490,7 +496,8 @@ public class ADC2Module extends Importer {
 	private static final String COMMON_PROPERTIES = "Common Properties";
 	private String name;
 	private MapBoard map = null;
-	private int gameTurn = -1;
+	@SuppressWarnings("unused")
+  private int gameTurn = -1;
 	private final ArrayList<Class> classes = new ArrayList<Class>();
 	private final ArrayList<Piece> pieces = new ArrayList<Piece>();
 	private final ArrayList<Player> players = new ArrayList<Player>();
@@ -596,8 +603,10 @@ public class ADC2Module extends Importer {
 		
 		/* int fastZoom = */ in.readUnsignedByte();
 		
-		int classCombatSummaryValues = in.readUnsignedByte();
-		int pieceCombatSummaryValues = in.readUnsignedByte();
+		@SuppressWarnings("unused")
+    int classCombatSummaryValues = in.readUnsignedByte();
+		@SuppressWarnings("unused")
+    int pieceCombatSummaryValues = in.readUnsignedByte();
 		/* int fastDraw = */ in.readUnsignedByte();
 	}
 

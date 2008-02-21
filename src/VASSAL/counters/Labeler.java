@@ -31,8 +31,6 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -61,7 +59,6 @@ import VASSAL.tools.HashCode;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
