@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipFile;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -47,6 +48,7 @@ import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.WrapLayout;
 
 public class PlayerWindow extends JFrame {
@@ -278,6 +280,7 @@ public class PlayerWindow extends JFrame {
         final GameModule mod = GameModule.getGameModule();
         if (mod != null) {
           ModuleEditorWindow.getInstance().moduleLoading(mod);
+          mod.setDataArchive(new ArchiveWriter(mod.getDataArchive().getArchive()));
         }
         ModuleEditorWindow.getInstance().setVisible(true);
       }

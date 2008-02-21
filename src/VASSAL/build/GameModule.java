@@ -789,6 +789,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public DataArchive getDataArchive() {
     return archive;
   }
+  
+  /**
+   * Set the data archive for the module.
+   *  
+   * @param archive - the data archive.
+   */
+  public void setDataArchive(DataArchive archive) {
+	  this.archive = archive;
+  }
 
   /**
    * If the module is being edited, return the writeable archive for the module
