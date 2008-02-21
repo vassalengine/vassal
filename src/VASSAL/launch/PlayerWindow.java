@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.ZipFile;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
