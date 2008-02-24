@@ -381,7 +381,7 @@ public class MovementReporter {
       final StringBuilder names = new StringBuilder();
       boolean first = true;
       for (Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
-        GamePiece piece = (GamePiece) i.next();
+        GamePiece piece = i.next();
         if (piece instanceof Stack) {
           for (Iterator<GamePiece> j = ((Stack) piece).getPiecesIterator(); j.hasNext(); ) {
             GamePiece p = j.next();
