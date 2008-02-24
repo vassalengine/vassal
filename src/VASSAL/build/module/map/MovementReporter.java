@@ -42,27 +42,27 @@ import VASSAL.tools.FormattedString;
  * Builds an auto-report message for a collection of Move Commands
  */
 public class MovementReporter {
-  private FormattedString format = new FormattedString();
+  protected FormattedString format = new FormattedString();
 
-  private List<MoveSummary> movesToReport = new ArrayList<MoveSummary>();
-  private List<MoveSummary> movesToMark = new ArrayList<MoveSummary>();
+  protected List<MoveSummary> movesToReport = new ArrayList<MoveSummary>();
+  protected List<MoveSummary> movesToMark = new ArrayList<MoveSummary>();
 
   public MovementReporter(Command moveCommand) {
     extractMoveCommands(moveCommand);
   }
 
-  private void extractMoveCommands(Command c) {
+  protected void extractMoveCommands(Command c) {
     MoveSummary summary = null;
     if (c instanceof AddPiece) {
       AddPiece addPiece = ((AddPiece) c);
       if (shouldReport(addPiece)) {
-        summary = new MoveSummary(addPiece);
+        summary = createMoveSummary(addPiece);
       }
     }
     else if (c instanceof MovePiece) {
       MovePiece movePiece = (MovePiece) c;
       if (shouldReport(movePiece)) {
-        summary = new MoveSummary(movePiece);
+        summary = createMoveSummary(movePiece);
       }
     }
     if (summary != null) {
@@ -88,6 +88,15 @@ public class MovementReporter {
     }
   }
 
+  protected MoveSummary createMoveSummary(AddPiece c) {
+    return new MoveSummary(c);
+  }
+  
+  protected MoveSummary createMoveSummary(MovePiece c) {
+    return new MoveSummary(c);
+  }
+  
+  
   /**
    * Mark all pieces with the {@link MovementMarkable} trait
    * @return the equivalent Command
@@ -190,10 +199,10 @@ public class MovementReporter {
         break;
       }
       format.setProperty(Map.PIECE_NAME, ms.getPieceName());
-      format.setProperty(Map.LOCATION, toMap.localizedLocationName(ms.getNewPosition()));
+      format.setProperty(Map.LOCATION, getLocation(toMap, ms.getNewPosition()));
       if (fromMap != null) {
         format.setProperty(Map.OLD_MAP, fromMap.getLocalizedConfigureName());
-        format.setProperty(Map.OLD_LOCATION, fromMap.localizedLocationName(ms.getOldPosition()));
+        format.setProperty(Map.OLD_LOCATION, getLocation(fromMap, ms.getOldPosition()));
       }
       format.setProperty(Map.MAP_NAME, toMap.getLocalizedConfigureName());
 
@@ -206,11 +215,73 @@ public class MovementReporter {
     PieceAccess.GlobalAccess.revertAll();
     return c;
   }
+  
+  protected String getLocation(Map map, Point p) {
+    return map.localizedLocationName(p);
+  }
+  
+  /**
+   * A version of the MovementReporter for reporting the movement of
+   * Invisible pieces. Replace the locations with '?'
+   */
+  public static class HiddenMovementReporter extends MovementReporter {
+
+    public HiddenMovementReporter(Command moveCommand) {
+      super(moveCommand);
+    }
+    
+    protected MoveSummary createMoveSummary(AddPiece c) {
+      return new HiddenMoveSummary(c);
+    }
+    
+    protected MoveSummary createMoveSummary(MovePiece c) {
+      return new HiddenMoveSummary(c);
+    }
+    
+    protected boolean shouldReport(AddPiece addPiece) {
+      GamePiece target = addPiece.getTarget();
+      if (target != null
+          && !(target instanceof Stack)
+          && (Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
+              || Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS)))) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    protected boolean shouldReport(MovePiece movePiece) {
+      GamePiece target = GameModule.getGameModule().getGameState().getPieceForId(movePiece.getId());
+      if (target == null) {
+        return false;
+      }
+      if (target instanceof Stack) {
+        for (Iterator<GamePiece> i = ((Stack) target).getPiecesIterator(); i.hasNext() ;) {
+          GamePiece piece = i.next();
+          if (Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+              || Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
+            return true;
+          }
+        }
+        return false;
+      }
+      else {
+        return Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_ME))
+            || Boolean.TRUE.equals(target.getProperty(Properties.INVISIBLE_TO_OTHERS));
+      }
+    }
+    
+    protected String getLocation(Map map, Point p) {
+      return "?";
+    }
+    
+  }
 
   public static class MoveSummary {
-    private String oldMapId, newMapId;
-    private Point oldPosition, newPosition;
-    private List<GamePiece> pieces = new ArrayList<GamePiece>();
+    protected String oldMapId, newMapId;
+    protected Point oldPosition, newPosition;
+    protected List<GamePiece> pieces = new ArrayList<GamePiece>();
 
     public MoveSummary(AddPiece c) {
       GamePiece target = c.getTarget();
@@ -294,5 +365,52 @@ public class MovementReporter {
       }
       return names.toString();
     }
+  }
+  
+  public static class HiddenMoveSummary extends MoveSummary {
+    
+    public HiddenMoveSummary(AddPiece c) {
+      super(c);
+    }
+    
+    public HiddenMoveSummary(MovePiece c) {
+      super(c);
+    }
+    
+    public String getPieceName() {
+      final StringBuilder names = new StringBuilder();
+      boolean first = true;
+      for (Iterator<GamePiece> i = pieces.iterator(); i.hasNext(); ) {
+        GamePiece piece = (GamePiece) i.next();
+        if (piece instanceof Stack) {
+          for (Iterator<GamePiece> j = ((Stack) piece).getPiecesIterator(); j.hasNext(); ) {
+            GamePiece p = j.next();
+            if (isInvisible(p)) {
+              if (!first) {
+                names.append(", ");
+              }
+              names.append("?");
+              first = false;
+            }
+          }
+        }
+        else {
+          if (isInvisible(piece)) {
+            if (!first) {
+              names.append(", ");
+            }
+            names.append("?");
+            first = false;
+          }
+        }
+      }
+      return names.toString();
+    }
+    
+    protected boolean isInvisible(GamePiece piece) {
+      return Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+      || Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_OTHERS));
+    }
+    
   }
 }

@@ -617,7 +617,7 @@ public class PieceMover extends AbstractBuildable
       tracker.addPiece(dragging);
     }
     if (GlobalOptions.getInstance().autoReportEnabled()) {
-      final Command report = createMovementReporter(comm).getReportCommand();
+      final Command report = createMovementReporter(comm).getReportCommand().append(new MovementReporter.HiddenMovementReporter(comm).getReportCommand());
       report.execute();
       comm = comm.append(report);
     }

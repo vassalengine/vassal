@@ -52,12 +52,13 @@ This trait allows a Game Piece to change the value of a <a href="GlobalPropertie
       <span style="font-weight: bold;">Description</span>&nbsp; A descriptive name for reference in the editor.<br>
 
       <span style="font-weight: bold;"></span><span style="font-weight: bold;">Global Property Name</span>&nbsp; The name
-of the property to be set.<br>
+of the property to be set. You can include $xxxx$ variables.<br>
 
       <span style="font-weight: bold;">Locate Property starting in the&nbsp;</span>
 You may name a Zone or Map containing the Global Property to be set, or
 you may set the property based on the piece's current location, looking
-for the occupied Zone or Map before defaulting to the Module.<br>
+for the occupied Zone or Map before defaulting to the Module. You can include $xxxx$ 
+variables in the name of the Zone or Map.<br>
 
       <span style="font-weight: bold;"></span><span style="font-weight: bold;">Is Numeric</span> If true,
 then changes to the value of the property will be restricted to integer

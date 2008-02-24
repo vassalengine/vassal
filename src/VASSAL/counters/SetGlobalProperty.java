@@ -140,6 +140,24 @@ public class SetGlobalProperty extends DynamicProperty {
       return piece.getProperty(key);
     }
   }
+  
+  public Object getLocalizedProperty(Object key) {
+    if (Properties.KEY_COMMANDS.equals(key)) {
+      return getProperty(key);
+    }
+    else if (Properties.INNER.equals(key)) {
+      return getProperty(key);
+    }
+    else if (Properties.OUTER.equals(key)) {
+      return getProperty(key);
+    }
+    else if (Properties.VISIBLE_STATE.equals(key)) {
+      return getProperty(key);
+    }
+    else {
+      return piece.getLocalizedProperty(key);
+    }
+  }
 
   public void setProperty(Object key, Object val) {
     if (Properties.INNER.equals(key)) {
