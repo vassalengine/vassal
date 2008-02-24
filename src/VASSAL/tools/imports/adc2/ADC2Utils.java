@@ -29,7 +29,15 @@ import VASSAL.tools.imports.FileFormatException;
  *
  */
 
-class ADC2Utils {
+public class ADC2Utils {
+	
+	public static final String MODULE_EXTENSION = ".ops";
+	public static final String MAP_EXTENSION = ".map";
+	public static final String SET_EXTENSION = ".set";
+	
+	public static final String MODULE_DESCRIPTION = "ADC2 Game Module";
+	public static final String MAP_DESCRIPTION = "ADC2 Map Board";
+	public static final String SET_DESCRIPTION = "ADC2 Symbol Set";
 	
 	// can never be instantiated
 	private ADC2Utils() {}

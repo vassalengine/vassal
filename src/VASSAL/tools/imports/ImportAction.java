@@ -37,6 +37,7 @@ import VASSAL.tools.ExtensionFileFilter;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.FileFilter;
 import VASSAL.tools.imports.adc2.ADC2Module;
+import VASSAL.tools.imports.adc2.ADC2Utils;
 import VASSAL.tools.imports.adc2.MapBoard;
 import VASSAL.tools.imports.adc2.SymbolSet;
 
@@ -64,12 +65,16 @@ public final class ImportAction extends EditModuleAction {
 	 * The following three arrays describe the import file types that we can handle.
 	 */
 	
-	private static final String[] EXTENSIONS = { ".ops", ".map", ".set" };
+	private static final String[] EXTENSIONS = {
+		ADC2Utils.MODULE_EXTENSION,
+		ADC2Utils.MAP_EXTENSION,
+		ADC2Utils.SET_EXTENSION,
+	};
 	
     private static final String[] DESCRIPTIONS = {
-    	"ADC2 Game Module",
-    	"ADC2 Map Board",
-    	"ADC2 Symbol Set",
+    	ADC2Utils.MODULE_DESCRIPTION,
+    	ADC2Utils.MAP_DESCRIPTION,
+    	ADC2Utils.SET_DESCRIPTION,
     };
 
     /*

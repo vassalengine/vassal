@@ -68,6 +68,7 @@ import VASSAL.counters.MovementMarkable;
 import VASSAL.counters.Replace;
 import VASSAL.counters.ReturnToDeck;
 import VASSAL.counters.UsePrototype;
+import VASSAL.tools.ExtensionFileFilter;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
@@ -252,6 +253,7 @@ public class ADC2Module extends Importer {
 					return true;
 			return false;
 		}
+		
 		void setValue(int index, String value) {
 			byte[] b = value.getBytes();
 			int result = 0;
@@ -410,6 +412,7 @@ public class ADC2Module extends Importer {
 				return symbol.getFileName();
 		}
 		
+		// TODO: why is there both getPlayer() and getOwner()?
 		public Player getPlayer() {
 			return players.get(owner);
 		}
@@ -524,13 +527,14 @@ public class ADC2Module extends Importer {
 		if (header != -3 && header != -2)
 			throw new FileFormatException("Invalid Game Module Header");
 				
-		// version information
+		// version information doesn't seem to do anything
 		in.read(new byte[2]);
 		
 		String s = readWindowsFileName(in);
 		String mapFileName = forceExtension(s, "map");
 		map = new MapBoard();
-		map.importFile(action, action.getCaseInsensitiveFile(new File(mapFileName), f, true, null));
+		map.importFile(action, action.getCaseInsensitiveFile(new File(mapFileName), f, true, 
+				new ExtensionFileFilter(ADC2Utils.MAP_DESCRIPTION, new String[] {ADC2Utils.MAP_EXTENSION})));
 		
 		// bail if any of these block reads fall of the end of the file, but preserve all of the information to that point.
 		try {
@@ -717,7 +721,6 @@ public class ADC2Module extends Importer {
 				}
 			}
 			
-			// TODO: need to do something with this hidden state stuff
 			HideState hidden;
 			switch(in.readUnsignedByte()) {
 			case 0:
@@ -767,7 +770,8 @@ public class ADC2Module extends Importer {
 		int nClasses = ADC2Utils.readBase250Word(in);
 		
 		for (int i = 0; i < nClasses; ++i) {		
-			// TODO: if symbol is null, then there's a problem
+			// TODO: if symbol is null, then there's a problem.
+			// Check what ADC2 does.
 			SymbolSet.SymbolData symbol = getSet().getGamePiece(ADC2Utils.readBase250Word(in));
 			
 			String name = readNullTerminatedString(in, 25);
@@ -799,10 +803,8 @@ public class ADC2Module extends Importer {
 			// belonging to all players (owner = 200)
 			int owner = in.readUnsignedByte();
 		
-			// TODO: handle hidden symbols
 			int hiddenSymbol = ADC2Utils.readBase250Word(in);
 		
-			// TODO: handle facing. Is this even appropriate?
 			// 0 = not used. Any value appears valid even if it's out of range
 			int facing = in.readUnsignedByte();
 			
