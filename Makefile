@@ -91,14 +91,14 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-generic
 	rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.sh
 	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
-			sed -e 's/tmp\/VASSAL-3.1.0-svn3128\/\?//' -e 's/\//\\\/g'`\" ; \
+			sed -e 's/tmp\/VASSAL-$(VERSION)\/\?//' -e 's/\//\\\/g'`\" ; \
 		find $$i -maxdepth 1 -type f -printf 'File "%p"\n' ; \
 	done >$(TMPDIR)/install_files.inc
 	sed -e 's/^SetOutPath/RMDir/' \
 			-e 's/^File "$(TMPDIR)\/VASSAL-$(VERSION)/Delete "$$INSTDIR/' \
 			-e 's/\//\\/g' <$(TMPDIR)/install_files.inc | \
 		tac	>$(TMPDIR)/uninstall_files.inc
-	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/VASSAL.nsi
+	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer.nsi
 
 release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
 
