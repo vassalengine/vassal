@@ -93,7 +93,7 @@ Var StartMenuFolder
 !define MUI_STARTMENUPAGE_NODISABLE
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER "VASSAL"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKLM"
-!define MUI_STARTMENUPAGE_REGISTRY_KEY "${IROOT}"
+!define MUI_STARTMENUPAGE_REGISTRY_KEY "${UROOT}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "StartMenuFolder"
 !insertmacro MUI_PAGE_STARTMENU StartMenu $StartMenuFolder
 
@@ -562,24 +562,33 @@ Section "-Application" Application
 
   ; create the shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN StartMenu
+    ; don't use version number in shortcut names for Standard install
+    ${If} $CustomSetup == 1
+      StrCpy $0 "VASSAL-${VERSION}"
+    ${Else}
+      StrCpy $0 "VASSAL"
+    ${EndIf}
 
     ; CreateShortCut uses $OUTDIR as the working directory for shortcuts
     SetOutPath "$INSTDIR"
 
     ; create the desktop shortcut
     ${If} $AddDesktopSC == 1
-      CreateShortCut "$DESKTOP\VASSAL-${VERSION}.lnk" "$INSTDIR\VASSAL.exe"
+      CreateShortCut "$DESKTOP\$0.lnk" "$INSTDIR\VASSAL.exe"
+      WriteRegStr "HKLM" "${UROOT}" "DesktopShortcut" "$DESKTOP\$0.lnk"
     ${EndIf}
 
     ; create the Start Menu shortcut
     ${If} $AddStartMenuSC == 1
       CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-      CreateShortCut "$SMPROGRAMS\$StartMenuFolder\VASSAL-${VERSION}.lnk" "$INSTDIR\VASSAL.exe"
+      CreateShortCut "$SMPROGRAMS\$StartMenuFolder\$0.lnk" "$INSTDIR\VASSAL.exe"
+      WriteRegStr "HKLM" "${UROOT}" "StartMenuShortcut" "$SMPROGRAMS\$StartMenuFolder\$0.lnk"
     ${EndIf}
 
     ; create the quick launch shortcut
     ${If} $AddQuickLaunchSC == 1
-      CreateShortCut "$QUICKLAUNCH\VASSAL-${VERSION}.lnk" "$INSTDIR\VASSAL.exe"
+      CreateShortCut "$QUICKLAUNCH\$0.lnk" "$INSTDIR\VASSAL.exe"
+      WriteRegStr "HKLM" "${UROOT}" "QuickLaunchShortcut" "$QUICKLAUNCH\$0.lnk"
     ${EndIf}
 
   !insertmacro MUI_STARTMENU_WRITE_END
@@ -592,16 +601,26 @@ Section Uninstall
   ; delete the uninstaller
   Delete "$INSTDIR\uninst.exe"
 
-; FIXME: we should check whether we created the SCs before deleting them
   ; delete the desktop shortuct
-  Delete "$DESKTOP\VASSAL-${VERSION}.lnk"
+  ReadRegStr $0 "HKLM" "${UROOT}" "DesktopShortcut"
+  ${If} $0 != ""
+    Delete "$0"
+  ${EndIf}
 
   ; delete the quick launch shortcut
-  Delete "$QUICKLAUNCH\VASSAL-${VERSION}.lnk"
+  ReadRegStr $0 "HKLM" "${UROOT}" "QuickLaunchShortcut"
+  ${If} $0 != ""
+    Delete "$0"
+  ${EndIf}
   
   ; delete the Start Menu items
+  ReadRegStr $0 "HKLM" "${UROOT}" "StartMenuShortcut"
+  ${If} $0 != ""
+    Delete "$0"
+  ${EndIf}
+
+  ; delete the Start Menu folder
   !insertmacro MUI_STARTMENU_GETFOLDER StartMenu $StartMenuFolder
-  Delete "$SMPROGRAMS\$StartMenuFolder\VASSAL-${VERSION}.lnk"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 
   ; delete registry keys
