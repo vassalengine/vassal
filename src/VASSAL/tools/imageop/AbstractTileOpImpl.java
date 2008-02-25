@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTileOp.java 2734 2007-12-21 14:30:36Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2007 by Joel Uckelman
  *
