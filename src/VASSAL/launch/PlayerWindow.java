@@ -146,7 +146,7 @@ public class PlayerWindow extends JFrame {
   protected final JToolBar toolBar = new JToolBar();
   protected final JPanel controlPanel = new JPanel();
 
-  protected PlayerWindow() {
+  public PlayerWindow() {
     setTitle("VASSAL");
 
     setLayout(new BorderLayout());

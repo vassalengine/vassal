@@ -176,6 +176,13 @@ public class Prefs {
     editor.write();
   }
   
+  public void close() throws IOException {
+    editor.close();
+    if (this == globalPrefs) {
+      globalPrefs = null;
+    }
+  }
+  
   /**
    * A global set of preferences that exists independent of any individual module
    * @return

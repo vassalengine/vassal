@@ -234,5 +234,9 @@ public class PrefsEditor {
     }
     archive.write();
   }
+
+  public void close() throws IOException {
+    archive.close();
+  }
 }
 

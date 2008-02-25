@@ -736,4 +736,9 @@ public class DataArchive extends SecureClassLoader {
     prod = new FilteredImageSource(img.getSource(), filter);
     return Toolkit.getDefaultToolkit().createImage(prod);
   }
+  
+  public void close() throws IOException {
+    archive.close();
+  }
+
 }

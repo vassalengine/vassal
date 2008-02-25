@@ -127,7 +127,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   };
 
-  protected PlayerWindow frame = PlayerWindow.getInstance();
+  protected PlayerWindow frame = new PlayerWindow();
   protected JPanel controlPanel = frame.getControlPanel();
   protected JToolBar toolBar = frame.getToolBar();
 
@@ -661,37 +661,70 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Exit the application, prompting user to save if necessary
    */
   public void quit() {
-    boolean cancelled = false;
-    try {
-      getGameState().setup(false);
-      cancelled = getGameState().isGameStarted();
-      if (!cancelled) {
+    if (shutDown()) {
+      System.exit(0);
+    }
+  }
+
+  /**
+   * Prompt user to save open game and modules/extensions being edited 
+   * @return true if shutDown should proceed, i.e. user did not cancel
+   * @throws IOException on error while attempting to save
+   */
+  public boolean shutDown() {
+    boolean cancelled;
+    getGameState().setup(false);
+    cancelled = getGameState().isGameStarted();
+    if (!cancelled) {
+      if (getDataArchive() instanceof ArchiveWriter
+          && !buildString().equals(lastSavedConfiguration)) {
+        switch (JOptionPane.showConfirmDialog(frame,
+          Resources.getString("GameModule.save_module"),  //$NON-NLS-1$
+             "", JOptionPane.YES_NO_CANCEL_OPTION)) {  //$NON-NLS-1$
+        case JOptionPane.YES_OPTION:
+          save();
+          break;
+        case JOptionPane.CANCEL_OPTION:
+          cancelled = true;
+        }
+      }
+      for (ModuleExtension ext : getComponentsOf(ModuleExtension.class)) {
+        cancelled = !ext.confirmExit();
+      }
+    }
+    if (!cancelled) {
+      try {
         getPrefs().write();
-        if (getDataArchive() instanceof ArchiveWriter
-            && !buildString().equals(lastSavedConfiguration)) {
-          switch (JOptionPane.showConfirmDialog(frame,
-            Resources.getString("GameModule.save_module"),  //$NON-NLS-1$
-               "", JOptionPane.YES_NO_CANCEL_OPTION)) {  //$NON-NLS-1$
-          case JOptionPane.YES_OPTION:
-            save();
-            break;
-          case JOptionPane.CANCEL_OPTION:
-            cancelled = true;
-          }
-        }
-        for (ModuleExtension ext : getComponentsOf(ModuleExtension.class)) {
-          cancelled = !ext.confirmExit();
-        }
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+      try {
+        getPrefs().close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+      try {
+        Prefs.getGlobalPrefs().write();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+      try {
+        Prefs.getGlobalPrefs().close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+      try {
+        getDataArchive().close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
       }
     }
-    catch (IOException ex) {
-      ex.printStackTrace();
-    }
-    finally {
-      if (!cancelled) {
-        System.exit(0);
-      }
-    }
+    return !cancelled;
   }
 
   /**
@@ -768,6 +801,17 @@ public abstract class GameModule extends AbstractConfigurable implements Command
      */
     for (Plugin plugin : theModule.getComponentsOf(Plugin.class)) {
       plugin.init();
+    }
+  }
+  
+  /**
+   * Unload the module 
+   */
+  public static void unload() {
+    if (theModule != null) {
+      if (theModule.shutDown()) {
+        theModule = null;
+      }
     }
   }
 

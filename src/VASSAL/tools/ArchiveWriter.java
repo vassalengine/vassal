@@ -375,4 +375,5 @@ public class ArchiveWriter extends DataArchive {
   protected void listImageNames(Collection v) {
     v.addAll(setOfImageNames());
   }
+
 }
