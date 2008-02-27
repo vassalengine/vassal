@@ -21,7 +21,6 @@ package VASSAL.chat;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -30,9 +29,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
-import VASSAL.tools.IOUtils;
 
 /**
  * Performs Get and Post operations to a given URL
@@ -73,10 +70,14 @@ public class HttpRequestWrapper {
     URLConnection conn = base.openConnection();
     conn.setUseCaches(false);
 
-    final InputStream in = conn.getInputStream();
-    final String s;
+    final ArrayList<String> l = new ArrayList<String>();
+
+    final BufferedReader in = new BufferedReader(
+      new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
     try {
-      s = IOUtils.toString(in, "UTF-8");
+      String line;
+      while ((line = in.readLine()) != null) l.add(line);
     }
     finally {
       try {
@@ -87,11 +88,6 @@ public class HttpRequestWrapper {
       }
     }
 
-    final ArrayList<String> l = new ArrayList<String>();
-    final StringTokenizer st = new StringTokenizer(s,"\n\r"); //$NON-NLS-1$
-    while (st.hasMoreTokens()) {
-      l.add(st.nextToken());
-    }
     return l;
   }
 
@@ -137,10 +133,8 @@ public class HttpRequestWrapper {
       new InputStreamReader(conn.getInputStream(), "UTF-8")); //$NON-NLS-1$
     try {
       final ArrayList<String> l = new ArrayList<String>();
-      for (String line = input.readLine();
-           line != null; line = input.readLine()) {
-        l.add(line);
-      }
+      String line;
+      while ((line = input.readLine()) != null) l.add(line);
       return l;
     }
     finally {

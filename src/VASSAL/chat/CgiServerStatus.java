@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -85,7 +86,6 @@ public class CgiServerStatus implements ServerStatus {
       e.printStackTrace();
     }
     cachedQuery = null;
-    retrieveHistory();
     ServerStatus.ModuleSummary[] entry =
       entries.values().toArray(new ServerStatus.ModuleSummary[entries.size()]);
     return entry;
