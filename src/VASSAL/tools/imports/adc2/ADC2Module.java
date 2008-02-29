@@ -203,7 +203,7 @@ public class ADC2Module extends Importer {
 					return null;
 				BasicPiece bp = new BasicPiece();
 				SequenceEncoder se = new SequenceEncoder(BasicPiece.ID, ';');
-				se.append("").append("").append(fileName).append(getName()).getValue();
+				se.append("").append("").append(fileName).append(getName());
 				bp.mySetType(se.getValue());			
 
 				// common properties
@@ -1001,9 +1001,10 @@ public class ADC2Module extends Importer {
 			p.translate(offset.x, offset.y);
 			String location = mainMap.locationName(p);
 			stack.setAttribute(SetupStack.NAME, location);
-			stack.setAttribute(SetupStack.OWNING_BOARD, getMap().getBoard().getConfigureName());
+			Board board = getMap().getBoard();
+			stack.setAttribute(SetupStack.OWNING_BOARD, board.getConfigureName());
 			
-			MapGrid mg = getMap().getBoard().getGrid();
+			MapGrid mg = board.getGrid();
 			Zone z = null;
 			if (mg instanceof ZonedGrid)
 				z = ((ZonedGrid) mg).findZone(p);				
@@ -1012,7 +1013,7 @@ public class ADC2Module extends Importer {
 			if (z != null) {
 				try {
 					if (mg.getLocation(location) != null) {						
-						//assert(mg.locationName(mg.getLocation(location)).equals(location));
+						assert(mg.locationName(mg.getLocation(location)).equals(location));
 						stack.setAttribute(SetupStack.USE_GRID_LOCATION, true);
 						stack.setAttribute(SetupStack.LOCATION, location);
 					}

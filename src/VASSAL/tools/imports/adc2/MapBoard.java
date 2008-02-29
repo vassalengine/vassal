@@ -48,18 +48,31 @@ import javax.imageio.ImageIO;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.Inventory;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.PrototypeDefinition;
+import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.map.BoardPicker;
+import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.Zoomer;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
+import VASSAL.build.module.map.boardPicker.board.MapGrid;
 import VASSAL.build.module.map.boardPicker.board.SquareGrid;
 import VASSAL.build.module.map.boardPicker.board.ZonedGrid;
+import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.HexGridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.RegularGridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.SquareGridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.counters.BasicPiece;
+import VASSAL.counters.GamePiece;
+import VASSAL.counters.Immobilized;
+import VASSAL.counters.Marker;
+import VASSAL.counters.UsePrototype;
+import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
 
@@ -70,6 +83,10 @@ import VASSAL.tools.imports.Importer;
  *
  */
 public class MapBoard extends Importer {
+
+	private static final String TERRAIN = "Terrain";
+
+	private static final String TYPE = "Type";
 
 	/**
 	 * A layout consisting of squares in a checkerboard pattern (<it>i.e.</it> each
@@ -1225,7 +1242,7 @@ public class MapBoard extends Importer {
 			this.color = color;
 			assert (orientation != null);
 			this.orientation = orientation;
-			assert (size > 0);
+//			assert (size > 0);
 			this.size = size;
 			font &= 0x7f;
 			int fontIndex = font & 0xf;
@@ -1237,7 +1254,8 @@ public class MapBoard extends Importer {
 		}
 
 		Font getFont() {
-			return getDefaultFont(getSize(), font);
+			int size = getSize();
+			return size == 0 ? null : getDefaultFont(getSize(), font);
 		}
 
 		/**
@@ -1245,6 +1263,8 @@ public class MapBoard extends Importer {
 		 */
 		Point getPosition(Graphics2D g) {
 			Point p = getPosition();
+			if (getSize() == 0)
+				return p;
 			assert (g.getFont() == getFont());
 			FontMetrics fm = g.getFontMetrics();
 			int size = getLayout().getHexSize();
@@ -1306,11 +1326,13 @@ public class MapBoard extends Importer {
 		// scale the size more appropriately--for some reason ADC2 font sizes
 		// don't correspond to anything else.
 		int getSize() {
-			return (size + 1) * 4 / 3 - 1;
+			return size == 0 ? 0 : (size + 1) * 4 / 3 - 1;
 		}
 
 		@Override
 		void draw(Graphics2D g) {
+			if (getSize() == 0)
+				return;
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setFont(getFont());
@@ -1319,6 +1341,10 @@ public class MapBoard extends Importer {
 			g.drawString(text, p.x, p.y);
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_OFF);
+		}
+
+		String getText() {
+			return text;
 		}
 	}
 
@@ -1841,6 +1867,8 @@ public class MapBoard extends Importer {
 	private static final String[] defaultFontNames = { "Courier", "Fixedsys",
 			"MS Sans Serif", "MS Serif", "Impact", "Brush Script MT",
 			"System", "Times New Roman", "Arial" };
+
+	private static final String PLACE_NAMES = "Place Names";
 	
 	/**
 	 * Get a font based on size and font index. If this font has not already been created, then it will be generated.
@@ -2391,7 +2419,7 @@ public class MapBoard extends Importer {
 
 			int font = in.readUnsignedByte();
 
-			if (!isOnMapBoard(index) || text.length() == 0 || size == 0 || orientation == null)
+			if (!isOnMapBoard(index) || text.length() == 0 || orientation == null)
 				continue;
 
 			placeNames.add(new PlaceName(index, text, color, orientation, size, font));
@@ -2653,8 +2681,7 @@ public class MapBoard extends Importer {
 		/* global properties */
 
 		// for testing purposes
-		GlobalOptions options = module.getAllDescendantComponentsOf(
-				GlobalOptions.class).toArray(new GlobalOptions[0])[0];
+		GlobalOptions options = module.getAllDescendantComponentsOf(GlobalOptions.class).toArray(new GlobalOptions[0])[0];
 		options.setAttribute(GlobalOptions.AUTO_REPORT, GlobalOptions.ALWAYS);
 
 		// add zoom capability
@@ -2666,6 +2693,92 @@ public class MapBoard extends Importer {
 			zoom.setAttribute("zoomLevels", StringArrayConfigurer.arrayToString(s));
 			zoom.addTo(mainMap);
 			getMainMap().add(zoom);
+		}
+		
+		// add place name capability
+		if (placeNames.size() > 0) {
+			writePlaceNames(module);
+		}
+	}
+
+	/**
+	 * Write out place name information as non-stackable pieces which can be searched via
+	 * the piece inventory.
+	 * 
+	 * @param module - Game module to write to.
+	 */
+	protected void writePlaceNames(GameModule module) {
+		// write prototype
+		PrototypesContainer container = module.getAllDescendantComponentsOf(PrototypesContainer.class).iterator().next();
+		PrototypeDefinition def = new PrototypeDefinition();
+		def.addTo(container);
+		container.add(def);
+		def.setConfigureName(PLACE_NAMES);
+		
+		GamePiece gp = new BasicPiece();
+		SequenceEncoder se = new SequenceEncoder(',');
+		se.append(TYPE);
+		gp = new Marker(Marker.ID + se.getValue(), gp);
+		gp.setProperty(TYPE, TERRAIN);
+		gp = new Immobilized(gp, Immobilized.ID + "n;V"); 		
+		def.setPiece(gp);
+		
+		// set up inventory button
+		final Inventory inv = new Inventory();
+		inv.build(null);			
+		inv.addTo(module);
+		module.add(inv);
+		
+		inv.setAttribute(Inventory.BUTTON_TEXT, "Places");
+		inv.setAttribute(Inventory.TOOLTIP, "Find place by name");
+		inv.setAttribute(Inventory.FILTER, TYPE + " = " + TERRAIN);
+		inv.setAttribute(Inventory.ICON, "");
+		
+		// write place names as pieces with no image.
+		getMainMap();
+		final Point offset = getCenterOffset();
+		
+		for (PlaceName pn : placeNames) {
+			Point p = pn.getPosition();
+			if (p == null)
+				continue;
+			SetupStack stack = new SetupStack();
+			stack.addTo(mainMap);
+			mainMap.add(stack);
+			p.translate(offset.x, offset.y);
+			String location = mainMap.locationName(p);
+			stack.setAttribute(SetupStack.NAME, location);
+			stack.setAttribute(SetupStack.OWNING_BOARD, board.getConfigureName());
+			
+			MapGrid mg = board.getGrid();
+			Zone z = null;
+			if (mg instanceof ZonedGrid)
+				z = ((ZonedGrid) mg).findZone(p);				
+			stack.setAttribute(SetupStack.X_POSITION, Integer.toString(p.x));
+			stack.setAttribute(SetupStack.Y_POSITION, Integer.toString(p.y));
+			if (z != null) {
+				try {
+					if (mg.getLocation(location) != null) {						
+						assert(mg.locationName(mg.getLocation(location)).equals(location));
+						stack.setAttribute(SetupStack.USE_GRID_LOCATION, true);
+						stack.setAttribute(SetupStack.LOCATION, location);
+					}
+				}
+				catch(BadCoords e) {}
+			}			
+			
+			BasicPiece bp = new BasicPiece();
+			se = new SequenceEncoder(BasicPiece.ID, ';');
+			se.append("").append("").append("").append(pn.getText());
+			bp.mySetType(se.getValue());			
+			
+			se = new SequenceEncoder(UsePrototype.ID.replaceAll(";", ""), ';');
+			se.append(PLACE_NAMES);
+			gp = new UsePrototype(se.getValue(), bp);
+			
+			PieceSlot ps = new PieceSlot(gp);
+			ps.addTo(stack);
+			stack.add(ps);
 		}
 	}
 

@@ -738,7 +738,8 @@ public class DataArchive extends SecureClassLoader {
   }
   
   public void close() throws IOException {
-    archive.close();
+	  if (archive != null)
+		  archive.close();
   }
 
 }
