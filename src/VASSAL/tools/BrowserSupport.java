@@ -25,6 +25,8 @@ import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
+// FIXME: Use java.awt.Desktop for this when we move to Java 1.6+.
+
 /**
  * Utility class for displaying an external browser window
  * @author rkinney

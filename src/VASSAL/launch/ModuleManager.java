@@ -1,6 +1,8 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License (LGPL) as published by the Free Software Foundation.
@@ -21,6 +23,9 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -40,8 +45,8 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -51,9 +56,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.html.HTMLEditorKit;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
@@ -67,6 +76,7 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.TranslateVassalAction;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.OrderedMenu;
@@ -126,7 +136,9 @@ public class ModuleManager {
   public void showFrame() {
     if (theFrame == null) {
       theFrame = new JFrame("VASSAL");
-      theFrame.setLayout(new BoxLayout(theFrame.getContentPane(), BoxLayout.X_AXIS));
+      theFrame.setLayout(
+        new BoxLayout(theFrame.getContentPane(), BoxLayout.X_AXIS));
+
       JMenuBar menuBar = new JMenuBar();
       theFrame.setJMenuBar(menuBar);
       menuBar.add(buildFileMenu());
@@ -156,14 +168,41 @@ public class ModuleManager {
   }
 
   protected JComponent buildModuleControls() {
-    JPanel moduleControls = new JPanel(new BorderLayout());
+    final JPanel moduleControls = new JPanel(new BorderLayout());
     modulePanelLayout = new CardLayout();
     moduleView = new JPanel(modulePanelLayout);
     moduleView.add(new JScrollPane(buildModuleList()),"modules");
-    JLabel l = new JLabel(Resources.getString("ModuleManager.quickstart"));
-    l.setHorizontalAlignment(SwingConstants.CENTER);
-    moduleView.add(l,"quickStart");
-    modulePanelLayout.show(moduleView, modules.size() == 0 ? "quickStart" : "modules");
+
+    final JEditorPane l = new JEditorPane("text/html",
+      Resources.getString("ModuleManager.quickstart"));
+    l.setEditable(false);
+
+    // pick up background color and font from JLabel
+    l.setBackground(UIManager.getColor("control"));
+    final Font font = UIManager.getFont("Label.font");
+
+    ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule(
+      "body { font: " + font.getFamily() + " " + font.getSize() + "pt }");
+
+    l.addHyperlinkListener(new HyperlinkListener() {
+      public void hyperlinkUpdate(HyperlinkEvent e) {
+        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+          BrowserSupport.openURL(e.getURL().toString());
+        }
+      }
+    }); 
+
+    // this is necessary to get proper vertical alignment
+    final JPanel p = new JPanel(new GridBagLayout());
+    final GridBagConstraints c = new GridBagConstraints();
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.anchor = GridBagConstraints.CENTER;
+    p.add(l, c);
+    
+    moduleView.add(p, "quickStart");
+
+    modulePanelLayout.show(moduleView,
+      modules.size() == 0 ? "quickStart" : "modules");
     moduleControls.add(moduleView, BorderLayout.CENTER);
     moduleControls.setBorder(new TitledBorder(Resources.getString("ModuleManager.recent_modules")));
     return moduleControls;
