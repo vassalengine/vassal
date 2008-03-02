@@ -38,6 +38,7 @@ public class ADC2Utils {
 	public static final String MODULE_DESCRIPTION = "ADC2 Game Module";
 	public static final String MAP_DESCRIPTION = "ADC2 Map Board";
 	public static final String SET_DESCRIPTION = "ADC2 Symbol Set";
+	static final String TYPE = "Type";
 	
 	// can never be instantiated
 	private ADC2Utils() {}

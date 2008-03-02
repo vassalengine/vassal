@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
@@ -84,9 +85,7 @@ import VASSAL.tools.imports.Importer;
  */
 public class MapBoard extends Importer {
 
-	private static final String TERRAIN = "Terrain";
-
-	private static final String TYPE = "Type";
+	private static final String PLACE_NAME = "Location Names";
 
 	/**
 	 * A layout consisting of squares in a checkerboard pattern (<it>i.e.</it> each
@@ -2319,10 +2318,10 @@ public class MapBoard extends Importer {
 		for (int i = 0; i < mapElements.size(); ++i) {
 
 			// invalid index: abort reordering and switch back to default
-			if (priority[i] >= mapElements.size())
+			if (priority[i] >= mapElements.size() || priority[i] < 0)
 				return;
 				
-			if (i > 0) { // TODO: what happens when the index is negative?
+			if (i > 0) {
 				// abort reordering and switch back to default if any indeces are repeated
 				for (int j = 0; j < i; ++j) {
 					if (priority[j] == priority[i])
@@ -2650,12 +2649,15 @@ public class MapBoard extends Importer {
 
 		// default grid
 		AbstractConfigurable ac = getLayout().getGeometricGrid();
-
+	
+		// ensure that we don't have a singleton null
+		if (mapSheets.size() == 1 && mapSheets.get(0) == null)
+			mapSheets.remove(0);
+		
 		// setup grids defined by ADC module
 		if (mapSheets.size() > 0) {
 			ZonedGrid zg = new ZonedGrid();
 			for (MapSheet ms : mapSheets) {
-				// TODO: what if mapSheets.size() == 1 and it's null?
 				if (ms == null) // the last one is always null
 					break;
 				Zone z = ms.getZone();
@@ -2717,9 +2719,9 @@ public class MapBoard extends Importer {
 		
 		GamePiece gp = new BasicPiece();
 		SequenceEncoder se = new SequenceEncoder(',');
-		se.append(TYPE);
+		se.append(ADC2Utils.TYPE);
 		gp = new Marker(Marker.ID + se.getValue(), gp);
-		gp.setProperty(TYPE, TERRAIN);
+		gp.setProperty(ADC2Utils.TYPE, PLACE_NAME);
 		gp = new Immobilized(gp, Immobilized.ID + "n;V"); 		
 		def.setPiece(gp);
 		
@@ -2729,25 +2731,31 @@ public class MapBoard extends Importer {
 		inv.addTo(module);
 		module.add(inv);
 		
-		inv.setAttribute(Inventory.BUTTON_TEXT, "Places");
+		inv.setAttribute(Inventory.BUTTON_TEXT, "Search");
 		inv.setAttribute(Inventory.TOOLTIP, "Find place by name");
-		inv.setAttribute(Inventory.FILTER, TYPE + " = " + TERRAIN);
+		inv.setAttribute(Inventory.FILTER, "CurrentMap = Main Map");
 		inv.setAttribute(Inventory.ICON, "");
+		inv.setAttribute(Inventory.GROUP_BY, "Type");
 		
 		// write place names as pieces with no image.
 		getMainMap();
 		final Point offset = getCenterOffset();
+		final HashSet<String> set = new HashSet<String>();
 		
 		for (PlaceName pn : placeNames) {
+			String name = pn.getText();
 			Point p = pn.getPosition();
 			if (p == null)
 				continue;
+			if (set.contains(name))
+				continue;
+			set.add(name);
 			SetupStack stack = new SetupStack();
 			stack.addTo(mainMap);
 			mainMap.add(stack);
 			p.translate(offset.x, offset.y);
 			String location = mainMap.locationName(p);
-			stack.setAttribute(SetupStack.NAME, location);
+			stack.setAttribute(SetupStack.NAME, name);
 			stack.setAttribute(SetupStack.OWNING_BOARD, board.getConfigureName());
 			
 			MapGrid mg = board.getGrid();
@@ -2769,7 +2777,7 @@ public class MapBoard extends Importer {
 			
 			BasicPiece bp = new BasicPiece();
 			se = new SequenceEncoder(BasicPiece.ID, ';');
-			se.append("").append("").append("").append(pn.getText());
+			se.append("").append("").append("").append(name);
 			bp.mySetType(se.getValue());			
 			
 			se = new SequenceEncoder(UsePrototype.ID.replaceAll(";", ""), ';');

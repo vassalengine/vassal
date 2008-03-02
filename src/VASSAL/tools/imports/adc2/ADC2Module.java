@@ -17,6 +17,7 @@
 
 package VASSAL.tools.imports.adc2;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -24,6 +25,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,6 +41,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
@@ -64,6 +67,7 @@ import VASSAL.counters.Delete;
 import VASSAL.counters.Footprint;
 import VASSAL.counters.FreeRotator;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Marker;
 import VASSAL.counters.MovementMarkable;
 import VASSAL.counters.Replace;
 import VASSAL.counters.ReturnToDeck;
@@ -75,6 +79,8 @@ import VASSAL.tools.imports.Importer;
 
 public class ADC2Module extends Importer {
 	
+	private static final String PIECE = "Pieces";
+
 	protected class Piece {
 		private final int[] values = new int[8];
 		private final ValueType[] types = new ValueType[8];
@@ -206,16 +212,18 @@ public class ADC2Module extends Importer {
 				se.append("").append("").append(fileName).append(getName());
 				bp.mySetType(se.getValue());			
 
-				// common properties
-				se = new SequenceEncoder(UsePrototype.ID.replaceAll(";", ""), ';');
-				se.append(COMMON_PROPERTIES);
-				gamePiece = new UsePrototype(se.getValue(), bp);
-
 				// facing
 				if (getPieceClass().getAllowedFacings() > 1) {
 					String type = FreeRotator.ID + getPieceClass().getAllowedFacings() + ";];[;Rotate CW;Rotate CCW;;;;";
-					gamePiece = new FreeRotator(type, gamePiece);				
+					gamePiece = new FreeRotator(type, bp);				
 				}				
+				else
+					gamePiece = bp;
+
+				// common properties
+				se = new SequenceEncoder(UsePrototype.ID.replaceAll(";", ""), ';');
+				se.append(COMMON_PROPERTIES);
+				gamePiece = new UsePrototype(se.getValue(), gamePiece);
 			}
 			return gamePiece;
 		}
@@ -688,7 +696,7 @@ public class ADC2Module extends Importer {
 	}
 
 	protected void readPieceBlock(DataInputStream in) throws IOException {
-		ADC2Utils.readBlockHeader(in, "Piece");
+		ADC2Utils.readBlockHeader(in, PIECE);
 		
 		int nPieces = ADC2Utils.readBase250Word(in);
 		for (int i = 0; i < nPieces; ++i) {
@@ -843,7 +851,21 @@ public class ADC2Module extends Importer {
 		String movedIcon = "/images/moved.gif";
 		se.append(movedIcon).append(xOffset).append(yOffset);
 		gp = new MovementMarkable(MovementMarkable.ID + se.getValue(), gp);
-		gp = new Footprint(Footprint.ID, gp);
+		se = new SequenceEncoder(';');
+		se.append(KeyStroke.getKeyStroke('T', InputEvent.CTRL_MASK))
+			.append("Movement Trail")
+			.append(false)
+			.append(false)
+			.append(10)
+			.append(Color.WHITE)
+			.append(Color.BLACK)
+			.append(100)
+			.append(0);
+		gp = new Footprint(Footprint.ID + se.getValue(), gp);
+		se = new SequenceEncoder(',');
+		se.append(ADC2Utils.TYPE);
+		gp = new Marker(Marker.ID + se.getValue(), gp);
+		gp.setProperty(ADC2Utils.TYPE, PIECE);
 		
 		def.setPiece(gp);		
 	}
