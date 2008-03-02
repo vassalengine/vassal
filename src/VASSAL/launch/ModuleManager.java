@@ -317,7 +317,7 @@ public class ModuleManager {
 
     list.addMouseListener(new MouseAdapter() {
       public void mouseReleased(MouseEvent e) {
-        if (e.isMetaDown()) {
+        if (e.isMetaDown() && !list.isSelectionEmpty()) {
           int index = list.locationToIndex(e.getPoint());
           if (index >= 0) {
             buildPopup(index).show(list, e.getX(), e.getY());
