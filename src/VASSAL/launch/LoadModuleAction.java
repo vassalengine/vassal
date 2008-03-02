@@ -56,7 +56,11 @@ public class LoadModuleAction extends GameModuleAction {
           target = f;
         }
       }
+
+      // bail out if still no target
+      if (target == null) return;
     }
+ 
     loadModule(target);
     actionCancelled = false;
   }

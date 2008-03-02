@@ -28,7 +28,7 @@ package VASSAL.tools;
  * @see Info.compareVersions(String,String)
  */
 public class VersionFormatException extends Exception {
-  public static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
   
   /** {@inheritDoc} */
   public VersionFormatException() { }

@@ -579,6 +579,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
      * A {@link ListModel} built on the {@link State}.
      */
     protected class LevelModel extends AbstractListModel {
+      private static final long serialVersionUID = 1L;
+    
       public void updateModel() {
         fireContentsChanged(this, 0, z.state.getLevelCount()-1);
       }
@@ -873,7 +875,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     private static final String FIT_HEIGHT = "Fit Height";
     private static final String FIT_VISIBLE = "Fit Visible";
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     public ZoomMenu() {
       super();
@@ -1001,7 +1003,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     protected final SpinnerNumberModel percentModel;
     protected final JButton okButton;   
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
  
     public ZoomDialog(Frame owner, String title, boolean modal) {
       super(owner, title, modal);

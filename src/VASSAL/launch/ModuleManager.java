@@ -73,10 +73,11 @@ import VASSAL.tools.OrderedMenu;
 import VASSAL.tools.imports.ImportAction;
 
 /**
- * Tracks recently-used modules and builds the main GUI window for interacting with modules
+ * Tracks recently-used modules and builds the main GUI window for
+ * interacting with modules.
  * 
  * @author rodneykinney
- * 
+ * @since 3.1.0 
  */
 public class ModuleManager {
   private static ModuleManager instance;
@@ -232,21 +233,27 @@ public class ModuleManager {
         missingModules.add(s);
       }
     }
+
     for (String s : missingModules) {
       moduleList.remove(s);
       recentModuleConfig.removeValue(s);
     }
+
     Collections.sort(moduleList, new Comparator<File>() {
       public int compare(File f1, File f2) {
         return f1.getName().compareTo(f2.getName());
       }
     });
+
     modules = new DefaultListModel();
     for (File f : moduleList) {
       modules.addElement(f);
     }
+
     final JList list = new JList(modules);
     list.setCellRenderer(new DefaultListCellRenderer() {
+      private static final long serialVersionUID = 1L;
+
       public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         setText(((File) value).getName());
@@ -254,6 +261,7 @@ public class ModuleManager {
         return c;
       }
     });
+
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
@@ -267,6 +275,7 @@ public class ModuleManager {
         }
       }
     });
+
     list.addMouseListener(new MouseAdapter() {
       public void mouseReleased(MouseEvent e) {
         if (e.isMetaDown()) {
@@ -290,6 +299,8 @@ public class ModuleManager {
         m.add(new LoadModuleAction(module));
         m.add(new EditModuleAction(module));
         m.add(new AbstractAction(Resources.getString("General.remove")) {
+          private static final long serialVersionUID = 1L;
+
           public void actionPerformed(ActionEvent e) {
             removeModule(module);
           }
@@ -299,10 +310,16 @@ public class ModuleManager {
     });
     return list;
   }
+
   private class ExtensionControls extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     private ExtensionsManager extMgr;
     private JList extList;
-    private AbstractAction addExtensionAction = new AbstractAction(Resources.getString("ModuleManager.add")) {
+    private AbstractAction addExtensionAction =
+        new AbstractAction(Resources.getString("ModuleManager.add")) {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         FileChooser fc = FileChooser.createFileChooser(theFrame, (DirectoryConfigurer) Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
         if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
@@ -311,7 +328,11 @@ public class ModuleManager {
         }
       }
     };
-    private AbstractAction newExtensionAction = new AbstractAction(Resources.getString(Resources.NEW)) {
+
+    private AbstractAction newExtensionAction =
+        new AbstractAction(Resources.getString(Resources.NEW)) {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         try {
           GameModule.init(new BasicModule(new DataArchive(getSelectedModule().getPath())));
@@ -335,6 +356,8 @@ public class ModuleManager {
       extList = new JList();
       add(new JScrollPane(extList), BorderLayout.CENTER);
       extList.setCellRenderer(new DefaultListCellRenderer() {
+        private static final long serialVersionUID = 1L;
+
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
           super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
           boolean active = ((Extension) value).isActive();
@@ -342,6 +365,7 @@ public class ModuleManager {
           return this;
         }
       });
+
       extList.addMouseListener(new MouseAdapter() {
         public void mouseReleased(MouseEvent e) {
           if (e.isMetaDown() && extMgr != null) {
@@ -356,12 +380,18 @@ public class ModuleManager {
       JPopupMenu m = new JPopupMenu();
       if (index >= 0) {
         final Extension ext = (Extension) extList.getModel().getElementAt(index);
-        m.add(new AbstractAction(Resources.getString(ext.isActive() ? "ModuleManager.deactivate" : "ModuleManager.activate")) {
+        m.add(new AbstractAction(
+          Resources.getString(
+            ext.isActive() ? "ModuleManager.deactivate" :
+                             "ModuleManager.activate")) {
+          private static final long serialVersionUID = 1L;
+        
           public void actionPerformed(ActionEvent e) {
             extMgr.setActive(ext.getFile(), !ext.isActive());
             refresh();
           }
         });
+
         m.add(new EditExtensionAction(m));
         m.addSeparator();
       }
