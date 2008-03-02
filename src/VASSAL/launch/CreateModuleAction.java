@@ -19,6 +19,10 @@ package VASSAL.launch;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+
+import javax.swing.JFrame;
+
+import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
@@ -32,7 +36,11 @@ public class CreateModuleAction extends GameModuleAction {
 
   public void performAction(ActionEvent e) throws IOException {
     GameModule.init(new BasicModule(new ArchiveWriter((String) null)));
-    GameModule.getGameModule().getFrame().setVisible(true);
-    ModuleEditorWindow.getInstance().moduleLoading(GameModule.getGameModule());
+    JFrame frame = GameModule.getGameModule().getFrame();
+    frame.setVisible(true);
+    ModuleEditorWindow w = new ModuleEditorWindow(GameModule.getGameModule());
+    w.setLocation(0, frame.getY() + frame.getHeight());
+    w.setSize(Info.getScreenBounds(frame).width/2,w.getHeight());
+    w.setVisible(true);
   }
 }

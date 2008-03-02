@@ -58,7 +58,7 @@ public class ShowHelpAction extends AbstractAction {
   public void actionPerformed(ActionEvent e) {
     if (contents != null) {
       if (helpWindow == null) {
-        BrowserSupport.openURL(contents);
+        BrowserSupport.openURL(contents.toString());
       }
       else {
         helpWindow.update(contents);

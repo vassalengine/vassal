@@ -18,17 +18,16 @@
 package VASSAL.launch;
 
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.swing.JMenuItem;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
@@ -59,8 +58,6 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.EditorWindow;
-import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
@@ -111,36 +108,7 @@ public class BasicModule extends GameModule {
       throw new IllegalArgumentException(ex.getMessage());
     }
 
-    final PlayerWindow pw = PlayerWindow.getInstance();
-
-    pw.setMenuItem(PlayerWindow.MenuKey.EDIT_PREFS,
-                   getPrefs().getEditor().getEditAction());
-
-    // setup quit items
-    final JMenuItem quitItem =
-      new JMenuItem(Resources.getString(Resources.QUIT));
-    quitItem.setMnemonic('Q');
-    quitItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        quit();
-      }
-    });
- 
-    pw.setMenuItem(PlayerWindow.MenuKey.QUIT, quitItem);
-
-    if (EditorWindow.hasInstance()) {
-      final EditorWindow ew = ModuleEditorWindow.getInstance();
-      final JMenuItem edQuitItem =
-        new JMenuItem(Resources.getString(Resources.QUIT));
-      edQuitItem.setMnemonic('Q');
-      edQuitItem.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          quit();
-        }
-      });
-
-      ew.setMenuItem(EditorWindow.MenuKey.QUIT, edQuitItem);
-    }
+    GameModule.getGameModule().getFileMenu().add(getPrefs().getEditor().getEditAction());
   }
 
   public void build(Element e) {

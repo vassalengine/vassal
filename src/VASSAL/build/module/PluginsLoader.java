@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipException;
 
-import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.command.Command;
@@ -39,10 +38,12 @@ public class PluginsLoader extends ExtensionsLoader {
 
   public static final String COMMAND_PREFIX = "PLUGIN\t"; //$NON-NLS-1$
   
+  private ExtensionsManager extMgr = new ExtensionsManager("plugins");
+  
   public void addTo(GameModule mod) {
     mod.addCommandEncoder(this);
-    for (String extname : getPluginNames()) {
-      addExtension(extname);
+    for (File ext : extMgr.getActiveExtensions()) {
+      addExtension(ext);
     }
   }
   
@@ -76,12 +77,8 @@ public class PluginsLoader extends ExtensionsLoader {
     return s;
   }
   
-  protected String[] getPluginNames() {
-    return getExtensionNames(getPluginDirectory());
-  } 
-  
   public static String getPluginDirectory() {
-    return (new File(Info.getHomeDir(), "plugins")).getAbsolutePath();  //$NON-NLS-1$
+    return new ExtensionsManager("plugins").getExtensionsDirectory().getPath();  //$NON-NLS-1$
   }
   
   protected String getLoadedMessage(String name, String version) {

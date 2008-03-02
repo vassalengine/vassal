@@ -494,7 +494,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
     
     protected String getNotLoadedMsg() {
-      return Resources.getString("ModuleExtension.load_extension", name, ExtensionsLoader.getExtensionDirectory()); //$NON-NLS-1$ 
+      return Resources.getString("ModuleExtension.load_extension", name, new ExtensionsManager(GameModule.getGameModule()).getExtensionsDirectory()); //$NON-NLS-1$ 
     }
 
     protected Command myUndoCommand() {

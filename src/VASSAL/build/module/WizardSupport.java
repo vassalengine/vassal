@@ -53,6 +53,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -75,12 +76,14 @@ import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.command.CommandFilter;
 import VASSAL.command.NullCommand;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.FileConfigurer;
 import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.SplashScreen;
 
 /**
@@ -135,6 +138,12 @@ public class WizardSupport {
    * 
    */
   public void showWelcomeWizard() {
+    BooleanConfigurer wizardConf = new BooleanConfigurer("welcomeWizard", Resources.getString("WizardSupport.ShowWizard"), Boolean.TRUE);
+    Prefs.getGlobalPrefs().addOption(wizardConf);
+    if (!wizardConf.booleanValue()) {
+      GameModule.getGameModule().getFrame().setVisible(true);
+      return;
+    }
     WizardBranchController c = createWelcomeWizard();
     Wizard welcomeWizard = c.createWizard();
     HashMap<String, Wizard> props = new HashMap<String, Wizard>();
@@ -146,7 +155,6 @@ public class WizardSupport {
     catch (MalformedURLException e) {
       e.printStackTrace();
     }
-//    Object result = WizardDisplayer.showWizard(welcomeWizard, new Rectangle(0, 0, logoSize.width + 400, logoSize.height), help, props);
     Object result = WizardDisplayer.showWizard(welcomeWizard, null, help, props);
     if (result instanceof Map) {
       Map m = (Map) result;
@@ -271,6 +279,16 @@ public class WizardSupport {
           addButton(tutorialButton, group, box);
         }
         actionControls = box;
+        box.add(Box.createVerticalGlue());
+        final BooleanConfigurer wizardConf = (BooleanConfigurer) Prefs.getGlobalPrefs().getOption("welcomeWizard");
+        final JCheckBox show = new JCheckBox(wizardConf.getName());
+        show.setSelected(wizardConf.booleanValue());
+        show.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            wizardConf.setValue(Boolean.valueOf(show.isSelected()));
+          }
+        });
+        box.add(show);
       }
       return actionControls;
     }
@@ -513,12 +531,11 @@ public class WizardSupport {
   public static class SavedGameLoader extends Thread {
     private WizardController controller;
     private Map settings;
-// FIXME: this is a bad design---when can we safely close this stream?
+    // FIXME: this is a bad design---when can we safely close this stream?
     private InputStream in;
     private String wizardKey;
 
-    public SavedGameLoader(WizardController controller, Map settings,
-                           InputStream in, String wizardKey) {
+    public SavedGameLoader(WizardController controller, Map settings, InputStream in, String wizardKey) {
       super();
       this.controller = controller;
       this.settings = settings;
@@ -546,7 +563,7 @@ public class WizardSupport {
       if (setupCommand == null) {
         throw new IOException(Resources.getString("WizardSupport.InvalidSavefile")); //$NON-NLS-1$
       }
-      // Strip out the setup(true) command.  This will be applied when the "Finish" button is pressed
+      // Strip out the setup(true) command. This will be applied when the "Finish" button is pressed
       setupCommand = new CommandFilter() {
         protected boolean accept(Command c) {
           return !(c instanceof GameState.SetupCommand) || !((GameState.SetupCommand) c).isGameStarting();
@@ -555,9 +572,9 @@ public class WizardSupport {
       return setupCommand;
     }
   }
-  
   public static class TutorialLoader extends SavedGameLoader {
     private Tutorial tutorial;
+
     public TutorialLoader(WizardController controller, Map settings, InputStream in, String wizardKey, Tutorial tutorial) {
       super(controller, settings, in, wizardKey);
       this.tutorial = tutorial;
@@ -565,7 +582,7 @@ public class WizardSupport {
 
     protected Command loadSavedGame() throws IOException {
       String msg = tutorial.getWelcomeMessage();
-      Command c = msg == null ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(),msg);
+      Command c = msg == null ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
       c = c.append(super.loadSavedGame());
       return c;
     }
@@ -589,6 +606,7 @@ public class WizardSupport {
             Resources.getString("WizardSupport.SavedGame"), GameModule.getGameModule().getGameState().getSavedGameDirectoryPreference()); //$NON-NLS-1$
         fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
           private Set<File> processing = new HashSet<File>();
+
           public void propertyChange(PropertyChangeEvent evt) {
             final File f = (File) evt.getNewValue();
             if (f == null || !f.exists()) {
@@ -597,7 +615,8 @@ public class WizardSupport {
             else if (f.isDirectory()) {
               controller.setProblem(""); //$NON-NLS-1$
             }
-            else if (!processing.contains(f) ) { // Sometimes the FileConfigurer fires more than one event for the same file
+            else if (!processing.contains(f)) { // Sometimes the FileConfigurer fires more than one event for the same
+              // file
               processing.add(f);
               try {
                 new SavedGameLoader(controller, settings, new FileInputStream(f), POST_LOAD_GAME_WIZARD) {
@@ -668,11 +687,8 @@ public class WizardSupport {
     public static GameSetupPanels newInstance() {
       GameSetupPanels panels = null;
       final ArrayList<SetupStepPage> pages = new ArrayList<SetupStepPage>();
-      final ArrayList<GameSetupStep> setupSteps =
-        new ArrayList<GameSetupStep>();
-      for (Iterator<GameSetupStep> i =
-           GameModule.getGameModule().getGameState().getUnfinishedSetupSteps();
-           i.hasNext();) {
+      final ArrayList<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
+      for (Iterator<GameSetupStep> i = GameModule.getGameModule().getGameState().getUnfinishedSetupSteps(); i.hasNext();) {
         final GameSetupStep step = i.next();
         setupSteps.add(step);
         final SetupStepPage page = new SetupStepPage(step);

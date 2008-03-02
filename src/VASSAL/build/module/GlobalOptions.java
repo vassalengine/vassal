@@ -83,8 +83,6 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
-  public static final String WELCOME_WIZARD = "welcomeWizard"; //$NON-NLS-1$
-  public static final String SHOW_SPLASH = "showSplash"; //$NON-NLS-1$
 
   public static final String PLAYER_NAME = "playerName"; //$NON-NLS-1$
   public static final String PLAYER_SIDE = "playerSide"; //$NON-NLS-1$
@@ -123,14 +121,12 @@ public class GlobalOptions extends AbstractConfigurable {
       Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
       Integer.valueOf(256));
     Prefs.getGlobalPrefs().addOption(initHeapConf);
-//    GameModule.getGameModule().getPrefs().addOption(initHeapConf);
 
     final IntConfigurer maxHeapConf = new IntConfigurer(
       MAXIMUM_HEAP,
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
       Integer.valueOf(512));
     Prefs.getGlobalPrefs().addOption(maxHeapConf);
-//    GameModule.getGameModule().getPrefs().addOption(maxHeapConf);
 
     final PropertyChangeListener heapListener;
     final String os = System.getProperty("os.name").toLowerCase();
@@ -289,20 +285,6 @@ public class GlobalOptions extends AbstractConfigurable {
 
     initHeapConf.addPropertyChangeListener(heapListener);
     maxHeapConf.addPropertyChangeListener(heapListener);
-
-    final BooleanConfigurer wizardConf = new BooleanConfigurer(
-      WELCOME_WIZARD,
-      "Show Welcome Wizard?",
-//      Resources.getString("GlobalOptions.welcome_wizard"),
-      Boolean.TRUE);
-    Prefs.getGlobalPrefs().addOption(wizardConf);
-
-    final BooleanConfigurer splashConf = new BooleanConfigurer(
-      SHOW_SPLASH,
-      "Show Splash Screen at Startup?",
-//      Resources.getString("GlobalOptions.welcome_wizard"),
-      Boolean.TRUE);
-    Prefs.getGlobalPrefs().addOption(splashConf);
 
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }

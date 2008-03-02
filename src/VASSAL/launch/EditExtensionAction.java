@@ -34,19 +34,21 @@ import VASSAL.tools.ArchiveWriter;
  */
 public class EditExtensionAction extends LoadModuleAction {
   private static final long serialVersionUID = 1L;
-  protected Component parentEditor;
   
   public EditExtensionAction(Component comp) {
     super(comp);
     putValue(NAME,Resources.getString("Editor.edit_extension"));
-    parentEditor = comp;
+  }
+  
+  public EditExtensionAction(File extFile) {
+    super(extFile);
+    putValue(NAME,Resources.getString("Editor.edit_extension"));
   }
   
   protected void loadModule(File f) throws IOException {
     ModuleExtension ext = new ModuleExtension(new ArchiveWriter(new ZipFile(f.getPath())));
     ext.build();
-    ExtensionEditorWindow.getInstance().moduleLoading(GameModule.getGameModule(), ext);
-    parentEditor.setVisible(false);
+    new ExtensionEditorWindow(GameModule.getGameModule(), ext).setVisible(true);
   }
 
 }

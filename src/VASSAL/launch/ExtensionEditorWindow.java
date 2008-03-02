@@ -34,12 +34,7 @@ public class ExtensionEditorWindow extends EditorWindow {
   protected static ExtensionEditorWindow instance = null;  
   protected ModuleExtension extension;
  
-  public static EditorWindow getInstance() {
-    if (instance == null) instance = new ExtensionEditorWindow();
-    return instance;
-  }
-  
-  public ExtensionEditorWindow() {
+  public ExtensionEditorWindow(GameModule mod, ModuleExtension ext) {
     super();
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
@@ -47,12 +42,6 @@ public class ExtensionEditorWindow extends EditorWindow {
         close();
       }
     });
-  }
-  
-  /**
-   * The Extension is loading
-   */
-  public void moduleLoading(GameModule mod, ModuleExtension ext) {
     extension = ext;
     tree = new ExtensionTree(mod, helpWindow, ext, this);
     treeStateChanged(false);
@@ -67,9 +56,6 @@ public class ExtensionEditorWindow extends EditorWindow {
     createUpdater.setEnabled(true);
 
     pack();
-    
-    setVisible(true);
-    ModuleEditorWindow.getInstance().setVisible(false);
   }
 
   public void moduleLoading(GameModule mod) {
@@ -81,7 +67,6 @@ public class ExtensionEditorWindow extends EditorWindow {
   }
 
   protected void populateFileMenu(JMenu menu) {
-    addCloseMenuItem(menu);
     addSaveMenuItem(menu);
     addSaveAsMenuItem(menu);
     menu.addSeparator();
@@ -128,7 +113,6 @@ public class ExtensionEditorWindow extends EditorWindow {
       extension = null;
       tree = null;      
       setVisible(false);
-      ModuleEditorWindow.getInstance().setVisible(true);
       dispose();
     }
   }

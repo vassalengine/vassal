@@ -14,31 +14,17 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+
 package VASSAL.launch;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 
-import VASSAL.build.GameModule;
-import VASSAL.build.module.ModuleExtension;
-import VASSAL.i18n.Resources;
-import VASSAL.tools.ArchiveWriter;
+import VASSAL.configure.SaveAsAction;
 
-/**
- * Creates a new module extension and opens an extension edit window
- * @author rodneykinney
- *
- */
-public class NewExtensionAction extends GameModuleAction {
-  private static final long serialVersionUID = 1L;
+public class SaveModuleAsAction extends SaveAsAction {
 
-  public NewExtensionAction(Component comp) {
-    super(Resources.getString("Editor.new_extension"), comp);
-  }
-
-  public void performAction(ActionEvent e) {
-    ModuleExtension ext = new ModuleExtension(new ArchiveWriter((String) null));
-    ext.build();
-    new ExtensionEditorWindow(GameModule.getGameModule(), ext).setVisible(true);
+  public void actionPerformed(ActionEvent e) {
+    // TODO Auto-generated method stub
+    
   }
 }

@@ -39,7 +39,6 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
@@ -51,6 +50,7 @@ import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidationReportDialog;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateVassalWindow;
+import VASSAL.tools.OrderedMenu;
 
 /**
  * EditorWindow is the base class for the three top-level component
@@ -61,16 +61,11 @@ import VASSAL.i18n.TranslateVassalWindow;
  */
 public abstract class EditorWindow extends JFrame {
   private static final long serialVersionUID = 1L;
-  protected static EditorWindow instance = null;
   protected SaveAction saveAction;
   protected SaveAsAction saveAsAction;
   protected JMenuItem componentHelpItem;
   protected JMenuItem createUpdater;
   protected JMenuItem close;
-
-  public static boolean hasInstance() {
-    return instance != null;
-  }
 
   protected final HelpWindow helpWindow = new HelpWindow(
     Resources.getString("Editor.ModuleEditor.reference_manual"), //$NON-NLS-1$
@@ -80,8 +75,6 @@ public abstract class EditorWindow extends JFrame {
   protected ConfigureTree tree;
   
   public abstract String getEditorType();
-  public abstract void moduleLoading(GameModule mod);
-  public abstract void moduleLoading(GameModule mod, ModuleExtension ext);
 
   private final Map<MenuKey,JMenuItem> menuItems =
     new HashMap<MenuKey,JMenuItem>();
@@ -193,12 +186,12 @@ public abstract class EditorWindow extends JFrame {
     populateFileMenu(fileMenu);
 
     // build Edit menu 
-    editMenu = new JMenu(Resources.getString("General.edit"));
+    editMenu = OrderedMenu.builder("General.edit").create();
     menuBar.add(editMenu);
     populateEditMenu(editMenu);
 
     // build Tools menu
-    toolsMenu = new JMenu(Resources.getString("General.tools"));
+    toolsMenu = OrderedMenu.builder("General.tools").create();
     menuBar.add(toolsMenu);
     populateToolsMenu(toolsMenu);
  
@@ -207,11 +200,6 @@ public abstract class EditorWindow extends JFrame {
     menuBar.add(helpMenu);
     populateHelpMenu(helpMenu);
  
-    // turn off File > Edit Module in PlayerWindow when the Editor is created
-    PlayerWindow.getInstance()
-                .getMenuItem(PlayerWindow.MenuKey.EDIT_MODULE)
-                .setEnabled(false);
-    
     // the presence of the panel prevents a NullPointerException on packing
     final JPanel panel = new JPanel();
     panel.setPreferredSize(new Dimension(250,400));
@@ -355,17 +343,6 @@ public abstract class EditorWindow extends JFrame {
     saveAsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     addMenuItem(MenuKey.SAVE_AS, menu.add(saveAsAction));
     toolBar.add(saveAsAction);
-  }
-  
-  protected void addCloseMenuItem(JMenu menu) {
-    close = new JMenuItem("Close " + getEditorType());
-    close.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        close();
-      }
-    });
-    close.setEnabled(false);
-    addMenuItem(MenuKey.CLOSE, menu.add(close));
   }
   
   /*

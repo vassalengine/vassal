@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -50,7 +51,6 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.PlayerWindow;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.FileChooser;
@@ -98,9 +98,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     mod.addCommandEncoder(this);
     mod.getGameState().addGameComponent(this);
 
-    final PlayerWindow pw = PlayerWindow.getInstance();
-    pw.setMenuItem(PlayerWindow.MenuKey.NEW_LOG, newLogAction).setMnemonic('B');
-    pw.setMenuItem(PlayerWindow.MenuKey.END_LOG, endLogAction).setMnemonic('E');
+    GameModule.getGameModule().getFileMenu().add(newLogAction);
+    GameModule.getGameModule().getFileMenu().add(endLogAction);
 
     JButton button = mod.getToolBar().add(undoAction);
     button.setToolTipText(Resources.getString("BasicLogger.undo_last_move"));  //$NON-NLS-1$

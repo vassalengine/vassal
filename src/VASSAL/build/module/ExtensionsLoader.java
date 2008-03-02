@@ -21,14 +21,12 @@ package VASSAL.build.module;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipException;
 
-import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.IllegalBuildException;
 import VASSAL.command.Command;
@@ -38,18 +36,18 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.SequenceEncoder;
 
-public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
-  // Preferences key for the list of extensions to load
-  private static final String SPECIFY_DIR_IN_PREFS = "specifyExtensionDirInPrefs"; //$NON-NLS-1$
-  private static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
+public class ExtensionsLoader implements CommandEncoder {
   public static final String COMMAND_PREFIX = "EXT\t"; //$NON-NLS-1$
 
   protected Set<String> loadedExtensions = new HashSet<String>();
   protected HashMap<String,String> loadedIds = new HashMap<String,String>();
+  
+  protected ExtensionsManager extMgr;
+  protected ExtensionsManager globalExtMgr;
 
   public void addTo(GameModule mod) {
-    if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
-      final DirectoryConfigurer config = new DirectoryConfigurer(EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory")); //$NON-NLS-1$
+    if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(ExtensionsManager.SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
+      final DirectoryConfigurer config = new DirectoryConfigurer(ExtensionsManager.EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory")); //$NON-NLS-1$
       config.setValue((Object) null);
       GameModule.getGameModule().getPrefs().addOption(Resources.getString("ExtensionsLoader.extensions_tab"), config); //$NON-NLS-1$
       config.addPropertyChangeListener(new PropertyChangeListener() {
@@ -58,21 +56,29 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
         }
       });
     }
+    extMgr = new ExtensionsManager(mod);
+    globalExtMgr = new ExtensionsManager("ext");
     mod.addCommandEncoder(this);
     addExtensions();
   }
 
   protected void addExtensions() {
-    for (String extname : getGlobalExtensionNames()) {
-      addExtension(extname);
+    for (File ext : globalExtMgr.getActiveExtensions()) {
+      if (!addExtension(ext)) {
+        globalExtMgr.setActive(ext, false);
+      }
     }
-    for (String extname : getExtensionNames()) {
-      addExtension(extname);
+    for (File ext : extMgr.getActiveExtensions()) {
+      if (!addExtension(ext)) {
+        extMgr.setActive(ext, false);
+      }
     }
   }
 
-  protected void addExtension(String extname) {
-    if (!loadedExtensions.contains(extname)) {
+  protected boolean addExtension(File extension) {
+    String extname = extension.getPath();
+    boolean success = loadedExtensions.contains(extname);
+    if (!success) {
       try {
         final ModuleExtension ext = createExtension(extname);
         ext.build();
@@ -97,6 +103,7 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
           GameModule.getGameModule().warn(idMsg);
           System.err.println(idMsg);
         }
+        success = true;
       }
       catch (ZipException e) {
         // Not a zip file.  Ignore
@@ -107,7 +114,8 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
       catch (IllegalBuildException e) {
         reportBuildError(e, extname);
       }
-    }    
+    }
+    return success;
   }
   
   protected ModuleExtension createExtension(String extname) throws ZipException, IOException, IllegalBuildException {
@@ -151,61 +159,4 @@ public class ExtensionsLoader implements CommandEncoder, FilenameFilter {
     return s;
   }
 
-  /**
-   * Tests if the specified file should be accepted as an module extension file.
-   * Currently we disallow any files that are hidden or "files" that are directories.
-   *
-   * @param   dir    the directory in which the file was found.
-   * @param   name   the name of the file.
-   * @return  <code>true</code> if and only if the name should be
-   * included in the file list; <code>false</code> otherwise.
-   */
-  public boolean accept(File dir, String name) {
-	  File fileCandidate = new File(dir, name);
-	  return !fileCandidate.isHidden() && !fileCandidate.isDirectory();
-  }
-  
-  protected String[] getExtensionNames() {
-    return getExtensionNames(getExtensionDirectory());
-  }
-
-  /*
-   * Global extensions live in installDir/ext and are loaded for every
-   * module. They must be Universal extensions or they will not load.
-   */
-  protected String[] getGlobalExtensionNames() {
-    return getExtensionNames((new File(Info.getHomeDir(), "ext")).getAbsolutePath());  //$NON-NLS-1$
-  }
-  
-  protected String[] getExtensionNames(String extensionDirectoryPath) {
-    File dir = new File(extensionDirectoryPath);
-    
-    File[] extensionFiles = dir.listFiles(this);
-    if (extensionFiles == null) {
-    	extensionFiles = new File[0];
-    }
-    
-    String[] extensionFilenames = new String[extensionFiles.length];
-    
-    for (int i = 0; i < extensionFiles.length; i++) {
-    	extensionFilenames[i] = extensionFiles[i].getPath();
-    }
-    return extensionFilenames;
-  }
-
-  public static String getExtensionDirectory() {
-    String dirName;
-    if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
-      dirName = GameModule.getGameModule().getPrefs().getOption(EXTENSION_DIR).getValueString();
-    }
-    else {
-      dirName = new File(GameModule.getGameModule().getDataArchive().getName()).getPath();
-      int index = dirName.lastIndexOf('.');
-      if (index > 0) {
-        dirName = dirName.substring(0, index);
-      }
-      dirName = dirName + "_ext"; //$NON-NLS-1$
-    }
-    return dirName;
-  }
 }

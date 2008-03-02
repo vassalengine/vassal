@@ -55,11 +55,6 @@ public class FirstTimeUserPanel {
     initComponents();
   }
 
-  @Deprecated 
-  public FirstTimeUserPanel(ConsoleWindow console) {
-    this();
-  }
-
   protected void initComponents() {
     panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -88,11 +83,10 @@ public class FirstTimeUserPanel {
     tour.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         try {
-//          console.getFrame().setVisible(false);
           GameModule.init(new BasicModule(new DataArchive(tourModule.getPath())));
           GameModule.getGameModule().getFrame().setVisible(true);
           GameModule.getGameModule().getGameState().loadGameInBackground(tourLogFile);
-//          console.getFrame().dispose();
+          SwingUtilities.getWindowAncestor(panel).dispose();
         }
         catch (Exception e) {
           e.printStackTrace();
@@ -101,8 +95,6 @@ public class FirstTimeUserPanel {
                e.getMessage(),
                Resources.getString("Main.open_error"),  //$NON-NLS-1$
                JOptionPane.ERROR_MESSAGE);
-//          console.setControls(new ConsoleControls(console).getControls());
-//          console.getFrame().setVisible(true);
         }
       }
     });
@@ -110,6 +102,7 @@ public class FirstTimeUserPanel {
     jump.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         SwingUtilities.getWindowAncestor(panel).dispose();
+        ModuleManager.getInstance().showFrame();
       }
     });
 

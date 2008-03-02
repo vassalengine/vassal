@@ -24,37 +24,18 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.ModuleExtension;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.SavedGameUpdaterDialog;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.imports.ImportAction;
 
 public class ModuleEditorWindow extends EditorWindow {
 
   private static final long serialVersionUID = 1L;
-  protected CreateModuleAction createModuleAction;
-  protected EditModuleAction editModuleAction;
-  protected ImportAction importAction;
-  protected NewExtensionAction newExtensionAction;
-  protected EditExtensionAction editExtensionAction;
   protected JMenuItem updateSavedGame;
 
-  public static EditorWindow getInstance() {
-    if (instance == null)
-      instance = new ModuleEditorWindow();
-    return instance;
-  }
-
-  public ModuleEditorWindow() {
+  public ModuleEditorWindow(GameModule mod) {
     super();
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  }
-  
-  /**
-   * The GameModule is loading
-   */
-  public void moduleLoading(GameModule mod) {
     tree = new ConfigureTree(mod, helpWindow, this);
     treeStateChanged(false);
     scrollPane.setViewportView(tree);    
@@ -62,24 +43,12 @@ public class ModuleEditorWindow extends EditorWindow {
     tree.populateEditMenu(this);
     componentHelpItem.setAction(tree.getHelpAction());
     
-    createModuleAction.setEnabled(false);
-    editModuleAction.setEnabled(false);
-//    close.setEnabled(true);
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
-    importAction.setEnabled(false);
     createUpdater.setEnabled(true);
     updateSavedGame.setEnabled(true);
 
-    PlayerWindow.getInstance()
-                .getMenuItem(PlayerWindow.MenuKey.OPEN_MODULE)
-                .setEnabled(false);
-    
     pack();
-  }
-
-  public void moduleLoading(GameModule mod, ModuleExtension ext) {
-
   }
 
   public String getEditorType() {
@@ -87,30 +56,9 @@ public class ModuleEditorWindow extends EditorWindow {
   }
 
   protected void populateFileMenu(JMenu menu) {
-    createModuleAction = new CreateModuleAction(this);
-    addMenuItem(MenuKey.NEW, menu.add(createModuleAction));
 
-    editModuleAction = new EditModuleAction(this);
-    addMenuItem(MenuKey.OPEN, menu.add(editModuleAction));
-
-    addCloseMenuItem(menu);
     addSaveMenuItem(menu);
     addSaveAsMenuItem(menu);
-
-    menu.addSeparator();
-
-    importAction = new ImportAction(this);
-    addMenuItem(MenuKey.IMPORT, menu.add(importAction));
-
-    menu.addSeparator();
-
-    newExtensionAction = new NewExtensionAction(this);
-    newExtensionAction.setEnabled(false);
-    addMenuItem(MenuKey.NEW_EXTENSION, menu.add(newExtensionAction));
-
-    editExtensionAction = new EditExtensionAction(this);
-    editExtensionAction.setEnabled(false);
-    addMenuItem(MenuKey.LOAD_EXTENSION, menu.add(editExtensionAction));
 
     menu.addSeparator();
 
@@ -154,10 +102,5 @@ public class ModuleEditorWindow extends EditorWindow {
   
   protected void close() {
     
-  }
-  
-  public void treeStateChanged(boolean changed) {
-    newExtensionAction.setEnabled(!changed);
-    editExtensionAction.setEnabled(!changed);
   }
 }

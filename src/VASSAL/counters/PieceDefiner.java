@@ -507,7 +507,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     Object o = availableList.getSelectedValue();
     if (o instanceof EditablePiece) {
       HelpFile h = ((EditablePiece) o).getHelpFile();
-      BrowserSupport.openURL(h.getContents());
+      BrowserSupport.openURL(h.getContents().toString());
     }
   }
 

@@ -29,7 +29,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.launch.EditModuleAction;
 import VASSAL.launch.ModuleEditorWindow;
-import VASSAL.launch.PlayerWindow;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
@@ -110,7 +109,6 @@ public final class ImportAction extends EditModuleAction {
 
 	@Override
 	protected void loadModule(File f) throws IOException {
-		GameModule.clear();
 		GameModule module = new BasicModule(new ArchiveWriter((String) null)); 
 		GameModule.init(module);
 
@@ -129,8 +127,8 @@ public final class ImportAction extends EditModuleAction {
 					}					
 					imp.importFile(this, f);
 					imp.writeToArchive();
-					PlayerWindow.getInstance().setVisible(true);
-					ModuleEditorWindow.getInstance().moduleLoading(module);
+					GameModule.getGameModule().getFrame().setVisible(true);
+					new ModuleEditorWindow(module).setVisible(true);
 				}
 				// some serious problems.
 				catch (IllegalAccessException e) {

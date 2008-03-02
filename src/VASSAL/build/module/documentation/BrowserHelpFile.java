@@ -81,7 +81,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       extractContents();
     }
     if (url != null) {
-      BrowserSupport.openURL(url);
+      BrowserSupport.openURL(url.toString());
     }
   }
   
