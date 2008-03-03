@@ -197,7 +197,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
       msg = checker.filter(msg, defaultRoomName, currentRoom.getName());
       if (msg.length() > compressionLimit) {
         try {
-          msg = ZIP_HEADER + Base64.encodeBytes(Compressor.compress(msg.getBytes("UTF-8")), false);  //$NON-NLS-1$
+          msg = ZIP_HEADER + Base64.encodeBytes(Compressor.compress(msg.getBytes("UTF-8")), Base64.DONT_BREAK_LINES);  //$NON-NLS-1$
         }
         catch (IOException e) {
           e.printStackTrace();
