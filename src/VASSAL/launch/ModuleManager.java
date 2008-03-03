@@ -55,7 +55,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.HyperlinkEvent;
@@ -320,7 +319,7 @@ public class ModuleManager {
         if (e.isMetaDown() && !list.isSelectionEmpty()) {
           int index = list.locationToIndex(e.getPoint());
           if (index >= 0) {
-            buildPopup(index).show(list, e.getX(), e.getY());
+             buildPopup(index).show(list, e.getX(), e.getY());
           }
         }
         else if (e.getClickCount() == 2) {

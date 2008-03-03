@@ -273,4 +273,8 @@ public class Translation extends AbstractConfigurable
   public int compareTo(Translation o) {
     return getDescription().compareTo(o.getDescription());
   }
+
+  public Locale getLocale() {
+    return locale;
+  }
 }

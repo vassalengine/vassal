@@ -217,6 +217,7 @@ public class Localization extends Language {
      * into one after all are loaded.
      */
     if (GameModule.getGameModule().isLocalizationEnabled()) {
+      Resources.addSupportedLocale(t.getLocale());
       if (moduleBundle.equals(t.getBundleFileName())) {
         moduleTranslations.add(t);
       }
