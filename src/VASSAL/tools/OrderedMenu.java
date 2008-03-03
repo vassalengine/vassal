@@ -1,4 +1,6 @@
 /*
+ * $Id$
+ *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -26,13 +28,15 @@ import javax.swing.JPopupMenu;
 import VASSAL.i18n.Resources;
 
 /**
- * Allows the specification of a specific order in which items will appear in the menu, regardless of the order in which
- * they are actually added in the code.
+ * Allows the specification of a specific order in which items will appear
+ * in the menu, regardless of the order in which they are actually added
+ * in the code.
  * 
- * Also provides some i18n support: automatically looks up resources and sets menu mnemonics in a locale-independent way
+ * Also provides some i18n support: automatically looks up resources and
+ * sets menu mnemonics in a locale-independent way.
  * 
  * @author rodneykinney
- * 
+ * @since 3.1.0 
  */
 public class OrderedMenu extends JMenu {
   private List<String> items;
@@ -83,6 +87,7 @@ public class OrderedMenu extends JMenu {
   public static Builder builder(String title) {
     return new Builder(title);
   }
+
   public static class Builder {
     private String title;
     private List<String> items = new ArrayList<String>();

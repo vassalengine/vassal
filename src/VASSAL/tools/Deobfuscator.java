@@ -1,4 +1,6 @@
 /*
+ * $Id$
+ *
  * Copyright (c) 2000-2006 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -24,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Converts an file created with {@link Obfuscator} back into plain text.
+ * Additionally, plain text will be passed through unchanged.
  */
 public class Deobfuscator {
   private String plain;
