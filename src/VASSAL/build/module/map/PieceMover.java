@@ -862,7 +862,7 @@ public class PieceMover extends AbstractBuildable
       if (drawWin != null) {
         // drawOffset is the offset between the mouse location during a drag
         // and the upper-left corner of the cursor
-        // accounts for difference betwen event point (screen coords)
+        // accounts for difference between event point (screen coords)
         // and Layered Pane position, boundingBox and off-center drag
         drawOffset.x = -boundingBox.x - currentPieceOffsetX + EXTRA_BORDER;
         drawOffset.y = -boundingBox.y - currentPieceOffsetY + EXTRA_BORDER;
@@ -1120,13 +1120,12 @@ public class PieceMover extends AbstractBuildable
         if (piecePosition.x <= 0 || piecePosition.y <= 0) {
           piecePosition = mousePosition;
         }
-        // Pieces in an expanded stack need to be offset
-        if (piece.getParent() != null &&
-            piece.getParent().isExpanded() && map != null) {
-          final Point offset =
-            piece.getMap().getStackMetrics()
-                          .relativePosition(piece.getParent(), piece);
-          piecePosition.translate(offset.x, offset.y);
+        // Account for offset of piece within stack
+        // We do this even for un-expanded stacks, since the offset can still be significant if the stack is large
+        dragPieceOffCenterZoom = map == null ? 1.0 : map.getZoom();
+        if (piece.getParent() != null && map != null) {
+          final Point offset = piece.getMap().getStackMetrics().relativePosition(piece.getParent(), piece);
+          piecePosition.translate((int) Math.round(offset.x * dragPieceOffCenterZoom), (int) Math.round(offset.y * dragPieceOffCenterZoom));
         }
         originalPieceOffsetX = piecePosition.x - mousePosition.x; // dragging
         // from UL
@@ -1134,7 +1133,6 @@ public class PieceMover extends AbstractBuildable
         // positive
         // offsets
         originalPieceOffsetY = piecePosition.y - mousePosition.y;
-        dragPieceOffCenterZoom = map == null ? 1.0 : map.getZoom();
         dragWin = dge.getComponent();
         drawWin = null;
         dropWin = null;
