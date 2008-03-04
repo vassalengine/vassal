@@ -53,6 +53,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
@@ -75,6 +76,7 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.TranslateVassalAction;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.FileChooser;
@@ -97,6 +99,7 @@ public class ModuleManager {
   private File selectedModule;
   private CardLayout modulePanelLayout;
   private JPanel moduleView;
+  private ComponentSplitter.SplitPane serverStatusView;
 
   public static ModuleManager getInstance() {
     if (instance == null) {
@@ -143,13 +146,18 @@ public class ModuleManager {
       menuBar.add(buildFileMenu());
       menuBar.add(buildToolsMenu());
       menuBar.add(buildHelpMenu());
-      JPanel p = new JPanel(new BorderLayout());
-      theFrame.add(p);
-      p.add(buildModuleControls(), BorderLayout.CENTER);
+      JSplitPane modAndExtControls = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+      modAndExtControls.setResizeWeight(1.0);
+      theFrame.add(modAndExtControls);
+      modAndExtControls.add(buildModuleControls());
       extensionsControls = buildExtensionsControls();
-      p.add(extensionsControls, BorderLayout.SOUTH);
+      modAndExtControls.add(extensionsControls);
+      JPanel allControls = new JPanel(new BorderLayout());
       JComponent serverStatusControls = buildServerStatusControls();
-      theFrame.add(serverStatusControls, BorderLayout.EAST);
+      allControls.add(modAndExtControls,BorderLayout.CENTER);
+      theFrame.add(allControls);
+      serverStatusView = new ComponentSplitter().splitRight(allControls, serverStatusControls, false);
+      serverStatusView.revalidate();
       Rectangle r = Info.getScreenBounds(theFrame);
       extensionsControls.setPreferredSize(new Dimension(0, r.height / 4));
       serverStatusControls.setPreferredSize(new Dimension((int) (r.width / 3.5), 0));
@@ -253,6 +261,11 @@ public class ModuleManager {
 
   protected JMenu buildToolsMenu() {
     JMenu menu = OrderedMenu.builder("General.tools").create();
+    menu.add(new AbstractAction(Resources.getString("Chat.server_status")) {
+      public void actionPerformed(ActionEvent e) {
+        serverStatusView.toggleVisibility();
+      }
+    });
     menu.add(new TranslateVassalAction(theFrame));
     return menu;
   }
