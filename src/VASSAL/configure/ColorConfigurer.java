@@ -19,22 +19,22 @@
 package VASSAL.configure;
 
 import java.awt.Color;
-import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ColorButton;
 
 /**
- * Configurer for {@link Color} values
+ * Configurer for {@link Color} values.
  */
 public class ColorConfigurer extends Configurer {
-  private static Font FONT = new Font("Dialog", 0, 10);
   private JPanel p;
-  private Panel cp;
+  private ColorButton cb;
 
   public ColorConfigurer(String key, String name) {
     this(key, name, Color.black);
@@ -49,11 +49,9 @@ public class ColorConfigurer extends Configurer {
   }
 
   public void setValue(Object o) {
-//	if (o == null)
-//	    o = Color.black;
     super.setValue(o);
-    if (cp != null)
-      cp.repaint();
+    if (cb != null) 
+      cb.setColor((Color) o);
   }
 
   public void setValue(String s) {
@@ -65,44 +63,21 @@ public class ColorConfigurer extends Configurer {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
       p.add(new JLabel(getName()));
-      cp = new Panel();
-      cp.setMaximumSize(new java.awt.Dimension(40, 40));
-      cp.setMinimumSize(new java.awt.Dimension(40, 40));
-      cp.setSize(new java.awt.Dimension(40, 40));
-      p.add(cp);
-      JButton b = new JButton(Resources.getString(Resources.SELECT));
-      p.add(b);
-      b.addActionListener
-          (new java.awt.event.ActionListener() {
-            public void actionPerformed
-                (java.awt.event.ActionEvent e) {
-              setValue(JColorChooser.showDialog
-                       (null, getName(), colorValue()));
-            }
-          });
+
+      cb = new ColorButton(colorValue());
+      cb.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          setValue(JColorChooser.showDialog(null, getName(), colorValue()));
+        }
+      });
+
+      p.add(cb);
     }
     return p;
   }
 
   private Color colorValue() {
     return (Color) value;
-  }
-
-  private class Panel extends JPanel {
-    private static final long serialVersionUID = 1L;
-
-    public void paint(java.awt.Graphics g) {
-      if (colorValue() != null) {
-        g.setColor(colorValue());
-        g.fillRect(0, 0, getSize().width, getSize().height);
-      }
-      else {
-        g.clearRect(0, 0, getSize().width, getSize().height);
-        g.setFont(FONT);
-        g.drawString(" nil ", getSize().width / 2
-                              - g.getFontMetrics(g.getFont()).stringWidth(" nil ") / 2, getSize().height / 2);
-      }
-    }
   }
 
   public static String colorToString(Color c) {
