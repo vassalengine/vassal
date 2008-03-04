@@ -78,7 +78,8 @@ public class LOS_Thread extends AbstractConfigurable implements
     CommandEncoder {
   
   public static final String LOS_THREAD_COMMAND = "LOS\t";
-    
+  
+  public static final String NAME = "threadName";
   public static final String SNAP_LOS = "snapLOS";
   public static final String SNAP_START = "snapStart";
   public static final String SNAP_END = "snapEnd";
@@ -197,14 +198,17 @@ public class LOS_Thread extends AbstractConfigurable implements
     map.addDrawComponent(this);
     map.getToolBar().add(launch);
     GameModule.getGameModule().addCommandEncoder(this);
-    GameModule.getGameModule().getPrefs().addOption
-        (getAttributeValueString(LABEL),
-         new BooleanConfigurer(SNAP_LOS, Resources.getString("LOS_Thread.snap_thread_preference")));
+    GameModule.getGameModule().getPrefs().addOption(getConfigureName(),
+      new BooleanConfigurer(SNAP_LOS,
+        Resources.getString("LOS_Thread.snap_thread_preference")));
+
     if (fixedColor == null) {
-      ColorConfigurer config = new ColorConfigurer(LOS_COLOR, Resources.getString("LOS_Thread.thread_color_preference"));
-      GameModule.getGameModule().getPrefs().addOption
-          (getAttributeValueString(LABEL), config);
-      threadColor = (Color) GameModule.getGameModule().getPrefs().getValue(LOS_COLOR);
+      ColorConfigurer config = new ColorConfigurer(LOS_COLOR,
+        Resources.getString("LOS_Thread.thread_color_preference"));
+      GameModule.getGameModule().getPrefs().addOption(
+        getConfigureName(), config);
+      threadColor = (Color) GameModule.getGameModule()
+                                      .getPrefs().getValue(LOS_COLOR);
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           threadColor = (Color) evt.getNewValue();
@@ -225,6 +229,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   /**
    * The attributes of an LOS_Thread are:
    * <pre>
+   * <code>NAME</code>:  the name of the Preferences tab
    * <code>LABEL</code>:  the label of the button
    * <code>HOTKEY</code>:  the hotkey equivalent of the button
    * <code>DRAW_RANGE</code>:  If true, draw the distance between endpoints of the thread
@@ -234,7 +239,27 @@ public class LOS_Thread extends AbstractConfigurable implements
    * </pre>
    */
   public String[] getAttributeNames() {
-    return new String[]{LABEL, TOOLTIP, ICON_NAME, HOTKEY, REPORT, PERSISTENCE, PERSISTENT_ICON_NAME, GLOBAL, SNAP_START, SNAP_END, DRAW_RANGE, RANGE_SCALE, RANGE_ROUNDING, HIDE_COUNTERS, HIDE_OPACITY, LOS_COLOR, RANGE_FOREGROUND, RANGE_BACKGROUND};
+    return new String[]{
+      NAME,
+      LABEL,
+      TOOLTIP,
+      ICON_NAME,  
+      HOTKEY,
+      REPORT,
+      PERSISTENCE,
+      PERSISTENT_ICON_NAME,
+      GLOBAL,
+      SNAP_START,
+      SNAP_END,
+      DRAW_RANGE,
+      RANGE_SCALE,
+      RANGE_ROUNDING,
+      HIDE_COUNTERS,
+      HIDE_OPACITY,
+      LOS_COLOR,
+      RANGE_FOREGROUND,
+      RANGE_BACKGROUND
+    };
   }
 
   public void setAttribute(String key, Object value) {
@@ -243,6 +268,9 @@ public class LOS_Thread extends AbstractConfigurable implements
         value = Boolean.valueOf((String) value);
       }
       drawRange = ((Boolean) value).booleanValue();
+    }
+    else if (NAME.equals(key)) {
+      setConfigureName((String) value);
     }
     else if (RANGE_SCALE.equals(key)) {
       if (value instanceof String) {
@@ -271,7 +299,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       if (value instanceof String) {
         value = new Integer((String) value);
       }
-      setTransparency (((Integer) value).intValue());
+      setTransparency(((Integer) value).intValue());
     }
     else if (RANGE_FOREGROUND.equals(key)) {
       if (value instanceof String) {
@@ -325,7 +353,6 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
   }
 
-
   protected void setTransparency(int h) {
     if (h < 0) {
       hideOpacity = 0;
@@ -341,6 +368,9 @@ public class LOS_Thread extends AbstractConfigurable implements
   public String getAttributeValueString(String key) {
     if (DRAW_RANGE.equals(key)) {
       return "" + drawRange;
+    }
+    else if (NAME.equals(key)) {
+      return getConfigureName();
     }
     else if (RANGE_SCALE.equals(key)) {
       return "" + rangeScale;
@@ -715,16 +745,13 @@ public class LOS_Thread extends AbstractConfigurable implements
     return "Line of Sight Thread";
   }
 
-  public String getConfigureName() {
-    return null;
-  }
-
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "LOS");
   }
 
   public String[] getAttributeDescriptions() {
     return new String[]{
+      "Thread name:  ",
       "Button text:  ",
       "Tooltip text:  ",                        
       "Button Icon:  ",
@@ -746,6 +773,7 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
       String.class,
       String.class,
       IconConfig.class,
@@ -827,7 +855,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     return new Configurable[0];
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
