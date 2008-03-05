@@ -32,6 +32,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
+//import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 
 /**
  * Shows the current status of connections to the server
@@ -58,13 +63,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
     JButton b = new JButton(Resources.getString("Chat.refresh")); //$NON-NLS-1$
     b.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        try {
-          refresh();
-        }
-        finally {
-          setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
+        refresh();
       }
     });
     toolbar.add(b);
@@ -116,24 +115,8 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
   }
 
   public void stateChanged(ChangeEvent e) {
-    if (status == null) {
-      return;
-    }
-    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-    try {
-      int sel = getSelectedIndex();
-      switch (sel) {
-      case 0:
-        refresh();
-        break;
-      default:
-        refresh(historicalModels[sel-1], status.getHistory(this.getTitleAt(sel)));
-        break;
-      }
-    }
-    finally {
-      setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-    }
+    if (status == null) return;
+    refresh(getSelectedIndex());
     fireSelectionChanged();
   }
 
@@ -163,21 +146,106 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
   }
 
   public void refresh() {
-    refresh(model, status.getStatus());
+    refresh(0);
   }
 
-  private void refresh(DefaultTreeModel m, ServerStatus.ModuleSummary[] modules) {
-    MutableTreeNode root = (MutableTreeNode) m.getRoot();
+  private SwingWorker<ServerStatus.ModuleSummary[],Void> cur_request = null;
+  private SwingWorker<ServerStatus.ModuleSummary[],Void> hist_request = null;
+
+  private void refresh(final int page) {
+    if (page == 0) {
+      if (cur_request != null && !cur_request.isDone()) return;
+      
+      setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+      cur_request = new SwingWorker<ServerStatus.ModuleSummary[],Void>() {
+        @Override
+        public ServerStatus.ModuleSummary[] doInBackground() {
+          return status.getStatus();
+        }
+      
+        @Override
+        protected void done() {
+          try {
+            if (getSelectedIndex() == 0) {
+              refresh(model, get());
+              fireSelectionChanged();
+            }
+          }
+          catch (InterruptedException ex) {
+            ex.printStackTrace();
+          }
+          catch (ExecutionException ex) {
+            ex.printStackTrace();
+          }
+
+          if (hist_request == null || hist_request.isDone()) 
+            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
+          cur_request = null;
+        }
+      };
+
+      cur_request.execute();
+    }
+    else {
+      if (hist_request != null && !hist_request.isDone()) return;
+
+      setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+      hist_request = new SwingWorker<ServerStatus.ModuleSummary[],Void>() {
+        @Override
+        public ServerStatus.ModuleSummary[] doInBackground() {
+          return status.getHistory(getTitleAt(page));
+        }
+      
+        @Override
+        protected void done() {
+          final int sel = getSelectedIndex();
+          if (sel == page) {
+            // page didn't change, refresh with what we computed
+            try {
+              refresh(historicalModels[sel-1], get());
+            }
+            catch (InterruptedException ex) {
+              ex.printStackTrace();
+            }
+            catch (ExecutionException ex) {
+              ex.printStackTrace();
+            }
+
+            fireSelectionChanged();
+          }
+          else if (sel != 0) {
+            // page changed, refresh that page instead
+            hist_request = null;
+            refresh(sel);
+          }
+
+          if (cur_request == null || cur_request.isDone()) 
+            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }
+      };
+
+      hist_request.execute();
+    }
+  }
+
+  private void refresh(DefaultTreeModel m,
+                       ServerStatus.ModuleSummary[] modules) {
+    final MutableTreeNode root = (MutableTreeNode) m.getRoot();
     while (root.getChildCount() > 0) {
       m.removeNodeFromParent((MutableTreeNode) root.getChildAt(0));
     }
+
     if (modules.length == 0) {
-      DefaultMutableTreeNode n = new DefaultMutableTreeNode(Resources.getString("Chat.no_connections")); //$NON-NLS-1$
+      DefaultMutableTreeNode n = new DefaultMutableTreeNode(
+        Resources.getString("Chat.no_connections")); //$NON-NLS-1$
       n.setAllowsChildren(false);
     }
     else {
-      for (int i = 0; i < modules.length; ++i) {
-        m.insertNodeInto(createNode(modules[i]), root, root.getChildCount());
+      for (ServerStatus.ModuleSummary s : modules) {
+        m.insertNodeInto(createNode(s), root, root.getChildCount());
       }
     }
   }
@@ -191,15 +259,18 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
       List<Player> l = ((Room)o).getPlayerList();
       children = l.toArray(new Player[l.size()]);
     }
+
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(o);
     if (children != null) {
       for (int i = 0; i < children.length; ++i) {
         node.add(createNode(children[i]));
       }
     }
+
     node.setAllowsChildren(children != null);
     return node;
   }
+
   public static class Render extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1L;
 

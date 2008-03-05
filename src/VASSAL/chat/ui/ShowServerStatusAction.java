@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -83,7 +84,8 @@ public class ShowServerStatusAction extends AbstractAction {
       pack();
       setSize(Math.max(getSize().width,400),Math.max(getSize().height,300));
       Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-      setLocation(d.width / 2 - getSize().width / 2, d.height / 2 - getSize().height / 2);
+      setLocation(d.width / 2 - getSize().width / 2,
+                  d.height / 2 - getSize().height / 2);
     }
 
     public void refresh() {

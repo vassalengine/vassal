@@ -42,7 +42,7 @@ public class HttpRequestWrapper {
   }
 
   public List<String> doGet(Properties p) throws IOException {
-    return doGet("",p); //$NON-NLS-1$
+    return doGet("", p); //$NON-NLS-1$
   }
 
   /**
@@ -66,8 +66,8 @@ public class HttpRequestWrapper {
         }
       }
     }
-    URL base = new URL(url);
-    URLConnection conn = base.openConnection();
+
+    final URLConnection conn = new URL(url).openConnection();
     conn.setUseCaches(false);
 
     final ArrayList<String> l = new ArrayList<String>();
@@ -77,7 +77,7 @@ public class HttpRequestWrapper {
 
     try {
       String line;
-      while ((line = in.readLine()) != null) l.add(line);
+      while ((line = in.readLine()) != null) l.add(line); 
     }
     finally {
       try {
@@ -87,7 +87,6 @@ public class HttpRequestWrapper {
         e.printStackTrace();
       }
     }
-
     return l;
   }
 
@@ -109,8 +108,8 @@ public class HttpRequestWrapper {
         }
       }
     }
-    URL base = new URL(url);
-    URLConnection conn = base.openConnection();
+
+    final URLConnection conn = new URL(url).openConnection();
     conn.setDoInput(true);
     conn.setDoOutput(true);
     conn.setUseCaches(false);
