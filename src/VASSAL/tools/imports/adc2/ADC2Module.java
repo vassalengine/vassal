@@ -44,6 +44,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.PieceWindow;
@@ -653,12 +654,15 @@ public class ADC2Module extends Importer {
 		ADC2Utils.readBlockHeader(in, "Force Pool");
 		
 		final int nForcePools = ADC2Utils.readBase250Word(in);
-		forcePoolNames = new String[nForcePools];
+		final ArrayList<String> fp = new ArrayList<String>(nForcePools);
 		for (int i = 0; i < nForcePools; ++i) {
-			forcePoolNames[i] = readNullTerminatedString(in, 25);
+			String n = readNullTerminatedString(in, 25);
 			in.read(new byte[3]); // not sure what these do
 			/* int nUnits = */ ADC2Utils.readBase250Word(in);
+			if (n.length() > 0 || i < nForcePools -1)
+				fp.add(n);
 		}
+		forcePoolNames = fp.toArray(new String[0]);
 	}
 
 	protected void readPlayerBlock(DataInputStream in) throws IOException {
@@ -843,7 +847,8 @@ public class ADC2Module extends Importer {
 		// set common properties
 		GamePiece gp = new BasicPiece();		
 		gp = new Delete(Delete.ID + "Delete;D", gp);
-		gp = new ReturnToDeck(ReturnToDeck.ID + "Return to Force Pool;R;;Select Force Pool", gp);
+		if (forcePoolNames != null && forcePoolNames.length > 0)
+			gp = new ReturnToDeck(ReturnToDeck.ID + "Return to Force Pool;R;;Select Force Pool", gp);
 		SequenceEncoder se = new SequenceEncoder(';');
 		Dimension modalSize = getSet().getModalSize();
 		int xOffset = modalSize.width/2;
@@ -872,16 +877,26 @@ public class ADC2Module extends Importer {
 	
 	@Override
 	public void writeToArchive() throws IOException {
-		GameModule.getGameModule().setAttribute(GameModule.MODULE_NAME, name);
+		GameModule gameModule = GameModule.getGameModule();
+		gameModule.setAttribute(GameModule.MODULE_NAME, name);
 
 		// prototype definitions
 		writePrototypesToArchive();
 		getMap().writeToArchive();	
 		writeClassesToArchive();
-		if (!forcePools.isEmpty())
+		if (forcePoolNames.length != 0)
 			writeForcePoolsToArchive();
 		writeSetupStacksToArchive();		
 		writePlayersToArchive();
+		
+		// dice
+		DiceButton dice = new DiceButton();
+		dice.setAttribute(DiceButton.NAME, "Roll");
+		dice.setAttribute(DiceButton.PROMPT_ALWAYS, Boolean.TRUE);
+		dice.setAttribute(DiceButton.TOOLTIP, "Roll the dice");
+		dice.setAttribute(DiceButton.BUTTON_TEXT, "Roll");
+		dice.addTo(gameModule);
+		gameModule.add(dice);
 	}
 
 	protected void writeClassesToArchive() throws IOException {

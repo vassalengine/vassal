@@ -24,10 +24,13 @@ import java.awt.Rectangle;
 import java.awt.image.BandCombineOp;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -454,6 +457,50 @@ public class SymbolSet extends Importer{
 
 			for (int i = 0; i < nMasks; ++i)
 				maskData[i] = new SymbolData(maskImages, true).read(in);
+		}
+		
+		readPermutationFile(f);
+	}
+
+	/**
+	 * Read an SDX file if one exists. This is a list of image indeces starting with terrain 
+	 * separated by newlines.
+	 * 
+	 * @param f - Set file.
+	 * @throws IOException
+	 */
+	protected void readPermutationFile(File f) throws IOException {
+		File sdx = new File(forceExtension(f.getPath(), "sdx"));
+		sdx = action.getCaseInsensitiveFile(sdx, f, false, null);
+		if (sdx != null) { // must reorder image indeces
+			BufferedReader input = new BufferedReader(new FileReader(sdx));
+			
+			SymbolData[] terrain = new SymbolData[mapBoardData.length];
+			System.arraycopy(mapBoardData, 0, terrain, 0, terrain.length);
+			SymbolData[] pieces = new SymbolData[gamePieceData.length];
+			System.arraycopy(gamePieceData, 0, pieces, 0, pieces.length);
+			
+			String line = null;			
+			try {
+				for (int i = 0; i < terrain.length; ++i) {
+					line = input.readLine();
+					int idx = Integer.parseInt(line);
+					terrain[i] = mapBoardData[idx-1];
+				}
+				for (int i = 0; i < pieces.length; ++i) {
+					line = input.readLine();
+					int idx = Integer.parseInt(line);
+					pieces[i] = gamePieceData[idx-1];
+				}
+			} catch (EOFException e) {
+			} catch (ArrayIndexOutOfBoundsException e) {
+				throw new FileFormatException("SDX file has out-of-bounds index \"" + line + "\".");
+			} catch (NumberFormatException e) {
+				throw new FileFormatException("SDX file has invalid index \"" + line + "\".");
+			} finally {
+				mapBoardData = terrain;
+				gamePieceData = pieces;
+			}
 		}
 	}
 

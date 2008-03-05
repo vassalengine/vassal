@@ -567,12 +567,17 @@ public class MapBoard extends Importer {
 
 		@Override
 		Point getNorthEast(int index) {
-			return indexToPosition(index - nColumns + (index / nColumns) % 2, false);
+			int row = getRow(index);
+			int col = getCol(index) + Math.abs(row) % 2;
+			--row;
+			return coordinatesToPosition(col, row, false);
 		}
 
 		@Override
 		Point getNorthWest(int index) {
-			return indexToPosition(index - nColumns - (index / nColumns + 1) % 2, false);
+			int row = getRow(index) - 1;
+			int col = getCol(index) - Math.abs(row) % 2;
+			return coordinatesToPosition(col, row, false);
 		}
 
 		@Override
@@ -622,12 +627,17 @@ public class MapBoard extends Importer {
 
 		@Override
 		Point getSouthEast(int index) {
-			return indexToPosition(index + nColumns + (index / nColumns) % 2, false);
+			int row = getRow(index);
+			int col = getCol(index) + Math.abs(row) % 2;
+			++row;
+			return coordinatesToPosition(col, row, false);
 		}
 
 		@Override
 		Point getSouthWest(int index) {
-			return indexToPosition(index + nColumns - (index / nColumns + 1) % 2, false);
+			int row = getRow(index) + 1;
+			int col = getCol(index) - Math.abs(row) % 2;
+			return coordinatesToPosition(col, row, false);
 		}
 	}
 
@@ -1486,12 +1496,16 @@ public class MapBoard extends Importer {
 
 		@Override
 		Point getNorthEast(int index) {
-			return indexToPosition(index - nColumns * ((index % nColumns + 1) % 2) + 1, false);
+			int col = getCol(index) + 1;
+			int row = getRow(index) - Math.abs(col) % 2;
+			return coordinatesToPosition(col, row, false);
 		}
 
 		@Override
 		Point getNorthWest(int index) {
-			return indexToPosition(index - nColumns * ((index % nColumns + 1) % 2) - 1, false);
+			int col = getCol(index) - 1;
+			int row = getRow(index) - Math.abs(col) % 2;
+			return coordinatesToPosition(col, row, false);
 		}
 
 		@Override
@@ -1543,12 +1557,18 @@ public class MapBoard extends Importer {
 
 		@Override
 		Point getSouthEast(int index) {
-			return indexToPosition(index + nColumns * ((index % nColumns) % 2) + 1, false);
+			int col = getCol(index);
+			int row = getRow(index) + Math.abs(col) % 2;
+			++col;
+			return coordinatesToPosition(col, row, false);
 		}
 
 		@Override
 		Point getSouthWest(int index) {
-			return indexToPosition(index + nColumns * ((index % nColumns) % 2) - 1, false);
+			int col = getCol(index);
+			int row = getRow(index) + Math.abs(col) % 2;
+			--col;
+			return coordinatesToPosition(col, row, false);
 		}
 	}
 
@@ -1570,6 +1590,14 @@ public class MapBoard extends Importer {
 			this.nRows = rows;
 		}
 
+		protected int getRow(int index) {
+			return index / nColumns;
+		}
+		
+		protected int getCol(int index) {
+			return index % nColumns;
+		}
+		
 		/**
 		 * Move the upper left and lower-right points to just within the map board.
 		 */
@@ -1662,7 +1690,9 @@ public class MapBoard extends Importer {
 		 * @return the position in pixels of the next hex or square to the East.
 		 */
 		Point getEast(int index) {
-			return indexToPosition(index + 1, false);
+			int row = getRow(index);
+			int col = getCol(index) + 1;
+			return coordinatesToPosition(col, row, false);
 		}
 
 		/**
@@ -1677,7 +1707,9 @@ public class MapBoard extends Importer {
 		 * @return the position in pixels of the next hex or square to the North.
 		 */
 		Point getNorth(int index) {
-			return indexToPosition(index - nColumns, false);
+			int row = getRow(index) - 1;
+			int col = getCol(index);
+			return coordinatesToPosition(col, row, false);
 		}
 
 		/**
@@ -1687,7 +1719,9 @@ public class MapBoard extends Importer {
 		 * @return the position in pixels of the next hex or square to the NorthEast.
 		 */
 		Point getNorthEast(int index) {
-			return indexToPosition(index - nColumns + 1, false);
+			int row = getRow(index) - 1;
+			int col = getCol(index) + 1;
+			return coordinatesToPosition(col, row, false);
 		}
 
 		/**
@@ -1697,7 +1731,9 @@ public class MapBoard extends Importer {
 		 * @return the position in pixels of the next hex or square to the NorthWest.
 		 */
 		Point getNorthWest(int index) {
-			return indexToPosition(index - nColumns - 1, false);
+			int row = getRow(index) - 1;
+			int col = getCol(index) - 1;
+			return coordinatesToPosition(col, row, false);
 		}
 
 		/**
@@ -1725,7 +1761,9 @@ public class MapBoard extends Importer {
 		 * @return the position in pixels of the next hex or square to the South.
 		 */
 		Point getSouth(int index) {
-			return indexToPosition(index + nColumns, false);
+			int row = getRow(index) + 1;
+			int col = getCol(index);
+			return coordinatesToPosition(col, row, false);
 		}
 
 		/**
@@ -1735,7 +1773,9 @@ public class MapBoard extends Importer {
 		 * @return the position in pixels of the next hex or square to the SouthEast.
 		 */
 		Point getSouthEast(int index) {
-			return indexToPosition(index + nColumns + 1, false);
+			int row = getRow(index) + 1;
+			int col = getCol(index) + 1;
+			return getLayout().coordinatesToPosition(col, row, false);
 		}
 
 		/**
@@ -1745,7 +1785,9 @@ public class MapBoard extends Importer {
 		 * @return the position in pixels of the next hex or square to the SouthWest.
 		 */
 		Point getSouthWest(int index) {
-			return indexToPosition(index + nColumns - 1, false);
+			int row = getRow(index) + 1;
+			int col = getCol(index) - 1;
+			return coordinatesToPosition(col, row, false);
 		}
 
 		/**
@@ -1755,7 +1797,9 @@ public class MapBoard extends Importer {
 		 * @return the position in pixels of the next hex or square to the West.
 		 */
 		Point getWest(int index) {
-			return indexToPosition(index - 1, false);
+			int row = getRow(index);
+			int col = getCol(index) - 1;
+			return coordinatesToPosition(col, row, false);
 		}
 	}
 
