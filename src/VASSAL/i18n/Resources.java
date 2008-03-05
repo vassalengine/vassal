@@ -53,7 +53,7 @@ public class Resources {
   private static VassalPropertyClassLoader bundleLoader = new VassalPropertyClassLoader();
   public static final String LOCALE_PREF_KEY = "Locale"; // Preferences key for the user's Locale
   protected static final List<Locale> supportedLocales = new ArrayList<Locale>(Arrays.asList(new Locale[]{Locale.ENGLISH, Locale.GERMAN, Locale.FRENCH, Locale.ITALIAN,
-                                                                                          Locale.JAPANESE}));
+                                                                                          new Locale("Spanish"), Locale.JAPANESE}));
   protected static Locale locale = Locale.getDefault();
   static {
     // If the user has a resource bundle for their default language on their local machine, add it to the list of supported locales
