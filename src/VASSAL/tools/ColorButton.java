@@ -78,10 +78,10 @@ public class ColorButton extends JButton {
     }
 
     public void paintIcon(Component c, Graphics g, int x, int y) {
-      if (color != null) {
-        g.setColor(Color.white);
-        g.drawRect(x, y, swatchWidth-1, swatchHeight-1);
+      g.setColor(Color.black);
+      g.drawRect(x, y, swatchWidth-1, swatchHeight-1);
 
+      if (color != null) {
         g.setColor(color);
         g.fillRect(x+1, y+1, swatchWidth-2, swatchHeight-2);
       }
