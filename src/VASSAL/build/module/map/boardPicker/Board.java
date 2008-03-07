@@ -327,8 +327,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
           // find actual tile size
           final int tw = Math.min(ow, location.x+bounds.width-tx);
           final int th = Math.min(oh, location.y+bounds.height-ty);
-
-          final Repainter rep = new Repainter(obs, tx, ty, tw, th);
+          
+          final Repainter rep = obs == null ? null :
+            new Repainter(obs, tx, ty, tw, th);
 
           try {
             final Future<Image> fim = op.getFutureTile(tile.x, tile.y, rep);

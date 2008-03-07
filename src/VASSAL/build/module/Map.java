@@ -1444,6 +1444,16 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     drawDrawable(g, true);
   }
 
+  /**
+   * Paint the map as {@link #paint(Graphics,int,int)}, but synchronously.
+   */
+  public void paintSynchronously(Graphics g, int xOffset, int yOffset) {
+    drawBoards(g, xOffset, yOffset, getZoom(), null);
+    drawDrawable(g, false);
+    drawPieces(g, xOffset, yOffset);
+    drawDrawable(g, true);
+  }
+
   public Highlighter getHighlighter() {
     return highlighter;
   }
