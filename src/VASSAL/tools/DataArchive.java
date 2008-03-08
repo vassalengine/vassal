@@ -118,9 +118,11 @@ public class DataArchive extends SecureClassLoader {
     final String path = IMAGE_DIR + name;
     final ImageSource src;
 
-    if ((src = imageSources.get(name)) != null) {
-// FIXME: is this case necessary? Does this even work?
-      Image image = src.getImage();
+    if (name.startsWith("/")) {
+      return ImageUtils.getImageSize(getImageInputStream(name));
+    }
+    else if ((src = imageSources.get(name)) != null) {
+      final Image image = src.getImage();
       if (image != null) {
         final int width = image.getWidth(null);
         final int height = image.getHeight(null);
@@ -143,10 +145,8 @@ public class DataArchive extends SecureClassLoader {
     final String path = IMAGE_DIR + name;
     final ImageSource src;
 
-// FIXME: this is a mess
-    if (name.charAt(0) == '/') {
-// FIXME: This gives a null stream to getImage if the resource can't be found!
-      return ImageUtils.getImage(getClass().getResourceAsStream(name)); 
+    if (name.startsWith("/")) {
+      return ImageUtils.getImage(getImageInputStream(name));
     }
     else if ((src = imageSources.get(name)) != null) {
       return src.getImage();
@@ -163,28 +163,40 @@ public class DataArchive extends SecureClassLoader {
   }
 
   public InputStream getImageInputStream(String name) throws IOException {
-// FIXME: This is a big, ugly mess. We should have a clearly documented
-// standard for image locations.
-//
 // FIXME: We should give notice that we're going to stop searching for
 // GIFs by appending ".gif" to them. In general, a way of marking obsolete
 // features would be good---something which pops up a dialog alerting the
 // user when a module calls a deprecated method, maybe.
-    if (name.charAt(0) == '/') {
-      final InputStream in = getClass().getResourceAsStream(name);
-      if (in == null)
-        throw new IOException("Resource not found: " + name);
-      return in;
+
+    if (name.startsWith("/")) {
+      return getResourceInputStream(name);
     }
     else {
-      final String path = IMAGE_DIR + name;
       try {
-        return getFileStream(path);
+        return getFileStream(IMAGE_DIR + name);
       }
-      catch (IOException e) {
-        return getFileStream(path + ".gif");
+      catch (IOException e1) {
+// FIXME: Everything in this catch should be deprecated behavior.
+        try {
+          return getFileStream(IMAGE_DIR + name + ".gif");
+        }
+        catch (IOException e2) {
+          try {
+            return getResourceInputStream("/images/" + name + ".gif");
+          }
+          catch (IOException e3) {
+            throw e1;
+          }
+        }
       }
     }
+  }
+
+  private InputStream getResourceInputStream(String name) throws IOException {
+    final InputStream in = getClass().getResourceAsStream(name);
+    if (in == null)
+      throw new IOException("Resource not found: " + name);
+    return in;
   }
 
   public String getArchiveURL() {
@@ -436,6 +448,16 @@ public class DataArchive extends SecureClassLoader {
         "Unable to load " + name + "\n" + e.getMessage());
     }
   }
+
+  public void close() throws IOException {
+    if (archive != null) {
+      archive.close();
+    }
+  }
+
+/////////////////////////////////////////////////////////////////////
+// All methods deprecated below this point.
+/////////////////////////////////////////////////////////////////////
 
   /**
    * Does the actual work of transforming an image.
@@ -737,10 +759,4 @@ public class DataArchive extends SecureClassLoader {
     return Toolkit.getDefaultToolkit().createImage(prod);
   }
   
-  public void close() throws IOException {
-    if (archive != null) {
-      archive.close();
-    }
-  }
-
 }
