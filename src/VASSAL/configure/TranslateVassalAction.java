@@ -1,4 +1,6 @@
 /*
+ * $Id$
+ *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -26,12 +28,16 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateVassalWindow;
 
 /**
- * Brings up a window in which the user can provide a foreign-language translation of the VASSAL program
- * @author rodneykinney
+ * Brings up a window in which the user can provide a foreign-language
+ * translation of the VASSAL program.
  *
+ * @author rodneykinney
  */
 public class TranslateVassalAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   private Frame parent;
+
   public TranslateVassalAction(Frame parent) {
     super(Resources.getString(
     "Editor.ModuleEditor.translate_vassal"));
