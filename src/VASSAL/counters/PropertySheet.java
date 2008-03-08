@@ -315,7 +315,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       if (frame != null) {
         Object field = m_fields.get(iField);
         if (field instanceof JTextComponent) {
-          ((JTextComponent) field).setText(value);
+          JTextComponent tf = (JTextComponent) field;
+          int pos = tf.getCaretPosition();
+          tf.setText(value);
+          tf.setCaretPosition(pos);
         }
         else if (field instanceof TickPanel) {
           ((TickPanel) field).updateValue(value);
