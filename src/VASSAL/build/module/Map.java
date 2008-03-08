@@ -187,6 +187,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected Zoomer zoom;
   protected StackMetrics metrics;
   protected Dimension edgeBuffer = new Dimension(0, 0);
+  protected Color bgColor = Color.white;
   protected LaunchButton launchButton;
   protected boolean useLaunchButton = false;
   protected String markMovedOption = GlobalOptions.ALWAYS;
@@ -240,6 +241,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public static final String MARK_UNMOVED_TOOLTIP = "markUnmovedTooltip"; //$NON-NLS-1$
   public static final String EDGE_WIDTH = "edgeWidth"; //$NON-NLS-1$
   public static final String EDGE_HEIGHT = "edgeHeight"; //$NON-NLS-1$
+  public static final String BACKGROUND_COLOR = "backgroundcolor";
   public static final String HIGHLIGHT_COLOR = "color"; //$NON-NLS-1$
   public static final String HIGHLIGHT_THICKNESS = "thickness"; //$NON-NLS-1$
   public static final String ALLOW_MULTIPLE = "allowMultiple"; //$NON-NLS-1$
@@ -305,6 +307,12 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       }
       catch (NumberFormatException ex) {
       }
+    }
+    else if (BACKGROUND_COLOR.equals(key)) {
+      if (value instanceof String) {
+        value = ColorConfigurer.stringToColor((String)value);
+      }
+      bgColor = (Color)value;
     }
     else if (ALLOW_MULTIPLE.equals(key)) {
       if (value instanceof String) {
@@ -394,6 +402,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     else if (EDGE_HEIGHT.equals(key)) {
       return String.valueOf(edgeBuffer.height); //$NON-NLS-1$
+    }
+    else if (BACKGROUND_COLOR.equals(key)) {
+      return ColorConfigurer.colorToString(bgColor);
     }
     else if (ALLOW_MULTIPLE.equals(key)) {
       return String.valueOf(picker.isAllowMultiple()); //$NON-NLS-1$
@@ -1575,18 +1586,20 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   protected void clearMapBorder(Graphics g) {
     if (clearFirst || boards.isEmpty()) {
-      g.clearRect(0, 0, theMap.getWidth(), theMap.getHeight());
+      g.setColor(bgColor);
+      g.fillRect(0, 0, theMap.getWidth(), theMap.getHeight());
       clearFirst = false;
     }
     else {
       final Dimension buffer = new Dimension(
         (int) (getZoom() * edgeBuffer.width),
         (int) (getZoom() * edgeBuffer.height));
-      g.clearRect(0, 0, buffer.width, theMap.getHeight());
-      g.clearRect(0, 0, theMap.getWidth(), buffer.height);
-      g.clearRect(theMap.getWidth() - buffer.width, 0,
+      g.setColor(bgColor);
+      g.fillRect(0, 0, buffer.width, theMap.getHeight());
+      g.fillRect(0, 0, theMap.getWidth(), buffer.height);
+      g.fillRect(theMap.getWidth() - buffer.width, 0,
                   buffer.width, theMap.getHeight());
-      g.clearRect(0, theMap.getHeight() - buffer.height,
+      g.fillRect(0, theMap.getHeight() - buffer.height,
                   theMap.getWidth(), buffer.height);
     }
   }
@@ -2055,6 +2068,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       "\"Mark unmoved\" button icon:  ",
       "Horizontal Padding:  ",
       "Vertical Padding:  ",
+      "Background color:  ",
       "Can contain multiple boards?",
       "Border color for selected counters:  ",
       "Border thickness for selected counters:  ",
@@ -2080,6 +2094,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       MARK_UNMOVED_ICON,
       EDGE_WIDTH,
       EDGE_HEIGHT,
+      BACKGROUND_COLOR,
       ALLOW_MULTIPLE,
       HIGHLIGHT_COLOR,
       HIGHLIGHT_THICKNESS,
@@ -2105,6 +2120,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       UnmovedIconConfig.class,
       Integer.class,
       Integer.class,
+      Color.class,
       Boolean.class,
       Color.class,
       Integer.class,
@@ -2448,7 +2464,8 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
     public void paint(Graphics g) {
       Rectangle r = getVisibleRect();
-      g.clearRect(r.x, r.y, r.width, r.height);
+      g.setColor(map.bgColor);
+      g.fillRect(r.x, r.y, r.width, r.height);
       map.paintRegion(g, r);
     }
 

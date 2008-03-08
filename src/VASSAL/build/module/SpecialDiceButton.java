@@ -151,6 +151,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     for (SpecialDie sd : dice) {
       results[i++] = ran.nextInt(sd.getFaceCount());
     }
+    setFormat(results);
     Command c = reportResults(results);
     if (reportResultAsText) {
       c = c.append(reportTextResults(results));
@@ -173,15 +174,11 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   private Command reportTextResults(int[] results) {
-    format.setProperty(NAME, getLocalizedConfigureName());
     int total = 0;
     for (int i = 0; i < dice.size(); ++i) {
       SpecialDie die = dice.get(i);
-      format.setProperty("result" + (i + 1), die.getTextValue(results[i])); //$NON-NLS-1$
       total += die.getIntValue(results[i]);
     }
-    format.setProperty(RESULT_TOTAL, String.valueOf(total)); //$NON-NLS-1$
-    format.setFormat(chatResultFormat);
     String msg = format.getLocalizedText();
     if (msg.length() > 0) {
       if (msg.startsWith("*")) { //$NON-NLS-1$
@@ -195,6 +192,18 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     c.execute();
     c.append(property.setPropertyValue(String.valueOf(total)));
     return c;
+  }
+
+  protected void setFormat(int[] results) {
+    format.setProperty(NAME, getLocalizedConfigureName());
+    int total = 0;
+    for (int i = 0; i < dice.size(); ++i) {
+      SpecialDie die = dice.get(i);
+      format.setProperty("result" + (i + 1), die.getTextValue(results[i])); //$NON-NLS-1$
+      total += die.getIntValue(results[i]);
+    }
+    format.setProperty(RESULT_TOTAL, String.valueOf(total)); //$NON-NLS-1$
+    format.setFormat(chatResultFormat);
   }
 
   /**
@@ -572,6 +581,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     }
 
     protected void executeCommand() {
+      target.setFormat(rolls);
       target.reportResults(rolls);
     }
 
