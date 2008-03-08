@@ -101,10 +101,11 @@ public class SVGManager {
 
       // get the default image width and height
       Element root = doc.getDocumentElement();
-      int width =
-         (int)(Float.parseFloat(root.getAttributeNS(null, "width"))+0.5);
-      int height =
-         (int)(Float.parseFloat(root.getAttributeNS(null, "height"))+0.5);
+
+      int width = (int)(Float.parseFloat(
+        root.getAttributeNS(null, "width").replaceFirst("px", ""))+0.5);
+      int height = (int)(Float.parseFloat(
+        root.getAttributeNS(null, "height").replaceFirst("px", ""))+0.5);
 
       // render the image
       return new SVGBufferedImage(doc, width, height,
@@ -125,10 +126,10 @@ public class SVGManager {
 
       // get the default image width and height
       Element root = doc.getDocumentElement();
-      int width =
-         (int)(Float.parseFloat(root.getAttributeNS(null, "width"))+0.5);
-      int height =
-         (int)(Float.parseFloat(root.getAttributeNS(null, "height"))+0.5);
+      int width = (int)(Float.parseFloat(
+        root.getAttributeNS(null, "width").replaceFirst("px", ""))+0.5);
+      int height = (int)(Float.parseFloat(
+        root.getAttributeNS(null, "height").replaceFirst("px", ""))+0.5);
 
       return new Dimension(width, height);
    }

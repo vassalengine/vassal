@@ -55,8 +55,11 @@ public class SVGRenderer {
 
     // get the default image size
     final Element root = doc.getDocumentElement();
-    defaultW = Float.parseFloat(root.getAttributeNS(null, "width"));
-    defaultH = Float.parseFloat(root.getAttributeNS(null, "height"));
+
+    defaultW = Float.parseFloat(
+      root.getAttributeNS(null, "width").replaceFirst("px", ""));
+    defaultH = Float.parseFloat(
+      root.getAttributeNS(null, "height").replaceFirst("px", ""));
   }
 
   private static final double DEGTORAD = Math.PI/180.0;
