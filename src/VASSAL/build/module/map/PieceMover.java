@@ -21,6 +21,7 @@ package VASSAL.build.module.map;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.StringSelection;
@@ -49,6 +50,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -56,6 +59,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -85,9 +89,10 @@ import VASSAL.counters.PieceSorter;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.OpIcon;
 
 /**
  * This is a MouseListener that moves pieces onto a Map window
@@ -314,6 +319,22 @@ public class PieceMover extends AbstractBuildable
     return null;
   }
 
+  private Image loadIcon(String name) {
+    try {
+      return Op.load(name).getImage(null);
+    }
+    catch (CancellationException e) {
+      ErrorLog.warn(e);
+    }
+    catch (InterruptedException e) {
+      ErrorLog.warn(e);
+    }
+    catch (ExecutionException e) {
+      ErrorLog.warn(e);
+    }
+    return null;
+  }
+
   protected void initButton() {
     final String value = getMarkOption();
     if (GlobalOptions.PROMPT.equals(value)) {
@@ -337,45 +358,28 @@ public class PieceMover extends AbstractBuildable
         };
         
         markUnmovedButton =
-          new LaunchButton("", NAME, null, Map.MARK_UNMOVED_ICON, al );
+          new LaunchButton("", NAME, null, Map.MARK_UNMOVED_ICON, al);
+
+        Image img = null;
         if (iconName != null && iconName.length() > 0) {
-          markUnmovedButton.setIcon(new OpIcon(Op.load(iconName)));
-/*
-          try {
-            markUnmovedButton.setIcon(new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(iconName)));
+          img = loadIcon(iconName);
+        }
+        
+        if (img == null) {
+          img = loadIcon(markUnmovedIcon);
+          if (img == null) {
+            img = loadIcon("/images/unmoved.gif");
           }
-          catch (IOException e) {
-            e.printStackTrace();
-          }
-*/
         }
 
-        if (markUnmovedButton.getIcon() == null) {
-          Icon icon = new OpIcon(Op.load(markUnmovedIcon));
-          markUnmovedButton.setIcon(icon);        
-/*
-          Icon icon = null;
+        if (img != null) markUnmovedButton.setIcon(new ImageIcon(img));
+        else markUnmovedButton.setText(
+          Resources.getString("Map.mark_unmoved_text")); //$NON-NLS-1$
 
-          try {
-            icon = new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(markUnmovedIcon));
-          }
-          catch (IOException e) {
-            URL defaultImage = getClass().getResource("/images/unmoved.gif"); //$NON-NLS-1$
-            if (defaultImage != null) {
-              icon = new ImageIcon(defaultImage);
-            }
-          }
-          if (icon != null) {
-            markUnmovedButton.setIcon(icon);
-          }
-          else {
-            markUnmovedButton.setText(Resources.getString("Map.mark_unmoved_text")); //$NON-NLS-1$
-          }
-*/
-        }
         markUnmovedButton.setAlignmentY(0.0F);
         markUnmovedButton.setText(markUnmovedText);
-        markUnmovedButton.setToolTipText(map.getAttributeValueString(Map.MARK_UNMOVED_TOOLTIP));
+        markUnmovedButton.setToolTipText(
+          map.getAttributeValueString(Map.MARK_UNMOVED_TOOLTIP));
         map.getToolBar().add(markUnmovedButton);
       }
     }
@@ -669,7 +673,7 @@ public class PieceMover extends AbstractBuildable
     map.repaint();
   }
 
-  /** @deprecated use #selectMovablePieces(MouseEvent) */
+  /** @deprecated Use {@link #selectMovablePieces(MouseEvent)}. */
   @Deprecated 
   protected void selectMovablePieces(Point point) {
     final GamePiece p = map.findPiece(point, dragTargetSelector);

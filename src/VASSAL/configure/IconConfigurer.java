@@ -25,18 +25,21 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.ImageFileFilter;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.OpIcon;
 
 public class IconConfigurer extends Configurer {
   private JPanel controls;
@@ -57,20 +60,22 @@ public class IconConfigurer extends Configurer {
     icon = null;
     imageName = s == null ? "" : s;
 
-/*
-    if (imageName.startsWith("/")) {
-      final URL imageURL = getClass().getResource(imageName);
-      if (imageURL != null) {
-        icon = new ImageIcon(imageURL);
+    if (imageName.length() > 0) {
+      try {
+        icon = new ImageIcon(Op.load(imageName).getImage(null));
+      }
+      catch (CancellationException e) {
+        ErrorLog.warn(e);
+      }
+      catch (InterruptedException e) {
+        ErrorLog.warn(e);
+      }
+      catch (ExecutionException e) {
+        ErrorLog.warn(e);
       }
     }
-*/
 
-    if (imageName.length() > 0) {
-      icon = new OpIcon(Op.load(imageName));
-    }
-
-    setValue((Object)imageName);
+    setValue((Object) imageName);
   }
 
   public Icon getIconValue() {
