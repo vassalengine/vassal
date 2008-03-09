@@ -51,17 +51,20 @@ public class Documentation extends AbstractConfigurable {
   public void build(Element el) {
     if (el == null) {
       try {
-        AboutScreen about = new AboutScreen();
-        about.setAttribute(AboutScreen.TITLE, Resources.getString("Documentation.about_vassal")); //$NON-NLS-1$
-        about.setAttribute(AboutScreen.FILE, "/images/Splash.png"); //$NON-NLS-1$
+        final AboutScreen about = new AboutScreen();
+        about.setAttribute(AboutScreen.TITLE,
+          Resources.getString("Documentation.about_module")); //$NON-NLS-1$
+        about.setAttribute(AboutScreen.FILE,
+          "/images/Splash.png"); //$NON-NLS-1$
         about.addTo(this);
         add(about);
       }
       catch (Exception err) {
         err.printStackTrace();
       }
-      HelpFile intro = new HelpFile();
-      intro.setAttribute(HelpFile.TITLE, Resources.getString("Documentation.quick_start")); //$NON-NLS-1$
+      final HelpFile intro = new HelpFile();
+      intro.setAttribute(HelpFile.TITLE,
+        Resources.getString("Documentation.quick_start")); //$NON-NLS-1$
       intro.setAttribute(HelpFile.FILE, "/help/Intro.html"); //$NON-NLS-1$
       intro.setAttribute(HelpFile.TYPE, HelpFile.RESOURCE);
       intro.addTo(this);
@@ -77,7 +80,8 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public void addTo(Buildable b) {
-    validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
+    validator =
+      new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
   public void removeFrom(Buildable b) {
@@ -105,7 +109,8 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return Resources.getString("Editor.Documentation.component_type"); //$NON-NLS-1$
+    return Resources.getString(
+      "Editor.Documentation.component_type"); //$NON-NLS-1$
   }
 
   public String getConfigureName() {

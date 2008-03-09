@@ -73,7 +73,8 @@ public class AboutVASSAL extends JWindow {
       }
     }; 
 
-    action.putValue(Action.NAME, "About VASSAL");
+    action.putValue(Action.NAME,
+                    Resources.getString("AboutScreen.about_vassal"));
     return action;
   }
 }

@@ -47,6 +47,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -129,13 +131,12 @@ public class GlobalOptions extends AbstractConfigurable {
     Prefs.getGlobalPrefs().addOption(maxHeapConf);
 
     final PropertyChangeListener heapListener;
-    final String os = System.getProperty("os.name").toLowerCase();
-    if (os.startsWith("windows")) {
+    if (Info.isWindows()) {
       // We are running on Windows. Blech! The plan here is to update
       // the VASSAL.l4j.ini which the Launch4j JAR wrapper reads.
       heapListener = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          final File file = new File("VASSAL.l4j.ini");
+          final File file = new File(Info.getBaseDir(), "VASSAL.l4j.ini");
 
           String s = null;
           try {
@@ -191,13 +192,12 @@ public class GlobalOptions extends AbstractConfigurable {
         }
       };
     }
-    else if (os.startsWith("mac os")) {
-      // We are running on OSX. We know this because there is no
-      // 1.5+ JVM for Mac OS9. The plan here is to update the
+    else if (Info.isMacOSX()) {
+      // We are running on OSX. The plan here is to update the
       // Info.plist which is contained in the VASSAL.app bundle.
       heapListener = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          final File file = new File("Info.plist");
+          final File file = new File(Info.getBaseDir(), "Info.plist");
           final String VMOptionsKey = "<key>VMOptions</key>";
 
           String s = null;
@@ -262,8 +262,10 @@ public class GlobalOptions extends AbstractConfigurable {
           final String iHeap = "-Xms" + initHeapConf.getValueString() + "M";
           final String mHeap = "-Xmx" + maxHeapConf.getValueString() + "M";
 
+          final File file = new File(Info.getBaseDir(), "heaps");
+
           try {
-            final FileWriter out = new FileWriter("heaps");
+            final FileWriter out = new FileWriter(file);
             try {
               out.write(iHeap + " " + mHeap);
             }

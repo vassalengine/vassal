@@ -44,6 +44,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
@@ -94,30 +95,33 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   protected void initComponents() {
-    if (op == null) {
-      return;
-    }
+    if (op == null) return;
 
-    final Icon icon = new OpIcon(op);
     final JWindow w = new JWindow(GameModule.getGameModule() != null ?
       GameModule.getGameModule().getFrame() : null);
     w.getContentPane().setBackground(Color.black);
     w.setLayout(new BoxLayout(w.getContentPane(), BoxLayout.Y_AXIS));
-    final JLabel l = new JLabel(icon);
+
+    final JLabel l = new JLabel(new OpIcon(op));
     l.setAlignmentX(0.5F);
     w.add(l);
+
     w.add(createLabel(
         Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
         GameModule.getGameModule().getGameName(),
         GameModule.getGameModule().getGameVersion())));
+
     for (ModuleExtension ext :
          GameModule.getGameModule().getComponentsOf(ModuleExtension.class)) {
       w.add(createLabel(
           Resources.getString("AboutScreen.extension_version", ext.getName(), ext.getVersion()))); //$NON-NLS-1$
     }
+
     w.add(createLabel(
         Resources.getString("AboutScreen.vassal_version", Info.getVersion()))); //$NON-NLS-1$
+
     w.pack();
+
     final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
     w.setLocation(d.width / 2 - w.getSize().width / 2,
                   d.height / 2 - w.getSize().height / 2);
@@ -187,6 +191,12 @@ public class AboutScreen extends AbstractConfigurable {
   public void setAttribute(String key, Object val) {
     if (TITLE.equals(key)) {
       title = (String) val;
+
+      // don't permit "About VASSAL"
+      if (title.equals(Resources.getString("AboutScreen.about_vassal"))) {
+        title = Resources.getString("Documentation.about_module");
+      } 
+
       setConfigureName(title);
       launch.setText(title);
     }
@@ -209,18 +219,16 @@ public class AboutScreen extends AbstractConfigurable {
                       .setBackgroundImage(op.getImage(null));
           }
           catch (CancellationException e) {
-// FIXME: is this possible?
             op = null;
-            e.printStackTrace();
+            ErrorLog.warn(e);
           }
           catch (InterruptedException e) {
-// FIXME: is this possible?
             op = null;
-            e.printStackTrace();
+            ErrorLog.warn(e);
           }
           catch (ExecutionException e) {
             op = null;
-            e.printStackTrace();
+            ErrorLog.warn(e);
           }
         }
       }

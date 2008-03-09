@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
-<plist version="0.9">
+<plist version="1.0">
 <dict>
   <key>CFBundleName</key>
   <string>VASSAL</string>
   <key>CFBundleIdentifier</key>
   <string>org.vassalengine.VASSAL</string>
   <key>CFBundleVersion</key>
-  <string>2911</string>
+  <string>SVNVERSION</string>
   <key>CFBundleShortVersionString</key>
-  <string>3.1.0</string>
+  <string>NUMVERSION</string>
   <key>NSHumanReadableCopyright</key>
   <string>2008, The VASSAL Team</string>
   <key>CFBundleIconFile</key>
@@ -25,7 +25,7 @@
   <key>CFBundleSignature</key>
   <string>????</string>
   <key>CFBundleGetInfoString</key>
-  <string>VASSAL version 3.1.0-svn2911</string>
+  <string>VASSAL version FULLVERSION</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>Java</key>

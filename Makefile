@@ -6,7 +6,9 @@ JDOCDIR:=javadoc
 DOCDIR:=doc
 DISTDIR:=dist
 
-VERSION:=3.1.0-svn$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
+VNUM:=3.1.0
+SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
+VERSION:=$(VNUM)-svn$(SVNVERSION)
 
 CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 JAVAPATH:=/usr/lib/jvm/java-1.6.0-sun
@@ -69,6 +71,9 @@ version:
 $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS)
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
+	sed -i -e 's/SVNVERSION/$(SVNVERSION)/' \
+         -e 's/NUMVERSION/$(VNUM)/' \
+				 -e 's/FULLVERSION/$(VERSION)/' $@/Contents/Info.plist
 	cp dist/macosx/JavaApplicationStub $@/Contents/MacOS
 	svn export $(LIBDIR) $@/Contents/Resources/Java
 	svn export $(DOCDIR) $@/Contents/Resources/doc

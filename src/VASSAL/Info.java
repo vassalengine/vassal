@@ -32,7 +32,7 @@ import VASSAL.tools.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-svn3251"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-svn3260"; //$NON-NLS-1$
   private static File homeDir;
 
   private static final boolean isWindows;
@@ -94,8 +94,14 @@ public final class Info {
     return bounds;
   }
 
-  public static boolean isMacOsX() {
+  public static boolean isMacOSX() {
     return isMacOSX;
+  }
+
+  /** Use {@link isMacOSX()} instead. */
+  @Deprecated
+  public static boolean isMacOsX() {
+    return isMacOSX();
   }
   
   public static boolean isWindows() {
