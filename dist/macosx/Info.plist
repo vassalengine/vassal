@@ -40,8 +40,6 @@
     <array>
       <string>$JAVAROOT/Vengine.jar</string>
     </array>
-    <key>Arguments</key>
-    <string>-extract /docsInfo</string>
     <key>VMOptions</key>
     <string>-Xms256M -Xmx512M</string>
   </dict>

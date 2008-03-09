@@ -4,7 +4,7 @@
   <jar>lib\Vengine.jar</jar>
   <outfile>VASSAL.exe</outfile>
   <errTitle></errTitle>
-  <cmdLine>-extract /docsInfo</cmdLine>
+  <cmdLine></cmdLine>
   <chdir>.</chdir>
   <priority>normal</priority>
   <downloadUrl>http://java.com/download</downloadUrl>

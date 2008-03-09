@@ -71,7 +71,8 @@ $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS)
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
 	cp dist/macosx/JavaApplicationStub $@/Contents/MacOS
 	svn export $(LIBDIR) $@/Contents/Resources/Java
-	cp $(LIBDIR)/{Vengine.jar,docs.jar} $@/Contents/Resources/Java
+	svn export $(DOCDIR) $@/Contents/Resources/doc
+	cp $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	dd if=/dev/zero of=$@ bs=1M count=$$(( `du -s $< | sed 's/\s\+.*$$//'` / 1024 + 1 ))
@@ -82,8 +83,9 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 
 $(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS) 
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
+	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
-	cp $(LIBDIR)/{Vengine.jar,docs.jar} $(TMPDIR)/VASSAL-$(VERSION)/lib
+	cp $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp dist/VASSAL.sh dist/windows/VASSAL.{bat,exe} $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
@@ -109,7 +111,7 @@ release-generic: $(TMPDIR)/VASSAL-$(VERSION)-generic.zip
 release: release-generic release-windows release-macosx
 
 clean-release:
-	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar $(LIBDIR)/docs.jar
+	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
 
 #upload:
 #	scp $(TMPDIR)/VASSAL-$(VERSION){-windows.exe,-macosx.dmg,.zip} nomic.net:www/tmp/vassal
