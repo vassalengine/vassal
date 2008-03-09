@@ -1,4 +1,6 @@
 /*
+ * $Id$
+ *
  * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
@@ -61,6 +63,7 @@ import VASSAL.tools.OrderedMenu;
  */
 public abstract class EditorWindow extends JFrame {
   private static final long serialVersionUID = 1L;
+
   protected SaveAction saveAction;
   protected SaveAsAction saveAsAction;
   protected JMenuItem componentHelpItem;
@@ -353,16 +356,9 @@ public abstract class EditorWindow extends JFrame {
   protected abstract void close();
   
   protected void addQuitMenuItem(JMenu menu) {
-
-    final JMenuItem quit = new JMenuItem(Resources.getString(Resources.QUIT));
-    quit.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        System.exit(0);
-      }
-    });
-   
-    quit.setMnemonic('Q');
-    menuItems.put(MenuKey.QUIT, menu.add(quit));
+    menuItems.put(MenuKey.QUIT, menu.add(new ShutDownAction()));
+// FXIME: mnemonics should be language-dependant
+    menuItems.get(MenuKey.QUIT).setMnemonic('Q');
   }
   
   protected void addTranslateMenuItem(JMenu menu) {

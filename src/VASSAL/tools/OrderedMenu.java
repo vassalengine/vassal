@@ -39,6 +39,8 @@ import VASSAL.i18n.Resources;
  * @since 3.1.0 
  */
 public class OrderedMenu extends JMenu {
+  private static final long serialVersionUID = 1L;
+
   private List<String> items;
 
   private OrderedMenu(String title, List<String> items) {
@@ -49,6 +51,8 @@ public class OrderedMenu extends JMenu {
 
   // Insert the menu item at the correct index so that the menu maintains the same order specified in the items list
   public JMenuItem add(JMenuItem menu) {
+// FIMXE: Setting the mnemonic from the first letter is a bug. Should
+// accept whatever mnemonic has already been set.
     menu.setMnemonic(menu.getText().charAt(0));
     int targetPosition = items.indexOf(menu.getText());
     if (targetPosition < 0) {

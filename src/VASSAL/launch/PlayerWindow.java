@@ -49,6 +49,7 @@ public class PlayerWindow extends JFrame {
   public JMenu getHelpMenu() {
     return helpMenu;
   }
+
   protected final JMenu fileMenu;
   protected final JMenu helpMenu;
   protected final JToolBar toolBar = new JToolBar();
@@ -58,24 +59,39 @@ public class PlayerWindow extends JFrame {
     setTitle("VASSAL");
     setLayout(new BorderLayout());
     setJMenuBar(menuBar);
+
     // build File menu
-    fileMenu = OrderedMenu.builder("General.file").appendItem("GameState.new_game").appendItem("GameState.load_game").appendItem("GameState.save_game")
-        .appendItem("GameState.close_game").appendSeparator().appendItem("BasicLogger.begin_logfile").appendItem("BasicLogger.end_logfile").appendSeparator()
-        .appendItem("Prefs.edit_preferences").appendSeparator().appendItem("General.quit").create();
+    fileMenu = OrderedMenu.builder("General.file")
+                          .appendItem("GameState.new_game")
+                          .appendItem("GameState.load_game")
+                          .appendItem("GameState.save_game")
+                          .appendItem("GameState.close_game")
+                          .appendSeparator()
+                          .appendItem("BasicLogger.begin_logfile")
+                          .appendItem("BasicLogger.end_logfile")
+                          .appendSeparator()
+                          .appendItem("Prefs.edit_preferences")
+                          .appendSeparator()
+                          .appendItem("General.quit")
+                          .create();
     fileMenu.add(new ShutDownAction());
     menuBar.add(fileMenu);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    // build Tools menu
+
     // build Help menu
-    helpMenu = OrderedMenu.builder("General.help").appendItem("About VASSAL").create();
+    helpMenu = OrderedMenu.builder("General.help")
+                          .appendItem("About VASSAL")
+                          .create();
     menuBar.add(helpMenu);
     final Action aboutVASSAL = AboutVASSAL.getAction();
     helpMenu.add(aboutVASSAL);
+
     // build toolbar
     toolBar.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
     toolBar.setAlignmentX(0.0f);
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.NORTH);
+
     // build central area
     controlPanel.setLayout(new BorderLayout());
     controlPanel.setPreferredSize(new Dimension(800, 600));
