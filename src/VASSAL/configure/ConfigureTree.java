@@ -121,7 +121,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected JMenuItem translateItem;
   public static java.awt.Font POPUP_MENU_FONT =
     new java.awt.Font("Dialog", 0, 11);
-  protected JMenu editMenu;
   protected static List<AdditionalComponent> additionalComponents =
     new ArrayList<AdditionalComponent>();
   
@@ -134,7 +133,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     toggleClickCount = 3;
     this.helpWindow = helpWindow;
     this.editorWindow = editorWindow;
-    this.editMenu = editorWindow.getEditMenu();
     setShowsRootHandles(true);
     setModel(new DefaultTreeModel(buildTreeNode(root)));
     setCellRenderer(buildRenderer());
@@ -874,32 +872,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     translateItem = ew.getMenuItem(EditorWindow.MenuKey.TRANSLATE);
 
     updateEditMenu(); 
-  }
-
-  /** @deprecated Use {@link #populateEditMenu()} instead. */
-  @Deprecated
-  public void buildEditMenu(JMenu menu) {
-    editMenu = menu;
-    deleteItem = new JMenuItem(deleteAction);
-    editMenu.add(deleteItem);
-    cutItem = new JMenuItem(cutAction);
-    editMenu.add(cutItem);
-    copyItem = new JMenuItem(copyAction);
-    editMenu.add(copyItem);
-    pasteItem = new JMenuItem(pasteAction);
-    editMenu.add(pasteItem);
-    moveItem = new JMenuItem(moveAction);
-    editMenu.add(moveItem);
-    editMenu.addSeparator();
-    propertiesItem = new JMenuItem(propertiesAction);
-    editMenu.add(propertiesItem);
-    translateItem = new JMenuItem(translateAction);
-    editMenu.add(translateItem);
-    updateEditMenu();
-  }
-
-  public JMenu getEditMenu() {
-    return editMenu;
   }
 
   /**

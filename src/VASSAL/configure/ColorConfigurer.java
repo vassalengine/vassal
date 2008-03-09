@@ -21,12 +21,12 @@ package VASSAL.configure;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import VASSAL.i18n.Resources;
 import VASSAL.tools.ColorButton;
 
 /**
