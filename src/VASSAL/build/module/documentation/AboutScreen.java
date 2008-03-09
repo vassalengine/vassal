@@ -84,8 +84,6 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   public void launch() {
-//    if (image == null) return;
-
     if (window == null) {
       initComponents();
     }
@@ -234,19 +232,6 @@ public class AboutScreen extends AbstractConfigurable {
       }
 
       window = null;
-/*
-//      image = getImage();
-//      GameModule.getGameModule().getWizardSupport().setBackgroundImage(image);
-      op = fileName == null || fileName.trim().isEmpty()
-         ? null : new SourceOp(fileName); 
-// FIXME: setting the background in the wizard blows caching
-      if (op != null) {
-        GameModule.getGameModule()
-                  .getWizardSupport()
-                  .setBackgroundImage(op.getImage(null));
-      }
-      window = null;
-*/
     }
   }
 
@@ -256,7 +241,6 @@ public class AboutScreen extends AbstractConfigurable {
 
   public void removeFrom(Buildable b) {
     ((Documentation) b).getHelpMenu().remove(launch);
-    //	launch.setEnabled(false);
   }
 
   /**
@@ -265,36 +249,12 @@ public class AboutScreen extends AbstractConfigurable {
   public void addTo(Buildable b) {
     final Documentation d = (Documentation) b;
     d.getHelpMenu().add(launch);
-// FIXME: need to do something to check whether op will produce non-null
-// output. Mabye in this case just skip this check, and complain later?
-// Or just load the image now?
-    if (op == null) {
-      throw new IllegalBuildException(
-        Resources.getString("AboutScreen.file_not_found", //$NON-NLS-1$
-        fileName ,
-        GameModule.getGameModule().getDataArchive().getName()));
-    }
-  }
 
-/*
-  private Image getImage() throws IllegalBuildException {
-    Image im = null;
-    if (fileName != null && fileName.length() > 0) {
-      try {
-        if (fileName.charAt(0) == '/') {
-          im = DataArchive.getImage(getClass().getResourceAsStream(fileName));
-        }
-        else {
-          return GameModule.getGameModule().getDataArchive().getCachedImage(fileName);
-        }
-      }
-      catch (Exception ex) {
-        ex.printStackTrace();
-      }
+    if (op == null) {
+      // use the VASSAL about image in case there is no image given
+      op = Op.load("/images/Splash.png");
     }
-    return im;
   }
-*/
 
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("HelpMenu.htm", "AboutScreen"); //$NON-NLS-1$ //$NON-NLS-2$
