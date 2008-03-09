@@ -16,7 +16,6 @@
  */
 package VASSAL.launch;
 
-import java.awt.Frame;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,7 +27,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -58,9 +56,9 @@ public class Main {
     initSystemProperties();
     System.err.println("-- OS " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
     System.err.println("-- Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
-    String v = getVersion();
-    System.err.println("-- VASSAL version " + v); //$NON-NLS-1$
-    final Thread t = new Thread(new ErrorLog.Group(), "Main Thread") { //$NON-NLS-1$
+    System.err.println("-- VASSAL version " + Info.getVersion()); //$NON-NLS-1$
+
+    new Thread(new ErrorLog.Group(), "Main Thread") { //$NON-NLS-1$
       public void run() {
         Runnable runnable = new Runnable() {
           public void run() {
@@ -75,8 +73,7 @@ public class Main {
         };
         SwingUtilities.invokeLater(runnable);
       }
-    };
-    t.start();
+    }.start();
   }
 
   protected void extractResourcesAndLaunch(final int resourceIndex) throws IOException {
@@ -153,15 +150,9 @@ public class Main {
 
   protected void launch() throws IOException {
     if (isFirstTime) {
-      final JDialog d = new JDialog((Frame)null, true);
-      d.setLocationRelativeTo(ModuleManager.getInstance().getFrame());
-      d.add(new FirstTimeUserPanel().getControls());
-      d.pack();
-      d.setLocationRelativeTo(null);
-      d.setVisible(true);
-      return;
+      new FirstTimeDialog().setVisible(true);
     }
-    if (builtInModule) {
+    else if (builtInModule) {
       GameModule.init(createModule(createDataArchive()));
       for (String ext : autoExtensions) {
         createExtension(ext).build();
@@ -211,6 +202,8 @@ public class Main {
     return new BasicModule(archive);
   }
 
+  /** @deprecated Use {@link Info.getVersion()} instead. */
+  @Deprecated
   protected String getVersion() {
     return VASSAL.Info.getVersion();
   }
