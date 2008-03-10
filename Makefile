@@ -63,8 +63,6 @@ Vengine.jar: all
 		sed -e '/Vengine.jar/d' -e '/^  $$/d') >>$(TMPDIR)/Vengine.mf
 	$(JAR) cvfm $(LIBDIR)/$@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) .
 
-	$(JAR) cvfm $(LIBDIR)/$@ dist/Vengine.mf -C $(CLASSDIR) .
-
 #docs.jar:
 #	mkdir -p $(TMPDIR)
 #	svn export $(DOCDIR) $(TMPDIR)/doc
