@@ -150,6 +150,8 @@ public class ADC2Module extends Importer {
 				return;
 			assert(pieceSlot == null);
 			pieceSlot = new PieceSlot(gp);
+			pieceSlot.build(null);
+			pieceSlot.updateGpId(GameModule.getGameModule());
 			pieceSlot.addTo(parent);
 			parent.add(pieceSlot);			
 		}
@@ -161,6 +163,8 @@ public class ADC2Module extends Importer {
 			assert(pieceSlot == null);
 			pieceSlot = new CardSlot();
 			pieceSlot.setPiece(gp);
+			pieceSlot.build(null);
+			pieceSlot.updateGpId(GameModule.getGameModule());
 			pieceSlot.addTo(parent);
 			parent.add(pieceSlot);						
 		}
@@ -208,11 +212,10 @@ public class ADC2Module extends Importer {
 				String fileName = getPieceClass().getImageName();
 				if (fileName == null)
 					return null;
-				BasicPiece bp = new BasicPiece();
 				SequenceEncoder se = new SequenceEncoder(BasicPiece.ID, ';');
 				se.append("").append("").append(fileName).append(getName());
-				bp.mySetType(se.getValue());			
-
+				BasicPiece bp = new BasicPiece(se.getValue());
+				
 				// facing
 				if (getPieceClass().getAllowedFacings() > 1) {
 					String type = FreeRotator.ID + getPieceClass().getAllowedFacings() + ";];[;Rotate CW;Rotate CCW;;;;";
@@ -316,6 +319,8 @@ public class ADC2Module extends Importer {
 			if (gp == null)
 				return;
 			pieceSlot = new PieceSlot(gp);
+			pieceSlot.build(null);
+			pieceSlot.updateGpId(GameModule.getGameModule());
 			pieceSlot.addTo(list);
 			list.add(pieceSlot);			
 		}
@@ -421,18 +426,13 @@ public class ADC2Module extends Importer {
 				return symbol.getFileName();
 		}
 		
-		// TODO: why is there both getPlayer() and getOwner()?
 		public Player getPlayer() {
-			return players.get(owner);
-		}
-		
-		public Player getOwner() {
-			if (owner == 200)
+			if (owner >= players.size())
 				return Player.ALL_PLAYERS;
 			else
-				return players.get(owner);
+				return players.get(owner);			
 		}
-
+		
 		protected void setFlipClass(int to) {
 			if (to >= 0 && to < classes.size())
 				flipClass = classes.get(to);
@@ -782,8 +782,6 @@ public class ADC2Module extends Importer {
 		int nClasses = ADC2Utils.readBase250Word(in);
 		
 		for (int i = 0; i < nClasses; ++i) {		
-			// TODO: if symbol is null, then there's a problem.
-			// Check what ADC2 does.
 			SymbolSet.SymbolData symbol = getSet().getGamePiece(ADC2Utils.readBase250Word(in));
 			
 			String name = readNullTerminatedString(in, 25);
@@ -811,8 +809,6 @@ public class ADC2Module extends Importer {
 				}
 			}
 			
-			// TODO: if the owner doesn't exist, then the class is treated as
-			// belonging to all players (owner = 200)
 			int owner = in.readUnsignedByte();
 		
 			int hiddenSymbol = ADC2Utils.readBase250Word(in);
@@ -840,6 +836,7 @@ public class ADC2Module extends Importer {
 
 		PrototypesContainer container = module.getAllDescendantComponentsOf(PrototypesContainer.class).iterator().next();
 		PrototypeDefinition def = new PrototypeDefinition();
+		def.build(null);
 		def.addTo(container);
 		container.add(def);
 		def.setConfigureName(COMMON_PROPERTIES);
@@ -884,13 +881,14 @@ public class ADC2Module extends Importer {
 		writePrototypesToArchive();
 		getMap().writeToArchive();	
 		writeClassesToArchive();
-		if (forcePoolNames.length != 0)
+		if (forcePoolNames != null && forcePoolNames.length != 0)
 			writeForcePoolsToArchive();
 		writeSetupStacksToArchive();		
 		writePlayersToArchive();
 		
 		// dice
 		DiceButton dice = new DiceButton();
+		dice.build(null);
 		dice.setAttribute(DiceButton.NAME, "Roll");
 		dice.setAttribute(DiceButton.PROMPT_ALWAYS, Boolean.TRUE);
 		dice.setAttribute(DiceButton.TOOLTIP, "Roll the dice");
@@ -906,6 +904,7 @@ public class ADC2Module extends Importer {
 		win.setAttribute(PieceWindow.NAME, "Add New Pieces");
 		
 		ListWidget list = new ListWidget();
+		list.build(null);
 		list.addTo(win);
 		win.add(list);
 		
@@ -990,6 +989,7 @@ public class ADC2Module extends Importer {
 		module.getArchiveWriter().addImage(forcePoolImageName, imageDataArray);
 		
 		final Board board = new Board();
+		board.build(null);
 		board.addTo(boardPicker);
 		boardPicker.add(board);
 		board.setConfigureName("Force Pools");
@@ -999,6 +999,7 @@ public class ADC2Module extends Importer {
 		final Rectangle rv = new Rectangle();
 		for (int i = 0; i < forcePoolNames.length; ++i) {
 			DrawPile pile = new DrawPile();
+			pile.build(null);
 			pile.addTo(forcePoolMap);
 			forcePoolMap.add(pile);
 			JPanel p = deckPanels[i];
@@ -1024,6 +1025,7 @@ public class ADC2Module extends Importer {
 		}
 	}
 
+	// TODO: Write out to a predifined setup instead of a setup stack.
 	protected void writeSetupStacksToArchive() throws IOException {
 		final Map mainMap = getMap().getMainMap();
 		final Point offset = getMap().getCenterOffset();
@@ -1033,6 +1035,7 @@ public class ADC2Module extends Importer {
 				continue;
 			ArrayList<Piece> s = stacks.get(hex);
 			SetupStack stack = new SetupStack();
+			stack.build(null);
 			stack.addTo(mainMap);
 			mainMap.add(stack);
 			p.translate(offset.x, offset.y);
