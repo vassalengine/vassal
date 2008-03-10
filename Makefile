@@ -27,7 +27,8 @@ NSIS:=PATH=$$PATH:/home/uckelman/java/nsis-2.35/ makensis
 
 SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
 CLASSES:=$(SOURCES:.java=.class)
-JARS:=Vengine.jar docs.jar
+JARS:=Vengine.jar
+#JARS:=Vengine.jar docs.jar
 
 vpath %.class $(shell find $(CLASSDIR) -type d)
 vpath %.java  $(shell find $(SRCDIR) -type d -name .svn -prune -o -print)
@@ -56,14 +57,20 @@ i18n: $(CLASSDIR)
 #	echo $(patsubst %,-C $(TMPDIR)/doc %,$(wildcard $(TMPDIR)/doc/*)) 
 
 Vengine.jar: all
+	cp dist/Vengine.mf $(TMPDIR)
+	(echo -n 'Class-Path: ' ; \
+		find lib -name '*.jar' -printf '%f\n  ' | \
+		sed -e '/Vengine.jar/d' -e '/^  $$/d') >>$(TMPDIR)/Vengine.mf
+	$(JAR) cvfm $(LIBDIR)/$@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) .
+
 	$(JAR) cvfm $(LIBDIR)/$@ dist/Vengine.mf -C $(CLASSDIR) .
 
-docs.jar:
-	mkdir -p $(TMPDIR)
-	svn export $(DOCDIR) $(TMPDIR)/doc
-	find $(TMPDIR)/doc -type f | sed "s/^$(TMPDIR)\/doc\///" >$(TMPDIR)/doc/docsList
-	cp dist/docsInfo $(TMPDIR)/doc
-	$(JAR) cvf $(LIBDIR)/$@ -C $(TMPDIR)/doc .
+#docs.jar:
+#	mkdir -p $(TMPDIR)
+#	svn export $(DOCDIR) $(TMPDIR)/doc
+#	find $(TMPDIR)/doc -type f | sed "s/^$(TMPDIR)\/doc\///" >$(TMPDIR)/doc/docsList
+#	cp dist/docsInfo $(TMPDIR)/doc
+#	$(JAR) cvf $(LIBDIR)/$@ -C $(TMPDIR)/doc .
 
 version:
 	sed -ri 's/VERSION = ".*"/VERSION = "$(VERSION)"/' $(SRCDIR)/VASSAL/Info.java
@@ -107,6 +114,8 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-generic
 		tac	>$(TMPDIR)/uninstall_files.inc
 	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer.nsi
 
+#$(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
+	
 release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
 
 release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows.exe
