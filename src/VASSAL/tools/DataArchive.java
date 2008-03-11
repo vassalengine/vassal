@@ -79,7 +79,6 @@ public class DataArchive extends SecureClassLoader {
   public static final String IMAGE_DIR = "images/";
   public static final String SOUNDS_DIR = "sounds/";
   private CodeSource cs;
-  protected SVGManager svgManager;
 
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
@@ -119,22 +118,19 @@ public class DataArchive extends SecureClassLoader {
     final ImageSource src;
 
     if (name.startsWith("/")) {
-      return ImageUtils.getImageSize(getImageInputStream(name));
+      if (name.toLowerCase().endsWith(".svg")) 
+        return SVGImageUtils.getImageSize(getImageInputStream(name));
+      else
+        return ImageUtils.getImageSize(getImageInputStream(name));
     }
     else if ((src = imageSources.get(name)) != null) {
       final Image image = src.getImage();
-      if (image != null) {
-        final int width = image.getWidth(null);
-        final int height = image.getHeight(null);
-        return new Dimension(width, height);
-      }
-      else return new Dimension();
+      return image != null ?
+        new Dimension(image.getWidth(null), image.getHeight(null)) :
+        new Dimension();
     }
     else if (name.toLowerCase().endsWith(".svg")) {
-      if (svgManager == null) svgManager = new SVGManager(this);
-
-      return svgManager.getImageSize(getArchiveURL() + path,
-                                     getFileStream(path));
+      return SVGImageUtils.getImageSize(getImageInputStream(name));
     }
     else {
       return ImageUtils.getImageSize(getImageInputStream(name));
@@ -146,16 +142,20 @@ public class DataArchive extends SecureClassLoader {
     final ImageSource src;
 
     if (name.startsWith("/")) {
-      return ImageUtils.getImage(getImageInputStream(name));
+      if (name.toLowerCase().endsWith(".svg")) { 
+        return new SVGRenderer(getArchiveURL() + path,
+                               getFileStream(path)).render();
+      }
+      else {
+        return ImageUtils.getImage(getImageInputStream(name));
+      }
     }
     else if ((src = imageSources.get(name)) != null) {
       return src.getImage();
     }
     else if (name.toLowerCase().endsWith(".svg")) {
-      if (svgManager == null) svgManager = new SVGManager(this);
-
-      return svgManager.loadSVGImage(getArchiveURL() + path,
-                                     getFileStream(path));
+      return new SVGRenderer(getArchiveURL() + path,
+                             getFileStream(path)).render();
     }
     else {
       return ImageUtils.getImage(getImageInputStream(name));

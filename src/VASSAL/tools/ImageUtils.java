@@ -1,3 +1,22 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2007-2008 by Joel Uckelman
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available 
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.tools;
 
 import java.awt.Dimension;
@@ -166,13 +185,8 @@ public class ImageUtils {
   
     // use the default hints if we weren't given any
     if (hints == null) hints = getDefaultHints();
- 
-    if (src instanceof SVGManager.SVGBufferedImage) {
-      // render SVG
-      return ((SVGManager.SVGBufferedImage) src)
-        .getTransformedInstance(scale, angle);
-    }
-    else if (scale == 1.0 && angle % 90.0 == 0.0) {
+
+    if (scale == 1.0 && angle % 90.0 == 0.0) {
       // this is an unscaled quadrant rotation, we can do this simply
       hints.put(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);

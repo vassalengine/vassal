@@ -90,9 +90,7 @@ public class ArchiveWriter extends DataArchive {
   public void addImage(String path, String name) {
     // check SVG for external references and pull them in
     if (name.toLowerCase().endsWith(".svg")) {
-      if (svgManager == null) svgManager = new SVGManager(this);
-
-      for (String s : svgManager.getExternalReferences(path)) {
+      for (String s : SVGImageUtils.getExternalReferences(path)) {
         final File f = new File(s);
         final String n = f.getName();
 // FIXME: this isn't right---n might not be a displaying SVG image
@@ -322,8 +320,7 @@ public class ArchiveWriter extends DataArchive {
       final Object o = h.get(name);
       if (o instanceof String) {
         if (name.toLowerCase().endsWith(".svg")) {
-          if (svgManager == null) svgManager = new SVGManager(this);
-          contents = svgManager.relativizeExternalReferences((String) o);   
+          contents = SVGImageUtils.relativizeExternalReferences((String) o);
         }
         else contents = IOUtils.getBytes(new FileInputStream((String) o));
       }
