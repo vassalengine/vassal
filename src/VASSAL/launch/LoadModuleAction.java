@@ -73,13 +73,17 @@ public class LoadModuleAction extends GameModuleAction {
     final JFrame frame = ModuleManager.getInstance().getFrame();
     frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-    GameModule.init(new BasicModule(new DataArchive(f.getPath())));
-    ModuleManager.getInstance().addModule(f);
-    Localization.getInstance().translate();
-    new ExtensionsLoader().addTo(GameModule.getGameModule());
-    GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
+    try {
+      GameModule.init(new BasicModule(new DataArchive(f.getPath())));
+      ModuleManager.getInstance().addModule(f);
+      Localization.getInstance().translate();
+      new ExtensionsLoader().addTo(GameModule.getGameModule());
+      GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
     
-    frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-    frame.setVisible(false);
+      frame.setVisible(false);
+    }
+    finally {
+      frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
   }
 }
