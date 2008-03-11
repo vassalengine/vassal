@@ -19,9 +19,12 @@
 package VASSAL.launch;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.JFrame;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.i18n.Localization;
@@ -33,7 +36,6 @@ import VASSAL.tools.FileChooser;
  * Loads a module in play mode
  * 
  * @author rodneykinney
- * 
  */
 public class LoadModuleAction extends GameModuleAction {
   private static final long serialVersionUID = 1L;
@@ -68,11 +70,16 @@ public class LoadModuleAction extends GameModuleAction {
   }
 
   protected void loadModule(File f) throws IOException {
+    final JFrame frame = ModuleManager.getInstance().getFrame();
+    frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
     GameModule.init(new BasicModule(new DataArchive(f.getPath())));
     ModuleManager.getInstance().addModule(f);
     Localization.getInstance().translate();
     new ExtensionsLoader().addTo(GameModule.getGameModule());
     GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
-    ModuleManager.getInstance().hideFrame();
+    
+    frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    frame.setVisible(false);
   }
 }
