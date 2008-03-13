@@ -32,7 +32,7 @@ import VASSAL.tools.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-svn3300"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-svn3297"; //$NON-NLS-1$
   private static File homeDir;
 
   private static final boolean isWindows;
@@ -157,6 +157,27 @@ public final class Info {
     return new File(getBaseDir(), d);
   }
 
+// FIXME: we should have something like
+// getAppDir(), getDocDir(), getConfDir(), getTmpDir()
+
+  public static File getAppDir() {
+    return new File(System.getProperty("user.dir"));
+  }
+
+  public static File getDocDir() {
+    final String d = isMacOSX ? "Contents/Resources/doc" : "doc";
+    return new File(getAppDir(), d);
+  }
+
+  public static File getConfDir() {
+    return getHomeDir();
+  }
+
+  public static File getTempDir() {
+    return new File(getHomeDir(), "tmp");
+  }
+
+// FIXME: this is a misleading name for this function
   public static File getHomeDir() {
     if (homeDir == null) {
       homeDir = new File(System.getProperty("user.home"), "VASSAL"); //$NON-NLS-1$ //$NON-NLS-2$

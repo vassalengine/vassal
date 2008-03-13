@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import VASSAL.Info;
 import VASSAL.tools.imageop.Op;
 
 /**
@@ -65,9 +66,7 @@ public class TempFileManager {
     //
     // set up for cleanup on shutdown
     //
-    final String os = System.getProperty("os.name").toLowerCase();
-
-    if (os.startsWith("windows")) {
+    if (Info.isWindows()) {
       Runtime.getRuntime().addShutdownHook(new Thread() {
         public void run() {
           // Clear the references to MappedBufferedImages so that the
@@ -118,7 +117,7 @@ public class TempFileManager {
       });
     }
 
-    tmpRoot = new File(System.getProperty("user.dir"), "tmp");
+    tmpRoot = Info.getTempDir();
 
     //
     // clean up stale temporary files
