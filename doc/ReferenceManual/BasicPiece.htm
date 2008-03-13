@@ -60,13 +60,17 @@ returns the name of the current <a href="Board.htm">Board</a></li>
 returns the name of the current <a href="ZonedGrid.htm">Zone</a></li>
         <li><span style="font-style: italic;">CurrentX</span>
 returns the current map X co-ordinate</li>
-        <li><span style="font-style: italic;">CurrentX</span>
+        <li><span style="font-style: italic;">CurrentY</span>
 returns the current map Y co-ordinate</li>
         <li><span style="font-style: italic;">DeckName</span>
 returns the name of the <a href="Deck.htm">Deck</a> if the piece is currently stacked in one</li>
         <li><span style="font-style: italic;">Selected</span> returns <span
  style="font-style: italic;">true</span> when the piece has been
 selected with the mouse
+        </li>
+        <li><span style="font-style: italic;">PieceId</span> returns a string that uniquely defines
+the source of the piece. All pieces sourced from the same GamePiece Palette slot will have the same
+PieceId string.        
         </li>
       </ul>
       
@@ -88,7 +92,7 @@ returns the name of the previous <a href="Board.htm">Board</a></li>
 returns the name of the previous <a href="ZonedGrid.htm">Zone</a></li>
         <li><span style="font-style: italic;">OldX</span>
 returns the previous map X co-ordinate</li>
-        <li><span style="font-style: italic;">OldX</span>
+        <li><span style="font-style: italic;">OldY</span>
 returns the previous map Y co-ordinate</li>
         </li>
       </ul>
