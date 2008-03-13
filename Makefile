@@ -23,7 +23,9 @@ JCFLAGS:=-d $(CLASSDIR) -source 5 -target 5 -Xlint -classpath $(CLASSPATH) \
 JAR:=$(JAVAPATH)/bin/jar
 JDOC:=$(JAVAPATH)/bin/javadoc
 
-NSIS:=PATH=$$PATH:/home/uckelman/java/nsis-2.35/ makensis
+NSIS:=PATH=$$PATH:/home/uckelman/java/nsis-2.35 makensis
+
+LAUNCH4J:=/home/uckelman/java/launch4j/launch4j
 
 SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
 CLASSES:=$(SOURCES:.java=.class)
@@ -63,6 +65,13 @@ Vengine.jar: all
 		sed -e '/Vengine.jar/d' -e '/^  $$/d') >>$(TMPDIR)/Vengine.mf
 	$(JAR) cvfm $(LIBDIR)/$@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) .
 
+$(TMPDIR)/VASSAL.exe: Info.class
+	cp dist/windows/VASSAL.l4j.xml $(TMPDIR)
+	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
+         -e 's/%NUMVERSION%/$(VNUM)/g' \
+				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
+	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
+
 #docs.jar:
 #	mkdir -p $(TMPDIR)
 #	svn export $(DOCDIR) $(TMPDIR)/doc
@@ -76,9 +85,9 @@ version:
 $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS)
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
-	sed -i -e 's/SVNVERSION/$(SVNVERSION)/' \
-         -e 's/NUMVERSION/$(VNUM)/' \
-				 -e 's/FULLVERSION/$(VERSION)/' $@/Contents/Info.plist
+	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
+         -e 's/%NUMVERSION%/$(VNUM)/g' \
+				 -e 's/%FULLVERSION%/$(VERSION)/g' $@/Contents/Info.plist
 	cp dist/macosx/JavaApplicationStub $@/Contents/MacOS
 	svn export $(LIBDIR) $@/Contents/Resources/Java
 	svn export $(DOCDIR) $@/Contents/Resources/doc
@@ -91,12 +100,13 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	sudo sh -c "mount -t hfsplus -o loop $@ $(TMPDIR)/dmg ; cp -va $< $(TMPDIR)/dmg ; umount $(TMPDIR)/dmg"
 	rmdir $(TMPDIR)/dmg
 
-$(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS) 
+$(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS) $(TMPDIR)/VASSAL.exe 
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
 	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL-$(VERSION)/lib
-	cp dist/VASSAL.sh dist/windows/VASSAL.{bat,exe} $(TMPDIR)/VASSAL-$(VERSION)
+	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe \
+		$(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
 $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-generic

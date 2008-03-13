@@ -37,7 +37,7 @@ Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
 
 InstallDir "$PROGRAMFILES\VASSAL\VASSAL-${VERSION}"
-InstallDirRegKey "HKLM" "${IROOT}" "InstallLocation"
+InstallDirRegKey HKLM "${IROOT}" "InstallLocation"
 
 # compression
 SetCompress auto
@@ -92,7 +92,7 @@ Var StartMenuFolder
 !define MUI_PAGE_CUSTOMFUNCTION_LEAVE leaveStartMenu
 !define MUI_STARTMENUPAGE_NODISABLE
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER "VASSAL"
-!define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKLM"
+!define MUI_STARTMENUPAGE_REGISTRY_ROOT HKLM
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${UROOT}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "StartMenuFolder"
 !insertmacro MUI_PAGE_STARTMENU StartMenu $StartMenuFolder
@@ -117,16 +117,17 @@ Page custom preConfirm leaveConfirm
 #
 
 ; Welcome page
-;!insertmacro MUI_UNPAGE_WELCOME
+!insertmacro MUI_UNPAGE_WELCOME
 
 ; Confirm page
-;!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_CONFIRM
 
 ; Remove Files page
-;!insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_INSTFILES
 
 ; Finish page
-;!insertmacro MUI_UNPAGE_FINISH
+!define MUI_UNFINISHPAGE_NOAUTOCLOSE
+!insertmacro MUI_UNPAGE_FINISH
 
 ; must be set after the pages, or header graphics fail to show up!
 !insertmacro MUI_LANGUAGE "English"
@@ -146,11 +147,11 @@ Page custom preConfirm leaveConfirm
 
 ; finds the version of the JRE, if any
 !macro GetJREVersion _RESULT
-  ReadRegStr ${_RESULT} "HKLM" "Software\JavaSoft\Java Runtime Environment" "CurrentVersion"
+  ReadRegStr ${_RESULT} HKLM "Software\JavaSoft\Java Runtime Environment" "CurrentVersion"
   ${If} ${_RESULT} != ""
     Push "$0"
   ${Else}
-    ReadRegStr ${_RESULT} "HKLM" "Software\JavaSoft\Java Development Kit" "CurrentVersion"
+    ReadRegStr ${_RESULT} HKLM "Software\JavaSoft\Java Development Kit" "CurrentVersion"
     ${If} ${_RESULT} != ""
       Push "$0"
     ${Else}
@@ -161,6 +162,135 @@ Page custom preConfirm leaveConfirm
 
 !define GetJREVersion "!insertmacro GetJREVersion"
 
+
+!macro ForceSingleton
+  #
+  # Only one instance of the installer may run at a time.
+  # Based on http://nsis.sourceforge.net/Allow_only_one_installer_instance.
+  #
+
+  ; set up a mutex
+  BringToFront
+  System::Call "kernel32::CreateMutexA(i 0, i 0, t '$(^Name)') i .r0 ?e"
+  Pop $0
+
+  ; if the mutex already existed, find the installer running before us
+  ${If} $0 != 0 
+    StrLen $0 "$(^Name)"
+    IntOp $0 $0 + 1
+
+    ; loop until we find the other installer
+    ${Do}
+      FindWindow $1 '#32770' '' 0 $1
+      ${If} $1 == 0
+        Abort
+      ${EndIf}
+
+      System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
+      ${If} $2 == "$(^Name)"
+        ; bring it to the front and die
+        System::Call "user32::ShowWindow(i r1,i 9) i."  
+        System::Call "user32::SetForegroundWindow(i r1) i."
+        Abort
+      ${EndIf}
+    ${Loop}
+  ${EndIf}
+!macroend
+
+!define ForceSingleton "!insertmacro ForceSingleton"
+
+
+; detect running instances of VASSAL
+!macro WaitForVASSALToClose
+  #
+  # Detect running instances of VASSAL.
+  # Based on http://nsis.sourceforge.net/Get_Windows_version
+  # and http://nsis.sourceforge.net/Get_a_list_of_running_processes.
+  #
+
+  ; no PSAPI on Windows 9x and ME, so don't try there
+  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion" "VersionNumber"
+  StrCpy $0 $0 1
+  ${If} $0 == "4"
+    MessageBox MB_OK "We are Windows 9x or Windows ME"
+    Return
+  ${EndIf}
+
+check_processes:  
+  ; allocate a buffer
+  System::Alloc 1024
+  Pop $R9
+
+  ; get the process array
+  System::Call "Psapi::EnumProcesses(i R9, i 1024, *i .R1)i .R8"
+  StrCmp $R8 0 handleError
+ 
+  IntOp $R2 $R1 / 4 ; Divide by sizeof(DWORD) to get number of processes
+  StrCpy $R4 0      ; R4 is our counter variable
+
+  ${Do}
+    System::Call "*$R9(i .R5)" ; Get next PID
+    ${If} $R5 == 0      ; skip PID 0
+      Goto next_iteration
+    ${ElseIf} $R5 < 0   ; done if PID < 0
+      ${Break}
+    ${EndIf}
+
+    System::Call "Kernel32::OpenProcess(i 1040, i 0, i R5)i .R8"
+    ${If} $R8 == 0
+      Goto next_iteration
+    ${EndIf}
+
+    System::Alloc 1024
+    Pop $R6
+
+    System::Call "Psapi::EnumProcessModules(i R8, i R6, i 1024, *i .R1)i .R7"
+    ${If} $R7 == 0
+      System::Free $R6
+      GoTo next_iteration
+    ${EndIf}
+
+    System::Alloc 256
+    Pop $R7
+
+    System::Call "*$R6(i .r6)" ; Get next module
+    System::Free $R6
+    System::Call "Psapi::GetModuleBaseName(i R8, i r6, t .R7, i 256)i .r6"
+
+    ${If} $6 == 0
+      System::Free $R7
+      GoTo handleError
+    ${EndIf}
+
+    ${If} $R7 == "VASSAL.exe"
+      System::Free $R7
+      System::Free $R9
+
+      MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "An instance of VASSAL is currently running.$\n$\nPlease close it and press OK to continue, or Cancel to quit." IDCANCEL bail_out
+      Sleep 500
+      Goto check_processes
+    ${EndIf}
+
+    System::Free $R7
+ 
+next_iteration:
+    IntOp $R4 $R4 + 1 ; Add 1 to our counter
+    IntOp $R9 $R9 + 4 ; Add sizeof(int) to our buffer address
+  ${LoopWhile} $R4 < $R2
+
+  System::Free $R9
+  Return
+
+handleError:
+  System::Free $R9
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "Unable to determine whether an instance of VASSAL is running.$\n$\nPlease close all instances of VASSAL before proceeding." IDCANCEL bail_out
+  Return
+
+bail_out:
+  Abort
+!macroend
+
+!define WaitForVASSALToClose "!insertmacro WaitForVASSALToClose"
 
 #
 # Setup Option Variables
@@ -174,12 +304,24 @@ Var RemoveOtherVersions
 
 #
 # Functions
-# 
+#
+Function un.onInit
+  ${ForceSingleton}
+  ${WaitForVASSALToClose}
+FunctionEnd
+
+
+Function .onInit
+  ${ForceSingleton}
+  ${WaitForVASSALToClose}
+FunctionEnd
+
+
 Function preSetupType
   !insertmacro MUI_HEADER_TEXT "Setup Type" "Choose setup options"
 
   nsDialogs::Create /NOUNLOAD 1018
-  pop $0
+  Pop $0
 
   ${NSD_CreateLabel} 0 0 100% 12u "Choose the type of setup you prefer, then click Next."
 	Pop $0
@@ -210,7 +352,7 @@ Var RemoveButton
 
 Function preUninstallOld
   ; bail out if we find no other versions
-  EnumRegKey $0 "HKLM" "${VROOT}" 0
+  EnumRegKey $0 HKLM "${VROOT}" 0
   ${If} $0 == ""
     StrCpy $RemoveOtherVersions ""
     Abort
@@ -222,7 +364,7 @@ Function preUninstallOld
     StrCpy $RemoveOtherVersions ""
     StrCpy $R0 0
     ${Do} 
-      EnumRegKey $0 "HKLM" "${VROOT}" $R0
+      EnumRegKey $0 HKLM "${VROOT}" $R0
       StrCpy $RemoveOtherVersions "$RemoveOtherVersions$0$\n"
       IntOp $R0 $R0 + 1
     ${LoopUntil} $0 == ""
@@ -261,7 +403,7 @@ Function preUninstallOld
   ; populate the keep list
   StrCpy $R0 0
   ${Do} 
-    EnumRegKey $1 "HKLM" "${VROOT}" $R0
+    EnumRegKey $1 HKLM "${VROOT}" $R0
     
     ${If} $1 != ""
       SendMessage $KeepListBox ${LB_ADDSTRING} 0 "STR:$1"
@@ -497,8 +639,8 @@ Section "-Application" Application
         DetailPrint "Uninstall: $1"
       
         ; get old install and uninstaller paths
-        ReadRegStr $2 "HKLM" "Software\Microsoft\Windows\CurrentVersion\Uninstall\$1" "InstallLocation"
-        ReadRegStr $3 "HKLM" "Software\Microsoft\Windows\CurrentVersion\Uninstall\$1" "UninstallString"
+        ReadRegStr $2 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\$1" "InstallLocation"
+        ReadRegStr $3 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\$1" "UninstallString"
 
         ; copy the uninstaller to $TEMP
         CopyFiles "$3" "$TEMP"
@@ -544,18 +686,18 @@ Section "-Application" Application
   !include "${TMPDIR}/install_files.inc"
 
   ; write keys to the registry
-  WriteRegStr "HKLM" "${IROOT}" "InstallLocation" "$INSTDIR"
+  WriteRegStr HKLM "${IROOT}" "InstallLocation" "$INSTDIR"
   
   ; write registry keys for uninstaller
-  WriteRegStr "HKLM" "${UROOT}" "DisplayName" "VASSAL (${VERSION})"
-  WriteRegStr "HKLM" "${UROOT}" "DisplayVersion" "${VERSION}"
-  WriteRegStr "HKLM" "${UROOT}" "InstallLocation" "$INSTDIR"
-  WriteRegStr "HKLM" "${UROOT}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr "HKLM" "${UROOT}" "Publisher" "vassalengine.org"
-  WriteRegStr "HKLM" "${UROOT}" "URLInfoAbout" "http://www.vassalengine.org"
-  WriteRegStr "HKLM" "${UROOT}" "URLUpdateInfo" "http://www.vassalengine.org"
-  WriteRegDWORD "HKLM" "${UROOT}" "NoModify" 0x00000001
-  WriteRegDWORD "HKLM" "${UROOT}" "NoRepair" 0x00000001
+  WriteRegStr HKLM "${UROOT}" "DisplayName" "VASSAL (${VERSION})"
+  WriteRegStr HKLM "${UROOT}" "DisplayVersion" "${VERSION}"
+  WriteRegStr HKLM "${UROOT}" "InstallLocation" "$INSTDIR"
+  WriteRegStr HKLM "${UROOT}" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "${UROOT}" "Publisher" "vassalengine.org"
+  WriteRegStr HKLM "${UROOT}" "URLInfoAbout" "http://www.vassalengine.org"
+  WriteRegStr HKLM "${UROOT}" "URLUpdateInfo" "http://www.vassalengine.org"
+  WriteRegDWORD HKLM "${UROOT}" "NoModify" 0x00000001
+  WriteRegDWORD HKLM "${UROOT}" "NoRepair" 0x00000001
 
   ; create the uninstaller
   WriteUninstaller "$INSTDIR\uninst.exe"
@@ -575,20 +717,20 @@ Section "-Application" Application
     ; create the desktop shortcut
     ${If} $AddDesktopSC == 1
       CreateShortCut "$DESKTOP\$0.lnk" "$INSTDIR\VASSAL.exe"
-      WriteRegStr "HKLM" "${UROOT}" "DesktopShortcut" "$DESKTOP\$0.lnk"
+      WriteRegStr HKLM "${UROOT}" "DesktopShortcut" "$DESKTOP\$0.lnk"
     ${EndIf}
 
     ; create the Start Menu shortcut
     ${If} $AddStartMenuSC == 1
       CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
       CreateShortCut "$SMPROGRAMS\$StartMenuFolder\$0.lnk" "$INSTDIR\VASSAL.exe"
-      WriteRegStr "HKLM" "${UROOT}" "StartMenuShortcut" "$SMPROGRAMS\$StartMenuFolder\$0.lnk"
+      WriteRegStr HKLM "${UROOT}" "StartMenuShortcut" "$SMPROGRAMS\$StartMenuFolder\$0.lnk"
     ${EndIf}
 
     ; create the quick launch shortcut
     ${If} $AddQuickLaunchSC == 1
       CreateShortCut "$QUICKLAUNCH\$0.lnk" "$INSTDIR\VASSAL.exe"
-      WriteRegStr "HKLM" "${UROOT}" "QuickLaunchShortcut" "$QUICKLAUNCH\$0.lnk"
+      WriteRegStr HKLM "${UROOT}" "QuickLaunchShortcut" "$QUICKLAUNCH\$0.lnk"
     ${EndIf}
 
   !insertmacro MUI_STARTMENU_WRITE_END
@@ -602,19 +744,19 @@ Section Uninstall
   Delete "$INSTDIR\uninst.exe"
 
   ; delete the desktop shortuct
-  ReadRegStr $0 "HKLM" "${UROOT}" "DesktopShortcut"
+  ReadRegStr $0 HKLM "${UROOT}" "DesktopShortcut"
   ${If} $0 != ""
     Delete "$0"
   ${EndIf}
 
   ; delete the quick launch shortcut
-  ReadRegStr $0 "HKLM" "${UROOT}" "QuickLaunchShortcut"
+  ReadRegStr $0 HKLM "${UROOT}" "QuickLaunchShortcut"
   ${If} $0 != ""
     Delete "$0"
   ${EndIf}
   
   ; delete the Start Menu items
-  ReadRegStr $0 "HKLM" "${UROOT}" "StartMenuShortcut"
+  ReadRegStr $0 HKLM "${UROOT}" "StartMenuShortcut"
   ${If} $0 != ""
     Delete "$0"
   ${EndIf}
@@ -624,8 +766,8 @@ Section Uninstall
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 
   ; delete registry keys
-  DeleteRegKey "HKLM" "${IROOT}"
-  DeleteRegKey "HKLM" "${UROOT}"
+  DeleteRegKey HKLM "${IROOT}"
+  DeleteRegKey HKLM "${UROOT}"
 
   ; delete the installed files and directories
   !include "${TMPDIR}/uninstall_files.inc"
