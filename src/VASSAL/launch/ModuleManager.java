@@ -261,6 +261,8 @@ public class ModuleManager {
   protected JMenu buildToolsMenu() {
     JMenu menu = OrderedMenu.builder("General.tools").create();
     menu.add(new AbstractAction(Resources.getString("Chat.server_status")) {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         serverStatusView.toggleVisibility();
         BooleanConfigurer config = (BooleanConfigurer) Prefs.getGlobalPrefs().getOption(SHOW_STATUS_KEY);
