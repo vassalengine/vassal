@@ -56,6 +56,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.HyperlinkEvent;
@@ -70,6 +71,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ExtensionsManager;
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ui.ServerStatusView;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.configure.StringArrayConfigurer;
@@ -84,14 +86,14 @@ import VASSAL.tools.OrderedMenu;
 import VASSAL.tools.imports.ImportAction;
 
 /**
- * Tracks recently-used modules and builds the main GUI window for
- * interacting with modules.
+ * Tracks recently-used modules and builds the main GUI window for interacting with modules.
  * 
  * @author rodneykinney
- * @since 3.1.0 
+ * @since 3.1.0
  */
 public class ModuleManager {
   private static ModuleManager instance;
+  private static final String SHOW_STATUS_KEY = "showServerStatus";
   private JFrame theFrame;
   private DefaultListModel modules = new DefaultListModel();
   private StringArrayConfigurer recentModuleConfig;
@@ -138,9 +140,7 @@ public class ModuleManager {
   public void showFrame() {
     if (theFrame == null) {
       theFrame = new JFrame("VASSAL");
-      theFrame.setLayout(
-        new BoxLayout(theFrame.getContentPane(), BoxLayout.X_AXIS));
-
+      theFrame.setLayout(new BoxLayout(theFrame.getContentPane(), BoxLayout.X_AXIS));
       JMenuBar menuBar = new JMenuBar();
       theFrame.setJMenuBar(menuBar);
       menuBar.add(buildFileMenu());
@@ -154,7 +154,7 @@ public class ModuleManager {
       modAndExtControls.add(extensionsControls);
       JPanel allControls = new JPanel(new BorderLayout());
       JComponent serverStatusControls = buildServerStatusControls();
-      allControls.add(modAndExtControls,BorderLayout.CENTER);
+      allControls.add(modAndExtControls, BorderLayout.CENTER);
       theFrame.add(allControls);
       serverStatusView = new ComponentSplitter().splitRight(allControls, serverStatusControls, false);
       serverStatusView.revalidate();
@@ -171,6 +171,15 @@ public class ModuleManager {
         }
       });
     }
+    BooleanConfigurer config = new BooleanConfigurer(SHOW_STATUS_KEY, null, true);
+    Prefs.getGlobalPrefs().addOption(null, config);
+    if (config.booleanValue()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          serverStatusView.showComponent();
+        }
+      });
+    }
     theFrame.setVisible(true);
   }
 
@@ -178,38 +187,28 @@ public class ModuleManager {
     final JPanel moduleControls = new JPanel(new BorderLayout());
     modulePanelLayout = new CardLayout();
     moduleView = new JPanel(modulePanelLayout);
-    moduleView.add(new JScrollPane(buildModuleList()),"modules");
-
-    final JEditorPane l = new JEditorPane("text/html",
-      Resources.getString("ModuleManager.quickstart"));
+    moduleView.add(new JScrollPane(buildModuleList()), "modules");
+    final JEditorPane l = new JEditorPane("text/html", Resources.getString("ModuleManager.quickstart"));
     l.setEditable(false);
-
     // pick up background color and font from JLabel
     l.setBackground(UIManager.getColor("control"));
     final Font font = UIManager.getFont("Label.font");
-
-    ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule(
-      "body { font: " + font.getFamily() + " " + font.getSize() + "pt }");
-
+    ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule("body { font: " + font.getFamily() + " " + font.getSize() + "pt }");
     l.addHyperlinkListener(new HyperlinkListener() {
       public void hyperlinkUpdate(HyperlinkEvent e) {
         if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
           BrowserSupport.openURL(e.getURL().toString());
         }
       }
-    }); 
-
+    });
     // this is necessary to get proper vertical alignment
     final JPanel p = new JPanel(new GridBagLayout());
     final GridBagConstraints c = new GridBagConstraints();
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.CENTER;
     p.add(l, c);
-    
     moduleView.add(p, "quickStart");
-
-    modulePanelLayout.show(moduleView,
-      modules.size() == 0 ? "quickStart" : "modules");
+    modulePanelLayout.show(moduleView, modules.size() == 0 ? "quickStart" : "modules");
     moduleControls.add(moduleView, BorderLayout.CENTER);
     moduleControls.setBorder(new TitledBorder(Resources.getString("ModuleManager.recent_modules")));
     return moduleControls;
@@ -218,7 +217,7 @@ public class ModuleManager {
   public JFrame getFrame() {
     return theFrame;
   }
-  
+
   public void hideFrame() {
     if (theFrame != null) {
       theFrame.setVisible(false);
@@ -264,6 +263,10 @@ public class ModuleManager {
     menu.add(new AbstractAction(Resources.getString("Chat.server_status")) {
       public void actionPerformed(ActionEvent e) {
         serverStatusView.toggleVisibility();
+        BooleanConfigurer config = (BooleanConfigurer) Prefs.getGlobalPrefs().getOption(SHOW_STATUS_KEY);
+        if (config != null) {
+          config.setValue(config.booleanValue() ? Boolean.FALSE : Boolean.TRUE);
+        }
       }
     });
     menu.add(new TranslateVassalAction(theFrame));
@@ -284,23 +287,19 @@ public class ModuleManager {
         missingModules.add(s);
       }
     }
-
     for (String s : missingModules) {
       moduleList.remove(s);
       recentModuleConfig.removeValue(s);
     }
-
     Collections.sort(moduleList, new Comparator<File>() {
       public int compare(File f1, File f2) {
         return f1.getName().compareTo(f2.getName());
       }
     });
-
     modules = new DefaultListModel();
     for (File f : moduleList) {
       modules.addElement(f);
     }
-
     final JList list = new JList(modules);
     list.setCellRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = 1L;
@@ -312,7 +311,6 @@ public class ModuleManager {
         return c;
       }
     });
-
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
@@ -326,13 +324,12 @@ public class ModuleManager {
         }
       }
     });
-
     list.addMouseListener(new MouseAdapter() {
       public void mouseReleased(MouseEvent e) {
         if (e.isMetaDown() && !list.isSelectionEmpty()) {
           int index = list.locationToIndex(e.getPoint());
           if (index >= 0) {
-             buildPopup(index).show(list, e.getX(), e.getY());
+            buildPopup(index).show(list, e.getX(), e.getY());
           }
         }
         else if (e.getClickCount() == 2) {
@@ -340,7 +337,7 @@ public class ModuleManager {
           if (index >= 0) {
             final File module = (File) list.getModel().getElementAt(index);
             new LoadModuleAction(module).actionPerformed(null);
-          }          
+          }
         }
       }
 
@@ -361,14 +358,11 @@ public class ModuleManager {
     });
     return list;
   }
-
   private class ExtensionControls extends JPanel {
     private static final long serialVersionUID = 1L;
-
     private ExtensionsManager extMgr;
     private JList extList;
-    private AbstractAction addExtensionAction =
-        new AbstractAction(Resources.getString("ModuleManager.add")) {
+    private AbstractAction addExtensionAction = new AbstractAction(Resources.getString("ModuleManager.add")) {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
@@ -379,9 +373,7 @@ public class ModuleManager {
         }
       }
     };
-
-    private AbstractAction newExtensionAction =
-        new AbstractAction(Resources.getString(Resources.NEW)) {
+    private AbstractAction newExtensionAction = new AbstractAction(Resources.getString(Resources.NEW)) {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
@@ -416,7 +408,6 @@ public class ModuleManager {
           return this;
         }
       });
-
       extList.addMouseListener(new MouseAdapter() {
         public void mouseReleased(MouseEvent e) {
           if (e.isMetaDown() && extMgr != null) {
@@ -431,18 +422,14 @@ public class ModuleManager {
       JPopupMenu m = new JPopupMenu();
       if (index >= 0) {
         final Extension ext = (Extension) extList.getModel().getElementAt(index);
-        m.add(new AbstractAction(
-          Resources.getString(
-            ext.isActive() ? "ModuleManager.deactivate" :
-                             "ModuleManager.activate")) {
+        m.add(new AbstractAction(Resources.getString(ext.isActive() ? "ModuleManager.deactivate" : "ModuleManager.activate")) {
           private static final long serialVersionUID = 1L;
-        
+
           public void actionPerformed(ActionEvent e) {
             extMgr.setActive(ext.getFile(), !ext.isActive());
             refresh();
           }
         });
-
         m.add(new EditExtensionAction(m));
         m.addSeparator();
       }
