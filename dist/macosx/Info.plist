@@ -31,7 +31,7 @@
   <key>Java</key>
   <dict>
     <key>WorkingDirectory</key>
-    <string>$APP_PACKAGE/Contents/Resources/Java</string>
+    <string>$APP_PACKAGE</string>
     <key>MainClass</key>
     <string>VASSAL.launch.Main</string>
     <key>JVMVersion</key>

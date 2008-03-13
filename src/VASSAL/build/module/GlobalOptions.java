@@ -197,7 +197,7 @@ public class GlobalOptions extends AbstractConfigurable {
       // Info.plist which is contained in the VASSAL.app bundle.
       heapListener = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          final File file = new File(Info.getBaseDir(), "Info.plist");
+          final File file = new File(Info.getBaseDir(), "Contents/Info.plist");
           final String VMOptionsKey = "<key>VMOptions</key>";
 
           String s = null;

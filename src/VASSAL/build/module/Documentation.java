@@ -76,7 +76,7 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public static File getDocumentationBaseDir() {
-    return new File(Info.getBaseDir(), "doc");
+    return Info.getDocsDir();
   }
 
   public void addTo(Buildable b) {

@@ -32,7 +32,7 @@ import VASSAL.tools.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-svn3260"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-svn3289"; //$NON-NLS-1$
   private static File homeDir;
 
   private static final boolean isWindows;
@@ -145,6 +145,16 @@ public final class Info {
    */
   public static File getBaseDir() {
     return new File(System.getProperty("user.dir"));
+  }
+
+  /**
+   * Returns the directory where the VASSAL documentation is installed.
+   * 
+   * @return a {@link File} representing the directory
+   */
+  public static File getDocsDir() {
+    final String d = isMacOSX ? "Contents/Resources/doc" : "doc";
+    return new File(getBaseDir(), d);
   }
 
   public static File getHomeDir() {
