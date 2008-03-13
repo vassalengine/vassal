@@ -86,6 +86,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     gpidSupport = s;
   }
   
+  public PieceDefiner(GpIdSupport s) {
+    this();
+    gpidSupport = s;
+  }
+  
   protected static void initDefinitions() {
     if (availableModel == null) {
       availableModel = new DefaultListModel();

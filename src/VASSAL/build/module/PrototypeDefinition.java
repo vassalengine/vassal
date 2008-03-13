@@ -30,6 +30,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.AddPiece;
@@ -183,7 +184,7 @@ public class PrototypeDefinition extends AbstractConfigurable
       box = Box.createVerticalBox();
       name = new StringConfigurer(null, "Name:  ", def.name);
       box.add(name.getControls());
-      pieceDefiner = new Definer();
+      pieceDefiner = new Definer(GameModule.getGameModule().getGpIdSupport());
       pieceDefiner.setPiece(def.getPiece());
       box.add(pieceDefiner);
       this.def = def;
@@ -210,6 +211,10 @@ public class PrototypeDefinition extends AbstractConfigurable
     public static class Definer extends PieceDefiner {
       private static final long serialVersionUID = 1L;
 
+      public Definer(GpIdSupport s) {
+        super(s);
+      }
+      
       public void setPiece(GamePiece piece) {
         if (piece != null) {
           GamePiece inner = Decorator.getInnermost(piece);
