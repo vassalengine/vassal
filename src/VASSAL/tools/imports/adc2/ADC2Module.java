@@ -34,8 +34,11 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -45,12 +48,18 @@ import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.DiceButton;
+import VASSAL.build.module.GameComponent;
+import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.Inventory;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.NewGameIndicator;
 import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.PlayerRoster;
+import VASSAL.build.module.PredefinedSetup;
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
+import VASSAL.build.module.GameState.SetupCommand;
 import VASSAL.build.module.map.BoardPicker;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.SetupStack;
@@ -62,6 +71,7 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.build.widget.ListWidget;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.command.Command;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Delete;
@@ -73,34 +83,37 @@ import VASSAL.counters.MovementMarkable;
 import VASSAL.counters.Replace;
 import VASSAL.counters.ReturnToDeck;
 import VASSAL.counters.UsePrototype;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ExtensionFileFilter;
+import VASSAL.tools.Obfuscator;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
 
 public class ADC2Module extends Importer {
 	
+	private static final String SETUP_NAME = "setup";
 	private static final String PIECE = "Pieces";
 
 	protected class Piece {
 		private final int[] values = new int[8];
 		private final ValueType[] types = new ValueType[8];
 		private final String name;
-		private final Class cl;
+		private final PieceClass cl;
 		@SuppressWarnings("unused")
     private final HideState hidden;
 		private final int flags;
 		private GamePiece gamePiece;
 		private PieceSlot pieceSlot;
 	
-		public Piece(Class cl) {
+		public Piece(PieceClass cl) {
 			this.name = null;
 			this.cl = cl;
 			this.flags = 0;
 			this.hidden = null;
 		}
 		
-		public Piece(int position, String name, Class cl, HideState hidden, int flags) {
+		public Piece(int position, String name, PieceClass cl, HideState hidden, int flags) {
 			if (name == null || name.equals(""))
 				this.name = null;
 			else
@@ -125,7 +138,7 @@ public class ADC2Module extends Importer {
 			}			
 		}		
 		
-		public Class getPieceClass() {
+		public PieceClass getPieceClass() {
 			return cl;
 		}
 		
@@ -215,14 +228,34 @@ public class ADC2Module extends Importer {
 				SequenceEncoder se = new SequenceEncoder(BasicPiece.ID, ';');
 				se.append("").append("").append(fileName).append(getName());
 				BasicPiece bp = new BasicPiece(se.getValue());
+				PieceClass c = getPieceClass();
 				
-				// facing
-				if (getPieceClass().getAllowedFacings() > 1) {
-					String type = FreeRotator.ID + getPieceClass().getAllowedFacings() + ";];[;Rotate CW;Rotate CCW;;;;";
-					gamePiece = new FreeRotator(type, bp);				
-				}				
+				// class values
+				if (c.getNValues() > 0) {
+					se = new SequenceEncoder(',');
+					for (int i = 0; i < classValues.length; ++i) {
+						if (c.getValue(i) != null)
+							se.append(classValues[i]);
+					}
+					gamePiece = new Marker(Marker.ID + se.getValue(), bp);
+					for (int i = 0; i < classValues.length; ++i) {
+						Object o = c.getValue(i);
+						if (o instanceof Boolean)
+							gamePiece.setProperty(classValues[i], o.equals(Boolean.TRUE) ? "yes" : "no");
+						else if (o instanceof String)
+							gamePiece.setProperty(classValues[i], (String) o);
+						else if (o instanceof Integer)
+							gamePiece.setProperty(classValues[i], o.toString());
+					}
+				}
 				else
 					gamePiece = bp;
+				
+				// facing
+				if (c.getAllowedFacings() > 1) {
+					String type = FreeRotator.ID + c.getAllowedFacings() + ";];[;Rotate CW;Rotate CCW;;;;";
+					gamePiece = new FreeRotator(type, bp);				
+				}				
 
 				// common properties
 				se = new SequenceEncoder(UsePrototype.ID.replaceAll(";", ""), ';');
@@ -290,11 +323,15 @@ public class ADC2Module extends Importer {
 		private String getValueAsString(int index) {
 			byte[] b = new byte[4];
 			int mask = 0x7f000000;
+			int length = 0;
 			for (int i = 0; i < b.length; ++i) {
 				b[i] = (byte) ((values[index] & mask) >> ((3-i)*8));
+				if (b[i] == 0)
+					break;
+				++length;
 				mask >>= 8;
 			}
-			return new String(b);
+			return new String(b, 0, length);
 		}
 		
 		private boolean getValueAsBoolean(int index) {
@@ -379,7 +416,7 @@ public class ADC2Module extends Importer {
 	 * A general class for a game piece.  Typically all pieces that appear to be identical blong to the
 	 * same class.
 	 */
-	protected class Class {
+	protected class PieceClass {
 		
 		private final int[] values = new int[8];
 		private final ValueType[] types = new ValueType[8];
@@ -388,10 +425,10 @@ public class ADC2Module extends Importer {
 		private final int owner;
 		private final int hiddenSymbol;
 		private final int facing;
-		private Class flipClass;
+		private PieceClass flipClass;
 		private Piece defaultPiece;
 		
-		public Class(String name, SymbolSet.SymbolData symbol, int owner, int hiddenSymbol, int facing) {
+		public PieceClass(String name, SymbolSet.SymbolData symbol, int owner, int hiddenSymbol, int facing) {
 			this.name = name;
 			this.symbol = symbol;
 			this.owner = owner;
@@ -434,11 +471,11 @@ public class ADC2Module extends Importer {
 		}
 		
 		protected void setFlipClass(int to) {
-			if (to >= 0 && to < classes.size())
-				flipClass = classes.get(to);
+			if (to >= 0 && to < pieceClasses.size())
+				flipClass = pieceClasses.get(to);
 		}
 		
-		public Class getFlipClass() {
+		public PieceClass getFlipClass() {
 			return flipClass;
 		}
 
@@ -469,12 +506,24 @@ public class ADC2Module extends Importer {
 		
 		public String getValueAsString(int index) {
 			byte[] b = new byte[4];
+			int length = 0;
 			int mask = 0x7f000000;
 			for (int i = 0; i < b.length; ++i) {
 				b[i] = (byte) ((values[index] & mask) >> ((3-i)*8));
+				if (b[i] == 0)
+					break;
+				++length;
 				mask >>= 8;
 			}
-			return new String(b);
+			return new String(b, 0, length);
+		}
+		
+		public int getNValues() {
+			int total = 0;
+			for (ValueType t : types)
+				if (t != ValueType.NOT_USED)
+					++total;
+			return total;
 		}
 		
 		public boolean getValueAsBoolean(int index) {
@@ -510,7 +559,7 @@ public class ADC2Module extends Importer {
 	private MapBoard map = null;
 	@SuppressWarnings("unused")
   private int gameTurn = -1;
-	private final ArrayList<Class> classes = new ArrayList<Class>();
+	private final ArrayList<PieceClass> pieceClasses = new ArrayList<PieceClass>();
 	private final ArrayList<Piece> pieces = new ArrayList<Piece>();
 	private final ArrayList<Player> players = new ArrayList<Player>();
 	private final HashMap<Integer,ArrayList<Piece>> stacks = new HashMap<Integer,ArrayList<Piece>>();
@@ -520,10 +569,10 @@ public class ADC2Module extends Importer {
 	private final String[] pieceValues = new String[8];
 	private int allowedFacings[]; 
 	
-	protected Class getClassFromIndex(int index) {
-		if (index < 0 || index >= classes.size())
+	protected PieceClass getClassFromIndex(int index) {
+		if (index < 0 || index >= pieceClasses.size())
 			return null;
-		return classes.get(index);
+		return pieceClasses.get(index);
 	}
 	
 	@Override
@@ -575,8 +624,8 @@ public class ADC2Module extends Importer {
 		for (int i = 0; i < nFlipDefs; ++i) {
 			int from = ADC2Utils.readBase250Word(in);
 			int to = ADC2Utils.readBase250Word(in);
-			if (from >= 0 && from < classes.size() && to >= 0 && to < classes.size())
-				classes.get(from).setFlipClass(to);
+			if (from >= 0 && from < pieceClasses.size() && to >= 0 && to < pieceClasses.size())
+				pieceClasses.get(from).setFlipClass(to);
 		}
 	}
 
@@ -706,7 +755,7 @@ public class ADC2Module extends Importer {
 		for (int i = 0; i < nPieces; ++i) {
 			String name = readNullTerminatedString(in, 25);
 			
-			Class cl = getClassFromIndex(ADC2Utils.readBase250Word(in));
+			PieceClass cl = getClassFromIndex(ADC2Utils.readBase250Word(in));
 			if (cl == null)
 				throw new FileFormatException("Invalid Class Index");
 			
@@ -810,19 +859,19 @@ public class ADC2Module extends Importer {
 			}
 			
 			int owner = in.readUnsignedByte();
-		
 			int hiddenSymbol = ADC2Utils.readBase250Word(in);
 		
 			// 0 = not used. Any value appears valid even if it's out of range
+			//FIXME: deal with out of range values.
 			int facing = in.readUnsignedByte();
 			
-			Class cl = new Class(name, symbol, owner, hiddenSymbol, facing);
+			PieceClass cl = new PieceClass(name, symbol, owner, hiddenSymbol, facing);
 			for (int j = 0; j < values.length; ++j) {
 				cl.setValue(j, values[j]);
 				cl.types[j] = types[j];
 			}
 			
-			classes.add(cl);
+			pieceClasses.add(cl);
 		}			
 	}
 
@@ -895,6 +944,8 @@ public class ADC2Module extends Importer {
 		dice.setAttribute(DiceButton.BUTTON_TEXT, "Roll");
 		dice.addTo(gameModule);
 		gameModule.add(dice);
+		
+		writeGameStateToArchive(gameModule);
 	}
 
 	protected void writeClassesToArchive() throws IOException {
@@ -908,10 +959,10 @@ public class ADC2Module extends Importer {
 		list.addTo(win);
 		win.add(list);
 		
-		for (Class c : classes)
+		for (PieceClass c : pieceClasses)
 			c.writeToArchive(list);
 		
-		for (Class c : classes)
+		for (PieceClass c : pieceClasses)
 			c.getDefaultPiece().setReplace();
 	}
 
@@ -1001,7 +1052,8 @@ public class ADC2Module extends Importer {
 			DrawPile pile = new DrawPile();
 			pile.build(null);
 			pile.addTo(forcePoolMap);
-			forcePoolMap.add(pile);
+			forcePoolMap.add(pile);			
+			
 			JPanel p = deckPanels[i];
 			p.getBounds(rv);
 			pile.setAttribute(DrawPile.OWNING_BOARD, "Force Pools");
@@ -1024,8 +1076,42 @@ public class ADC2Module extends Importer {
 				}
 		}
 	}
+	
+	protected void writeGameStateToArchive(GameModule gameModule) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		ZipOutputStream zip = new ZipOutputStream(out);
+		zip.setLevel(9);
+		zip.putNextEntry(new ZipEntry(GameState.SAVEFILE_ZIP_ENTRY));		
 
-	// TODO: Write out to a predifined setup instead of a setup stack.
+		// initialize components. setup all game components with argument false first
+		GameState state = gameModule.getGameState();
+		state.setup(false);
+		for (GameComponent gc : state.getGameComponents())
+			gc.setup(true);		
+		
+		// generate save file
+		Command restore = new SetupCommand(false);
+		restore.append(state.getRestorePiecesCommand());
+		for (GameComponent gc : state.getGameComponents())
+			restore.append(gc.getRestoreCommand());
+		restore.append(new SetupCommand(true));
+		state.setup(false);
+		String save = gameModule.encode(restore);
+		zip.write(save.getBytes("UTF-8"));
+		zip.closeEntry();
+		zip.close();		
+		gameModule.getArchiveWriter().addFile(SETUP_NAME, out.toByteArray());
+		
+		// write predefined setup in archive
+		PredefinedSetup setup = new PredefinedSetup();
+		setup.build(null);
+		setup.addTo(gameModule);
+		gameModule.add(setup);
+		setup.setAttribute(PredefinedSetup.NAME, Resources.getString("GameState.new_game"));
+		setup.setAttribute(PredefinedSetup.USE_FILE, Boolean.TRUE);
+		setup.setAttribute(PredefinedSetup.FILE, SETUP_NAME);
+	}
+	
 	protected void writeSetupStacksToArchive() throws IOException {
 		final Map mainMap = getMap().getMainMap();
 		final Point offset = getMap().getCenterOffset();
@@ -1037,6 +1123,7 @@ public class ADC2Module extends Importer {
 			SetupStack stack = new SetupStack();
 			stack.build(null);
 			stack.addTo(mainMap);
+
 			mainMap.add(stack);
 			p.translate(offset.x, offset.y);
 			String location = mainMap.locationName(p);

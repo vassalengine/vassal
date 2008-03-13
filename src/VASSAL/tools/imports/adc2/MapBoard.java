@@ -2745,6 +2745,17 @@ public class MapBoard extends Importer {
 		if (placeNames.size() > 0) {
 			writePlaceNames(module);
 		}
+		
+		// set up inventory button
+		final Inventory inv = new Inventory();
+		inv.build(null);			
+		inv.addTo(module);
+		module.add(inv);		
+		inv.setAttribute(Inventory.BUTTON_TEXT, "Search");
+		inv.setAttribute(Inventory.TOOLTIP, "Find place by name");
+		inv.setAttribute(Inventory.FILTER, "CurrentMap = Main Map");
+		inv.setAttribute(Inventory.ICON, "");
+		inv.setAttribute(Inventory.GROUP_BY, "Type");
 	}
 
 	/**
@@ -2768,18 +2779,6 @@ public class MapBoard extends Importer {
 		gp.setProperty(ADC2Utils.TYPE, PLACE_NAME);
 		gp = new Immobilized(gp, Immobilized.ID + "n;V"); 		
 		def.setPiece(gp);
-		
-		// set up inventory button
-		final Inventory inv = new Inventory();
-		inv.build(null);			
-		inv.addTo(module);
-		module.add(inv);
-		
-		inv.setAttribute(Inventory.BUTTON_TEXT, "Search");
-		inv.setAttribute(Inventory.TOOLTIP, "Find place by name");
-		inv.setAttribute(Inventory.FILTER, "CurrentMap = Main Map");
-		inv.setAttribute(Inventory.ICON, "");
-		inv.setAttribute(Inventory.GROUP_BY, "Type");
 		
 		// write place names as pieces with no image.
 		getMainMap();

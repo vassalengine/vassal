@@ -263,7 +263,7 @@ public final class ImportAction extends EditModuleAction {
 		if (queryIfNotFound) {
 			new ErrorLog();
 			JOptionPane.showMessageDialog(comp, "Unable to locate file:\n"
-					+ f.getPath(), "File Warning", JOptionPane.ERROR_MESSAGE);
+					+ f.getPath(), "File Warning", JOptionPane.WARNING_MESSAGE);
 	
 			fc.resetChoosableFileFilters();
 			if (filter != null)
