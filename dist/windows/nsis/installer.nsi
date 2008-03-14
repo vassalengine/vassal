@@ -29,14 +29,15 @@
 !define SRCDIR "${TMPDIR}/VASSAL-${VERSION}"
 !define UROOT "Software\Microsoft\Windows\CurrentVersion\Uninstall\VASSAL (${VERSION})"
 !define VROOT "Software\vassalengine.org\VASSAL"
-!define IROOT "${VROOT}\VASSAL (${VERSION})"
+!define VNAME "VASSAL (${VERSION})"
+!define IROOT "${VROOT}\${VNAME}"
 !define JRE_MINIMUM "1.5.0"
 !define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=12797"
 
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
 
-InstallDir "$PROGRAMFILES\VASSAL\VASSAL-${VERSION}"
+InstallDir "$PROGRAMFILES\VASSAL"
 InstallDirRegKey HKLM "${IROOT}" "InstallLocation"
 
 # compression
@@ -180,20 +181,20 @@ Page custom preConfirm leaveConfirm
     IntOp $0 $0 + 1
 
     ; loop until we find the other installer
-    ${Do}
-      FindWindow $1 '#32770' '' 0 $1
-      ${If} $1 == 0
-        Abort
-      ${EndIf}
+loop:
+    FindWindow $1 '#32770' '' 0 $1
+    ${If} $1 == 0
+      Abort
+    ${EndIf}
 
-      System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
-      ${If} $2 == "$(^Name)"
-        ; bring it to the front and die
-        System::Call "user32::ShowWindow(i r1,i 9) i."  
-        System::Call "user32::SetForegroundWindow(i r1) i."
-        Abort
-      ${EndIf}
-    ${Loop}
+    System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
+    ${If} $2 == "$(^Name)"
+      ; bring it to the front and die
+      System::Call "user32::ShowWindow(i r1,i 9) i."  
+      System::Call "user32::SetForegroundWindow(i r1) i."
+      Abort
+    ${EndIf}
+    Goto loop
   ${EndIf}
 !macroend
 
@@ -212,8 +213,7 @@ Page custom preConfirm leaveConfirm
   ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion" "VersionNumber"
   StrCpy $0 $0 1
   ${If} $0 == "4"
-    MessageBox MB_OK "We are Windows 9x or Windows ME"
-    Return
+    Goto cannot_check 
   ${EndIf}
 
 check_processes:  
@@ -223,7 +223,10 @@ check_processes:
 
   ; get the process array
   System::Call "Psapi::EnumProcesses(i R9, i 1024, *i .R1)i .R8"
-  StrCmp $R8 0 handleError
+  ${If} $R8 == 0
+    System::Free $R9
+    Goto cannot_check
+  ${EndIf}
  
   IntOp $R2 $R1 / 4 ; Divide by sizeof(DWORD) to get number of processes
   StrCpy $R4 0      ; R4 is our counter variable
@@ -259,7 +262,8 @@ check_processes:
 
     ${If} $6 == 0
       System::Free $R7
-      GoTo handleError
+      System::Free $R9
+      GoTo cannot_check
     ${EndIf}
 
     ${If} $R7 == "VASSAL.exe"
@@ -281,8 +285,7 @@ next_iteration:
   System::Free $R9
   Return
 
-handleError:
-  System::Free $R9
+cannot_check:
   MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "Unable to determine whether an instance of VASSAL is running.$\n$\nPlease close all instances of VASSAL before proceeding." IDCANCEL bail_out
   Return
 
@@ -342,6 +345,11 @@ FunctionEnd
 Function leaveSetupType
   ; read the install type from the Custom radio button
   ${NSD_GetState} $CustomSetup $CustomSetup
+
+  ; custom setups install to a versioned directory, by default
+  ${If} $CustomSetup == 1
+    StrCpy $INSTDIR "$PROGRAMFILES\VASSAL-${VERSION}"
+  ${EndIf}
 FunctionEnd
 
 
@@ -351,17 +359,11 @@ Var KeepButton
 Var RemoveButton
 
 Function preUninstallOld
-  ; bail out if we find no other versions
-  EnumRegKey $0 HKLM "${VROOT}" 0
-  ${If} $0 == ""
-    StrCpy $RemoveOtherVersions ""
-    Abort
-  ${EndIf}
+  StrCpy $RemoveOtherVersions ""
 
   ${If} CustomSetup != 1
-    ; remove all other versions in Standard setup
-    ; find all other versions of VASSAL
-    StrCpy $RemoveOtherVersions ""
+    ; remove all versions in Standard setup
+    ; find all versions of VASSAL
     StrCpy $R0 0
     ${Do} 
       EnumRegKey $0 HKLM "${VROOT}" $R0
@@ -372,12 +374,25 @@ Function preUninstallOld
 
   ${SkipIfNotCustom}
 
+  EnumRegKey $0 HKLM "${VROOT}" 0
+  ${If} $0 == ""
+    ; skip this page if we find no other versions
+    Abort
+  ${ElseIf} $0 == "${VNAME}"
+    ; remove this version and skip this page if we find only this version
+    EnumRegKey $0 HKLM "${VROOT}" 1
+    ${If} $0 == ""
+      StrCpy $RemoveOtherVersions "${VNAME}$\n"
+      Abort
+    ${EndIf}
+  ${EndIf}
+
   !insertmacro MUI_HEADER_TEXT "Remove Old Versions" "Uninstalling previous versions of VASSAL"
 
   nsDialogs::Create /NOUNLOAD 1018
   Pop $0
 
-  ${NSD_CreateLabel} 0 0 100% 24u "The installer has found the following versions of VASSAL installed on your computer. Please select the versions of VASSAL you would like to remove now."
+  ${NSD_CreateLabel} 0 0 100% 24u "The installer has found these other versions of VASSAL installed on your computer. Please select the versions of VASSAL you would like to remove now."
   Pop $0
 
   ${NSD_CreateLabel} 0 32u 120u 12u "To Keep:"
@@ -406,8 +421,15 @@ Function preUninstallOld
     EnumRegKey $1 HKLM "${VROOT}" $R0
     
     ${If} $1 != ""
-      SendMessage $KeepListBox ${LB_ADDSTRING} 0 "STR:$1"
-      Pop $0
+      ${If} $1 == "${VNAME}"
+        ; automatically uninstall existing copies of this version
+        StrCpy $RemoveOtherVersions "${VNAME}$\n"
+      ${Else}
+        ; add entries for versions which are not this one
+        SendMessage $KeepListBox ${LB_ADDSTRING} 0 "STR:$1"
+        Pop $0
+      ${EndIf}
+      
       IntOp $R0 $R0 + 1
     ${EndIf}
   ${LoopUntil} $1 == ""
@@ -477,7 +499,6 @@ FunctionEnd
 
 Function leaveUninstallOld
   ; find the uninstallers for old versions to be removed
-  StrCpy $RemoveOtherVersions ""
   SendMessage $RemoveListBox ${LB_GETCOUNT} 0 0 $1 
   ${For} $0 0 $1
     System::Call "user32::SendMessage(i $RemoveListBox,i ${LB_GETTEXT},i r0, t .r2)i .r4"
