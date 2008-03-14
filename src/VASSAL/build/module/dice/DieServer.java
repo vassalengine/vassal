@@ -13,8 +13,12 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DieRoll;
 import VASSAL.build.module.InternetDiceButton;
-import VASSAL.tools.BackgroundTask;
 import VASSAL.tools.FormattedString;
+
+// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
+//import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
+
 
 /**
  * Base DieServer Class
@@ -179,29 +183,29 @@ public abstract class DieServer {
    * Internet Servers will call this routine to do their dirty work.
    */
   public void doInternetRoll(final RollSet mroll, final FormattedString format) {
-    BackgroundTask task = new BackgroundTask() {
-      private IOException error;
-
-      public void doFirst() {
-        try {
-          doIRoll(mroll);
-        }
-        catch (IOException e) {
-          error = e;
-        }
+    // FIXME: refactor so that doInBackground can return something useful
+    new SwingWorker<Void,Void>() {
+      @Override
+      public Void doInBackground() throws Exception {
+        doIRoll(mroll);
+        return null;
       }
 
-      public void doLater() {
-        if (error == null) {
+      @Override
+      protected void done() {
+        try {
+          get();
           reportResult(mroll, format);
         }
-        else {
-          String s = "- Internet dice roll attempt " + mroll.getDescription() + " failed.";
+        catch (Exception e) {
+          e.printStackTrace();
+
+          final String s = "- Internet dice roll attempt " +
+                           mroll.getDescription() + " failed.";
           GameModule.getGameModule().getChatter().send(s);
         }
       }
-    };
-    task.start();
+    }.execute();
   }
 
   /**

@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module;
 
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
@@ -51,11 +52,14 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.BackgroundTask;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.Deobfuscator;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.Obfuscator;
+
+// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
+//import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
 
 /**
  * The GameState represents the state of the game currently being played.
@@ -503,48 +507,60 @@ public class GameState implements CommandEncoder {
     GameModule.getGameModule().warn(
       Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
 
-    new BackgroundTask() {
-      private String msg;
-      private Command loadCommand;
+    final JFrame frame = GameModule.getGameModule().getFrame();
+    frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-      public void doFirst() {
+    new SwingWorker<Command,Void>() {
+      @Override
+      public Command doInBackground() throws Exception {
         try {
+          return decodeSavedGame(in);
+        }
+        finally {
           try {
-            loadCommand = decodeSavedGame(in);
+            in.close();
           }
-          finally {
-            try {
-              in.close();
-            }
-            catch (IOException e) {
-              e.printStackTrace();
-            }
+          catch (IOException e) {
+            e.printStackTrace();
           }
+        }
+      }
 
+      @Override
+      protected void done() {
+        try {
+          Command loadCommand = null;
+          String msg;
+          try {
+            loadCommand = get();
+  
+            if (loadCommand != null) {
+              msg = Resources.getString("GameState.loaded", shortName);  //$NON-NLS-1$
+            }
+            else {
+              msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$
+            } 
+          }
+          catch (Exception e) {
+            e.printStackTrace();
+            msg = Resources.getString("GameState.error_loading", shortName);  //$NON-NLS-1$
+          }
+  
           if (loadCommand != null) {
-            msg = Resources.getString("GameState.loaded", shortName);  //$NON-NLS-1$
+            loadCommand.execute();
           }
-          else {
-            msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$
-          }
-        }
-        catch (Exception ex) {
-          ex.printStackTrace();
-          msg = Resources.getString("GameState.error_loading", shortName);  //$NON-NLS-1$
-        }
-      }
 
-      public void doLater() {
-        if (loadCommand != null) {
-          loadCommand.execute();
+          GameModule.getGameModule().warn(msg);
+          Logger logger = GameModule.getGameModule().getLogger();
+          if (logger instanceof BasicLogger) {
+            ((BasicLogger)logger).queryNewLogFile(true);
+          }
         }
-        GameModule.getGameModule().warn(msg);
-        Logger logger = GameModule.getGameModule().getLogger();
-        if (logger instanceof BasicLogger) {
-          ((BasicLogger)logger).queryNewLogFile(true);
+        finally {
+          frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
       }
-    }.start();
+    }.execute();
   }
 
   /**

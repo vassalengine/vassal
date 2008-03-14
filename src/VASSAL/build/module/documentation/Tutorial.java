@@ -35,7 +35,11 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.BackgroundTask;
+
+// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
+//import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
+
 
 /**
  * Provides tutorial functionality by reading in a logfile
@@ -66,14 +70,22 @@ public class Tutorial extends AbstractConfigurable {
 
   public void launch() {
     GameModule.getGameModule().warn(Resources.getString("Tutorial.Tutorial.loading")); //$NON-NLS-1$
-    new BackgroundTask() {
-      private Command saveCommand;
-      private String error;
-      public void doFirst() {
+
+    new SwingWorker<Command,Void>() {
+      @Override
+      public Command doInBackground() throws Exception {
+        return getTutorialCommand();
+      }
+    
+      @Override
+      protected void done() {
+        Command saveCommand = null;
+        String error = null;
+
         try {
-          saveCommand = getTutorialCommand();
+          saveCommand = get();
         }
-        catch (IOException e) {
+        catch (Exception e) {
           e.printStackTrace();
           String msg = Resources.getString("Tutorial.unable_to_launch", name); //$NON-NLS-1$
           if (e.getMessage() != null) {
@@ -81,14 +93,10 @@ public class Tutorial extends AbstractConfigurable {
           }
           error = msg;
         }
-      }
 
-      @Override
-      public void doLater() {
         if (saveCommand != null) {
           saveCommand.execute();
-          if (welcomeMessage != null
-              && welcomeMessage.length() > 0) {
+          if (welcomeMessage != null && welcomeMessage.length() > 0) {
             GameModule.getGameModule().warn(welcomeMessage);
           }
         }
@@ -96,12 +104,17 @@ public class Tutorial extends AbstractConfigurable {
           GameModule.getGameModule().warn(error);
         }
       }
-      
-    }.start();
+    }.execute();
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Menu Text", "Logfile", "Launch automatically on first startup", "Auto-launch confirm message", "Welcome message"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    return new String[] {
+      "Menu Text", //$NON-NLS-1$
+      "Logfile",   //$NON-NLS-1$
+      "Launch automatically on first startup",  //$NON-NLS-1$
+      "Auto-launch confirm message",  //$NON-NLS-1$
+      "Welcome message"  //$NON-NLS-1$
+    };
   }
 
   public Class<?>[] getAttributeTypes() {
