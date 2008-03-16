@@ -20,14 +20,15 @@ package VASSAL.tools;
 
 import javax.swing.SwingUtilities;
 
-// FIXME: deprecate this in favor of SwingWorker, now that we also use it.
-
 /**
  * Utility task for starting a thread that performs one task,
  * {@link #doFirst}, then queues another another
  * task, {@link #doLater}, for the Event Handler thread to execute
  * This is basically a simple version of Sun's SwingWorker class.
+ *
+ * @deprecated Use {@link SwingWorker} now that we ship the JAR for it.
  */
+@Deprecated
 public abstract class BackgroundTask {
     public abstract void doFirst();
 

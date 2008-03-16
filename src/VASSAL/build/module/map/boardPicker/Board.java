@@ -333,7 +333,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
           try {
             final Future<Image> fim = op.getFutureTile(tile.x, tile.y, rep);
-            if (fim.isDone()) {
+            if (fim.isDone() || obs == null) {
               try {
                 g.drawImage(fim.get(), tx, ty, obs);
               }
@@ -377,7 +377,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
               }
 
               g.drawImage(throbber, tx+tw/2-thxoff, ty+th/2-thyoff, tobs);
-//              g.drawImage(throbber, tx+tw/2-thxoff, ty+th/2-thyoff, obs);
             }
           }
           catch (CancellationException e) {

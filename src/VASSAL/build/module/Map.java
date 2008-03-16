@@ -1380,44 +1380,61 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   public void paintRegion(Graphics g, Rectangle visibleRect) {
+    paintRegion(g, visibleRect, theMap);
+  }
+
+  public void paintRegion(Graphics g, Rectangle visibleRect, Component c) {
     clearMapBorder(g); // To avoid ghost pieces around the edge
-    drawBoardsInRegion(g, visibleRect);
+    drawBoardsInRegion(g, visibleRect, c);
     drawDrawable(g, false);
-    drawPiecesInRegion(g, visibleRect);
+    drawPiecesInRegion(g, visibleRect, c);
     drawDrawable(g, true);
   }
 
-  public void drawBoardsInRegion(Graphics g, Rectangle visibleRect) {
+  public void drawBoardsInRegion(Graphics g,
+                                 Rectangle visibleRect,
+                                 Component c) {
     for (Board b : boards) {
-      Point p = getLocation(b, getZoom());
-      b.drawRegion(g, p, visibleRect, getZoom(), theMap);
+      b.drawRegion(g, getLocation(b, getZoom()), visibleRect, getZoom(), c);
     }
+  }
+
+  public void drawBoardsInRegion(Graphics g, Rectangle visibleRect) {
+    drawBoardsInRegion(g, visibleRect, theMap);
   }
 
   public void repaint() {
     theMap.repaint();
   }
 
-  public void drawPiecesInRegion(Graphics g, Rectangle visibleRect) {
+  public void drawPiecesInRegion(Graphics g,
+                                 Rectangle visibleRect,
+                                 Component c) {
     if (!hideCounters) {
       Graphics2D g2d = (Graphics2D) g;
       Composite oldComposite = g2d.getComposite();
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
+      g2d.setComposite(
+        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pieceOpacity));
       GamePiece[] stack = pieces.getPieces();
       for (int i = 0; i < stack.length; ++i) {
         Point pt = componentCoordinates(stack[i].getPosition());
         if (stack[i].getClass() == Stack.class) {
-          getStackMetrics().draw((Stack) stack[i], pt, g, this, getZoom(), visibleRect);
+          getStackMetrics().draw(
+            (Stack) stack[i], pt, g, this, getZoom(), visibleRect);
         }
         else {
-          stack[i].draw(g, pt.x, pt.y, theMap, getZoom());
+          stack[i].draw(g, pt.x, pt.y, c, getZoom());
           if (Boolean.TRUE.equals(stack[i].getProperty(Properties.SELECTED))) {
-            highlighter.draw(stack[i], g, pt.x, pt.y, theMap, getZoom());
+            highlighter.draw(stack[i], g, pt.x, pt.y, c, getZoom());
           }
         }
       }
       g2d.setComposite(oldComposite);
     }
+  }
+
+  public void drawPiecesInRegion(Graphics g, Rectangle visibleRect) {
+    drawPiecesInRegion(g, visibleRect, theMap);
   }
 
   public void drawPieces(Graphics g, int xOffset, int yOffset) {
@@ -1450,16 +1467,6 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   public void paint(Graphics g, int xOffset, int yOffset) {
     drawBoards(g, xOffset, yOffset, getZoom(), theMap);
-    drawDrawable(g, false);
-    drawPieces(g, xOffset, yOffset);
-    drawDrawable(g, true);
-  }
-
-  /**
-   * Paint the map as {@link #paint(Graphics,int,int)}, but synchronously.
-   */
-  public void paintSynchronously(Graphics g, int xOffset, int yOffset) {
-    drawBoards(g, xOffset, yOffset, getZoom(), null);
     drawDrawable(g, false);
     drawPieces(g, xOffset, yOffset);
     drawDrawable(g, true);

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,9 +18,7 @@
  */
 package VASSAL.build.module.map;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -28,19 +26,31 @@ import java.awt.MediaTracker;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.event.IIOWriteProgressListener;
+import javax.imageio.stream.ImageOutputStream;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JWindow;
+import javax.swing.JProgressBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -50,12 +60,19 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
-import VASSAL.tools.BackgroundTask;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.LaunchButton;
 
+// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
+//import javax.swing.SwingWorker;
+import org.jdesktop.swingworker.SwingWorker;
+
+
 /**
- * This allows the user to capture a snapshot of the entire map into a PNG file
+ * This allows the user to capture a snapshot of the entire map into
+ * a PNG file.
  */
 public class ImageSaver extends AbstractConfigurable {
   protected LaunchButton launch;
@@ -63,20 +80,26 @@ public class ImageSaver extends AbstractConfigurable {
   protected boolean promptToSplit = false;
   protected static final String DEFAULT_ICON = "/images/camera.gif";
 
+  protected static ProgressDialog dialog;
+
   public ImageSaver() {
-    ActionListener al = new ActionListener() {
+    final ActionListener al = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         writeMapAsImage();
       }
     };
-    launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON_NAME, al);
+  
+    launch =
+      new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON_NAME, al);
+
     // Set defaults for backward compatibility
-    launch.setAttribute(TOOLTIP, "Save Map as PNG file");
+    launch.setAttribute(TOOLTIP, "Save Map as PNG image");
     launch.setAttribute(BUTTON_TEXT, "");
     launch.setAttribute(ICON_NAME, DEFAULT_ICON);
   }
 
   public ImageSaver(Map m) {
+    super();
     map = m;
   }
 
@@ -142,131 +165,311 @@ public class ImageSaver extends AbstractConfigurable {
   }
 
   /**
-   * Outputs a snapshot of the Map to a PNG file. Displays a file dialog to
-   * prompt the user for the file
+   * Write a PNG-encoded snapshot of the map.
    */
   public void writeMapAsImage() {
-    int sections = 1;
-    if (promptToSplit) {
-      final String s = JOptionPane.showInputDialog("Divide map into how many sections?\n(Using more sections requires less memory)");
-      if (s == null) {
-        return;
+    // prompt user for image filename
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    fc.setSelectedFile(new File(fc.getCurrentDirectory(),
+      GameModule.getGameModule().getGameName() + "Map.png"));
+
+    final Frame frame =
+      (Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView());
+
+    if (fc.showSaveDialog(frame) != FileChooser.APPROVE_OPTION) return; 
+   
+    final File file = fc.getSelectedFile();
+
+    dialog = new ProgressDialog(frame, "Saving Map Image");
+
+    // force the dialog to be a reasonable width
+    // FIXME: this is not really a good way to do this---should do
+    // something with the minimum size or font metrics
+    final int l = "Saving map image as ".length() + file.getName().length() + 6;
+    final StringBuilder b = new StringBuilder();
+    for (int i = 0; i < l; i++) b.append("N"); 
+    dialog.setLabel(b.toString());
+
+    dialog.pack();
+    dialog.setLabel("Saving map image as ");
+
+    dialog.setIndeterminate(true);
+    dialog.setLocationRelativeTo(frame);
+
+    final Dimension s = map.mapSize();
+    s.width *= map.getZoom();
+    s.height *= map.getZoom();
+    writeMapRectAsImage(file, 0, 0, s.width, s.height);
+
+    dialog.setVisible(true);
+  }
+
+  /**
+   * Helper method for writing images.
+   *
+   * @param file the file to write
+   * @param x the left edge of the map area to write
+   * @param y the top edge of the map area to write
+   * @param w the width of the map area to write
+   * @param h the height of the map area to write
+   */
+  protected void writeMapRectAsImage(File file, int x, int y, int w, int h) {
+    final SnapshotTask task = new SnapshotTask(file, x, y, w, h);
+
+    task.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent e) {
+        if ("progress".equals(e.getPropertyName())) {
+          dialog.setProgress((Integer) e.getNewValue());
+        }
+        else if ("state".equals(e.getPropertyName())) {
+          if ((SwingWorker.StateValue) e.getNewValue() ==
+              SwingWorker.StateValue.DONE) {
+            // close the dialog on cancellation or completion
+            dialog.setVisible(false);
+            dialog.dispose();
+          }
+        }
       }
-      try {
-        sections = Integer.parseInt(s);
+    });
+
+    dialog.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        task.cancel(true);
       }
-      catch (NumberFormatException ex) {
-      }
+    });
+
+    task.execute();
+  }
+
+  private static class ProgressDialog extends JDialog {
+    private static final long serialVersionUID = 1L;
+
+    private final JLabel label;
+    private final JProgressBar progbar;
+    private final JButton cancel;
+
+    public ProgressDialog(Frame parent, String title) {
+      super(parent, title, true);
+
+      final Box box = Box.createVerticalBox();
+      box.setBorder(new EmptyBorder(12, 12, 11, 11));
+      add(box);
+
+      final Box lb = Box.createHorizontalBox();
+      label = new JLabel("Saving map image...");
+      lb.add(label);
+      lb.add(Box.createHorizontalGlue());
+      box.add(lb);
+
+      box.add(Box.createVerticalStrut(11));
+
+      progbar = new JProgressBar(0, 100);
+      progbar.setStringPainted(true);
+      progbar.setValue(0);
+      box.add(progbar);
+    
+      box.add(Box.createVerticalStrut(17));
+
+      final Box bb = Box.createHorizontalBox();
+      bb.add(Box.createHorizontalGlue());
+      cancel = new JButton(Resources.getString("General.cancel"));
+      cancel.setSelected(true);
+      bb.add(cancel);
+      bb.add(Box.createHorizontalGlue());
+      box.add(bb);
     }
 
-    final FileChooser fc = GameModule.getGameModule().getFileChooser();
-    fc.setSelectedFile(
-      new File(fc.getCurrentDirectory(),
-               GameModule.getGameModule().getGameName() + "Map.png"));
-    
-    if (fc.showSaveDialog(map.getView()) == FileChooser.APPROVE_OPTION) {
-      final int sectionCount = sections;
-      final String fileName = fc.getSelectedFile().getPath();
-      final JWindow w = new JWindow((Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView()));
-      final JLabel text = new JLabel("Saving Map Image ...");
-      text.setFont(new Font("Dialog", Font.PLAIN, 48));
-      text.setBackground(Color.white);
-      text.setForeground(Color.black);
-      text.setBorder(new BevelBorder(BevelBorder.RAISED, Color.lightGray, Color.darkGray));
-      w.getContentPane().setBackground(Color.white);
-      w.add(text);
-      w.pack();
-      Rectangle r = map.getView().getTopLevelAncestor().getBounds();
-      w.setLocation(r.x + r.width / 2 - w.getSize().width / 2, r.y + r.height / 2 - w.getSize().height / 2);
-      BackgroundTask task = new BackgroundTask() {
-        private Throwable error;
+    public void setLabel(String text) {
+      label.setText(text);
+    }
 
-        public void doFirst() {
-          try {
-            // FIXME: Don't open all of the file handles at once.
-            // Open, write, close, repeat instead.
-            final FileOutputStream[] p = new FileOutputStream[sectionCount];
-            try {
-              for (int i = 0; i < sectionCount; ++i) {
-                String sectionName = fileName;
-                if (sectionCount > 1) {
-                  if (fileName.lastIndexOf(".") >= 0) {
-                    sectionName =
-                      fileName.substring(0, fileName.lastIndexOf(".")) +
-                      (i + 1) + fileName.substring(fileName.lastIndexOf("."));
-                  }
-                  else {
-                    sectionName = fileName + (i + 1);
-                  }
-                }
-                p[i] = new FileOutputStream(sectionName);
-              }
-              writeImage(p);
-            }
-            finally {
-              for (FileOutputStream out : p) {
-                try {
-                  out.close();
-                }
-                catch (IOException e) {
-                  e.printStackTrace();
-                }
-              }
-            }
-          }
-          catch (Throwable err) {
-            error = err;
-          }
-        }
+    public void setIndeterminate(boolean indet) {
+      progbar.setIndeterminate(indet);
+    }
 
-        public void doLater() {
-          if (error instanceof OutOfMemoryError) {
-            JOptionPane.showMessageDialog(map.getView().getTopLevelAncestor(), "Insufficient memory\n" + "Zooming out will reduce memory requirements\n"
-                + "Otherwise, try again and you will be prompted to split the map\n" + "into a number of sections", "Error saving map image",
-                JOptionPane.ERROR_MESSAGE);
-            promptToSplit = true;
-          }
-          else if (error != null) {
-            error.printStackTrace();
-            String msg = error.getMessage();
-            if (msg == null || msg.length() == 0) {
-              msg = error.getClass().getName();
-              msg = msg.substring(msg.lastIndexOf(".") + 1);
-            }
-            JOptionPane.showMessageDialog(map.getView().getTopLevelAncestor(), msg, "Error saving map image", JOptionPane.ERROR_MESSAGE);
-          }
-          w.dispose();
-        }
-      };
+    public void setProgress(int percent) {
+      progbar.setValue(percent);
+    }
 
-      final Timer t = new Timer(1000, new ActionListener() {
-        boolean toggle;
+    public void addActionListener(ActionListener l) {
+      cancel.addActionListener(l);
+    }
+  }
 
-        public void actionPerformed(ActionEvent e) {
-          if (toggle) {
-            text.setText("Saving Map Image");
-          }
-          else {
-            text.setText("Saving Map Image ...");
-          }
-          toggle = !toggle;
+  private class SnapshotTask extends SwingWorker<Void,Void> {
+    private int tiles;
+    private int tilesDone = 0;
+
+    private final File file;
+    private final int x;
+    private final int y;
+    private final int w;
+    private final int h;
+
+    private final List<File> files = new ArrayList<File>();
+
+    public SnapshotTask(File file, int x, int y, int w, int h) {
+      this.file = file;
+      this.x = x;
+      this.y = y;
+      this.w = w;
+      this.h = h;
+    }
+
+    private void writeImage(final File f, BufferedImage img, Rectangle r)
+      throws IOException {
+
+      files.add(f);
+
+      // update the dialog on the EDT
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          dialog.setLabel("Saving map image as " + f.getName() + ":");
+          dialog.setIndeterminate(true);
         }
       });
 
-      w.setVisible(true);
-      task.start();
-      t.start();
+      // FIXME: do something to estimate how long painting will take
+      final Graphics2D g = img.createGraphics();
+      g.translate(-r.x, -r.y);
+      map.paintRegion(g, r, null);
+      g.dispose();
+
+      // update the dialog on the EDT
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          dialog.setIndeterminate(false);
+        }
+      });
+
+      final ImageWriter iw = ImageIO.getImageWritersByFormatName("png").next();
+      iw.addIIOWriteProgressListener(new IIOWriteProgressListener() {
+        public void imageComplete(ImageWriter source) { }
+      
+        public void imageProgress(ImageWriter source, float percentageDone) {
+          setProgress(Math.round((100*tilesDone + percentageDone)/tiles));
+        }
+
+        public void imageStarted(ImageWriter source, int imageIndex) { }
+
+        public void thumbnailComplete(ImageWriter source) { }
+  
+        public void thumbnailProgress(ImageWriter source,
+                                      float percentageDone) { }
+
+        public void thumbnailStarted(ImageWriter source,
+                                     int imageIndex, int thumbnailIndex) { }
+  
+        public void writeAborted(ImageWriter source) { }
+      });
+
+      final ImageOutputStream os = ImageIO.createImageOutputStream(f); 
+      try {
+        iw.setOutput(os);
+        iw.write(img);
+      }
+      finally {
+        os.flush();
+        iw.dispose();
+        try {
+          os.close();
+        }
+        catch (IOException e) {
+          ErrorLog.warn(e);
+        }
+      }
     }
+
+    @Override
+    public Void doInBackground() throws Exception {
+      setProgress(0);
+
+      int iw = w;
+      int ih = h;
+      BufferedImage img = null;
+
+      // find a size of BufferedImage we can allocate successfully
+      while (img == null) {
+        try {
+          img = new BufferedImage(iw, ih, BufferedImage.TYPE_INT_ARGB);
+        }
+        catch (OutOfMemoryError e) {
+          if (iw > ih) iw = (int) Math.ceil(iw/2.0);
+          else ih = (int) Math.ceil(ih/2.0);
+        }
+      }
+
+      if (iw == w && ih == h) {
+        // write the whole map as one image
+        tiles = 1;
+        writeImage(file, img, new Rectangle(0, 0, w, h));
+      }
+      else {
+        // get the base name of the files to write 
+        final String base;
+        final String suffix; 
+        final String s = file.getName();
+        if (s.endsWith(".png")) {
+          base = s.substring(0, s.lastIndexOf("."));
+          suffix = ".png";
+        }
+        else {
+          base = s;
+          suffix = "";
+        }
+
+        // calculate total tiles 
+        tiles = (int) (Math.ceil((double)w/iw) * Math.ceil((double)h/ih));
+
+        // tile across the map with images of size iw by ih.
+        for (int ix = 0; ix < w; ix += iw) {
+          for (int iy = 0; iy < h; iy += ih) {
+            final File f = new File(file.getParent(),
+              base + "." + (ix/iw) + "." + (iy/iw) + suffix);
+  
+            final Rectangle r = new Rectangle(ix, iy,
+              Math.min(w-ix, iw), Math.min(h-iy, ih));
+  
+            writeImage(f, img, r);
+            tilesDone++;
+          }
+        }
+      }
+
+      return null;
+    }
+
+    @Override
+    protected void done() {
+      try {
+        get();
+      }
+      catch (CancellationException e) {
+        // on cancellation, remove all files we created
+        for (File f : files) f.delete();
+      }
+      catch (InterruptedException e) {
+        ErrorLog.warn(e);
+      }
+      catch (ExecutionException e) {
+        ErrorLog.warn(e);
+      }
+    } 
   }
 
   /**
    * Write a PNG-encoded snapshot of the map to the given OutputStreams,
    * dividing the map into vertical sections, one per stream
+   *
+   * @deprecated
    */
+  @Deprecated
   public void writeImage(OutputStream[] out) throws IOException {
     Dimension buffer = map.getEdgeBuffer();
-    int totalWidth = (int) ((map.mapSize().width - 2 * buffer.width) * map.getZoom());
-    int totalHeight = (int) ((map.mapSize().height - 2 * buffer.height) * map.getZoom());
+    int totalWidth =
+      (int) ((map.mapSize().width - 2 * buffer.width) * map.getZoom());
+    int totalHeight =
+      (int) ((map.mapSize().height - 2 * buffer.height) * map.getZoom());
     for (int i = 0; i < out.length; ++i) {
       int height = totalHeight / out.length;
       if (i == out.length - 1) {
@@ -275,9 +478,11 @@ public class ImageSaver extends AbstractConfigurable {
 
       Image output = map.getView().createImage(totalWidth, height);
       Graphics2D gg = (Graphics2D) output.getGraphics();
-      map.paintSynchronously(gg,
+      
+      map.paintRegion(gg, new Rectangle(
         -(int) (map.getZoom() * buffer.width),
-        -(int) (map.getZoom() * buffer.height) + height * i);
+        -(int) (map.getZoom() * buffer.height) + height * i,
+        totalWidth, totalHeight), null);
       gg.dispose();
       try {
         MediaTracker t = new MediaTracker(map.getView());
@@ -289,7 +494,12 @@ public class ImageSaver extends AbstractConfigurable {
       }
 
       try {
-        writePNG(output, out[i]);
+        if (output instanceof RenderedImage) {
+          ImageIO.write((RenderedImage) output, "png", out[i]);
+        }
+        else {
+          throw new IOException("Bad image type");
+        }
       }
       finally {
         try {
@@ -299,15 +509,6 @@ public class ImageSaver extends AbstractConfigurable {
           e.printStackTrace();
         }
       }
-    }
-  }
-
-  private void writePNG(Image output, OutputStream out) throws IOException {
-    if (output instanceof RenderedImage) {
-      ImageIO.write((RenderedImage) output, "png", out);
-    }
-    else {
-      throw new IOException("Bad image type");
     }
   }
 
