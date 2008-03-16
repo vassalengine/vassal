@@ -94,6 +94,22 @@ public class ADC2Module extends Importer {
 	private static final String DRAW_ON_TOP_OF_OTHERS = "Draw on top of others?";
 	private static final String PIECE = "Pieces";
 
+	public static final double[] FACING_ANGLES = new double[46];
+	
+	static {
+		for (int i = 0; i < 3; ++i) {
+			FACING_ANGLES[i+1] = -i*90.0;
+			FACING_ANGLES[i+5] = -(i*90.0 + 45.0);
+		}
+		
+		for (int i = 0; i < 6; ++i) {
+			FACING_ANGLES[i+10] = -i*60.0;
+			FACING_ANGLES[i+20] = -((i*60.0 - 15.0) % 360.0);
+			FACING_ANGLES[i+30] = -(i*60.0 + 30.0);
+			FACING_ANGLES[i+40] = -(i*60.0 + 15.0);
+		}
+	}
+	
 	protected class Piece {
 		private final int[] values = new int[8];
 		private final ValueType[] types = new ValueType[8];
@@ -259,7 +275,7 @@ public class ADC2Module extends Importer {
 				
 				gamePiece = addMarker(gamePiece);				
 				gamePiece = addMovementMarkable(gamePiece);
-				if (getPieceClass().getAllowedFacings() > 1)
+				if (getPieceClass().getAllowedFacings() != FacingDirection.NONE)
 					gamePiece = addFreeRotator(gamePiece);		
 				gamePiece = addUsePrototype(gamePiece);
 				
@@ -331,9 +347,21 @@ public class ADC2Module extends Importer {
 			return gamePiece;
 		}
 
+		// TODO: provide angle phase offset for FreeRotator
 		private GamePiece addFreeRotator(GamePiece gamePiece) {
-			String type = FreeRotator.ID + getPieceClass().getAllowedFacings() + ";];[;Rotate CW;Rotate CCW;;;;";
-			gamePiece = new FreeRotator(type, gamePiece);				
+			int nsides = getMap().getNFaces();
+			int nfacings;
+			switch (getPieceClass().getAllowedFacings()) {
+			case FLAT_SIDES:
+				nfacings = nsides == 4 ? 4 : 12;
+				break;
+			default:
+				nfacings = nsides == 4 ? 4 : 24;
+			}
+			String type = FreeRotator.ID + nfacings + ";];[;Rotate CW;Rotate CCW;;;;";
+			gamePiece = new FreeRotator(type, gamePiece);
+			((FreeRotator) gamePiece).setAngle(FACING_ANGLES[facing]);
+			
 			return gamePiece;
 		}
 
@@ -593,9 +621,11 @@ public class ADC2Module extends Importer {
 			types[index] = ValueType.NUMERIC;
 		}
 		
-		public int getAllowedFacings() {
+		public FacingDirection getAllowedFacings() {
 			if (allowedFacings == null)
-				return 1;
+				return FacingDirection.NONE;
+			else if (facing >= allowedFacings.length)
+				return FacingDirection.NONE;
 			else
 				return allowedFacings[facing];
 		}
@@ -725,7 +755,7 @@ public class ADC2Module extends Importer {
 	private String[] forcePoolNames;
 	private final String[] classValues = new String[8];
 	private final String[] pieceValues = new String[8];
-	private int allowedFacings[]; 
+	private FacingDirection allowedFacings[]; 
 	
 	protected PieceClass getClassFromIndex(int index) {
 		if (index < 0 || index >= pieceClasses.size())
@@ -735,7 +765,7 @@ public class ADC2Module extends Importer {
 
 	private HashMap<String, HashMap<Dimension, String>> hiddenFlagImages;
 	private static final String HIDDEN_INFO_FLAG = "i";
-	private static final String HIDDEN_FLAG = "H";
+	private static final String HIDDEN_FLAG = "";
 	private String getHiddenInfoImage(Dimension d, String flag) throws IOException {
 		if (hiddenFlagImages == null)
 			hiddenFlagImages = new HashMap<String, HashMap<Dimension,String>>();
@@ -763,7 +793,7 @@ public class ADC2Module extends Importer {
 			Rectangle2D rect2 = fm.getStringBounds(flag, g);
 			g.fillRect(0, 0, (int) rect.getWidth() + 2, (int) rect.getHeight() + 2);
 			
-			g.setColor(new Color(0.8f, 0.0f, 0.0f));
+			g.setColor(new Color(0.8f, 0.0f, 0.0f, 0.4f));
 			g.drawString(flag, (int) ((rect.getWidth() - rect2.getWidth())/2.0) + 1, fm.getAscent() + 1);
 			
 			imageName = getUniqueImageFileName(flag + d.width + "x" + d.height);
@@ -847,19 +877,30 @@ public class ADC2Module extends Importer {
 		/* soundOn = */	in.readUnsignedByte();
 	}
 
-	// FIXME: make facings more reasonable.
-	// ADC2 uses a very boroque method for indicating facing. Most of this is not applicable to VASSAL.
+	protected enum FacingDirection {
+		FLAT_SIDES, VERTEX, BOTH, NONE
+	}
+	
 	protected void readFacingBlock(DataInputStream in) throws IOException {
 		ADC2Utils.readBlockHeader(in, "Facing");
 		
 		final int nFacing = in.readUnsignedByte();
-		allowedFacings = new int[nFacing+1];
-		allowedFacings[0] = 1;
+		allowedFacings = new FacingDirection[nFacing+1];
+		allowedFacings[0] = FacingDirection.NONE;
 		
 		for (int i = 0; i < nFacing; ++i) {
-			/* String styleName = */ readNullTerminatedString(in);			
-			/* int direction = */ in.readUnsignedByte();
-			allowedFacings[i+1] = 2 * getMap().getNFaces();
+			/* String styleName = */ readNullTerminatedString(in);
+			
+			switch (in.readUnsignedByte()) {
+			case 2:
+				allowedFacings[i] = FacingDirection.VERTEX;
+				break;
+			case 3:
+				allowedFacings[i] = FacingDirection.BOTH;
+				break;
+			default:
+				allowedFacings[i] = FacingDirection.FLAT_SIDES;	
+			}
 			
 			/* int display = */ in.readUnsignedByte();
 			/* int fillColor = */ in.readUnsignedByte();
@@ -879,7 +920,7 @@ public class ADC2Module extends Importer {
 		/* int fastDraw = */ in.readUnsignedByte();
 	}
 
-	// I'm not even clear on what these do in ADC2.
+	// None of this is either doable or appropriate in VASSAL.
 	protected void readStackBlock(DataInputStream in) throws IOException {
 		ADC2Utils.readBlockHeader(in, "Stack");
 		
@@ -1009,6 +1050,8 @@ public class ADC2Module extends Importer {
 			int flags = in.readUnsignedByte();
 			
 			int facing = in.readUnsignedByte();
+			if (facing > FACING_ANGLES.length)
+				facing = 0;
 			
 			Piece p = new Piece(position, name, cl, hidden, flags, facing);			
 			for (int j = 0; j < values.length; ++j) {
@@ -1069,8 +1112,7 @@ public class ADC2Module extends Importer {
 			int owner = in.readUnsignedByte();
 			int hiddenSymbol = ADC2Utils.readBase250Word(in);
 		
-			// 0 = not used. Any value appears valid even if it's out of range
-			//FIXME: deal with out of range values.
+			// 0 = not used.
 			int facing = in.readUnsignedByte();
 			
 			PieceClass cl = new PieceClass(name, symbol, owner, hiddenSymbol, facing);
