@@ -86,7 +86,8 @@ import VASSAL.tools.OrderedMenu;
 import VASSAL.tools.imports.ImportAction;
 
 /**
- * Tracks recently-used modules and builds the main GUI window for interacting with modules.
+ * Tracks recently-used modules and builds the main GUI window for 
+ * interacting with modules.
  * 
  * @author rodneykinney
  * @since 3.1.0
@@ -188,12 +189,17 @@ public class ModuleManager {
     modulePanelLayout = new CardLayout();
     moduleView = new JPanel(modulePanelLayout);
     moduleView.add(new JScrollPane(buildModuleList()), "modules");
-    final JEditorPane l = new JEditorPane("text/html", Resources.getString("ModuleManager.quickstart"));
+
+    final JEditorPane l = new JEditorPane("text/html",
+      Resources.getString("ModuleManager.quickstart"));
     l.setEditable(false);
+
     // pick up background color and font from JLabel
     l.setBackground(UIManager.getColor("control"));
     final Font font = UIManager.getFont("Label.font");
-    ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule("body { font: " + font.getFamily() + " " + font.getSize() + "pt }");
+    ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule(
+      "body { font: " + font.getFamily() + " " + font.getSize() + "pt }");
+    
     l.addHyperlinkListener(new HyperlinkListener() {
       public void hyperlinkUpdate(HyperlinkEvent e) {
         if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
@@ -201,16 +207,20 @@ public class ModuleManager {
         }
       }
     });
+
     // this is necessary to get proper vertical alignment
     final JPanel p = new JPanel(new GridBagLayout());
     final GridBagConstraints c = new GridBagConstraints();
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.CENTER;
     p.add(l, c);
+
     moduleView.add(p, "quickStart");
-    modulePanelLayout.show(moduleView, modules.size() == 0 ? "quickStart" : "modules");
+    modulePanelLayout.show(
+      moduleView, modules.size() == 0 ? "quickStart" : "modules");
     moduleControls.add(moduleView, BorderLayout.CENTER);
-    moduleControls.setBorder(new TitledBorder(Resources.getString("ModuleManager.recent_modules")));
+    moduleControls.setBorder(new TitledBorder(
+      Resources.getString("ModuleManager.recent_modules")));
     return moduleControls;
   }
 
@@ -289,19 +299,23 @@ public class ModuleManager {
         missingModules.add(s);
       }
     }
+
     for (String s : missingModules) {
       moduleList.remove(s);
       recentModuleConfig.removeValue(s);
     }
+
     Collections.sort(moduleList, new Comparator<File>() {
       public int compare(File f1, File f2) {
         return f1.getName().compareTo(f2.getName());
       }
     });
+
     modules = new DefaultListModel();
     for (File f : moduleList) {
       modules.addElement(f);
     }
+
     final JList list = new JList(modules);
     list.setCellRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = 1L;
@@ -313,6 +327,7 @@ public class ModuleManager {
         return c;
       }
     });
+
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
@@ -326,6 +341,7 @@ public class ModuleManager {
         }
       }
     });
+
     list.addMouseListener(new MouseAdapter() {
       public void mouseReleased(MouseEvent e) {
         if (e.isMetaDown() && !list.isSelectionEmpty()) {
@@ -360,6 +376,7 @@ public class ModuleManager {
     });
     return list;
   }
+
   private class ExtensionControls extends JPanel {
     private static final long serialVersionUID = 1L;
     private ExtensionsManager extMgr;
@@ -375,6 +392,7 @@ public class ModuleManager {
         }
       }
     };
+
     private AbstractAction newExtensionAction = new AbstractAction(Resources.getString(Resources.NEW)) {
       private static final long serialVersionUID = 1L;
 
@@ -400,6 +418,7 @@ public class ModuleManager {
       add(tb, BorderLayout.NORTH);
       extList = new JList();
       add(new JScrollPane(extList), BorderLayout.CENTER);
+
       extList.setCellRenderer(new DefaultListCellRenderer() {
         private static final long serialVersionUID = 1L;
 
@@ -410,6 +429,7 @@ public class ModuleManager {
           return this;
         }
       });
+
       extList.addMouseListener(new MouseAdapter() {
         public void mouseReleased(MouseEvent e) {
           if (e.isMetaDown() && extMgr != null) {
@@ -468,6 +488,7 @@ public class ModuleManager {
       newExtensionAction.setEnabled(extMgr != null);
       addExtensionAction.setEnabled(extMgr != null);
     }
+
     private class Extension implements Comparable<Extension> {
       private File extFile;
       private boolean active;
