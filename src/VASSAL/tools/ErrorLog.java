@@ -40,6 +40,8 @@ public class ErrorLog {
     ErrorDialog.warning(t, t.getMessage());
   }
 
+  private ErrorLog() { }
+
   public void handle(Throwable t) {
     t.printStackTrace();
 
