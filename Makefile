@@ -1,3 +1,5 @@
+SHELL:=/bin/bash
+
 SRCDIR:=src
 LIBDIR:=lib
 CLASSDIR:=classes
