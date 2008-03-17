@@ -21,14 +21,18 @@ package VASSAL.build.module;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
@@ -51,13 +55,13 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.OpIcon;
 
 /**
  * ...
@@ -592,6 +596,9 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   /** Icon class for graphical display of a dice roll */
   private class ResultsIcon implements Icon {
+// FIXME: because Sun checks what class Icon implementations are,
+// this won't display as disabled properly
+
 // FIXME: how does this work? where are width and height set?
     private int width, height;
     private Icon[] icons;
@@ -603,17 +610,24 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       icons = new Icon[results.length];
       for (int i = 0; i < results.length; ++i) {
         String imageName = dice.get(i).getImageName(results[i]);
-/*
-        try {
-          Image aImage = GameModule.getGameModule().getDataArchive().getCachedImage(imageName);
-          icons[i] = new ImageIcon(aImage);
+
+        if (imageName.length() > 0) {
+          Image img = null;
+          try {
+            img = Op.load(imageName).getImage(null);
+          }
+          catch (CancellationException e) {
+            ErrorLog.warn(e);
+          }
+          catch (InterruptedException e) {
+            ErrorLog.warn(e);
+          }
+          catch (ExecutionException e) {
+            ErrorLog.warn(e);
+          }
+      
+          if (img != null) icons[i] = new ImageIcon(img);
         }
-        catch (IOException e) {
-          System.err.println("Unable to locate image " + imageName); //$NON-NLS-1$
-        }
-*/
-// FIXME: not really correct, should have a way to catch failure
-        icons[i] = new OpIcon(Op.load(imageName));
       }
     }
 
@@ -638,5 +652,5 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     public int getIconHeight() {
       return height;
     }
-  } // end class SpecialDiceIcon
+  }
 }

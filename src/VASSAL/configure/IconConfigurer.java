@@ -22,6 +22,7 @@ package VASSAL.configure;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -61,8 +62,9 @@ public class IconConfigurer extends Configurer {
     imageName = s == null ? "" : s;
 
     if (imageName.length() > 0) {
+      Image img = null;
       try {
-        icon = new ImageIcon(Op.load(imageName).getImage(null));
+        img = Op.load(imageName).getImage(null);
       }
       catch (CancellationException e) {
         ErrorLog.warn(e);
@@ -73,6 +75,8 @@ public class IconConfigurer extends Configurer {
       catch (ExecutionException e) {
         ErrorLog.warn(e);
       }
+      
+      if (img != null) icon = new ImageIcon(img);
     }
 
     setValue((Object) imageName);
