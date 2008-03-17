@@ -18,10 +18,12 @@
 package VASSAL.tools.imports;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
@@ -29,9 +31,9 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.launch.EditModuleAction;
 import VASSAL.launch.ModuleEditorWindow;
+import VASSAL.launch.ModuleManager;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.ExtensionFileFilter;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.FileFilter;
@@ -109,7 +111,7 @@ public final class ImportAction extends EditModuleAction {
 
 	@Override
 	protected void loadModule(File f) throws IOException {
-		GameModule module = new BasicModule(new ArchiveWriter((String) null)); 
+		final GameModule module = new BasicModule(new ArchiveWriter((String) null)); 
 		GameModule.init(module);
 
 		// try to import the module on the basis of the extension
@@ -117,16 +119,22 @@ public final class ImportAction extends EditModuleAction {
 			if (f.getName().toLowerCase().endsWith(EXTENSIONS[i].toLowerCase())) {
 				try {
 					Importer imp = null;
+				    JFrame frame = ModuleManager.getInstance().getFrame();
 					try {
+					    frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 						imp = (Importer) (IMPORTERS[i].newInstance());
+						imp.importFile(this, f);
+						imp.writeToArchive();
 					}
 					catch (ClassCastException e) {
 						e.printStackTrace();
 						ErrorDialog.error(e, IMPORTERS[i].getCanonicalName() + 
 								" must be a descendent of Importer.");
-					}					
-					imp.importFile(this, f);
-					imp.writeToArchive();
+					}
+					finally {
+						frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));						
+					}
+					
 					GameModule.getGameModule().getFrame().setVisible(true);
 					new ModuleEditorWindow(module).setVisible(true);
 				}
@@ -261,7 +269,6 @@ public final class ImportAction extends EditModuleAction {
 	
 		// no luck so far.  Ask the user.
 		if (queryIfNotFound) {
-			new ErrorLog();
 			JOptionPane.showMessageDialog(comp, "Unable to locate file:\n"
 					+ f.getPath() + "\nPlease locate it in the following dialog.", 
 					"File Warning", JOptionPane.WARNING_MESSAGE);
