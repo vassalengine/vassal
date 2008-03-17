@@ -513,7 +513,7 @@ public class DataArchive extends SecureClassLoader {
         }
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.warn(e);
       }
     }
     for (DataArchive ext : extensions) {

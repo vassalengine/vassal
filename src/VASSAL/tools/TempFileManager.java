@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import VASSAL.Info;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.imageop.Op;
 
 /**
@@ -136,7 +137,7 @@ public class TempFileManager {
             recursiveDelete(f);
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.warn(e);
           }
         }
       }

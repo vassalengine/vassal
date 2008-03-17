@@ -51,6 +51,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -156,13 +157,13 @@ public class ZoneHighlight extends AbstractConfigurable  {
                                    new Rectangle(srcOp.getSize()));
         }
         catch (CancellationException e) {
-          e.printStackTrace();
+          ErrorLog.warn(e);
         }
         catch (InterruptedException e) {
-          e.printStackTrace();
+          ErrorLog.warn(e);
         }
         catch (ExecutionException e) {
-          e.printStackTrace();
+          ErrorLog.warn(e);
         }
       }
       else {

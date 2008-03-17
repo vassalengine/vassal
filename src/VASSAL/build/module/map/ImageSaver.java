@@ -490,7 +490,7 @@ public class ImageSaver extends AbstractConfigurable {
         t.waitForID(0);
       }
       catch (Exception e) {
-        e.printStackTrace();
+        ErrorLog.warn(e);
       }
 
       try {
@@ -506,7 +506,7 @@ public class ImageSaver extends AbstractConfigurable {
           out[i].close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.warn(e);
         }
       }
     }

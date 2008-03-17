@@ -82,6 +82,7 @@ import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
@@ -664,36 +665,41 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         cancelled = !ext.confirmExit();
       }
     }
+
     if (!cancelled) {
       try {
         getPrefs().write();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.warn(e);
       }
+
       try {
         getPrefs().close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.warn(e);
       }
+
       try {
         Prefs.getGlobalPrefs().write();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.warn(e);
       }
+
       try {
         Prefs.getGlobalPrefs().close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.warn(e);
       }
+
       try {
         getDataArchive().close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.warn(e);
       }
     }
     return !cancelled;
