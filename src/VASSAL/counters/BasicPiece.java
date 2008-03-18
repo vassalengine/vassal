@@ -145,6 +145,17 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   }
 
   public Object getProperty(Object key) {
+    if (BASIC_NAME.equals(key)) {
+      return getName();
+    }
+    else
+        return getPublicProperty(key);
+  }
+  
+  /*
+   * Properties visible in a masked unit
+   */
+  public Object getPublicProperty(Object key) {
     if (Properties.KEY_COMMANDS.equals(key)) {
       return getKeyCommands();
     }
@@ -153,9 +164,6 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     }
     else if (PIECE_NAME.equals(key)) {
       return Decorator.getOutermost(this).getName();
-    }
-    else if (BASIC_NAME.equals(key)) {
-      return getName();
     }
     else if (CURRENT_MAP.equals(key)) {
       return getMap() == null ? "" : getMap().getConfigureName();
@@ -208,6 +216,18 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   }
 
   public Object getLocalizedProperty(Object key) {
+    if (BASIC_NAME.equals(key)) {
+      return getLocalizedName();
+    }
+    else {
+      return getLocalizedPublicProperty(key);
+    }
+  }
+  
+  /*
+   * Properties visible in a masked unit
+   */
+  public Object getLocalizedPublicProperty(Object key) {
     if (Properties.KEY_COMMANDS.equals(key)) {
       return getProperty(key);
     }
