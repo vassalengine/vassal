@@ -56,6 +56,7 @@ import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.map.BoardPicker;
+import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.LayeredPieceCollection;
 import VASSAL.build.module.map.SetupStack;
@@ -378,6 +379,8 @@ public class ADC2Module extends Importer {
 			return gamePiece;
 		}
 
+		 //TODO:  add more math functions to MouseOverStackViewer including min(), max(), and mean().
+		//		 and antialiased characters in MouseOverStackViewer
 		private GamePiece addPropertySheet(GamePiece gamePiece) {
 			SequenceEncoder se = new SequenceEncoder('~');
 			SequenceEncoder state = new SequenceEncoder('~');
@@ -764,6 +767,7 @@ public class ADC2Module extends Importer {
 	}
 
 	private HashMap<String, HashMap<Dimension, String>> hiddenFlagImages;
+	private int version;
 	private static final String HIDDEN_INFO_FLAG = "i";
 	private static final String HIDDEN_FLAG = "";
 	private String getHiddenInfoImage(Dimension d, String flag) throws IOException {
@@ -825,9 +829,9 @@ public class ADC2Module extends Importer {
 		int header = in.readByte();
 		if (header != -3 && header != -2)
 			throw new FileFormatException("Invalid Game Module Header");
-				
-		// version information doesn't seem to do anything
-		in.read(new byte[2]);
+		
+		// TODO: figure out version-specific formats for older versions.
+		version = in.readUnsignedShort();
 		
 		String s = readWindowsFileName(in);
 		String mapFileName = forceExtension(s, "map");
@@ -891,15 +895,22 @@ public class ADC2Module extends Importer {
 		for (int i = 0; i < nFacing; ++i) {
 			/* String styleName = */ readNullTerminatedString(in);
 			
-			switch (in.readUnsignedByte()) {
-			case 2:
-				allowedFacings[i] = FacingDirection.VERTEX;
-				break;
-			case 3:
-				allowedFacings[i] = FacingDirection.BOTH;
-				break;
-			default:
-				allowedFacings[i] = FacingDirection.FLAT_SIDES;	
+			int direction = in.readUnsignedByte();
+			// one invalid facing struct will invalidate all later ones.
+			if (i == 0 || allowedFacings[i] != FacingDirection.NONE) {
+				switch (direction) {
+				case 2:
+					allowedFacings[i+1] = FacingDirection.VERTEX;
+					break;
+				case 3:
+					allowedFacings[i+1] = FacingDirection.BOTH;
+					break;
+				default:
+					allowedFacings[i+1] = FacingDirection.FLAT_SIDES;	
+				}
+			}
+			else {
+				allowedFacings[i+1] = FacingDirection.NONE;
 			}
 			
 			/* int display = */ in.readUnsignedByte();
@@ -943,7 +954,11 @@ public class ADC2Module extends Importer {
 	protected void readReplayBlock(DataInputStream in) throws IOException {
 		ADC2Utils.readBlockHeader(in, "Replay");
 		
-		int nBytes = ADC2Utils.readBase250Integer(in);
+		int nBytes;
+		if (version > 0x0203)
+			nBytes = ADC2Utils.readBase250Integer(in);
+		else
+			nBytes = ADC2Utils.readBase250Word(in);
 		in.read(new byte[nBytes]);
 	}
 
@@ -952,7 +967,7 @@ public class ADC2Module extends Importer {
 		
 		final int nForcePools = ADC2Utils.readBase250Word(in);
 		final ArrayList<String> fp = new ArrayList<String>(nForcePools);
-		while (true) {
+		for (int i = 0; i < nForcePools; ++i) {
 			String n = readNullTerminatedString(in, 25);
 			in.read(new byte[3]); // not sure what these do
 			if (ADC2Utils.readBase250Word(in) != FORCE_POOL_BLOCK_END)
@@ -1336,6 +1351,12 @@ public class ADC2Module extends Importer {
 	
 	protected void writeSetupStacksToArchive() throws IOException {
 		final Map mainMap = getMap().getMainMap();
+		
+		// change mouse over stack viewer
+		CounterDetailViewer viewer = GameModule.getGameModule().getAllDescendantComponentsOf(CounterDetailViewer.class).iterator().next();
+		viewer.setAttribute(CounterDetailViewer.DISPLAY, CounterDetailViewer.FILTER);
+		viewer.setAttribute(CounterDetailViewer.PROPERTY_FILTER, ADC2Utils.TYPE + " = " + PIECE);
+		
 		final Point offset = getMap().getCenterOffset();
 		for (int hex : stacks.keySet()) {
 			Point p = getMap().indexToPosition(hex);

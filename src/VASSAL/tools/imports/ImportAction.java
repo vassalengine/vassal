@@ -135,7 +135,7 @@ public final class ImportAction extends EditModuleAction {
 						frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));						
 					}
 					
-					GameModule.getGameModule().getFrame().setVisible(true);
+					module.getFrame().setVisible(true);
 					new ModuleEditorWindow(module).setVisible(true);
 				}
 				// some serious problems.
