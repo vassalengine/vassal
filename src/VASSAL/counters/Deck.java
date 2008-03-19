@@ -396,6 +396,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return maxStack;
   }
   
+  public int getDrawablePieceCount() {
+    return Math.min(pieceCount, maxStack);
+  }
+  
   public String[] getCountExpressions() {
     String[] fullstrings = new String[countExpressions.length];
     for (int index = 0; index < countExpressions.length;index++) {
@@ -851,6 +855,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     Dimension d = top == null ? size : top.getShape().getBounds().getSize();
     Rectangle r = new Rectangle(new Point(), d);
     r.translate(-r.width / 2, -r.height / 2);
+    for (int i=0,n=getDrawablePieceCount();i<n;++i) {
+      r.y -= 2;
+      r.height += 2;
+      r.width += 2;
+    }
     return r;
   }
 

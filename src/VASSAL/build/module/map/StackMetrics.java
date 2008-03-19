@@ -385,7 +385,7 @@ public class StackMetrics extends AbstractConfigurable {
    * @return the number of pieces processed in the stack
    */
   public int getContents(Stack parent, Point[] positions, Shape[] shapes, Rectangle[] boundingBoxes, int x, int y) {
-    int count = parent.getPieceCount();
+    int count = parent.getDrawablePieceCount();
     if (positions != null) {
       count = Math.min(count, positions.length);
     }
@@ -472,11 +472,11 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   public Point relativePosition(Stack parent, GamePiece c) {
-    int index = parent.indexOf(c);
+    int index = Math.min(parent.indexOf(c),parent.getDrawablePieceCount()-1);
     if (index < 0) {
-      throw new RuntimeException(c.getId() + " is not contained in " + parent.getId());
+      throw new RuntimeException(c + " is not contained in " + parent);
     }
-    Point[] pos = new Point[parent.getPieceCount()];
+    Point[] pos = new Point[parent.getDrawablePieceCount()];
     getContents(parent, pos, null, null, 0, 0);
     return pos[index];
   }

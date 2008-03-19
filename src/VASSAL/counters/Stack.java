@@ -203,6 +203,14 @@ public class Stack implements GamePiece, StateMergeable {
     return pieceCount;
   }
 
+  /** 
+   * Return the number of pieces that should be drawn in the stack, before accounting to visibility
+   * @return
+   */
+  public int getDrawablePieceCount() {
+    return pieceCount;
+  }
+
   /**
    * Inserts a child GamePiece at a given index. If the child piece already
    * belongs to this Stack, it will be repositioned to the given index.

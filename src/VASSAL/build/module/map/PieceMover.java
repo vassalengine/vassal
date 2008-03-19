@@ -52,7 +52,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import javax.swing.Icon;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -299,7 +299,7 @@ public class PieceMover extends AbstractBuildable
       public Object visitDeck(Deck d) {
         final Point pos = d.getPosition();
         final Point p = new Point(pt.x - pos.x, pt.y - pos.y);
-        if (d.getShape().contains(p) && d.getPieceCount() > 0) {
+        if (d.boundingBox().contains(p) && d.getPieceCount() > 0) {
           return d;
         }
         else {
