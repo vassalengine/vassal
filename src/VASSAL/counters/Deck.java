@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -48,12 +49,14 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.map.DeckGlobalKeyCommand;
 import VASSAL.build.module.map.DrawPile;
+import VASSAL.build.module.map.StackMetrics;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.command.AddPiece;
 import VASSAL.command.ChangeTracker;
@@ -79,6 +82,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public static final String NEVER = "Never";
   public static final String USE_MENU = "Via right-click Menu";
   protected static final String NO_USER = "nobody"; // Dummy user ID for turning
+  protected static StackMetrics deckStackMetrics = new StackMetrics(false,2,2,2,2);
   // cards face down
 
   protected boolean drawOutline = true;
@@ -396,7 +400,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return maxStack;
   }
   
-  public int getDrawablePieceCount() {
+  public int getMaximumVisiblePieceCount() {
     return Math.min(pieceCount, maxStack);
   }
   
@@ -849,13 +853,17 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
     return c;
   }
+  
+  public StackMetrics getStackMetrics() {
+    return deckStackMetrics;
+  }
 
   public Rectangle boundingBox() {
     GamePiece top = topPiece();
     Dimension d = top == null ? size : top.getShape().getBounds().getSize();
     Rectangle r = new Rectangle(new Point(), d);
     r.translate(-r.width / 2, -r.height / 2);
-    for (int i=0,n=getDrawablePieceCount();i<n;++i) {
+    for (int i=0,n=getMaximumVisiblePieceCount();i<n;++i) {
       r.y -= 2;
       r.height += 2;
       r.width += 2;

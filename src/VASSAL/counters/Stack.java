@@ -204,10 +204,10 @@ public class Stack implements GamePiece, StateMergeable {
   }
 
   /** 
-   * Return the number of pieces that should be drawn in the stack, before accounting to visibility
+   * Return the number of pieces that could possible be drawn in the stack, regardless of visibility to any particular player
    * @return
    */
-  public int getDrawablePieceCount() {
+  public int getMaximumVisiblePieceCount() {
     return pieceCount;
   }
 
@@ -583,6 +583,14 @@ public class Stack implements GamePiece, StateMergeable {
 
   public static void setDefaultMetrics(StackMetrics s) {
     defaultMetrics = s;
+  }
+  
+  public StackMetrics getStackMetrics(Map m) {
+    return m == null ? getDefaultMetrics() : m.getStackMetrics();
+  }
+  
+  public StackMetrics getStackMetrics() {
+    return getStackMetrics(getMap());
   }
 
   public StackMetrics getDefaultMetrics() {

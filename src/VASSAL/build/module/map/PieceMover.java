@@ -1128,7 +1128,7 @@ public class PieceMover extends AbstractBuildable
         // We do this even for un-expanded stacks, since the offset can still be significant if the stack is large
         dragPieceOffCenterZoom = map == null ? 1.0 : map.getZoom();
         if (piece.getParent() != null && map != null) {
-          final Point offset = piece.getMap().getStackMetrics().relativePosition(piece.getParent(), piece);
+          final Point offset = piece.getParent().getStackMetrics().relativePosition(piece.getParent(), piece);
           piecePosition.translate((int) Math.round(offset.x * dragPieceOffCenterZoom), (int) Math.round(offset.y * dragPieceOffCenterZoom));
         }
         originalPieceOffsetX = piecePosition.x - mousePosition.x; // dragging
