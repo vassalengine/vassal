@@ -117,6 +117,13 @@ public abstract class Decorator implements GamePiece, StateMergeable {
     }
   }
 
+  /*
+   * getOuter() required by Obscurable to handle masking of getProperty calls
+   */
+  public Decorator getOuter() {
+    return dec;
+  }
+  
   public void setPosition(Point p) {
     piece.setPosition(p);
   }

@@ -248,8 +248,12 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     else if (Properties.VISIBLE_STATE.equals(key)) {
       return myGetState()+isPeeking()+piece.getProperty(key);
     }
+    // Handle OUTER here to prevent infinite loops when masking obscured properties
+    else if (Properties.OUTER.equals(key)) {
+      return getOuter();
+    }
     // If piece is obscured to me, then mask any properties returned by
-    // traits between this one and the innermost BasicPiece.  
+    // traits between this one and the innermost BasicPiece.
     else if (obscuredToMe()) {
       return ((BasicPiece) Decorator.getInnermost(this)).getPublicProperty(key);
     }
