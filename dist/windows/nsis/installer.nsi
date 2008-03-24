@@ -706,6 +706,9 @@ Section "-Application" Application
   ; set the files to bundle
   !include "${TMPDIR}/install_files.inc"
 
+  ; create the heap sizes config file
+  ExecWait 'javaw -cp "$INSTDIR\lib\Vengine.jar" VASSAL.launch.HeapSetter'
+
   ; write keys to the registry
   WriteRegStr HKLM "${IROOT}" "InstallLocation" "$INSTDIR"
   
@@ -789,6 +792,9 @@ Section Uninstall
   ; delete registry keys
   DeleteRegKey HKLM "${IROOT}"
   DeleteRegKey HKLM "${UROOT}"
+
+  ; delete the heap size file
+  Delete "$INSTDIR\VASSAL.l4j.ini"
 
   ; delete the installed files and directories
   !include "${TMPDIR}/uninstall_files.inc"

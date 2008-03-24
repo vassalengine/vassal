@@ -29,10 +29,6 @@ package VASSAL.build.module;
 import java.awt.Container;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +59,7 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.HeapSetter;
 import VASSAL.preferences.BooleanPreference;
 import VASSAL.preferences.DoublePreference;
 import VASSAL.preferences.EnumPreference;
@@ -70,6 +67,7 @@ import VASSAL.preferences.IntegerPreference;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.StringPreference;
 import VASSAL.preferences.TextPreference;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.IOUtils;
 
@@ -117,7 +115,7 @@ public class GlobalOptions extends AbstractConfigurable {
     GameModule.getGameModule().getPrefs().addOption(combConf);
     useSingleWindow = !Boolean.FALSE.equals(combConf.getValue());
 
-// FIXME: probably not the right place for these
+// FIXME: probably not the right place for these?
     final IntConfigurer initHeapConf = new IntConfigurer(
       INITIAL_HEAP,
       Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
@@ -130,160 +128,18 @@ public class GlobalOptions extends AbstractConfigurable {
       Integer.valueOf(512));
     Prefs.getGlobalPrefs().addOption(maxHeapConf);
 
-    final PropertyChangeListener heapListener;
-    if (Info.isWindows()) {
-      // We are running on Windows. Blech! The plan here is to update
-      // the VASSAL.l4j.ini which the Launch4j JAR wrapper reads.
-      heapListener = new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          final File file = new File(Info.getBaseDir(), "VASSAL.l4j.ini");
-
-          String s = null;
-          try {
-            final FileReader in = new FileReader(file);
-            try {
-              s = IOUtils.toString(in);
-            }
-            finally {
-              try {
-                in.close();
-              }
-              catch (IOException e) {
-                e.printStackTrace();
-                return;
-              }
-            }          
-          }
-          catch (FileNotFoundException e) {
-          }
-          catch (IOException e) {
-            e.printStackTrace();
-            return;
-          }
-
-          final String iHeap = "-Xms" + initHeapConf.getValueString() + "M";
-          final String mHeap = "-Xmx" + maxHeapConf.getValueString() + "M";
-
-          if (s != null) {
-            s = s.replaceFirst("-Xms\\w*", iHeap)
-                 .replaceFirst("-Xmx\\w*", mHeap);
-          }
-          else {
-            s = iHeap + "\n" + mHeap + "\n";
-          }
-
-          try {
-            final FileWriter out = new FileWriter(file);
-            try {
-              out.write(s);
-            }
-            finally {
-              try {
-                out.close();
-              }
-              catch (IOException e) {
-                e.printStackTrace();
-              }
-            }
-          }
-          catch (IOException e) {
-            e.printStackTrace();
-          }
+    final PropertyChangeListener heapListener = new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent e) {
+        try {
+          HeapSetter.getInstance().setHeaps(
+            initHeapConf.getIntValue(HeapSetter.DEFAULT_INITIAL_HEAP),
+            maxHeapConf.getIntValue(HeapSetter.DEFAULT_MAXIMUM_HEAP));
         }
-      };
-    }
-    else if (Info.isMacOSX()) {
-      // We are running on OSX. The plan here is to update the
-      // Info.plist which is contained in the VASSAL.app bundle.
-      heapListener = new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          final File file = new File(Info.getBaseDir(), "Contents/Info.plist");
-          final String VMOptionsKey = "<key>VMOptions</key>";
-
-          String s = null;
-          try {
-            final FileReader in = new FileReader(file);
-            try {
-              s = IOUtils.toString(in);
-            }
-            finally {
-              try {
-                in.close();
-              }
-              catch (IOException e) {
-                e.printStackTrace();
-                return;
-              }
-            }
-          }
-          catch (IOException e) {
-            e.printStackTrace();
-            return;
-          }
-
-          final String iHeap = "-Xms" + initHeapConf.getValueString() + "M";
-          final String mHeap = "-Xmx" + maxHeapConf.getValueString() + "M";
-
-          // Replace only after VMOptions, since it's possible, though
-          // unlikely, that "-Xms" or "-Xmx" appears somewhere else in
-          // the Info.plist.
-          final int i = s.indexOf(VMOptionsKey) + VMOptionsKey.length();
-          s = s.substring(0, i) +
-              s.substring(i)
-               .replaceFirst("-Xms\\w*", iHeap)
-               .replaceFirst("-Xmx\\w*", mHeap);
-
-          try {
-            final FileWriter out = new FileWriter(file);
-            try {
-              out.write(s);
-            }
-            finally {
-              try {
-                out.close();
-              }
-              catch (IOException e) {
-                e.printStackTrace();
-              }
-            }
-          }
-          catch (IOException e) {
-            e.printStackTrace();
-          }
+        catch (IOException ex) {
+          ErrorLog.warn(ex);
         }
-      };
-    }
-    else {
-      // We are running on some UNIX. Hooray! The plan here is to
-      // update the heaps file, which will be cat'ed in as an argument
-      // to the JVM in the VASSAL.sh shell script.
-      heapListener = new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          final String iHeap = "-Xms" + initHeapConf.getValueString() + "M";
-          final String mHeap = "-Xmx" + maxHeapConf.getValueString() + "M";
-
-          final File file = new File(Info.getBaseDir(), "heaps");
-
-          try {
-            final FileWriter out = new FileWriter(file);
-            try {
-              out.write(iHeap + " " + mHeap);
-            }
-            finally {
-              try {
-                out.close();
-              }
-              catch (IOException e) {
-                e.printStackTrace();
-              }
-            }
-          }
-          catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
-      };
-    }
+      }
+    };
 
     initHeapConf.addPropertyChangeListener(heapListener);
     maxHeapConf.addPropertyChangeListener(heapListener);
