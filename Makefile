@@ -60,14 +60,17 @@ i18n: $(CLASSDIR)
 #show:
 #	echo $(patsubst %,-C $(TMPDIR)/doc %,$(wildcard $(TMPDIR)/doc/*)) 
 
-Vengine.jar: all
+$(TMPDIR):
+	mkdir -p $(TMPDIR)
+
+Vengine.jar: all $(TMPDIR)
 	cp dist/Vengine.mf $(TMPDIR)
 	(echo -n 'Class-Path: ' ; \
-		find lib -name '*.jar' -printf '%f\n  ' | \
+		find $(LIBDIR) -name '*.jar' -printf '%f\n  ' | \
 		sed -e '/Vengine.jar/d' -e '/^  $$/d') >>$(TMPDIR)/Vengine.mf
 	$(JAR) cvfm $(LIBDIR)/$@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) .
 
-$(TMPDIR)/VASSAL.exe: Info.class
+$(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
 	cp dist/windows/VASSAL.l4j.xml $(TMPDIR)
 	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
          -e 's/%NUMVERSION%/$(VNUM)/g' \
@@ -84,7 +87,7 @@ $(TMPDIR)/VASSAL.exe: Info.class
 version:
 	sed -ri 's/VERSION = ".*"/VERSION = "$(VERSION)"/' $(SRCDIR)/VASSAL/Info.java
 
-$(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS)
+$(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \

@@ -164,7 +164,7 @@ Page custom preConfirm leaveConfirm
 !define GetJREVersion "!insertmacro GetJREVersion"
 
 
-!macro ForceSingleton
+!macro ForceSingleton _MUTEX
   #
   # Only one instance of the installer may run at a time.
   # Based on http://nsis.sourceforge.net/Allow_only_one_installer_instance.
@@ -172,12 +172,12 @@ Page custom preConfirm leaveConfirm
 
   ; set up a mutex
   BringToFront
-  System::Call "kernel32::CreateMutexA(i 0, i 0, t '$(^Name)') i .r0 ?e"
+  System::Call "kernel32::CreateMutexA(i 0, i 0, t '${_MUTEX}') i .r0 ?e"
   Pop $0
 
   ; if the mutex already existed, find the installer running before us
   ${If} $0 != 0 
-    StrLen $0 "$(^Name)"
+    StrLen $0 "${_MUTEX}"
     IntOp $0 $0 + 1
 
     ; loop until we find the other installer
@@ -188,7 +188,7 @@ loop:
     ${EndIf}
 
     System::Call "user32::GetWindowText(i r1, t .r2, i r0) i."
-    ${If} $2 == "$(^Name)"
+    ${If} $2 == "${_MUTEX}"
       ; bring it to the front and die
       System::Call "user32::ShowWindow(i r1,i 9) i."  
       System::Call "user32::SetForegroundWindow(i r1) i."
@@ -309,13 +309,13 @@ Var RemoveOtherVersions
 # Functions
 #
 Function un.onInit
-  ${ForceSingleton}
+  ${ForceSingleton} "VASSAL-${VERSION}-uninstaller"
   ${WaitForVASSALToClose}
 FunctionEnd
 
 
 Function .onInit
-  ${ForceSingleton}
+  ${ForceSingleton} "VASSAL-installer"
   ${WaitForVASSALToClose}
 FunctionEnd
 
@@ -707,6 +707,7 @@ Section "-Application" Application
   !include "${TMPDIR}/install_files.inc"
 
   ; create the heap sizes config file
+  SetOutPath "$INSTDIR"
   ExecWait 'javaw -cp "$INSTDIR\lib\Vengine.jar" VASSAL.launch.HeapSetter'
 
   ; write keys to the registry
