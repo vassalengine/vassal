@@ -30,6 +30,7 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ import javax.imageio.ImageIO;
 import VASSAL.build.GameModule;
 import VASSAL.tools.BitmapFileFilter;
 import VASSAL.tools.imports.FileFormatException;
+import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.imports.Importer;
 
 /**
@@ -270,6 +272,8 @@ public class SymbolSet extends Importer{
 	 */
 	private boolean ignoreMask;
 
+	private boolean isCardSet;
+
 	/**
 	 * Read symbol images based on basename and suffix. Bitmap filenames are of the form
 	 * <tt>name + "-CN.bmp"</tt> where C is the specified suffix ('M' for masks; 'U' for
@@ -280,10 +284,14 @@ public class SymbolSet extends Importer{
 	 * @param suffix   single character suffix
 	 */
 	BufferedImage loadSymbolImage(String filename, char suffix) throws IOException {
-		final String fn = filename + '-' + suffix + (zoomLevel + 1) + ".bmp";
+		String fn;
+		if (suffix == '\0')
+			fn = filename + (zoomLevel + 1) + ".bmp";
+		else
+			fn = filename + '-' + suffix + (zoomLevel + 1) + ".bmp";
 		File f = action.getCaseInsensitiveFile(new File(fn), null, true, new BitmapFileFilter());
 		if (f == null)
-			throw new FileFormatException("Missing bitmap file: " + fn);
+			throw new FileNotFoundException("Missing bitmap file: " + fn);
 		return ImageIO.read(f);
 	}
 
@@ -329,15 +337,32 @@ public class SymbolSet extends Importer{
 			return null;
 	}
 
+	public Dimension getMaxSize(Dimension max) {
+		if (max == null)
+			max = new Dimension(0,0);
+		for (SymbolData piece : gamePieceData) {
+			BufferedImage im = piece.getImage();
+			if (im.getWidth() > max.width)
+				max.width = im.getWidth();
+			if (im.getHeight() > max.height)
+				max.height = im.getHeight();
+		}
+		return max;
+	}
+	
+	public Dimension getMaxSize() {
+		return getMaxSize(null);
+	}
+	
 	/**
 	 * @return The most frequently occuring dimension for game pieces in this module.
 	 */
-	Dimension getModalSize() {
+	public Dimension getModalSize() {
 		final HashMap<Dimension, Integer> histogram = new HashMap<Dimension, Integer>();
 		for (SymbolData piece : gamePieceData) {
-			final BufferedImage im = piece.getImage();
-			final Dimension d = new Dimension(im.getWidth(), im.getHeight());
-			final Integer i = histogram.get(d);
+			BufferedImage im = piece.getImage();
+			Dimension d = new Dimension(im.getWidth(), im.getHeight());
+			Integer i = histogram.get(d);
 			if (i == null)
 				histogram.put(d, 1);
 			else
@@ -378,9 +403,20 @@ public class SymbolSet extends Importer{
 	}
 
 	/**
+	 * Read a card set from the specified file.
+	 * @throws IOException 
+	 */
+	void importCardSet(ImportAction a, File f) throws IOException {
+		isCardSet = true;
+		importFile(a, f);
+	}
+	
+	/**
 	 * Read a symbol set from the specified file.
 	 */
 	protected void load(File f) throws IOException {
+		super.load(f);
+		
 		DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
 
 		// if header is -3, then mask indeces are one-byte long. Otherwise, if
@@ -416,6 +452,8 @@ public class SymbolSet extends Importer{
 		default:
 			ignoreMask = true;
 		}
+		if (isCardSet)
+			ignoreMask = true;
 
 		// bitmap dimensions are completely ignored
 		int nMapBoardSymbols = ADC2Utils.readBase250Word(in);
@@ -428,25 +466,35 @@ public class SymbolSet extends Importer{
 
 		int nMasks = ADC2Utils.readBase250Word(in);
 		/* maskBitmapDims = */ readDimension(in);
-		if (!ignoreMask)
-			maskData = new SymbolData[nMasks];
+		maskData = new SymbolData[nMasks];
 
 		String baseName = stripExtension(f.getPath());
 
 		// load images
-		BufferedImage mapBoardImages = loadSymbolImage(baseName, 't');
+		BufferedImage mapBoardImages = null;
+		if (!isCardSet)
+			mapBoardImages = loadSymbolImage(baseName, 't');
 		for (int i = 0; i < nMapBoardSymbols; ++i) {
 			mapBoardData[i] = new SymbolData(mapBoardImages, false).read(in);
 			// check for size consistency. Not sure what to do if they're not
 			// all the same size or not square
-			if (mapBoardData[i].rect.height != mapBoardData[0].rect.height
-					|| mapBoardData[i].rect.width != mapBoardData[0].rect.width)
-				throw new FileFormatException("Map board image dimensions are inconsistent");
-			if (mapBoardData[i].rect.width != mapBoardData[i].rect.height)
-				throw new FileFormatException("Map board image dimensions are not square");
+			if (!isCardSet) {
+				if (mapBoardData[i].rect.height != mapBoardData[0].rect.height
+						|| mapBoardData[i].rect.width != mapBoardData[0].rect.width)
+					throw new FileFormatException("Map board image dimensions are inconsistent");
+				if (mapBoardData[i].rect.width != mapBoardData[i].rect.height)
+					throw new FileFormatException("Map board image dimensions are not square");
+			}
 		}
 
-		BufferedImage gamePieceImages = loadSymbolImage(baseName, 'u');
+		BufferedImage gamePieceImages;
+		if (isCardSet) {
+			gamePieceImages = loadSymbolImage(baseName);
+		}
+		else {
+			gamePieceImages = loadSymbolImage(baseName, 'u');
+		}
+		
 		for (int i = 0; i < nGamePieceSymbols; ++i)
 			gamePieceData[i] = new SymbolData(gamePieceImages, false).read(in);
 
@@ -460,6 +508,10 @@ public class SymbolSet extends Importer{
 		}
 		
 		readPermutationFile(f);
+	}
+
+	private BufferedImage loadSymbolImage(String string) throws IOException {
+		return loadSymbolImage(string, '\0');
 	}
 
 	/**

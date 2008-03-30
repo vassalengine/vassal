@@ -18,6 +18,7 @@
 package VASSAL.tools.imports.adc2;
 
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 
 import VASSAL.tools.imports.FileFormatException;
@@ -31,6 +32,14 @@ import VASSAL.tools.imports.FileFormatException;
 
 public class ADC2Utils {
 	
+	public static class NoMoreBlocksException extends EOFException {
+		private static final long serialVersionUID = 1L;
+
+		NoMoreBlocksException(String name) {
+			super(name);
+		}
+	}
+
 	public static final String MODULE_EXTENSION = ".ops";
 	public static final String MAP_EXTENSION = ".map";
 	public static final String SET_EXTENSION = ".set";
@@ -68,8 +77,15 @@ public class ADC2Utils {
 	 * doesn't match.
 	 */
 	static void readBlockHeader(DataInputStream in, String string) throws IOException {
-		int header = in.readByte();
-		if (header != BLOCK_SEPARATOR)
-			throw new FileFormatException("Invalid " + string + " block header.");
+		try {
+			int header = in.readByte();
+			if (header != BLOCK_SEPARATOR)
+				throw new FileFormatException("Invalid " + string + " block header.");
+		}
+		catch (EOFException e) {
+			throw new NoMoreBlocksException(string);
+		}
+		if (in.available() == 0)
+			throw new NoMoreBlocksException(string);
 	}
 }

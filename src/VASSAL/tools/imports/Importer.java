@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.widget.PieceSlot;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 
@@ -37,6 +39,15 @@ public abstract class Importer {
 	 * We need this for the getCaseInsensitiveFile method.
 	 */
 	protected ImportAction action;
+	protected File file;
+	
+	static protected void InsertComponent(Buildable child, Buildable parent) {
+		child.build(null);
+		if (child instanceof PieceSlot)
+			((PieceSlot) child).updateGpId(GameModule.getGameModule());
+		child.addTo(parent);
+		parent.add(child);
+	}
 	
 	/**
 	 * The method that actually loads the file and creates the classes containing information needed for the archive. 
@@ -45,7 +56,9 @@ public abstract class Importer {
 	 * @param f            The base file to be imported.
 	 * @throws IOException
 	 */
-	protected abstract void load(File f) throws IOException;
+	protected void load(File f) throws IOException {
+		this.file = f;
+	}
 	
 	/**
 	 * Create the VASSAL module based on the classes created by <code>load</code>. This should not be called directly

@@ -33,9 +33,9 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +73,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.Marker;
 import VASSAL.counters.UsePrototype;
+import VASSAL.tools.ExtensionFileFilter;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
@@ -2017,7 +2018,7 @@ public class MapBoard extends Importer {
 	private Color tableColor;
 
 	// version information needed for rendering hexes and determining hex dimensions
-	private boolean isPreV208;
+	private boolean isPreV208 = true;
 
 	// map file path
 	private String path;
@@ -2097,6 +2098,8 @@ public class MapBoard extends Importer {
 			// image file name
 			String name = stripExtension(readWindowsFileName(in));
 			File file = action.getCaseInsensitiveFile(new File(name + "-L" + (zoomLevel+1) + ".bmp"), new File(path), true, null);
+			if (file == null)
+				throw new FileNotFoundException("Unable to find map image.");
 			BufferedImage img = ImageIO.read(file);
 			int x = 0;
 			int y = 0;
@@ -2527,6 +2530,8 @@ public class MapBoard extends Importer {
 
 	@Override
 	protected void load(File f) throws IOException {
+		super.load(f);
+		
 		DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
 
 		baseName = stripExtension(f.getName());
@@ -2542,7 +2547,11 @@ public class MapBoard extends Importer {
 		String s = readWindowsFileName(in);
 		String symbolSetFileName = forceExtension(s, "set");
 		set = new SymbolSet();
-		set.importFile(action, action.getCaseInsensitiveFile(new File(symbolSetFileName), f, true, null));
+		File setFile = action.getCaseInsensitiveFile(new File(symbolSetFileName), f, true, 
+				new ExtensionFileFilter(ADC2Utils.SET_DESCRIPTION, new String[] {ADC2Utils.SET_EXTENSION}));
+		if (setFile == null)
+			throw new FileNotFoundException("Unable to find symbol set file.");
+		set.importFile(action, setFile);
 
 		in.readByte(); // ignored
 
@@ -2593,12 +2602,13 @@ public class MapBoard extends Importer {
 		readTableColorBlock(in);
 		readHexNumberingBlock(in); 
 
+		// TODO: default map item drawing order appears to be different for different maps. 
 		try { // optional blocks
 			readMapBoardOverlaySymbolBlock(in);
 			readVersionBlock(in);
 			readMapItemDrawingOrderBlock(in);
 			readMapItemDrawFlagBlock(in);
-		} catch(EOFException e) {}
+		} catch(ADC2Utils.NoMoreBlocksException e) {}
 	}
 
 	/**

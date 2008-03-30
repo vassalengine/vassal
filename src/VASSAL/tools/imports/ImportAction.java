@@ -276,6 +276,8 @@ public final class ImportAction extends EditModuleAction {
 			fc.resetChoosableFileFilters();
 			if (filter != null)
 				fc.setFileFilter(filter);
+	
+			fc.setSelectedFile(new File(f.getName()));
 			
 			if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
 				File p = fc.getSelectedFile();
