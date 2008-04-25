@@ -17,6 +17,7 @@
  * at http://www.opensource.org.
  */
 
+// FIXME: Why is this in configure and not i18n?
 package VASSAL.configure;
 
 import java.awt.Frame;

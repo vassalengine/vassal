@@ -1,5 +1,5 @@
 /*
- * $Id: ModulePlugin.java 2366 2007-08-21 04:19:55 +0000 (Tue, 21 Aug 2007) rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney, Brent Easton
  *

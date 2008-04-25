@@ -361,7 +361,7 @@ Var RemoveButton
 Function preUninstallOld
   StrCpy $RemoveOtherVersions ""
 
-  ${If} CustomSetup != 1
+  ${If} $CustomSetup != 1
     ; remove all versions in Standard setup
     ; find all versions of VASSAL
     StrCpy $R0 0
@@ -705,10 +705,6 @@ Section "-Application" Application
 
   ; set the files to bundle
   !include "${TMPDIR}/install_files.inc"
-
-  ; create the heap sizes config file
-  SetOutPath "$INSTDIR"
-  ExecWait 'javaw -cp "$INSTDIR\lib\Vengine.jar" VASSAL.launch.HeapSetter'
 
   ; write keys to the registry
   WriteRegStr HKLM "${IROOT}" "InstallLocation" "$INSTDIR"

@@ -18,7 +18,8 @@ package VASSAL.launch;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -27,11 +28,12 @@ import VASSAL.build.GameModule;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.SavedGameUpdaterDialog;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.menu.MenuManager;
 
 public class ModuleEditorWindow extends EditorWindow {
-
   private static final long serialVersionUID = 1L;
-  protected JMenuItem updateSavedGame;
+
+  protected Action updateSavedGame;
 
   public ModuleEditorWindow(GameModule mod) {
     super();
@@ -40,9 +42,22 @@ public class ModuleEditorWindow extends EditorWindow {
     treeStateChanged(false);
     scrollPane.setViewportView(tree);    
     
+    final MenuManager mm = MenuManager.getInstance();
+
     tree.populateEditMenu(this);
-    componentHelpItem.setAction(tree.getHelpAction());
-    
+ 
+    mm.addAction("Editor.ModuleEditor.reference_manual", tree.getHelpAction());
+
+    updateSavedGame = new AbstractAction(Resources.getString(
+                          "Editor.ModuleEditor.update_saved")) { //$NON-NLS-1$
+      private static final long serialVersionUID = 1L;
+
+      public void actionPerformed(ActionEvent e) {
+        new SavedGameUpdaterDialog(ModuleEditorWindow.this).setVisible(true);
+      }
+    };
+    mm.addAction("Editor.ModuleEditor.update_saved", updateSavedGame);
+   
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
     createUpdater.setEnabled(true);
@@ -55,13 +70,11 @@ public class ModuleEditorWindow extends EditorWindow {
     return "Module";
   }
 
+/*
   protected void populateFileMenu(JMenu menu) {
-
     addSaveMenuItem(menu);
     addSaveAsMenuItem(menu);
-
     menu.addSeparator();
-
     addQuitMenuItem(menu);
   }
 
@@ -83,6 +96,7 @@ public class ModuleEditorWindow extends EditorWindow {
 
     addTranslateMenuItem(menu);
   }
+*/
 
   protected void save() {
     ModuleEditorWindow.this.saver(new Runnable() {
@@ -100,7 +114,5 @@ public class ModuleEditorWindow extends EditorWindow {
     }); 
   }
   
-  protected void close() {
-    
-  }
+  protected void close() { }
 }

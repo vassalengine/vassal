@@ -1,5 +1,5 @@
 /*
- * $Id: TopLevelComponent.java 864 2006-03-06 05:24:24Z rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2008 by Brent Easton
  *

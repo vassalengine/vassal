@@ -24,6 +24,7 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
+import java.util.Random;
 
 import VASSAL.tools.VersionFormatException;
 import VASSAL.tools.VersionTokenizer;
@@ -32,7 +33,7 @@ import VASSAL.tools.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-svn3297"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-svn3389"; //$NON-NLS-1$
   private static File homeDir;
 
   private static final boolean isWindows;
@@ -77,6 +78,16 @@ public final class Info {
     catch (VersionFormatException e) {
       return null;
     }
+  }
+
+  // Strictly speaking, this doesn't guarantee uniqueness, but the
+  // probability that any reasonable number or simultaneously-running
+  // instances of the VASSAL ModuleManager, Player or Editor will get
+  // the same ID is vanishingly small.
+  private static final long instanceID = new Random().nextLong();
+
+  public static long getInstanceID() {
+    return instanceID;
   }
 
   /**
@@ -158,15 +169,15 @@ public final class Info {
   }
 
 // FIXME: we should have something like
-// getAppDir(), getDocDir(), getConfDir(), getTmpDir()
+// getBinDir(), getDocDir(), getConfDir(), getTmpDir()
 
-  public static File getAppDir() {
+  public static File getBinDir() {
     return new File(System.getProperty("user.dir"));
   }
 
   public static File getDocDir() {
     final String d = isMacOSX ? "Contents/Resources/doc" : "doc";
-    return new File(getAppDir(), d);
+    return new File(getBaseDir(), d);
   }
 
   public static File getConfDir() {

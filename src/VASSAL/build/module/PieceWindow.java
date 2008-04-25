@@ -48,6 +48,7 @@ import VASSAL.preferences.VisibilityOption;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.menu.MenuManager;
 
 /**
  * A window from which players can create new {@link GamePiece}s by
@@ -102,6 +103,8 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       d.add(root);
       d.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
       d.setTitle(getConfigureName());
+      d.setJMenuBar(MenuManager.getInstance().getMenuBarFor(d));
+
       addPropertyChangeListener(new java.beans.PropertyChangeListener() {
         public void propertyChange(java.beans.PropertyChangeEvent e) {
           if (Configurable.NAME_PROPERTY
@@ -110,6 +113,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
           }
         }
       });
+
       return d;
     }
   }

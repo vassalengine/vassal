@@ -208,7 +208,8 @@ public class ActionButton extends Decorator implements EditablePiece {
 
     /**
      * Handle a mouse click on the given GamePiece at the given location (where
-     * 0,0 is the center of the piece)
+     * 0,0 is the center of the piece). Activate all Action Buttons in sequence
+     * that are not Masked or Hidden
      * 
      * @param p
      * @param x
@@ -223,6 +224,16 @@ public class ActionButton extends Decorator implements EditablePiece {
     public void doClick(GamePiece p, Point point) {
       for (GamePiece piece = p; piece instanceof Decorator;
            piece = ((Decorator) piece).getInner()) {
+        if (piece instanceof Obscurable) {
+          if (((Obscurable) piece).obscuredToMe()) {
+            return;
+          }
+        }
+        else if (piece instanceof Hideable) {
+          if (((Hideable) piece).invisibleToMe()) {
+            return;
+          }
+        }
         if (piece instanceof ActionButton) {
           ActionButton action = (ActionButton) piece;
           if (action.bounds.contains(point)) {

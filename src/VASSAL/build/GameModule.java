@@ -31,7 +31,6 @@ import java.util.Random;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -49,6 +48,7 @@ import VASSAL.build.module.GlobalKeyCommand;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Inventory;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.ModuleMetaData;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.MultiActionButton;
 import VASSAL.build.module.NotesWindow;
@@ -103,16 +103,19 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected static final String DEFAULT_NAME = "Unnamed module";  //$NON-NLS-1$
   public static final String MODULE_NAME = "name";  //$NON-NLS-1$
   public static final String MODULE_VERSION = "version";  //$NON-NLS-1$
+  public static final String DESCRIPTION = "description";
   public static final String VASSAL_VERSION_CREATED = "VassalVersion";  //$NON-NLS-1$
   /** The System property of this name will return a version identifier for the version of VASSAL being run */
   public static final String VASSAL_VERSION_RUNNING = "runningVassalVersion";  //$NON-NLS-1$
   public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId";
+  public static final String BUILDFILE = "buildFile";
   
   private static GameModule theModule;
 
   protected String moduleVersion = "0.0";  //$NON-NLS-1$
   protected String vassalVersionCreated = "0.0";  //$NON-NLS-1$
   protected String gameName = DEFAULT_NAME;
+  protected String description = "";
   protected String lastSavedConfiguration;
   protected FileChooser fileChooser;
   protected FileDialog fileDialog;
@@ -223,6 +226,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         
       }
     }
+    else if (DESCRIPTION.equals(name)) {
+      description = (String) value;
+    }
   }
 
   public String getAttributeValueString(String name) {
@@ -240,6 +246,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     else if (NEXT_PIECESLOT_ID.equals(name)) {
       return String.valueOf(nextGpId);
+    }
+    else if (DESCRIPTION.equals(name)) {
+      return description;
     }
     return null;
   }
@@ -277,17 +286,23 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return new String[]{
       MODULE_NAME,
       MODULE_VERSION,
+      DESCRIPTION,
       VASSAL_VERSION_CREATED,
       NEXT_PIECESLOT_ID
     };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{Resources.getString("Editor.GameModule.name_label"), Resources.getString("Editor.GameModule.version_label")}; //$NON-NLS-1$ //$NON-NLS-2$
+    return new String[]{
+      Resources.getString("Editor.GameModule.name_label"),    //$NON-NLS-1$
+      Resources.getString("Editor.GameModule.version_label"), //$NON-NLS-1$
+      Resources.getString("Editor.GameModule.description")
+    };
   }
 
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
+      String.class,
       String.class,
       String.class
     };
@@ -601,20 +616,6 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * @return the File menu of the command window
-   */
-  public JMenu getFileMenu() {
-    return frame.getFileMenu();
-  }
-
-  /**
-   * @return the Help menu of the command window
-   */
-  public JMenu getHelpMenu() {
-    return frame.getHelpMenu();
-  }
-
-  /**
    * Append the string to the title of the controls window and all Map windows
    * @param s If null, set the title to the default.
    */
@@ -856,10 +857,18 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   protected void save(boolean saveAs) {
     vassalVersionCreated = Info.getVersion();
+    
+    try {
+      (new ModuleMetaData(this)).save(getArchiveWriter());
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    
     try {
       String save = buildString();
       getArchiveWriter().addFile
-          ("buildFile",  //$NON-NLS-1$
+          (BUILDFILE,  
            new java.io.ByteArrayInputStream(save.getBytes("UTF-8")));  //$NON-NLS-1$
       if (saveAs) {
         getArchiveWriter().saveAs();
@@ -929,5 +938,4 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       return getProperty(key);
     }
   }
-  
 }

@@ -30,20 +30,21 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Locale;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+
+// FIXME: switch to these once we move to Java 1.6
+//import javax.swing.GroupLayout;
+//import javax.swing.LayoutStyle;
+import org.jdesktop.layout.GroupLayout;
+import org.jdesktop.layout.LayoutStyle;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
@@ -59,9 +60,8 @@ import VASSAL.tools.DataArchive;
 public class FirstTimeDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  public FirstTimeDialog() {
-    super((Frame) null, true);
-    setLocationRelativeTo(ModuleManager.getInstance().getFrame());
+  public FirstTimeDialog(Frame parent) {
+    super(parent, true);
 
     setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
@@ -70,80 +70,27 @@ public class FirstTimeDialog extends JDialog {
       }
     });
 
-    final JPanel b = new JPanel();
-    b.setLayout(new BoxLayout(b, BoxLayout.Y_AXIS));
-
     final JLabel about = new JLabel(
       new ImageIcon(getClass().getResource("/images/Splash.png")));
-    about.setAlignmentX(0.5F);
-    b.add(about);
 
-    b.add(getControls());
+    final JLabel welcome = new JLabel();
+    welcome.setFont(new Font("SansSerif", 1, 40));  //$NON-NLS-1$
+    welcome.setText(Resources.getString("Main.welcome"));  //$NON-NLS-1$
+    welcome.setForeground(Color.black);
 
-    add(b);
-    pack();
-
-    setLocationRelativeTo(null);
-  }
-
-  private JPanel getControls() {
-    final File tourModule = new File(
-      Documentation.getDocumentationBaseDir(), "tour.mod");  //$NON-NLS-1$
-    final File tourLogFile = new File(
-      Documentation.getDocumentationBaseDir(), "tour.log");  //$NON-NLS-1$
-
-    final JPanel panel = new JPanel();
-    panel.setBorder(new EmptyBorder(5,5,5,5));
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-    final JLabel l = new JLabel();
-    l.setFont(new Font("SansSerif", 1, 40));  //$NON-NLS-1$
-    l.setText(Resources.getString("Main.welcome"));  //$NON-NLS-1$
-    l.setForeground(Color.black);
-    l.setAlignmentX(0.5F);
-    panel.add(l);
-
-    Box b = Box.createHorizontalBox();
-    final JButton tour =
-      new JButton(Resources.getString("Main.tour"));  //$NON-NLS-1$
+    final JButton tour = new JButton(new LaunchTourAction(parent)); 
     final JButton jump =
       new JButton(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
     final JButton help = new JButton(Resources.getString(Resources.HELP));
-    b.add(tour);
-    b.add(jump);
-    b.add(help);
 
-    final JPanel p = new JPanel();
-    p.add(b);
-    panel.add(p);
-
-    tour.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        try {
-          GameModule.init(
-            new BasicModule(new DataArchive(tourModule.getPath())));
-          GameModule.getGameModule().getFrame().setVisible(true);
-          GameModule.getGameModule()
-                    .getGameState().loadGameInBackground(tourLogFile);
-          FirstTimeDialog.this.dispose();
-        }
-        catch (Exception e) {
-          e.printStackTrace();
-          JOptionPane.showMessageDialog
-              (null,
-               e.getMessage(),
-               Resources.getString("Main.open_error"),  //$NON-NLS-1$
-               JOptionPane.ERROR_MESSAGE);
-        }
-      }
-    });
-
-    jump.addActionListener(new ActionListener() {
+    final ActionListener closer = new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         FirstTimeDialog.this.dispose();
-        ModuleManager.getInstance().showFrame();
       }
-    });
+    };
+
+    tour.addActionListener(closer);
+    jump.addActionListener(closer);
 
     try {
       final File readme =
@@ -154,33 +101,80 @@ public class FirstTimeDialog extends JDialog {
       e.printStackTrace();
     }
 
-    b = Box.createHorizontalBox();
-    b.add(new JLabel(Resources.getString("Prefs.language")+":  "));
-    final JComboBox box =
+    final JLabel lang = new JLabel(Resources.getString("Prefs.language") + ":");
+    final JComboBox langbox =
       new JComboBox(Resources.getSupportedLocales().toArray());
-    box.setRenderer(new DefaultListCellRenderer() {
+    langbox.setRenderer(new DefaultListCellRenderer() {
       private static final long serialVersionUID = 1L;
 
       public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        setText(((Locale) value).getDisplayName());
+        setText(((Locale) value).getDisplayName(Resources.getLocale()));
         return this;
       }
     });
 
-    box.setSelectedItem(Resources.getLocale());
-    box.addActionListener(new ActionListener() {
+    langbox.setSelectedItem(Resources.getLocale());
+    langbox.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        Resources.setLocale((Locale) box.getSelectedItem());
-        final Container parent = panel.getParent();
-        parent.remove(panel);
-        parent.add(getControls());
+        Resources.setLocale((Locale) langbox.getSelectedItem());
+
+        // update the text for the new locale
+        welcome.setText(Resources.getString("Main.welcome"));  //$NON-NLS-1$
+        tour.setText(Resources.getString("Main.tour"));  //$NON-NLS-1$
+        jump.setText(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
+        help.setText(Resources.getString(Resources.HELP));
+        lang.setText(Resources.getString("Prefs.language") + ":");
         FirstTimeDialog.this.pack();
+        // langbox picks up the new locale automatically from getDisplayName()
       }
     });
-    b.add(box);
-    panel.add(b);
 
-    return panel;
+    final JPanel panel = new JPanel();
+    final GroupLayout layout = new GroupLayout(panel);
+    panel.setLayout(layout);
+
+    layout.setAutocreateGaps(true);
+    layout.setAutocreateContainerGaps(true);
+
+    layout.setHorizontalGroup(
+      layout.createParallelGroup(GroupLayout.CENTER, true)
+        .add(about)
+        .add(welcome)
+        .add(layout.createSequentialGroup()
+          .add(tour)
+          .add(jump)
+          .add(help))
+        .add(layout.createSequentialGroup()
+          .add(0, 0, Integer.MAX_VALUE)
+          .add(lang)
+          .add(langbox)
+          .add(0, 0, Integer.MAX_VALUE)));
+
+    layout.setVerticalGroup(
+      layout.createSequentialGroup()
+        .add(about)
+        .addPreferredGap(LayoutStyle.UNRELATED,
+                         GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
+        .add(welcome)
+        .addPreferredGap(LayoutStyle.UNRELATED,
+                         GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
+        .add(layout.createParallelGroup(GroupLayout.BASELINE, false)
+          .add(tour)
+          .add(jump)
+          .add(help))
+        .addPreferredGap(LayoutStyle.UNRELATED,
+                         GroupLayout.DEFAULT_SIZE, Integer.MAX_VALUE)
+        .add(layout.createParallelGroup(GroupLayout.BASELINE, false)
+          .add(lang)
+          .add(langbox)));
+
+    layout.linkSize(new Component[]{tour, jump, help});
+    
+    add(panel);
+
+    pack();
+    setMinimumSize(getSize());
+    setLocationRelativeTo(null);
   }
 }

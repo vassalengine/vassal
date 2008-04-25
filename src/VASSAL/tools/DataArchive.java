@@ -114,7 +114,6 @@ public class DataArchive extends SecureClassLoader {
    * @return the size of the image
    */
   public Dimension getImageSize(String name) throws IOException {
-    final String path = IMAGE_DIR + name;
     final ImageSource src;
 
     if (name.startsWith("/")) {

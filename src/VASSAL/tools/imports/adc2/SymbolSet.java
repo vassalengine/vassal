@@ -23,6 +23,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BandCombineOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -101,6 +102,12 @@ public class SymbolSet extends Importer{
 		 * Rectangle in shared bitmap <code>img</code>.
 		 */
 		private Rectangle rect;
+
+		/**
+		 * <code>Boolean.TRUE</code> if the image is completely transparent (invisible)
+		 * and <code>null</code> if it has not yet been checked. 
+		 */
+		private Boolean transparent;
 		
 		SymbolData(BufferedImage bitmap, boolean isMask) {
 			this.bitmap = bitmap;
@@ -172,6 +179,27 @@ public class SymbolSet extends Importer{
 			return fileName;
 		}
 
+		/**
+		 * Returns true if all alpha values are zero.
+		 */
+		boolean isTransparent() {
+			if (transparent == null) {
+				BufferedImage image = getImage();
+				transparent  = Boolean.TRUE;
+				search:
+					for (int i = 0; i < image.getWidth(); ++i) {
+						for (int j = 0; j < image.getHeight(); ++j) {
+							if (image.getRGB(i, j) != 0) {
+								transparent = Boolean.FALSE;
+								break search;
+							}
+						}
+					}
+				
+			}
+			return transparent.booleanValue();
+		}
+		
 		/**
 		 * Get image corresponding to this symbol. Generates the image and applies
 		 * optional mask if not already done so.

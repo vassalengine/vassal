@@ -85,6 +85,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.SplashScreen;
+import VASSAL.tools.UsernameAndPasswordDialog;
 
 /**
  * Provides support for two different wizards. The WelcomeWizard is the initial screen shown to the user when loading a
@@ -142,6 +143,18 @@ public class WizardSupport {
     Prefs.getGlobalPrefs().addOption(wizardConf);
     if (!wizardConf.booleanValue()) {
       GameModule.getGameModule().getFrame().setVisible(true);
+
+      // prompt for username and password if wizard is off 
+      // but no username is set
+      // FIXME: this belongs outside of the wizard, not here
+      final String name = (String) GameModule.getGameModule()
+                                             .getPrefs()
+                                             .getValue(GameModule.REAL_NAME);
+      if (name == null || name.equals("newbie")) {
+        new UsernameAndPasswordDialog(
+          GameModule.getGameModule().getFrame()).setVisible(true);
+      }
+
       return;
     }
     WizardBranchController c = createWelcomeWizard();

@@ -1,1 +1,1 @@
-Main-Class: VASSAL.launch.Main
+Main-Class: VASSAL.launch.ModuleManager

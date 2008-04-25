@@ -101,13 +101,16 @@ public class ExtensionsManager {
     return inactiveDir;
   }
 
-  public void setActive(File extension, boolean active) {
+  public File setActive(File extension, boolean active) {
+    File newExt;
     if (active) {
-      extension.renameTo(new File(getExtensionsDirectory(), extension.getName()));
+      newExt = new File(getExtensionsDirectory(), extension.getName());
     }
     else {
-      extension.renameTo(new File(getInactiveExtensionsDirectory(), extension.getName()));
+      newExt = new File(getInactiveExtensionsDirectory(), extension.getName());
     }
+    extension.renameTo(newExt);
+    return newExt;
   }
 
   public List<File> getActiveExtensions() {
@@ -117,4 +120,14 @@ public class ExtensionsManager {
   public List<File> getInactiveExtensions() {
     return Arrays.asList(getInactiveExtensionsDirectory().listFiles(filter));
   }
+  
+  public boolean isExtensionActive(File extension) {
+    for (File f : getActiveExtensions()) {
+      if (f.getName().equals(extension.getName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: IterableEnumeration.java 2790 2007-12-31 15:28:08Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 Joel Uckelman
  *

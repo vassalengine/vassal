@@ -240,6 +240,7 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   public void removeFrom(Buildable b) {
+//    MenuManager.getInstance().removeAction(launch);
     ((Documentation) b).getHelpMenu().remove(launch);
   }
 
@@ -249,6 +250,7 @@ public class AboutScreen extends AbstractConfigurable {
   public void addTo(Buildable b) {
     final Documentation d = (Documentation) b;
     d.getHelpMenu().add(launch);
+//    MenuManager.getInstance().addAction(launch);
 
     if (op == null) {
       // use the VASSAL about image in case there is no image given

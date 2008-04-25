@@ -54,6 +54,7 @@ import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.VisibilityOption;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.KeyStrokeListener;
+import VASSAL.tools.menu.MenuManager;
 
 public class ChatServerControls extends AbstractBuildable {
 
@@ -164,9 +165,11 @@ public class ChatServerControls extends AbstractBuildable {
         SwingUtilities.invokeLater(runnable);
       }
       else {
-        JFrame frame = new JFrame(Resources.getString("Chat.server"));  //$NON-NLS-1$
+        final JFrame frame = new JFrame(Resources.getString("Chat.server"));  //$NON-NLS-1$
         frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.add(controlPanel);
+        frame.setJMenuBar(MenuManager.getInstance().getMenuBarFor(frame));
+
         String key = "BoundsOfClientWindow";  //$NON-NLS-1$
         PositionOption pos = new VisibilityOption(key, frame);
         GameModule.getGameModule().getPrefs().addOption(pos);

@@ -13,7 +13,7 @@
   <stayAlive>false</stayAlive>
   <icon></icon>
   <classPath>
-    <mainClass>VASSAL.launch.Main</mainClass>
+    <mainClass>VASSAL.launch.ModuleManager</mainClass>
     <cp>Vengine.jar</cp>
   </classPath>
   <jre>

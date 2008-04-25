@@ -1,4 +1,6 @@
 /*
+ * $Id$
+ *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -29,9 +31,9 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JMenuItem;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -51,7 +53,8 @@ import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.IOUtils;
 
 /**
- * Unpacks a zipped directory stored in the module and displays it in an external browser window
+ * Unpacks a zipped directory stored in the module and displays it in an
+ * external browser window.
  * 
  * @author rkinney
  */
@@ -61,19 +64,31 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   public static final String STARTING_PAGE = "startingPage"; //$NON-NLS-1$
   protected String name;
   protected String startingPage;
-  protected JMenuItem launch;
+//  protected JMenuItem launch;
+  protected Action launch;
   protected URL url;
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected ComponentI18nData myI18nData;
 
   public BrowserHelpFile() {
     super();
+    
+    launch = new AbstractAction() {
+      private static final long serialVersionUID = 1L;
+
+      public void actionPerformed(ActionEvent e) {
+        launch();
+      }
+    };
+
+/*
     launch = new JMenuItem();
     launch.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         launch();
       }
     });
+*/
   }
 
   public void launch() {
@@ -187,7 +202,8 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   public void setAttribute(String key, Object value) {
     if (TITLE.equals(key)) {
       name = (String) value;
-      launch.setText(name);
+//      launch.setText(name);
+      launch.putValue(Action.NAME, name);
       url = null;
       getI18nData().setUntranslatedValue(key, name);
     }
@@ -197,8 +213,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
   }
 
+  protected JMenuItem launchItem;
+
   public void addTo(Buildable parent) {
-    ((Documentation) parent).getHelpMenu().add(launch);
+    launchItem = ((Documentation) parent).getHelpMenu().add(launch);    
   }
 
   public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -229,13 +247,14 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public void removeFrom(Buildable parent) {
-    ((Documentation) parent).getHelpMenu().remove(launch);
+    ((Documentation) parent).getHelpMenu().remove(launchItem);
     launch.setEnabled(false);
   }
 
   public static String getConfigureTypeName() {
     return "HTML Help File"; //$NON-NLS-1$
   }
+
   /**
    * The attributes we want to expose in the editor are not the same as the ones we want to save to the buildFile, so we
    * use this object to specify the properties in the editor. Also packs up the contents directory and saves it to the

@@ -29,6 +29,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 
 public class ShutDownAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
 
   public ShutDownAction() {
     super(Resources.getString(Resources.QUIT));

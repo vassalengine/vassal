@@ -41,8 +41,17 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.JarArchive;
 
-//import org.jdesktop.swinghelper.debug.EventDispatchThreadHangMonitor;
+/*
+import javax.swing.RepaintManager;
+import org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager;
+import org.jdesktop.swinghelper.debug.EventDispatchThreadHangMonitor;
+*/
 
+/** 
+ * @deprecated Use {@link Editor}, {@link Player}, and {@link ModuleManager}
+ *  as entry points for VASSAL instead.
+ */
+@Deprecated
 public class Main {
   protected boolean isFirstTime;
   protected boolean builtInModule;
@@ -54,6 +63,8 @@ public class Main {
 
   public Main(final String[] args) {
     initSystemProperties();
+
+    // begin the error log
     System.err.println("-- OS " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
     System.err.println("-- Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
     System.err.println("-- VASSAL version " + Info.getVersion()); //$NON-NLS-1$
@@ -121,28 +132,52 @@ public class Main {
   }
 
   protected void initSystemProperties() {
-    if (System.getProperty("stderr") == null) { //$NON-NLS-1$
-      System.setProperty("stderr", new File(Info.getHomeDir(), "errorLog").getPath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    //
+    // Error log setup
+    //
+    String stderr = "stderr";           //$NON-NLS-1$
+    final String errorLog = "errorLog"; //$NON-NLS-1$
+
+    // redirect stderr to errorLog by default
+    if (System.getProperty(stderr) == null) {
+      System.setProperty(stderr,
+        new File(Info.getHomeDir(), errorLog).getPath());
     }
-    if (!"null".equals(System.getProperty("stderr"))) { //$NON-NLS-1$ //$NON-NLS-2$
+
+    // write no log if stderr is set to null
+    stderr = System.getProperty(stderr); 
+    if (!"null".equals(stderr)) { //$NON-NLS-1$
       try {
-        System.setErr(new PrintStream(new FileOutputStream(System.getProperty("stderr")))); //$NON-NLS-1$
+        System.setErr(new PrintStream(new FileOutputStream(stderr)));
       }
       catch (IOException ex) {
-        System.err.println("Unable to redirect stderr to " + System.getProperty("stderr")); //$NON-NLS-1$ //$NON-NLS-2$
+        System.err.println(
+          "Unable to redirect stderr to " + stderr); //$NON-NLS-1$
       }
     }
 
-    if (System.getProperty("http.proxyHost") == null //$NON-NLS-1$
-        && System.getProperty("proxyHost") != null) { //$NON-NLS-1$
-      System.setProperty("http.proxyHost", System.getProperty("proxyHost")); //$NON-NLS-1$ //$NON-NLS-2$
+    //
+    // HTTP proxying setup
+    //
+    final String httpProxyHost = "http.proxyHost";  //$NON-NLS-1$
+    final String proxyHost = "proxyHost";           //$NON-NLS-1$
+
+    if (System.getProperty(httpProxyHost) == null && 
+        System.getProperty(proxyHost) != null) {
+      System.setProperty(httpProxyHost, System.getProperty(proxyHost));
     }
 
-    if (System.getProperty("http.proxyPort") == null //$NON-NLS-1$
-        && System.getProperty("proxyPort") != null) { //$NON-NLS-1$
-      System.setProperty("http.proxyPort", System.getProperty("proxyPort")); //$NON-NLS-1$ //$NON-NLS-2$
+    final String httpProxyPort = "http.proxyPort"; //$NON-NLS-1$
+    final String proxyPort = "proxyPort";          //$NON-NLS-1$
+
+    if (System.getProperty(httpProxyPort) == null &&
+        System.getProperty(proxyPort) != null) {
+      System.setProperty(httpProxyPort, System.getProperty(proxyPort));
     }
 
+    //
+    // Miscellaneous setup
+    //
     System.setProperty("swing.aatext", "true"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("swing.boldMetal", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("awt.useSystemAAFontSettings", "on"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -150,7 +185,7 @@ public class Main {
 
   protected void launch() throws IOException {
     if (isFirstTime) {
-      new FirstTimeDialog().setVisible(true);
+      new FirstTimeDialog(null).setVisible(true);
     }
     else if (builtInModule) {
       GameModule.init(createModule(createDataArchive()));
@@ -162,7 +197,7 @@ public class Main {
       GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
     }
     else if (moduleFile == null) {
-      ModuleManager.getInstance().showFrame();
+      ModuleManagerWindow.getInstance().setVisible(true);
     }
     else if (editMode) {
       new EditModuleAction(moduleFile).loadModule(moduleFile);
@@ -238,6 +273,8 @@ public class Main {
   }
 
   public static void main(String[] args) {
+//    EventDispatchThreadHangMonitor.initMonitoring();
+//    RepaintManager.setCurrentManager(new CheckThreadViolationRepaintManager());
     new Main(args);
   }
 }

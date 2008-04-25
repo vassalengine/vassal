@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import VASSAL.configure.SaveAsAction;
 
 public class SaveModuleAsAction extends SaveAsAction {
+  private static final long serialVersionUID = 1L;
 
   public void actionPerformed(ActionEvent e) {
     // TODO Auto-generated method stub

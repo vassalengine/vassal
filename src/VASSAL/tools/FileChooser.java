@@ -19,8 +19,10 @@
 package VASSAL.tools;
 
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.FileDialog;
 import java.awt.Frame;
+import java.awt.Window;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -31,8 +33,10 @@ import VASSAL.Info;
 import VASSAL.configure.DirectoryConfigurer;
 
 /**
- * FileChooser provides a wrapper for {@link javax.swing.JFileChooser} and {@link java.awt.FileDialog}, selecting
- * whichever is preferred on the user's OS. FileChooser's methods mirror those of JFileChooser.
+ * FileChooser provides a wrapper for {@link javax.swing.JFileChooser} and
+ * {@link java.awt.FileDialog}, selecting whichever is preferred on the
+ * user's OS. <code>FileChooser</code>'s methods mirror those of
+ * <code>JFileChooser</code>.
  * 
  * @author Joel Uckelman
  */
@@ -68,7 +72,7 @@ public abstract class FileChooser {
    */
   public static FileChooser createFileChooser(Component parent, DirectoryConfigurer prefs, int mode) {
     FileChooser fc;
-    if (Info.isMacOsX()) {
+    if (Info.isMacOSX()) {
       // Mac has a good native file dialog
       fc = new NativeFileChooser(parent, prefs, mode);
     }
@@ -289,8 +293,21 @@ public abstract class FileChooser {
     }
 
     protected FileDialog awt_file_dialog_init(Component parent) {
-      Frame frame = parent instanceof Frame ? (Frame) parent : (Frame) SwingUtilities.getAncestorOfClass(Frame.class, parent);
-      FileDialog fd = new FileDialog(frame, title);
+      final FileDialog fd;
+
+      final Window w = parent instanceof Window ? (Window) parent :
+        SwingUtilities.getWindowAncestor(parent);
+
+      if (w instanceof Dialog) {
+        fd = new FileDialog((Dialog) w, title);
+      }
+      else if (w instanceof Frame) {
+        fd = new FileDialog((Frame) w, title);
+      }
+      else {
+        fd = new FileDialog((Frame) null, title);
+      }
+
       fd.setModal(true);
       fd.setFilenameFilter(filter);
       if (cur != null) {
@@ -305,27 +322,30 @@ public abstract class FileChooser {
     }
 
     public int showOpenDialog(Component parent) {
-        FileDialog fd = awt_file_dialog_init(parent);
-        fd.setMode(FileDialog.LOAD);
-        System.setProperty("apple.awt.fileDialogForDirectories", String.valueOf(mode == DIRECTORIES_ONLY));
-        fd.setVisible(true);
-        int value;
-        if (fd.getFile() != null) {
-          cur = new File(fd.getDirectory(), fd.getFile());
-          value = FileChooser.APPROVE_OPTION;
-        }
-        else {
-          value = FileChooser.CANCEL_OPTION;
-        }
-        updateDirectoryPreference();
-        return value;
+      final FileDialog fd = awt_file_dialog_init(parent);
+      fd.setMode(FileDialog.LOAD);
+      System.setProperty("apple.awt.fileDialogForDirectories",
+                         String.valueOf(mode == DIRECTORIES_ONLY));
+      fd.setVisible(true);
+        
+      final int value;
+      if (fd.getFile() != null) {
+        cur = new File(fd.getDirectory(), fd.getFile());
+        value = FileChooser.APPROVE_OPTION;
+      }
+      else {
+        value = FileChooser.CANCEL_OPTION;
+      }
+      updateDirectoryPreference();
+      return value;
     }
 
     public int showSaveDialog(Component parent) {
-      FileDialog fd = awt_file_dialog_init(parent);
+      final FileDialog fd = awt_file_dialog_init(parent);
       fd.setMode(FileDialog.SAVE);
       fd.setVisible(true);
-      int value;
+      
+      final int value;
       if (fd.getFile() != null) {
         cur = new File(fd.getDirectory(), fd.getFile());
         value = FileChooser.APPROVE_OPTION;

@@ -1,5 +1,5 @@
 /*
- * $Id: MappedDataBufferInt.java 2747 2007-12-26 21:40:30Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2007 by Joel Uckelman
  *

@@ -41,15 +41,8 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.event.IIOWriteProgressListener;
 import javax.imageio.stream.ImageOutputStream;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -64,6 +57,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.ProgressDialog;
 
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;
@@ -180,7 +174,8 @@ public class ImageSaver extends AbstractConfigurable {
    
     final File file = fc.getSelectedFile();
 
-    dialog = new ProgressDialog(frame, "Saving Map Image");
+    dialog = new ProgressDialog(frame, "Saving Map Image",
+                                       "Saving map image...");
 
     // force the dialog to be a reasonable width
     // FIXME: this is not really a good way to do this---should do
@@ -239,61 +234,6 @@ public class ImageSaver extends AbstractConfigurable {
     });
 
     task.execute();
-  }
-
-  private static class ProgressDialog extends JDialog {
-    private static final long serialVersionUID = 1L;
-
-    private final JLabel label;
-    private final JProgressBar progbar;
-    private final JButton cancel;
-
-    public ProgressDialog(Frame parent, String title) {
-      super(parent, title, true);
-
-      final Box box = Box.createVerticalBox();
-      box.setBorder(new EmptyBorder(12, 12, 11, 11));
-      add(box);
-
-      final Box lb = Box.createHorizontalBox();
-      label = new JLabel("Saving map image...");
-      lb.add(label);
-      lb.add(Box.createHorizontalGlue());
-      box.add(lb);
-
-      box.add(Box.createVerticalStrut(11));
-
-      progbar = new JProgressBar(0, 100);
-      progbar.setStringPainted(true);
-      progbar.setValue(0);
-      box.add(progbar);
-    
-      box.add(Box.createVerticalStrut(17));
-
-      final Box bb = Box.createHorizontalBox();
-      bb.add(Box.createHorizontalGlue());
-      cancel = new JButton(Resources.getString("General.cancel"));
-      cancel.setSelected(true);
-      bb.add(cancel);
-      bb.add(Box.createHorizontalGlue());
-      box.add(bb);
-    }
-
-    public void setLabel(String text) {
-      label.setText(text);
-    }
-
-    public void setIndeterminate(boolean indet) {
-      progbar.setIndeterminate(indet);
-    }
-
-    public void setProgress(int percent) {
-      progbar.setValue(percent);
-    }
-
-    public void addActionListener(ActionListener l) {
-      cancel.addActionListener(l);
-    }
   }
 
   private class SnapshotTask extends SwingWorker<Void,Void> {

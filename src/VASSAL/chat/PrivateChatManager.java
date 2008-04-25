@@ -17,6 +17,7 @@
  */
 package VASSAL.chat;
 
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import VASSAL.i18n.Resources;
+import VASSAL.tools.menu.MenuManager;
 
 /**
  * Manages {@link PrivateChatter} instances
@@ -53,16 +55,20 @@ public class PrivateChatManager {
     if (chat == null) {
       chat = new PrivateChatter(sender, client);
       chatters.add(new Entry(sender, chat));
-      JFrame f = new JFrame();
+      
+      final JFrame f = new JFrame();
       f.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent e) {
           promptToBan(sender);
         }
       });
+
       f.setTitle(Resources.getString("Chat.private_channel", sender.getName())); //$NON-NLS-1$
+      f.setJMenuBar(MenuManager.getInstance().getMenuBarFor(f));
       f.getContentPane().add(chat);
       f.pack();
-      f.setLocation(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width / 2 - f.getSize().width / 2, 0);
+      f.setLocation(Toolkit.getDefaultToolkit().getScreenSize().width / 2 -
+                    f.getSize().width / 2, 0);
     }
     return chat;
   }

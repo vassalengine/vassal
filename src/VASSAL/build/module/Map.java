@@ -157,6 +157,7 @@ import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.menu.MenuManager;
 
 /*
 import org.jdesktop.swinghelper.layer.JXLayer;
@@ -1750,6 +1751,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       JFrame d = new JFrame();
       d.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       d.setTitle(getDefaultWindowTitle());
+      d.setJMenuBar(MenuManager.getInstance().getMenuBarFor(d));
       return d;
     }
   }

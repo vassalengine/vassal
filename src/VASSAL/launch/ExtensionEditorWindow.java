@@ -20,13 +20,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.configure.ExtensionTree;
+import VASSAL.tools.menu.MenuManager;
 
 public class ExtensionEditorWindow extends EditorWindow {
 
@@ -48,11 +49,15 @@ public class ExtensionEditorWindow extends EditorWindow {
     scrollPane.setViewportView(tree);
     
     tree.populateEditMenu(this);
-    componentHelpItem.setAction(tree.getHelpAction());
+
+    final MenuManager mm = MenuManager.getInstance();
+    mm.addAction("Editor.ModuleEditor.reference_manual", tree.getHelpAction());
+    
+    toolBar.addSeparator();
+    toolBar.add(extension.getEditAction(new JDialog(this)));
     
     saveAction.setEnabled(true);
     saveAsAction.setEnabled(true);
-    close.setEnabled(true);
     createUpdater.setEnabled(true);
 
     pack();
@@ -66,6 +71,7 @@ public class ExtensionEditorWindow extends EditorWindow {
     return "Extension";
   }
 
+/*
   protected void populateFileMenu(JMenu menu) {
     addSaveMenuItem(menu);
     addSaveAsMenuItem(menu);
@@ -78,6 +84,7 @@ public class ExtensionEditorWindow extends EditorWindow {
     menu.addSeparator();
     addTranslateMenuItem(menu);    
   }
+*/
 
   protected void save() {
     ExtensionEditorWindow.this.saver(new Runnable() {

@@ -1,5 +1,5 @@
 /*
- * $Id: PluginsLoader.java 2298 2007-07-18 13:07:07 +0000 (Wed, 18 Jul 2007) rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney, Brent Easton
  *

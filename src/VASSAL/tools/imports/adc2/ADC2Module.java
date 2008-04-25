@@ -19,20 +19,26 @@ package VASSAL.tools.imports.adc2;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.InputEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,10 +54,14 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
+import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.Widget;
+import VASSAL.build.module.ChartWindow;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.MultiActionButton;
 import VASSAL.build.module.PieceWindow;
 import VASSAL.build.module.PlayerHand;
 import VASSAL.build.module.PlayerRoster;
@@ -64,6 +74,7 @@ import VASSAL.build.module.map.CounterDetailViewer;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.build.module.map.LOS_Thread;
 import VASSAL.build.module.map.LayeredPieceCollection;
+import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.MapGrid;
@@ -73,13 +84,18 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.turn.ListTurnLevel;
 import VASSAL.build.module.turn.TurnTracker;
 import VASSAL.build.widget.CardSlot;
+import VASSAL.build.widget.Chart;
+import VASSAL.build.widget.HtmlChart;
 import VASSAL.build.widget.ListWidget;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.build.widget.TabWidget;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Deck;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.Delete;
+import VASSAL.counters.DynamicProperty;
+import VASSAL.counters.Embellishment;
 import VASSAL.counters.Footprint;
 import VASSAL.counters.FreeRotator;
 import VASSAL.counters.GamePiece;
@@ -99,6 +115,7 @@ import VASSAL.tools.imports.adc2.SymbolSet.SymbolData;
 
 public class ADC2Module extends Importer {
 	
+	private static final String CHARTS = "Charts";
 	private static final String TRAY = "Tray";
 	private static final String FORCE_POOL_PNG = "forcePool.png";
 	private static final String FORCE_POOL = "Force Pool";
@@ -275,11 +292,11 @@ public class ADC2Module extends Importer {
 
 		private final int type;
 		private final int show;
-		private final int color;
+		private final Color color;
 		private final int position;
 		private final int size;
 
-		protected StatusDots(int type, int show, int color, int position, int size) {
+		protected StatusDots(int type, int show, Color color, int position, int size) {
 			this.type = type;
 			this.show = show;
 			this.color = color;
@@ -287,7 +304,7 @@ public class ADC2Module extends Importer {
 			this.size = size;
 		}
 
-		public int getColor() {
+		public Color getColor() {
 			return color;
 		}
 
@@ -315,7 +332,6 @@ public class ADC2Module extends Importer {
 			else
 				return null;
 		}
-
 	}
 
 	private static final int FORCE_POOL_BLOCK_END = 30000;
@@ -423,7 +439,7 @@ public class ADC2Module extends Importer {
 				return;
 			assert(pieceSlot == null);
 			pieceSlot = new PieceSlot(gp);
-			InsertComponent(pieceSlot, parent);
+			insertComponent(pieceSlot, parent);
 		}
 		
 		protected void writeToArchive(DrawPile parent) throws IOException {
@@ -433,9 +449,10 @@ public class ADC2Module extends Importer {
 			assert(pieceSlot == null);
 			pieceSlot = new CardSlot();
 			pieceSlot.setPiece(gp);
-			InsertComponent(pieceSlot, parent);
+			insertComponent(pieceSlot, parent);
 		}
 
+		// TODO: create option whereby anyone can flip/hide a card.
 		public Player getPlayer() {
 			return pieceClass.getOwner();
 		}
@@ -498,9 +515,11 @@ public class ADC2Module extends Importer {
 				// and a stack property viewer.
 				// Piece values
 				appendDecorator(getPropertySheet());
+				appendDecorator(getDynamicProperty());
 				appendDecorator(getPieceValueMask());
-				appendDecorator(getMarker());
 				appendDecorator(getMovementMarkable());
+				appendDecorator(getDefendedEmbellishment());
+				appendDecorator(getAttackedEmbellishment());
 				appendDecorator(getFreeRotator());
 				appendDecorator(getUsePrototype());
 				appendDecorator(getHidden());
@@ -556,6 +575,22 @@ public class ADC2Module extends Importer {
 				return FACING_ANGLES[facing];
 		}
 		
+		protected Embellishment getDefendedEmbellishment() throws IOException {
+			Embellishment layer = pieceClass.getDefendedEmbellishmentDecorator();
+			SequenceEncoder se = new SequenceEncoder(';');
+			se.append(hasDefended() ? 1 : -1).append("");
+			layer.mySetState(se.getValue());
+			return layer;
+		}
+		
+		protected Embellishment getAttackedEmbellishment() throws IOException {
+			Embellishment layer = pieceClass.getAttackedEmbellishmentDecorator();
+			SequenceEncoder se = new SequenceEncoder(';');
+			se.append(hasAttacked() ? 1 : -1).append("");
+			layer.mySetState(se.getValue());
+			return layer;
+		}
+		
 		// TODO: provide angle phase offset for FreeRotator
 		protected FreeRotator getFreeRotator() {
 			FreeRotator p = pieceClass.getFreeRotatorDecorator();
@@ -579,44 +614,71 @@ public class ADC2Module extends Importer {
 		//		 and antialiased characters in MouseOverStackViewer
 		protected PropertySheet getPropertySheet() {
 			PropertySheet p = pieceClass.getPropertySheetDecorator();
+			
 			if (p != null) {
+				SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(p.myGetType().substring(PropertySheet.ID.length()), ';');
+			    String definition = decoder.nextToken();
+			    String menuName = decoder.nextToken();
+			    char launchKey = decoder.nextChar('\0');
+			    int commitStyle = decoder.nextInt(0);
+			    String red = decoder.hasMoreTokens() ? decoder.nextToken() : "";
+			    String green = decoder.hasMoreTokens() ? decoder.nextToken() : "";
+			    String blue = decoder.hasMoreTokens() ? decoder.nextToken() : "";
+		
 				SequenceEncoder se = new SequenceEncoder('~');
 				SequenceEncoder state = new SequenceEncoder('~');
 				for(int i = 0; i < pieceValues.length; ++i) {
 					if (pieceValues[i] != null && !pieceValues[i].equals("")) {
 						se.append("0" + pieceValues[i]);
-						if (pieceValues[i] != null && !pieceValues[i].equals("")) {
-							Object o = getValue(i);
-							if (o instanceof String)
-								state.append((String) o);
-							else if (o instanceof Integer)
-								state.append(o.toString());
-							else if (o instanceof Boolean)
-								state.append(o.equals(Boolean.TRUE) ? "yes" : "no");
-							else
-								state.append("");
-						}
+						Object o = getValue(i);
+						if (o instanceof String)
+							state.append((String) o);
+						else if (o instanceof Integer)
+							state.append(o.toString());
+						else if (o instanceof Boolean)
+							state.append(o.equals(Boolean.TRUE) ? "yes" : "no");
+						else
+							state.append("");
 					}
 				}
-				se.append("0" + DRAW_ON_TOP_OF_OTHERS);
-				state.append(drawOnTopOfOthers() ? "yes" : "no");
-				se = new SequenceEncoder(se.getValue(), ';'); // properties
-				se.append("Properties"); // menu name
-				se.append('P'); // key
-				se.append(0); // commit
-				se.append("").append("").append(""); // colour
-				p.mySetType(PropertySheet.ID + se.getValue());
-				p.mySetState(state.getValue());
+				
+				if (definition.length() == 0) {
+					definition = se.getValue();
+				}
+				else if (se.getValue() != null) {
+					definition = definition + "~" + se.getValue();
+				}
+				
+				String st = p.myGetState();
+				if (st == null) {
+					st = state.getValue();
+				}
+				else if (state.getValue() != null) {
+					st = p.myGetState() + "~" + state.getValue();
+				}
+				
+				if (definition != null && definition.length() > 0) {
+					se = new SequenceEncoder(definition, ';'); // properties
+					se.append(menuName); // menu name
+					se.append(launchKey); // key
+					se.append(commitStyle); // commit
+					se.append(red).append(green).append(blue); // colour
+					p.mySetType(PropertySheet.ID + se.getValue());
+					p.mySetState(st);
+				}
+				else {
+					p = null;
+				}
+			}
 
-				return p;
-			}
-			else {
-				return null;
-			}
+			return p;
 		}
-
-		protected Marker getMarker() {
-			return pieceClass.getMarkerDecorator();
+		
+		protected DynamicProperty getDynamicProperty() {
+			DynamicProperty dp = pieceClass.getDynamicPropertyDecorator();
+			dp.setInner(gamePiece); // so we can change the state below.
+			dp.setValue(drawOnTopOfOthers() ? "1" : "0");
+			return dp;
 		}
 
 		protected GamePiece getBasicPiece() throws IOException {
@@ -711,7 +773,7 @@ public class ADC2Module extends Importer {
 			if (gp == null)
 				return;
 			pieceSlot = new PieceSlot(gp);
-			InsertComponent(pieceSlot, list);
+			insertComponent(pieceSlot, list);
 		}
 
 		protected PieceSlot getPieceSlot() {
@@ -735,6 +797,7 @@ public class ADC2Module extends Importer {
 		private final String name;
 		private final SymbolSet.SymbolData hiddenSymbol;
 		private final int hiddenPieceOptions;
+		private HashSet<Player> allies;
 
 		public Player(String name, SymbolSet.SymbolData hiddenSymbol, int hiddenPieceOptions) {
 			this.name = name;
@@ -761,12 +824,36 @@ public class ADC2Module extends Importer {
 			return (hiddenPieceOptions & 0x4) > 0 || hiddenWhenPlaced();
 		}
 		
+		// TODO: add game master option to players
+		public boolean isGameMaster() {
+			return (hiddenPieceOptions & 0x8) > 0;
+		}
+		
 		public SymbolSet.SymbolData getHiddenSymbol() {
 			return hiddenSymbol;
 		}
 
 		public String getName() {
 			return name;
+		}
+
+		public void setAlly(Player player) {
+			if (allies == null) {
+				allies = new HashSet<Player>();				
+			}
+			allies.add(player);
+		}
+		
+		public boolean isAlly(Player player) {
+			if (allies == null) {
+				return false;
+			}
+			return allies.contains(player);
+		}
+
+		@Override
+		public String toString() {
+			return getName();
 		}
 	}
 
@@ -827,11 +914,6 @@ public class ADC2Module extends Importer {
 		}
 
 		@Override
-		public Marker getMarkerDecorator() {
-			return null;
-		}
-
-		@Override
 		public Obscurable getPieceValueMask() throws IOException {
 			return null;
 		}
@@ -863,7 +945,7 @@ public class ADC2Module extends Importer {
 			se.append(getHiddenSymbol().getFileName()); // hide image
 			se.append("Hide Piece"); // menu name
 			BufferedImage image = getSymbol().getImage();
-			se.append("G" + getHiddenImage(new Dimension(image.getWidth(), image.getHeight()), HiddenFlag.MARKER)); // display style
+			se.append("G" + getFlagLayer(new Dimension(image.getWidth(), image.getHeight()), StateFlag.MARKER)); // display style
 			se.append(getHiddenName()); // mask name
 			if (getOwner() == Player.NO_PLAYERS || getOwner() == Player.ALL_PLAYERS) {
 				se.append("side:");
@@ -922,6 +1004,23 @@ public class ADC2Module extends Importer {
 			this.facing = facing;
 		}
 
+		public DynamicProperty getDynamicPropertyDecorator() {
+			SequenceEncoder type = new SequenceEncoder(';');
+			type.append("Layer");
+			SequenceEncoder constraints = new SequenceEncoder(',');
+			constraints.append(true).append(0).append(1).append(true);
+			type.append(constraints.getValue());
+			SequenceEncoder command = new SequenceEncoder(':');
+			KeyStroke stroke = KeyStroke.getKeyStroke('=', InputEvent.SHIFT_DOWN_MASK);
+			SequenceEncoder change = new SequenceEncoder(',');
+			change.append('I').append(1);
+			command.append("Draw on top").append(stroke.getKeyCode() + "," + stroke.getModifiers()).append(change.getValue());
+			type.append(new SequenceEncoder(command.getValue(), ',').getValue());
+			DynamicProperty dp = new DynamicProperty();
+			dp.mySetType(DynamicProperty.ID + type.getValue());
+			return dp;
+		}
+
 		public String getUniqueName() {
 			if (uniqueName == null) {
 				uniqueName = getName();
@@ -939,7 +1038,34 @@ public class ADC2Module extends Importer {
 		}
 
 		public PropertySheet getPropertySheetDecorator() {
-			return new PropertySheet();
+			SequenceEncoder type = new SequenceEncoder('~');
+			SequenceEncoder state = new SequenceEncoder('~');
+			for(int i = 0; i < classValues.length; ++i) {
+				if (classValues[i] != null && !classValues[i].equals("")) {
+					type.append("0" + classValues[i]);
+					Object o = getValue(i);
+					if (o instanceof String)
+						state.append((String) o);
+					else if (o instanceof Integer)
+						state.append(o.toString());
+					else if (o instanceof Boolean)
+						state.append(o.equals(Boolean.TRUE) ? "yes" : "no");
+					else
+						state.append("");
+				}
+			}
+
+			PropertySheet p = new PropertySheet();
+			SequenceEncoder se = new SequenceEncoder(';'); // properties
+			se.append(type.getValue() == null ? "" : type.getValue());
+			se.append("Properties"); // menu name
+			se.append('P'); // key
+			se.append(0); // commit
+			se.append("").append("").append(""); // colour
+			p.mySetType(PropertySheet.ID + se.getValue());
+			p.mySetState(state.getValue());
+
+			return p;
 		}
 
 		public UsePrototype getUsePrototypeDecorator() {
@@ -950,6 +1076,50 @@ public class ADC2Module extends Importer {
 			return p;
 		}
 
+		public Embellishment getAttackedEmbellishmentDecorator() throws IOException {
+			return getCombatEmbellishmentDecorator("Mark Attacked", "A", StateFlag.ATTACK);
+		}
+		
+		public Embellishment getDefendedEmbellishmentDecorator() throws IOException {
+			return getCombatEmbellishmentDecorator("Mark Defended", "D", StateFlag.DEFEND);
+		}
+		
+		private Embellishment getCombatEmbellishmentDecorator(String command, String key, StateFlag flag) throws IOException {
+			BufferedImage image = getSymbol().getImage();
+			int xOffset = (image.getWidth()+1)/2 + 5;
+			int yOffset = 0;
+			String imageName = getFlagTab(image.getHeight(), flag);
+			SequenceEncoder se = new SequenceEncoder(';');
+			se.append(command)                   // Activate command
+			  .append(InputEvent.CTRL_MASK)      // Activate modifiers
+			  .append(key)                       // Activate key
+			  .append("")                        // Up command
+			  .append(0)                         // Up modifiers
+			  .append("")                        // Up key
+			  .append("")                        // Down command
+			  .append(0)                         // Down modifiers
+			  .append("")                        // Down key
+			  .append("")                        // Reset command
+			  .append("")                        // Reset key
+			  .append("")                        // Reset level
+			  .append(false)                     // Draw underneath when selected
+			  .append(xOffset)                   // x offset
+			  .append(yOffset)                   // y offset
+			  .append(StringArrayConfigurer.arrayToString(new String[] {imageName})) // Image name
+			  .append(StringArrayConfigurer.arrayToString(new String[] {""}))
+			  .append(false)                     // loop levels
+			  .append(command)                   // name
+			  .append((KeyStroke) null)          // Random key
+			  .append("")                        // Random text
+			  .append(false)                     // Follow property
+			  .append("")                        // Property name
+			  .append(1);                        // First level value
+			Embellishment layer = new Embellishment();
+			layer.mySetType(Embellishment.ID + se.getValue());
+			return layer;
+		}
+		
+		// TODO: permit offset to mask image.
 		public Obscurable getPieceValueMask() throws IOException {
 			if (getOwner().useHiddenPieces()) {
 				SequenceEncoder se = new SequenceEncoder(';');
@@ -957,7 +1127,7 @@ public class ADC2Module extends Importer {
 				se.append(getImageName()); // hide image
 				se.append("Hide Info"); // menu name
 				BufferedImage image = getSymbol().getImage();
-				se.append("G" + getHiddenImage(new Dimension(image.getWidth(), image.getHeight()), HiddenFlag.INFO)); // display style
+				se.append("G" + getFlagLayer(new Dimension(image.getWidth(), image.getHeight()), StateFlag.INFO)); // display style
 				if (name == null)
 					se.append(getName());
 				else
@@ -975,44 +1145,13 @@ public class ADC2Module extends Importer {
 		public MovementMarkable getMovementMarkableDecorator() throws IOException {
 			SequenceEncoder se = new SequenceEncoder(';');
 			BufferedImage img = getSymbol().getImage();
-			int xOffset = img.getWidth()/2 + 1;
-			int yOffset = -img.getHeight()/2 - 2;
-			String movedIcon = "/images/moved.gif";
+			int xOffset = (img.getWidth()+1)/2;
+			int yOffset = -img.getHeight()/2;
+			String movedIcon = getFlagTab(img.getHeight(), StateFlag.MOVE);
 			se.append(movedIcon).append(xOffset).append(yOffset);
 			MovementMarkable p = new MovementMarkable();
 			p.mySetType(MovementMarkable.ID + se.getValue());
 			return p;
-		}
-
-		public Marker getMarkerDecorator() {
-			SequenceEncoder se;
-			boolean useMarker = false;
-			se = new SequenceEncoder(',');
-			for (int i = 0; i < classValues.length; ++i) {
-				if (classValues[i] != null && !classValues[i].equals("") && getValue(i) != null) {
-					se.append(classValues[i]);
-					useMarker = true;
-				}
-			}
-			if (useMarker) {
-				Marker p = new Marker();
-				p.mySetType(Marker.ID + se.getValue());
-				for (int i = 0; i < classValues.length; ++i) {
-					if (classValues[i] == null || classValues[i].equals(""))
-						continue;
-					Object o = getValue(i);
-					if (o instanceof Boolean)
-						p.setProperty(classValues[i], o.equals(Boolean.TRUE) ? "yes" : "no");
-					else if (o instanceof String)
-						p.setProperty(classValues[i], (String) o);
-					else if (o instanceof Integer)
-						p.setProperty(classValues[i], o.toString());
-				}
-				return p;
-			}
-			else {
-				return null;
-			}
 		}
 
 		public Decorator getHiddenDecorator() throws IOException {
@@ -1039,7 +1178,7 @@ public class ADC2Module extends Importer {
 					se.append(getHiddenSymbol().getFileName()); // hide image
 					se.append("Hide Piece"); // menu name
 					BufferedImage image = getSymbol().getImage();
-					se.append("G" + getHiddenImage(new Dimension(image.getWidth(), image.getHeight()), HiddenFlag.MARKER)); // display style
+					se.append("G" + getFlagLayer(new Dimension(image.getWidth(), image.getHeight()), StateFlag.MARKER)); // display style
 					se.append(getHiddenName()); // mask name
 					se.append(sides); // owning player
 					p = new Obscurable();
@@ -1241,7 +1380,7 @@ public class ADC2Module extends Importer {
 		return set;
 	}
 
-	private HashMap<HiddenFlag, HashMap<Dimension, String>> hiddenFlagImages;
+	private HashMap<StateFlag, HashMap<Dimension, String>> hiddenFlagImages;
 	private int version;
 	private int classCombatSummaryValues;
 	private int pieceCombatSummaryValues;
@@ -1250,25 +1389,108 @@ public class ADC2Module extends Importer {
 	private boolean useLOS;
 	private String deckName;
 	private int nCardSets;
+	private final String infoPages[] = new String[10];
+	private String infoPageName;
 	
-	public enum HiddenFlag {
-		INFO("i", new Color(0.2f, 1.0f, 1.0f, 0.4f), new Dimension(10, 15)),
-		MARKER("H", new Color(1.0f, 1.0f, 0.2f, 0.4f), new Dimension(15, 10));
+	public static final Color FLAG_BACKGROUND = new Color(1.0f, 1.0f, 0.8f, 0.8f);
+	public static final Color FLAG_FOREGROUND = new Color(0.5f, 0.0f, 0.5f, 1.0f);
+//	public static final Color FLAG_BACKGROUND = Color.BLACK;
+//	public static final Color FLAG_FOREGROUND = Color.WHITE;
+	
+	public static class StateFlag {
+		public static final StateFlag MOVE = new StateFlag("M", FLAG_BACKGROUND, FLAG_FOREGROUND, 0);
+		public static final StateFlag ATTACK = new StateFlag("A", FLAG_BACKGROUND, FLAG_FOREGROUND, 1);
+		public static final StateFlag DEFEND = new StateFlag("D", FLAG_BACKGROUND, FLAG_FOREGROUND, 1);
+		public static final StateFlag INFO = new StateFlag("h", FLAG_BACKGROUND, FLAG_FOREGROUND, 2);
+		public static final StateFlag MARKER = new StateFlag("H", FLAG_BACKGROUND, FLAG_FOREGROUND, 2);
+		public static final StateFlag COMBAT = new StateFlag("C", FLAG_BACKGROUND, FLAG_FOREGROUND, 1);		
 		
-		public final String flag;
-		public final Color color;
-		public final Dimension size;
+		private final String name;
+		private final Color background;
+		private final Color foreground;
+		private final int tab;
+		private String imageName;
+		private final ArrayList<StatusDots> statusDots = new ArrayList<StatusDots>();
 
-		HiddenFlag(String flag, Color c, Dimension d) {
-			this.flag = flag;
-			this.color = c;
-			this.size = d;
+		public StateFlag(String flag, Color background, Color foreground, int tab) {
+			this.name = flag;
+			this.background = background;
+			this.foreground = foreground;
+			this.tab = tab;
+		}
+		
+		public String getStatusIconName() throws IOException {
+			if (imageName == null) {
+				BufferedImage icon = new BufferedImage(10, 15, BufferedImage.TYPE_INT_ARGB);
+				Graphics2D g = icon.createGraphics();
+				drawFlagImage(g);
+				imageName = getUniqueImageFileName(name);
+
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				ImageIO.write(icon, "png", out);
+				byte[] imageDataArray = out.toByteArray();
+				GameModule.getGameModule().getArchiveWriter().addImage(imageName, imageDataArray);
+			}
+			return imageName;
+		}
+		
+		public void addStatusDots(StatusDots dots) {
+			statusDots.add(dots);
+		}
+		
+		public void drawFlagImage(Graphics2D g) {
+			final int tabHeight = 15;
+			final int tabWidth = 10;
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.setColor(background);
+			g.fillRoundRect(-tabWidth, 0, 2*tabWidth, tabHeight, 6, 6);
+			g.setColor(foreground);
+			g.drawRoundRect(-tabWidth, 0, 2*tabWidth-1, tabHeight-1, 6, 6);
+			g.setFont(new Font("Dialog", Font.PLAIN, 9));
+			Rectangle2D r = g.getFontMetrics().getStringBounds(name, g);
+			g.drawString(name, tabWidth/2 - (int) (r.getWidth()/2.0) - 1, 11);
+			g.setBackground(new Color(0,0,0,0));
+			g.clearRect(-tabWidth, 0, tabWidth, tabHeight);	
 		}
 	}
-	
-	protected String getHiddenImage(Dimension d, HiddenFlag flag) throws IOException {
+
+	private String getFlagTab(int height, StateFlag flag) throws IOException {
 		if (hiddenFlagImages == null)
-			hiddenFlagImages = new HashMap<HiddenFlag, HashMap<Dimension,String>>();
+			hiddenFlagImages = new HashMap<StateFlag, HashMap<Dimension,String>>();
+		
+		HashMap<Dimension,String> map = hiddenFlagImages.get(flag);		
+		if (map == null) {
+			map = new HashMap<Dimension,String>();
+			hiddenFlagImages.put(flag, map);
+		}
+		
+		Dimension d = new Dimension(0, height);
+		String imageName = map.get(d);
+		if (imageName == null) {
+			int tabHeight = 15;
+			int tabSpace = height < 43 ? (height-tabHeight)/2 : tabHeight-1;
+			int tabWidth = 10;
+			BufferedImage icon = new BufferedImage(tabWidth, height, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = icon.createGraphics();
+			g.translate(0, tabSpace*flag.tab);
+			flag.drawFlagImage(g);
+			
+			imageName = getUniqueImageFileName(flag.name + 0 + "x" + height);
+			map.put(d, imageName);
+			
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			ImageIO.write(icon, "png", out);
+			byte[] imageDataArray = out.toByteArray();
+			GameModule.getGameModule().getArchiveWriter().addImage(imageName, imageDataArray);
+		}
+		
+		return imageName;
+	}
+
+	private String getFlagLayer(Dimension d, StateFlag flag) throws IOException {
+		if (hiddenFlagImages == null)
+			hiddenFlagImages = new HashMap<StateFlag, HashMap<Dimension,String>>();
 		
 		HashMap<Dimension,String> map = hiddenFlagImages.get(flag);		
 		if (map == null) {
@@ -1278,13 +1500,15 @@ public class ADC2Module extends Importer {
 		
 		String imageName = map.get(d);
 		if (imageName == null) {
-			BufferedImage icon = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_ARGB);
+			int tabHeight = 15;
+			int tabSpace = d.height < 43 ? (d.height-tabHeight)/2 : tabHeight-1;
+			int tabWidth = 10;
+			BufferedImage icon = new BufferedImage(d.width + 2*tabWidth, d.height, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g = icon.createGraphics();
+			g.translate(d.width+tabWidth, tabSpace*flag.tab);
+			flag.drawFlagImage(g);
 			
-			g.setColor(flag.color);
-			g.fillRect(0, 0, flag.size.width, flag.size.height);
-			
-			imageName = getUniqueImageFileName(flag.flag + d.width + "x" + d.height);
+			imageName = getUniqueImageFileName(flag.name + d.width + "x" + d.height);
 			map.put(d, imageName);
 			
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -1351,10 +1575,110 @@ public class ADC2Module extends Importer {
 			readLOSFlagBlock(in);
 			readDeckNameBlock(in);
 			readPoolOwnerBlock(in);
+			readAutoRevealWhenMovingLOSFlagBlock(in);
+			readCombatRevealFlagBlock(in);
+			readInfoPageBlock(in);
+			readInfoSizeBlock(in);
+			readAllianceBlock(in);
+			readDrawOptionsBlock(in);
+			readPieceStatusDotsBlock(in); // read this in again!
 		}
 		catch(ADC2Utils.NoMoreBlocksException e) { }
 	}
 	
+	// TODO: what happens when this conflicts with the draw options in the map file itself?
+	private void readDrawOptionsBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Draw Options");
+		
+		@SuppressWarnings("unused")
+		boolean showHexSides = in.readByte() != 0;
+		@SuppressWarnings("unused")
+		boolean showHexLines = in.readByte() != 0;
+		@SuppressWarnings("unused")
+		boolean showPlaceNames = in.readByte() != 0;
+		int pieceOptionFlags = in.readUnsignedByte();
+		@SuppressWarnings("unused")
+		boolean showPieces = (pieceOptionFlags & 0x1) > 0;
+		@SuppressWarnings("unused")
+		boolean showMarkers = (pieceOptionFlags & 0x2) == 0;		
+		
+		/*
+		 * First three bytes give symbols per hex for the three zoomlevels.
+		 * 1 = 1 (inside hex)
+		 * 4 = 4 per hex
+		 * 101 = 1 (inside hex) & overlay stack on pieces
+		 * 104 = 4 per hex & overlay stack on pieces
+		 * 200 = 1 (centered)
+		 * 201 = 1 (centered) & overlay stack on pieces
+		 * all other values are completely invalid.
+		 * 
+		 * The purpose of the last byte in this block is unknown.
+		 */
+		in.read(new byte[4]);
+	}
+
+	// TODO: allow multiple players to see hidden units.
+	protected void readAllianceBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Alliances");
+		
+		/* int nAlliances = */ ADC2Utils.readBase250Word(in); // ignored
+		for (int i = 0; i < players.size(); ++i) {
+			in.readUnsignedShort(); // unknown
+			for (int j = 0; j < players.size(); ++j) {
+				if (in.readUnsignedShort() > 0) {
+					players.get(i).setAlly(players.get(j));
+				}
+			}
+		}
+	}
+
+	protected void readInfoSizeBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Info Size");		
+		in.read(new byte[4]);
+	}
+
+	protected void readInfoPageBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Info Page");
+		
+		infoPageName = readWindowsFileName(in);
+		if (infoPageName.length() > 0) {
+			File ipx = action.getCaseInsensitiveFile(new File(forceExtension(infoPageName, "ipx")), file, true, 
+					new ExtensionFileFilter("Info page file (*.ipx;*.IPX)", new String[] {".ipx"}));
+			if (ipx != null) {
+				DataInputStream input = new DataInputStream(new BufferedInputStream(new FileInputStream(ipx)));
+				
+				for (int i = 0; i < 10; ++i) {
+					/* int sep = */ input.readByte();
+					int idx = input.readUnsignedByte();
+					int len = input.readUnsignedByte();
+					byte dimensions[] = new byte[8];
+					input.read(dimensions);
+					byte buf[] = new byte[len];
+					input.read(buf);
+					String name = new String(buf);
+					if (idx >=0 && idx <10) {
+						infoPages[idx] = name;
+					}
+				}
+			}
+			else {
+				infoPageName = null;
+			}
+		}
+	}
+
+	protected void readCombatRevealFlagBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Combat Reveal Option Flag");
+		
+		in.readByte();
+	}
+
+	protected void readAutoRevealWhenMovingLOSFlagBlock(DataInputStream in) throws IOException {
+		ADC2Utils.readBlockHeader(in, "Auto Reveal When Moving (LOS) Flag");
+		
+		in.readByte();
+	}
+
 	protected void readPoolOwnerBlock(DataInputStream in) throws IOException {
 		ADC2Utils.readBlockHeader(in, "Pool Owner");
 		
@@ -1452,7 +1776,8 @@ public class ADC2Module extends Importer {
 			int color = in.readUnsignedByte();
 			int position = in.readByte();
 			in.read(size);
-			statusDots[i] = new StatusDots(type, show, color, position, size[2]);
+			
+			statusDots[i] = new StatusDots(type, show, ADC2Utils.getColorFromIndex(color), position, size[2]);
 		}
 	}
 
@@ -1781,18 +2106,23 @@ public class ADC2Module extends Importer {
 	protected void writePrototypesToArchive(GameModule gameModule) {
 		PrototypesContainer container = gameModule.getAllDescendantComponentsOf(PrototypesContainer.class).iterator().next();
 		PrototypeDefinition def = new PrototypeDefinition();
-		InsertComponent(def, container);
+		insertComponent(def, container);
 		def.setConfigureName(COMMON_PROPERTIES);
 
 		// set common properties
 		GamePiece gp = new BasicPiece();
 		
-		gp = new Delete(Delete.ID + "Delete;D", gp);
+		Delete del = new Delete();
+		SequenceEncoder se = new SequenceEncoder(';');
+		se.append("Delete").append(KeyStroke.getKeyStroke("DELETE"));
+		del.mySetType(Delete.ID + se.getValue());
+		del.setInner(gp);
+		gp = del;
 		
 		if (forcePools.count(ForcePool.class) > 0)
 			gp = new ReturnToDeck(ReturnToDeck.ID + "Return to Force Pool;R;;Select Force Pool", gp);
 		
-		SequenceEncoder se = new SequenceEncoder(';');
+		se = new SequenceEncoder(';');
 		se.append(KeyStroke.getKeyStroke('T', InputEvent.CTRL_MASK))
 			.append("Movement Trail")
 			.append(false)
@@ -1817,14 +2147,17 @@ public class ADC2Module extends Importer {
 		GameModule gameModule = GameModule.getGameModule();
 		gameModule.setAttribute(GameModule.MODULE_NAME, name);
 
-		configureMapLayers();		
 		configureMouseOverStackViewer(gameModule);
 		writePrototypesToArchive(gameModule);
-		getMap().writeToArchive();	
+		getMap().writeToArchive();
+		getMainMap().setAttribute(Map.MARK_UNMOVED_ICON, StateFlag.MOVE.getStatusIconName());
+		configureStatusFlagButtons();
+		configureMapLayers();				
 		writeClassesToArchive(gameModule);
 		writeForcePoolsToArchive(gameModule);
 		writeDecksToArchive(gameModule);
 		writeHandsToArchive(gameModule);
+		writeInfoPagesToArchive(gameModule);
 		writeToolbarMenuToArchive(gameModule);
 		writeSetupStacksToArchive(gameModule);		
 		writePlayersToArchive(gameModule);		
@@ -1832,24 +2165,131 @@ public class ADC2Module extends Importer {
 		if (turnNames.size() > 1)  // must have at least two turns
 			configureTurnCounter(gameModule);
 		if (useLOS)
-			InsertComponent(new LOS_Thread(), gameModule);
+			insertComponent(new LOS_Thread(), gameModule);
+	}
+
+	private void configureStatusFlagButtons() throws IOException {
+		String imageName;
+		MassKeyCommand command;
+		
+		imageName = StateFlag.ATTACK.getStatusIconName();
+		command = new MassKeyCommand();
+		insertComponent(command, getMainMap());
+		command.setAttribute(MassKeyCommand.TOOLTIP, "Clear attacked status");
+		command.setAttribute(MassKeyCommand.BUTTON_TEXT, "Attacked");
+		command.setAttribute(MassKeyCommand.HOTKEY, null);
+		command.setAttribute(MassKeyCommand.ICON, imageName);
+		command.setAttribute(MassKeyCommand.NAME, "Attacked");
+		command.setAttribute(MassKeyCommand.KEY_COMMAND, KeyStroke.getKeyStroke('A', InputEvent.CTRL_DOWN_MASK));
+		command.setAttribute(MassKeyCommand.PROPERTIES_FILTER, "Mark Attacked_Active = true");
+		command.setAttribute(MassKeyCommand.DECK_COUNT, new Integer(-1));
+		command.setAttribute(MassKeyCommand.REPORT_SINGLE, Boolean.TRUE);
+		command.setAttribute(MassKeyCommand.REPORT_FORMAT, "");
+
+		imageName = StateFlag.DEFEND.getStatusIconName();
+		command = new MassKeyCommand();
+		insertComponent(command, getMainMap());
+		command.setAttribute(MassKeyCommand.TOOLTIP, "Clear defended status");
+		command.setAttribute(MassKeyCommand.BUTTON_TEXT, "Defended");
+		command.setAttribute(MassKeyCommand.HOTKEY, null);
+		command.setAttribute(MassKeyCommand.ICON, imageName);
+		command.setAttribute(MassKeyCommand.NAME, "Defended");
+		command.setAttribute(MassKeyCommand.KEY_COMMAND, KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK));
+		command.setAttribute(MassKeyCommand.PROPERTIES_FILTER, "Mark Defended_Active = true");
+		command.setAttribute(MassKeyCommand.DECK_COUNT, new Integer(-1));
+		command.setAttribute(MassKeyCommand.REPORT_SINGLE, Boolean.TRUE);
+		command.setAttribute(MassKeyCommand.REPORT_FORMAT, "");
+		
+		MultiActionButton button = new MultiActionButton();
+		insertComponent(button, getMainMap());
+		button.setAttribute(MultiActionButton.BUTTON_TEXT, "");
+		button.setAttribute(MultiActionButton.TOOLTIP, "Clear combat status flags.");
+		button.setAttribute(MultiActionButton.BUTTON_ICON, StateFlag.COMBAT.getStatusIconName());
+		button.setAttribute(MultiActionButton.BUTTON_HOTKEY, KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
+		button.setAttribute(MultiActionButton.MENU_ITEMS, StringArrayConfigurer.arrayToString(new String[] {"Attacked", "Defended"}));		
+	}
+
+	protected void writeInfoPagesToArchive(GameModule gameModule) throws IOException {
+		if (infoPageName != null && !infoPageName.equals("")) {
+			ChartWindow charts = new ChartWindow();
+			insertComponent(charts, gameModule);
+			charts.setAttribute(ChartWindow.NAME, CHARTS);
+			charts.setAttribute(ChartWindow.BUTTON_TEXT, CHARTS);
+			charts.setAttribute(ChartWindow.TOOLTIP, CHARTS);
+			charts.setAttribute(ChartWindow.HOTKEY, KeyStroke.getKeyStroke('C', InputEvent.CTRL_DOWN_MASK));
+			
+			TabWidget tab = new TabWidget();
+			insertComponent(tab, charts);
+			
+			for (int i = 0; i < infoPages.length; ++i) {
+				File f = action.getCaseInsensitiveFile(new File(forceExtension(infoPageName, "b"+i)), file, false, null);
+				if (f == null) {
+					f = action.getCaseInsensitiveFile(new File(forceExtension(infoPageName, "t"+i)), file, false, null);
+				}				
+				if (f != null) {
+					Boolean isChart = Character.toLowerCase(getExtension(f.getName()).charAt(0)) == 'b';
+					Widget w;
+					if (isChart) {
+						w = new Chart();
+						insertComponent(w, tab);
+						w.setAttribute(Chart.NAME, infoPages[i]);
+						gameModule.getArchiveWriter().addImage(f.getPath(), f.getName());
+						w.setAttribute(Chart.FILE, f);
+					}
+					else {
+						w = new HtmlChart();
+						insertComponent(w, tab);
+						w.setAttribute(HtmlChart.NAME, infoPages[i]);
+						
+						StringBuilder sb = new StringBuilder();
+						sb.append("<html><body>");
+						BufferedReader input = null;
+						try {
+							input = new BufferedReader(new FileReader(f));
+						} 
+						catch (FileNotFoundException e) {} // already found
+						
+						String line = null;
+						do {
+							line = input.readLine();
+							
+							if (line != null && line.length() > 0) {
+								line = line.replaceAll(" (?: )", "&nbsp;");
+								line = line.replaceAll("(?<=&nbsp;) ", "&nbsp;");
+								line = line.replaceFirst("^ ", "&nbsp;");
+								sb.append("<p>" + line + "</p>");
+							}
+						} while (line != null);
+						
+						sb.append("</body></html>");
+						gameModule.getArchiveWriter().addFile(f.getName(), sb.toString().getBytes());
+						w.setAttribute(HtmlChart.FILE, f.getName());
+					}
+					tab.propertyChange(new PropertyChangeEvent(w, Configurable.NAME_PROPERTY, "", infoPages[i]));
+				}
+			}
+		}
 	}
 
 	protected void configureMapLayers() {
 		// add game piece layers to map
-		Map map = getMap().getMainMap();
-		LayeredPieceCollection layer = new LayeredPieceCollection();
-		InsertComponent(layer, map);
-		layer.setAttribute(LayeredPieceCollection.PROPERTY_NAME, DRAW_ON_TOP_OF_OTHERS);
-		layer.setAttribute(LayeredPieceCollection.LAYER_ORDER, StringArrayConfigurer.arrayToString(new String[] {"no", "yes"}));
+		LayeredPieceCollection layer = getLayeredPieceCollection();
+		String order = layer.getAttributeValueString(LayeredPieceCollection.LAYER_ORDER);
+		if (order.equals("")) {
+			order = "0,1";
+		}
+		else {
+			order = order + ",0,1";
+		}
+		layer.setAttribute(LayeredPieceCollection.LAYER_ORDER, order);
 	}
 
 	protected void configureTurnCounter(GameModule gameModule) {
 		TurnTracker tracker = new TurnTracker();
-		InsertComponent(tracker, gameModule);
+		insertComponent(tracker, gameModule);
 		tracker.setAttribute(TurnTracker.TURN_FORMAT, "$level1$");
 		ListTurnLevel list = new ListTurnLevel();
-		InsertComponent(list, tracker);
+		insertComponent(list, tracker);
 		list.setAttribute("property", "currentTurn");
 		String[] names = new String[turnNames.size()];
 		list.setAttribute("list", StringArrayConfigurer.arrayToString(turnNames.toArray(names)));
@@ -1858,11 +2298,12 @@ public class ADC2Module extends Importer {
 
 	protected void configureDiceRoller(GameModule gameModule) {
 		DiceButton dice = new DiceButton();
-		InsertComponent(dice, gameModule);
+		insertComponent(dice, gameModule);
 		dice.setAttribute(DiceButton.NAME, "Roll");
 		dice.setAttribute(DiceButton.PROMPT_ALWAYS, Boolean.TRUE);
 		dice.setAttribute(DiceButton.TOOLTIP, "Roll the dice");
 		dice.setAttribute(DiceButton.BUTTON_TEXT, "Roll");
+		dice.setAttribute(DiceButton.REPORT_FORMAT, "** $name$ $nDice$d$nSides$ (+$plus$ each) = $result$ *** <$playerName$>");
 	}
 
 	protected void configureMouseOverStackViewer(GameModule gameModule) {
@@ -1907,7 +2348,7 @@ public class ADC2Module extends Importer {
 		win.setAttribute(PieceWindow.NAME, "Add New Pieces");
 		
 		ListWidget list = new ListWidget();
-		InsertComponent(list, win);
+		insertComponent(list, win);
 		
 		for (PieceClass c : pieceClasses)
 			c.writeToArchive(list);
@@ -1933,7 +2374,7 @@ public class ADC2Module extends Importer {
 		for (Iterator<Pool> iter = forcePools.iterator(HandPool.class); iter.hasNext(); ) {
 			HandPool pool = (HandPool) iter.next();
 			PlayerHand hand = new PlayerHand();
-			InsertComponent(hand, module);
+			insertComponent(hand, module);
 			if (pool.getOwner() == Player.ALL_PLAYERS) {
 				String sides[] = new String[players.size()];
 				for (int i = 0; i < players.size(); ++i) {
@@ -1952,13 +2393,13 @@ public class ADC2Module extends Importer {
 			
 			BoardPicker picker = hand.getBoardPicker();
 			final Board board = new Board();
-			InsertComponent(board, picker);
+			insertComponent(board, picker);
 			board.setConfigureName(pool.name);
 
 			List<Piece> s = pool.getPieces();
 			if (pieces.size() > 0) {
 				SetupStack stack = new SetupStack();
-				InsertComponent(stack, hand);
+				insertComponent(stack, hand);
 
 				Dimension d = getMaxDeckSize();
 				Point p = new Point(d.width/2 + 10, d.height/2 + 10);
@@ -1980,7 +2421,7 @@ public class ADC2Module extends Importer {
 			return;
 		
 		final Map deckMap = new Map();
-		InsertComponent(deckMap, gameModule);
+		insertComponent(deckMap, gameModule);
 		
 		deckMap.setMapName(DECKS);
 		deckMap.setAttribute(Map.MARK_MOVED, GlobalOptions.NEVER);
@@ -2027,7 +2468,7 @@ public class ADC2Module extends Importer {
 				name = pool.name;
 			}
 			else {
-				name = pool.name + " (" + ((Cards) pool).getOwner() + ")";
+				name = pool.name + " (" + ((Cards) pool).getOwner().getName() + ")";
 			}
 			JLabel label = new JLabel(name);
 			label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -2051,7 +2492,7 @@ public class ADC2Module extends Importer {
 		gameModule.getArchiveWriter().addImage(deckImageName, imageDataArray);
 		
 		final Board board = new Board();
-		InsertComponent(board, boardPicker);
+		insertComponent(board, boardPicker);
 		board.setConfigureName(DECKS);
 		board.setAttribute(Board.IMAGE, deckImageName);
 		
@@ -2061,7 +2502,7 @@ public class ADC2Module extends Importer {
 		for (int i = 0; i < nDecks; ++i) {
 			Pool pool = iter.next();
 			DrawPile pile = new DrawPile();
-			InsertComponent(pile, deckMap);
+			insertComponent(pile, deckMap);
 			
 			JPanel p = deckPanels[i];
 			p.getBounds(rv);
@@ -2093,15 +2534,20 @@ public class ADC2Module extends Importer {
 		if (nHands == 0)
 			return;
 		ToolbarMenu menu = new ToolbarMenu();
-		InsertComponent(menu, gameModule);
+		insertComponent(menu, gameModule);
 		menu.setAttribute(ToolbarMenu.BUTTON_TEXT, "Windows");
-		menu.setAttribute(ToolbarMenu.TOOLTIP, "Open trays, decks, and hands.");
-		String items[] = new String[nHands+2];
+		menu.setAttribute(ToolbarMenu.TOOLTIP, "Open trays, decks, charts, and hands.");
+		String items[] = new String[nHands+3];
 		items[0] = TRAY;
 		items[1] = DECKS;
+		int start = 2;
+		if (infoPageName != null) {
+			items[2] = CHARTS;
+			start = 3;
+		}
 		Iterator<Pool> iter = forcePools.iterator(HandPool.class);
 		for (int i = 0; i < nHands; ++i) {
-			items[i+2] = iter.next().getButtonName();
+			items[i+start] = iter.next().getButtonName();
 		}
 		menu.setAttribute(ToolbarMenu.MENU_ITEMS, StringArrayConfigurer.arrayToString(items));
 	}
@@ -2127,7 +2573,7 @@ public class ADC2Module extends Importer {
 		
 		final GameModule module = GameModule.getGameModule();
 		final Map forcePoolMap = new Map();
-		InsertComponent(forcePoolMap, module);
+		insertComponent(forcePoolMap, module);
 		
 		forcePoolMap.setMapName(TRAY);
 		forcePoolMap.setAttribute(Map.MARK_MOVED, GlobalOptions.NEVER);
@@ -2188,7 +2634,7 @@ public class ADC2Module extends Importer {
 		module.getArchiveWriter().addImage(FORCE_POOL_PNG, imageDataArray);
 		
 		final Board board = new Board();
-		InsertComponent(board, boardPicker);
+		insertComponent(board, boardPicker);
 		board.setConfigureName(TRAY);
 		board.setAttribute(Board.IMAGE, FORCE_POOL_PNG);
 		
@@ -2198,7 +2644,7 @@ public class ADC2Module extends Importer {
 		for (int i = 0; i < nForcePools; ++i) {
 			ForcePool fp = (ForcePool) iter.next();
 			DrawPile pile = new DrawPile();
-			InsertComponent(pile, forcePoolMap);
+			insertComponent(pile, forcePoolMap);
 			
 			JPanel p = deckPanels[i];
 			p.getBounds(rv);
@@ -2222,8 +2668,9 @@ public class ADC2Module extends Importer {
 		}
 	}
 	
+	// add option to show only top piece just like decks.
 	protected void writeSetupStacksToArchive(GameModule gameModule) throws IOException {
-		final Map mainMap = getMap().getMainMap();
+		final Map mainMap = getMainMap();
 		
 		final Point offset = getMap().getCenterOffset();
 		for (int hex : stacks.keySet()) {
@@ -2232,7 +2679,7 @@ public class ADC2Module extends Importer {
 				continue;
 			ArrayList<Piece> s = stacks.get(hex);
 			SetupStack stack = new SetupStack();
-			InsertComponent(stack, mainMap);
+			insertComponent(stack, mainMap);
 
 			p.translate(offset.x, offset.y);
 			String location = mainMap.locationName(p);

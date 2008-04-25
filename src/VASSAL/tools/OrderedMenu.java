@@ -18,12 +18,14 @@
  */
 package VASSAL.tools;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 
 import VASSAL.i18n.Resources;
 
@@ -49,38 +51,71 @@ public class OrderedMenu extends JMenu {
     this.items = items;
   }
 
-  // Insert the menu item at the correct index so that the menu maintains the same order specified in the items list
-  public JMenuItem add(JMenuItem menu) {
+   // Insert the menu item at the correct index so that the menu maintains the same order specified in the items list
+  @Override
+  public JMenuItem add(JMenuItem item) {
 // FIMXE: Setting the mnemonic from the first letter is a bug. Should
 // accept whatever mnemonic has already been set.
-    menu.setMnemonic(menu.getText().charAt(0));
-    int targetPosition = items.indexOf(menu.getText());
-    if (targetPosition < 0) {
-      return super.add(menu);
+    item.setMnemonic(item.getText().charAt(0));
+
+    // Note: This is extremely inefficient, but menus are small and
+    // coding it this way kept the code simple.
+
+//System.out.println("adding " + item.getText());
+
+    // find location of this item in pre-built list
+    final int target = items.indexOf(item.getText());
+    if (target < 0) return super.add(item);
+
+    // strip out separators
+    for (int i = 0; i < getMenuComponentCount(); i++) {
+      final Component c = getMenuComponent(i); 
+      if (c instanceof JSeparator) remove(i--);
     }
-    int index = 0;
-    int prev = targetPosition;
-    outer: while (--prev >= 0) {
-      // Look for the preceding item in the existing menu
-      String previous = items.get(prev);
-      if (previous != null) {
-        for (int i = 0; i < getMenuComponentCount(); ++i) {
-          if (getMenuComponent(i) instanceof JMenuItem) {
-            if (previous.equals(((JMenuItem) getMenuComponent(i)).getText())) {
-              index = i + 1;
-              while (index < getMenuComponentCount() && getMenuComponent(index) instanceof JPopupMenu.Separator) {
-                index++;
-              }
-              break outer;
-            }
-          }
+
+    int actual = -1;
+    JMenuItem ret = null;
+
+    // find greatest exisitng predecessor
+    previous: for (int prev = target-1; prev >= 0; prev--) {
+      final String prevText = items.get(prev);
+      if (prevText == null) continue;
+
+      for (int i = 0; i < getMenuComponentCount(); i++) {
+        final Component c = getMenuComponent(i);
+        if (!(c instanceof JMenuItem)) continue;
+        if (!prevText.equals(((JMenuItem) c).getText())) continue;
+
+        ret = super.insert(item, ++i);
+        actual = i;
+        break previous;
+      }
+    }
+
+    if (actual < 0) {
+      actual = 0;
+      ret = super.insert(item, 0);
+    }
+
+//System.out.println(actual + " " + item.getText());
+
+    // reinsert separators
+    for (int i = 0; i < items.size(); i++) {
+      if (items.get(i) != null) continue;
+
+      final String prev = items.get(i-1);
+      for (int j = 0; j < getMenuComponentCount(); j++) {
+        final Component c = getMenuComponent(j);
+        if (!(c instanceof JMenuItem)) continue;
+
+        if (prev.equals(((JMenuItem) c).getText())) {
+          insertSeparator(j+1);
+          break;
         }
       }
     }
-    if (targetPosition < items.size() - 1 && items.get(targetPosition + 1) == null) {
-      insertSeparator(index);
-    }
-    return super.insert(menu, index);
+
+    return ret;
   }
 
   /**

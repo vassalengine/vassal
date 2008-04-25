@@ -17,6 +17,7 @@
 
 package VASSAL.tools.imports.adc2;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -31,11 +32,11 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +44,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -53,7 +56,10 @@ import VASSAL.build.module.Inventory;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
+import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.map.BoardPicker;
+import VASSAL.build.module.map.LayerControl;
+import VASSAL.build.module.map.LayeredPieceCollection;
 import VASSAL.build.module.map.SetupStack;
 import VASSAL.build.module.map.Zoomer;
 import VASSAL.build.module.map.boardPicker.Board;
@@ -75,6 +81,7 @@ import VASSAL.counters.Marker;
 import VASSAL.counters.UsePrototype;
 import VASSAL.tools.ExtensionFileFilter;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.TempFileManager;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
 
@@ -88,6 +95,269 @@ public class MapBoard extends Importer {
 
 	private static final String PLACE_NAME = "Location Names";
 
+	protected class MapLayer {
+		private final ArrayList<? extends MapDrawable> elements; 
+		private final String name;
+		private final boolean switchable;
+		protected ArrayList<MapLayer> layers = null;
+		protected String imageName;
+		boolean shouldDraw = true;
+		
+		MapLayer(ArrayList<? extends MapDrawable> elements, String name, boolean switchable) {
+			this.elements = elements;
+			this.name = name;
+			this.switchable = switchable;
+		}				
+		
+		void writeToArchive() throws IOException {
+			// write piece
+			Rectangle r = writeImageToArchive();
+			if (imageName != null) {
+				SequenceEncoder se = new SequenceEncoder(';');
+				se.append("").append("").append(imageName).append(getName());
+				GamePiece gp = new BasicPiece(BasicPiece.ID + se.getValue());
+				gp = new Marker(Marker.ID + "Layer", gp);
+				gp.setProperty("Layer", getName());
+				gp = new Immobilized(gp, Immobilized.ID + "n;V"); 
+
+				// create layer
+				LayeredPieceCollection l = getLayeredPieceCollection();
+				String order = l.getAttributeValueString(LayeredPieceCollection.LAYER_ORDER);
+				if (order.equals("")) {
+					order = getName();
+				}
+				else {
+					order = order + "," + getName();
+				}
+				l.setAttribute(LayeredPieceCollection.LAYER_ORDER, order);
+
+				Map mainMap = getMainMap();
+				Board board = getBoard();
+				SetupStack stack = new SetupStack();
+				insertComponent(stack, mainMap);
+				Point p = new Point(r.x + r.width/2, r.y + r.height/2);
+				stack.setAttribute(SetupStack.NAME, getName());
+				stack.setAttribute(SetupStack.OWNING_BOARD, board.getConfigureName());
+				stack.setAttribute(SetupStack.X_POSITION, Integer.toString(p.x));
+				stack.setAttribute(SetupStack.Y_POSITION, Integer.toString(p.y));
+
+				PieceSlot slot = new PieceSlot(gp);
+				insertComponent(slot, stack);
+				
+				if (isSwitchable()) {
+					// TODO: initial state of layer visibility
+					// add stack layer control
+					LayerControl control = new LayerControl();
+					insertComponent(control, l);
+					control.setAttribute(LayerControl.BUTTON_TEXT, getName());
+					control.setAttribute(LayerControl.TOOLTIP, "Toggle " + getName().toLowerCase() + " visibility");
+					control.setAttribute(LayerControl.COMMAND, LayerControl.CMD_TOGGLE);
+					control.setAttribute(LayerControl.LAYERS, getName());
+
+					// one toolbar menu to control all mapboard elements.
+					ToolbarMenu menu = getToolbarMenu();
+					String entries = menu.getAttributeValueString(ToolbarMenu.MENU_ITEMS);
+					if (entries.equals("")) {
+						entries = getName();
+					}
+					else {
+						entries = new SequenceEncoder(entries, ',').append(getName()).getValue();
+					}
+					menu.setAttribute(ToolbarMenu.MENU_ITEMS, entries);
+				}
+			}
+		}
+
+		/**
+		 * @throws IOException
+		 */
+		protected Rectangle writeImageToArchive() throws IOException {
+			// write image to archive
+			BufferedImage image = getLayerImage();
+			if (image != null) {
+				Rectangle r = getCropRectangle(image);
+				File f = TempFileManager.getInstance().createTempFile("map", ".png");
+				FileOutputStream out = new FileOutputStream(f);
+				ImageIO.write(image.getSubimage(r.x, r.y, r.width, r.height), "png", out);
+				out.close();
+				imageName = getUniqueImageFileName(getName());
+				GameModule.getGameModule().getArchiveWriter().addImage(f.getPath(), imageName);
+				return r;
+			}
+			else {
+				return null;
+			}
+		}
+		
+		protected Rectangle getCropRectangle(BufferedImage image) {
+			Rectangle r = new Rectangle(getLayout().getBoardSize());
+			leftside:
+				while (true) {
+					for (int i = r.y; i < r.y + r.height; ++i) {
+						if (image.getRGB(r.x, i) != 0) {
+							break leftside;
+						}
+					}
+					++r.x;
+					--r.width;
+				}
+			topside:
+				while (true) {
+					for (int i = r.x; i < r.x + r.width; ++i) {
+						if (image.getRGB(i, r.y) != 0) {
+							break topside;
+						}
+					}
+					++r.y;
+					--r.height;
+				}
+			rightside:
+				while (true) {
+					for (int i = r.y; i < r.y + r.height; ++i) {
+						if (image.getRGB(r.x + r.width - 1, i) != 0) {
+							break rightside;
+						}
+					}
+					--r.width;
+				}
+			bottomside:
+				while (true) {
+					for (int i = r.x; i < r.x + r.width; ++i) {
+						if (image.getRGB(i, r.y + r.height - 1) != 0) {
+							break bottomside;
+						}
+					}
+					--r.height;
+				}
+			return r;
+		}
+
+		void overlay(MapLayer layer) {
+			if (layers == null) {
+				layers = new ArrayList<MapLayer>();
+			}
+			layers.add(layer);
+		}
+		
+		protected AlphaComposite getComposite() {
+			return AlphaComposite.SrcAtop;
+		}
+		
+		BufferedImage getLayerImage() {
+			Dimension d = getLayout().getBoardSize();
+			BufferedImage image = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = image.createGraphics();
+			if (draw(g)) {
+				if (layers != null) {
+					g.setComposite(getComposite());
+					for (MapLayer l : layers) {
+						l.draw(g);
+					}
+				}
+			}
+			else {
+				image = null;
+			}
+			return image;
+		}
+		
+		boolean draw(Graphics2D g) {
+			if (shouldDraw) {
+				shouldDraw = false;
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,   RenderingHints.VALUE_ANTIALIAS_OFF);
+				g.setRenderingHint(RenderingHints.KEY_RENDERING,      RenderingHints.VALUE_RENDER_QUALITY);
+				g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+				for (MapDrawable m : elements) {
+					if (m.draw(g)) {
+						shouldDraw = true;
+					}
+				}
+			}
+			return shouldDraw;
+		}
+		
+		boolean isSwitchable() {
+			return switchable;
+		}
+		
+		String getName() {
+			return name;
+		}
+		
+		boolean hasElements() {
+			return !elements.isEmpty();
+		}
+	}
+
+	class BaseLayer extends MapLayer {
+
+		BaseLayer() {
+			super(null, "Base Layer", false);
+		}
+
+		boolean hasBaseMap() {
+			File underlay = action.getCaseInsensitiveFile(new File(forceExtension(path, "sml")), null, false, null);
+			if (underlay == null) {
+				underlay = action.getCaseInsensitiveFile(new File(stripExtension(path) + "-Z" + (zoomLevel+1) + ".bmp"), 
+						null, false, null);				
+			}
+			return underlay != null;
+		}
+		
+		@Override
+		boolean draw(Graphics2D g) {
+			// set background color
+			g.setBackground(tableColor);
+			Dimension d = getLayout().getBoardSize();
+			g.clearRect(0, 0, d.width, d.height);
+			
+			// See if map image file exists
+			File sml = action.getCaseInsensitiveFile(new File(forceExtension(path, "sml")), null, false, null);
+			if (sml != null) {
+				try {
+					readScannedMapLayoutFile(sml, g);
+				} catch (IOException e) {}
+			}
+			else {
+				// If sml file doesn't exist, see if there is a single-sheet underlay image
+				File underlay = action.getCaseInsensitiveFile(new File(stripExtension(path) + "-Z" + (zoomLevel+1) + ".bmp"), 
+						null, false, null);
+				if (underlay != null) {
+					BufferedImage img;
+					try {
+						img = ImageIO.read(underlay);
+						g.drawImage(img, null, 0, 0);
+					} catch (IOException e) {}					
+				}
+			}	
+			return true;			
+		}		
+
+		@Override
+		void writeToArchive() throws IOException {
+			// write the underlay map image
+			writeImageToArchive();
+			assert(imageName != null);
+			Board board = getBoard();
+			board.setAttribute(Board.IMAGE, imageName);
+			board.setConfigureName(baseName);
+			
+			// so we can get hex labels
+			getMainMap().setBoards(Collections.singleton(board));
+		}
+
+		@Override
+		protected Rectangle getCropRectangle(BufferedImage image) {
+			return new Rectangle(getLayout().getBoardSize());
+		}
+
+		@Override
+		protected AlphaComposite getComposite() {
+			return AlphaComposite.SrcOver;
+		}
+	}
+	
 	/**
 	 * A layout consisting of squares in a checkerboard pattern (<it>i.e.</it> each
 	 * square has four neighbours).
@@ -194,13 +464,18 @@ public class MapBoard extends Importer {
 			super(index);
 			assert (symbol != null);
 			this.symbol = symbol;
-		}
-
+		}		
+		
 		@Override
-		void draw(Graphics2D g) {
+		boolean draw(Graphics2D g) {
 			Point p = getPosition();
-			if (symbol != null)
+			if (symbol != null && !symbol.isTransparent()) {
 				g.drawImage(symbol.getImage(), null, p.x, p.y);
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 	}
 	
@@ -210,14 +485,18 @@ public class MapBoard extends Importer {
 	protected class MapBoardOverlay extends HexData {
 		
 		@Override
-		void draw(Graphics2D g) {
-			if (symbol != null) {
+		boolean draw(Graphics2D g) {
+			if (symbol != null) {				
 				for (int y = 0; y < getNRows(); ++y) {
 					for (int x = 0; x < getNColumns(); ++x) {
 						Point p = coordinatesToPosition(x, y);
 						g.drawImage(symbol.getImage(), null, p.x, p.y);
 					}
 				}
+				return true;
+			}
+			else {
+				return false;
 			}
 		}
 
@@ -264,10 +543,12 @@ public class MapBoard extends Importer {
 		 * list calls the draw method for all of the lines thus created.
 		 */
 		@Override
-		void draw(Graphics2D g) {
+		boolean draw(Graphics2D g) {
 			LineDefinition l = getLine();
-
+			boolean result = false;
+			
 			if (l != null) {
+				result = true;
 				Point pos = getPosition();
 				int size = getLayout().getHexSize();
 				pos.translate(size / 2, size / 2);
@@ -321,8 +602,11 @@ public class MapBoard extends Importer {
 			}
 			
 			// if this is the last one, draw all of the compiled lines.
-			if (this == hexLines.get(hexLines.size() - 1))
+			if (this == hexLines.get(hexLines.size() - 1)) {
 				drawLines(g, BasicStroke.CAP_BUTT);
+			}
+			
+			return result;
 		}
 		
 		@Override
@@ -361,11 +645,13 @@ public class MapBoard extends Importer {
 
 		// see the comments for HexLine.draw(Graphics2D).
 		@Override
-		void draw(Graphics2D g) {
+		boolean draw(Graphics2D g) {
 
 			LineDefinition l = getLine();
+			boolean result = false;
 
 			if (l != null) {
+				result = true;
 				Point p = getPosition();
 				int size = getLayout().getHexSize();
 				int dX = getLayout().getDeltaX();
@@ -405,8 +691,11 @@ public class MapBoard extends Importer {
 			}
 
 			// if this is the last one, draw all the lines.
-			if (this == hexSides.get(hexSides.size() - 1))
+			if (this == hexSides.get(hexSides.size() - 1)) {
 				drawLines(g, BasicStroke.CAP_ROUND);
+			}
+			
+			return result;
 		}
 		
 		@Override
@@ -965,7 +1254,10 @@ public class MapBoard extends Importer {
 			this.hexIndex = index;
 		}
 
-		abstract void draw(Graphics2D g);
+		/**
+		 * Draw the element to the graphics context. Return <code>true</code> if an element was actually drawn.
+		 */
+		abstract boolean draw(Graphics2D g);
 
 		int getHexIndex() {
 			return hexIndex;
@@ -1146,12 +1438,10 @@ public class MapBoard extends Importer {
 
 				// add numbering system to grid
 				RegularGridNumbering gn = getGridNumbering();
-				gn.addTo(mg);
-				mg.add(gn);			
+				insertComponent(gn, mg);
 
 				// add grid to zone
-				mg.addTo(zone);
-				zone.add(mg);
+				insertComponent(mg, zone);
 
 				getLayout().setGridNumberingOffsets(gn, this);
 			}
@@ -1340,17 +1630,21 @@ public class MapBoard extends Importer {
 		}
 
 		@Override
-		void draw(Graphics2D g) {
-			if (getSize() == 0)
-				return;
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-			g.setFont(getFont());
-			g.setColor(color);
-			Point p = getPosition(g);
-			g.drawString(text, p.x, p.y);
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_OFF);
+		boolean draw(Graphics2D g) {
+			if (getSize() != 0) {
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_ON);
+				g.setFont(getFont());
+				g.setColor(color);
+				Point p = getPosition(g);
+				g.drawString(text, p.x, p.y);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_OFF);
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 
 		String getText() {
@@ -1804,108 +2098,12 @@ public class MapBoard extends Importer {
 		}
 	}
 
-	// ADCs default pallet which is referenced by index.
-	private static final Color[] defaultColorPallet = { new Color(0x000000),
-			new Color(0x808080), new Color(0x800000), new Color(0x808000),
-			new Color(0x008000), new Color(0x008080), new Color(0x000080),
-			new Color(0x800080), new Color(0x808040), new Color(0x004040),
-			new Color(0x0080ff), new Color(0x004080), new Color(0x4000ff),
-			new Color(0x804000), new Color(0xffffff), new Color(0xc0c0c0),
-			new Color(0xff0000), new Color(0xffff00), new Color(0x00ff00),
-			new Color(0x00ffff), new Color(0x0000ff), new Color(0xff00ff),
-			new Color(0xffff80), new Color(0x00ff80), new Color(0x80ffff),
-			new Color(0x8080ff), new Color(0xff0080), new Color(0xff8040),
-			new Color(0x010101), new Color(0x0e0e0e), new Color(0x1c1c1c),
-			new Color(0x2a2a2a), new Color(0x383838), new Color(0x464646),
-			new Color(0x545454), new Color(0x626262), new Color(0x707070),
-			new Color(0x7e7e7e), new Color(0x8c8c8c), new Color(0x9a9a9a),
-			new Color(0xa8a8a8), new Color(0xb6b6b6), new Color(0xc4c4c4),
-			new Color(0xd2d2d2), new Color(0xe0e0e0), new Color(0xeeeeee),
-			new Color(0x330000), new Color(0x660000), new Color(0x990000),
-			new Color(0xcc0000), new Color(0xc1441a), new Color(0x003300),
-			new Color(0x333300), new Color(0x663300), new Color(0x993300),
-			new Color(0xcc3300), new Color(0xff3300), new Color(0x006600),
-			new Color(0x336600), new Color(0x666600), new Color(0x996600),
-			new Color(0xcc6600), new Color(0xff6600), new Color(0x009900),
-			new Color(0x339900), new Color(0x669900), new Color(0x999900),
-			new Color(0xcc9900), new Color(0xff9900), new Color(0x00cc00),
-			new Color(0x33cc00), new Color(0x66cc00), new Color(0x99cc00),
-			new Color(0xcccc00), new Color(0xffcc00), new Color(0x00ea00),
-			new Color(0x33ff00), new Color(0x66ff00), new Color(0x99ff00),
-			new Color(0xccff00), new Color(0xffff00), new Color(0x000033),
-			new Color(0x330033), new Color(0x660033), new Color(0x990033),
-			new Color(0xcc0033), new Color(0xff0033), new Color(0x003333),
-			new Color(0x663333), new Color(0x993333), new Color(0xcc3333),
-			new Color(0xff3333), new Color(0x006633), new Color(0x336633),
-			new Color(0x666633), new Color(0x996633), new Color(0xcc6633),
-			new Color(0xff6633), new Color(0x009933), new Color(0x339933),
-			new Color(0x669933), new Color(0x999933), new Color(0xcc9933),
-			new Color(0xff9933), new Color(0x00cc33), new Color(0x33cc33),
-			new Color(0x66cc33), new Color(0x99cc33), new Color(0xcccc33),
-			new Color(0xffcc33), new Color(0x00ff33), new Color(0x33ff33),
-			new Color(0x66ff33), new Color(0x99ff33), new Color(0xccff33),
-			new Color(0xffff33), new Color(0x000066), new Color(0x330066),
-			new Color(0x660066), new Color(0x990066), new Color(0xcc0066),
-			new Color(0xff0066), new Color(0x003366), new Color(0x333366),
-			new Color(0x663366), new Color(0x993366), new Color(0xcc3366),
-			new Color(0xff3366), new Color(0x006666), new Color(0x336666),
-			new Color(0x996666), new Color(0xcc6666), new Color(0xff6666),
-			new Color(0x009966), new Color(0x339966), new Color(0x669966),
-			new Color(0x999966), new Color(0xcc9966), new Color(0xff9966),
-			new Color(0x00cc66), new Color(0x33cc66), new Color(0x66cc66),
-			new Color(0x99cc66), new Color(0xcccc66), new Color(0xffcc66),
-			new Color(0x00ff66), new Color(0x33ff66), new Color(0x66ff66),
-			new Color(0x99ff66), new Color(0xccff66), new Color(0xffff66),
-			new Color(0x000099), new Color(0x330099), new Color(0x660099),
-			new Color(0x990099), new Color(0xcc0099), new Color(0xff0099),
-			new Color(0x003399), new Color(0x333399), new Color(0x663399),
-			new Color(0x993399), new Color(0xcc3399), new Color(0xff3399),
-			new Color(0x006699), new Color(0x336699), new Color(0x666699),
-			new Color(0x996699), new Color(0xcc6699), new Color(0xff6699),
-			new Color(0x009999), new Color(0x339999), new Color(0x669999),
-			new Color(0xcc9999), new Color(0xff9999), new Color(0x00cc99),
-			new Color(0x33cc99), new Color(0x66cc99), new Color(0x99cc99),
-			new Color(0xcccc99), new Color(0xffcc99), new Color(0x00ff99),
-			new Color(0x33ff99), new Color(0x66ff99), new Color(0x99ff99),
-			new Color(0xccff99), new Color(0xffff99), new Color(0x0000cc),
-			new Color(0x3300cc), new Color(0x6600cc), new Color(0x9900cc),
-			new Color(0xcc00cc), new Color(0xff00cc), new Color(0x0033cc),
-			new Color(0x3333cc), new Color(0x6633cc), new Color(0x9933cc),
-			new Color(0xcc33cc), new Color(0xff33cc), new Color(0x0066cc),
-			new Color(0x3366cc), new Color(0x6666cc), new Color(0x9966cc),
-			new Color(0xcc66cc), new Color(0xff66cc), new Color(0x0099cc),
-			new Color(0x3399cc), new Color(0x6699cc), new Color(0x9999cc),
-			new Color(0xcc99cc), new Color(0xff99cc), new Color(0x00cccc),
-			new Color(0x33cccc), new Color(0x66cccc), new Color(0x99cccc),
-			new Color(0xffcccc), new Color(0x00ffcc), new Color(0x33ffcc),
-			new Color(0x66ffcc), new Color(0x99ffcc), new Color(0xccffcc),
-			new Color(0xffffcc), new Color(0x0000ff), new Color(0x3300ff),
-			new Color(0x6600ff), new Color(0x9900ff), new Color(0xcc00ff),
-			new Color(0xff00ff), new Color(0x0033ff), new Color(0x3333ff),
-			new Color(0x6633ff), new Color(0x9933ff), new Color(0xcc33ff),
-			new Color(0xff33ff), new Color(0x0066ff), new Color(0x3366ff),
-			new Color(0x6666ff), new Color(0x9966ff), new Color(0xcc66ff),
-			new Color(0xff66ff), new Color(0x0099ff), new Color(0x3399ff),
-			new Color(0x6699ff), new Color(0x9999ff), new Color(0xcc99ff),
-			new Color(0xff99ff), new Color(0x00ccff), new Color(0x33ccff),
-			new Color(0x66ccff), new Color(0x99ccff), new Color(0xccccff),
-			new Color(0xffccff), new Color(0x00ffff), new Color(0x33ffff),
-			new Color(0x66ffff), new Color(0x99ffff), new Color(0xccffff) };
-
 	// Archive of fonts used for placenames. makes reuse possible and is
 	// probably faster as most of the place names use only one of a very few fonts.
 	private final static HashMap<Integer, Font> defaultFonts = new HashMap<Integer, Font>();
 
 	// which level to import
 	private static final int zoomLevel = 2;
-
-	/**
-	 * Returns a color from the default ADC pallet
-	 */
-	protected static Color getColorFromIndex(int index) {
-		assert (index >= 0 && index < defaultColorPallet.length);
-		return defaultColorPallet[index];
-	}
 
 	// fonts available to ADC
 	private static final String[] defaultFontNames = { "Courier", "Fixedsys",
@@ -1978,11 +2176,8 @@ public class MapBoard extends Importer {
 	// line definitions needed for hex sides and lines
 	private LineDefinition[] lineDefinitions;
 
-	// actual map image which is drawn on request
-	private BufferedImage map;
-
 	// organizes all the drawable elements in order of drawing priority
-	private ArrayList<ArrayList<? extends MapDrawable>> mapElements = new ArrayList<ArrayList<? extends MapDrawable>>();
+	private ArrayList<MapLayer> mapElements = new ArrayList<MapLayer>();
 
 	// grid numbering systems
 	private final ArrayList<MapSheet> mapSheets = new ArrayList<MapSheet>();
@@ -2023,66 +2218,19 @@ public class MapBoard extends Importer {
 	// map file path
 	private String path;
 	
-	// the exported VASSAL Map object
-	private Map mainMap;
-
-	// VASSAL board created from imported map
-	private Board board;
-
 	// The VASSAL BoardPicker object which is the tree parent of Board.
 	private BoardPicker boardPicker;
 
 	// initialize the drawing elements which must all be ArrayList<>'s.
 	public MapBoard() {
-		mapElements.add(primaryMapBoardSymbols);
-		mapElements.add(secondaryMapBoardSymbols);
-		mapElements.add(hexSides);
-		mapElements.add(hexLines);
-		mapElements.add(placeSymbols);
-		mapElements.add(attributes);
-		mapElements.add(overlaySymbol);
-		mapElements.add(placeNames);
-	}
-
-	/**
-	 * Generate and return the map image. Will only be generated once.
-	 * 
-	 * @throws IOException if some IO error occurs when reading in the map info.
-	 */
-	protected BufferedImage getMapImage() throws IOException {
-		if (map == null) {
-			Dimension d = getLayout().getBoardSize();
-			map = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g = map.createGraphics();
-			
-			// set background color
-			g.setBackground(tableColor);
-			g.clearRect(0, 0, d.width, d.height);
-			
-			// See if map image file exists
-			File sml = action.getCaseInsensitiveFile(new File(forceExtension(path, "sml")), null, false, null);
-			if (sml != null) 
-				readScannedMapLayoutFile(sml, g);
-			else {
-				// If sml file doesn't exist, see if there is a single-sheet underlay image
-				File underlay = action.getCaseInsensitiveFile(new File(stripExtension(path) + "-Z" + (zoomLevel+1) + ".bmp"), 
-						null, false, null);
-				if (underlay != null) {
-					BufferedImage img = ImageIO.read(underlay);
-					g.drawImage(img, null, 0, 0);
-				}
-			}
-			
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-			g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-			g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-
-			// go through the list of drawable elements and put them on after getting the (optional) scanned sheets.
-			for (ArrayList<? extends MapDrawable> list : mapElements)
-				for (MapDrawable element : list)
-					element.draw(g);
-		}
-		return map;
+		mapElements.add(new MapLayer(primaryMapBoardSymbols, "Primary MapBoard Symbols", false));
+		mapElements.add(new MapLayer(secondaryMapBoardSymbols, "Secondary MapBoard Symbols", false));
+		mapElements.add(new MapLayer(hexSides, "Hex Sides", true));
+		mapElements.add(new MapLayer(hexLines, "Hex Lines", true));
+		mapElements.add(new MapLayer(placeSymbols, "Place Symbols", false));
+		mapElements.add(new MapLayer(attributes, "Attributes", false));
+		mapElements.add(new MapLayer(overlaySymbol, "Overlay Symbol", true));
+		mapElements.add(new MapLayer(placeNames, "Place Names", true));
 	}
 
 	/**
@@ -2133,6 +2281,7 @@ public class MapBoard extends Importer {
 	protected void readMapItemDrawFlagBlock(DataInputStream in) throws IOException {
 		ADC2Utils.readBlockHeader(in, "Map Item Draw Flag");
 
+		// TODO: these aren't being removed any more because the type of mapElements has changed.
 		// obviously, element types can't be sorted before we do this.
 		if (in.readByte() == 0)
 			mapElements.remove(primaryMapBoardSymbols);
@@ -2240,7 +2389,7 @@ public class MapBoard extends Importer {
 		lineDefinitions = new LineDefinition[nLineDefinitions];
 		for (int i = 0; i < nLineDefinitions; ++i) {
 			int colorIndex = in.readUnsignedByte();
-			Color color = getColorFromIndex(colorIndex);
+			Color color = ADC2Utils.getColorFromIndex(colorIndex);
 			int size = 0;
 			for (int j = 0; j < 3; ++j) {
 				int s = in.readByte();
@@ -2361,7 +2510,7 @@ public class MapBoard extends Importer {
 		
 		byte[] priority = new byte[10];
 		in.read(priority);
-		ArrayList<ArrayList<? extends MapDrawable>> items = new ArrayList<ArrayList<? extends MapDrawable>>(mapElements.size());
+		ArrayList<MapLayer> items = new ArrayList<MapLayer>(mapElements.size());
 		for (int i = 0; i < mapElements.size(); ++i) {
 
 			// invalid index: abort reordering and switch back to default
@@ -2401,7 +2550,7 @@ public class MapBoard extends Importer {
 		ADC2Utils.readBlockHeader(in, "Table Color");
 		
 		/* int fastScrollFlag = */ in.readByte();
-		tableColor = getColorFromIndex(in.readUnsignedByte());
+		tableColor = ADC2Utils.getColorFromIndex(in.readUnsignedByte());
 	}
 	
 	/**
@@ -2418,7 +2567,7 @@ public class MapBoard extends Importer {
 			if (symbol != null && isOnMapBoard(index))
 				placeSymbols.add(new HexData(index, symbol));
 			String text = readNullTerminatedString(in, 25);
-			Color color = getColorFromIndex(in.readUnsignedByte());
+			Color color = ADC2Utils.getColorFromIndex(in.readUnsignedByte());
 
 			int size = 0;
 			for (int z = 0; z < 3; ++z) {
@@ -2612,15 +2761,6 @@ public class MapBoard extends Importer {
 	}
 
 	/**
-	 * @return The VASSAL Map object corresponding to this imported map.
-	 */
-	Map getMainMap() {
-		if (mainMap == null)
-			mainMap = GameModule.getGameModule().getAllDescendantComponentsOf(Map.class).toArray(new Map[0])[0];
-		return mainMap;
-	}
-	
-	/**
 	 * @return How many sides does each hex (6) or square (4) have?
 	 */
 	int getNFaces() {
@@ -2678,28 +2818,45 @@ public class MapBoard extends Importer {
 	public void writeToArchive() throws IOException {
 
 		GameModule module = GameModule.getGameModule();
-
-		// write the map image
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ImageIO.write(getMapImage(), "png", out);
-		byte[] imageDataArray = out.toByteArray();
-		module.getArchiveWriter().addImage(baseName + ".png", imageDataArray);
-
+		
+		// merge layers that can and should be merged.
+		MapLayer base = new BaseLayer();		
+		// if there is no base map image, avoid creating a lot of layers.
+		if (!((BaseLayer) base).hasBaseMap()) {
+			Iterator<MapLayer> iter = mapElements.iterator();
+			while(iter.hasNext()) {
+				base.overlay(iter.next());
+				iter.remove();
+			}
+			mapElements.add(base);
+		}
+		else {
+			mapElements.add(0, base);
+			Iterator<MapLayer> iter = mapElements.iterator();
+			iter.next();
+			while(iter.hasNext()) {
+				MapLayer next = iter.next();
+				if (!next.isSwitchable()) {
+					Iterator<MapLayer> iter2 = mapElements.iterator();
+					MapLayer under = iter2.next();
+					while (under != next) {
+						under.overlay(next);
+						under = iter2.next();
+					}
+					iter.remove();
+				}
+			}
+			mapElements.add(0, base);
+		}
+		
+		for (MapLayer layer : mapElements) {
+			layer.writeToArchive();
+		}		
+		
 		// map options: log formats
 		getMainMap().setAttribute(Map.MOVE_WITHIN_FORMAT, "$pieceName$ moving from [$previousLocation$] to [$location$]");
 		getMainMap().setAttribute(Map.MOVE_TO_FORMAT, "$pieceName$ moving from [$previousLocation$] to [$location$]");
 		getMainMap().setAttribute(Map.CREATE_FORMAT, "$pieceName$ Added to [$location$]");
-
-		boardPicker = getBoardPicker();
-		board = new Board();
-		board.addTo(boardPicker);
-		boardPicker.add(board);
-		board.setAttribute(Board.IMAGE, baseName + ".png");
-		// board.setAttribute(Board.REVERSIBLE, Boolean.TRUE);
-		board.setConfigureName(baseName);
-		
-		// so we can get hex labels
-		getMainMap().setBoards(Collections.singleton(board));
 
 		// default grid
 		AbstractConfigurable ac = getLayout().getGeometricGrid();
@@ -2707,8 +2864,9 @@ public class MapBoard extends Importer {
 		// ensure that we don't have a singleton null
 		if (mapSheets.size() == 1 && mapSheets.get(0) == null)
 			mapSheets.remove(0);
-		
+				
 		// setup grids defined by ADC module
+		Board board = getBoard();
 		if (mapSheets.size() > 0) {
 			ZonedGrid zg = new ZonedGrid();
 			for (MapSheet ms : mapSheets) {
@@ -2716,22 +2874,18 @@ public class MapBoard extends Importer {
 					break;
 				Zone z = ms.getZone();
 				if (z != null) {
-					z.addTo(zg);
-					zg.add(z);
+					insertComponent(z, zg);
 				}
 			}
 
 			// add default grid
-			ac.addTo(zg);
-			zg.add(ac);
+			insertComponent(ac, zg);
 
 			// add zoned grid to board
-			zg.addTo(board);
-			board.add(zg);
+			insertComponent(zg, board);
 		} else {
 			// add the default grid to the board
-			ac.addTo(board);
-			board.add(ac);
+			insertComponent(ac, board);
 		}
 
 		/* global properties */
@@ -2747,8 +2901,7 @@ public class MapBoard extends Importer {
 			for (int i = 0; i < 3; ++i)
 				s[i] = Double.toString(set.getZoomFactor(i));
 			zoom.setAttribute("zoomLevels", StringArrayConfigurer.arrayToString(s));
-			zoom.addTo(mainMap);
-			getMainMap().add(zoom);
+			insertComponent(zoom, getMainMap());
 		}
 		
 		// add place name capability
@@ -2758,9 +2911,7 @@ public class MapBoard extends Importer {
 		
 		// set up inventory button
 		final Inventory inv = new Inventory();
-		inv.build(null);			
-		inv.addTo(module);
-		module.add(inv);		
+		insertComponent(inv, module);
 		inv.setAttribute(Inventory.BUTTON_TEXT, "Search");
 		inv.setAttribute(Inventory.TOOLTIP, "Find place by name");
 		inv.setAttribute(Inventory.FILTER, "CurrentMap = Main Map");
@@ -2778,8 +2929,7 @@ public class MapBoard extends Importer {
 		// write prototype
 		PrototypesContainer container = module.getAllDescendantComponentsOf(PrototypesContainer.class).iterator().next();
 		PrototypeDefinition def = new PrototypeDefinition();
-		def.addTo(container);
-		container.add(def);
+		insertComponent(def, container);
 		def.setConfigureName(PLACE_NAMES);
 		
 		GamePiece gp = new BasicPiece();
@@ -2793,7 +2943,8 @@ public class MapBoard extends Importer {
 		// write place names as pieces with no image.
 		getMainMap();
 		final Point offset = getCenterOffset();
-		final HashSet<String> set = new HashSet<String>();
+		final HashSet<String> set = new HashSet<String>();		
+		final Board board = getBoard();
 		
 		for (PlaceName pn : placeNames) {
 			String name = pn.getText();
@@ -2804,10 +2955,9 @@ public class MapBoard extends Importer {
 				continue;
 			set.add(name);
 			SetupStack stack = new SetupStack();
-			stack.addTo(mainMap);
-			mainMap.add(stack);
+			insertComponent(stack, getMainMap());
 			p.translate(offset.x, offset.y);
-			String location = mainMap.locationName(p);
+			String location = getMainMap().locationName(p);
 			stack.setAttribute(SetupStack.NAME, name);
 			stack.setAttribute(SetupStack.OWNING_BOARD, board.getConfigureName());
 			
@@ -2838,8 +2988,7 @@ public class MapBoard extends Importer {
 			gp = new UsePrototype(se.getValue(), bp);
 			
 			PieceSlot ps = new PieceSlot(gp);
-			ps.addTo(stack);
-			stack.add(ps);
+			insertComponent(ps, stack);
 		}
 	}
 
@@ -2856,9 +3005,36 @@ public class MapBoard extends Importer {
 	 * @return The VASSAL board object corresponding to the imported map.
 	 */
 	Board getBoard() {
+		BoardPicker picker = getBoardPicker();
+		String boards[] = picker.getAllowableBoardNames();
+		assert(boards.length <= 1);
+		Board board = null;
+		if (boards.length == 0) {
+			board = new Board();
+			insertComponent(board, picker);
+		}
+		else {
+			board = picker.getBoard(boards[0]);
+		}
 		return board;
 	}
 
+	private ToolbarMenu getToolbarMenu() {
+		List<ToolbarMenu> list = getMainMap().getComponentsOf(ToolbarMenu.class);
+		ToolbarMenu menu = null;
+		if (list.size() == 0) {
+			menu = new ToolbarMenu();
+			insertComponent(menu, getMainMap());
+			menu.setAttribute(ToolbarMenu.BUTTON_TEXT, "View");
+			menu.setAttribute(ToolbarMenu.TOOLTIP, "Toggle visibility of map elements");				
+		}
+		else {
+			assert(list.size() == 1);
+			menu = list.get(0);
+		}
+		return menu;
+	}
+	
 	/**
 	 * @return The map background colour.
 	 */

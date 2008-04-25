@@ -59,7 +59,6 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringEnum;
 import VASSAL.i18n.Resources;
-import VASSAL.launch.HeapSetter;
 import VASSAL.preferences.BooleanPreference;
 import VASSAL.preferences.DoublePreference;
 import VASSAL.preferences.EnumPreference;
@@ -127,22 +126,6 @@ public class GlobalOptions extends AbstractConfigurable {
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
       Integer.valueOf(512));
     Prefs.getGlobalPrefs().addOption(maxHeapConf);
-
-    final PropertyChangeListener heapListener = new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent e) {
-        try {
-          HeapSetter.getInstance().setHeaps(
-            initHeapConf.getIntValue(HeapSetter.DEFAULT_INITIAL_HEAP),
-            maxHeapConf.getIntValue(HeapSetter.DEFAULT_MAXIMUM_HEAP));
-        }
-        catch (IOException ex) {
-          ErrorLog.warn(ex);
-        }
-      }
-    };
-
-    initHeapConf.addPropertyChangeListener(heapListener);
-    maxHeapConf.addPropertyChangeListener(heapListener);
 
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }

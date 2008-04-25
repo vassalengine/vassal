@@ -25,6 +25,8 @@ import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidationReportDialog;
 
 public class SaveModuleAction extends SaveAction {
+  private static final long serialVersionUID = 1L;
+
   public SaveModuleAction() {
   }
 

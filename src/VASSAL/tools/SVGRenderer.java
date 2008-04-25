@@ -1,5 +1,5 @@
 /*
- * $Id: SVGManager.java 3245 2008-03-08 23:18:52Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2007-2008 by Joel Uckelman
  *

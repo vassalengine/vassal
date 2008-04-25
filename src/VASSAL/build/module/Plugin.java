@@ -1,5 +1,5 @@
 /*
- * $Id: Plugin.java 2393 2007-09-04 06:25:56 +0000 (Tue, 04 Sep 2007) swampwallaby $
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney, Brent Easton
  *

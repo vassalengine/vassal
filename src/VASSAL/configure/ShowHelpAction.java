@@ -16,6 +16,8 @@
  * License along with this library; if not, copies are available 
  * at http://www.opensource.org.
  */
+
+// FIXME: Why is this in configure instead of build.module.documentation?
 package VASSAL.configure;
 
 import java.awt.event.ActionEvent;
@@ -38,7 +40,7 @@ public class ShowHelpAction extends AbstractAction {
   private URL contents;
 
   public ShowHelpAction(URL contents, URL iconURL) {
-    this(null,contents,iconURL);
+    this(null, contents, iconURL);
   }
   
   public ShowHelpAction(HelpWindow helpWindow, HelpFile contents, URL iconURL) {
@@ -55,6 +57,7 @@ public class ShowHelpAction extends AbstractAction {
 
     putValue(Action.NAME, Resources.getString(Resources.HELP));
   }
+
   public void actionPerformed(ActionEvent e) {
     if (contents != null) {
       if (helpWindow == null) {

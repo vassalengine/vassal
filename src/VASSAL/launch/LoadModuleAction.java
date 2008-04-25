@@ -27,10 +27,12 @@ import javax.swing.JFrame;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
+import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.FileChooser;
+import VASSAL.preferences.Prefs;
 
 /**
  * Loads a module in play mode
@@ -40,6 +42,7 @@ import VASSAL.tools.FileChooser;
 public class LoadModuleAction extends GameModuleAction {
   private static final long serialVersionUID = 1L;
   private File moduleFile;
+  protected FileChooser fc;
 
   public LoadModuleAction(Component comp) {
     super(Resources.getString("Main.play_module"), comp);
@@ -54,6 +57,12 @@ public class LoadModuleAction extends GameModuleAction {
     actionCancelled = true;
     File target = moduleFile;
     if (target == null) {
+      if (fc == null) {
+        fc = FileChooser.createFileChooser(comp,
+          (DirectoryConfigurer)
+            Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
+      }
+
       if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
         File f = fc.getSelectedFile();
         if (f != null && f.exists()) {
@@ -70,20 +79,20 @@ public class LoadModuleAction extends GameModuleAction {
   }
 
   protected void loadModule(File f) throws IOException {
-    final JFrame frame = ModuleManager.getInstance().getFrame();
-    frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-    try {
-      GameModule.init(new BasicModule(new DataArchive(f.getPath())));
-      ModuleManager.getInstance().addModule(f);
-      Localization.getInstance().translate();
-      new ExtensionsLoader().addTo(GameModule.getGameModule());
-      GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
+//    final JFrame frame = ModuleManagerWindow.getInstance();
+//    frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//
+//    try {
+    GameModule.init(new BasicModule(new DataArchive(f.getPath())));
+//      ModuleManagerWindow.getInstance().addModule(f);
+    Localization.getInstance().translate();
+    new ExtensionsLoader().addTo(GameModule.getGameModule());
+    GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
     
-      frame.setVisible(false);
-    }
-    finally {
-      frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-    }
+//      frame.setVisible(false);
+//    }
+//    finally {
+//      frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+//    }
   }
 }

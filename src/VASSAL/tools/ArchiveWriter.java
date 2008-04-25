@@ -21,9 +21,11 @@ package VASSAL.tools;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +49,7 @@ public class ArchiveWriter extends DataArchive {
   private final Map<String,Object> sounds = new HashMap<String,Object>();
   private final Map<String,Object> files = new HashMap<String,Object>();
   private String archiveName;
+  private boolean closeWhenNotInUse;
 
   /**
    * Create a new writeable archive.
@@ -59,10 +62,11 @@ public class ArchiveWriter extends DataArchive {
    */
   public ArchiveWriter(String zipName) {
     archiveName = zipName;
+    closeWhenNotInUse = false;
     if (archiveName == null) {
       archive = null;
     }
-    else {
+    else { 
       try {
         archive = new ZipFile(archiveName);
       }
@@ -71,12 +75,34 @@ public class ArchiveWriter extends DataArchive {
       }
     }
   }
-
+  
+  public ArchiveWriter(String zipName, boolean keepClosed) {
+    this(zipName);
+    closeWhenNotInUse();
+  }
+  
   public ArchiveWriter(ZipFile archive) {
     this.archive = archive;
     archiveName = archive.getName();
   }
 
+  /**
+   * Close the archive, but keep it available for reuse. Used for Preferences
+   * file which must be shared between processes.
+   */
+  public void closeWhenNotInUse() {
+    closeWhenNotInUse = true;
+    if (archive != null) {
+      try {
+        archive.close();
+        archive = null;
+      }
+      catch (IOException ex) {
+        archive = null;
+      }
+    }
+  }
+  
   /**
    * Add an image file to the archive. The file will be copied into an "images"
    * directory in the archive. Storing another image with the same name will
@@ -166,6 +192,9 @@ public class ArchiveWriter extends DataArchive {
    */
   @Override
   public InputStream getFileStream(String name) throws IOException {
+    if (closeWhenNotInUse && archive == null && archiveName != null) {
+      archive = new ZipFile(archiveName);
+    }
     InputStream stream;
     stream = getAddedStream(images, name);
     if (stream == null) {
@@ -218,7 +247,7 @@ public class ArchiveWriter extends DataArchive {
       if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;
       archiveName = fc.getSelectedFile().getPath();
     }
-
+    
     String temp = (new File(archiveName)).getParent();
     temp = temp == null ? "temp" : temp + File.separator + "temp";
     int n = 1;
@@ -229,8 +258,15 @@ public class ArchiveWriter extends DataArchive {
 
     final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(temp));
     try {
-      if (archive != null) {
+      if (closeWhenNotInUse && archive == null && archiveName != null) {
         try {
+          archive = new ZipFile(archiveName);
+        }
+        catch (Exception exc) {
+           // No stack trace 
+        }
+      }
+      if (archive != null) {
           // Copy old non-overwritten entries into temp file
           final ZipInputStream zis =
             new ZipInputStream(new FileInputStream(archive.getName()));
@@ -266,15 +302,6 @@ public class ArchiveWriter extends DataArchive {
               e.printStackTrace();
             }
           }
-        }
-        finally {
-          try {
-            archive.close();
-          }
-          catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
       }
 
       // Write new entries into temp file
@@ -289,6 +316,11 @@ public class ArchiveWriter extends DataArchive {
       catch (IOException e) {
         e.printStackTrace();
       }
+    }
+    
+    if (archive != null) {
+      archive.close();
+      archive = null;
     }
 
     final File original = new File(archiveName);
@@ -305,7 +337,9 @@ public class ArchiveWriter extends DataArchive {
                             "\nData stored in " + temp);
     }
 
-    archive = new ZipFile(archiveName);
+    if (!closeWhenNotInUse) {
+      archive = new ZipFile(archiveName);
+    }
   }
 
   private void writeEntries(Map<String,Object> h, int method,
@@ -371,6 +405,24 @@ public class ArchiveWriter extends DataArchive {
   @SuppressWarnings("unchecked")
   protected void listImageNames(Collection v) {
     v.addAll(setOfImageNames());
+  }
+
+  /**
+   * Ensure the specified Zip archive exists. Create it and the specified
+   * entry if it does not.
+   * 
+   * @param archiveName Archive file
+   * @param entryName Entry Name
+   */ 
+  public static void ensureExists(File archiveFile, String entryName) throws FileNotFoundException, IOException {
+    if (!archiveFile.exists()) {
+      ZipOutputStream zis = new ZipOutputStream(
+        (OutputStream)new FileOutputStream(archiveFile));
+      ZipEntry entry = new ZipEntry(entryName);
+      zis.putNextEntry(entry);
+      zis.finish();
+      zis.close();
+    }
   }
 
 }

@@ -1,4 +1,6 @@
 /*
+ * $Id$
+ *
  * Copyright (c) 2008 by Michael Kiefte
  *
  * This library is free software; you can redistribute it and/or
@@ -19,6 +21,7 @@ package VASSAL.tools.imports;
 
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -27,11 +30,13 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
+import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.launch.EditModuleAction;
 import VASSAL.launch.ModuleEditorWindow;
 import VASSAL.launch.ModuleManager;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ExtensionFileFilter;
@@ -87,7 +92,24 @@ public final class ImportAction extends EditModuleAction {
 		MapBoard.class,
 		SymbolSet.class,
 	};
-	
+
+  public static FileChooser getFileChooser(Window w) {
+    final FileChooser chooser = FileChooser.createFileChooser(w,
+      (DirectoryConfigurer)
+        Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
+
+    chooser.resetChoosableFileFilters();
+		for (int i = IMPORTERS.length-1; i >= 0; --i) {
+		  chooser.addChoosableFileFilter(new ExtensionFileFilter(
+        DESCRIPTIONS[i] + " (*" + EXTENSIONS[i].toLowerCase()
+                        + ";*" + EXTENSIONS[i].toUpperCase() + ")", 
+        new String[] {EXTENSIONS[i]})
+      );
+    }
+
+    return chooser;
+  }
+
 	@Override
 	public void performAction(ActionEvent e) throws IOException {
 		actionCancelled = true;
@@ -110,7 +132,7 @@ public final class ImportAction extends EditModuleAction {
 	}
 
 	@Override
-	protected void loadModule(File f) throws IOException {
+	public void loadModule(File f) throws IOException {
 		final GameModule module = new BasicModule(new ArchiveWriter((String) null)); 
 		GameModule.init(module);
 
@@ -119,9 +141,9 @@ public final class ImportAction extends EditModuleAction {
 			if (f.getName().toLowerCase().endsWith(EXTENSIONS[i].toLowerCase())) {
 				try {
 					Importer imp = null;
-				    JFrame frame = ModuleManager.getInstance().getFrame();
+//				  JFrame frame = ModuleManager.getInstance().getFrame();
 					try {
-					    frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//					  frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 						imp = (Importer) (IMPORTERS[i].newInstance());
 						imp.importFile(this, f);
 						imp.writeToArchive();
@@ -132,7 +154,7 @@ public final class ImportAction extends EditModuleAction {
 								" must be a descendent of Importer.");
 					}
 					finally {
-						frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));						
+//						frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 					}
 					
 					module.getFrame().setVisible(true);

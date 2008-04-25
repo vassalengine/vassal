@@ -62,6 +62,7 @@ import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.menu.MenuManager;
 
 public class BasicModule extends GameModule {
   private static char COMMAND_SEPARATOR = (char) KeyEvent.VK_ESCAPE;
@@ -72,7 +73,7 @@ public class BasicModule extends GameModule {
   }
 
   protected void build() throws IOException {
-    final String fileName = "buildFile"; //$NON-NLS-1$
+    final String fileName = BUILDFILE; 
 
     InputStream in = null;
     try {
@@ -108,7 +109,10 @@ public class BasicModule extends GameModule {
       throw new IllegalArgumentException(ex.getMessage());
     }
 
-    GameModule.getGameModule().getFileMenu().add(getPrefs().getEditor().getEditAction());
+    MenuManager.getInstance().addAction("Prefs.edit_preferences",
+      getPrefs().getEditor().getEditAction());
+
+//    GameModule.getGameModule().getFileMenu().add(getPrefs().getEditor().getEditAction());
   }
 
   public void build(Element e) {

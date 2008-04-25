@@ -174,6 +174,9 @@ public class DiceButton extends AbstractConfigurable {
   protected String formatResult(String result) {
     reportFormat.setProperty(REPORT_NAME, getLocalizedConfigureName());
     reportFormat.setProperty(RESULT, result);
+    reportFormat.setProperty(N_DICE, Integer.toString(nDice));
+    reportFormat.setProperty(N_SIDES, Integer.toString(nSides));
+    reportFormat.setProperty(PLUS, Integer.toString(plus));
     String text = reportFormat.getLocalizedText();
     String report = text;
     if (text.length() > 0) {
@@ -222,7 +225,7 @@ public class DiceButton extends AbstractConfigurable {
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT});
+      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT, N_DICE, N_SIDES, PLUS});
     }
   }
 

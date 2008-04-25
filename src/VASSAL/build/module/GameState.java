@@ -20,7 +20,6 @@ package VASSAL.build.module;
 
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,9 +34,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+
+import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.build.GameModule;
 import VASSAL.command.AddPiece;
@@ -56,10 +59,7 @@ import VASSAL.tools.BridgeStream;
 import VASSAL.tools.Deobfuscator;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.Obfuscator;
-
-// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
-//import javax.swing.SwingWorker;
-import org.jdesktop.swingworker.SwingWorker;
+import VASSAL.tools.menu.MenuManager;
 
 /**
  * The GameState represents the state of the game currently being played.
@@ -70,7 +70,8 @@ public class GameState implements CommandEncoder {
   protected Map<String,GamePiece> pieces = new HashMap<String,GamePiece>();
   protected List<GameComponent> gameComponents = new ArrayList<GameComponent>();
   protected List<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
-  protected JMenuItem loadGame, saveGame, newGame, closeGame;
+//  protected JMenuItem loadGame, saveGame, newGame, closeGame;
+  protected Action loadGame, saveGame, newGame, closeGame;
   protected String lastSave;
   protected DirectoryConfigurer savedGameDirectoryPreference;
 
@@ -83,43 +84,55 @@ public class GameState implements CommandEncoder {
    * entries to the <code>File</code> menu of the controls window
    */
   public void addTo(GameModule mod) {
-    loadGame = new JMenuItem(Resources.getString("GameState.load_game"));  //$NON-NLS-1$
-    loadGame.addActionListener(new ActionListener() {
+    loadGame = new AbstractAction(Resources.getString("GameState.load_game")) {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         loadGame();
       }
-    });
-    loadGame.setMnemonic('L');
+    };
+//    loadGame.setProperty(Action.MNEMONIC_KEY, 'L');
 
-    saveGame = new JMenuItem(Resources.getString("GameState.save_game"));  //$NON-NLS-1$
-    saveGame.addActionListener(new ActionListener() {
+    saveGame = new AbstractAction(Resources.getString("GameState.save_game")) {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         saveGame();
       }
-    });
-    saveGame.setMnemonic('S');
+    };
+//    saveGame.setProperty(Action.MNEMONIC_KEY, 'S');
 
-    newGame = new JMenuItem(Resources.getString("GameState.new_game"));  //$NON-NLS-1$
-    newGame.addActionListener(new ActionListener() {
+    newGame = new AbstractAction(Resources.getString("GameState.new_game")) {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         setup(false);
         setup(true);
       }
-    });
-    newGame.setMnemonic('N');
+    };
+//    newGame.setProperty(Action.MNEMONIC_KEY, 'N');
 
-    closeGame = new JMenuItem(Resources.getString("GameState.close_game"));  //$NON-NLS-1$
-    closeGame.addActionListener(new ActionListener() {
+    closeGame = new AbstractAction(
+        Resources.getString("GameState.close_game")) {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         setup(false);
       }
-    });
-    closeGame.setMnemonic('C');
+    };
+//    closeGame.setProperty(Action.MNEMONIC_KEY, 'C');
 
+    final MenuManager mm = MenuManager.getInstance();
+    mm.addAction("GameState.new_game", newGame);
+    mm.addAction("GameState.load_game", loadGame);
+    mm.addAction("GameState.save_game", saveGame);
+    mm.addAction("GameState.close_game", closeGame);
+/*
     GameModule.getGameModule().getFileMenu().add(newGame);
     GameModule.getGameModule().getFileMenu().add(loadGame);
     GameModule.getGameModule().getFileMenu().add(saveGame);
     GameModule.getGameModule().getFileMenu().add(closeGame);
+*/
 
     saveGame.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
@@ -227,11 +240,13 @@ public class GameState implements CommandEncoder {
     closeGame.setEnabled(gameStarting);
 
     if (gameStarting) {
-      loadGame.setText(Resources.getString("GameState.load_continuation"));  //$NON-NLS-1$
+      loadGame.putValue(Action.NAME, Resources.getString("GameState.load_continuation"));
+//      loadGame.setText(Resources.getString("GameState.load_continuation"));  //$NON-NLS-1$
       GameModule.getGameModule().getWizardSupport().showGameSetupWizard();
     }
     else {
-      loadGame.setText(Resources.getString("GameState.load_game"));  //$NON-NLS-1$
+      loadGame.putValue(Action.NAME, Resources.getString("GameState.load_game"));
+//      loadGame.setText(Resources.getString("GameState.load_game"));  //$NON-NLS-1$
       GameModule.getGameModule().appendToTitle(null);
     }
 
@@ -420,7 +435,7 @@ public class GameState implements CommandEncoder {
   }
   
   public static final String SAVEFILE_ZIP_ENTRY = "savedGame";  //$NON-NLS-1$
-
+  
   /**
    * Return a {@link Command} that, when executed, will restore the
    * game to its current state.  Invokes {@link GameComponent#getRestoreCommand}
@@ -487,12 +502,13 @@ public class GameState implements CommandEncoder {
 
     final ArchiveWriter saver = new ArchiveWriter(f.getPath());
     saver.addFile(SAVEFILE_ZIP_ENTRY, out.toInputStream());
+    (new SaveMetaData()).save(saver);
     saver.write();
     if (saver.getArchive() != null) {
       saver.getArchive().close();
     }
   }
-
+  
   public void loadGameInBackground(final File f) {
     try {
       loadGameInBackground(f.getName(), new FileInputStream(f));

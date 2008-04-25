@@ -23,14 +23,21 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.menu.ChildProxy;
+import VASSAL.tools.menu.MenuBarProxy;
+import VASSAL.tools.menu.MenuItemProxy;
+import VASSAL.tools.menu.MenuProxy;
+import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.menu.ParentProxy;
 
 /**
  * Defines a saved game that is accessible from the File menu.
@@ -41,28 +48,34 @@ public class PredefinedSetup extends AbstractConfigurable {
   public static final String FILE = "file"; //$NON-NLS-1$
   public static final String USE_FILE = "useFile"; //$NON-NLS-1$
   public static final String IS_MENU = "isMenu"; //$NON-NLS-1$
+
   protected boolean isMenu;
-  protected boolean useFile=true;
+  protected boolean useFile = true;
   protected String fileName;
-  protected JMenuItem menuItem;
-  protected JMenu menu;
-  protected JMenuItem originalItem;
+
+  protected MenuItemProxy menuItem;
+  protected MenuProxy menu;
+
   protected VisibilityCondition showFile;
   protected VisibilityCondition showUseFile;
 
   public PredefinedSetup() {
-    menuItem = new JMenuItem();
-    menu = new JMenu();
-    menuItem.addActionListener(new ActionListener() {
+    menuItem = new MenuItemProxy(new AbstractAction() {
+      private static final long serialVersionUID = 1L;
+
       public void actionPerformed(ActionEvent e) {
         launch();
       }
     });
+
+    menu = new MenuProxy();
+
     showFile = new VisibilityCondition() {
       public boolean shouldBeVisible() {
         return !isMenu && useFile;
       }
     };
+
     showUseFile = new VisibilityCondition() {
       public boolean shouldBeVisible() {
         return !isMenu;
@@ -73,7 +86,7 @@ public class PredefinedSetup extends AbstractConfigurable {
   public String[] getAttributeDescriptions() {
     return new String[]{
       "Name:  ",
-      "Contains sub-menus?",
+      "Parent menu?",
       "Use pre-defined file?",
       "Saved Game:  "
     };
@@ -118,11 +131,14 @@ public class PredefinedSetup extends AbstractConfigurable {
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
-      menuItem.setText((String) value);
+      menuItem.getAction().putValue(Action.NAME, (String) value);
       menu.setText((String) value);
     }
     else if (USE_FILE.equals(key)) {
-      useFile = "true".equals(value) || Boolean.TRUE.equals(value); //$NON-NLS-1$
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      useFile = ((Boolean) value).booleanValue();
     }
     else if (FILE.equals(key)) {
       if (value instanceof File) {
@@ -151,13 +167,15 @@ public class PredefinedSetup extends AbstractConfigurable {
   }
 
   public void launch() {
-    if (useFile
-      && fileName != null) {
+    if (useFile && fileName != null) {
       try {
-        GameModule.getGameModule().getGameState().loadGameInBackground(fileName, getSavedGameContents());
+        GameModule.getGameModule()
+                  .getGameState()
+                  .loadGameInBackground(fileName, getSavedGameContents());
       }
       catch (IOException e) {
-        GameModule.getGameModule().warn(Resources.getString("GameState.invalid_savefile", fileName));
+        GameModule.getGameModule().warn(
+          Resources.getString("GameState.invalid_savefile", fileName));
       }
     }
     else {
@@ -170,42 +188,75 @@ public class PredefinedSetup extends AbstractConfigurable {
     return GameModule.getGameModule().getDataArchive().getFileStream(fileName);
   }
 
-  private JMenuItem getMenuInUse() {
+  private ChildProxy<?> getMenuInUse() {
     return isMenu ? menu : menuItem;
   }
 
   private void setMenu(boolean isMenu) {
-    if (isMenu != this.isMenu
-        && getMenuInUse().getParent() != null) {
-      JMenuItem inUse = getMenuInUse();
-      int index = -1;
-      for (int i = 0,n = inUse.getParent().getComponentCount(); i < n; ++i) {
-        if (inUse.getParent().getComponent(i) == inUse) {
-          index = i;
-          break;
-        }
-      }
-      if (index >= 0) {
-        JMenuItem notInUse = this.isMenu ? menuItem : menu;
-        inUse.getParent().add(notInUse, index);
-        inUse.getParent().remove(inUse);
-      }
+    if (isMenu == this.isMenu) return;
+
+    final ChildProxy<?> inUse = getMenuInUse();
+    final ParentProxy parent = inUse.getParent();
+
+    if (parent != null) {
+      // swap our items if one is already in the menu
+      final ChildProxy<?> notInUse = this.isMenu ? menuItem : menu;
+
+      parent.insert(notInUse, parent.getIndex(inUse));
+      parent.remove(inUse);
     }
+
     this.isMenu = isMenu;
   }
 
   public void addTo(Buildable parent) {
     if (parent instanceof GameModule) {
-      JMenu fileMenu = GameModule.getGameModule().getFileMenu();
-      originalItem = (JMenuItem) fileMenu.getMenuComponent(0);
-      fileMenu.insert(getMenuInUse(), 0);
-      fileMenu.remove(originalItem);
+      final MenuManager mm = MenuManager.getInstance();
+      final MenuItemProxy start = mm.getItems("PredefinedSetup.start").get(0);
+      final MenuItemProxy end = mm.getItems("PredefinedSetup.end").get(0);
+      final MenuProxy par = (MenuProxy) end.getParent();
+      final int startPos = par.getIndex(start);     
+      final int endPos = par.getIndex(end);     
+
+      // create the separator if this is the first item
+      if (startPos + 1 == endPos) {
+        par.insertSeparator(endPos+1);
+      }
+
+      // insert the item between the markers
+      par.insert(getMenuInUse(), endPos);
     }
     else if (parent instanceof PredefinedSetup) {
-      PredefinedSetup setup = (PredefinedSetup) parent;
+      final PredefinedSetup setup = (PredefinedSetup) parent;
       setup.menu.add(getMenuInUse());
     }
+
     GameModule.getGameModule().getWizardSupport().addPredefinedSetup(this);
+  }
+
+  public void removeFrom(Buildable parent) {
+    if (parent instanceof GameModule) {
+      final MenuManager mm = MenuManager.getInstance();
+      final MenuItemProxy start = mm.getItems("PredefinedSetup.start").get(0);
+      final MenuItemProxy end = mm.getItems("PredefinedSetup.end").get(0);
+      final MenuProxy par = (MenuProxy) end.getParent();
+
+      // remove the item
+      par.remove(getMenuInUse());
+      
+      // remove the separator if this was the last item
+      final int startPos = par.getIndex(start);     
+      final int endPos = par.getIndex(end);     
+      if (startPos + 1 == endPos) {
+        par.remove(endPos+1);
+      } 
+    }
+    else if (parent instanceof PredefinedSetup) {
+      final PredefinedSetup setup = (PredefinedSetup) parent;
+      setup.menu.remove(getMenuInUse());
+    }
+
+    GameModule.getGameModule().getWizardSupport().removePredefinedSetup(this);
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -218,19 +269,6 @@ public class PredefinedSetup extends AbstractConfigurable {
 
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("GameModule.htm", "PredefinedSetup"); //$NON-NLS-1$ //$NON-NLS-2$
-  }
-
-  public void removeFrom(Buildable parent) {
-    if (parent instanceof GameModule) {
-      JMenu fileMenu = GameModule.getGameModule().getFileMenu();
-      fileMenu.insert(originalItem, 0);
-      fileMenu.remove(getMenuInUse());
-    }
-    else if (parent instanceof PredefinedSetup) {
-      PredefinedSetup setup = (PredefinedSetup) parent;
-      setup.menu.remove(getMenuInUse());
-    }
-    GameModule.getGameModule().getWizardSupport().removePredefinedSetup(this);
   }
 
   public boolean isMenu() {

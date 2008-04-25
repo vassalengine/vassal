@@ -24,7 +24,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.swing.Action;
+import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -48,7 +51,8 @@ public class HelpFile extends AbstractConfigurable {
   protected URL contents;
   protected String title;
   protected String fileName;
-  protected JMenuItem launch;
+//  protected JMenuItem launch;
+  protected Action launch;
   protected String fileType = ARCHIVE_ENTRY;
 
   public static String getConfigureTypeName() {
@@ -56,6 +60,7 @@ public class HelpFile extends AbstractConfigurable {
   }
 
   public HelpFile() {
+/*
     launch = new JMenuItem();
     setConfigureName("help");
     setMenuItem();
@@ -64,6 +69,18 @@ public class HelpFile extends AbstractConfigurable {
         showWindow();
       }
     });
+*/
+    setConfigureName("help");
+
+    launch = new AbstractAction() {
+      private static final long serialVersionUID = 1L;
+
+      public void actionPerformed(ActionEvent e) {
+        showWindow();
+      }
+    }; 
+
+    setMenuItem();
   }
 
 
@@ -164,7 +181,8 @@ public class HelpFile extends AbstractConfigurable {
   }
 
   private void setMenuItem() {
-    launch.setText(getConfigureName());
+    launch.putValue(Action.NAME, getConfigureName());
+//    launch.setText(getConfigureName());
   }
 
   /**
@@ -196,7 +214,8 @@ public class HelpFile extends AbstractConfigurable {
     if (TITLE.equals(key)) {
       title = (String) val;
       setConfigureName(title);
-      launch.setText(title);
+//      launch.setText(title);
+      launch.putValue(Action.NAME, title);
     }
     else if (FILE.equals(key)) {
       if (val instanceof File) {
@@ -232,12 +251,14 @@ public class HelpFile extends AbstractConfigurable {
   }
 
   public void removeFrom(Buildable b) {
-    ((Documentation) b).getHelpMenu().remove(launch);
+    ((Documentation) b).getHelpMenu().remove(launchItem);
     launch.setEnabled(false);
   }
 
+  protected JMenuItem launchItem;
+
   public void addTo(Buildable b) {
-    ((Documentation) b).getHelpMenu().add(launch);
+    launchItem = ((Documentation) b).getHelpMenu().add(launch);
   }
   
   public static HelpFile getReferenceManualPage(String page) {

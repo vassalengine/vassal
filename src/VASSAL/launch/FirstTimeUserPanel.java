@@ -106,7 +106,7 @@ public class FirstTimeUserPanel {
     jump.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         SwingUtilities.getWindowAncestor(panel).dispose();
-        ModuleManager.getInstance().showFrame();
+        ModuleManagerWindow.getInstance().setVisible(true);
       }
     });
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.
+com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
   <key>CFBundleName</key>
@@ -33,15 +34,13 @@
     <key>WorkingDirectory</key>
     <string>$APP_PACKAGE</string>
     <key>MainClass</key>
-    <string>VASSAL.launch.Main</string>
+    <string>VASSAL.launch.ModuleManager</string>
     <key>JVMVersion</key>
     <string>1.5+</string>
     <key>ClassPath</key>
     <array>
       <string>$JAVAROOT/Vengine.jar</string>
     </array>
-    <key>VMOptions</key>
-    <string>-Xms256M -Xmx512M</string>
   </dict>
 </dict>
 </plist>

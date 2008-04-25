@@ -20,9 +20,12 @@ package VASSAL.tools.imports;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
+import VASSAL.build.module.map.LayeredPieceCollection;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
@@ -41,12 +44,35 @@ public abstract class Importer {
 	protected ImportAction action;
 	protected File file;
 	
-	static protected void InsertComponent(Buildable child, Buildable parent) {
+	static protected void insertComponent(Buildable child, Buildable parent) {
 		child.build(null);
 		if (child instanceof PieceSlot)
 			((PieceSlot) child).updateGpId(GameModule.getGameModule());
 		child.addTo(parent);
 		parent.add(child);
+	}
+	
+	/**
+	 * @return The VASSAL Map object corresponding to this imported map.
+	 */
+	protected Map getMainMap() {
+		return GameModule.getGameModule().getAllDescendantComponentsOf(Map.class).iterator().next();
+	}
+	
+	protected LayeredPieceCollection getLayeredPieceCollection() {
+		Map map = getMainMap();
+		List<LayeredPieceCollection> l = map.getComponentsOf(LayeredPieceCollection.class);
+		LayeredPieceCollection collection = null;
+		if (l.size() == 0) {
+			collection = new LayeredPieceCollection();
+			insertComponent(collection, map);
+			collection.setAttribute(LayeredPieceCollection.PROPERTY_NAME, "Layer");
+		}
+		else {
+			assert(l.size() == 1);
+			collection = l.get(0);
+		}
+		return collection;
 	}
 	
 	/**

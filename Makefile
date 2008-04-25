@@ -38,7 +38,7 @@ vpath %.class $(shell find $(CLASSDIR) -type d)
 vpath %.java  $(shell find $(SRCDIR) -type d -name .svn -prune -o -print)
 vpath %.jar $(LIBDIR)
 
-all: $(CLASSDIR) $(CLASSES) i18n images
+all: $(CLASSDIR) $(CLASSES) i18n images help
 
 $(CLASSDIR):
 	mkdir -p $(CLASSDIR)
@@ -49,7 +49,12 @@ $(CLASSDIR):
 images: $(CLASSDIR)/images
 
 $(CLASSDIR)/images: $(CLASSDIR)
-	svn export $(SRCDIR)/images $(CLASSDIR)/images
+	svn export --force $(SRCDIR)/images $(CLASSDIR)/images
+
+help: $(CLASSDIR)/help
+
+$(CLASSDIR)/help: $(CLASSDIR)
+	svn export --force $(SRCDIR)/help $(CLASSDIR)/help
 
 i18n: $(CLASSDIR)
 	for i in `cd $(SRCDIR) && find VASSAL -name '*.properties'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
@@ -67,7 +72,8 @@ Vengine.jar: all $(TMPDIR)
 	cp dist/Vengine.mf $(TMPDIR)
 	(echo -n 'Class-Path: ' ; \
 		find $(LIBDIR) -name '*.jar' -printf '%f\n  ' | \
-		sed -e '/Vengine.jar/d' -e '/^  $$/d') >>$(TMPDIR)/Vengine.mf
+		sed -e '/Vengine.jar/d' -e '/AppleJavaExtensions.jar/d' -e '/^  $$/d' \
+	) >>$(TMPDIR)/Vengine.mf
 	$(JAR) cvfm $(LIBDIR)/$@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) .
 
 $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
@@ -95,6 +101,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $@/Contents/Info.plist
 	cp dist/macosx/JavaApplicationStub $@/Contents/MacOS
 	svn export $(LIBDIR) $@/Contents/Resources/Java
+	rm $@/Contents/Resources/Java/AppleJavaExtensions.jar
 	svn export $(DOCDIR) $@/Contents/Resources/doc
 	cp $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
@@ -105,17 +112,18 @@ $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	sudo sh -c "mount -t hfsplus -o loop $@ $(TMPDIR)/dmg ; cp -va $< $(TMPDIR)/dmg ; umount $(TMPDIR)/dmg"
 	rmdir $(TMPDIR)/dmg
 
-$(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS) $(TMPDIR)/VASSAL.exe 
+$(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS)
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
 	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
+	rm $(TMPDIR)/VASSAL-$(VERSION)/lib/AppleJavaExtensions.jar
 	cp $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL-$(VERSION)/lib
-	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe \
-		$(TMPDIR)/VASSAL-$(VERSION)
+	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-generic
+$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-generic $(TMPDIR)/VASSAL.exe
 	rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.sh
+	cp $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
 			sed -e 's/tmp\/VASSAL-$(VERSION)\/\?//' -e 's/\//\\\/g'`\" ; \
@@ -152,4 +160,4 @@ clean-javadoc:
 clean: clean-release
 	$(RM) -r $(CLASSDIR)/*
 
-.PHONY: all clean release release-macosx release-windows release-generic clean-release i18n images javadoc clean-javadoc version
+.PHONY: all clean release release-macosx release-windows release-generic clean-release i18n images help javadoc clean-javadoc version

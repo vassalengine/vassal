@@ -357,7 +357,9 @@ The <span style="font-weight: bold;">Report Format</span> specifies
 the <a href="MessageFormat.htm">Message Format</a> for reporting the
 results:&nbsp; <span style="font-style: italic;"><span style="font-style: italic;">name</span></span> is the name of the
 button as specified above, <span style="font-style: italic;">result</span>
-is the result of the roll.<br>
+is the result of the roll, <span style="font-style: italic;">nDice</span> is the number of dice,
+<span style="font-style: italic;">nSides</span> is the number of dice, 
+and <span style="font-style: italic;">plus</span> is the modifier to each die roll.<br>
             <br>
 The <span style="font-style: italic;">result</span> of the dice roll is stored as a global <a href="Properties.htm">Property</a> under the name &lt;name&gt;_result, where &lt;name&gt; is the name given to the component. (<span style="font-style: italic;">Example:</span> A dice button is named "2d6" After a roll of 11, the property name $2d6_result$ will resolve to "11" until the next roll.<br>
 

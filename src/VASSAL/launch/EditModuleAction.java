@@ -1,4 +1,6 @@
 /*
+ * $Id$
+ *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -45,7 +47,8 @@ public class EditModuleAction extends LoadModuleAction {
   protected void loadModule(File f) throws IOException {
     ArchiveWriter archive = new ArchiveWriter(new ZipFile(f.getPath()));
     GameModule.init(new BasicModule(archive));
-    ModuleManager.getInstance().hideFrame();
+// FIXME: really hide the MM?
+//    ModuleManagerWindow.getInstance().setVisible(false);
     JFrame frame = GameModule.getGameModule().getFrame();
     frame.setVisible(true);
     ModuleEditorWindow w = new ModuleEditorWindow(GameModule.getGameModule());

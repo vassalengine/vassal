@@ -70,6 +70,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public static final String UNIVERSAL = "anyModule"; //$NON-NLS-1$ 
   public static final String NEXT_PIECESLOT_ID = "nextPieceSlotId"; //$NON-NLS-1$ 
   public static final String EXTENSION_ID = "extensionId"; //$NON-NLS-1$ 
+  public static final String DESCRIPTION = "description";
   
   private DataArchive archive;
   private String version = "0.0"; //$NON-NLS-1$
@@ -82,6 +83,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   protected int nextGpId = 0;
   protected String extensionId = "";
   protected JTextField idDisplay;
+  protected String description = "";
 
   public ModuleExtension(DataArchive archive) {
     this.archive = archive;
@@ -95,8 +97,12 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     return archive;
   }
 
+  public String getDescription() {
+    return description;
+    
+  }
   public void build() {
-    final String fileName = "buildFile"; //$NON-NLS-1$
+    final String fileName = GameModule.BUILDFILE; //$NON-NLS-1$
 
     GameModule.getGameModule().getDataArchive().addExtension(archive);
     GameModule.getGameModule().setGpIdSupport(this); // Record that we are currently building this Extension
@@ -186,6 +192,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     return new String[]{
       UNIVERSAL,
       VERSION,
+      DESCRIPTION,
       BASE_MODULE_NAME,
       BASE_MODULE_VERSION,
       VASSAL_VERSION_CREATED,
@@ -253,6 +260,9 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     else if (EXTENSION_ID.equals(key)) {
       s = extensionId;
     }
+    else if (DESCRIPTION.equals(key)) {
+      s = description;
+    }
     return s;
   }
 
@@ -299,6 +309,9 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     else if (EXTENSION_ID.equals(key)) {
       extensionId = (String) value;      
     }
+    else if (DESCRIPTION.equals(key)) {
+      description = (String) value; 
+    }
   }
   
   public String getExtensionId() {
@@ -340,9 +353,15 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public void save() throws IOException {
     vassalVersionCreated = Info.getVersion();
     if (archive instanceof ArchiveWriter) {
+      try {
+        (new ExtensionMetaData(this)).save((ArchiveWriter) archive);
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
       String save = buildString();
       ((ArchiveWriter) archive).addFile
-          ("buildFile", //$NON-NLS-1$
+          (GameModule.BUILDFILE,
            new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
       ((ArchiveWriter) archive).write();
       lastSave = save;
@@ -355,9 +374,15 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public void saveAs() throws IOException {
     vassalVersionCreated = Info.getVersion();
     if (archive instanceof ArchiveWriter) {
+      try {
+        (new ExtensionMetaData(this)).save((ArchiveWriter) archive);
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
       String save = buildString();
       ((ArchiveWriter) archive).addFile
-          ("buildFile", //$NON-NLS-1$
+          (GameModule.BUILDFILE, //
            new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
       ((ArchiveWriter) archive).saveAs();
       lastSave = save;
@@ -377,6 +402,9 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       final StringConfigurer config = new StringConfigurer(VERSION, "Version:  ", version);
       d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
       d.add(config.getControls());
+      
+      final StringConfigurer dconfig = new StringConfigurer(DESCRIPTION, "Description:  ", description);
+      d.add(dconfig.getControls());
       
       /*
        * The Extension id should not normally be changed once saved games have been created.
@@ -417,6 +445,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       ok.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           setAttribute(VERSION, config.getValue());
+          setAttribute(DESCRIPTION, dconfig.getValue());
           setAttribute(UNIVERSAL, uconfig.getValue());
           d.dispose();
         }

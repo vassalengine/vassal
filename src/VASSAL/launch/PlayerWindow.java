@@ -21,16 +21,24 @@ package VASSAL.launch;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-
-import javax.swing.Action;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
-import VASSAL.tools.OrderedMenu;
+import VASSAL.Info;
+import VASSAL.build.module.Documentation;
+import VASSAL.configure.ShowHelpAction;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.WrapLayout;
+import VASSAL.tools.menu.MenuBarProxy;
+import VASSAL.tools.menu.MenuProxy;
+import VASSAL.tools.menu.MenuManager;
 
 public class PlayerWindow extends JFrame {
   private static final long serialVersionUID = 1L;
@@ -42,51 +50,70 @@ public class PlayerWindow extends JFrame {
   public JPanel getControlPanel() {
     return controlPanel;
   }
-  protected final JMenuBar menuBar = new JMenuBar();
 
-  public JMenu getFileMenu() {
-    return fileMenu;
-  }
-
-  public JMenu getHelpMenu() {
-    return helpMenu;
-  }
-
-  protected final JMenu fileMenu;
-  protected final JMenu helpMenu;
   protected final JToolBar toolBar = new JToolBar();
   protected final JPanel controlPanel = new JPanel();
 
   public PlayerWindow() {
     setTitle("VASSAL");
     setLayout(new BorderLayout());
-    setJMenuBar(menuBar);
-
-    // build File menu
-    fileMenu = OrderedMenu.builder("General.file")
-                          .appendItem("GameState.new_game")
-                          .appendItem("GameState.load_game")
-                          .appendItem("GameState.save_game")
-                          .appendItem("GameState.close_game")
-                          .appendSeparator()
-                          .appendItem("BasicLogger.begin_logfile")
-                          .appendItem("BasicLogger.end_logfile")
-                          .appendSeparator()
-                          .appendItem("Prefs.edit_preferences")
-                          .appendSeparator()
-                          .appendItem("General.quit")
-                          .create();
-    fileMenu.add(new ShutDownAction());
-    menuBar.add(fileMenu);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    // build Help menu
-    helpMenu = OrderedMenu.builder("General.help")
-                          .appendItem("About VASSAL")
-                          .create();
-    menuBar.add(helpMenu);
-    final Action aboutVASSAL = AboutVASSAL.getAction();
-    helpMenu.add(aboutVASSAL);
+    // setup menubar and actions
+    final MenuManager mm = MenuManager.getInstance();
+    final MenuBarProxy mb = mm.getMenuBarProxyFor(this);
+
+    // file menu
+    final MenuProxy fileMenu =
+      new MenuProxy(Resources.getString("General.file"));
+
+    fileMenu.add(mm.addMarker("PredefinedSetup.start"));
+    fileMenu.add(mm.addMarker("PredefinedSetup.end"));
+ 
+    fileMenu.add(mm.addKey("GameState.new_game"));
+    fileMenu.add(mm.addKey("GameState.load_game"));
+    fileMenu.add(mm.addKey("GameState.save_game"));
+    fileMenu.add(mm.addKey("GameState.close_game"));
+    fileMenu.addSeparator();
+    fileMenu.add(mm.addKey("BasicLogger.begin_logfile"));
+    fileMenu.add(mm.addKey("BasicLogger.end_logfile"));
+
+    if (!Info.isMacOSX()) {
+      fileMenu.addSeparator();
+      fileMenu.add(mm.addKey("Prefs.edit_preferences"));
+      fileMenu.addSeparator();
+      fileMenu.add(mm.addKey("General.quit"));
+    }
+
+    mm.addAction("General.quit", new ShutDownAction());
+
+    // help menu
+    final MenuProxy helpMenu =
+      new MenuProxy(Resources.getString("General.help"));
+    
+    helpMenu.add(mm.addKey("General.help"));
+
+    if (!Info.isMacOSX()) {
+      helpMenu.addSeparator();
+      helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
+    }
+
+    URL url = null; 
+    try {
+      url = new File(Documentation.getDocumentationBaseDir(),
+                     "README.html").toURI().toURL();
+    }
+    catch (MalformedURLException e) {
+      ErrorLog.warn(e);
+    }
+    mm.addAction("General.help", new ShowHelpAction(url, null));
+
+    mm.addAction("AboutScreen.about_vassal", AboutVASSAL.getAction());
+    
+    mb.add(fileMenu);
+    mb.add(helpMenu);
+
+    setJMenuBar(mm.getMenuBarFor(this));
 
     // build toolbar
     toolBar.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));

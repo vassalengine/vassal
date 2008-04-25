@@ -56,6 +56,7 @@ import VASSAL.tools.BridgeStream;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.Obfuscator;
+import VASSAL.tools.menu.MenuManager;
 
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
   public static final String BEGIN = "begin_log";  //$NON-NLS-1$
@@ -73,6 +74,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   protected Command beginningState;
   protected File outputFile;
   protected Action stepAction = new StepAction();
+  protected SaveMetaData metadata;
 
   public BasicLogger() {
     super();
@@ -98,8 +100,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     mod.addCommandEncoder(this);
     mod.getGameState().addGameComponent(this);
 
-    GameModule.getGameModule().getFileMenu().add(newLogAction);
-    GameModule.getGameModule().getFileMenu().add(endLogAction);
+    final MenuManager mm = MenuManager.getInstance();
+    mm.addAction("BasicLogger.begin_logfile", newLogAction);
+    mm.addAction("BasicLogger.end_logfile", endLogAction);
 
     JButton button = mod.getToolBar().add(undoAction);
     button.setToolTipText(Resources.getString("BasicLogger.undo_last_move"));  //$NON-NLS-1$
@@ -273,7 +276,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       new Obfuscator(s.getBytes("UTF-8")).write(out); //$NON-NLS-1$    
 
       final ArchiveWriter saver = new ArchiveWriter(outputFile.getPath());
-      saver.addFile("savedGame", out.toInputStream()); //$NON-NLS-1$
+      saver.addFile(GameState.SAVEFILE_ZIP_ENTRY, out.toInputStream()); //$NON-NLS-1$
+      metadata.save(saver);
       saver.write();
 
       GameModule.getGameModule().getGameState().setModified(false);
@@ -300,6 +304,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       endLogAction.setEnabled(true);
       GameModule.getGameModule().appendToTitle(Resources.getString("BasicLogger.logging_to", outputFile.getName()));  //$NON-NLS-1$
       newLogAction.setEnabled(false);
+      metadata = new SaveMetaData();
     }
   }
 
@@ -366,7 +371,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
     return null;
   }
+
   protected Action undoAction = new UndoAction();
+
   protected Action endLogAction = new AbstractAction(Resources.getString("BasicLogger.end_logfile")) {  //$NON-NLS-1$
     private static final long serialVersionUID = 1L;
 
@@ -387,6 +394,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
     }
   };
+
   protected Action newLogAction = new AbstractAction(Resources.getString("BasicLogger.begin_logfile")) {  //$NON-NLS-1$
     private static final long serialVersionUID = 1L;
 
