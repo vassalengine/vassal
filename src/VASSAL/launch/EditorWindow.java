@@ -25,6 +25,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -88,6 +90,13 @@ public abstract class EditorWindow extends JFrame {
   protected EditorWindow() {
     setTitle("VASSAL " + getEditorType() + " Editor");    
     setLayout(new BorderLayout());
+
+    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        close();
+      }
+    });
 
     toolBar.setFloatable(false);
     add(toolBar, BorderLayout.NORTH);
@@ -232,7 +241,10 @@ public abstract class EditorWindow extends JFrame {
    */
   protected abstract void save();
   protected abstract void saveAs();
-  protected abstract void close();
+
+  protected void close() {
+    GameModule.getGameModule().quit();  
+  }
  
   protected void saver(final Runnable save) {
     final ValidationReport report = new ValidationReport();

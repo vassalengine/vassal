@@ -37,7 +37,6 @@ public class ModuleEditorWindow extends EditorWindow {
 
   public ModuleEditorWindow(GameModule mod) {
     super();
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     tree = new ConfigureTree(mod, helpWindow, this);
     treeStateChanged(false);
     scrollPane.setViewportView(tree);    
@@ -113,6 +112,4 @@ public class ModuleEditorWindow extends EditorWindow {
       }
     }); 
   }
-  
-  protected void close() { }
 }

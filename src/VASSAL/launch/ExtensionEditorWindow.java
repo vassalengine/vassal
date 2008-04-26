@@ -16,8 +16,6 @@
  */
 package VASSAL.launch;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 import javax.swing.JDialog;
@@ -37,12 +35,7 @@ public class ExtensionEditorWindow extends EditorWindow {
  
   public ExtensionEditorWindow(GameModule mod, ModuleExtension ext) {
     super();
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent e) {
-        close();
-      }
-    });
+
     extension = ext;
     tree = new ExtensionTree(mod, helpWindow, ext, this);
     treeStateChanged(false);
@@ -110,17 +103,5 @@ public class ExtensionEditorWindow extends EditorWindow {
         }
       }
     }); 
-  }
-  
-  /**
-   * Close Extension and return to the Module Editor
-   */
-  protected void close() {
-    if (extension.confirmExit()) {
-      extension = null;
-      tree = null;      
-      setVisible(false);
-      dispose();
-    }
   }
 }
