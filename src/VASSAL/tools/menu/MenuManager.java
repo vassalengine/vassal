@@ -72,6 +72,10 @@ public abstract class MenuManager {
     }
   }
 
+  public void removeAction(String key) {
+    addAction(key, null);
+  }
+
   public MenuItemProxy addMarker(String key) {
     List<MenuItemProxy> items = actionLocations.get(key);
     if (items == null) {

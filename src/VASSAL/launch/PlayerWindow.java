@@ -93,8 +93,10 @@ public class PlayerWindow extends JFrame {
     
     helpMenu.add(mm.addKey("General.help"));
 
+    helpMenu.addSeparator();
+    helpMenu.add(mm.addKey("Documentation.about_module"));
+
     if (!Info.isMacOSX()) {
-      helpMenu.addSeparator();
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
     }
 

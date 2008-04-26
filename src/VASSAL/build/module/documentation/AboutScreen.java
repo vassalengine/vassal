@@ -24,12 +24,13 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -48,6 +49,7 @@ import VASSAL.tools.ErrorLog;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
+import VASSAL.tools.menu.MenuManager;
 
 /**
  * Places an entry in the <code>Help</code> menu.  Selecting the entry
@@ -59,16 +61,17 @@ public class AboutScreen extends AbstractConfigurable {
   protected Image image;
   protected String title;
   protected String fileName;
-  protected JMenuItem launch;
+  protected Action launch;
   protected Window window;
 
   public AboutScreen() {
-    launch = new JMenuItem();
-    launch.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
+    launch = new AbstractAction() {
+      private static final long serialVersionUID = 1L;
+
+      public void actionPerformed(ActionEvent e) {
         launch();
       }
-    });
+    };
   }
 
   public AboutScreen(ImageOp op) {
@@ -196,7 +199,7 @@ public class AboutScreen extends AbstractConfigurable {
       } 
 
       setConfigureName(title);
-      launch.setText(title);
+      launch.putValue(Action.NAME, title);
     }
     else if (FILE.equals(key)) {
       if (val instanceof File) {
@@ -240,17 +243,15 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   public void removeFrom(Buildable b) {
-//    MenuManager.getInstance().removeAction(launch);
-    ((Documentation) b).getHelpMenu().remove(launch);
+    MenuManager.getInstance().removeAction("Documentation.about_module");
   }
 
   /**
    * Expects to be added to a {@link Documentation}.  Adds an entry
-   * to the <code>Help</code> menu */
+   * to the <code>Help</code> menu
+   */
   public void addTo(Buildable b) {
-    final Documentation d = (Documentation) b;
-    d.getHelpMenu().add(launch);
-//    MenuManager.getInstance().addAction(launch);
+    MenuManager.getInstance().addAction("Documentation.about_module", launch);
 
     if (op == null) {
       // use the VASSAL about image in case there is no image given

@@ -45,6 +45,7 @@ import javax.swing.KeyStroke;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
@@ -56,6 +57,7 @@ import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidationReportDialog;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateVassalWindow;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -142,9 +144,7 @@ public abstract class EditorWindow extends JFrame {
 
     helpMenu.add(mm.addKey("General.help"));
     helpMenu.add(mm.addKey("Editor.ModuleEditor.reference_manual"));
-    
-    helpMenu.add(mm.addKey("about_module"));
-
+   
     if (!Info.isMacOSX()) {
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
@@ -200,8 +200,17 @@ public abstract class EditorWindow extends JFrame {
     createUpdater.setEnabled(false);
     mm.addAction("create_module_updater", createUpdater);
 
+    URL url = null; 
+    try {
+      url = new File(Documentation.getDocumentationBaseDir(),
+                     "README.html").toURI().toURL();
+    }
+    catch (MalformedURLException e) {
+      ErrorLog.warn(e);
+    }
+    mm.addAction("General.help", new ShowHelpAction(url, null));
 
-    URL url = null;
+    url = null;
     try {
       File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
       dir = new File(dir, "ReferenceManual/index.htm"); //$NON-NLS-1$
