@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +35,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
@@ -89,19 +91,42 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   public void build(Element e) {
     if (e != null) {
-      NamedNodeMap attributes = e.getAttributes();
+      final NamedNodeMap attributes = e.getAttributes();
       for (int i = 0; i < attributes.getLength(); ++i) {
-        Attr att = (Attr) attributes.item(i);
+        final Attr att = (Attr) attributes.item(i);
+ 
+        // Old versions of VASSAL (pre-2.9?) wrote "Retire" as the
+        // icon filename for the retireButton, even when no such
+        // image existed in the archive. This test blocks irritating
+        // errors due to nonexistent "Retire" images, by ignoring
+        // the buttonIcon attribute when the value is "Retire" but
+        // no such image can be found in the archive.
+        if ("buttonIcon".equals(att.getName()) &&
+            "Retire".equals(att.getValue())) {
+          try {
+            GameModule.getGameModule()
+                      .getDataArchive()
+                      .getImageInputStream(att.getValue());
+          }
+          catch (IOException ex) {
+            continue;
+          }
+        }  
+
         retireButton.setAttribute(att.getName(), att.getValue());
-        Localization.getInstance().saveTranslatableAttribute(this, att.getName(), att.getValue());
+        Localization.getInstance()
+                    .saveTranslatableAttribute(this, att.getName(),
+                                                     att.getValue());
       }
-      NodeList n = e.getElementsByTagName("*"); //$NON-NLS-1$
+
+      final NodeList n = e.getElementsByTagName("*"); //$NON-NLS-1$
       sides.clear();
       for (int i = 0; i < n.getLength(); ++i) {
-        Element el = (Element) n.item(i);
+        final Element el = (Element) n.item(i);
         sides.add(Builder.getText(el));
       }
-      Localization.getInstance().saveTranslatableAttribute(this, SIDES, getSidesAsString());
+      Localization.getInstance()
+                  .saveTranslatableAttribute(this, SIDES, getSidesAsString());
     }
   }
 
