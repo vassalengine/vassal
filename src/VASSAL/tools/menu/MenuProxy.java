@@ -58,7 +58,7 @@ public class MenuProxy extends AbstractParent<JMenu> {
     final JMenu menu = new JMenu(text);
 
     for (ChildProxy<?> child : children) {
-      if (child instanceof Marker) continue;
+      if (child instanceof MenuMarker) continue;
       menu.add(child.createPeer());
     }
     

@@ -50,7 +50,7 @@ public class MenuBarProxy extends AbstractParent<JMenuBar> {
     final JMenuBar mb = new JMenuBar();
  
     for (ChildProxy<?> child : children) {
-      if (child instanceof Marker) continue;
+      if (child instanceof MenuMarker) continue;
       mb.add(child.createPeer());
     }
 

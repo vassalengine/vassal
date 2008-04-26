@@ -35,6 +35,8 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.menu.MenuItemProxy;
+import VASSAL.tools.menu.MenuManager;
 
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;
@@ -52,7 +54,6 @@ public class Tutorial extends AbstractConfigurable {
   public static final String WELCOME_MESSAGE = "welcomeMessage"; //$NON-NLS-1$
   private String fileName;
   private Action launch;
-  private JMenuItem item;
   private boolean launchOnFirstStartup;
   private String welcomeMessage = Resources.getString("Tutorial.instructions"); //$NON-NLS-1$
   private String promptMessage = Resources.getString("Tutorial.load_tutorial"); //$NON-NLS-1$
@@ -194,12 +195,24 @@ public class Tutorial extends AbstractConfigurable {
     }
   }
 
+  protected MenuItemProxy launchItem;
+
   public void addTo(Buildable parent) {
-    item = ((Documentation) parent).getHelpMenu().add(launch);
+//    item = ((Documentation) parent).getHelpMenu().add(launch);
+    launchItem = new MenuItemProxy(launch);
+    MenuManager.getInstance().addToSection("Documentation", launchItem);
+
     final String key = "viewedTutorial" + getConfigureName(); //$NON-NLS-1$
     hasViewedTutorial = new BooleanConfigurer(key, null, Boolean.FALSE);
     GameModule.getGameModule().getPrefs().addOption(null, hasViewedTutorial);
     GameModule.getGameModule().getWizardSupport().setTutorial(this);
+  }
+
+  public void removeFrom(Buildable parent) {
+//    if (item != null) {
+//      ((Documentation) parent).getHelpMenu().remove(item);
+//    }
+    MenuManager.getInstance().removeFromSection("Documentation", launchItem);
   }
 
   public Class[] getAllowableConfigureComponents() {
@@ -208,12 +221,6 @@ public class Tutorial extends AbstractConfigurable {
 
   public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("HelpMenu.htm", "Tutorial"); //$NON-NLS-1$ //$NON-NLS-2$
-  }
-
-  public void removeFrom(Buildable parent) {
-    if (item != null) {
-      ((Documentation) parent).getHelpMenu().remove(item);
-    }
   }
 
   /**
@@ -230,8 +237,7 @@ public class Tutorial extends AbstractConfigurable {
   }
 
   public boolean isFirstRun() {
-    return launchOnFirstStartup
-        && !hasViewedTutorial.booleanValue();
+    return launchOnFirstStartup && !hasViewedTutorial.booleanValue();
   }
   
   /**

@@ -21,7 +21,7 @@ package VASSAL.tools.menu;
 
 import javax.swing.JMenuItem;
 
-public class Marker extends MenuItemProxy {
+public class MenuMarker extends MenuItemProxy {
   @Override
   public JMenuItem createPeer() {
     throw new UnsupportedOperationException();

@@ -33,10 +33,13 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.menu.MenuItemProxy;
+import VASSAL.tools.menu.MenuManager;
 
 /**
  * Places an entry in the <code>Help</code> menu.  Selecting the entry
- * displays a window with stored text on it. */
+ * displays a window with stored text on it.
+ */
 public class HelpFile extends AbstractConfigurable {
   public static final String TITLE = "title"; //$NON-NLS-1$
   public static final String FILE = "fileName"; //$NON-NLS-1$
@@ -51,7 +54,6 @@ public class HelpFile extends AbstractConfigurable {
   protected URL contents;
   protected String title;
   protected String fileName;
-//  protected JMenuItem launch;
   protected Action launch;
   protected String fileType = ARCHIVE_ENTRY;
 
@@ -60,58 +62,39 @@ public class HelpFile extends AbstractConfigurable {
   }
 
   public HelpFile() {
-/*
-    launch = new JMenuItem();
-    setConfigureName("help");
-    setMenuItem();
-    launch.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        showWindow();
-      }
-    });
-*/
-    setConfigureName("help");
+    this("help", (URL) null);
+  }
 
+  public HelpFile(String title, File contents, String ref)
+                                throws MalformedURLException {
+    this(title, new URL(toURL(contents), ref));
+  }
+
+  public HelpFile(String title, File contents) throws MalformedURLException {
+    this(title, toURL(contents));
+  }
+
+  public HelpFile(String title, URL contents) {
+    this.title = title;
+    this.contents = contents;
+    setConfigureName(title);
+    
     launch = new AbstractAction() {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
         showWindow();
       }
-    }; 
-
-    setMenuItem();
-  }
-
-
-  public HelpFile(String title, File contents, String ref) throws MalformedURLException {
-    this();
-    this.title = title;
-    this.contents = new URL(toURL(contents),ref);
-    setConfigureName(title);
-    setMenuItem();
-  }
-  public HelpFile(String title, File contents) throws MalformedURLException {
-    this();
-    this.title = title;
-    this.contents = toURL(contents);
-    setConfigureName(title);
-    setMenuItem();
-  }
-
-  public HelpFile(String title, URL contents) {
-    this();
-    this.title = title;
-    this.contents = contents;
-    setConfigureName(title);
-    setMenuItem();
+    };
+ 
+    launch.putValue(Action.NAME, getConfigureName());
   }
 
   /**
    * Create and display a new HelpWindow with the contents of this HelpFile
    */
   public void showWindow() {
-    HelpWindow w = getHelpWindow();
+    final HelpWindow w = getHelpWindow();
     w.setVisible(true);
     w.toFront();
   }
@@ -128,7 +111,8 @@ public class HelpFile extends AbstractConfigurable {
       if (fileName != null) {
         if (ARCHIVE_ENTRY.equals(fileType)) {
           try {
-            contents = GameModule.getGameModule().getDataArchive().getURL(fileName);
+            contents =
+              GameModule.getGameModule().getDataArchive().getURL(fileName);
           }
           catch (IOException e) {
             e.printStackTrace();
@@ -140,7 +124,8 @@ public class HelpFile extends AbstractConfigurable {
         else if (LOCAL_FILE.equals(fileType)) {
           File f = new File(fileName);
           if (fileName.startsWith("docs/")) { //$NON-NLS-1$
-            f = new File(Documentation.getDocumentationBaseDir(),fileName.substring("docs/".length())); //$NON-NLS-1$
+            f = new File(Documentation.getDocumentationBaseDir(),
+                         fileName.substring("docs/".length())); //$NON-NLS-1$
           }
           try {
             contents = toURL(f);
@@ -180,11 +165,6 @@ public class HelpFile extends AbstractConfigurable {
     }
   }
 
-  private void setMenuItem() {
-    launch.putValue(Action.NAME, getConfigureName());
-//    launch.setText(getConfigureName());
-  }
-
   /**
    * The attributes of a HelpFile are:
    *
@@ -193,8 +173,12 @@ public class HelpFile extends AbstractConfigurable {
    * DataArchive}.  The text is displayed in a window with the same title
    */
   public String[] getAttributeNames() {
-    String s[] = {TITLE, FILE, IMAGE, TYPE};
-    return s;
+    return new String[] {
+      TITLE,
+      FILE,
+      IMAGE,
+      TYPE
+    };
   }
 
   public String getAttributeValueString(String key) {
@@ -214,7 +198,6 @@ public class HelpFile extends AbstractConfigurable {
     if (TITLE.equals(key)) {
       title = (String) val;
       setConfigureName(title);
-//      launch.setText(title);
       launch.putValue(Action.NAME, title);
     }
     else if (FILE.equals(key)) {
@@ -250,17 +233,19 @@ public class HelpFile extends AbstractConfigurable {
     return new Class[0];
   }
 
+  protected MenuItemProxy launchItem;
+
+  public void addTo(Buildable b) {
+    launchItem = new MenuItemProxy(launch);
+    MenuManager.getInstance().addToSection("Documentation", launchItem);
+    launch.setEnabled(true);
+  }
+  
   public void removeFrom(Buildable b) {
-    ((Documentation) b).getHelpMenu().remove(launchItem);
+    MenuManager.getInstance().removeFromSection("Documentation", launchItem);   
     launch.setEnabled(false);
   }
 
-  protected JMenuItem launchItem;
-
-  public void addTo(Buildable b) {
-    launchItem = ((Documentation) b).getHelpMenu().add(launch);
-  }
-  
   public static HelpFile getReferenceManualPage(String page) {
     return getReferenceManualPage(page,null);
   }
@@ -278,6 +263,5 @@ public class HelpFile extends AbstractConfigurable {
       return null;
     }
   }
-
 }
 

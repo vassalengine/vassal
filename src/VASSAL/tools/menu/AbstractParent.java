@@ -33,7 +33,7 @@ public abstract class AbstractParent<T extends JComponent>
     children.add(child);
     child.setParent(this);
 
-    if (child instanceof Marker) return;
+    if (child instanceof MenuMarker) return;
 
     forEachPeer(new Functor<T>() {
       public void apply(T peer) {
@@ -46,7 +46,7 @@ public abstract class AbstractParent<T extends JComponent>
     // find the true position, neglecting markers
     int j = -1;
     for (int i = 0; i <= pos; i++) {
-      if (!(children.get(i) instanceof Marker)) j++;
+      if (!(children.get(i) instanceof MenuMarker)) j++;
     }
     return j;
   }
@@ -55,7 +55,7 @@ public abstract class AbstractParent<T extends JComponent>
     children.add(pos, child);
     child.setParent(this);
     
-    if (child instanceof Marker) return;
+    if (child instanceof MenuMarker) return;
 
     final int rpos = proxyIndexToRealIndex(pos);
 

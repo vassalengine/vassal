@@ -51,6 +51,8 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.menu.MenuItemProxy;
+import VASSAL.tools.menu.MenuManager;
 
 /**
  * Unpacks a zipped directory stored in the module and displays it in an
@@ -64,7 +66,6 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   public static final String STARTING_PAGE = "startingPage"; //$NON-NLS-1$
   protected String name;
   protected String startingPage;
-//  protected JMenuItem launch;
   protected Action launch;
   protected URL url;
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
@@ -80,15 +81,6 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         launch();
       }
     };
-
-/*
-    launch = new JMenuItem();
-    launch.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    });
-*/
   }
 
   public void launch() {
@@ -186,7 +178,11 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
  
   public String[] getAttributeNames() {
-    return new String[]{TITLE, CONTENTS, STARTING_PAGE};
+    return new String[]{
+      TITLE,
+      CONTENTS,
+      STARTING_PAGE
+    };
   }
 
   public String getAttributeValueString(String key) {
@@ -202,7 +198,6 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   public void setAttribute(String key, Object value) {
     if (TITLE.equals(key)) {
       name = (String) value;
-//      launch.setText(name);
       launch.putValue(Action.NAME, name);
       url = null;
       getI18nData().setUntranslatedValue(key, name);
@@ -213,10 +208,17 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
   }
 
-  protected JMenuItem launchItem;
+  protected MenuItemProxy launchItem;
 
   public void addTo(Buildable parent) {
-    launchItem = ((Documentation) parent).getHelpMenu().add(launch);    
+    launchItem = new MenuItemProxy(launch);
+    MenuManager.getInstance().addToSection("Documentation", launchItem);
+    launch.setEnabled(true);
+  }
+
+  public void removeFrom(Buildable parent) {
+    MenuManager.getInstance().removeFromSection("Documentation", launchItem);
+    launch.setEnabled(false);
   }
 
   public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -244,11 +246,6 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public void remove(Buildable child) {
-  }
-
-  public void removeFrom(Buildable parent) {
-    ((Documentation) parent).getHelpMenu().remove(launchItem);
-    launch.setEnabled(false);
   }
 
   public static String getConfigureTypeName() {

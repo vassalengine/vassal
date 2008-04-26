@@ -76,15 +76,56 @@ public abstract class MenuManager {
     addAction(key, null);
   }
 
-  public MenuItemProxy addMarker(String key) {
+  public MenuMarker getMarker(String key) {
+    final List<MenuItemProxy> items = actionLocations.get(key);
+    if (items != null && items.size() > 0) {
+      final MenuItemProxy mip = items.get(0);
+      if (mip instanceof MenuMarker) return (MenuMarker) mip;
+    }
+    return null;     
+  }
+
+  public MenuMarker addMarker(String key) {
     List<MenuItemProxy> items = actionLocations.get(key);
     if (items == null) {
       items = new ArrayList<MenuItemProxy>();
       actionLocations.put(key, items);
     }
 
-    final MenuItemProxy item = new Marker();
-    items.add(item);    
-    return item;
+    final MenuMarker marker = new MenuMarker();
+    items.add(marker);
+    return marker;
+  }
+
+  public void addToSection(String key, ChildProxy<?> item) {
+    final MenuMarker start = getMarker(key + ".start");
+    final MenuMarker end = getMarker(key + ".end");
+    final MenuProxy parent = (MenuProxy) end.getParent();
+    final int startPos = parent.getIndex(start);
+    final int endPos = parent.getIndex(end);
+
+    // create the separator if this is the first item
+    if (startPos + 1 == endPos) {
+      parent.insertSeparator(endPos+1);
+    }
+
+    // insert the item between the markers
+    parent.insert(item, endPos);
+  }
+
+  public void removeFromSection(String key, ChildProxy<?> item) {
+    final MenuMarker start = getMarker(key + ".start");
+    final MenuMarker end = getMarker(key + ".end");
+    final MenuProxy parent = (MenuProxy) end.getParent();
+
+    // remove the item
+    parent.remove(item);
+      
+    // remove the separator if this was the last item
+    final int startPos = parent.getIndex(start);     
+    final int endPos = parent.getIndex(end);     
+    if (startPos + 1 == endPos) {
+      parent.remove(endPos+1);
+    }
   }
 }

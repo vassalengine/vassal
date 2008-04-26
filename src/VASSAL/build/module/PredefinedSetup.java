@@ -33,7 +33,6 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.menu.ChildProxy;
-import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -211,20 +210,7 @@ public class PredefinedSetup extends AbstractConfigurable {
 
   public void addTo(Buildable parent) {
     if (parent instanceof GameModule) {
-      final MenuManager mm = MenuManager.getInstance();
-      final MenuItemProxy start = mm.getItems("PredefinedSetup.start").get(0);
-      final MenuItemProxy end = mm.getItems("PredefinedSetup.end").get(0);
-      final MenuProxy par = (MenuProxy) end.getParent();
-      final int startPos = par.getIndex(start);     
-      final int endPos = par.getIndex(end);     
-
-      // create the separator if this is the first item
-      if (startPos + 1 == endPos) {
-        par.insertSeparator(endPos+1);
-      }
-
-      // insert the item between the markers
-      par.insert(getMenuInUse(), endPos);
+      MenuManager.getInstance().addToSection("PredefinedSetup", getMenuInUse());
     }
     else if (parent instanceof PredefinedSetup) {
       final PredefinedSetup setup = (PredefinedSetup) parent;
@@ -236,20 +222,8 @@ public class PredefinedSetup extends AbstractConfigurable {
 
   public void removeFrom(Buildable parent) {
     if (parent instanceof GameModule) {
-      final MenuManager mm = MenuManager.getInstance();
-      final MenuItemProxy start = mm.getItems("PredefinedSetup.start").get(0);
-      final MenuItemProxy end = mm.getItems("PredefinedSetup.end").get(0);
-      final MenuProxy par = (MenuProxy) end.getParent();
-
-      // remove the item
-      par.remove(getMenuInUse());
-      
-      // remove the separator if this was the last item
-      final int startPos = par.getIndex(start);     
-      final int endPos = par.getIndex(end);     
-      if (startPos + 1 == endPos) {
-        par.remove(endPos+1);
-      } 
+      MenuManager.getInstance()
+                 .removeFromSection("PredefinedSetup", getMenuInUse());
     }
     else if (parent instanceof PredefinedSetup) {
       final PredefinedSetup setup = (PredefinedSetup) parent;
