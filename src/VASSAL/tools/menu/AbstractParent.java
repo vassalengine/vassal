@@ -29,7 +29,6 @@ public abstract class AbstractParent<T extends JComponent>
 
   protected final List<ChildProxy<?>> children = new ArrayList<ChildProxy<?>>();
 
-  @Override
   public void add(final ChildProxy<?> child) {
     children.add(child);
     child.setParent(this);
@@ -52,7 +51,6 @@ public abstract class AbstractParent<T extends JComponent>
     return j;
   }
 
-  @Override
   public void insert(final ChildProxy<?> child, int pos) {
     children.add(pos, child);
     child.setParent(this);
@@ -68,35 +66,29 @@ public abstract class AbstractParent<T extends JComponent>
     });
   }
 
-  @Override
   public void remove(ChildProxy<?> child) {
     if (children.remove(child)) {
       child.setParent(null);
     }
   }
 
-  @Override
   public void remove(int pos) {
     final ChildProxy<?> child = children.remove(pos);
     child.setParent(null);
   }
 
-  @Override
   public int getChildCount() {
     return children.size();
   }  
   
-  @Override
   public ChildProxy<?>[] getChildren() {
     return children.toArray(new ChildProxy<?>[children.size()]);
   }
 
-  @Override
   public ChildProxy<?> getChild(int pos) {
     return children.get(pos);
   }
 
-  @Override
   public int getIndex(ChildProxy<?> child) {
     return children.indexOf(child);
   }
