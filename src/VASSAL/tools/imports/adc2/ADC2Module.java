@@ -35,6 +35,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -1647,18 +1648,23 @@ public class ADC2Module extends Importer {
 			if (ipx != null) {
 				DataInputStream input = new DataInputStream(new BufferedInputStream(new FileInputStream(ipx)));
 				
-				for (int i = 0; i < 10; ++i) {
-					/* int sep = */ input.readByte();
-					int idx = input.readUnsignedByte();
-					int len = input.readUnsignedByte();
-					byte dimensions[] = new byte[8];
-					input.read(dimensions);
-					byte buf[] = new byte[len];
-					input.read(buf);
-					String name = new String(buf);
-					if (idx >=0 && idx <10) {
-						infoPages[idx] = name;
+				try {
+					while (true) { // loop until EOF
+						while (input.readUnsignedByte() != 0x3b) { }
+						int idx = input.readUnsignedByte();
+						int len = input.readUnsignedByte();
+						byte dimensions[] = new byte[8];
+						input.read(dimensions);
+						byte buf[] = new byte[len];
+						input.read(buf);
+						String name = new String(buf);
+						if (idx >=0 && idx <10 && infoPages[idx] == null) {
+							infoPages[idx] = name;
+						}
 					}
+				}
+				catch (EOFException e) {
+					// do nothing
 				}
 			}
 			else {

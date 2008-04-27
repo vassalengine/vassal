@@ -27,7 +27,7 @@ JDOC:=$(JAVAPATH)/bin/javadoc
 
 NSIS:=PATH=$$PATH:/home/uckelman/java/nsis-2.35 makensis
 
-LAUNCH4J:=/home/uckelman/java/launch4j/launch4j
+LAUNCH4J:=~/java/launch4j/launch4j
 
 SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
 CLASSES:=$(SOURCES:.java=.class)
