@@ -76,7 +76,7 @@ import VASSAL.Info;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ExtensionMetaData;
 import VASSAL.build.module.ExtensionsManager;
-import VASSAL.build.module.MetaData;
+import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.ModuleMetaData;
 import VASSAL.build.module.SaveMetaData;
 import VASSAL.chat.CgiServerStatus;
@@ -854,7 +854,7 @@ public class ModuleManagerWindow extends JFrame {
     
     public ModuleInfo(File f) {
       super(f, moduleIcon);
-      MetaData data = MetaData.buildMetaData(file);
+      AbstractMetaData data = AbstractMetaData.buildMetaData(file);
       if (data != null && data instanceof ModuleMetaData) {
         setValid(true);
         metadata = (ModuleMetaData) data;
@@ -876,7 +876,7 @@ public class ModuleManagerWindow extends JFrame {
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
       setFile(new File(sd.nextToken()));
       setIcon(moduleIcon);
-      MetaData data = MetaData.buildMetaData(getFile());
+      AbstractMetaData data = AbstractMetaData.buildMetaData(getFile());
       if (data != null && data instanceof ModuleMetaData) {
         setValid(true);
         metadata = (ModuleMetaData) data;
@@ -989,8 +989,8 @@ public class ModuleManagerWindow extends JFrame {
       return metadata.getVersion();
     }
     
-    public String getDescription() {
-      return metadata.getDescription();
+    public String getLocalizedDescription() {
+      return metadata.getLocalizedDescription();
     }
     
     public String getModuleName() {
@@ -998,11 +998,11 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     public String toString() {
-      return metadata.getName();
+      return metadata.getLocalizedName();
     }
     
     public String getValueAt(int column) {
-      return column == SPARE_COLUMN ? getDescription() : super.getValueAt(column);
+      return column == SPARE_COLUMN ? getLocalizedDescription() : super.getValueAt(column);
     }
   }
   
@@ -1019,7 +1019,7 @@ public class ModuleManagerWindow extends JFrame {
       super(file, active ? activeExtensionIcon : inactiveExtensionIcon);
       this.active = active;
       moduleInfo = module;
-      MetaData data = MetaData.buildMetaData(file);
+      AbstractMetaData data = AbstractMetaData.buildMetaData(file);
       if (data != null && data instanceof ExtensionMetaData) {
         setValid(true);
         metadata = (ExtensionMetaData) data;
@@ -1185,7 +1185,7 @@ public class ModuleManagerWindow extends JFrame {
     public SaveFileInfo(File f, GameFolderInfo folder) {
       super(f, fileIcon);  
       folderInfo = folder;
-      MetaData data = MetaData.buildMetaData(file);
+      AbstractMetaData data = AbstractMetaData.buildMetaData(file);
       if (data != null && data instanceof SaveMetaData) {
         metadata = (SaveMetaData) data;
         setValid(true);
@@ -1222,7 +1222,7 @@ public class ModuleManagerWindow extends JFrame {
           comments = "[" + metadata.getModuleName() +  "] ";
         }
       }
-      comments += metadata.getComments();
+      comments += metadata.getDescription();
       return comments;
     }
     
@@ -1237,10 +1237,6 @@ public class ModuleManagerWindow extends JFrame {
     
     public String getVersion() {
       return metadata.getModuleVersion();
-    }
-    
-    public String getComments() {
-      return metadata.getComments();
     }
     
   }

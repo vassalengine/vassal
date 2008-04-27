@@ -30,11 +30,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
 
-import javax.swing.Action;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -46,9 +43,9 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FileChooser;
 import VASSAL.tools.imports.ImportAction;
+import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.menu.MacOSXMenuManager;
 
 public class Editor {
   protected File moduleFile;

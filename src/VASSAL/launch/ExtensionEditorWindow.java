@@ -19,7 +19,6 @@ package VASSAL.launch;
 import java.io.IOException;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;

@@ -21,7 +21,6 @@ package VASSAL.launch;
 
 import java.awt.Window;
 import java.io.File;
-import javax.swing.Action;
 
 import VASSAL.build.module.Documentation;
 import VASSAL.i18n.Resources;

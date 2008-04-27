@@ -24,9 +24,8 @@ import java.awt.FlowLayout;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
@@ -37,8 +36,8 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuBarProxy;
-import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.menu.MenuProxy;
 
 public class PlayerWindow extends JFrame {
   private static final long serialVersionUID = 1L;

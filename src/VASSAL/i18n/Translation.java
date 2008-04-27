@@ -34,7 +34,7 @@ import VASSAL.tools.ArchiveWriter;
 
 public class Translation extends AbstractConfigurable
                          implements Comparable<Translation> {
-  protected static final String LOCALE = "locale"; //$NON-NLS-1$
+  public static final String LOCALE = "locale"; //$NON-NLS-1$
   protected Locale locale;
   protected boolean dirty = false;
   protected Properties localProperties;
@@ -80,6 +80,10 @@ public class Translation extends AbstractConfigurable
 
   protected String getDescription() {
     return locale.getDisplayName(Locale.getDefault());
+  }
+  
+  public String getLanguageCode() {
+    return locale.getLanguage();
   }
 
   public String getConfigureName() {

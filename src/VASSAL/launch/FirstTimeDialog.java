@@ -20,7 +20,6 @@ package VASSAL.launch;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -30,6 +29,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Locale;
+
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -37,20 +37,14 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-// FIXME: switch to these once we move to Java 1.6
-//import javax.swing.GroupLayout;
-//import javax.swing.LayoutStyle;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
-import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.DataArchive;
 
 /**
  * A dialog for first-time users.

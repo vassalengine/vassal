@@ -23,31 +23,17 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
-import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.BridgeStream;
 
 /**
  * 
@@ -59,88 +45,50 @@ import VASSAL.tools.BridgeStream;
  * @since 3.1.0
  *
  */
-public class ModuleMetaData extends MetaData {
+public class ModuleMetaData extends AbstractMetaData {
 
   public static final String ZIP_ENTRY_NAME = "moduledata";
   public static final String DATA_VERSION = "1";
     
-  protected String name;
+  protected Attribute nameAttr;
 
   public ModuleMetaData(ZipFile zip) {
     read(zip);
   }
   
   public ModuleMetaData(GameModule module) {
-    name = GameModule.getGameModule().getGameName();
-    version = GameModule.getGameModule().getGameVersion();
-    vassalVersion = Info.getVersion();
-    description = GameModule.getGameModule().getAttributeValueString(GameModule.DESCRIPTION);
+    nameAttr = new Attribute(module, GameModule.MODULE_NAME);
+    setDescription(new Attribute(module, GameModule.DESCRIPTION));
+    setVersion(module.getGameVersion());
+    setVassalVersion(Info.getVersion());
   }
 
   public String getName() {
-    return name;
+    return nameAttr.getValue();
+  }
+  
+  public String getLocalizedName() {
+    return nameAttr.getLocalizedValue();
   }
 
+  public String getZipEntryName() {
+    return ZIP_ENTRY_NAME;
+  }
+  
+  public String getMetaDataVersion() {
+    return DATA_VERSION;
+  }
+  
   /**
-   * Write Save Game metadata to the specified Archive
-   * @param archive Save game Archive
-   * @throws IOException If anything goes wrong
+   * Add elements specific to a ModuleMetaData 
+   * 
+   * @param doc Document
+   * @param root Root element
    */
-  public void save(ArchiveWriter archive) throws IOException {
-    Document doc = null;
-    try {
-      doc = DocumentBuilderFactory.newInstance()
-                                  .newDocumentBuilder()
-                                  .newDocument();
-      
-      final Element rootEl = doc.createElement(ROOT_ELEMENT);
-      rootEl.setAttribute(VERSION_ATTR, DATA_VERSION);
-      doc.appendChild(rootEl);
-      
-      Element e = doc.createElement(NAME_ELEMENT);
-      e.appendChild(doc.createTextNode(getName()));
-      rootEl.appendChild(e);
-      // FIXME: Extend to include any translations of the name
-
-      e = doc.createElement(VERSION_ELEMENT);
-      e.appendChild(doc.createTextNode(getVersion()));
-      rootEl.appendChild(e);
-
-      e = doc.createElement(VASSAL_VERSION_ELEMENT);
-      e.appendChild(doc.createTextNode(getVassalVersion()));
-      rootEl.appendChild(e);
-      
-      e = doc.createElement(DESCRIPTION_ELEMENT);
-      e.appendChild(doc.createTextNode(getDescription()));
-      rootEl.appendChild(e);
-      // FIXME: Extend to include any translations of the description
-      
-    }
-    catch (ParserConfigurationException ex) {
-      throw new IOException(ex.getMessage());
-    }
-
-    final BridgeStream out = new BridgeStream();
-    try {
-      final Transformer xformer =
-        TransformerFactory.newInstance().newTransformer();
-      xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-      xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
-          "2");
-      xformer.transform(new DOMSource(doc), new StreamResult(out));
-    }
-    catch (TransformerConfigurationException ex) {
-      throw new IOException(ex.getMessage());
-    }
-    catch (TransformerFactoryConfigurationError ex) {
-      throw new IOException(ex.getMessage());
-    }
-    catch (TransformerException ex) {
-      throw new IOException(ex.getMessage());
-    }
-
-    archive.addFile(ZIP_ENTRY_NAME, out.toInputStream());
+  protected void addElements(Document doc, Element root) {
+    nameAttr.generateXML(doc, root, NAME_ELEMENT);
   }
+
 
   /**
    * Read and validate a Module file.
@@ -150,7 +98,7 @@ public class ModuleMetaData extends MetaData {
    * @param file Module File
    */
   public void read(ZipFile zip) {
-    description = name = version = "";
+    version = "";
 
     InputStream is = null;
     try {
@@ -164,7 +112,7 @@ public class ModuleMetaData extends MetaData {
         ZipEntry data = zip.getEntry(ZIP_ENTRY_NAME);
         if (data == null) {
           data = zip.getEntry(GameModule.BUILDFILE);
-          handler = new BuildFileXMLHandler();
+          handler = new ModuleBuildFileXMLHandler();
         }
         else {
           handler = new MetadataXMLHandler();
@@ -217,104 +165,44 @@ public class ModuleMetaData extends MetaData {
   /**
    * XML Handler for parsing a Module/Extension metadata file
    */
-  private class MetadataXMLHandler extends DefaultHandler {
-    final StringBuilder accumulator = new StringBuilder();
-
-    @Override
-    public void startElement(String uri, String localName,
-                             String qName, Attributes attrs) {
-      // clear the content accumulator
-      accumulator.setLength(0);
-
-      // handle element attributes we care about
-    }
+  private class MetadataXMLHandler extends XMLHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) {
       // handle all of the elements which have CDATA here
       if (NAME_ELEMENT.equals(qName)) {
-         name = accumulator.toString().trim();
+        if (nameAttr == null) {
+          nameAttr = new Attribute(NAME_ELEMENT, accumulator.toString().trim());
+        }
+        else {
+          nameAttr.addTranslation(language, accumulator.toString().trim());
+        }
       }
-      else if (VERSION_ELEMENT.equals(qName)) {
-         version = accumulator.toString().trim();
+      else {
+        super.endElement(uri, localName, qName);
       }
-      if (DESCRIPTION_ELEMENT.equals(qName)) {
-        description = accumulator.toString().trim();
-      }
-    }
-
-    @Override
-    public void characters(char[] ch, int start, int length) {
-      accumulator.append(ch, start, length);
-    }
-
-    @Override
-    public void warning(SAXParseException e) throws SAXException {
-      e.printStackTrace();
-    }
-
-    @Override
-    public void error(SAXParseException e) throws SAXException {
-      e.printStackTrace();
-    }
-
-    @Override
-    public void fatalError(SAXParseException e) throws SAXException {
-      throw e;
     }
   }
   
   /**
-   * XML Handle for parsing a buildFile. Used to read minimal data from
+   * XML Handle for parsing a Module buildFile. Used to read minimal data from
    * modules saved prior to 3.1.0. 
    */
-  private class BuildFileXMLHandler extends DefaultHandler {
-    final StringBuilder accumulator = new StringBuilder();
+  private class ModuleBuildFileXMLHandler extends BuildFileXMLHandler {
 
     @Override
     public void startElement(String uri, String localName,
                              String qName, Attributes attrs) 
         throws SAXEndException {
-      // clear the content accumulator
-      accumulator.setLength(0);
+      super.startElement(uri, localName, qName, attrs);
 
       // handle element attributes we care about
       if (BUILDFILE_MODULE_ELEMENT1.equals(qName) || BUILDFILE_MODULE_ELEMENT2.equals(qName)) {
-        name = getAttr(attrs, NAME_ATTR);
-        version = getAttr(attrs, VERSION_ATTR);
-        vassalVersion  = getAttr(attrs, VASSAL_VERSION_ATTR);
+        nameAttr = new Attribute (NAME_ELEMENT, getAttr(attrs, NAME_ATTR));
+        setVersion(getAttr(attrs, VERSION_ATTR));
+        setVassalVersion(getAttr(attrs, VASSAL_VERSION_ATTR));
         throw new SAXEndException();
       }
-    }
-
-    private String getAttr(Attributes attrs, String qName) {
-      final String value = attrs.getValue(qName);
-      return value == null ? "" : value;
-    }
-    
-    @Override
-    public void endElement(String uri, String localName, String qName) {
-      // handle all of the elements which have CDATA here
-    }
-
-    @Override
-    public void characters(char[] ch, int start, int length) {
-      accumulator.append(ch, start, length);
-    }
-
-    @Override
-    public void warning(SAXParseException e) throws SAXException {
-      e.printStackTrace();
-    }
-
-    @Override
-    public void error(SAXParseException e) throws SAXException {
-      e.printStackTrace();
-    }
-
-    @Override
-    public void fatalError(SAXParseException e) throws SAXException {
-      throw e;
     }
   }
 

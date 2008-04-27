@@ -24,31 +24,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.swing.JOptionPane;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.BridgeStream;
 
 /**
  * 
@@ -60,33 +46,27 @@ import VASSAL.tools.BridgeStream;
  * @since 3.1.0
  *
  */
-public class SaveMetaData extends MetaData {
+public class SaveMetaData extends AbstractMetaData {
 
   public static final String ZIP_ENTRY_NAME = "savedata";
   public static final String DATA_VERSION = "1";
 
-  public static final String COMMENTS_ELEMENT = "comments";
-
-  protected String comments;
   protected ModuleMetaData moduleData;
 
   public SaveMetaData() {
-    comments  = (String) JOptionPane.showInputDialog(
+    String comments  = (String) JOptionPane.showInputDialog(
         GameModule.getGameModule().getFrame(),
         Resources.getString("BasicLogger.enter_comments"),
         Resources.getString("BasicLogger.log_file_comments"),
         JOptionPane.PLAIN_MESSAGE,
         null,
         null,
-        comments);
+        "");
+    setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
   }
   
   public SaveMetaData(ZipFile zip) {
     read(zip);
-  }
-  
-  public String getComments() {
-    return comments;
   }
   
   public String getModuleName() {
@@ -96,6 +76,14 @@ public class SaveMetaData extends MetaData {
   public String getModuleVersion() {
     return moduleData == null ? "" : moduleData.getVersion();
   }
+  
+  public String getZipEntryName() {
+    return ZIP_ENTRY_NAME;
+  }
+  
+  public String getMetaDataVersion() {
+    return DATA_VERSION;
+  }
 
   /**
    * Write Save Game metadata to the specified Archive
@@ -103,47 +91,29 @@ public class SaveMetaData extends MetaData {
    * @throws IOException If anything goes wrong
    */
   public void save(ArchiveWriter archive) throws IOException {
-    Document doc = null;
-    try {
-      doc = DocumentBuilderFactory.newInstance()
-                                  .newDocumentBuilder()
-                                  .newDocument();
-      
-      final Element root = doc.createElement(ROOT_ELEMENT);
-      root.setAttribute(VERSION_ATTR, DATA_VERSION);
-      doc.appendChild(root);
-
-      final Element comments = doc.createElement(COMMENTS_ELEMENT);
-      comments.appendChild(doc.createTextNode(getComments()));
-      root.appendChild(comments);
-    }
-    catch (ParserConfigurationException ex) {
-      throw new IOException(ex.getMessage());
-    }
-
-    final BridgeStream out = new BridgeStream();
-    try {
-      final Transformer xformer =
-        TransformerFactory.newInstance().newTransformer();
-      xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-      xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
-          "2");
-      xformer.transform(new DOMSource(doc), new StreamResult(out));
-    }
-    catch (TransformerConfigurationException ex) {
-      throw new IOException(ex.getMessage());
-    }
-    catch (TransformerFactoryConfigurationError ex) {
-      throw new IOException(ex.getMessage());
-    }
-    catch (TransformerException ex) {
-      throw new IOException(ex.getMessage());
-    }
-
-    archive.addFile(ZIP_ENTRY_NAME, out.toInputStream());
+    super.save(archive);
     
-    // Also save a copy of the current module metadata in the save file
-    (new ModuleMetaData(GameModule.getGameModule())).save(archive);
+    // Also save a copy of the current module metadata in the save file. Copy
+    // module metadata from the module archive as it will contain full i18n
+    // information.
+    InputStream in = null;
+    try {
+      in = GameModule.getGameModule().getDataArchive().getFileStream(ModuleMetaData.ZIP_ENTRY_NAME);
+      archive.addFile(ModuleMetaData.ZIP_ENTRY_NAME, in);
+      in.close();
+    }
+    finally {
+      if (in != null) {
+        in.close();
+      }
+    }
+  }
+  
+  /**
+   * Add Elements specific to SaveMetaData
+   */
+  protected void addElements(Document doc, Element root) {
+    return;
   }
 
   /**
@@ -154,7 +124,6 @@ public class SaveMetaData extends MetaData {
    * @param file Saved Game File
    */
   public void read(ZipFile zip) {
-    comments = "";
 
     InputStream is = null;
     try {
@@ -205,59 +174,6 @@ public class SaveMetaData extends MetaData {
           e.printStackTrace();
         }
       }
-    }
-  }
-
-  private class XMLHandler extends DefaultHandler {
-    final StringBuilder accumulator = new StringBuilder();
-    String currentElement = null;
-
-    @Override
-    public void startElement(String uri, String localName,
-                             String qName, Attributes attrs) {
-      // clear the content accumulator
-      accumulator.setLength(0);
-
-      // handle element attributes we care about
-/*
-      else if (VASSAL_ELEMENT.equals(localName)) {
-        vassalVersion = attrs.getName(VERSION_ATTR);
-      }
-*/
-      currentElement = qName;
-    }
-
-//    private String getAttr(Attributes attrs, String qName) {
-//      final String value = attrs.getValue(qName);
-//      return value == null ? "" : value;
-//    }
-
-    @Override
-    public void endElement(String uri, String localName, String qName) {
-      // handle all of the elements which have CDATA here
-      if (COMMENTS_ELEMENT.equals(qName)) {
-        comments = accumulator.toString().trim();
-      }
-    }
-
-    @Override
-    public void characters(char[] ch, int start, int length) {
-      accumulator.append(ch, start, length);
-    }
-
-    @Override
-    public void warning(SAXParseException e) throws SAXException {
-      e.printStackTrace();
-    }
-
-    @Override
-    public void error(SAXParseException e) throws SAXException {
-      e.printStackTrace();
-    }
-
-    @Override
-    public void fatalError(SAXParseException e) throws SAXException {
-      throw e;
     }
   }
 }

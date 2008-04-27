@@ -19,20 +19,18 @@
 package VASSAL.launch;
 
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.JFrame;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.FileChooser;
-import VASSAL.preferences.Prefs;
 
 /**
  * Loads a module in play mode
