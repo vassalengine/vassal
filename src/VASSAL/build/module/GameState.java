@@ -321,6 +321,7 @@ public class GameState implements CommandEncoder {
       }
     }
     catch (IOException err) {
+      err.printStackTrace();
       GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
     }
   }
