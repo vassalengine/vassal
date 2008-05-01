@@ -207,6 +207,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       cmdC = new CommandClient(new Socket((String) null, childPort));
       children.add(cmdC);
 
+      // trigger any process() methods belonging to subclasses
+      publish((Void) null);
+
       // block until the process ends
       p.waitFor();
       return null;
