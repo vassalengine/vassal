@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2007 by Joel Uckelman
+ * $Id$
+ *
+ * Copyright (c) 2007-2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,6 +23,7 @@ package VASSAL.tools;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -29,6 +32,8 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * General I/O stream manipulation utilities. This class provides static
@@ -255,5 +260,45 @@ public class IOUtils {
     }
 
     return buffer != null ? buffer : new byte[0];
+  }
+
+  /**
+   * Close a {@link Closeable} unconditionally. Equivalent to
+   * calling <code>c.close()</code> when <code>c</code> is nonnull.
+   * {@link IOException}s are quietly ignored, as there is generally
+   * nothing that can be done about exceptions on closing.
+   *
+   * @param c a (possibly <code>null</code>) <code>Closeable</code>
+   */
+  public static void closeQuietly(Closeable c) {
+    if (c == null) return;
+    
+    try {
+      c.close();
+    }
+    catch (IOException e) {
+    }
+  }
+
+  // FIXME: Remove in Java 1.6+, when ServerSocket implements Closeable 
+  public static void closeQuietly(ServerSocket s) {
+    if (s == null) return;
+
+    try {
+      s.close();
+    }
+    catch (IOException e) {
+    }
+  }
+
+  // FIXME: Remove in Java 1.6+, when Socket implements Closeable 
+  public static void closeQuietly(Socket s) {
+    if (s == null) return;
+
+    try {
+      s.close();
+    }
+    catch (IOException e) {
+    }
   }
 }
