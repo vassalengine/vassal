@@ -20,8 +20,6 @@
     <path></path>
     <minVersion>1.5.0</minVersion>
     <dontUsePrivateJres>false</dontUsePrivateJres>
-    <initialHeapSize>256</initialHeapSize>
-    <maxHeapSize>512</maxHeapSize>
   </jre>
   <versionInfo>
     <fileVersion>%NUMVERSION%.0</fileVersion>
