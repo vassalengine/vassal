@@ -59,8 +59,8 @@ $(CLASSDIR)/help: $(CLASSDIR)
 i18n: $(CLASSDIR)
 	for i in `cd $(SRCDIR) && find VASSAL -name '*.properties'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
 
-#fast:
-#	$(JC) $(JCFLAGS) $(shell find $(SRCDIR) -name '*.java')
+fast: $(CLASSDIR)
+	$(JC) $(JCFLAGS) $(shell find $(SRCDIR) -name '*.java')
 
 #show:
 #	echo $(patsubst %,-C $(TMPDIR)/doc %,$(wildcard $(TMPDIR)/doc/*)) 
