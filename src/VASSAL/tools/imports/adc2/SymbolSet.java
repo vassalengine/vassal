@@ -52,6 +52,8 @@ import VASSAL.tools.imports.Importer;
  */
 public class SymbolSet extends Importer{
 
+	private static final int OLD_SYMBOL_SET_FORMAT = 0xFD;
+
 	/**
 	 * Shape of the terrain elements.
 	 */
@@ -150,7 +152,7 @@ public class SymbolSet extends Importer{
 			// if (header == -3)
 			//    pict.maskIndex = in.readUnsignedByte();
 			// else
-			maskIndex = ADC2Utils.readBase250Word(in);
+			maskIndex = header == OLD_SYMBOL_SET_FORMAT ? in.readUnsignedByte() : ADC2Utils.readBase250Word(in);
 			for (int i = 0; i < 3; ++i) {
 				int x1 = in.readInt();
 				int y1 = in.readInt();
@@ -302,6 +304,8 @@ public class SymbolSet extends Importer{
 
 	private boolean isCardSet;
 
+	private int header;
+
 	/**
 	 * Read symbol images based on basename and suffix. Bitmap filenames are of the form
 	 * <tt>name + "-CN.bmp"</tt> where C is the specified suffix ('M' for masks; 'U' for
@@ -447,18 +451,12 @@ public class SymbolSet extends Importer{
 		
 		DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
 
-		// if header is -3, then mask indeces are one-byte long. Otherwise, if
-		// the header is anything else between -6 and -1, then mask indeces are base-250
-		// two-byte words.  However, we're only handling Version 2 files.
-		int header = in.readByte();
-		if (header < -6 || header > -1)
+		// if header is 0xFD, then mask indeces are one-byte long. Otherwise, if
+		// the header is anything else greater than 0xFA, then mask indeces are base-250
+		// two-byte words. 
+		header = in.readUnsignedByte();
+		if (header < 0xFA)
 			throw new FileFormatException("Invalid Symbol Set Header");
-		// Right now we could handle older set file formats, but I don't know what
-		// the map file is supposed to look like. Easier to upgrade format before
-		// importing.
-		// TODO: take care of older version symbol set files.
-		if (header == -3)
-			throw new FileFormatException("Symbol set file version less than 2.12\nConvert before importing.");
 
 		// comletely overridden by the map file
 		/* int orientation = */ in.readByte(); // 1=vertical; 2=horizontal; 3=grid

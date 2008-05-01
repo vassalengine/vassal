@@ -295,6 +295,10 @@ public final class ImportAction extends EditModuleAction {
 					+ f.getPath() + "\nPlease locate it in the following dialog.", 
 					"File Warning", JOptionPane.WARNING_MESSAGE);
 	
+			if (fc == null) {
+				fc = getFileChooser(null);
+			}
+
 			fc.resetChoosableFileFilters();
 			if (filter != null)
 				fc.setFileFilter(filter);
