@@ -103,8 +103,7 @@ public class SaveMetaData extends AbstractMetaData {
     }
     catch (IOException e) {
       // No Metatdata in source module, create a fresh copy
-      ModuleMetaData moduleData = new ModuleMetaData(GameModule.getGameModule());
-      moduleData.save(archive);
+      new ModuleMetaData(GameModule.getGameModule()).save(archive);
     }
     finally {
       if (in != null) {
