@@ -21,9 +21,14 @@ package VASSAL.launch;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -56,12 +61,38 @@ public class Editor {
   private boolean newExtension = false;
   private boolean importModule = false;
 
+  protected CommandClient cmdC = null;
+  protected CommandServer cmdS = null;
+
   public Editor(final String[] args) {
     StartUp.initSystemProperties();
 //    StartUp.setupErrorLog();
     StartUp.startErrorLog();
 
     Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
+
+//////
+    try {
+      // set up our command listener
+      final ServerSocket serverSocket = new ServerSocket(0);
+      cmdS = new EditorCommandServer(serverSocket);
+      new Thread(cmdS).start();
+
+      // write our socket port out to the module manager
+      new DataOutputStream(System.out).writeInt(serverSocket.getLocalPort());
+
+      // read the module manager's socket port from stdin
+      final int port = new DataInputStream(System.in).readInt();
+ 
+      // set up our command client
+      cmdC = new CommandClient(new Socket((String) null, port));
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+  
+    if (cmdC == null || cmdS == null) System.exit(1);
+//////
  
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
@@ -74,6 +105,30 @@ public class Editor {
         }
       }
     });
+  }
+
+  protected static class EditorCommandServer extends CommandServer {
+    public EditorCommandServer(ServerSocket serverSocket) {
+      super(serverSocket);
+    }
+
+    @Override
+    protected Object reply(Object cmd) {
+      if ("REQUEST_CLOSE".equals(cmd)) {
+        final GameModule module = GameModule.getGameModule();
+        module.getFrame().toFront();
+        final boolean shutDown = module.shutDown();
+        try {
+          return shutDown ? "OK" : "NOK";
+        }
+        finally {
+          if (shutDown) System.exit(0);
+        }
+      }
+      else {
+        return "UNRECOGNIZED_COMMAND";
+      } 
+    }
   }
 
   protected void extractResourcesAndLaunch(final int resourceIndex) throws IOException {
@@ -145,7 +200,8 @@ public class Editor {
       else new EditModuleAction(moduleFile).loadModule(moduleFile);
     }
     finally {
-      System.out.print("\n");
+      final Object reply = cmdC.request("NOTIFY_OPEN");
+      System.out.println("Reply: " + reply);
     }
   }
 
@@ -177,8 +233,8 @@ public class Editor {
   public static class NewModuleLaunchAction extends AbstractLaunchAction {
     private static final long serialVersionUID = 1L;
 
-    public NewModuleLaunchAction(Window window) {
-      super(Resources.getString("Main.new_module"), window, 
+    public NewModuleLaunchAction(ModuleManagerWindow mm) {
+      super(Resources.getString("Main.new_module"), mm, 
             Editor.class.getName(), new String[]{ "-new" }, null);
     }
 
@@ -188,12 +244,25 @@ public class Editor {
     }
   }
 
-  public static class ImportModuleLaunchAction extends AbstractLaunchAction {
+  public static class ImportLaunchAction extends AbstractLaunchAction {
     private static final long serialVersionUID = 1L;
 
-    public ImportModuleLaunchAction(Window window) {
-      super(Resources.getString("Editor.import_module"), window, 
-            Editor.class.getName(), new String[]{ "-import" }, null);
+    public ImportLaunchAction(ModuleManagerWindow mm, File module) {
+      super(Resources.getString("Editor.import_module"), mm,
+            Editor.class.getName(), new String[]{ "-import" }, module);
+    }
+
+    @Override
+    protected LaunchTask getLaunchTask() {
+      return new LaunchTask();
+    }
+  }
+
+  public static class PromptImportLaunchAction extends ImportLaunchAction {
+    private static final long serialVersionUID = 1L;
+
+    public PromptImportLaunchAction(ModuleManagerWindow mm) {
+      super(mm, null);
     }
 
     @Override
@@ -215,11 +284,6 @@ public class Editor {
       } 
     
       return module;
-    }
-
-    @Override
-    protected LaunchTask getLaunchTask() {
-      return new LaunchTask();
     }
   }
 

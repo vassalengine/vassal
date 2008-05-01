@@ -21,11 +21,17 @@ package VASSAL.launch;
 
 import java.awt.Cursor;
 import java.awt.Window;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
@@ -58,9 +64,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected final String entryPoint;
   protected final String[] args;
 
-  protected static final Set<File> editing = new HashSet<File>();
+  protected static final Set<File> editing =
+    Collections.synchronizedSet(new HashSet<File>());
   protected static final Map<File,Integer> using =
-    new HashMap<File,Integer>();
+    Collections.synchronizedMap(new HashMap<File,Integer>());
+
+  protected static final List<CommandClient> children =
+    Collections.synchronizedList(new ArrayList<CommandClient>());
 
   public AbstractLaunchAction(String name, Window window, String entryPoint,
                               String[] args, File module) {
@@ -79,6 +89,18 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     return editing.contains(f);
   }
 
+  public static boolean shutDown() {
+    for (CommandClient child : children) {
+      try {
+        if ("NOK".equals(child.request("REQUEST_CLOSE"))) return false;
+      }
+      catch (IOException e) {
+        ErrorLog.warn(e);
+      }
+    }
+    return true;
+  }
+
   public void actionPerformed(ActionEvent e) {
     window.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     getLaunchTask().execute();
@@ -87,7 +109,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected abstract LaunchTask getLaunchTask(); 
 
   protected File promptForModule() {
-    // prompt the use to pick a module
+    // prompt the user to pick a module
     final FileChooser fc = FileChooser.createFileChooser(window,
       (DirectoryConfigurer)
         Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
@@ -104,8 +126,15 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     // module might be reassigned before the task is over, keep a local copy
     protected final File mod = AbstractLaunchAction.this.module; 
 
+    protected ServerSocket serverSocket;
+    protected Socket clientSocket;
+  
+    protected CommandClient cmdC;
+    protected CommandServer cmdS;
+
     @Override
     public Void doInBackground() throws Exception {
+      // get heap setttings
       int initialHeap; 
       try {
         initialHeap = Integer.parseInt(Prefs.getGlobalPrefs()
@@ -132,6 +161,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         maximumHeap = DEFAULT_MAXIMUM_HEAP;
       }
 
+      // create a socket for communicating which the child process
+      final ServerSocket serverSocket = new ServerSocket(0);
+      cmdS = new LaunchCommandServer(serverSocket);
+      new Thread(cmdS).start();
+
+      // build the child process
       final String[] pa =
         new String[6 + args.length + (mod == null ? 0 : 1)];
       pa[0] = "java";
@@ -148,27 +183,33 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       final Process p = pb.start();
 
-      // close child's stdin because we won't write to it 
-      p.getOutputStream().close();
-
       // pump child's stderr to our own stderr
-      new StreamPump(p.getErrorStream(), System.err).start();
+      new Thread(new StreamPump(p.getErrorStream(), System.err)).start();
 
-      // child writes a char to stdout to signal end of loading
-      p.getInputStream().read();
-      publish((Void) null);
+      // write the port for this socket to child's stdin and close
+      DataOutputStream dout = null;
+      try {
+        dout = new DataOutputStream(p.getOutputStream());
+        dout.writeInt(serverSocket.getLocalPort());
+      }
+      finally {
+        IOUtils.closeQuietly(dout);
+      }
+
+      // read the port for the child's socket from its stdout
+      final DataInputStream din = new DataInputStream(p.getInputStream());
+      final int childPort = din.readInt();
 
       // pump child's stdout to our own stdout
-      new StreamPump(p.getInputStream(), System.out).start();
+      new Thread(new StreamPump(p.getInputStream(), System.out)).start();
+
+      // create the client for the child's socket
+      cmdC = new CommandClient(new Socket((String) null, childPort));
+      children.add(cmdC);
 
       // block until the process ends
       p.waitFor();
       return null;
-    }
-
-    @Override
-    protected void process(List<Void> chunks) {
-      window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     @Override
@@ -184,10 +225,32 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       catch (ExecutionException e) {
         ErrorLog.warn(e);
       }
+      finally {
+        IOUtils.closeQuietly(clientSocket);
+        IOUtils.closeQuietly(serverSocket);
+        children.remove(cmdC);
+      }    
     }
   }
 
-  private static class StreamPump extends Thread {
+  protected class LaunchCommandServer extends CommandServer {
+    public LaunchCommandServer(ServerSocket serverSocket) {
+      super(serverSocket);
+    }
+
+    @Override
+    protected Object reply(Object cmd) {
+      if ("NOTIFY_OPEN".equals(cmd)) {
+        window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        return "OK";
+      }
+      else {
+        return "UNRECOGNIZED_COMMAND";
+      }
+    }
+  }
+
+  private static class StreamPump implements Runnable {
     private final InputStream in;
     private final OutputStream out;
 

@@ -35,6 +35,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -137,7 +138,22 @@ public class ModuleManagerWindow extends JFrame {
     setTitle("VASSAL");
     setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 
-    final ShutDownAction shutDownAction = new ShutDownAction();
+    final AbstractAction shutDownAction = new AbstractAction() {
+      private static final long serialVersionUID = 1L;
+
+      public void actionPerformed(ActionEvent e) {
+        if (!AbstractLaunchAction.shutDown()) return;
+        try {
+          Prefs.getGlobalPrefs().write();
+          Prefs.getGlobalPrefs().close();
+        }
+        catch (IOException ex) {
+          ex.printStackTrace();
+        }
+        System.exit(0);
+      }
+    };
+    shutDownAction.putValue(Action.NAME, Resources.getString(Resources.QUIT));
 
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
@@ -206,7 +222,7 @@ public class ModuleManagerWindow extends JFrame {
     mm.addAction("Main.edit_module", new Editor.PromptLaunchAction(this));
     mm.addAction("Main.new_module", new Editor.NewModuleLaunchAction(this));
     mm.addAction("Editor.import_module",
-      new Editor.ImportModuleLaunchAction(this));
+      new Editor.PromptImportLaunchAction(this));
     mm.addAction("General.quit", shutDownAction);
 
     mm.addAction("Editor.ModuleEditor.translate_vassal",

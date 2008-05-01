@@ -21,8 +21,13 @@ package VASSAL.launch;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -49,12 +54,14 @@ import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 
 public class Player {
-//  protected boolean isFirstTime;
   protected boolean builtInModule;
   protected File moduleFile;
   protected File savedGame;
   protected List<String> extractTargets = new ArrayList<String>();
   protected List<String> autoExtensions = new ArrayList<String>();
+
+  protected CommandClient cmdC = null;
+  protected CommandServer cmdS = null;
 
   public Player(final String[] args) {
     StartUp.initSystemProperties();
@@ -62,6 +69,29 @@ public class Player {
     StartUp.startErrorLog();
 
     Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
+
+//////
+    try {
+      // set up our command listener
+      final ServerSocket serverSocket = new ServerSocket(0);
+      cmdS = new PlayerCommandServer(serverSocket);
+      new Thread(cmdS).start();
+
+      // write our socket port out to the module manager
+      new DataOutputStream(System.out).writeInt(serverSocket.getLocalPort());
+
+      // read the module manager's socket port from stdin
+      final int port = new DataInputStream(System.in).readInt();
+ 
+      // set up our command client
+      cmdC = new CommandClient(new Socket((String) null, port));
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+  
+    if (cmdC == null || cmdS == null) System.exit(1);
+//////
     
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
@@ -74,6 +104,30 @@ public class Player {
         }
       }
     });
+  }
+
+  protected static class PlayerCommandServer extends CommandServer {
+    public PlayerCommandServer(ServerSocket serverSocket) {
+      super(serverSocket);
+    }
+
+    @Override
+    protected Object reply(Object cmd) {
+      if ("REQUEST_CLOSE".equals(cmd)) {
+        final GameModule module = GameModule.getGameModule();
+        module.getFrame().toFront();
+        final boolean shutDown = module.shutDown();
+        try {
+          return shutDown ? "OK" : "NOK";
+        }
+        finally {
+          if (shutDown) System.exit(0);
+        }
+      }
+      else {
+        return "UNRECOGNIZED_COMMAND";
+      } 
+    }
   }
 
   protected void extractResourcesAndLaunch(final int resourceIndex) throws IOException {
@@ -125,12 +179,6 @@ public class Player {
     else new PlayerMenuManager();
 
     try {
-/*
-      if (isFirstTime) {
-        new FirstTimeDialog().setVisible(true);
-      }
-      else if (builtInModule) {
-*/
       if (builtInModule) {
         GameModule.init(createModule(createDataArchive()));
         for (String ext : autoExtensions) {
@@ -158,7 +206,8 @@ public class Player {
       }
     }  
     finally {
-      System.out.print("\n");
+      final Object reply = cmdC.request("NOTIFY_OPEN");
+      System.out.println("Reply: " + reply);
     }
   }
 
@@ -184,10 +233,6 @@ public class Player {
   }
 
   protected void configure(final String[] args) {
-/*
-    File prefsFile = new File(Info.getHomeDir(), "Preferences");
-    isFirstTime = !prefsFile.exists();
-*/
     int n = -1;
     while (++n < args.length) {
       final String arg = args[n];
