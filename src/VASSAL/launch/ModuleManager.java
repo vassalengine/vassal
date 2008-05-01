@@ -28,6 +28,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -84,10 +86,15 @@ public class ModuleManager {
     try {
       new ModuleManager();
     }
-    catch (IOException e) {
+    catch (BindException e) {
       // if this fails, a ModuleManager is already listening
     }
-
+    catch (IOException e) {
+      // should not happen
+      e.printStackTrace();
+      System.exit(1);
+    }  
+    
     // pass launch parameters on to the ModuleManager via the socket
     Socket clientSocket = null;
     ObjectOutputStream out = null;
@@ -142,11 +149,30 @@ public class ModuleManager {
 
     StartUp.initSystemProperties();
 
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        launch();
-      }
-    });
+    if (Info.isMacOSX()) new MacOSXMenuManager();
+    else new ModuleManagerMenuManager();
+
+    // we wait for the MMW becuase the SocketListener might use it
+    try { 
+      SwingUtilities.invokeAndWait(new Runnable() {
+        public void run() {
+          launch();
+        }
+      });
+    }
+    catch (InterruptedException e) {
+      // should not happen
+      e.printStackTrace();
+      System.exit(1);
+    }
+    catch (InvocationTargetException e) {
+      // should not happen
+      e.printStackTrace();
+      System.exit(1);
+    }
+
+    // window != null now, so listen on the socket
+    new Thread(new SocketListener(serverSocket)).start();
   }
 
   private class SocketListener implements Runnable {
@@ -191,17 +217,11 @@ public class ModuleManager {
       }
       finally {
         IOUtils.closeQuietly(serverSocket);
-      }      
+      }
     }
   }
 
   protected void launch() {
-    if (Info.isMacOSX()) new MacOSXMenuManager();
-    else new ModuleManagerMenuManager();
-
-    final File prefsFile = new File(Info.getHomeDir(), "Preferences");
-    final boolean isFirstTime = !prefsFile.exists();
-
     window = ModuleManagerWindow.getInstance();
 
     if (Info.isMacOSX()) {
@@ -233,18 +253,16 @@ public class ModuleManager {
     }
 
     window.setVisible(true);
-    if (isFirstTime) new FirstTimeDialog(window).setVisible(true);
 
-    new Thread(new SocketListener(serverSocket)).start();
+    final File prefsFile = new File(Info.getHomeDir(), "Preferences");
+    final boolean isFirstTime = !prefsFile.exists();
+
+    if (isFirstTime) new FirstTimeDialog(window).setVisible(true);
   }
 
   protected String execute(Object req) {
     if (req instanceof LaunchRequest) { 
       final LaunchRequest lr = (LaunchRequest) req;
-
-      System.out.println("lr.mode = " + lr.mode + 
-                       ", lr.module = " + lr.module + 
-                       ", lr.game = " + lr.game);
 
       switch (lr.mode) {
       case MANAGE:  
@@ -282,7 +300,10 @@ public class ModuleManager {
         return "not yet implemented";   // FIXME
       }
     }
-
+    else {
+      return "unrecognized command";
+    }
+  
     return null;
   }
 
