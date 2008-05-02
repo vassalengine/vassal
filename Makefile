@@ -106,7 +106,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
 	cp $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg.gz: $(TMPDIR)/VASSAL-$(VERSION).app
-	mkisofs -V VASSAL-$(VERSION) -r -apple $< | gzip -9 $@
+	mkisofs -V VASSAL-$(VERSION) -r -apple $< | gzip -9 >$@
 
 $(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS)
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
