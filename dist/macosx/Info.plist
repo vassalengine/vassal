@@ -29,6 +29,23 @@ com/DTDs/PropertyList-1.0.dtd">
   <string>VASSAL version %FULLVERSION%</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
+  <key>CFBundleDocumentTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeOSTypes</key>
+      <array>
+        <string>VMOD</string>
+      </array>
+      <key>CFBundleTypeName</key>
+      <string>VASSAL Module</string>
+      <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>vmod</string>
+      </array>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+    </dict>
+  </array>
   <key>Java</key>
   <dict>
     <key>WorkingDirectory</key>

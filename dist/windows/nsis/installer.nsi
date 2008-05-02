@@ -724,37 +724,59 @@ Section "-Application" Application
   WriteUninstaller "$INSTDIR\uninst.exe"
 
   ; create the shortcuts
+  ; don't use version number in shortcut names for Standard install
+  ${If} $CustomSetup == 1
+    StrCpy $0 "VASSAL-${VERSION}"
+  ${Else}
+    StrCpy $0 "VASSAL"
+  ${EndIf}
+
+  ; CreateShortCut uses $OUTDIR as the working directory for shortcuts
+  SetOutPath "$INSTDIR"
+
+  ; create the desktop shortcut
+  ${If} $AddDesktopSC == 1
+    CreateShortCut "$DESKTOP\$0.lnk" "$INSTDIR\VASSAL.exe"
+    WriteRegStr HKLM "${UROOT}" "DesktopShortcut" "$DESKTOP\$0.lnk"
+  ${EndIf}
+
   !insertmacro MUI_STARTMENU_WRITE_BEGIN StartMenu
-    ; don't use version number in shortcut names for Standard install
-    ${If} $CustomSetup == 1
-      StrCpy $0 "VASSAL-${VERSION}"
-    ${Else}
-      StrCpy $0 "VASSAL"
-    ${EndIf}
-
-    ; CreateShortCut uses $OUTDIR as the working directory for shortcuts
-    SetOutPath "$INSTDIR"
-
-    ; create the desktop shortcut
-    ${If} $AddDesktopSC == 1
-      CreateShortCut "$DESKTOP\$0.lnk" "$INSTDIR\VASSAL.exe"
-      WriteRegStr HKLM "${UROOT}" "DesktopShortcut" "$DESKTOP\$0.lnk"
-    ${EndIf}
-
     ; create the Start Menu shortcut
     ${If} $AddStartMenuSC == 1
       CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
       CreateShortCut "$SMPROGRAMS\$StartMenuFolder\$0.lnk" "$INSTDIR\VASSAL.exe"
       WriteRegStr HKLM "${UROOT}" "StartMenuShortcut" "$SMPROGRAMS\$StartMenuFolder\$0.lnk"
     ${EndIf}
-
-    ; create the quick launch shortcut
-    ${If} $AddQuickLaunchSC == 1
-      CreateShortCut "$QUICKLAUNCH\$0.lnk" "$INSTDIR\VASSAL.exe"
-      WriteRegStr HKLM "${UROOT}" "QuickLaunchShortcut" "$QUICKLAUNCH\$0.lnk"
-    ${EndIf}
-
   !insertmacro MUI_STARTMENU_WRITE_END
+
+  ; create the quick launch shortcut
+  ${If} $AddQuickLaunchSC == 1
+    CreateShortCut "$QUICKLAUNCH\$0.lnk" "$INSTDIR\VASSAL.exe"
+    WriteRegStr HKLM "${UROOT}" "QuickLaunchShortcut" "$QUICKLAUNCH\$0.lnk"
+  ${EndIf}
+
+  ; create file associations
+  WriteRegStr HKCR ".vmod" "" "VASSALModule"
+;  WriteRegStr HKCR ".vmod" "Content Type" "application/vnd.vassal.module"
+  WriteRegStr HKCR "VASSALModule" "" "VASSAL Module"
+  WriteRegStr HKCR "VASSALModule\DefualtIcon" "" ""
+  WriteRegStr HKCR "VASSALModule\shell\open\command" "" '$INSTDIR\VASSAL.exe --load "%1"'
+  WriteRegStr HKCR "VASSALModule\shell\edit\command" "" '$INSTDIR\VASSAL.exe --edit "%1"'
+
+;  WriteRegStr HKCR ".vlog" "" "VASSALGameLog"
+;  WriteRegStr HKCR ".vmod" "Content Type" "application/vnd.vassal.log"
+;  WriteRegStr HKCR "VASSALGameLog" "" "VASSAL Game Log"
+;  WriteRegStr HKCR "VASSALGameLog\DefualtIcon" "" ""
+;  WriteRegStr HKCR "VASSALGameLog\shell\open\command" "" '$INSTDIR\VASSAL.exe -load "%1"'
+
+;  WriteRegStr HKCR ".vsav" "" "VASSALSavedGame"
+;  WriteRegStr HKCR ".vsav" "Content Type" "application/vnd.vassal.save"
+;  WriteRegStr HKCR "VASSALSavedGame" "" "VASSAL Saved Game"
+;  WriteRegStr HKCR "VASSALSavedGame\DefualtIcon" "" ""
+;  WriteRegStr HKCR "VASSALSavedGame\shell\open\command" "" '$INSTDIR\VASSAL.exe -load "%1"'
+
+  ; notify Windows that file associations have changed
+  System::Call 'Shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'
 SectionEnd
 
 #
@@ -790,9 +812,13 @@ Section Uninstall
   DeleteRegKey HKLM "${IROOT}"
   DeleteRegKey HKLM "${UROOT}"
 
-  ; delete the heap size file
-  Delete "$INSTDIR\VASSAL.l4j.ini"
+  ; remove file associations
+  DeleteRegKey HKCR ".vmod"
+  DeleteRegKey HKCR "VASSALModule"
 
+  ; notify Windows that file associations have changed
+  System::Call 'Shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'
+  
   ; delete the installed files and directories
   !include "${TMPDIR}/uninstall_files.inc"
 
