@@ -105,12 +105,8 @@ $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
 	svn export $(DOCDIR) $@/Contents/Resources/doc
 	cp $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
-$(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
-	dd if=/dev/zero of=$@ bs=1M count=$$(( `du -s $< | sed 's/\s\+.*$$//'` / 1024 + 1 ))
-	mkfs.hfsplus -s -v VASSAL-$(VERSION) $@
-	mkdir -p $(TMPDIR)/dmg
-	sudo sh -c "mount -t hfsplus -o loop $@ $(TMPDIR)/dmg ; cp -va $< $(TMPDIR)/dmg ; umount $(TMPDIR)/dmg"
-	rmdir $(TMPDIR)/dmg
+$(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg.gz: $(TMPDIR)/VASSAL-$(VERSION).app
+	mkisofs -V VASSAL-$(VERSION) -r -apple $< | gzip -9 $@
 
 $(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS)
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
@@ -137,7 +133,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-generic $(TMPDIR)/VASSAL.exe
 
 #$(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
 	
-release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
+release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg.gz
 
 release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows.exe
 
