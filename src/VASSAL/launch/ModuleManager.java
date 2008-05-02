@@ -28,7 +28,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -37,9 +36,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 
-import com.apple.eawt.Application;
-import com.apple.eawt.ApplicationAdapter;
-import com.apple.eawt.ApplicationEvent;
+import gnu.getopt.Getopt;
+import gnu.getopt.LongOpt;
 
 import VASSAL.Info;
 import VASSAL.tools.ErrorLog;
@@ -59,28 +57,9 @@ public class ModuleManager {
 
   private static final int port = 8904;
 
-  private static enum Mode {
-    MANAGE,
-    LOAD,
-    EDIT,
-    IMPORT,
-    NEW,
-    EDIT_EXT,
-    NEW_EXT
-  }
-
-  protected static class LaunchRequest implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    public Mode mode;
-    public File module;
-    public File game;
-    public File extension;
-  }
-
   public static void main(String[] args) {
     // parse command-line arguments
-    final LaunchRequest lr = parseArgs(args); 
+    final LaunchRequest lr = LaunchRequest.parseArgs(args); 
    
     // try to create ModuleManager
     try {
@@ -136,42 +115,36 @@ public class ModuleManager {
     }
   }
 
-  protected ModuleManagerWindow window;
-
   private final ServerSocket serverSocket;
 
+  private static ModuleManager instance = null;
+
+  public static ModuleManager getInstance() {
+    return instance;
+  }
+
   public ModuleManager() throws IOException {
+    if (instance != null) throw new IllegalStateException();
+
     serverSocket = new ServerSocket(port); 
 
-    StartUp.setupErrorLog();
-    StartUp.startErrorLog();
+    final StartUp start = StartUp.getInstance();
+    start.setupErrorLog();
+    start.startErrorLog();
     Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
 
-    StartUp.initSystemProperties();
+    start.initSystemProperties();
 
     if (Info.isMacOSX()) new MacOSXMenuManager();
     else new ModuleManagerMenuManager();
 
-    // we wait for the MMW becuase the SocketListener might use it
-    try { 
-      SwingUtilities.invokeAndWait(new Runnable() {
-        public void run() {
-          launch();
-        }
-      });
-    }
-    catch (InterruptedException e) {
-      // should not happen
-      e.printStackTrace();
-      System.exit(1);
-    }
-    catch (InvocationTargetException e) {
-      // should not happen
-      e.printStackTrace();
-      System.exit(1);
-    }
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        launch();
+      }
+    });
 
-    // window != null now, so listen on the socket
+    // ModuleManagerWindow.getInstance() != null now, so listen on the socket
     new Thread(new SocketListener(serverSocket)).start();
   }
 
@@ -222,36 +195,7 @@ public class ModuleManager {
   }
 
   protected void launch() {
-    window = ModuleManagerWindow.getInstance();
-
-    if (Info.isMacOSX()) {
-      final Application app = Application.getApplication();
-      app.addApplicationListener(new ApplicationAdapter() {
-        @Override
-        public void handleOpenFile(ApplicationEvent e) {
-          final String filename = e.getFilename();
-          if (filename.endsWith(".vmod")) {
-            final LaunchRequest lr = new LaunchRequest();
-            lr.mode = Mode.LOAD;
-            lr.module = new File(filename);
-            execute(lr);
-            e.setHandled(true); 
-          }
-          else {
-            e.setHandled(false);
-          }
-        }
-
-        @Override
-        public void handleReOpenApplication(ApplicationEvent e) {
-          final LaunchRequest lr = new LaunchRequest();
-          lr.mode = Mode.MANAGE; 
-          execute(lr);
-          e.setHandled(true);
-        }
-      }); 
-    }
-
+    final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
     window.setVisible(true);
 
     final File prefsFile = new File(Info.getHomeDir(), "Preferences");
@@ -263,6 +207,7 @@ public class ModuleManager {
   protected String execute(Object req) {
     if (req instanceof LaunchRequest) { 
       final LaunchRequest lr = (LaunchRequest) req;
+      final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
 
       switch (lr.mode) {
       case MANAGE:  
@@ -305,134 +250,6 @@ public class ModuleManager {
     }
   
     return null;
-  }
-
-
-  protected static LaunchRequest parseArgs(String[] args) {
-    /*
-      VASSAL -e module [log/save]
-      VASSAL -i module
-      VASSAL -l module [log/save]
-      VASSAL -n
-
-      Operation:
-        -e, --edit
-        -i, --import
-        -l, --load
-        -n, --new
-
-      Options:
-        -a, --auto
-        -h, --help
-        -x, --extract
-            --
-    */
-
-    final LaunchRequest lr = new LaunchRequest();
-
-    // parse the options
-    int i = -1;
-    while (++i < args.length) {
-      if (!args[i].startsWith("-") || "--".equals(args[i])) {
-        // end of options
-        break;
-      }
-      else if ("-a".equals(args[i]) || "--auto".equals(args[i])) {
-        throw new UnsupportedOperationException();  // FIXME
-      }
-      else if ("-e".equals(args[i]) || "--edit".equals(args[i])) {
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.EDIT;
-      }
-      else if ("-h".equals(args[i]) || "--help".equals(args[i])) {
-        System.err.println("TODO: Command-line help.");
-        System.exit(0);
-      }
-      else if ("-i".equals(args[i]) || "--import".equals(args[i])) {
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.IMPORT;
-      }
-      else if ("-l".equals(args[i]) || "--load".equals(args[i])) {
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.LOAD;
-      }
-      else if ("-n".equals(args[i]) || "--new".equals(args[i])) {
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.NEW;
-      }
-      else if ("-x".equals(args[i]) || "--extract".equals(args[i])) {
-        throw new UnsupportedOperationException();  // FIXME
-      }
-      else if ("--auto-extensions".equals(args[i])) {
-        throw new UnsupportedOperationException();  // FIXME
-      }
-      else if ("--new-extension".equals(args[i])) {
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.NEW_EXT;
-      }
-      else if ("--edit-extension".equals(args[i])) {
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.EDIT_EXT; 
-      }
-      else {
-        throw new IllegalArgumentException("unrecognized option: " + args[i]);
-      }
-    }
-
-    // load by default if an argument is given; otherwise, manage
-    if (lr.mode == null) {
-      lr.mode = i < args.length ? Mode.LOAD : Mode.MANAGE;
-    }
-
-    // get the module and game, if specified
-    switch (lr.mode) {
-    case MANAGE:
-      break;
-    case LOAD:
-    case EDIT:
-      if (i < args.length) {
-        lr.module = new File(args[i++]);
-        if (i < args.length) {
-          lr.game = new File(args[i++]);
-        }
-      }
-      else {
-        throw new IllegalArgumentException("too few arguments");
-      }
-      break;
-    case IMPORT:
-    case NEW_EXT:
-      if (i < args.length) {
-        lr.module = new File(args[i++]);
-      }
-      else {
-        throw new IllegalArgumentException("too few arguments");
-      }
-      break;
-    case EDIT_EXT:
-      if (i + 1 < args.length) {
-        lr.module = new File(args[i++]);
-        lr.extension = new File(args[i++]);
-      }
-      else {
-        throw new IllegalArgumentException("too few arguments");
-      }
-      break;
-    case NEW:
-      break;
-    }
-
-    if (i < args.length) {
-      throw new IllegalArgumentException("too many arguments");
-    }   
- 
-    return lr;
   }
 
   private static class ModuleManagerMenuManager extends MenuManager {

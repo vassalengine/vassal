@@ -64,9 +64,10 @@ public class Player {
   protected CommandServer cmdS = null;
 
   public Player(final String[] args) {
-    StartUp.initSystemProperties();
+    final StartUp start = StartUp.getInstance();
+    start.initSystemProperties();
 //    StartUp.setupErrorLog();
-    StartUp.startErrorLog();
+    start.startErrorLog();
 
     Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
 

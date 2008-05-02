@@ -29,10 +29,21 @@ import VASSAL.Info;
 import VASSAL.tools.ErrorLog;
 
 public class StartUp {
-  public static void initSystemProperties() {
-    //
-    // HTTP proxying setup
-    //
+  protected static final StartUp instance =
+    Info.isMacOSX() ? new MacOSXStartUp() : new StartUp();
+
+  protected static StartUp getInstance() {
+    return instance;
+  }
+
+  protected StartUp() {}
+
+  public void initSystemProperties() {
+    initHTTPProxyProperties();
+    initUIProperties();
+  }
+
+  protected void initHTTPProxyProperties() {
     final String httpProxyHost = "http.proxyHost";  //$NON-NLS-1$
     final String proxyHost = "proxyHost";           //$NON-NLS-1$
 
@@ -48,45 +59,15 @@ public class StartUp {
         System.getProperty(proxyPort) != null) {
       System.setProperty(httpProxyPort, System.getProperty(proxyPort));
     }
+  }
 
-    //
-    // Miscellaneous setup
-    //
+  protected void initUIProperties() {
     System.setProperty("swing.aatext", "true"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("swing.boldMetal", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("awt.useSystemAAFontSettings", "on"); //$NON-NLS-1$ //$NON-NLS-2$
-
-    //
-    // OS-specific setup
-    //
-    if (Info.isMacOSX()) {
-      // use the system menu bar
-      System.setProperty("apple.laf.useScreenMenuBar", "true");
-
-      // put "VASSAL" in the system menu bar
-      System.setProperty(
-        "com.apple.mrj.application.apple.menu.about.name", "VASSAL");
-
-      // show the grow box in the lower right corner of windows
-      System.setProperty("apple.awt.showGrowBox", "true");
-
-      // grow box should not overlap other elements
-      System.setProperty("com.apple.mrj.application.growbox.intrudes", "true");
-
-      // live resize of app windows
-      System.setProperty("com.apple.mrj.application.live-resize", "true");
-
-      // use native LookAndFeel---must be after other Apple properties
-      try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      }
-      catch (Exception e) {
-        ErrorLog.warn(e);
-      }
-    }    
   }
-  
-  public static void setupErrorLog() {
+
+  public void setupErrorLog() {
     //
     // Error log setup
     //
@@ -112,7 +93,7 @@ public class StartUp {
     }
   }
 
-  public static void startErrorLog() {
+  public void startErrorLog() {
     // begin the error log
     System.err.println("-- OS " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
     System.err.println("-- Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
