@@ -53,6 +53,7 @@ import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 
 public class Editor {
+/*
   protected File moduleFile;
   protected File extensionFile;
   protected List<String> extractTargets = new ArrayList<String>();
@@ -60,45 +61,66 @@ public class Editor {
   private boolean newModule = false;
   private boolean newExtension = false;
   private boolean importModule = false;
+*/
 
   protected CommandClient cmdC = null;
   protected CommandServer cmdS = null;
 
-  public Editor(final String[] args) {
-    final StartUp start = StartUp.getInstance();
-    start.initSystemProperties();
-//    StartUp.setupErrorLog();
-    start.startErrorLog();
+  protected final LaunchRequest lr;
 
+  public static void main(String[] args) {
+    new Editor(LaunchRequest.parseArgs(args));
+  }
+
+  private static Editor instance = null;
+
+  public static Editor getInstance() {
+    return instance;
+  }
+
+  public Editor(LaunchRequest lr) {
+    if (instance != null) throw new IllegalStateException();
+    instance = this;
+
+    final StartUp start = StartUp.getInstance();
+    if (lr.standalone) start.startErrorLog();
+    start.setupErrorLog();
     Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
 
-//////
-    try {
-      // set up our command listener
-      final ServerSocket serverSocket = new ServerSocket(0);
-      cmdS = new EditorCommandServer(serverSocket);
-      new Thread(cmdS).start();
+    start.initSystemProperties();
 
-      // write our socket port out to the module manager
-      new DataOutputStream(System.out).writeInt(serverSocket.getLocalPort());
+    this.lr = lr;
 
-      // read the module manager's socket port from stdin
-      final int port = new DataInputStream(System.in).readInt();
+    if (!lr.standalone) {
+      try {
+        // set up our command listener
+        final ServerSocket serverSocket = new ServerSocket(0);
+        cmdS = new EditorCommandServer(serverSocket);
+        new Thread(cmdS).start();
+
+        // write our socket port out to the module manager
+        new DataOutputStream(System.out).writeInt(serverSocket.getLocalPort());
+
+        // read the module manager's socket port from stdin
+        final int port = new DataInputStream(System.in).readInt();
  
-      // set up our command client
-      cmdC = new CommandClient(new Socket((String) null, port));
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
+        // set up our command client
+        cmdC = new CommandClient(new Socket((String) null, port));
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
   
-    if (cmdC == null || cmdS == null) System.exit(1);
-//////
+      if (cmdC == null || cmdS == null) System.exit(1);
+    }
  
+    if (Info.isMacOSX()) new MacOSXMenuManager();
+    else new EditorMenuManager();
+
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
-          Editor.this.configure(args);
+//          Editor.this.configure(args);
           Editor.this.extractResourcesAndLaunch(0);
         }
         catch (IOException e) {
@@ -132,14 +154,15 @@ public class Editor {
     }
   }
 
-  protected void extractResourcesAndLaunch(final int resourceIndex) throws IOException {
-    if (resourceIndex >= extractTargets.size()) {
+  protected void extractResourcesAndLaunch(final int resourceIndex)
+                                                          throws IOException {
+    if (lr.extract == null || resourceIndex >= lr.extract.size()) {
       launch();
     }
     else {
       final Properties props = new Properties();
       final InputStream in =
-        Editor.class.getResourceAsStream(extractTargets.get(resourceIndex));
+        Editor.class.getResourceAsStream(lr.extract.get(resourceIndex));
       if (in != null) {
         try {
           props.load(in);
@@ -177,28 +200,28 @@ public class Editor {
   }
 
   protected void launch() throws IOException {
-    if (Info.isMacOSX()) new MacOSXMenuManager();
-    else new EditorMenuManager();
-
     try {
-      if (newModule) new CreateModuleAction(null).performAction(null);
-
-      if (moduleFile == null) return;
-
-      if (newExtension) {
-        GameModule.init(new BasicModule(new DataArchive(moduleFile.getPath())));
+      switch (lr.mode) {
+      case EDIT:
+        new EditModuleAction(lr.module).loadModule(lr.module);
+        break;
+      case IMPORT:
+        new ImportAction(null).loadModule(lr.module);
+        break;
+      case NEW:
+        new CreateModuleAction(null).performAction(null);
+        break;
+      case EDIT_EXT:
+        GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
+        GameModule.getGameModule().getFrame().setVisible(true);
+        new EditExtensionAction(lr.extension).performAction(null);
+        break;
+      case NEW_EXT:
+        GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
         final JFrame f = GameModule.getGameModule().getFrame();
         f.setVisible(true);
         new NewExtensionAction(f).performAction(null);
       }
-      else if (extensionFile != null) {
-        GameModule.init(new BasicModule(new DataArchive(moduleFile.getPath())));
-        final JFrame f = GameModule.getGameModule().getFrame();
-        f.setVisible(true);
-        new EditExtensionAction(extensionFile).performAction(null);
-      }
-      else if (importModule) new ImportAction(null).loadModule(moduleFile); 
-      else new EditModuleAction(moduleFile).loadModule(moduleFile);
     }
     finally {
       final Object reply = cmdC.request("NOTIFY_OPEN");
@@ -206,6 +229,7 @@ public class Editor {
     }
   }
 
+/*
   protected void configure(final String[] args) {
     int n = -1;
     while (++n < args.length) {
@@ -230,13 +254,16 @@ public class Editor {
       }
     }
   }
+*/
 
   public static class NewModuleLaunchAction extends AbstractLaunchAction {
     private static final long serialVersionUID = 1L;
 
     public NewModuleLaunchAction(ModuleManagerWindow mm) {
-      super(Resources.getString("Main.new_module"), mm, 
-            Editor.class.getName(), new String[]{ "-new" }, null);
+      super(Resources.getString("Main.new_module"), mm,
+        Editor.class.getName(),
+        new LaunchRequest(LaunchRequest.Mode.NEW)
+      );
     }
 
     @Override
@@ -250,7 +277,9 @@ public class Editor {
 
     public ImportLaunchAction(ModuleManagerWindow mm, File module) {
       super(Resources.getString("Editor.import_module"), mm,
-            Editor.class.getName(), new String[]{ "-import" }, module);
+        Editor.class.getName(),
+        new LaunchRequest(LaunchRequest.Mode.IMPORT, module)
+      );
     }
 
     @Override
@@ -280,11 +309,11 @@ public class Editor {
       final FileChooser fc = ImportAction.getFileChooser(window);
 
       if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
-        module = fc.getSelectedFile();
-        if (module != null && !module.exists()) module = null;
+        lr.module = fc.getSelectedFile();
+        if (lr.module != null && !lr.module.exists()) lr.module = null;
       } 
     
-      return module;
+      return lr.module;
     }
   }
 
@@ -293,15 +322,17 @@ public class Editor {
 
     public LaunchAction(ModuleManagerWindow mm, File module) {
       super(Resources.getString("Main.edit_module"), mm,
-            Editor.class.getName(), new String[0], module);
+        Editor.class.getName(),
+        new LaunchRequest(LaunchRequest.Mode.EDIT, module)
+      );
       setEnabled(!editing.contains(module) && !using.containsKey(module));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
       // register that this module is being edited
-      if (editing.contains(module) || using.containsKey(module)) return;
-      editing.add(module);
+      if (editing.contains(lr.module) || using.containsKey(lr.module)) return;
+      editing.add(lr.module);
 
       super.actionPerformed(e);
     }
@@ -354,7 +385,7 @@ public class Editor {
       if (promptForModule() == null) return;
 
       super.actionPerformed(e);
-      module = null;
+      lr.module = null;
     }
   }
 
@@ -375,9 +406,5 @@ public class Editor {
       else if (fc instanceof EditorWindow) return editorBar;
       else return null;
     }
-  }
-
-  public static void main(String[] args) {
-    new Editor(args);
   }
 }

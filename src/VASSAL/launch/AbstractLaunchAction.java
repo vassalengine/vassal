@@ -60,9 +60,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   public static final int DEFAULT_MAXIMUM_HEAP = 512;
 
   protected final Window window; 
-  protected File module;
   protected final String entryPoint;
-  protected final String[] args;
+  protected final LaunchRequest lr;
 
   protected static final Set<File> editing =
     Collections.synchronizedSet(new HashSet<File>());
@@ -72,15 +71,15 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected static final List<CommandClient> children =
     Collections.synchronizedList(new ArrayList<CommandClient>());
 
-  public AbstractLaunchAction(String name, Window window, String entryPoint,
-                              String[] args, File module) {
+  
+  public AbstractLaunchAction(String name, Window window,
+                              String entryPoint, LaunchRequest lr) {
     super(name);
     this.window = window;
     this.entryPoint = entryPoint;
-    this.args = args;
-    this.module = module;
+    this.lr = lr;
   }
-  
+
   public static boolean isInUse(File f) {
     return using.containsKey(f);
   }
@@ -115,16 +114,16 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
 
     if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
-      module = fc.getSelectedFile();
-      if (module != null && !module.exists()) module = null;
+      lr.module = fc.getSelectedFile();
+      if (lr.module != null && !lr.module.exists()) lr.module = null;
     }
     
-    return module;
+    return lr.module;
   }
 
   protected class LaunchTask extends SwingWorker<Void,Void> {
     // module might be reassigned before the task is over, keep a local copy
-    protected final File mod = AbstractLaunchAction.this.module; 
+    protected final File mod = AbstractLaunchAction.this.lr.module; 
 
     protected ServerSocket serverSocket;
     protected Socket clientSocket;
@@ -167,8 +166,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       new Thread(cmdS).start();
 
       // build the child process
-      final String[] pa =
-        new String[6 + args.length + (mod == null ? 0 : 1)];
+      final String[] args = lr.toArgs();      
+      final String[] pa = new String[6 + args.length];
       pa[0] = "java";
       pa[1] = "-Xms" + initialHeap + "M";
       pa[2] = "-Xmx" + maximumHeap + "M";
@@ -176,7 +175,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       pa[4] = System.getProperty("java.class.path");
       pa[5] = entryPoint; 
       System.arraycopy(args, 0, pa, 6, args.length);
-      if (mod != null) pa[pa.length-1] = mod.getPath();
 
       final ProcessBuilder pb = new ProcessBuilder(pa);
       pb.directory(Info.getBinDir());

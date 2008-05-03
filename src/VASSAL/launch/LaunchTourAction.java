@@ -33,11 +33,10 @@ public class LaunchTourAction extends AbstractLaunchAction {
       Resources.getString("Main.tour"),
       window,
       Player.class.getName(),
-      new String[]{
-        "-load", new File(Documentation.getDocumentationBaseDir(),
-        "tour.log").getPath()
-      },
-      new File(Documentation.getDocumentationBaseDir(), "tour.mod")
+      new LaunchRequest(LaunchRequest.Mode.LOAD,
+        new File(Documentation.getDocumentationBaseDir(), "tour.mod"),
+        new File(Documentation.getDocumentationBaseDir(), "tour.log")
+      )
     );
   }
 

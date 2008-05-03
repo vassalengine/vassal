@@ -22,11 +22,22 @@ package VASSAL.launch;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
+import VASSAL.Info;
+
+/**
+ * Encapsulates and parses command-line arguments.
+ * <code>args</code> and <code>LaunchRequest.parseArgs(args).toArgs()</code>
+ * are equivalent (though perhaps not equal) argument lists.
+ *
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class LaunchRequest implements Serializable {
   private static final long serialVersionUID = 1L;
 
@@ -47,12 +58,119 @@ public class LaunchRequest implements Serializable {
 
   public boolean standalone;
 
-  public boolean auto;
+  public boolean builtInModule;
   public List<String> autoext;
   public List<String> extract;
 
+  public LaunchRequest() {
+    this(null, null);
+  }
+
+  public LaunchRequest(Mode mode) {
+    this(mode, null, null);
+  }
+
+  public LaunchRequest(Mode mode, File module) {
+    this(mode, module, null);
+  }
+
+  public LaunchRequest(Mode mode, File module, File other) {
+    this.mode = mode;
+    this.module = module;
+
+    if (mode == Mode.EDIT_EXT) extension = other;
+    else game = other;
+  }
+
+  /**
+   * @return an array which would be parsed to this <code>LaunchRequest</code>
+   */
+  public String[] toArgs() {
+    final ArrayList<String> args = new ArrayList<String>();
+
+    switch (mode) {
+    case MANAGE:   args.add("--manage"); break;
+    case LOAD:     args.add("--load");   break;
+    case EDIT:     args.add("--edit");   break;
+    case IMPORT:   args.add("--import"); break;
+    case NEW:      args.add("--new");    break;
+    case EDIT_EXT: args.add("--edit-extension"); break;
+    case NEW_EXT:  args.add("--new-extension");  break;
+    }
+
+    if (standalone)    args.add("--standalone");
+    if (builtInModule) args.add("--auto");
+
+    if (autoext != null) {
+      final StringBuilder sb = new StringBuilder("--auto-extensions=");
+
+      final Iterator<String> i = autoext.iterator();
+      sb.append(i.next());
+      while (i.hasNext()) sb.append(',').append(i.next());
+      args.add(sb.toString().replace(' ','_'));
+    }
+
+    if (extract != null) {
+      for (String x : extract) {
+        args.add("--extract=" + x);
+      }
+    }
+
+    if (module != null) {
+      args.add(module.getPath());
+      if (game != null) {
+        args.add(game.getPath());
+      }
+      else if (extension != null) {
+        args.add(extension.getPath());
+      }
+    }
+
+    return args.toArray(new String[args.size()]);
+  }
+
+  private static final String help =
+"Usage:\n" +
+"  VASSAL -e [option]... module\n" +
+"  VASSAL -i [option]... module\n" +
+"  VASSAL -l [option]... module [save|log]\n" +
+"  VASSAL -n [option]...\n" +
+"  VASSAL -m\n" +
+"  VASSAL -h\n" +
+"  VASSAL --edit-extension [option]... module extension\n" +
+"  VASSAL --new-extension [option]...\n" +
+"\n" +
+"Options:\n" +
+"  -a, --auto          TODO\n" +
+"  -e, --edit          Edit a module\n" +
+"  -h, --help          Display this help and exit\n" +
+"  -i, --import        Import a non-VASSAL module\n" +
+"  -l, --load          Load a module and saved game or log\n" +
+"  -m, --manage        Use the module manager\n" +
+"  -n, --new           Create a new module\n" +
+"  -x, --extract       TODO\n" +
+"  --auto-extensions   TODO\n" +
+"  --edit-extension    Edit a module extension\n" +
+"  --new-extension     Create a new module extension\n" +
+//"  --standalone        run the Player or Editor alone, debugging use only\n" +
+"  --version           Display version information and exit\n" +
+"  --                  Terminate the list of options\n" +
+"\n" +
+"VASSAL defaults to '-m' if no options are given.\n" +
+"\n";
+
+  /**
+   * @param args an array of command-line arguments
+   * @return a <code>LaunchRequest</code> equivalent to <code>args</code>
+   */ 
   public static LaunchRequest parseArgs(String[] args) {
     final LaunchRequest lr = new LaunchRequest();
+
+    final int AUTO_EXT = 2;
+    final int EDIT_EXT = 3;
+    final int NEW_EXT = 4;
+    final int STANDALONE = 5;
+    final int VERSION = 6;
 
     final LongOpt[] longOpts = new LongOpt[]{
       new LongOpt("auto",    LongOpt.NO_ARGUMENT,       null, 'a'),
@@ -61,40 +179,46 @@ public class LaunchRequest implements Serializable {
       new LongOpt("help",    LongOpt.NO_ARGUMENT,       null, 'h'),
       new LongOpt("import",  LongOpt.NO_ARGUMENT,       null, 'i'),
       new LongOpt("load",    LongOpt.NO_ARGUMENT,       null, 'l'),
+      new LongOpt("manage",  LongOpt.NO_ARGUMENT,       null, 'm'),
       new LongOpt("new",     LongOpt.NO_ARGUMENT,       null, 'n'),
-      new LongOpt("auto-extensions", LongOpt.REQUIRED_ARGUMENT, null, 2),
-      new LongOpt("edit-extension", LongOpt.NO_ARGUMENT, null, 3),
-      new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, 4),
-      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, 5),
+      new LongOpt("auto-extensions", LongOpt.REQUIRED_ARGUMENT, null, AUTO_EXT),
+      new LongOpt("edit-extension", LongOpt.NO_ARGUMENT, null, EDIT_EXT),
+      new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, NEW_EXT),
+      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, STANDALONE),
+      new LongOpt("version", LongOpt.NO_ARGUMENT, null, VERSION)
     };
 
-    final Getopt g = new Getopt("VASSAL", args, ":aex:hiln");
+    final Getopt g = new Getopt("VASSAL", args, ":aehilmnx:", longOpts);
 
     int c;
     String optarg;
     while ((c = g.getopt()) != -1) {
       switch (c) {
-      case 2:   // auto-extensions
+      case AUTO_EXT:
         if (lr.autoext == null) lr.autoext = new ArrayList<String>();
         for (String ext : g.getOptarg().split(",")) {
           lr.autoext.add(ext.replace("_"," "));
         }
         break;
-      case 3:   // edit-extensions
+      case EDIT_EXT:
         if (lr.mode != null)
           throw new IllegalArgumentException("only one mode");
         lr.mode = Mode.EDIT_EXT; 
         break;
-      case 4:   // new-extension
+      case NEW_EXT:
         if (lr.mode != null)
           throw new IllegalArgumentException("only one mode");
         lr.mode = Mode.NEW_EXT;
         break;
-      case 5:   // standalone
+      case STANDALONE:
         lr.standalone = true;
         break;
+      case VERSION:
+        System.err.println("VASSAL " + Info.getVersion());
+        System.exit(0);
+        break;
       case 'a':
-        lr.auto = true;
+        lr.builtInModule = true;
         break;
       case 'e':
         if (lr.mode != null)
@@ -106,7 +230,7 @@ public class LaunchRequest implements Serializable {
         lr.extract.add(g.getOptarg());
         break;
       case 'h':
-        System.err.println("TODO: Command-line help.");
+        System.err.print(help);
         System.exit(0);
         break;
       case 'i':
@@ -118,6 +242,11 @@ public class LaunchRequest implements Serializable {
         if (lr.mode != null)
           throw new IllegalArgumentException("only one mode");
         lr.mode = Mode.LOAD;
+        break;
+      case 'm':
+        if (lr.mode != null)
+          throw new IllegalArgumentException("only one mode");
+        lr.mode = Mode.MANAGE;
         break;
       case 'n':
         if (lr.mode != null)
@@ -183,7 +312,7 @@ public class LaunchRequest implements Serializable {
     }   
  
     // other consistency checks
-    if (lr.auto) {
+    if (lr.builtInModule) {
       if (lr.mode != Mode.LOAD)
         throw new IllegalArgumentException("auto requires load mode"); 
       if (lr.module != null)

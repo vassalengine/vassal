@@ -1111,7 +1111,8 @@ public class ModuleManagerWindow extends JFrame {
      * Is the extension, or its owning module currently being Played or Edited?
      */
     public boolean isInUse() {
-      return AbstractLaunchAction.isInUse(file) || AbstractLaunchAction.isEditing(file);
+      return AbstractLaunchAction.isInUse(file) ||
+             AbstractLaunchAction.isEditing(file);
     }
     
     private class ActivateExtensionAction extends AbstractAction {
@@ -1257,26 +1258,27 @@ public class ModuleManagerWindow extends JFrame {
     
   }
   
-  /** *************************************************************************
-   * Action to create a New Extension and edit it in another process
-   *
+  /**
+   * Action to create a New Extension and edit it in another process.
    */
   private class NewExtensionLaunchAction extends AbstractLaunchAction {
     private static final long serialVersionUID = 1L;
 
     public NewExtensionLaunchAction(Frame frame) {
       super(Resources.getString("ModuleManager.new_extension"), frame, 
-            Editor.class.getName(), new String[]{ "-newext" }, null);
+        Editor.class.getName(),
+        new LaunchRequest(LaunchRequest.Mode.NEW_EXT)
+      );
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      module = getSelectedModule();
+      lr.module = getSelectedModule();
 
       // register that this module is being used
-      if (editing.contains(module)) return;
-      Integer count = using.get(module);
-      using.put(module, count == null ? 1 : ++count);
+      if (editing.contains(lr.module)) return;
+      Integer count = using.get(lr.module);
+      using.put(lr.module, count == null ? 1 : ++count);
 
       super.actionPerformed(e);
     }
@@ -1311,14 +1313,12 @@ public class ModuleManagerWindow extends JFrame {
   private class EditExtensionLaunchAction extends AbstractLaunchAction {
     private static final long serialVersionUID = 1L;
 
-    private final File extension;
-
     public EditExtensionLaunchAction(Frame frame, File extension, File module) {
       super(Resources.getString("Editor.edit_extension"), frame,
-            Editor.class.getName(),
-            new String[]{ "-edext", extension.getPath() },
-            module);
-      this.extension = extension;
+        Editor.class.getName(),
+        new LaunchRequest(LaunchRequest.Mode.EDIT_EXT, module, extension)
+      );
+
       setEnabled(!using.containsKey(module) &&
                  !editing.contains(module) &&
                  !editing.contains(extension) &&
@@ -1328,14 +1328,14 @@ public class ModuleManagerWindow extends JFrame {
     @Override
     public void actionPerformed(ActionEvent e) {
       // check that neither this module nor this extension is being edited
-      if (editing.contains(module) || editing.contains(extension)) return;
+      if (editing.contains(lr.module) || editing.contains(lr.extension)) return;
 
       // register that this module is being used
-      Integer count = using.get(module);
-      using.put(module, count == null ? 1 : ++count);
+      Integer count = using.get(lr.module);
+      using.put(lr.module, count == null ? 1 : ++count);
 
       // register that this extension is being edited 
-      editing.add(extension);
+      editing.add(lr.extension);
 
       super.actionPerformed(e);
       setEnabled(false);
@@ -1354,7 +1354,7 @@ public class ModuleManagerWindow extends JFrame {
           else using.put(mod, --count);
 
           // reduce that this extension is done being edited
-          editing.remove(extension);
+          editing.remove(lr.extension);
           setEnabled(true);
         }
 

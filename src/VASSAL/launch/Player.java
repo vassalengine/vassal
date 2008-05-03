@@ -54,50 +54,72 @@ import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 
 public class Player {
+/*
   protected boolean builtInModule;
   protected File moduleFile;
   protected File savedGame;
   protected List<String> extractTargets = new ArrayList<String>();
   protected List<String> autoExtensions = new ArrayList<String>();
+*/
 
   protected CommandClient cmdC = null;
   protected CommandServer cmdS = null;
 
-  public Player(final String[] args) {
-    final StartUp start = StartUp.getInstance();
-    start.initSystemProperties();
-//    StartUp.setupErrorLog();
-    start.startErrorLog();
+  protected final LaunchRequest lr;
 
+  public static void main(String[] args) {
+    new Player(LaunchRequest.parseArgs(args));
+  }
+
+  private static Player instance = null;
+
+  public static Player getInstance() {
+    return instance;
+  }
+
+  public Player(LaunchRequest lr) {
+    if (instance != null) throw new IllegalStateException();
+    instance = this;
+
+    this.lr = lr;
+
+    if (!lr.standalone) {
+      try {
+        // set up our command listener
+        final ServerSocket serverSocket = new ServerSocket(0);
+        cmdS = new PlayerCommandServer(serverSocket);
+        new Thread(cmdS).start();
+
+        // write our socket port out to the module manager
+        new DataOutputStream(System.out).writeInt(serverSocket.getLocalPort());
+
+        // read the module manager's socket port from stdin
+        final int port = new DataInputStream(System.in).readInt();
+
+        // set up our command client
+        cmdC = new CommandClient(new Socket((String) null, port));
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+  
+      if (cmdC == null || cmdS == null) System.exit(1);
+    } 
+
+    final StartUp start = StartUp.getInstance();
+    if (lr.standalone) start.setupErrorLog();
+    start.startErrorLog();
     Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
 
-//////
-    try {
-      // set up our command listener
-      final ServerSocket serverSocket = new ServerSocket(0);
-      cmdS = new PlayerCommandServer(serverSocket);
-      new Thread(cmdS).start();
+    start.initSystemProperties();
 
-      // write our socket port out to the module manager
-      new DataOutputStream(System.out).writeInt(serverSocket.getLocalPort());
+    if (Info.isMacOSX()) new MacOSXMenuManager();
+    else new PlayerMenuManager();
 
-      // read the module manager's socket port from stdin
-      final int port = new DataInputStream(System.in).readInt();
- 
-      // set up our command client
-      cmdC = new CommandClient(new Socket((String) null, port));
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-  
-    if (cmdC == null || cmdS == null) System.exit(1);
-//////
-    
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
-          Player.this.configure(args);
+//          Player.this.configure(args);
           Player.this.extractResourcesAndLaunch(0);
         }
         catch (IOException e) {
@@ -131,14 +153,15 @@ public class Player {
     }
   }
 
-  protected void extractResourcesAndLaunch(final int resourceIndex) throws IOException {
-    if (resourceIndex >= extractTargets.size()) {
+  protected void extractResourcesAndLaunch(final int resourceIndex)
+                                                          throws IOException {
+    if (lr.extract == null || resourceIndex >= lr.extract.size()) {
       launch();
     }
     else {
       final Properties props = new Properties();
       final InputStream in =
-        Player.class.getResourceAsStream(extractTargets.get(resourceIndex));
+        Player.class.getResourceAsStream(lr.extract.get(resourceIndex));
       if (in != null) {
         try {
           props.load(in);
@@ -176,20 +199,17 @@ public class Player {
   }
 
   protected void launch() throws IOException {
-    if (Info.isMacOSX()) new MacOSXMenuManager();
-    else new PlayerMenuManager();
-
     try {
-      if (builtInModule) {
+      if (lr.builtInModule) {
         GameModule.init(createModule(createDataArchive()));
-        for (String ext : autoExtensions) {
+        for (String ext : lr.autoext) {
           createExtension(ext).build();
         }
         createExtensionsLoader().addTo(GameModule.getGameModule());
         Localization.getInstance().translate();
         GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
       }
-      else if (moduleFile == null) {
+      else if (lr.module == null) {
         return;
       }
       else {
@@ -197,9 +217,9 @@ public class Player {
         createExtensionsLoader().addTo(GameModule.getGameModule());
         Localization.getInstance().translate();
         final GameModule m = GameModule.getGameModule();
-        if (savedGame != null) {
+        if (lr.game != null) {
           m.getFrame().setVisible(true);
-          m.getGameState().loadGameInBackground(savedGame);
+          m.getGameState().loadGameInBackground(lr.game);
         }
         else {
           m.getWizardSupport().showWelcomeWizard();
@@ -207,8 +227,10 @@ public class Player {
       }
     }  
     finally {
-      final Object reply = cmdC.request("NOTIFY_OPEN");
-      System.out.println("Reply: " + reply);
+      if (cmdC != null) { 
+        final Object reply = cmdC.request("NOTIFY_OPEN");
+       System.out.println("Reply: " + reply);
+      }
     }
   }
 
@@ -221,11 +243,11 @@ public class Player {
   }
 
   protected DataArchive createDataArchive() throws IOException {
-    if (builtInModule) {
+    if (lr.builtInModule) {
       return new JarArchive();
     }
     else {
-      return new DataArchive(moduleFile.getPath());
+      return new DataArchive(lr.module.getPath());
     }
   }
 
@@ -233,6 +255,7 @@ public class Player {
     return new BasicModule(archive);
   }
 
+/*
   protected void configure(final String[] args) {
     int n = -1;
     while (++n < args.length) {
@@ -256,28 +279,32 @@ public class Player {
       }
     }
   }
+*/
 
   public static class LaunchAction extends AbstractLaunchAction {
     private static final long serialVersionUID = 1L;
 
     public LaunchAction(ModuleManagerWindow mm, File module) {
       super(Resources.getString("Main.play_module"), mm,
-            Player.class.getName(), new String[0], module);
+        Player.class.getName(),
+        new LaunchRequest(LaunchRequest.Mode.LOAD, module)
+      );
       setEnabled(!editing.contains(module));
     }
     
     public LaunchAction(ModuleManagerWindow mm, File module, File saveGame) {
       super(Resources.getString("General.open"), mm, Player.class.getName(),
-            new String[] {"-load",saveGame.getPath()}, module);
+        new LaunchRequest(LaunchRequest.Mode.LOAD, module, saveGame)
+      );
       setEnabled(!editing.contains(module));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
       // register that this module is being used
-      if (editing.contains(module)) return;
-      Integer count = using.get(module);
-      using.put(module, count == null ? 1 : ++count);
+      if (editing.contains(lr.module)) return;
+      Integer count = using.get(lr.module);
+      using.put(lr.module, count == null ? 1 : ++count);
 
       super.actionPerformed(e);
     }
@@ -317,7 +344,7 @@ public class Player {
       if (promptForModule() == null) return;
 
       super.actionPerformed(e);
-      module = null;
+      lr.module = null;
     }
   }
 
@@ -333,9 +360,5 @@ public class Player {
     public MenuBarProxy getMenuBarProxyFor(JFrame fc) {
       return (fc instanceof PlayerWindow) ? menuBar : null;
     }
-  }
-
-  public static void main(String[] args) {
-    new Player(args);
   }
 }

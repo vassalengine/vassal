@@ -125,6 +125,7 @@ public class ModuleManager {
 
   public ModuleManager() throws IOException {
     if (instance != null) throw new IllegalStateException();
+    instance = this;
 
     serverSocket = new ServerSocket(port); 
 
