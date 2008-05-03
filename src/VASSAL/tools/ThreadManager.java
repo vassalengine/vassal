@@ -72,8 +72,9 @@ public class ThreadManager {
 
   // FIXME: RunnableFuture does not exist in Java 1.5. Remove this
   // once we switch to 1.6.
+  @SuppressWarnings("unchecked")
   public static <V> Future<V> submit(Runnable task) {
-System.out.println("thread queue: " + requestQueue.size());
+//System.out.println("thread queue: " + requestQueue.size());
     return (Future<V>) threadPool.submit(task);
   }
 
