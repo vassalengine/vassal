@@ -184,10 +184,9 @@ public class ADC2Module extends Importer {
 			this.pieces = pieces;			
 		}
 		
-		@SuppressWarnings("unchecked")
 		List<Piece> getPieces() {
 			if (pieces == null)
-				return Collections.EMPTY_LIST;
+				return Collections.emptyList();
 			else
 				return Collections.unmodifiableList(pieces);
 		}
@@ -1951,6 +1950,7 @@ public class ADC2Module extends Importer {
 		} while (name.length() > 0);
 	}
 
+  @SuppressWarnings("fallthrough")
 	protected void readPieceBlock(DataInputStream in) throws IOException {
 		ADC2Utils.readBlockHeader(in, PIECE);
 		
