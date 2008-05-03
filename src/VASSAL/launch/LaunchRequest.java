@@ -28,6 +28,7 @@ import java.util.List;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
+import VASSAL.i18n.Resources;
 import VASSAL.Info;
 
 /**
@@ -42,13 +43,13 @@ public class LaunchRequest implements Serializable {
   private static final long serialVersionUID = 1L;
 
   enum Mode {
-    MANAGE,
-    LOAD,
-    EDIT,
-    IMPORT,
-    NEW,
-    EDIT_EXT,
-    NEW_EXT
+    MANAGE   { public String toString() { return "manage"; } },
+    LOAD     { public String toString() { return "load";   } },
+    EDIT     { public String toString() { return "edit";   } },
+    IMPORT   { public String toString() { return "import"; } },
+    NEW      { public String toString() { return "new";    } },
+    EDIT_EXT { public String toString() { return "edit-extension"; } },
+    NEW_EXT  { public String toString() { return "new-extension";  } }
   }
 
   public Mode mode;
@@ -83,20 +84,14 @@ public class LaunchRequest implements Serializable {
   }
 
   /**
+   * Create an argument array equivalent to this <code>LaunchRequest</code>.
+   *
    * @return an array which would be parsed to this <code>LaunchRequest</code>
    */
   public String[] toArgs() {
     final ArrayList<String> args = new ArrayList<String>();
 
-    switch (mode) {
-    case MANAGE:   args.add("--manage"); break;
-    case LOAD:     args.add("--load");   break;
-    case EDIT:     args.add("--edit");   break;
-    case IMPORT:   args.add("--import"); break;
-    case NEW:      args.add("--new");    break;
-    case EDIT_EXT: args.add("--edit-extension"); break;
-    case NEW_EXT:  args.add("--new-extension");  break;
-    }
+    args.add("--" + mode.toString());
 
     if (standalone)    args.add("--standalone");
     if (builtInModule) args.add("--auto");
@@ -116,6 +111,8 @@ public class LaunchRequest implements Serializable {
       }
     }
 
+    args.add("--");
+
     if (module != null) {
       args.add(module.getPath());
       if (game != null) {
@@ -129,6 +126,7 @@ public class LaunchRequest implements Serializable {
     return args.toArray(new String[args.size()]);
   }
 
+  // FIXME: translate this somehow?
   private static final String help =
 "Usage:\n" +
 "  VASSAL -e [option]... module\n" +
@@ -160,6 +158,8 @@ public class LaunchRequest implements Serializable {
 "\n";
 
   /**
+   * Parse an argument array to a <code>LaunchRequest</code>.
+   * 
    * @param args an array of command-line arguments
    * @return a <code>LaunchRequest</code> equivalent to <code>args</code>
    */ 
@@ -189,6 +189,7 @@ public class LaunchRequest implements Serializable {
     };
 
     final Getopt g = new Getopt("VASSAL", args, ":aehilmnx:", longOpts);
+    g.setOpterr(false);
 
     int c;
     String optarg;
@@ -201,14 +202,10 @@ public class LaunchRequest implements Serializable {
         }
         break;
       case EDIT_EXT:
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.EDIT_EXT; 
+        setMode(lr, Mode.EDIT_EXT);
         break;
       case NEW_EXT:
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.NEW_EXT;
+        setMode(lr, Mode.NEW_EXT);
         break;
       case STANDALONE:
         lr.standalone = true;
@@ -221,43 +218,36 @@ public class LaunchRequest implements Serializable {
         lr.builtInModule = true;
         break;
       case 'e':
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.EDIT;
-        break;
-      case 'x':
-        if (lr.extract == null) lr.extract = new ArrayList<String>();
-        lr.extract.add(g.getOptarg());
+        setMode(lr, Mode.EDIT);
         break;
       case 'h':
         System.err.print(help);
         System.exit(0);
         break;
       case 'i':
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.IMPORT;
+        setMode(lr, Mode.IMPORT);
         break;
       case 'l':
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.LOAD;
+        setMode(lr, Mode.LOAD);
         break;
       case 'm':
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.MANAGE;
+        setMode(lr, Mode.MANAGE);
         break;
       case 'n':
-        if (lr.mode != null)
-          throw new IllegalArgumentException("only one mode");
-        lr.mode = Mode.NEW;
+        setMode(lr, Mode.NEW);
+        break;
+      case 'x':
+        if (lr.extract == null) lr.extract = new ArrayList<String>();
+        lr.extract.add(g.getOptarg());
         break;
       case ':':
+        die("LaunchRequest.missing_argument", args[g.getOptind()-1]); 
+        break;
       case '?':
-        System.exit(1);
+        die("LaunchRequest.unrecognized_option", args[g.getOptind()-1]);
         break;
       default:
+        // should never happen
         throw new IllegalStateException();  
       }
     }
@@ -274,24 +264,30 @@ public class LaunchRequest implements Serializable {
     case MANAGE:
       break;
     case LOAD:
-    case EDIT:
       if (i < args.length) {
-        lr.module = new File(args[i++]);
-        if (i < args.length) {
+        // check whether this is a module, saved game, or log
+        if (args[i].endsWith(".vsav") || args[i].endsWith(".vmod")) {
           lr.game = new File(args[i++]);
+        }
+        else {
+          lr.module = new File(args[i++]);
+          if (i < args.length) {
+            lr.game = new File(args[i++]);
+          }
         }
       }
       else {
-        throw new IllegalArgumentException("too few arguments");
+        die("LaunchRequest.missing_module");
       }
       break;
+    case EDIT:
     case IMPORT:
     case NEW_EXT:
       if (i < args.length) {
         lr.module = new File(args[i++]);
       }
       else {
-        throw new IllegalArgumentException("too few arguments");
+        die("LaunchRequest.missing_module");
       }
       break;
     case EDIT_EXT:
@@ -300,7 +296,7 @@ public class LaunchRequest implements Serializable {
         lr.extension = new File(args[i++]);
       }
       else {
-        throw new IllegalArgumentException("too few arguments");
+        die("LaunchRequest.missing_module");
       }
       break;
     case NEW:
@@ -308,28 +304,58 @@ public class LaunchRequest implements Serializable {
     }
 
     if (i < args.length) {
-      throw new IllegalArgumentException("too many arguments");
+      die("LaunchRequest.excess_args", args[i]);
     }   
  
     // other consistency checks
     if (lr.builtInModule) {
-      if (lr.mode != Mode.LOAD)
-        throw new IllegalArgumentException("auto requires load mode"); 
-      if (lr.module != null)
-        throw new IllegalArgumentException("too many arguments");
+      if (lr.mode != Mode.LOAD) {
+        die("LaunchRequest.only_in_mode", "--auto", Mode.LOAD.toString());
+      }      
+
+      if (lr.module != null) {
+        die("LaunchRequest.excess_args", args[i]);
+      }
     }  
 
     if (lr.autoext != null) {
-      if (lr.mode != Mode.LOAD)
-        throw new IllegalArgumentException("autoext requires load mode"); 
-      if (lr.module != null)
-        throw new IllegalArgumentException("too many arguments");
+      if (lr.mode != Mode.LOAD) {
+        die("LaunchRequest.only_in_mode",
+            "--auto-extensions", Mode.LOAD.toString());
+      }      
+
+      if (lr.module != null) {
+        die("LaunchRequest.excess_args", args[i]);
+      }
     }
 
     if (lr.standalone && lr.mode == Mode.MANAGE) {
-      throw new IllegalArgumentException("standalone is not for manage mode");
+      die("LaunchRequest.not_in_mode", "--standalone", Mode.MANAGE.toString());
     } 
 
     return lr;
+  }
+
+  protected static boolean checkOption(String s, String[] args) {
+    for (String a : args) {
+      if (a.equals(s)) return true;
+    }
+    return false;
+  }
+
+  protected static void setMode(LaunchRequest lr, Mode mode) {
+    if (lr.mode != null) die("LaunchRequest.only_one_mode");
+    lr.mode = mode; 
+  }
+
+  /** 
+   * Print an error message and exit.
+   *
+   * @param key {@link Resources} key
+   * @param vals {@link Resources} arguments
+   */
+  protected static void die(String key, String... vals) {
+    System.err.println("VASSAL: " + Resources.getString(key, (Object[]) vals));
+    System.exit(1);
   }
 }
