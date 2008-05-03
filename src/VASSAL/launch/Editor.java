@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -53,16 +52,6 @@ import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 
 public class Editor {
-/*
-  protected File moduleFile;
-  protected File extensionFile;
-  protected List<String> extractTargets = new ArrayList<String>();
-
-  private boolean newModule = false;
-  private boolean newExtension = false;
-  private boolean importModule = false;
-*/
-
   protected CommandClient cmdC = null;
   protected CommandServer cmdS = null;
 
@@ -120,7 +109,6 @@ public class Editor {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
-//          Editor.this.configure(args);
           Editor.this.extractResourcesAndLaunch(0);
         }
         catch (IOException e) {
@@ -228,33 +216,6 @@ public class Editor {
       System.out.println("Reply: " + reply);
     }
   }
-
-/*
-  protected void configure(final String[] args) {
-    int n = -1;
-    while (++n < args.length) {
-      final String arg = args[n];
-      if ("-extract".equals(arg)) {
-        extractTargets.add(args[++n]);
-      }
-      else if ("-import".equals(arg)) {
-        importModule = true; 
-      }
-      else if ("-new".equals(arg)) {
-        newModule = true; 
-      }
-      else if ("-newext".equals(arg)) {
-        newExtension = true;
-      }
-      else if ("-edext".equals(arg)) {
-        extensionFile = new File(args[++n]); 
-      }
-      else if (!arg.startsWith("-")) {
-        moduleFile = new File(arg);
-      }
-    }
-  }
-*/
 
   public static class NewModuleLaunchAction extends AbstractLaunchAction {
     private static final long serialVersionUID = 1L;
