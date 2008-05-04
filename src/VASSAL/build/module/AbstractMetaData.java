@@ -50,15 +50,14 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Translation;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
+import VASSAL.tools.IOUtils;
 
 /**
  * 
- * Base Class representing the metadata for a Saved Game, Module or Extension. 
- * A Base MetaData class is returned only for invalid files.
+ * Base class representing the metadata for a Saved Game, Module or Extension. 
  * 
  * @author Brent Easton
  * @since 3.1.0
- *
  */
 public abstract class AbstractMetaData {
 
@@ -118,10 +117,39 @@ public abstract class AbstractMetaData {
   public String getLocalizedDescription() {
     return descriptionAttr == null ? "" : descriptionAttr.getLocalizedValue();
   }
-  
+
+  public enum FileType { MODULE, EXTENSION, SAVE, UNKNOWN }
+
+  public static FileType getFileType(String filename) {
+    return getFileType(new File(filename));
+  }
+ 
+  public static FileType getFileType(File file) {
+    final AbstractMetaData data = AbstractMetaData.buildMetaData(file);
+
+    if (data == null) {
+      // Not a Module, Extension or Saved game of any type, old or new.
+      return FileType.UNKNOWN;
+    }
+    else if (data instanceof SaveMetaData) {
+      return FileType.SAVE;
+    }
+    else if (data instanceof ExtensionMetaData) {
+      return FileType.EXTENSION;
+    }
+    else if (data instanceof ModuleMetaData) {
+      return FileType.MODULE;
+    }
+    else {
+      // Some other type of metadata we don't know about.
+      // This should not happen, they should all be listed here.
+      throw new IllegalStateException();
+    }
+  }
+
   /**
    * Factory method to build and return an appropriate MetaData class based 
-   * on the contents of the file. Return null of the file is not a Zip archive,
+   * on the contents of the file. Return null if the file is not a Zip archive,
    * or it is not a VASSAL Module, Extension or Save Game. 
    * 
    * @param file metadata file
@@ -136,89 +164,69 @@ public abstract class AbstractMetaData {
     
     // Check it is a Zip file
     ZipFile zip = null;
-    
-    try {
-      zip = new ZipFile(file);
-    }
-    catch (ZipException e) {
-      return null;
-    }
-    catch (IOException e) {
-      return null;
-    } 
+    try { 
+      try {
+        zip = new ZipFile(file);
+      }
+      catch (ZipException e) {
+        return null;
+      }
+      catch (IOException e) {
+        return null;
+      } 
 
-    // Check if it is a Save Game file
-    ZipEntry entry = zip.getEntry(GameState.SAVEFILE_ZIP_ENTRY);
-    if (entry != null) {
-      return new SaveMetaData(zip);
-    }
+      // Check if it is a Save Game file
+      ZipEntry entry = zip.getEntry(GameState.SAVEFILE_ZIP_ENTRY);
+      if (entry != null) {
+        return new SaveMetaData(zip);
+      }
     
-    // Check if it has a buildFile
-    ZipEntry buildFileEntry = zip.getEntry(GameModule.BUILDFILE);
-    if (buildFileEntry == null) {
-      closeZip(zip);
-      return null;
-    }
+      // Check if it has a buildFile
+      ZipEntry buildFileEntry = zip.getEntry(GameModule.BUILDFILE);
+      if (buildFileEntry == null) {
+        return null;
+      }
     
-    // It's either a module or an Extension, check for existence of
-    // metadata
-    entry = zip.getEntry(ModuleMetaData.ZIP_ENTRY_NAME);
-    if (entry != null) {
-      return new ModuleMetaData(zip);
-    }
+      // It's either a module or an Extension, check for existence of metadata
+      entry = zip.getEntry(ModuleMetaData.ZIP_ENTRY_NAME);
+      if (entry != null) {
+        return new ModuleMetaData(zip);
+      }
     
-    entry = zip.getEntry(ExtensionMetaData.ZIP_ENTRY_NAME);
-    if (entry != null) {
-      return new ExtensionMetaData(zip);
-    }
+      entry = zip.getEntry(ExtensionMetaData.ZIP_ENTRY_NAME);
+      if (entry != null) {
+        return new ExtensionMetaData(zip);
+      }
     
-    // read the first few lines of the buildFile    
-    BufferedReader br = null;
-    try {
-            
-      br = new BufferedReader(new InputStreamReader(zip.getInputStream(buildFileEntry)));
-      for (int i = 0; i < 10; i++) {
-        String s = br.readLine();
-        if (s.indexOf(BUILDFILE_MODULE_ELEMENT1) > 0 || s.indexOf(BUILDFILE_MODULE_ELEMENT2) > 0) {
-          br.close();
-          return new ModuleMetaData(zip);
-        }  
-        else if (s.indexOf(BUILDFILE_EXTENSION_ELEMENT) > 0) {
-          br.close();
-          return new ExtensionMetaData(zip);
+      // read the first few lines of the buildFile    
+      BufferedReader br = null;
+      try {
+        br = new BufferedReader(
+          new InputStreamReader(zip.getInputStream(buildFileEntry)));
+        for (int i = 0; i < 10; i++) {
+          final String s = br.readLine();
+          if (s.indexOf(BUILDFILE_MODULE_ELEMENT1) > 0 ||
+              s.indexOf(BUILDFILE_MODULE_ELEMENT2) > 0) {
+            br.close();
+            return new ModuleMetaData(zip);
+          }  
+          else if (s.indexOf(BUILDFILE_EXTENSION_ELEMENT) > 0) {
+            br.close();
+            return new ExtensionMetaData(zip);
+          }
         }
       }
-    }
-    catch (IOException e) {
-      
+      catch (IOException e) {
+      }
+      finally {
+        IOUtils.closeQuietly(br);
+      }
     }
     finally {
-      if (br != null) {
-        try {
-          br.close();
-        }
-        catch (IOException e) {
-          // No stacktrace
-        }
-      }
-    }
-    
-    closeZip(zip);
-    
+      IOUtils.closeQuietly(zip);
+    }    
+
     return null;
-  }
-  
-  /**
-   * Quietly close a zip file, throw no errors.
-   */
-  private static void closeZip(ZipFile zip) {
-    try {
-      zip.close();
-    }
-    catch (IOException e) {
-      // No stack trace
-    }
-    return;
   }
   
   /**
@@ -269,6 +277,7 @@ public abstract class AbstractMetaData {
       throw new IOException(ex.getMessage());
     }
 
+// FIXME: could we replace BridgeStream by a pair of Pipe streams?
     final BridgeStream out = new BridgeStream();
     try {
       final Transformer xformer = TransformerFactory.newInstance()
@@ -328,7 +337,8 @@ public abstract class AbstractMetaData {
   class Attribute {
     protected String attributeName;
     protected String value;
-    protected HashMap<String, String> translations = new HashMap<String, String>();
+    protected HashMap<String, String> translations =
+      new HashMap<String, String>();
     
     /**
      * Build Attribute class based on atrribute value and translations
