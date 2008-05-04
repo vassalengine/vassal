@@ -269,7 +269,8 @@ public class LaunchRequest implements Serializable {
         final File file = new File(args[i++]);
         switch (AbstractMetaData.getFileType(file)) {
         case MODULE:
-          if (lr.module != null) die("");
+          if (lr.module != null)
+            die("LaunchRequest.only_one", "module");
           lr.module = file;
           break;
         case EXTENSION:
@@ -277,12 +278,12 @@ public class LaunchRequest implements Serializable {
           lr.extension = file;
           break;
         case SAVE:
-          if (lr.game != null) die("");
-System.err.println("LR: " + file);
+          if (lr.game != null)
+            die("LaunchRequest.only_one", "saved game or log");
           lr.game = file;
           break;
         case UNKNOWN:
-          die("");
+          die("LaunchRequest.unknown_file_type", file.toString());
           break;
         }
       }
@@ -290,22 +291,6 @@ System.err.println("LR: " + file);
       if (lr.module == null && lr.game == null) {
         die("LaunchRequest.missing_module");
       }
-/*
-        // check whether this is a module, saved game, or log
-        if (args[i].endsWith(".vsav") || args[i].endsWith(".vmod")) {
-          lr.game = new File(args[i++]);
-        }
-        else {
-          lr.module = new File(args[i++]);
-          if (i < args.length) {
-            lr.game = new File(args[i++]);
-          }
-        }
-      }
-      else {
-        die("LaunchRequest.missing_module");
-      }
-*/
       break;
     case EDIT:
     case IMPORT:
@@ -319,7 +304,7 @@ System.err.println("LR: " + file);
         case EXTENSION:
         case SAVE:
         case UNKNOWN:
-          die("");
+          die("LaunchRequest.unknown_file_type", file.toString());
           break;
         }
       }
@@ -332,7 +317,8 @@ System.err.println("LR: " + file);
         final File file = new File(args[i++]);
         switch (AbstractMetaData.getFileType(file)) {
         case MODULE:
-          if (lr.module != null) die("");
+          if (lr.module != null)
+            die("LaunchRequest.only_one", "module");
           lr.module = file;
           break;
         case EXTENSION:
@@ -341,7 +327,7 @@ System.err.println("LR: " + file);
           break;
         case SAVE:
         case UNKNOWN:
-          die("");
+          die("LaunchRequest.unknown_file_type", file.toString());
           break;
         }
       }
@@ -353,16 +339,6 @@ System.err.println("LR: " + file);
       if (lr.extension == null) {
         die("LaunchRequest.missing_extension");
       }
-
-/*
-      if (i + 1 < args.length) {
-        lr.module = new File(args[i++]);
-        lr.extension = new File(args[i++]);
-      }
-      else {
-        die("LaunchRequest.missing_module");
-      }
-*/
       break;
     case NEW:
       break;
@@ -402,7 +378,7 @@ System.err.println("LR: " + file);
   }
 
   protected static void setMode(LaunchRequest lr, Mode mode) {
-    if (lr.mode != null) die("LaunchRequest.only_one_mode");
+    if (lr.mode != null) die("LaunchRequest.only_one", "mode");
     lr.mode = mode; 
   }
 
