@@ -34,6 +34,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.zip.ZipFile;
 
 /**
  * General I/O stream manipulation utilities. This class provides static
@@ -262,6 +263,20 @@ public class IOUtils {
     return buffer != null ? buffer : new byte[0];
   }
 
+
+/*
+  public static void close(Closeable c) {
+    if (c == null) return;
+
+    try {
+      c.close();
+    }
+    catch (IOException e) {
+      ErrorLog.warn(e);
+    }
+  }
+*/
+
   /**
    * Close a {@link Closeable} unconditionally. Equivalent to
    * calling <code>c.close()</code> when <code>c</code> is nonnull.
@@ -297,6 +312,25 @@ public class IOUtils {
 
     try {
       s.close();
+    }
+    catch (IOException e) {
+    }
+  }
+
+  // Why doesn't ZipFile implement Closeable? Argh!
+  /**
+   * Close a {@link ZipFile} unconditionally. Equivalent to
+   * calling <code>z.close()</code> when <code>z</code> is nonnull.
+   * {@link IOException}s are quietly ignored, as there is generally
+   * nothing that can be done about exceptions on closing.
+   *
+   * @param z a (possibly <code>null</code>) <code>ZipFile</code>
+   */
+  public static void closeQuietly(ZipFile z) {
+    if (z == null) return;
+
+    try {
+      z.close();
     }
     catch (IOException e) {
     }
