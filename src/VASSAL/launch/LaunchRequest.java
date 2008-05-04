@@ -28,6 +28,7 @@ import java.util.List;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
+import VASSAL.build.module.AbstractMetaData;
 import VASSAL.i18n.Resources;
 import VASSAL.Info;
 
@@ -131,11 +132,11 @@ public class LaunchRequest implements Serializable {
 "Usage:\n" +
 "  VASSAL -e [option]... module\n" +
 "  VASSAL -i [option]... module\n" +
-"  VASSAL -l [option]... module [save|log]\n" +
+"  VASSAL -l [option]... module|save|log...\n" +
 "  VASSAL -n [option]...\n" +
 "  VASSAL -m\n" +
 "  VASSAL -h\n" +
-"  VASSAL --edit-extension [option]... module extension\n" +
+"  VASSAL --edit-extension [option]... module|extension...\n" +
 "  VASSAL --new-extension [option]...\n" +
 "\n" +
 "Options:\n" +
@@ -264,7 +265,32 @@ public class LaunchRequest implements Serializable {
     case MANAGE:
       break;
     case LOAD:
-      if (i < args.length) {
+      while (i < args.length) {
+        final File file = new File(args[i++]);
+        switch (AbstractMetaData.getFileType(file)) {
+        case MODULE:
+          if (lr.module != null) die("");
+          lr.module = file;
+          break;
+        case EXTENSION:
+          if (lr.extension != null) die("");
+          lr.extension = file;
+          break;
+        case SAVE:
+          if (lr.game != null) die("");
+System.err.println("LR: " + file);
+          lr.game = file;
+          break;
+        case UNKNOWN:
+          die("");
+          break;
+        }
+      }
+
+      if (lr.module == null && lr.game == null) {
+        die("LaunchRequest.missing_module");
+      }
+/*
         // check whether this is a module, saved game, or log
         if (args[i].endsWith(".vsav") || args[i].endsWith(".vmod")) {
           lr.game = new File(args[i++]);
@@ -279,18 +305,56 @@ public class LaunchRequest implements Serializable {
       else {
         die("LaunchRequest.missing_module");
       }
+*/
       break;
     case EDIT:
     case IMPORT:
     case NEW_EXT:
       if (i < args.length) {
-        lr.module = new File(args[i++]);
+        final File file = new File(args[i++]);
+        switch (AbstractMetaData.getFileType(file)) {
+        case MODULE:
+          lr.module = file;
+          break;
+        case EXTENSION:
+        case SAVE:
+        case UNKNOWN:
+          die("");
+          break;
+        }
       }
       else {
         die("LaunchRequest.missing_module");
       }
       break;
     case EDIT_EXT:
+      while (i < args.length) {
+        final File file = new File(args[i++]);
+        switch (AbstractMetaData.getFileType(file)) {
+        case MODULE:
+          if (lr.module != null) die("");
+          lr.module = file;
+          break;
+        case EXTENSION:
+          if (lr.extension != null) die("");
+          lr.extension = file;
+          break;
+        case SAVE:
+        case UNKNOWN:
+          die("");
+          break;
+        }
+      }
+
+      if (lr.module == null) {
+        die("LaunchRequest.missing_module");
+      }
+      
+      if (lr.extension == null) {
+        die("LaunchRequest.missing_extension");
+      }
+
+/*
       if (i + 1 < args.length) {
         lr.module = new File(args[i++]);
         lr.extension = new File(args[i++]);
@@ -298,6 +362,7 @@ public class LaunchRequest implements Serializable {
       else {
         die("LaunchRequest.missing_module");
       }
+*/
       break;
     case NEW:
       break;
@@ -334,13 +399,6 @@ public class LaunchRequest implements Serializable {
     } 
 
     return lr;
-  }
-
-  protected static boolean checkOption(String s, String[] args) {
-    for (String a : args) {
-      if (a.equals(s)) return true;
-    }
-    return false;
   }
 
   protected static void setMode(LaunchRequest lr, Mode mode) {
