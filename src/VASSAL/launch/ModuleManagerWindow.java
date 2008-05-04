@@ -545,10 +545,9 @@ public class ModuleManagerWindow extends JFrame {
     public Object getValueAt(Object node, int column)  {
       return ((MyTreeNode) node).getValueAt(column);
     }
-    
   }
   
-  /** *************************************************************************
+  /**
    * Custom Tree cell renderer:-
    *   - Add file name as tooltip
    *   - Handle expanded display (some nodes use the same icon for expanded/unexpanded)
@@ -608,11 +607,12 @@ public class ModuleManagerWindow extends JFrame {
     public File getFile() {
       return getNodeInfo().getFile();
     }
-    
+   
+    @Override
     public void setValueAt(Object aValue, int column) {
-
     }
     
+    @Override
     public Object getValueAt(int column) {
       return getNodeInfo().getValueAt(column);
     }
@@ -706,7 +706,8 @@ public class ModuleManagerWindow extends JFrame {
     
     public AbstractInfo() {
     }
-    
+   
+    @Override 
     public String toString() {
       return file == null ? "" : file.getName();
     }
@@ -989,7 +990,8 @@ public class ModuleManagerWindow extends JFrame {
       new Player.LaunchAction(
           ModuleManagerWindow.this, file).actionPerformed(null);
     }
-    
+   
+    @Override 
     public JPopupMenu buildPopup(int row) {
       final JPopupMenu m = new JPopupMenu();
       m.add(new Player.LaunchAction(ModuleManagerWindow.this, file));
@@ -1014,9 +1016,11 @@ public class ModuleManagerWindow extends JFrame {
      * Is the module currently being Played or Edited?
      */
     public boolean isInUse() {
-      return AbstractLaunchAction.isInUse(file) || AbstractLaunchAction.isEditing(file);
+      return AbstractLaunchAction.isInUse(file) ||
+             AbstractLaunchAction.isEditing(file);
     }
-    
+   
+    @Override 
     public String getVersion() {
       return metadata.getVersion();
     }
@@ -1028,13 +1032,16 @@ public class ModuleManagerWindow extends JFrame {
     public String getModuleName() {
       return metadata.getName();
     }
-    
+   
+    @Override 
     public String toString() {
       return metadata.getLocalizedName();
     }
     
+    @Override 
     public String getValueAt(int column) {
-      return column == SPARE_COLUMN ? getLocalizedDescription() : super.getValueAt(column);
+      return column == SPARE_COLUMN ?
+        getLocalizedDescription() : super.getValueAt(column);
     }
   }
   
@@ -1070,6 +1077,7 @@ public class ModuleManagerWindow extends JFrame {
       setIcon(active ? activeExtensionIcon : inactiveExtensionIcon);
     }
     
+    @Override 
     public String getVersion() {
       return metadata == null ? "" : metadata.getVersion();
     }
@@ -1082,6 +1090,7 @@ public class ModuleManagerWindow extends JFrame {
       return moduleInfo == null ? null : moduleInfo.getExtensionsManager();
     }
 
+    @Override 
     public String toString() {
       String s = getFile().getName();
       String st = "";
@@ -1099,6 +1108,7 @@ public class ModuleManagerWindow extends JFrame {
       return s;
     }
     
+    @Override 
     public JPopupMenu buildPopup(int row) {
       final JPopupMenu m = new JPopupMenu();
       m.add(new ActivateExtensionAction(Resources.getString(isActive() ?
@@ -1108,7 +1118,8 @@ public class ModuleManagerWindow extends JFrame {
         ModuleManagerWindow.this, getFile(), getSelectedModule()));
       return m;
     }
-    
+   
+    @Override 
     public Color getTreeCellFgColor() {
       // FIXME: should get colors from LAF
       if (isActive()) {
@@ -1119,8 +1130,10 @@ public class ModuleManagerWindow extends JFrame {
       }
     }
     
+    @Override 
     public String getValueAt(int column) {
-      return column == SPARE_COLUMN ? getDescription() : super.getValueAt(column);
+      return column == SPARE_COLUMN ?
+        getDescription() : super.getValueAt(column);
     }
     
     /*
@@ -1201,6 +1214,7 @@ public class ModuleManagerWindow extends JFrame {
     /*
      * Force Game Folders to sort after extensions
      */
+    @Override 
     public String getSortKey() {
       return "3";
     }
@@ -1228,6 +1242,7 @@ public class ModuleManagerWindow extends JFrame {
       }
     }
     
+    @Override 
     public JPopupMenu buildPopup(int row) {
       final JPopupMenu m = new JPopupMenu();
       m.add(new Player.LaunchAction(
@@ -1244,8 +1259,10 @@ public class ModuleManagerWindow extends JFrame {
         ModuleManagerWindow.this, getModuleFile(), file).actionPerformed(null);
     } 
     
+    @Override 
     public String getValueAt(int column) {
-      return column == SPARE_COLUMN ? buildComments() : super.getValueAt(column);
+      return column == SPARE_COLUMN ?
+        buildComments() : super.getValueAt(column);
     }
     
     private String buildComments() {
@@ -1260,18 +1277,21 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     private boolean belongsToModule() {
-      return metadata.getModuleName().length() == 0 || folderInfo.getModuleInfo().getModuleName().equals(metadata.getModuleName());
+      return metadata.getModuleName().length() == 0 ||
+        folderInfo.getModuleInfo().getModuleName().equals(
+          metadata.getModuleName());
     }
     
+    @Override 
     public Color getTreeCellFgColor() {
       // FIXME: should get colors from LAF
        return belongsToModule() ? Color.black : Color.gray;
      }
-    
+   
+    @Override 
     public String getVersion() {
       return metadata.getModuleVersion();
     }
-    
   }
   
   /**
@@ -1384,5 +1404,4 @@ public class ModuleManagerWindow extends JFrame {
       };
     } 
   }
- 
 }
