@@ -489,6 +489,7 @@ public class ModuleManagerWindow extends JFrame {
 
   public void addModule(File f) {
     if (!rootNode.contains(f)) {
+System.out.println("Hey! " + f);
       final ModuleInfo moduleInfo = new ModuleInfo(f);
       final MyTreeNode moduleNode = new MyTreeNode(moduleInfo);
       treeModel.insertNodeInto(moduleNode, rootNode,
@@ -618,9 +619,18 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     public MyTreeNode findNode(File f) {
-      
       for (int i = 0; i < getChildCount(); i++) {
         final MyTreeNode moduleNode = (MyTreeNode) getChildAt(i);
+
+        // NB: we canonicalize because File.equals() does not
+        // always return true when one File is a relative path.
+        try {
+          f = f.getCanonicalFile();
+        }
+        catch (IOException e) {
+          f = f.getAbsoluteFile();
+        }
+
         if (f.equals(moduleNode.getNodeInfo().getFile())) {
           return moduleNode;
         }
@@ -683,15 +693,15 @@ public class ModuleManagerWindow extends JFrame {
     protected boolean valid = true;
     protected String error = "";
     
-    public AbstractInfo (File f, Icon open, Icon closed) {
-      file = f;
+    public AbstractInfo(File f, Icon open, Icon closed) {
+      setFile(f);
       setIcon(open, closed);
     }
-    public AbstractInfo (File f, Icon i) {
+    public AbstractInfo(File f, Icon i) {
       this (f, i, i);
     }
     
-    public AbstractInfo (File f) {
+    public AbstractInfo(File f) {
       this(f, null);
     }
     
@@ -707,7 +717,14 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     public void setFile(File f) {
-      file = f;
+      if (f == null) return;
+
+      try {
+        file = f.getCanonicalFile();
+      }
+      catch (IOException e) {
+        file = f.getAbsoluteFile();
+      }
     }
     
     public String getToolTipText() {
@@ -724,7 +741,8 @@ public class ModuleManagerWindow extends JFrame {
      */
     public int compareTo(AbstractInfo info) {
       final int typeCompare = info.getSortKey().compareTo(getSortKey());
-      return typeCompare == 0 ? getFile().getName().toLowerCase().compareTo(info.getFile().getName().toLowerCase()) : typeCompare;
+      return typeCompare == 0 ? getFile().getName().toLowerCase().compareTo(
+        info.getFile().getName().toLowerCase()) : typeCompare;
     }
     
     public JPopupMenu buildPopup(int row) {
@@ -739,7 +757,7 @@ public class ModuleManagerWindow extends JFrame {
       setIcon(i, i);
     }
     
-    public void setIcon (Icon open, Icon closed) {
+    public void setIcon(Icon open, Icon closed) {
       openIcon = open;
       closedIcon = closed;
     }
@@ -778,7 +796,6 @@ public class ModuleManagerWindow extends JFrame {
     public String getComments() {
       return "";
     }
-
     
     /**
      * Return a String used to sort different types of AbstractInfo's that are
