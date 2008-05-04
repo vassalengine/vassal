@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -41,8 +40,10 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
+import VASSAL.build.module.SaveMetaData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
@@ -54,14 +55,6 @@ import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 
 public class Player {
-/*
-  protected boolean builtInModule;
-  protected File moduleFile;
-  protected File savedGame;
-  protected List<String> extractTargets = new ArrayList<String>();
-  protected List<String> autoExtensions = new ArrayList<String>();
-*/
-
   protected CommandClient cmdC = null;
   protected CommandServer cmdS = null;
 
@@ -119,7 +112,6 @@ public class Player {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
-//          Player.this.configure(args);
           Player.this.extractResourcesAndLaunch(0);
         }
         catch (IOException e) {
@@ -209,9 +201,6 @@ public class Player {
         Localization.getInstance().translate();
         GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
       }
-      else if (lr.module == null) {
-        return;
-      }
       else {
         GameModule.init(createModule(createDataArchive()));
         createExtensionsLoader().addTo(GameModule.getGameModule());
@@ -229,7 +218,7 @@ public class Player {
     finally {
       if (cmdC != null) { 
         final Object reply = cmdC.request("NOTIFY_OPEN");
-       System.out.println("Reply: " + reply);
+        System.out.println("Reply: " + reply);
       }
     }
   }
@@ -254,32 +243,6 @@ public class Player {
   protected GameModule createModule(DataArchive archive) {
     return new BasicModule(archive);
   }
-
-/*
-  protected void configure(final String[] args) {
-    int n = -1;
-    while (++n < args.length) {
-      final String arg = args[n];
-      if ("-auto".equals(arg)) {
-        builtInModule = true;
-      }
-      else if ("-extract".equals(arg)) {
-        extractTargets.add(args[++n]);
-      }
-      else if ("-autoextensions".equals(arg)) {
-        for (String ext : args[++n].split(",")) {
-          autoExtensions.add(ext.replace("_"," "));
-        }
-      }
-      else if ("-load".equals(arg)) {
-        savedGame = new File(args[++n]);
-      }
-      else if (!arg.startsWith("-")) {
-        moduleFile = new File(arg);
-      }
-    }
-  }
-*/
 
   public static class LaunchAction extends AbstractLaunchAction {
     private static final long serialVersionUID = 1L;
