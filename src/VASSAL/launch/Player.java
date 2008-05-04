@@ -40,10 +40,8 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
-import VASSAL.build.module.SaveMetaData;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
@@ -84,7 +82,9 @@ public class Player {
         new Thread(cmdS).start();
 
         // write our socket port out to the module manager
-        new DataOutputStream(System.out).writeInt(serverSocket.getLocalPort());
+        final DataOutputStream out = new DataOutputStream(System.out);
+        out.writeInt(serverSocket.getLocalPort());
+        out.flush();
 
         // read the module manager's socket port from stdin
         final int port = new DataInputStream(System.in).readInt();
@@ -217,8 +217,7 @@ public class Player {
     }  
     finally {
       if (cmdC != null) { 
-        final Object reply = cmdC.request("NOTIFY_OPEN");
-        System.out.println("Reply: " + reply);
+        cmdC.request("NOTIFY_OPEN");
       }
     }
   }

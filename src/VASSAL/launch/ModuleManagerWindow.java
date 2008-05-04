@@ -507,7 +507,20 @@ public class ModuleManagerWindow extends JFrame {
     treeModel.removeNodeFromParent(moduleNode);
     updateModuleList();
   }
-  
+ 
+  public File getModuleByName(String name) {
+    if (name == null) return null;
+
+    for (int i = 0; i < rootNode.getChildCount(); i++) {
+      final ModuleInfo module =
+        (ModuleInfo) ((MyTreeNode) rootNode.getChildAt(i)).getNodeInfo();
+      
+      if (name.equals(module.getModuleName())) return module.getFile(); 
+    }
+
+    return null;
+  }
+ 
   private void updateModuleList() {
     final List<String> l = new ArrayList<String>();
     for (int i = 0; i < rootNode.getChildCount(); i++) {

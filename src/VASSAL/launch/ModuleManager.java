@@ -36,10 +36,9 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 
-import gnu.getopt.Getopt;
-import gnu.getopt.LongOpt;
-
 import VASSAL.Info;
+import VASSAL.build.module.AbstractMetaData;
+import VASSAL.build.module.SaveMetaData;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -216,21 +215,43 @@ public class ModuleManager {
         break;
       case LOAD:
         if (Player.LaunchAction.isEditing(lr.module))
-          return "module open for editing";
+          return "module open for editing";   // FIXME
     
-        if (lr.game == null) {
+        if (lr.module == null && lr.game != null) {
+          // attempt to find the module for the saved game or log
+          final AbstractMetaData data = AbstractMetaData.buildMetaData(lr.game);
+          if (data != null && data instanceof SaveMetaData) {
+            // we found save metadata
+            final String moduleName = ((SaveMetaData) data).getModuleName();
+            if (moduleName != null && moduleName.length() > 0) {
+              // get the module file by module name 
+              lr.module = window.getModuleByName(moduleName);
+            }
+            else {
+              // this is a pre 3.1 save file, can't tell the module name
+// FIXME: show some error here
+              return "cannot find module";
+            }
+          }
+        }
+
+        if (lr.module == null) {
+          return "cannot find module";
+// FIXME: show some error here
+        }
+        else if (lr.game == null) {
           new Player.LaunchAction(window, lr.module).actionPerformed(null);
         }
-        else {
+        else { 
           new Player.LaunchAction(
             window, lr.module, lr.game).actionPerformed(null);
         }
         break;
       case EDIT:
         if (Editor.LaunchAction.isInUse(lr.module))
-          return "module open for play";
+          return "module open for play";      // FIXME
         if (Editor.LaunchAction.isEditing(lr.module))
-          return "module open for editing";
+          return "module open for editing";   // FIXME
   
         new Editor.LaunchAction(window, lr.module).actionPerformed(null);
         break;
