@@ -51,7 +51,10 @@ public class ErrorDialog {
 
     final JCheckBox disableCheck =
       new JCheckBox("Do not show this dialog again");
-    
+
+    // prevent exception from null messages  
+    if (message == null) message = ""; 
+
     final JLabel msgLabel = new JLabel(
       "<html>" + message.replace("\n", "<p>") + "</html>");
 
