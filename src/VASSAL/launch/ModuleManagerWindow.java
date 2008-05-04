@@ -489,7 +489,6 @@ public class ModuleManagerWindow extends JFrame {
 
   public void addModule(File f) {
     if (!rootNode.contains(f)) {
-System.out.println("Hey! " + f);
       final ModuleInfo moduleInfo = new ModuleInfo(f);
       final MyTreeNode moduleNode = new MyTreeNode(moduleInfo);
       treeModel.insertNodeInto(moduleNode, rootNode,
