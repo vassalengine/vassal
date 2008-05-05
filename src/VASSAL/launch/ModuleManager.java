@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.net.BindException;
+import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -39,6 +40,8 @@ import javax.swing.SwingUtilities;
 import VASSAL.Info;
 import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.SaveMetaData;
+import VASSAL.configure.IntConfigurer;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -54,12 +57,36 @@ import VASSAL.tools.menu.MacOSXMenuManager;
  */
 public class ModuleManager {
 
-  private static final int port = 8904;
+  private static final String MODULE_MANAGER_PORT = "moduleManagerPort";
+
+  private static int port;
 
   public static void main(String[] args) {
     // parse command-line arguments
     final LaunchRequest lr = LaunchRequest.parseArgs(args); 
-   
+  
+    // set up prefs for port to listen on
+    final IntConfigurer portConfig =
+      new IntConfigurer(MODULE_MANAGER_PORT, null, -1); 
+    Prefs.getGlobalPrefs().addOption(portConfig);
+ 
+    // set port from command-line if specified; else try the prefs 
+    if (lr.port >= 0) {
+      port = lr.port;
+
+      // we have a port, write it to the prefs
+      portConfig.setValue(port);
+      try {
+        Prefs.getGlobalPrefs().write();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    else {
+      port = portConfig.getIntValue(-1);
+    }
+
     // try to create ModuleManager
     try {
       new ModuleManager();
@@ -126,7 +153,38 @@ public class ModuleManager {
     if (instance != null) throw new IllegalStateException();
     instance = this;
 
-    serverSocket = new ServerSocket(port); 
+    // if the port is bad, try a random port
+    if (port < 0 || port > 65535) {
+      ServerSocket socket = null;
+
+      while (socket == null) {
+        // check a random port in the range [49152,65535]
+        port = (int)(Math.random() * 16384) + 49152;
+        try {
+          socket = new ServerSocket(port);
+
+          // we have a port, write it to the prefs
+          final IntConfigurer portConfig = (IntConfigurer)
+            Prefs.getGlobalPrefs().getOption(MODULE_MANAGER_PORT);
+          portConfig.setValue(port);
+          try {
+            Prefs.getGlobalPrefs().write();
+          }
+          catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+        catch (ConnectException e) {
+          // we can't connect, try another port
+          IOUtils.closeQuietly(socket);
+        }
+      }
+
+      serverSocket = socket;
+    }
+    else {
+      serverSocket = new ServerSocket(port);
+    }
 
     final StartUp start = StartUp.getInstance();
     start.setupErrorLog();

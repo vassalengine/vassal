@@ -64,6 +64,8 @@ public class LaunchRequest implements Serializable {
   public List<String> autoext;
   public List<String> extract;
 
+  public int port = -1;
+
   public LaunchRequest() {
     this(null, null);
   }
@@ -110,6 +112,8 @@ public class LaunchRequest implements Serializable {
 
     if (standalone)    args.add("--standalone");
     if (builtInModule) args.add("--auto");
+
+    if (port >= 0) args.add("--port=" + port);
 
     if (autoext != null) {
       final StringBuilder sb = new StringBuilder("--auto-extensions=");
@@ -165,6 +169,7 @@ public class LaunchRequest implements Serializable {
 "  --auto-extensions   TODO\n" +
 "  --edit-extension    Edit a module extension\n" +
 "  --new-extension     Create a new module extension\n" +
+"  --port              Set port for manager to listen on\n" +
 //"  --standalone        run the Player or Editor alone, debugging use only\n" +
 "  --version           Display version information and exit\n" +
 "  --                  Terminate the list of options\n" +
@@ -184,8 +189,9 @@ public class LaunchRequest implements Serializable {
     final int AUTO_EXT = 2;
     final int EDIT_EXT = 3;
     final int NEW_EXT = 4;
-    final int STANDALONE = 5;
-    final int VERSION = 6;
+    final int PORT = 5;
+    final int STANDALONE = 6;
+    final int VERSION = 7;
 
     final LongOpt[] longOpts = new LongOpt[]{
       new LongOpt("auto",    LongOpt.NO_ARGUMENT,       null, 'a'),
@@ -199,6 +205,7 @@ public class LaunchRequest implements Serializable {
       new LongOpt("auto-extensions", LongOpt.REQUIRED_ARGUMENT, null, AUTO_EXT),
       new LongOpt("edit-extension", LongOpt.NO_ARGUMENT, null, EDIT_EXT),
       new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, NEW_EXT),
+      new LongOpt("port", LongOpt.REQUIRED_ARGUMENT, null, PORT),
       new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, STANDALONE),
       new LongOpt("version", LongOpt.NO_ARGUMENT, null, VERSION)
     };
@@ -221,6 +228,18 @@ public class LaunchRequest implements Serializable {
         break;
       case NEW_EXT:
         setMode(lr, Mode.NEW_EXT);
+        break;
+      case PORT:
+        try {
+          lr.port = Integer.parseInt(g.getOptarg());
+        }
+        catch (NumberFormatException e) {
+          die("LaunchRequest.bad_port", g.getOptarg());
+        }
+
+        if (lr.port < 49152 || lr.port > 65535) {
+          die("LaunchRequest.bad_port", g.getOptarg());
+        }
         break;
       case STANDALONE:
         lr.standalone = true;
