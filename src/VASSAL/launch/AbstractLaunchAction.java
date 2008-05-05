@@ -122,8 +122,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   }
 
   protected class LaunchTask extends SwingWorker<Void,Void> {
-    // module might be reassigned before the task is over, keep a local copy
-    protected final File mod = AbstractLaunchAction.this.lr.module; 
+    // lr might be modified before the task is over, keep a local copy
+    protected final LaunchRequest lr =
+      new LaunchRequest(AbstractLaunchAction.this.lr); 
 
     protected ServerSocket serverSocket;
     protected Socket clientSocket;

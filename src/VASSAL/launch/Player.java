@@ -279,15 +279,15 @@ public class Player {
           super.done();
 
           // reduce the using count
-          Integer count = using.get(mod);
-          if (count == 1) using.remove(mod);
-          else using.put(mod, --count);
+          Integer count = using.get(lr.module);
+          if (count == 1) using.remove(lr.module);
+          else using.put(lr.module, --count);
         }
 
         @Override
         protected void process(List<Void> chunks) {
           super.process(chunks);
-          ((ModuleManagerWindow) window).addModule(mod);
+          ((ModuleManagerWindow) window).addModule(lr.module);
         }
       };
     }
@@ -306,7 +306,6 @@ public class Player {
       if (promptForModule() == null) return;
 
       super.actionPerformed(e);
-      lr.module = null;
     }
   }
 

@@ -84,6 +84,20 @@ public class LaunchRequest implements Serializable {
     else game = other;
   }
 
+  public LaunchRequest(LaunchRequest lr) {
+    this.mode = lr.mode;
+    this.module = lr.module;
+    this.game = lr.game;
+    this.extension = lr.extension;
+
+    this.standalone = lr.standalone;
+    
+    this.builtInModule = lr.builtInModule;
+    
+    if (lr.autoext != null) this.autoext = new ArrayList(lr.autoext);
+    if (lr.extract != null) this.extract = new ArrayList(lr.extract); 
+  }
+
   /**
    * Create an argument array equivalent to this <code>LaunchRequest</code>.
    *

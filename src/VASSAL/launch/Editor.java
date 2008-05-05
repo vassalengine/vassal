@@ -305,14 +305,14 @@ public class Editor {
           super.done();
 
           // register that this module is no longer being edited
-          editing.remove(mod);
+          editing.remove(lr.module);
           setEnabled(true);
         }
 
         @Override
         protected void process(List<Void> chunks) {
           super.process(chunks);
-          ((ModuleManagerWindow) window).addModule(mod);
+          ((ModuleManagerWindow) window).addModule(lr.module);
         }
       };
     }
