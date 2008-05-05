@@ -212,10 +212,7 @@ public class Editor {
       }
     }
     finally {
-    	if (cmdC != null) {
-    		final Object reply = cmdC.request("NOTIFY_OPEN");
-    		System.out.println("Reply: " + reply);
-    	}
+    	if (cmdC != null) cmdC.request("NOTIFY_OPEN");
     }
   }
 

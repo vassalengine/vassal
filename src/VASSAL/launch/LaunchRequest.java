@@ -293,7 +293,12 @@ public class LaunchRequest implements Serializable {
       }
       break;
     case IMPORT:
-    	lr.module = new File(args[i++]);
+      if (i < args.length) {
+    	  lr.module = new File(args[i++]);
+      }
+      else {
+        die("LaunchRequest.missing_module");
+      }
     	break;
     case EDIT:
     case NEW_EXT:
