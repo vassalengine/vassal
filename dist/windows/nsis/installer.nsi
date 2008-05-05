@@ -31,6 +31,7 @@
 !define VROOT "Software\vassalengine.org\VASSAL"
 !define VNAME "VASSAL (${VERSION})"
 !define IROOT "${VROOT}\${VNAME}"
+!define AROOT "Software\Classes"
 !define JRE_MINIMUM "1.5.0"
 !define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=12797"
 
@@ -756,24 +757,24 @@ Section "-Application" Application
   ${EndIf}
 
   ; create file associations
-  WriteRegStr HKCR ".vmod" "" "VASSALModule"
-;  WriteRegStr HKCR ".vmod" "Content Type" "application/vnd.vassal.module"
-  WriteRegStr HKCR "VASSALModule" "" "VASSAL Module"
-  WriteRegStr HKCR "VASSALModule\DefualtIcon" "" ""
-  WriteRegStr HKCR "VASSALModule\shell\open\command" "" '$INSTDIR\VASSAL.exe --load "%1"'
-  WriteRegStr HKCR "VASSALModule\shell\edit\command" "" '$INSTDIR\VASSAL.exe --edit "%1"'
+  WriteRegStr HKLM "${AROOT}\.vmod" "" "VASSALModule"
+;  WriteRegStr HKLM ".vmod" "Content Type" "application/vnd.vassal.module"
+  WriteRegStr HKLM "${AROOT}\VASSALModule" "" "VASSAL Module"
+  WriteRegStr HKLM "${AROOT}\VASSALModule\DefualtIcon" "" ""
+  WriteRegStr HKLM "${AROOT}\VASSALModule\shell\open\command" "" '$INSTDIR\VASSAL.exe --load "%1"'
+  WriteRegStr HKLM "${AROOT}\VASSALModule\shell\edit\command" "" '$INSTDIR\VASSAL.exe --edit "%1"'
 
-;  WriteRegStr HKCR ".vlog" "" "VASSALGameLog"
-;  WriteRegStr HKCR ".vmod" "Content Type" "application/vnd.vassal.log"
-;  WriteRegStr HKCR "VASSALGameLog" "" "VASSAL Game Log"
-;  WriteRegStr HKCR "VASSALGameLog\DefualtIcon" "" ""
-;  WriteRegStr HKCR "VASSALGameLog\shell\open\command" "" '$INSTDIR\VASSAL.exe -load "%1"'
+  WriteRegStr HKLM "${AROOT}\.vlog" "" "VASSALGameLog"
+;  WriteRegStr HKLM ".vmod" "Content Type" "application/vnd.vassal.log"
+  WriteRegStr HKLM "${AROOT}\VASSALGameLog" "" "VASSAL Game Log"
+  WriteRegStr HKLM "${AROOT}\VASSALGameLog\DefualtIcon" "" ""
+  WriteRegStr HKLM "${AROOT}\VASSALGameLog\shell\open\command" "" '$INSTDIR\VASSAL.exe --load "%1"'
 
-;  WriteRegStr HKCR ".vsav" "" "VASSALSavedGame"
-;  WriteRegStr HKCR ".vsav" "Content Type" "application/vnd.vassal.save"
-;  WriteRegStr HKCR "VASSALSavedGame" "" "VASSAL Saved Game"
-;  WriteRegStr HKCR "VASSALSavedGame\DefualtIcon" "" ""
-;  WriteRegStr HKCR "VASSALSavedGame\shell\open\command" "" '$INSTDIR\VASSAL.exe -load "%1"'
+  WriteRegStr HKLM "${AROOT}\.vsav" "" "VASSALSavedGame"
+;  WriteRegStr HKLM ".vsav" "Content Type" "application/vnd.vassal.save"
+  WriteRegStr HKLM "${AROOT}\VASSALSavedGame" "" "VASSAL Saved Game"
+  WriteRegStr HKLM "${AROOT}\VASSALSavedGame\DefualtIcon" "" ""
+  WriteRegStr HKLM "${AROOT}\VASSALSavedGame\shell\open\command" "" '$INSTDIR\VASSAL.exe --load "%1"'
 
   ; notify Windows that file associations have changed
   System::Call 'Shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'
@@ -813,8 +814,14 @@ Section Uninstall
   DeleteRegKey HKLM "${UROOT}"
 
   ; remove file associations
-  DeleteRegKey HKCR ".vmod"
-  DeleteRegKey HKCR "VASSALModule"
+  DeleteRegKey HKLM "${AROOT}\.vmod"
+  DeleteRegKey HKLM "${AROOT}\VASSALModule"
+
+  DeleteRegKey HKLM "${AROOT}\.vlog"
+  DeleteRegKey HKLM "${AROOT}\VASSALGameLog"
+
+  DeleteRegKey HKLM "${AROOT}\.vsav"
+  DeleteRegKey HKLM "${AROOT}\VASSALSavedGame"
 
   ; notify Windows that file associations have changed
   System::Call 'Shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'
