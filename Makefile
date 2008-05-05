@@ -108,7 +108,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
 	cp $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
-	genisoimage -V VASSAL-$(VERSION) -r -hfs -root VASSAL-$(VERSION).app -o $@ $<
+	genisoimage -V VASSAL-$(VERSION) -r -apple -root VASSAL-$(VERSION).app -o $@ $<
 
 $(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS)
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
