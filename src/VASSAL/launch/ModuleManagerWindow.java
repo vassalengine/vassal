@@ -184,20 +184,21 @@ public class ModuleManagerWindow extends JFrame {
     // tools menu
     final MenuProxy toolsMenu =
       new MenuProxy(Resources.getString("General.tools"));
-    
+   
+    final BooleanConfigurer serverStatusConfig =
+      new BooleanConfigurer(SHOW_STATUS_KEY, null, Boolean.FALSE);
+    Prefs.getGlobalPrefs().addOption(null, serverStatusConfig); 
+
     toolsMenu.add(new CheckBoxMenuItemProxy(new AbstractAction(
                    Resources.getString("Chat.server_status")) {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
         serverStatusView.toggleVisibility();
-        final BooleanConfigurer config = (BooleanConfigurer)
-          Prefs.getGlobalPrefs().getOption(SHOW_STATUS_KEY);
-        if (config != null) {
-          config.setValue(config.booleanValue() ? Boolean.FALSE : Boolean.TRUE);
-        }
+        serverStatusConfig.setValue(
+          serverStatusConfig.booleanValue() ? Boolean.FALSE : Boolean.TRUE);
       }
-    }));
+    }, serverStatusConfig.booleanValue()));
  
    toolsMenu.add(mm.addKey("Editor.ModuleEditor.translate_vassal"));
 
@@ -307,6 +308,9 @@ public class ModuleManagerWindow extends JFrame {
     serverStatusView = new ComponentSplitter().splitRight(
       moduleControls, serverStatusControls, false);
     serverStatusView.revalidate();
+
+    // show the server status controls according to the prefs
+    if (serverStatusConfig.booleanValue()) serverStatusView.showComponent();
 
     final Rectangle r = Info.getScreenBounds(this);
     serverStatusControls.setPreferredSize(
