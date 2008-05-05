@@ -59,7 +59,9 @@ $(CLASSDIR)/help: $(CLASSDIR)
 i18n: $(CLASSDIR)
 	for i in `cd $(SRCDIR) && find VASSAL -name '*.properties'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
 
-fast: $(CLASSDIR)
+fast: clean $(CLASSDIR) fast-compile i18n images help
+
+fast-compile:
 	$(JC) $(JCFLAGS) $(shell find $(SRCDIR) -name '*.java')
 
 #show:
@@ -156,4 +158,4 @@ clean-javadoc:
 clean: clean-release
 	$(RM) -r $(CLASSDIR)/*
 
-.PHONY: all clean release release-macosx release-windows release-generic clean-release i18n images help javadoc clean-javadoc version
+.PHONY: all fast fast-compile clean release release-macosx release-windows release-generic clean-release i18n images help javadoc clean-javadoc version
