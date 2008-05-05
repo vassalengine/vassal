@@ -94,8 +94,8 @@ public class LaunchRequest implements Serializable {
     
     this.builtInModule = lr.builtInModule;
     
-    if (lr.autoext != null) this.autoext = new ArrayList(lr.autoext);
-    if (lr.extract != null) this.extract = new ArrayList(lr.extract); 
+    if (lr.autoext != null) this.autoext = new ArrayList<String>(lr.autoext);
+    if (lr.extract != null) this.extract = new ArrayList<String>(lr.extract); 
   }
 
   /**
