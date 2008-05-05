@@ -1340,9 +1340,9 @@ public class ModuleManagerWindow extends JFrame {
           super.done();
 
           // reduce the using count
-          Integer count = using.get(mod);
-          if (count == 1) using.remove(mod);
-          else using.put(mod, --count);
+          Integer count = using.get(lr.module);
+          if (count == 1) using.remove(lr.module);
+          else using.put(lr.module, --count);
         }
 
 /*
@@ -1398,9 +1398,9 @@ public class ModuleManagerWindow extends JFrame {
           super.done();
 
           // reduce the using count for module
-          Integer count = using.get(mod);
-          if (count == 1) using.remove(mod);
-          else using.put(mod, --count);
+          Integer count = using.get(lr.module);
+          if (count == 1) using.remove(lr.module);
+          else using.put(lr.module, --count);
 
           // reduce that this extension is done being edited
           editing.remove(lr.extension);
