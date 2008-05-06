@@ -20,6 +20,7 @@ package VASSAL.counters;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -293,6 +294,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
     int x = horizontalOffset;
     int y = verticalOffset;
 
+    Dimension lblSize = imagePainter.getImageSize();
+    
     Rectangle selBnds = piece.getShape().getBounds();
     switch (verticalPos) {
       case 't':
@@ -310,17 +313,17 @@ public class Labeler extends Decorator implements TranslatablePiece {
     }
     switch (verticalJust) {
       case 'b':
-        y -= lbl.getHeight();
+        y -= lblSize.getHeight();
         break;
       case 'c':
-        y -= lbl.getHeight() / 2;
+        y -= lblSize.getHeight() / 2;
     }
     switch (horizontalJust) {
       case 'c':
-        x -= lbl.getWidth() / 2;
+        x -= lblSize.getWidth() / 2;
         break;
       case 'r':
-        x -= lbl.getWidth();
+        x -= lblSize.getWidth();
     }
     return new Point(x, y);
   }
