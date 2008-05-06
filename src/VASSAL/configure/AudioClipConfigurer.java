@@ -20,8 +20,8 @@ package VASSAL.configure;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.AudioFileFilter;
-import VASSAL.tools.FileChooser;
+import VASSAL.tools.filechooser.AudioFileFilter;
+import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * Class for selecting an AudioClip while editing a module and adding it to

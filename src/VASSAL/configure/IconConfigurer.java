@@ -38,8 +38,8 @@ import javax.swing.JPanel;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.ErrorLog;
-import VASSAL.tools.FileChooser;
-import VASSAL.tools.ImageFileFilter;
+import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.ImageFileFilter;
 import VASSAL.tools.imageop.Op;
 
 public class IconConfigurer extends Configurer {

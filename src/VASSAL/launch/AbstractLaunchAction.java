@@ -50,8 +50,8 @@ import VASSAL.build.module.GlobalOptions;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorLog;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.filechooser.FileChooser;
 
 public abstract class AbstractLaunchAction extends AbstractAction {
   private static final long serialVersionUID = 1L;

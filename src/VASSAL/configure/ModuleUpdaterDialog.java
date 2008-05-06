@@ -34,8 +34,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.ZipUpdater;
+import VASSAL.tools.filechooser.FileChooser;
 
 public class ModuleUpdaterDialog extends JDialog {
   private static final long serialVersionUID = 1L;

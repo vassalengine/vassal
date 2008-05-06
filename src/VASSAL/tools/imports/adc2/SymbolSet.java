@@ -39,7 +39,7 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.BitmapFileFilter;
+import VASSAL.tools.filechooser.BMPFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.imports.Importer;
@@ -321,7 +321,7 @@ public class SymbolSet extends Importer{
 			fn = filename + (zoomLevel + 1) + ".bmp";
 		else
 			fn = filename + '-' + suffix + (zoomLevel + 1) + ".bmp";
-		File f = action.getCaseInsensitiveFile(new File(fn), null, true, new BitmapFileFilter());
+		File f = action.getCaseInsensitiveFile(new File(fn), null, true, new BMPFileFilter());
 		if (f == null)
 			throw new FileNotFoundException("Missing bitmap file: " + fn);
 		return ImageIO.read(f);

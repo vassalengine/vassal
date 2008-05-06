@@ -30,7 +30,7 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.FileChooser;
+import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * Loads a module in play mode

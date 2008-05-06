@@ -21,8 +21,8 @@ package VASSAL.configure;
 import java.io.File;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.FileChooser;
-import VASSAL.tools.ImageFileFilter;
+import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.ImageFileFilter;
 
 /**
  * A Configurer for {@link java.awt.Image} values. Allows the user to select an

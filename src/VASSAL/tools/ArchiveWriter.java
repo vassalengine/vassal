@@ -39,6 +39,7 @@ import java.util.zip.ZipOutputStream;
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * An ArchiveWriter is a writeable DataArchive. New files may be added

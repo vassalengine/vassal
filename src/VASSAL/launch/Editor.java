@@ -45,7 +45,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorLog;
-import VASSAL.tools.FileChooser;
+import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;

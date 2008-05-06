@@ -39,7 +39,7 @@ import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
-import VASSAL.tools.FileChooser;
+import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imports.ImportAction;
 
 /**

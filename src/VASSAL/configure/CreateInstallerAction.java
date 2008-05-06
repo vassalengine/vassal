@@ -55,8 +55,8 @@ import VASSAL.launch.install.Screen;
 import VASSAL.launch.install.SuccessScreen;
 import VASSAL.launch.install.WizardDialog;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * @author rkinney

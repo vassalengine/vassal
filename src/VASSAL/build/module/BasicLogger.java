@@ -53,9 +53,9 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.Obfuscator;
+import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.menu.MenuManager;
 
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {

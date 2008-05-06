@@ -91,10 +91,10 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.filechooser.FileChooser;
 
 public class Inventory extends AbstractConfigurable
                        implements GameComponent,

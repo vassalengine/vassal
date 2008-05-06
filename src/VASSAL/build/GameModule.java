@@ -83,11 +83,11 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorLog;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
 import VASSAL.tools.ToolBarComponent;
+import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is

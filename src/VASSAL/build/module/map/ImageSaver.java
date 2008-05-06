@@ -55,9 +55,9 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorLog;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ProgressDialog;
+import VASSAL.tools.filechooser.FileChooser;
 
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;

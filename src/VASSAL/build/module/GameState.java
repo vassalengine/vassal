@@ -57,8 +57,8 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.Deobfuscator;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.Obfuscator;
+import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.menu.MenuManager;
 
 /**

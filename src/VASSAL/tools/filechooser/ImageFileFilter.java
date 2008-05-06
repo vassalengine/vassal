@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2006 by Joel Uckelman
+ * Copyright (c) 2006-2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -16,14 +16,20 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.tools;
+package VASSAL.tools.filechooser;
 
 /**
- * A FileFilter which accepts directories only.
+ * A FileFilter for GIF, JPEG, PNG, and SVG images. Used by file choosers
+ * to filter out files which aren't images.
  *
  * @author Joel Uckelman
- * @deprecated Moved to {@link VASSAL.tools.filechooser.DirectoryFileFilter}.
  */
-@Deprecated
-public class DirectoryFileFilter extends VASSAL.tools.filechooser.DirectoryFileFilter {
+public class ImageFileFilter extends ExtensionFileFilter {
+  public static final String[] types = {
+    ".gif", ".jpg", ".jpeg", ".png", ".svg"
+  };
+
+  public ImageFileFilter() {
+    super("Image files", types);
+  }
 }

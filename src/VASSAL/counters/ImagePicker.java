@@ -35,9 +35,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import VASSAL.build.GameModule;
-import VASSAL.tools.FileChooser;
-import VASSAL.tools.ImageFileFilter;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.ImageFileFilter;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 

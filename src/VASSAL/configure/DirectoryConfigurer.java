@@ -22,7 +22,7 @@ import java.io.File;
 
 import VASSAL.build.GameModule;
 import VASSAL.preferences.Prefs;
-import VASSAL.tools.FileChooser;
+import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * A Configurer for picking file directories

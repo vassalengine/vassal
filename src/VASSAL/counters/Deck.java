@@ -66,11 +66,11 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * A collection of pieces that behaves like a deck, i.e.: Doesn't move.

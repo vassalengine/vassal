@@ -56,9 +56,9 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.PrefsEditor;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.FileChooser;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * Extracts a Zip file resource to a user-specified directory User: rkinney Date: Dec 5, 2003

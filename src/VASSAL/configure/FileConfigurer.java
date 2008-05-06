@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 import VASSAL.build.GameModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.FileChooser;
+import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * A Configurer for java.io.File values

@@ -35,8 +35,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.tools.AudioFileFilter;
-import VASSAL.tools.FileChooser;
+import VASSAL.tools.filechooser.AudioFileFilter;
+import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * Configurer for specifying an AudioClip. This class is intended to allow
