@@ -1,0 +1,146 @@
+3.1.0 - ??
+
+* Launch from VASSAL.exe on Windows
+* Native Windows installer
+* Native MacOS X bundle
+* File associations for Windows and MacOS X
+* Upgraded SVG library from Batik 1.6 to Batik 1.7
+* New module library interface
+* Welcome Wizard can be turned off
+* 10x faster Server Status lookups
+* Generation and storage of GamePiece ID's (gpid's)
+* ADC2 module importer
+* TurnTracker improvements
+* Spanish translation
+* Adjustable map background color
+
+* RFE 1633152: Simplify adjusting Maximum Memory requirements
+* RFE 1566177: Implement JAI tiled images to reduce memory usage
+* RFE 1565958: Zooming to larger than 100%
+
+* Bug 1926512: Updated Private notes not written to save file
+* Bug 1866161: Exception when deleting initial elements from tabs
+* Bug 1860941: Do not prompt to start new logfile when already recording
+* Bug 1716080: Piece traits editor allows removal of BasicPiece trait
+* Bug 1716071: Multiple selection isn't drawn in drag ghosts
+* Bug: Zooming now correctly maintains view center
+* Bug: Fixed player name bug which falsely reported empty player
+* Bug: LaunchButton return focus to previous focus owner
+* Bug: ReturnToDeck would not prompt user for deck if there was a
+draw pile that had the empty string as a name
+* Bug: Disable main selection highlighter if thickness is set to 0
+* Bug: Disable Undo at the start of a new log
+* Bug: Fix PropertyExpressoin to correctly compare 2 properties
+* Bug: Two bugs in HexGridNumbering.getCenterPoint()
+* Bug: Can't display a Global Property in a Text Label of a piece
+that has a Set Global Property trait defined.
+* Bug: Report movement of Invisible pieces (? moves ? to ?)
+* Bug: Offset of dragged piece from Deck with maximum # of pieces
+to show
+* Bug: Offset of dragged piece from Deck with large number of
+showing pieces
+* Bug: Fix bug in RestrictCommands not re-enabling commands
+* Bug: Properly handle px units in width and height of SVG images
+
+3.0.18 - 3 February 2008
+* Remove LOS_Thread console output.
+* Bug: Fix LaunchButton focusability.
+
+3.0.17 - 30 December 2007
+* Bug: Load extensions for built-in modules.
+
+3.0.16 - 27 December 2007
+* Bug: Don't report legacy clone/delete actions for invisible pieces
+
+3.0.15 - 17 December 2007
+* Bug: NullPointerException in Embelishment
+* RFE: SetupStack now understands locations on grids and regions.
+
+3.0.14 - 17 December 2007
+* Not released.
+
+3.0.13 - 8 November 2007
+Usability improvements:
+* Move up/down/top/bottom keys preserve order when multiple pieces are
+selected.
+* Pieces dropped onto an expanded stack won't snap to the hexgrid instead.
+* A piece with the Place Marker trait will stay selected after placing the
+marker.
+
+3.0.12 - 20 October 2007
+* Bug: Untrapped error on "Jump right in"
+* Bug: Arbitrary rotations on private maps,
+* Bug: Decks with Mask traits assigned to "any side"
+* Bug: Suppressible reports for Dice Buttons
+* Bug: Piece pacement when loading a Deck from file
+* Bug: Boards that have no name
+
+3.0.11 - 8 October 2007
+* Bug: A number of minor bugs with PropertySheet dialogs, toolbar menus,
+prefix names, stack movement.
+
+3.0.10 - 4 October 2007
+* Bug: Fixed a NullPointerException.
+
+3.0.9 - 3 October 2007
+* Bug: Fixed some problems with non-docking Map Windows, including the Map
+Overview Window and toolbar.
+
+3.0.8 - 1 Ocbober 2007
+* Restored high-quality image scaling preference.
+
+3.0.7 - 26 September 2007
+* Added High-quality scaling algorithm for zooming in. The scaling is
+faster than the previous smooth-scaling algorithm, so the "Use smooth
+scaling" preferences option has been removed.
+
+3.0.6 - 5 September 2007
+* Not released.
+
+3.0.5 - 1 September 2007
+* Bug: Layout problems with the board picker in the Game Setup wizard.
+* Bug: Untrapped error when adding a new Chart to a module.
+
+3.0.4 - 29 August 2007
+* Bug: Masked pieces can be un-masked by non-owners
+* Bug: The "Level1=" field is not property initialized in the Layer
+properties editor.
+
+3.0.3 - 21 August 2007
+* Bug: Problem creating module installers.
+
+3.0.2 - 16 August 2007
+* Not released.
+
+3.0.1 - 13 August 2007 
+* Bug: Multi-Action buttons no longer appear as sub-menus within a Toolbar
+menu
+* Bug: Dynamic Properties are correctly substituted within a Text Label.
+
+3.0.0 - 9 August 2007
+* Choose between central server and direct peer-to-peer connection
+* Internationalization support: Modules can be translated into any
+language via module extensions
+* Create standalone installers for a module: installed executable
+will launch module directly in play mode using the correct version
+of VASSAL
+* Support for Scalable Vector Graphics (SVG) images
+* Improved HelpFiles: display in external browser window. Create
+HelpFiles by bundling the contents of a folder
+* Add arbitrary Global Key Commands to the right-click menu of a Deck
+* Copy/Paste traits when editing a GamePiece
+* Preferences to auto-prompt to start log files at Start and End of a
+Replay. 
+* LOS thread enhancements: snap to grid, report action, echo on
+opponent's window
+* Make delay before scrolling at map edge configurable
+* All toolbar buttons have configurable tooltip text
+* Configurable text for the "Mark Moved" button
+* A Moving stack should not pick up other counters from stacks
+* Layer option to automatically track a Property value
+* Allow Layer Reset command to reference $..$ properties
+* New tabs for Notes Window
+* Enable 'Last move Highlighter' by default in all modules
+* Allow Transparent Border/Bg color in Mouse Over Stack Viewer
+* Send To Location - specify Zone, other piece's location
+* Shift clicking on map should not deselect counters
