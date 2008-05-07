@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Properties;
 
+import VASSAL.tools.ErrorLog;
+
 /**
  * Utility class to allow translation of VASSAL using the Component
  * Translation mechanism.
@@ -45,14 +47,14 @@ public class VassalTranslation extends Translation {
       baseValues.load(in);
     }
     catch (IOException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     finally {
       try {
         in.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }
@@ -109,7 +111,7 @@ public class VassalTranslation extends Translation {
         out.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }
@@ -124,7 +126,7 @@ public class VassalTranslation extends Translation {
         in.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }

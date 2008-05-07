@@ -162,10 +162,10 @@ public class ErrorDialog {
           }
         }
         catch (InterruptedException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
         catch (InvocationTargetException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }.start();

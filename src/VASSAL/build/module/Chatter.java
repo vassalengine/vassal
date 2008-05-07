@@ -56,6 +56,7 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FontConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.ScrollPane;
 
@@ -327,7 +328,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       }
     }
     catch (BadLocationException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     return col == null ? Color.black : col;
   }

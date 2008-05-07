@@ -45,6 +45,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.SavedGameUpdater;
 import VASSAL.tools.ScrollPane;
 
@@ -217,7 +218,7 @@ public class SavedGameUpdaterDialog extends JDialog {
             out.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }

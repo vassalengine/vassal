@@ -36,8 +36,10 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorLog;
 
 /**
  * This class holds static convenience methods for building {@link Buildable}
@@ -74,7 +76,7 @@ public abstract class Builder {
               msg = err.getClass().getName().substring(err.getClass().getName().lastIndexOf(".") + 1); //$NON-NLS-1$
             }
             System.err.println(child.toString());
-            err.printStackTrace();
+            ErrorLog.log(err);
             JOptionPane.showMessageDialog
               (null,
                Resources.getString("Builder.create_error",  //$NON-NLS-1$
@@ -126,7 +128,7 @@ public abstract class Builder {
           if (in != null) in.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
@@ -205,7 +207,7 @@ public abstract class Builder {
       return w.toString();
     }
     catch (IOException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
       return ""; //$NON-NLS-1$
     }
   }

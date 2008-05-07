@@ -35,6 +35,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 
@@ -87,7 +88,7 @@ public class Tutorial extends AbstractConfigurable {
           saveCommand = get();
         }
         catch (Exception e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
           String msg = Resources.getString("Tutorial.unable_to_launch", name); //$NON-NLS-1$
           if (e.getMessage() != null) {
             msg += ":  " + e.getMessage(); //$NON-NLS-1$

@@ -71,6 +71,7 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -377,11 +378,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             updateGpIds(clone);
           }
           catch (InstantiationException e1) {
-            e1.printStackTrace();
+            ErrorLog.log(e1);
             JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot copy " + getConfigureName(target), "Copy failed", JOptionPane.ERROR_MESSAGE);
           }
           catch (IllegalAccessException e1) {
-            e1.printStackTrace();
+            ErrorLog.log(e1);
             JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot copy " + getConfigureName(target), "Copy failed", JOptionPane.ERROR_MESSAGE);
           }
         }
@@ -512,7 +513,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
         }
         catch (Exception err) {
-          err.printStackTrace();
+          ErrorLog.log(err);
         }
       }
     };
@@ -545,7 +546,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             insert(getParent(targetNode), clone, targetNode.getParent().getIndex(targetNode) + 1);
           }
           catch (Exception err) {
-            err.printStackTrace();
+            ErrorLog.log(err);
             JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot clone " + getConfigureName(target), "Clone failed", JOptionPane.ERROR_MESSAGE);
           }
         }

@@ -55,6 +55,7 @@ import VASSAL.launch.install.Screen;
 import VASSAL.launch.install.SuccessScreen;
 import VASSAL.launch.install.WizardDialog;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.filechooser.FileChooser;
 
@@ -168,7 +169,7 @@ public class CreateInstallerAction extends AbstractAction {
                   zipOut.close();
                 }
                 catch (IOException ex) {
-                  ex.printStackTrace();
+                  ErrorLog.log(ex);
                 }
               }
             }
@@ -200,7 +201,7 @@ public class CreateInstallerAction extends AbstractAction {
         input.close();
       }
       catch (IOException ex) {
-        ex.printStackTrace();
+        ErrorLog.log(ex);
       }
     }
 
@@ -218,7 +219,7 @@ public class CreateInstallerAction extends AbstractAction {
         input.close();
       }
       catch (IOException ex) {
-        ex.printStackTrace();
+        ErrorLog.log(ex);
       }
     }
   }
@@ -271,7 +272,7 @@ public class CreateInstallerAction extends AbstractAction {
           input.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }

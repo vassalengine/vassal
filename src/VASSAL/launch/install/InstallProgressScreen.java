@@ -23,6 +23,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
+import VASSAL.tools.ErrorLog;
 
 /**
  * @author rkinney
@@ -61,11 +62,11 @@ public abstract class InstallProgressScreen implements Screen, Runnable {
       tryInstall(wizard);
     }
     catch (IOException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
       wizard.getDialog().setScreen(new FailureScreen(e));
     }
     catch (RuntimeException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
       wizard.getDialog().setScreen(new FailureScreen(e));
     }
   }

@@ -25,6 +25,8 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import VASSAL.tools.ErrorLog;
+
 /**
  * Utility base class for GameModule-related actions, with auxilliary actions and error reporting
  * 
@@ -64,7 +66,7 @@ public abstract class GameModuleAction extends AbstractAction {
   protected abstract void performAction(ActionEvent evt) throws Exception;
 
   protected void reportError(Exception ex) {
-    ex.printStackTrace();
+    ErrorLog.log(ex);
     JOptionPane.showMessageDialog(comp, getMessage(ex));
   }
 

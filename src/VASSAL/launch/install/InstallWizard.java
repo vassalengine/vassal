@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 import VASSAL.i18n.BundleHelper;
+import VASSAL.tools.ErrorLog;
 
 /**
  * Walks the user through a wizard interface. The user may choose between an
@@ -52,7 +53,7 @@ public class InstallWizard implements Constants {
           in.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
@@ -93,7 +94,7 @@ public class InstallWizard implements Constants {
     }
     catch (Exception e) {
       screen = new FailureScreen(e);
-      e.printStackTrace();
+      ErrorLog.log(e);
       dialog.setScreen(screen);
     }
     return screen;

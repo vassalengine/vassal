@@ -60,6 +60,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.UniqueIdManager;
@@ -270,13 +271,13 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       return (BufferedImage) srcOp.getImage(null);
     }
     catch (CancellationException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     catch (InterruptedException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     catch (ExecutionException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     return null;
   }

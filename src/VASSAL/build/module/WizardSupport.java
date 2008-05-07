@@ -84,6 +84,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.UsernameAndPasswordDialog;
 
@@ -166,7 +167,7 @@ public class WizardSupport {
       help = new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null);
     }
     catch (MalformedURLException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     Object result = WizardDisplayer.showWizard(welcomeWizard, null, help, props);
     if (result instanceof Map) {
@@ -315,7 +316,7 @@ public class WizardSupport {
             new TutorialLoader(controller, settings, tutorial.getTutorialContents(), POST_INITIAL_STEPS_WIZARD, tutorial).start();
           }
           catch (IOException e1) {
-            e1.printStackTrace();
+            ErrorLog.log(e1);
             controller.setProblem(Resources.getString("WizardSupport.ErrorLoadingTutorial")); //$NON-NLS-1$
           }
         }

@@ -562,7 +562,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
           fixedBoundaries = true;
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
           String msg = "Error reading board image " + imageFile + " in " + GameModule.getGameModule().getDataArchive().getName();
           if (e.getMessage() != null) {
             msg += ":\n"+e.getMessage(); 
@@ -571,7 +571,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
         }
       }
       catch (OutOfMemoryError err) {
-        err.printStackTrace();
+        ErrorLog.log(err);
         throw new OutOfMemoryError("Insufficient memory to load board " + getName());
       }
     }

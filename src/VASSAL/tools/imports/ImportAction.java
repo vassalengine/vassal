@@ -39,6 +39,7 @@ import VASSAL.launch.ModuleManager;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.FileFilter;
@@ -149,7 +150,7 @@ public final class ImportAction extends EditModuleAction {
 						imp.writeToArchive();
 					}
 					catch (ClassCastException e) {
-						e.printStackTrace();
+						ErrorLog.log(e);
 						ErrorDialog.error(e, IMPORTERS[i].getCanonicalName() + 
 								" must be a descendent of Importer.");
 					}
@@ -162,12 +163,12 @@ public final class ImportAction extends EditModuleAction {
 				}
 				// some serious problems.
 				catch (IllegalAccessException e) {
-					e.printStackTrace();
+					ErrorLog.log(e);
 					ErrorDialog.error(e, "Either " + IMPORTERS[i].getCanonicalName()
 							+ " or its constructor is not visible to ImportAction.");
 				}
 				catch (InstantiationException e) {
-					e.printStackTrace();
+					ErrorLog.log(e);
 					ErrorDialog.error(e, "Unable to instantiate " + IMPORTERS[i].getCanonicalName()
 							+ " for some reason.");
 				}

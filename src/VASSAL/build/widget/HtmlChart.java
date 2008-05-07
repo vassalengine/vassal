@@ -44,6 +44,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.imageop.Op;
@@ -98,7 +99,7 @@ public class HtmlChart extends Widget implements MouseListener {
           stream.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }

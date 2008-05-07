@@ -83,7 +83,7 @@ public class ZipUpdater implements Runnable {
             in.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }
@@ -110,7 +110,7 @@ public class ZipUpdater implements Runnable {
         newContents.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }
@@ -146,7 +146,7 @@ public class ZipUpdater implements Runnable {
         in.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
 
@@ -189,7 +189,7 @@ public class ZipUpdater implements Runnable {
           output.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       } 
     }
@@ -258,7 +258,7 @@ public class ZipUpdater implements Runnable {
                   gis.close();
                 }
                 catch (IOException ex) {
-                  ex.printStackTrace();
+                  ErrorLog.log(ex);
                 }
               }
             }
@@ -315,7 +315,7 @@ public class ZipUpdater implements Runnable {
               is.close();
             }
             catch (IOException e) {
-              e.printStackTrace();
+              ErrorLog.log(e);
             }
           }
         }
@@ -324,7 +324,7 @@ public class ZipUpdater implements Runnable {
             out.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }
@@ -333,7 +333,7 @@ public class ZipUpdater implements Runnable {
           goal.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
@@ -342,7 +342,7 @@ public class ZipUpdater implements Runnable {
         oldZipFile.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }
@@ -381,7 +381,7 @@ public class ZipUpdater implements Runnable {
             r.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
 
@@ -397,18 +397,18 @@ public class ZipUpdater implements Runnable {
             r.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }
     }
     catch (final IOException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
       try {
         SwingUtilities.invokeAndWait(new ZipUpdater(oldArchiveName,e));
       }
       catch (Exception e1) {
-        e1.printStackTrace();
+        ErrorLog.log(e1);
       }
     }
   }

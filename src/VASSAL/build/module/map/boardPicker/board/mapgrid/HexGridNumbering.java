@@ -53,6 +53,7 @@ import javax.swing.JTextField;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.counters.Labeler;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.ScrollPane;
 
 public class HexGridNumbering extends RegularGridNumbering {
@@ -408,7 +409,7 @@ public class HexGridNumbering extends RegularGridNumbering {
               repaint();
             }
             catch (NumberFormatException e1) {
-              e1.printStackTrace();
+              ErrorLog.log(e1);
             }
           }
         });

@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
@@ -187,13 +188,13 @@ public class ImageItem extends Item {
         g.drawImage(srcOp.getImage(null), origin.x, origin.y, null);
       }
       catch (CancellationException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       catch (InterruptedException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       catch (ExecutionException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }

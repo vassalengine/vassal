@@ -44,6 +44,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 
 
@@ -168,7 +169,7 @@ public class InstallJnlpScreen extends InstallProgressScreen
           in.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
@@ -177,7 +178,7 @@ public class InstallJnlpScreen extends InstallProgressScreen
         out.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }    
   }
@@ -215,7 +216,7 @@ public class InstallJnlpScreen extends InstallProgressScreen
         writer.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }
@@ -257,7 +258,7 @@ public class InstallJnlpScreen extends InstallProgressScreen
           in.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }

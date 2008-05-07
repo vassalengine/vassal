@@ -34,6 +34,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.ErrorLog;
 
 /**
  * A set of preferences.  Each set of preferences is identified by a name, and
@@ -135,12 +136,12 @@ public class Prefs {
           in.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
     catch (IOException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
 
     editor.getArchive().closeWhenNotInUse();
@@ -201,10 +202,10 @@ public class Prefs {
         ArchiveWriter.ensureExists(prefsFile, "VASSAL");
       }
       catch (FileNotFoundException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }      
       
       globalPrefs = new Prefs(new PrefsEditor(new ArchiveWriter(prefsFile.getPath())), "VASSAL");  //$NON-NLS-1$
@@ -212,7 +213,7 @@ public class Prefs {
         globalPrefs.write();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       DirectoryConfigurer c = new DirectoryConfigurer(MODULES_DIR_KEY, null);
       c.setValue(new File(System.getProperty("user.home")));

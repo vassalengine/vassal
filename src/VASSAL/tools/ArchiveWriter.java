@@ -179,7 +179,7 @@ public class ArchiveWriter extends DataArchive {
       files.put(name, IOUtils.getBytes(stream));
     }
     catch (IOException ex) {
-      ex.printStackTrace();
+      ErrorLog.log(ex);
     }
   }
 
@@ -300,7 +300,7 @@ public class ArchiveWriter extends DataArchive {
               zis.close();
             }
             catch (IOException e) {
-              e.printStackTrace();
+              ErrorLog.log(e);
             }
           }
       }
@@ -315,7 +315,7 @@ public class ArchiveWriter extends DataArchive {
         out.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
     

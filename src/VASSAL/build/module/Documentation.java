@@ -35,6 +35,7 @@ import VASSAL.build.module.documentation.Tutorial;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -63,7 +64,7 @@ public class Documentation extends AbstractConfigurable {
         add(about);
       }
       catch (Exception err) {
-        err.printStackTrace();
+        ErrorLog.log(err);
       }
       final HelpFile intro = new HelpFile();
       intro.setAttribute(HelpFile.TITLE,

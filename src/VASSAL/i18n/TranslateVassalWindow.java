@@ -40,6 +40,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.ShowHelpAction;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
 
@@ -102,14 +103,14 @@ public class TranslateVassalWindow extends TranslateWindow {
               ((MyTableModel) keyTable.getModel()).fireTableDataChanged();
             }
             catch (IOException e) {
-              e.printStackTrace();
+              ErrorLog.log(e);
             }
             finally {
               try {
                 in.close();
               }
               catch (IOException e) {
-                e.printStackTrace();
+                ErrorLog.log(e);
               }
             }
           }
@@ -211,12 +212,12 @@ public class TranslateVassalWindow extends TranslateWindow {
           in.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
     catch (IOException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
       String msg = e.getMessage();
       if (msg == null) {
         msg = "Unable to load translation";
@@ -252,7 +253,7 @@ public class TranslateVassalWindow extends TranslateWindow {
       if (msg == null) {
         msg = "Unable to save translation";
       }
-      e.printStackTrace();
+      ErrorLog.log(e);
       JOptionPane.showMessageDialog(this, msg);
       return false;
     }

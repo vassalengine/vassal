@@ -308,7 +308,7 @@ public abstract class AbstractOpImpl implements ImageOp {
 /*
           catch (Exception e) {
 System.out.println("throwing, sync: " + this);
-            e.printStackTrace();
+            ErrorLog.log(e);
 //            cache.remove(this, of);
             cache.put(this, failure);
             ErrorDialog.raiseErrorDialog(e, e.getMessage());
@@ -354,17 +354,17 @@ System.out.println("throwing, sync: " + this);
       catch (CancellationException e) {
 System.out.println("throwing: " + this);
         cache.remove(this, fim);
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       catch (InterruptedException e) {
 System.out.println("throwing: " + this);
         cache.remove(this, fim);
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       catch (ExecutionException e) {
 System.out.println("throwing: " + this);
 //        cache.remove(this, fim);
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
 // NOTE: if we make getImage throw, we need to separate out the exceptions
 // in which fim should be removed, and rethrow those.
@@ -408,18 +408,18 @@ System.out.println("throwing: " + this);
         catch (CancellationException e) {
 System.out.println("throwing: " + this);
           cache.remove(this, fim);
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
         catch (InterruptedException e) {
 System.out.println("throwing: " + this);
           cache.remove(this, fim);
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
         catch (ExecutionException e) {
 System.out.println("throwing: " + this);
 //          cache.remove(this, fim);
           cache.replace(this, fim, failure);
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
 */
       }
@@ -489,7 +489,7 @@ System.out.println("throwing: " + this);
 /*
           catch (Exception e) {
 System.out.println("throwing, sync: " + this);
-            e.printStackTrace();
+            ErrorLog.log(e);
             cache.put(this, failure);
           }
 

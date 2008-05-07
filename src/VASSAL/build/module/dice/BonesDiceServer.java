@@ -32,6 +32,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import VASSAL.build.module.DieRoll;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
 
 public class BonesDiceServer extends DieServer {
@@ -121,7 +122,7 @@ public class BonesDiceServer extends DieServer {
         in.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
 

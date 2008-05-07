@@ -424,7 +424,7 @@ public class ImageUtils {
         stream.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
  

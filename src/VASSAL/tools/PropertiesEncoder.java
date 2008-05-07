@@ -58,7 +58,7 @@ public class PropertiesEncoder {
       return se.getValue();
     }
     catch (IOException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
       return "";
     }
   }

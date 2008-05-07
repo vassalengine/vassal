@@ -61,6 +61,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.menu.MenuManager;
 
@@ -100,7 +101,7 @@ public class BasicModule extends GameModule {
             in.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }
@@ -290,10 +291,10 @@ public class BasicModule extends GameModule {
       add(child);
     }
     catch (InstantiationException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     catch (IllegalAccessException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
   }
   

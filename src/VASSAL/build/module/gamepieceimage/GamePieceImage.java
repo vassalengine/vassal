@@ -37,6 +37,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.ImageSource;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.Op;
@@ -307,13 +308,13 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       return srcOp.getImage(null);
     }
     catch (CancellationException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
     }
     catch (InterruptedException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     catch (ExecutionException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     return NULL_IMAGE;
   }
@@ -361,7 +362,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       ImageIO.write(bufferedImage,"png", out); //$NON-NLS-1$
     }
     catch (IOException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
       return new byte[1];
     }
     return out.toByteArray();

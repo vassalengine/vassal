@@ -44,7 +44,7 @@ public class Deobfuscator {
         in.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
 

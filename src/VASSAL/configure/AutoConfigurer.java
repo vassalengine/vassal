@@ -31,9 +31,11 @@ import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.tools.ErrorLog;
 
 /**
  * A Configurer for configuring Configurable components
@@ -129,7 +131,7 @@ public class AutoConfigurer extends Configurer
         config = new StringEnumConfigurer(key, prompt, validValues);
       }
       catch (Exception e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
         config = new StringConfigurer(key, prompt);
       }
     }

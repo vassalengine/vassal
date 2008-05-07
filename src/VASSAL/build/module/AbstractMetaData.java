@@ -50,6 +50,7 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Translation;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 
 /**
@@ -472,12 +473,12 @@ public abstract class AbstractMetaData {
 
     @Override
     public void warning(SAXParseException e) throws SAXException {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
 
     @Override
     public void error(SAXParseException e) throws SAXException {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
 
     @Override
@@ -519,12 +520,12 @@ public abstract class AbstractMetaData {
 
     @Override
     public void warning(SAXParseException e) throws SAXException {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
 
     @Override
     public void error(SAXParseException e) throws SAXException {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
 
     @Override

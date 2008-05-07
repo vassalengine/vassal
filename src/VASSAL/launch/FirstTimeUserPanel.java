@@ -44,6 +44,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorLog;
 
 /** @deprecated Use {@link FirstTimeDialog} instead. */
 @Deprecated
@@ -93,7 +94,7 @@ public class FirstTimeUserPanel {
           SwingUtilities.getWindowAncestor(panel).dispose();
         }
         catch (Exception e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
           JOptionPane.showMessageDialog
               (null,
                e.getMessage(),
@@ -116,7 +117,7 @@ public class FirstTimeUserPanel {
       help.addActionListener(new ShowHelpAction(readme.toURI().toURL(), null));
     }
     catch (MalformedURLException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
 
     b = Box.createHorizontalBox();

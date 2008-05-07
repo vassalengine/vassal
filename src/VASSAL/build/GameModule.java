@@ -862,7 +862,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       (new ModuleMetaData(this)).save(getArchiveWriter());
     }
     catch (IOException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     
     try {
@@ -879,7 +879,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       lastSavedConfiguration = save;
     }
     catch (IOException err) {
-      err.printStackTrace();
+      ErrorLog.log(err);
       JOptionPane.showMessageDialog
           (frame,
            Resources.getString("GameModule.save_error", err.getMessage()), //$NON-NLS-1$

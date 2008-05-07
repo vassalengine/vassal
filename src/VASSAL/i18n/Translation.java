@@ -31,6 +31,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.ErrorLog;
 
 public class Translation extends AbstractConfigurable
                          implements Comparable<Translation> {
@@ -184,7 +185,7 @@ public class Translation extends AbstractConfigurable
           in.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
@@ -205,7 +206,7 @@ public class Translation extends AbstractConfigurable
         in.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }
@@ -248,7 +249,7 @@ public class Translation extends AbstractConfigurable
         loadProperties();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
         localProperties = new Properties();
       }
     }

@@ -55,6 +55,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorLog;
 
 /**
  * An optional extension to a GameModule
@@ -128,7 +129,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
             in.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }
@@ -357,7 +358,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         (new ExtensionMetaData(this)).save((ArchiveWriter) archive);
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       String save = buildString();
       ((ArchiveWriter) archive).addFile
@@ -378,7 +379,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
         (new ExtensionMetaData(this)).save((ArchiveWriter) archive);
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       String save = buildString();
       ((ArchiveWriter) archive).addFile

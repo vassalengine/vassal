@@ -35,6 +35,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 
 /**
@@ -152,10 +153,10 @@ public class SaveMetaData extends AbstractMetaData {
         moduleData = new ModuleMetaData(zip); 
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       catch (SAXException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
     finally {
@@ -164,7 +165,7 @@ public class SaveMetaData extends AbstractMetaData {
           zip.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
       
@@ -173,7 +174,7 @@ public class SaveMetaData extends AbstractMetaData {
           is.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }

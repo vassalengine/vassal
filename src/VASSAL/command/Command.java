@@ -20,7 +20,9 @@ package VASSAL.command;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
+
 import VASSAL.build.GameModule;
+import VASSAL.tools.ErrorLog;
 
 /**
  * Command is an abstract class that does something. Any action that takes place during a game should be encapsulated in
@@ -70,7 +72,7 @@ public abstract class Command {
     String s = GameModule.getGameModule() == null ?
       c.toString() : GameModule.getGameModule().encode(c);
     System.err.println("Unable to execute " + s);
-    ex.printStackTrace();
+    ErrorLog.log(ex);
   }
 
   /**

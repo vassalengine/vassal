@@ -50,6 +50,7 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -144,7 +145,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
                 fos.close();
               }
               catch (IOException e) {
-                e.printStackTrace();
+                ErrorLog.log(e);
               }
             }
           }
@@ -157,12 +158,12 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
           in.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
     catch (IOException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
   }
 
@@ -322,7 +323,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
               out.close();
             }
             catch (IOException e) {
-              e.printStackTrace();
+              ErrorLog.log(e);
             }
           }
 
@@ -331,7 +332,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
             "help/"+BrowserHelpFile.this.getContentsResource()); //$NON-NLS-1$
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
@@ -358,7 +359,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
             in.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }

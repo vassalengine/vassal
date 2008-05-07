@@ -80,7 +80,7 @@ public class ModuleManager {
         Prefs.getGlobalPrefs().write();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
     else {
@@ -96,7 +96,7 @@ public class ModuleManager {
     }
     catch (IOException e) {
       // should not happen
-      e.printStackTrace();
+      ErrorLog.log(e);
       System.exit(1);
     }  
     
@@ -171,7 +171,7 @@ public class ModuleManager {
             Prefs.getGlobalPrefs().write();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
         catch (ConnectException e) {

@@ -33,6 +33,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 
@@ -115,7 +116,7 @@ public class HelpFile extends AbstractConfigurable {
               GameModule.getGameModule().getDataArchive().getURL(fileName);
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
         else if (RESOURCE.equals(fileType)) {
@@ -131,7 +132,7 @@ public class HelpFile extends AbstractConfigurable {
             contents = toURL(f);
           }
           catch (MalformedURLException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }

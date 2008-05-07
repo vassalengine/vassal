@@ -97,7 +97,7 @@ public class Editor {
         cmdC = new CommandClient(new Socket((String) null, port));
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
   
       if (cmdC == null || cmdS == null) System.exit(1);
@@ -160,7 +160,7 @@ public class Editor {
             in.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }
@@ -179,7 +179,7 @@ public class Editor {
   }
 
   protected void reportError(Exception e) {
-    e.printStackTrace();
+    ErrorLog.log(e);
     String msg = e.getMessage();
     if (msg == null) {
       msg = e.getClass().getSimpleName();

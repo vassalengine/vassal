@@ -83,7 +83,7 @@ public class TransparentFilter extends RGBImageFilter {
       pg.grabPixels();
     }
     catch (InterruptedException ex) {
-      ex.printStackTrace();
+      ErrorLog.log(ex);
     }
     return bg[0];
   }

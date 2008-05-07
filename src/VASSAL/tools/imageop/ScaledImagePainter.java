@@ -22,6 +22,8 @@ import java.awt.image.ImageObserver;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
+import VASSAL.tools.ErrorLog;
+
 /**
  * Paints an image at arbitrary scale. Uses the ImageOp interfaces to lazily fetch and cache images
  * 
@@ -48,13 +50,13 @@ public class ScaledImagePainter {
           g.drawImage(srcOp.getImage(null), x, y, obs);
         }
         catch (CancellationException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
         catch (InterruptedException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
         catch (ExecutionException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
       else {
@@ -65,13 +67,13 @@ public class ScaledImagePainter {
           g.drawImage(scaleOp.getImage(null), x, y, obs);
         }
         catch (CancellationException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
         catch (InterruptedException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
         catch (ExecutionException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }

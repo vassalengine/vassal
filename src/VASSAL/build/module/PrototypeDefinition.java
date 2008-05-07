@@ -45,6 +45,7 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PieceEditor;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
 
@@ -143,7 +144,7 @@ public class PrototypeDefinition extends AbstractConfigurable
         }
       }
       catch (RuntimeException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
         def = null;
         piece = null;
       }

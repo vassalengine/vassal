@@ -40,6 +40,7 @@ import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.launch.EditorWindow;
+import VASSAL.tools.ErrorLog;
 
 /**
  * The configuration tree for editing a module extension
@@ -126,7 +127,7 @@ public class ExtensionTree extends ConfigureTree {
           }
         }
         catch (Exception err) {
-          err.printStackTrace();
+          ErrorLog.log(err);
         }
       }
     };
@@ -222,7 +223,7 @@ public class ExtensionTree extends ConfigureTree {
               }
             }
             catch (InstantiationException e1) {
-              e1.printStackTrace();
+              ErrorLog.log(e1);
               JOptionPane.showMessageDialog
                   (getTopLevelAncestor(),
                    "Cannot copy " + getConfigureName(target),
@@ -231,7 +232,7 @@ public class ExtensionTree extends ConfigureTree {
 
             }
             catch (IllegalAccessException e1) {
-              e1.printStackTrace();
+              ErrorLog.log(e1);
               JOptionPane.showMessageDialog
                   (getTopLevelAncestor(),
                    "Cannot copy " + getConfigureName(target),
@@ -321,7 +322,7 @@ public class ExtensionTree extends ConfigureTree {
             }
           }
           catch (Exception err) {
-            err.printStackTrace();
+            ErrorLog.log(err);
             JOptionPane.showMessageDialog
                 (getTopLevelAncestor(),
                  "Cannot clone " + getConfigureName(target),

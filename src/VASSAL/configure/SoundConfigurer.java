@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.filechooser.AudioFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
 
@@ -135,7 +136,7 @@ public class SoundConfigurer extends Configurer {
         clipName = s;
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
         clipName = null;
       }
     }
@@ -147,7 +148,7 @@ public class SoundConfigurer extends Configurer {
         setValue(clipFactory.invoke(null, new Object[] {url}));
       }
       catch (Exception e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
     else {

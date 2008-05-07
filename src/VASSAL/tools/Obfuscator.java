@@ -68,7 +68,7 @@ public class Obfuscator {
         in.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
 

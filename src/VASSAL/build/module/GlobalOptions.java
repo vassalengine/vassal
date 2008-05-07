@@ -252,7 +252,7 @@ public class GlobalOptions extends AbstractConfigurable {
                 msg = err.getClass().getName().substring(err.getClass().getName().lastIndexOf(".") + 1); //$NON-NLS-1$
               }
               System.err.println(b.toString());
-              err.printStackTrace();
+              ErrorLog.log(err);
               JOptionPane.showMessageDialog
                 (null,
                  Resources.getString("GlobalOptions.create_error",  //$NON-NLS-1$

@@ -39,6 +39,7 @@ import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imports.ImportAction;
 
@@ -80,7 +81,7 @@ public class ConsoleControls {
           Localization.getInstance().translate();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     };
@@ -136,7 +137,7 @@ public class ConsoleControls {
       box.add(help);
     }
     catch (MalformedURLException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     controls.add(box);
     box = Box.createHorizontalBox();

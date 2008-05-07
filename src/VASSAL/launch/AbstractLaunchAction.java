@@ -144,7 +144,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         // don't show warning dialog, since this isn't fatal,
         // or even abnormal, e.g., in the case where this is
         // a new copy of VASSAL
-        ex.printStackTrace();
+        ErrorLog.log(ex);
         initialHeap = DEFAULT_INITIAL_HEAP;
       }
 
@@ -157,7 +157,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         // don't show warning dialog, since this isn't fatal,
         // or even abnormal, e.g., in the case where this is
         // a new copy of VASSAL
-        ex.printStackTrace();
+        ErrorLog.log(ex);
         maximumHeap = DEFAULT_MAXIMUM_HEAP;
       }
 

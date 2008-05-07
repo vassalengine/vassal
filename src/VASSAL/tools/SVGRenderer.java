@@ -114,7 +114,7 @@ public class SVGRenderer {
       return r.getBufferedImage();
     }
     catch (TranscoderException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
 
     return null;
@@ -145,7 +145,7 @@ public class SVGRenderer {
       return r.getBufferedImage();
     }
     catch (TranscoderException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
 
     return null; 
@@ -173,7 +173,7 @@ public class SVGRenderer {
           in.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }

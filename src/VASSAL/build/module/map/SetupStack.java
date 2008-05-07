@@ -97,6 +97,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.menu.MenuManager;
 
@@ -1029,7 +1030,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           dge.getDragSource().addDragSourceMotionListener(this);
         }
         catch (InvalidDnDOperationException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
         
         return;

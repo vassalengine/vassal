@@ -57,6 +57,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.Deobfuscator;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.Obfuscator;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.menu.MenuManager;
@@ -321,7 +322,7 @@ public class GameState implements CommandEncoder {
       }
     }
     catch (IOException err) {
-      err.printStackTrace();
+      ErrorLog.log(err);
       GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
     }
   }
@@ -538,7 +539,7 @@ public class GameState implements CommandEncoder {
             in.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }
@@ -559,7 +560,7 @@ public class GameState implements CommandEncoder {
             } 
           }
           catch (Exception e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
             msg = Resources.getString("GameState.error_loading", shortName);  //$NON-NLS-1$
           }
   
@@ -628,7 +629,7 @@ public class GameState implements CommandEncoder {
         zipInput.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
 

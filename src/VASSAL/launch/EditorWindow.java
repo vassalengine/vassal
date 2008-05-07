@@ -212,7 +212,7 @@ public abstract class EditorWindow extends JFrame {
       url = HelpFile.toURL(dir);
     }
     catch (MalformedURLException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
 
     final Action helpAction = new ShowHelpAction(url,

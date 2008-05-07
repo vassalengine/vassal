@@ -56,6 +56,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.PrefsEditor;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.filechooser.FileChooser;
@@ -282,7 +283,7 @@ public class ResourceExtracter {
             out.close();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }
@@ -291,7 +292,7 @@ public class ResourceExtracter {
           in.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
@@ -313,7 +314,7 @@ public class ResourceExtracter {
         resourceList.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }
@@ -358,7 +359,7 @@ public class ResourceExtracter {
         out.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
 
@@ -419,7 +420,7 @@ public class ResourceExtracter {
           out.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
@@ -428,7 +429,7 @@ public class ResourceExtracter {
         in.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
 
@@ -459,7 +460,7 @@ public class ResourceExtracter {
               out.close();
             }
             catch (IOException e) {
-              e.printStackTrace();
+              ErrorLog.log(e);
             }
           }
         }
@@ -470,7 +471,7 @@ public class ResourceExtracter {
         zip.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }
@@ -582,7 +583,7 @@ public class ResourceExtracter {
           new ResourceExtracter(prefs, p, null).install();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     };

@@ -89,7 +89,7 @@ public class TempFileManager {
             }
             catch (IOException e) {
               if (sleep > maxsleep) {
-                e.printStackTrace();
+                ErrorLog.log(e);
                 break;
               }
 
@@ -112,7 +112,7 @@ public class TempFileManager {
             cleanupSessionRoot();
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       });

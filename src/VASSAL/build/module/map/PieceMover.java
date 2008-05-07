@@ -1158,7 +1158,7 @@ public class PieceMover extends AbstractBuildable
           dge.getDragSource().addDragSourceMotionListener(this);
         }
         catch (InvalidDnDOperationException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }

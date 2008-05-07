@@ -69,6 +69,7 @@ import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.PropertiesWindow;
 import VASSAL.configure.ShowHelpAction;
+import VASSAL.tools.ErrorLog;
 
 /**
  * Window for editing translations of a {@link Configurable} object
@@ -451,7 +452,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
 
   protected void reportSaveError(IOException e1) {
-    e1.printStackTrace();
+    ErrorLog.log(e1);
     String msg = e1.getMessage();
     if (msg == null) {
       msg = "Unable to save";

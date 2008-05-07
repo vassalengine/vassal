@@ -33,6 +33,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.tools.ErrorLog;
 
 public class ExtensionMetaData extends AbstractMetaData {
 
@@ -132,13 +133,13 @@ public class ExtensionMetaData extends AbstractMetaData {
         parser.parse(new InputSource(is));
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       catch (SAXEndException e) {
         // Indicates End of module/extension parsing. not an error.
       }
       catch (SAXException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
     finally {
@@ -147,7 +148,7 @@ public class ExtensionMetaData extends AbstractMetaData {
           zip.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
       
@@ -156,7 +157,7 @@ public class ExtensionMetaData extends AbstractMetaData {
           is.close();
         }
         catch (IOException e) {
-          e.printStackTrace();
+          ErrorLog.log(e);
         }
       }
     }
