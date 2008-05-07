@@ -24,7 +24,6 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
-import java.util.Random;
 
 import VASSAL.tools.VersionFormatException;
 import VASSAL.tools.VersionTokenizer;
@@ -33,7 +32,7 @@ import VASSAL.tools.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-svn3477"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-beta1"; //$NON-NLS-1$
   private static File homeDir;
 
   private static final boolean isWindows;
@@ -84,9 +83,10 @@ public final class Info {
   // probability that any reasonable number or simultaneously-running
   // instances of the VASSAL ModuleManager, Player or Editor will get
   // the same ID is vanishingly small.
-  private static final long instanceID = new Random().nextLong();
+  private static final int instanceID =
+    (int) (Math.random() * Integer.MAX_VALUE);
 
-  public static long getInstanceID() {
+  public static int getInstanceID() {
     return instanceID;
   }
 
@@ -96,9 +96,10 @@ public final class Info {
    * @return
    */
   public static Rectangle getScreenBounds(Component c) {
-    Rectangle bounds = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-    GraphicsConfiguration config = c.getGraphicsConfiguration();
-    Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(config);
+    final Rectangle bounds =
+      new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+    final GraphicsConfiguration config = c.getGraphicsConfiguration();
+    final Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(config);
     bounds.translate(insets.left, insets.top);
     bounds.setSize(bounds.width - insets.left - insets.right,
                    bounds.height - insets.top - insets.bottom);
@@ -127,8 +128,8 @@ public final class Info {
    * the parseable parts of the two <code>String</code>s.
    */
   public static int compareVersions(String v0, String v1) {
-    VersionTokenizer tok0 = new VersionTokenizer(v0);
-    VersionTokenizer tok1 = new VersionTokenizer(v1);
+    final VersionTokenizer tok0 = new VersionTokenizer(v0);
+    final VersionTokenizer tok1 = new VersionTokenizer(v1);
 
     try {
       // find the first token where v0 and v1 differ

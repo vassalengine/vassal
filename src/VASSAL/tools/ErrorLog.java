@@ -33,8 +33,7 @@ public class ErrorLog implements Thread.UncaughtExceptionHandler {
   }
 
   public static void warn(Throwable t) {
-    System.err.println("[" + Info.getInstanceID() + "]");
-    t.printStackTrace();
+    log(t);
 
     // replace ExecutionExceptions with their causes
     if (t instanceof ExecutionException && t.getCause() != null)
@@ -43,10 +42,15 @@ public class ErrorLog implements Thread.UncaughtExceptionHandler {
     ErrorDialog.warning(t, t.getMessage());
   }
 
+  public static void log(Throwable t) {
+    System.err.println("[" + Info.getInstanceID() + "]");
+    t.printStackTrace();
+  }
+
   public ErrorLog() { }
 
   public void handle(Throwable t) {
-    t.printStackTrace();
+    log(t);
 
     final String logFile = System.getProperty("stderr");  //$NON-NLS-1$
     if (!ErrorDialog.isDisabled(t.getClass())) {
