@@ -19,6 +19,7 @@
 * RFE 1565958: Zooming to larger than 100%
 
 * Bug 1926512: Updated Private notes not written to save file
+* Bug 1877899: Return To Deck Stacking Problem 
 * Bug 1866161: Exception when deleting initial elements from tabs
 * Bug 1860941: Do not prompt to start new logfile when already recording
 * Bug 1716080: Piece traits editor allows removal of BasicPiece trait
