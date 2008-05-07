@@ -29,15 +29,6 @@ import VASSAL.Info;
 import VASSAL.tools.ErrorLog;
 
 public class StartUp {
-  protected static final StartUp instance =
-    Info.isMacOSX() ? new MacOSXStartUp() : new StartUp();
-
-  protected static StartUp getInstance() {
-    return instance;
-  }
-
-  protected StartUp() {}
-
   public void initSystemProperties() {
     initHTTPProxyProperties();
     initUIProperties();

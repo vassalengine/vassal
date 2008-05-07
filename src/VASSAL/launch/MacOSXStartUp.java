@@ -29,13 +29,10 @@ import VASSAL.tools.ErrorLog;
 
 
 public class MacOSXStartUp extends StartUp {
-  protected MacOSXStartUp() {}
-
   @Override
   public void initSystemProperties() {
     super.initSystemProperties();
     initMacOSXSpecificProperties();
-    setupApplicationListeners();
   }
 
   protected void initMacOSXSpecificProperties() {
@@ -62,33 +59,5 @@ public class MacOSXStartUp extends StartUp {
     catch (Exception e) {
       ErrorLog.warn(e);
     }
-  }
-
-  protected void setupApplicationListeners() {
-    final Application app = Application.getApplication();
-    app.addApplicationListener(new ApplicationAdapter() {
-      @Override
-      public void handleOpenFile(ApplicationEvent e) {
-        final String filename = e.getFilename();
-        if (filename.endsWith(".vmod")) {
-          final LaunchRequest lr = new LaunchRequest();
-          lr.mode = LaunchRequest.Mode.LOAD;
-          lr.module = new File(filename);
-          ModuleManager.getInstance().execute(lr);
-          e.setHandled(true); 
-        }
-        else {
-          e.setHandled(false);
-        }
-      }
-
-      @Override
-      public void handleReOpenApplication(ApplicationEvent e) {
-        final LaunchRequest lr = new LaunchRequest();
-        lr.mode = LaunchRequest.Mode.MANAGE;
-        ModuleManager.getInstance().execute(lr);
-        e.setHandled(true);
-      }
-    });
   }
 }

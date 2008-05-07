@@ -186,7 +186,8 @@ public class ModuleManager {
       serverSocket = new ServerSocket(port);
     }
 
-    final StartUp start = StartUp.getInstance();
+    final StartUp start = Info.isMacOSX() ?
+      new ModuleManagerMacOSXStartUp() : new StartUp();
     start.setupErrorLog();
     start.startErrorLog();
     Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());

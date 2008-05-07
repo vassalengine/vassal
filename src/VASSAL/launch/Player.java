@@ -99,7 +99,7 @@ public class Player {
       if (cmdC == null || cmdS == null) System.exit(1);
     } 
 
-    final StartUp start = StartUp.getInstance();
+    final StartUp start = Info.isMacOSX() ? new MacOSXStartUp() : new StartUp();
     if (lr.standalone) start.setupErrorLog();
     start.startErrorLog();
     Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());

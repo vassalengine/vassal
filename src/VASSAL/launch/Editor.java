@@ -71,7 +71,7 @@ public class Editor {
     if (instance != null) throw new IllegalStateException();
     instance = this;
 
-    final StartUp start = StartUp.getInstance();
+    final StartUp start = Info.isMacOSX() ? new MacOSXStartUp() : new StartUp();
     if (lr.standalone) start.startErrorLog();
     start.setupErrorLog();
     Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
