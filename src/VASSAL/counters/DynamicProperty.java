@@ -26,8 +26,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import javax.swing.Box;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -180,8 +182,10 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     Stack parent = getParent();
     Map map = getMap();
     // If the property has changed the layer to which this piece belongs,
-    // re-insert it into the map
-    if (map != null) {
+    // re-insert it into the map.
+    // No need to re-insert pieces in Decks, it causes problems if they are NO_STACK
+    if (map != null && ! (getParent() instanceof Deck)) {
+      
       GamePiece outer = Decorator.getOutermost(this);
       if (parent == null) {
         Point pos = getPosition();
