@@ -66,6 +66,7 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.ScrollPane;
@@ -1226,7 +1227,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         dest.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }
@@ -1274,7 +1275,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         src.close();
       }
       catch (IOException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
 

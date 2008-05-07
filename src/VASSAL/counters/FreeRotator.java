@@ -58,6 +58,7 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;
@@ -269,13 +270,13 @@ public class FreeRotator extends Decorator
                     obs);
       }
       catch (CancellationException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       catch (InterruptedException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
       catch (ExecutionException e) {
-        e.printStackTrace();
+        ErrorLog.log(e);
       }
     }
   }
@@ -556,13 +557,13 @@ public class FreeRotator extends Decorator
       return (Op.rotateScale(gpOp, angle, 1.0)).getImage(null);
     }
     catch (CancellationException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     catch (InterruptedException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     catch (ExecutionException e) {
-      e.printStackTrace();
+      ErrorLog.log(e);
     }
     return null;
   }

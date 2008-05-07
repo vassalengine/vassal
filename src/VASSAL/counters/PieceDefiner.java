@@ -51,6 +51,7 @@ import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.tools.BrowserSupport;
+import VASSAL.tools.ErrorLog;
 
 /**
  * This is the GamePiece designer dialog.  It appears when you edit
@@ -297,7 +298,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
             }
           }
           catch (Exception e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
         }
       }
@@ -615,7 +616,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       inUseModel.addElement(c);
     }
     catch (Exception ex) {
-      ex.printStackTrace();
+      ErrorLog.log(ex);
     }
     refresh();
   }

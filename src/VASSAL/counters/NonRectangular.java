@@ -46,6 +46,7 @@ import javax.swing.border.TitledBorder;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
+import VASSAL.tools.ErrorLog;
 import VASSAL.tools.imageop.Op;
 
 /**
@@ -192,20 +193,20 @@ public class NonRectangular extends Decorator implements EditablePiece {
             setShapeFromImage(Op.load(name).getImage(null));
           }
           catch (CancellationException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
           catch (InterruptedException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
           catch (ExecutionException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }         
 /*
           try {
             setShapeFromImage(GameModule.getGameModule().getDataArchive().getCachedImage(name));
           }
           catch (IOException e) {
-            e.printStackTrace();
+            ErrorLog.log(e);
           }
 */
         }
