@@ -21,101 +21,39 @@ package VASSAL.launch;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Properties;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 
-public class Editor {
-  protected CommandClient cmdC = null;
-  protected CommandServer cmdS = null;
-
-  protected final LaunchRequest lr;
-
+public class Editor extends Launcher {
   public static void main(String[] args) {
     new Editor(LaunchRequest.parseArgs(args));
   }
 
-  private static Editor instance = null;
-
-  public static Editor getInstance() {
-    return instance;
+  public Editor(LaunchRequest lr) {
+    super(lr);
   }
 
-  public Editor(LaunchRequest lr) {
-    if (instance != null) throw new IllegalStateException();
-    instance = this;
+  protected MenuManager createMenuManager() {
+    return Info.isMacOSX() ? new MacOSXMenuManager() : new EditorMenuManager();
+  }
 
-    final StartUp start = Info.isMacOSX() ? new MacOSXStartUp() : new StartUp();
-    if (lr.standalone) start.startErrorLog();
-    start.setupErrorLog();
-    Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
-
-    start.initSystemProperties();
-
-    this.lr = lr;
-
-    if (!lr.standalone) {
-      try {
-        // set up our command listener
-        final ServerSocket serverSocket = new ServerSocket(0);
-        cmdS = new EditorCommandServer(serverSocket);
-        new Thread(cmdS).start();
-
-        // write our socket port out to the module manager
-        new DataOutputStream(System.out).writeInt(serverSocket.getLocalPort());
-
-        // read the module manager's socket port from stdin
-        final int port = new DataInputStream(System.in).readInt();
- 
-        // set up our command client
-        cmdC = new CommandClient(new Socket((String) null, port));
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
-  
-      if (cmdC == null || cmdS == null) System.exit(1);
-    }
- 
-    if (Info.isMacOSX()) new MacOSXMenuManager();
-    else new EditorMenuManager();
-
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          Editor.this.extractResourcesAndLaunch(0);
-        }
-        catch (IOException e) {
-          reportError(e);
-        }
-      }
-    });
+  protected CommandServer createCommandServer(ServerSocket serverSocket) {
+    return new EditorCommandServer(serverSocket);
   }
 
   protected static class EditorCommandServer extends CommandServer {
@@ -140,51 +78,6 @@ public class Editor {
         return "UNRECOGNIZED_COMMAND";
       } 
     }
-  }
-
-  protected void extractResourcesAndLaunch(final int resourceIndex)
-                                                          throws IOException {
-    if (lr.extract == null || resourceIndex >= lr.extract.size()) {
-      launch();
-    }
-    else {
-      final Properties props = new Properties();
-      final InputStream in =
-        Editor.class.getResourceAsStream(lr.extract.get(resourceIndex));
-      if (in != null) {
-        try {
-          props.load(in);
-        }
-        finally {
-          try {
-            in.close();
-          }
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
-        }
-      }
-
-      new ResourceExtracter(Prefs.getGlobalPrefs(), props, new Observer() {
-        public void update(Observable o, Object arg) {
-          try {
-            extractResourcesAndLaunch(resourceIndex + 1);
-          }
-          catch (IOException e) {
-            reportError(e);
-          }
-        }
-      }).install();
-    }
-  }
-
-  protected void reportError(Exception e) {
-    ErrorLog.log(e);
-    String msg = e.getMessage();
-    if (msg == null) {
-      msg = e.getClass().getSimpleName();
-    }
-    JOptionPane.showMessageDialog(null, msg, Resources.getString("ResourceExtracter.install_failed"), JOptionPane.ERROR_MESSAGE);
   }
 
   protected void launch() throws IOException {

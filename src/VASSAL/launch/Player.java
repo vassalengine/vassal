@@ -21,22 +21,12 @@ package VASSAL.launch;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Properties;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
@@ -44,81 +34,27 @@ import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
-import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.JarArchive;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 
-public class Player {
-  protected CommandClient cmdC = null;
-  protected CommandServer cmdS = null;
-
-  protected final LaunchRequest lr;
-
+public class Player extends Launcher {
   public static void main(String[] args) {
     new Player(LaunchRequest.parseArgs(args));
   }
 
-  private static Player instance = null;
-
-  public static Player getInstance() {
-    return instance;
+  public Player(LaunchRequest lr) {
+    super(lr);
   }
 
-  public Player(LaunchRequest lr) {
-    if (instance != null) throw new IllegalStateException();
-    instance = this;
+  protected MenuManager createMenuManager() {
+    return Info.isMacOSX() ? new MacOSXMenuManager() : new PlayerMenuManager();
+  }
 
-    this.lr = lr;
-
-    if (!lr.standalone) {
-      try {
-        // set up our command listener
-        final ServerSocket serverSocket = new ServerSocket(0);
-        cmdS = new PlayerCommandServer(serverSocket);
-        new Thread(cmdS).start();
-
-        // write our socket port out to the module manager
-        final DataOutputStream out = new DataOutputStream(System.out);
-        out.writeInt(serverSocket.getLocalPort());
-        out.flush();
-
-        // read the module manager's socket port from stdin
-        final int port = new DataInputStream(System.in).readInt();
-
-        // set up our command client
-        cmdC = new CommandClient(new Socket((String) null, port));
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
-  
-      if (cmdC == null || cmdS == null) System.exit(1);
-    } 
-
-    final StartUp start = Info.isMacOSX() ? new MacOSXStartUp() : new StartUp();
-    if (lr.standalone) start.setupErrorLog();
-    start.startErrorLog();
-    Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
-
-    start.initSystemProperties();
-
-    if (Info.isMacOSX()) new MacOSXMenuManager();
-    else new PlayerMenuManager();
-
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          Player.this.extractResourcesAndLaunch(0);
-        }
-        catch (IOException e) {
-          reportError(e);
-        }
-      }
-    });
+  protected CommandServer createCommandServer(ServerSocket serverSocket) {
+    return new PlayerCommandServer(serverSocket);
   }
 
   protected static class PlayerCommandServer extends CommandServer {
@@ -143,51 +79,6 @@ public class Player {
         return "UNRECOGNIZED_COMMAND";
       } 
     }
-  }
-
-  protected void extractResourcesAndLaunch(final int resourceIndex)
-                                                          throws IOException {
-    if (lr.extract == null || resourceIndex >= lr.extract.size()) {
-      launch();
-    }
-    else {
-      final Properties props = new Properties();
-      final InputStream in =
-        Player.class.getResourceAsStream(lr.extract.get(resourceIndex));
-      if (in != null) {
-        try {
-          props.load(in);
-        }
-        finally {
-          try {
-            in.close();
-          }
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
-        }
-      }
-
-      new ResourceExtracter(Prefs.getGlobalPrefs(), props, new Observer() {
-        public void update(Observable o, Object arg) {
-          try {
-            extractResourcesAndLaunch(resourceIndex + 1);
-          }
-          catch (IOException e) {
-            reportError(e);
-          }
-        }
-      }).install();
-    }
-  }
-
-  protected void reportError(Exception e) {
-    ErrorLog.log(e);
-    String msg = e.getMessage();
-    if (msg == null) {
-      msg = e.getClass().getSimpleName();
-    }
-    JOptionPane.showMessageDialog(null, msg, Resources.getString("ResourceExtracter.install_failed"), JOptionPane.ERROR_MESSAGE);
   }
 
   protected void launch() throws IOException {
@@ -216,9 +107,7 @@ public class Player {
       }
     }  
     finally {
-      if (cmdC != null) { 
-        cmdC.request("NOTIFY_OPEN");
-      }
+      if (cmdC != null) cmdC.request("NOTIFY_OPEN");
     }
   }
 
