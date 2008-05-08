@@ -66,6 +66,8 @@ public class LaunchRequest implements Serializable {
 
   public int port = -1;
 
+  public long key;
+
   public LaunchRequest() {
     this(null, null);
   }

@@ -41,6 +41,7 @@ import VASSAL.Info;
 import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.SaveMetaData;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.LongConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
@@ -58,13 +59,34 @@ import VASSAL.tools.menu.MacOSXMenuManager;
 public class ModuleManager {
 
   private static final String MODULE_MANAGER_PORT = "moduleManagerPort";
+  private static final String MODULE_MANAGER_KEY = "moduleManagerKey";
 
   private static int port;
+  private static long key;
 
   public static void main(String[] args) {
     // parse command-line arguments
     final LaunchRequest lr = LaunchRequest.parseArgs(args); 
-  
+
+    // set up security key so other users can't talk with our socket
+    final LongConfigurer keyConfig =
+      new LongConfigurer(MODULE_MANAGER_KEY, null, -1L);
+    Prefs.getGlobalPrefs().addOption(keyConfig);
+ 
+    key = keyConfig.getLongValue(-1);
+    if (key == -1) {
+      key = (long) (Math.random() * Long.MAX_VALUE);
+      keyConfig.setValue(key);
+      try {
+        Prefs.getGlobalPrefs().write();
+      }
+      catch (IOException e) {
+        ErrorLog.log(e);
+      }
+    }
+
+    lr.key = key;
+
     // set up prefs for port to listen on
     final IntConfigurer portConfig =
       new IntConfigurer(MODULE_MANAGER_PORT, null, -1); 
@@ -266,6 +288,12 @@ public class ModuleManager {
   protected String execute(Object req) {
     if (req instanceof LaunchRequest) { 
       final LaunchRequest lr = (LaunchRequest) req;
+
+      if (lr.key != key) {
+// FIXME: translate
+        return "incorrect key";
+      }
+
       final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
 
       switch (lr.mode) {
@@ -327,7 +355,7 @@ public class ModuleManager {
       }
     }
     else {
-      return "unrecognized command";
+      return "unrecognized command";  // FIXME
     }
   
     return null;
