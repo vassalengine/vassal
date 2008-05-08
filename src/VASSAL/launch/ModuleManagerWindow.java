@@ -200,7 +200,7 @@ public class ModuleManagerWindow extends JFrame {
       }
     }, serverStatusConfig.booleanValue()));
  
-   toolsMenu.add(mm.addKey("Editor.ModuleEditor.translate_vassal"));
+    toolsMenu.add(mm.addKey("Editor.ModuleEditor.translate_vassal"));
 
     // help menu
     final MenuProxy helpMenu =
