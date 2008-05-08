@@ -148,7 +148,7 @@ public class ModuleManagerWindow extends JFrame {
           Prefs.getGlobalPrefs().close();
         }
         catch (IOException ex) {
-          ex.printStackTrace();
+          ErrorLog.warn(e);
         }
         System.exit(0);
       }
