@@ -89,6 +89,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   }
 
   public static boolean shutDown() {
+    ModuleManagerWindow.getInstance().toBack();
     for (CommandClient child : children) {
       try {
         if ("NOK".equals(child.request("REQUEST_CLOSE"))) return false;
