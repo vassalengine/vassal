@@ -11,6 +11,7 @@ DISTDIR:=dist
 VNUM:=3.1.0
 SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
 VERSION:=$(VNUM)-svn$(SVNVERSION)
+#VERSION:=$(VNUM)-beta1
 
 CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 JAVAPATH:=/usr/lib/jvm/java-1.6.0-sun
@@ -119,7 +120,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS)
 	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-generic $(TMPDIR)/VASSAL.exe
+$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: version release-generic $(TMPDIR)/VASSAL.exe
 	rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.sh
 	cp $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
@@ -133,13 +134,17 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-generic $(TMPDIR)/VASSAL.exe
 		tac	>$(TMPDIR)/uninstall_files.inc
 	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer.nsi
 
-#$(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
-	
+$(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
+	svn export . $(TMPDIR)/VASSAL-$(VERSION)-src
+	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION)-src ; cd ..
+
 release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
 
 release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows.exe
 
 release-generic: $(TMPDIR)/VASSAL-$(VERSION)-generic.zip
+
+release-src: $(TMPDIR)/VASSAL-$(VERSION)-src.zip
 
 release: release-generic release-windows release-macosx
 
