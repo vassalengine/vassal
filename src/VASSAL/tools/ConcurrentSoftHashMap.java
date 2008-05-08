@@ -88,7 +88,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
     // you put in?
     while ((sv = (SoftValue<K,V>) queue.poll()) != null) {
       map.remove(sv.key, sv);
-      System.out.println("Hasta la vista, " + sv.key + ".");
+//      System.out.println("Hasta la vista, " + sv.key + ".");
     }
 //    System.out.println("Cache size = " + map.size());
   }
