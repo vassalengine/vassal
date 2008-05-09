@@ -368,7 +368,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       ((ArchiveWriter) archive).addFile
           (GameModule.BUILDFILE,
            new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
-      ((ArchiveWriter) archive).write();
+      ((ArchiveWriter) archive).write(true);
       lastSave = save;
     }
     else {
@@ -389,7 +389,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       ((ArchiveWriter) archive).addFile
           (GameModule.BUILDFILE, //
            new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
-      ((ArchiveWriter) archive).saveAs();
+      ((ArchiveWriter) archive).saveAs(true);
       lastSave = save;
     }
     else {
