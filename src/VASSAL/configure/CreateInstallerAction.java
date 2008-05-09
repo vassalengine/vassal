@@ -62,6 +62,7 @@ import VASSAL.tools.filechooser.FileChooser;
 /**
  * @author rkinney
  */
+@Deprecated
 public class CreateInstallerAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
