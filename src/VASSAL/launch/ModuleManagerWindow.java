@@ -456,6 +456,9 @@ public class ModuleManagerWindow extends JFrame {
       }
     });
 
+    // We capture the time and location of clicks which would cause
+    // expansion in order to distinguish these from clicks which
+    // might launch a module or game.
     tree.addTreeWillExpandListener(new TreeWillExpandListener() {
       public void treeWillCollapse(TreeExpansionEvent e) {
         lastExpansionTime = System.currentTimeMillis();
