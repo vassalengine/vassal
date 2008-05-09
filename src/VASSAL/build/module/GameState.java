@@ -54,6 +54,7 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.Launcher;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.Deobfuscator;
@@ -506,6 +507,7 @@ public class GameState implements CommandEncoder {
     saver.addFile(SAVEFILE_ZIP_ENTRY, out.toInputStream());
     (new SaveMetaData()).save(saver);
     saver.write();
+    Launcher.getInstance().sendSaveCmd(f);
     if (saver.getArchive() != null) {
       saver.getArchive().close();
     }

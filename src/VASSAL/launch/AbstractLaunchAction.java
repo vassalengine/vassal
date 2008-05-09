@@ -243,7 +243,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     @Override
     protected Object reply(Object cmd) {
-      if ("NOTIFY_OPEN".equals(cmd)) {
+      if (cmd instanceof Launcher.SaveFileCmd) {
+        return ModuleManagerWindow.getInstance().update(((Launcher.SaveFileCmd) cmd).getFile());
+      }
+      else if ("NOTIFY_OPEN".equals(cmd)) {
         window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         return "OK";
       }

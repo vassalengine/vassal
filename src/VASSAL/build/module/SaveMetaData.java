@@ -36,7 +36,6 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorLog;
-import VASSAL.tools.IOUtils;
 
 /**
  * 
@@ -56,6 +55,7 @@ public class SaveMetaData extends AbstractMetaData {
   protected ModuleMetaData moduleData;
 
   public SaveMetaData() {
+    super();
     String comments  = (String) JOptionPane.showInputDialog(
         GameModule.getGameModule().getFrame(),
         Resources.getString("BasicLogger.enter_comments"),
@@ -98,18 +98,7 @@ public class SaveMetaData extends AbstractMetaData {
     // Also save a copy of the current module metadata in the save file. Copy
     // module metadata from the module archive as it will contain full i18n
     // information.
-    InputStream in = null;
-    try {
-      in = GameModule.getGameModule().getDataArchive().getFileStream(ModuleMetaData.ZIP_ENTRY_NAME);
-      archive.addFile(ModuleMetaData.ZIP_ENTRY_NAME, in);
-    }
-    catch (IOException e) {
-      // No Metatdata in source module, create a fresh copy
-      new ModuleMetaData(GameModule.getGameModule()).save(archive);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
-    }
+    copyModuleMetadata(archive);
   }
   
   /**
@@ -133,7 +122,7 @@ public class SaveMetaData extends AbstractMetaData {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style save with no metadata.
       try {
-        final ZipEntry data = zip.getEntry(SaveMetaData.ZIP_ENTRY_NAME);
+        final ZipEntry data = zip.getEntry(getZipEntryName());
         if (data == null) return;
 
         final XMLReader parser = XMLReaderFactory.createXMLReader();

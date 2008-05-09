@@ -20,6 +20,7 @@ package VASSAL.build.module;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
@@ -45,6 +46,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import VASSAL.Info;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Translation;
@@ -68,6 +70,7 @@ public abstract class AbstractMetaData {
   protected static final String NAME_ATTR = "name";
   protected static final String VERSION_ATTR = "version";
   protected static final String VASSAL_VERSION_ATTR = "vassalVersion";
+  protected static final String DESCRIPTION_ATTR = "description";
   protected static final String EXTENSION_ATTR = "extension";
   protected static final String MODULE_NAME_ATTR = "moduleName";
   protected static final String MODULE_VERSION_ATTR = "moduleVersion";
@@ -90,7 +93,11 @@ public abstract class AbstractMetaData {
   protected String version;
   protected String vassalVersion;
   protected Attribute descriptionAttr;
-  
+ 
+  public AbstractMetaData() {
+    setVassalVersion(Info.getVersion());
+  }
+ 
   public String getVersion() {
     return version == null ? "" : version;
   }
@@ -107,10 +114,14 @@ public abstract class AbstractMetaData {
     vassalVersion = s;
   }
   
-  public void setDescription (Attribute desc) {
+  public void setDescription(Attribute desc) {
     descriptionAttr = desc;
   }
-  
+ 
+  public void setDescription(String desc) {
+    descriptionAttr = new Attribute(GameModule.DESCRIPTION, desc);
+  }
+ 
   public String getDescription() {
     return descriptionAttr == null ? "" : descriptionAttr.getValue();
   }
@@ -189,16 +200,16 @@ public abstract class AbstractMetaData {
       }
     
       // It's either a module or an Extension, check for existence of metadata
-      entry = zip.getEntry(ModuleMetaData.ZIP_ENTRY_NAME);
-      if (entry != null) {
-        return new ModuleMetaData(zip);
-      }
-    
       entry = zip.getEntry(ExtensionMetaData.ZIP_ENTRY_NAME);
       if (entry != null) {
         return new ExtensionMetaData(zip);
       }
     
+      entry = zip.getEntry(ModuleMetaData.ZIP_ENTRY_NAME);
+      if (entry != null) {
+        return new ModuleMetaData(zip);
+      }
+
       // read the first few lines of the buildFile    
       BufferedReader br = null;
       try {
@@ -299,6 +310,30 @@ public abstract class AbstractMetaData {
     }
 
     archive.addFile(getZipEntryName(), out.toInputStream());
+  }
+
+  /**
+   * Copy the Module metatdata from the current module into the specified
+   * archive.
+   *
+   * @param archive Archive to copy into
+   * @throws IOException
+   */
+  public void copyModuleMetadata(ArchiveWriter archive) throws IOException {
+    InputStream in = null;
+    try {
+      in = GameModule.getGameModule()
+                     .getDataArchive()
+                     .getFileStream(ModuleMetaData.ZIP_ENTRY_NAME);
+      archive.addFile(ModuleMetaData.ZIP_ENTRY_NAME, in);
+    }
+    catch (IOException e) {
+      // No Metatdata in source module, create a fresh copy 
+      new ModuleMetaData(GameModule.getGameModule()).save(archive);
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
   }
   
   /**

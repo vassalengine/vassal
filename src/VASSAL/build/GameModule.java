@@ -48,8 +48,8 @@ import VASSAL.build.module.GlobalKeyCommand;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Inventory;
 import VASSAL.build.module.Map;
-import VASSAL.build.module.ModuleMetaData;
 import VASSAL.build.module.ModuleExtension;
+import VASSAL.build.module.ModuleMetaData;
 import VASSAL.build.module.MultiActionButton;
 import VASSAL.build.module.NotesWindow;
 import VASSAL.build.module.PieceWindow;
@@ -871,10 +871,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
           (BUILDFILE,  
            new java.io.ByteArrayInputStream(save.getBytes("UTF-8")));  //$NON-NLS-1$
       if (saveAs) {
-        getArchiveWriter().saveAs();
+        getArchiveWriter().saveAs(true);
       }
       else {
-        getArchiveWriter().write();
+        getArchiveWriter().write(true);
       }
       lastSavedConfiguration = save;
     }

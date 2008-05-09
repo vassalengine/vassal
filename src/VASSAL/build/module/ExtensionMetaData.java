@@ -31,8 +31,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorLog;
 
 public class ExtensionMetaData extends AbstractMetaData {
@@ -40,11 +40,11 @@ public class ExtensionMetaData extends AbstractMetaData {
   public static final String ZIP_ENTRY_NAME = "extensiondata";
   public static final String DATA_VERSION = "1";
 
-  protected static final String MODULE_NAME_ATTR = "moduleName";
-  protected static final String MODULE_VERSION_ATTR = "moduleVersion";
+  protected static final String UNIVERSAL_ELEMENT = "universal";
+  protected static final String UNIVERSAL_ATTR = "anyModule";
 
-  protected String moduleName;
-  protected String moduleVersion;
+  protected ModuleMetaData moduleData;
+  protected boolean universal;
 
   /**
    * Build an ExtensionMetaData for the given extension
@@ -53,11 +53,11 @@ public class ExtensionMetaData extends AbstractMetaData {
    *          Extension
    */
   public ExtensionMetaData(ModuleExtension ext) {
+    super();
     setVersion(ext.getVersion());
-    setVassalVersion(Info.getVersion());
-    setDescription(new Attribute(ModuleExtension.DESCRIPTION, ext.getDescription()));
-    moduleName = GameModule.getGameModule().getGameName();
-    moduleVersion = GameModule.getGameModule().getGameVersion();
+    setDescription(
+      new Attribute(ModuleExtension.DESCRIPTION, ext.getDescription()));
+    universal = ext.getUniversal();
   }
 
   /**
@@ -70,6 +70,14 @@ public class ExtensionMetaData extends AbstractMetaData {
     read(zip);
   }
 
+  public String getModuleName() {
+    return moduleData == null ? "" : moduleData.getName();
+  }
+  
+  public String getModuleVersion() {
+    return moduleData == null ? "" : moduleData.getVersion();
+  }
+
   public String getZipEntryName() {
     return ZIP_ENTRY_NAME;
   }
@@ -77,7 +85,21 @@ public class ExtensionMetaData extends AbstractMetaData {
   public String getMetaDataVersion() {
     return DATA_VERSION;
   }
-  
+ 
+  /**
+   * Write Extension metadata to the specified Archive
+   * @param archive Save game Archive
+   * @throws IOException If anything goes wrong
+   */
+  public void save(ArchiveWriter archive) throws IOException {
+    super.save(archive);
+    
+    // Also save a copy of the current module metadata in the save file. Copy
+    // module metadata from the module archive as it will contain full i18n
+    // information.
+    copyModuleMetadata(archive);
+  }
+ 
   /**
    * Add elements specific to an ExtensionMetaData 
    * 
@@ -85,14 +107,9 @@ public class ExtensionMetaData extends AbstractMetaData {
    * @param root Root element
    */
   protected void addElements(Document doc, Element root) {
-
-      Element e = doc.createElement(MODULE_NAME_ELEMENT);
-      e.appendChild(doc.createTextNode(moduleName));
-      root.appendChild(e);
-
-      e = doc.createElement(MODULE_VERSION_ELEMENT);
-      e.appendChild(doc.createTextNode(moduleVersion));
-      root.appendChild(e);
+    final Element e = doc.createElement(UNIVERSAL_ELEMENT);
+    e.appendChild(doc.createTextNode(String.valueOf(universal)));
+    root.appendChild(e);
   }
   
   /**
@@ -103,8 +120,6 @@ public class ExtensionMetaData extends AbstractMetaData {
    * @param file Module File
    */
   public void read(ZipFile zip) {
-    version = moduleName = moduleVersion = "";
-
     InputStream is = null;
     try {
 
@@ -114,7 +129,7 @@ public class ExtensionMetaData extends AbstractMetaData {
       try {
         final XMLReader parser = XMLReaderFactory.createXMLReader();
         DefaultHandler handler = null;
-        ZipEntry data = zip.getEntry(ZIP_ENTRY_NAME);
+        ZipEntry data = zip.getEntry(getZipEntryName());
         if (data == null) {
           data = zip.getEntry(GameModule.BUILDFILE);
           handler = new ExtensionBuildFileXMLHandler();
@@ -131,6 +146,15 @@ public class ExtensionMetaData extends AbstractMetaData {
         // parse! parse!
         is = zip.getInputStream(data);
         parser.parse(new InputSource(is));
+
+        // read the matching Module data. A basic moduledata may have been
+        // built when reading the buildFile, overwrite if we find a real
+        // module metadata file
+        final ModuleMetaData buildFileModuleData = moduleData;
+        moduleData = new ModuleMetaData(zip); 
+        if (moduleData == null) {
+          moduleData = buildFileModuleData;
+        }
       }
       catch (IOException e) {
         ErrorLog.log(e);
@@ -171,11 +195,8 @@ public class ExtensionMetaData extends AbstractMetaData {
     @Override
     public void endElement(String uri, String localName, String qName) {
       // handle all of the elements which have CDATA here
-      if (MODULE_NAME_ELEMENT.equals(qName)) {
-         moduleName = accumulator.toString().trim();
-      }
-      else if (MODULE_VERSION_ELEMENT.equals(qName)) {
-         moduleVersion = accumulator.toString().trim();
+      if (UNIVERSAL_ELEMENT.equals(qName)) {
+        universal = "true".equals(accumulator.toString().trim());
       }
       else {
         super.endElement(uri, localName, qName);
@@ -197,10 +218,15 @@ public class ExtensionMetaData extends AbstractMetaData {
 
       // handle element attributes we care about
       if (BUILDFILE_EXTENSION_ELEMENT.equals(qName)) {
-        version = getAttr(attrs, VERSION_ATTR);
-        vassalVersion  = getAttr(attrs, VASSAL_VERSION_ATTR);
-        moduleName = getAttr(attrs, MODULE_NAME_ATTR);
-        moduleVersion = getAttr(attrs, MODULE_VERSION_ATTR);
+        setVersion(getAttr(attrs, VERSION_ATTR));
+        setVassalVersion(getAttr(attrs, VASSAL_VERSION_ATTR));
+        setDescription(getAttr(attrs, DESCRIPTION_ATTR));
+        universal = "true".equals(getAttr(attrs, UNIVERSAL_ATTR));
+        // Build a basic module metadata in case this is an older extension
+        // with no metadata from the originating module
+        final String moduleName = getAttr(attrs, MODULE_NAME_ATTR);
+        final String moduleVersion = getAttr(attrs, MODULE_VERSION_ATTR);
+        moduleData = new ModuleMetaData(moduleName, moduleVersion);
         throw new SAXEndException();
       }
     }

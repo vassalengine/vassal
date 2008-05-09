@@ -19,7 +19,6 @@
 
 package VASSAL.launch;
 
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;

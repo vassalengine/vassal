@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -74,10 +76,10 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
 import VASSAL.Info;
+import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ExtensionMetaData;
 import VASSAL.build.module.ExtensionsManager;
-import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.ModuleMetaData;
 import VASSAL.build.module.SaveMetaData;
 import VASSAL.chat.CgiServerStatus;
@@ -358,12 +360,17 @@ public class ModuleManagerWindow extends JFrame {
         final MyTreeNode folderNode = new MyTreeNode(folderInfo);
         moduleNode.add(folderNode);
         final ArrayList<File> l = new ArrayList<File>();
-        for (File f1 : f.listFiles()) {
+
+        final File[] files = f.listFiles();
+        if (files == null) continue;
+
+        for (File f1 : files) {
           if (f1.isFile()) {
             l.add(f1);
           }
         }
         Collections.sort(l);
+        
         for (File f2 : l) {
           final SaveFileInfo fileInfo = new SaveFileInfo(f2, folderInfo);
           if (fileInfo.isValid() && fileInfo.belongsToModule()) {
@@ -474,6 +481,60 @@ public class ModuleManagerWindow extends JFrame {
     tree.getTableHeader().setAlignmentX(JComponent.CENTER_ALIGNMENT);
   }
   
+  /** 
+   * A File has been saved or created by the Player or the Editor. Update
+   * the display as necessary.
+   * @param f The file
+   * @return
+   */
+  public String update(File f) {
+    AbstractMetaData.FileType type = AbstractMetaData.getFileType(f);
+    
+    // Module.
+    // If we already have this module added, just refresh it, otherwise add it in.    
+    if (type == AbstractMetaData.FileType.MODULE) {
+      final MyTreeNode moduleNode = rootNode.findNode(f);
+      if (moduleNode == null) {
+        addModule(f);
+      }
+      else {
+        moduleNode.refresh();
+      }      
+    }
+    
+    // Extension.
+    // Check to see if it has been saved into one of the extension directories
+    // for any module we already know of. Refresh the module
+    else if (type == AbstractMetaData.FileType.EXTENSION) {
+      for (int i = 0; i < rootNode.getChildCount(); i++) {
+        final MyTreeNode moduleNode = rootNode.getChild(i); 
+        final ModuleInfo moduleInfo = (ModuleInfo) moduleNode.getNodeInfo();
+        for (ExtensionInfo ext : moduleInfo.getExtensions()) {
+          if (ext.getFile().equals(f)) {
+            moduleNode.refresh();
+            return "OK";
+          }
+        }
+      }
+    }
+    
+    // Save Game or Log file. 
+    // If the parent of the save file is already recorded as a Game Folder, 
+    // pass the file off to the Game Folder to handle. Otherwise, ignore it.
+    else if (type == AbstractMetaData.FileType.SAVE) {
+      for (int i = 0; i < rootNode.getChildCount(); i++) {
+        final MyTreeNode moduleNode = rootNode.getChild(i);
+        final MyTreeNode folderNode = moduleNode.findNode(f.getParentFile());
+        if (folderNode != null && folderNode.getNodeInfo() instanceof GameFolderInfo) {
+            ((GameFolderInfo) folderNode.getNodeInfo()).update(f);  
+             return "OK";
+        }
+      }      
+    }
+    tree.repaint();
+    return "OK";
+  }
+  
   /**
    * Return the number of Modules added to the Module Manager
    * 
@@ -517,7 +578,7 @@ public class ModuleManagerWindow extends JFrame {
 
     for (int i = 0; i < rootNode.getChildCount(); i++) {
       final ModuleInfo module =
-        (ModuleInfo) ((MyTreeNode) rootNode.getChildAt(i)).getNodeInfo();
+        (ModuleInfo) rootNode.getChild(i).getNodeInfo();
       
       if (name.equals(module.getModuleName())) return module.getFile(); 
     }
@@ -529,7 +590,7 @@ public class ModuleManagerWindow extends JFrame {
     final List<String> l = new ArrayList<String>();
     for (int i = 0; i < rootNode.getChildCount(); i++) {
       final ModuleInfo module =
-        (ModuleInfo) ((MyTreeNode) rootNode.getChildAt(i)).getNodeInfo();
+        (ModuleInfo) (rootNode.getChild(i)).getNodeInfo();
       l.add(module.encode());
     }
     recentModuleConfig.setValue(l.toArray(new String[l.size()]));
@@ -615,6 +676,7 @@ public class ModuleManagerWindow extends JFrame {
     
     public MyTreeNode(AbstractInfo nodeInfo) {
       super(nodeInfo);
+      nodeInfo.setTreeNode(this);
     }
 
     public AbstractInfo getNodeInfo() {
@@ -623,6 +685,10 @@ public class ModuleManagerWindow extends JFrame {
     
     public File getFile() {
       return getNodeInfo().getFile();
+    }
+    
+    public void refresh() {
+      getNodeInfo().refresh();
     }
    
     @Override
@@ -634,9 +700,13 @@ public class ModuleManagerWindow extends JFrame {
       return getNodeInfo().getValueAt(column);
     }
     
+    public MyTreeNode getChild(int index) {
+      return (MyTreeNode) super.getChildAt(index);
+    }
+    
     public MyTreeNode findNode(File f) {
       for (int i = 0; i < getChildCount(); i++) {
-        final MyTreeNode moduleNode = (MyTreeNode) getChildAt(i);
+        final MyTreeNode moduleNode = getChild(i);
 
         // NB: we canonicalize because File.equals() does not
         // always return true when one File is a relative path.
@@ -660,7 +730,7 @@ public class ModuleManagerWindow extends JFrame {
 
     public int findInsertIndex(AbstractInfo info) {
       for (int i = 0; i < getChildCount(); i++) {
-        final MyTreeNode childNode = (MyTreeNode) getChildAt(i);
+        final MyTreeNode childNode = getChild(i);
         if (childNode.getNodeInfo().compareTo(info) >= 0) {
           return i;
         }
@@ -681,7 +751,10 @@ public class ModuleManagerWindow extends JFrame {
       else if (info instanceof ModuleInfo) {
         return this;
       }
-      else {
+      else if ((MyTreeNode) getParent() == null) {
+        return null;
+      }
+      else {        
         return ((MyTreeNode) getParent()).getParentModuleNode();
       }
     }
@@ -708,6 +781,7 @@ public class ModuleManagerWindow extends JFrame {
     protected Icon closedIcon;
     protected boolean valid = true;
     protected String error = "";
+    protected MyTreeNode node;
     
     public AbstractInfo(File f, Icon open, Icon closed) {
       setFile(f);
@@ -814,6 +888,14 @@ public class ModuleManagerWindow extends JFrame {
       return "";
     }
     
+    public MyTreeNode getTreeNode() {
+      return node;
+    }
+    
+    public void setTreeNode(MyTreeNode n) {
+      node = n;
+    }
+    
     /**
      * Return a String used to sort different types of AbstractInfo's that are
      * children of the same parent.
@@ -833,6 +915,19 @@ public class ModuleManagerWindow extends JFrame {
     public Color getTreeCellFgColor() {
       return Color.black;
     }
+    
+    /** 
+     * Refresh yourself and any children
+     */
+    public void refresh() {
+      refreshChildren();
+    }
+    
+    public void refreshChildren() {
+      for (int i = 0; i < node.getChildCount(); i++) {
+        (node.getChild(i)).refresh();
+      }      
+    }
   }
   
   /** *************************************************************************
@@ -850,7 +945,7 @@ public class ModuleManagerWindow extends JFrame {
   public class ModuleInfo extends AbstractInfo {
 
     private ExtensionsManager extMgr;
-    private List<File> gameFolders = new ArrayList<File>();
+    private SortedSet<File> gameFolders = new TreeSet<File>();
     private ModuleMetaData metadata;
     
     private Action newExtensionAction =
@@ -866,14 +961,14 @@ public class ModuleManagerWindow extends JFrame {
           ModuleManagerWindow.this, (DirectoryConfigurer)
             Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
         if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
-          File selectedFile = fc.getSelectedFile();
-          ExtensionInfo testExtInfo = new ExtensionInfo(selectedFile, true, null);
+          final File selectedFile = fc.getSelectedFile();
+          final ExtensionInfo testExtInfo = new ExtensionInfo(selectedFile, true, null);
           if (testExtInfo.isValid()) {
-            File f = getExtensionsManager().setActive(fc.getSelectedFile(), true);
-            MyTreeNode moduleNode = rootNode.findNode(selectedModule);
-            ExtensionInfo extInfo = new ExtensionInfo(f, true, (ModuleInfo) moduleNode.getNodeInfo());
+            final File f = getExtensionsManager().setActive(fc.getSelectedFile(), true);
+            final MyTreeNode moduleNode = rootNode.findNode(selectedModule);
+            final ExtensionInfo extInfo = new ExtensionInfo(f, true, (ModuleInfo) moduleNode.getNodeInfo());
             if (extInfo.isValid()) {
-              MyTreeNode extNode = new MyTreeNode(extInfo);
+              final MyTreeNode extNode = new MyTreeNode(extInfo);
               treeModel.insertNodeInto(extNode, moduleNode, moduleNode.findInsertIndex(extInfo));
             }
           }
@@ -894,16 +989,18 @@ public class ModuleManagerWindow extends JFrame {
             Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY),
             FileChooser.DIRECTORIES_ONLY);
         if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
-          final File f = fc.getSelectedFile();
-          if (!gameFolders.contains(f)) {
-            addFolder(f);
-          }
+          addFolder(fc.getSelectedFile());
         }
       }
     };
     
     public ModuleInfo(File f) {
       super(f, moduleIcon);
+      extMgr = new ExtensionsManager(f); 
+      loadMetaData();  
+    }
+    
+    protected void loadMetaData() {
       AbstractMetaData data = AbstractMetaData.buildMetaData(file);
       if (data != null && data instanceof ModuleMetaData) {
         setValid(true);
@@ -912,8 +1009,7 @@ public class ModuleManagerWindow extends JFrame {
       else {
         setValid(false);
         return;
-      }
-      extMgr = new ExtensionsManager(f);   
+      }  
     }
     
     /**
@@ -926,20 +1022,43 @@ public class ModuleManagerWindow extends JFrame {
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
       setFile(new File(sd.nextToken()));
       setIcon(moduleIcon);
-      AbstractMetaData data = AbstractMetaData.buildMetaData(getFile());
-      if (data != null && data instanceof ModuleMetaData) {
-        setValid(true);
-        metadata = (ModuleMetaData) data;
-      }
-      else {
-        setValid(false);
-        return;
-      }
+      loadMetaData();
       extMgr = new ExtensionsManager(getFile());  
       while (sd.hasMoreTokens()) {
         gameFolders.add(new File(sd.nextToken()));
       }
-      Collections.sort(gameFolders);
+    }
+    
+    /**
+     * Refresh this module and all children
+     */
+    public void refresh() {
+      loadMetaData();
+      
+      // Remove any missing children
+      final MyTreeNode[] nodes = new MyTreeNode[getTreeNode().getChildCount()];
+      for (int i = 0; i < getTreeNode().getChildCount(); i++) {
+        nodes[i] = getTreeNode().getChild(i);
+      }
+      for (int i = 0; i < nodes.length; i++) {
+        if (!nodes[i].getFile().exists()) {
+          treeModel.removeNodeFromParent(nodes[i]);
+        }
+      }  
+      
+      // Refresh or add any existing children
+      for (ExtensionInfo ext : getExtensions()) {
+        MyTreeNode extNode = getTreeNode().findNode(ext.getFile());
+        if (extNode == null) {
+          if (ext.isValid()) {
+            extNode = new MyTreeNode(ext);
+            treeModel.insertNodeInto(extNode, getTreeNode(), getTreeNode().findInsertIndex(ext));
+          }
+        }
+        else {
+          extNode.refresh();
+        }
+      }
     }
     
     /**
@@ -962,6 +1081,18 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public void addFolder(File f) {
+      // try to create the directory if it doesn't exist
+      if (!f.exists() && !f.mkdirs()) {
+        JOptionPane.showMessageDialog(
+          ModuleManagerWindow.this,
+          Resources.getString("Install.error_unable_to_create", f.getPath()),
+          "Error",
+          JOptionPane.ERROR_MESSAGE
+        );
+        
+        return;
+      }
+
       gameFolders.add(f);
       final MyTreeNode moduleNode = rootNode.findNode(selectedModule);
       final GameFolderInfo folderInfo =
@@ -987,7 +1118,7 @@ public class ModuleManagerWindow extends JFrame {
       gameFolders.remove(f);
     }
     
-    public List<File> getFolders() {
+    public SortedSet<File> getFolders() {
       return gameFolders;
     }
     
@@ -1075,14 +1206,26 @@ public class ModuleManagerWindow extends JFrame {
       super(file, active ? activeExtensionIcon : inactiveExtensionIcon);
       this.active = active;
       moduleInfo = module;
+      loadMetaData();
+    }
+    
+    protected void loadMetaData() {   
       AbstractMetaData data = AbstractMetaData.buildMetaData(file);
       if (data != null && data instanceof ExtensionMetaData) {
         setValid(true);
         metadata = (ExtensionMetaData) data;
       }
       else {
+        setError(Resources.getString("ModuleManager.invalid_extension"));
         setValid(false);
       }
+    }
+    
+    @Override
+    public void refresh() {
+      loadMetaData();
+      setActive(getExtensionsManager().isExtensionActive(getFile()));
+      tree.repaint();
     }
     
     public boolean isActive() {
@@ -1221,11 +1364,40 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     public void refresh() {
-      MyTreeNode moduleNode = rootNode.findNode(moduleInfo.getFile());
-      MyTreeNode folderNode = moduleNode.findNode(getFile());
-      treeModel.removeNodeFromParent(folderNode);
-      moduleInfo.removeFolder(getFile());
-      moduleInfo.addFolder(getFile());
+      
+      // Remove any files that no longer exist
+      for (int i = getTreeNode().getChildCount()-1; i >= 0; i--) {
+        final MyTreeNode fileNode = getTreeNode().getChild(i);
+        final SaveFileInfo fileInfo = (SaveFileInfo) fileNode.getNodeInfo();
+        if (!fileInfo.getFile().exists()) {
+          treeModel.removeNodeFromParent(fileNode);
+        }
+      }
+      
+      // Refresh any that are
+      File[] files = getFile().listFiles();
+      for (int i = 0; i < files.length; i++) {
+        update(files[i]);
+      }
+    }
+    
+    /**
+     * Update the display for the specified save File, or add it in if 
+     * we don't already know about it.
+     * @param f
+     */
+    public void update(File f) {
+      for (int i = 0; i < getTreeNode().getChildCount(); i++) {
+        final SaveFileInfo fileInfo = (SaveFileInfo) (getTreeNode().getChild(i)).getNodeInfo();
+        if (fileInfo.getFile().equals(f)) {
+          fileInfo.refresh();
+          return;
+        }
+      }
+      final SaveFileInfo fileInfo = new SaveFileInfo(f, this);
+      final MyTreeNode fileNode = new MyTreeNode(fileInfo);
+      treeModel.insertNodeInto(fileNode, getTreeNode(),
+          getTreeNode().findInsertIndex(fileInfo));
     }
     
     /*
@@ -1244,11 +1416,14 @@ public class ModuleManagerWindow extends JFrame {
 
     protected GameFolderInfo folderInfo;  // Owning Folder
     protected SaveMetaData metadata;      // Save file metadata
-    protected ModuleMetaData moduleMetadata; // Module metadata
     
     public SaveFileInfo(File f, GameFolderInfo folder) {
       super(f, fileIcon);  
       folderInfo = folder;
+      loadMetaData();
+    }
+    
+    protected void loadMetaData() {
       AbstractMetaData data = AbstractMetaData.buildMetaData(file);
       if (data != null && data instanceof SaveMetaData) {
         metadata = (SaveMetaData) data;
@@ -1257,6 +1432,11 @@ public class ModuleManagerWindow extends JFrame {
       else {
         setValid(false);
       }
+    }
+    
+    public void refresh() {
+      loadMetaData();
+      tree.repaint();
     }
     
     @Override 

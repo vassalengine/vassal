@@ -22,6 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipFile;
 
+import javax.swing.JFrame;
+
+import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
@@ -48,7 +51,11 @@ public class EditExtensionAction extends LoadModuleAction {
   protected void loadModule(File f) throws IOException {
     ModuleExtension ext = new ModuleExtension(new ArchiveWriter(new ZipFile(f.getPath())));
     ext.build();
-    new ExtensionEditorWindow(GameModule.getGameModule(), ext).setVisible(true);
+    JFrame frame = GameModule.getGameModule().getFrame();
+    ExtensionEditorWindow w = new ExtensionEditorWindow(GameModule.getGameModule(), ext);
+    w.setLocation(0, frame.getY() + frame.getHeight());
+    w.setSize(Info.getScreenBounds(frame).width/2,w.getHeight());
+    w.setVisible(true);
   }
 
 }

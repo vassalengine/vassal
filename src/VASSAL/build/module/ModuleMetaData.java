@@ -32,7 +32,6 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ErrorLog;
 
@@ -58,10 +57,16 @@ public class ModuleMetaData extends AbstractMetaData {
   }
   
   public ModuleMetaData(GameModule module) {
+    super();
     nameAttr = new Attribute(module, GameModule.MODULE_NAME);
     setDescription(new Attribute(module, GameModule.DESCRIPTION));
     setVersion(module.getGameVersion());
-    setVassalVersion(Info.getVersion());
+  }
+
+  public ModuleMetaData(String name, String version) {
+    super();
+    nameAttr = new Attribute(GameModule.MODULE_NAME, name);
+    setVersion(version);
   }
 
   public String getName() {
@@ -202,9 +207,9 @@ public class ModuleMetaData extends AbstractMetaData {
         nameAttr = new Attribute (NAME_ELEMENT, getAttr(attrs, NAME_ATTR));
         setVersion(getAttr(attrs, VERSION_ATTR));
         setVassalVersion(getAttr(attrs, VASSAL_VERSION_ATTR));
+        setDescription(getAttr(attrs, DESCRIPTION_ATTR));
         throw new SAXEndException();
       }
     }
   }
-
 }

@@ -21,18 +21,20 @@ package VASSAL.launch;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.InputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
+
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
-import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorLog;
@@ -162,4 +164,34 @@ public abstract class Launcher {
   protected abstract MenuManager createMenuManager();
 
   protected abstract CommandServer createCommandServer(ServerSocket s);
+  
+  /**
+   * Send a message to the ModuleManager that a file has been saved by the
+   * Editor or the Player
+   * @param f
+   */
+  public void sendSaveCmd(File f) {
+    if (cmdC != null) {
+      try {
+        cmdC.request(new SaveFileCmd(f));
+      }
+      catch (IOException e) {
+        //
+      }
+    }
+  }
+  
+  public static class SaveFileCmd implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    protected File file;
+    
+    public SaveFileCmd(File f) {
+      file = f;
+    }
+    
+    public File getFile() {
+      return file;
+    }
+  }
 }

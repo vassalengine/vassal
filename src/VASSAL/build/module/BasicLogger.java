@@ -51,6 +51,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.Launcher;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.KeyStrokeListener;
@@ -279,6 +280,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       saver.addFile(GameState.SAVEFILE_ZIP_ENTRY, out.toInputStream()); //$NON-NLS-1$
       metadata.save(saver);
       saver.write();
+      Launcher.getInstance().sendSaveCmd(outputFile);
 
       GameModule.getGameModule().getGameState().setModified(false);
       undoAction.setEnabled(false);
