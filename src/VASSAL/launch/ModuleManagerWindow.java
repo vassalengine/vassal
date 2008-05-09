@@ -29,6 +29,7 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -64,6 +65,8 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -129,6 +132,12 @@ public class ModuleManagerWindow extends JFrame {
   private JXTreeTable tree;
   private MyTreeTableModel treeModel;
   private MyTreeNode selectedNode;
+
+  private long lastExpansionTime;
+  private TreePath lastExpansionPath;
+
+  private static final long doubleClickInterval = (Integer)
+    Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
 
   public static ModuleManagerWindow getInstance() {
     return instance;
@@ -396,7 +405,11 @@ public class ModuleManagerWindow extends JFrame {
         if (e.getClickCount() == 2) {
           final TreePath path =
             tree.getPathForLocation(e.getPoint().x, e.getPoint().y);
-          if (path == null) return;
+
+          // do nothing if not on a node, or if this node was expanded
+          // or collapsed during the past doubleClickInterval milliseconds
+          if (path == null || (lastExpansionPath == path &&
+              e.getWhen() - lastExpansionTime <= doubleClickInterval)) return;
 
           selectedNode = (MyTreeNode) path.getLastPathComponent();
 
@@ -443,9 +456,21 @@ public class ModuleManagerWindow extends JFrame {
       }
     });
 
+    tree.addTreeExpansionListener(new TreeExpansionListener() {
+      public void treeCollapsed(TreeExpansionEvent e) {
+        lastExpansionTime = System.currentTimeMillis();
+        lastExpansionPath = e.getPath();
+      }
+
+      public void treeExpanded(TreeExpansionEvent e) {
+        lastExpansionTime = System.currentTimeMillis();
+        lastExpansionPath = e.getPath();
+      }
+    });
+
     // This ensures that double-clicks always start the module but
     // doesn't prevent single-clicks on the handles from working. 
-    tree.setToggleClickCount(3); 
+    tree.setToggleClickCount(3);
 
     tree.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     tree.addTreeSelectionListener(new TreeSelectionListener() {
@@ -480,7 +505,7 @@ public class ModuleManagerWindow extends JFrame {
     // FIXME: How to set alignment of individual header components?
     tree.getTableHeader().setAlignmentX(JComponent.CENTER_ALIGNMENT);
   }
-  
+
   /** 
    * A File has been saved or created by the Player or the Editor. Update
    * the display as necessary.
