@@ -18,6 +18,7 @@ package VASSAL.build.module;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import VASSAL.build.GameModule;
 
 /**
  * Convenience class for managing extensions relative to a module file
+ * Create extension directory as lazily as possible
  * 
  * @author rodneykinney
  * 
@@ -63,7 +65,7 @@ public class ExtensionsManager {
     extensionsDir = ensureExists(new File(Info.getHomeDir(),dir));
   }
 
-  public File getExtensionsDirectory() {
+  public File getExtensionsDirectory(boolean mustExist) {
     if (extensionsDir == null) {
       File dir;
       if (GlobalOptions.getInstance() != null && "true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
@@ -75,9 +77,15 @@ public class ExtensionsManager {
         if (index > 0) {
           dirName = dirName.substring(0, index);
         }
-        dir = ensureExists(new File(dirName + "_ext"));
+        dir = new File(dirName + "_ext");
+        if (mustExist) {
+          dir = ensureExists(dir);
+        }
       }
       extensionsDir = dir;
+    }
+    if (mustExist && ! extensionsDir.exists()) {
+      extensionsDir = ensureExists(extensionsDir);
     }
     return extensionsDir;
   }
@@ -94,9 +102,15 @@ public class ExtensionsManager {
     return dir;
   }
 
-  public File getInactiveExtensionsDirectory() {
+  public File getInactiveExtensionsDirectory(boolean mustExist) {
     if (inactiveDir == null) {
-      inactiveDir = ensureExists(new File(getExtensionsDirectory(), "inactive"));
+      inactiveDir = new File(getExtensionsDirectory(mustExist), "inactive");
+      if (mustExist) {
+        inactiveDir = ensureExists(inactiveDir);
+      }
+    }
+    if (mustExist && ! inactiveDir.exists()) {
+      inactiveDir = ensureExists(inactiveDir);
     }
     return inactiveDir;
   }
@@ -104,21 +118,23 @@ public class ExtensionsManager {
   public File setActive(File extension, boolean active) {
     File newExt;
     if (active) {
-      newExt = new File(getExtensionsDirectory(), extension.getName());
+      newExt = new File(getExtensionsDirectory(true), extension.getName());
     }
     else {
-      newExt = new File(getInactiveExtensionsDirectory(), extension.getName());
+      newExt = new File(getInactiveExtensionsDirectory(true), extension.getName());
     }
     extension.renameTo(newExt);
     return newExt;
   }
 
   public List<File> getActiveExtensions() {
-    return Arrays.asList(getExtensionsDirectory().listFiles(filter));
+    File dir = getExtensionsDirectory(false);
+    return dir.exists() ? Arrays.asList(dir.listFiles(filter)) : new ArrayList<File>();
   }
 
   public List<File> getInactiveExtensions() {
-    return Arrays.asList(getInactiveExtensionsDirectory().listFiles(filter));
+    File dir = getInactiveExtensionsDirectory(false);
+    return dir.exists() ? Arrays.asList(dir.listFiles(filter)) : new ArrayList<File>();
   }
   
   public boolean isExtensionActive(File extension) {

@@ -78,7 +78,7 @@ public class PluginsLoader extends ExtensionsLoader {
   }
   
   public static String getPluginDirectory() {
-    return new ExtensionsManager("plugins").getExtensionsDirectory().getPath();  //$NON-NLS-1$
+    return new ExtensionsManager("plugins").getExtensionsDirectory(false).getPath();  //$NON-NLS-1$
   }
   
   protected String getLoadedMessage(String name, String version) {

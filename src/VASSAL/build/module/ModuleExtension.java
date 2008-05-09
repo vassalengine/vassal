@@ -99,9 +99,13 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   }
 
   public String getDescription() {
-    return description;
-    
+    return description;    
   }
+  
+  public boolean getUniversal() {
+    return universal;
+  }
+  
   public void build() {
     final String fileName = GameModule.BUILDFILE; //$NON-NLS-1$
 
@@ -524,7 +528,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     }
     
     protected String getNotLoadedMsg() {
-      return Resources.getString("ModuleExtension.load_extension", name, new ExtensionsManager(GameModule.getGameModule()).getExtensionsDirectory()); //$NON-NLS-1$ 
+      return Resources.getString("ModuleExtension.load_extension", name, new ExtensionsManager(GameModule.getGameModule()).getExtensionsDirectory(false)); //$NON-NLS-1$ 
     }
 
     protected Command myUndoCommand() {
