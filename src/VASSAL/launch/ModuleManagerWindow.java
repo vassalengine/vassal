@@ -66,7 +66,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -456,13 +456,13 @@ public class ModuleManagerWindow extends JFrame {
       }
     });
 
-    tree.addTreeExpansionListener(new TreeExpansionListener() {
-      public void treeCollapsed(TreeExpansionEvent e) {
+    tree.addTreeWillExpandListener(new TreeWillExpandListener() {
+      public void treeWillCollapse(TreeExpansionEvent e) {
         lastExpansionTime = System.currentTimeMillis();
         lastExpansionPath = e.getPath();
       }
 
-      public void treeExpanded(TreeExpansionEvent e) {
+      public void treeWillExpand(TreeExpansionEvent e) {
         lastExpansionTime = System.currentTimeMillis();
         lastExpansionPath = e.getPath();
       }
