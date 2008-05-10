@@ -33,7 +33,6 @@ LAUNCH4J:=~/java/launch4j/launch4j
 SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
 CLASSES:=$(SOURCES:.java=.class)
 JARS:=Vengine.jar
-#JARS:=Vengine.jar docs.jar
 
 vpath %.class $(shell find $(CLASSDIR) -type d)
 vpath %.java  $(shell find $(SRCDIR) -type d -name .svn -prune -o -print)
@@ -85,13 +84,6 @@ $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
          -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
 	$(LAUNCH4J) $(CURDIR)/$(TMPDIR)/VASSAL.l4j.xml
-
-#docs.jar:
-#	mkdir -p $(TMPDIR)
-#	svn export $(DOCDIR) $(TMPDIR)/doc
-#	find $(TMPDIR)/doc -type f | sed "s/^$(TMPDIR)\/doc\///" >$(TMPDIR)/doc/docsList
-#	cp dist/docsInfo $(TMPDIR)/doc
-#	$(JAR) cvf $(LIBDIR)/$@ -C $(TMPDIR)/doc .
 
 version:
 	sed -ri 's/VERSION = ".*"/VERSION = "$(VERSION)"/' $(SRCDIR)/VASSAL/Info.java
