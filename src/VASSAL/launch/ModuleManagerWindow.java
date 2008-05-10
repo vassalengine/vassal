@@ -136,8 +136,12 @@ public class ModuleManagerWindow extends JFrame {
   private long lastExpansionTime;
   private TreePath lastExpansionPath;
 
-  private static final long doubleClickInterval = (Integer)
-    Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
+  private static final long doubleClickInterval;
+  static {
+    final Object dci =
+      Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
+    doubleClickInterval = dci instanceof Integer ? (Integer) dci : 200L;
+  }
 
   public static ModuleManagerWindow getInstance() {
     return instance;
