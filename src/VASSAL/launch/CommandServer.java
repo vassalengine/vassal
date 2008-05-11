@@ -27,6 +27,16 @@ import java.net.Socket;
 
 import VASSAL.tools.IOUtils;
 
+/**
+ * The base class for socket servers for communication between the
+ * {@link ModuleManager} and its children {@link Player} and {@link Editor}
+ * processes. Concrete extensions will implement {@link #reply(Object)} to
+ * process incoming requests. 
+ *
+ * @see CommandClient
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public abstract class CommandServer implements Runnable {
   private final ServerSocket serverSocket;
 

@@ -24,15 +24,39 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+/**
+ * A socket client for communication between the {@link ModuleManager}
+ * and its children {@link Player} and {@link Editor} processes. Requests
+ * are sent from, and replies recieved by this class.
+ *
+ * @see CommandServer
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class CommandClient {
   private final ObjectInputStream in;
   private final ObjectOutputStream out;
 
+  /**
+   * Create a new <code>CommandClient</code>.
+   *
+   * @param clientSocket the socket on which to communicate
+   * @throws IOException if something goes wrong with the socket
+   */
   public CommandClient(Socket clientSocket) throws IOException {
     out = new ObjectOutputStream(clientSocket.getOutputStream());
     in = new ObjectInputStream(clientSocket.getInputStream());
   }
 
+  /**
+   * Send a request to the socket listener and recieve a reply.
+   * This method is synchronized to ensure that only one thread
+   * sends a requests over the socket at a time.
+   *
+   * @param cmd the command to send to the socket listener
+   * @return the reply object from the socket listener
+   * @throws IOException if something goes wrong with the socket
+   */
   public synchronized Object request(Object cmd) throws IOException {
     out.writeObject(cmd);
     try {

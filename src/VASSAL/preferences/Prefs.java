@@ -103,7 +103,6 @@ public class Prefs {
   }
 
   /**
-   *
    * @param key
    * @return the value of the preferences setting stored under key
    */
@@ -113,9 +112,11 @@ public class Prefs {
   }
 
   /**
-   *
-   * @param key the name of a Preferences option
-   * @return the value for the option that was read from the Preferences file at startup
+   * Return the value of a given preference.
+   * 
+   * @param key the name of the preference to retrieve
+   * @return the value of this option read from the Preferences file at
+   * startup, or <code>null</code> if no value is undefined
    */
   public String getStoredValue(String key) {
     return storedValues.getProperty(key);
