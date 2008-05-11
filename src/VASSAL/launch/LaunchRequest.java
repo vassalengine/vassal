@@ -1,5 +1,5 @@
 /*
- * $Id: Editor.java 3508 2008-05-01 15:11:42Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman 
  *

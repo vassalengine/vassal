@@ -1,5 +1,5 @@
 /*
- * $Id: Player.java 3571 2008-05-07 15:23:50Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman 
  *

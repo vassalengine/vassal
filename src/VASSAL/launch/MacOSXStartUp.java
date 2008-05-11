@@ -1,5 +1,5 @@
 /*
- * $Id: ModuleManager.java 3512 2008-05-01 20:11:28Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *
