@@ -46,13 +46,24 @@ import javax.swing.AbstractAction;
 import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.Info;
+import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.GlobalOptions;
+import VASSAL.build.module.ModuleMetaData;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
+import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.filechooser.FileChooser;
 
+/**
+ * 
+ * The base class for {@link Action}s which launch processes from the
+ * {@link ModuleManagerWindow}.
+ *
+ * @author Joel Uckelman
+ * @since 3.1.0 
+ */
 public abstract class AbstractLaunchAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
   
@@ -80,14 +91,27 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     this.lr = lr;
   }
 
-  public static boolean isInUse(File f) {
-    return using.containsKey(f);
+  /**
+   * @param file the file to check
+   * @return <code>true</code> iff the file is in use
+   */
+  public static boolean isInUse(File file) {
+    return using.containsKey(file);
   }
   
-  public static boolean isEditing(File f) {
-    return editing.contains(f);
+  /**
+   * @param file the file to check
+   * @return <code>true</code> iff the file is being edited
+   */
+  public static boolean isEditing(File file) {
+    return editing.contains(file);
   }
 
+  /**
+   * Ask child processes to close.
+   *
+   * @return <code>true</code> iff all child processes will terminate
+   */
   public static boolean shutDown() {
     ModuleManagerWindow.getInstance().toBack();
     for (CommandClient child : children) {
@@ -101,6 +125,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     return true;
   }
 
+  /** {@inheritDoc} */  
   public void actionPerformed(ActionEvent e) {
     window.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     getLaunchTask().execute();
@@ -136,30 +161,42 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     @Override
     public Void doInBackground() throws Exception {
       // get heap setttings
-      int initialHeap; 
-      try {
-        initialHeap = Integer.parseInt(Prefs.getGlobalPrefs()
-          .getStoredValue(GlobalOptions.INITIAL_HEAP));
-      }
-      catch (NumberFormatException ex) {
-        // don't show warning dialog, since this isn't fatal,
-        // or even abnormal, e.g., in the case where this is
-        // a new copy of VASSAL
-        ErrorLog.log(ex);
-        initialHeap = DEFAULT_INITIAL_HEAP;
-      }
+      int initialHeap = DEFAULT_INITIAL_HEAP;
+      int maximumHeap = DEFAULT_MAXIMUM_HEAP;
 
-      int maximumHeap;
-      try {
-        maximumHeap = Integer.parseInt(Prefs.getGlobalPrefs()
-          .getStoredValue(GlobalOptions.MAXIMUM_HEAP));
-      }
-      catch (NumberFormatException ex) {
-        // don't show warning dialog, since this isn't fatal,
-        // or even abnormal, e.g., in the case where this is
-        // a new copy of VASSAL
-        ErrorLog.log(ex);
-        maximumHeap = DEFAULT_MAXIMUM_HEAP;
+      // get module name
+      final AbstractMetaData data = AbstractMetaData.buildMetaData(lr.module);
+      if (data != null && data instanceof ModuleMetaData) {
+        final String moduleName = ((ModuleMetaData) data).getName();
+
+        // read module prefs
+        final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
+
+        // read initial heap size, if it exists
+        final String iheap = p.getStoredValue(GlobalOptions.INITIAL_HEAP);
+        if (iheap != null) {
+          try {
+            initialHeap = Integer.parseInt(iheap);
+          }
+          catch (NumberFormatException ex) {
+// FIXME: warn the user the prefs are corrupt
+            ErrorLog.warn(ex);
+            initialHeap = DEFAULT_INITIAL_HEAP;
+          }
+        }
+
+        // read maximum heap size, if it exists
+        final String mheap = p.getStoredValue(GlobalOptions.MAXIMUM_HEAP);
+        if (mheap != null) {
+          try {
+            maximumHeap = Integer.parseInt(mheap);
+          }
+          catch (NumberFormatException ex) {
+// FIXME: warn the user the prefs are corrupt
+            ErrorLog.warn(ex);
+            maximumHeap = DEFAULT_MAXIMUM_HEAP;
+          }
+        }
       }
 
       // create a socket for communicating which the child process

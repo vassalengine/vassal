@@ -16,14 +16,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Sep 3, 2002
- * Time: 9:44:57 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.build.module;
 
 import java.awt.Container;
@@ -107,6 +99,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public void addTo(Buildable parent) {
     instance = this;
 
+    // should this moudule use a combined main window?
     final BooleanConfigurer combConf = new BooleanConfigurer(
       SINGLE_WINDOW,
       Resources.getString("GlobalOptions.use_combined"),  //$NON-NLS-1$
@@ -114,18 +107,19 @@ public class GlobalOptions extends AbstractConfigurable {
     GameModule.getGameModule().getPrefs().addOption(combConf);
     useSingleWindow = !Boolean.FALSE.equals(combConf.getValue());
 
-// FIXME: probably not the right place for these?
+    // the initial heap size for this module
     final IntConfigurer initHeapConf = new IntConfigurer(
       INITIAL_HEAP,
       Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
       Integer.valueOf(256));
-    Prefs.getGlobalPrefs().addOption(initHeapConf);
+    GameModule.getGameModule().getPrefs().addOption(initHeapConf);
 
+    // the maximum heap size for this module
     final IntConfigurer maxHeapConf = new IntConfigurer(
       MAXIMUM_HEAP,
       Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
       Integer.valueOf(512));
-    Prefs.getGlobalPrefs().addOption(maxHeapConf);
+    GameModule.getGameModule().getPrefs().addOption(maxHeapConf);
 
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
