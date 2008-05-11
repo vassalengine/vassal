@@ -210,7 +210,7 @@ public class ArchiveWriter extends DataArchive {
         stream = super.getFileStream(name);
       }
       else {
-        throw new IOException(name + " not found");
+        throw new FileNotFoundException(name + " not found");
       }
     }
     return stream;

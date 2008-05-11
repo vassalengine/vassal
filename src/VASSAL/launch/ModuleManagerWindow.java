@@ -1360,10 +1360,12 @@ public class ModuleManagerWindow extends JFrame {
   private class GameFolderInfo extends AbstractInfo {
     protected String comment;
     protected ModuleInfo moduleInfo;
+    protected long dtm;
     
     public GameFolderInfo(File f, ModuleInfo m) {
       super(f, openGameFolderIcon, closedGameFolderIcon);
       moduleInfo = m;
+      dtm = f.lastModified();
     }
     
     public JPopupMenu buildPopup(int row) {

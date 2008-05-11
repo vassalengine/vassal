@@ -276,6 +276,7 @@ public class ModuleManager {
   }
 
   protected void launch() {
+    System.err.println("-- Manager");
     final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
     window.setVisible(true);
 

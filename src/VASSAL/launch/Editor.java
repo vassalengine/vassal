@@ -80,6 +80,7 @@ public class Editor extends Launcher {
   }
 
   protected void launch() throws IOException {
+    System.err.println("-- Editor");
     try {
       switch (lr.mode) {
       case EDIT:

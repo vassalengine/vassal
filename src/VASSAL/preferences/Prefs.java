@@ -140,6 +140,9 @@ public class Prefs {
         }
       }
     }
+    catch (FileNotFoundException e) {
+      // First time for this module, not an error.
+    }  
     catch (IOException e) {
       ErrorLog.log(e);
     }

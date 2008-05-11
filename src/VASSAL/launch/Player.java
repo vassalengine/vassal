@@ -82,6 +82,7 @@ public class Player extends Launcher {
   }
 
   protected void launch() throws IOException {
+    System.err.println("-- Player");
     try {
       if (lr.builtInModule) {
         GameModule.init(createModule(createDataArchive()));

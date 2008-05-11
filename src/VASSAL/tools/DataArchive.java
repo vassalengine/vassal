@@ -30,6 +30,7 @@ import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -377,7 +378,7 @@ public class DataArchive extends SecureClassLoader {
     }
 
     if (stream == null) {
-      throw new IOException(
+      throw new FileNotFoundException(
         "\'" + file + "\' not found in " + archive.getName());
     }
     return stream;

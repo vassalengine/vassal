@@ -320,6 +320,9 @@ public class PieceMover extends AbstractBuildable
   }
 
   private Image loadIcon(String name) {
+    if (name == null || name.length() == 0) {
+      return null;
+    }
     try {
       return Op.load(name).getImage(null);
     }
@@ -365,7 +368,7 @@ public class PieceMover extends AbstractBuildable
           img = loadIcon(iconName);
         }
         
-        if (img == null) {
+        if (img == null) {          
           img = loadIcon(markUnmovedIcon);
           if (img == null) {
             img = loadIcon("/images/unmoved.gif");
