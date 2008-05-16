@@ -1508,7 +1508,8 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     private boolean belongsToModule() {
-      return metadata.getModuleName().length() == 0 ||
+      return metadata != null 
+        && metadata.getModuleName().length() == 0 ||
         folderInfo.getModuleInfo().getModuleName().equals(
           metadata.getModuleName());
     }
