@@ -682,7 +682,6 @@ public class LOS_Thread extends AbstractConfigurable implements
       if (!checkList.contains(location) && !location.equals(anchorLocation)) {
         checkList.add(location);
         lastLocation = location;
-        System.out.println("Dragged to "+lastLocation);
       }
       
       Point mapAnchor = map.mapCoordinates(lastAnchor);
