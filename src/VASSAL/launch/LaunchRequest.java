@@ -216,8 +216,6 @@ public class LaunchRequest implements Serializable {
     g.setOpterr(false);
 
     int c;
-    @SuppressWarnings("unused")
-    String optarg;
     while ((c = g.getopt()) != -1) {
       switch (c) {
       case AUTO_EXT:

@@ -22,7 +22,10 @@ import javax.swing.UIManager;
 
 import VASSAL.tools.ErrorLog;
 
-
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class MacOSXStartUp extends StartUp {
   @Override
   public void initSystemProperties() {

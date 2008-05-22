@@ -26,6 +26,10 @@ import java.io.PrintStream;
 
 import VASSAL.Info;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class StartUp {
   public void initSystemProperties() {
     initHTTPProxyProperties();
