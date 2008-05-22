@@ -69,13 +69,14 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       return ImageUtils.getLargeImage(getImageStream());
     }
     else {
-      return ImageUtils.getSmallImage(
-        getImageStream());
+      return ImageUtils.getSmallImage(getImageStream());
     }
   }
 
   protected InputStream getImageStream() throws IOException {
-    return GameModule.getGameModule().getDataArchive().getImageInputStream(name);
+    return GameModule.getGameModule()
+                     .getDataArchive()
+                     .getImageInputStream(name);
   }
 
 // FIXME: we need a way to invalidate ImageOps when an exception is thrown?
