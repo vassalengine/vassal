@@ -71,7 +71,7 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
     setAllAttributesUntranslatable();
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{GamePieceLayout.class};
   }
 

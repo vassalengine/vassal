@@ -109,7 +109,7 @@ public class FontManager extends AbstractConfigurable {
     instance = this;
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[] { FontStyle.class };
   }
 

@@ -235,7 +235,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
     return HelpFile.getReferenceManualPage("GamePieceLayouts.htm"); //$NON-NLS-1$
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{GamePieceImage.class};
   }
 

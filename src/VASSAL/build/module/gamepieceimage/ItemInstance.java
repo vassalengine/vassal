@@ -172,7 +172,7 @@ public abstract class ItemInstance extends AbstractConfigurable {
     return null;
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return null;
   }
 

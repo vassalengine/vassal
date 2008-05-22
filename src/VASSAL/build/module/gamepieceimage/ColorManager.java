@@ -177,7 +177,7 @@ public class ColorManager extends AbstractConfigurable {
     validator = new SingleChildInstance(GameModule.getGameModule(), getClass());
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[] { ColorSwatch.class };
   }
 

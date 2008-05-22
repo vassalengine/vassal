@@ -114,7 +114,7 @@ public class FontStyle extends AbstractConfigurable {
     return HelpFile.getReferenceManualPage("GamePieceLayout.htm","NamedColors"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

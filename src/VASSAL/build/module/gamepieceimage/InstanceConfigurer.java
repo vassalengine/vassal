@@ -297,7 +297,7 @@ public class InstanceConfigurer extends Configurer {
           return null;
       }
 
-      public Class getColumnClass(int col) {
+      public Class<String> getColumnClass(int col) {
            return String.class;
       }
 

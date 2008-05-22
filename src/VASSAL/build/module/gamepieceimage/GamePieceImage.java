@@ -196,7 +196,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       if (value instanceof String) {
         value = InstanceConfigurer.StringToProperties((String) value, this);
       }
-      instances = (List<ItemInstance>) value;
+      if (instances instanceof List) {
+        instances = (List<ItemInstance>) value;
+      }
       if (defnConfig != null) {
         rebuildInstances();
         defnConfig.visualizer.rebuild();
@@ -252,7 +254,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     return HelpFile.getReferenceManualPage("GamePieceImage.htm"); //$NON-NLS-1$
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
@@ -302,6 +304,10 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       return NULL_IMAGE;
     }
 */
+    if (getConfigureName() == null || getConfigureName().length() == 0) {
+      return NULL_IMAGE;
+    }
+    
     srcOp = Op.load(getConfigureName());
 
     try {

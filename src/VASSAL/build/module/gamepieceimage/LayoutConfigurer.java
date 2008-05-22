@@ -371,7 +371,7 @@ public class LayoutConfigurer extends Configurer {
           return null;
       }
 
-      public Class getColumnClass(int c) {
+      public Class<String> getColumnClass(int c) {
         return String.class;
       }
     }
