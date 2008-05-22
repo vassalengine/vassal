@@ -248,6 +248,7 @@ public class ImageSaver extends AbstractConfigurable {
 
     private final List<File> files = new ArrayList<File>();
 
+// FIXME: SnapshotTask ignores x,y!
     public SnapshotTask(File file, int x, int y, int w, int h) {
       this.file = file;
       this.x = x;
