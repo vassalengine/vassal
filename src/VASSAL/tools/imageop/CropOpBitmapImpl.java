@@ -123,19 +123,12 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     tiles = new ImageOp[numXTiles*numYTiles];
   }
 
-  /** {@inheritDoc} */
-  protected ImageOp getTileOp(int tileX, int tileY) {
-    ImageOp top = tiles[tileY*numXTiles + tileX];
-    if (top == null) {
-      top = tiles[tileY*numXTiles + tileX] =
-        new CropOpBitmapImpl(this,
-                             tileX*tileSize.width,
-                             tileY*tileSize.height,
-                             Math.min((tileX+1)*tileSize.width, size.width),
-                             Math.min((tileY+1)*tileSize.height, size.height));
-    }
-
-    return top;
+  protected ImageOp createTileOp(int tileX, int tileY) {
+    return new CropOpBitmapImpl(this,
+                         tileX*tileSize.width,
+                         tileY*tileSize.height,
+                         Math.min((tileX+1)*tileSize.width, size.width),
+                         Math.min((tileY+1)*tileSize.height, size.height));
   }
 
   public ImageOp getSource() {

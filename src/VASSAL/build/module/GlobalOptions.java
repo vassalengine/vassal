@@ -19,16 +19,15 @@
 package VASSAL.build.module;
 
 import java.awt.Container;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+
 import javax.swing.JOptionPane;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,7 +35,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -55,12 +53,10 @@ import VASSAL.preferences.BooleanPreference;
 import VASSAL.preferences.DoublePreference;
 import VASSAL.preferences.EnumPreference;
 import VASSAL.preferences.IntegerPreference;
-import VASSAL.preferences.Prefs;
 import VASSAL.preferences.StringPreference;
 import VASSAL.preferences.TextPreference;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.IOUtils;
 
 public class GlobalOptions extends AbstractConfigurable {
   public static final String NON_OWNER_UNMASKABLE = "nonOwnerUnmaskable"; //$NON-NLS-1$

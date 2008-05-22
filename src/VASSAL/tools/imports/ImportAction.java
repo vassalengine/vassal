@@ -20,13 +20,11 @@
 package VASSAL.tools.imports;
 
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
@@ -35,7 +33,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.launch.EditModuleAction;
 import VASSAL.launch.ModuleEditorWindow;
-import VASSAL.launch.ModuleManager;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;

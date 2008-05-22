@@ -101,14 +101,8 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     tiles = new ImageOp[numXTiles*numYTiles];
   }
 
-  protected ImageOp getTileOp(int tileX, int tileY) {
-    ImageOp top = tiles[tileY*numXTiles + tileX];
-    if (top == null) {
-      top = tiles[tileY*numXTiles + tileX] =
-        new TileOp(this, tileX, tileY);
-    }
-  
-    return top;
+  protected ImageOp createTileOp(int tileX, int tileY) {
+    return new TileOp(this, tileX, tileY);
   }
 
   private static class TileOp extends AbstractTileOpImpl {

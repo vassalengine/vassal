@@ -19,14 +19,13 @@
 package VASSAL.build.module.documentation;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.swing.Action;
+
 import javax.swing.AbstractAction;
-import javax.swing.JMenuItem;
+import javax.swing.Action;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;

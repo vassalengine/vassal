@@ -22,6 +22,7 @@ package VASSAL.tools.imageop;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.IOException;
+import java.io.InputStream;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
@@ -65,12 +66,16 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     if (size == null) fixSize();
 
     if (ImageUtils.isLargeImage(size.width, size.height)) {
-      return ImageUtils.getLargeImage(name);
+      return ImageUtils.getLargeImage(getImageStream());
     }
     else {
       return ImageUtils.getSmallImage(
-        GameModule.getGameModule().getDataArchive().getImageInputStream(name));
+        getImageStream());
     }
+  }
+
+  protected InputStream getImageStream() throws IOException {
+    return GameModule.getGameModule().getDataArchive().getImageInputStream(name);
   }
 
 // FIXME: we need a way to invalidate ImageOps when an exception is thrown?
@@ -79,13 +84,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   /** {@inheritDoc} */
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
-      try {
-        size = GameModule.getGameModule().getDataArchive().getImageSize(name);
-      }
-      catch (IOException e) {
-        ErrorLog.warn(e);
-        size = new Dimension(-1,-1);
-      }
+        size = getImageSize();
     }
 
     tileSize = new Dimension(256,256);
@@ -96,15 +95,18 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     tiles = new ImageOp[numXTiles*numYTiles];
   }
 
-  /** {@inheritDoc} */
-  public ImageOp getTileOp(int tileX, int tileY) {
-    ImageOp top = tiles[tileY*numXTiles + tileX];
-    if (top == null) {
-      top = tiles[tileY*numXTiles + tileX]
-          = new SourceTileOpBitmapImpl(this, tileX, tileY);
+  protected Dimension getImageSize() {
+    try {
+      return GameModule.getGameModule().getDataArchive().getImageSize(name);
     }
+    catch (IOException e) {
+      ErrorLog.warn(e);
+      return new Dimension(-1,-1);
+    }
+  }
 
-    return top;
+  protected ImageOp createTileOp(int tileX, int tileY) {
+    return new SourceTileOpBitmapImpl(this, tileX, tileY);
   }
 
   public ImageOp getSource() {

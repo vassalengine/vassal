@@ -106,15 +106,8 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
     tiles = new ImageOp[numXTiles*numYTiles];
   }
 
-  /** {@inheritDoc} */
-  public ImageOp getTileOp(int tileX, int tileY) {
-    ImageOp top = tiles[tileY*numXTiles + tileX];
-    if (top == null) {
-      top = tiles[tileY*numXTiles + tileX]
-          = new SourceTileOpSVGImpl(this, tileX, tileY);
-    }
-
-    return top;
+  protected ImageOp createTileOp(int tileX, int tileY) {
+    return new SourceTileOpSVGImpl(this, tileX, tileY);
   }
 
   public ImageOp getSource() {

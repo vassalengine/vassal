@@ -25,12 +25,12 @@ import java.io.InputStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JMenuItem;
+
+import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.Documentation;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.VisibilityCondition;
@@ -38,10 +38,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
-
-// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
-//import javax.swing.SwingWorker;
-import org.jdesktop.swingworker.SwingWorker;
 
 
 /**

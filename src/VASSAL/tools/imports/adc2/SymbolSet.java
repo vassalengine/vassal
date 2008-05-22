@@ -23,7 +23,6 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BandCombineOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

@@ -18,12 +18,7 @@
  */
 package VASSAL.launch;
 
-import java.io.File;
 import javax.swing.UIManager;
-
-import com.apple.eawt.Application;
-import com.apple.eawt.ApplicationAdapter;
-import com.apple.eawt.ApplicationEvent;
 
 import VASSAL.tools.ErrorLog;
 

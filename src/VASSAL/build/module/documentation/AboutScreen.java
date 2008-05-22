@@ -29,18 +29,17 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JWindow;
+
 import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
-import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;

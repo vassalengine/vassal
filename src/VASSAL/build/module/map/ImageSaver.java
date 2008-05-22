@@ -37,12 +37,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.event.IIOWriteProgressListener;
 import javax.imageio.stream.ImageOutputStream;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
+import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -53,15 +56,10 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ProgressDialog;
 import VASSAL.tools.filechooser.FileChooser;
-
-// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
-//import javax.swing.SwingWorker;
-import org.jdesktop.swingworker.SwingWorker;
 
 
 /**
@@ -241,7 +239,9 @@ public class ImageSaver extends AbstractConfigurable {
     private int tilesDone = 0;
 
     private final File file;
+    @SuppressWarnings("unused")
     private final int x;
+    @SuppressWarnings("unused")
     private final int y;
     private final int w;
     private final int h;

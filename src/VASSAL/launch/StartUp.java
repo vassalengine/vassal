@@ -19,14 +19,12 @@
 
 package VASSAL.launch;
 
-import java.io.IOException;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import javax.swing.UIManager;
 
 import VASSAL.Info;
-import VASSAL.tools.ErrorLog;
 
 public class StartUp {
   public void initSystemProperties() {

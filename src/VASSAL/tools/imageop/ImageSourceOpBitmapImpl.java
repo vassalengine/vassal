@@ -67,15 +67,8 @@ public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
     tiles = new ImageOp[numXTiles*numYTiles];
   }
 
-  /** {@inheritDoc} */
-  protected ImageOp getTileOp(int tileX, int tileY) {
-    ImageOp top = tiles[tileY*numXTiles + tileX];
-    if (top == null) {
-      top = tiles[tileY*numXTiles + tileX]
-          = new SourceTileOpBitmapImpl(this, tileX, tileY);
-    }
-
-    return top;
+  protected ImageOp createTileOp(int tileX, int tileY) {
+    return new SourceTileOpBitmapImpl(this, tileX, tileY);
   }
 
   public ImageOp getSource() {

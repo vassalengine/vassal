@@ -20,19 +20,17 @@ package VASSAL.launch;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.net.BindException;
 import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
@@ -45,9 +43,9 @@ import VASSAL.configure.LongConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.menu.MacOSXMenuManager;
 
 /**
  * Tracks recently-used modules and builds the main GUI window for 

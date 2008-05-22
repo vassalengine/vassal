@@ -19,10 +19,10 @@
 package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
@@ -34,8 +34,8 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;
-import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.menu.ParentProxy;
 
 /**

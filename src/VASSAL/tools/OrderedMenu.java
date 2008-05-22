@@ -21,10 +21,9 @@ package VASSAL.tools;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.Action;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
 import VASSAL.i18n.Resources;
