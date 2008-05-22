@@ -34,7 +34,7 @@ import VASSAL.tools.DataArchive;
  * Abstract parent of all importer classes.
  * 
  * @author Michael Kiefte
- *
+ * @since 3.1.0
  */
 public abstract class Importer {
 	
@@ -60,8 +60,10 @@ public abstract class Importer {
 	}
 	
 	protected LayeredPieceCollection getLayeredPieceCollection() {
-		Map map = getMainMap();
-		List<LayeredPieceCollection> l = map.getComponentsOf(LayeredPieceCollection.class);
+		final Map map = getMainMap();
+		final List<LayeredPieceCollection> l =
+      map.getComponentsOf(LayeredPieceCollection.class);
+
 		LayeredPieceCollection collection = null;
 		if (l.size() == 0) {
 			collection = new LayeredPieceCollection();
