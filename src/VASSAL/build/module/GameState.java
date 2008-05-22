@@ -61,6 +61,7 @@ import VASSAL.tools.Deobfuscator;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.Obfuscator;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -278,6 +279,8 @@ public class GameState implements CommandEncoder {
    */
   public void loadGame() {
     FileChooser fc = GameModule.getGameModule().getFileChooser();
+    fc.addChoosableFileFilter(new LogAndSaveFileFilter());
+
     if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
 
     final File f = fc.getSelectedFile();
@@ -338,12 +341,13 @@ public class GameState implements CommandEncoder {
   }
 
   private File getSaveFile() {
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.selectDotSavFile();
+    fc.addChoosableFileFilter(new LogAndSaveFileFilter());
+
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
-    File outputFile = fc.getSelectedFile();
-    return outputFile;
+    return fc.getSelectedFile();
   }
 
   /**
