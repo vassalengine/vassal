@@ -55,6 +55,7 @@ import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.ModuleFileFilter;
 
 /**
  * 
@@ -133,11 +134,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
   protected abstract LaunchTask getLaunchTask(); 
 
-  protected File promptForModule() {
-    // prompt the user to pick a module
+  protected File promptForFile() {
+    // prompt the user to pick a file
     final FileChooser fc = FileChooser.createFileChooser(window,
       (DirectoryConfigurer)
         Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
+
+    addFileFilters(fc);
 
     if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
       lr.module = fc.getSelectedFile();
@@ -145,6 +148,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     }
     
     return lr.module;
+  }
+
+  protected void addFileFilters(FileChooser fc) {
+    fc.addChoosableFileFilter(new ModuleFileFilter());
   }
 
   protected class LaunchTask extends SwingWorker<Void,Void> {
@@ -281,7 +288,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     @Override
     protected Object reply(Object cmd) {
       if (cmd instanceof Launcher.SaveFileCmd) {
-        return ModuleManagerWindow.getInstance().update(((Launcher.SaveFileCmd) cmd).getFile());
+        return ModuleManagerWindow.getInstance().update(
+          ((Launcher.SaveFileCmd) cmd).getFile());
       }
       else if ("NOTIFY_OPEN".equals(cmd)) {
         window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));

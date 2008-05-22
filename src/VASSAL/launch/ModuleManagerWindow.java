@@ -99,6 +99,7 @@ import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -1575,7 +1576,7 @@ public class ModuleManagerWindow extends JFrame {
     }
   }
 
-  /** *************************************************************************
+  /**
    * Action to Edit an Extension in another process
    */
   private class EditExtensionLaunchAction extends AbstractLaunchAction {
@@ -1607,6 +1608,11 @@ public class ModuleManagerWindow extends JFrame {
 
       super.actionPerformed(e);
       setEnabled(false);
+    }
+
+    @Override
+    protected void addFileFilters(FileChooser fc) {
+      fc.addChoosableFileFilter(new ModuleExtensionFileFilter());
     }
 
     @Override

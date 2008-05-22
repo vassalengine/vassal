@@ -151,13 +151,13 @@ public class Editor extends Launcher {
     @Override
     public void actionPerformed(ActionEvent e) {
       // prompt the user to pick a module
-      if (promptForModule() == null) return;
+      if (promptForFile() == null) return;
 
       super.actionPerformed(e);
     }
 
     @Override
-    protected File promptForModule() {
+    protected File promptForFile() {
       // prompt the use to pick a module
       final FileChooser fc = ImportAction.getFileChooser(window);
 
@@ -235,7 +235,7 @@ public class Editor extends Launcher {
     @Override
     public void actionPerformed(ActionEvent e) {
       // prompt the user to pick a module
-      if (promptForModule() == null) return;
+      if (promptForFile() == null) return;
 
       super.actionPerformed(e);
       lr.module = null;

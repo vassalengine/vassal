@@ -193,7 +193,7 @@ public class Player extends Launcher {
     @Override
     public void actionPerformed(ActionEvent e) {
       // prompt the user to pick a module
-      if (promptForModule() == null) return;
+      if (promptForFile() == null) return;
 
       super.actionPerformed(e);
     }
