@@ -22,10 +22,10 @@ package VASSAL.launch;
 import java.awt.Cursor;
 import java.awt.Window;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -212,17 +212,16 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       new Thread(cmdS).start();
 
       // build the child process
-      final String[] args = lr.toArgs();      
-      final String[] pa = new String[6 + args.length];
-      pa[0] = "java";
-      pa[1] = "-Xms" + initialHeap + "M";
-      pa[2] = "-Xmx" + maximumHeap + "M";
-      pa[3] = "-cp"; 
-      pa[4] = System.getProperty("java.class.path");
-      pa[5] = entryPoint; 
-      System.arraycopy(args, 0, pa, 6, args.length);
+      final String[] args = {
+        "java",
+        "-Xms" + initialHeap + "M",
+        "-Xmx" + maximumHeap + "M",
+        "-cp",
+        System.getProperty("java.class.path"),
+        entryPoint
+      };
 
-      final ProcessBuilder pb = new ProcessBuilder(pa);
+      final ProcessBuilder pb = new ProcessBuilder(args);
       pb.directory(Info.getBinDir());
 
       final Process p = pb.start();
@@ -231,13 +230,14 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       new Thread(new StreamPump(p.getErrorStream(), System.err)).start();
 
       // write the port for this socket to child's stdin and close
-      DataOutputStream dout = null;
+      ObjectOutputStream oout = null;
       try {
-        dout = new DataOutputStream(p.getOutputStream());
-        dout.writeInt(serverSocket.getLocalPort());
+        oout = new ObjectOutputStream(p.getOutputStream());
+        oout.writeInt(serverSocket.getLocalPort());
+        oout.writeObject(lr);
       }
       finally {
-        IOUtils.closeQuietly(dout);
+        IOUtils.closeQuietly(oout);
       }
 
       // read the port for the child's socket from its stdout
@@ -252,7 +252,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       children.add(cmdC);
 
       // trigger any process() methods belonging to subclasses
-      publish((Void) null);
+//      publish((Void) null);
 
       // block until the process ends
       p.waitFor();
@@ -291,7 +291,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         return ModuleManagerWindow.getInstance().update(
           ((Launcher.SaveFileCmd) cmd).getFile());
       }
-      else if ("NOTIFY_OPEN".equals(cmd)) {
+      else if ("NOTIFY_OPEN_OK".equals(cmd)) {
+        ModuleManagerWindow.getInstance().addModule(lr.module);
+        window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        return "OK";
+      }
+      else if ("NOTIFY_OPEN_FAILED".equals(cmd)) {
         window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         return "OK";
       }

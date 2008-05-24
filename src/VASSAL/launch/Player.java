@@ -40,13 +40,18 @@ import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class Player extends Launcher {
   public static void main(String[] args) {
-    new Player(LaunchRequest.parseArgs(args));
+    new Player(args);
   }
 
-  public Player(LaunchRequest lr) {
-    super(lr);
+  protected Player(String[] args) {
+    // the ctor is protected to enforce that it's called via main()
+    super(args);
   }
 
   protected MenuManager createMenuManager() {
@@ -82,7 +87,6 @@ public class Player extends Launcher {
   }
 
   protected void launch() throws IOException {
-    System.err.println("-- Player");
     try {
       if (lr.builtInModule) {
         GameModule.init(createModule(createDataArchive()));
@@ -106,9 +110,12 @@ public class Player extends Launcher {
           m.getWizardSupport().showWelcomeWizard();
         }
       }
-    }  
-    finally {
-      if (cmdC != null) cmdC.request("NOTIFY_OPEN");
+
+      if (cmdC != null) cmdC.request("NOTIFY_OPEN_OK");
+    }
+    catch (IOException e) {
+      if (cmdC != null) cmdC.request("NOTIFY_OPEN_FAILED");
+      throw e;
     }
   }
 
@@ -172,12 +179,6 @@ public class Player extends Launcher {
           Integer count = using.get(lr.module);
           if (count == 1) using.remove(lr.module);
           else using.put(lr.module, --count);
-        }
-
-        @Override
-        protected void process(List<Void> chunks) {
-          super.process(chunks);
-          ((ModuleManagerWindow) window).addModule(lr.module);
         }
       };
     }

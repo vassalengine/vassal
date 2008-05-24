@@ -1564,14 +1564,6 @@ public class ModuleManagerWindow extends JFrame {
           if (count == 1) using.remove(lr.module);
           else using.put(lr.module, --count);
         }
-
-/*
-        @Override
-        protected void process(List<Void> chunks) {
-          super.process(chunks);
-          ((ModuleManagerWindow) frame).addModule(mod);
-        }
-*/
       };
     }
   }
@@ -1631,14 +1623,6 @@ public class ModuleManagerWindow extends JFrame {
           editing.remove(lr.extension);
           setEnabled(true);
         }
-
-/*
-        @Override
-        protected void process(List<Void> chunks) {
-          super.process(chunks);
-          ((ModuleManagerWindow) frame).addModule(mod);
-        }
-*/
       };
     } 
   }

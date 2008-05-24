@@ -40,11 +40,12 @@ import VASSAL.tools.menu.MenuManager;
 
 public class Editor extends Launcher {
   public static void main(String[] args) {
-    new Editor(LaunchRequest.parseArgs(args));
+    new Editor(args);
   }
 
-  public Editor(LaunchRequest lr) {
-    super(lr);
+  protected Editor(String[] args) {
+    // the ctor is protected to enforce that it's called via main()
+    super(args);
   }
 
   protected MenuManager createMenuManager() {
@@ -80,7 +81,6 @@ public class Editor extends Launcher {
   }
 
   protected void launch() throws IOException {
-    System.err.println("-- Editor");
     try {
       switch (lr.mode) {
       case EDIT:
@@ -103,9 +103,12 @@ public class Editor extends Launcher {
         f.setVisible(true);
         new NewExtensionAction(f).performAction(null);
       }
+
+    	if (cmdC != null) cmdC.request("NOTIFY_OPEN_OK");
     }
-    finally {
-    	if (cmdC != null) cmdC.request("NOTIFY_OPEN");
+    catch (IOException e) {
+    	if (cmdC != null) cmdC.request("NOTIFY_OPEN_FAILED");
+      throw e;
     }
   }
 
@@ -200,12 +203,6 @@ public class Editor extends Launcher {
           // register that this module is no longer being edited
           editing.remove(lr.module);
           setEnabled(true);
-        }
-
-        @Override
-        protected void process(List<Void> chunks) {
-          super.process(chunks);
-          ((ModuleManagerWindow) window).addModule(lr.module);
         }
       };
     }

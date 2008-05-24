@@ -88,9 +88,9 @@ public class StartUp {
 
   public void startErrorLog() {
     // begin the error log
+    System.err.println("[" + Info.getInstanceID() + "]");
     System.err.println("-- OS " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
     System.err.println("-- Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
     System.err.println("-- VASSAL version " + Info.getVersion()); //$NON-NLS-1$
-    System.err.println("-- VASSAL instance " + Info.getInstanceID()); //$NON-NLS-1$
   }
 }

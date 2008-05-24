@@ -112,7 +112,6 @@ public class LaunchRequest implements Serializable {
 
     args.add("--" + mode.toString());
 
-    if (standalone)    args.add("--standalone");
     if (builtInModule) args.add("--auto");
 
     if (port >= 0) args.add("--port=" + port);
@@ -172,7 +171,6 @@ public class LaunchRequest implements Serializable {
 "  --edit-extension    Edit a module extension\n" +
 "  --new-extension     Create a new module extension\n" +
 "  --port              Set port for manager to listen on\n" +
-//"  --standalone        run the Player or Editor alone, debugging use only\n" +
 "  --version           Display version information and exit\n" +
 "  --                  Terminate the list of options\n" +
 "\n" +
@@ -192,8 +190,7 @@ public class LaunchRequest implements Serializable {
     final int EDIT_EXT = 3;
     final int NEW_EXT = 4;
     final int PORT = 5;
-    final int STANDALONE = 6;
-    final int VERSION = 7;
+    final int VERSION = 6;
 
     final LongOpt[] longOpts = new LongOpt[]{
       new LongOpt("auto",    LongOpt.NO_ARGUMENT,       null, 'a'),
@@ -208,7 +205,6 @@ public class LaunchRequest implements Serializable {
       new LongOpt("edit-extension", LongOpt.NO_ARGUMENT, null, EDIT_EXT),
       new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, NEW_EXT),
       new LongOpt("port", LongOpt.REQUIRED_ARGUMENT, null, PORT),
-      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, STANDALONE),
       new LongOpt("version", LongOpt.NO_ARGUMENT, null, VERSION)
     };
 
@@ -241,9 +237,6 @@ public class LaunchRequest implements Serializable {
         if (lr.port < 49152 || lr.port > 65535) {
           die("LaunchRequest.bad_port", g.getOptarg());
         }
-        break;
-      case STANDALONE:
-        lr.standalone = true;
         break;
       case VERSION:
         System.err.println("VASSAL " + Info.getVersion());
@@ -279,7 +272,7 @@ public class LaunchRequest implements Serializable {
         die("LaunchRequest.missing_argument", args[g.getOptind()-1]); 
         break;
       case '?':
-        die("LaunchRequest.unrecognized_option", args[g.getOptind()-1]);
+        die("LaunchRequest.unrecognized_option", args[g.getOptind()]);
         break;
       default:
         // should never happen
@@ -410,10 +403,6 @@ public class LaunchRequest implements Serializable {
         die("LaunchRequest.excess_args", args[i]);
       }
     }
-
-    if (lr.standalone && lr.mode == Mode.MANAGE) {
-      die("LaunchRequest.not_in_mode", "--standalone", Mode.MANAGE.toString());
-    } 
 
     return lr;
   }

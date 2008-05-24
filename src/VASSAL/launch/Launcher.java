@@ -19,11 +19,11 @@
 
 package VASSAL.launch;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -56,13 +56,33 @@ public abstract class Launcher {
     return instance;
   }
 
-  public Launcher(LaunchRequest lr) {
+  protected Launcher(String[] args) {
     if (instance != null) throw new IllegalStateException();
     instance = this;
 
-    this.lr = lr;
+    final boolean standalone = args.length > 0;
 
-    if (!lr.standalone) {
+    // parse the command line args now if we're standalone, since they
+    // could be messed up and so we'll bail before setup
+    LaunchRequest lr = null; 
+    if (standalone) {
+      // Note: We could do more sanity checking of the launch request
+      // in standalone mode, but we don't bother because this is meant
+      // only for debugging, not for normal use. If you pass nonsense
+      // arguments (e.g., '-e' to the Player), don't expect it to work.
+      lr = LaunchRequest.parseArgs(args);
+    }
+
+    // start the error log and setup system properties
+    final StartUp start = Info.isMacOSX() ? new MacOSXStartUp() : new StartUp();
+    if (standalone) start.setupErrorLog();
+    start.startErrorLog();
+    System.err.println("-- " + getClass().getSimpleName());
+    Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
+    start.initSystemProperties();
+
+    // if we're not standalone, contact the module manager for instructions 
+    if (!standalone) {
       try {
         // set up our command listener
         final ServerSocket serverSocket = new ServerSocket(0);
@@ -74,25 +94,25 @@ public abstract class Launcher {
         out.writeInt(serverSocket.getLocalPort());
         out.flush();
 
-        // read the module manager's socket port from stdin
-        final int port = new DataInputStream(System.in).readInt();
+        // read the module manager's socket port and launch request from stdin
+        final ObjectInputStream in = new ObjectInputStream(System.in);
+        final int port = in.readInt();
+        lr = (LaunchRequest) in.readObject();
 
         // set up our command client
         cmdC = new CommandClient(new Socket((String) null, port));
+      }
+      catch (ClassNotFoundException e) {
+        ErrorLog.log(e);
       }
       catch (IOException e) {
         ErrorLog.log(e);
       }
   
       if (cmdC == null || cmdS == null) System.exit(1);
-    } 
+    }
 
-    final StartUp start = Info.isMacOSX() ? new MacOSXStartUp() : new StartUp();
-    if (lr.standalone) start.setupErrorLog();
-    start.startErrorLog();
-    Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
-
-    start.initSystemProperties();
+    this.lr = lr;
 
     createMenuManager();
 
@@ -103,6 +123,7 @@ public abstract class Launcher {
         }
         catch (IOException e) {
           reportError(e);
+          System.exit(1);
         }
       }
     });
