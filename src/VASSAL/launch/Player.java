@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.List;
 
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
@@ -144,7 +145,7 @@ public class Player extends Launcher {
     private static final long serialVersionUID = 1L;
 
     public LaunchAction(ModuleManagerWindow mm, File module) {
-      super(Resources.getString("Main.play_module"), mm,
+      super(Resources.getString("Main.play_module_specific"), mm,
         Player.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.LOAD, module)
       );
@@ -189,6 +190,7 @@ public class Player extends Launcher {
 
     public PromptLaunchAction(ModuleManagerWindow mm) {
       super(mm, null);
+      putValue(Action.NAME, Resources.getString("Main.play_module"));
     }
 
     @Override
