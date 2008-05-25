@@ -73,7 +73,6 @@ public class GameState implements CommandEncoder {
   protected Map<String,GamePiece> pieces = new HashMap<String,GamePiece>();
   protected List<GameComponent> gameComponents = new ArrayList<GameComponent>();
   protected List<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
-//  protected JMenuItem loadGame, saveGame, newGame, closeGame;
   protected Action loadGame, saveGame, newGame, closeGame;
   protected String lastSave;
   protected DirectoryConfigurer savedGameDirectoryPreference;
@@ -130,12 +129,6 @@ public class GameState implements CommandEncoder {
     mm.addAction("GameState.load_game", loadGame);
     mm.addAction("GameState.save_game", saveGame);
     mm.addAction("GameState.close_game", closeGame);
-/*
-    GameModule.getGameModule().getFileMenu().add(newGame);
-    GameModule.getGameModule().getFileMenu().add(loadGame);
-    GameModule.getGameModule().getFileMenu().add(saveGame);
-    GameModule.getGameModule().getFileMenu().add(closeGame);
-*/
 
     saveGame.setEnabled(gameStarting);
     closeGame.setEnabled(gameStarting);
@@ -243,13 +236,13 @@ public class GameState implements CommandEncoder {
     closeGame.setEnabled(gameStarting);
 
     if (gameStarting) {
-      loadGame.putValue(Action.NAME, Resources.getString("GameState.load_continuation"));
-//      loadGame.setText(Resources.getString("GameState.load_continuation"));  //$NON-NLS-1$
+      loadGame.putValue(Action.NAME,
+        Resources.getString("GameState.load_continuation"));
       GameModule.getGameModule().getWizardSupport().showGameSetupWizard();
     }
     else {
-      loadGame.putValue(Action.NAME, Resources.getString("GameState.load_game"));
-//      loadGame.setText(Resources.getString("GameState.load_game"));  //$NON-NLS-1$
+      loadGame.putValue(Action.NAME,
+        Resources.getString("GameState.load_game"));
       GameModule.getGameModule().appendToTitle(null);
     }
 
