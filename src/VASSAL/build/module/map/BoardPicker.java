@@ -445,14 +445,20 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
   public void setup(boolean show) {
     if (show) {
       if (currentBoards == null) {
-        String setup = getDefaultSetup();
+        final String setup = getDefaultSetup();
         if (setup != null) {
-          Command c = decode(setup);
+          final Command c = decode(setup);
           if (c != null) {
             c.execute();
           }
         }
       }
+
+      if ((currentBoards == null || currentBoards.size() == 0) &&
+            possibleBoards.size() > 0) {
+        selectBoards(GameModule.getGameModule().getFrame());
+      }
+
       map.setBoards(getSelectedBoards());
     }
     else {
