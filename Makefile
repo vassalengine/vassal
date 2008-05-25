@@ -11,7 +11,7 @@ DISTDIR:=dist
 VNUM:=3.1.0
 SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
 VERSION:=$(VNUM)-svn$(SVNVERSION)
-#VERSION:=$(VNUM)-beta1
+#VERSION:=$(VNUM)-beta2
 
 CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 JAVAPATH:=/usr/lib/jvm/java-1.6.0-sun
@@ -147,7 +147,7 @@ clean-release:
 #	scp $(TMPDIR)/VASSAL-$(VERSION){-windows.exe,-macosx.dmg,.zip} nomic.net:www/tmp/vassal
 
 javadoc:
-	$(JDOC) -d $(JDOCDIR) -link http://java.sun.com/javase/6/docs/api -sourcepath $(SRCDIR) -subpackages $(shell echo $(notdir $(wildcard src/*)) | tr ' ' ':')
+	$(JDOC) -d $(JDOCDIR) -link http://java.sun.com/javase/6/docs/api -sourcepath $(SRCDIR) -subpackages VASSAL 
 
 clean-javadoc:
 	$(RM) -r $(JDOCDIR)
