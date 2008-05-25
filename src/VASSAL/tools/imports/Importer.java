@@ -157,8 +157,10 @@ public abstract class Importer {
 		char ch;
 		for (int i = 0; maxLen == 0 || i < maxLen; ++i) {
 			ch = (char) in.read();
-			if (ch != 0)
+			if (ch >= 0x20)
 				sb.append(ch);
+			else if (ch != 0)
+				sb.append(" ");
 			else
 				break;
 		}
