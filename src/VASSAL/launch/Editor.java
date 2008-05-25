@@ -83,29 +83,36 @@ public class Editor extends Launcher {
 
   protected void launch() throws IOException {
     try {
+      Object req = null;
+
       switch (lr.mode) {
       case EDIT:
         new EditModuleAction(lr.module).loadModule(lr.module);
+        req = "NOTIFY_OPEN_OK";
         break;
       case IMPORT:
         new ImportAction(null).loadModule(lr.module);
+        req = "NOTIFY_IMPORT_OK";
         break;
       case NEW:
         new CreateModuleAction(null).performAction(null);
+        req = "NOTIFY_OPEN_OK";
         break;
       case EDIT_EXT:
         GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
         GameModule.getGameModule().getFrame().setVisible(true);
         new EditExtensionAction(lr.extension).performAction(null);
+        req = "NOTIFY_OPEN_OK";
         break;
       case NEW_EXT:
         GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
         final JFrame f = GameModule.getGameModule().getFrame();
         f.setVisible(true);
         new NewExtensionAction(f).performAction(null);
+        req = "NOTIFY_OPEN_OK";
       }
 
-    	if (cmdC != null) cmdC.request("NOTIFY_OPEN_OK");
+    	if (cmdC != null) cmdC.request(req);
     }
     catch (IOException e) {
     	if (cmdC != null) cmdC.request("NOTIFY_OPEN_FAILED");

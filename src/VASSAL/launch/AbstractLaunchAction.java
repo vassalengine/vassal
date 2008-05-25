@@ -300,6 +300,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         return "OK";
       }
+      else if ("NOTIFY_IMPORT_OK".equals(cmd)) {
+        window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        return "OK";
+      }
       else {
         return "UNRECOGNIZED_COMMAND";
       }
