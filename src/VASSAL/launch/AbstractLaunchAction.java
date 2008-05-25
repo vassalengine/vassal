@@ -167,41 +167,43 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     @Override
     public Void doInBackground() throws Exception {
-      // get heap setttings
+      // set default heap setttings
       int initialHeap = DEFAULT_INITIAL_HEAP;
       int maximumHeap = DEFAULT_MAXIMUM_HEAP;
 
-      // get module name
-      final AbstractMetaData data = AbstractMetaData.buildMetaData(lr.module);
-      if (data != null && data instanceof ModuleMetaData) {
-        final String moduleName = ((ModuleMetaData) data).getName();
+      // find module-specific heap settings, if any
+      if (lr.module != null) {
+        final AbstractMetaData data = AbstractMetaData.buildMetaData(lr.module);
+        if (data != null && data instanceof ModuleMetaData) {
+          final String moduleName = ((ModuleMetaData) data).getName();
 
-        // read module prefs
-        final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
+          // read module prefs
+          final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
 
-        // read initial heap size, if it exists
-        final String iheap = p.getStoredValue(GlobalOptions.INITIAL_HEAP);
-        if (iheap != null) {
-          try {
-            initialHeap = Integer.parseInt(iheap);
-          }
-          catch (NumberFormatException ex) {
+          // read initial heap size, if it exists
+          final String iheap = p.getStoredValue(GlobalOptions.INITIAL_HEAP);
+          if (iheap != null) {
+            try {
+              initialHeap = Integer.parseInt(iheap);
+            }
+            catch (NumberFormatException ex) {
 // FIXME: warn the user the prefs are corrupt
-            ErrorLog.warn(ex);
-            initialHeap = DEFAULT_INITIAL_HEAP;
+              ErrorLog.warn(ex);
+              initialHeap = DEFAULT_INITIAL_HEAP;
+            }
           }
-        }
 
-        // read maximum heap size, if it exists
-        final String mheap = p.getStoredValue(GlobalOptions.MAXIMUM_HEAP);
-        if (mheap != null) {
-          try {
-            maximumHeap = Integer.parseInt(mheap);
-          }
-          catch (NumberFormatException ex) {
+          // read maximum heap size, if it exists
+          final String mheap = p.getStoredValue(GlobalOptions.MAXIMUM_HEAP);
+          if (mheap != null) {
+            try {
+              maximumHeap = Integer.parseInt(mheap);
+            }
+            catch (NumberFormatException ex) {
 // FIXME: warn the user the prefs are corrupt
-            ErrorLog.warn(ex);
-            maximumHeap = DEFAULT_MAXIMUM_HEAP;
+              ErrorLog.warn(ex);
+              maximumHeap = DEFAULT_MAXIMUM_HEAP;
+            }
           }
         }
       }
@@ -297,6 +299,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         return "OK";
       }
       else if ("NOTIFY_OPEN_FAILED".equals(cmd)) {
+        window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        return "OK";
+      }
+      else if ("NOTIFY_NEW_OK".equals(cmd)) {
         window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         return "OK";
       }

@@ -96,7 +96,7 @@ public class Editor extends Launcher {
         break;
       case NEW:
         new CreateModuleAction(null).performAction(null);
-        req = "NOTIFY_OPEN_OK";
+        req = "NOTIFY_NEW_OK";
         break;
       case EDIT_EXT:
         GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
