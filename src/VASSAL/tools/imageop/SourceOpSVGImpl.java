@@ -65,7 +65,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    */
   public Image apply() throws IOException {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
-    final String path = DataArchive.IMAGE_DIR + name;
+    final String path = archive.getImagePrefix() + name;
     final SVGRenderer renderer = new SVGRenderer(
       archive.getArchiveURL() + path,
       archive.getFileStream(path));

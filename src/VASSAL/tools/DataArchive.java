@@ -78,20 +78,32 @@ public class DataArchive extends SecureClassLoader {
   protected SortedSet<String> localImages = null;
 
   public static final String IMAGE_DIR = "images/";
+  protected String imageDir;
   public static final String SOUNDS_DIR = "sounds/";
+  protected String soundsDir = SOUNDS_DIR;
   private CodeSource cs;
 
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
+    this.imageDir = IMAGE_DIR;
+  }
+
+  public DataArchive(String zipName, String imageDir) throws IOException {
+    this();
+    archive = new ZipFile(zipName);
+    this.imageDir = imageDir;
   }
 
   public DataArchive(String zipName) throws IOException {
-    this();
-    archive = new ZipFile(zipName);
+    this(zipName,IMAGE_DIR);
   }
-
+  
   public String getName() {
     return archive == null ? "data archive" : archive.getName();
+  }
+  
+  public String getImagePrefix() {
+    return imageDir;
   }
 
   public ZipFile getArchive() {
@@ -138,7 +150,7 @@ public class DataArchive extends SecureClassLoader {
   }
 
   public Image getImage(String name) throws IOException {
-    final String path = IMAGE_DIR + name;
+    final String path = imageDir + name;
     final ImageSource src;
 
     if (name.startsWith("/")) {
@@ -173,16 +185,16 @@ public class DataArchive extends SecureClassLoader {
     }
     else {
       try {
-        return getFileStream(IMAGE_DIR + name);
+        return getFileStream(imageDir + name);
       }
       catch (IOException e1) {
 // FIXME: Everything in this catch should be deprecated behavior.
         try {
-          return getFileStream(IMAGE_DIR + name + ".gif");
+          return getFileStream(imageDir + name + ".gif");
         }
         catch (IOException e2) {
           try {
-            return getResourceInputStream("/images/" + name + ".gif");
+            return getResourceInputStream("/"+imageDir + name + ".gif");
           }
           catch (IOException e3) {
             throw e1;
@@ -291,8 +303,8 @@ public class DataArchive extends SecureClassLoader {
 
     if (archive != null) {
       for (ZipEntry entry : iterate(archive.entries())) {
-        if (entry.getName().startsWith(IMAGE_DIR)) {
-          s.add(entry.getName().substring(IMAGE_DIR.length()));
+        if (entry.getName().startsWith(imageDir)) {
+          s.add(entry.getName().substring(imageDir.length()));
         }
       }
     }
@@ -507,8 +519,8 @@ public class DataArchive extends SecureClassLoader {
 
         ZipEntry entry = null;
         while ((entry = zis.getNextEntry()) != null) {
-          if (entry.getName().startsWith(IMAGE_DIR)) {
-            s.add(entry.getName().substring(IMAGE_DIR.length()));
+          if (entry.getName().startsWith(imageDir)) {
+            s.add(entry.getName().substring(imageDir.length()));
           }
         }
       }

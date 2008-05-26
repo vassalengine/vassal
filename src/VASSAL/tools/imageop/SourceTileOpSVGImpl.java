@@ -74,7 +74,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
 
   public Image apply() throws Exception {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
-    final String path = DataArchive.IMAGE_DIR + sop.getName();
+    final String path = archive.getImagePrefix() + sop.getName();
     final SVGRenderer renderer = new SVGRenderer(
       archive.getArchiveURL() + path,
       archive.getFileStream(path));

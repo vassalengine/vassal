@@ -123,7 +123,7 @@ public class ArchiveWriter extends DataArchive {
         final String n = f.getName();
 // FIXME: this isn't right---n might not be a displaying SVG image
 //        ImageCache.remove(new SourceOp(n));         
-        images.put(IMAGE_DIR + n, f.getPath());
+        images.put(imageDir + n, f.getPath());
       }
     }
     // otherwise just add what we were given
@@ -137,7 +137,7 @@ public class ArchiveWriter extends DataArchive {
 
   public void addImage(String name, byte[] contents) {
 //    ImageCache.remove(new SourceOp(name));
-    images.put(IMAGE_DIR + name, contents);
+    images.put(imageDir + name, contents);
     localImages = null;
   } 
   
@@ -151,7 +151,7 @@ public class ArchiveWriter extends DataArchive {
 
   public void removeImage(String name) {
 //    ImageCache.remove(new SourceOp(name));
-    images.remove(IMAGE_DIR + name);
+    images.remove(imageDir + name);
     localImages = null;
   }
 
@@ -395,8 +395,8 @@ public class ArchiveWriter extends DataArchive {
   public SortedSet<String> getImageNameSet() {
     final SortedSet<String> s = super.getImageNameSet();
     for (String name : images.keySet()) {
-      if (name.startsWith(IMAGE_DIR)) {
-        s.add(name.substring(IMAGE_DIR.length()));
+      if (name.startsWith(imageDir)) {
+        s.add(name.substring(imageDir.length()));
       }
     }
     return s;
@@ -407,8 +407,8 @@ public class ArchiveWriter extends DataArchive {
   protected SortedSet<String> setOfImageNames() {
     final SortedSet<String> s = super.setOfImageNames();
     for (String name : images.keySet()) {
-      if (name.startsWith(IMAGE_DIR)) {
-        s.add(name.substring(IMAGE_DIR.length()));
+      if (name.startsWith(imageDir)) {
+        s.add(name.substring(imageDir.length()));
       }
     }
     return s;

@@ -159,7 +159,7 @@ public class SVGRenderer {
     @Override
     public Document loadDocument(String uri)
         throws MalformedURLException, IOException {
-      final String file = DataArchive.IMAGE_DIR +
+      final String file = GameModule.getGameModule().getDataArchive().getImagePrefix() +
         (new File((new URL(uri)).getPath())).getName();
 
       final InputStream in = GameModule.getGameModule()
