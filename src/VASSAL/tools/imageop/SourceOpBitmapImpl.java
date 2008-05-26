@@ -42,6 +42,9 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
 
   /** The cached hash code of this object. */
   protected final int hash;
+  
+  /** The zip file from which the image will be loaded */
+  protected DataArchive archive;
 
   /**
    * Constructs an <code>ImageOp</code> which will load the given file.
@@ -51,9 +54,14 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
    *    if <code>name</code> is <code>null</code>.
    */
   public SourceOpBitmapImpl(String name) {
+    this(name,GameModule.getGameModule().getDataArchive());
+  }
+  
+  public SourceOpBitmapImpl(String name, DataArchive archive) {
     if (name == null || name.length() == 0)
       throw new IllegalArgumentException();
     this.name = name;
+    this.archive = archive;
     hash = name.hashCode();
   }
 
@@ -74,9 +82,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   }
 
   protected InputStream getImageStream() throws IOException {
-    return GameModule.getGameModule()
-                     .getDataArchive()
-                     .getImageInputStream(name);
+    return archive.getImageInputStream(name);
   }
 
 // FIXME: we need a way to invalidate ImageOps when an exception is thrown?
@@ -98,7 +104,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
 
   protected Dimension getImageSize() {
     try {
-      return GameModule.getGameModule().getDataArchive().getImageSize(name);
+      return archive.getImageSize(name);
     }
     catch (IOException e) {
       ErrorLog.warn(e);
@@ -127,8 +133,9 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof SourceOp)) return false;
-    return name.equals(((SourceOp) o).getName());
+    if (o == null || !(o instanceof SourceOpBitmapImpl)) return false;
+    if (!name.equals(((SourceOpBitmapImpl) o).getName())) return false;
+    return archive == null ? ((SourceOpBitmapImpl)o).archive == null : archive.getName().equals(((SourceOpBitmapImpl)o).archive.getName());
   }
 
   /** {@inheritDoc} */

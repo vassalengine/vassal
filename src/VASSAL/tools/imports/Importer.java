@@ -185,7 +185,7 @@ public abstract class Importer {
 		String t = s;
 		int index = 0;
 		final ArchiveWriter writer = GameModule.getGameModule().getArchiveWriter();
-		while (writer.isImageAdded(DataArchive.IMAGE_DIR + t))
+		while (writer.isImageAdded(writer.getImagePrefix() + t))
 			t = s + '(' + (++index) + ')';
 		return t;
 	}
