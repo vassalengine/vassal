@@ -57,7 +57,7 @@ public class ExtensionElement implements Buildable {
       targetPath = ComponentPathBuilder.getInstance().getPath(e.getAttribute(TARGET));
     }
     catch (ComponentPathBuilder.PathFormatException e1) {
-      throw new IllegalBuildException(e1.getMessage());
+      throw new IllegalBuildException(e1);
     }
     Element childElement = null;
     for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
@@ -71,11 +71,7 @@ public class ExtensionElement implements Buildable {
         extension = Builder.create(childElement);
       }
       catch (Exception e1) {
-        String msg = e1.getMessage();
-        if (msg == null) {
-          msg = e1.getClass().getName().substring(e1.getClass().getName().lastIndexOf('.') + 1);
-        }
-        throw new IllegalBuildException(msg);
+        throw new IllegalBuildException(e1);
       }
     }
   }

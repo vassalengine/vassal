@@ -25,7 +25,8 @@ public class AcceptPeerThread extends Thread {
       }
       catch (Exception ex) {
         if (i == MAX_ATTEMPTS -1) {
-          throw new IOException(ex.getMessage());
+          // FIXME: switch to IOException(Throwable) ctor in Java 1.6
+          throw (IOException) new IOException().initCause(ex);
         }
       }
     }

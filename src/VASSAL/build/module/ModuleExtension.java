@@ -139,7 +139,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       }
     }
     catch (IOException e) {
-      throw new IllegalBuildException(e.getMessage());
+      throw new IllegalBuildException(e);
     }
 
     GameModule.getGameModule().add(this);

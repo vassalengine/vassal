@@ -107,7 +107,7 @@ public class BasicModule extends GameModule {
       }
     }
     catch (IOException ex) {
-      throw new IllegalArgumentException(ex.getMessage());
+      throw new IllegalArgumentException(ex);
     }
 
     MenuManager.getInstance().addAction("Prefs.edit_preferences",

@@ -168,7 +168,6 @@ public abstract class AbstractMetaData {
    * @return MetaData object
    */
   public static AbstractMetaData buildMetaData(File file) {
-    
     // Check the file exists and is a file
     if (!file.exists() || !file.isFile()) {
       return null;
@@ -255,8 +254,8 @@ public abstract class AbstractMetaData {
     Element e = null;
     try {
       doc = DocumentBuilderFactory.newInstance()
-      .newDocumentBuilder()
-      .newDocument();
+                                  .newDocumentBuilder()
+                                  .newDocument();
 
       final Element root = doc.createElement(ROOT_ELEMENT);
       root.setAttribute(VERSION_ATTR, getMetaDataVersion());
@@ -286,7 +285,8 @@ public abstract class AbstractMetaData {
 
     }
     catch (ParserConfigurationException ex) {
-      throw new IOException(ex.getMessage());
+      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
+      throw (IOException) new IOException().initCause(ex);
     }
 
 // FIXME: could we replace BridgeStream by a pair of Pipe streams?
@@ -300,13 +300,16 @@ public abstract class AbstractMetaData {
       xformer.transform(new DOMSource(doc), new StreamResult(out));
     }
     catch (TransformerConfigurationException ex) {
-      throw new IOException(ex.getMessage());
+      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
+      throw (IOException) new IOException().initCause(ex);
     }
     catch (TransformerFactoryConfigurationError ex) {
-      throw new IOException(ex.getMessage());
+      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
+      throw (IOException) new IOException().initCause(ex);
     }
     catch (TransformerException ex) {
-      throw new IOException(ex.getMessage());
+      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
+      throw (IOException) new IOException().initCause(ex);
     }
 
     archive.addFile(getZipEntryName(), out.toInputStream());

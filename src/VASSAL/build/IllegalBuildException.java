@@ -25,7 +25,12 @@ package VASSAL.build;
 public class IllegalBuildException extends RuntimeException {
    private static final long serialVersionUID = 1L;
 
+// FIXME: should this really extend RuntimeException?
    public IllegalBuildException(String s) {
 	   super(s);
    }
+
+  public IllegalBuildException(Throwable t) {
+    super(t);
+  } 
 }
