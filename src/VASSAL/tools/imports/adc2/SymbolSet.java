@@ -541,7 +541,7 @@ public class SymbolSet extends Importer{
 
 	/**
 	 * Read an SDX file if one exists. This is a list of image indeces starting with terrain 
-	 * separated by newlines.
+	 * separated by newlines. Only piece images are actually permuted.
 	 * 
 	 * @param f - Set file.
 	 * @throws IOException
@@ -552,17 +552,13 @@ public class SymbolSet extends Importer{
 		if (sdx != null) { // must reorder image indeces
 			BufferedReader input = new BufferedReader(new FileReader(sdx));
 			
-			SymbolData[] terrain = new SymbolData[mapBoardData.length];
-			System.arraycopy(mapBoardData, 0, terrain, 0, terrain.length);
 			SymbolData[] pieces = new SymbolData[gamePieceData.length];
 			System.arraycopy(gamePieceData, 0, pieces, 0, pieces.length);
 			
 			String line = null;			
 			try {
-				for (int i = 0; i < terrain.length; ++i) {
+				for (int i = 0; i < mapBoardData.length; ++i) {
 					line = input.readLine();
-					int idx = Integer.parseInt(line);
-					terrain[i] = mapBoardData[idx-1];
 				}
 				for (int i = 0; i < pieces.length; ++i) {
 					line = input.readLine();
@@ -575,7 +571,6 @@ public class SymbolSet extends Importer{
 			} catch (NumberFormatException e) {
 				throw new FileFormatException("SDX file has invalid index \"" + line + "\".");
 			} finally {
-				mapBoardData = terrain;
 				gamePieceData = pieces;
 			}
 		}
