@@ -48,6 +48,7 @@ import java.util.Vector;
  * @version 0.2 01/28/02 Refactored and Added Licence
  * @version 0.1 12/27/01 Initial Version
  */
+@SuppressWarnings("unchecked")
 public class PeerReader extends Thread {
   private Vector zLines = new Vector();
   private BufferedReader zReader;

@@ -262,6 +262,7 @@ public class WizardSupport {
       return c;
     }
 
+    @SuppressWarnings("unchecked")
     private JComponent getActionControls(WizardController controller, final Map settings) {
       if (actionControls == null) {
         Box box = Box.createVerticalBox();
@@ -327,6 +328,7 @@ public class WizardSupport {
     private JRadioButton createLoadSavedGameButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadSavedGame")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
+        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
           Wizard wiz = new BranchingWizard(new LoadSavedGamePanels(), POST_LOAD_GAME_WIZARD).createWizard();
@@ -341,6 +343,7 @@ public class WizardSupport {
     private JRadioButton createPlayOnlineButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOnline")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
+        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           settings.put(WizardSupport.ACTION_KEY, PLAY_ONLINE_ACTION);
           controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
@@ -353,6 +356,7 @@ public class WizardSupport {
     private JRadioButton createPlayOfflineButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOffline")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
+        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           GameModule.getGameModule().getGameState().setup(false);
           settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
@@ -384,6 +388,7 @@ public class WizardSupport {
         final StringConfigurer pwd = new PasswordConfigurer(null, Resources.getString("WizardSupport.Password")); //$NON-NLS-1$
         final StringConfigurer pwd2 = new PasswordConfigurer(null, Resources.getString("WizardSupport.ConfirmPassword")); //$NON-NLS-1$
         PropertyChangeListener pl = new PropertyChangeListener() {
+          @SuppressWarnings("unchecked")
           public void propertyChange(PropertyChangeEvent evt) {
             settings.put(GameModule.REAL_NAME, nameConfig.getValue());
             settings.put(GameModule.SECRET_NAME, pwd.getValue());
@@ -453,6 +458,7 @@ public class WizardSupport {
       ((DefaultComboBoxModel) setupSelection.getModel()).insertElementAt(description, 0);
       setupSelection.setSelectedIndex(0);
       setupSelection.addActionListener(new ActionListener() {
+        @SuppressWarnings("unchecked")
         public void actionPerformed(ActionEvent e) {
           if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
             PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
@@ -557,6 +563,7 @@ public class WizardSupport {
       this.wizardKey = wizardKey;
     }
 
+    @SuppressWarnings("unchecked")
     public void run() {
       try {
         controller.setProblem(Resources.getString("WizardSupport.LoadingGame")); //$NON-NLS-1$

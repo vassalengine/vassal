@@ -80,6 +80,7 @@ import javax.swing.tree.TreeSelectionModel;
  * @author Tim Boudreau
  * @author Rodney Kinney 
  */
+@SuppressWarnings("unchecked")
 final class GenericListener
         implements ActionListener, PropertyChangeListener, ItemListener,
         ContainerListener, DocumentListener, ChangeListener,
