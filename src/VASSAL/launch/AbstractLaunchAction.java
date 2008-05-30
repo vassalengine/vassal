@@ -171,11 +171,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       int initialHeap = DEFAULT_INITIAL_HEAP;
       int maximumHeap = DEFAULT_MAXIMUM_HEAP;
 
+      String moduleName = null;
+
       // find module-specific heap settings, if any
       if (lr.module != null) {
         final AbstractMetaData data = AbstractMetaData.buildMetaData(lr.module);
         if (data != null && data instanceof ModuleMetaData) {
-          final String moduleName = ((ModuleMetaData) data).getName();
+          moduleName = ((ModuleMetaData) data).getName();
 
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
@@ -214,14 +216,25 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       new Thread(cmdS).start();
 
       // build the child process
-      final String[] args = {
-        "java",
-        "-Xms" + initialHeap + "M",
-        "-Xmx" + maximumHeap + "M",
-        "-cp",
-        System.getProperty("java.class.path"),
-        entryPoint
-      };
+      final ArrayList<String> al = new ArrayList<String>();
+      al.add("java");
+      al.add("-Xms" + initialHeap + "M");
+      al.add("-Xmx" + maximumHeap + "M");
+      al.add("-cp");
+      al.add(System.getProperty("java.class.path"));
+
+      if (Info.isMacOSX()) {
+        // use the module name for the dock if we found a module name
+        al.add("-Xdock:name=" + 
+          (moduleName != null && moduleName.length() > 0 ? moduleName :
+// FIXME: should be localized?
+          "Unnamed module"));  
+//        al.add("-Xdock:icon=" + );
+      }
+
+      al.add(entryPoint);
+
+      final String[] args = al.toArray(new String[al.size()]);
 
       final ProcessBuilder pb = new ProcessBuilder(args);
       pb.directory(Info.getBinDir());
