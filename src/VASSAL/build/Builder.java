@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException; 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -36,10 +37,12 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.IOUtils;
 
 /**
  * This class holds static convenience methods for building {@link Buildable}
@@ -118,25 +121,25 @@ public abstract class Builder {
   public static Document createDocument(InputStream in)
                                         throws IOException {
     try {
-      try {
-        return DocumentBuilderFactory.newInstance()
-                                     .newDocumentBuilder()
-                                     .parse(in);
-      }
-      finally {
-        try {
-          if (in != null) in.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
-      }
+      return DocumentBuilderFactory.newInstance()
+                                   .newDocumentBuilder()
+                                   .parse(in);
     }
-    catch (Exception e) {
-      // FIXME: use chaining when we move to 1.6+
-      final IOException io = new IOException();
-      try { io.initCause(e); } catch (Throwable t) { assert false; }
-      throw io;
+    catch (ParserConfigurationException e) {
+      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
+      throw (IOException) new IOException().initCause(e);
+    }
+    catch (SAXException e) {
+      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
+      throw (IOException) new IOException().initCause(e);
+    }
+    finally {
+      try {
+        if (in != null) in.close();
+      }
+      catch (IOException e) {
+        ErrorLog.log(e);
+      }
     }
   }
 
@@ -149,6 +152,7 @@ public abstract class Builder {
                                    .newDocumentBuilder()
                                    .newDocument();
     }
+// FIXME: shoult catch more specific exceptions here
     catch (Exception ex) {
       return null;
     }
@@ -171,10 +175,12 @@ public abstract class Builder {
       xformer.transform(source, result);
     }
     catch (TransformerException e) {
-      throw new IOException(e.getMessage());
+      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
+      throw (IOException) new IOException().initCause(e);
     }
     catch (TransformerFactoryConfigurationError e) {
-      throw new IOException(e.getMessage());
+      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
+      throw (IOException) new IOException().initCause(e);
     }
   }
 
