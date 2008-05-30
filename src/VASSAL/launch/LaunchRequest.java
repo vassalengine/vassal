@@ -62,7 +62,6 @@ public class LaunchRequest implements Serializable {
 
   public boolean builtInModule;
   public List<String> autoext;
-  public List<String> extract;
 
   public int port = -1;
 
@@ -99,7 +98,6 @@ public class LaunchRequest implements Serializable {
     this.builtInModule = lr.builtInModule;
     
     if (lr.autoext != null) this.autoext = new ArrayList<String>(lr.autoext);
-    if (lr.extract != null) this.extract = new ArrayList<String>(lr.extract); 
   }
 
   /**
@@ -123,12 +121,6 @@ public class LaunchRequest implements Serializable {
       sb.append(i.next());
       while (i.hasNext()) sb.append(',').append(i.next());
       args.add(sb.toString().replace(' ','_'));
-    }
-
-    if (extract != null) {
-      for (String x : extract) {
-        args.add("--extract=" + x);
-      }
     }
 
     args.add("--");
@@ -166,7 +158,6 @@ public class LaunchRequest implements Serializable {
 "  -l, --load          Load a module and saved game or log\n" +
 "  -m, --manage        Use the module manager\n" +
 "  -n, --new           Create a new module\n" +
-"  -x, --extract       TODO\n" +
 "  --auto-extensions   TODO\n" +
 "  --edit-extension    Edit a module extension\n" +
 "  --new-extension     Create a new module extension\n" +
@@ -195,7 +186,6 @@ public class LaunchRequest implements Serializable {
     final LongOpt[] longOpts = new LongOpt[]{
       new LongOpt("auto",    LongOpt.NO_ARGUMENT,       null, 'a'),
       new LongOpt("edit",    LongOpt.NO_ARGUMENT,       null, 'e'),
-      new LongOpt("extract", LongOpt.REQUIRED_ARGUMENT, null, 'x'), 
       new LongOpt("help",    LongOpt.NO_ARGUMENT,       null, 'h'),
       new LongOpt("import",  LongOpt.NO_ARGUMENT,       null, 'i'),
       new LongOpt("load",    LongOpt.NO_ARGUMENT,       null, 'l'),
@@ -208,7 +198,7 @@ public class LaunchRequest implements Serializable {
       new LongOpt("version", LongOpt.NO_ARGUMENT, null, VERSION)
     };
 
-    final Getopt g = new Getopt("VASSAL", args, ":aehilmnx:", longOpts);
+    final Getopt g = new Getopt("VASSAL", args, ":aehilmn", longOpts);
     g.setOpterr(false);
 
     int c;
@@ -263,10 +253,6 @@ public class LaunchRequest implements Serializable {
         break;
       case 'n':
         setMode(lr, Mode.NEW);
-        break;
-      case 'x':
-        if (lr.extract == null) lr.extract = new ArrayList<String>();
-        lr.extract.add(g.getOptarg());
         break;
       case ':':
         die("LaunchRequest.missing_argument", args[g.getOptind()-1]); 

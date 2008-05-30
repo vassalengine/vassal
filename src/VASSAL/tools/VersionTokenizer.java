@@ -19,6 +19,8 @@
 
 package VASSAL.tools;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,18 +30,17 @@ import java.util.regex.Pattern;
  * a series of integers. The integers thus returned from two different
  * tokenizers may be compared to determine the temporal ordering of two
  * VASSAL versions. Valid version strings are matched by the following
- * regular expression: <code>\d+(.\d+)*(-(svn|beta|rc)\d+)?</code>. Old
+ * regular expression: <code>\d+(.\d+)*(-(svn\d+|.+)?</code>. Old
  * version numbers which are not valid by current standards (e.g., 3.0b6)
  * may be successfully parsed far enough to determine their ordering with
  * respect to post-3.1.0 versions.
  *
  * <p>Nonnumeric parts of a version string are tokenized as follows:</p>
  * <table>
- *  <tr><td><code>svn</code></td><td>0</td></tr>
- *  <tr><td><code>beta</code></td><td>1</td></tr>
- *  <tr><td><code>rc</code></td><td>2</td></tr>
- *  <tr><td><code>-</code> (tag delimiter)</td><td>-2</td></tr>
  *  <tr><td>end-of-string</td><td>-1</td></tr>
+ *  <tr><td><code>-</code> (tag delimiter)</td><td>-2</td></tr>
+ *  <tr><td><code>svn\d+</code></td><td><code>\d+</code></td></tr>
+ *  <tr><td>other tags</td><td>mapped to svn version</td></tr>
  * </table>
  * <p>This mapping ensures that of two version strings with the same
  * version number, if one has a tag (the part starting with the hyphen) but
@@ -54,7 +55,20 @@ import java.util.regex.Pattern;
  */
 public class VersionTokenizer {
   private String v;
-  private int state = 0;
+
+  private enum State { NUM, DELIM, TAG, EOS, END };
+  private State state = State.NUM;
+
+  private static Map<String,Integer> tags = new HashMap<String,Integer>();
+
+  // This is the mapping for tags to svn versions. Only tags which cannot
+  // be distinguished from the current version from the numeric portion
+  // alone need to be maintined here. (E.g., the 3.1.0 tags may be removed
+  // as soon as 3.1.1 is released.)
+  static {
+    tags.put("3.1.0-beta1", 3606);
+    tags.put("3.1.0-beta2", 3664);
+  }
 
   /**
    * Constructs a <code>VersionTokenizer</code> which operates on a
@@ -76,7 +90,7 @@ public class VersionTokenizer {
    * integers
    */
   public boolean hasNext() {
-    return v.length() > 0 || state == 4;
+    return v.length() > 0 || state == State.EOS;
   }
 
   /**
@@ -95,8 +109,7 @@ public class VersionTokenizer {
 
     while (true) {
       switch (state) {
-      case 0:
-        // case 0 reads version numbers
+      case NUM:   // read a version number
         final Matcher m = Pattern.compile("^\\d+").matcher(v);
         if (!m.lookingAt()) throw new VersionFormatException();
         try {
@@ -107,60 +120,47 @@ public class VersionTokenizer {
           throw new VersionFormatException(e);
         }
         v = v.substring(m.end());
-        state = v.length() == 0 ? 4 : 1;
+        state = v.length() == 0 ? State.EOS : State.DELIM;
         return n;
-      case 1:
-        // case 1 eats delimiters
+      case DELIM: // eat delimiters
         switch (v.charAt(0)) {
         case '.':
-          state = 0;
+          state = State.NUM;
           v = v.substring(1);
           break;
         case '-':
-          state = 2;
+          state = State.TAG;
           v = v.substring(1);
           return -2;
         default:
           throw new VersionFormatException();
         }
         break;
-      case 2:
-        // case 2 reads the tag type
+      case TAG: // parse the tag 
         if (v.startsWith("svn")) {
+          // report the svn version
           v = v.substring(3);
-          state = 3;
-          return 0;
+          try {
+            n = Integer.parseInt(v);
+            if (n < 0) throw new VersionFormatException();
+          }
+          catch (NumberFormatException e) {
+            throw new VersionFormatException(e);
+          }
         }
-        else if (v.startsWith("beta")) {
-          v = v.substring(4);
-          state = 3;
-          return 1;
+        else if (tags.containsKey(v)) {
+          // convert the tag to an svn version
+          n = tags.get(v);
         }
-        else if (v.startsWith("rc")) {
-          v = v.substring(2);
-          state = 3;
-          return 2;
-        }
-        throw new VersionFormatException();
-      case 3:
-        // case 3 reads the tag number
-        try {
-          n = Integer.parseInt(v);
-          if (n < 0) throw new VersionFormatException();
-        }
-        catch (NumberFormatException e) {
-          throw new VersionFormatException(e);
-        }
+        else throw new VersionFormatException();
+
         v = "";
-        state = 4;
+        state = State.EOS;
         return n;
-      case 4:
-        // case 4 returns the end-of-string marker
-        state = 5;
+      case EOS: // mark the end of the string
+        state = State.END;
         return -1;
-      case 5:
-        // case 5 is terminal
-      default:
+      case END: // this case is terminal
         throw new IllegalStateException();
       }
     }

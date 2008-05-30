@@ -32,7 +32,7 @@ import VASSAL.tools.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-beta1"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-svn3680"; //$NON-NLS-1$
   private static File homeDir;
 
   private static final boolean isWindows;
@@ -50,7 +50,7 @@ public final class Info {
 
   /**
    * A valid version format is "w.x.[y|bz]", where 'w','x','y', and 'z' are
-   * integers. In the version number, w.x are the major/minor release number,
+   @* integers. In the version number, w.x are the major/minor release number,
    * y is the bug-fix release number, and the 'b' indicates a beta release,
    * e.g. 3.0b2.
    * 
@@ -66,7 +66,10 @@ public final class Info {
    * version of 3.0.2 is 3.0, and the minor version of 3.0b3 is 3.0beta.
    * 
    * @return
+   * @deprecated If you need the minor version number, get it from
+   * a {@link VersionTokenizer}.
    */
+  @Deprecated
   public static String getMinorVersion() {
 // FIXME: check where this is used. maybe we can deprecate?
     final VersionTokenizer tok = new VersionTokenizer(VERSION);
@@ -121,7 +124,10 @@ public final class Info {
   }
 
   /**
-   * Compares VASSAL version strings.
+   * Compares VASSAL version strings. This method is guaranteed to
+   * correctly compare the current version string with any other
+   * version string. It is <em>not</em> guaranteed to correctly
+   * compare two arbitrary version strings.
    *
    * @return negative if {@code v0 > v1}, positive if {@code v0 < v1}, and
    * zero if {@code v0 == v1} or if the ordering cannot be determined from

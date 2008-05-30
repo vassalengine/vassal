@@ -27,16 +27,10 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Properties;
 
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
-import VASSAL.i18n.Resources;
-import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.menu.MenuManager;
 
@@ -119,65 +113,15 @@ public abstract class Launcher {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         try {
-          Launcher.this.extractResourcesAndLaunch(0);
+          launch();
         }
         catch (IOException e) {
-          reportError(e);
+// FIXME: show a proper dialog here, on load failure
+          ErrorLog.warn(e);
           System.exit(1);
         }
       }
     });
-  }
-
-  protected void extractResourcesAndLaunch(final int resourceIndex)
-                                                          throws IOException {
-    if (lr.extract == null || resourceIndex >= lr.extract.size()) {
-      launch();
-    }
-    else {
-      final Properties props = new Properties();
-      final InputStream in =
-        Launcher.class.getResourceAsStream(lr.extract.get(resourceIndex));
-      if (in != null) {
-        try {
-          props.load(in);
-        }
-        finally {
-          try {
-            in.close();
-          }
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
-        }
-      }
-
-      new ResourceExtracter(Prefs.getGlobalPrefs(), props, new Observer() {
-        public void update(Observable o, Object arg) {
-          try {
-            extractResourcesAndLaunch(resourceIndex + 1);
-          }
-          catch (IOException e) {
-            reportError(e);
-          }
-        }
-      }).install();
-    }
-  }
-
-  protected void reportError(Exception e) {
-    ErrorLog.log(e);
-    String msg = e.getMessage();
-    if (msg == null) {
-      msg = e.getClass().getSimpleName();
-    }
-
-    JOptionPane.showMessageDialog(
-      null,
-      msg,
-      Resources.getString("ResourceExtracter.install_failed"),
-      JOptionPane.ERROR_MESSAGE
-    );
   }
 
   protected abstract void launch() throws IOException;
@@ -197,7 +141,7 @@ public abstract class Launcher {
         cmdC.request(new SaveFileCmd(f));
       }
       catch (IOException e) {
-        //
+// FIXME: warn here?
       }
     }
   }

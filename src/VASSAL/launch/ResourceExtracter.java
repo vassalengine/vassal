@@ -63,7 +63,9 @@ import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * Extracts a Zip file resource to a user-specified directory User: rkinney Date: Dec 5, 2003
+ * @deprecated
  */
+@Deprecated
 public class ResourceExtracter {
   private InstallDirChooser installDirChooser;
   private JProgressBar bar;
