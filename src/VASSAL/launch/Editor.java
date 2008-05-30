@@ -244,7 +244,6 @@ public class Editor extends Launcher {
       if (promptForFile() == null) return;
 
       super.actionPerformed(e);
-      lr.module = null;
     }
   }
 

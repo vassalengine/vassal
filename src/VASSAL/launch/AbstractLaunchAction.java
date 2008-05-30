@@ -146,6 +146,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       lr.module = fc.getSelectedFile();
       if (lr.module != null && !lr.module.exists()) lr.module = null;
     }
+    else {
+      lr.module = null;
+    }
     
     return lr.module;
   }
