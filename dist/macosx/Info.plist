@@ -32,10 +32,6 @@ com/DTDs/PropertyList-1.0.dtd">
   <key>CFBundleDocumentTypes</key>
   <array>
     <dict>
-      <key>CFBundleTypeOSTypes</key>
-      <array>
-        <string>VMOD</string>
-      </array>
       <key>CFBundleTypeName</key>
       <string>VASSAL Module</string>
       <key>CFBundleTypeExtensions</key>
