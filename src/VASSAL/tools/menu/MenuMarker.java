@@ -19,11 +19,24 @@
 
 package VASSAL.tools.menu;
 
-import javax.swing.JMenuItem;
+import javax.swing.JComponent;
 
-public class MenuMarker extends MenuItemProxy {
-  @Override
-  public JMenuItem createPeer() {
-    throw new UnsupportedOperationException();
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
+public class MenuMarker implements ChildProxy<JComponent> {
+  protected ParentProxy parent;
+
+  public ParentProxy getParent() {
+    return parent;
+  }
+
+  public void setParent(ParentProxy parent) {
+    this.parent = parent;  
+  }
+
+  public JComponent createPeer() {
+    return null;
   }
 }

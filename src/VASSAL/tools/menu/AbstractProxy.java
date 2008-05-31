@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public abstract class AbstractProxy<T extends JComponent>
                 implements ChildProxy<T> {
   protected final List<WeakReference<T>> peers =

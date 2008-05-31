@@ -22,6 +22,10 @@ package VASSAL.tools.menu;
 import java.lang.ref.WeakReference;
 import javax.swing.JSeparator;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class SeparatorProxy extends AbstractProxy<JSeparator> {
   @Override
   public JSeparator createPeer() {

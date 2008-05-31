@@ -195,9 +195,8 @@ public class Tutorial extends AbstractConfigurable {
   protected MenuItemProxy launchItem;
 
   public void addTo(Buildable parent) {
-//    item = ((Documentation) parent).getHelpMenu().add(launch);
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection("Documentation", launchItem);
+    MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
 
     final String key = "viewedTutorial" + getConfigureName(); //$NON-NLS-1$
     hasViewedTutorial = new BooleanConfigurer(key, null, Boolean.FALSE);
@@ -206,10 +205,8 @@ public class Tutorial extends AbstractConfigurable {
   }
 
   public void removeFrom(Buildable parent) {
-//    if (item != null) {
-//      ((Documentation) parent).getHelpMenu().remove(item);
-//    }
-    MenuManager.getInstance().removeFromSection("Documentation", launchItem);
+    MenuManager.getInstance()
+               .removeFromSection("Documentation.Module", launchItem);
   }
 
   public Class[] getAllowableConfigureComponents() {

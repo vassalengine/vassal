@@ -212,12 +212,13 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
   public void addTo(Buildable parent) {
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection("Documentation", launchItem);
+    MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
     launch.setEnabled(true);
   }
 
   public void removeFrom(Buildable parent) {
-    MenuManager.getInstance().removeFromSection("Documentation", launchItem);
+    MenuManager.getInstance()
+               .removeFromSection("Documentation.Module", launchItem);
     launch.setEnabled(false);
   }
 

@@ -25,6 +25,10 @@ import java.lang.ref.WeakReference;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class CheckBoxMenuItemProxy
        extends AbstractProxy<JCheckBoxMenuItem>
        implements ItemListener {

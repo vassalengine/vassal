@@ -237,12 +237,13 @@ public class HelpFile extends AbstractConfigurable {
 
   public void addTo(Buildable b) {
     launchItem = new MenuItemProxy(launch);
-    MenuManager.getInstance().addToSection("Documentation", launchItem);
+    MenuManager.getInstance().addToSection("Documentation.Module", launchItem);
     launch.setEnabled(true);
   }
   
   public void removeFrom(Buildable b) {
-    MenuManager.getInstance().removeFromSection("Documentation", launchItem);   
+    MenuManager.getInstance()
+               .removeFromSection("Documentation.Module", launchItem);   
     launch.setEnabled(false);
   }
 

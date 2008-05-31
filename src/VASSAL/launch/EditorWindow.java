@@ -53,6 +53,7 @@ import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidationReportDialog;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
@@ -103,15 +104,18 @@ public abstract class EditorWindow extends JFrame {
     final MenuBarProxy mb = mm.getMenuBarProxyFor(this);
 
     // file menu
-    final MenuProxy fileMenu =
-      new MenuProxy(Resources.getString("General.file"));
-  
-    fileMenu.add(mm.addKey("Editor.save"));
-    fileMenu.add(mm.addKey("Editor.save_as"));
-
-    if (!Info.isMacOSX()) {
+    if (Info.isMacOSX()) {
+      mm.addToSection("Editor.File", mm.addKey("Editor.save"));
+      mm.addToSection("Editor.File", mm.addKey("Editor.save_as"));
+    }
+    else {
+      final MenuProxy fileMenu =
+        new MenuProxy(Resources.getString("General.file"));
+      fileMenu.add(mm.addKey("Editor.save"));
+      fileMenu.add(mm.addKey("Editor.save_as"));
       fileMenu.addSeparator();
       fileMenu.add(mm.addKey("General.quit"));
+      mb.add(fileMenu);
     }
 
     // edit menu
@@ -125,7 +129,7 @@ public abstract class EditorWindow extends JFrame {
     editMenu.addSeparator();
     editMenu.add(mm.addKey("Editor.ModuleEditor.properties"));
     editMenu.add(mm.addKey("Editor.ModuleEditor.translate"));
-
+    
     // tools menu
     final MenuProxy toolsMenu =
       new MenuProxy(Resources.getString("General.tools"));
@@ -133,22 +137,29 @@ public abstract class EditorWindow extends JFrame {
     toolsMenu.add(mm.addKey("create_module_updater"));
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));
 
-    // help menu
-    final MenuProxy helpMenu =
-      new MenuProxy(Resources.getString("General.help"));
-
-    helpMenu.add(mm.addKey("General.help"));
-    helpMenu.add(mm.addKey("Editor.ModuleEditor.reference_manual"));
-   
-    if (!Info.isMacOSX()) {
-      helpMenu.addSeparator();
-      helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
+    if (Info.isMacOSX()) {
+      mm.addToSection("Editor.MenuBar", editMenu);
+      mm.addToSection("Editor.MenuBar", toolsMenu);
+    }
+    else {
+      mb.add(editMenu);
+      mb.add(toolsMenu);
     }
 
-    mb.add(fileMenu);
-    mb.add(editMenu);
-    mb.add(toolsMenu);
-    mb.add(helpMenu);
+    // help menu
+    if (Info.isMacOSX()) {
+      mm.addToSection("Documentation.VASSAL",
+                      mm.addKey("Editor.ModuleEditor.reference_manual"));
+    }
+    else {
+      final MenuProxy helpMenu =
+        new MenuProxy(Resources.getString("General.help"));
+      helpMenu.add(mm.addKey("General.help"));
+      helpMenu.add(mm.addKey("Editor.ModuleEditor.reference_manual"));
+      helpMenu.addSeparator();
+      helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
+      mb.add(helpMenu);
+    }
 
     final int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
@@ -240,6 +251,16 @@ public abstract class EditorWindow extends JFrame {
     pack();
   }
  
+  protected MenuProxy findMenuProxy(String name, MenuBarProxy mb) {
+    for (ChildProxy<?> c : mb.getChildren()) {
+      if (c instanceof MenuProxy) {
+        final MenuProxy m = (MenuProxy) c;
+        if (name.equals(m.getText())) return m;
+      }
+    }
+    return null;
+  }
+
   /*
    * Each component must Save, SaveAs and close itself
    */

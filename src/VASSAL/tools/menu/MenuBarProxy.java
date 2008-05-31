@@ -20,8 +20,13 @@
 package VASSAL.tools.menu;
 
 import java.lang.ref.WeakReference;
+import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class MenuBarProxy extends AbstractParent<JMenuBar> {
 
 /*
@@ -50,8 +55,8 @@ public class MenuBarProxy extends AbstractParent<JMenuBar> {
     final JMenuBar mb = new JMenuBar();
  
     for (ChildProxy<?> child : children) {
-      if (child instanceof MenuMarker) continue;
-      mb.add(child.createPeer());
+      final JComponent peer = child.createPeer();
+      if (peer != null) mb.add(peer);
     }
 
 /*

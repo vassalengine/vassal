@@ -21,6 +21,10 @@ package VASSAL.tools.menu;
 
 import javax.swing.JComponent;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public interface ChildProxy<T extends JComponent> {
   public ParentProxy getParent();
 

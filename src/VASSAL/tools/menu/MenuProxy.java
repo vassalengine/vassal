@@ -20,8 +20,13 @@
 package VASSAL.tools.menu;
 
 import java.lang.ref.WeakReference;
+import javax.swing.JComponent;
 import javax.swing.JMenu;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class MenuProxy extends AbstractParent<JMenu> {
   private String text;
 
@@ -43,6 +48,10 @@ public class MenuProxy extends AbstractParent<JMenu> {
     return sep;
   }
 
+  public String getText() {
+    return text;
+  }
+
   public void setText(final String text) {
     this.text = text;
 
@@ -58,8 +67,8 @@ public class MenuProxy extends AbstractParent<JMenu> {
     final JMenu menu = new JMenu(text);
 
     for (ChildProxy<?> child : children) {
-      if (child instanceof MenuMarker) continue;
-      menu.add(child.createPeer());
+      final JComponent peer = child.createPeer();
+      if (peer != null) menu.add(peer);
     }
     
     peers.add(new WeakReference<JMenu>(menu, queue));

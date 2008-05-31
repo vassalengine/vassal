@@ -23,6 +23,10 @@ import java.lang.ref.WeakReference;
 import javax.swing.Action;
 import javax.swing.JMenuItem;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class MenuItemProxy extends AbstractProxy<JMenuItem> {
   protected Action action;
 

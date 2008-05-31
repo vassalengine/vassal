@@ -19,6 +19,10 @@
 
 package VASSAL.tools.menu;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public interface ParentProxy {
   public void add(ChildProxy<?> child);
 

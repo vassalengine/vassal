@@ -77,7 +77,11 @@ public class PlayerWindow extends JFrame {
     fileMenu.add(mm.addKey("BasicLogger.begin_logfile"));
     fileMenu.add(mm.addKey("BasicLogger.end_logfile"));
 
-    if (!Info.isMacOSX()) {
+    if (Info.isMacOSX()) {
+      fileMenu.add(mm.addMarker("Editor.File.start"));
+      fileMenu.add(mm.addMarker("Editor.File.end"));
+    }
+    else { 
       fileMenu.addSeparator();
       fileMenu.add(mm.addKey("Prefs.edit_preferences"));
       fileMenu.addSeparator();
@@ -89,12 +93,14 @@ public class PlayerWindow extends JFrame {
     // help menu
     final MenuProxy helpMenu =
       new MenuProxy(Resources.getString("General.help"));
-    
+   
+    helpMenu.add(mm.addMarker("Documentation.VASSAL.start"));
     helpMenu.add(mm.addKey("General.help"));
+    helpMenu.add(mm.addMarker("Documentation.VASSAL.end"));
 
     helpMenu.addSeparator();
-    helpMenu.add(mm.addMarker("Documentation.start"));
-    helpMenu.add(mm.addMarker("Documentation.end"));
+    helpMenu.add(mm.addMarker("Documentation.Module.start"));
+    helpMenu.add(mm.addMarker("Documentation.Module.end"));
 
     helpMenu.add(mm.addKey("Documentation.about_module"));
 
@@ -115,6 +121,8 @@ public class PlayerWindow extends JFrame {
     mm.addAction("AboutScreen.about_vassal", AboutVASSAL.getAction());
     
     mb.add(fileMenu);
+    mb.add(mm.addMarker("Editor.MenuBar.start"));
+    mb.add(mm.addMarker("Editor.MenuBar.end"));
     mb.add(helpMenu);
 
     setJMenuBar(mm.getMenuBarFor(this));
