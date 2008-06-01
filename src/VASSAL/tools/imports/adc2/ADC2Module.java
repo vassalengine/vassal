@@ -741,7 +741,7 @@ public class ADC2Module extends Importer {
 			int length = 0;
 			for (int i = 0; i < b.length; ++i) {
 				b[i] = (byte) ((values[index] & mask) >> ((3-i)*8));
-				if (b[i] == 0)
+				if (b[i] < 0x20 || b[i] > 0x7e)
 					break;
 				++length;
 				mask >>= 8;
@@ -1295,7 +1295,7 @@ public class ADC2Module extends Importer {
 			int mask = 0x7f000000;
 			for (int i = 0; i < b.length; ++i) {
 				b[i] = (byte) ((values[index] & mask) >> ((3-i)*8));
-				if (b[i] == 0)
+				if (b[i] < 0x20 || b[i] > 0x7e)
 					break;
 				++length;
 				mask >>= 8;
@@ -1723,14 +1723,15 @@ public class ADC2Module extends Importer {
 		
 		in.read(new byte[18]); // unknown
 		/* int maxRange = */ in.readUnsignedShort();
-		/* boolean degradeLOS = */ in.readByte();
+		/* int degradeLOS = */ in.readByte();
 		/* int pointsToBlockLOS = */ ADC2Utils.readBase250Word(in);
 		/* String levelHeight = */ readNullTerminatedString(in, 20);
-		/* boolean useSmoothing = */ in.readByte();
+		/* int useSmoothing = */ in.readByte();
 		/* int cliffElevation = */ ADC2Utils.readBase250Word(in);
-		if (version > 0x0203) {
+		if (version > 0x0204) {
 			/* int hexSize = */ ADC2Utils.readBase250Word(in);
-			/* String units = */ in.read(new byte[10]);
+			byte[] units = new byte[10];
+			in.read(units);
 		}
 		
 		int nBlocks = ADC2Utils.readBase250Word(in);
@@ -1740,7 +1741,8 @@ public class ADC2Module extends Importer {
 			/* int aboveGroundLevel = */ ADC2Utils.readBase250Word(in);
 			/* int whenSpotting = */ ADC2Utils.readBase250Word(in);
 			/* int whenTarget = */ ADC2Utils.readBase250Word(in);
-			/* Color color = */ in.read(new byte[3]);
+			byte[] color = new byte[3];
+			in.read(color);
 		}
 	}
 

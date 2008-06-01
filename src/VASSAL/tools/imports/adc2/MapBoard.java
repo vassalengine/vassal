@@ -833,11 +833,18 @@ public class MapBoard extends Importer {
 
 		@Override
 		void initGridNumbering(RegularGridNumbering numbering, MapSheet sheet) {
-			// TODO: staggering doesn't appear to be handled at all!
 			super.initGridNumbering(numbering, sheet);
+			boolean stagger = false;
+			if (sheet.firstHexRight() && sheet.getField().y%2 == 1)
+				stagger = true;
+			else if (sheet.firstHexLeft() && sheet.getField().y%2 == 0)
+				stagger = true;
+			numbering.setAttribute(HexGridNumbering.STAGGER, stagger);
 			numbering.setAttribute(RegularGridNumbering.FIRST, sheet.rowsAndCols() ? "H" : "V");
 			numbering.setAttribute(RegularGridNumbering.H_TYPE, sheet.numericRows() ? "N" : "A");
 			numbering.setAttribute(RegularGridNumbering.V_TYPE, sheet.numericCols() ? "N" : "A");
+			numbering.setAttribute(RegularGridNumbering.H_LEADING, sheet.getNRowChars()-1);
+			numbering.setAttribute(RegularGridNumbering.V_LEADING, sheet.getNColChars()-1);
 		}
 
 		@Override
@@ -1920,7 +1927,7 @@ public class MapBoard extends Importer {
 		void initGridNumbering(RegularGridNumbering numbering, MapSheet sheet) {
 			numbering.setAttribute(RegularGridNumbering.FIRST, sheet.colsAndRows() ? "H" : "V");
 			numbering.setAttribute(RegularGridNumbering.H_TYPE, sheet.numericCols() ? "N" : "A");
-			numbering.setAttribute(RegularGridNumbering.H_LEADING, sheet.getNColChars()-1);
+			numbering.setAttribute(RegularGridNumbering.H_LEADING, sheet.getNColChars()-1);			
 			numbering.setAttribute(RegularGridNumbering.H_DESCEND, sheet.colsIncreaseLeft());
 			numbering.setAttribute(RegularGridNumbering.H_DESCEND, sheet.colsIncreaseLeft());
 			numbering.setAttribute(RegularGridNumbering.V_TYPE, sheet.numericRows() ? "N" : "A");
@@ -2860,6 +2867,8 @@ public class MapBoard extends Importer {
 
 		// default grid
 		AbstractConfigurable ac = getLayout().getGeometricGrid();
+		
+		// TODO: set default grid numbering for maps that have no sheets (e.g., Air Assault on Crete).
 	
 		// ensure that we don't have a singleton null
 		if (mapSheets.size() == 1 && mapSheets.get(0) == null)
