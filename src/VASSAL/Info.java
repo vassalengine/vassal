@@ -32,7 +32,7 @@ import VASSAL.tools.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-svn3680"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-svn3700"; //$NON-NLS-1$
   private static File homeDir;
 
   private static final boolean isWindows;
@@ -143,7 +143,7 @@ public final class Info {
         final int n0 = tok0.next();
         final int n1 = tok1.next();
       
-        if (n0 != n1) return n0 - n1;
+        if (n0 != n1) return n1 - n0;
       }    
     }
     catch (VersionFormatException e) {
