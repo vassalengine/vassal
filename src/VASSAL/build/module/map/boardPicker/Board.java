@@ -313,12 +313,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
         final int ow = op.getTileWidth();
         final int oh = op.getTileHeight();
 
-//System.out.println(location);
-//System.out.println(visibleRect);        
-
         final Point[] tiles = op.getTileIndices(r);
 
-//        for (Point tile : op.getTileIndices(r)) {
         for (Point tile : tiles) {
           // find tile position
           final int tx = location.x + tile.x*ow;
@@ -454,11 +450,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
       done = true;
     }
 
-//    private static int count = 0;
-
     public boolean imageUpdate(Image img, int flags,
                                int x, int y, int w, int h) {
-//System.out.println((count++) + " " + done);
       return !done && c.imageUpdate(img, flags, x, y, w, h);
     }
   }
@@ -550,32 +543,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
   */
   @Deprecated
   public void fixImage() {
-/*
-    if (imageFile != null && boardImage == null) {
-      try {
-        Cleanup.init();
-        Cleanup.getInstance().addBoard(this);
-        try {
-          boardImage = GameModule.getGameModule().getDataArchive().getImage(imageFile);
-          Icon icon = new ImageIcon(boardImage);
-          boundaries.setSize(icon.getIconWidth(), icon.getIconHeight());
-          fixedBoundaries = true;
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-          String msg = "Error reading board image " + imageFile + " in " + GameModule.getGameModule().getDataArchive().getName();
-          if (e.getMessage() != null) {
-            msg += ":\n"+e.getMessage(); 
-          }
-          throw new IllegalStateException(msg);
-        }
-      }
-      catch (OutOfMemoryError err) {
-        ErrorLog.log(err);
-        throw new OutOfMemoryError("Insufficient memory to load board " + getName());
-      }
-    }
-*/
   }
 
   public String locationName(Point p) {
