@@ -48,6 +48,7 @@ public class MenuItemProxy extends AbstractProxy<JMenuItem> {
     forEachPeer(new Functor<JMenuItem>() {
       public void apply(JMenuItem item) {
         item.setAction(action);
+        item.setVisible(action != null);
       }
     });
   }

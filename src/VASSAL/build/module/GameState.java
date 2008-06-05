@@ -251,10 +251,6 @@ public class GameState implements CommandEncoder {
       gc.setup(this.gameStarting);
     }
 
-    if (gameStarting) {
-// FIXME: what is the purpose of this?
-//      GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
-    }
     gameStarted = gameStarted || this.gameStarting;
     lastSave = gameStarting ? saveString() : null;
   }

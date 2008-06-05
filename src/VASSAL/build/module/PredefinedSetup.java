@@ -30,6 +30,7 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.menu.ChildProxy;
@@ -42,7 +43,7 @@ import VASSAL.tools.menu.ParentProxy;
  * Defines a saved game that is accessible from the File menu.
  * The game will be loaded in place of a normal New Game
  */
-public class PredefinedSetup extends AbstractConfigurable {
+public class PredefinedSetup extends AbstractConfigurable implements GameComponent {
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String FILE = "file"; //$NON-NLS-1$
   public static final String USE_FILE = "useFile"; //$NON-NLS-1$
@@ -57,15 +58,17 @@ public class PredefinedSetup extends AbstractConfigurable {
 
   protected VisibilityCondition showFile;
   protected VisibilityCondition showUseFile;
+  protected AbstractAction launchAction;
 
   public PredefinedSetup() {
-    menuItem = new MenuItemProxy(new AbstractAction() {
+    launchAction = new AbstractAction() {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
         launch();
       }
-    });
+    };
+    menuItem = new MenuItemProxy(launchAction);
 
     menu = new MenuProxy();
 
@@ -216,7 +219,8 @@ public class PredefinedSetup extends AbstractConfigurable {
       final PredefinedSetup setup = (PredefinedSetup) parent;
       setup.menu.add(getMenuInUse());
     }
-
+    MenuManager.getInstance().removeAction("GameState.new_game");
+    GameModule.getGameModule().getGameState().addGameComponent(this);
     GameModule.getGameModule().getWizardSupport().addPredefinedSetup(this);
   }
 
@@ -229,7 +233,7 @@ public class PredefinedSetup extends AbstractConfigurable {
       final PredefinedSetup setup = (PredefinedSetup) parent;
       setup.menu.remove(getMenuInUse());
     }
-
+    GameModule.getGameModule().getGameState().removeGameComponent(this);
     GameModule.getGameModule().getWizardSupport().removePredefinedSetup(this);
   }
 
@@ -255,5 +259,13 @@ public class PredefinedSetup extends AbstractConfigurable {
 
   public String getFileName() {
     return fileName;
+  }
+
+  public Command getRestoreCommand() {
+    return null;
+  }
+
+  public void setup(boolean gameStarting) {
+    launchAction.setEnabled(!gameStarting);
   }
 }
