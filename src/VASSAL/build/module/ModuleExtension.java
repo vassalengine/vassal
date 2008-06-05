@@ -511,7 +511,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
            GameModule.getGameModule().getComponentsOf(ModuleExtension.class)) {
         if (ext.getName().equals(name)) {
           containsExtension = true;
-          if (Info.compareVersions(ext.getVersion(), version) < 0) {
+          if (Info.compareVersions(ext.getVersion(), version) > 0) {
              GameModule.getGameModule().warn(getVersionErrorMsg(ext.getVersion()));
           }
           break;

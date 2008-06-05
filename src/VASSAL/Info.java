@@ -143,7 +143,7 @@ public final class Info {
         final int n0 = tok0.next();
         final int n1 = tok1.next();
       
-        if (n0 != n1) return n1 - n0;
+        if (n0 != n1) return n0 - n1;
       }    
     }
     catch (VersionFormatException e) {
@@ -153,7 +153,7 @@ public final class Info {
     }
 
     // otherwise, the shorter one is earlier; or they're the same
-    return tok0.hasNext() ? -1 : (tok1.hasNext() ? 1 : 0);
+    return tok0.hasNext() ? 1 : (tok1.hasNext() ? -1 : 0);
   }
 
   /**
