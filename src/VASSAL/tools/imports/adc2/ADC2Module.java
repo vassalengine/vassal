@@ -43,10 +43,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -790,20 +792,26 @@ public class ADC2Module extends Importer {
 	}
 
 	public static class Player {
-
+		
 		public static final Player ALL_PLAYERS = new Player("All Players", null, 0);
 		public static final Player NO_PLAYERS = new Player("No Player", null, 0);
 		public static final Player UNKNOWN = new Player("Unknown", null, 0);
+		private static int nPlayers = 0;
 		private final String name;
 		private final SymbolSet.SymbolData hiddenSymbol;
 		private final int hiddenPieceOptions;
-		private HashSet<Player> allies;
+		private final int order;
+		private TreeSet<Player> allies = new TreeSet<Player>(new Comparator<Player>() {
+			public int compare(Player p1, Player p2) { return p1.order - p2.order; }
+		});
 
 		public Player(String name, SymbolSet.SymbolData hiddenSymbol, int hiddenPieceOptions) {
 			this.name = name;
 			this.hiddenSymbol = hiddenSymbol;
 			// this.searchRange = searchRange > 50 ? 50 : searchRange;
 			this.hiddenPieceOptions = hiddenPieceOptions;
+			order = nPlayers++;
+			allies.add(this);
 		}
 		
 		public boolean useHiddenPieces() {
@@ -834,13 +842,16 @@ public class ADC2Module extends Importer {
 		}
 
 		public String getName() {
-			return name;
+			StringBuilder sb = new StringBuilder();
+			for (Player p : allies) {
+				if (sb.length() > 0)
+					sb.append('/');
+				sb.append(p.name);
+			}
+			return sb.toString();
 		}
 
 		public void setAlly(Player player) {
-			if (allies == null) {
-				allies = new HashSet<Player>();				
-			}
 			allies.add(player);
 		}
 		
@@ -1728,7 +1739,7 @@ public class ADC2Module extends Importer {
 		/* String levelHeight = */ readNullTerminatedString(in, 20);
 		/* int useSmoothing = */ in.readByte();
 		/* int cliffElevation = */ ADC2Utils.readBase250Word(in);
-		if (version > 0x0204) {
+		if (version > 0x0206) {
 			/* int hexSize = */ ADC2Utils.readBase250Word(in);
 			byte[] units = new byte[10];
 			in.read(units);
@@ -2368,8 +2379,10 @@ public class ADC2Module extends Importer {
 	protected void writePlayersToArchive(GameModule gameModule) {
 		final PlayerRoster roster = gameModule.getAllDescendantComponentsOf(PlayerRoster.class).iterator().next();
 		final SequenceEncoder se = new SequenceEncoder(',');
-		for (Player player : players)
-			se.append(player.getName());
+		for (Player player : players) {
+			if (player.allies.first() == player) // only write out if it's the first in an alliance
+				se.append(player.getName());
+		}
 		for (int i = 0; i < 2; ++i)
 			roster.setAttribute(PlayerRoster.SIDES, se.getValue());		
 	}

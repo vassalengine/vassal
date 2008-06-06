@@ -118,7 +118,9 @@ public class MapBoard extends Importer {
 				GamePiece gp = new BasicPiece(BasicPiece.ID + se.getValue());
 				gp = new Marker(Marker.ID + "Layer", gp);
 				gp.setProperty("Layer", getName());
-				gp = new Immobilized(gp, Immobilized.ID + "n;V"); 
+				gp = new Marker(Marker.ID + "Type", gp);
+				gp.setProperty("Type", "Layer");
+				gp = new Immobilized(gp, Immobilized.ID + "n;V");
 
 				// create layer
 				LayeredPieceCollection l = getLayeredPieceCollection();
@@ -161,7 +163,7 @@ public class MapBoard extends Importer {
 						entries = getName();
 					}
 					else {
-						entries = new SequenceEncoder(entries, ',').append(getName()).getValue();
+						entries = entries + "," + new SequenceEncoder(getName(), ',').getValue();
 					}
 					menu.setAttribute(ToolbarMenu.MENU_ITEMS, entries);
 				}
@@ -2923,7 +2925,7 @@ public class MapBoard extends Importer {
 		insertComponent(inv, module);
 		inv.setAttribute(Inventory.BUTTON_TEXT, "Search");
 		inv.setAttribute(Inventory.TOOLTIP, "Find place by name");
-		inv.setAttribute(Inventory.FILTER, "CurrentMap = Main Map");
+		inv.setAttribute(Inventory.FILTER, "CurrentMap = Main Map && Type != Layer");
 		inv.setAttribute(Inventory.ICON, "");
 		inv.setAttribute(Inventory.GROUP_BY, "Type");
 	}
