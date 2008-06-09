@@ -33,14 +33,12 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 
 /**
- * A JButton for placing into a VASSAL component's toolbar.
- * Handles configuration of a hotkey shortcut, maintains appropriate
- * tooltip text, etc.
+ * A JButton for placing into a VASSAL component's toolbar. Handles configuration of a hotkey shortcut, maintains
+ * appropriate tooltip text, etc.
  */
 public class LaunchButton extends JButton {
   private static final long serialVersionUID = 1L;
   public static final String UNTRANSLATED_TEXT = "unTranslatedText"; //$NON-NLS-1$
-
   protected String tooltipAtt;
   protected String nameAtt;
   protected String keyAtt;
@@ -50,26 +48,21 @@ public class LaunchButton extends JButton {
   protected KeyStrokeListener keyListener;
   protected Configurer nameConfig, keyConfig;
 
-  public LaunchButton(String text, String textAttribute,
-                      String hotkeyAttribute, ActionListener al) {
-    this(text,textAttribute,hotkeyAttribute,null,al);
+  public LaunchButton(String text, String textAttribute, String hotkeyAttribute, ActionListener al) {
+    this(text, textAttribute, hotkeyAttribute, null, al);
   }
 
-  public LaunchButton(String text, String tooltipAttribute,
-                      String textAttribute, String hotkeyAttribute,
-                      String iconAttribute, final ActionListener al) {
+  public LaunchButton(String text, String tooltipAttribute, String textAttribute, String hotkeyAttribute, String iconAttribute, final ActionListener al) {
     this(text, textAttribute, hotkeyAttribute, iconAttribute, al);
     tooltipAtt = tooltipAttribute;
   }
-  
-  public LaunchButton(String text, String textAttribute,
-                      String hotkeyAttribute, String iconAttribute,
-                      final ActionListener al) {
+
+  public LaunchButton(String text, String textAttribute, String hotkeyAttribute, String iconAttribute, final ActionListener al) {
     super(text);
     nameAtt = textAttribute;
     keyAtt = hotkeyAttribute;
     iconAtt = iconAttribute;
-    iconConfig = new IconConfigurer(iconAtt,null,null);
+    iconConfig = new IconConfigurer(iconAtt, null, null);
     setAlignmentY(0.0F);
     keyListener = new KeyStrokeListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -78,8 +71,10 @@ public class LaunchButton extends JButton {
         }
       }
     });
-    GameModule.getGameModule().addKeyStrokeListener(keyListener);
-    addActionListener(al);
+    if (al != null) {
+      GameModule.getGameModule().addKeyStrokeListener(keyListener);
+      addActionListener(al);
+    }
     setFocusable(false);
   }
 
@@ -94,8 +89,8 @@ public class LaunchButton extends JButton {
   public String getIconAttribute() {
     return iconAtt;
   }
-  
-	public String getAttributeValueString(String key) {
+
+  public String getAttributeValueString(String key) {
     if (key.equals(nameAtt)) {
       return getText();
     }
@@ -130,7 +125,7 @@ public class LaunchButton extends JButton {
         setToolTipText(toolTipText);
       }
       else if (key.equals(tooltipAtt)) {
-        toolTipText  = (String)value;
+        toolTipText = (String) value;
         setToolTipText(toolTipText);
       }
       else if (key.equals(iconAtt)) {
@@ -142,13 +137,12 @@ public class LaunchButton extends JButton {
       }
     }
   }
-  
+
   public void setToolTipText(String text) {
     toolTipText = text;
     if (keyListener.getKeyStroke() != null) {
-      text =
-        (text == null ? "" : text + " ") //$NON-NLS-1$ //$NON-NLS-2$
-        + "[" + HotKeyConfigurer.getString(keyListener.getKeyStroke()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+      text = (text == null ? "" : text + " ") //$NON-NLS-1$ //$NON-NLS-2$
+          + "[" + HotKeyConfigurer.getString(keyListener.getKeyStroke()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
     super.setToolTipText(text);
   }
@@ -167,8 +161,7 @@ public class LaunchButton extends JButton {
     return keyConfig;
   }
 
-	protected void checkVisibility() {
-		setVisible((getText() != null && getText().length() > 0) ||
-                getIcon() != null);
-	}
+  protected void checkVisibility() {
+    setVisible((getText() != null && getText().length() > 0) || getIcon() != null);
+  }
 }

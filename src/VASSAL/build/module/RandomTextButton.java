@@ -100,7 +100,7 @@ public class RandomTextButton extends DiceButton {
    * prefix+[comma-separated roll list]+suffix */
   protected void DR() {
     final StringBuilder result = new StringBuilder();
-    int total = 0;
+    int total = addToTotal;
     for (int i = 0; i < nDice; ++i) {
       int roll = (int) (ran.nextFloat() * nSides + 1);
 
@@ -137,7 +137,8 @@ public class RandomTextButton extends DiceButton {
 
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REPORT_TOTAL.equals(name)
-        || PLUS.equals(name)) {
+        || PLUS.equals(name)
+        || ADD_TO_TOTAL.equals(name)) {
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
           return isNumeric;

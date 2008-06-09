@@ -55,7 +55,7 @@ import VASSAL.tools.LaunchButton;
  * result in the Chatter */
 public class DiceButton extends AbstractConfigurable {
   protected java.util.Random ran;
-  protected int nSides = 6, nDice = 2, plus = 0;
+  protected int nSides = 6, nDice = 2, plus = 0, addToTotal=0;
   protected boolean reportTotal = false;
   protected boolean promptAlways = false;
   protected FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** <$" + GlobalOptions.PLAYER_NAME + "$>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -71,6 +71,7 @@ public class DiceButton extends AbstractConfigurable {
   public static final String N_DICE = "nDice"; //$NON-NLS-1$
   public static final String N_SIDES = "nSides"; //$NON-NLS-1$
   public static final String PLUS = "plus"; //$NON-NLS-1$
+  public static final String ADD_TO_TOTAL = "addToTotal"; //$NON-NLS-1$
   public static final String HOTKEY = "hotkey"; //$NON-NLS-1$
   public static final String REPORT_TOTAL = "reportTotal"; //$NON-NLS-1$
   public static final String PROMPT_ALWAYS = "prompt"; //$NON-NLS-1$
@@ -81,11 +82,19 @@ public class DiceButton extends AbstractConfigurable {
   public static final String REPORT_NAME = "name"; //$NON-NLS-1$
 
   public DiceButton() {
+    initLaunchButton();
+  }
+
+  protected void initLaunchButton() {
     ActionListener rollAction = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (promptAlways) {
-          DiceButton delegate = new DiceButton();
-          List<String> keepAttributes = Arrays.asList(new String[]{N_DICE, N_SIDES, PLUS});
+          DiceButton delegate = new DiceButton() {
+            protected void initLaunchButton() {
+              launch = new LaunchButton(null,BUTTON_TEXT,HOTKEY,null);
+            }
+          };
+          List<String> keepAttributes = Arrays.asList(new String[]{N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
           for (String key : keepAttributes) {
             delegate.setAttribute(key, getAttributeValueString(key));
           }
@@ -143,7 +152,7 @@ public class DiceButton extends AbstractConfigurable {
    * prefix+[comma-separated roll list]+suffix */
   protected void DR() {
     String val = ""; //$NON-NLS-1$
-    int total = 0;
+    int total = addToTotal;
     for (int i = 0; i < nDice; ++i) {
       int roll = (int) (ran.nextFloat() * nSides + 1) + plus;
       if (reportTotal) {
@@ -177,6 +186,7 @@ public class DiceButton extends AbstractConfigurable {
     reportFormat.setProperty(N_DICE, Integer.toString(nDice));
     reportFormat.setProperty(N_SIDES, Integer.toString(nSides));
     reportFormat.setProperty(PLUS, Integer.toString(plus));
+    reportFormat.setProperty(ADD_TO_TOTAL, Integer.toString(addToTotal));
     String text = reportFormat.getLocalizedText();
     String report = text;
     if (text.length() > 0) {
@@ -194,6 +204,7 @@ public class DiceButton extends AbstractConfigurable {
       N_DICE,
       N_SIDES,
       PLUS,
+      ADD_TO_TOTAL,
       REPORT_TOTAL,
       HOTKEY,
       PROMPT_ALWAYS,
@@ -210,6 +221,7 @@ public class DiceButton extends AbstractConfigurable {
       Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
       Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
       Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
+      Resources.getString("Dice.add_to_total"), //$NON-NLS-1$
       "Report Total?",
       "Hotkey:  ",
       "Prompt for values when button pushed?",
@@ -225,7 +237,7 @@ public class DiceButton extends AbstractConfigurable {
 
   public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT, N_DICE, N_SIDES, PLUS});
+      return new PlayerIdFormattedStringConfigurer(key, name, new String[]{REPORT_NAME, RESULT, N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
     }
   }
 
@@ -235,6 +247,7 @@ public class DiceButton extends AbstractConfigurable {
       String.class,
       String.class,
       IconConfig.class,
+      Integer.class,
       Integer.class,
       Integer.class,
       Integer.class,
@@ -255,7 +268,7 @@ public class DiceButton extends AbstractConfigurable {
     if (N_DICE.equals(name)
         || N_SIDES.equals(name)
         || PLUS.equals(name)
-        || REPORT_TOTAL.equals(name)) {
+        || ADD_TO_TOTAL.equals(name)) {
       return cond;
     }
     else {
@@ -314,6 +327,14 @@ public class DiceButton extends AbstractConfigurable {
         plus = Integer.parseInt((String) o);
       }
     }
+    else if (ADD_TO_TOTAL.equals(key)) {
+      if (o instanceof Integer) {
+        addToTotal = ((Integer) o).intValue();
+      }
+      else if (o instanceof String) {
+        addToTotal = Integer.parseInt((String) o);
+      }
+    }
     else if (REPORT_TOTAL.equals(key)) {
       if (o instanceof Boolean) {
         reportTotal = ((Boolean) o).booleanValue();
@@ -347,19 +368,22 @@ public class DiceButton extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (N_DICE.equals(key)) {
-      return "" + nDice; //$NON-NLS-1$
+      return String.valueOf(nDice); //$NON-NLS-1$
     }
     else if (N_SIDES.equals(key)) {
-      return "" + nSides; //$NON-NLS-1$
+      return String.valueOf(nSides); //$NON-NLS-1$
     }
     else if (PLUS.equals(key)) {
-      return "" + plus; //$NON-NLS-1$
+      return String.valueOf(plus); //$NON-NLS-1$
+    }
+    else if (ADD_TO_TOTAL.equals(key)) {
+      return String.valueOf(addToTotal); //$NON-NLS-1$
     }
     else if (REPORT_TOTAL.equals(key)) {
-      return "" + reportTotal; //$NON-NLS-1$
+      return String.valueOf(reportTotal); //$NON-NLS-1$
     }
     else if (PROMPT_ALWAYS.equals(key)) {
-      return "" + promptAlways; //$NON-NLS-1$
+      return String.valueOf(promptAlways); //$NON-NLS-1$
     }
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
