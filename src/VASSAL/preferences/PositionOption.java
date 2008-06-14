@@ -19,6 +19,8 @@
 package VASSAL.preferences;
 
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -35,6 +37,7 @@ public class PositionOption extends VASSAL.configure.Configurer
   protected Window theFrame;
   protected Rectangle bounds;
   protected Rectangle defaultValue;
+  protected Rectangle previousBounds;
 
   public PositionOption(String key, Window f, Rectangle defaultValue) {
     super(key, null, defaultValue);
@@ -107,6 +110,8 @@ public class PositionOption extends VASSAL.configure.Configurer
     if (theFrame.isShowing()) {
       Point p = theFrame.getLocationOnScreen();
       if (isOnScreen(p)) {
+        // Save the previous size in case this is the start of a Maximize
+        previousBounds = new Rectangle(bounds);
         bounds.setLocation(p);
       }
     }
@@ -114,7 +119,16 @@ public class PositionOption extends VASSAL.configure.Configurer
 
   public void componentResized(ComponentEvent e) {
     if (theFrame.isShowing()) {
-      bounds.setSize(theFrame.getSize());
+      // A resize when the window is already maximised only happens when
+      // a window is first resized. Record the pre-maximised bounds.
+      if (theFrame instanceof Frame && 
+          previousBounds != null && 
+          ((((Frame) theFrame).getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH)) {
+        bounds.setBounds(previousBounds);
+      }
+      else {
+        bounds.setSize(theFrame.getSize());
+      }
     }
   }
 
@@ -125,20 +139,37 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   protected void setFrameBounds() {
-    Dimension maxSize = Toolkit.getDefaultToolkit().getScreenSize();
+     final Rectangle desktopBounds = GraphicsEnvironment.getLocalGraphicsEnvironment( ).getMaximumWindowBounds( ); 
+    
+    // Respect any existing bounds
     if (bounds.width != 0 && bounds.height != 0) {
       theFrame.setSize(new Dimension(Math.abs(bounds.width),Math.abs(bounds.height)));
     }
     theFrame.setLocation(bounds.getLocation());
-    if (theFrame.getLocation().x + theFrame.getSize().width
-      > maxSize.width) {
-      theFrame.setSize(maxSize.width - theFrame.getLocation().x,
-                       theFrame.getSize().height);
+    
+    // Reduce size to fit on desktop
+    int width = theFrame.getSize().width > desktopBounds.width ? desktopBounds.width : theFrame.getSize().width;
+    int height = theFrame.getSize().height > desktopBounds.height ? desktopBounds.height : theFrame.getSize().height;
+    if (width != theFrame.getSize().width || height != theFrame.getSize().height) {
+      theFrame.setSize(width, height);
     }
-    if (theFrame.getLocation().y + theFrame.getSize().height
-      > maxSize.height) {
-      theFrame.setSize(theFrame.getSize().width,
-                       maxSize.height - theFrame.getLocation().y);
+    
+    // Slide whole window onto desktop if any part off desktop
+    int x = theFrame.getLocation().x;
+    int y = theFrame.getLocation().y;
+    
+    if (x < desktopBounds.x) x = desktopBounds.x;
+    if (y < desktopBounds.y) y = desktopBounds.y;
+    
+    if (x + theFrame.getSize().width > desktopBounds.x + desktopBounds.width) {
+      x = (desktopBounds.x + desktopBounds.width) - theFrame.getSize().width;
+    }
+    if (y + theFrame.getSize().height > desktopBounds.y + desktopBounds.height) {
+      y = (desktopBounds.y + desktopBounds.height) - theFrame.getSize().height;
+    }    
+    if (x != theFrame.getLocation().x || y != theFrame.getLocation().y) {
+      theFrame.setLocation(x, y);
     }
   }
+
 }
