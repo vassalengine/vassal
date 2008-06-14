@@ -35,6 +35,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -61,14 +63,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeWillExpandListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -89,10 +92,12 @@ import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ui.ServerStatusView;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.TranslateVassalAction;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ComponentSplitter;
@@ -109,6 +114,7 @@ public class ModuleManagerWindow extends JFrame {
   private static final long serialVersionUID = 1L;
 
   private static final String SHOW_STATUS_KEY = "showServerStatus";
+  private static final String DIVIDER_LOCATION_KEY = "moduleManagerDividerLocation";
   private static final int COLUMNS = 3;
   private static final int KEY_COLUMN = 0;
   private static final int VERSION_COLUMN = 1;
@@ -130,12 +136,14 @@ public class ModuleManagerWindow extends JFrame {
   private ComponentSplitter.SplitPane serverStatusView;
   
   private MyTreeNode rootNode;
-  private JXTreeTable tree;
+  private MyTree tree;
   private MyTreeTableModel treeModel;
   private MyTreeNode selectedNode;
 
   private long lastExpansionTime;
   private TreePath lastExpansionPath;
+  
+  private IntConfigurer dividerLocationConfig;
 
   private static final long doubleClickInterval;
   static {
@@ -205,6 +213,9 @@ public class ModuleManagerWindow extends JFrame {
       new BooleanConfigurer(SHOW_STATUS_KEY, null, Boolean.FALSE);
     Prefs.getGlobalPrefs().addOption(null, serverStatusConfig); 
 
+    dividerLocationConfig = new IntConfigurer(DIVIDER_LOCATION_KEY, null, -10);
+    Prefs.getGlobalPrefs().addOption(null, dividerLocationConfig);
+    
     toolsMenu.add(new CheckBoxMenuItemProxy(new AbstractAction(
                    Resources.getString("Chat.server_status")) {
       private static final long serialVersionUID = 1L;
@@ -213,6 +224,9 @@ public class ModuleManagerWindow extends JFrame {
         serverStatusView.toggleVisibility();
         serverStatusConfig.setValue(
           serverStatusConfig.booleanValue() ? Boolean.FALSE : Boolean.TRUE);
+        if (serverStatusView.isVisible()) {
+          setDividerLocation(getPreferredDividerLocation());        
+        }
       }
     }, serverStatusConfig.booleanValue()));
  
@@ -324,15 +338,46 @@ public class ModuleManagerWindow extends JFrame {
     serverStatusView = new ComponentSplitter().splitRight(
       moduleControls, serverStatusControls, false);
     serverStatusView.revalidate();
-
+    
     // show the server status controls according to the prefs
-    if (serverStatusConfig.booleanValue()) serverStatusView.showComponent();
-
+    if (serverStatusConfig.booleanValue()) {
+      serverStatusView.showComponent();
+    }
+    
+    setDividerLocation(getPreferredDividerLocation());
+    serverStatusView.addPropertyChangeListener("dividerLocation", new PropertyChangeListener(){
+      public void propertyChange(PropertyChangeEvent e) {
+        setPreferredDividerLocation((Integer) e.getNewValue());
+      }});
+    
     final Rectangle r = Info.getScreenBounds(this);
     serverStatusControls.setPreferredSize(
       new Dimension((int) (r.width / 3.5), 0));
 
     setSize(3 * r.width / 4, 3 * r.height / 4);
+    
+    // Save/load the window position and size in prefs
+    final PositionOption option =
+      new PositionOption(PositionOption.key + "ModuleManager", this);
+    Prefs.getGlobalPrefs().addOption(option);
+  }
+  
+  protected void setDividerLocation(int i) {
+    final int loc = i;
+    Runnable r = new Runnable() {
+      public void run() {
+        serverStatusView.setDividerLocation(loc);
+      }
+    };
+    SwingUtilities.invokeLater(r); 
+  }
+  
+  protected void setPreferredDividerLocation(int i) {
+    dividerLocationConfig.setValue(new Integer(i));
+  }
+  
+  protected int getPreferredDividerLocation() {
+    return dividerLocationConfig.getIntValue(500);
   }
   
   protected void buildTree() {
@@ -397,7 +442,7 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     treeModel = new MyTreeTableModel(rootNode);
-    tree = new JXTreeTable(treeModel);
+    tree = new MyTree(treeModel);
     
     tree.setRootVisible(false);
     tree.setEditable(false);
@@ -655,6 +700,29 @@ public class ModuleManagerWindow extends JFrame {
     
     public Object getValueAt(Object node, int column)  {
       return ((MyTreeNode) node).getValueAt(column);
+    }
+  }
+  
+  /**
+   * Custom implementation of JXTreeTable
+   * Fix for bug on startup generating illegal column numbers
+   *
+   */
+  private class MyTree extends JXTreeTable {
+
+    private static final long serialVersionUID = 1L;
+
+    public MyTree(MyTreeTableModel treeModel) {
+      super(treeModel);
+    }
+    
+    /**
+     * There appears to be a bug/strange interaction between JXTreetable and the ComponentSplitter
+     * when the Component
+     */
+    public String getToolTipText(MouseEvent event) {
+      if (getComponentAt(event.getPoint().x, event.getPoint().y) == null) return null;  
+      return super.getToolTipText(event);
     }
   }
   

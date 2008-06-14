@@ -312,8 +312,9 @@ public class ComponentSplitter {
             ancestor.validate();
           }
         }
-        Runnable runnable = new Runnable() {
-          public void run() {
+        // Running later causes race conditions in the Module Manager
+        //Runnable runnable = new Runnable() {
+        //  public void run() {
             ((BasicSplitPaneUI) getUI()).getDivider().setVisible(false);
             getHideableComponent().setVisible(false);
             switch (hideablePosition) {
@@ -325,9 +326,9 @@ public class ComponentSplitter {
             case HIDE_BOTTOM:
               setDividerLocation(1.0);
             }
-          }
-        };
-        SwingUtilities.invokeLater(runnable);
+        //  }
+        //};
+        //SwingUtilities.invokeLater(runnable);
         SplitPane split = getTransverseSplit();
         if (split != null) {
           split.hideTransverseComponent(this);
