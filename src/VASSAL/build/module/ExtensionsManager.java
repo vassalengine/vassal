@@ -26,16 +26,12 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 
 /**
- * Convenience class for managing extensions relative to a module file
- * Create extension directory as lazily as possible
+ * Convenience class for managing extensions relative to a module file Create extension directory as lazily as possible
  * 
  * @author rodneykinney
  * 
  */
 public class ExtensionsManager {
-  // Preferences key for the list of extensions to load
-  public static final String SPECIFY_DIR_IN_PREFS = "specifyExtensionDirInPrefs"; //$NON-NLS-1$
-  public static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
   private File moduleFile;
   private File extensionsDir;
   private File inactiveDir;
@@ -62,32 +58,31 @@ public class ExtensionsManager {
    * Manage global extensions
    */
   public ExtensionsManager(String dir) {
-    extensionsDir = ensureExists(new File(Info.getHomeDir(),dir));
+    extensionsDir = ensureExists(new File(Info.getHomeDir(), dir));
   }
 
   public File getExtensionsDirectory(boolean mustExist) {
     if (extensionsDir == null) {
       File dir;
-      if (GlobalOptions.getInstance() != null && "true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
-        dir = new File(GameModule.getGameModule().getPrefs().getOption(EXTENSION_DIR).getValueString());
+      String dirName = moduleFile.getPath();
+      int index = dirName.lastIndexOf('.');
+      if (index > 0) {
+        dirName = dirName.substring(0, index);
       }
-      else {
-        String dirName = moduleFile.getPath();
-        int index = dirName.lastIndexOf('.');
-        if (index > 0) {
-          dirName = dirName.substring(0, index);
-        }
-        dir = new File(dirName + "_ext");
-        if (mustExist) {
-          dir = ensureExists(dir);
-        }
+      dir = new File(dirName + "_ext");
+      if (mustExist) {
+        dir = ensureExists(dir);
       }
       extensionsDir = dir;
     }
-    if (mustExist && ! extensionsDir.exists()) {
+    if (mustExist && !extensionsDir.exists()) {
       extensionsDir = ensureExists(extensionsDir);
     }
     return extensionsDir;
+  }
+
+  public void setExtensionsDirectory(File dir) {
+    extensionsDir = dir == null ? null : ensureExists(dir);
   }
 
   protected File ensureExists(File dir) {
@@ -109,7 +104,7 @@ public class ExtensionsManager {
         inactiveDir = ensureExists(inactiveDir);
       }
     }
-    if (mustExist && ! inactiveDir.exists()) {
+    if (mustExist && !inactiveDir.exists()) {
       inactiveDir = ensureExists(inactiveDir);
     }
     return inactiveDir;
@@ -136,7 +131,7 @@ public class ExtensionsManager {
     File dir = getInactiveExtensionsDirectory(false);
     return dir.exists() ? Arrays.asList(dir.listFiles(filter)) : new ArrayList<File>();
   }
-  
+
   public boolean isExtensionActive(File extension) {
     for (File f : getActiveExtensions()) {
       if (f.getName().equals(extension.getName())) {
@@ -145,5 +140,4 @@ public class ExtensionsManager {
     }
     return false;
   }
-  
 }

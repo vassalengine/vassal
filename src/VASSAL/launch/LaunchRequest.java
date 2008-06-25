@@ -258,7 +258,7 @@ public class LaunchRequest implements Serializable {
         die("LaunchRequest.missing_argument", args[g.getOptind()-1]); 
         break;
       case '?':
-        die("LaunchRequest.unrecognized_option", args[g.getOptind()]);
+        die("LaunchRequest.unrecognized_option", args[g.getOptind()-1]);
         break;
       default:
         // should never happen

@@ -38,6 +38,9 @@ import VASSAL.tools.SequenceEncoder;
 
 public class ExtensionsLoader implements CommandEncoder {
   public static final String COMMAND_PREFIX = "EXT\t"; //$NON-NLS-1$
+  // Preferences key for the list of extensions to load
+  public static final String SPECIFY_DIR_IN_PREFS = "specifyExtensionDirInPrefs"; //$NON-NLS-1$
+  public static final String EXTENSION_DIR = "extensionDIR"; //$NON-NLS-1$
 
   protected Set<String> loadedExtensions = new HashSet<String>();
   protected HashMap<String,String> loadedIds = new HashMap<String,String>();
@@ -46,19 +49,24 @@ public class ExtensionsLoader implements CommandEncoder {
   protected ExtensionsManager globalExtMgr;
 
   public void addTo(GameModule mod) {
-    if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(ExtensionsManager.SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
-      final DirectoryConfigurer config = new DirectoryConfigurer(ExtensionsManager.EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory")); //$NON-NLS-1$
+    extMgr = new ExtensionsManager(mod);
+    globalExtMgr = new ExtensionsManager("ext");
+    mod.addCommandEncoder(this);
+    if ("true".equals(GlobalOptions.getInstance().getAttributeValueString(SPECIFY_DIR_IN_PREFS))) { //$NON-NLS-1$
+      final DirectoryConfigurer config = new DirectoryConfigurer(EXTENSION_DIR, Resources.getString("ExtensionsLoader.extensions_directory")); //$NON-NLS-1$
       config.setValue((Object) null);
       GameModule.getGameModule().getPrefs().addOption(Resources.getString("ExtensionsLoader.extensions_tab"), config); //$NON-NLS-1$
+      extMgr.setExtensionsDirectory(config.getFileValue());
+      if (config.getFileValue() == null) {
+        config.setValue(extMgr.getExtensionsDirectory(false).getAbsoluteFile());
+      }
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
+          extMgr.setExtensionsDirectory((File) evt.getNewValue());
           addExtensions();
         }
       });
     }
-    extMgr = new ExtensionsManager(mod);
-    globalExtMgr = new ExtensionsManager("ext");
-    mod.addCommandEncoder(this);
     addExtensions();
   }
 
