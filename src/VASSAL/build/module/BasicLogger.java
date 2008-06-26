@@ -102,7 +102,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     mod.getGameState().addGameComponent(this);
 
     final MenuManager mm = MenuManager.getInstance();
+    newLogAction.putValue(Action.MNEMONIC_KEY,(int)Resources.getString("BasicLogger.begin_logfile.shortcut").charAt(0));
     mm.addAction("BasicLogger.begin_logfile", newLogAction);
+    endLogAction.putValue(Action.MNEMONIC_KEY,(int)Resources.getString("BasicLogger.end_logfile.shortcut").charAt(0));
     mm.addAction("BasicLogger.end_logfile", endLogAction);
 
     JButton button = mod.getToolBar().add(undoAction);

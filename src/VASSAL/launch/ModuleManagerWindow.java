@@ -194,6 +194,7 @@ public class ModuleManagerWindow extends JFrame {
     // file menu
     final MenuProxy fileMenu =
       new MenuProxy(Resources.getString("General.file"));
+    fileMenu.setMnemonic(Resources.getString("General.file.shortcut").charAt(0));
     
     fileMenu.add(mm.addKey("Main.play_module"));
     fileMenu.add(mm.addKey("Main.edit_module"));
@@ -235,6 +236,7 @@ public class ModuleManagerWindow extends JFrame {
     // help menu
     final MenuProxy helpMenu =
       new MenuProxy(Resources.getString("General.help"));
+    helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
     helpMenu.add(mm.addKey("General.help"));
     helpMenu.add(mm.addKey("Main.tour"));

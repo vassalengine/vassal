@@ -93,7 +93,7 @@ public class GameState implements CommandEncoder {
         loadGame();
       }
     };
-//    loadGame.setProperty(Action.MNEMONIC_KEY, 'L');
+    loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
     saveGame = new AbstractAction(Resources.getString("GameState.save_game")) {
       private static final long serialVersionUID = 1L;
@@ -102,7 +102,7 @@ public class GameState implements CommandEncoder {
         saveGame();
       }
     };
-//    saveGame.setProperty(Action.MNEMONIC_KEY, 'S');
+    saveGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game.shortcut").charAt(0));
 
     newGame = new AbstractAction(Resources.getString("GameState.new_game")) {
       private static final long serialVersionUID = 1L;
@@ -112,7 +112,7 @@ public class GameState implements CommandEncoder {
         setup(true);
       }
     };
-//    newGame.setProperty(Action.MNEMONIC_KEY, 'N');
+    newGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.new_game.shortcut").charAt(0));
 
     closeGame = new AbstractAction(
         Resources.getString("GameState.close_game")) {
@@ -122,7 +122,7 @@ public class GameState implements CommandEncoder {
         setup(false);
       }
     };
-//    closeGame.setProperty(Action.MNEMONIC_KEY, 'C');
+    closeGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.close_game.shortcut").charAt(0));
 
     final MenuManager mm = MenuManager.getInstance();
     mm.addAction("GameState.new_game", newGame);

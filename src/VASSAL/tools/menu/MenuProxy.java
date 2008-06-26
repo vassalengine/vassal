@@ -29,6 +29,7 @@ import javax.swing.JMenu;
  */
 public class MenuProxy extends AbstractParent<JMenu> {
   private String text;
+  private char mnemonic=0;
 
   public MenuProxy() { }
 
@@ -65,6 +66,9 @@ public class MenuProxy extends AbstractParent<JMenu> {
   @Override
   public JMenu createPeer() {
     final JMenu menu = new JMenu(text);
+    if (mnemonic != 0) {
+      menu.setMnemonic(mnemonic);
+    }
 
     for (ChildProxy<?> child : children) {
       final JComponent peer = child.createPeer();
@@ -73,5 +77,14 @@ public class MenuProxy extends AbstractParent<JMenu> {
     
     peers.add(new WeakReference<JMenu>(menu, queue));
     return menu;
+  }
+
+  public void setMnemonic(final char mnemonic) {
+    this.mnemonic = mnemonic;
+    forEachPeer(new Functor<JMenu>() {
+         public void apply(JMenu menu) {
+           menu.setMnemonic(mnemonic);
+         }
+    });
   }
 }

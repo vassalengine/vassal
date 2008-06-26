@@ -65,6 +65,7 @@ public class PlayerWindow extends JFrame {
     // file menu
     final MenuProxy fileMenu =
       new MenuProxy(Resources.getString("General.file"));
+    fileMenu.setMnemonic(Resources.getString("General.file.shortcut").charAt(0));
 
     fileMenu.add(mm.addMarker("PredefinedSetup.start"));
     fileMenu.add(mm.addMarker("PredefinedSetup.end"));
@@ -93,6 +94,7 @@ public class PlayerWindow extends JFrame {
     // help menu
     final MenuProxy helpMenu =
       new MenuProxy(Resources.getString("General.help"));
+    helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
    
     helpMenu.add(mm.addMarker("Documentation.VASSAL.start"));
     helpMenu.add(mm.addKey("General.help"));

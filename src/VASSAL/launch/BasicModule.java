@@ -112,8 +112,6 @@ public class BasicModule extends GameModule {
 
     MenuManager.getInstance().addAction("Prefs.edit_preferences",
       getPrefs().getEditor().getEditAction());
-
-//    GameModule.getGameModule().getFileMenu().add(getPrefs().getEditor().getEditAction());
   }
 
   public void build(Element e) {

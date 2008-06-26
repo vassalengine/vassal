@@ -223,7 +223,7 @@ public class PrefsEditor {
           dialog.setVisible(true);
         }
       };
-      editAction.putValue(Action.MNEMONIC_KEY, new Integer('P'));
+      editAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("Prefs.edit_preferences").charAt(0));
     }
     return editAction;
   }

@@ -111,6 +111,7 @@ public abstract class EditorWindow extends JFrame {
     else {
       final MenuProxy fileMenu =
         new MenuProxy(Resources.getString("General.file"));
+      fileMenu.setMnemonic(Resources.getString("General.file.shortcut").charAt(0));
       fileMenu.add(mm.addKey("Editor.save"));
       fileMenu.add(mm.addKey("Editor.save_as"));
       fileMenu.addSeparator();
@@ -121,6 +122,7 @@ public abstract class EditorWindow extends JFrame {
     // edit menu
     final MenuProxy editMenu =
       new MenuProxy(Resources.getString("General.edit"));
+    editMenu.setMnemonic(Resources.getString("General.edit.shortcut").charAt(0));
     
     editMenu.add(mm.addKey("Editor.cut"));
     editMenu.add(mm.addKey("Editor.copy"));
@@ -154,6 +156,7 @@ public abstract class EditorWindow extends JFrame {
     else {
       final MenuProxy helpMenu =
         new MenuProxy(Resources.getString("General.help"));
+      helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
       helpMenu.add(mm.addKey("General.help"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.reference_manual"));
       helpMenu.addSeparator();
