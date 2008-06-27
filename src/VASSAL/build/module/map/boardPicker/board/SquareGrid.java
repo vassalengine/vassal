@@ -32,6 +32,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.Map;
+import static java.lang.Math.*;
 
 import javax.swing.JButton;
 
@@ -51,6 +52,7 @@ import VASSAL.configure.VisibilityCondition;
 public class SquareGrid extends AbstractConfigurable implements GeometricGrid, GridEditor.EditableGrid {
   protected double dx = 48.0;
   protected double dy = 48.0;
+  protected int snapScale = 0;
   protected Point origin = new Point(24, 24);
   protected boolean visible = false;
   protected boolean edgesLegal = false;
@@ -325,12 +327,12 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   public int range(Point p1, Point p2) {
     if (rangeOption.equals(RANGE_METRIC)) {
-      return Math.max(Math.abs((int) Math.floor((p2.x - p1.x) / dx + 0.5))
-                      , Math.abs((int) Math.floor((p2.y - p1.y) / dy + 0.5)));
+      return max(abs((int) floor((p2.x - p1.x) / dx + 0.5))
+                      , abs((int) floor((p2.y - p1.y) / dy + 0.5)));
     }
     else {
-      return Math.abs((int) Math.floor((p2.x - p1.x) / dx + 0.5))
-          + Math.abs((int) Math.floor((p2.y - p1.y) / dy + 0.5));
+      return abs((int) floor((p2.x - p1.x) / dx + 0.5))
+          + abs((int) floor((p2.y - p1.y) / dy + 0.5));
     }
   }
   
@@ -344,7 +346,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
       for (int x = -range; x < range + 1; x++) {
         int x1 = (int) (x * dx);
-//        int yRange = range - Math.abs(x); /* This creates a diamond-shaped range.  Configuration option?  */
+//        int yRange = range - abs(x); /* This creates a diamond-shaped range.  Configuration option?  */
         int yRange = range;
         for (int y = -yRange; y < yRange + 1; y++) {
           int y1 = (int) (y * dy);
@@ -373,43 +375,59 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 // (1,0) is the east edge of the origin cell
 // (1,1) is the lower-right corner of the origin cell
 
-    int nx = (int) Math.round((p.x - origin.x) / (.5 * dx));
-    int ny = (int) Math.round((p.y - origin.y) / (.5 * dy));
-    int nx2 = (int) Math.round((p.x - origin.x - .25 * dx) / (.5 * dx));
-    int ny2 = (int) Math.round((p.y - origin.y - .25 * dy) / (.5 * dy));
-
+    int offsetX = p.x - origin.x;
+    int nx = (int) round(offsetX / (.5 * dx));
+    int offsetY = p.y - origin.y;
+    int ny = (int) round(offsetY / (.5 * dy));
+    
+    Point snap = null;
 
     if (cornersLegal && edgesLegal) {
       ;
     }
     else if (cornersLegal) {
       if (ny % 2 == 0) {  // on a cell center
-        nx = 2 * (int) Math.round((float) nx * .5);
+        nx = 2 * (int) round(offsetX/dx);
       }
       else { // on a corner
-        nx = 1 + 2 * (int) Math.round((float) (nx - 1) * .5);
+        nx = 1 + 2 * (int) round(offsetX/dx - .5);
       }
     }
     else if (edgesLegal) {
       if (ny % 2 == 0) {
         if (nx % 2 == 0) { // Cell center
-          nx = 2 * (int) Math.round((float) nx * .5);
+          nx = 2 * (int) round(offsetX/dx);
         }
         else { // Vertical edge
           ;
         }
       }
       else { // Horizontal edge
-        nx = 2 * (int) Math.round((float) nx * .5);
+        nx = 2 * (int) round(offsetX/dx);
       }
     }
     else {
-//      nx = 2 * (int) Math.round((float) nx * .5);
-//      ny = 2 * (int) Math.round((float) ny * .5);
-      nx = 2 * (int) Math.round((float) nx2 * .5);
-      ny = 2 * (int) Math.round((float) ny2 * .5);
+      nx = 2*(int)round(offsetX/dx);
+      ny = 2*(int)round(offsetY/dy);
+      if (snapScale > 0) {
+        int deltaX = offsetX - (int)round(nx*dx/2);
+        deltaX = (int)round(deltaX/(.5*dx/snapScale));
+        deltaX = max(deltaX,1-snapScale);
+        deltaX = min(deltaX,snapScale-1);
+        deltaX = (int)round(deltaX*.5*dx/snapScale);
+        int deltaY = offsetY - (int)round(ny*dy/2);
+        deltaY = (int)round(deltaY/(.5*dy/snapScale));
+        deltaY = max(deltaY,1-snapScale);
+        deltaY = min(deltaY,snapScale-1);
+        deltaY = (int)round(deltaY*.5*dy/snapScale);
+        snap = new Point((int)round(nx*dx/2 + deltaX),(int)round(ny*dy/2+deltaY));
+        snap.translate(origin.x, origin.y);
+      }
     }
-    return new Point(origin.x + (int) (nx * dx / 2), origin.y + (int) (ny * dy / 2));
+    if (snap == null) {
+      snap = new Point(origin.x + (int)round(nx * dx / 2), origin.y + (int) round(ny * dy / 2));
+    }
+    return snap;
   }
 
   public boolean isLocationRestricted(Point p) {
@@ -469,11 +487,11 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     double deltaX = scale * dx;
     double deltaY = scale * dy;
 
-    double xmin = reversed ? bounds.x + scale * origin.x + bounds.width - deltaX * Math.round((bounds.x + scale * origin.x + bounds.width - region.x) / deltaX) + deltaX / 2
-        : bounds.x + scale * origin.x + deltaX * Math.round((region.x - bounds.x - scale * origin.x) / deltaX) + deltaX / 2;
+    double xmin = reversed ? bounds.x + scale * origin.x + bounds.width - deltaX * round((bounds.x + scale * origin.x + bounds.width - region.x) / deltaX) + deltaX / 2
+        : bounds.x + scale * origin.x + deltaX * round((region.x - bounds.x - scale * origin.x) / deltaX) + deltaX / 2;
     double xmax = region.x + region.width;
-    double ymin = reversed ? bounds.y + scale * origin.y + bounds.height - deltaY * Math.round((bounds.y + scale * origin.y + bounds.height - region.y) / deltaY) + deltaY / 2
-        : bounds.y + scale * origin.y + deltaY * Math.round((region.y - bounds.y - scale * origin.y) / deltaY) + deltaY / 2;
+    double ymin = reversed ? bounds.y + scale * origin.y + bounds.height - deltaY * round((bounds.y + scale * origin.y + bounds.height - region.y) / deltaY) + deltaY / 2
+        : bounds.y + scale * origin.y + deltaY * round((region.y - bounds.y - scale * origin.y) / deltaY) + deltaY / 2;
     double ymax = region.y + region.height;
 
     Point p1 = new Point();
@@ -481,21 +499,21 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     g2d.setColor(color == null ? Color.black : color);
     // x is the location of a vertical line
     for (double x = xmin; x < xmax; x += deltaX) {
-      p1.move((int) Math.round(x), region.y);
-      p2.move((int) Math.round(x), region.y + region.height);
+      p1.move((int) round(x), region.y);
+      p2.move((int) round(x), region.y + region.height);
       g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
     }
     for (double y = ymin; y < ymax; y += deltaY) {
-      g2d.drawLine(region.x, (int) Math.round(y), region.x + region.width, (int) Math.round(y));
+      g2d.drawLine(region.x, (int) round(y), region.x + region.width, (int) round(y));
     }
     if (dotsVisible) {
-      xmin = reversed ? bounds.x + scale * origin.x + bounds.width - deltaX * Math.round((bounds.x + scale * origin.x + bounds.width - region.x) / deltaX)
-          : bounds.x + scale * origin.x + deltaX * Math.round((region.x - bounds.x - scale * origin.x) / deltaX);
-      ymin = reversed ? bounds.y + scale * origin.y + bounds.height - deltaY * Math.round((bounds.y + scale * origin.y + bounds.height - region.y) / deltaY)
-          : bounds.y + scale * origin.y + deltaY * Math.round((region.y - bounds.y - scale * origin.y) / deltaY);
+      xmin = reversed ? bounds.x + scale * origin.x + bounds.width - deltaX * round((bounds.x + scale * origin.x + bounds.width - region.x) / deltaX)
+          : bounds.x + scale * origin.x + deltaX * round((region.x - bounds.x - scale * origin.x) / deltaX);
+      ymin = reversed ? bounds.y + scale * origin.y + bounds.height - deltaY * round((bounds.y + scale * origin.y + bounds.height - region.y) / deltaY)
+          : bounds.y + scale * origin.y + deltaY * round((region.y - bounds.y - scale * origin.y) / deltaY);
       for (double x = xmin; x < xmax; x += deltaX) {
         for (double y = ymin; y < ymax; y += deltaY) {
-          p1.move((int) Math.round(x - .5), (int) Math.round(y - .5));
+          p1.move((int) round(x - .5), (int) round(y - .5));
           g2d.fillRect(p1.x, p1.y, 2, 2);
         }
       }
@@ -544,10 +562,10 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       if ((isPerpendicular(hp1, hp2) && isPerpendicular(hp1, hp3) && !isPerpendicular(hp2, hp3)) ||
           (isPerpendicular(hp2, hp1) && isPerpendicular(hp2, hp3) && !isPerpendicular(hp1, hp3)) ||
           (isPerpendicular(hp3, hp1) && isPerpendicular(hp3, hp2) && !isPerpendicular(hp1, hp2))) {
-        int height = Math.max(Math.abs(hp1.y-hp2.y), Math.abs(hp1.y-hp3.y));
-        int width = Math.max(Math.abs(hp1.x-hp2.x), Math.abs(hp1.x-hp3.x));
-        int top = Math.min(hp1.y, Math.min(hp2.y, hp3.y));
-        int left = Math.min(hp1.x, Math.min(hp2.x, hp3.x));
+        int height = max(abs(hp1.y-hp2.y), abs(hp1.y-hp3.y));
+        int width = max(abs(hp1.x-hp2.x), abs(hp1.x-hp3.x));
+        int top = min(hp1.y, min(hp2.y, hp3.y));
+        int left = min(hp1.x, min(hp2.x, hp3.x));
         grid.setDx(width);
         grid.setDy(height);
         setNewOrigin(new Point(left+width/2, top+height/2));
