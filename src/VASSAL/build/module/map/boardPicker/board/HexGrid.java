@@ -452,7 +452,17 @@ public class HexGrid extends AbstractConfigurable
   public Point snapToHexSide(Point p) {
     p = new Point(p);
     rotateIfSideways(p);
-    p.setLocation(sideX(p.x, p.y), sideY(p.x, p.y));
+    int x = sideX(p.x, p.y);
+    int y = sideY(p.x, p.y);
+    if (snapScale > 0) {
+      int hexX = hexX(p.x,p.y);
+      int hexY = hexY(p.x,p.y);
+      if (abs(p.x-hexX) + abs(p.y-hexY) <= abs(p.x-x)+abs(p.y-y)) {
+        x = hexX;
+        y = hexY;
+      }
+    }
+    p.setLocation(x, y);
     rotateIfSideways(p);
     return p;
   }
@@ -463,7 +473,17 @@ public class HexGrid extends AbstractConfigurable
   public Point snapToHexVertex(Point p) {
     p = new Point(p);
     rotateIfSideways(p);
-    p.setLocation(vertexX(p.x, p.y), vertexY(p.x, p.y));
+    int x = vertexX(p.x, p.y);
+    int y = vertexY(p.x, p.y);
+    if (snapScale > 0) {
+      int hexX = hexX(p.x,p.y);
+      int hexY = hexY(p.x,p.y);
+      if (abs(p.x-hexX) + abs(p.y-hexY) <= abs(p.x-x)+abs(p.y-y)) {
+        x = hexX;
+        y = hexY;
+      }
+    }
+    p.setLocation(x, y);
     rotateIfSideways(p);
     return p;
   }
