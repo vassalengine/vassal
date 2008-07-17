@@ -32,15 +32,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MovementReporter;
+import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
@@ -194,8 +197,12 @@ public class Translate extends Decorator implements TranslatablePiece {
     int y = 0;
     GamePiece outer = Decorator.getOutermost(this);
     
+    Board b = outer.getMap().findBoard(p);
     try {
       x = Integer.parseInt(xDist.getText(outer)) + Integer.parseInt(xIndex.getText(outer)) * Integer.parseInt(xOffset.getText(outer));
+      if (b != null) {
+        x = (int)Math.round(b.getMagnification()*x);
+      }
     }
     catch (Exception e) {
       
@@ -203,6 +210,9 @@ public class Translate extends Decorator implements TranslatablePiece {
     
     try {
       y = Integer.parseInt(yDist.getText(outer)) + Integer.parseInt(yIndex.getText(outer)) * Integer.parseInt(yOffset.getText(outer));
+      if (b != null) {
+        y = (int)Math.round(b.getMagnification()*y);
+      }
     }
     catch (Exception e) {
       

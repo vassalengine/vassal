@@ -577,4 +577,12 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     }
     
   }
+
+  public int getSnapScale() {
+    return snapScale;
+  }
+
+  public void setSnapScale(int snapScale) {
+    this.snapScale = snapScale;
+  }
 }

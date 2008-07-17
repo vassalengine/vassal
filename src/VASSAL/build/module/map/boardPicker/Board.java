@@ -83,6 +83,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   protected Color color = null;
   protected MapGrid grid = null;
   protected Map map;
+  protected double magnification = 1.0;
 
   @Deprecated protected String boardName = "Board 1";
   @Deprecated protected Image boardImage;
@@ -285,8 +286,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public void drawRegion(final Graphics g,
                          final Point location,
                          Rectangle visibleRect,
-                         final double zoom,
+                         double zoom,
                          final Component obs) {
+    zoom *= magnification;
     final Rectangle bounds =
       new Rectangle(location.x, location.y,
                     Math.round(boundaries.width * (float) zoom),
@@ -494,6 +496,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
     if (reversed) {
       p = new Point(bounds().width - p.x, bounds().height - p.y);
     }
+    if (magnification != 1.0) {
+      p.x = (int) Math.round(p.x/magnification);
+      p.y = (int) Math.round(p.y/magnification);
+    }
     return p;
   }
 
@@ -501,7 +507,14 @@ public class Board extends AbstractConfigurable implements GridContainer {
    * If this board is reversed, return the location in reversed coordinates
    */
   public Point globalCoordinates(Point p) {
-    return localCoordinates(p);
+    if (magnification != 1.0) {
+      p.x = (int)Math.round(p.x*magnification);
+      p.y = (int)Math.round(p.y*magnification);
+    }
+    if (reversed) {
+      p = new Point(bounds().width - p.x, bounds().height - p.y);
+    }
+    return p;
   }
 
   public void setGrid(MapGrid mg) {
@@ -582,6 +595,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public Rectangle bounds() {
     if (imageFile != null && boardImageOp != null && !fixedBoundaries) {
       boundaries.setSize(boardImageOp.getSize());
+      boundaries.setSize((int)Math.round(magnification*boundaries.width), (int)Math.round(magnification*boundaries.height));
       fixedBoundaries = true;
     }
     return new Rectangle(boundaries);
@@ -679,5 +693,15 @@ public class Board extends AbstractConfigurable implements GridContainer {
       }
       gameStarted = gameStarting;
     }
+  }
+
+  public double getMagnification() {
+    return magnification;
+  }
+
+  public void setMagnification(double magnification) {
+    this.magnification = magnification;
+    fixedBoundaries = false;
+    bounds();
   }
 }
