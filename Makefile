@@ -14,17 +14,17 @@ VERSION:=$(VNUM)-svn$(SVNVERSION)
 #VERSION:=$(VNUM)-beta2
 
 CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
-JAVAPATH:=/usr/lib/jvm/java-1.6.0-sun
+#JAVAPATH:=/usr/lib/jvm/java-1.6.0-sun
 
 #CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':')
 #JAVAPATH:=/usr/lib/jvm/java-1.5.0-sun
 
-JC:=$(JAVAPATH)/bin/javac
+JC:=/usr/bin/javac
 JCFLAGS:=-d $(CLASSDIR) -source 5 -target 5 -Xlint -classpath $(CLASSPATH) \
 				 -sourcepath $(SRCDIR)
 
-JAR:=$(JAVAPATH)/bin/jar
-JDOC:=$(JAVAPATH)/bin/javadoc
+JAR:=/usr/bin/jar
+JDOC:=/usr/bin/javadoc
 
 NSIS:=PATH=$$PATH:~/java/nsis makensis
 
