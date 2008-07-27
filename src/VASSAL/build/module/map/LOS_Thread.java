@@ -671,6 +671,9 @@ public class LOS_Thread extends AbstractConfigurable implements
       retainAfterRelease = true;
 
       Point p = e.getPoint();
+      
+      map.scrollAtEdge(p, 15);
+      
       if (Boolean.TRUE.equals
           (GameModule.getGameModule().getPrefs().getValue(SNAP_LOS))
           || snapEnd) {
@@ -678,7 +681,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       }
       arrow = map.mapCoordinates(p);
       
-      String location = map.locationName(arrow); 
+      String location = map.localizedLocationName(arrow); 
       if (!checkList.contains(location) && !location.equals(anchorLocation)) {
         checkList.add(location);
         lastLocation = location;
