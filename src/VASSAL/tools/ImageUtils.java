@@ -288,19 +288,17 @@ public class ImageUtils {
       final ImageReader reader = i.next();
       try {
         reader.setInput(stream);
-        return new Dimension(reader.getWidth(0), reader.getHeight(0));
+        final Dimension size =
+          new Dimension(reader.getWidth(0), reader.getHeight(0));
+        in.close();
+        return size;
       }
       finally {
         reader.dispose();
       }
     }
     finally {
-      try {
-        in.close();
-      }
-      catch (IOException e) {
-        ErrorLog.warn(e);
-      }
+      IOUtils.closeQuietly(in);
     }
   }
 
@@ -362,6 +360,7 @@ public class ImageUtils {
             }
             catch (IOException e) {
               // ignore, we throw an OutOfMemoryError at the bottom 
+              ErrorLog.log(e);
             }
             break;
           case RAM:
@@ -371,6 +370,7 @@ public class ImageUtils {
             }
             catch (OutOfMemoryError e) {
               // ignore, we throw an OutOfMemoryError at the bottom 
+              ErrorLog.log(e);
             }
             break;
           default:
@@ -380,14 +380,11 @@ public class ImageUtils {
         finally {
           reader.dispose();
         }
+
+        stream.close();
       }
       finally {
-        try {
-          stream.close();
-        }
-        catch (IOException e) {
-          ErrorLog.warn(e);
-        }
+        IOUtils.closeQuietly(stream);
       }
     }
 
@@ -431,6 +428,7 @@ public class ImageUtils {
         }
         catch (IOException e) {
           // ignore, we throw an OutOfMemoryError at bottom
+          ErrorLog.log(e);
         }
         break;
       case RAM:
@@ -439,6 +437,7 @@ public class ImageUtils {
         }
         catch (OutOfMemoryError e) {
           // ignore, we throw an OutOfMemoryError at bottom
+          ErrorLog.log(e);
         }
         break;
       default:
@@ -463,6 +462,7 @@ public class ImageUtils {
         }
         catch (IOException e) {
           // ignore, we throw an OutOfMemoryError at bottom
+          ErrorLog.log(e);
         }
         break;
       case RAM:
@@ -475,6 +475,7 @@ public class ImageUtils {
         }
         catch (OutOfMemoryError e) {
           // ignore, we throw an OutOfMemoryError at bottom
+          ErrorLog.log(e);
         }
         break;
       default:
@@ -511,5 +512,24 @@ public class ImageUtils {
     g.drawImage(src, 0, 0, null);
     g.dispose();
     return dst;
+  }
+
+  /**
+   * Transform an <code>Image</code> to a <code>BufferedImage</code>.
+   * 
+   * @param src the <code>Image</code> to transform
+   */
+  public static BufferedImage toBufferedImage(Image src) {
+    if (src == null) return null;
+    if (src instanceof BufferedImage) return (BufferedImage) src;
+
+    final BufferedImage bi = new BufferedImage(src.getWidth(null),
+                                               src.getHeight(null),
+                                               BufferedImage.TYPE_INT_ARGB);
+    final Graphics2D g = bi.createGraphics();
+    g.drawImage(src, 0, 0, null);
+    g.dispose();
+
+    return bi;
   }
 }
