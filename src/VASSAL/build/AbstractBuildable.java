@@ -48,7 +48,7 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
 	 * Build this component by getting all XML attributes of the XML element and
 	 * calling {@link #setAttribute} with the String value of the attribute
 	 */
-	public void build(org.w3c.dom.Element e) {
+	public void build(Element e) {
 		if (e != null) {
 			NamedNodeMap n = e.getAttributes();
 			for (int i = 0; i < n.getLength(); ++i) {
