@@ -182,7 +182,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     if (myRotation != null) {
       Point2D myPosition = getPosition().getLocation();
       Point2D p2d = p.getLocation();
-      p2d = AffineTransform.getRotateInstance(myRotation.getAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(p2d, null);
+      p2d = AffineTransform.getRotateInstance(myRotation.getCumulativeAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(p2d, null);
       p = new Point((int) p2d.getX(), (int) p2d.getY());
     }
     if (!Boolean.TRUE.equals(Decorator.getOutermost(this).getProperty(Properties.IGNORE_GRID))) {

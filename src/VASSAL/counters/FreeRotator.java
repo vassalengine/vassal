@@ -168,6 +168,20 @@ public class FreeRotator extends Decorator
   public double getAngle() {
     return useUnrotatedShape ? 0.0 : validAngles[angleIndex];
   }
+  
+  public double getCumulativeAngle() {  
+    double angle = getAngle();
+    // Add cumulative angle of any other FreeRotator trait in this piece
+    FreeRotator nextRotation = (FreeRotator) Decorator.getDecorator(getInner(), FreeRotator.class);
+    if (nextRotation != null) {
+      angle += nextRotation.getCumulativeAngle();
+    }
+    return angle;
+  }
+  
+  public double getCumulativeAngleInRadians() {
+    return -PI_180 * getCumulativeAngle();
+  }
 
   public void setAngle(double angle) {
     if (validAngles.length == 1) {
