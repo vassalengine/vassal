@@ -18,16 +18,28 @@
  */
 package VASSAL.tools;
 
+////////////////////////////////////////////////////////
+// These imports are used in deprecated methods only. //
+////////////////////////////////////////////////////////
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
+import java.awt.image.FilteredImageSource;
+import java.awt.Toolkit;
+import java.awt.Rectangle;
+import java.util.Collection;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.zip.ZipInputStream;
+import javax.swing.ImageIcon;
+import VASSAL.tools.imageop.Op;
+////////////////////////////////////////////////////////
+
 import static VASSAL.tools.IterableEnumeration.iterate;
 
 import java.applet.AudioClip;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.image.FilteredImageSource;
-import java.awt.image.ImageFilter;
-import java.awt.image.ImageProducer;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,34 +52,24 @@ import java.security.PermissionCollection;
 import java.security.SecureClassLoader;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-
-import javax.swing.ImageIcon;
-
 import sun.applet.AppletAudioClip;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.RotateScaleOp;
-import VASSAL.tools.imageop.ScaleOp;
 
 /**
  * Wrapper around a Zip archive with methods to cache images
  */
-public class DataArchive extends SecureClassLoader {
+public class DataArchive extends SecureClassLoader implements Closeable {
   protected ZipFile archive = null;
+
   protected List<DataArchive> extensions = new ArrayList<DataArchive>();
 
+// FIXME: this needs to become a ConcurrentSoftHashMap like for images
   private final Map<String,AudioClip> soundCache =
     new HashMap<String,AudioClip>();
 
@@ -81,7 +83,6 @@ public class DataArchive extends SecureClassLoader {
   protected String imageDir;
   public static final String SOUNDS_DIR = "sounds/";
   protected String soundsDir = SOUNDS_DIR;
-  private CodeSource cs;
 
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
@@ -95,7 +96,7 @@ public class DataArchive extends SecureClassLoader {
   }
 
   public DataArchive(String zipName) throws IOException {
-    this(zipName,IMAGE_DIR);
+    this(zipName, IMAGE_DIR);
   }
   
   public String getName() {
@@ -111,7 +112,7 @@ public class DataArchive extends SecureClassLoader {
   }
 
   public AudioClip getCachedAudioClip(String name) throws IOException {
-    String path = SOUNDS_DIR + name;
+    final String path = SOUNDS_DIR + name;
     AudioClip clip = soundCache.get(path);
     if (clip == null) {
       clip = new AppletAudioClip(IOUtils.getBytes(getFileStream(path)));
@@ -174,88 +175,51 @@ public class DataArchive extends SecureClassLoader {
     }
   }
 
-  public InputStream getImageInputStream(String name) throws IOException {
+  public InputStream getImageInputStream(String fileName) throws IOException {
 // FIXME: We should give notice that we're going to stop searching for
 // GIFs by appending ".gif" to them. In general, a way of marking obsolete
 // features would be good---something which pops up a dialog alerting the
 // user when a module calls a deprecated method, maybe.
 
-    if (name.startsWith("/")) {
-      return getResourceInputStream(name);
+    if (fileName.startsWith("/")) {
+      final InputStream in = getClass().getResourceAsStream(fileName);
+      if (in != null) return in;
+      throw new FileNotFoundException("Resource not found: " + fileName);
     }
-    else {
-      try {
-        return getFileStream(imageDir + name);
-      }
-      catch (IOException e1) {
-// FIXME: Everything in this catch should be deprecated behavior.
-        try {
-          return getFileStream(imageDir + name + ".gif");
-        }
-        catch (IOException e2) {
-          try {
-            return getResourceInputStream("/"+imageDir + name + ".gif");
-          }
-          catch (IOException e3) {
-            throw e1;
-          }
-        }
-      }
-    }
-  }
 
-  private InputStream getResourceInputStream(String name) throws IOException {
-    final InputStream in = getClass().getResourceAsStream(name);
-    if (in == null)
-      throw new IOException("Resource not found: " + name);
-    return in;
+    try {
+      return getFileStream(imageDir + fileName);
+    }
+    catch (FileNotFoundException e) {
+    }
+
+////////////////////
+// FIXME: Appending .gif should be considered deprecated behavior.
+//
+    try {
+      return getFileStream(imageDir + fileName + ".gif");
+    }
+    catch (FileNotFoundException e) {
+    }
+
+    final InputStream in =
+      getClass().getResourceAsStream("/" + imageDir + fileName + ".gif");
+    if (in != null) return in;
+//
+///////////////////
+
+    throw new FileNotFoundException(
+      "\'" + imageDir + fileName + "\' not found in " + getName());
   }
 
   public String getArchiveURL() {
-    return "jar:file://" + 
-           (archive != null ? archive.getName() : "null") + "!/";
+    return archive != null ? "jar:file://" + archive.getName() + "!/" : "";
   }
-
-/*
-  private Shape getImageShape(String imageName) {
-    Shape s = (Shape) imageShapes.get(imageName);
-    if (s == null) {
-      Area a = new Area();
-      try {
-        Image im = getCachedImage(imageName);
-        ImageIcon icon = new ImageIcon(im);
-        int width = icon.getIconWidth();
-        int height = icon.getIconHeight();
-        int[] pixels = new int[width * height];
-        PixelGrabber pg = new PixelGrabber(im, 0, 0, width, height, pixels, 0, width);
-        long time = System.currentTimeMillis();
-        pg.grabPixels();
-        System.err.println("Grab "+imageName+" took "+(System.currentTimeMillis()-time));
-        time = System.currentTimeMillis();
-        for (int j = 0; j < height; ++j) {
-          for (int i = 0; i < width; ++i) {
-            if (((pixels[i + j * width] >> 24) & 0xff) > 0) {
-              a.add(new Area(new Rectangle(i, j, 1, 1)));
-            }
-          }
-        }
-        System.err.println("Build shape "+imageName+" took "+(System.currentTimeMillis()-time));
-      }
-      catch (IOException e) {
-      }
-      catch (InterruptedException e) {
-
-      }
-      s = a;
-      imageShapes.put(imageName,s);
-    }
-    return s;
-  }
-*/
 
   /**
    * Add an ImageSource under the given name, but only if no source is
    * yet registered under this name.
+   *
    * @param name
    * @param src
    * @return true if the ImageSource was added, false if it existed already
@@ -315,34 +279,25 @@ public class DataArchive extends SecureClassLoader {
     if (archive == null) {
       throw new IOException("Must save before accessing contents");
     }
-    URL url = null;
+
     final ZipEntry entry = archive.getEntry(fileName);
     if (entry != null) {
       final String archiveURL =
-        HelpFile.toURL(new File(archive.getName())).toString();
-      url = new URL("jar:" + archiveURL + "!/" + fileName);
+        URLUtils.toURL(new File(archive.getName())).toString();
+      return new URL("jar:" + archiveURL + "!/" + fileName);
     }
-    else {
-      url = getURLFromExtension(fileName);
-    }
-    if (url == null) {
-      throw new IOException("\'" + fileName + "\' not found in " + archive.getName());
-    }
-    return url;
-  }
-
-  protected URL getURLFromExtension(String fileName) {
-    URL url = null;
-    for (int i = 0; i < extensions.size() && url == null; ++i) {
-      final DataArchive ext = extensions.get(i);
+    
+    for (DataArchive ext : extensions) {
       try {
-        url = ext.getURL(fileName);
-      }
-      catch (IOException e) {
-        // Not found in this extension.  Try the next.
+        return ext.getURL(fileName); 
+      }      
+      catch (FileNotFoundException e) {
+        // not found in this extension, try the next
       }
     }
-    return url;
+
+    throw new FileNotFoundException(
+      "\'" + fileName + "\' not found in " + getName());
   }
 
   /**
@@ -357,78 +312,59 @@ public class DataArchive extends SecureClassLoader {
 
   /**
    * Return the writeable instance of DataArchive, either this or one
-   * of its extensions. (At most one archive should be being edited at a time)
+   * of its extensions. (At most one archive should be edited at a time.)
+   *
    * @return
    */
   public ArchiveWriter getWriter() {
-    ArchiveWriter writer = null;
-    if (this instanceof ArchiveWriter) {
-      writer = (ArchiveWriter) this;
+    if (this instanceof ArchiveWriter) return (ArchiveWriter) this;
+    
+    for (DataArchive ext : extensions) {
+      final ArchiveWriter writer = ext.getWriter();
+      if (writer != null) return writer;
     }
-    else {
-      for (DataArchive ext : extensions) {
-        if (ext instanceof ArchiveWriter) {
-          writer = (ArchiveWriter) ext;
-          break;
-        }
-      }
-    }
-    return writer;
+
+    return null;
   }
 
   /**
    * Get an inputstream from the given filename in the archive
    */
-  public InputStream getFileStream(String file) throws IOException {
-    InputStream stream = null;
-    final ZipEntry entry = archive.getEntry(file);
-    if (entry != null) {
-      stream = archive.getInputStream(entry);
-    }
-    else {
-      stream = getFileStreamFromExtension(file);
+  public InputStream getFileStream(String fileName) throws IOException {
+    final ZipEntry entry = archive.getEntry(fileName);
+    if (entry != null) return archive.getInputStream(entry);
+   
+    // we don't have it, try our extensions 
+    for (DataArchive ext : extensions) {
+      try {
+        return ext.getFileStream(fileName);
+      }
+      catch (FileNotFoundException e) {
+        // not found in this extension, try the next
+      }
     }
 
-    if (stream == null) {
-      throw new FileNotFoundException(
-        "\'" + file + "\' not found in " + archive.getName());
-    }
-    return stream;
+    throw new FileNotFoundException(
+      "\'" + fileName + "\' not found in " + getName());
   }
 
-  protected InputStream getFileStreamFromExtension(String file) {
-    InputStream stream = null;
-    for (int i = 0; i < extensions.size() && stream == null; ++i) {
-      final DataArchive ext = extensions.get(i);
-      try {
-        stream = ext.getFileStream(file);
-      }
-      catch (IOException e0) {
-        // Not found in this extension. Try the next.
-        if (stream != null) {
-          try {
-            stream.close();
-          }
-          catch (IOException e1) {
-            ErrorLog.warn(e1);
-          }
-        }
-      }
-    }
-    return stream;
+  public void close() throws IOException {
+    if (archive != null) archive.close();
   }
 
   @Override
   public synchronized Class<?> loadClass(String name, boolean resolve)
                                          throws ClassNotFoundException {
+// FIXME: why is this method this way?
     Class<?> c;
     try {
 //      c = findSystemClass(name);
       c = Class.forName(name);
     }
-    catch (Exception noClass) {
+    catch (ClassNotFoundException e) {
       c = findLoadedClass(name);
     }
+
     if (c == null) {
       return findClass(name);
     }
@@ -445,25 +381,18 @@ public class DataArchive extends SecureClassLoader {
     return p;
   }
 
+  private static final CodeSource cs =
+    new CodeSource((URL) null, (Certificate[]) null);
+
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {
-    if (cs == null) {
-      cs = new CodeSource((URL) null, (Certificate[]) null);
-    }
     try {
       final String slashname = name.replace('.', '/');
       final byte[] data = IOUtils.getBytes(getFileStream(slashname + ".class"));
       return defineClass(name, data, 0, data.length, cs);
     }
     catch (IOException e) {
-      throw new ClassNotFoundException(
-        "Unable to load " + name + "\n" + e.getMessage());
-    }
-  }
-
-  public void close() throws IOException {
-    if (archive != null) {
-      archive.close();
+      throw new ClassNotFoundException("Unable to load class " + name, e);
     }
   }
 
@@ -525,7 +454,7 @@ public class DataArchive extends SecureClassLoader {
         }
       }
       catch (IOException e) {
-        ErrorLog.warn(e);
+        ErrorLog.log(e);
       }
     }
     for (DataArchive ext : extensions) {
@@ -560,21 +489,15 @@ public class DataArchive extends SecureClassLoader {
     }
     catch (CancellationException e) {
       // FIXME: use chaining when we move to 1.6+
-      final IOException io = new IOException();
-      try { io.initCause(e); } catch (Throwable t) { assert false; }
-      throw io;
+      throw (IOException) new IOException().initCause(e);
     }
     catch (InterruptedException e) {
       // FIXME: use chaining when we move to 1.6+
-      final IOException io = new IOException();
-      try { io.initCause(e); } catch (Throwable t) { assert false; }
-      throw io;
+      throw (IOException) new IOException().initCause(e);
     }
     catch (ExecutionException e) {
       // FIXME: use chaining when we move to 1.6+
-      final IOException io = new IOException();
-      try { io.initCause(e); } catch (Throwable t) { assert false; }
-      throw io;
+      throw (IOException) new IOException().initCause(e);
     }
   }
 
@@ -770,5 +693,4 @@ public class DataArchive extends SecureClassLoader {
     prod = new FilteredImageSource(img.getSource(), filter);
     return Toolkit.getDefaultToolkit().createImage(prod);
   }
-  
 }

@@ -18,13 +18,13 @@
  */
 package VASSAL.tools;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 
 public class JarArchive extends DataArchive {
-
   protected String prefix;
 
   public JarArchive() {
@@ -38,26 +38,43 @@ public class JarArchive extends DataArchive {
 
   @Override
   public URL getURL(String fileName) throws IOException {
-    URL url = getClass().getResource(getAbsolutePath(fileName));
-    if (url == null) {
-      url = getURLFromExtension(fileName);
+    final URL url = getClass().getResource(getAbsolutePath(fileName));
+    if (url != null) return url;
+
+    for (DataArchive ext : extensions) {
+      try {
+        return ext.getURL(fileName);
+      }
+      catch (FileNotFoundException e) {
+        // not found in this extension, try the next
+      }
     }
-    return url;
+
+    throw new FileNotFoundException(
+      "\'" + fileName + "\' not found in " + getName());
   }
 
   @Override
-  public InputStream getFileStream(String file) throws IOException {
-    InputStream in = getClass().getResourceAsStream(getAbsolutePath(file));
-  
-    if (in == null) {
-      in = getFileStreamFromExtension(file);
+  public InputStream getFileStream(String fileName) throws IOException {
+    final InputStream in =
+      getClass().getResourceAsStream(getAbsolutePath(fileName));
+    if (in != null) return in;
+
+    for (DataArchive ext : extensions) {
+      try {
+        return ext.getFileStream(fileName);
+      }
+      catch (FileNotFoundException e) {
+        // not found in this extension, try the next
+      }
     }
-    return in;
+
+    throw new FileNotFoundException(
+      "\'" + fileName + "\' not found in " + getName());
   }
 
   protected String getAbsolutePath(String file) {
-    String resource = prefix != null ? "/" + prefix + "/" + file : "/" + file;
-    return resource;
+    return (prefix != null ? "/" + prefix : "" ) + "/" + file;
   }
 
   @Override
