@@ -51,6 +51,23 @@ public class IOUtils {
 
   /**
    * Copies bytes from an <code>InputStream</code> to an
+   * <code>OutputStream</code> via a <code>byte</code> buffer. This
+   * method buffers input internally, so the input stream should not
+   * be a <code>BufferedInputStream</code>.
+   *
+   * @param in the source
+   * @param out the destination
+   * @param buffer the buffer
+   * @throws IOException if one occurs while reading or writing.
+   */
+  public static void copy(InputStream in, OutputStream out, byte[] buffer)
+      throws IOException {
+    int n = 0;
+    while ((n = in.read(buffer)) > 0) out.write(buffer, 0, n);
+  }
+
+  /**
+   * Copies bytes from an <code>InputStream</code> to an
    * <code>OutputStream</code>. This method buffers input
    * internally, so the input stream should not be a
    * <code>BufferedInputStream</code>.
@@ -61,7 +78,21 @@ public class IOUtils {
    */
   public static void copy(InputStream in, OutputStream out)
       throws IOException {
-    final byte[] buffer = new byte[BUFFER_SIZE];
+    copy(in, out, new byte[BUFFER_SIZE]);
+  }
+
+  /**
+   * Copies chars from a <code>Reader</code> to a <code>Writer</code>
+   * via a <code>char</code> buffer. This method buffers input internally,
+   * so the <code>Reader</code> should not be a <code>BufferedReader</code>.
+   *
+   * @param in the source 
+   * @param out the destination
+   * @param buffer the buffer
+   * @throws IOException if one occurs while reading or writing.
+   */
+  public static void copy(Reader in, Writer out, char[] buffer)
+      throws IOException {
     int n = 0;
     while ((n = in.read(buffer)) > 0) out.write(buffer, 0, n);
   }
@@ -76,9 +107,7 @@ public class IOUtils {
    * @throws IOException if one occurs while reading or writing.
    */
   public static void copy(Reader in, Writer out) throws IOException {
-    final char[] buffer = new char[BUFFER_SIZE];
-    int n = 0;
-    while ((n = in.read(buffer)) > 0) out.write(buffer, 0, n);
+    copy(in, out, new char[BUFFER_SIZE]);
   }
   
   /**
@@ -252,35 +281,16 @@ public class IOUtils {
       }
     }
     finally {
-      try {
-        bufIn.close();
-      }
-      catch (IOException e) {
-        ErrorLog.warn(e);
-      }
+      closeQuietly(bufIn);
     }
 
     return buffer != null ? buffer : new byte[0];
   }
 
-
-/*
-  public static void close(Closeable c) {
-    if (c == null) return;
-
-    try {
-      c.close();
-    }
-    catch (IOException e) {
-      ErrorLog.warn(e);
-    }
-  }
-*/
-
   /**
    * Close a {@link Closeable} unconditionally. Equivalent to
    * calling <code>c.close()</code> when <code>c</code> is nonnull.
-   * {@link IOException}s are quietly ignored, as there is generally
+   * {@link IOException}s are quietly logged, as there is generally
    * nothing that can be done about exceptions on closing.
    *
    * @param c a (possibly <code>null</code>) <code>Closeable</code>
@@ -292,6 +302,7 @@ public class IOUtils {
       c.close();
     }
     catch (IOException e) {
+      ErrorLog.log(e);
     }
   }
 
@@ -303,6 +314,7 @@ public class IOUtils {
       s.close();
     }
     catch (IOException e) {
+      ErrorLog.log(e);
     }
   }
 
@@ -314,6 +326,7 @@ public class IOUtils {
       s.close();
     }
     catch (IOException e) {
+      ErrorLog.log(e);
     }
   }
 
@@ -321,7 +334,7 @@ public class IOUtils {
   /**
    * Close a {@link ZipFile} unconditionally. Equivalent to
    * calling <code>z.close()</code> when <code>z</code> is nonnull.
-   * {@link IOException}s are quietly ignored, as there is generally
+   * {@link IOException}s are quietly logged, as there is generally
    * nothing that can be done about exceptions on closing.
    *
    * @param z a (possibly <code>null</code>) <code>ZipFile</code>
@@ -333,6 +346,7 @@ public class IOUtils {
       z.close();
     }
     catch (IOException e) {
+      ErrorLog.log(e);
     }
   }
 }
