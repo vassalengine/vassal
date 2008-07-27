@@ -249,7 +249,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           switch (destination.charAt(0)) {
           case 'L':
             try {
-              dest = offsetDestination(Integer.parseInt(x.getText(outer)), Integer.parseInt(y.getText(outer)), outer);
+              dest = new Point(Integer.parseInt(x.getText(outer)), Integer.parseInt(y.getText(outer)));
             }
             catch (Exception e) {
               ;
