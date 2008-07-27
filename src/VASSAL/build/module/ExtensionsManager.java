@@ -26,7 +26,8 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 
 /**
- * Convenience class for managing extensions relative to a module file Create extension directory as lazily as possible
+ * Convenience class for managing extensions relative to a module file.
+ * Create extension directory as lazily as possible.
  * 
  * @author rodneykinney
  * 
@@ -35,9 +36,11 @@ public class ExtensionsManager {
   private File moduleFile;
   private File extensionsDir;
   private File inactiveDir;
+
   /**
-   * Tests if the specified file should be accepted as an module extension file. Currently we disallow any files that
-   * are hidden or "files" that are directories.
+   * Tests if the specified file should be accepted as an module extension
+   * file. Currently we disallow any files that are hidden or "files" that
+   * are directories.
    */
   private FilenameFilter filter = new FilenameFilter() {
     public boolean accept(File dir, String name) {
