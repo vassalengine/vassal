@@ -62,7 +62,8 @@ public class Resources {
       Locale.FRENCH,
       Locale.ITALIAN,
       new Locale("es"), // Spanish
-      Locale.JAPANESE
+      Locale.JAPANESE,
+      new Locale("nl")
     }
   ));
 
