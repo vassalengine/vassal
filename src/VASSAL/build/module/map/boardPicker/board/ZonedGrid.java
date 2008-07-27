@@ -216,7 +216,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 	  if (background != null)
 		  return background.getLocation(location);
 	  else
-		  return null;
+		  throw new BadCoords();
   }
 
   public boolean isVisible() {

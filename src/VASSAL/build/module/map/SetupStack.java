@@ -176,10 +176,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected void updatePosition() {
 	  if (isUseGridLocation() && location != null && !location.equals("")) {
 		  try {
-        pos = getConfigureBoard().getGrid().getLocation(location);
-      }
-      catch (BadCoords e) {
-      }
+			  Point p = getConfigureBoard().getGrid().getLocation(location);
+		  }
+		  catch (BadCoords e) {
+		  }
 	  }
   }
   

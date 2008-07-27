@@ -79,6 +79,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
 import VASSAL.configure.ConfigureTree;
@@ -280,10 +281,10 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return new Class[]{Region.class};
   }
 
-  public Point getLocation(String name) {
+  public Point getLocation(String name) throws BadCoords {
 	  Region reg = findRegion(name);
 	  if (reg == null)
-		  return null;
+		  throw new BadCoords();
 	  else
 		  return new Point(reg.getOrigin());
   }

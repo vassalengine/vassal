@@ -320,7 +320,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   public Point getLocation(String location) throws BadCoords {
 	  if (gridNumbering == null)
-		  return null;
+		  throw new BadCoords();
 	  else
 		  return gridNumbering.getLocation(location);
   }

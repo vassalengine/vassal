@@ -401,7 +401,7 @@ public class HexGrid extends AbstractConfigurable
 
   public Point getLocation(String location) throws BadCoords {
 	  if (numbering == null)
-		  return null;
+		  throw new BadCoords();
 	  else
 		  return numbering.getLocation(location);
   }
