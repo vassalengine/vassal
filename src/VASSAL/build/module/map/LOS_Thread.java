@@ -446,17 +446,12 @@ public class LOS_Thread extends AbstractConfigurable implements
   
   public void setState(String state) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(state, ';');
-    try {
-      anchor.x = sd.nextInt(anchor.x);
-      anchor.y = sd.nextInt(anchor.y);
-      arrow.x = sd.nextInt(arrow.x);
-      arrow.y = sd.nextInt(arrow.y);
-      setPersisting(sd.nextBoolean(false));
-      setMirroring(sd.nextBoolean(false));
-    }
-    catch (Exception e) {
-      
-    }
+    anchor.x = sd.nextInt(anchor.x);
+    anchor.y = sd.nextInt(anchor.y);
+    arrow.x = sd.nextInt(arrow.x);
+    arrow.y = sd.nextInt(arrow.y);
+    setPersisting(sd.nextBoolean(false));
+    setMirroring(sd.nextBoolean(false));
   }
   
   public void draw(java.awt.Graphics g, Map m) {
