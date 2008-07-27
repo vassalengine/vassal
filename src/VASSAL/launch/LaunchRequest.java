@@ -173,8 +173,10 @@ public class LaunchRequest implements Serializable {
    * 
    * @param args an array of command-line arguments
    * @return a <code>LaunchRequest</code> equivalent to <code>args</code>
+   * @throws LaunchRequestException when parsing fails
    */ 
-  public static LaunchRequest parseArgs(String[] args) {
+  public static LaunchRequest parseArgs(String[] args)
+                                                throws LaunchRequestException {
     final LaunchRequest lr = new LaunchRequest();
 
     final int AUTO_EXT = 2;
@@ -393,19 +395,21 @@ public class LaunchRequest implements Serializable {
     return lr;
   }
 
-  protected static void setMode(LaunchRequest lr, Mode mode) {
+  protected static void setMode(LaunchRequest lr, Mode mode)
+                                                throws LaunchRequestException {
     if (lr.mode != null) die("LaunchRequest.only_one", "mode");
     lr.mode = mode; 
   }
 
   /** 
-   * Print an error message and exit.
+   * Throws a {@link LaunchRequestException}.
    *
    * @param key {@link Resources} key
    * @param vals {@link Resources} arguments
+   * @throws LaunchRequestException always
    */
-  protected static void die(String key, String... vals) {
-    System.err.println("VASSAL: " + Resources.getString(key, (Object[]) vals));
-    System.exit(1);
+  protected static void die(String key, String... vals)
+                                                throws LaunchRequestException {
+    throw new LaunchRequestException(key, vals);
   }
 }

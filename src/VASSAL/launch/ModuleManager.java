@@ -64,7 +64,14 @@ public class ModuleManager {
 
   public static void main(String[] args) {
     // parse command-line arguments
-    final LaunchRequest lr = LaunchRequest.parseArgs(args); 
+    LaunchRequest lr = null;
+    try {
+      lr = LaunchRequest.parseArgs(args);
+    }
+    catch (LaunchRequestException e) {
+      System.err.println("VASSAL: " + e.getMessage());
+      System.exit(1);
+    }
 
     // set up security key so other users can't talk with our socket
     final LongConfigurer keyConfig =

@@ -64,7 +64,13 @@ public abstract class Launcher {
       // in standalone mode, but we don't bother because this is meant
       // only for debugging, not for normal use. If you pass nonsense
       // arguments (e.g., '-e' to the Player), don't expect it to work.
-      lr = LaunchRequest.parseArgs(args);
+      try {
+        lr = LaunchRequest.parseArgs(args);
+      }
+      catch (LaunchRequestException e) {
+        System.err.println("VASSAL: " + e.getMessage());
+        System.exit(1);
+      }
     }
 
     // start the error log and setup system properties
