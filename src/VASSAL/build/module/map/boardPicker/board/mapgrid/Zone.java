@@ -296,21 +296,24 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 	  }
 	  
 	  if (regex.length() == 0)
-		  return null; // nothing to match!
+		  throw new BadCoords(); // nothing to match!
 	  Pattern pattern = Pattern.compile(regex.toString());
 	  Matcher matcher = pattern.matcher(location);
-	  if (!matcher.matches())
-		  return null;
+	  if (!matcher.matches()) {
+		  throw new BadCoords();
+	  }
 	  assert(matcher.groupCount() == groupCount);
 	  
 	  Point p = null;
 	  if (groupCount > 0) {
 		  String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));	  
 		  p = getGrid().getLocation(locationName);
-		  if (p == null || !contains(p))
-			  return null;
-		  else
+		  if (p == null || !contains(p)) {
+			  throw new BadCoords();
+		  }
+		  else {
 			  return p;
+		  }
 	  }
 	  else { 
 		  // no grid to match against

@@ -456,7 +456,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 	  }
 
 	  if (regex.length() == 0 || colGroup == 0 || rowGroup == 0)
-		  return null;
+		  throw new BadCoords();
 	  
 	  Pattern pattern = Pattern.compile(regex.toString());
 	  Matcher matcher = pattern.matcher(location);
