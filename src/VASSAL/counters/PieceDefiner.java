@@ -434,7 +434,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         if (clipBoard != null) {
           Decorator c = (Decorator) GameModule.getGameModule().createPiece(clipBoard.getType(), null);
           if (c instanceof PlaceMarker) {
-            ((PlaceMarker) c).updateGpId();
+            ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
           }
           c.setInner((GamePiece) inUseModel.lastElement());
           inUseModel.addElement(c);
