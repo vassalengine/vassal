@@ -39,8 +39,9 @@ public class ComponentPathBuilder {
 
 
   /**
-   * Return a string identifying the specified {@link Configurable} components as a path
-   * through the configuration parent-child hierarchy.
+   * Return a string identifying the specified {@link Configurable}
+   * components as a paththrough the configuration parent-child hierarchy.
+   *
    * @param targetPath
    * @return
    */
@@ -59,14 +60,14 @@ public class ComponentPathBuilder {
 
   /**
    * Return a list of {@link Configurable} components specified by the
-   * given identifier
+   * given identifier.
    *
    * @param id
    * @return
    * @throws PathFormatException if no such component exists
    */
   public Configurable[] getPath(String id) throws PathFormatException {
-    ArrayList<Configurable> list = new ArrayList<Configurable>();
+    final ArrayList<Configurable> list = new ArrayList<Configurable>();
     if (id.length() > 0) {
       SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(id, '/');
       addToPath(GameModule.getGameModule(), st, list);

@@ -170,6 +170,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
           }
           catch (InterruptedException e) {
           }
+
           SwingUtilities.invokeLater(new Runnable() {
             public void run() {
               executeUpdate();

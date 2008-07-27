@@ -18,6 +18,9 @@
  */
 package VASSAL.build;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 /**
  * A Buildable instance can be initialized from a configuration file.
  * The configuration file is an XML file in which each XML element
@@ -25,29 +28,30 @@ package VASSAL.build;
  * containment hierarchy that mirrors the XML structure.  
  */
 public interface Buildable {
-    /**
-     * Build the object
-     * @param e the XML element containing the object data
-     */
-    public void build(org.w3c.dom.Element e);
+  /**
+   * Build the object
+   * @param e the XML element containing the object data
+   */
+  public void build(Element e);
 
-    /**
-     * Adds this component to its parent.
-     * In order to make Buildable objects extensible, the child
-     * is reponsible for adding itself to the parent.  That way,
-     * Buildable subcomponents can be defined in an extension package
-     * without needing to modify the containing class.
-     */
-    public void addTo(Buildable parent);
+  /**
+   * Adds this component to its parent.
+   * In order to make Buildable objects extensible, the child
+   * is reponsible for adding itself to the parent.  That way,
+   * Buildable subcomponents can be defined in an extension package
+   * without needing to modify the containing class.
+   */
+  public void addTo(Buildable parent);
 
-    /**
-     * Adds a child component.  Both this method and {@link #addTo} are
-     * invoked when adding a child to a parent
-     */
-    public void add(Buildable child);
-    /**
-     * @return an XML element from which
-     * this component can be built
-     */
-    public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc);
+  /**
+   * Adds a child component.  Both this method and {@link #addTo} are
+   * invoked when adding a child to a parent
+   */
+  public void add(Buildable child);
+
+  /**
+   * @return an XML element from which
+   * this component can be built
+   */
+  public Element getBuildElement(Document doc);
 }

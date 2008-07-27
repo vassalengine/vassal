@@ -20,15 +20,14 @@ package VASSAL.build;
 
 /**
  * An Exception indicating that an illegal operation was performed
- * when building a Buildable component
+ * when building a Buildable component.
  */
 public class IllegalBuildException extends RuntimeException {
-   private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-// FIXME: should this really extend RuntimeException?
-   public IllegalBuildException(String s) {
-	   super(s);
-   }
+  public IllegalBuildException(String s) {
+    super(s);
+  }
 
   public IllegalBuildException(Throwable t) {
     super(t);

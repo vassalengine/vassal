@@ -101,7 +101,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
     processQueue();
     return map.size();
   }
- 
+
   /** {@inheritDoc} */
   @Override 
   public boolean containsKey(Object key) {
