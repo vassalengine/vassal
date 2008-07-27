@@ -33,8 +33,9 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 
 /**
- * A JButton for placing into a VASSAL component's toolbar. Handles configuration of a hotkey shortcut, maintains
- * appropriate tooltip text, etc.
+ * A JButton for placing into a VASSAL component's toolbar.
+ * Handles configuration of a hotkey shortcut, maintains appropriate
+ * tooltip text, etc.
  */
 public class LaunchButton extends JButton {
   private static final long serialVersionUID = 1L;
@@ -48,11 +49,14 @@ public class LaunchButton extends JButton {
   protected KeyStrokeListener keyListener;
   protected Configurer nameConfig, keyConfig;
 
-  public LaunchButton(String text, String textAttribute, String hotkeyAttribute, ActionListener al) {
+  public LaunchButton(String text, String textAttribute,
+                      String hotkeyAttribute, ActionListener al) {
     this(text, textAttribute, hotkeyAttribute, null, al);
   }
 
-  public LaunchButton(String text, String tooltipAttribute, String textAttribute, String hotkeyAttribute, String iconAttribute, final ActionListener al) {
+  public LaunchButton(String text, String tooltipAttribute,
+                      String textAttribute, String hotkeyAttribute,
+                      String iconAttribute, final ActionListener al) {
     this(text, textAttribute, hotkeyAttribute, iconAttribute, al);
     tooltipAtt = tooltipAttribute;
   }
@@ -162,6 +166,7 @@ public class LaunchButton extends JButton {
   }
 
   protected void checkVisibility() {
-    setVisible((getText() != null && getText().length() > 0) || getIcon() != null);
+    setVisible((getText() != null && getText().length() > 0) ||
+                getIcon() != null);
   }
 }

@@ -86,29 +86,34 @@ public class DiceButton extends AbstractConfigurable {
   }
 
   protected void initLaunchButton() {
-    ActionListener rollAction = new ActionListener() {
+    final ActionListener rollAction = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if (promptAlways) {
-          DiceButton delegate = new DiceButton() {
+          final DiceButton delegate = new DiceButton() {
             protected void initLaunchButton() {
               launch = new LaunchButton(null,BUTTON_TEXT,HOTKEY,null);
             }
           };
-          List<String> keepAttributes = Arrays.asList(new String[]{N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
+          
+          final List<String> keepAttributes =
+            Arrays.asList(new String[]{N_DICE, N_SIDES, PLUS, ADD_TO_TOTAL});
+
           for (String key : keepAttributes) {
             delegate.setAttribute(key, getAttributeValueString(key));
           }
-          AutoConfigurer ac = new AutoConfigurer(delegate);
-          ConfigurerWindow w = new ConfigurerWindow(ac, true);
+
+          final AutoConfigurer ac = new AutoConfigurer(delegate);
+          final ConfigurerWindow w = new ConfigurerWindow(ac, true);
           for (String key : getAttributeNames()) {
             if (!keepAttributes.contains(key)) {
-              Component controls = ac.getConfigurer(key).getControls();
+              final Component controls = ac.getConfigurer(key).getControls();
               controls.getParent().remove(controls);
             }
           }
           w.pack();
           w.setLocationRelativeTo(launch.getTopLevelAncestor());
           w.setVisible(true);
+
           for (String key : keepAttributes) {
             setAttribute(key, delegate.getAttributeValueString(key));
           }
