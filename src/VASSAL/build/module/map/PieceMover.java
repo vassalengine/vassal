@@ -1115,6 +1115,17 @@ public class PieceMover extends AbstractBuildable
       if (!DragBuffer.getBuffer().isEmpty()) {
         final Map map = dge.getComponent() instanceof Map.View
                       ? ((Map.View) dge.getComponent()).getMap() : null;
+                      
+        // Remove any Immovable pieces from the DragBuffer that got selected in a
+        // selection rectangle
+        List<GamePiece> pieces = new ArrayList<GamePiece>();              
+        for (PieceIterator i = DragBuffer.getBuffer().getIterator(); i.hasMoreElements(); pieces.add(i.nextPiece()));
+        for (GamePiece piece : pieces) {
+          if (Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE))) {
+             DragBuffer.getBuffer().remove(piece);
+          }
+        }        
+                      
         final GamePiece piece =
           DragBuffer.getBuffer().getIterator().nextPiece();
         final Point mousePosition = map == null ?
