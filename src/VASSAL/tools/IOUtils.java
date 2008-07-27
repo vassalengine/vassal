@@ -35,6 +35,7 @@ import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.zip.ZipFile;
+import javax.imageio.stream.ImageInputStream;
 
 /**
  * General I/O stream manipulation utilities. This class provides static
@@ -344,6 +345,26 @@ public class IOUtils {
 
     try {
       z.close();
+    }
+    catch (IOException e) {
+      ErrorLog.log(e);
+    }
+  }
+
+  // Why doesn't ImageInputStream implement Closeable? Argh!
+  /**
+   * Close an {@link ImageInputStream} unconditionally. Equivalent to
+   * calling <code>s.close()</code> when <code>s</code> is nonnull.
+   * {@link IOException}s are quietly logged, as there is generally
+   * nothing that can be done about exceptions on closing.
+   *
+   * @param s a (possibly <code>null</code>) <code>ImageInputStream</code>
+   */
+  public static void closeQuietly(ImageInputStream s) {
+    if (s == null) return;
+
+    try {
+      s.close();
     }
     catch (IOException e) {
       ErrorLog.log(e);
