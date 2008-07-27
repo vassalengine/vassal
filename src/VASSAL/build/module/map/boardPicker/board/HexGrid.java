@@ -569,11 +569,11 @@ public class HexGrid extends AbstractConfigurable
     y1 = y;
     p1.setLocation(round(x1), round(y1));
 
-    x2 = x - .5F * r;
-    y2 = reversed ? y + .5F * deltaY : y - .5F * deltaY;
+    x2 = x - 0.5F * r;
+    y2 = reversed ? y + 0.5F * deltaY : y - 0.5F * deltaY;
     p2.setLocation(round(x2), round(y2));
 
-    x3 = x + .5F * r;
+    x3 = x + 0.5F * r;
     y3 = y2;
     p3.setLocation(round(x3) + 1, round(y3));
 
@@ -582,7 +582,7 @@ public class HexGrid extends AbstractConfigurable
     p4.setLocation(round(x4) + 1, round(y4));
 
     x5 = x3;
-    y5 = reversed ? y - .5F * deltaY : y + .5F * deltaY;
+    y5 = reversed ? y - 0.5F * deltaY : y + 0.5F * deltaY;
     p5.setLocation(round(x5) + 1, round(y5) + 1);
 
     x6 = x2;
@@ -629,10 +629,10 @@ public class HexGrid extends AbstractConfigurable
     int loc = ((int) (dx * (int) floor((x - origin.x + dx / 2) / dx) + origin.x));
     if (snapScale > 0) {
       int delta = x - loc;
-      delta = (int)round(delta/(.5*dx/snapScale));
+      delta = (int)round(delta/(0.5*dx/snapScale));
       delta = max(delta,1-snapScale);
       delta = min(delta,snapScale-1);
-      delta = (int)round(delta*.5*dx/snapScale);
+      delta = (int)round(delta*0.5*dx/snapScale);
       loc += delta;
     }
     return loc;
@@ -649,10 +649,10 @@ public class HexGrid extends AbstractConfigurable
           (dy * (int) floor((y - origin.y) / dy) + (int) (dy / 2) + origin.y));
     if (snapScale > 0) {
       int delta = y - loc;
-      delta = (int)round(delta/(.5*dy/snapScale));
+      delta = (int)round(delta/(0.5*dy/snapScale));
       delta = max(delta,1-snapScale);
       delta = min(delta,snapScale-1);
-      delta = (int)round(delta*.5*dy/snapScale);
+      delta = (int)round(delta*0.5*dy/snapScale);
       loc += delta;
     }
     return loc;
@@ -750,10 +750,10 @@ public class HexGrid extends AbstractConfigurable
         x1 = x - r;
         y1 = y;
         p1.setLocation(round(x1), round(y1));
-        x2 = x - .5F * r;
-        y2 = reversed ? y + .5F * deltaY : y - .5F * deltaY;
+        x2 = x - 0.5F * r;
+        y2 = reversed ? y + 0.5F * deltaY : y - 0.5F * deltaY;
         p2.setLocation(round(x2), round(y2));
-        x3 = x + .5F * r;
+        x3 = x + 0.5F * r;
         y3 = y2;
         p3.setLocation(round(x3), round(y3));
         x4 = x + r;
@@ -780,10 +780,10 @@ public class HexGrid extends AbstractConfigurable
         x2 += deltaX;
         x3 += deltaX;
         x4 += deltaX;
-        y1 += .5F * deltaY;
-        y2 += .5F * deltaY;
-        y3 += .5F * deltaY;
-        y4 += .5F * deltaY;
+        y1 += 0.5F * deltaY;
+        y2 += 0.5F * deltaY;
+        y3 += 0.5F * deltaY;
+        y4 += 0.5F * deltaY;
         p1.setLocation(round(x1), round(y1));
         p2.setLocation(round(x2), round(y2));
         p3.setLocation(round(x3), round(y3));

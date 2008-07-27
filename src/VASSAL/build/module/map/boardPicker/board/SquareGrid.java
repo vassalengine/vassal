@@ -376,9 +376,9 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 // (1,1) is the lower-right corner of the origin cell
 
     int offsetX = p.x - origin.x;
-    int nx = (int) round(offsetX / (.5 * dx));
+    int nx = (int) round(offsetX / (0.5 * dx));
     int offsetY = p.y - origin.y;
-    int ny = (int) round(offsetY / (.5 * dy));
+    int ny = (int) round(offsetY / (0.5 * dy));
     
     Point snap = null;
 
@@ -390,7 +390,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
         nx = 2 * (int) round(offsetX/dx);
       }
       else { // on a corner
-        nx = 1 + 2 * (int) round(offsetX/dx - .5);
+        nx = 1 + 2 * (int) round(offsetX/dx - 0.5);
       }
     }
     else if (edgesLegal) {
@@ -411,15 +411,15 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       ny = 2*(int)round(offsetY/dy);
       if (snapScale > 0) {
         int deltaX = offsetX - (int)round(nx*dx/2);
-        deltaX = (int)round(deltaX/(.5*dx/snapScale));
+        deltaX = (int)round(deltaX/(0.5*dx/snapScale));
         deltaX = max(deltaX,1-snapScale);
         deltaX = min(deltaX,snapScale-1);
-        deltaX = (int)round(deltaX*.5*dx/snapScale);
+        deltaX = (int)round(deltaX*0.5*dx/snapScale);
         int deltaY = offsetY - (int)round(ny*dy/2);
-        deltaY = (int)round(deltaY/(.5*dy/snapScale));
+        deltaY = (int)round(deltaY/(0.5*dy/snapScale));
         deltaY = max(deltaY,1-snapScale);
         deltaY = min(deltaY,snapScale-1);
-        deltaY = (int)round(deltaY*.5*dy/snapScale);
+        deltaY = (int)round(deltaY*0.5*dy/snapScale);
         snap = new Point((int)round(nx*dx/2 + deltaX),(int)round(ny*dy/2+deltaY));
         snap.translate(origin.x, origin.y);
       }
@@ -513,7 +513,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
           : bounds.y + scale * origin.y + deltaY * round((region.y - bounds.y - scale * origin.y) / deltaY);
       for (double x = xmin; x < xmax; x += deltaX) {
         for (double y = ymin; y < ymax; y += deltaY) {
-          p1.move((int) round(x - .5), (int) round(y - .5));
+          p1.move((int) round(x - 0.5), (int) round(y - 0.5));
           g2d.fillRect(p1.x, p1.y, 2, 2);
         }
       }
