@@ -18,6 +18,8 @@
  */
 package VASSAL.tools;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -99,17 +101,15 @@ public class ZipUpdater implements Runnable {
       throw new IOException("This updater was created with an original that differs from the file you're trying to update.\nLocal entry does not match original:  "+newEntry.getName());
     }
 
+    BufferedInputStream in = null;
     try {
-      return writeEntry(newContents, output, newEntry);
+      in = new BufferedInputStream(newContents);
+      long cs = writeEntry(newContents, output, newEntry);
+      in.close();
+      return cs;
     }
     finally {
-      try {
-        newContents.close();
-      }
-      // FIXME: review error message
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(in);
     }
   }
 
@@ -132,21 +132,19 @@ public class ZipUpdater implements Runnable {
   public void write(File destination) throws IOException {
     checkSums = new Properties();
 
-    final InputStream in =
+    final InputStream rin =
       ZipUpdater.class.getResourceAsStream("/" + CHECKSUM_RESOURCE);
-    if (in == null)
+    if (rin == null)
       throw new IOException("Resource not found: " + CHECKSUM_RESOURCE);
+
+    BufferedInputStream in = null;
     try {
+      in = new BufferedInputStream(rin);
       checkSums.load(in);
+      in.close();
     }
     finally {
-      try {
-        in.close();
-      }
-      // FIXME: review error message
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(in);
     }
 
     final File tempFile = File.createTempFile("VSL", ".zip");
@@ -238,9 +236,10 @@ public class ZipUpdater implements Runnable {
 
       final ZipFile goal = new ZipFile(newFile);
       try {
-        final JarOutputStream out =
-          new JarOutputStream(new FileOutputStream(updaterFile));
+        JarOutputStream out = null;
         try {
+          out = new JarOutputStream(
+                  new BufferedOutputStream(new FileOutputStream(updaterFile)));
           for (ZipEntry entry : iterate(goal.entries())) {
             final long goalCrc = getCrc(goal, entry);
             final long inputCrc =
@@ -250,18 +249,14 @@ public class ZipUpdater implements Runnable {
                 new ZipEntry(ENTRIES_DIR + entry.getName());
               outputEntry.setMethod(entry.getMethod());
 
-              final InputStream gis = goal.getInputStream(entry);
+              InputStream gis = null;
               try {
+                gis = new BufferedInputStream(goal.getInputStream(entry));
                 writeEntry(gis, out, outputEntry);
+                gis.close();
               }
               finally {
-                try {
-                  gis.close();
-                }
-                // FIXME: review error message
-                catch (IOException ex) {
-                  ErrorLog.log(ex);
-                }
+                IOUtils.closeQuietly(gis);
               }
             }
             checkSums.put(entry.getName(), goalCrc + "");
@@ -309,47 +304,33 @@ public class ZipUpdater implements Runnable {
             getClass().getResourceAsStream("/" + className); 
           if (is == null)
             throw new IOException("Resource not found: " + className);
+
+          BufferedInputStream in = null;
           try {
+            in = new BufferedInputStream(is);
             writeEntry(is, out, classEntry);
+            in.close();
           }
           finally {
-            try {
-              is.close();
-            }
-            // FIXME: review error message
-            catch (IOException e) {
-              ErrorLog.log(e);
-            }
+            IOUtils.closeQuietly(in);
           }
+
+          out.close();
         }
         finally {
-          try {
-            out.close();
-          }
-          // FIXME: review error message
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
+          IOUtils.closeQuietly(out);
         }
+  
+        goal.close();
       }
       finally {
-        try {
-          goal.close();
-        }
-        // FIXME: review error message
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
+        IOUtils.closeQuietly(goal);
       }
+
+      oldZipFile.close();
     }
     finally {
-      try {
-        oldZipFile.close();
-      }
-      // FIXME: review error message
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(oldZipFile);
     }
   }
 

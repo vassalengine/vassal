@@ -19,6 +19,7 @@
 package VASSAL.chat.ui;
 
 import java.awt.Component;
+import java.net.URL;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -36,7 +37,7 @@ public class LockableRoomTreeRenderer extends RoomTreeRenderer {
 
   private Icon lockedIcon;
   public LockableRoomTreeRenderer() {
-    java.net.URL image = getClass().getResource("/images/lockedRoom.gif"); //$NON-NLS-1$
+    URL image = getClass().getResource("/images/lockedRoom.gif"); //$NON-NLS-1$
     if (image != null) {
       lockedIcon = new ImageIcon(image);
     }

@@ -23,6 +23,7 @@
  */
 package VASSAL.chat.ui;
 
+import java.net.URL;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -43,7 +44,7 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
   private Icon looking;
 
   public RoomTreeRenderer() {
-    java.net.URL image = getClass().getResource("/images/playerAway.gif"); //$NON-NLS-1$
+    URL image = getClass().getResource("/images/playerAway.gif"); //$NON-NLS-1$
     if (image != null) {
       away = new ImageIcon(image);
     }

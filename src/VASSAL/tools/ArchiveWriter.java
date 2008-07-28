@@ -258,7 +258,6 @@ public class ArchiveWriter extends DataArchive {
 
     ZipOutputStream out = null;
     try {
-// FIXME: check whether buffering here affects performance
       out = new ZipOutputStream(
               new BufferedOutputStream(
                 new FileOutputStream(temp)));
@@ -282,7 +281,6 @@ public class ArchiveWriter extends DataArchive {
 
         ZipInputStream in = null;
         try {
-// FIXME: check whether buffering here affects performance
           in = new ZipInputStream(
                 new BufferedInputStream(
                   new FileInputStream(archive.getName())));
@@ -356,10 +354,11 @@ public class ArchiveWriter extends DataArchive {
           // o is a filename 
           in = new FileInputStream((String) o);
 
+          final byte[] buf = new byte[8192];
+
           if (method == ZipEntry.STORED) {
             // find the checksum
             final CRC32 checksum = new CRC32();
-            final byte[] buf = new byte[8192];
             
             int count = 0;
             int n = 0;
@@ -382,7 +381,7 @@ public class ArchiveWriter extends DataArchive {
           }
 
           out.putNextEntry(entry);
-          IOUtils.copy(in, out);
+          IOUtils.copy(in, out, buf);
           in.close();
         }
         finally {
@@ -450,7 +449,8 @@ public class ArchiveWriter extends DataArchive {
 
     ZipOutputStream out = null;
     try {
-      out = new ZipOutputStream(new FileOutputStream(archiveFile));
+      out = new ZipOutputStream(
+              new BufferedOutputStream(new FileOutputStream(archiveFile)));
       out.putNextEntry(new ZipEntry(entryName));
       out.close();
     }

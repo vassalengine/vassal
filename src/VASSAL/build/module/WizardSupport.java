@@ -33,6 +33,7 @@ import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -315,7 +316,7 @@ public class WizardSupport {
         public void actionPerformed(ActionEvent e) {
           controller.setProblem(Resources.getString("WizardSupport.LoadingTutorial")); //$NON-NLS-1$
           try {
-            new TutorialLoader(controller, settings, tutorial.getTutorialContents(), POST_INITIAL_STEPS_WIZARD, tutorial).start();
+            new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
           }
           // FIXME: review error message
           catch (IOException e1) {
@@ -509,7 +510,7 @@ public class WizardSupport {
 
     protected void loadSetup(PredefinedSetup setup, final WizardController controller, final Map settings) {
       try {
-        new SavedGameLoader(controller, settings, setup.getSavedGameContents(), POST_PLAY_OFFLINE_WIZARD).start();
+        new SavedGameLoader(controller, settings, new BufferedInputStream(setup.getSavedGameContents()), POST_PLAY_OFFLINE_WIZARD).start();
       }
       // FIXME: review error message
       catch (IOException e1) {
@@ -555,7 +556,7 @@ public class WizardSupport {
   public static class SavedGameLoader extends Thread {
     private WizardController controller;
     private Map settings;
-    // FIXME: this is a bad design---when can we safely close this stream?
+    // FIXME: this is a bad design---when can we safely close this stream?!
     private InputStream in;
     private String wizardKey;
 
@@ -585,19 +586,22 @@ public class WizardSupport {
     }
 
     protected Command loadSavedGame() throws IOException {
-      Command setupCommand = GameModule.getGameModule().getGameState().decodeSavedGame(in);
+      Command setupCommand =
+        GameModule.getGameModule().getGameState().decodeSavedGame(in);
       if (setupCommand == null) {
         throw new IOException(Resources.getString("WizardSupport.InvalidSavefile")); //$NON-NLS-1$
       }
       // Strip out the setup(true) command. This will be applied when the "Finish" button is pressed
       setupCommand = new CommandFilter() {
         protected boolean accept(Command c) {
-          return !(c instanceof GameState.SetupCommand) || !((GameState.SetupCommand) c).isGameStarting();
+          return !(c instanceof GameState.SetupCommand) ||
+                 !((GameState.SetupCommand) c).isGameStarting();
         }
       }.apply(setupCommand);
       return setupCommand;
     }
   }
+
   public static class TutorialLoader extends SavedGameLoader {
     private Tutorial tutorial;
 
@@ -645,7 +649,7 @@ public class WizardSupport {
               // file
               processing.add(f);
               try {
-                new SavedGameLoader(controller, settings, new FileInputStream(f), POST_LOAD_GAME_WIZARD) {
+                new SavedGameLoader(controller, settings, new BufferedInputStream(new FileInputStream(f)), POST_LOAD_GAME_WIZARD) {
                   public void run() {
                     super.run();
                     processing.remove(f);

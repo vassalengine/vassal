@@ -211,12 +211,15 @@ public abstract class AbstractMetaData {
           final String s = br.readLine();
           if (s.indexOf(BUILDFILE_MODULE_ELEMENT1) > 0 ||
               s.indexOf(BUILDFILE_MODULE_ELEMENT2) > 0) {
+            br.close();
             return new ModuleMetaData(zip);
           }  
           else if (s.indexOf(BUILDFILE_EXTENSION_ELEMENT) > 0) {
+            br.close();
             return new ExtensionMetaData(zip);
           }
         }
+        br.close();
       }
       finally {
         IOUtils.closeQuietly(br);
@@ -286,11 +289,10 @@ public abstract class AbstractMetaData {
       throw (IOException) new IOException().initCause(ex);
     }
 
-    // FIXME: could we replace BridgeStream by a pair of Pipe streams?
     final BridgeStream out = new BridgeStream();
     try {
-      final Transformer xformer = TransformerFactory.newInstance()
-          .newTransformer();
+      final Transformer xformer =
+        TransformerFactory.newInstance().newTransformer();
       xformer.setOutputProperty(OutputKeys.INDENT, "yes");
       xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
           "2");

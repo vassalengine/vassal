@@ -21,6 +21,7 @@ package VASSAL.build.module;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -532,7 +533,8 @@ public class GameState implements CommandEncoder {
   
   public void loadGameInBackground(final File f) {
     try {
-      loadGameInBackground(f.getName(), new FileInputStream(f));
+      loadGameInBackground(f.getName(),
+                           new BufferedInputStream(new FileInputStream(f)));
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, f);
@@ -631,13 +633,14 @@ public class GameState implements CommandEncoder {
    * @throws IOException
    */
   public Command decodeSavedGame(File saveFile) throws IOException {
-// FIXME: should we wrap this in a BufferedInputStream here?
-    return decodeSavedGame(new FileInputStream(saveFile));
+    return decodeSavedGame(
+      new BufferedInputStream(new FileInputStream(saveFile)));
   }
   
   public Command decodeSavedGame(InputStream in) throws IOException {
-    final ZipInputStream zipInput = new ZipInputStream(in);
+    ZipInputStream zipInput = null;
     try {
+      zipInput = new ZipInputStream(in);
       for (ZipEntry entry = zipInput.getNextEntry(); entry != null;
            entry = zipInput.getNextEntry()) {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
@@ -645,6 +648,7 @@ public class GameState implements CommandEncoder {
             new Deobfuscator(zipInput).getString());
         }
       }
+      zipInput.close();
     }
     finally {
       IOUtils.closeQuietly(zipInput);

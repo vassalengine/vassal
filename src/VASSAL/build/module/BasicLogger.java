@@ -223,7 +223,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   }
 
   protected void step() {
-    Command c = logInput.get(nextInput++);
+    final Command c = logInput.get(nextInput++);
     c.execute();
     GameModule.getGameModule().sendAndLog(c);
     stepAction.setEnabled(nextInput < logInput.size());
