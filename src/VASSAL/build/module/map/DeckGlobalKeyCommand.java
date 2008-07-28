@@ -99,7 +99,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   
   public void apply(Deck deck) {
     GameModule.getGameModule().sendAndLog(((DeckGlobalCommand) globalCommand).apply(deck, getFilter()));
-	}
+  }
   
   public String encode() {
     SequenceEncoder se = new SequenceEncoder('|');

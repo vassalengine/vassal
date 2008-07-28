@@ -68,7 +68,7 @@ public class BoxWidget extends Widget
       Widget w = (Widget) b;
       widgets.addElement(w);
       w.addPropertyChangeListener(this);
-      //	    w.setAllowableConfigureComponents(getAllowableConfigureComponents());
+      //      w.setAllowableConfigureComponents(getAllowableConfigureComponents());
       if (panel != null) {
         multiPanel.add(getKey(w), w.getComponent());
       }

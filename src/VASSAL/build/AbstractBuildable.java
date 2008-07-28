@@ -37,23 +37,23 @@ import VASSAL.i18n.Translatable;
  * handled automatically.
  */
 public abstract class AbstractBuildable implements Buildable, ValidityChecker {
-	protected List<Buildable> buildComponents = new ArrayList<Buildable>();
+  protected List<Buildable> buildComponents = new ArrayList<Buildable>();
 
-	protected ValidityChecker validator; // Sub-classes can set this
+  protected ValidityChecker validator; // Sub-classes can set this
 
-	// reference to perform validity
-	// checking
+  // reference to perform validity
+  // checking
 
-	/**
-	 * Build this component by getting all XML attributes of the XML element and
-	 * calling {@link #setAttribute} with the String value of the attribute
-	 */
-	public void build(Element e) {
-		if (e != null) {
-			NamedNodeMap n = e.getAttributes();
-			for (int i = 0; i < n.getLength(); ++i) {
-				Attr att = (Attr) n.item(i);
-				setAttribute(att.getName(), att.getValue());
+  /**
+   * Build this component by getting all XML attributes of the XML element and
+   * calling {@link #setAttribute} with the String value of the attribute
+   */
+  public void build(Element e) {
+    if (e != null) {
+      NamedNodeMap n = e.getAttributes();
+      for (int i = 0; i < n.getLength(); ++i) {
+        Attr att = (Attr) n.item(i);
+        setAttribute(att.getName(), att.getValue());
         
         /*
          * Save a record of all Attributes for later translation. Need to save
@@ -64,55 +64,55 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
         if (this instanceof Translatable) {
           Localization.getInstance().saveTranslatableAttribute((Translatable) this, att.getName(), att.getValue());
         }
-			}
-			Builder.build(e, this);
-		}
-	}
+      }
+      Builder.build(e, this);
+    }
+  }
 
-	/**
-	 * @return a list of all attribute names for this component
-	 */
-	public abstract String[] getAttributeNames();
+  /**
+   * @return a list of all attribute names for this component
+   */
+  public abstract String[] getAttributeNames();
 
-	/**
-	 * Sets an attribute value for this component. The <code>key</code>
-	 * parameter will be one of those listed in {@link #getAttributeNames}. If
-	 * the <code>value</code> parameter is a String, it will be the value
-	 * returned by {@link #getAttributeValueString} for the same
-	 * <code>key</code>. If the implementing class extends
-	 * {@link AbstractConfigurable}, then <code>value</code> will be an
-	 * instance of the corresponding Class listed in
-	 * {@link AbstractConfigurable#getAttributeTypes}
-	 * 
-	 * @param key
-	 *            the name of the attribute. Will be one of those listed in
-	 *            {@link #getAttributeNames}
-	 */
-	public abstract void setAttribute(String key, Object value);
+  /**
+   * Sets an attribute value for this component. The <code>key</code>
+   * parameter will be one of those listed in {@link #getAttributeNames}. If
+   * the <code>value</code> parameter is a String, it will be the value
+   * returned by {@link #getAttributeValueString} for the same
+   * <code>key</code>. If the implementing class extends
+   * {@link AbstractConfigurable}, then <code>value</code> will be an
+   * instance of the corresponding Class listed in
+   * {@link AbstractConfigurable#getAttributeTypes}
+   * 
+   * @param key
+   *            the name of the attribute. Will be one of those listed in
+   *            {@link #getAttributeNames}
+   */
+  public abstract void setAttribute(String key, Object value);
 
-	/**
-	 * Return a String representation of the attribute with the given name. When
-	 * initializing a module, this String value will be passed to
-	 * {@link #setAttribute}.
-	 * 
-	 * @param key
-	 *            the name of the attribute. Will be one of those listed in
-	 *            {@link #getAttributeNames}
-	 */
-	public abstract String getAttributeValueString(String key);
+  /**
+   * Return a String representation of the attribute with the given name. When
+   * initializing a module, this String value will be passed to
+   * {@link #setAttribute}.
+   * 
+   * @param key
+   *            the name of the attribute. Will be one of those listed in
+   *            {@link #getAttributeNames}
+   */
+  public abstract String getAttributeValueString(String key);
 
-	/**
-	 * @return all build components that are an instance of the given class
+  /**
+   * @return all build components that are an instance of the given class
    * @deprecated Use {@link #getComponentsOf(Class<T>)} instead.
-	 */
+   */
   @Deprecated
   public <T> Enumeration<T> getComponents(Class<T> target) {
     return Collections.enumeration(getComponentsOf(target));
   }
 
-	/**
-	 * @return all build components that are an instance of the given class
-	 */
+  /**
+   * @return all build components that are an instance of the given class
+   */
   public <T> List<T> getComponentsOf(Class<T> target) {
     final ArrayList<T> l = new ArrayList<T>();
     for (Buildable b : buildComponents) {
@@ -123,100 +123,100 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker {
     return l;
   }
  
-	/**
-	 * Recursively descend the build tree and return an enumeration of all
-	 * components that are instances of the given class
-	 * 
-	 * @param target
-	 * @return
+  /**
+   * Recursively descend the build tree and return an enumeration of all
+   * components that are instances of the given class
+   * 
+   * @param target
+   * @return
    * @deprecated Use {@link #getAllDescendantComponentsOf(Class<T>)} instead.
-	 */
+   */
   @Deprecated
-	public <T> Enumeration<T> getAllDescendantComponents(Class<T> target) {
-		return Collections.enumeration(getAllDescendantComponentsOf(target));
-	}
-
-	/**
-	 * Recursively descend the build tree and return a {@link List} of all
-	 * components that are instances of the given class
-	 * 
-	 * @param target
-	 * @return
-	 */
-  public <T> List<T> getAllDescendantComponentsOf(Class<T> target) {
-		ArrayList<T> l = new ArrayList<T>();
-		addComponents(target, l);
-		return l;
+  public <T> Enumeration<T> getAllDescendantComponents(Class<T> target) {
+    return Collections.enumeration(getAllDescendantComponentsOf(target));
   }
 
-	private <T> void addComponents(Class<T> target, List<T> l) {
-		if (target.isInstance(this)) {
-			l.add(target.cast(this));
-		}
-		for (Buildable b : buildComponents) {
-			if (target.isInstance(b)) {
-				l.add(target.cast(b));
-			}
-			else if (b instanceof AbstractBuildable) {
-				((AbstractBuildable) b).addComponents(target, l);
-			}
-		}
-	}
+  /**
+   * Recursively descend the build tree and return a {@link List} of all
+   * components that are instances of the given class
+   * 
+   * @param target
+   * @return
+   */
+  public <T> List<T> getAllDescendantComponentsOf(Class<T> target) {
+    ArrayList<T> l = new ArrayList<T>();
+    addComponents(target, l);
+    return l;
+  }
 
-	public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
-		Element el = doc.createElement(getClass().getName());
-		String[] names = getAttributeNames();
-		for (int i = 0; i < names.length; ++i) {
-			String val = getAttributeValueString(names[i]);
-			if (val != null) {
-				el.setAttribute(names[i], val);
-			}
-		}
+  private <T> void addComponents(Class<T> target, List<T> l) {
+    if (target.isInstance(this)) {
+      l.add(target.cast(this));
+    }
+    for (Buildable b : buildComponents) {
+      if (target.isInstance(b)) {
+        l.add(target.cast(b));
+      }
+      else if (b instanceof AbstractBuildable) {
+        ((AbstractBuildable) b).addComponents(target, l);
+      }
+    }
+  }
+
+  public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
+    Element el = doc.createElement(getClass().getName());
+    String[] names = getAttributeNames();
+    for (int i = 0; i < names.length; ++i) {
+      String val = getAttributeValueString(names[i]);
+      if (val != null) {
+        el.setAttribute(names[i], val);
+      }
+    }
 
     for (Buildable b : getBuildables()) {
-			el.appendChild(b.getBuildElement(doc));
-		}
-		return el;
-	}
+      el.appendChild(b.getBuildElement(doc));
+    }
+    return el;
+  }
 
-	/**
-	 * Add a Buildable object to this object
-	 */
-	public void add(Buildable b) {
-		buildComponents.add(b);
-	}
+  /**
+   * Add a Buildable object to this object
+   */
+  public void add(Buildable b) {
+    buildComponents.add(b);
+  }
 
-	/**
-	 * Returns an enumeration of Buildable objects which are the direct children
-	 * of this object in the Buildable containment hierarchy. The
-	 * {@link #getBuildElement} method uses these objects to construct the XML
-	 * element from which this object can be built.
+  /**
+   * Returns an enumeration of Buildable objects which are the direct children
+   * of this object in the Buildable containment hierarchy. The
+   * {@link #getBuildElement} method uses these objects to construct the XML
+   * element from which this object can be built.
    *
    * @deprecated Use {@link #getBuildables()} instead.
-	 */
+   */
   @Deprecated
-	public Enumeration<Buildable> getBuildComponents() {
-		return Collections.enumeration(buildComponents);
-	}
+  public Enumeration<Buildable> getBuildComponents() {
+    return Collections.enumeration(buildComponents);
+  }
 
-	/**
-	 * Returns a Collection of Buildable objects which are the direct children
-	 * of this object in the Buildable containment hierarchy. The
-	 * {@link #getBuildElement} method uses these objects to construct the XML
-	 * element from which this object can be built.
-	 */
+  /**
+   * Returns a Collection of Buildable objects which are the direct children
+   * of this object in the Buildable containment hierarchy. The
+   * {@link #getBuildElement} method uses these objects to construct the XML
+   * element from which this object can be built.
+   */
   public List<Buildable> getBuildables() {
     return Collections.unmodifiableList(buildComponents);
   }
 
-	public void validate(Buildable target, ValidationReport report) {
-		if (validator != null) {
-			validator.validate(target, report);
-		}
-		for (Buildable child : buildComponents) {
-			if (child instanceof ValidityChecker) {
-				((ValidityChecker) child).validate(child, report);
-			}
-		}
-	}
+  public void validate(Buildable target, ValidationReport report) {
+    if (validator != null) {
+      validator.validate(target, report);
+    }
+    for (Buildable child : buildComponents) {
+      if (child instanceof ValidityChecker) {
+        ((ValidityChecker) child).validate(child, report);
+      }
+    }
+  }
 }

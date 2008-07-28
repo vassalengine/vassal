@@ -124,7 +124,7 @@ public class CounterTurnLevel extends TurnLevel {
 
   protected void retreat() {
     // Retreat sub-levels
-    super.retreat();	
+    super.retreat();  
     
     // If no sub-levels, or they rolled over, retreat this level
     int oldCurrent = current;

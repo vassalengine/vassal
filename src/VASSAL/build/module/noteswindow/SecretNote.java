@@ -28,12 +28,12 @@ import VASSAL.build.module.PlayerRoster;
  * This is an immutable object
  */
 public class SecretNote {
-  private String owner;				// Owner's Password
-  private String name;				// Name of Note
-  private String text;      		// Text of Note
-  private boolean hidden = true;	// Is note still hidden?
-  private Date date;				// Date/Time stamp
-  private String handle = "";		// Owner's handle //$NON-NLS-1$
+  private String owner;        // Owner's Password
+  private String name;        // Name of Note
+  private String text;          // Text of Note
+  private boolean hidden = true;  // Is note still hidden?
+  private Date date;        // Date/Time stamp
+  private String handle = "";    // Owner's handle //$NON-NLS-1$
 
   public SecretNote(String name, String owner, String text, boolean hidden) {
     this.name = name;

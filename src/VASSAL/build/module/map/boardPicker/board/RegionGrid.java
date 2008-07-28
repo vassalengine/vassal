@@ -208,9 +208,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     else if (FONT_SIZE.equals(key)) {
       return "" + fontSize;
     }
-	else if (SNAPTO.equals(key)) {
-	  return "" + snapTo;
-	}
+  else if (SNAPTO.equals(key)) {
+    return "" + snapTo;
+  }
     return null;
   }
 
@@ -245,23 +245,23 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       }
       fontSize = ((Integer) val).intValue();
     }
-	  else if (SNAPTO.equals(key)) {
-  		if (val instanceof Boolean) {
-  			snapTo = ((Boolean) val).booleanValue();
-  		} 
+    else if (SNAPTO.equals(key)) {
+      if (val instanceof Boolean) {
+        snapTo = ((Boolean) val).booleanValue();
+      } 
       else if (val instanceof String) {
-  			snapTo = "true".equals(val);
-  		}
-  	}
+        snapTo = "true".equals(val);
+      }
+    }
   }
 
   public void configureRegions() {
-  	inConfig = true;
+    inConfig = true;
     for (Region r : regionList.values()) {
       r.setSelected(false);
     }
-  	regionConfigurer = new Config(this);
-  	regionConfigurer.setVisible(true);
+    regionConfigurer = new Config(this);
+    regionConfigurer.setVisible(true);
   }
 
   // Force Regions to be drawn when configuring
@@ -282,11 +282,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   }
 
   public Point getLocation(String name) throws BadCoords {
-	  Region reg = findRegion(name);
-	  if (reg == null)
-		  throw new BadCoords();
-	  else
-		  return new Point(reg.getOrigin());
+    Region reg = findRegion(name);
+    if (reg == null)
+      throw new BadCoords();
+    else
+      return new Point(reg.getOrigin());
   }
 
   public int range(Point p1, Point p2) {
@@ -316,8 +316,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   // Internal routine to find closest point for region name reporting
   //
   protected Point doSnap(Point p) {
-	  double distSq, minDistSq = Double.MAX_VALUE;
-  	Point snapPoint = p;
+    double distSq, minDistSq = Double.MAX_VALUE;
+    Point snapPoint = p;
 
     // Iterate over each grid point and determine the closest.
     for (Point checkPoint : regionList.keySet()) {
@@ -335,20 +335,20 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   public String locationName(Point p) {
 
-  	Point checkPoint;
+    Point checkPoint;
 
-  	if (regionList.isEmpty()) {
-  		return null;
-  	}
+    if (regionList.isEmpty()) {
+      return null;
+    }
 
-  	//
-  	// If snap-to is turned off, then p has not been snapped to a grid point yet
-  	//
-  	if (snapTo) {
-  		checkPoint = p;
-  	}
+    //
+    // If snap-to is turned off, then p has not been snapped to a grid point yet
+    //
+    if (snapTo) {
+      checkPoint = p;
+    }
     else {
-    	checkPoint = doSnap(p);
+      checkPoint = doSnap(p);
     }
 
     final Region region = regionList.get(checkPoint);

@@ -40,5 +40,5 @@ public interface GridNumbering {
     public void draw(java.awt.Graphics g, java.awt.Rectangle bounds, java.awt.Rectangle visibleRect, double scale, boolean reversed);
 
     public boolean isVisible();
-	  public Point getLocation(String location) throws BadCoords;
+    public Point getLocation(String location) throws BadCoords;
 }

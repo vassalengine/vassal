@@ -37,19 +37,19 @@ public class PrivateMessageAction extends AbstractAction {
     private PrivateChatManager mgr;
 
     public PrivateMessageAction(Player p, ChatServerConnection client, PrivateChatManager mgr) {
-	super(Resources.getString("Chat.private_msg")); //$NON-NLS-1$
-	this.p = p;
-	this.mgr = mgr;
-	setEnabled(p != null 
-		   && client != null
-		   && mgr != null 
-		   && !p.equals(client.getUserInfo()));
+  super(Resources.getString("Chat.private_msg")); //$NON-NLS-1$
+  this.p = p;
+  this.mgr = mgr;
+  setEnabled(p != null 
+       && client != null
+       && mgr != null 
+       && !p.equals(client.getUserInfo()));
     }
     public void actionPerformed(ActionEvent evt) {
-	PrivateChatter chat = mgr.getChatterFor(p);
-	java.awt.Window f = (java.awt.Window)chat.getTopLevelAncestor();
-	f.setVisible(true);
-	f.toFront();
+  PrivateChatter chat = mgr.getChatterFor(p);
+  java.awt.Window f = (java.awt.Window)chat.getTopLevelAncestor();
+  f.setVisible(true);
+  f.toFront();
     }
     
     public static PlayerActionFactory factory(final ChatServerConnection client, final PrivateChatManager chatMgr) {

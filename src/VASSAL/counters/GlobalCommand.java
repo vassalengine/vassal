@@ -31,7 +31,7 @@ import VASSAL.tools.FormattedString;
  * Applies a given keyboard command to all counters on a map
  */
 public class GlobalCommand {
-	protected KeyStroke keyStroke;
+  protected KeyStroke keyStroke;
   protected boolean reportSingle;
   protected int selectFromDeck = -1;
   protected FormattedString reportFormat = new FormattedString();
@@ -113,16 +113,16 @@ public class GlobalCommand {
       this.stroke = stroke;
     }
 
-		public Object visitDeck(Deck d) {
-			Object target = null;
-			if (selectFromDeck != 0) {
-				d.setDragCount(selectFromDeck < 0 ? d.getPieceCount() : selectFromDeck);
-	      for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
-	        apply(it.nextPiece());
-	      }
-			}
-			return target;
-		}
+    public Object visitDeck(Deck d) {
+      Object target = null;
+      if (selectFromDeck != 0) {
+        d.setDragCount(selectFromDeck < 0 ? d.getPieceCount() : selectFromDeck);
+        for (PieceIterator it = d.drawCards(); it.hasMoreElements();) {
+          apply(it.nextPiece());
+        }
+      }
+      return target;
+    }
 
     public Object visitStack(Stack s) {
       for (Iterator<GamePiece> i = s.getPiecesIterator(); i.hasNext();) {
@@ -155,15 +155,15 @@ public class GlobalCommand {
 
   }
 
-	public int getSelectFromDeck() {
-		return selectFromDeck;
-	}
+  public int getSelectFromDeck() {
+    return selectFromDeck;
+  }
 
-	/**
-	 * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
-	 * @param selectFromDeck
-	 */
-	public void setSelectFromDeck(int selectFromDeck) {
-		this.selectFromDeck = selectFromDeck;
-	}
+  /**
+   * Set the number of pieces to select from a deck that the command will apply to.  A value <0 means to apply to all pieces in the deck
+   * @param selectFromDeck
+   */
+  public void setSelectFromDeck(int selectFromDeck) {
+    this.selectFromDeck = selectFromDeck;
+  }
 }

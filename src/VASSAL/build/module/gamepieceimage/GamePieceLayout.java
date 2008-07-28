@@ -311,10 +311,10 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
   
   public Image getVisualizerImage() {
-	  if (visImage == null) {
-		  rebuildVisualizerImage();
-	  }
-	  return visImage;
+    if (visImage == null) {
+      rebuildVisualizerImage();
+    }
+    return visImage;
   }
 
   public Image buildImage(GamePieceImage defn) {
@@ -414,7 +414,7 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
 
 
   public void rebuildVisualizerImage() {
-	  visImage = buildImage(imageDefn);
+    visImage = buildImage(imageDefn);
   }
 
   public void setImageDefn(GamePieceImage d) {

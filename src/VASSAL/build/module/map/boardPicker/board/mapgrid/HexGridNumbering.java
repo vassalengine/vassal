@@ -233,51 +233,51 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   @Override
   public Point getCenterPoint(int col, int row) {
-	  if (stagger) {
-		  if (grid.isSideways()) {
-			  if (col % 2 != 0) {
-				  if (hDescending)
-					  row++;
-				  else
-					  row--;
-			  }
-		  }
-		  else {
-			  if (col % 2 != 0) {
-				  if (vDescending)
-					  row++;
-				  else
-					  row--;
-			  }
-		  }
-	  }
-	  
-	  if (grid.isSideways()) {
-		  if (vDescending)
-			  col = getMaxRows() - col;
-		  if (hDescending)
-			  row = getMaxColumns() - row;
-	  }
-	  else {
-		  if (hDescending)
-			  col = getMaxColumns() - col;
-		  if (vDescending)
-			  row = getMaxRows() - row;
-	  }
-	  
-	  Point p = new Point();
-	  
-	  p.x = (int) (col * grid.getHexWidth());
-	  p.x += grid.getOrigin().x;
-	  
-	  if (col % 2 == 0)
-		  p.y = (int) (row * grid.getHexSize());
-	  else
-		  p.y = (int) (row * grid.getHexSize() + grid.getHexSize()/2);
-	  p.y += grid.getOrigin().y;
-	  
-	  grid.rotateIfSideways(p);
-	  return p;
+    if (stagger) {
+      if (grid.isSideways()) {
+        if (col % 2 != 0) {
+          if (hDescending)
+            row++;
+          else
+            row--;
+        }
+      }
+      else {
+        if (col % 2 != 0) {
+          if (vDescending)
+            row++;
+          else
+            row--;
+        }
+      }
+    }
+    
+    if (grid.isSideways()) {
+      if (vDescending)
+        col = getMaxRows() - col;
+      if (hDescending)
+        row = getMaxColumns() - row;
+    }
+    else {
+      if (hDescending)
+        col = getMaxColumns() - col;
+      if (vDescending)
+        row = getMaxRows() - row;
+    }
+    
+    Point p = new Point();
+    
+    p.x = (int) (col * grid.getHexWidth());
+    p.x += grid.getOrigin().x;
+    
+    if (col % 2 == 0)
+      p.y = (int) (row * grid.getHexSize());
+    else
+      p.y = (int) (row * grid.getHexSize() + grid.getHexSize()/2);
+    p.y += grid.getOrigin().y;
+    
+    grid.rotateIfSideways(p);
+    return p;
   }
 
   public int getColumn(Point p) {

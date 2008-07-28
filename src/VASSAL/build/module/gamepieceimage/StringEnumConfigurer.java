@@ -95,8 +95,8 @@ public class StringEnumConfigurer extends Configurer {
   }
 
   public void setValidValues(String[] s) {
-  	validValues = s;
-	box.setModel(new DefaultComboBoxModel(validValues));
+    validValues = s;
+  box.setModel(new DefaultComboBoxModel(validValues));
   }
   
   public void setValue(Object o) {

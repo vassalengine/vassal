@@ -274,65 +274,65 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   }
 
   public Point getLocation(String location) throws BadCoords {
-	  final SequenceEncoder.Decoder se =
+    final SequenceEncoder.Decoder se =
       new SequenceEncoder.Decoder(locationFormat, '$');
-	  boolean isProperty = true;
-	  final StringBuilder regex = new StringBuilder();
-	  int groupCount = 0;
-	  
-	  while (se.hasMoreTokens()) {
-		  String token = se.nextToken();
-		  isProperty = !isProperty;
-		  if (token.length() > 0) {
-			  if (!isProperty || !se.hasMoreTokens())
-				  regex.append(Pattern.quote(token));
-			  else if (token.equals(NAME))
-				  regex.append(Pattern.quote(getConfigureName()));
-			  else if (token.equals(GRID_LOCATION) && getGrid() != null) {
-				  regex.append("(.*)");
-				  ++groupCount;
-			  }
-		  }
-	  }
-	  
-	  if (regex.length() == 0)
-		  throw new BadCoords(); // nothing to match!
-	  Pattern pattern = Pattern.compile(regex.toString());
-	  Matcher matcher = pattern.matcher(location);
-	  if (!matcher.matches()) {
-		  throw new BadCoords();
-	  }
-	  assert(matcher.groupCount() == groupCount);
-	  
-	  Point p = null;
-	  if (groupCount > 0) {
-		  String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));	  
-		  p = getGrid().getLocation(locationName);
-		  if (p == null || !contains(p)) {
-			  throw new BadCoords();
-		  }
-		  else {
-			  return p;
-		  }
-	  }
-	  else { 
-		  // no grid to match against
-		  // try the geographic mean
-		  p = new Point(0, 0);
-		  for (int i = 0; i < myPolygon.npoints; ++i)
-			  p.translate(myPolygon.xpoints[i], myPolygon.ypoints[i]);
-		  p.x /= myPolygon.npoints;
-		  p.y /= myPolygon.npoints;
-		  if (contains(p))
-			  return p;
-		  else {
-			  // concave polygon
-			  // default to the first point
-			  p.x = myPolygon.xpoints[0];
-			  p.y = myPolygon.ypoints[0];
-			  return p;
-		  }
-	  }
+    boolean isProperty = true;
+    final StringBuilder regex = new StringBuilder();
+    int groupCount = 0;
+    
+    while (se.hasMoreTokens()) {
+      String token = se.nextToken();
+      isProperty = !isProperty;
+      if (token.length() > 0) {
+        if (!isProperty || !se.hasMoreTokens())
+          regex.append(Pattern.quote(token));
+        else if (token.equals(NAME))
+          regex.append(Pattern.quote(getConfigureName()));
+        else if (token.equals(GRID_LOCATION) && getGrid() != null) {
+          regex.append("(.*)");
+          ++groupCount;
+        }
+      }
+    }
+    
+    if (regex.length() == 0)
+      throw new BadCoords(); // nothing to match!
+    Pattern pattern = Pattern.compile(regex.toString());
+    Matcher matcher = pattern.matcher(location);
+    if (!matcher.matches()) {
+      throw new BadCoords();
+    }
+    assert(matcher.groupCount() == groupCount);
+    
+    Point p = null;
+    if (groupCount > 0) {
+      String locationName = location.substring(matcher.start(groupCount), matcher.end(groupCount));    
+      p = getGrid().getLocation(locationName);
+      if (p == null || !contains(p)) {
+        throw new BadCoords();
+      }
+      else {
+        return p;
+      }
+    }
+    else { 
+      // no grid to match against
+      // try the geographic mean
+      p = new Point(0, 0);
+      for (int i = 0; i < myPolygon.npoints; ++i)
+        p.translate(myPolygon.xpoints[i], myPolygon.ypoints[i]);
+      p.x /= myPolygon.npoints;
+      p.y /= myPolygon.npoints;
+      if (contains(p))
+        return p;
+      else {
+        // concave polygon
+        // default to the first point
+        p.x = myPolygon.xpoints[0];
+        p.y = myPolygon.ypoints[0];
+        return p;
+      }
+    }
   }
 
   public String locationName(Point p) {

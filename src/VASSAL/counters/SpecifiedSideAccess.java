@@ -30,33 +30,33 @@ import VASSAL.build.module.PlayerRoster;
  * 
  */
 public class SpecifiedSideAccess implements PieceAccess {
-	private List<String> sides;
+  private List<String> sides;
 
   public SpecifiedSideAccess(List<String> sides) {
     this.sides = Collections.unmodifiableList(sides);
   }
 
-	public String getCurrentPlayerId() {
-		return PlayerRoster.getMySide();
-	}
-
-	public boolean currentPlayerHasAccess(String ownerId) {
-	  if (ownerId == null) {
-		  return true;
-	  }
-	  else if (sides.contains(ownerId)) {
-		  return !GlobalAccess.isHideAll() && sides.contains(getCurrentPlayerId());
-	  }
-	  else {
-		  return false;
-	  }
+  public String getCurrentPlayerId() {
+    return PlayerRoster.getMySide();
   }
 
-	public List<String> getSides() {
-		return sides;
-	}
+  public boolean currentPlayerHasAccess(String ownerId) {
+    if (ownerId == null) {
+      return true;
+    }
+    else if (sides.contains(ownerId)) {
+      return !GlobalAccess.isHideAll() && sides.contains(getCurrentPlayerId());
+    }
+    else {
+      return false;
+    }
+  }
 
-	public boolean currentPlayerCanModify(String ownerId) {
-		return sides.contains(getCurrentPlayerId());
-	}
+  public List<String> getSides() {
+    return sides;
+  }
+
+  public boolean currentPlayerCanModify(String ownerId) {
+    return sides.contains(getCurrentPlayerId());
+  }
 }

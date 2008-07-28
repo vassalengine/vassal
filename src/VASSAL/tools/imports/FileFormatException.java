@@ -8,12 +8,12 @@ import java.io.IOException;
  */
 public class FileFormatException extends IOException {
 
-	private static final long serialVersionUID = 0L;
+  private static final long serialVersionUID = 0L;
 
-	FileFormatException() {
-	}
+  FileFormatException() {
+  }
 
-	public FileFormatException(String s) {
-		super(s);
-	}
+  public FileFormatException(String s) {
+    super(s);
+  }
 }

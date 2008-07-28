@@ -326,9 +326,9 @@ public class MultiRoll extends JDialog implements ActionListener {
       col1.setHorizontalAlignment(JTextField.CENTER);
       col1.setBorder(myBorder);
 
-//			JLabel col2 = new JLabel("Roll");
-//			col2.setPreferredSize(new Dimension(COL2_WIDTH, ROW_HEIGHT));
-//			col2.setHorizontalAlignment(JTextField.CENTER);
+//      JLabel col2 = new JLabel("Roll");
+//      col2.setPreferredSize(new Dimension(COL2_WIDTH, ROW_HEIGHT));
+//      col2.setHorizontalAlignment(JTextField.CENTER);
 //            col2.setBorder(myBorder);
 
       JLabel col3 = new JLabel("Details");

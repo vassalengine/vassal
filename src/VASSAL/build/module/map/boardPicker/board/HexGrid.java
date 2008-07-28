@@ -400,10 +400,10 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public Point getLocation(String location) throws BadCoords {
-	  if (numbering == null)
-		  throw new BadCoords();
-	  else
-		  return numbering.getLocation(location);
+    if (numbering == null)
+      throw new BadCoords();
+    else
+      return numbering.getLocation(location);
   }
 
   public Point snapTo(Point p) {
@@ -831,18 +831,18 @@ public class HexGrid extends AbstractConfigurable
   }
   
   public void editGrid() {
-  	gridEditor = new HexGridEditor((GridEditor.EditableGrid) this);
-  	gridEditor.setVisible(true);
-  	// Local variables may have been updated by GridEditor so refresh
-  	// configurers. Setting the Dy configurer will auto-recalculate dx
- 	double origDx = dx;
-  	AutoConfigurer cfg = (AutoConfigurer) getConfigurer();
-  	cfg.getConfigurer(DY).setValue(String.valueOf(dy));
-  	dx = origDx;
-  	cfg.getConfigurer(DX).setValue(String.valueOf(dx));
-  	cfg.getConfigurer(X0).setValue(String.valueOf(origin.x));
-  	cfg.getConfigurer(Y0).setValue(String.valueOf(origin.y));
-  	cfg.getConfigurer(SIDEWAYS).setValue(String.valueOf(sideways));
+    gridEditor = new HexGridEditor((GridEditor.EditableGrid) this);
+    gridEditor.setVisible(true);
+    // Local variables may have been updated by GridEditor so refresh
+    // configurers. Setting the Dy configurer will auto-recalculate dx
+   double origDx = dx;
+    AutoConfigurer cfg = (AutoConfigurer) getConfigurer();
+    cfg.getConfigurer(DY).setValue(String.valueOf(dy));
+    dx = origDx;
+    cfg.getConfigurer(DX).setValue(String.valueOf(dx));
+    cfg.getConfigurer(X0).setValue(String.valueOf(origin.x));
+    cfg.getConfigurer(Y0).setValue(String.valueOf(origin.y));
+    cfg.getConfigurer(SIDEWAYS).setValue(String.valueOf(sideways));
   }
   
   public class HexGridEditor extends GridEditor {

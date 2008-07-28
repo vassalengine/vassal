@@ -53,8 +53,8 @@ public class NewColorConfigurer extends Configurer {
   }
 
   public void setValue(Object o) {
-//	if (o == null)
-//	    o = Color.black;
+//  if (o == null)
+//      o = Color.black;
     super.setValue(o);
     if (cp != null)
       cp.repaint();

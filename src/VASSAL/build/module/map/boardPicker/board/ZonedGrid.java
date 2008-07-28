@@ -208,20 +208,20 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   public Point getLocation(String location) throws BadCoords {
-	  for (Zone zone : zones) {
-		  try {
-			  Point p = zone.getLocation(location);
-			  if (p != null && zone.contains(p)) {
-				  return p;
-			  }
-		  }
-		  catch (BadCoords bc) {			  
-		  }
-	  }
-	  if (background != null)
-		  return background.getLocation(location);
-	  else
-		  throw new BadCoords();
+    for (Zone zone : zones) {
+      try {
+        Point p = zone.getLocation(location);
+        if (p != null && zone.contains(p)) {
+          return p;
+        }
+      }
+      catch (BadCoords bc) {        
+      }
+    }
+    if (background != null)
+      return background.getLocation(location);
+    else
+      throw new BadCoords();
   }
 
   public boolean isVisible() {

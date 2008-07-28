@@ -65,9 +65,9 @@ public class KeyStrokeListener {
   }
   
   public void keyPressed(KeyStroke stroke) {
-  	if (stroke != null && stroke.equals(key)) {
-  		l.actionPerformed(new ActionEvent(this,0,"Direct Invocation"));
-  	}
+    if (stroke != null && stroke.equals(key)) {
+      l.actionPerformed(new ActionEvent(this,0,"Direct Invocation"));
+    }
   }
 
   public void addKeyStrokeSource(KeyStrokeSource src) {

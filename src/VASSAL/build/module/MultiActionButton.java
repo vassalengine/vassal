@@ -14,26 +14,26 @@ import VASSAL.build.module.documentation.HelpFile;
  */
 public class MultiActionButton extends ToolbarMenu {
 
-	public MultiActionButton() {
-		super();
-		setAttribute(BUTTON_TEXT, "Multi-Action");
+  public MultiActionButton() {
+    super();
+    setAttribute(BUTTON_TEXT, "Multi-Action");
     setAttribute(TOOLTIP, ""); //$NON-NLS-1$
     launch.putClientProperty(MENU_PROPERTY, null);
-	}
-	
+  }
+  
   public String[] getAttributeDescriptions() {
     return new String[] {"Button text:  ", "Tooltip text:  ", "Button Icon:  ", "Hotkey:  ", "Buttons"};
   }
 
-	public void launch() {
-		for (int i=0,n=menu.getComponentCount();i<n;++i) {
-			Component c = menu.getComponent(i);
-			if (c instanceof JMenuItem) {
-				((JMenuItem)c).doClick();
-			}
-		}
-	}
-	
+  public void launch() {
+    for (int i=0,n=menu.getComponentCount();i<n;++i) {
+      Component c = menu.getComponent(i);
+      if (c instanceof JMenuItem) {
+        ((JMenuItem)c).doClick();
+      }
+    }
+  }
+  
   public static String getConfigureTypeName() {
     return "Multi-Action Button";
   }

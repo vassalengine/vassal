@@ -282,7 +282,7 @@ public class TextItem extends Item {
     sd.nextToken();
     item.fontStyleName = sd.nextToken(FontManager.DEFAULT);
     if (item.fontStyleName.length() == 0) {
-    	item.fontStyleName = FontManager.DEFAULT;
+      item.fontStyleName = FontManager.DEFAULT;
     }
     item.textSource = sd.nextToken(SRC_VARIABLE);
     item.text = sd.nextToken(""); //$NON-NLS-1$

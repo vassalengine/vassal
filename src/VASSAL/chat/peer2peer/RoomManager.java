@@ -85,14 +85,14 @@ public class RoomManager {
   public Room[] getRooms() {
     return rooms.toArray(new Room[rooms.size()]);
 /*
-//	System.err.println("--------");
+//  System.err.println("--------");
     Room[] r = new Room[rooms.size()];
     for (int i = 0; i < r.length; ++i) {
       r[i] = (VASSAL.chat.Room) rooms.elementAt(i);
-      //	    System.err.println("Room "+r[i]);
-      //	    for (int j=0;j<r[i].players.length;++j) {
-      //		System.err.println("  "+((P2PPlayer)r[i].players[j]).summary());
-      //	    }
+      //      System.err.println("Room "+r[i]);
+      //      for (int j=0;j<r[i].players.length;++j) {
+      //    System.err.println("  "+((P2PPlayer)r[i].players[j]).summary());
+      //      }
     }
     return r;
 */

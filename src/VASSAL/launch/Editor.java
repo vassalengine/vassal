@@ -112,7 +112,7 @@ public class Editor extends Launcher {
       req = "NOTIFY_OPEN_OK";
     }
 
-  	if (cmdC != null) {
+    if (cmdC != null) {
       try {
         cmdC.request(req);
         req = "NOTIFY_OPEN_OK";

@@ -65,8 +65,8 @@ public class KeySpecifier extends JPanel implements KeyListener {
       key = key.length() < 1 ? "" : key.substring(0, key.length() - 1);
     }
     else if (e.getKeyChar() != KeyEvent.CHAR_UNDEFINED) {
-      //	  key = tf.getText().trim().length() == 0 ?
-      //	      " " : key+(char)e.getKeyCode();
+      //    key = tf.getText().trim().length() == 0 ?
+      //        " " : key+(char)e.getKeyCode();
       key += (char) e.getKeyCode();
     }
   }

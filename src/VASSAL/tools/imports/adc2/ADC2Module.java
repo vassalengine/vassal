@@ -712,66 +712,66 @@ public class ADC2Module extends Importer {
       return (flags & 0x10) > 0;
     }
 
-		public String getName() {
-			if (name == null)
-				return pieceClass.getUniqueName();
-			else
-				return pieceClass.getUniqueName() + " " + name;
-		}
-		
-		protected void setValue(int index, String value) {
-			byte[] b = value.getBytes();
-			int result = 0;
-			for (int i = 0; i < 4; ++i)
-				result = (result<<8) + b[i];
-			values[index] = result;
-			types[index] = ValueType.TEXT;
-		}
-		
-		protected void setValue(int index, boolean value) {
-			if (value)
-				values[index] = 1;
-			else
-				values[index] = 0;
-			types[index] = ValueType.YESNO;
-		}
-		
-		private int getValueAsInt(int index) {
-			return values[index];
-		}
-		
-		private String getValueAsString(int index) {
-			byte[] b = new byte[4];
-			int mask = 0x7f000000;
-			int length = 0;
-			for (int i = 0; i < b.length; ++i) {
-				b[i] = (byte) ((values[index] & mask) >> ((3-i)*8));
-				if (b[i] < 0x20 || b[i] > 0x7e)
-					break;
-				++length;
-				mask >>= 8;
-			}
-			return new String(b, 0, length);
-		}
-		
-		private boolean getValueAsBoolean(int index) {
-			return values[index] > 0 ? true : false;
-		}
-		
-		public Object getValue(int index) {
-			if (types[index] == null)
-				return null;
-			switch(types[index]) {
-			case NUMERIC:
-				return getValueAsInt(index);
-			case TEXT:
-				return getValueAsString(index);
-			case YESNO:
-				return getValueAsBoolean(index);
-			default:
-				return null;
-			}
-		}
+    public String getName() {
+      if (name == null)
+        return pieceClass.getUniqueName();
+      else
+        return pieceClass.getUniqueName() + " " + name;
+    }
+    
+    protected void setValue(int index, String value) {
+      byte[] b = value.getBytes();
+      int result = 0;
+      for (int i = 0; i < 4; ++i)
+        result = (result<<8) + b[i];
+      values[index] = result;
+      types[index] = ValueType.TEXT;
+    }
+    
+    protected void setValue(int index, boolean value) {
+      if (value)
+        values[index] = 1;
+      else
+        values[index] = 0;
+      types[index] = ValueType.YESNO;
+    }
+    
+    private int getValueAsInt(int index) {
+      return values[index];
+    }
+    
+    private String getValueAsString(int index) {
+      byte[] b = new byte[4];
+      int mask = 0x7f000000;
+      int length = 0;
+      for (int i = 0; i < b.length; ++i) {
+        b[i] = (byte) ((values[index] & mask) >> ((3-i)*8));
+        if (b[i] < 0x20 || b[i] > 0x7e)
+          break;
+        ++length;
+        mask >>= 8;
+      }
+      return new String(b, 0, length);
+    }
+    
+    private boolean getValueAsBoolean(int index) {
+      return values[index] > 0 ? true : false;
+    }
+    
+    public Object getValue(int index) {
+      if (types[index] == null)
+        return null;
+      switch(types[index]) {
+      case NUMERIC:
+        return getValueAsInt(index);
+      case TEXT:
+        return getValueAsString(index);
+      case YESNO:
+        return getValueAsBoolean(index);
+      default:
+        return null;
+      }
+    }
 
     protected void writeToArchive(ListWidget list) throws IOException {
       GamePiece gp = getGamePiece();
@@ -795,35 +795,35 @@ public class ADC2Module extends Importer {
   }
 
   public static class Player {
-		
-		public static final Player ALL_PLAYERS = new Player("All Players", null, 0);
-		public static final Player NO_PLAYERS = new Player("No Player", null, 0);
-		public static final Player UNKNOWN = new Player("Unknown", null, 0);
-		private static int nPlayers = 0;
-		private final String name;
-		private final SymbolSet.SymbolData hiddenSymbol;
-		private final int hiddenPieceOptions;
-		private final int order;
-		private TreeSet<Player> allies = new TreeSet<Player>(new Comparator<Player>() {
-			public int compare(Player p1, Player p2) { return p1.order - p2.order; }
-		});
+    
+    public static final Player ALL_PLAYERS = new Player("All Players", null, 0);
+    public static final Player NO_PLAYERS = new Player("No Player", null, 0);
+    public static final Player UNKNOWN = new Player("Unknown", null, 0);
+    private static int nPlayers = 0;
+    private final String name;
+    private final SymbolSet.SymbolData hiddenSymbol;
+    private final int hiddenPieceOptions;
+    private final int order;
+    private TreeSet<Player> allies = new TreeSet<Player>(new Comparator<Player>() {
+      public int compare(Player p1, Player p2) { return p1.order - p2.order; }
+    });
 
-		public Player(String name, SymbolSet.SymbolData hiddenSymbol, int hiddenPieceOptions) {
-			this.name = name;
-			this.hiddenSymbol = hiddenSymbol;
-			// this.searchRange = searchRange > 50 ? 50 : searchRange;
-			this.hiddenPieceOptions = hiddenPieceOptions;
-			order = nPlayers++;
-			allies.add(this);
-		}
-		
-		public boolean useHiddenPieces() {
-			return (hiddenPieceOptions & 0x1) > 0;
-		}
-		
-		public boolean hiddenWhenPlaced() {
-			return (hiddenPieceOptions & 0x2) > 0;
-		}
+    public Player(String name, SymbolSet.SymbolData hiddenSymbol, int hiddenPieceOptions) {
+      this.name = name;
+      this.hiddenSymbol = hiddenSymbol;
+      // this.searchRange = searchRange > 50 ? 50 : searchRange;
+      this.hiddenPieceOptions = hiddenPieceOptions;
+      order = nPlayers++;
+      allies.add(this);
+    }
+    
+    public boolean useHiddenPieces() {
+      return (hiddenPieceOptions & 0x1) > 0;
+    }
+    
+    public boolean hiddenWhenPlaced() {
+      return (hiddenPieceOptions & 0x2) > 0;
+    }
 
     // in ADC2 hiddenInForcePools and hiddenWhenPlaced are different concepts
     // as you only get to see a list of piece names when you look at the force
@@ -844,26 +844,26 @@ public class ADC2Module extends Importer {
       return hiddenSymbol;
     }
 
-		public String getName() {
-			final StringBuilder sb = new StringBuilder();
-			for (Player p : allies) {
-				if (sb.length() > 0)
-					sb.append('/');
-				sb.append(p.name);
-			}
-			return sb.toString();
-		}
+    public String getName() {
+      final StringBuilder sb = new StringBuilder();
+      for (Player p : allies) {
+        if (sb.length() > 0)
+          sb.append('/');
+        sb.append(p.name);
+      }
+      return sb.toString();
+    }
 
-		public void setAlly(Player player) {
-			allies.add(player);
-		}
-		
-		public boolean isAlly(Player player) {
-			if (allies == null) {
-				return false;
-			}
-			return allies.contains(player);
-		}
+    public void setAlly(Player player) {
+      allies.add(player);
+    }
+    
+    public boolean isAlly(Player player) {
+      if (allies == null) {
+        return false;
+      }
+      return allies.contains(player);
+    }
 
     @Override
     public String toString() {
@@ -1278,71 +1278,71 @@ public class ADC2Module extends Importer {
       return flipClass;
     }
 
-		public String getName() {
-			return name;
-		}
-		
-		protected void setValue(int index, String value) {
-			byte[] b = value.getBytes();
-			int result = 0;
-			for (int i = 0; i < 4; ++i)
-				result = (result<<8) + b[i];
-			values[index] = result;
-			types[index] = ValueType.TEXT;
-		}
-		
-		protected void setValue(int index, boolean value) {
-			if (value)
-				values[index] = 1;
-			else
-				values[index] = 0;
-			types[index] = ValueType.YESNO;
-		}
-		
-		public int getValueAsInt(int index) {
-			return values[index];
-		}
-		
-		public String getValueAsString(int index) {
-			byte[] b = new byte[4];
-			int length = 0;
-			int mask = 0x7f000000;
-			for (int i = 0; i < b.length; ++i) {
-				b[i] = (byte) ((values[index] & mask) >> ((3-i)*8));
-				if (b[i] < 0x20 || b[i] > 0x7e)
-					break;
-				++length;
-				mask >>= 8;
-			}
-			return new String(b, 0, length);
-		}
-		
-		public int getNValues() {
-			int total = 0;
-			for (ValueType t : types)
-				if (t != ValueType.NOT_USED)
-					++total;
-			return total;
-		}
-		
-		public boolean getValueAsBoolean(int index) {
-			return values[index] > 0 ? true : false;
-		}
-		
-		public Object getValue(int index) {
-			if (types[index] == null)
-				return null;
-			switch(types[index]) {
-			case NUMERIC:
-				return getValueAsInt(index);
-			case TEXT:
-				return getValueAsString(index);
-			case YESNO:
-				return getValueAsBoolean(index);
-			default:
-				return null;
-			}
-		}
+    public String getName() {
+      return name;
+    }
+    
+    protected void setValue(int index, String value) {
+      byte[] b = value.getBytes();
+      int result = 0;
+      for (int i = 0; i < 4; ++i)
+        result = (result<<8) + b[i];
+      values[index] = result;
+      types[index] = ValueType.TEXT;
+    }
+    
+    protected void setValue(int index, boolean value) {
+      if (value)
+        values[index] = 1;
+      else
+        values[index] = 0;
+      types[index] = ValueType.YESNO;
+    }
+    
+    public int getValueAsInt(int index) {
+      return values[index];
+    }
+    
+    public String getValueAsString(int index) {
+      byte[] b = new byte[4];
+      int length = 0;
+      int mask = 0x7f000000;
+      for (int i = 0; i < b.length; ++i) {
+        b[i] = (byte) ((values[index] & mask) >> ((3-i)*8));
+        if (b[i] < 0x20 || b[i] > 0x7e)
+          break;
+        ++length;
+        mask >>= 8;
+      }
+      return new String(b, 0, length);
+    }
+    
+    public int getNValues() {
+      int total = 0;
+      for (ValueType t : types)
+        if (t != ValueType.NOT_USED)
+          ++total;
+      return total;
+    }
+    
+    public boolean getValueAsBoolean(int index) {
+      return values[index] > 0 ? true : false;
+    }
+    
+    public Object getValue(int index) {
+      if (types[index] == null)
+        return null;
+      switch(types[index]) {
+      case NUMERIC:
+        return getValueAsInt(index);
+      case TEXT:
+        return getValueAsString(index);
+      case YESNO:
+        return getValueAsBoolean(index);
+      default:
+        return null;
+      }
+    }
 
     protected void writeToArchive(ListWidget list) throws IOException {
       getDefaultPiece().writeToArchive(list);
@@ -1750,33 +1750,33 @@ public class ADC2Module extends Importer {
       useLOS = true;
   }
 
-	protected void readLOSBlock(DataInputStream in) throws IOException {
-		ADC2Utils.readBlockHeader(in, "LOS");
-		
-		in.read(new byte[18]); // unknown
-		/* int maxRange = */ in.readUnsignedShort();
-		/* int degradeLOS = */ in.readByte();
-		/* int pointsToBlockLOS = */ ADC2Utils.readBase250Word(in);
-		/* String levelHeight = */ readNullTerminatedString(in, 20);
-		/* int useSmoothing = */ in.readByte();
-		/* int cliffElevation = */ ADC2Utils.readBase250Word(in);
-		if (version > 0x0206) {
-			/* int hexSize = */ ADC2Utils.readBase250Word(in);
-			byte[] units = new byte[10];
-			in.read(units);
-		}
-		
-		int nBlocks = ADC2Utils.readBase250Word(in);
-		for (int i = 0; i < nBlocks; ++i) {
-			/* int blockPoints = */ ADC2Utils.readBase250Word(in);
-			/* int baseElevation = */ ADC2Utils.readBase250Word(in);
-			/* int aboveGroundLevel = */ ADC2Utils.readBase250Word(in);
-			/* int whenSpotting = */ ADC2Utils.readBase250Word(in);
-			/* int whenTarget = */ ADC2Utils.readBase250Word(in);
-			byte[] color = new byte[3];
-			in.read(color);
-		}
-	}
+  protected void readLOSBlock(DataInputStream in) throws IOException {
+    ADC2Utils.readBlockHeader(in, "LOS");
+    
+    in.read(new byte[18]); // unknown
+    /* int maxRange = */ in.readUnsignedShort();
+    /* int degradeLOS = */ in.readByte();
+    /* int pointsToBlockLOS = */ ADC2Utils.readBase250Word(in);
+    /* String levelHeight = */ readNullTerminatedString(in, 20);
+    /* int useSmoothing = */ in.readByte();
+    /* int cliffElevation = */ ADC2Utils.readBase250Word(in);
+    if (version > 0x0206) {
+      /* int hexSize = */ ADC2Utils.readBase250Word(in);
+      byte[] units = new byte[10];
+      in.read(units);
+    }
+    
+    int nBlocks = ADC2Utils.readBase250Word(in);
+    for (int i = 0; i < nBlocks; ++i) {
+      /* int blockPoints = */ ADC2Utils.readBase250Word(in);
+      /* int baseElevation = */ ADC2Utils.readBase250Word(in);
+      /* int aboveGroundLevel = */ ADC2Utils.readBase250Word(in);
+      /* int whenSpotting = */ ADC2Utils.readBase250Word(in);
+      /* int whenTarget = */ ADC2Utils.readBase250Word(in);
+      byte[] color = new byte[3];
+      in.read(color);
+    }
+  }
 
   protected void readTurnNameBlock(DataInputStream in) throws IOException {
     ADC2Utils.readBlockHeader(in, "Turn Names");
@@ -2398,16 +2398,16 @@ public class ADC2Module extends Importer {
       c.getDefaultPiece().setReplace();
   }
 
-	protected void writePlayersToArchive(GameModule gameModule) {
-		final PlayerRoster roster = gameModule.getAllDescendantComponentsOf(PlayerRoster.class).iterator().next();
-		final SequenceEncoder se = new SequenceEncoder(',');
-		for (Player player : players) {
-			if (player.allies.first() == player) // only write out if it's the first in an alliance
-				se.append(player.getName());
-		}
-		for (int i = 0; i < 2; ++i)
-			roster.setAttribute(PlayerRoster.SIDES, se.getValue());		
-	}
+  protected void writePlayersToArchive(GameModule gameModule) {
+    final PlayerRoster roster = gameModule.getAllDescendantComponentsOf(PlayerRoster.class).iterator().next();
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (Player player : players) {
+      if (player.allies.first() == player) // only write out if it's the first in an alliance
+        se.append(player.getName());
+    }
+    for (int i = 0; i < 2; ++i)
+      roster.setAttribute(PlayerRoster.SIDES, se.getValue());    
+  }
 
   // TODO make a select all cards in hand option
   protected void writeHandsToArchive(GameModule module) throws IOException {

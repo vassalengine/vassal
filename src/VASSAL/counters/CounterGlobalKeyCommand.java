@@ -100,8 +100,8 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
         .append(restrictRange)
         .append(range)
         .append(globalCommand.isReportSingle())
-    	.append(fixedRange)
-    	.append(rangeProperty)
+      .append(fixedRange)
+      .append(rangeProperty)
       .append(description)
       .append(globalCommand.getSelectFromDeck());
     return ID + se.getValue();
@@ -287,8 +287,8 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
           .append(restrictRange.getValueString())
           .append(range.getValueString())
           .append(suppress.booleanValue().booleanValue())
-    	  .append(fixedRange.booleanValue().booleanValue())
-    	  .append(rangeProperty.getValueString())
+        .append(fixedRange.booleanValue().booleanValue())
+        .append(rangeProperty.getValueString())
         .append(descInput.getValueString())
         .append(deckPolicy.getIntValue());
       return ID + se.getValue();

@@ -124,7 +124,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
-    st.nextToken();		// Discard ID
+    st.nextToken();    // Discard ID
     transparencyColor = st.nextColor(defaultTransparencyColor);
     transparencyLevel = st.nextInt((int) (defaultTransparencyLevel * 100)) / 100.0F;
     radius = st.nextInt(defaultRadius);

@@ -178,7 +178,7 @@ public class DragBuffer {
       }
 
       public void mouseReleased(MouseEvent evt) {
-        //		    evt.translatePoint(((JFrame)evt.getSource()).getLocationOnScreen().x,((JFrame)evt.getSource()).getLocationOnScreen().y);
+        //        evt.translatePoint(((JFrame)evt.getSource()).getLocationOnScreen().x,((JFrame)evt.getSource()).getLocationOnScreen().y);
         System.err.println("Release at " + evt.getPoint());
       }
 

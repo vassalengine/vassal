@@ -29,8 +29,8 @@ public class SmallList extends List {
 
   public void paint(Graphics g) {
     while (getItemCount() > 0 &&
-//	   getSize().width > g.getFontMetrics().stringWidth(getItem(0))+2)
-	   getSize().width > 135)
+//     getSize().width > g.getFontMetrics().stringWidth(getItem(0))+2)
+     getSize().width > 135)
       setSize(getSize().width-2,getSize().height);
     super.paint(g);
   }

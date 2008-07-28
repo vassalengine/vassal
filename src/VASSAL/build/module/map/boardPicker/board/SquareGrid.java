@@ -319,10 +319,10 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public Point getLocation(String location) throws BadCoords {
-	  if (gridNumbering == null)
-		  throw new BadCoords();
-	  else
-		  return gridNumbering.getLocation(location);
+    if (gridNumbering == null)
+      throw new BadCoords();
+    else
+      return gridNumbering.getLocation(location);
   }
 
   public int range(Point p1, Point p2) {
@@ -537,15 +537,15 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
   
   public void editGrid() {
-  	gridEditor = new SquareGridEditor((GridEditor.EditableGrid) this);
-  	gridEditor.setVisible(true);
-  	// Local variables may have been updated by GridEditor so refresh
-  	// configurers.
-  	AutoConfigurer cfg = (AutoConfigurer) getConfigurer();
-  	cfg.getConfigurer(DX).setValue(String.valueOf(dx));
-  	cfg.getConfigurer(DY).setValue(String.valueOf(dy));
-  	cfg.getConfigurer(X0).setValue(String.valueOf(origin.x));
-  	cfg.getConfigurer(Y0).setValue(String.valueOf(origin.y));
+    gridEditor = new SquareGridEditor((GridEditor.EditableGrid) this);
+    gridEditor.setVisible(true);
+    // Local variables may have been updated by GridEditor so refresh
+    // configurers.
+    AutoConfigurer cfg = (AutoConfigurer) getConfigurer();
+    cfg.getConfigurer(DX).setValue(String.valueOf(dx));
+    cfg.getConfigurer(DY).setValue(String.valueOf(dy));
+    cfg.getConfigurer(X0).setValue(String.valueOf(origin.x));
+    cfg.getConfigurer(Y0).setValue(String.valueOf(origin.y));
   }
   
   public class SquareGridEditor extends GridEditor {
