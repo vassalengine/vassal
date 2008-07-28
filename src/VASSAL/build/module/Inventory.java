@@ -379,7 +379,8 @@ public class Inventory extends AbstractConfigurable
       p = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
       p.print(output);
-      
+      p.close();     
+ 
       final Command c = new Chatter.DisplayText(
         GameModule.getGameModule().getChatter(),
         Resources.getString("Inventory.wrote", file)  //$NON-NLS-1$

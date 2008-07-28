@@ -146,6 +146,8 @@ public class SaveMetaData extends AbstractMetaData {
  
       // read the matching Module data
       moduleData = new ModuleMetaData(zip);
+
+      zip.close();
     }
     catch (IOException e) {
       ErrorLog.log(e);

@@ -224,6 +224,8 @@ public abstract class AbstractMetaData {
       finally {
         IOUtils.closeQuietly(br);
       }
+    
+      zip.close();
     }
     catch (ZipException e) {
       ErrorLog.log(e);

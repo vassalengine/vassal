@@ -244,6 +244,7 @@ public class BugDialog {
       
       in = new DataInputStream(http.getInputStream());
       IOUtils.copy(in, System.err);
+      in.close();
     }
     // FIXME: review error message
     catch (IOException e) {

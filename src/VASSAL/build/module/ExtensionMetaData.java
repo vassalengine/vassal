@@ -160,6 +160,8 @@ public class ExtensionMetaData extends AbstractMetaData {
       if (moduleData == null) {
         moduleData = buildFileModuleData;
       }
+
+      zip.close();
     }
     catch (IOException e) {
       ErrorLog.log(e);

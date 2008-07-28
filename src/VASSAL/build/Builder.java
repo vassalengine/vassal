@@ -142,9 +142,11 @@ public abstract class Builder {
   public static Document createDocument(InputStream in)
                                         throws IOException {
     try {
-      return DocumentBuilderFactory.newInstance()
-                                   .newDocumentBuilder()
-                                   .parse(in);
+      final Document doc = DocumentBuilderFactory.newInstance()
+                                                .newDocumentBuilder()
+                                                .parse(in);
+      in.close();
+      return doc;
     }
     catch (ParserConfigurationException e) {
       ErrorDialog.bug(e);

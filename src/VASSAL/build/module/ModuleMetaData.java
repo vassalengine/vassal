@@ -140,6 +140,8 @@ public class ModuleMetaData extends AbstractMetaData {
       finally {
         IOUtils.closeQuietly(in);
       }
+
+      zip.close();
     }
     catch (IOException e) {
       ErrorLog.log(e);

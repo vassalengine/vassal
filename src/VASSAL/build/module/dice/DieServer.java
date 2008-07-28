@@ -276,9 +276,10 @@ public abstract class DieServer {
     final PrintWriter out = new PrintWriter(connection.getOutputStream());
     try {
       for (String s : rollString) out.println(s);
+      out.close();
     }
     finally {
-      out.close();
+      IOUtils.closeQuietly(out);
     }
   
     BufferedReader in = null;
