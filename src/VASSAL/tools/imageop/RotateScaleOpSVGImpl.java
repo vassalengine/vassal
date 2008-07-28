@@ -23,6 +23,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 
 import VASSAL.build.GameModule;
@@ -99,7 +100,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
     final String path = archive.getImagePrefix() + sop.getName();
     final SVGRenderer renderer = new SVGRenderer(
       archive.getArchiveURL() + path,
-      archive.getFileStream(path));
+      new BufferedInputStream(archive.getFileStream(path)));
  
     if (size == null) fixSize();
 

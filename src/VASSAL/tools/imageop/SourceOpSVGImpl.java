@@ -22,6 +22,7 @@ package VASSAL.tools.imageop;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -92,7 +93,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
     final String path = archive.getImagePrefix() + name;
     final SVGRenderer renderer = new SVGRenderer(
       archive.getArchiveURL() + path,
-      archive.getFileStream(path));
+      new BufferedInputStream(archive.getFileStream(path)));
 
     return renderer.render();
   }

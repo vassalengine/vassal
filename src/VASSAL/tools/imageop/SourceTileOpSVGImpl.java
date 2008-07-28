@@ -22,6 +22,7 @@ package VASSAL.tools.imageop;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.geom.Rectangle2D;
+import java.io.BufferedInputStream;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
@@ -77,7 +78,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     final String path = archive.getImagePrefix() + sop.getName();
     final SVGRenderer renderer = new SVGRenderer(
       archive.getArchiveURL() + path,
-      archive.getFileStream(path));
+      new BufferedInputStream(archive.getFileStream(path)));
 
     final Rectangle2D aoi = new Rectangle2D.Float(x0, y0, x1-x0, y1-y0); 
     return renderer.render(0.0, 1.0, aoi);
