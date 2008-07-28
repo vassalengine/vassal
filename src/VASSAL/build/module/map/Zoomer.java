@@ -80,6 +80,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 
 /**
@@ -531,7 +532,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       }
       catch (NumberFormatException ex) {
         // should not happen, text already validated
-        assert false;
+        ErrorDialog.bug(ex);
       }
       return 0.0;
     }
