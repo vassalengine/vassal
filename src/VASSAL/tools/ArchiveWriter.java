@@ -448,10 +448,15 @@ public class ArchiveWriter extends DataArchive {
 
     if (archiveFile.exists()) return;
 
-    final ZipOutputStream zis =
-      new ZipOutputStream(new FileOutputStream(archiveFile));
-    zis.putNextEntry(new ZipEntry(entryName));
-    zis.close();
+    ZipOutputStream out = null;
+    try {
+      out = new ZipOutputStream(new FileOutputStream(archiveFile));
+      out.putNextEntry(new ZipEntry(entryName));
+      out.close();
+    }
+    finally {
+      IOUtils.closeQuietly(out);
+    }
   }
 
   /** @deprecated Use {@link getImageNameSet()} instead. */

@@ -579,12 +579,15 @@ public class SymbolSet extends Importer{
             int idx = Integer.parseInt(line);
             pieces[i] = gamePieceData[idx-1];
           }
-        } catch (EOFException e) {
-        } catch (ArrayIndexOutOfBoundsException e) {
+        }
+        catch (EOFException e) {}
+        catch (ArrayIndexOutOfBoundsException e) {
           throw new FileFormatException("SDX file has out-of-bounds index \"" + line + "\".");
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
           throw new FileFormatException("SDX file has invalid index \"" + line + "\".");
-        } finally {
+        }
+        finally {
           gamePieceData = pieces;
         }
         

@@ -366,7 +366,6 @@ public class ZipUpdater implements Runnable {
     System.exit(0);
   }
 
-
   public static void main(String[] args) {
     String oldArchiveName = "<unknown>";
     try {
@@ -377,48 +376,51 @@ public class ZipUpdater implements Runnable {
         updater.createUpdater(new File(goal));
       }
       else {
-        BufferedReader r = new BufferedReader(new InputStreamReader(
-          ZipUpdater.class.getResourceAsStream("/" + TARGET_ARCHIVE)));
+        BufferedReader r = null;
         try {
+          r = new BufferedReader(new InputStreamReader(
+                ZipUpdater.class.getResourceAsStream("/" + TARGET_ARCHIVE)));
           oldArchiveName = r.readLine();
+          r.close();
         }
         finally {
-          try {
-            r.close();
-          }
-          // FIXME: review error message
-          catch (IOException e) {
-            ErrorLog.log(e);
+          if (r != null) {
+            try {
+              r.close();
+            }
+            catch (IOException e) {
+              e.printStackTrace();
+            }
           }
         }
 
-        r = new BufferedReader(new InputStreamReader(
-          ZipUpdater.class.getResourceAsStream("/" + UPDATED_ARCHIVE_NAME)));
         try {
+          r = new BufferedReader(new InputStreamReader(
+            ZipUpdater.class.getResourceAsStream("/" + UPDATED_ARCHIVE_NAME)));
           final String newArchiveName = r.readLine();
           final ZipUpdater updater = new ZipUpdater(new File(oldArchiveName));
           updater.write(new File(newArchiveName));
+          r.close();
         }
         finally {
-          try {
-            r.close();
-          }
-          // FIXME: review error message
-          catch (IOException e) {
-            ErrorLog.log(e);
+          if (r != null) {
+            try {
+              r.close();
+            }
+            catch (IOException e) {
+              e.printStackTrace();
+            }
           }
         }
       }
     }
-    // FIXME: review error message
     catch (final IOException e) {
-      ErrorLog.log(e);
+      e.printStackTrace();
       try {
         SwingUtilities.invokeAndWait(new ZipUpdater(oldArchiveName,e));
       }
-      // FIXME: review error message
       catch (Exception e1) {
-        ErrorLog.log(e1);
+        e1.printStackTrace();
       }
     }
   }

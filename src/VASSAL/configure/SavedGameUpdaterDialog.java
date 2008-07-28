@@ -24,6 +24,8 @@ import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -48,6 +50,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.SavedGameUpdater;
 import VASSAL.tools.ScrollPane;
 
@@ -218,24 +221,19 @@ public class SavedGameUpdaterDialog extends JDialog {
       p.put(MODULE_NAME_KEY, GameModule.getGameModule().getGameName());
       p.put(VERSION_KEY, GameModule.getGameModule().getGameVersion());
 
+      BufferedOutputStream out = null;
       try {
-        final FileOutputStream out = new FileOutputStream(fc.getSelectedFile());
-        try {
-          p.store(out, null);
-        }
-        finally {
-          try {
-            out.close();
-          }
-          // FIXME: review error message
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
-        }
+        out = new BufferedOutputStream(
+                new FileOutputStream(fc.getSelectedFile()));
+        p.store(out, null);
+        out.close();
       }
       // FIXME: review error message
       catch (IOException e) {
         showErrorMessage(e, "Export failed","Unable to write info");
+      }
+      finally {
+        IOUtils.closeQuietly(out);
       }
     }
   }
@@ -245,16 +243,12 @@ public class SavedGameUpdaterDialog extends JDialog {
     if (JFileChooser.CANCEL_OPTION != fc.showOpenDialog(this)) {
       oldPieceInfo = new Properties();
 
-      try {
-        FileInputStream in = null;
-        try {
-          in = new FileInputStream(fc.getSelectedFile());
-          oldPieceInfo.load(in);
-        }
-        finally {
-          if (in != null) in.close();
-        }
-
+      BufferedInputStream in = null;
+      try { 
+        in = new BufferedInputStream(new FileInputStream(fc.getSelectedFile()));
+        oldPieceInfo.load(in);
+        in.close();
+      
         String moduleVersion = oldPieceInfo.getProperty(VERSION_KEY);
         String moduleName = oldPieceInfo.getProperty(MODULE_NAME_KEY);
         if (!GameModule.getGameModule().getGameName().equals(moduleName)) {
@@ -275,6 +269,9 @@ public class SavedGameUpdaterDialog extends JDialog {
       catch (IOException e) {
         showErrorMessage(e,"Import failed","Unable to import info");
         oldPieceInfo = null;
+      }
+      finally {
+        IOUtils.closeQuietly(in);
       }
     }
     updateButton.setEnabled(oldPieceInfo != null);

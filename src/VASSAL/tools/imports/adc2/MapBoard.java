@@ -176,16 +176,17 @@ public class MapBoard extends Importer {
      */
     protected Rectangle writeImageToArchive() throws IOException {
       // write image to archive
-      BufferedImage image = getLayerImage();
+      final BufferedImage image = getLayerImage();
       if (image != null) {
-        Rectangle r = getCropRectangle(image);
-        File f = TempFileManager.getInstance().createTempFile("map", ".png");
-        FileOutputStream out = new FileOutputStream(f);
-        ImageIO.write(image.getSubimage(r.x, r.y, r.width, r.height), "png", out);
-// FIXME: where is the finally?
-        out.close();
+        final Rectangle r = getCropRectangle(image);
+        final File f =
+          TempFileManager.getInstance().createTempFile("map", ".png");
+        ImageIO.write(image.getSubimage(r.x, r.y, r.width, r.height), "png", f);
+
         imageName = getUniqueImageFileName(getName());
-        GameModule.getGameModule().getArchiveWriter().addImage(f.getPath(), imageName);
+        GameModule.getGameModule()
+                  .getArchiveWriter()
+                  .addImage(f.getPath(), imageName);
         return r;
       }
       else {

@@ -18,6 +18,7 @@
  */
 package VASSAL.tools;
 
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -70,7 +71,7 @@ public class Deobfuscator {
   public static void main(String[] args) throws Exception {
     System.out.println("Decoding "+args[0]);
     Deobfuscator d = new Deobfuscator(new FileInputStream(args[0]));
-    FileWriter out = new FileWriter(args[0]);
+    BufferedWriter out = new BufferedWriter(new FileWriter(args[0]));
     out.write(d.getString());
     out.close();
     System.out.println("Done!");

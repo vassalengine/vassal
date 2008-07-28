@@ -16,6 +16,7 @@
  */
 package VASSAL.tools;
 
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -64,16 +65,11 @@ public class Obfuscator {
       data = IOUtils.toByteArray(in);
     }
     finally {
-      try {
-        in.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      in.close();
     }
 
     Obfuscator o = new Obfuscator(data);
-    o.write(new FileOutputStream(args[0]));
+    o.write(new BufferedOutputStream(new FileOutputStream(args[0])));
     System.out.println("Done!");
     System.exit(0);
   }

@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
@@ -1290,9 +1291,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public Command loadDeck(File f) throws IOException {
-    final FileReader in = new FileReader(f);
+    BufferedReader in = null;
     String ds = null;
     try {
+      in = new BufferedReader(new FileReader(f));
       ds = IOUtils.toString(in);
       in.close();
     }

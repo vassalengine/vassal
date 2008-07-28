@@ -138,6 +138,7 @@ public class SaveMetaData extends AbstractMetaData {
       try {
         in = new BufferedInputStream(zip.getInputStream(data));
         parser.parse(new InputSource(in));
+        in.close();
       }
       finally {
         IOUtils.closeQuietly(in);

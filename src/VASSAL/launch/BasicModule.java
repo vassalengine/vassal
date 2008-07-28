@@ -100,6 +100,7 @@ public class BasicModule extends GameModule {
         try {
           final Document doc = Builder.createDocument(in);
           build(doc.getDocumentElement());
+          in.close();
         }
         finally {
           IOUtils.closeQuietly(in);
