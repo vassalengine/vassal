@@ -114,6 +114,7 @@ import VASSAL.counters.ReturnToDeck;
 import VASSAL.counters.UsePrototype;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
@@ -1545,31 +1546,29 @@ public class ADC2Module extends Importer {
   @Override
   protected void load(File f) throws IOException {
     super.load(f);
-    
     DataInputStream in = null;
+    
     try {
       in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
-    
+
       name = stripExtension(f.getName());
 
       int header = in.readByte();
       if (header != -3 && header != -2)
         throw new FileFormatException("Invalid Game Module Header");
-    
+
       // TODO: figure out version-specific formats for older versions.
       version = in.readUnsignedShort();
-    
+
       String s = readWindowsFileName(in);
       String mapFileName = forceExtension(s, "map");
       map = new MapBoard();
-      File mapFile = action.getCaseInsensitiveFile(
-        new File(mapFileName), f, true, 
-        new ExtensionFileFilter(ADC2Utils.MAP_DESCRIPTION,
-                                new String[] {ADC2Utils.MAP_EXTENSION}));
+      File mapFile = action.getCaseInsensitiveFile(new File(mapFileName), f, true, 
+          new ExtensionFileFilter(ADC2Utils.MAP_DESCRIPTION, new String[] {ADC2Utils.MAP_EXTENSION}));
       if (mapFile == null)
         throw new FileNotFoundException("Unable to locate map file.");
       map.importFile(action, mapFile);
-    
+
       // TODO: each block has an ideosyncratic way of terminating itself.
       // this has to be tested extensively.
       try {
@@ -1666,32 +1665,33 @@ public class ADC2Module extends Importer {
     
     infoPageName = readWindowsFileName(in);
     if (infoPageName.length() > 0) {
-      final File ipx = action.getCaseInsensitiveFile(
-        new File(forceExtension(infoPageName, "ipx")), file, true, 
-        new ExtensionFileFilter("Info page file (*.ipx;*.IPX)",
-                                new String[] {".ipx"}));
-
+      File ipx = action.getCaseInsensitiveFile(new File(forceExtension(infoPageName, "ipx")), file, true, 
+          new ExtensionFileFilter("Info page file (*.ipx;*.IPX)", new String[] {".ipx"}));
       if (ipx != null) {
         DataInputStream input = null;
+        
         try {
-          input = new DataInputStream(
-                    new BufferedInputStream(new FileInputStream(ipx)));
+          input = new DataInputStream(new BufferedInputStream(new FileInputStream(ipx)));
 
-          while (true) { // loop until EOF
-            while (input.readUnsignedByte() != 0x3b) { }
-            final int idx = input.readUnsignedByte();
-            final int len = input.readUnsignedByte();
-            final byte dimensions[] = new byte[8];
-            input.read(dimensions);
-            final byte buf[] = new byte[len];
-            input.read(buf);
-            final String name = new String(buf);
-            if (idx >=0 && idx <10 && infoPages[idx] == null) {
-              infoPages[idx] = name;
+          try {
+            while (true) { // loop until EOF
+              while (input.readUnsignedByte() != 0x3b) { }
+              int idx = input.readUnsignedByte();
+              int len = input.readUnsignedByte();
+              byte dimensions[] = new byte[8];
+              input.read(dimensions);
+              byte buf[] = new byte[len];
+              input.read(buf);
+              String name = new String(buf);
+              if (idx >=0 && idx <10 && infoPages[idx] == null) {
+                infoPages[idx] = name;
+              }
             }
           }
-        }
-        catch (EOFException e) {
+          catch (EOFException e) {
+            // do nothing
+          }
+          
           input.close();
         }
         finally {
@@ -2281,30 +2281,33 @@ public class ADC2Module extends Importer {
             insertComponent(w, tab);
             w.setAttribute(HtmlChart.NAME, infoPages[i]);
             
-            final StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.append("<html><body>");
             BufferedReader input = null;
             try {
               input = new BufferedReader(new FileReader(f));
-            } 
-            // FIXME: review error message
-            catch (FileNotFoundException e) {} // already found
-            
-            String line = null;
-            do {
-              line = input.readLine();
+
+              String line = null;
+              do {
+                line = input.readLine();
+
+                if (line != null && line.length() > 0) {
+                  line = line.replaceAll(" (?: )", "&nbsp;");
+                  line = line.replaceAll("(?<=&nbsp;) ", "&nbsp;");
+                  line = line.replaceFirst("^ ", "&nbsp;");
+                  sb.append("<p>" + line + "</p>");
+                }
+              } while (line != null);
+
+              sb.append("</body></html>");
+              gameModule.getArchiveWriter().addFile(f.getName(), sb.toString().getBytes());
+              w.setAttribute(HtmlChart.FILE, f.getName());
               
-              if (line != null && line.length() > 0) {
-                line = line.replaceAll(" (?: )", "&nbsp;");
-                line = line.replaceAll("(?<=&nbsp;) ", "&nbsp;");
-                line = line.replaceFirst("^ ", "&nbsp;");
-                sb.append("<p>" + line + "</p>");
-              }
-            } while (line != null);
-            
-            sb.append("</body></html>");
-            gameModule.getArchiveWriter().addFile(f.getName(), sb.toString().getBytes());
-            w.setAttribute(HtmlChart.FILE, f.getName());
+              input.close();
+            }
+            finally {
+              IOUtils.closeQuietly(input);
+            }
           }
           tab.propertyChange(new PropertyChangeEvent(w, Configurable.NAME_PROPERTY, "", infoPages[i]));
         }

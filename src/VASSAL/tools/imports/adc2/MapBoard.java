@@ -79,6 +79,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.Marker;
 import VASSAL.counters.UsePrototype;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.TempFileManager;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
@@ -1640,20 +1641,20 @@ public class MapBoard extends Importer {
     // scale the size more appropriately--for some reason ADC2 font sizes
     // don't correspond to anything else.
     int getSize() {
-      return size == 0 ? 0 : (size + 1) * 4 / 3 - 1;
+      return size <= 5 ? 0 : (size + 1) * 4 / 3 - 1;
     }
 
     @Override
     boolean draw(Graphics2D g) {
       if (getSize() != 0) {
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
         g.setFont(getFont());
         g.setColor(color);
         Point p = getPosition(g);
         g.drawString(text, p.x, p.y);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_OFF);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
         return true;
       }
       else {
@@ -2252,28 +2253,37 @@ public class MapBoard extends Importer {
    * sections. An extra file describes how the images are pasted together. This function pieces the images
    * together using the <code>Graphics2D</code> object <code>g</code>.
    */
-  protected void readScannedMapLayoutFile(File f, Graphics2D g) throws IOException {    
-    DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
-    // how many image sections
-    int nSheets = ADC2Utils.readBase250Word(in);
-    for (int i = 0; i < nSheets; ++i) {
-      // image file name
-      String name = stripExtension(readWindowsFileName(in));
-      File file = action.getCaseInsensitiveFile(new File(name + "-L" + (zoomLevel+1) + ".bmp"), new File(path), true, null);
-      if (file == null)
-        throw new FileNotFoundException("Unable to find map image.");
-      BufferedImage img = ImageIO.read(file);
-      int x = 0;
-      int y = 0;
-      for (int j = 0; j < 3; ++j) {
-        int tempx = ADC2Utils.readBase250Integer(in);
-        int tempy = ADC2Utils.readBase250Integer(in);
-        if (j == zoomLevel) {
-          x = tempx;
-          y = tempy;
+  protected void readScannedMapLayoutFile(File f, Graphics2D g) throws IOException {
+    DataInputStream in = null;
+    
+    try {
+      in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
+      // how many image sections
+      int nSheets = ADC2Utils.readBase250Word(in);
+      for (int i = 0; i < nSheets; ++i) {
+        // image file name
+        String name = stripExtension(readWindowsFileName(in));
+        File file = action.getCaseInsensitiveFile(new File(name + "-L" + (zoomLevel+1) + ".bmp"), new File(path), true, null);
+        if (file == null)
+          throw new FileNotFoundException("Unable to find map image.");
+        BufferedImage img = ImageIO.read(file);
+        int x = 0;
+        int y = 0;
+        for (int j = 0; j < 3; ++j) {
+          int tempx = ADC2Utils.readBase250Integer(in);
+          int tempy = ADC2Utils.readBase250Integer(in);
+          if (j == zoomLevel) {
+            x = tempx;
+            y = tempy;
+          }
         }
+        g.drawImage(img, null, x, y);
       }
-      g.drawImage(img, null, x, y);
+      
+      in.close();
+    }
+    finally {
+      IOUtils.closeQuietly(in);
     }
   }
 
@@ -2694,84 +2704,93 @@ public class MapBoard extends Importer {
   @Override
   protected void load(File f) throws IOException {
     super.load(f);
+    DataInputStream in = null;
     
-    DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
+    try {
+      in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
 
-    baseName = stripExtension(f.getName());
-    path = f.getPath();
-    int header = in.readByte();
-    if (header != -3)
-      throw new FileFormatException("Invalid Mapboard File Header");
+      baseName = stripExtension(f.getName());
+      path = f.getPath();
+      int header = in.readByte();
+      if (header != -3)
+        throw new FileFormatException("Invalid Mapboard File Header");
 
-    // don't know what these do.
-    in.read(new byte[2]);
+      // don't know what these do.
+      in.read(new byte[2]);
 
-    // get the symbol set
-    String s = readWindowsFileName(in);
-    String symbolSetFileName = forceExtension(s, "set");
-    set = new SymbolSet();
-    File setFile = action.getCaseInsensitiveFile(new File(symbolSetFileName), f, true, 
-        new ExtensionFileFilter(ADC2Utils.SET_DESCRIPTION, new String[] {ADC2Utils.SET_EXTENSION}));
-    if (setFile == null)
-      throw new FileNotFoundException("Unable to find symbol set file.");
-    set.importFile(action, setFile);
+      // get the symbol set
+      String s = readWindowsFileName(in);
+      String symbolSetFileName = forceExtension(s, "set");
+      set = new SymbolSet();
+      File setFile = action.getCaseInsensitiveFile(new File(symbolSetFileName), f, true, 
+          new ExtensionFileFilter(ADC2Utils.SET_DESCRIPTION, new String[] {ADC2Utils.SET_EXTENSION}));
+      if (setFile == null)
+        throw new FileNotFoundException("Unable to find symbol set file.");
+      set.importFile(action, setFile);
 
-    in.readByte(); // ignored
+      in.readByte(); // ignored
 
-    columns = ADC2Utils.readBase250Word(in);
-    rows = ADC2Utils.readBase250Word(in);
-    // presumably, they're all the same size (and they're square)
-    int hexSize = set.getMapBoardSymbolSize();
+      columns = ADC2Utils.readBase250Word(in);
+      rows = ADC2Utils.readBase250Word(in);
+      // presumably, they're all the same size (and they're square)
+      int hexSize = set.getMapBoardSymbolSize();
 
-    // each block read separately
-    readHexDataBlock(in);
-    readPlaceNameBlock(in);
-    readHexSideBlock(in);
-    readLineDefinitionBlock(in);
-    readAttributeBlock(in);
-    readMapSheetBlock(in);
-    readHexLineBlock(in);
-    readLineDrawPriorityBlock(in);
-    // end of data blocks
-    
-    int orientation = in.read();
-    switch(orientation) {
-    case 0:
-    case 1: // vertical hex orientation or grid offset column
-      if (set.getMapBoardSymbolShape() == SymbolSet.Shape.SQUARE)
-        layout = new GridOffsetColumnLayout(hexSize, columns, rows);
-      else
-        layout = new VerticalHexLayout(hexSize, columns, rows);
-      break;
-    case 2: // horizontal hex orientation or grid offset row
-      if (set.getMapBoardSymbolShape() == SymbolSet.Shape.SQUARE)
-        layout = new GridOffsetRowLayout(hexSize, columns, rows);
-      else
-        layout = new HorizontalHexLayout(hexSize, columns, rows);
-      break;
-    default: // square grid -- no offset
-      layout = new GridLayout(hexSize, columns, rows);
+      // each block read separately
+      readHexDataBlock(in);
+      readPlaceNameBlock(in);
+      readHexSideBlock(in);
+      readLineDefinitionBlock(in);
+      readAttributeBlock(in);
+      readMapSheetBlock(in);
+      readHexLineBlock(in);
+      readLineDrawPriorityBlock(in);
+      // end of data blocks
+
+      int orientation = in.read();
+      switch(orientation) {
+      case 0:
+      case 1: // vertical hex orientation or grid offset column
+        if (set.getMapBoardSymbolShape() == SymbolSet.Shape.SQUARE)
+          layout = new GridOffsetColumnLayout(hexSize, columns, rows);
+        else
+          layout = new VerticalHexLayout(hexSize, columns, rows);
+        break;
+      case 2: // horizontal hex orientation or grid offset row
+        if (set.getMapBoardSymbolShape() == SymbolSet.Shape.SQUARE)
+          layout = new GridOffsetRowLayout(hexSize, columns, rows);
+        else
+          layout = new HorizontalHexLayout(hexSize, columns, rows);
+        break;
+      default: // square grid -- no offset
+        layout = new GridLayout(hexSize, columns, rows);
+      }
+
+      /* int saveMapPosition = */ in.readByte();
+
+      /* int mapViewingPosition = */ in.readShort(); // probably base-250
+
+      /* int mapViewingZoomLevel = */ in.readShort(); 
+
+      in.readByte(); // totally unknown
+
+      // strangely, more blocks
+      readTableColorBlock(in);
+      readHexNumberingBlock(in); 
+
+      // TODO: default map item drawing order appears to be different for different maps. 
+      try { // optional blocks
+        readMapBoardOverlaySymbolBlock(in);
+        readVersionBlock(in);
+        readMapItemDrawingOrderBlock(in);
+        readMapItemDrawFlagBlock(in);
+      }
+      catch(ADC2Utils.NoMoreBlocksException e) {}
+      
+      in.close();
     }
-    
-    /* int saveMapPosition = */ in.readByte();
-    
-    /* int mapViewingPosition = */ in.readShort(); // probably base-250
-    
-    /* int mapViewingZoomLevel = */ in.readShort(); 
-    
-    in.readByte(); // totally unknown
-    
-    // strangely, more blocks
-    readTableColorBlock(in);
-    readHexNumberingBlock(in); 
-
-    // TODO: default map item drawing order appears to be different for different maps. 
-    try { // optional blocks
-      readMapBoardOverlaySymbolBlock(in);
-      readVersionBlock(in);
-      readMapItemDrawingOrderBlock(in);
-      readMapItemDrawFlagBlock(in);
-    } catch(ADC2Utils.NoMoreBlocksException e) {}
+    finally {
+      IOUtils.closeQuietly(in);
+    }
   }
 
   /**
