@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.zip.ZipException;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.IllegalBuildException;
 import VASSAL.command.Command;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
@@ -46,8 +45,10 @@ public class PluginsLoader extends ExtensionsLoader {
       addExtension(ext);
     }
   }
-  
-  protected ModuleExtension createExtension(String extname) throws ZipException, IOException, IllegalBuildException {
+ 
+  @Override 
+  protected ModuleExtension createExtension(String extname)
+                                            throws ZipException, IOException {
     return new ModulePlugin(new DataArchive(extname));
   }
   
@@ -96,7 +97,5 @@ public class PluginsLoader extends ExtensionsLoader {
    * ModuleExtension. 
    */
   public interface PluginElement {
-    
   }
-  
 }

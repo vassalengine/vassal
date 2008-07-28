@@ -43,6 +43,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
       }
       catch (InterruptedException e) {
       }
+
       String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
       setRoom(new SimpleRoom(newRoom));
     }
@@ -54,6 +55,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
       log.write(report((VASSAL.chat.Room[]) evt.getNewValue()));
       log.flush();
     }
+    // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
     }

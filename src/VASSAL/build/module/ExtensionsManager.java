@@ -42,9 +42,9 @@ public class ExtensionsManager {
    * file. Currently we disallow any files that are hidden or "files" that
    * are directories.
    */
-  private FilenameFilter filter = new FilenameFilter() {
+  private final FilenameFilter filter = new FilenameFilter() {
     public boolean accept(File dir, String name) {
-      File fileCandidate = new File(dir, name);
+      final File fileCandidate = new File(dir, name);
       return !fileCandidate.isHidden() && !fileCandidate.isDirectory();
     }
   };
@@ -90,10 +90,12 @@ public class ExtensionsManager {
 
   protected File ensureExists(File dir) {
     if (dir.exists() && !dir.isDirectory()) {
+// FIXME: is this exception appropriate?
       throw new IllegalStateException(dir + " is not a directory");
     }
     if (!dir.exists()) {
       if (!dir.mkdirs()) {
+// FIXME: is this exception appropriate?
         throw new IllegalStateException("Could not create " + dir);
       }
     }

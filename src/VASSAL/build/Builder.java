@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException; 
@@ -37,16 +38,19 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.IOUtils;
 
 /**
  * This class holds static convenience methods for building {@link Buildable}
- * objects
+ * objects.
  */
 public abstract class Builder {
   /**
@@ -62,57 +66,75 @@ public abstract class Builder {
    * @param parent the parent Buildable instance
    */
   public static void build(Element e, Buildable parent) {
-    if (e != null) {
-      for (Node child = e.getFirstChild(); child != null;
-           child = child.getNextSibling()) {
-        if (Node.ELEMENT_NODE == child.getNodeType()) {
-          try {
-            Buildable b = create((Element) child);
-            if (parent != null) {
+    if (e == null) return;
+
+    for (Node child = e.getFirstChild(); child != null;
+         child = child.getNextSibling()) {
+      if (Node.ELEMENT_NODE == child.getNodeType()) {
+        try {
+          final Buildable b = create((Element) child);
+          if (parent != null) {
               b.addTo(parent);
               parent.add(b);
-            }
           }
-          catch (Throwable err) {
-            String msg = err.getMessage();
-            if (msg == null) {
-              msg = err.getClass().getName().substring(err.getClass().getName().lastIndexOf(".") + 1); //$NON-NLS-1$
-            }
-            System.err.println(child.toString());
-            ErrorLog.log(err);
-            JOptionPane.showMessageDialog
-              (null,
-               Resources.getString("Builder.create_error",  //$NON-NLS-1$
-                   ((Element) child).getTagName(),
-                                 GameModule.getGameModule().getDataArchive().getName(),
-                                 msg ), 
-               Resources.getString("Builder.error"), //$NON-NLS-1$
-               JOptionPane.ERROR_MESSAGE);
-          }
+        }
+        catch (IllegalBuildException ex) {
+          ErrorDialog.bug(ex);
         }
       }
     }
   }
 
   /**
-   * Create an instance of a class from an XML element and build it
+   * Create an instance of a class from an XML element and build it.
    *
    * The <code>.class</code> file for the named class may be either
    * in the System's classpath or else within the {@link DataArchive}
-   * of the {@link GameModule}
+   * of the {@link GameModule}.
+   *
+   * @throws IllegalBuildException if something goes wrong when loading
+   * the class or creating an instance of it
    */
-  public static Buildable create(Element e) throws Exception {
-    Buildable b;
-    if (GameModule.getGameModule() == null) {
-      b = (Buildable) Class.forName(e.getTagName()).newInstance();
+  public static Buildable create(Element e) throws IllegalBuildException {
+    final GameModule mod = GameModule.getGameModule();
+    final String name = e.getTagName();
+
+    try {
+      final Buildable b = (Buildable) (mod == null ?  Class.forName(name) :
+        mod.getDataArchive().loadClass(name)).getConstructor().newInstance();
+      b.build(e);
+      return b;
     }
-    else {
-      b = (Buildable) GameModule
-        .getGameModule().getDataArchive()
-        .loadClass(e.getTagName()).newInstance();
+    catch (Throwable t) {
+      // find and rethrow causes which are not bugs
+      ErrorUtils.throwAncestorOfClass(OutOfMemoryError.class, t);
+
+      if (t instanceof ClassCastException ||
+          t instanceof ClassNotFoundException ||
+          t instanceof IllegalAccessException ||
+          t instanceof IllegalArgumentException ||
+          t instanceof InstantiationException ||
+          t instanceof InvocationTargetException ||
+          t instanceof NoSuchMethodException ||
+          t instanceof SecurityException ||
+          t instanceof ExceptionInInitializerError || 
+          t instanceof LinkageError) {
+        // one of the standard classloading problems occured
+        throw new IllegalBuildException(t);
+      }
+      else if (t instanceof Error) {
+        // some unusual problem occurred    
+        throw (Error) t;
+      }
+      else if (t instanceof RuntimeException) {
+        // some unusual problem occurred    
+        throw (RuntimeException) t;
+      }
+      else {
+        // this should never happen
+        throw new IllegalStateException(t);
+      }
     }
-    b.build(e);
-    return b;
   }
 
   /**
@@ -126,20 +148,15 @@ public abstract class Builder {
                                    .parse(in);
     }
     catch (ParserConfigurationException e) {
-      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
-      throw (IOException) new IOException().initCause(e);
+      ErrorDialog.bug(e);
+      return null;
     }
     catch (SAXException e) {
       // FIXME: switch to IOException(Throwable) ctor in Java 1.6
       throw (IOException) new IOException().initCause(e);
     }
     finally {
-      try {
-        if (in != null) in.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(in);
     }
   }
 
@@ -152,8 +169,8 @@ public abstract class Builder {
                                    .newDocumentBuilder()
                                    .newDocument();
     }
-// FIXME: shoult catch more specific exceptions here
-    catch (Exception ex) {
+    catch (ParserConfigurationException e) {
+      ErrorDialog.bug(e);
       return null;
     }
   }
@@ -161,24 +178,23 @@ public abstract class Builder {
   /**
    * Write an XML document to a Writer
    */
-  public static void writeDocument(Document doc, Writer writer) throws IOException {
+  public static void writeDocument(Document doc, Writer writer)
+                                                          throws IOException {
+    final Source source = new DOMSource(doc);
+
+    // Prepare the output file
+    final Result result = new StreamResult(writer);
+
+    // Write the DOM document to the file
     try {
-      Source source = new DOMSource(doc);
-
-      // Prepare the output file
-      Result result = new StreamResult(writer);
-
-      // Write the DOM document to the file
-      Transformer xformer = TransformerFactory.newInstance().newTransformer();
+      final Transformer xformer =
+        TransformerFactory.newInstance().newTransformer();
       xformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
       xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
       xformer.transform(source, result);
     }
+    // FIXME: review error message
     catch (TransformerException e) {
-      // FIXME: switch to IOException(Throwable) ctor in Java 1.6
-      throw (IOException) new IOException().initCause(e);
-    }
-    catch (TransformerFactoryConfigurationError e) {
       // FIXME: switch to IOException(Throwable) ctor in Java 1.6
       throw (IOException) new IOException().initCause(e);
     }
@@ -188,15 +204,13 @@ public abstract class Builder {
    * Return the decoded text contents of an Element node
    */
   public static String getText(Element e) {
-    StringBuilder buffer = new StringBuilder();
-    org.w3c.dom.NodeList sub = e.getChildNodes();
+    final StringBuilder buffer = new StringBuilder();
+    final NodeList sub = e.getChildNodes();
     for (int i = 0; i < sub.getLength(); ++i) {
-      if (sub.item(i).getNodeType()
-        == Node.TEXT_NODE) {
+      if (sub.item(i).getNodeType() == Node.TEXT_NODE) {
         buffer.append(((org.w3c.dom.Text) sub.item(i)).getData());
       }
-      else if (sub.item(i).getNodeType()
-        == Node.ENTITY_REFERENCE_NODE) {
+      else if (sub.item(i).getNodeType() == Node.ENTITY_REFERENCE_NODE) {
         buffer.append(sub.item(i).getFirstChild().toString());
       }
     }
@@ -204,16 +218,17 @@ public abstract class Builder {
   }
 
   /**
-   * @return a String representation of an XML Node
+   * @return a String representation of an XML document 
    */
   public static String toString(Document doc) {
-    StringWriter w = new StringWriter();
+    final StringWriter w = new StringWriter();
     try {
-      writeDocument(doc,w);
+      writeDocument(doc, w);
       return w.toString();
     }
+    // FIXME: review error message
     catch (IOException e) {
-      ErrorLog.log(e);
+//      IOErrorDialog.error(e);
       return ""; //$NON-NLS-1$
     }
   }

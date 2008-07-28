@@ -25,8 +25,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import javax.imageio.ImageIO;
 
 import VASSAL.build.AbstractConfigurable;
@@ -37,7 +35,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ImageSource;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.Op;
@@ -310,19 +308,8 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     
     srcOp = Op.load(getConfigureName());
 
-    try {
-      return srcOp.getImage(null);
-    }
-    catch (CancellationException e) {
-        ErrorLog.log(e);
-    }
-    catch (InterruptedException e) {
-      ErrorLog.log(e);
-    }
-    catch (ExecutionException e) {
-      ErrorLog.log(e);
-    }
-    return NULL_IMAGE;
+    final Image img = srcOp.getImage();
+    return img == null ? NULL_IMAGE : img;
   }
 
   // Called by the DataArchive only when the image is needed
@@ -368,7 +355,8 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       ImageIO.write(bufferedImage,"png", out); //$NON-NLS-1$
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      ErrorDialog.bug(e);
+// FIXME: why byte[1] instead of byte[0]?
       return new byte[1];
     }
     return out.toByteArray();

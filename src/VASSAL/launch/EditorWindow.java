@@ -42,7 +42,6 @@ import javax.swing.KeyStroke;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
-import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.ModuleUpdaterDialog;
@@ -52,7 +51,10 @@ import VASSAL.configure.ShowHelpAction;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidationReportDialog;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.URLUtils;
+import VASSAL.tools.menu.ChildProxy;
+import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -111,7 +113,11 @@ public abstract class EditorWindow extends JFrame {
     else {
       final MenuProxy fileMenu =
         new MenuProxy(Resources.getString("General.file"));
+
+      // FIMXE: setting nmemonic from first letter could cause collisions in
+      // some languages   
       fileMenu.setMnemonic(Resources.getString("General.file.shortcut").charAt(0));
+
       fileMenu.add(mm.addKey("Editor.save"));
       fileMenu.add(mm.addKey("Editor.save_as"));
       fileMenu.addSeparator();
@@ -156,7 +162,11 @@ public abstract class EditorWindow extends JFrame {
     else {
       final MenuProxy helpMenu =
         new MenuProxy(Resources.getString("General.help"));
+
+      // FIMXE: setting nmemonic from first letter could cause collisions in
+      // some languages   
       helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
+
       helpMenu.add(mm.addKey("General.help"));
       helpMenu.add(mm.addKey("Editor.ModuleEditor.reference_manual"));
       helpMenu.addSeparator();
@@ -215,7 +225,7 @@ public abstract class EditorWindow extends JFrame {
                      "README.html").toURI().toURL();
     }
     catch (MalformedURLException e) {
-      ErrorLog.warn(e);
+      ErrorDialog.bug(e);
     }
     mm.addAction("General.help", new ShowHelpAction(url, null));
 
@@ -223,10 +233,10 @@ public abstract class EditorWindow extends JFrame {
     try {
       File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
       dir = new File(dir, "ReferenceManual/index.htm"); //$NON-NLS-1$
-      url = HelpFile.toURL(dir);
+      url = URLUtils.toURL(dir);
     }
     catch (MalformedURLException e) {
-      ErrorLog.log(e);
+      ErrorDialog.bug(e);
     }
 
     final Action helpAction = new ShowHelpAction(url,

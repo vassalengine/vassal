@@ -25,8 +25,10 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 
-import VASSAL.tools.VersionFormatException;
-import VASSAL.tools.VersionTokenizer;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.version.VersionFormatException;
+import VASSAL.tools.version.VassalVersionTokenizer;
+import VASSAL.tools.version.VersionTokenizer;
 
 /**
  * Class for storing release-related information
@@ -71,8 +73,7 @@ public final class Info {
    */
   @Deprecated
   public static String getMinorVersion() {
-// FIXME: check where this is used. maybe we can deprecate?
-    final VersionTokenizer tok = new VersionTokenizer(VERSION);
+    final VersionTokenizer tok = new VassalVersionTokenizer(VERSION);
     try {
       return Integer.toString(tok.next()) + "." +
              Integer.toString(tok.next());
@@ -134,8 +135,8 @@ public final class Info {
    * the parseable parts of the two <code>String</code>s.
    */
   public static int compareVersions(String v0, String v1) {
-    final VersionTokenizer tok0 = new VersionTokenizer(v0);
-    final VersionTokenizer tok1 = new VersionTokenizer(v1);
+    final VersionTokenizer tok0 = new VassalVersionTokenizer(v0);
+    final VersionTokenizer tok1 = new VassalVersionTokenizer(v1);
 
     try {
       // find the first token where v0 and v1 differ
@@ -143,12 +144,11 @@ public final class Info {
         final int n0 = tok0.next();
         final int n1 = tok1.next();
       
-        if (n0 != n1) return n0 - n1;
+        if (n0 != n1) return n1 - n0;
       }    
     }
     catch (VersionFormatException e) {
-      System.err.println("Invalid version format: " +  //$NON-NLS-1$
-                         v0 + ", " + v1);              //$NON-NLS-2$
+      ErrorDialog.bug(e);
       return 0;
     }
 

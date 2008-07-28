@@ -41,6 +41,7 @@ public class IncrementProperty implements PropertyChanger {
       }
       return String.valueOf(value);
     }
+    // FIXME: review error message
     catch (NumberFormatException e) {
       return oldValue;
     }
@@ -55,5 +56,4 @@ public class IncrementProperty implements PropertyChanger {
     int getMaximumValue();
     boolean isWrap();
   }
-
 }

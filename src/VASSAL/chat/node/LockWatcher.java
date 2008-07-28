@@ -75,8 +75,10 @@ public class LockWatcher extends Thread {
       }
       catch (InterruptedException e) {
       }
+
       sender.close();
     }
+    // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
     }
@@ -88,6 +90,7 @@ public class LockWatcher extends Thread {
         System.err.println("No response from server in "+(timeout/1000.0)+" seconds.  Terminating process"); //$NON-NLS-1$ //$NON-NLS-2$
         System.exit(0);
       }
+      // FIXME: review error message
       catch (InterruptedException e) {
         System.err.println("Ping"); //$NON-NLS-1$
         // Interrupt means response received from server

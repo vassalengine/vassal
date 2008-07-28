@@ -417,6 +417,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         value = -v;
       }
     }
+    // FIXME: review error message
     catch (NumberFormatException e) {
     }
     return;
@@ -518,13 +519,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         if (tracker == null) {
           tracker = new ChangeTracker(this);
         }
+
         try {
-          int level = Integer.parseInt(resetLevel.getText(Decorator.getOutermost(this)));
+          final int level = Integer.parseInt(
+            resetLevel.getText(Decorator.getOutermost(this)));
           setValue(Math.abs(level) - 1);
           setActive(level > 0);
         }
-        catch (Exception e) {
-
+        // FIXME: review error message
+        catch (NumberFormatException e) {
         }
       }
       // random layers
@@ -566,21 +569,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     catch (CancellationException e) {
       // FIXME: use chaining when we move to 1.6+
-      final IOException io = new IOException();
-      try { io.initCause(e); } catch (Throwable t) { assert false; }
-      throw io;
+      throw (IOException) new IOException().initCause(e);
     }
     catch (InterruptedException e) {
       // FIXME: use chaining when we move to 1.6+
-      final IOException io = new IOException();
-      try { io.initCause(e); } catch (Throwable t) { assert false; }
-      throw io;
+      throw (IOException) new IOException().initCause(e);
     }
     catch (ExecutionException e) {
       // FIXME: use chaining when we move to 1.6+
-      final IOException io = new IOException();
-      try { io.initCause(e); } catch (Throwable t) { assert false; }
-      throw io;
+      throw (IOException) new IOException().initCause(e);
     }
   }
 
@@ -1061,15 +1058,19 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         commonNames.add(commonName);
         i++;
       }
+
       try {
         Integer.parseInt(xOffInput.getText());
       }
+      // FIXME: review error message
       catch (NumberFormatException xNAN) {
         xOffInput.setText("0");
       }
+
       try {
         Integer.parseInt(yOffInput.getText());
       }
+      // FIXME: review error message
       catch (NumberFormatException yNAN) {
         yOffInput.setText("0");
       }
@@ -1127,15 +1128,18 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         }
         i++;
       }
+
       try {
         Integer.parseInt(xOffInput.getText());
       }
+      // FIXME: review error message
       catch (NumberFormatException xNAN) {
         xOffInput.setText("0");
       }
       try {
         Integer.parseInt(yOffInput.getText());
       }
+      // FIXME: review error message
       catch (NumberFormatException yNAN) {
         yOffInput.setText("0");
       }

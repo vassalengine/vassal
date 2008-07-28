@@ -62,6 +62,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     try {
       myIp = discoverMyIpAddressFromRemote();
     }
+    // FIXME: review error message
     catch (IOException e) {
     }
     acceptThread = new AcceptPeerThread(myInfo.getInfo().getPort(), ppm);

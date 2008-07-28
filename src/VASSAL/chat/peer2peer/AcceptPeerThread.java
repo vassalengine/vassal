@@ -23,6 +23,7 @@ public class AcceptPeerThread extends Thread {
         socket = new ServerSocket(port);
         break;
       }
+      // FIXME: review error message
       catch (Exception ex) {
         if (i == MAX_ATTEMPTS -1) {
           // FIXME: switch to IOException(Throwable) ctor in Java 1.6
@@ -51,6 +52,7 @@ public class AcceptPeerThread extends Thread {
       try {
         ppm.addNewPeer(socket.accept());
       }
+      // FIXME: review error message
       catch (Exception ex) {
         halt();
       }
@@ -63,6 +65,7 @@ public class AcceptPeerThread extends Thread {
     try {
       socket.close();
     }
+    // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
     }

@@ -62,6 +62,7 @@ public abstract class SocketHandler {
               try {
                 handler.handleMessage(line);
               }
+              // FIXME: review error message
               catch (Exception e) {
                 // Handler threw an exception.  Keep reading.
                 System.err.println("Caught " + e.getClass().getName() + " handling " + line); //$NON-NLS-1$ //$NON-NLS-2$
@@ -70,6 +71,7 @@ public abstract class SocketHandler {
             }
           }
         }
+        // FIXME: review error message
         catch (IOException ignore) {
           String msg = ignore.getClass().getName();
           msg = msg.substring(msg.lastIndexOf('.') + 1);
@@ -98,6 +100,7 @@ public abstract class SocketHandler {
             }
           }
         }
+        // FIXME: review error message
         catch (IOException ignore) {
           String msg = ignore.getClass().getName();
           msg = msg.substring(msg.lastIndexOf('.') + 1);
@@ -133,11 +136,13 @@ public abstract class SocketHandler {
       try {
         closeStreams();
       }
+      // FIXME: review error message
       catch (IOException ignore) {
       }
       try {
         sock.close();
       }
+      // FIXME: review error message
       catch (IOException ignore) {
       }
       isOpen = false;

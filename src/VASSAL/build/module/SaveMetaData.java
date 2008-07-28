@@ -18,8 +18,8 @@
  */
 package VASSAL.build.module;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -36,16 +36,15 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.IOUtils;
 
 /**
- * 
  * Class representing the metadata for a Save Game/Log File. Details
  * about the module this savegame was created with are saved in a
  * seperate moduledata file in the saved game zip.
  * 
  * @author Brent Easton
  * @since 3.1.0
- *
  */
 public class SaveMetaData extends AbstractMetaData {
 
@@ -56,14 +55,17 @@ public class SaveMetaData extends AbstractMetaData {
 
   public SaveMetaData() {
     super();
-    String comments  = (String) JOptionPane.showInputDialog(
-        GameModule.getGameModule().getFrame(),
-        Resources.getString("BasicLogger.enter_comments"),
-        Resources.getString("BasicLogger.log_file_comments"),
-        JOptionPane.PLAIN_MESSAGE,
-        null,
-        null,
-        "");
+
+    final String comments = (String) JOptionPane.showInputDialog(
+      GameModule.getGameModule().getFrame(),
+      Resources.getString("BasicLogger.enter_comments"),
+      Resources.getString("BasicLogger.log_file_comments"),
+      JOptionPane.PLAIN_MESSAGE,
+      null,
+      null,
+      ""
+    );
+
     setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
   }
   
@@ -110,62 +112,48 @@ public class SaveMetaData extends AbstractMetaData {
 
   /**
    * Read and validate a Saved Game/Log file.
-   *  - Check it has a Zip Entry named savedgame
-   *  - If it has a metadata file, read and parse it.
-   *  - 
+   * Check that it has a Zip Entry named savedgame.
+   * If it has a metadata file, read and parse it.
+   *
    * @param file Saved Game File
    */
   public void read(ZipFile zip) {
-
-    InputStream is = null;
     try {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style save with no metadata.
+      final ZipEntry data = zip.getEntry(getZipEntryName());
+      if (data == null) return;
+
+      final XMLReader parser = XMLReaderFactory.createXMLReader();
+
+      // set up the handler
+      final XMLHandler handler = new XMLHandler();
+      parser.setContentHandler(handler);
+      parser.setDTDHandler(handler);
+      parser.setEntityResolver(handler);
+      parser.setErrorHandler(handler);
+
+      // parse! parse!
+      BufferedInputStream in = null;
       try {
-        final ZipEntry data = zip.getEntry(getZipEntryName());
-        if (data == null) return;
-
-        final XMLReader parser = XMLReaderFactory.createXMLReader();
-
-        // set up the handler
-        final XMLHandler handler = new XMLHandler();
-        parser.setContentHandler(handler);
-        parser.setDTDHandler(handler);
-        parser.setEntityResolver(handler);
-        parser.setErrorHandler(handler);
-
-        // parse! parse!
-        is = zip.getInputStream(data);
-        parser.parse(new InputSource(is));
-        
-        // read the matching Module data
-        moduleData = new ModuleMetaData(zip); 
+        in = new BufferedInputStream(zip.getInputStream(data));
+        parser.parse(new InputSource(in));
       }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
-      catch (SAXException e) {
-        ErrorLog.log(e);
-      }
+      finally {
+        IOUtils.closeQuietly(in);
+      }       
+ 
+      // read the matching Module data
+      moduleData = new ModuleMetaData(zip);
+    }
+    catch (IOException e) {
+      ErrorLog.log(e);
+    }
+    catch (SAXException e) {
+      ErrorLog.log(e);
     }
     finally {
-      if (zip != null) {
-        try {
-          zip.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
-      }
-      
-      if (is != null) {
-        try {
-          is.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
-      }
+      IOUtils.closeQuietly(zip);
     }
   }
 }

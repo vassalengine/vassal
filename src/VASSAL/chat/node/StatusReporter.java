@@ -59,6 +59,7 @@ public class StatusReporter implements Runnable {
                 .append('\n');
         }
       }
+      // FIXME: review error message
       catch (IOException e) {
         e.printStackTrace();
       }
@@ -77,6 +78,7 @@ public class StatusReporter implements Runnable {
         reportStatus.doPost("updateConnections", props); //$NON-NLS-1$
         sleepInterval = MIN_SLEEP;
       }
+      // FIXME: review error message
       catch (IOException e) {
         sleepInterval = Math.min(2 * sleepInterval, MAX_SLEEP);
       }
@@ -92,6 +94,7 @@ public class StatusReporter implements Runnable {
         Thread.sleep(sleepInterval);
         sendContents();
       }
+      // FIXME: review error message
       catch (InterruptedException e) {
         e.printStackTrace();
       }

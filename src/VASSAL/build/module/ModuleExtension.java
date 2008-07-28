@@ -56,6 +56,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.IOUtils;
 
 /**
  * An optional extension to a GameModule
@@ -110,7 +111,9 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     final String fileName = GameModule.BUILDFILE; //$NON-NLS-1$
 
     GameModule.getGameModule().getDataArchive().addExtension(archive);
-    GameModule.getGameModule().setGpIdSupport(this); // Record that we are currently building this Extension
+
+    // Record that we are currently building this Extension
+    GameModule.getGameModule().setGpIdSupport(this);
 
     InputStream in = null;
     try {
@@ -119,27 +122,21 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     catch (IOException e) {
     }
 
-    try {
-      if (in == null) {
-        build(null);
-      }
-      else {
-        try {
-          final Document doc = Builder.createDocument(in);
-          build(doc.getDocumentElement());
-        }
-        finally {
-          try {
-            in.close();
-          }
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
-        }
-      }
+    if (in == null) {
+      build(null);
     }
-    catch (IOException e) {
-      throw new IllegalBuildException(e);
+    else {
+      try {
+        final Document doc = Builder.createDocument(in);
+        build(doc.getDocumentElement());
+      }
+      // FIXME: review error message
+      catch (IOException e) {
+        throw new IllegalBuildException(e);
+      }
+      finally {
+        IOUtils.closeQuietly(in);
+      }
     }
 
     GameModule.getGameModule().add(this);
@@ -153,7 +150,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
        * generate new gpid's.
        */
       if (nextGpId == 0) {
-        String id = UUID.randomUUID().toString();
+        final String id = UUID.randomUUID().toString();
         extensionId = id.substring(id.length()-3);
         updateGpIds();    
       }
@@ -216,26 +213,28 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   }
 
   public void removeFrom(Buildable parent) {
-    throw new IllegalBuildException(Resources.getString("ModuleExtension.cannot_remove")); //$NON-NLS-1$
+    throw new IllegalBuildException(
+      Resources.getString("ModuleExtension.cannot_remove")); //$NON-NLS-1$
   }
 
   public boolean confirmExit() {
     boolean confirm = true;
-    if (archive instanceof ArchiveWriter
-        && !buildString().equals(lastSave)) {
-      switch (JOptionPane.showConfirmDialog
-          (GameModule.getGameModule().getFrame(), Resources.getString("ModuleExtension.save_extension"), //$NON-NLS-1$
-           "", JOptionPane.YES_NO_CANCEL_OPTION)) { //$NON-NLS-1$
-        case JOptionPane.YES_OPTION:
-          try {
-            save();
-          }
-          catch (IOException e) {
-            confirm = false;
-          }
-          break;
-        case JOptionPane.CANCEL_OPTION:
+    if (archive instanceof ArchiveWriter && !buildString().equals(lastSave)) {
+      switch (JOptionPane.showConfirmDialog(
+        GameModule.getGameModule().getFrame(),
+        Resources.getString("ModuleExtension.save_extension"), //$NON-NLS-1$
+        "", JOptionPane.YES_NO_CANCEL_OPTION)) { //$NON-NLS-1$
+      case JOptionPane.YES_OPTION:
+        try {
+          save();
+        }
+        // FIXME: review error message
+        catch (IOException e) {
           confirm = false;
+        }
+        break;
+      case JOptionPane.CANCEL_OPTION:
+        confirm = false;
       }
 
     }
@@ -307,8 +306,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       try {
         nextGpId = Integer.parseInt((String) value);
       }
-      catch (Exception e) {
-        
+      // FIXME: review error message
+      catch (NumberFormatException e) {
       }
     }
     else if (EXTENSION_ID.equals(key)) {
@@ -361,10 +360,12 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       try {
         (new ExtensionMetaData(this)).save((ArchiveWriter) archive);
       }
+      // FIXME: review error message
       catch (IOException e) {
         ErrorLog.log(e);
       }
-      String save = buildString();
+
+      final String save = buildString();
       ((ArchiveWriter) archive).addFile
           (GameModule.BUILDFILE,
            new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
@@ -382,13 +383,15 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       try {
         (new ExtensionMetaData(this)).save((ArchiveWriter) archive);
       }
+      // FIXME: review error message
       catch (IOException e) {
         ErrorLog.log(e);
       }
-      String save = buildString();
-      ((ArchiveWriter) archive).addFile
-          (GameModule.BUILDFILE, //
-           new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
+
+      final String save = buildString();
+      ((ArchiveWriter) archive).addFile(
+          GameModule.BUILDFILE,
+          new ByteArrayInputStream(save.getBytes("UTF-8"))); //$NON-NLS-1$
       ((ArchiveWriter) archive).saveAs(true);
       lastSave = save;
     }
@@ -412,8 +415,8 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       d.add(dconfig.getControls());
       
       /*
-       * The Extension id should not normally be changed once saved games have been created.
-       * Display a dialog with warnings.
+       * The Extension id should not normally be changed once saved games
+       * have been created. Display a dialog with warnings.
        */
       Box idBox = Box.createHorizontalBox();
       idBox.add(new JLabel("Extension Id: "));

@@ -40,6 +40,8 @@ import VASSAL.build.GameModule;
 import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
+import VASSAL.tools.WriteErrorDialog;
 
 // FXIME: Would be better if this didn't set the username and password
 // directly, but instead had a static method for returning them.
@@ -80,25 +82,21 @@ public class UsernameAndPasswordDialog extends JDialog {
     ok.setEnabled(false);
     ok.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        GameModule.getGameModule()
-                  .getPrefs()
-                  .getOption(GameModule.REAL_NAME)
-                  .setValue(nameConfig.getValueString());
-        GameModule.getGameModule()
-                  .getPrefs()
-                  .getOption(GameModule.SECRET_NAME)
-                  .setValue(pwd.getValueString());
+        final Prefs p = GameModule.getGameModule().getPrefs();
+
+        p.getOption(GameModule.REAL_NAME)
+         .setValue(nameConfig.getValueString());
+        p.getOption(GameModule.SECRET_NAME)
+         .setValue(pwd.getValueString());
 
         try {
-          GameModule.getGameModule().getPrefs().write();
-          UsernameAndPasswordDialog.this.dispose(); 
+          p.write();
         }
         catch (IOException ex) {
-          final String msg = ex.getMessage();
-          error.setText(
-            msg == null ? Resources.getString("Prefs.unable_to_save") : msg);
-          error.setForeground(Color.red);
+          WriteErrorDialog.error(ex, p.getFile());
         }
+
+        UsernameAndPasswordDialog.this.dispose(); 
       }
     });
 

@@ -19,54 +19,48 @@ package VASSAL.tools;
 
 import javax.swing.JOptionPane;
 
-import VASSAL.build.GameModule;
-import VASSAL.i18n.Resources;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
+import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
+
 // FIXME: Use java.awt.Desktop for this when we move to Java 1.6+.
 
 /**
- * Utility class for displaying an external browser window
+ * Utility class for displaying an external browser window.
+ *
  * @author rkinney
  */
 public class BrowserSupport {
-  private static BrowserLauncher browserLauncher;
-  private static Exception initializationError;
-  
-  public static void openURL(String url) {
-    if (!initialized()) {
-      initialize();
+  private static final BrowserLauncher browserLauncher;
+ 
+  static {
+    BrowserLauncher bl = null;
+    try {
+      bl = new BrowserLauncher();
     }
-    if (initializationError == null) {
+    catch (BrowserLaunchingInitializingException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (UnsupportedOperatingSystemException e) {
+      ErrorDialog.bug(e);
+    }
+
+    browserLauncher = bl;
+  }
+ 
+  public static void openURL(String url) {
+    if (browserLauncher != null) {
       browserLauncher.openURLinBrowser(url);
     }
     else {
-      String msg = Resources.getString("BrowserSupport.unable_to_launch")+"\n"; //$NON-NLS-1$
-      if (initializationError.getMessage() != null) {
-        msg += initializationError.getMessage()+"\n"; //$NON-NLS-1$
-      }
-      msg += Resources.getString("BrowserSupport.open_browser",url); //$NON-NLS-1$
-      JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg);
-    }
-
-  }
-
-  private static void initialize() {
-    try {
-      browserLauncher = new BrowserLauncher();
-    }
-    catch (BrowserLaunchingInitializingException e) {
-      initializationError = e;
-    }
-    catch (UnsupportedOperatingSystemException e) {
-      initializationError = e;
+      ErrorDialog.error(
+        Resources.getString("BrowserSupport.unable_to_launch"),
+        Resources.getString("BrowserSupport.unable_to_launch"),
+        Resources.getString("BrowserSupport.open_browser", url)
+      );
     }
   }
-
-  private static boolean initialized() {
-    return browserLauncher != null || initializationError != null;
-  }
-
 }

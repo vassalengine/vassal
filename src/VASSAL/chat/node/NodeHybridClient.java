@@ -80,11 +80,13 @@ public class NodeHybridClient extends DynamicClient {
           address = address.substring(0, index);
           c = new SocketNodeClient(info.getModuleName(), info.getUserName(),encoder, address, port, msgSvr, welcomeMsgSvr);
         }
+        // FIXME: review error message
         catch (NumberFormatException ex) {
           fireStatus(Resources.getString("Server.bad_address2", address));   //$NON-NLS-1$
         }
       }
     }
+    // FIXME: review error message
     catch (IOException e) {
       fireStatus(Resources.getString("Server.bad_address3"));  //$NON-NLS-1$
     }

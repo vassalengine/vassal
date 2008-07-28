@@ -32,6 +32,7 @@ public abstract class Interceptor implements PacketInterceptor, PacketFilter {
     try {
       intercept(packet);
     }
+    // FIXME: review error message
     catch (RuntimeException e) {
       e.printStackTrace();
     }
@@ -43,6 +44,7 @@ public abstract class Interceptor implements PacketInterceptor, PacketFilter {
     try {
       return acceptPacket(packet);
     }
+    // FIXME: review error message
     catch (RuntimeException e) {
       e.printStackTrace();
       return false;

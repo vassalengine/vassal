@@ -21,6 +21,7 @@ package VASSAL.build.module;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -58,8 +60,12 @@ import VASSAL.launch.Launcher;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.Deobfuscator;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.Obfuscator;
+import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.menu.MenuManager;
@@ -77,8 +83,7 @@ public class GameState implements CommandEncoder {
   protected String lastSave;
   protected DirectoryConfigurer savedGameDirectoryPreference;
 
-  public GameState() {
-  }
+  public GameState() {}
 
   /**
    * Expects to be added to a GameModule.  Adds <code>New</code>,
@@ -93,6 +98,8 @@ public class GameState implements CommandEncoder {
         loadGame();
       }
     };
+    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // some languages
     loadGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.load_game.shortcut").charAt(0));
 
     saveGame = new AbstractAction(Resources.getString("GameState.save_game")) {
@@ -102,6 +109,8 @@ public class GameState implements CommandEncoder {
         saveGame();
       }
     };
+    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // some languages
     saveGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.save_game.shortcut").charAt(0));
 
     newGame = new AbstractAction(Resources.getString("GameState.new_game")) {
@@ -112,6 +121,8 @@ public class GameState implements CommandEncoder {
         setup(true);
       }
     };
+    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // some languages
     newGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.new_game.shortcut").charAt(0));
 
     closeGame = new AbstractAction(
@@ -122,6 +133,8 @@ public class GameState implements CommandEncoder {
         setup(false);
       }
     };
+    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // some languages
     closeGame.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("GameState.close_game.shortcut").charAt(0));
 
     final MenuManager mm = MenuManager.getInstance();
@@ -267,33 +280,40 @@ public class GameState implements CommandEncoder {
    * file should be that returned by {@link #getRestoreCommand}.
    */
   public void loadGame() {
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.addChoosableFileFilter(new LogAndSaveFileFilter());
 
     if (fc.showOpenDialog() != FileChooser.APPROVE_OPTION) return;
 
     final File f = fc.getSelectedFile();
-    if (f.exists()) {
-      try {
-        if (gameStarted) {
-          loadContinuation(f);
-        }
-        else {
-          loadGameInBackground(f);
-        }
+    try {
+      if (!f.exists()) throw new FileNotFoundException(
+        "Unalbe to locate " + f.getPath());
+
+      if (gameStarted) {
+        loadContinuation(f);
       }
-      catch (IOException e) {
+      else {
+        loadGameInBackground(f);
+      }
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, f);
+    }
+/*
         String msg = Resources.getString("GameState.unable_to_load", f.getName());  //$NON-NLS-1$
         if (e.getMessage() != null) {
           msg += "\n" + e.getMessage();  //$NON-NLS-1$
         }
         JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(),
                                msg, Resources.getString("GameState.load_error"), JOptionPane.ERROR_MESSAGE);  //$NON-NLS-1$
-      }
     }
     else {
+// FIXME: give more specific error message
+// FIXME: maybe deprecate warn()?
       GameModule.getGameModule().warn(Resources.getString("GameState.unable_to_find", f.getPath()));  //$NON-NLS-1$
     }
+*/
   }
 
   protected String saveString() {
@@ -304,19 +324,23 @@ public class GameState implements CommandEncoder {
   /** Prompts the user for a file into which to save the game */
   public void saveGame() {
     GameModule.getGameModule().warn(Resources.getString("GameState.saving_game"));  //$NON-NLS-1$
-    try {
-      File saveFile = getSaveFile();
-      if (saveFile != null) {
+
+    final File saveFile = getSaveFile();
+    if (saveFile == null) {
+      GameModule.getGameModule().warn(Resources.getString("GameState.save_canceled"));  //$NON-NLS-1$
+    }
+    else {
+      try {
         saveGame(saveFile);
         GameModule.getGameModule().warn(Resources.getString("GameState.game_saved"));  //$NON-NLS-1$
       }
-      else {
-        GameModule.getGameModule().warn(Resources.getString("GameState.save_canceled"));  //$NON-NLS-1$
+      catch (IOException e) {
+        WriteErrorDialog.error(e, saveFile);
+/*
+        ErrorLog.log(err);
+        GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
+*/
       }
-    }
-    catch (IOException err) {
-      ErrorLog.log(err);
-      GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
     }
   }
 
@@ -511,7 +535,8 @@ public class GameState implements CommandEncoder {
       loadGameInBackground(f.getName(), new FileInputStream(f));
     }
     catch (IOException e) {
-      GameModule.getGameModule().warn(Resources.getString("GameState.invalid_savefile", f.getPath()));
+      ReadErrorDialog.error(e, f);
+//      GameModule.getGameModule().warn(Resources.getString("GameState.invalid_savefile", f.getPath()));
     }
   }
 
@@ -530,12 +555,7 @@ public class GameState implements CommandEncoder {
           return decodeSavedGame(in);
         }
         finally {
-          try {
-            in.close();
-          }
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
+          IOUtils.closeQuietly(in);
         }
       }
 
@@ -543,7 +563,7 @@ public class GameState implements CommandEncoder {
       protected void done() {
         try {
           Command loadCommand = null;
-          String msg;
+          String msg = null;
           try {
             loadCommand = get();
   
@@ -554,7 +574,11 @@ public class GameState implements CommandEncoder {
               msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$
             } 
           }
-          catch (Exception e) {
+          catch (InterruptedException e) {
+            ErrorDialog.bug(e);
+          }
+          // FIXME: review error message
+          catch (ExecutionException e) {
             ErrorLog.log(e);
             msg = Resources.getString("GameState.error_loading", shortName);  //$NON-NLS-1$
           }
@@ -599,12 +623,15 @@ public class GameState implements CommandEncoder {
   }
 
   /**
-   * Read a saved game and translate it into a Command.  Executing the command will load the saved game 
+   * Read a saved game and translate it into a Command.  Executing the
+   * command will load the saved game.
+   *
    * @param fileName
    * @return
    * @throws IOException
    */
   public Command decodeSavedGame(File saveFile) throws IOException {
+// FIXME: should we wrap this in a BufferedInputStream here?
     return decodeSavedGame(new FileInputStream(saveFile));
   }
   
@@ -620,14 +647,10 @@ public class GameState implements CommandEncoder {
       }
     }
     finally {
-      try {
-        zipInput.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(zipInput);
     }
 
+// FIXME: give more specific error message
     throw new IOException("Invalid saveFile format");
   }
 

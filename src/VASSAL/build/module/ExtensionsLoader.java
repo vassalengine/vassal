@@ -114,11 +114,13 @@ public class ExtensionsLoader implements CommandEncoder {
         success = true;
       }
       catch (ZipException e) {
-        // Not a zip file.  Ignore
+        // Not a zip file. Ignore.
       }
+      // FIXME: review error message
       catch (IOException e) {
         reportBuildError(e, extname);
       }
+      // FIXME: review error message
       catch (IllegalBuildException e) {
         reportBuildError(e, extname);
       }
@@ -126,7 +128,8 @@ public class ExtensionsLoader implements CommandEncoder {
     return success;
   }
   
-  protected ModuleExtension createExtension(String extname) throws ZipException, IOException, IllegalBuildException {
+  protected ModuleExtension createExtension(String extname)
+                                            throws ZipException, IOException {
     return new ModuleExtension(new DataArchive(extname));
   }
 

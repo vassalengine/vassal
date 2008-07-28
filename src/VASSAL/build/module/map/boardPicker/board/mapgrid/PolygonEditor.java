@@ -127,6 +127,7 @@ public class PolygonEditor extends JPanel {
             p.addPoint(x, y);
           }
         }
+        // FIXME: review error message
         catch (NumberFormatException e) {
         }
       }

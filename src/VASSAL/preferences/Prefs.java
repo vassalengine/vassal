@@ -18,8 +18,10 @@
  */
 package VASSAL.preferences;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,14 +36,16 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.IOUtils;
+import VASSAL.tools.ReadErrorDialog;
 
 /**
  * A set of preferences.  Each set of preferences is identified by a name, and
  * different sets may share a common editor, which is responsible for
  * writing the preferences to disk
  */
-public class Prefs {
+public class Prefs implements Closeable {
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; //$NON_NLS-1$
   private static Prefs globalPrefs;
@@ -59,6 +63,10 @@ public class Prefs {
 
   public PrefsEditor getEditor() {
     return editor;
+  }
+
+  public File getFile() {
+    return new File(editor.getArchive().getName());
   }
 
   public void addOption(Configurer o) {
@@ -82,7 +90,7 @@ public class Prefs {
   public void addOption(String category, Configurer o, String prompt) {
     if (o != null && options.get(o.getKey()) == null) {
       options.put(o.getKey(), o);
-      String val = storedValues.getProperty(o.getKey());
+      final String val = storedValues.getProperty(o.getKey());
       if (val != null) {
         o.setValue(val);
         prompt = null;
@@ -94,8 +102,7 @@ public class Prefs {
   }
 
   public void setValue(String option, Object value) {
-    Configurer c = options.get(option);
-    c.setValue(value);
+    options.get(option).setValue(value);
   }
 
   public Configurer getOption(String s) {
@@ -107,7 +114,7 @@ public class Prefs {
    * @return the value of the preferences setting stored under key
    */
   public Object getValue(String key) {
-    Configurer c = options.get(key);
+    final Configurer c = options.get(key);
     return c == null ? null : c.getValue();
   }
 
@@ -124,28 +131,22 @@ public class Prefs {
 
   public void init(String moduleName) {
     name = moduleName;
-    InputStream in = null;
 
+    BufferedInputStream in = null;
     try {
-      in = editor.getArchive().getFileStream(name);
-      try {
-        storedValues.clear();
-        storedValues.load(in);
-      }
-      finally {
-        try {
-          in.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
-      }
+      in = new BufferedInputStream(editor.getArchive().getFileStream(name));
+      storedValues.clear();
+      storedValues.load(in);
+      in.close();
     }
     catch (FileNotFoundException e) {
       // First time for this module, not an error.
     }  
     catch (IOException e) {
-      ErrorLog.log(e);
+      ReadErrorDialog.error(e, editor.getArchive().getName());
+    }
+    finally {
+      IOUtils.closeQuietly(in);
     }
 
     editor.getArchive().closeWhenNotInUse();
@@ -167,7 +168,7 @@ public class Prefs {
    */
   public void save() throws IOException {
     for (Configurer c : options.values()) {
-      String val = c.getValueString();
+      final String val = c.getValueString();
       if (val != null) {
         storedValues.put(c.getKey(), val);
       }
@@ -175,13 +176,14 @@ public class Prefs {
         storedValues.remove(c.getKey());
       }
     }
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
     storedValues.store(out, null);
     editor.getArchive()
           .addFile(name, new ByteArrayInputStream(out.toByteArray()));
   }
 
-  /** Save these preferences and write to disk */
+  /** Save these preferences and write to disk. */
   public void write() throws IOException {
     editor.write();
   }
@@ -194,32 +196,34 @@ public class Prefs {
   }
   
   /**
-   * A global set of preferences that exists independent of any individual module
-   * @return
+   * A global set of preferences that exists independent of any individual
+   * module.
+   *
+   * @return the global <code>Prefs</code> object
    */
   public static Prefs getGlobalPrefs() {
-
     if (globalPrefs == null) {
-      File prefsFile = new File(Info.getHomeDir(), "Preferences");  //$NON-NLS-1$
+      final File prefsFile =
+        new File(Info.getHomeDir(), "Preferences");  //$NON-NLS-1$
 
       try {
         ArchiveWriter.ensureExists(prefsFile, "VASSAL");
       }
-      catch (FileNotFoundException e) {
-        ErrorLog.log(e);
-      }
       catch (IOException e) {
-        ErrorLog.log(e);
+        WriteErrorDialog.error(e, prefsFile);  
       }      
       
-      globalPrefs = new Prefs(new PrefsEditor(new ArchiveWriter(prefsFile.getPath())), "VASSAL");  //$NON-NLS-1$
+      globalPrefs = new Prefs(new PrefsEditor(
+        new ArchiveWriter(prefsFile.getPath())), "VASSAL");  //$NON-NLS-1$
       try {
         globalPrefs.write();
       }
       catch (IOException e) {
-        ErrorLog.log(e);
+        WriteErrorDialog.error(e, prefsFile);
       }
-      DirectoryConfigurer c = new DirectoryConfigurer(MODULES_DIR_KEY, null);
+
+      final DirectoryConfigurer c =
+        new DirectoryConfigurer(MODULES_DIR_KEY, null);
       c.setValue(new File(System.getProperty("user.home")));
       globalPrefs.addOption(null,c);
     }

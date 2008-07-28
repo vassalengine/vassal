@@ -50,8 +50,9 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * This is the GamePiece designer dialog.  It appears when you edit
@@ -156,7 +157,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         try {
           availableModel.addElement(piece.getClass().newInstance());
         }
-        catch (Throwable ex) {
+        catch (IllegalAccessException e) {
+          ErrorDialog.bug(e);
+        }
+        catch (InstantiationException e) {
+          ErrorDialog.bug(e);
         }
       }
       piece = ((Decorator) piece).piece;
@@ -284,8 +289,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
             }
           }
         }
-        else if (selected instanceof GamePiece
-            && inUseModel.getSize() == 0) {
+        else if (selected instanceof GamePiece && inUseModel.getSize() == 0) {
           try {
             GamePiece p = (GamePiece) selected.getClass().newInstance();
             setPiece(p);
@@ -297,8 +301,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
               }
             }
           }
-          catch (Exception e) {
-            ErrorLog.log(e);
+          catch (IllegalAccessException e) {
+            ErrorDialog.bug(e);
+          }
+          catch (InstantiationException e) {
+            ErrorDialog.bug(e);
           }
         }
       }
@@ -432,7 +439,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     pasteButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         if (clipBoard != null) {
-          Decorator c = (Decorator) GameModule.getGameModule().createPiece(clipBoard.getType(), null);
+          final Decorator c = (Decorator)
+            GameModule.getGameModule().createPiece(clipBoard.getType(), null);
           if (c instanceof PlaceMarker) {
             ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
           }
@@ -486,26 +494,32 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   protected void importPiece(String className) {
     try {
-      Class<?> c = GameModule.getGameModule().getDataArchive().loadClass(className);
-      Object o = c.newInstance();
-      if (o instanceof GamePiece) {
-        availableModel.addElement(o);
+      final Class<?> c =
+        GameModule.getGameModule().getDataArchive().loadClass(className);
+
+      if (c.isAssignableFrom(GamePiece.class)) {
+        availableModel.addElement(c.newInstance());
       }
       else {
-        JOptionPane.showMessageDialog(this, "Class must implement the GamePiece interface.", "Class error", JOptionPane.ERROR_MESSAGE);
+        ErrorDialog.error(
+          Resources.getString("PieceDefiner.class_not_a_gamepiece"),
+          Resources.getString("PieceDefiner.class_not_a_gamepiece"),
+          Resources.getString("PieceDefiner.class_not_a_gamepiece_message")
+        );
       }
     }
-    catch (ClassNotFoundException noClass) {
-      JOptionPane.showMessageDialog(this, "Couldn't find class.\nClass file must exist in module zipfile with correct package structure.", "Class not found", JOptionPane.ERROR_MESSAGE);
+    catch (ClassNotFoundException e) {
+      ErrorDialog.error(
+        Resources.getString("PieceDefiner.class_not_found"),
+        Resources.getString("PieceDefiner.class_not_found"),
+        Resources.getString("PieceDefiner.class_not_foundc_message")
+      );
     }
-    catch (InstantiationException iex) {
-      JOptionPane.showMessageDialog(this, "Couldn't instantiate class.\nClass must not be abstract.", "Class not initialized", JOptionPane.ERROR_MESSAGE);
+    catch (InstantiationException e) {
+      ErrorDialog.bug(e);
     }
-    catch (IllegalAccessException ilex) {
-      JOptionPane.showMessageDialog(this, "Error accessing class", "Access error", JOptionPane.ERROR_MESSAGE);
-    }
-    catch (NoSuchMethodError noMethod) {
-      JOptionPane.showMessageDialog(this, "Couldn't instantiate class.\nClass must have a no-argument constructor.", "Class not initialized", JOptionPane.ERROR_MESSAGE);
+    catch (IllegalAccessException e) {
+      ErrorDialog.bug(e);
     }
   }
 
@@ -615,9 +629,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       c.setInner((GamePiece) inUseModel.lastElement());
       inUseModel.addElement(c);
     }
-    catch (Exception ex) {
-      ErrorLog.log(ex);
+    catch (IllegalAccessException e) {
+      ErrorDialog.bug(e);
     }
+    catch (InstantiationException e) {
+      ErrorDialog.bug(e);
+    }
+
     refresh();
   }
 

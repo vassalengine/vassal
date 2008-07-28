@@ -255,6 +255,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       try {
         max = Integer.parseInt(format.getText(this));
       }
+      // FIXME: review error message
       catch (NumberFormatException e) {
       }
     }
@@ -268,6 +269,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       try {
         min = Integer.parseInt(format.getText(this));
       }
+      // FIXME: review error message
       catch (NumberFormatException e) {
       }
     }

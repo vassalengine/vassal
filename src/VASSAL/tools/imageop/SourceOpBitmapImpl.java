@@ -23,10 +23,14 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ImageUtils;
 
 /**
@@ -65,6 +69,26 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     hash = name.hashCode();
   }
 
+ /** {@inheritDoc} */
+  @Override
+  public Image getImage() {
+    try {
+      return getImage(null);
+    }
+    catch (CancellationException e) {
+      // FIXME: bug until we permit cancellation 
+      ErrorDialog.bug(e);
+    }
+    catch (InterruptedException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (ExecutionException e) {
+      OpErrorDialog.error(e, this);
+    }
+
+    return null;
+  }
+
   /**
    *  {@inheritDoc}
    *
@@ -91,7 +115,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   /** {@inheritDoc} */
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
-        size = getImageSize();
+      size = getImageSize();
     }
 
     tileSize = new Dimension(256,256);
@@ -107,7 +131,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       return archive.getImageSize(name);
     }
     catch (IOException e) {
-      ErrorLog.warn(e);
+      ReadErrorDialog.error(e, name);
       return new Dimension(-1,-1);
     }
   }
@@ -134,8 +158,12 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || !(o instanceof SourceOpBitmapImpl)) return false;
-    if (!name.equals(((SourceOpBitmapImpl) o).getName())) return false;
-    return archive == null ? ((SourceOpBitmapImpl)o).archive == null : archive.getName().equals(((SourceOpBitmapImpl)o).archive.getName());
+
+// FIXME: should this be a cast to SourceOp instead?
+    final SourceOpBitmapImpl s = (SourceOpBitmapImpl) o;
+    if (!name.equals(s.getName())) return false;
+    return archive == null ? s.archive == null :
+      archive.getName().equals(s.archive.getName());
   }
 
   /** {@inheritDoc} */

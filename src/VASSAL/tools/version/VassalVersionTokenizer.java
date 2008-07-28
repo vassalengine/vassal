@@ -1,7 +1,7 @@
 /*
- * $Id$
+ * $Id: VersionTokenizer.java 3723 2008-06-08 11:38:25Z uckelman $
  *
- * Copyright (c) 2007 by Joel Uckelman
+ * Copyright (c) 2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,7 +17,7 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools;
+package VASSAL.tools.version;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,9 +51,10 @@ import java.util.regex.Pattern;
  *
  * @since 3.1.0
  * @author Joel Uckelman
- * @see Info.compareVersions(String,String)
+ * @see Version
+ * @see VersionFormatException
  */
-public class VersionTokenizer {
+public class VassalVersionTokenizer implements VersionTokenizer {
   private String v;
 
   private enum State { NUM, DELIM, TAG, EOS, END };
@@ -77,31 +78,17 @@ public class VersionTokenizer {
    * @param version the version <code>String</code> to parse
    * @throws IllegalArgumentException if <code>version == null</code>.
    */  
-  public VersionTokenizer(String version) {
+  public VassalVersionTokenizer(String version) {
     if (version == null) throw new IllegalArgumentException();
     v = version;
   }
 
-  /**
-   * Returns <code>true</code> if the version <code>String</code> is
-   * not fully parsed.
-   *
-   * @return <code>true</code> if {@link #next()} will return more
-   * integers
-   */
+  /** {@inheritDocs} */
   public boolean hasNext() {
     return v.length() > 0 || state == State.EOS;
   }
 
-  /**
-   * Returns an integer representing the next token.
-   *
-   * @return the integer representing the next token
-   * @throws VersionFormatException if the string deviates from
-   * the current version formatting rules at the next token.
-   * @throws NoSuchElementException if this method is called when
-   * {@link hasNext()} would return <code>false</code>.
-   */
+  /** {@inheritDocs} */
   public int next() throws VersionFormatException {
     if (!hasNext()) throw new NoSuchElementException(); 
 
@@ -194,7 +181,7 @@ public class VersionTokenizer {
 
     for (String v : ex) {
       System.out.print(v + ":");
-      final VersionTokenizer tok = new VersionTokenizer(v);
+      final VassalVersionTokenizer tok = new VassalVersionTokenizer(v);
       try {
         while (tok.hasNext()) System.out.print(" " + tok.next());
         System.out.print("\n");

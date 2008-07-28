@@ -65,9 +65,10 @@ public class SVGImageUtils {
     final Document doc;
     try {
       doc = factory.createDocument(null, in);
+      in.close();
     }
     finally {
-      if (in != null) in.close();
+      IOUtils.closeQuietly(in);
     }
 
     // get the default image width and height
@@ -125,8 +126,9 @@ public class SVGImageUtils {
         }
       }
     }
+    // FIXME: review error message
     catch (IOException ex) {
-      ErrorLog.warn(ex);
+//      ErrorLog.warn(ex);
     }
 
     for (String s : follow) {
@@ -177,8 +179,9 @@ public class SVGImageUtils {
         final String name = new File(url.getPath()).getName();
         XLinkSupport.setXLinkHref(e, name + '#' + anchor);
       }
+      // FIXME: review error message
       catch (MalformedURLException ex) {
-        ErrorLog.warn(ex);
+//        ErrorLog.warn(ex);
       }
     }
     

@@ -32,8 +32,10 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ZipUpdater;
 import VASSAL.tools.filechooser.FileChooser;
 
@@ -68,6 +70,7 @@ public class ModuleUpdaterDialog extends JDialog {
             new File(GameModule.getGameModule()
               .getArchiveWriter().getArchive().getName()), output);
         }
+        // FIXME: review error message
         catch (IOException e1) {
           String msg = e1.getMessage();
           if (msg == null) {
@@ -88,9 +91,12 @@ public class ModuleUpdaterDialog extends JDialog {
     add(b);
     HelpFile hf = null;
     try {
-      hf = new HelpFile(null, new File(new File(VASSAL.build.module.Documentation.getDocumentationBaseDir(), "ReferenceManual"), "ModuleUpdater.htm"));
+      hf = new HelpFile(null, new File(new File(
+        VASSAL.build.module.Documentation.getDocumentationBaseDir(),
+        "ReferenceManual"), "ModuleUpdater.htm"));
     }
     catch (MalformedURLException ex) {
+      ErrorDialog.bug(ex);
     }
 
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));

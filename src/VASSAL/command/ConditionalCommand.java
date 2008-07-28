@@ -1,4 +1,6 @@
-/*
+/* 
+ * $Id$
+ *
  * Copyright (c) 2000-2006 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
@@ -139,10 +141,11 @@ public class ConditionalCommand extends Command {
       return value;
     }
 
+// FIXME: what versions are being compared here?
     public boolean isSatisfied() {
       String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);
-      return VASSAL.Info.compareVersions(propertyValue, value) < 0;
+      return Info.compareVersions(propertyValue, value) < 0;
     }
   }
 
@@ -163,6 +166,7 @@ public class ConditionalCommand extends Command {
       return value;
     }
 
+// FIXME: what versions are being compared here?
     public boolean isSatisfied() {
       String propertyValue =
         GameModule.getGameModule().getAttributeValueString(property);

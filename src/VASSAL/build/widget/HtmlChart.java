@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +45,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.imageop.Op;
@@ -74,7 +75,7 @@ public class HtmlChart extends Widget implements MouseListener {
 
   private void setText(String text) {
     htmlWin.setText(text);
-    // ensure hyperlink engine knows we no longer at the last URL
+    // ensure hyperlink engine knows we are no longer at the last URL
     htmlWin.getDocument().putProperty("stream", null);
     htmlWin.revalidate();
   }
@@ -83,36 +84,33 @@ public class HtmlChart extends Widget implements MouseListener {
     setText(getFile(fname));
   }
 
-  private String getFile(String fname) {
-    if (fname == null) {
-      return null;
-    }
+  private String getFile(final String fname) {
+    if (fname == null) return null;
 
-    try {      
-      final InputStream stream =
-        GameModule.getGameModule().getDataArchive().getFileStream(fname);
-      try {
-        return IOUtils.toString(stream, "UTF-8");
-      }
-      finally {
-        try {
-          stream.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
-      }
+    String s = null;
+    InputStream in = null;
+    try {
+      in = new BufferedInputStream(
+        GameModule.getGameModule().getDataArchive().getFileStream(fname));
+      s =  IOUtils.toString(in, "UTF-8");
+      in.close();
     }
     catch (IOException e) {
-      return "Page " + fname + " not found";
+      ReadErrorDialog.error(e, fname);
     }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
+
+    return s;
   }
 
-  // Warning, creating a JEditorPane with a "jar" url or using setPage() with a jar
-  // url will leave a resource open in the MOD file, making it impossible to
-  // save or rename it. This might be acceptable for people playing a MOD,
-  // but is unacceptable for editors; they can only save their work to a new file.
-  // Therefore, we read the entire file instead of simply using:
+  // Warning: Creating a JEditorPane with a "jar" url or using setPage()
+  // with a jar URL will leave a resource open in the MOD file, making it
+  // impossible to save or rename it. This might be acceptable for people
+  // playing a module, but is unacceptable for editors; they can only save
+  // their work to a new file. Therefore, we read the entire file instead
+  // of simply using:
   //    GameModule.getGameModule().getDataArchive().getURL( fileName );
   public Component getComponent() {
     if (htmlWin == null) {
@@ -231,18 +229,18 @@ public class HtmlChart extends Widget implements MouseListener {
   }
 
   public class HtmlChartHyperlinkListener implements HyperlinkListener {
-
     public void hyperlinkUpdate(HyperlinkEvent event) {
       if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-        if (!isURL() && event.getDescription().indexOf("/") < 0 || event.getURL() == null) {
+        if ((!isURL() && event.getDescription().indexOf("/") < 0) ||
+            event.getURL() == null) {
           setFile(event.getDescription());
         }
         else {
           try {
             htmlWin.setPage(event.getURL());
           }
-          catch (IOException exception) {
-            setText("Can't open " + event.getURL() + " : " + exception.getMessage());
+          catch (IOException ex) {
+            ReadErrorDialog.error(ex, event.getURL().toString());
           }
           htmlWin.revalidate();
         }
@@ -298,18 +296,6 @@ public class HtmlChart extends Widget implements MouseListener {
         }
 
         protected Component createComponent() {
-/*
-          try {
-            final JLabel label = new JLabel();
-            final ImageIcon icon = new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(imageName));
-            label.setIcon(icon);
-            return label;
-          }
-          catch (Exception e) {
-            return null;
-          }
-*/
-// FIXME: not really correct, should have a way of catching failure
           final JLabel label = new JLabel();
           label.setIcon(new OpIcon(srcOp));
           return label;

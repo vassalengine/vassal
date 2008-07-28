@@ -21,6 +21,7 @@ package VASSAL.configure;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.StringTokenizer;
 
 import javax.swing.BoxLayout;
 import javax.swing.JColorChooser;
@@ -88,17 +89,22 @@ public class ColorConfigurer extends Configurer {
   }
 
   public static Color stringToColor(String s) {
-    if (s == null
-        || "null".equals(s)) {
+    if (s == null || "null".equals(s)) {
       return null;
     }
-    java.util.StringTokenizer st = new java.util.StringTokenizer(s, ",");
+
+    final StringTokenizer st = new StringTokenizer(s, ",");
     try {
       return new Color(Integer.parseInt(st.nextToken()),
                        Integer.parseInt(st.nextToken()),
                        Integer.parseInt(st.nextToken()));
     }
-    catch (Exception e) {
+    // FIXME: review error message
+    // FIXME: should this method throw when it fails?
+    catch (NumberFormatException e) {
+      return null;
+    }
+    catch (IllegalArgumentException e) {
       return null;
     }
   }

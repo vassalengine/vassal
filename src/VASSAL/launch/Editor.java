@@ -32,6 +32,7 @@ import javax.swing.JMenuBar;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imports.ImportAction;
@@ -82,41 +83,45 @@ public class Editor extends Launcher {
   }
 
   protected void launch() throws IOException {
-    try {
-      Object req = null;
+    Object req = null;
 
-      switch (lr.mode) {
-      case EDIT:
-        new EditModuleAction(lr.module).loadModule(lr.module);
-        req = "NOTIFY_OPEN_OK";
-        break;
-      case IMPORT:
-        new ImportAction(null).loadModule(lr.module);
-        req = "NOTIFY_IMPORT_OK";
-        break;
-      case NEW:
-        new CreateModuleAction(null).performAction(null);
-        req = "NOTIFY_NEW_OK";
-        break;
-      case EDIT_EXT:
-        GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
-        GameModule.getGameModule().getFrame().setVisible(true);
-        new EditExtensionAction(lr.extension).performAction(null);
-        req = "NOTIFY_OPEN_OK";
-        break;
-      case NEW_EXT:
-        GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
-        final JFrame f = GameModule.getGameModule().getFrame();
-        f.setVisible(true);
-        new NewExtensionAction(f).performAction(null);
+    switch (lr.mode) {
+    case EDIT:
+      new EditModuleAction(lr.module).loadModule(lr.module);
+      req = "NOTIFY_OPEN_OK";
+      break;
+    case IMPORT:
+      new ImportAction(null).loadModule(lr.module);
+      req = "NOTIFY_IMPORT_OK";
+      break;
+    case NEW:
+      new CreateModuleAction(null).performAction(null);
+      req = "NOTIFY_NEW_OK";
+      break;
+    case EDIT_EXT:
+      GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
+      GameModule.getGameModule().getFrame().setVisible(true);
+      new EditExtensionAction(lr.extension).performAction(null);
+      req = "NOTIFY_OPEN_OK";
+      break;
+    case NEW_EXT:
+      GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
+      final JFrame f = GameModule.getGameModule().getFrame();
+      f.setVisible(true);
+      new NewExtensionAction(f).performAction(null);
+      req = "NOTIFY_OPEN_OK";
+    }
+
+  	if (cmdC != null) {
+      try {
+        cmdC.request(req);
         req = "NOTIFY_OPEN_OK";
       }
-
-    	if (cmdC != null) cmdC.request(req);
-    }
-    catch (IOException e) {
-    	if (cmdC != null) cmdC.request("NOTIFY_OPEN_FAILED");
-      throw e;
+      catch (IOException e) {
+        // This is not fatal, since we've successfully opened the module,
+        // but possibly this means that the Module Manager has died.
+        CommunicationErrorDialog.error(e);
+      }
     }
   }
 

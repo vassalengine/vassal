@@ -71,6 +71,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -114,15 +115,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected Action propertiesAction;
   protected Action translateAction;
   protected Action helpAction;
-/*
-  protected JMenuItem cutItem;
-  protected JMenuItem copyItem;
-  protected JMenuItem pasteItem;
-  protected JMenuItem deleteItem;
-  protected JMenuItem moveItem;
-  protected JMenuItem propertiesItem;
-  protected JMenuItem translateItem;
-*/
 
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
   protected static List<AdditionalComponent> additionalComponents =
@@ -358,31 +350,30 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Action buildPasteAction(final Configurable target) {
-    Action a = new AbstractAction(pasteCmd) {
+    final Action a = new AbstractAction(pasteCmd) {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
         if (cutData != null) {
-          DefaultMutableTreeNode targetNode = getTreeNode(target);
-          if (remove(getParent(cutData), (Configurable) cutData.getUserObject())) {
-            insert(target, (Configurable) cutData.getUserObject(), targetNode.getChildCount());
+          final DefaultMutableTreeNode targetNode = getTreeNode(target);
+          final Configurable cutObj = (Configurable) cutData.getUserObject();
+          if (remove(getParent(cutData), cutObj)) {
+            insert(target, cutObj, targetNode.getChildCount());
           }
         }
         else if (copyData != null) {
           try {
-            Configurable copyBase = (Configurable) copyData.getUserObject();
-            Configurable clone = copyBase.getClass().newInstance();
+            final Configurable copyBase =
+              (Configurable) copyData.getUserObject();
+            final Configurable clone =
+              copyBase.getClass().getConstructor().newInstance();
+
             clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
             insert(target, clone, getTreeNode(target).getChildCount());
             updateGpIds(clone);
           }
-          catch (InstantiationException e1) {
-            ErrorLog.log(e1);
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot copy " + getConfigureName(target), "Copy failed", JOptionPane.ERROR_MESSAGE);
-          }
-          catch (IllegalAccessException e1) {
-            ErrorLog.log(e1);
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot copy " + getConfigureName(target), "Copy failed", JOptionPane.ERROR_MESSAGE);
+          catch (Throwable t) {
+            ErrorUtils.handleNewInstanceFailure(t);
           }
         }
         cutData = null;
@@ -443,6 +434,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
               insert(c, child, getTreeNode(c).getChildCount());
             }
           }
+          // FIXME: review error message
           catch (Exception ex) {
             JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error adding " + getConfigureName(child) + " to " + getConfigureName(target) + "\n"
                 + ex.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE);
@@ -511,6 +503,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             insert(c, child, getTreeNode(c).getChildCount());
           }
         }
+        // FIXME: review error message
         catch (Exception err) {
           ErrorLog.log(err);
         }
@@ -540,13 +533,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
         public void actionPerformed(ActionEvent evt) {
           try {
-            Configurable clone = target.getClass().newInstance();
+            final Configurable clone =
+              target.getClass().getConstructor().newInstance();
+
             clone.build(target.getBuildElement(Builder.createNewDocument()));
-            insert(getParent(targetNode), clone, targetNode.getParent().getIndex(targetNode) + 1);
+            insert(getParent(targetNode), clone,
+                   targetNode.getParent().getIndex(targetNode) + 1);
           }
-          catch (Exception err) {
-            ErrorLog.log(err);
-            JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot clone " + getConfigureName(target), "Clone failed", JOptionPane.ERROR_MESSAGE);
+          catch (Throwable t) {
+            ErrorUtils.handleNewInstanceFailure(t);
           }
         }
       };
@@ -625,6 +620,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       notifyStateChanged(true);
       return true;
     }
+    // FIXME: review error message
     catch (IllegalBuildException err) {
       JOptionPane.showMessageDialog(getTopLevelAncestor(), "Cannot delete " + getConfigureName(child) + " from " + getConfigureName(parent) + "\n"
           + err.getMessage(), "Illegal configuration", JOptionPane.ERROR_MESSAGE);
@@ -643,6 +639,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         oldContents[i].removeFrom(parent);
         parent.remove(oldContents[i]);
       }
+      // FIXME: review error message
       catch (IllegalBuildException err) {
         JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't insert " + getConfigureName(child) + " before " + getConfigureName(oldContents[i]),
             "Illegal configuration", JOptionPane.ERROR_MESSAGE);
@@ -662,15 +659,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       childI[0] = index;
       ((DefaultTreeModel) getModel()).nodesWereInserted(parentNode, childI);
     }
+    // FIXME: review error message
     catch (IllegalBuildException err) {
       JOptionPane.showMessageDialog(getTopLevelAncestor(), "Can't add " + getConfigureName(child) + "\n" + err.getMessage(), "Illegal configuration",
           JOptionPane.ERROR_MESSAGE);
       succeeded = false;
     }
+
     for (Configurable c : moveToBack) {
       parent.add(c);
       c.addTo(parent);
     }
+
     notifyStateChanged(true);
     return succeeded;
   }
@@ -700,10 +700,13 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   public static String getConfigureName(Class<?> c) {
+// FIXME: Wouldn't it be better if some superclass had getConfigureTypeName()
+// as a method?!
     try {
-      return (String) c.getMethod("getConfigureTypeName", new Class[0]).invoke(null, new Object[0]);
+      return (String) c.getMethod("getConfigureTypeName").invoke(null);
     }
-    catch (Exception err) {
+    catch (Throwable t) {
+      ErrorUtils.handleMethodFailure(t);
       return c.getName().substring(c.getName().lastIndexOf(".") + 1);
     }
   }
@@ -718,7 +721,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected Configurable importConfigurable() {
-    String className = JOptionPane.showInputDialog(getTopLevelAncestor(), "Enter fully-qualified name of Java class to import");
+    final String className = JOptionPane.showInputDialog(
+      getTopLevelAncestor(),
+      "Enter fully-qualified name of Java class to import");
+
     Configurable config = null;
     if (className != null) {
       config = null;
@@ -732,18 +738,22 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           JOptionPane.showMessageDialog(getTopLevelAncestor(), "Class must implement the Configurable interface.", "Class error", JOptionPane.ERROR_MESSAGE);
         }
       }
+      // FIXME: review error message
       catch (ClassNotFoundException noClass) {
         JOptionPane.showMessageDialog(getTopLevelAncestor(), "Couldn't find class.\nClass file must exist in module zipfile with correct package structure.",
             "Class not found", JOptionPane.ERROR_MESSAGE);
       }
+      // FIXME: review error message
       catch (InstantiationException iex) {
         JOptionPane.showMessageDialog(getTopLevelAncestor(), "Couldn't instantiate class.\nClass must have a no-argument constructor.",
             "Class not initialized", JOptionPane.ERROR_MESSAGE);
       }
+      // FIXME: review error message
       catch (IllegalAccessException ilex) {
         JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error accessing class", "Access error", JOptionPane.ERROR_MESSAGE);
       }
-      catch (NoSuchMethodError noMethod) {
+      // FIXME: review error message
+catch (NoSuchMethodError noMethod) {
         JOptionPane.showMessageDialog(getTopLevelAncestor(), "Couldn't instantiate class.\nClass must have a no-argument constructor.",
             "Class not initialized", JOptionPane.ERROR_MESSAGE);
       }

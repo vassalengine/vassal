@@ -41,8 +41,10 @@ import VASSAL.build.module.SaveMetaData;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.LongConfigurer;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -86,7 +88,7 @@ public class ModuleManager {
         Prefs.getGlobalPrefs().write();
       }
       catch (IOException e) {
-        ErrorLog.log(e);
+        WriteErrorDialog.error(e, Prefs.getGlobalPrefs().getFile().getPath());
       }
     }
 
@@ -107,7 +109,7 @@ public class ModuleManager {
         Prefs.getGlobalPrefs().write();
       }
       catch (IOException e) {
-        ErrorLog.log(e);
+        WriteErrorDialog.error(e, Prefs.getGlobalPrefs().getFile().getPath());
       }
     }
     else {
@@ -123,7 +125,7 @@ public class ModuleManager {
     }
     catch (IOException e) {
       // should not happen
-      ErrorLog.log(e);
+      ErrorDialog.bug(e);
       System.exit(1);
     }  
     
@@ -137,7 +139,8 @@ public class ModuleManager {
         clientSocket = new Socket((String) null, port);
       }
       catch (IOException e) {
-        System.err.println("Couldn't open socket.");
+        System.err.println("VASSAL: Couldn't open socket.");
+        e.printStackTrace();
         System.exit(1);
       }
 
@@ -148,7 +151,8 @@ public class ModuleManager {
         out.flush();
       }
       catch (IOException e) {
-        System.err.println("Couldn't write to socket.");
+        System.err.println("VASSAL: Couldn't write to socket.");
+        e.printStackTrace();
         System.exit(1);
       }
 
@@ -157,7 +161,8 @@ public class ModuleManager {
         IOUtils.copy(in, System.err);
       }
       catch (IOException e) {
-        System.err.println("Couldn't read from socket.");
+        System.err.println("VASSAL: Couldn't read from socket.");
+        e.printStackTrace();
         System.exit(1);
       }
     }
@@ -198,7 +203,8 @@ public class ModuleManager {
             Prefs.getGlobalPrefs().write();
           }
           catch (IOException e) {
-            ErrorLog.log(e);
+            WriteErrorDialog.error(e,
+              Prefs.getGlobalPrefs().getFile().getPath());
           }
         }
         catch (ConnectException e) {
@@ -253,19 +259,22 @@ public class ModuleManager {
                   new BufferedInputStream(clientSocket.getInputStream()));
             
             final String message = execute(in.readObject());
+            in.close();
+            clientSocket.close();
 
             if (message == null) continue;
             
             out = new PrintStream(
                     new BufferedOutputStream(clientSocket.getOutputStream()));
             out.println(message);
-            out.flush();
+            out.close();
           }
+          // FIXME: review error message
           catch (IOException e) {
-            ErrorLog.warn(e);
+            ErrorDialog.bug(e); 
           }
           catch (ClassNotFoundException e) {
-            ErrorLog.warn(e);
+            ErrorDialog.bug(e);
           }
           finally {
             IOUtils.closeQuietly(in);

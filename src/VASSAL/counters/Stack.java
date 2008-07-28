@@ -27,7 +27,9 @@ import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+
 import VASSAL.build.GameModule;
+import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.command.Command;
@@ -446,23 +448,25 @@ public class Stack implements GamePiece, StateMergeable {
   }
 
   public void setState(String s) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
-    String mapId = st.nextToken();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
+    final String mapId = st.nextToken();
     setPosition(new Point(st.nextInt(0), st.nextInt(0)));
     pieceCount = 0;
+
+    final GameState gs = GameModule.getGameModule().getGameState();
     while (st.hasMoreTokens()) {
-      GamePiece child = GameModule.getGameModule().getGameState().getPieceForId(st.nextToken());
-      if (child != null) {
-        insertChild(child, pieceCount);
-      }
+      final GamePiece child = gs.getPieceForId(st.nextToken());
+      if (child != null) insertChild(child, pieceCount);
     }
+
     Map m = null;
     if (!"null".equals(mapId)) {
       m = Map.getMapById(mapId);
       if (m == null) {
-        throw new RuntimeException("Could not find map " + mapId);
+        throw new IllegalStateException("Could not find map " + mapId);
       }
     }
+
     if (m != getMap()) {
       if (m != null) {
         m.addPiece(this);

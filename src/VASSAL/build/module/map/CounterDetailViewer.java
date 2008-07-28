@@ -985,6 +985,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       try {
         minimumDisplayablePieces = Integer.parseInt((String) value);
       }
+      // FIXME: review error message
       catch (NumberFormatException e) {
       }
     }

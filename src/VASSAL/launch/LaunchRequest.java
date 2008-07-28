@@ -303,7 +303,7 @@ public class LaunchRequest implements Serializable {
         }
       }
 
-      if (lr.module == null && lr.game == null) {
+      if (!lr.builtInModule && lr.module == null && lr.game == null) {
         die("LaunchRequest.missing_module");
       }
       break;

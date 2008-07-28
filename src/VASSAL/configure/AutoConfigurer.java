@@ -19,6 +19,7 @@
 package VASSAL.configure;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Image;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
@@ -35,7 +36,7 @@ import javax.swing.KeyStroke;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * A Configurer for configuring Configurable components
@@ -90,8 +91,12 @@ public class AutoConfigurer extends Configurer
     }
   }
 
-  public static Configurer createConfigurer(Class type, String key, String prompt, AutoConfigurable target) {
-    Configurer config;
+  public static Configurer createConfigurer(Class type,
+                                            String key,
+                                            String prompt,
+                                            AutoConfigurable target) {
+    Configurer config = null;
+
     if (String.class.isAssignableFrom(type)) {
       config = new StringConfigurer(key, prompt);
     }
@@ -105,7 +110,8 @@ public class AutoConfigurer extends Configurer
       config = new BooleanConfigurer(key, prompt);
     }
     else if (Image.class.isAssignableFrom(type)) {
-      config = new ImageConfigurer(key, prompt, GameModule.getGameModule().getArchiveWriter());
+      config = new ImageConfigurer(key, prompt,
+        GameModule.getGameModule().getArchiveWriter());
     }
     else if (Color.class.isAssignableFrom(type)) {
       config = new ColorConfigurer(key, prompt);
@@ -114,7 +120,8 @@ public class AutoConfigurer extends Configurer
       config = new HotKeyConfigurer(key, prompt);
     }
     else if (java.io.File.class.isAssignableFrom(type)) {
-      config = new FileConfigurer(key, prompt, GameModule.getGameModule().getArchiveWriter());
+      config = new FileConfigurer(key, prompt,
+        GameModule.getGameModule().getArchiveWriter());
     }
     else if (String[].class.isAssignableFrom(type)) {
       config = new StringArrayConfigurer(key, prompt);
@@ -127,24 +134,30 @@ public class AutoConfigurer extends Configurer
     }
     else if (StringEnum.class.isAssignableFrom(type)) {
       try {
-        String[] validValues = ((StringEnum) type.newInstance()).getValidValues(target);
+        final String[] validValues =
+          ((StringEnum) type.newInstance()).getValidValues(target);
         config = new StringEnumConfigurer(key, prompt, validValues);
       }
-      catch (Exception e) {
-        ErrorLog.log(e);
+      catch (IllegalAccessException e) {
+        ErrorDialog.bug(e);
+        config = new StringConfigurer(key, prompt);
+      }
+      catch (InstantiationException e) {
+        ErrorDialog.bug(e);
         config = new StringConfigurer(key, prompt);
       }
     }
     else if (ConfigurerFactory.class.isAssignableFrom(type)) {
       try {
-        ConfigurerFactory f = (ConfigurerFactory) type.newInstance();
+        final ConfigurerFactory f = (ConfigurerFactory) type.newInstance();
         config = f.getConfigurer(target, key,prompt);
       }
-      catch (InstantiationException e) {
-        throw new IllegalArgumentException("Invalid class " + type.getName());
-      }
       catch (IllegalAccessException e) {
-        throw new IllegalArgumentException("Invalid class " + type.getName());
+// FIXME: do this, or throw?
+        ErrorDialog.bug(e);
+      }
+      catch (InstantiationException e) {
+        ErrorDialog.bug(e);
       }
     }
     else {
@@ -168,11 +181,11 @@ public class AutoConfigurer extends Configurer
   }
 
   public void setValue(String s) {
-    throw new RuntimeException
-      ("Can't set Configurable from String");
+    throw new UnsupportedOperationException(
+      "Can't set Configurable from String");
   }
 
-  public java.awt.Component getControls() {
+  public Component getControls() {
     return p;
   }
 

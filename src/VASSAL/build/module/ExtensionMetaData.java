@@ -17,8 +17,8 @@
  */
 package VASSAL.build.module;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -34,6 +34,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.IOUtils;
 
 public class ExtensionMetaData extends AbstractMetaData {
 
@@ -63,8 +64,7 @@ public class ExtensionMetaData extends AbstractMetaData {
   /**
    * Read Extension metadata from specified zip archive
    * 
-   * @param zip
-   *          Archive
+   * @param zip the archive
    */
   public ExtensionMetaData(ZipFile zip) {
     read(zip);
@@ -120,70 +120,57 @@ public class ExtensionMetaData extends AbstractMetaData {
    * @param file Module File
    */
   public void read(ZipFile zip) {
-    InputStream is = null;
     try {
-
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
-      // the first lines of the buildFile
-      try {
-        final XMLReader parser = XMLReaderFactory.createXMLReader();
-        DefaultHandler handler = null;
-        ZipEntry data = zip.getEntry(getZipEntryName());
-        if (data == null) {
-          data = zip.getEntry(GameModule.BUILDFILE);
-          handler = new ExtensionBuildFileXMLHandler();
-        }
-        else {
-          handler = new MetadataXMLHandler();
-        }
+      // the first lines of the buildFile.
+      final XMLReader parser = XMLReaderFactory.createXMLReader();
+      DefaultHandler handler = null;
+
+      ZipEntry data = zip.getEntry(getZipEntryName());
+      if (data == null) {
+        data = zip.getEntry(GameModule.BUILDFILE);
+        handler = new ExtensionBuildFileXMLHandler();
+      }
+      else {
+        handler = new MetadataXMLHandler();
+      }
         
-        parser.setContentHandler(handler);
-        parser.setDTDHandler(handler);
-        parser.setEntityResolver(handler);
-        parser.setErrorHandler(handler);
+      parser.setContentHandler(handler);
+      parser.setDTDHandler(handler);
+      parser.setEntityResolver(handler);
+      parser.setErrorHandler(handler);
 
-        // parse! parse!
-        is = zip.getInputStream(data);
-        parser.parse(new InputSource(is));
+      // parse! parse!
+      BufferedInputStream in = null;
+      try {
+        in = new BufferedInputStream(zip.getInputStream(data));
+        parser.parse(new InputSource(in));
+      }
+      finally {
+        IOUtils.closeQuietly(in);
+      }
 
-        // read the matching Module data. A basic moduledata may have been
-        // built when reading the buildFile, overwrite if we find a real
-        // module metadata file
-        final ModuleMetaData buildFileModuleData = moduleData;
-        moduleData = new ModuleMetaData(zip); 
-        if (moduleData == null) {
-          moduleData = buildFileModuleData;
-        }
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
-      catch (SAXEndException e) {
-        // Indicates End of module/extension parsing. not an error.
-      }
-      catch (SAXException e) {
-        ErrorLog.log(e);
+      // read the matching Module data. A basic moduledata may have been
+      // built when reading the buildFile, overwrite if we find a real
+      // module metadata file
+      final ModuleMetaData buildFileModuleData = moduleData;
+      moduleData = new ModuleMetaData(zip); 
+      if (moduleData == null) {
+        moduleData = buildFileModuleData;
       }
     }
+    catch (IOException e) {
+      ErrorLog.log(e);
+    }
+    catch (SAXEndException e) {
+      // Indicates End of module/extension parsing. not an error.
+    }
+    catch (SAXException e) {
+      ErrorLog.log(e);
+    }
     finally {
-      if (zip != null) {
-        try {
-          zip.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
-      }
-      
-      if (is != null) {
-        try {
-          is.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
-      }
+      IOUtils.closeQuietly(zip);
     }
   }
   

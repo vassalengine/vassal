@@ -29,13 +29,10 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
@@ -128,7 +125,6 @@ public class ImageItem extends Item {
   }
   
   public String getAttributeValueString(String key) {
-    
     if (IMAGE.equals(key)) {
       return imageName;
     }  
@@ -182,19 +178,10 @@ public class ImageItem extends Item {
                                         RenderingHints.VALUE_ANTIALIAS_OFF);
     }
 
-//    if (image != null) {
     if (srcOp != null) {
-      try {
-        g.drawImage(srcOp.getImage(null), origin.x, origin.y, null);
-      }
-      catch (CancellationException e) {
-        ErrorLog.log(e);
-      }
-      catch (InterruptedException e) {
-        ErrorLog.log(e);
-      }
-      catch (ExecutionException e) {
-        ErrorLog.log(e);
+      final Image img = srcOp.getImage();
+      if (img != null) {
+        g.drawImage(img, origin.x, origin.y, null);
       }
     }
   }

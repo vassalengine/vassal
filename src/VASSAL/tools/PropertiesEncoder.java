@@ -25,7 +25,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 /**
- * Encodes a set of properties into a String, without using a '\n' character
+ * Encodes a set of properties into a String, without using an '\n' character.
  */
 public class PropertiesEncoder {
   private Properties prop;
@@ -42,25 +42,27 @@ public class PropertiesEncoder {
   }
 
   private String encode(Properties p) {
+    String s = null;
     try {
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      final ByteArrayOutputStream out = new ByteArrayOutputStream();
       p.store(out, null);
-      // Strip away comments
-      String s = new String(out.toByteArray(),"UTF-8");
-      StringTokenizer st = new StringTokenizer(s, "\n\r", false);
-      SequenceEncoder se = new SequenceEncoder('|');
-      while (st.hasMoreTokens()) {
-        String token = st.nextToken();
-        if (!token.startsWith("#")) {
-          se.append(token);
-        }
-      }
-      return se.getValue();
+      s = new String(out.toByteArray(), "UTF-8");
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      ErrorDialog.bug(e);
       return "";
     }
+
+    // Strip away comments
+    final StringTokenizer st = new StringTokenizer(s, "\n\r", false);
+    final SequenceEncoder se = new SequenceEncoder('|');
+    while (st.hasMoreTokens()) {
+      final String token = st.nextToken();
+      if (!token.startsWith("#")) {
+        se.append(token);
+      }
+    }
+    return se.getValue();
   }
 
   private Properties decode(String s) throws IOException {

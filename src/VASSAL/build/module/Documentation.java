@@ -35,7 +35,7 @@ import VASSAL.build.module.documentation.Tutorial;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -54,18 +54,13 @@ public class Documentation extends AbstractConfigurable {
 
   public void build(Element el) {
     if (el == null) {
-      try {
-        final AboutScreen about = new AboutScreen();
-        about.setAttribute(AboutScreen.TITLE,
-          Resources.getString("Documentation.about_module")); //$NON-NLS-1$
-        about.setAttribute(AboutScreen.FILE,
-          "/images/Splash.png"); //$NON-NLS-1$
-        about.addTo(this);
-        add(about);
-      }
-      catch (Exception err) {
-        ErrorLog.log(err);
-      }
+      final AboutScreen about = new AboutScreen();
+      about.setAttribute(AboutScreen.TITLE,
+        Resources.getString("Documentation.about_module")); //$NON-NLS-1$
+      about.setAttribute(AboutScreen.FILE, "/images/Splash.png"); //$NON-NLS-1$
+      about.addTo(this);
+      add(about);
+
       final HelpFile intro = new HelpFile();
       intro.setAttribute(HelpFile.TITLE,
         Resources.getString("Documentation.quick_start")); //$NON-NLS-1$
@@ -128,6 +123,7 @@ public class Documentation extends AbstractConfigurable {
       return new HelpFile(null, new File(dir, "HelpMenu.htm")); //$NON-NLS-1$
     }
     catch (MalformedURLException ex) {
+      ErrorDialog.bug(ex);
       return null;
     }
   }

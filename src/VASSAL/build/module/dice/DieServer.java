@@ -8,13 +8,16 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DieRoll;
 import VASSAL.build.module.InternetDiceButton;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.IOUtils;
 
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;
@@ -198,7 +201,11 @@ public abstract class DieServer {
           get();
           reportResult(mroll, format);
         }
-        catch (Exception e) {
+        catch (InterruptedException e) {
+          ErrorDialog.bug(e);
+        }
+        // FIXME: review error message
+        catch (ExecutionException e) {
           ErrorLog.log(e);
 
           final String s = "- Internet dice roll attempt " +
@@ -274,19 +281,18 @@ public abstract class DieServer {
       out.close();
     }
   
-    final BufferedReader in =
-      new BufferedReader(new InputStreamReader(connection.getInputStream()));
+    BufferedReader in = null;
     try {
+      in = new BufferedReader(
+        new InputStreamReader(connection.getInputStream()));
+
       String inputLine;
       while ((inputLine = in.readLine()) != null) returnString.add(inputLine);
+
+      in.close();
     }
     finally {
-      try {
-        in.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(in);
     }
 
     parseInternetRollString(toss, new Vector(returnString));

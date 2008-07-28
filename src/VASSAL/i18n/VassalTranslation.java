@@ -18,7 +18,10 @@
  */
 package VASSAL.i18n;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +29,9 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Properties;
 
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.IOUtils;
+import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.WriteErrorDialog;
 
 /**
  * Utility class to allow translation of VASSAL using the Component
@@ -41,21 +46,26 @@ public class VassalTranslation extends Translation {
 
   public VassalTranslation() {
     setConfigureName("VASSAL");
-    final InputStream in = getClass().getResourceAsStream("VASSAL.properties");
+
+    final InputStream is = getClass().getResourceAsStream("VASSAL.properties");
     try {
-      if (in == null) throw new IOException("Resource not found");
-      baseValues.load(in);
+      if (is != null) {
+        BufferedInputStream in = null;
+        try {
+          in = new BufferedInputStream(is);
+          baseValues.load(in);
+          in.close();
+        }    
+        finally {
+          IOUtils.closeQuietly(in);
+        }
+      }
+      else {
+        throw new FileNotFoundException("VASSAL.properties not found");
+      }
     }
     catch (IOException e) {
-      ErrorLog.log(e);
-    }
-    finally {
-      try {
-        in.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      ReadErrorDialog.error(e, "VASSAL.properties");
     }
   }
   
@@ -101,18 +111,15 @@ public class VassalTranslation extends Translation {
   }
 
   public void saveProperties(File file, Locale locale) throws IOException {
-    final FileOutputStream out = new FileOutputStream(file);
+    BufferedOutputStream out = null;
     try {
+      out = new BufferedOutputStream(new FileOutputStream(file));
       localProperties.store(out, locale.getDisplayName());
+      out.close();
       dirty = false;
     }
     finally {
-      try {
-        out.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(out);
     }
   }
 
@@ -120,14 +127,10 @@ public class VassalTranslation extends Translation {
     try { 
       localProperties.load(in);
       dirty = false;
+      in.close();
     }
     finally {
-      try {
-        in.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(in);
     }
   }
 }

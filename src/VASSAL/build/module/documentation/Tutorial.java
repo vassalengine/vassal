@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -35,6 +36,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -83,7 +85,11 @@ public class Tutorial extends AbstractConfigurable {
         try {
           saveCommand = get();
         }
-        catch (Exception e) {
+        catch (InterruptedException e) {
+          ErrorDialog.bug(e);
+        }
+        // FIXME: review error message
+        catch (ExecutionException e) {
           ErrorLog.log(e);
           String msg = Resources.getString("Tutorial.unable_to_launch", name); //$NON-NLS-1$
           if (e.getMessage() != null) {

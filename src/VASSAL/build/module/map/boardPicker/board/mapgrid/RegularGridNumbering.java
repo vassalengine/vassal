@@ -461,6 +461,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 	  Pattern pattern = Pattern.compile(regex.toString());
 	  Matcher matcher = pattern.matcher(location);
 	  if (!matcher.matches()) {
+// FIXME: rename to BadCoordsException
 	    throw new BadCoords();
 	  }
 	  assert(matcher.groupCount() == groupCount && groupCount >= 2);

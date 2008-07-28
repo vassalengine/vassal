@@ -18,7 +18,12 @@
  */
 package VASSAL.configure;
 
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+
 import VASSAL.build.Configurable;
 
 /**
@@ -29,49 +34,56 @@ import VASSAL.build.Configurable;
  * It is usually easier for the target to implement AutoConfigurable
  * and use the AutoConfigurer class.
  */
-public class SimpleConfigurer extends Configurer implements PropertyChangeListener {
-    private javax.swing.JPanel p;
-    private Configurer attConfig[];
-    private Configurable target;
+public class SimpleConfigurer extends Configurer
+                              implements PropertyChangeListener {
+  private javax.swing.JPanel p;
+  private Configurer attConfig[];
+  private Configurable target;
 
-    public SimpleConfigurer(Configurable c, Configurer attConfigurers[]) {
-	super(null,c.getConfigureName());
-	attConfig = attConfigurers;
-	target = c;
-	setValue(target);
-	target.addPropertyChangeListener
-            (new java.beans.PropertyChangeListener() {
-		    public void propertyChange
-			(java.beans.PropertyChangeEvent evt) {
-			if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-			    setName((String)evt.getNewValue());}}});
+  public SimpleConfigurer(Configurable c, Configurer attConfigurers[]) {
+    super(null,c.getConfigureName());
+
+    attConfig = attConfigurers;
+    target = c;
+    setValue(target);
+    target.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          setName((String) evt.getNewValue());
+        }
+      }
+    });
+  }
+  
+  public String getValueString() {
+    return target.getConfigureName();
+  }
+  
+  public void setValue(String s) {
+    throw new UnsupportedOperationException(
+      "Can't set Configurable from String");
+  }
+  
+  public Component getControls() {
+    if (p == null) {
+      p = new JPanel();
+      p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+      for (int i = 0; i < attConfig.length; ++i) {
+        p.add(attConfig[i].getControls());
+        // attConfig[i].addPropertyChangeListener(this);
+      }
     }
-    public String getValueString() {
-	return target.getConfigureName();
+    return p;
+  }
+  
+  public void propertyChange(final PropertyChangeEvent p1) {
+    for (int i = 0; i < attConfig.length; ++i) {
+      // System.err.println(attConfig[i].getName()+" = "+attConfig[i].getValue());
+      if (attConfig[i].getValue() == null) {
+        setValue((Object)null);
+        return;
+      }
+      setValue(target);
     }
-    public void setValue(String s) {
-	throw new RuntimeException
-            ("Can't set Configurable from String");
-    }
-    public java.awt.Component getControls() {
-	if (p == null) {
-	    p = new javax.swing.JPanel();
-	    p.setLayout(new javax.swing.BoxLayout(p,javax.swing.BoxLayout.Y_AXIS));
-	    for (int i=0;i<attConfig.length;++i) {
-		p.add(attConfig[i].getControls());
-		//                    attConfig[i].addPropertyChangeListener(this);
-	    }
-	}
-	return p;
-    }
-    public void propertyChange(final java.beans.PropertyChangeEvent p1) {
-	for (int i=0;i<attConfig.length;++i) {
-	    //                System.err.println(attConfig[i].getName()+" = "+attConfig[i].getValue());
-	    if (attConfig[i].getValue() == null) {
-		setValue((Object)null);
-		return;
-	    }
-	    setValue(target);
-	}
-    }
+  }
 }

@@ -64,6 +64,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
       }
       catch (InterruptedException e) {
       }
+
       String newRoom = "Room" + (int) (numRooms * rng.nextFloat()); //$NON-NLS-1$
       client.setRoom(new SimpleRoom(newRoom));
     }
@@ -77,6 +78,7 @@ public class EchoClient implements Runnable, PropertyChangeListener {
         log.write(report((VASSAL.chat.Room[]) evt.getNewValue()));
         log.flush();
       }
+      // FIXME: review error message
       catch (IOException e) {
         e.printStackTrace();
       }

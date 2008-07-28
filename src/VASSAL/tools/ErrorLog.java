@@ -16,93 +16,71 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.tools;
 
-import java.util.concurrent.ExecutionException;
+package VASSAL.tools;
 
 import VASSAL.Info;
 
 /**
- * Warns the user when an uncaught Exception occurs.
- * See Java code in {@link EventDispatchThread.handleException()}.
+ * Logs errors when problems have occurred.
  */
 public class ErrorLog implements Thread.UncaughtExceptionHandler {
+
+  // Sets this class to handle exceptions occurring on the EDT.
+  // See Java code in {@link EventDispatchThread.handleException()}.
+  // In the case of an exception, the class is instantiated using its
+  // zero-argument constructor and {@link handle()} is called with the
+  // Throwable from the EDT.
   static {
     System.getProperties().put("sun.awt.exception.handler", //$NON-NLS-1$
-                               "VASSAL.tools.ErrorLog");    //$NON-NLS-1$
+                               ErrorLog.class.getName());
   }
 
-  public static void warn(Throwable t) {
-    log(t);
+  public ErrorLog() { }
 
-    // replace ExecutionExceptions with their causes
-    if (t instanceof ExecutionException && t.getCause() != null)
-      t = t.getCause();
-
-    ErrorDialog.warning(t, t.getMessage());
+  /**
+   * Handles uncaught exceptions. Displays a {@link BugDialog} for
+   * exceptions other than {@link OutOfMemoryException}.
+   *
+   * @param t the <code>Throwable</code> which was not caught.
+   */ 
+  public void handle(Throwable t) {
+    ErrorDialog.bug(t);
   }
 
+  /**
+   * @inheritDocs
+   * 
+   * Needed to implement {@link Thread.UncaughtExceptionHandler}. Do
+   * not call this method directly.
+   */
+  public void uncaughtException(Thread thread, Throwable t) {
+    handle(t);
+  }
+
+  /**
+   * Write a stack trace to the log.
+   *
+   * @param t the <code>Throwable</code> holding the stack trace
+   */
   public static void log(Throwable t) {
     System.err.println("[" + Info.getInstanceID() + "]");
     t.printStackTrace();
   }
 
-  public ErrorLog() { }
-
-  public void handle(Throwable t) {
-    log(t);
-
-    final String logFile = System.getProperty("stderr");  //$NON-NLS-1$
-    if (!ErrorDialog.isDisabled(t.getClass())) {
-      String text = null;
-
-      if (t instanceof OutOfMemoryError) {
-        final String s = t.getMessage();
-        text = "The application has run out of memory.\n";
-        if (s != null) {
-          text += s+"\n";
-        }
-      }
-      else {
-        final String type = t.getClass().getSimpleName();
-        String msg = t.getMessage();
-        if (msg == null || msg.length() == 0) {
-          msg = type;
-        }
-        else {
-          msg = type + "\n" + msg;
-        }
-
-        text = "An untrapped error has occurred:\n\n" +
-               msg + "\n\n" +
-               "Please send a report to support@vassalengine.org and attach the log file.\n" + logFile;
-      }
-
-      ErrorDialog.error(t, text);
-    }
-  }
-
-  public void uncaughtException(Thread t, Throwable e) {
-    handle(e);
+  /**
+   * Write a message to the log.
+   *
+   * @param message the message to log
+   */ 
+  public static void log(String message) {
+    System.err.println("[" + Info.getInstanceID() + "]");
+    System.err.println(message);
   }
 
   public static void main(String[] args) {
     final ErrorLog log = new ErrorLog();
-    while (!ErrorDialog.isDisabled(RuntimeException.class)) {
-      log.handle(new RuntimeException("Warning!!!"));
-    }
-  }
-
-  @Deprecated
-  public static class Group extends ThreadGroup {
-    private ErrorLog handler = new ErrorLog();
-
-    public Group() {
-      super("Main Thread");
-    }
-
-    public void uncaughtException(Thread t, Throwable e) {
-      handler.handle(e);
-    }
+    log.handle(new RuntimeException("Error!!!"));
+    System.exit(0);
   }
 }

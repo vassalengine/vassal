@@ -38,6 +38,8 @@ import java.util.concurrent.ExecutionException;
 //import javax.swing.SwingWorker;
 import org.jdesktop.swingworker.SwingWorker;
 
+import VASSAL.tools.ErrorDialog;
+
 /**
  * Shows the current status of connections to the server
  */
@@ -173,8 +175,9 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
             }
           }
           catch (InterruptedException ex) {
-            ex.printStackTrace();
+            ErrorDialog.bug(ex);
           }
+          // FIXME: review error message
           catch (ExecutionException ex) {
             ex.printStackTrace();
           }
@@ -207,9 +210,11 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
             try {
               refresh(historicalModels[sel-1], get());
             }
+            // FIXME: review error message
             catch (InterruptedException ex) {
               ex.printStackTrace();
             }
+            // FIXME: review error message
             catch (ExecutionException ex) {
               ex.printStackTrace();
             }

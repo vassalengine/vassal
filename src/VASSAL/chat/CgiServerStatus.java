@@ -70,7 +70,7 @@ public class CgiServerStatus implements ServerStatus {
       new HashMap<String,ServerStatus.ModuleSummary>();
     try {
       for (String s : request.doGet("getCurrentConnections", new Properties())) { //$NON-NLS-1$
-        SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
+        final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
         try {
           final String moduleName = st.nextToken();
           final String roomName = st.nextToken();
@@ -84,10 +84,12 @@ public class CgiServerStatus implements ServerStatus {
             updateEntry(entry, roomName, playerName);
           }
         }
+        // FIXME: review error message
         catch (NoSuchElementException e1) {
         }
       }
     }
+    // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
     }
@@ -148,9 +150,11 @@ public class CgiServerStatus implements ServerStatus {
           final Long when = Long.valueOf(st.nextToken());
           records.put(when, new String[]{ moduleName, roomName, playerName });
         }
+        // FIXME: review error message
         catch (NoSuchElementException e) {
           e.printStackTrace();
         }
+        // FIXME: review error message
         catch (NumberFormatException e) {
           e.printStackTrace();
         }
@@ -218,6 +222,7 @@ public class CgiServerStatus implements ServerStatus {
     try {
       return request.doGet("getConnectionHistory", p);
     }
+    // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
     }

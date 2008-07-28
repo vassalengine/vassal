@@ -45,7 +45,7 @@ import org.jdesktop.layout.LayoutStyle;
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * A dialog for first-time users.
@@ -89,11 +89,11 @@ public class FirstTimeDialog extends JDialog {
 
     try {
       final File readme =
-        new File (Documentation.getDocumentationBaseDir(),"README.html");
+        new File (Documentation.getDocumentationBaseDir(), "README.html");
       help.addActionListener(new ShowHelpAction(readme.toURI().toURL(), null));
     }
     catch (MalformedURLException e) {
-      ErrorLog.log(e);
+      ErrorDialog.bug(e);
     }
 
     final JLabel lang = new JLabel(Resources.getString("Prefs.language") + ":");

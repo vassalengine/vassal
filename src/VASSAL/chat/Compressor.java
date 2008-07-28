@@ -44,6 +44,7 @@ public abstract class Compressor {
       try {
         zipOut.close();
       }
+      // FIXME: review error message
       catch (IOException e) {
         e.printStackTrace();
       }
@@ -62,6 +63,7 @@ public abstract class Compressor {
       try {
         zipIn.close();
       }
+      // FIXME: review error message
       catch (IOException e) {
         e.printStackTrace();
       }
@@ -85,6 +87,7 @@ public abstract class Compressor {
             final String decomp = new String(decompress(comp.getBytes()));
             System.err.println("Decompressed (" + decomp.length() + ") = " + decomp); //$NON-NLS-1$ //$NON-NLS-2$
           }
+          // FIXME: review error message
           catch (IOException ex) {
             ex.printStackTrace();
           }
@@ -101,6 +104,7 @@ public abstract class Compressor {
         try {
           file.close();
         }
+        // FIXME: review error message
         catch (IOException e) {
           e.printStackTrace();
         }
@@ -118,6 +122,7 @@ public abstract class Compressor {
           try {
             out.close();
           }
+          // FIXME: review error message
           catch (IOException e) {
             e.printStackTrace();
           }
@@ -125,6 +130,7 @@ public abstract class Compressor {
 
         final byte[] recompressed = Compressor.compress(uncompressed);
         if (!Arrays.equals(recompressed,contents)) {
+// FIXME: don't throw unchecked exception
           throw new RuntimeException("Compression failed"); //$NON-NLS-1$
         }
       }
@@ -139,12 +145,14 @@ public abstract class Compressor {
           try {
             out.close();
           } 
+          // FIXME: review error message
           catch (IOException e) {
             e.printStackTrace();
           }
         }
 
         if (!Arrays.equals(Compressor.decompress(compressed),contents)) {
+// FIXME: don't throw unchecked exception
           throw new RuntimeException("Compression failed"); //$NON-NLS-1$
         }
       }

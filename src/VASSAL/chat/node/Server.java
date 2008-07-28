@@ -50,6 +50,7 @@ public class Server extends Thread {
         new PlayerNode(s, rootNode);
         consecutiveFailures = 0;
       }
+      // FIXME: review error message
       catch (Exception e) {
         e.printStackTrace();
         consecutiveFailures++;
@@ -130,6 +131,7 @@ public class Server extends Thread {
         try {
           reader.close();
         }
+        // FIXME: review error message
         catch (IOException e) {
           e.printStackTrace();
         }

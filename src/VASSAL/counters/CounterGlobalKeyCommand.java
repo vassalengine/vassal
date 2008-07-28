@@ -178,17 +178,20 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
       int r = range;
       if (!fixedRange) {
         try {
-          r = Integer.parseInt((String) Decorator.getOutermost(this).getProperty(rangeProperty));
+          r = Integer.parseInt(
+            (String) Decorator.getOutermost(this).getProperty(rangeProperty));
         }
-        catch (Exception e) {
-          
+        // FIXME: review error message
+        catch (NumberFormatException e) {
         }
       }
       filter = new BooleanAndPieceFilter(filter,new RangeFilter(getMap(), getPosition(), r));
     }
+
     for (Map m : Map.getMapList()) {
       c = c.append(globalCommand.apply(m, filter));
-	  }
+    }
+
     GameModule.getGameModule().sendAndLog(c);
   }
   

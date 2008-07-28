@@ -185,6 +185,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
         welcomeMessageServer.getWelcomeMessage().execute();
         connected = true;
       }
+      // FIXME: review error message
       catch (IOException e) {
         propSupport.firePropertyChange(STATUS, null, Resources.getString("Peer2Peer.connection_error", e.getMessage())); //$NON-NLS-1$
         propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);

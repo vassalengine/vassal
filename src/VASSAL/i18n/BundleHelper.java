@@ -17,13 +17,15 @@
 package VASSAL.i18n;
 
 import java.text.MessageFormat;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import VASSAL.tools.ErrorLog;
+
 /**
- * Utility class for extracting strings from a ResourceBundle
+ * Utility class for extracting strings from a {@link ResourceBundle}.
  * 
  * @author rodneykinney
- * 
  */
 public class BundleHelper {
   private ResourceBundle bundle;
@@ -33,18 +35,18 @@ public class BundleHelper {
   }
 
   public String getString(String id) {
-    String s = null;
     try {
-      s = bundle.getString(id);
+      return bundle.getString(id);
     }
-    catch (Exception ex) {
-      System.err.println("No Translation: " + id);
+    catch (ClassCastException e) {
+      ErrorLog.log("No Translation: " + id);
     }
-    // 2. Worst case, return the key
-    if (s == null) {
-      s = id;
+    catch (MissingResourceException e) {
+      ErrorLog.log("No Translation: " + id);
     }
-    return s;
+        
+    // fallback: return the key
+    return id;
   }
 
   public String getString(String id, Object... args) {

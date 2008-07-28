@@ -44,7 +44,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.SavedGameUpdater;
 import VASSAL.tools.ScrollPane;
@@ -137,12 +139,17 @@ public class SavedGameUpdaterDialog extends JDialog {
     updateButton.setEnabled(false);
     buttonsBox.add(updateButton);
     JButton helpButton = new JButton("Help");
+
     HelpFile hf = null;
     try {
-      hf = new HelpFile(null, new File(new File(VASSAL.build.module.Documentation.getDocumentationBaseDir(), "ReferenceManual"), "SavedGameUpdater.htm"));
+      hf = new HelpFile(null, new File(
+        new File(Documentation.getDocumentationBaseDir(), "ReferenceManual"),
+        "SavedGameUpdater.htm"));
     }
     catch (MalformedURLException ex) {
+      ErrorDialog.bug(ex);
     }
+
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
     buttonsBox.add(helpButton);
     JButton closeButton = new JButton("Close");
@@ -167,6 +174,7 @@ public class SavedGameUpdaterDialog extends JDialog {
             updater.updateSavedGame(oldPieceInfo,savedGame);
             GameModule.getGameModule().warn("Updated "+savedGame.getName()+" from version "+versionField.getText()+" to "+GameModule.getGameModule().getGameVersion());
           }
+          // FIXME: review error message
           catch (final IOException e) {
             Runnable showError = new Runnable() {
               public void run() {
@@ -176,8 +184,10 @@ public class SavedGameUpdaterDialog extends JDialog {
             try {
               SwingUtilities.invokeAndWait(showError);
             }
+            // FIXME: review error message
             catch (InterruptedException e1) {
             }
+            // FIXME: review error message
             catch (InvocationTargetException e1) {
             }
           }
@@ -217,11 +227,13 @@ public class SavedGameUpdaterDialog extends JDialog {
           try {
             out.close();
           }
+          // FIXME: review error message
           catch (IOException e) {
             ErrorLog.log(e);
           }
         }
       }
+      // FIXME: review error message
       catch (IOException e) {
         showErrorMessage(e, "Export failed","Unable to write info");
       }
@@ -259,6 +271,7 @@ public class SavedGameUpdaterDialog extends JDialog {
           versionField.setText(moduleVersion);
         }
       }
+      // FIXME: review error message
       catch (IOException e) {
         showErrorMessage(e,"Import failed","Unable to import info");
         oldPieceInfo = null;

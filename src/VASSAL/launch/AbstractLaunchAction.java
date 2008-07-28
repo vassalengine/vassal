@@ -50,9 +50,11 @@ import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.ModuleMetaData;
 import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.CommunicationErrorDialog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
@@ -120,7 +122,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         if ("NOK".equals(child.request("REQUEST_CLOSE"))) return false;
       }
       catch (IOException e) {
-        ErrorLog.warn(e);
+        CommunicationErrorDialog.error(e);
       }
     }
     return true;
@@ -142,14 +144,16 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     addFileFilters(fc);
 
-    if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
+    // loop until cancellation or we get an existing file
+    while (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
       lr.module = fc.getSelectedFile();
-      if (lr.module != null && !lr.module.exists()) lr.module = null;
+      if (lr.module != null) {
+        if (lr.module.exists()) break;
+// FIXME: do something to warn about nonexistant file
+//        FileNotFoundDialog.warning(window, lr.module);
+      }
     }
-    else {
-      lr.module = null;
-    }
-    
+
     return lr.module;
   }
 
@@ -169,7 +173,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     protected CommandServer cmdS;
 
     @Override
-    public Void doInBackground() throws Exception {
+    public Void doInBackground() throws InterruptedException, IOException {
       // set default heap setttings
       int initialHeap = DEFAULT_INITIAL_HEAP;
       int maximumHeap = DEFAULT_MAXIMUM_HEAP;
@@ -192,8 +196,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
               initialHeap = Integer.parseInt(iheap);
             }
             catch (NumberFormatException ex) {
-// FIXME: warn the user the prefs are corrupt
-              ErrorLog.warn(ex);
+              ErrorDialog.warning(
+                Resources.getString("Error.bad_initial_heap"),
+                Resources.getString("Error.bad_initial_heap"),
+                Resources.getString("Error.bad_initial_heap_message",
+                  DEFAULT_INITIAL_HEAP)
+              );
+ 
               initialHeap = DEFAULT_INITIAL_HEAP;
             }
           }
@@ -205,8 +214,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
               maximumHeap = Integer.parseInt(mheap);
             }
             catch (NumberFormatException ex) {
-// FIXME: warn the user the prefs are corrupt
-              ErrorLog.warn(ex);
+              ErrorDialog.warning(
+                Resources.getString("Error.bad_maximum_heap"),
+                Resources.getString("Error.bad_maximum_heap"),
+                Resources.getString("Error.bad_maximum_heap_message",
+                  DEFAULT_MAXIMUM_HEAP)
+              );
+
               maximumHeap = DEFAULT_MAXIMUM_HEAP;
             }
           }
@@ -253,6 +267,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         oout = new ObjectOutputStream(p.getOutputStream());
         oout.writeInt(serverSocket.getLocalPort());
         oout.writeObject(lr);
+        oout.close();
       }
       finally {
         IOUtils.closeQuietly(oout);
@@ -269,9 +284,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       cmdC = new CommandClient(new Socket((String) null, childPort));
       children.add(cmdC);
 
-      // trigger any process() methods belonging to subclasses
-//      publish((Void) null);
-
       // block until the process ends
       p.waitFor();
       return null;
@@ -281,14 +293,28 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     protected void done() {
       try {
         get();
+        clientSocket.close();
+        serverSocket.close();
       }
       catch (CancellationException e) {
+        // FIXME: bug until we enable cancellation of loading
+        ErrorDialog.bug(e);
       }
       catch (InterruptedException e) {
-        ErrorLog.warn(e);
+        ErrorDialog.bug(e);
       }
       catch (ExecutionException e) {
-        ErrorLog.warn(e);
+        // determine what kind of exception occurred
+        final Throwable c = e.getCause();
+        if (c instanceof IOException) {
+          CommunicationErrorDialog.error(e, (IOException) c);
+        }
+        else {
+          ErrorDialog.bug(e);
+        }
+      }
+      catch (IOException e) {
+        CommunicationErrorDialog.error(e);
       }
       finally {
         IOUtils.closeQuietly(clientSocket);
@@ -314,16 +340,27 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         return "OK";
       }
-      else if ("NOTIFY_OPEN_FAILED".equals(cmd)) {
-        window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        return "OK";
-      }
       else if ("NOTIFY_NEW_OK".equals(cmd)) {
         window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         return "OK";
       }
       else if ("NOTIFY_IMPORT_OK".equals(cmd)) {
         window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        return "OK";
+      }
+      else if (cmd instanceof Launcher.LoadFailedCmd) {
+        window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
+        final Throwable thrown = ((Launcher.LoadFailedCmd) cmd).getThrowable();
+
+        ErrorDialog.error(
+          Resources.getString("Error.load_error"),
+          Resources.getString("Error.load_error"),
+          thrown,
+          Resources.getString("Error.load_error_message"),
+          thrown.getMessage()
+        );
+
         return "OK";
       }
       else {
@@ -346,7 +383,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         IOUtils.copy(in, out);
       }
       catch (IOException e) {
-        ErrorLog.warn(e);
+        CommunicationErrorDialog.error(e);
       }
     }
   }

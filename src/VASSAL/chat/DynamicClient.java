@@ -49,6 +49,7 @@ public class DynamicClient extends HybridClient {
       Properties p = getServerConfig();
       c = ChatServerFactory.build(p);
     }
+    // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
       fireStatus("Unable to initiate connection to server"); //$NON-NLS-1$

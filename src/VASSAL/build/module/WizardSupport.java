@@ -84,6 +84,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.UsernameAndPasswordDialog;
@@ -167,7 +168,7 @@ public class WizardSupport {
       help = new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null);
     }
     catch (MalformedURLException e) {
-      ErrorLog.log(e);
+      ErrorDialog.bug(e);
     }
     Object result = WizardDisplayer.showWizard(welcomeWizard, null, help, props);
     if (result instanceof Map) {
@@ -316,6 +317,7 @@ public class WizardSupport {
           try {
             new TutorialLoader(controller, settings, tutorial.getTutorialContents(), POST_INITIAL_STEPS_WIZARD, tutorial).start();
           }
+          // FIXME: review error message
           catch (IOException e1) {
             ErrorLog.log(e1);
             controller.setProblem(Resources.getString("WizardSupport.ErrorLoadingTutorial")); //$NON-NLS-1$
@@ -408,6 +410,7 @@ public class WizardSupport {
                 GameModule.getGameModule().getPrefs().write();
                 controller.setProblem(null);
               }
+              // FIXME: review error message
               catch (IOException e) {
                 String msg = e.getMessage();
                 if (msg == null) {
@@ -508,6 +511,7 @@ public class WizardSupport {
       try {
         new SavedGameLoader(controller, settings, setup.getSavedGameContents(), POST_PLAY_OFFLINE_WIZARD).start();
       }
+      // FIXME: review error message
       catch (IOException e1) {
         controller.setProblem(Resources.getString("WizardSupport.UnableToLoad"));
       }
@@ -574,6 +578,7 @@ public class WizardSupport {
         settings.put(wizardKey, panels);
         controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
       }
+      // FIXME: review error message
       catch (IOException e) {
         controller.setProblem(Resources.getString("WizardSupport.UnableToLoad")); //$NON-NLS-1$
       }
@@ -647,6 +652,7 @@ public class WizardSupport {
                   }
                 }.start();
               }
+              // FIXME: review error message
               catch (IOException e) {
                 controller.setProblem(Resources.getString("WizardSupport.UnableToLoad")); //$NON-NLS-1$
               }

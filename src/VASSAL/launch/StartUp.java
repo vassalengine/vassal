@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import VASSAL.Info;
+import VASSAL.tools.WriteErrorDialog;
 
 /**
  * @author Joel Uckelman
@@ -79,9 +80,8 @@ public class StartUp {
       try {
         System.setErr(new PrintStream(new FileOutputStream(stderr)));
       }
-      catch (IOException ex) {
-        System.err.println(
-          "Unable to redirect stderr to " + stderr); //$NON-NLS-1$
+      catch (IOException e) {
+        WriteErrorDialog.error(e, stderr);
       }
     }
   }

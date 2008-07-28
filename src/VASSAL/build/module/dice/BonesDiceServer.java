@@ -32,8 +32,9 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import VASSAL.build.module.DieRoll;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.IOUtils;
 
 public class BonesDiceServer extends DieServer {
 
@@ -77,9 +78,11 @@ public class BonesDiceServer extends DieServer {
     }
     catch (MalformedURLException e) {
       // should never happen
+      ErrorDialog.bug(e);
     }
     catch (URISyntaxException e) {
       // should never happen
+      ErrorDialog.bug(e);
     }
 
     return null;
@@ -111,19 +114,18 @@ public class BonesDiceServer extends DieServer {
     connection.setRequestMethod("GET");
     connection.connect();
 
-    final BufferedReader in =
-      new BufferedReader(new InputStreamReader(connection.getInputStream()));
+    BufferedReader in = null;
     try {
+      in = new BufferedReader(
+        new InputStreamReader(connection.getInputStream()));
+
       String line;
       while ((line = in.readLine()) != null) returnString.add(line);
+
+      in.close();
     }
     finally {
-      try {
-        in.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(in);
     }
 
     parseInternetRollString(toss, returnString);

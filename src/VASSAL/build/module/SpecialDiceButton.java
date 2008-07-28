@@ -28,8 +28,6 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -55,7 +53,6 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.TranslatableConfigurerFactory;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
@@ -612,20 +609,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         String imageName = dice.get(i).getImageName(results[i]);
 
         if (imageName.length() > 0) {
-          Image img = null;
-          try {
-            img = Op.load(imageName).getImage(null);
-          }
-          catch (CancellationException e) {
-            ErrorLog.warn(e);
-          }
-          catch (InterruptedException e) {
-            ErrorLog.warn(e);
-          }
-          catch (ExecutionException e) {
-            ErrorLog.warn(e);
-          }
-      
+          final Image img = Op.load(imageName).getImage();
           if (img != null) icons[i] = new ImageIcon(img);
         }
       }

@@ -21,15 +21,17 @@ package VASSAL.command;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import VASSAL.build.GameModule;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
 
 /**
- * Command is an abstract class that does something. Any action that takes place during a game should be encapsulated in
- * a Command object. When performing actions during a game, corresponding Commands will be logged in the current logfile
- * and/or sent to other players on the server.
+ * Command is an abstract class that does something. Any action that takes
+ * place during a game should be encapsulated in a Command object. When
+ * performing actions during a game, corresponding Commands will be logged
+ * in the current logfile and/or sent to other players on the server.
  * 
- * Commands can be strung together into compound commands with the {@link #append} method.
+ * Commands can be strung together into compound commands with the
+ * {@link #append} method.
  * 
  * @see CommandEncoder
  */
@@ -37,42 +39,50 @@ public abstract class Command {
   private LinkedList<Command> seq = new LinkedList<Command>();
   private Command undo;
 
-  public Command() {
-  }
+  public Command() {}
 
   public Command[] getSubCommands() {
     return seq.toArray(new Command[seq.size()]);
   }
 
   /**
-   * Execute this command by first invoking {@link #executeCommand}, then invoking {@link #execute} recursively on all
-   * subcommands.
+   * Execute this command by first invoking {@link #executeCommand}, then
+   * invoking {@link #execute} recursively on all subcommands.
    */
   public void execute() {
     try {
       executeCommand();
     }
-    catch (Exception ex) {
-      LinkedList<Command> oldSeq = seq;
+    catch (Throwable t) {
+      handleFailure(t);
+
+      final LinkedList<Command> oldSeq = seq;
       stripSubCommands();
-      reportException(this, ex);
       seq = oldSeq;
     }
-    for (Command c : seq) {
+
+    for (Command cmd : seq) {
       try {
-        c.execute();
+        cmd.execute();
       }
-      catch (Exception ex) {
-        reportException(c, ex);
-      }
+      catch (Throwable t) {
+        handleFailure(t);
+      }    
     }
   }
 
-  private void reportException(Command c, Exception ex) {
-    String s = GameModule.getGameModule() == null ?
-      c.toString() : GameModule.getGameModule().encode(c);
-    System.err.println("Unable to execute " + s);
-    ErrorLog.log(ex);
+  private void handleFailure(Throwable t) {
+    // find and rethrow causes which are not bugs
+    ErrorUtils.throwAncestorOfClass(OutOfMemoryError.class, t);
+
+    if (t instanceof Error) {
+      // some unusual problem occurred    
+      throw (Error) t;
+    }
+    else {
+      // report the bug here
+      ErrorDialog.bug(t);
+    }
   }
 
   /**
@@ -117,7 +127,8 @@ public abstract class Command {
   }
 
   /**
-   * Return true if this command has no sub-commands attached to it (other than null commands)
+   * Return true if this command has no sub-commands attached to it
+   * (other than null commands).
    * 
    * @return
    */
@@ -131,16 +142,13 @@ public abstract class Command {
   }
 
   public String toString() {
-    String s = getClass().getName();
-    s = s.substring(s.lastIndexOf(".") + 1);
-    String details = getDetails();
-    if (details != null) {
-      s += "[" + details + "]";
-    }
-    for (Command c : seq) {
-      s += "+" + c.toString();
-    }
-    return s;
+    final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+    final String details = getDetails();
+    if (details != null) sb.append("[").append(details).append("]");
+
+    for (Command c : seq) sb.append("+").append(c.toString());
+
+    return sb.toString();
   }
 
   /** Detailed information for toString() */
@@ -163,7 +171,8 @@ public abstract class Command {
   }
 
   /**
-   * @return a Command that undoes not only this Command's action, but also the actions of all its subcommands.
+   * @return a Command that undoes not only this Command's action, but also
+   * the actions of all its subcommands.
    */
   public Command getUndoCommand() {
     if (undo == null) {

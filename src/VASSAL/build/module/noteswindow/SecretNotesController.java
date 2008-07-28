@@ -28,6 +28,7 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,7 +114,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   public Command decode(String command) {
     Command comm = null;
     if (command.startsWith(COMMAND_PREFIX)) {
-      SequenceEncoder.Decoder st = new SequenceEncoder.Decoder
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder
           (command.substring(COMMAND_PREFIX.length()), '\t');
       String name = st.nextToken();
       String owner = st.nextToken();
@@ -121,17 +122,21 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       String text = TextConfigurer.restoreNewlines(st.nextToken());
       String handle = ""; //$NON-NLS-1$
       Date date = null;
+
       if (st.hasMoreTokens()) {
         try {
           date = INTERNAL_DATE_FORMATTER.parse(st.nextToken());
         }
-        catch (Exception e) {
+        // FIXME: review error message
+        catch (ParseException e) {
           date = null;
         }
       }
+
       if (st.hasMoreTokens()) {
         handle = st.nextToken();
       }
+
       SecretNote note = new SecretNote(name, owner, text, hidden, date, handle);
       comm = new AddSecretNoteCommand(this, note);
     }

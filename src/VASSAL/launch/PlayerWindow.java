@@ -33,7 +33,7 @@ import VASSAL.Info;
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -94,6 +94,9 @@ public class PlayerWindow extends JFrame {
     // help menu
     final MenuProxy helpMenu =
       new MenuProxy(Resources.getString("General.help"));
+
+    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // some languages   
     helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
    
     helpMenu.add(mm.addMarker("Documentation.VASSAL.start"));
@@ -116,7 +119,7 @@ public class PlayerWindow extends JFrame {
                      "README.html").toURI().toURL();
     }
     catch (MalformedURLException e) {
-      ErrorLog.warn(e);
+      ErrorDialog.bug(e);
     }
     mm.addAction("General.help", new ShowHelpAction(url, null));
 

@@ -47,6 +47,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
+import VASSAL.tools.WriteErrorDialog;
 
 public class PrefsEditor {
   private JDialog dialog;
@@ -201,12 +202,14 @@ public class PrefsEditor {
       c.fireUpdate();
       c.setFrozen(false);
     }
+
     try {
       write();
     }
     catch (IOException e) {
-      JOptionPane.showMessageDialog(dialog.getOwner(), Resources.getString("Prefs.unable_to_save"), Resources.getString("Prefs.save_error"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
+      WriteErrorDialog.error(e, archive.getName());
     }
+
     dialog.setVisible(false);
   }
 
@@ -223,6 +226,8 @@ public class PrefsEditor {
           dialog.setVisible(true);
         }
       };
+      // FIMXE: setting nmemonic from first letter could cause collisions in
+      // some languages
       editAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("Prefs.edit_preferences").charAt(0));
     }
     return editAction;

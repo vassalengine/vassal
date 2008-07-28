@@ -32,7 +32,9 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.URLUtils;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 
@@ -67,11 +69,11 @@ public class HelpFile extends AbstractConfigurable {
 
   public HelpFile(String title, File contents, String ref)
                                 throws MalformedURLException {
-    this(title, new URL(toURL(contents), ref));
+    this(title, new URL(URLUtils.toURL(contents), ref));
   }
 
   public HelpFile(String title, File contents) throws MalformedURLException {
-    this(title, toURL(contents));
+    this(title, URLUtils.toURL(contents));
   }
 
   public HelpFile(String title, URL contents) {
@@ -107,52 +109,42 @@ public class HelpFile extends AbstractConfigurable {
   }
 
   public URL getContents() {
-    if (contents == null) {
-      if (fileName != null) {
-        if (ARCHIVE_ENTRY.equals(fileType)) {
-          try {
-            contents =
-              GameModule.getGameModule().getDataArchive().getURL(fileName);
-          }
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
-        }
-        else if (RESOURCE.equals(fileType)) {
-          contents = getClass().getResource(fileName);
-        }
-        else if (LOCAL_FILE.equals(fileType)) {
-          File f = new File(fileName);
-          if (fileName.startsWith("docs/")) { //$NON-NLS-1$
-            f = new File(Documentation.getDocumentationBaseDir(),
-                         fileName.substring("docs/".length())); //$NON-NLS-1$
-          }
-          try {
-            contents = toURL(f);
-          }
-          catch (MalformedURLException e) {
-            ErrorLog.log(e);
-          }
-        }
+    if (contents != null || fileName == null) return contents;
+
+    if (ARCHIVE_ENTRY.equals(fileType)) {
+      try {
+        contents = GameModule.getGameModule().getDataArchive().getURL(fileName);
+      }
+      catch (IOException e) {
+        ReadErrorDialog.error(e, fileName);
       }
     }
+    else if (RESOURCE.equals(fileType)) {
+      contents = getClass().getResource(fileName);
+    }
+    else if (LOCAL_FILE.equals(fileType)) {
+      File f = new File(fileName);
+      if (fileName.startsWith("docs/")) { //$NON-NLS-1$
+        f = new File(Documentation.getDocumentationBaseDir(),
+                     fileName.substring("docs/".length())); //$NON-NLS-1$
+      }
+
+      try {
+        contents = URLUtils.toURL(f);
+      }
+      catch (MalformedURLException e) {
+        ErrorDialog.bug(e);
+      }
+    }
+
     return contents;
   }
 
+  /** @deprecated Use {@link URLUtils.toURL(File)} instead. */
+  @Deprecated
   public static URL toURL(File f) throws MalformedURLException {
-    String path = f.getAbsolutePath();
-    if (File.separatorChar != '/') {
-      path = path.replace(File.separatorChar, '/');
-    }
-    if (!path.startsWith("/")) { //$NON-NLS-1$
-      path = "/" + path; //$NON-NLS-1$
-    }
-    if (!path.endsWith("/") && f.isDirectory()) { //$NON-NLS-1$
-      path = path + "/"; //$NON-NLS-1$
-    }
-    return new URL("file", "", path); //$NON-NLS-1$ //$NON-NLS-2$
+    return URLUtils.toURL(f);
   }
-
 
   public HelpFile getHelpFile() {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
@@ -160,7 +152,8 @@ public class HelpFile extends AbstractConfigurable {
     try {
       return new HelpFile(null, new File(dir, "HelpMenu.htm"), "#HelpFile"); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    catch (MalformedURLException ex) {
+    catch (MalformedURLException e) {
+      ErrorDialog.bug(e);
       return null;
     }
   }
@@ -258,9 +251,11 @@ public class HelpFile extends AbstractConfigurable {
     File dir = VASSAL.build.module.Documentation.getDocumentationBaseDir();
     dir = new File(dir, "ReferenceManual"); //$NON-NLS-1$
     try {
-      return anchor == null ? new HelpFile(null,new File(dir,page)) : new HelpFile(null, new File(dir, page), anchor);
+      return anchor == null ? new HelpFile(null,new File(dir, page)) :
+                              new HelpFile(null, new File(dir, page), anchor);
     }
     catch (MalformedURLException ex) {
+      ErrorDialog.bug(ex);
       return null;
     }
   }

@@ -38,6 +38,7 @@ import javax.swing.UIManager;
 import VASSAL.Info;
 import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ErrorDialog;
 
 public class Resources {
   /*
@@ -55,6 +56,7 @@ public class Resources {
   /** Preferences key for the user's Locale */
   public static final String LOCALE_PREF_KEY = "Locale";
 
+  // Note: The Locale ctor takes the lower-case two-letter ISO language code. 
   protected static final List<Locale> supportedLocales =
     new ArrayList<Locale>(Arrays.asList(new Locale[]{
       Locale.ENGLISH,
@@ -70,22 +72,27 @@ public class Resources {
   protected static Locale locale = Locale.getDefault();
 
   static {
-    // If the user has a resource bundle for their default language on their local machine, add it to the list of supported locales
+    // If the user has a resource bundle for their default language on their
+    // local machine, add it to the list of supported locales
     if (ResourceBundle.getBundle("VASSAL.i18n.VASSAL", Locale.getDefault(), bundleLoader).getLocale().getLanguage().equals(Locale.getDefault().getLanguage())) {
       addSupportedLocale(Locale.getDefault());
     }
-    ArrayList<String> languages = new ArrayList<String>();
+
+    final ArrayList<String> languages = new ArrayList<String>();
     for (Locale l : getSupportedLocales()) {
       languages.add(l.getLanguage());
     }
+
     Locale myLocale = Locale.getDefault();
     String savedLocale = Prefs.getGlobalPrefs().getStoredValue(LOCALE_PREF_KEY);
+
     if (savedLocale == null) {
       myLocale = supportedLocales.iterator().next();
     }
     else {
       myLocale = new Locale(savedLocale);
     }
+
     Resources.setLocale(myLocale);
     StringEnumConfigurer localeConfig = new StringEnumConfigurer(Resources.LOCALE_PREF_KEY, getString("Prefs.language"), languages.toArray(new String[languages
         .size()])) {
@@ -136,15 +143,20 @@ public class Resources {
   public static Collection<String> getEditorKeys() {
     return Collections.list(editorBundle.getResourceBundle().getKeys());
   }
+
   /*
-   * Translation of individual modules is handled differently. There may be multiple Module.properties file active -
-   * Potentially one in the module plus one in each Extension loaded. These will be read into UberProperties structures
+   * Translation of individual modules is handled differently.
+   * There may be multiple Module.properties file active -
+   * Potentially one in the module plus one in each Extension loaded.
+   * These will be read into UberProperties structures
    * with each file loaded supplying defaults for subsequent files.
    */
   protected static String MODULE_BUNDLE = "Module"; //$NON-NLS-1$
+
   /*
-   * Commonly used i18n keys used in multiple components. By defining them centrally, they will only have to be
-   * translated once. Reference to these string should be made as follows:
+   * Commonly used i18n keys used in multiple components. By defining them
+   * centrally, they will only have to be translated once. Reference to these
+   * string should be made as follows:
    * 
    * Resources.getString(Resources.VASSAL)
    */
@@ -170,11 +182,14 @@ public class Resources {
   public static final String NEXT = "General.next"; //$NON-NLS-1$
   public static final String REFRESH = "General.refresh"; //$NON-NLS-1$
   public static final String SELECT = "General.select"; //$NON-NLS-1$
+
   /*
-   * All i18n keys for the Module Editor must commence with "Editor.", This allows us to use a single
-   * Resources.getString() call for both resource bundles.
+   * All i18n keys for the Module Editor must commence with "Editor."
+   * This allows us to use a single Resources.getString() call for both
+   * resource bundles.
    */
   public static final String EDITOR_PREFIX = "Editor."; //$NON-NLS-1$
+
   /*
    * Common Editor labels that appear in many components.
    */
@@ -266,30 +281,33 @@ public class Resources {
   public static String getString(String id, Object... params) {
     return getBundleForKey(id).getString(id, params);
   }
+
   /**
-   * Custom Class Loader for loading VASSAL property files. Check first for files in the VASSAL home directory
+   * Custom Class Loader for loading VASSAL property files.
+   * Check first for files in the VASSAL home directory.
    * 
    * @author Brent Easton
-   * 
    */
   public static class VassalPropertyClassLoader extends ClassLoader {
     public URL getResource(String name) {
       URL url = null;
-      String propFileName = name.substring(name.lastIndexOf('/') + 1);
-      File propFile = new File(Info.getHomeDir(), propFileName);
+      final String propFileName = name.substring(name.lastIndexOf('/') + 1);
+      final File propFile = new File(Info.getHomeDir(), propFileName);
       if (propFile.exists()) {
         try {
           url = propFile.toURI().toURL();
         }
         catch (MalformedURLException e) {
+          ErrorDialog.bug(e);
         }
       }
-      /*
-       * No openable file in home dir, so let Java find one for us in the standard classpath.
-       */
+
+      // No openable file in home dir, so let Java find one for us in
+      // the standard classpath.
       if (url == null) {
         url = this.getClass().getClassLoader().getResource(name);
       }
+
       return url;
     }
   }

@@ -25,7 +25,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.MediaTracker;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Window;
@@ -33,11 +32,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
-import java.awt.image.PixelGrabber;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.StringTokenizer;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -46,7 +43,7 @@ import javax.swing.border.TitledBorder;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.imageop.Op;
 
 /**
@@ -189,26 +186,9 @@ public class NonRectangular extends Decorator implements EditablePiece {
 
         public void setImageName(String name) {
           super.setImageName(name);
-          try {
-            setShapeFromImage(Op.load(name).getImage(null));
-          }
-          catch (CancellationException e) {
-            ErrorLog.log(e);
-          }
-          catch (InterruptedException e) {
-            ErrorLog.log(e);
-          }
-          catch (ExecutionException e) {
-            ErrorLog.log(e);
-          }         
-/*
-          try {
-            setShapeFromImage(GameModule.getGameModule().getDataArchive().getCachedImage(name));
-          }
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
-*/
+
+          final Image img = Op.load(name).getImage();
+          if (img != null) setShapeFromImage(img);
         }
       };
       picker.setBorder(new TitledBorder("Use image shape"));
@@ -219,37 +199,27 @@ public class NonRectangular extends Decorator implements EditablePiece {
       controls.getTopLevelAncestor()
               .setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-// FIXME: this part is quite outdated---replace MediaTracker and PixelGrabber
-      try {
-        final MediaTracker t = new MediaTracker(controls);
-        t.addImage(im, 0);
-        t.waitForAll();
+      final BufferedImage bi = ImageUtils.toBufferedImage(im);
+      final int w = bi.getWidth();
+      final int h = bi.getHeight();
+      final int[] pixels = bi.getRGB(0, 0, w, h, new int[w*h], 0, w);
 
-        final int width = im.getWidth(controls);
-        final int height = im.getHeight(controls);
-        final int[] pixels = new int[width * height];
-        final PixelGrabber pg =
-          new PixelGrabber(im, 0, 0, width, height, pixels, 0, width);
-        pg.grabPixels();
-        final Area outline = new Area();
-        for (int j = 0; j < height; ++j) {
-          for (int i = 0; i < width; ++i) {
-            if (((pixels[i + j * width] >> 24) & 0xff) > 0) {
-              outline.add(new Area(new Rectangle(i, j, 1, 1)));
-            }
+      final Area outline = new Area();
+      for (int j = 0; j < h; ++j) {
+        for (int i = 0; i < w; ++i) {
+          if (((pixels[i + j*w] >> 24) & 0xff) > 0) {
+            outline.add(new Area(new Rectangle(i, j, 1, 1)));
           }
         }
-        shape = AffineTransform.getTranslateInstance(-width / 2, -height / 2)
-                               .createTransformedShape(outline);
-      }
-      catch (InterruptedException e) {
-        shape = null;
       }
 
-      final  Window w = SwingUtilities.getWindowAncestor(controls);
-      if (w != null) {
-        w.pack();
-      }
+// FIXME: should be 2.0 to avoid integer arithemtic?
+      shape = AffineTransform.getTranslateInstance(-w / 2, -h / 2)
+                             .createTransformedShape(outline);
+
+      final  Window wd = SwingUtilities.getWindowAncestor(controls);
+      if (wd != null) wd.pack();
+
       controls.getTopLevelAncestor().setCursor(null);
     }
 

@@ -62,12 +62,14 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         throw e;
       }
     }
+
     try {
       chat.changeSubject(getName());
     }
     catch (XMPPException e) {
       // Room already exists but we're not the owner
     }
+
     chat.addMessageListener(client);
     return chat;
   }
@@ -104,6 +106,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
           info = MultiUserChat.getRoomInfo(client.getConnection(), jid);
           subject = info.getSubject();
         }
+        // FIXME: review error message
         catch (XMPPException e) {
           e.printStackTrace();
         }

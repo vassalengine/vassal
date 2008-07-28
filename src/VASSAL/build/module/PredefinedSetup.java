@@ -33,6 +33,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -176,8 +177,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
                   .loadGameInBackground(fileName, getSavedGameContents());
       }
       catch (IOException e) {
-        GameModule.getGameModule().warn(
-          Resources.getString("GameState.invalid_savefile", fileName));
+        ReadErrorDialog.error(e, fileName);
       }
     }
     else {

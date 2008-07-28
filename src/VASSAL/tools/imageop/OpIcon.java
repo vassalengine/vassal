@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * An implementation of {@link Icon} using an {@link ImageOp} as a source.
@@ -73,13 +73,13 @@ public class OpIcon extends ImageIcon implements Icon {
         g.drawImage(sop.getImage(new Repainter(c, g.getClipBounds())), x, y, c);
       }
       catch (CancellationException e) {
-        ErrorLog.warn(e);
+        ErrorDialog.bug(e);
       }
       catch (InterruptedException e) {
-        ErrorLog.warn(e);
+        ErrorDialog.bug(e);
       }
       catch (ExecutionException e) {
-        ErrorLog.warn(e);
+        OpErrorDialog.error(e, sop);
       }
     }
   }
@@ -87,22 +87,7 @@ public class OpIcon extends ImageIcon implements Icon {
   /** {@inheritDoc} */
   @Override
   public Image getImage() {
-    if (sop != null) {
-      try {
-        return sop.getImage(null);
-      }
-      catch (CancellationException e) {
-        ErrorLog.warn(e);
-      }
-      catch (InterruptedException e) {
-        ErrorLog.warn(e);
-      }
-      catch (ExecutionException e) {
-        ErrorLog.warn(e);
-      }
-    }
-
-    return null;
+    return sop == null ? null : sop.getImage();
   }
 
   /**
@@ -110,8 +95,7 @@ public class OpIcon extends ImageIcon implements Icon {
    * image from being set this way.
    */
   @Override
-  public void setImage(Image img) {
-  }
+  public void setImage(Image img) {}
   
   /** {@inheritDoc} */
   @Override

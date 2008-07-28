@@ -38,8 +38,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -58,7 +56,6 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;
@@ -277,20 +274,10 @@ public class FreeRotator extends Decorator
       }
 
       final Rectangle r = boundingBox();
-      try {
-        g.drawImage(op.getImage(null),
-                    x + (int) (zoom * r.x),
-                    y + (int) (zoom * r.y),
-                    obs);
-      }
-      catch (CancellationException e) {
-        ErrorLog.log(e);
-      }
-      catch (InterruptedException e) {
-        ErrorLog.log(e);
-      }
-      catch (ExecutionException e) {
-        ErrorLog.log(e);
+
+      final Image img = op.getImage();
+      if (img != null) {
+        g.drawImage(img, x + (int) (zoom * r.x), y + (int) (zoom * r.y), obs);
       }
     }
   }
@@ -567,19 +554,7 @@ public class FreeRotator extends Decorator
 
     if (gpOp.isChanged()) gpOp = Op.piece(piece);
 
-    try {
-      return (Op.rotateScale(gpOp, angle, 1.0)).getImage(null);
-    }
-    catch (CancellationException e) {
-      ErrorLog.log(e);
-    }
-    catch (InterruptedException e) {
-      ErrorLog.log(e);
-    }
-    catch (ExecutionException e) {
-      ErrorLog.log(e);
-    }
-    return null;
+    return Op.rotateScale(gpOp, angle, 1.0).getImage();
   }
 
   public String getDescription() {

@@ -17,15 +17,15 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools;
+package VASSAL.tools.version;
 
 /**
  * An {@link Exception} indicating a malformed VASSAL version string.
  *
  * @since 3.1.0
  * @author Joel Uckelman
+ * @see Version
  * @see VersionTokenizer
- * @see Info.compareVersions(String,String)
  */
 public class VersionFormatException extends Exception {
   private static final long serialVersionUID = 1L;

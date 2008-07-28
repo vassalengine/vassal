@@ -23,11 +23,15 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.GameModule;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ImageUtils;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.SVGRenderer;
 
 /**
@@ -54,8 +58,28 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
   public SourceOpSVGImpl(String name) {
     if (name == null || name.length() == 0)
       throw new IllegalArgumentException();
+
     this.name = name;
     hash = name.hashCode();
+  }
+
+  @Override
+  public Image getImage() {
+    try {
+      return getImage(null);
+    }
+    catch (CancellationException e) {
+      // FIXME: bug until we permit cancellation 
+      ErrorDialog.bug(e);
+    }
+    catch (InterruptedException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (ExecutionException e) {
+      OpErrorDialog.error(e, this);
+    }
+
+    return null;
   }
 
   /**
@@ -70,17 +94,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
       archive.getArchiveURL() + path,
       archive.getFileStream(path));
 
-    final BufferedImage src = renderer.render();
-    if (src.getWidth() * src.getHeight() * 4 > 1024*1024) {
-      try {
-        return ImageUtils.toMemoryMapped(src);
-      }
-      catch (IOException e) {
-        // couldn't map file
-        ErrorLog.warn(e);
-      }
-    }
-    return src;
+    return renderer.render();
   }
 
 // FIXME: we need a way to invalidate ImageOps when an exception is thrown?
@@ -93,7 +107,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
         size = GameModule.getGameModule().getDataArchive().getImageSize(name);
       }
       catch (IOException e) {
-        ErrorLog.warn(e);
+        ReadErrorDialog.error(e, name);
         size = new Dimension(-1,-1);
       }
     }

@@ -21,7 +21,7 @@ package VASSAL.command;
 import java.io.IOException;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ReadErrorDialog;
 
 public class PlayAudioClipCommand extends Command {
   public static final String COMMAND_PREFIX="AUDIO\t"; 
@@ -33,10 +33,13 @@ public class PlayAudioClipCommand extends Command {
 
   protected void executeCommand() {
     try {
-      GameModule.getGameModule().getDataArchive().getCachedAudioClip(clipName).play();
+      GameModule.getGameModule()
+                .getDataArchive()
+                .getCachedAudioClip(clipName)
+                .play();
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      ReadErrorDialog.error(e, clipName);
     }
   }
 
@@ -54,6 +57,6 @@ public class PlayAudioClipCommand extends Command {
   }
   
   public String encode() {
-    return COMMAND_PREFIX+clipName;
+    return COMMAND_PREFIX + clipName;
   }
 }

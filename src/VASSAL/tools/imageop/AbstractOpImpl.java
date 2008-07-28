@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007 by Joel Uckelman
+ * Copyright (c) 2007-2008 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,12 +30,14 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;
 import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.tools.ConcurrentSoftHashMap;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThreadManager;
 
 /**
@@ -209,17 +211,18 @@ public abstract class AbstractOpImpl implements ImageOp {
         obs.imageOpChange(op, true);
       }
       catch (CancellationException e) {
-        ErrorLog.warn(e);
+        // FIXME: should not call bug once we implement cancellation
+        ErrorDialog.bug(e);
         cache.remove(op, this);
         obs.imageOpChange(op, false);
       }
       catch (InterruptedException e) {
-        ErrorLog.warn(e);
+        ErrorDialog.bug(e);
         cache.remove(op, this);
         obs.imageOpChange(op, false);
       }
       catch (ExecutionException e) {
-        ErrorLog.warn(e);
+        OpErrorDialog.error(e, op);
         cache.replace(op, this, failure);
         obs.imageOpChange(op, false);
       }
@@ -241,6 +244,33 @@ public abstract class AbstractOpImpl implements ImageOp {
    * could be anything, so any exception may be thrown.
    */
   public abstract Image apply() throws Exception;
+
+  /**
+   * Calculates the <code>Image</code> produced by this operation. Calls
+   * to this method are memoized to prevent redundant computations.
+   *
+   * <p><b>Warning:</b> <code>Image</code>s returned by this method
+   * <em>must not</em> be modified.</p>
+   *
+   * @return the resulting <code>Image</code>
+   */
+  public Image getImage() {
+    try {
+      return getImage(null);
+    }
+    catch (CancellationException e) {
+      // FIXME: bug until we permit cancellation 
+      ErrorDialog.bug(e);
+    }
+    catch (InterruptedException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (ExecutionException e) {
+      ErrorDialog.bug(e);
+    }
+
+    return null;
+  }
 
   /**
    * Calculates the <code>Image</code> produced by this operation, and
@@ -527,19 +557,19 @@ System.out.println("throwing, sync: " + this);
   protected Dimension getSizeFromCache() {
     final Future<Image> fim = cache.get(this);
     if (fim != null && fim.isDone()) {
-/*
-      final Image im = fim.get();
-
-      if (im != null) {
-        return new Dimension(im.getWidth(null), im.getHeight(null));
-      }
-*/
       try {
         final Image im = fim.get();
         return new Dimension(im.getWidth(null), im.getHeight(null));
       }
-      catch (Exception e) {
-// FIXME: is this ok?
+      catch (CancellationException e) {
+        // FIXME: a bug until we permit cancellation
+        ErrorDialog.bug(e);
+      }
+      catch (InterruptedException e) {
+        ErrorDialog.bug(e);
+      }
+      catch (ExecutionException e) {
+        // ignore this, as this means that the size isn't cached
       }
     }
     return null;    

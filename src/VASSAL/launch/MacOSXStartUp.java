@@ -19,8 +19,9 @@
 package VASSAL.launch;
 
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * @author Joel Uckelman
@@ -54,8 +55,17 @@ public class MacOSXStartUp extends StartUp {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
-    catch (Exception e) {
-      ErrorLog.warn(e);
+    catch (ClassNotFoundException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (IllegalAccessException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (InstantiationException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (UnsupportedLookAndFeelException e) {
+      ErrorDialog.bug(e);
     }
   }
 }

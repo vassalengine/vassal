@@ -19,6 +19,7 @@
 
 package VASSAL.preferences;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,7 +28,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipEntry;
 
 import VASSAL.Info;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.IOUtils;
 
 /**
@@ -46,22 +47,29 @@ public class ReadOnlyPrefs {
   public ReadOnlyPrefs(String name) {
     this.name = name;
 
+    final File zipfile = new File(Info.getHomeDir(), "Preferences");
+
     ZipFile zip = null;
+    BufferedInputStream in = null;
     try {
-      zip = new ZipFile(new File(Info.getHomeDir(), "Preferences"));
+      zip = new ZipFile(zipfile);
       final ZipEntry entry = zip.getEntry(name);
       if (entry == null)
         throw new FileNotFoundException(name + " does not exist");
-      
-      storedValues.load(zip.getInputStream(entry));
+
+      in = new BufferedInputStream(zip.getInputStream(entry)); 
+      storedValues.load(in);
+      in.close();
+      zip.close();
     }
     catch (FileNotFoundException e) {
       // First time for this module, not an error.
     }  
     catch (IOException e) {
-      ErrorLog.log(e);
+      ReadErrorDialog.error(e, zipfile.getPath() + "/!" + name);
     }
     finally {
+      IOUtils.closeQuietly(in);
       IOUtils.closeQuietly(zip);
     }
   }

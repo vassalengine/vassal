@@ -30,7 +30,8 @@ import VASSAL.tools.ComponentPathBuilder;
 
 /**
  * An element of a {@link ModuleExtension} that extends an
- * individual {@link VASSAL.build.Buildable} component of the {@link VASSAL.build.GameModule}
+ * individual {@link VASSAL.build.Buildable} component of the
+ * {@link VASSAL.build.GameModule}.
  */
 public class ExtensionElement implements Buildable {
   /**
@@ -54,24 +55,18 @@ public class ExtensionElement implements Buildable {
 
   public void build(Element e) {
     try {
-      targetPath = ComponentPathBuilder.getInstance().getPath(e.getAttribute(TARGET));
+      targetPath =
+        ComponentPathBuilder.getInstance().getPath(e.getAttribute(TARGET));
     }
     catch (ComponentPathBuilder.PathFormatException e1) {
       throw new IllegalBuildException(e1);
     }
-    Element childElement = null;
+
+    // find and build first child which is an element
     for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
       if (n.getNodeType() == Node.ELEMENT_NODE) {
-        childElement = (Element) n;
+        extension = Builder.create((Element) n);
         break;
-      }
-    }
-    if (childElement != null) {
-      try {
-        extension = Builder.create(childElement);
-      }
-      catch (Exception e1) {
-        throw new IllegalBuildException(e1);
       }
     }
   }
@@ -85,14 +80,16 @@ public class ExtensionElement implements Buildable {
   }
 
   public Element getBuildElement(Document doc) {
-    Element el = doc.createElement(getClass().getName());
-    el.setAttribute(TARGET, ComponentPathBuilder.getInstance().getId(targetPath));
+    final Element el = doc.createElement(getClass().getName());
+    el.setAttribute(TARGET,
+                    ComponentPathBuilder.getInstance().getId(targetPath));
     el.appendChild(extension.getBuildElement(doc));
     return el;
   }
 
   public void addTo(Buildable parent) {
-    Configurable target = targetPath.length == 0 ? GameModule.getGameModule() : targetPath[targetPath.length - 1];
+    final Configurable target = targetPath.length == 0 ?
+      GameModule.getGameModule() : targetPath[targetPath.length - 1];
     extension.addTo(target);
     target.add(extension);
   }

@@ -408,6 +408,7 @@ public class HexGridNumbering extends RegularGridNumbering {
               scale = Double.parseDouble(tf.getText());
               repaint();
             }
+            // FIXME: review error message
             catch (NumberFormatException e1) {
               ErrorLog.log(e1);
             }

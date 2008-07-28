@@ -16,14 +16,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * Created by IntelliJ IDEA.
- * User: rkinney
- * Date: Jul 14, 2002
- * Time: 4:25:21 PM
- * To change template for new class use
- * Code Style | Class Templates options (Tools | IDE Options).
- */
 package VASSAL.counters;
 
 import java.awt.Component;
@@ -114,16 +106,16 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   }
 
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
-    se.append(command.getName());
-    se.append(key);
-    se.append(markerSpec == null ? "null" : markerSpec);
-    se.append(markerText == null ? "null" : markerText);
-    se.append(xOffset).append(yOffset);
-    se.append(matchRotation);
-    se.append(afterBurnerKey);
-    se.append(description);
-    se.append(gpId);
+    final SequenceEncoder se = new SequenceEncoder(';');
+    se.append(command.getName())
+      .append(key)
+      .append(markerSpec == null ? "null" : markerSpec)
+      .append(markerText == null ? "null" : markerText)
+      .append(xOffset).append(yOffset)
+      .append(matchRotation)
+      .append(afterBurnerKey)
+      .append(description)
+      .append(gpId);
     return ID + se.getValue();
   }
 
@@ -138,7 +130,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   }
 
   protected Command placeMarker() {
-    GamePiece marker = createMarker();
+    final GamePiece marker = createMarker();
     Command c = null;
     if (marker != null) {
       GamePiece outer = getOutermost(this);
@@ -235,6 +227,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
           newGpId = ((PieceSlot) conf).getGpId();
         }
       }
+      // FIXME: review error message
       catch (ComponentPathBuilder.PathFormatException e) {
       }
     }

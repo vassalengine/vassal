@@ -23,6 +23,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,11 +83,14 @@ import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.IOUtils;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
 import VASSAL.tools.ToolBarComponent;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 
 /**
@@ -211,19 +215,20 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        JOptionPane.showMessageDialog
-            (null,
-             Resources.getString("GameModule.version_error", vassalVersionCreated, runningVersion),  //$NON-NLS-1$
-             Resources.getString("GameModule.version_error_short"),  //$NON-NLS-1$
-             JOptionPane.ERROR_MESSAGE);
+        ErrorDialog.warning(
+          Resources.getString("GameModule.version_error"),
+          Resources.getString("GameModule.version_error"),
+          Resources.getString("GameModule.version_error_message",
+                              vassalVersionCreated, runningVersion)
+        );
       }
     }
     else if (NEXT_PIECESLOT_ID.equals(name)) {
       try {
         nextGpId = Integer.parseInt((String) value);
       }
-      catch (Exception e) {
-        
+      // FIXME: review error message
+      catch (NumberFormatException e) {
       }
     }
     else if (DESCRIPTION.equals(name)) {
@@ -643,12 +648,12 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * Prompt user to save open game and modules/extensions being edited 
    * @return true if shutDown should proceed, i.e. user did not cancel
-   * @throws IOException on error while attempting to save
    */
   public boolean shutDown() {
     boolean cancelled;
     getGameState().setup(false);
     cancelled = getGameState().isGameStarted();
+
     if (!cancelled) {
       if (getDataArchive() instanceof ArchiveWriter
           && !buildString().equals(lastSavedConfiguration)) {
@@ -668,41 +673,43 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
 
     if (!cancelled) {
+      Prefs p = null;
+
+      // write and close module prefs
       try {
-        getPrefs().write();
+        p = getPrefs();
+        p.write();
+        p.close();
       }
       catch (IOException e) {
-        ErrorLog.warn(e);
+        WriteErrorDialog.error(e, p.getFile());
+      }
+      finally {
+        IOUtils.closeQuietly(p);
       }
 
+      // write and close global prefs
       try {
-        getPrefs().close();
+        p = getGlobalPrefs();
+        p.write();
+        p.close();
       }
       catch (IOException e) {
-        ErrorLog.warn(e);
+        WriteErrorDialog.error(e, p.getFile());
       }
+      finally {
+        IOUtils.closeQuietly(p);
+      }    
 
+      // close the module
       try {
-        Prefs.getGlobalPrefs().write();
+        archive.close();
       }
       catch (IOException e) {
-        ErrorLog.warn(e);
-      }
-
-      try {
-        Prefs.getGlobalPrefs().close();
-      }
-      catch (IOException e) {
-        ErrorLog.warn(e);
-      }
-
-      try {
-        getDataArchive().close();
-      }
-      catch (IOException e) {
-        ErrorLog.warn(e);
+        ReadErrorDialog.error(e, archive.getName());
       }
     }
+
     return !cancelled;
   }
 
@@ -743,11 +750,13 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Set the singleton GameModule and invoke {@link #build} on it
+   * Set the singleton GameModule and invoke {@link #build} on it.
    */
   public static void init(GameModule module) throws IOException {
     if (theModule != null) {
-      throw new IOException(Resources.getString("GameModule.open_error", theModule.getDataArchive().getName()));  //$NON-NLS-1$
+      throw new UnsupportedOperationException(
+        Resources.getString("GameModule.open_error",
+          theModule.getDataArchive().getName()));
     }
     else {
       theModule = module;
@@ -768,7 +777,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
        * Run through every PieceSlot and generate new gpid's.
        */
       if (getGameModule().nextGpId == 0) {
-        for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
+        for (PieceSlot pieceSlot :
+            theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
           pieceSlot.updateGpId();
         }  
       }
@@ -858,33 +868,35 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected void save(boolean saveAs) {
     vassalVersionCreated = Info.getVersion();
     
+    final ArchiveWriter writer = getArchiveWriter();
+
     try {
-      (new ModuleMetaData(this)).save(getArchiveWriter());
+      (new ModuleMetaData(this)).save(writer);
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      WriteErrorDialog.error(e, writer.getName());
     }
     
     try {
-      String save = buildString();
-      getArchiveWriter().addFile
-          (BUILDFILE,  
-           new java.io.ByteArrayInputStream(save.getBytes("UTF-8")));  //$NON-NLS-1$
+      final String save = buildString();
+      writer.addFile(BUILDFILE,  
+        new ByteArrayInputStream(save.getBytes("UTF-8")));  //$NON-NLS-1$
+
       if (saveAs) {
-        getArchiveWriter().saveAs(true);
+        writer.saveAs(true);
       }
       else {
-        getArchiveWriter().write(true);
+        writer.write(true);
       }
       lastSavedConfiguration = save;
     }
-    catch (IOException err) {
-      ErrorLog.log(err);
-      JOptionPane.showMessageDialog
-          (frame,
-           Resources.getString("GameModule.save_error", err.getMessage()), //$NON-NLS-1$
-           Resources.getString("GameModule.save_error_short"),  //$NON-NLS-1$
-           JOptionPane.ERROR_MESSAGE);
+    catch (IOException e) {
+      ErrorDialog.error(
+        Resources.getString("GameModule.save_error"),
+        Resources.getString("GameModule.save_error"),
+        e,
+        Resources.getString("GameModule.save_error_message")
+      );
     }
   }
 

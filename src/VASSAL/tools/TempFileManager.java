@@ -27,6 +27,7 @@ import java.util.List;
 
 import VASSAL.Info;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.imageop.Op;
 
 /**
@@ -89,6 +90,7 @@ public class TempFileManager {
             }
             catch (IOException e) {
               if (sleep > maxsleep) {
+                // just log, since shutdown hooks don't have long to run
                 ErrorLog.log(e);
                 break;
               }
@@ -96,7 +98,7 @@ public class TempFileManager {
               try {
                 Thread.sleep(sleep);
               }
-              catch (Exception ignore) {
+              catch (InterruptedException ignore) {
               }
 
               sleep *= 2;
@@ -112,6 +114,7 @@ public class TempFileManager {
             cleanupSessionRoot();
           }
           catch (IOException e) {
+            // just log, since shutdown hooks don't have long to run
             ErrorLog.log(e);
           }
         }
@@ -134,10 +137,10 @@ public class TempFileManager {
         final File lock = new File(f.getParent(), f.getName() + ".lck");
         if (!lock.exists()) {
           try {
-            recursiveDelete(f);
+            FileUtils.recursiveDelete(f);
           }
           catch (IOException e) {
-            ErrorLog.warn(e);
+            WriteErrorDialog.error(e, f);
           }
         }
       }
@@ -145,8 +148,8 @@ public class TempFileManager {
   }
 
   private void cleanupSessionRoot() throws IOException {
-    if (lock.exists()) delete(lock);
-    recursiveDelete(sessionRoot);
+    if (lock.exists()) FileUtils.delete(lock);
+    FileUtils.recursiveDelete(sessionRoot);
   }
 
   private static final TempFileManager instance = new TempFileManager();
@@ -165,45 +168,10 @@ public class TempFileManager {
     return new File(sessionRoot.toString());
   }
 
-  private static void delete(File file) throws IOException {
-    if (!file.delete())
-      throw new IOException("Failed to delete " + file.getAbsolutePath());
-  }
-
-  private static void mkdirs(File dir) throws IOException {
-    if (!dir.mkdirs()) throw new IOException(
-      "Failed to create directory " + dir.getAbsolutePath());
-  }
-
-  private static void recursiveDelete(File base) throws IOException {
-    // we delete as many files as we can
-    final List<File> failed = new ArrayList<File>();
-    recursiveDeleteHelper(base, failed);
-
-    // if any deletions failed, we list them
-    if (!failed.isEmpty()) {
-      final StringBuilder sb = new StringBuilder();
-      for (File f : failed) sb.append(' ').append(f.getAbsolutePath());
-      throw new IOException("Failed to delete" + sb.toString());
-    }
-  }
-
-  private static void recursiveDeleteHelper(File parent, List<File> failed) {
-    // delete children, depth first
-    if (parent.isDirectory()) {
-      for (File child : parent.listFiles()) {
-        recursiveDeleteHelper(child, failed);
-      }
-    }
-
-    // store leaves which can't be deleted in the failed list
-    if (!parent.delete()) failed.add(parent);
-  }
-
   private File createSessionRoot() throws IOException {
     // ensure that we have a good temporary root
     if (!tmpRoot.exists() || (!tmpRoot.isDirectory() && !tmpRoot.delete())) {
-      mkdirs(tmpRoot);
+      FileUtils.mkdirs(tmpRoot);
     }
 
     // get the name for our session root
@@ -218,7 +186,7 @@ public class TempFileManager {
     lock.deleteOnExit();
 
     // now create our session root directory
-    mkdirs(dir);
+    FileUtils.mkdirs(dir);
 
     return dir;
   }
@@ -234,7 +202,7 @@ public class TempFileManager {
     if (sessionRoot == null) sessionRoot = createSessionRoot();
 
     final File dir = new File(sessionRoot, dirname);
-    mkdirs(dir);
+    FileUtils.mkdirs(dir);
     return dir;
   }
 

@@ -139,6 +139,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
           }
           registerNewConnection();
         }
+        // FIXME: review error message
         catch (IOException e) {
           propSupport.firePropertyChange(STATUS, null, Resources.getString("Chat.unable_to_establish", e.getMessage()));  //$NON-NLS-1$
         }
@@ -199,6 +200,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
         try {
           msg = ZIP_HEADER + Base64.encodeBytes(Compressor.compress(msg.getBytes("UTF-8")), Base64.DONT_BREAK_LINES);  //$NON-NLS-1$
         }
+        // FIXME: review error message
         catch (IOException e) {
           e.printStackTrace();
         }
@@ -291,6 +293,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
             Properties info = new PropertiesEncoder(infoString).getProperties();
             allRooms[i].setInfo(info);
           }
+          // FIXME: review error message
           catch (IOException e) {
             e.printStackTrace();
           }
@@ -307,6 +310,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
         try {
           msg = new String(Compressor.decompress(Base64.decode(msg.substring(ZIP_HEADER.length()))), "UTF-8");  //$NON-NLS-1$
         }
+        // FIXME: review error message
         catch (IOException e) {
           e.printStackTrace();
         }
@@ -332,6 +336,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
           Properties p = new PropertiesEncoder(playerNodes[j].getInfo()).getProperties();
           players[j].setInfo(p);
         }
+        // FIXME: review error message
         catch (IOException e) {
           e.printStackTrace();
         }
@@ -342,6 +347,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
           rooms[i].setInfo(new PropertiesEncoder(roomNodes[i].getInfo()).getProperties());
         }
       }
+      // FIXME: review error message
       catch (IOException e) {
         e.printStackTrace();
       }
@@ -386,6 +392,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
       p = new NodePlayer(null);
       p.setInfo(propEncoder.getProperties());
     }
+    // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
     }

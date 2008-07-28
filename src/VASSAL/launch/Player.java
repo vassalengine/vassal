@@ -35,6 +35,7 @@ import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.JarArchive;
 import VASSAL.tools.menu.MacOSXMenuManager;
@@ -88,35 +89,42 @@ public class Player extends Launcher {
   }
 
   protected void launch() throws IOException {
-    try {
-      if (lr.builtInModule) {
-        GameModule.init(createModule(createDataArchive()));
+    if (lr.builtInModule) {
+      GameModule.init(createModule(createDataArchive()));
+      
+      if (lr.autoext != null) {
         for (String ext : lr.autoext) {
           createExtension(ext).build();
         }
-        createExtensionsLoader().addTo(GameModule.getGameModule());
-        Localization.getInstance().translate();
-        GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
-      }
-      else {
-        GameModule.init(createModule(createDataArchive()));
-        createExtensionsLoader().addTo(GameModule.getGameModule());
-        Localization.getInstance().translate();
-        final GameModule m = GameModule.getGameModule();
-        if (lr.game != null) {
-          m.getFrame().setVisible(true);
-          m.getGameState().loadGameInBackground(lr.game);
-        }
-        else {
-          m.getWizardSupport().showWelcomeWizard();
-        }
       }
 
-      if (cmdC != null) cmdC.request("NOTIFY_OPEN_OK");
+      createExtensionsLoader().addTo(GameModule.getGameModule());
+      Localization.getInstance().translate();
+      GameModule.getGameModule().getWizardSupport().showWelcomeWizard();
     }
-    catch (IOException e) {
-      if (cmdC != null) cmdC.request("NOTIFY_OPEN_FAILED");
-      throw e;
+    else {
+      GameModule.init(createModule(createDataArchive()));
+      createExtensionsLoader().addTo(GameModule.getGameModule());
+      Localization.getInstance().translate();
+      final GameModule m = GameModule.getGameModule();
+      if (lr.game != null) {
+        m.getFrame().setVisible(true);
+        m.getGameState().loadGameInBackground(lr.game);
+      }
+      else {
+        m.getWizardSupport().showWelcomeWizard();
+      }
+    }
+
+    if (cmdC != null) {
+      try {
+        cmdC.request("NOTIFY_OPEN_OK");
+      }
+      catch (IOException e) {
+        // This is not fatal, since we've successfully opened the module,
+        // but possibly this means that the Module Manager has died.
+        CommunicationErrorDialog.error(e);
+      }
     }
   }
 

@@ -113,11 +113,11 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     Command comm = null;
     if (myCommand.matches(stroke)) {
-    	DrawPile pile = deck;
-    	if (pile == null || deckId.length() == 0)
-    		pile = findDeck();
-    	if (pile == null)
-    		return null;
+      DrawPile pile = deck;
+      if (pile == null || deckId.length() == 0)
+        pile = findDeck();
+      if (pile == null)
+        return null;
       comm = pile.addToContents(Decorator.getOutermost(this));
       // Apply Auto-move key
       Map m = pile.getMap();
@@ -146,76 +146,78 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   }
 
   private DrawPile findDeck() {
-	  DrawPile pile = null;
-	  if (deckId.length() > 0)
-		  pile = DrawPile.findDrawPile(deckId);
+    DrawPile pile = null;
+    if (deckId.length() > 0)
+      pile = DrawPile.findDrawPile(deckId);
     if (pile == null)
-    	return promptForDrawPile();
+      return promptForDrawPile();
     // cache
     deck = pile;
     return pile;
   }
   
   private DrawPile promptForDrawPile() {
-	  final JDialog d = new JDialog(GameModule.getGameModule().getFrame(), true);
-	  d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
-	  d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
-	  
-	  class AvailableDeck {
-		  private DrawPile pile;
+    final JDialog d = new JDialog(GameModule.getGameModule().getFrame(), true);
+    d.setTitle(Decorator.getInnermost(this).getName()); //$NON-NLS-1$
+    d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
+    
+    class AvailableDeck {
+      private DrawPile pile;
 
-		  public AvailableDeck(DrawPile pile) {
-			  this.pile = pile;
-		  }
+      public AvailableDeck(DrawPile pile) {
+        this.pile = pile;
+      }
 
-		  public String toString() {
-			  return pile.getConfigureName();
-		  }
-	  }
-	  
-	  final List<DrawPile> piles =
+      public String toString() {
+        return pile.getConfigureName();
+      }
+    }
+    
+    final List<DrawPile> piles =
       GameModule.getGameModule().getAllDescendantComponentsOf(DrawPile.class);
-	  if (piles.size() == 0)
-		  throw new IllegalArgumentException("No decks in module.");
-	  
-	  final AvailableDeck[] decks = new AvailableDeck[piles.size()];
-	  int i = 0;
-	  for (DrawPile p : piles)
-		  decks[i++] = new AvailableDeck(p);
 
-	  final JList list = new JList(decks);
-	  list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    if (piles.size() == 0) {
+      throw new IllegalStateException("No decks in module.");
+    }
+    
+    final AvailableDeck[] decks = new AvailableDeck[piles.size()];
+    int i = 0;
+    for (DrawPile p : piles)
+      decks[i++] = new AvailableDeck(p);
+
+    final JList list = new JList(decks);
+    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     JLabel prompt = new JLabel(selectDeckPrompt);
     prompt.setAlignmentX(0.5f);
     d.add(prompt); //$NON-NLS-1$
-	  d.add(new ScrollPane(list));
-	  Box box = Box.createHorizontalBox();
-	  box.setAlignmentX(0.5F);
-	  JButton b = new JButton(Resources.getString(Resources.OK));
-	  b.addActionListener(new ActionListener() {
-		  public void actionPerformed(ActionEvent e) {
-			  AvailableDeck selection = (AvailableDeck) list.getSelectedValue();
-			  if (selection != null)
-				  deck = selection.pile;
-			  d.dispose();
-		  }
-	  });
-	  box.add(b);
-	  b = new JButton(Resources.getString(Resources.CANCEL));
-	  b.addActionListener(new ActionListener() {
-		  public void actionPerformed(ActionEvent e) {
-			  d.dispose();
-		  }
-	  });
-	  box.add(b);
-	  d.add(box);
-	  d.pack();
-	  d.setLocationRelativeTo(d.getOwner());
-	  d.setVisible(true);
-	  // don't cache -- ask again next time
-	  DrawPile pile = deck;
-	  deck = null;
-	  return pile;
+    d.add(new ScrollPane(list));
+    Box box = Box.createHorizontalBox();
+    box.setAlignmentX(0.5F);
+    JButton b = new JButton(Resources.getString(Resources.OK));
+    b.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        AvailableDeck selection = (AvailableDeck) list.getSelectedValue();
+        if (selection != null)
+          deck = selection.pile;
+        d.dispose();
+      }
+    });
+    box.add(b);
+    b = new JButton(Resources.getString(Resources.CANCEL));
+    b.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        d.dispose();
+      }
+    });
+    box.add(b);
+    d.add(box);
+    d.pack();
+    d.setLocationRelativeTo(d.getOwner());
+    d.setVisible(true);
+    // don't cache -- ask again next time
+    DrawPile pile = deck;
+    deck = null;
+    return pile;
   }
 
   public void mySetState(String newState) {

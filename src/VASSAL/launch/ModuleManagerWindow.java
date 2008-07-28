@@ -101,8 +101,10 @@ import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ComponentSplitter;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
@@ -167,13 +169,19 @@ public class ModuleManagerWindow extends JFrame {
 
       public void actionPerformed(ActionEvent e) {
         if (!AbstractLaunchAction.shutDown()) return;
+
+        final Prefs gl = Prefs.getGlobalPrefs();
         try {
-          Prefs.getGlobalPrefs().write();
-          Prefs.getGlobalPrefs().close();
+          gl.write();
+          gl.close();
         }
         catch (IOException ex) {
-          ErrorLog.warn(ex);
+          WriteErrorDialog.error(ex, gl.getFile());
         }
+        finally {
+          IOUtils.closeQuietly(gl);
+        }
+
         System.exit(0);
       }
     };
@@ -267,7 +275,7 @@ public class ModuleManagerWindow extends JFrame {
                      "README.html").toURI().toURL();
     }
     catch (MalformedURLException e) {
-      ErrorLog.warn(e);
+      ErrorDialog.bug(e);
     }
     mm.addAction("General.help", new ShowHelpAction(url, null));
     

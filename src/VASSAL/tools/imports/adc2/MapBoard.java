@@ -181,6 +181,7 @@ public class MapBoard extends Importer {
 				File f = TempFileManager.getInstance().createTempFile("map", ".png");
 				FileOutputStream out = new FileOutputStream(f);
 				ImageIO.write(image.getSubimage(r.x, r.y, r.width, r.height), "png", out);
+// FIXME: where is the finally?
 				out.close();
 				imageName = getUniqueImageFileName(getName());
 				GameModule.getGameModule().getArchiveWriter().addImage(f.getPath(), imageName);
@@ -319,7 +320,9 @@ public class MapBoard extends Importer {
 			if (sml != null) {
 				try {
 					readScannedMapLayoutFile(sml, g);
-				} catch (IOException e) {}
+				}
+        // FIXME: review error message
+        catch (IOException e) {}
 			}
 			else {
 				// If sml file doesn't exist, see if there is a single-sheet underlay image
@@ -330,7 +333,9 @@ public class MapBoard extends Importer {
 					try {
 						img = ImageIO.read(underlay);
 						g.drawImage(img, null, 0, 0);
-					} catch (IOException e) {}					
+					}
+          // FIXME: review error message
+          catch (IOException e) {}					
 				}
 			}	
 			return true;			

@@ -70,6 +70,7 @@ import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.PropertiesWindow;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.WriteErrorDialog;
 
 /**
  * Window for editing translations of a {@link Configurable} object
@@ -259,29 +260,35 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   }
   
   protected Component getButtonPanel() {
-    JPanel buttonBox = new JPanel();
-    JButton helpButton = new JButton(Resources.getString(Resources.HELP));
+    final JPanel buttonBox = new JPanel();
+
+    final JButton helpButton = new JButton(Resources.getString(Resources.HELP));
     helpButton.addActionListener(new ShowHelpAction(HelpFile.getReferenceManualPage("Translations.htm#module").getContents(),null));;
     buttonBox.add(helpButton);
-    JButton okButton = new JButton(Resources.getString(Resources.OK));
+
+    final JButton okButton = new JButton(Resources.getString(Resources.OK));
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         try {
           save();
         }
         catch (IOException e1) {
-          reportSaveError(e1);
+          WriteErrorDialog.error(e1,
+            GameModule.getGameModule().getArchiveWriter().getName());
         }
       }
     });
     buttonBox.add(okButton);
-    JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
+
+    final JButton cancelButton = new JButton(
+      Resources.getString(Resources.CANCEL));
     cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         cancel();
       }
     });
     buttonBox.add(cancelButton);
+
     return buttonBox;
   }
   
@@ -310,7 +317,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
           }
         }
         catch (IOException e) {
-          reportSaveError(e);
+          WriteErrorDialog.error(e,
+            GameModule.getGameModule().getArchiveWriter().getName());
         }
       }
     }
@@ -397,7 +405,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
           }
         }
         catch (IOException e) {
-          reportSaveError(e);
+          WriteErrorDialog.error(e,
+            GameModule.getGameModule().getArchiveWriter().getName());
         }
       }
     }
@@ -449,15 +458,6 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     if (currentTranslation != null) {
       currentTranslation.reloadProperties();
     }
-  }
-
-  protected void reportSaveError(IOException e1) {
-    ErrorLog.log(e1);
-    String msg = e1.getMessage();
-    if (msg == null) {
-      msg = "Unable to save";
-    }
-    JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg, "Error while saving", JOptionPane.ERROR_MESSAGE);
   }
 
   /**
@@ -788,5 +788,4 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     }
 
   }
-
 }

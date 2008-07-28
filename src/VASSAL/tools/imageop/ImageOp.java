@@ -32,6 +32,8 @@ public interface ImageOp {
 
   public Image apply() throws Exception;
 
+  public Image getImage();
+
   public Image getImage(ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException;
 

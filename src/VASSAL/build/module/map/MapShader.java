@@ -36,8 +36,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.KeyStroke;
 
@@ -62,6 +60,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.HashCode;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
@@ -69,11 +68,9 @@ import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 
 /**
- *
- * MapShader
  * Draw shaded regions on a map.
- * @author Brent Easton
  *
+ * @author Brent Easton
  */
 public class MapShader extends AbstractConfigurable implements GameComponent, Drawable, UniqueIdManager.Identifyable {
 
@@ -214,18 +211,13 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    * Get/Build the shape of the shade.
    */
   protected Area getShadeShape(Map map) {
-    Area myShape;
-    if (type.equals(FG_TYPE)) {
-      myShape = new Area();
-    }
-    else {
-      myShape = new Area(getBoardClip());
+    final Area myShape = type.equals(FG_TYPE) ?
+      new Area() : new Area(getBoardClip());
+
+    for (GamePiece p : map.getPieces()) {
+      checkPiece(myShape, p);
     }
 
-    final GamePiece pieces[] = map.getPieces();
-    for (int i = 0; i < pieces.length; i++) {
-      checkPiece(myShape, pieces[i]);
-    }
     return myShape;
   }
 
@@ -257,29 +249,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    * pattern.
    */
   protected BufferedImage getShadePattern() {
-/*
-    if (shadePattern == null) {
-      buildShadePattern();
-    }
-    return shadePattern;
-*/
-    if (srcOp == null) {
-      buildShadePattern();
-    }
-
-    try {
-      return (BufferedImage) srcOp.getImage(null);
-    }
-    catch (CancellationException e) {
-      ErrorLog.log(e);
-    }
-    catch (InterruptedException e) {
-      ErrorLog.log(e);
-    }
-    catch (ExecutionException e) {
-      ErrorLog.log(e);
-    }
-    return null;
+    if (srcOp == null) buildShadePattern();
+    return ImageUtils.toBufferedImage(srcOp.getImage());
   }
 
   protected Rectangle getPatternRect() {
@@ -290,62 +261,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     srcOp = pattern.equals(TYPE_IMAGE) && imageName != null
           ? Op.load(imageName) : new PatternOp(color, pattern);
     patternRect = new Rectangle(srcOp.getSize());
-
-//    shadePattern = null;
-//    srcOp = null;
-//    if (pattern.equals(TYPE_IMAGE) && imageName != null) {
-/*
-      try {
-        Image im = GameModule.getGameModule().getDataArchive().getCachedImage(imageName);
-        if (im instanceof BufferedImage) {
-          shadePattern = (BufferedImage) im;
-        }
-        else {
-          Icon icon = new ImageIcon(im);
-          if (icon.getIconWidth() > 0 && icon.getIconHeight() > 0) {
-            shadePattern = new BufferedImage(icon.getIconWidth(),
-                                             icon.getIconHeight(),
-                                             BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g = shadePattern.createGraphics();
-            g.drawImage(im, 0, 0, null);
-            g.dispose();
-          }
-        }
-      }
-      catch (IOException ex) {
-      }
-*/
-//      srcOp = new SourceOp(imageName);
-//    }
-//    else {
-/*
-//    if (shadePattern == null) {
-      shadePattern = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
-      Graphics2D g = shadePattern.createGraphics();
-      g.setColor(color);
-      if (pattern.equals(TYPE_25_PERCENT)) {
-        g.drawLine(0, 0, 0, 0);
-      }
-      else if (pattern.equals(TYPE_50_PERCENT)) {
-        g.drawLine(0, 0, 0, 0);
-        g.drawLine(1, 1, 1, 1);
-      }
-      else if (pattern.equals(TYPE_75_PERCENT)) {
-        g.drawLine(0, 0, 1, 0);
-        g.drawLine(1, 1, 1, 1);
-      }
-      else {
-        g.drawLine(0, 0, 1, 0);
-        g.drawLine(0, 1, 1, 1);
-      }
-      g.dispose();
-
-      srcOp = new ImageSourceOp(shadePattern);
-*/
-//    }
-
-//    patternRect = new Rectangle(srcOp.getSize());
-//      new Rectangle(0, 0, shadePattern.getWidth(), shadePattern.getHeight());
   }
 
   private static class PatternOp extends AbstractTileOpImpl {

@@ -31,6 +31,7 @@ import javax.swing.event.HyperlinkListener;
 import VASSAL.build.widget.HtmlChart;
 import VASSAL.build.widget.HtmlChart.XTMLEditorKit;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.menu.MenuManager;
 
@@ -86,7 +87,7 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
         pane.setPage(contents);
       }
       catch (IOException e) {
-        pane.setText(Resources.getString("HelpWindow.unable_to_read", contents.toString())); //$NON-NLS-1$
+        ReadErrorDialog.error(e, contents.toString());
       }
     }
     else {

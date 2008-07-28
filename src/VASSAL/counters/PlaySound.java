@@ -38,7 +38,7 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -74,8 +74,11 @@ public class PlaySound extends Decorator implements TranslatablePiece {
   }
 
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
-    se.append(format.getFormat()).append(menuText).append(stroke).append(sendToOthers);
+    final SequenceEncoder se = new SequenceEncoder(';');
+    se.append(format.getFormat())
+      .append(menuText)
+      .append(stroke)
+      .append(sendToOthers);
     return ID + se.getValue();
   }
 
@@ -96,16 +99,18 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     Command c = null;
     if (command.matches(stroke)) {
-      String clipName = format.getText(Decorator.getOutermost(this));
+      final String clipName = format.getText(Decorator.getOutermost(this));
       c = new PlayAudioClipCommand(clipName);
       try {
-        AudioClip clip = GameModule.getGameModule().getDataArchive().getCachedAudioClip(clipName);
+        final AudioClip clip = GameModule.getGameModule()
+                                         .getDataArchive()
+                                         .getCachedAudioClip(clipName);
         if (clip != null) {
           clip.play();
         }
       }
       catch (IOException e) {
-        ErrorLog.log(e);
+        ReadErrorDialog.error(e, clipName);
       }
     }
     return c;

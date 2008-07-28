@@ -97,7 +97,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.menu.MenuManager;
 
@@ -129,47 +129,47 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
  
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-	  if (USE_GRID_LOCATION.equals(name)) {
-		  return new VisibilityCondition() {
-			  public boolean shouldBeVisible() {
-				  Board b = getConfigureBoard();
-				  if (b == null)
-					  return false;
-				  else
-					  return b.getGrid() != null;
-			  }
-		  };
-	  }
-	  else if (LOCATION.equals(name)) {
-		  return new VisibilityCondition() {
-			  public boolean shouldBeVisible() {
-				  return isUseGridLocation();
-			  }			  
-		  };
-	  }
-	  else if (X_POSITION.equals(name) || Y_POSITION.equals(name)) {
-		  return new VisibilityCondition() {
-			  public boolean shouldBeVisible() {
-				  return !isUseGridLocation();
-			  }
-		  };
-	  }
-	  else
-		  return super.getAttributeVisibility(name);
+    if (USE_GRID_LOCATION.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          Board b = getConfigureBoard();
+          if (b == null)
+            return false;
+          else
+            return b.getGrid() != null;
+        }
+      };
+    }
+    else if (LOCATION.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return isUseGridLocation();
+        }        
+      };
+    }
+    else if (X_POSITION.equals(name) || Y_POSITION.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return !isUseGridLocation();
+        }
+      };
+    }
+    else
+      return super.getAttributeVisibility(name);
   }
 
   // must have a useable board with a grid
   protected boolean isUseGridLocation() {
-	  if (!useGridLocation)
-		  return false;
-	  Board b = getConfigureBoard();
-	  if (b == null)
-		  return false;
-	  MapGrid g = b.getGrid();
-	  if (g == null)
-		  return false;
-	  else
-		  return true;
+    if (!useGridLocation)
+      return false;
+    Board b = getConfigureBoard();
+    if (b == null)
+      return false;
+    MapGrid g = b.getGrid();
+    if (g == null)
+      return false;
+    else
+      return true;
   }
   
   // only update the position if we're using the location name
@@ -178,20 +178,22 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 		  try {
 			  Point p = getConfigureBoard().getGrid().getLocation(location);
 		  }
-		  catch (BadCoords e) {
-		  }
-	  }
+      // FIXME: review error message
+      catch (BadCoords e) {
+      }
+    }
   }
   
   @Override
   public void validate(Buildable target, ValidationReport report) {
-	  if (isUseGridLocation()) {
-		  if (location == null)
-			  report.addWarning(getConfigureName() + Resources.getString("SetupStack.null_location"));
-		  else {
-		    try {
+    if (isUseGridLocation()) {
+      if (location == null)
+        report.addWarning(getConfigureName() + Resources.getString("SetupStack.null_location"));
+      else {
+        try {
           getConfigureBoard().getGrid().getLocation(location);
         }
+        // FIXME: review error message
         catch (BadCoords e) {
           String msg = "Bad location name "+location+" in "+getConfigureName();
           if (e.getMessage() != null) {
@@ -199,19 +201,19 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           }
           report.addWarning(msg);
         }
-		  }
-	  }
-	  
-	  super.validate(target, report);
+      }
+    }
+    
+    super.validate(target, report);
   }
 
   protected void updateLocation() {
-	  Board b = getConfigureBoard();
-	  if (b != null) {
-		  MapGrid g = b.getGrid();
-		  if (g != null)
-			  location = g.locationName(pos);
-	  }
+    Board b = getConfigureBoard();
+    if (b != null) {
+      MapGrid g = b.getGrid();
+      if (g != null)
+        location = g.locationName(pos);
+    }
   }
 
   public void setup(boolean gameStarting) {
@@ -286,10 +288,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       return owningBoardName;
     }
     else if (USE_GRID_LOCATION.equals(key)) {
-    	return Boolean.toString(useGridLocation);
+      return Boolean.toString(useGridLocation);
     }
     else if (LOCATION.equals(key)) {
-    	return location;
+      return location;
     }
     else if (X_POSITION.equals(key)) {
       return "" + pos.x;
@@ -316,13 +318,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       updateConfigureButton();
     }
     else if (USE_GRID_LOCATION.equals(key)) {
-    	if (value instanceof String) {
-    		value = new Boolean((String) value);
-    	}
-    	useGridLocation = ((Boolean) value).booleanValue();
+      if (value instanceof String) {
+        value = new Boolean((String) value);
+      }
+      useGridLocation = ((Boolean) value).booleanValue();
     }
     else if (LOCATION.equals(key)) {
-    	location = (String) value;
+      location = (String) value;
     }
     else if (X_POSITION.equals(key)) {
       if (value instanceof String) {
@@ -412,40 +414,40 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
 //  public static class GridPrompt extends StringEnum {
-//	  public static final String NONE = "<none>";
-//	  public static final String ZONE = "(Zone)";
-//	  public static final String BOARD = "(Board)";
-//	  
-//	  public GridPrompt() {		  
-//	  }
+//    public static final String NONE = "<none>";
+//    public static final String ZONE = "(Zone)";
+//    public static final String BOARD = "(Board)";
+//    
+//    public GridPrompt() {      
+//    }
 //
-//	@Override
-//	public String[] getValidValues(AutoConfigurable target) {
-//		ArrayList<String> values = new ArrayList<String>();
-//		values.add(NONE);
-//		if (target instanceof SetupStack) {
-//			SetupStack stack = (SetupStack) target;
-//			BoardPicker bp = stack.map.getBoardPicker();
-//			if (stack.owningBoardName != null) {
-//				Board b = bp.getBoard(stack.owningBoardName);
-//				MapGrid grid = b.getGrid();
-//				if (grid != null) {
-//					GridNumbering gn = grid.getGridNumbering();
-//					if (gn != null)
-//						values.add(BOARD + " " + b.getName());
-//					if (grid instanceof ZonedGrid) {
-//						ZonedGrid zg = (ZonedGrid) grid;
-//						for (Iterator i = zg.getZones(); i.hasNext(); ) {
-//							Zone z = (Zone) i.next();						
-//							if (!z.isUseParentGrid() && z.getGrid() != null && z.getGrid().getGridNumbering() != null)
-//								values.add(ZONE + " " + z.getName());
-//						}
-//					}
-//				}
-//			}
-//		}
-//		return values.toArray(new String[values.size()]);
-//	}
+//  @Override
+//  public String[] getValidValues(AutoConfigurable target) {
+//    ArrayList<String> values = new ArrayList<String>();
+//    values.add(NONE);
+//    if (target instanceof SetupStack) {
+//      SetupStack stack = (SetupStack) target;
+//      BoardPicker bp = stack.map.getBoardPicker();
+//      if (stack.owningBoardName != null) {
+//        Board b = bp.getBoard(stack.owningBoardName);
+//        MapGrid grid = b.getGrid();
+//        if (grid != null) {
+//          GridNumbering gn = grid.getGridNumbering();
+//          if (gn != null)
+//            values.add(BOARD + " " + b.getName());
+//          if (grid instanceof ZonedGrid) {
+//            ZonedGrid zg = (ZonedGrid) grid;
+//            for (Iterator i = zg.getZones(); i.hasNext(); ) {
+//              Zone z = (Zone) i.next();            
+//              if (!z.isUseParentGrid() && z.getGrid() != null && z.getGrid().getGridNumbering() != null)
+//                values.add(ZONE + " " + z.getName());
+//            }
+//          }
+//        }
+//      }
+//    }
+//    return values.toArray(new String[values.size()]);
+//  }
 //  }
 //  
   public static class OwningBoardPrompt extends StringEnum {
@@ -490,7 +492,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     xConfig = ((AutoConfigurer) c).getConfigurer(X_POSITION);
     yConfig = ((AutoConfigurer) c).getConfigurer(Y_POSITION);
     locationConfig = ((AutoConfigurer) c).getConfigurer(LOCATION);
-	updateConfigureButton();
+    updateConfigureButton();
     ((Container) c.getControls()).add(configureButton);
     
     return c;
@@ -1026,30 +1028,28 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
         // begin dragging
         try {
-          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR), new StringSelection(""), this); // DEBUG
+          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
+                        new StringSelection(""), this); // DEBUG
           dge.getDragSource().addDragSourceMotionListener(this);
         }
         catch (InvalidDnDOperationException e) {
-          ErrorLog.log(e);
+          ErrorDialog.bug(e);
         }
-        
-        return;
-        
       }
 
       protected void setDragCursor() {
-          JRootPane rootWin = SwingUtilities.getRootPane(this);
-          if (rootWin != null) {
-            // remove cursor from old window
-            if (dragCursor.getParent() != null) {
-              dragCursor.getParent().remove(dragCursor);
-            }
-            drawWin = rootWin.getLayeredPane();
-
-            calcDrawOffset();
-            dragCursor.setVisible(true);
-            drawWin.add(dragCursor, JLayeredPane.DRAG_LAYER);
+        JRootPane rootWin = SwingUtilities.getRootPane(this);
+        if (rootWin != null) {
+          // remove cursor from old window
+          if (dragCursor.getParent() != null) {
+            dragCursor.getParent().remove(dragCursor);
           }
+          drawWin = rootWin.getLayeredPane();
+
+          calcDrawOffset();
+          dragCursor.setVisible(true);
+          drawWin.add(dragCursor, JLayeredPane.DRAG_LAYER);
+        }
       }
       
       /** Moves the drag cursor on the current draw window */

@@ -40,6 +40,7 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
+import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
@@ -55,7 +56,7 @@ import VASSAL.preferences.EnumPreference;
 import VASSAL.preferences.IntegerPreference;
 import VASSAL.preferences.StringPreference;
 import VASSAL.preferences.TextPreference;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 
 public class GlobalOptions extends AbstractConfigurable {
@@ -192,66 +193,46 @@ public class GlobalOptions extends AbstractConfigurable {
 
   /**
    * Components may use GlobalOptions to store generic global attributes.
-   * This method registers the given key as an attribute of the GlobalOptions with the given type.
+   * This method registers the given key as an attribute of the GlobalOptions
+   * with the given type.
    */
   public void addOption(Configurer option) {
     optionConfigurers.put(option.getKey(), option);
     Object initValue = optionInitialValues.get(option.getKey());
+
     if (initValue instanceof String) {
       option.setValue((String)initValue);
     }
+
     if (config != null) {
       ((Container)config.getControls()).add(option.getControls());
     }
   }
 
   public void build(Element e) {
-    if (e != null) {
-      NamedNodeMap n = e.getAttributes();
-      for (int i = 0; i < n.getLength(); ++i) {
-        Attr att = (Attr) n.item(i);
-        setAttribute(att.getName(), att.getValue());
-      }
-      
-//      NodeList l = e.getElementsByTagName("option");
-//      for (int i=0,len=l.getLength();i<len;++i) {
-//        Element option = (Element)l.item(i);
-//        optionInitialValues.put(option.getAttribute("name"),Builder.getText(option));
-//      }
-
-        
-      NodeList l = e.getChildNodes();
-      for (int i=0,len=l.getLength();i<len;++i) {
-        Node node = l.item(i);
-        if (node.getNodeType() == Node.ELEMENT_NODE) {
-          Element element = (Element) node;
-          String name = element.getTagName();
-          if (name.equals("option")) { //$NON-NLS-1$
-            optionInitialValues.put(element.getAttribute("name"),Builder.getText(element)); //$NON-NLS-1$
+    if (e == null) return;
+ 
+    final NamedNodeMap nnm = e.getAttributes();
+    for (int i = 0; i < nnm.getLength(); ++i) {
+      final Attr att = (Attr) nnm.item(i);
+      setAttribute(att.getName(), att.getValue());
+    }
+    
+    for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
+      if (n.getNodeType() == Node.ELEMENT_NODE) {
+        final Element element = (Element) n;
+        if ("option".equals(element.getTagName())) { //$NON-NLS-1$
+          optionInitialValues.put(element.getAttribute("name"), //$NON-NLS-1$
+                                  Builder.getText(element));
+        }
+        else {
+          try { 
+            final Buildable b = Builder.create(element);
+            b.addTo(this);
+            add(b);
           }
-          else {
-            Buildable b = null;
-            try {
-              b = Builder.create(element);
-              b.addTo(this);
-              add(b);
-            }
-            catch (Throwable err) {
-              String msg = err.getMessage();
-              if (msg == null) {
-                msg = err.getClass().getName().substring(err.getClass().getName().lastIndexOf(".") + 1); //$NON-NLS-1$
-              }
-              System.err.println(b.toString());
-              ErrorLog.log(err);
-              JOptionPane.showMessageDialog
-                (null,
-                 Resources.getString("GlobalOptions.create_error",  //$NON-NLS-1$
-                           ((Element) b).getTagName(),
-                           GameModule.getGameModule().getDataArchive().getName(),
-                           msg),
-                 Resources.getString("GlobalOptions.error"), //$NON-NLS-1$
-                 JOptionPane.ERROR_MESSAGE);
-            }
+          catch (IllegalBuildException ex) {
+            ErrorDialog.bug(ex);
           }
         }
       }
@@ -259,9 +240,9 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public Element getBuildElement(Document doc) {
-    Element e = super.getBuildElement(doc);
+    final Element e = super.getBuildElement(doc);
     for (Configurer c : optionConfigurers.values()) {
-      Element option = doc.createElement("option"); //$NON-NLS-1$
+      final Element option = doc.createElement("option"); //$NON-NLS-1$
       option.setAttribute("name", c.getKey()); //$NON-NLS-1$
       option.appendChild(doc.createTextNode(c.getValueString()));
       e.appendChild(option);
@@ -271,9 +252,9 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public Configurer getConfigurer() {
     if (config == null) {
-      Configurer defaultConfig = super.getConfigurer();
+      final Configurer defaultConfig = super.getConfigurer();
       for (Configurer c : optionConfigurers.values()) {
-        ((Container)defaultConfig.getControls()).add(c.getControls());
+        ((Container) defaultConfig.getControls()).add(c.getControls());
       }
     }
     return config;

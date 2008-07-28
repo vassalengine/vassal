@@ -26,23 +26,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.URLUtils;
 import VASSAL.tools.filechooser.AudioFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
 
 /**
  * Configurer for specifying an AudioClip. This class is intended to allow
- * players to override a default sound with their own sound file on their local
- * file system
+ * players to override a default sound with their own sound file on their
+ * local file system.
  */
 public class SoundConfigurer extends Configurer {
   public static final String DEFAULT = "default";
@@ -50,62 +51,50 @@ public class SoundConfigurer extends Configurer {
   private String clipName;
   private JPanel controls;
   private JTextField textField;
-  private Method clipFactory;
+  private AudioClipFactory clipFactory;
   private final String NO_VALUE = "<disabled>";
 
   public SoundConfigurer(String key, String name, String defaultResource) {
     super(key, name);
     this.defaultResource = defaultResource;
-    try {
-      clipFactory = Applet.class.getMethod("newAudioClip", new Class[] {URL.class});
-    }
-    catch (NoSuchMethodException e) {
-    }
-    catch (SecurityException e) {
-    }
+    clipFactory = createAudioClipFactory();
     setValue(DEFAULT);
   }
 
   public Component getControls() {
     if (controls == null) {
-      if (clipFactory == null) {
-        controls = new JPanel();
-        controls.add(new JLabel("Sound not supported on this platform"));
-      }
-      else {
-        controls = new JPanel();
-        controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
-        controls.add(new JLabel(name));
-        JButton b = new JButton("Play");
-        b.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            play();
-          }
-        });
-        controls.add(b);
-        b = new JButton("Default");
-        b.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            setValue(DEFAULT);
-          }
-        });
-        controls.add(b);
-        b = new JButton("Select");
-        b.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            chooseClip();
-          }
-        });
-        controls.add(b);
-        textField = new JTextField();
-        textField.setMaximumSize(
-          new Dimension(textField.getMaximumSize().width,
-                        textField.getPreferredSize().height));
-        textField.setEditable(false);
-        textField.setText(DEFAULT.equals(clipName) ?
-                          defaultResource : clipName);
-        controls.add(textField);
-      }
+      controls = new JPanel();
+      controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
+      controls.add(new JLabel(name));
+      JButton b = new JButton("Play");
+      b.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          play();
+        }
+      });
+      controls.add(b);
+      b = new JButton("Default");
+      b.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          setValue(DEFAULT);
+        }
+      });
+      controls.add(b);
+      b = new JButton("Select");
+      b.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          chooseClip();
+        }
+      });
+      controls.add(b);
+      textField = new JTextField();
+      textField.setMaximumSize(
+        new Dimension(textField.getMaximumSize().width,
+                      textField.getPreferredSize().height));
+      textField.setEditable(false);
+      textField.setText(DEFAULT.equals(clipName) ?
+                        defaultResource : clipName);
+      controls.add(textField);
     }
     return controls;
   }
@@ -132,11 +121,11 @@ public class SoundConfigurer extends Configurer {
     }
     else if (s != null) {
       try {
-        url = HelpFile.toURL(new File(s));
+        url = URLUtils.toURL(new File(s));
         clipName = s;
       }
-      catch (IOException e) {
-        ErrorLog.log(e);
+      catch (MalformedURLException e) {
+        ReadErrorDialog.error(e, s);
         clipName = null;
       }
     }
@@ -145,10 +134,10 @@ public class SoundConfigurer extends Configurer {
     }
     if (url != null) {
       try {
-        setValue(clipFactory.invoke(null, new Object[] {url}));
+        setValue(clipFactory.getAudioClip(url));
       }
-      catch (Exception e) {
-        ErrorLog.log(e);
+      catch (IOException e) {
+        ReadErrorDialog.error(e, url.toString());
       }
     }
     else {
@@ -159,15 +148,27 @@ public class SoundConfigurer extends Configurer {
     }
   }
 
+  protected interface AudioClipFactory {
+    public AudioClip getAudioClip(URL url) throws IOException;
+  }
+
+  protected AudioClipFactory createAudioClipFactory() {
+    return new AudioClipFactory() {
+      public AudioClip getAudioClip(URL url) {
+        return Applet.newAudioClip(url);
+      }
+    };
+  }
+
   public void play() {
-    AudioClip clip = (AudioClip) getValue();
+    final AudioClip clip = (AudioClip) getValue();
     if (clip != null) {
       clip.play();
     }
   }
 
   public void chooseClip() {
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.setFileFilter(new AudioFileFilter());    
 
     if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {

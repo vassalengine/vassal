@@ -21,6 +21,7 @@ package VASSAL.build.module.gamepieceimage;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.StringTokenizer;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -28,6 +29,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 
@@ -148,17 +150,21 @@ public class NewColorConfigurer extends Configurer {
   }
 
   public static Color stringToColor(String s) {
-    if (s == null
-        || "null".equals(s)) { //$NON-NLS-1$
+    if (s == null || "null".equals(s)) { //$NON-NLS-1$
       return null;
     }
-    java.util.StringTokenizer st = new java.util.StringTokenizer(s, ","); //$NON-NLS-1$
+
+    final StringTokenizer st = new StringTokenizer(s, ","); //$NON-NLS-1$
     try {
       return new Color(Integer.parseInt(st.nextToken()),
                        Integer.parseInt(st.nextToken()),
                        Integer.parseInt(st.nextToken()));
     }
-    catch (Exception e) {
+    // FIXME: review error message
+    catch (NumberFormatException e) {
+      return null;
+    }
+    catch (IllegalArgumentException e) {
       return null;
     }
   }

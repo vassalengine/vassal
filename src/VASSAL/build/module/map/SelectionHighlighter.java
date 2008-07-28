@@ -177,6 +177,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       try {
         thickness = ((Integer) value).intValue();
       }
+      // FIXME: review error message
       catch (NumberFormatException ex) {
       }
     }
@@ -191,6 +192,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       try {
         x = ((Integer) value).intValue();
       }
+      // FIXME: review error message
       catch (NumberFormatException ex) {
       }
     }
@@ -201,6 +203,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       try {
         y = ((Integer) value).intValue();
       }
+      // FIXME: review error message
       catch (NumberFormatException ex) {
       }
     }

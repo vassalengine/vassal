@@ -70,7 +70,8 @@ public class LayerControl extends AbstractConfigurable {
           Integer.parseInt(layers[i]);
           pieceCollection.setLayerEnabled(i, true);
         }
-        catch (Exception e) {
+        // FIXME: review error message
+        catch (NumberFormatException e) {
           pieceCollection.setLayerEnabled(layers[i], true);
         }
       }
@@ -81,7 +82,8 @@ public class LayerControl extends AbstractConfigurable {
           Integer.parseInt(layers[i]);
           pieceCollection.setLayerEnabled(i, false);
         }
-        catch (Exception e) {
+        // FIXME: review error message
+        catch (NumberFormatException e) {
           pieceCollection.setLayerEnabled(layers[i], false);
         }
       }
@@ -92,7 +94,8 @@ public class LayerControl extends AbstractConfigurable {
           Integer.parseInt(layers[i]);
           pieceCollection.toggleLayerEnabled(i);
         }
-        catch (Exception e) {
+        // FIXME: review error message
+        catch (NumberFormatException e) {
           pieceCollection.toggleLayerEnabled(layers[i]);
         }
       }

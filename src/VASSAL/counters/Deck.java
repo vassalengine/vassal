@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -66,11 +67,13 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.KeyStrokeListener;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 
 /**
@@ -593,13 +596,35 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public String getType() {
-    SequenceEncoder se = new SequenceEncoder(';');
-    se.append(drawOutline).append(ColorConfigurer.colorToString(outlineColor)).append(String.valueOf(size.width)).append(String.valueOf(size.height)).append(
-        faceDownOption).append(shuffleOption).append(String.valueOf(allowMultipleDraw)).append(String.valueOf(allowSelectDraw)).append(
-        String.valueOf(reversible)).append(reshuffleCommand).append(reshuffleTarget).append(reshuffleMsgFormat).append(deckName).append(shuffleMsgFormat)
-        .append(reverseMsgFormat).append(faceDownMsgFormat).append(drawFaceUp).append(persistable).append(shuffleKey).append(reshuffleKey).append(String.valueOf(maxStack))
-        .append(getCountExpressions()).append(expressionCounting)
-        .append(getGlobalCommands()).append(hotkeyOnEmpty).append(emptyKey).append(selectDisplayProperty.getFormat()).append(selectSortProperty);
+    final SequenceEncoder se = new SequenceEncoder(';');
+    se.append(drawOutline)
+      .append(ColorConfigurer.colorToString(outlineColor))
+      .append(String.valueOf(size.width))
+      .append(String.valueOf(size.height))
+      .append(faceDownOption)
+      .append(shuffleOption)
+      .append(String.valueOf(allowMultipleDraw))
+      .append(String.valueOf(allowSelectDraw))
+      .append(String.valueOf(reversible))
+      .append(reshuffleCommand)
+      .append(reshuffleTarget)
+      .append(reshuffleMsgFormat)
+      .append(deckName)
+      .append(shuffleMsgFormat)
+      .append(reverseMsgFormat)
+      .append(faceDownMsgFormat)
+      .append(drawFaceUp)
+      .append(persistable)
+      .append(shuffleKey)
+      .append(reshuffleKey)
+      .append(String.valueOf(maxStack))
+      .append(getCountExpressions())
+      .append(expressionCounting)
+      .append(getGlobalCommands())
+      .append(hotkeyOnEmpty)
+      .append(emptyKey)
+      .append(selectDisplayProperty.getFormat())
+      .append(selectSortProperty);
     return ID + se.getValue();
   }
 
@@ -714,16 +739,19 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public void setState(String state) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(state, ';');
-    String mapId = st.nextToken();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(state, ';');
+    final String mapId = st.nextToken();
     setPosition(new Point(st.nextInt(0), st.nextInt(0)));
+
     Map m = null;
     if (!"null".equals(mapId)) { //$NON-NLS-1$
       m = Map.getMapById(mapId);
       if (m == null) {
-        throw new RuntimeException(Resources.getString("Deck.could_not_find", mapId)); //$NON-NLS-1$
+        throw new IllegalStateException(
+          Resources.getString("Deck.could_not_find", mapId)); //$NON-NLS-1$
       }
     }
+
     if (m != getMap()) {
       if (m != null) {
         m.addPiece(this);
@@ -732,14 +760,16 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         setMap(null);
       }
     }
+
     faceDown = "true".equals(st.nextToken()); //$NON-NLS-1$
-    ArrayList<GamePiece> l = new ArrayList<GamePiece>();
+    final ArrayList<GamePiece> l = new ArrayList<GamePiece>();
     if (st.hasMoreTokens()) {
-      SequenceEncoder.Decoder st2 =
+      final SequenceEncoder.Decoder st2 =
         new SequenceEncoder.Decoder(st.nextToken(), ',');
       while (st2.hasMoreTokens()) {
-        GamePiece p = GameModule.getGameModule()
-                                .getGameState().getPieceForId(st2.nextToken());
+        final GamePiece p = GameModule.getGameModule()
+                                      .getGameState()
+                                      .getPieceForId(st2.nextToken());
         if (p != null) {
           l.add(p);
         }
@@ -1016,15 +1046,15 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void promptForDragCount() {
     while (true) {
-      String s = JOptionPane.showInputDialog(Resources.getString("Deck.enter_the_number")); //$NON-NLS-1$
+      final String s = JOptionPane.showInputDialog(
+        Resources.getString("Deck.enter_the_number")); //$NON-NLS-1$
       if (s != null) {
         try {
           dragCount = Integer.parseInt(s);
           dragCount = Math.min(dragCount, getPieceCount());
-          if (dragCount >= 0) {
-            break;
-          }
+          if (dragCount >= 0) break;
         }
+        // FIXME: review error message
         catch (NumberFormatException ex) {
         }
       }
@@ -1190,10 +1220,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   private Command saveDeck() {
-    Command c = new NullCommand();
+    final Command c = new NullCommand();
     GameModule.getGameModule().warn(Resources.getString("Deck.saving_deck")); //$NON-NLS-1$
+
+    final File saveFile = getSaveFileName();
     try {
-      File saveFile = getSaveFileName();
       if (saveFile != null) {
         saveDeck(saveFile);
         GameModule.getGameModule().warn(Resources.getString("Deck.deck_saved")); //$NON-NLS-1$
@@ -1202,33 +1233,30 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         GameModule.getGameModule().warn(Resources.getString("Deck.save_canceled")); //$NON-NLS-1$
       }
     }
-    catch (IOException err) {
-      GameModule.getGameModule().warn(Resources.getString("Deck.save_failed")); //$NON-NLS-1$
+    catch (IOException e) {
+      WriteErrorDialog.error(e, saveFile);
     }
     return c;
   }
 
   public void saveDeck(File f) throws IOException {
     Command comm = new LoadDeckCommand(null);
-
-    final FileWriter dest = new FileWriter(f);
+    for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
+      final GamePiece p = i.next();
+      p.setMap(null);
+      comm = comm.append(new AddPiece(p));
+    }
+    
+    BufferedWriter out = null;
     try {
-      for (Iterator<GamePiece> i = getPiecesIterator(); i.hasNext();) {
-        final GamePiece p = i.next();
-        p.setMap(null);
-        comm = comm.append(new AddPiece(p));
-      }
+      out = new BufferedWriter(new FileWriter(f));
       GameModule.getGameModule().addCommandEncoder(commandEncoder);
-      dest.write(GameModule.getGameModule().encode(comm));
+      out.write(GameModule.getGameModule().encode(comm));
       GameModule.getGameModule().removeCommandEncoder(commandEncoder);
+      out.close();
     }
     finally {
-      try {
-        dest.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(out);
     }
   }
 
@@ -1243,44 +1271,37 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   private Command loadDeck() {
     Command c = new NullCommand();
     GameModule.getGameModule().warn(Resources.getString("Deck.loading_deck")); //$NON-NLS-1$
+
+    final File loadFile = getLoadFileName();
     try {
-      File saveFile = getLoadFileName();
-      if (saveFile != null) {
-        c = loadDeck(saveFile);
+      if (loadFile != null) {
+        c = loadDeck(loadFile);
         GameModule.getGameModule().warn(Resources.getString("Deck.deck_loaded")); //$NON-NLS-1$
       }
       else {
         GameModule.getGameModule().warn(Resources.getString("Deck.load_canceled")); //$NON-NLS-1$
       }
     }
-    catch (IOException err) {
-      GameModule.getGameModule().warn(Resources.getString("Deck.load_failed")); //$NON-NLS-1$
+    catch (IOException e) {
+      ReadErrorDialog.error(e, loadFile);
     }
-    return c;
 
+    return c;
   }
 
   public Command loadDeck(File f) throws IOException {
-    final StringBuilder buffer = new StringBuilder();
-    final FileReader src = new FileReader(f);
+    final FileReader in = new FileReader(f);
+    String ds = null;
     try {
-      final char[] data = new char[10000];
-      int len;
-      while ((len = src.read(data)) > 0) {
-        buffer.append(data, 0, len);
-      }
+      ds = IOUtils.toString(in);
+      in.close();
     }
     finally {
-      try {
-        src.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(in);
     }
 
     GameModule.getGameModule().addCommandEncoder(commandEncoder);
-    Command c = GameModule.getGameModule().decode(buffer.toString());
+    Command c = GameModule.getGameModule().decode(ds);
     GameModule.getGameModule().removeCommandEncoder(commandEncoder);
     if (c instanceof LoadDeckCommand) {
       /*
@@ -1289,9 +1310,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
        * players is a ChangePiece command for this deck, which we need to place
        * after the AddPiece commands for the contents
        */
-      ChangeTracker t = new ChangeTracker(this);
+      final ChangeTracker t = new ChangeTracker(this);
       c.execute();
-      Command[] sub = c.getSubCommands();
+      final Command[] sub = c.getSubCommands();
       c = new NullCommand();
       for (int i = 0; i < sub.length; ++i) {
         c.append(sub[i]);
@@ -1374,34 +1395,37 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     }
   }
 
-    /**
-     * Return the number of cards to be returned by next call to {@link #drawCards()}
-     */
-    public int getDragCount() {
-      return dragCount;
-    }
+  /**
+   * Return the number of cards to be returned by next call to
+   * {@link #drawCards()}.
+   */
+  public int getDragCount() {
+    return dragCount;
+  }
 
-    /**
-     * Set the number of cards to be returned by next call to {@link #drawCards()}
-     * @param dragCount
-     */
-     public void setDragCount(int dragCount) {
-       this.dragCount = dragCount;
-     }
+  /**
+   * Set the number of cards to be returned by next call to
+   * {@link #drawCards()}.
+   *
+   * @param dragCount
+   */
+  public void setDragCount(int dragCount) {
+    this.dragCount = dragCount;
+  }
+  
+  public void setSelectDisplayProperty(String promptDisplayProperty) {
+    this.selectDisplayProperty.setFormat(promptDisplayProperty);
+  }
 
-    public void setSelectDisplayProperty(String promptDisplayProperty) {
-      this.selectDisplayProperty.setFormat(promptDisplayProperty);
-    }
+  public void setSelectSortProperty(String promptSortProperty) {
+    this.selectSortProperty = promptSortProperty;
+  }
 
-    public void setSelectSortProperty(String promptSortProperty) {
-      this.selectSortProperty = promptSortProperty;
-    }
+  public String getSelectDisplayProperty() {
+    return selectDisplayProperty.getFormat();
+  }
 
-    public String getSelectDisplayProperty() {
-      return selectDisplayProperty.getFormat();
-    }
-
-    public String getSelectSortProperty() {
-      return selectSortProperty;
-    }
+  public String getSelectSortProperty() {
+    return selectSortProperty;
+  }
 }

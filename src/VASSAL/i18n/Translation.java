@@ -18,11 +18,14 @@
  */
 package VASSAL.i18n;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -31,7 +34,8 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.IOUtils;
 
 public class Translation extends AbstractConfigurable
                          implements Comparable<Translation> {
@@ -110,8 +114,10 @@ public class Translation extends AbstractConfigurable
       try {
         loadProperties();
       }
+// FIXME: review error message
+// FIXME: should we catch a FileNotFoundException here instead?
       catch (IOException e) {
-        // Fail quietly - This error will occur when adding a new translation
+        // Fail quietly: This error will occur when adding a new translation.
       }
     }
   }
@@ -125,12 +131,12 @@ public class Translation extends AbstractConfigurable
    *          property value
    */
   public void setProperty(String key, String value) {
-  if (value == null || value.length() == 0) {
+    if (value == null || value.length() == 0) {
       getProperties().remove(key);  
-  }
-  else {
+    }
+    else {
       getProperties().setProperty(key, value);
-  }
+    }
     dirty = true;
   }
 
@@ -150,9 +156,7 @@ public class Translation extends AbstractConfigurable
    * @return
    */
   public String translate(String key) {
-    String translation = null;
-    translation = getProperties().getProperty(key);
-    return translation;
+    return getProperties().getProperty(key);
   }
 
   /**
@@ -161,53 +165,52 @@ public class Translation extends AbstractConfigurable
    * 
    */
   protected void loadProperties() throws IOException {
-    String bundle = getBundleName() + ".properties"; //$NON-NLS-1$
     if (localProperties == null) {
       localProperties = new Properties();
     }
 
-    InputStream in = null;
-    try {
-      if (GameModule.getGameModule() != null) {
-        in = GameModule.getGameModule().getDataArchive().getFileStream(bundle);
-      }
-    }
-    catch (IOException e) {
-      // properties have not been saved yet
-    }
-
-    if (in != null) {
+    if (GameModule.getGameModule() != null) {
+      BufferedInputStream in = null;
       try {
+        try {
+          in = new BufferedInputStream(
+            GameModule.getGameModule()
+                      .getDataArchive()
+                      .getFileStream(getBundleFileName())
+          );
+        }
+        catch (FileNotFoundException e) {
+          // ignore, properties have not been saved yet
+          dirty = false;
+          return;
+        }
+      
         localProperties.load(in);
+        in.close();
       }
       finally {
-        try {
-          in.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
+        IOUtils.closeQuietly(in);
       }
     }
-      
+       
     dirty = false;
   }
 
   protected VassalResourceBundle getBundle() throws IOException {
-    String bundle = getBundleName() + ".properties"; //$NON-NLS-1$
-
-    final InputStream in =
-      GameModule.getGameModule().getDataArchive().getFileStream(bundle);
+    BufferedInputStream in = null;
     try {
-      return new VassalResourceBundle(in);
+      in = new BufferedInputStream(
+        GameModule.getGameModule()
+                  .getDataArchive()
+                  .getFileStream(getBundleFileName())
+      );
+
+      final VassalResourceBundle b = new VassalResourceBundle(in);
+      in.close();
+      return b;
     }
     finally {
-      try {
-        in.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(in);
     }
   }
 
@@ -227,19 +230,19 @@ public class Translation extends AbstractConfigurable
    * 
    */
   protected void saveProperties() throws IOException {
-    String bundle = getBundleName() + ".properties"; //$NON-NLS-1$
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
     getProperties().store(out, "Module translation");
-    ArchiveWriter writer = GameModule.getGameModule().getArchiveWriter();
+
+    final ArchiveWriter writer = GameModule.getGameModule().getArchiveWriter();
     if (writer != null) {
-      writer.addFile(bundle, out.toByteArray());
+      writer.addFile(getBundleFileName(), out.toByteArray());
       dirty = false;
     }
-    out.close();
   }
 
   /**
-   * Return the properties map for this translation. Create and load from the moduel if necessary
+   * Return the properties map for this translation. Create and load from
+   * the module if necessary.
    * 
    * @return properties
    */
@@ -249,7 +252,7 @@ public class Translation extends AbstractConfigurable
         loadProperties();
       }
       catch (IOException e) {
-        ErrorLog.log(e);
+        ReadErrorDialog.error(e, getBundleFileName());
         localProperties = new Properties();
       }
     }

@@ -50,8 +50,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -90,7 +88,7 @@ import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.imageop.Op;
 
@@ -320,22 +318,8 @@ public class PieceMover extends AbstractBuildable
   }
 
   private Image loadIcon(String name) {
-    if (name == null || name.length() == 0) {
-      return null;
-    }
-    try {
-      return Op.load(name).getImage(null);
-    }
-    catch (CancellationException e) {
-      ErrorLog.warn(e);
-    }
-    catch (InterruptedException e) {
-      ErrorLog.warn(e);
-    }
-    catch (ExecutionException e) {
-      ErrorLog.warn(e);
-    }
-    return null;
+    if (name == null || name.length() == 0) return null;
+    return Op.load(name).getImage();
   }
 
   protected void initButton() {
@@ -782,7 +766,7 @@ public class PieceMover extends AbstractBuildable
                                              DropTargetListener {
     final int CURSOR_ALPHA = 127; // psuedo cursor is 50% transparent
     final int EXTRA_BORDER = 4; // psuedo cursor is includes a 4 pixel border
-    static private DragHandler theDragHandler = null; // singleton pattern
+    final static private DragHandler theDragHandler = new DragHandler();
     private JLabel dragCursor; // An image label. Lives on current DropTarget's
     // LayeredPane.
     private BufferedImage dragImage; // An image label. Lives on current DropTarget's LayeredPane.
@@ -810,9 +794,6 @@ public class PieceMover extends AbstractBuildable
 
     /** returns the singleton DragHandler instance */
     static public DragHandler getTheDragHandler() {
-      if (theDragHandler == null) {
-        theDragHandler = new DragHandler();
-      }
       return theDragHandler;
     }
 
@@ -837,13 +818,6 @@ public class PieceMover extends AbstractBuildable
     protected DropTargetListener getListener(DropTargetEvent event) {
       final Component component = event.getDropTargetContext().getComponent();
       return dropTargetListeners.get(component);
-    }
-
-    /** CTOR */
-    private DragHandler() {
-      if (theDragHandler != null) {
-        throw new java.lang.RuntimeException("There can be no more than one DragHandler!"); //$NON-NLS-1$
-      }
     }
 
     /** Moves the drag cursor on the current draw window */
@@ -1162,6 +1136,7 @@ public class PieceMover extends AbstractBuildable
           moveDragCursor(mousePosition.x, mousePosition.y);
         }
         final BufferedImage dragImage = makeDragImage(dragPieceOffCenterZoom);
+
         // begin dragging
         try {
           final Point dragPointOffset = new Point(
@@ -1173,7 +1148,7 @@ public class PieceMover extends AbstractBuildable
           dge.getDragSource().addDragSourceMotionListener(this);
         }
         catch (InvalidDnDOperationException e) {
-          ErrorLog.log(e);
+          ErrorDialog.bug(e);
         }
       }
     }

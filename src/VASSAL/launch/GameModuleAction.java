@@ -28,7 +28,8 @@ import javax.swing.JOptionPane;
 import VASSAL.tools.ErrorLog;
 
 /**
- * Utility base class for GameModule-related actions, with auxilliary actions and error reporting
+ * Utility base class for {@link GameModule}-related actions, with auxilliary
+ * actions and error reporting.
  * 
  * @author rodneykinney
  * 
@@ -58,6 +59,7 @@ public abstract class GameModuleAction extends AbstractAction {
         runActions();
       }
     }
+    // FIXME: review error message
     catch (Exception e1) {
       reportError(e1);
     }

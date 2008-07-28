@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -33,8 +34,6 @@ import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -51,7 +50,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.SourceOp;
 
@@ -135,39 +134,14 @@ public class ZoneHighlight extends AbstractConfigurable  {
   protected Paint getPaint() {
     if (paint == null) {
       if (style.equals(STYLE_IMAGE)) {
-/*
-        try {
-          final ImageIcon i = new ImageIcon(GameModule.getGameModule().getDataArchive().getCachedImage(imageName));
-          final BufferedImage bi =
-            new BufferedImage(i.getIconWidth(),
-                              i.getIconHeight(),
-                              BufferedImage.TYPE_INT_ARGB);
-          final Graphics2D big = bi.createGraphics();
-          big.drawImage(i.getImage(), 0, 0, null);
-          big.dispose();
-          paint = new TexturePaint(bi, new Rectangle(0, 0, bi.getWidth(), bi.getHeight()));
-        }
-        catch (IOException e) {
-          System.err.println("Unable to locate image " + imageName);
-        }
-*/
-        try {
-          // FIXME: don't cast!
-          paint = new TexturePaint((BufferedImage) srcOp.getImage(null),
+        final Image im = srcOp.getImage();
+        if (im != null) {
+          paint = new TexturePaint(ImageUtils.toBufferedImage(im),
                                    new Rectangle(srcOp.getSize()));
-        }
-        catch (CancellationException e) {
-          ErrorLog.warn(e);
-        }
-        catch (InterruptedException e) {
-          ErrorLog.warn(e);
-        }
-        catch (ExecutionException e) {
-          ErrorLog.warn(e);
         }
       }
       else {
-// FIXME: maybe make this an ImageOp?
+// FIXME: Make this an ImageOp?
         final BufferedImage bi =
           new BufferedImage(6, 6, BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g = bi.createGraphics();  

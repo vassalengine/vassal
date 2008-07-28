@@ -24,6 +24,7 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -113,6 +114,7 @@ public class SVGRenderer {
       r.transcode(new TranscoderInput(doc), null);
       return r.getBufferedImage();
     }
+    // FIXME: review error message
     catch (TranscoderException e) {
       ErrorLog.log(e);
     }
@@ -144,6 +146,7 @@ public class SVGRenderer {
       r.transcode(new TranscoderInput(doc), null);
       return r.getBufferedImage();
     }
+    // FIXME: review error message
     catch (TranscoderException e) {
       ErrorLog.log(e);
     }
@@ -159,7 +162,8 @@ public class SVGRenderer {
     @Override
     public Document loadDocument(String uri)
         throws MalformedURLException, IOException {
-      final String file = GameModule.getGameModule().getDataArchive().getImagePrefix() +
+      final String file =
+        GameModule.getGameModule().getDataArchive().getImagePrefix() +
         (new File((new URL(uri)).getPath())).getName();
 
       final InputStream in = GameModule.getGameModule()
@@ -169,12 +173,7 @@ public class SVGRenderer {
         return loadDocument(uri, in);
       }
       finally {
-        try {
-          in.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
+        IOUtils.closeQuietly(in);
       }
     }
   }
@@ -214,40 +213,44 @@ public class SVGRenderer {
       renderer.setTree(this.root);
       this.root = null; // We're done with it...
 
+      // now we are sure that the aoi is the image size
+      final Shape raoi = new Rectangle2D.Float(0, 0, width, height);
+      // Warning: the renderer's AOI must be in user space
       try {
-        // now we are sure that the aoi is the image size
-        final Shape raoi = new Rectangle2D.Float(0, 0, width, height);
-        // Warning: the renderer's AOI must be in user space
         renderer.repaint(curTxf.createInverse().
                          createTransformedShape(raoi));
-        BufferedImage rend = renderer.getOffScreen();
-        renderer = null; // We're done with it...
+      }
+      catch (NoninvertibleTransformException e) {
+        throw new TranscoderException(e);
+      }
 
-        final BufferedImage dest = createImage(w, h);
+// FIXME: is this the image we want to use?
+      BufferedImage rend = renderer.getOffScreen();
+      renderer = null; // We're done with it...
 
-        final Graphics2D g2d = GraphicsUtil.createGraphics(dest);
-        if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
-          final Paint bgcolor = (Paint) hints.get(KEY_BACKGROUND_COLOR);
-          g2d.setComposite(AlphaComposite.SrcOver);
-          g2d.setPaint(bgcolor);
-          g2d.fillRect(0, 0, w, h);
-        }
+      final BufferedImage dest = createImage(w, h);
 
-        if (rend != null) { // might be null if the svg document is empty
-          g2d.drawRenderedImage(rend, new AffineTransform());
-        }
-        g2d.dispose();
-        rend = null; // We're done with it...
+      final Graphics2D g2d = GraphicsUtil.createGraphics(dest);
+      if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
+        final Paint bgcolor = (Paint) hints.get(KEY_BACKGROUND_COLOR);
+        g2d.setComposite(AlphaComposite.SrcOver);
+        g2d.setPaint(bgcolor);
+        g2d.fillRect(0, 0, w, h);
+      }
+
+      if (rend != null) { // might be null if the svg document is empty
+        g2d.drawRenderedImage(rend, new AffineTransform());
+      }
+      g2d.dispose();
+      rend = null; // We're done with it...
         
-        writeImage(dest, output);
-      }
-      catch (Exception ex) {
-        throw new TranscoderException(ex);
-      }
+      writeImage(dest, output);
     }
 
     private BufferedImage createImage(int w, int h) {
-      return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+      return ImageUtils.isLargeImage(w, h) ?
+        ImageUtils.createEmptyLargeImage(w, h) :
+        new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
     }
 
     private void writeImage(BufferedImage image, TranscoderOutput output) {

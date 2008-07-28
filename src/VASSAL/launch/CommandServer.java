@@ -25,6 +25,8 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import VASSAL.tools.CommunicationErrorDialog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.IOUtils;
 
 /**
@@ -60,10 +62,16 @@ public abstract class CommandServer implements Runnable {
       while ((cmd = in.readObject()) != null) {
         out.writeObject(reply(cmd));
       }
+
+      out.close();
+      in.close();
+      clientSocket.close();
     }
     catch (ClassNotFoundException e) {
+      ErrorDialog.bug(e);
     }
     catch (IOException e) {
+      CommunicationErrorDialog.error(e);
     }
     finally {
       IOUtils.closeQuietly(in);

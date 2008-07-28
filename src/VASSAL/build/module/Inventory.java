@@ -1,8 +1,9 @@
 /*
  * $Id$
  *
- * Copyright (c) 2005-2006 by Rodney Kinney, Brent Easton, Torsten Spindler, 
- * and Scot McConnachie
+ * Copyright (c) 2005-2006 by Rodney Kinney, Brent Easton,
+ * Torsten Spindler, and Scot McConnachie
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License (LGPL) as published by the Free Software Foundation.
@@ -29,7 +30,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.FileOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -62,6 +65,7 @@ import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -92,8 +96,10 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 
 public class Inventory extends AbstractConfigurable
@@ -356,9 +362,10 @@ public class Inventory extends AbstractConfigurable
   protected void inventoryToText() {
     final StringBuilder output = new StringBuilder(""); //$NON-NLS-1$
     FileChooser fc = GameModule.getGameModule().getFileChooser();
-    if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) {
-      return;
-    }
+    if (fc.showSaveDialog() == FileChooser.CANCEL_OPTION) return;
+
+    final File file = fc.getSelectedFile();
+
     // TODO replace this hack
     mapSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
     // groupSeparator = mapSeparator + "  ";
@@ -366,21 +373,24 @@ public class Inventory extends AbstractConfigurable
     output.append(results.getResultString()); 
     // .substring(1).replaceAll(
   //      mapSeparator, System.getProperty("line.separator"));
- 
+
+    PrintWriter p = null; 
     try {
-      final PrintWriter p =
-        new PrintWriter(new FileOutputStream(fc.getSelectedFile().getPath()));
-      try {
-        p.print(output);
-        Command c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), Resources.getString("Inventory.wrote", fc.getSelectedFile().getName())); //$NON-NLS-1$
-        c.execute();
-      }
-      finally {
-        p.close();
-      }
+      p = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+
+      p.print(output);
+      
+      final Command c = new Chatter.DisplayText(
+        GameModule.getGameModule().getChatter(),
+        Resources.getString("Inventory.wrote", file)  //$NON-NLS-1$
+      );
+      c.execute();
     }
     catch (IOException e) {
-      JOptionPane.showMessageDialog(null, e.getMessage());
+      WriteErrorDialog.error(e, file);
+    }
+    finally {
+      IOUtils.closeQuietly(p);
     }
   }
 
@@ -458,7 +468,8 @@ public class Inventory extends AbstractConfigurable
     try {
       count = Integer.parseInt(s);
     }
-    catch (Exception e) {
+    // FIXME: review error message
+    catch (NumberFormatException e) {
       count = 1;
     }
 
@@ -1025,6 +1036,7 @@ public class Inventory extends AbstractConfigurable
               CounterNode childNode = (CounterNode) results.getChild(node, i);
               sum += Integer.parseInt((String) (childNode.getCounter()).getProperty(key));
             }
+            // FIXME: review error message
             catch (NumberFormatException e) {
               sum++;
             }
@@ -1314,8 +1326,9 @@ public class Inventory extends AbstractConfigurable
           return -1;
         if (arg1 instanceof CounterNode && !(arg0 instanceof CounterNode))
           return 1;
-    
-        throw new RuntimeException("These CounterNodes are not strange!");
+   
+        throw new IllegalArgumentException(
+          "These CounterNodes are not strange!");
       }
     }
   
@@ -1550,7 +1563,7 @@ public class Inventory extends AbstractConfigurable
     }
 
     public void valueForPathChanged(TreePath path, Object newValue) {
-      throw new RuntimeException("No idea what to do!");
+      throw new UnsupportedOperationException();
     }
   }
 }

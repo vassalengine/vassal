@@ -57,6 +57,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
         }
       }
     }
+    // FIXME: review error message
     catch (IOException e) {
     }
     return motd;
@@ -94,11 +95,11 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
         msgList.add(new Message(sender, content, created));
       }
     }
+    // FIXME: review error message
     catch (IOException ex) {
       ex.printStackTrace();
     }
-    Message[] msgs = msgList.toArray(new Message[msgList.size()]);
-    return msgs;
+    return msgList.toArray(new Message[msgList.size()]);
   }
 
   private Properties prepareInfo() {
@@ -157,9 +158,9 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     try {
       postMessageURL.doPost(p);
     }
+    // FIXME: review error message
     catch (IOException ex) {
       ex.printStackTrace();
     }
   }
-
 }

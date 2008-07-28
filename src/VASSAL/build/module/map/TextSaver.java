@@ -20,11 +20,14 @@ package VASSAL.build.module.map;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -35,7 +38,9 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.counters.GamePiece;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 
 public class TextSaver extends AbstractConfigurable {
@@ -54,7 +59,9 @@ public class TextSaver extends AbstractConfigurable {
         apply();
       }
     };
-    launch = new LaunchButton("Save Text", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON_NAME, al);
+
+    launch = new LaunchButton("Save Text", TOOLTIP, BUTTON_TEXT,
+                              HOTKEY, ICON_NAME, al);
     launch.setAttribute(TOOLTIP, "Save map contents as plain text file");
   }
   
@@ -128,26 +135,28 @@ public class TextSaver extends AbstractConfigurable {
   }
 
   protected void writeMapAsText() {
-    FileChooser fc = GameModule.getGameModule().getFileChooser();
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
     if (fc.showSaveDialog(map.getView()) != FileChooser.APPROVE_OPTION) return;
 
+    final File file =  fc.getSelectedFile();
+    PrintWriter p = null;
     try {
-      final PrintWriter p =
-        new PrintWriter(new FileOutputStream(fc.getSelectedFile().getPath()));
-      try {
-        for (GamePiece gp : map.getPieces()) {
-          final String s = gp.getName();
-          if (s.length() > 0) {
-            p.println(map.locationName(gp.getPosition()) + ": " + s);
-          }
+      p = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+      
+      for (GamePiece gp : map.getPieces()) {
+        final String s = gp.getName();
+        if (s.length() > 0) {
+          p.println(map.locationName(gp.getPosition()) + ": " + s);
         }
       }
-      finally {
-        p.close();
-      }
+  
+      p.close();
     }
     catch (IOException e) {
-      JOptionPane.showMessageDialog(null, e.getMessage());
+      WriteErrorDialog.error(e, file);  
+    }
+    finally {
+      IOUtils.closeQuietly(p);
     }
   }
 
@@ -165,5 +174,4 @@ public class TextSaver extends AbstractConfigurable {
   public Class[] getAllowableConfigureComponents() {
     return new Class[0];
   }
-
 }

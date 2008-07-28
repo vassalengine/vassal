@@ -56,9 +56,12 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ProgressDialog;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 
 
@@ -258,8 +261,7 @@ public class ImageSaver extends AbstractConfigurable {
     }
 
     private void writeImage(final File f, BufferedImage img, Rectangle r)
-      throws IOException {
-
+                                                          throws IOException {
       files.add(f);
 
       // update the dialog on the EDT
@@ -303,26 +305,22 @@ public class ImageSaver extends AbstractConfigurable {
   
         public void writeAborted(ImageWriter source) { }
       });
-
-      final ImageOutputStream os = ImageIO.createImageOutputStream(f); 
+      
+      ImageOutputStream os = null;
       try {
+        os = ImageIO.createImageOutputStream(f); 
         iw.setOutput(os);
         iw.write(img);
+        os.close();
       }
       finally {
-        os.flush();
         iw.dispose();
-        try {
-          os.close();
-        }
-        catch (IOException e) {
-          ErrorLog.warn(e);
-        }
+        IOUtils.closeQuietly(os);
       }
     }
 
     @Override
-    public Void doInBackground() throws Exception {
+    public Void doInBackground() throws IOException {
       setProgress(0);
 
       int iw = w;
@@ -390,10 +388,16 @@ public class ImageSaver extends AbstractConfigurable {
         for (File f : files) f.delete();
       }
       catch (InterruptedException e) {
-        ErrorLog.warn(e);
+        ErrorDialog.bug(e);
       }
       catch (ExecutionException e) {
-        ErrorLog.warn(e);
+        final Throwable c = e.getCause();
+        if (c instanceof IOException) {
+          WriteErrorDialog.error(e, (IOException) c, files.get(files.size()-1));
+        }
+        else {
+          ErrorDialog.bug(e);
+        }
       }
     } 
   }
@@ -431,7 +435,7 @@ public class ImageSaver extends AbstractConfigurable {
         t.waitForID(0);
       }
       catch (Exception e) {
-        ErrorLog.warn(e);
+        ErrorLog.log(e);
       }
 
       try {
@@ -447,7 +451,7 @@ public class ImageSaver extends AbstractConfigurable {
           out[i].close();
         }
         catch (IOException e) {
-          ErrorLog.warn(e);
+          ErrorLog.log(e);
         }
       }
     }

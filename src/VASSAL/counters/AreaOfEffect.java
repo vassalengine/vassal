@@ -233,11 +233,12 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       return radius;
     }
     else {
+      final String r =
+        (String) Decorator.getOutermost(this).getProperty(radiusMarker);
       try {
-        String r = (String) Decorator.getOutermost(this).getProperty(radiusMarker);
         return Integer.parseInt(r);
       }
-      catch (Exception e) {
+      catch (NumberFormatException e) {
         return 0;
       }
     }

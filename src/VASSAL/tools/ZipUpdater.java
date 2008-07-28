@@ -55,6 +55,7 @@ public class ZipUpdater implements Runnable {
   private File oldFile;
   private ZipFile oldZipFile;
   private Properties checkSums;
+
   public ZipUpdater(File input) throws IOException {
     this.oldFile = input;
     if (!oldFile.exists()) {
@@ -76,15 +77,11 @@ public class ZipUpdater implements Runnable {
           while ((count = in.read(buffer)) > 0) {
             checksum.update(buffer, 0, count);
           }
+          in.close();
           crc = checksum.getValue();
         }
         finally {
-          try {
-            in.close();
-          }
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
+          IOUtils.closeQuietly(in);
         }
       }
     }
@@ -109,6 +106,7 @@ public class ZipUpdater implements Runnable {
       try {
         newContents.close();
       }
+      // FIXME: review error message
       catch (IOException e) {
         ErrorLog.log(e);
       }
@@ -145,6 +143,7 @@ public class ZipUpdater implements Runnable {
       try {
         in.close();
       }
+      // FIXME: review error message
       catch (IOException e) {
         ErrorLog.log(e);
       }
@@ -166,6 +165,7 @@ public class ZipUpdater implements Runnable {
             targetSum =
               Long.parseLong(checkSums.getProperty(entryName, "<none>"));
           }
+          // FIXME: review error message
           catch (NumberFormatException invalid) {
             throw new IOException("Invalid checksum " + checkSums.getProperty(entryName, "<none>") + " for entry " + entryName);
           }
@@ -188,6 +188,7 @@ public class ZipUpdater implements Runnable {
         try {
           output.close();
         }
+        // FIXME: review error message
         catch (IOException e) {
           ErrorLog.log(e);
         }
@@ -257,6 +258,7 @@ public class ZipUpdater implements Runnable {
                 try {
                   gis.close();
                 }
+                // FIXME: review error message
                 catch (IOException ex) {
                   ErrorLog.log(ex);
                 }
@@ -314,6 +316,7 @@ public class ZipUpdater implements Runnable {
             try {
               is.close();
             }
+            // FIXME: review error message
             catch (IOException e) {
               ErrorLog.log(e);
             }
@@ -323,6 +326,7 @@ public class ZipUpdater implements Runnable {
           try {
             out.close();
           }
+          // FIXME: review error message
           catch (IOException e) {
             ErrorLog.log(e);
           }
@@ -332,6 +336,7 @@ public class ZipUpdater implements Runnable {
         try {
           goal.close();
         }
+        // FIXME: review error message
         catch (IOException e) {
           ErrorLog.log(e);
         }
@@ -341,6 +346,7 @@ public class ZipUpdater implements Runnable {
       try {
         oldZipFile.close();
       }
+      // FIXME: review error message
       catch (IOException e) {
         ErrorLog.log(e);
       }
@@ -380,6 +386,7 @@ public class ZipUpdater implements Runnable {
           try {
             r.close();
           }
+          // FIXME: review error message
           catch (IOException e) {
             ErrorLog.log(e);
           }
@@ -396,17 +403,20 @@ public class ZipUpdater implements Runnable {
           try {
             r.close();
           }
+          // FIXME: review error message
           catch (IOException e) {
             ErrorLog.log(e);
           }
         }
       }
     }
+    // FIXME: review error message
     catch (final IOException e) {
       ErrorLog.log(e);
       try {
         SwingUtilities.invokeAndWait(new ZipUpdater(oldArchiveName,e));
       }
+      // FIXME: review error message
       catch (Exception e1) {
         ErrorLog.log(e1);
       }

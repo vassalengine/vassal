@@ -40,7 +40,7 @@ import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.launch.EditorWindow;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorUtils;
 
 /**
  * The configuration tree for editing a module extension
@@ -126,8 +126,9 @@ public class ExtensionTree extends ConfigureTree {
             }
           }
         }
+        // FIXME: review error message
         catch (Exception err) {
-          ErrorLog.log(err);
+//          ErrorLog.log(err);
         }
       }
     };
@@ -167,6 +168,7 @@ public class ExtensionTree extends ConfigureTree {
               insert(c, child, getTreeNode(c).getChildCount());
             }
           }
+          // FIXME: review error message
           catch (Exception ex) {
             JOptionPane.showMessageDialog
                 (getTopLevelAncestor(),
@@ -214,31 +216,22 @@ public class ExtensionTree extends ConfigureTree {
           }
           else if (copyData != null) {
             try {
-              Configurable copyTarget = (Configurable) copyData.getUserObject();
-              Configurable clone = copyTarget.getClass().newInstance();
-              clone.build(copyTarget.getBuildElement(Builder.createNewDocument()));
+              final Configurable copyTarget =
+                (Configurable) copyData.getUserObject();
+              final Configurable clone =
+                copyTarget.getClass().getConstructor().newInstance();
+
+              clone.build(
+                copyTarget.getBuildElement(Builder.createNewDocument()));
+
               if (insert(target, clone, getTreeNode(target).getChildCount())) {
                 updateGpIds(clone);
-                extension.add(new ExtensionElement(clone, getPath(getTreeNode(target))));
+                extension.add(
+                  new ExtensionElement(clone, getPath(getTreeNode(target))));
               }
             }
-            catch (InstantiationException e1) {
-              ErrorLog.log(e1);
-              JOptionPane.showMessageDialog
-                  (getTopLevelAncestor(),
-                   "Cannot copy " + getConfigureName(target),
-                   "Copy failed",
-                   JOptionPane.ERROR_MESSAGE);
-
-            }
-            catch (IllegalAccessException e1) {
-              ErrorLog.log(e1);
-              JOptionPane.showMessageDialog
-                  (getTopLevelAncestor(),
-                   "Cannot copy " + getConfigureName(target),
-                   "Copy failed",
-                   JOptionPane.ERROR_MESSAGE);
-
+            catch (Throwable t) {
+              ErrorUtils.handleNewInstanceFailure(t);
             }
           }
           cutData = null;
@@ -306,28 +299,30 @@ public class ExtensionTree extends ConfigureTree {
 
   protected Action buildCloneAction(final Configurable target) {
     final DefaultMutableTreeNode targetNode = getTreeNode(target);
-    if (isEditable((DefaultMutableTreeNode) targetNode.getParent())) {
+    final DefaultMutableTreeNode parentNode =
+      (DefaultMutableTreeNode) targetNode.getParent();
+
+    if (isEditable(parentNode)) {
       return super.buildCloneAction(target);
     }
-    if (targetNode.getParent() != null) {
+
+    if (parentNode != null) {
       return new AbstractAction("Clone") {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent evt) {
           try {
-            Configurable clone = target.getClass().newInstance();
+            final Configurable clone =
+              target.getClass().getConstructor().newInstance();
             clone.build(target.getBuildElement(Builder.createNewDocument()));
-            if (insert((Configurable) ((DefaultMutableTreeNode) targetNode.getParent()).getUserObject(), clone, targetNode.getParent().getChildCount())) {
-              extension.add(new ExtensionElement(clone, getPath((DefaultMutableTreeNode) targetNode.getParent())));
+
+            if (insert((Configurable) parentNode.getUserObject(),
+                       clone, parentNode.getChildCount())) {
+              extension.add(new ExtensionElement(clone, getPath(parentNode)));
             }
           }
-          catch (Exception err) {
-            ErrorLog.log(err);
-            JOptionPane.showMessageDialog
-                (getTopLevelAncestor(),
-                 "Cannot clone " + getConfigureName(target),
-                 "Clone failed",
-                 JOptionPane.ERROR_MESSAGE);
+          catch (Throwable t) {
+            ErrorUtils.handleNewInstanceFailure(t);
           }
         }
       };

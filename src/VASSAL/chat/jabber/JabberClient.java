@@ -139,6 +139,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       try {
         currentChat.sendMessage(encoder.encode(c));
       }
+      // FIXME: review error message
       catch (XMPPException e) {
         reportXMPPException(e);
       }
@@ -166,6 +167,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
           try {
             conn.login(username, password, "VASSAL");
           }
+          // FIXME: review error message
           catch (XMPPException e) {
             // Create the account if it doesn't exist
             if (e.getXMPPError() != null && e.getXMPPError().getCode() == 401) {
@@ -174,6 +176,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
               try {
                 conn.getAccountManager().createAccount(username, password, attributes);
               }
+              // FIXME: review error message
               catch (XMPPException createAccountError) {
                 if (createAccountError.getXMPPError() != null && createAccountError.getXMPPError().getCode() == 409) {
                   // Account already exists. Password is incorrect
@@ -199,6 +202,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
           propSupport.firePropertyChange(CONNECTED, null, Boolean.TRUE);
           setRoom(defaultRoom);
         }
+        // FIXME: review error message
         catch (XMPPException e) {
           reportXMPPException(e);
           if (e.getWrappedThrowable() != null && e.getWrappedThrowable().getLocalizedMessage() != null) {
@@ -284,6 +288,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
         monitor.sendRoomChanged();
       }
     }
+    // FIXME: review error message
     catch (XMPPException e) {
       reportXMPPException(e);
       propSupport.firePropertyChange(STATUS, null, "Failed to join room");
@@ -318,6 +323,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     try {
       chat.sendMessage(encoder.encode(c));
     }
+    // FIXME: review error message
     catch (XMPPException e) {
       reportXMPPException(e);
     }
@@ -624,6 +630,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
         MultiUserChat.getRoomInfo(conn, room.getJid());
       }
     }
+    // FIXME: review error message
     catch (XMPPException e) {
       e.printStackTrace();
     }

@@ -24,6 +24,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import VASSAL.tools.ErrorDialog;
+
 /**
  * A socket client for communication between the {@link ModuleManager}
  * and its children {@link Player} and {@link Editor} processes. Requests
@@ -63,6 +65,7 @@ public class CommandClient {
       return in.readObject();
     }
     catch (ClassNotFoundException e) {
+      ErrorDialog.bug(e);
       return null;
     }
   }

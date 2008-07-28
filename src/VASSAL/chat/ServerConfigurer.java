@@ -196,9 +196,11 @@ public class ServerConfigurer extends Configurer {
       getServerInfo().store(out, null);
       s = new String(out.toByteArray(), ENCODING);
     }
+    // FIXME: review error message
     catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }
+    // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
     }
@@ -233,9 +235,11 @@ public class ServerConfigurer extends Configurer {
     try {
       p.load(new ByteArrayInputStream(s.getBytes(ENCODING)));
     }
+    // FIXME: review error message
     catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }
+    // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
     }

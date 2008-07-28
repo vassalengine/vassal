@@ -199,23 +199,30 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
       else {
         Builder.build(e, this);
       }
+
       try {
         psize = new Dimension(Integer.parseInt(e.getAttribute(SLOT_WIDTH)),
                               Integer.parseInt(e.getAttribute(SLOT_HEIGHT)));
       }
-      catch (Exception ex) {
+      // FIXME: review error message
+      catch (NumberFormatException ex) {
       }
+
       try {
         slotScale = Double.valueOf(e.getAttribute(SCALE)).doubleValue();
       }
-      catch (Exception ex) {
+      // FIXME: review error message
+      catch (NumberFormatException ex) {
       }
+
       try {
         maxColumns = Integer.parseInt(e.getAttribute(MAX_COLUMNS));
       }
-      catch (Exception ex) {
+      // FIXME: review error message
+      catch (NumberFormatException ex) {
         maxColumns = 0;
       }
+
       String value = e.getAttribute(DIALOG_TITLE);
       if (value != null && value.length() > 0) {
         title = value;

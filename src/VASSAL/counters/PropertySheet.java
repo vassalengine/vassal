@@ -389,24 +389,24 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           }
 
           public void update(DocumentEvent e) {
-
             if (!isUpdating) {
               switch (commitStyle) {
-                case COMMIT_IMMEDIATELY:
-                  // queue commit operation because it could do something unsafe in a an event update
-                  javax.swing.SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                      updateStateFromFields();
-                    }
-                  });
-                  break;
-                case COMMIT_ON_APPLY:
-                  applyButton.setEnabled(true);
-                  break;
-                case COMMIT_ON_CLOSE:
-                  break;
-                default:
-                  throw new RuntimeException();
+              case COMMIT_IMMEDIATELY:
+                // queue commit operation because it could do something
+                // unsafe in a an event update
+                SwingUtilities.invokeLater(new Runnable() {
+                  public void run() {
+                    updateStateFromFields();
+                  }
+                });
+                break;
+              case COMMIT_ON_APPLY:
+                applyButton.setEnabled(true);
+                break;
+              case COMMIT_ON_CLOSE:
+                break;
+              default:
+                throw new IllegalStateException();
               }
             }
           }

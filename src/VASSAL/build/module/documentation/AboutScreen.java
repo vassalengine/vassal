@@ -27,8 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -44,7 +42,6 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
@@ -211,24 +208,15 @@ public class AboutScreen extends AbstractConfigurable {
         fileName = fileName.trim();
         if (fileName.length() > 0) {
           op = Op.load(fileName);
-          
-          try {
-            // FIXME: get the wizard to cache
+
+          final Image img = op.getImage();
+          if (img != null) {         
             GameModule.getGameModule()
                       .getWizardSupport()
-                      .setBackgroundImage(op.getImage(null));
+                      .setBackgroundImage(op.getImage());
           }
-          catch (CancellationException e) {
+          else {
             op = null;
-            ErrorLog.warn(e);
-          }
-          catch (InterruptedException e) {
-            op = null;
-            ErrorLog.warn(e);
-          }
-          catch (ExecutionException e) {
-            op = null;
-            ErrorLog.warn(e);
           }
         }
       }

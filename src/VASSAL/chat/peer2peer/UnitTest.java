@@ -12,6 +12,8 @@ import org.litesoft.p2pchat.PeerWriter;
 import org.litesoft.p2pchat.PendingPeerManager;
 import org.litesoft.p2pchat.UserDialog;
 
+import VASSAL.tools.IOUtils;
+
 public class UnitTest implements UserDialog {
   private String id;
 
@@ -20,25 +22,31 @@ public class UnitTest implements UserDialog {
   }
 
   public static void main(String[] args) throws Exception {
-    Properties p = new Properties();
+    final Properties p = new Properties();
+
     if ("true".equals(p.getProperty("reader"))) { //$NON-NLS-1$ //$NON-NLS-2$
       //testReadWrite();
       testPeer();
     }
+
     if ("true".equals(p.getProperty("manager"))) { //$NON-NLS-1$ //$NON-NLS-2$
       testPeerManager();
     }
+
     if ("true".equals(p.getProperty("managers"))) { //$NON-NLS-1$ //$NON-NLS-2$
       testPeerManagers();
     }
   }
 
-  private static void testPeerManager() throws InterruptedException, IOException {
+  private static void testPeerManager() throws InterruptedException,
+                                               IOException {
     startSocketReader(5555);
-    UserDialog d = new UnitTest("Client"); //$NON-NLS-1$
-    PendingPeerManager ppm = new PendingPeerManager(d);
-    ActivePeerManager apm = new ActivePeerManager(new MyInfo("TestClient",5556),d,ppm); //$NON-NLS-1$
-    PeerInfo info = new PeerInfo("SocketReader","localhost",5555); //$NON-NLS-1$ //$NON-NLS-2$
+    final UserDialog d = new UnitTest("Client"); //$NON-NLS-1$
+    final PendingPeerManager ppm = new PendingPeerManager(d);
+    final ActivePeerManager apm =
+      new ActivePeerManager(new MyInfo("TestClient",5556),d,ppm); //$NON-NLS-1$
+    final PeerInfo info =
+      new PeerInfo("SocketReader","localhost",5555); //$NON-NLS-1$ //$NON-NLS-2$
     info.setID("SocketReader"); //$NON-NLS-1$
     ppm.addNewPeer(info);
     Thread.sleep(10000);
@@ -96,8 +104,10 @@ public class UnitTest implements UserDialog {
     }
   }
 
-  private static void startSocketReader(final int port) throws InterruptedException {
+  private static void startSocketReader(final int port)
+                                                  throws InterruptedException {
     final Object lock = new Object();
+
     final Runnable runnable = new Runnable() {
       public void run() {
         try {
@@ -108,8 +118,9 @@ public class UnitTest implements UserDialog {
           }
 
           final Socket s = server.accept();
-          final PeerReader reader = new PeerReader(s.getInputStream());
+          PeerReader reader = null;
           try {
+            reader = new PeerReader(s.getInputStream());
             while (true) {
               final String msg = reader.readLine();
               System.err.println("" + msg); //$NON-NLS-1$
@@ -118,9 +129,10 @@ public class UnitTest implements UserDialog {
               }
             }
             System.err.println("Done"); //$NON-NLS-1$
+            reader.close();
           }
           finally {
-            reader.close();
+            if (reader != null) reader.close();
           }
         }
         catch (IOException e) {
@@ -128,6 +140,7 @@ public class UnitTest implements UserDialog {
         }
       }
     };
+
     synchronized (lock) {
       new Thread(runnable).start();
       lock.wait();

@@ -171,7 +171,8 @@ public class ADC2Utils {
 			if (header != BLOCK_SEPARATOR)
 				throw new FileFormatException("Invalid " + string + " block header.");
 		}
-		catch (EOFException e) {
+		// FIXME: review error message
+    catch (EOFException e) {
 			throw new NoMoreBlocksException(string);
 		}
 		if (in.available() == 0)

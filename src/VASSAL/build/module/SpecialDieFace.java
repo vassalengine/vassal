@@ -94,6 +94,7 @@ public class SpecialDieFace extends AbstractConfigurable {
         }
         value = ((Integer) o).intValue();
       }
+      // FIXME: review error message
       catch (NumberFormatException e) {
       }
     }

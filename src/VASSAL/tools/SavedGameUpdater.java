@@ -79,6 +79,7 @@ public class SavedGameUpdater {
               }
             }
           }
+          // FIXME: review error message
           catch (ComponentPathBuilder.PathFormatException ex) {
             System.err.println("Unable to replace " + p.getName() + ": " + ex.getMessage());
           }

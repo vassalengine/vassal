@@ -21,6 +21,7 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,7 +62,8 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.menu.MenuManager;
 
@@ -76,10 +78,13 @@ public class BasicModule extends GameModule {
   protected void build() throws IOException {
     final String fileName = BUILDFILE; 
 
-    InputStream in = null;
+    BufferedInputStream in = null;
     try {
-      in = getDataArchive().getFileStream(fileName);
+      in = new BufferedInputStream(getDataArchive().getFileStream(fileName));
     }    
+    // FIXME: review error message
+    // FIXME: this should be more specific, to separate the case where
+    // we have failed I/O from when we read ok but have no module
     catch (IOException e) {
       if (new File(getDataArchive().getName()).exists()) {
         throw new IOException(
@@ -97,15 +102,11 @@ public class BasicModule extends GameModule {
           build(doc.getDocumentElement());
         }
         finally {
-          try {
-            in.close();
-          }
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
+          IOUtils.closeQuietly(in);
         }
       }
     }
+    // FIXME: review error message
     catch (IOException ex) {
       throw new IllegalArgumentException(ex);
     }
@@ -116,7 +117,8 @@ public class BasicModule extends GameModule {
 
   public void build(Element e) {
     /*
-     * We determine the name of the module at the very beginning, so we know which preferences to read
+     * We determine the name of the module at the very beginning, so we
+     * know which preferences to read.
      */
     if (e != null) {
       gameName = e.getAttribute(MODULE_NAME);
@@ -124,6 +126,7 @@ public class BasicModule extends GameModule {
         vassalVersionCreated = e.getAttribute(VASSAL_VERSION_CREATED);
       }
     }
+
     initIdentityPreferences();
     initGameState();
     initLogger();
@@ -283,16 +286,16 @@ public class BasicModule extends GameModule {
 
   protected void addComponent(Class<? extends Buildable> componentClass) {
     try {
-      Buildable child = componentClass.newInstance();
+      final Buildable child = componentClass.newInstance();
       child.build(null);
       child.addTo(this);
       add(child);
     }
     catch (InstantiationException e) {
-      ErrorLog.log(e);
+      ErrorDialog.bug(e);
     }
     catch (IllegalAccessException e) {
-      ErrorLog.log(e);
+      ErrorDialog.bug(e);
     }
   }
   
@@ -306,5 +309,4 @@ public class BasicModule extends GameModule {
   public String getI18nPrefix() {
     return "";
   }
-
 }

@@ -28,6 +28,7 @@ public class P2PPlayer extends SimplePlayer {
           props = new PropertiesEncoder(info.getChatName()).getProperties();
         setStats();
       }
+      // FIXME: review error message
       catch (IOException ex) {
         props = new Properties();
         setProps();

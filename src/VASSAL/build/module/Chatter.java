@@ -327,6 +327,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         }
       }
     }
+    // FIXME: review error message
     catch (BadLocationException e) {
       ErrorLog.log(e);
     }

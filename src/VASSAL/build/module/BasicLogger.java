@@ -56,6 +56,7 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.Obfuscator;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.menu.MenuManager;
 
@@ -102,8 +103,12 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     mod.getGameState().addGameComponent(this);
 
     final MenuManager mm = MenuManager.getInstance();
+    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // some languages
     newLogAction.putValue(Action.MNEMONIC_KEY,(int)Resources.getString("BasicLogger.begin_logfile.shortcut").charAt(0));
     mm.addAction("BasicLogger.begin_logfile", newLogAction);
+    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // some languages
     endLogAction.putValue(Action.MNEMONIC_KEY,(int)Resources.getString("BasicLogger.end_logfile.shortcut").charAt(0));
     mm.addAction("BasicLogger.end_logfile", endLogAction);
 
@@ -177,24 +182,26 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       logOutput.clear();
       nextInput = 0;
       nextUndo = -1;
-      beginningState = GameModule.getGameModule().getGameState().getRestoreCommand();
+      beginningState =
+        GameModule.getGameModule().getGameState().getRestoreCommand();
     }
     else {
       if (endLogAction.isEnabled()) {
-        if (JOptionPane.showConfirmDialog(GameModule.getGameModule().getFrame(), Resources.getString("BasicLogger.save_log"), Resources.getString("BasicLogger.unsaved_log"),  //$NON-NLS-1$ //$NON-NLS-2$
+        if (JOptionPane.showConfirmDialog(
+            GameModule.getGameModule().getFrame(),
+            Resources.getString("BasicLogger.save_log"),    //$NON-NLS-1$
+            Resources.getString("BasicLogger.unsaved_log"), //$NON-NLS-1$
             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
           try {
             write();
           }
-          catch (IOException ex) {
-            String msg = Resources.getString("BasicLogger.unable_to_write", outputFile.toString());  //$NON-NLS-1$
-            if (ex.getMessage() != null) {
-              msg += ".\n" + ex.getMessage(); //$NON-NLS-1$
-            }
-            JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg, Resources.getString("BasicLogger.save_failed"), JOptionPane.ERROR_MESSAGE);  //$NON-NLS-1$
+          catch (IOException e) {
+            // BasicLogger is not a lumberjack
+            WriteErrorDialog.error(e, outputFile);
           }
         }
       }
+
       logInput.clear();
       beginningState = null;
       undoAction.setEnabled(false);
@@ -390,11 +397,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         outputFile = null;
       }
       catch (IOException ex) {
-        String msg = Resources.getString("BasicLogger.unable_to_write", outputFile.toString());  //$NON-NLS-1$
-        if (ex.getMessage() != null) {
-          msg += ".\n" + ex.getMessage(); //$NON-NLS-1$
-        }
-        JOptionPane.showMessageDialog(GameModule.getGameModule().getFrame(), msg, Resources.getString("BasicLogger.save_failed"), JOptionPane.ERROR_MESSAGE);  //$NON-NLS-1$
+        WriteErrorDialog.error(ex, outputFile);
       }
     }
   };
@@ -414,15 +417,18 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     public LogCommand(Command c, List<Command> logInput, Action stepAction) {
       if (c instanceof LogCommand) {
-        throw new RuntimeException(Resources.getString("BasicLogger.cant_log"));  //$NON-NLS-1$
+        throw new UnsupportedOperationException(
+          Resources.getString("BasicLogger.cant_log"));  //$NON-NLS-1$
       }
+
       this.logInput = logInput;
       this.stepAction = stepAction;
       logged = c;
-      Command sub[] = c.getSubCommands();
-      for (int i = 0; i < sub.length; ++i) {
-        append(new LogCommand(sub[i], logInput, stepAction));
+
+      for (Command sub : c.getSubCommands()) {
+        append(new LogCommand(sub, logInput, stepAction));
       }
+
       logged.stripSubCommands();
     }
 
@@ -444,10 +450,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     }
 
     protected Command assembleCommand() {
-      Command c = logged;
-      Command sub[] = getSubCommands();
-      for (int i = 0; i < sub.length; ++i) {
-        c.append(((LogCommand) sub[i]).assembleCommand());
+      final Command c = logged;
+      for (Command sub : getSubCommands()) {
+        c.append(((LogCommand) sub).assembleCommand());
       }
       return c;
     }
@@ -456,7 +461,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     private static final long serialVersionUID = 1L;
 
     public StepAction() {
-      URL iconURL = getClass().getResource(STEP_ICON);
+      final URL iconURL = getClass().getResource(STEP_ICON);
       if (iconURL != null) {
         putValue(Action.SMALL_ICON, new ImageIcon(iconURL));
       }

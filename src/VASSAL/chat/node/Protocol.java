@@ -197,6 +197,7 @@ public class Protocol {
       try {
         p = new PropertiesEncoder(cmd.substring(ROOM_INFO.length())).getProperties();
       }
+      // FIXME: review error message
       catch (IOException e) {
         e.printStackTrace();
       }

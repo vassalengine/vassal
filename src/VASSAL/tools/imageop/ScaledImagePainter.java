@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2007 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,25 +18,23 @@ package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.ImageObserver;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-
-import VASSAL.tools.ErrorLog;
 
 /**
- * Paints an image at arbitrary scale. Uses the ImageOp interfaces to lazily fetch and cache images
+ * Paints an image at arbitrary scale. Uses the ImageOp interfaces to
+ * lazily fetch and cache images.
  * 
  * @author rodneykinney
- * 
+ * @since 3.1.0
  */
 public class ScaledImagePainter {
   protected ImageOp srcOp;
   protected ScaleOp scaleOp;
 
   public void setImageName(String imageName) {
-    ImageOp src = imageName == null || imageName.trim().length() == 0 ? null : Op.load(imageName);
-    setSource(src);    
+    setSource(imageName == null || imageName.trim().length() == 0
+      ? null : Op.load(imageName));
   }
 
   public Dimension getImageSize() {
@@ -44,39 +42,22 @@ public class ScaledImagePainter {
   }
 
   public void draw(Graphics g, int x, int y, double scale, ImageObserver obs) {
-    if (srcOp != null) {
-      if (scale == 1.0) {
-        try {
-          g.drawImage(srcOp.getImage(null), x, y, obs);
-        }
-        catch (CancellationException e) {
-          ErrorLog.log(e);
-        }
-        catch (InterruptedException e) {
-          ErrorLog.log(e);
-        }
-        catch (ExecutionException e) {
-          ErrorLog.log(e);
-        }
-      }
-      else {
-        if (scaleOp == null || scaleOp.getScale() != scale) {
-          scaleOp = Op.scale(srcOp, scale);
-        }
-        try {
-          g.drawImage(scaleOp.getImage(null), x, y, obs);
-        }
-        catch (CancellationException e) {
-          ErrorLog.log(e);
-        }
-        catch (InterruptedException e) {
-          ErrorLog.log(e);
-        }
-        catch (ExecutionException e) {
-          ErrorLog.log(e);
-        }
-      }
+    if (srcOp == null) return;
+  
+    final Image img;
+    if (scale == 1.0) {
+      img = srcOp.getImage();
     }
+    else {
+      if (scaleOp == null || scaleOp.getScale() != scale) {
+        scaleOp = Op.scale(srcOp, scale);
+      }
+      img = scaleOp.getImage();
+    }
+
+    if (img == null) return;
+
+    g.drawImage(img, x, y, obs);
   }
 
   public ImageOp getSource() {

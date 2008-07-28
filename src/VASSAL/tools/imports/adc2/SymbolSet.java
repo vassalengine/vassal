@@ -39,6 +39,7 @@ import javax.imageio.ImageIO;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.filechooser.BMPFileFilter;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.imports.Importer;
@@ -448,91 +449,98 @@ public class SymbolSet extends Importer{
 	protected void load(File f) throws IOException {
 		super.load(f);
 		
-		DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
+		DataInputStream in =
+      new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
+    try {
+		  // if header is 0xFD, then mask indeces are one-byte long. Otherwise, if
+  		// the header is anything else greater than 0xFA, then mask indeces are
+   		// base-250 two-byte words.
+  		header = in.readUnsignedByte();
+	  	if (header < 0xFA)
+  			throw new FileFormatException("Invalid Symbol Set Header");
 
-		// if header is 0xFD, then mask indeces are one-byte long. Otherwise, if
-		// the header is anything else greater than 0xFA, then mask indeces are base-250
-		// two-byte words. 
-		header = in.readUnsignedByte();
-		if (header < 0xFA)
-			throw new FileFormatException("Invalid Symbol Set Header");
-
-		// comletely overridden by the map file
-		/* int orientation = */ in.readByte(); // 1=vertical; 2=horizontal; 3=grid
+  		// completely overridden by the map file
+	  	/* int orientation = */ in.readByte(); // 1=vertical; 2=horizontal; 3=grid
 		
-		int mapStyle = in.readByte(); // 0=grid; all other values=hex		
-		switch (mapStyle) {
-		case 1:
-			symbolShape = Shape.HEX;
-			break;
-		default:
-			symbolShape = Shape.SQUARE;	
-		}
+    		int mapStyle = in.readByte(); // 0=grid; all other values=hex		
+    		switch (mapStyle) {
+    		case 1:
+  			symbolShape = Shape.HEX;
+  			break;
+  		default:
+  			symbolShape = Shape.SQUARE;	
+  		}
 		
-		int symSetVersion = in.readByte(); // 1=version 1
-		switch (symSetVersion) {
-		case 0:
-			ignoreMask = false;
-			break;
-		default:
-			ignoreMask = true;
-		}
-		if (isCardSet)
-			ignoreMask = true;
+  		int symSetVersion = in.readByte(); // 1=version 1
+  		switch (symSetVersion) {
+  		case 0:
+  			ignoreMask = false;
+	  		break;
+      default:
+  			ignoreMask = true;
+  		}
+  		if (isCardSet)
+  			ignoreMask = true;
 
-		// bitmap dimensions are completely ignored
-		int nMapBoardSymbols = ADC2Utils.readBase250Word(in);
-		mapBoardData = new SymbolData[nMapBoardSymbols];
-		/* terrainBitmapDims = */ readDimension(in);
+  		// bitmap dimensions are completely ignored
+  		int nMapBoardSymbols = ADC2Utils.readBase250Word(in);
+  		mapBoardData = new SymbolData[nMapBoardSymbols];
+  		/* terrainBitmapDims = */ readDimension(in);
 
-		int nGamePieceSymbols = ADC2Utils.readBase250Word(in);
-		gamePieceData = new SymbolData[nGamePieceSymbols];
-		/* unitBitmapDims = */ readDimension(in);
+  		int nGamePieceSymbols = ADC2Utils.readBase250Word(in);
+  		gamePieceData = new SymbolData[nGamePieceSymbols];
+  		/* unitBitmapDims = */ readDimension(in);
 
-		int nMasks = ADC2Utils.readBase250Word(in);
-		/* maskBitmapDims = */ readDimension(in);
-		maskData = new SymbolData[nMasks];
+  		int nMasks = ADC2Utils.readBase250Word(in);
+  		/* maskBitmapDims = */ readDimension(in);
+  		maskData = new SymbolData[nMasks];
+  
+  		String baseName = stripExtension(f.getPath());
+  
+  		// load images
+  		BufferedImage mapBoardImages = null;
+  		if (!isCardSet)
+  			mapBoardImages = loadSymbolImage(baseName, 't');
+  		for (int i = 0; i < nMapBoardSymbols; ++i) {
+  			mapBoardData[i] = new SymbolData(mapBoardImages, false).read(in);
+  			// check for size consistency. Not sure what to do if they're not
+  			// all the same size or not square
+  			if (!isCardSet) {
+  				if (mapBoardData[i].rect.height != mapBoardData[0].rect.height
+  						|| mapBoardData[i].rect.width != mapBoardData[0].rect.width)
+  					throw new FileFormatException("Map board image dimensions are inconsistent");
+  				if (mapBoardData[i].rect.width != mapBoardData[i].rect.height)
+  					throw new FileFormatException("Map board image dimensions are not square");
+  			}
+  		}
 
-		String baseName = stripExtension(f.getPath());
-
-		// load images
-		BufferedImage mapBoardImages = null;
-		if (!isCardSet)
-			mapBoardImages = loadSymbolImage(baseName, 't');
-		for (int i = 0; i < nMapBoardSymbols; ++i) {
-			mapBoardData[i] = new SymbolData(mapBoardImages, false).read(in);
-			// check for size consistency. Not sure what to do if they're not
-			// all the same size or not square
-			if (!isCardSet) {
-				if (mapBoardData[i].rect.height != mapBoardData[0].rect.height
-						|| mapBoardData[i].rect.width != mapBoardData[0].rect.width)
-					throw new FileFormatException("Map board image dimensions are inconsistent");
-				if (mapBoardData[i].rect.width != mapBoardData[i].rect.height)
-					throw new FileFormatException("Map board image dimensions are not square");
-			}
-		}
-
-		BufferedImage gamePieceImages;
-		if (isCardSet) {
-			gamePieceImages = loadSymbolImage(baseName);
-		}
-		else {
-			gamePieceImages = loadSymbolImage(baseName, 'u');
-		}
+  		BufferedImage gamePieceImages;
+  		if (isCardSet) {
+  			gamePieceImages = loadSymbolImage(baseName);
+  		}
+  		else {
+  			gamePieceImages = loadSymbolImage(baseName, 'u');
+  		}
 		
-		for (int i = 0; i < nGamePieceSymbols; ++i)
-			gamePieceData[i] = new SymbolData(gamePieceImages, false).read(in);
+  		for (int i = 0; i < nGamePieceSymbols; ++i)
+  			gamePieceData[i] = new SymbolData(gamePieceImages, false).read(in);
 
-		if (!ignoreMask) {
-			BufferedImage maskImages = loadSymbolImage(baseName, 'm');
-			// convert binary bitmap to RGBA alpha mask
-			maskImages = generateAlphaMask(maskImages);
+  		if (!ignoreMask) {
+  			BufferedImage maskImages = loadSymbolImage(baseName, 'm');
+  			// convert binary bitmap to RGBA alpha mask
+  			maskImages = generateAlphaMask(maskImages);
+  
+  			for (int i = 0; i < nMasks; ++i)
+  				maskData[i] = new SymbolData(maskImages, true).read(in);
+  		}
 
-			for (int i = 0; i < nMasks; ++i)
-				maskData[i] = new SymbolData(maskImages, true).read(in);
-		}
-		
-		readPermutationFile(f);
+      in.close();
+    }
+    finally {  		
+      IOUtils.closeQuietly(in);
+    }
+
+  	readPermutationFile(f);
 	}
 
 	private BufferedImage loadSymbolImage(String string) throws IOException {
@@ -550,27 +558,38 @@ public class SymbolSet extends Importer{
 		File sdx = new File(forceExtension(f.getPath(), "sdx"));
 		sdx = action.getCaseInsensitiveFile(sdx, f, false, null);
 		if (sdx != null) { // must reorder image indeces
-			BufferedReader input = new BufferedReader(new FileReader(sdx));
-			
 			SymbolData[] pieces = new SymbolData[gamePieceData.length];
 			System.arraycopy(gamePieceData, 0, pieces, 0, pieces.length);
 			
+			BufferedReader input = null;
 			String line = null;			
 			try {
+        input = new BufferedReader(new FileReader(sdx));
 				for (int i = 0; i < mapBoardData.length; ++i) {
 					line = input.readLine();
 				}
+
 				for (int i = 0; i < pieces.length; ++i) {
 					line = input.readLine();
 					int idx = Integer.parseInt(line);
 					pieces[i] = gamePieceData[idx-1];
 				}
-			} catch (EOFException e) {
-			} catch (ArrayIndexOutOfBoundsException e) {
+
+        input.close();
+			}
+      catch (EOFException e) {
+			}
+      // FIXME: review error message
+      catch (ArrayIndexOutOfBoundsException e) {
 				throw new FileFormatException("SDX file has out-of-bounds index \"" + line + "\".");
-			} catch (NumberFormatException e) {
+			}
+      // FIXME: review error message
+      catch (NumberFormatException e) {
 				throw new FileFormatException("SDX file has invalid index \"" + line + "\".");
-			} finally {
+			}
+      finally {
+        IOUtils.closeQuietly(input);
+
 				gamePieceData = pieces;
 			}
 		}

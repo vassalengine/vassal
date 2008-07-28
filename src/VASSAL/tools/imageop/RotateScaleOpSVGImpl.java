@@ -102,18 +102,8 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
       archive.getFileStream(path));
  
     if (size == null) fixSize();
-    final BufferedImage src = renderer.render(angle, scale);
-    if (size.width * size.height * 4 > 1024*1024) {
-      try {
-// FIXME: renderer should be passed a memory-mapped image, if possible
-        return ImageUtils.toMemoryMapped(src);
-      }
-      catch (IOException e) {
-        // couldn't map file
-        ErrorLog.warn(e);
-      }
-    }
-    return src; 
+
+    return renderer.render(angle, scale);
   }
 
   /** {@inheritDoc} */

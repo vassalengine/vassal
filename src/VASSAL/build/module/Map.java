@@ -296,6 +296,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       try {
         edgeBuffer = new Dimension(((Integer) value).intValue(), edgeBuffer.height);
       }
+      // FIXME: review error message
       catch (NumberFormatException ex) {
       }
     }
@@ -306,6 +307,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       try {
         edgeBuffer = new Dimension(edgeBuffer.width, ((Integer) value).intValue());
       }
+      // FIXME: review error message
       catch (NumberFormatException ex) {
       }
     }
@@ -1546,9 +1548,11 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   public Rectangle selectionBoundsOf(GamePiece p) {
     if (p.getMap() != this) {
-      throw new RuntimeException(Resources.getString("Map.piece_not_on_map")); //$NON-NLS-1$
+      throw new IllegalArgumentException(
+        Resources.getString("Map.piece_not_on_map")); //$NON-NLS-1$
     }
-    Rectangle r = p.getShape().getBounds();
+
+    final Rectangle r = p.getShape().getBounds();
     r.translate(p.getPosition().x, p.getPosition().y);
     if (p.getParent() != null) {
       Point pt = getStackMetrics().relativePosition(p.getParent(), p);
@@ -1562,11 +1566,13 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   public Point positionOf(GamePiece p) {
     if (p.getMap() != this) {
-      throw new RuntimeException(Resources.getString("Map.piece_not_on_map")); //$NON-NLS-1$
+      throw new IllegalArgumentException(
+        Resources.getString("Map.piece_not_on_map")); //$NON-NLS-1$
     }
-    Point point = p.getPosition();
+
+    final Point point = p.getPosition();
     if (p.getParent() != null) {
-      Point pt = getStackMetrics().relativePosition(p.getParent(), p);
+      final Point pt = getStackMetrics().relativePosition(p.getParent(), p);
       point.translate(pt.x, pt.y);
     }
     return point;

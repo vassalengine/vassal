@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.configure.ExtensionTree;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.menu.MenuManager;
 
 public class ExtensionEditorWindow extends EditorWindow {
@@ -85,7 +86,7 @@ public class ExtensionEditorWindow extends EditorWindow {
           extension.save();
         }
         catch (IOException e) {
-          JOptionPane.showMessageDialog(ExtensionEditorWindow.this,e.getMessage(),"Save Failed",JOptionPane.ERROR_MESSAGE);
+          WriteErrorDialog.error(e, extension.getDataArchive().getName());
         }
       }
     });  
@@ -98,7 +99,7 @@ public class ExtensionEditorWindow extends EditorWindow {
           extension.saveAs();
         }
         catch (IOException e) {
-          JOptionPane.showMessageDialog(ExtensionEditorWindow.this,e.getMessage(),"Save Failed",JOptionPane.ERROR_MESSAGE);
+          WriteErrorDialog.error(e, extension.getDataArchive().getName());
         }
       }
     }); 

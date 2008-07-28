@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2004 by Rodney Kinney
+ * Copyright (c) 2004-2008 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -22,60 +22,60 @@ package VASSAL.counters;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.command.AddPiece;
+import VASSAL.tools.ErrorUtils;
 
 /**
  * Utility class for cloning {@link GamePiece}s
  */
 public class PieceCloner {
-  private static PieceCloner instance;
+  private static PieceCloner instance = new PieceCloner();
 
-  // For use by sub-classes
-  protected PieceCloner() {
-  }
+  // For use by subclasses
+  protected PieceCloner() {}
 
   public static PieceCloner getInstance() {
-    if (instance == null) {
-      instance = new PieceCloner();
-    }
     return instance;
   }
+
   /**
-   * Create a new instance that is a clone of the given piece
+   * Create a new instance that is a clone of the given piece.
+   *
    * @return the new instance
    */
   public GamePiece clonePiece(GamePiece piece) {
     GamePiece clone = null;
     if (piece instanceof BasicPiece) {
       clone = GameModule.getGameModule().createPiece(piece.getType());
-      Map m = piece.getMap();
-      piece.setMap(null); // Temporarily set map to null so that clone won't be added to map
+      final Map m = piece.getMap();
+
+      // Temporarily set map to null so that clone won't be added to map
+      piece.setMap(null); 
+
       clone.setState(piece.getState());
       piece.setMap(m);
     }
     else if (piece instanceof UsePrototype) {
       clone = clonePiece(((UsePrototype)piece).getExpandedInner());
     }
-    else if (piece instanceof EditablePiece
-        && piece instanceof Decorator) {
+    else if (piece instanceof EditablePiece && piece instanceof Decorator) {
       try {
-        clone = piece.getClass().newInstance();
-        ((Decorator) clone).setInner(clonePiece(((Decorator) piece).getInner()));
-        ((EditablePiece) clone).mySetType(((Decorator) piece).myGetType());
-        ((Decorator) clone).mySetState(((Decorator) piece).myGetState());
+        clone = piece.getClass().getConstructor().newInstance();
+        ((Decorator)clone).setInner(clonePiece(((Decorator)piece).getInner()));
+        ((EditablePiece)clone).mySetType(((Decorator)piece).myGetType());
+        ((Decorator)clone).mySetState(((Decorator)piece).myGetState());
       }
-      catch (InstantiationException e) {
-        throw new RuntimeException(e);
-      }
-      catch (IllegalAccessException e) {
-        throw new RuntimeException(e);
+      catch (Throwable t) {
+        ErrorUtils.handleNewInstanceFailure(t);
       }
     }
     else {
-      clone = ((AddPiece) GameModule.getGameModule().decode
-          (GameModule.getGameModule().encode
-           (new AddPiece(piece)))).getTarget();
-      Map m = piece.getMap();
-      piece.setMap(null); // Temporarily set map to null so that clone won't be added to map
+      clone = ((AddPiece) GameModule.getGameModule().decode(
+        GameModule.getGameModule().encode(new AddPiece(piece)))).getTarget();
+      final Map m = piece.getMap();
+
+      // Temporarily set map to null so that clone won't be added to map
+      piece.setMap(null);
+
       clone.setState(piece.getState());
       piece.setMap(m);
     }

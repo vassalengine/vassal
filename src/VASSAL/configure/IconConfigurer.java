@@ -26,8 +26,6 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -37,7 +35,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ImageFileFilter;
 import VASSAL.tools.imageop.Op;
@@ -62,20 +59,7 @@ public class IconConfigurer extends Configurer {
     imageName = s == null ? "" : s;
 
     if (imageName.length() > 0) {
-      Image img = null;
-      try {
-        img = Op.load(imageName).getImage(null);
-      }
-      catch (CancellationException e) {
-        ErrorLog.warn(e);
-      }
-      catch (InterruptedException e) {
-        ErrorLog.warn(e);
-      }
-      catch (ExecutionException e) {
-        ErrorLog.warn(e);
-      }
-      
+      final Image img = Op.load(imageName).getImage();
       if (img != null) icon = new ImageIcon(img);
     }
 

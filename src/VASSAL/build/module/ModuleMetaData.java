@@ -18,8 +18,8 @@
  */
 package VASSAL.build.module;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -34,6 +34,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.ErrorLog;
+import VASSAL.tools.IOUtils;
 
 /**
  * 
@@ -106,65 +107,50 @@ public class ModuleMetaData extends AbstractMetaData {
   public void read(ZipFile zip) {
     version = "";
 
-    InputStream is = null;
     try {
-
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
       // the first lines of the buildFile
-      try {
-        final XMLReader parser = XMLReaderFactory.createXMLReader();
-        DefaultHandler handler = null;
-        ZipEntry data = zip.getEntry(ZIP_ENTRY_NAME);
-        if (data == null) {
-          data = zip.getEntry(GameModule.BUILDFILE);
-          handler = new ModuleBuildFileXMLHandler();
-        }
-        else {
-          handler = new MetadataXMLHandler();
-        }
-        
-        if (data == null) {
-          return;
-        }
-        
-        parser.setContentHandler(handler);
-        parser.setDTDHandler(handler);
-        parser.setEntityResolver(handler);
-        parser.setErrorHandler(handler);
+      final XMLReader parser = XMLReaderFactory.createXMLReader();
+      DefaultHandler handler = null;
 
-        // parse! parse!
-        is = zip.getInputStream(data);
-        parser.parse(new InputSource(is));
+      ZipEntry data = zip.getEntry(ZIP_ENTRY_NAME);
+      if (data == null) {
+        data = zip.getEntry(GameModule.BUILDFILE);
+        if (data == null) return;
+        
+        handler = new ModuleBuildFileXMLHandler();
       }
-      catch (IOException e) {
-        ErrorLog.log(e);
+      else {
+        handler = new MetadataXMLHandler();
       }
-      catch (SAXEndException e) {
-        // Indicates End of module/extension parsing. not an error.
+        
+      parser.setContentHandler(handler);
+      parser.setDTDHandler(handler);
+      parser.setEntityResolver(handler);
+      parser.setErrorHandler(handler);
+
+      // parse! parse!
+      BufferedInputStream in = null;
+      try {
+        in = new BufferedInputStream(zip.getInputStream(data));
+        parser.parse(new InputSource(in));
       }
-      catch (SAXException e) {
-        ErrorLog.log(e);
+      finally {
+        IOUtils.closeQuietly(in);
       }
     }
+    catch (IOException e) {
+      ErrorLog.log(e);
+    }
+    catch (SAXEndException e) {
+      // Indicates End of module/extension parsing. not an error.
+    }
+    catch (SAXException e) {
+      ErrorLog.log(e);
+    }
     finally {
-      if (zip != null) {
-        try {
-          zip.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
-      }
-      
-      if (is != null) {
-        try {
-          is.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
-      }
+      IOUtils.closeQuietly(zip);
     }
   }
 
@@ -203,7 +189,8 @@ public class ModuleMetaData extends AbstractMetaData {
       super.startElement(uri, localName, qName, attrs);
 
       // handle element attributes we care about
-      if (BUILDFILE_MODULE_ELEMENT1.equals(qName) || BUILDFILE_MODULE_ELEMENT2.equals(qName)) {
+      if (BUILDFILE_MODULE_ELEMENT1.equals(qName) ||
+          BUILDFILE_MODULE_ELEMENT2.equals(qName)) {
         nameAttr = new Attribute (NAME_ELEMENT, getAttr(attrs, NAME_ATTR));
         setVersion(getAttr(attrs, VERSION_ATTR));
         setVassalVersion(getAttr(attrs, VASSAL_VERSION_ATTR));

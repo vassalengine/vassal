@@ -44,6 +44,7 @@ public class JabberClientFactory extends ChatServerFactory {
     try {
       port = Integer.parseInt(serverConfig.getProperty(JABBER_PORT, DEFAULT_JABBER_PORT));
     }
+    // FIXME: review error message
     catch (NumberFormatException e) {
       e.printStackTrace();
     }

@@ -48,6 +48,7 @@ public class SumProperties implements PropertySource {
           try {
             sum += Integer.parseInt(val.toString());
           }
+          // FIXME: review error message
           catch (NumberFormatException e) {
           }
         }

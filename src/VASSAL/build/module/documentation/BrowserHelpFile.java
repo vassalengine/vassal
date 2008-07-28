@@ -51,6 +51,7 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 
@@ -101,68 +102,58 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   protected void extractContents() {
+    ZipInputStream in = null;
     try {
-      ZipInputStream in = null;
       try {
-        try {
+        in = new ZipInputStream(GameModule.getGameModule().getDataArchive()
+              .getFileStream("help/" + getContentsResource())); //$NON-NLS-1$
+      }
+      // FIXME: review error message
+      catch (IOException e) {
+        // The help file was created with empty contents.
+        // Assume an absolute URL as the starting page.
+        url = new URL(startingPage);
+        return;
+      }
         
-          in = new ZipInputStream(GameModule.getGameModule().getDataArchive()
-           .getFileStream("help/" + getContentsResource())); //$NON-NLS-1$
-        }
-        catch (IOException e) {
-          // The help file was created with empty contents.
-          // Assume an absolute URL as the starting page.
-          url = new URL(startingPage);
-          return;
-        }
-        
-        final File tmp = File.createTempFile("VASSAL", "help"); //$NON-NLS-1$ //$NON-NLS-2$
-        File output = tmp.getParentFile();
-        tmp.delete();
-        output = new File(output, "VASSAL"); //$NON-NLS-1$
-        output = new File(output, "help"); //$NON-NLS-1$
-        output = new File(output, getContentsResource());
-        if (output.exists()) {
-          recursiveDelete(output);
-        }
+      final File tmp = File.createTempFile("VASSAL", "help"); //$NON-NLS-1$ //$NON-NLS-2$
+      File output = tmp.getParentFile();
+      tmp.delete();
+      output = new File(output, "VASSAL"); //$NON-NLS-1$
+      output = new File(output, "help"); //$NON-NLS-1$
+      output = new File(output, getContentsResource());
+      if (output.exists()) recursiveDelete(output);
   
-        output.mkdirs();
-        ZipEntry entry;
+      output.mkdirs();
+      ZipEntry entry;
   
-        while ((entry = in.getNextEntry()) != null) {
-          if (entry.isDirectory()) {
-            new File(output, entry.getName()).mkdirs();
+      while ((entry = in.getNextEntry()) != null) {
+        if (entry.isDirectory()) {
+          new File(output, entry.getName()).mkdirs();
+        }
+        else {
+// FIXME: no way to distinguish between read and write errors here
+          FileOutputStream fos = null;
+          try {
+            fos = new FileOutputStream(new File(output, entry.getName()));
+            IOUtils.copy(in, fos);
+            in.close();
+            fos.close();
           }
-          else {
-            FileOutputStream fos =
-              new FileOutputStream(new File(output, entry.getName()));
-            try {
-              IOUtils.copy(in, fos);
-            }
-            finally {
-              try {
-                fos.close();
-              }
-              catch (IOException e) {
-                ErrorLog.log(e);
-              }
-            }
+          finally {
+            IOUtils.closeQuietly(fos);
           }
         }
+      }
   
-        url = new File(output, startingPage).toURI().toURL();
-      }
-      finally {
-        try {
-          in.close();
-        }
-        catch (IOException e) {
-          ErrorLog.log(e);
-        }
-      }
+      url = new File(output, startingPage).toURI().toURL();
     }
+    // FIXME: review error message
     catch (IOException e) {
       ErrorLog.log(e);
+    }
+    finally {
+      IOUtils.closeQuietly(in);
     }
   }
 
@@ -308,36 +299,34 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
 
     public void packContents() {
-      if (dir != null) {
-        try {
-          final File packed = File.createTempFile("VASSALhelp", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-          final ZipOutputStream out =
-            new ZipOutputStream(new FileOutputStream(packed));
-          try {
-            for (File f : dir.listFiles()) {
-              packFile(f, "", out); //$NON-NLS-1$
-            }
-          }
-          finally {
-            try {
-              out.close();
-            }
-            catch (IOException e) {
-              ErrorLog.log(e);
-            }
-          }
+      if (dir == null) return;
 
-          GameModule.getGameModule().getArchiveWriter().addFile(
-            packed.getPath(),
-            "help/"+BrowserHelpFile.this.getContentsResource()); //$NON-NLS-1$
+      File packed = null;
+      try {
+        packed = File.createTempFile("VASSALhelp", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
+        ZipOutputStream out = null;
+        try {
+          out = new ZipOutputStream(new FileOutputStream(packed));
+          for (File f : dir.listFiles()) {
+            packFile(f, "", out); //$NON-NLS-1$
+          }
+          out.close();
         }
-        catch (IOException e) {
-          ErrorLog.log(e);
+        finally {
+          IOUtils.closeQuietly(out);
         }
+
+        GameModule.getGameModule().getArchiveWriter().addFile(
+          packed.getPath(),
+          "help/" + BrowserHelpFile.this.getContentsResource()); //$NON-NLS-1$
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, packed);
       }
     }
 
-    protected void packFile(File packed, String prefix, ZipOutputStream out) throws IOException {
+    protected void packFile(File packed, String prefix, ZipOutputStream out)
+                                                          throws IOException {
       if (packed.isDirectory()) {
         final ZipEntry entry = new ZipEntry(packed.getName()+"/"); //$NON-NLS-1$
         out.putNextEntry(entry);
@@ -350,17 +339,14 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         final ZipEntry entry = new ZipEntry(prefix + packed.getName());
         out.putNextEntry(entry);
 
-        final FileInputStream in = new FileInputStream(packed); 
+        FileInputStream in = null;
         try {
+          in = new FileInputStream(packed); 
           IOUtils.copy(in, out);
+          in.close();
         }
         finally {
-          try {
-            in.close();
-          }
-          catch (IOException e) {
-            ErrorLog.log(e);
-          }
+          IOUtils.closeQuietly(in);
         }
       }
     }

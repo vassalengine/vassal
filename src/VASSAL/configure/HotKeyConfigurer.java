@@ -136,10 +136,13 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
           (Integer.parseInt(s.substring(0, index)),
            Integer.parseInt(s.substring(index + 1)));
     }
-    catch (Exception e) {
+    // FIXME: review error message
+    catch (NumberFormatException e) {
       return null;
     }
-
+    catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 
   /**
@@ -148,5 +151,4 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
   public static String encode(KeyStroke stroke) {
     return stroke == null ? "" : stroke.getKeyCode() + "," + stroke.getModifiers(); //$NON-NLS-1$ //$NON-NLS-2$
   }
-
 }

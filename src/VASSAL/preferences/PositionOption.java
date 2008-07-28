@@ -83,14 +83,14 @@ public class PositionOption extends VASSAL.configure.Configurer
   }
 
   public void setValue(String in) {
-    StringTokenizer st = new StringTokenizer
-      (in, ",");
+    final StringTokenizer st = new StringTokenizer(in, ",");
     try {
       setValue(new Rectangle(Integer.parseInt(st.nextToken()),
                              Integer.parseInt(st.nextToken()),
                              Integer.parseInt(st.nextToken()),
                              Integer.parseInt(st.nextToken())));
     }
+    // FIXME: review error message
     catch (NumberFormatException e) {
     }
   }

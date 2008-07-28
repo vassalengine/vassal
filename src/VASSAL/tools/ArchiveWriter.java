@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,6 +18,8 @@
  */
 package VASSAL.tools;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +27,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +41,7 @@ import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.launch.Launcher;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.filechooser.FileChooser;
 
 /**
@@ -56,24 +58,21 @@ public class ArchiveWriter extends DataArchive {
   /**
    * Create a new writeable archive.
    * 
-   * @param zipName
-   *          the name of the archive. If null, the user will be prompted for a
-   *          filename when saving. If not null, new entries will be added to
-   *          the named archive. If the file exists and is not a zip archive, it
-   *          will be overwritten.
+   * @param zipName the name of the archive. If null, the user will be
+   * prompted for a filename when saving. If not null, new entries will
+   * be added to the named archive. If the file exists and is not a zip
+   * archive, it will be overwritten.
    */
   public ArchiveWriter(String zipName) {
     archiveName = zipName;
     closeWhenNotInUse = false;
-    if (archiveName == null) {
-      archive = null;
-    }
-    else { 
+
+    if (archiveName != null) {
       try {
         archive = new ZipFile(archiveName);
       }
-      catch (IOException ex) {
-        archive = null;
+      catch (IOException e) {
+        ReadErrorDialog.error(e, archiveName);
       }
     }
   }
@@ -90,30 +89,30 @@ public class ArchiveWriter extends DataArchive {
 
   /**
    * Close the archive, but keep it available for reuse. Used for Preferences
-   * file which must be shared between processes.
+   * files which must be shared between processes.
    */
   public void closeWhenNotInUse() {
     closeWhenNotInUse = true;
+
     if (archive != null) {
       try {
         archive.close();
-        archive = null;
       }
-      catch (IOException ex) {
-        archive = null;
+      catch (IOException e) {
+        ReadErrorDialog.error(e, archive.getName());
       }
+
+      archive = null;
     }
   }
   
   /**
-   * Add an image file to the archive. The file will be copied into an "images"
-   * directory in the archive. Storing another image with the same name will
-   * overwrite the previous image.
+   * Add an image file to the archive. The file will be copied into an
+   * "images" directory in the archive. Storing another image with the
+   * same name will overwrite the previous image.
    * 
-   * @param path
-   *          the full path of the image file on the user's filesystem
-   * @param name
-   *          the name under which to store the image in the archive
+   * @param path the full path of the image file on the user's filesystem
+   * @param name the name under which to store the image in the archive
    */
   public void addImage(String path, String name) {
     // check SVG for external references and pull them in
@@ -142,7 +141,7 @@ public class ArchiveWriter extends DataArchive {
   } 
   
   public void addSound(String file, String name) {
-    sounds.put(SOUNDS_DIR+name, file);
+    sounds.put(SOUNDS_DIR + name, file);
   }
 
   public boolean isImageAdded(String name) {
@@ -158,34 +157,30 @@ public class ArchiveWriter extends DataArchive {
   /**
    * Copy a file from the user's filesystem to the archive.
    * 
-   * @param path
-   *          the full path of the file on the user's filesystem
-   * @param name
-   *          the name under which to store the file in the archive
+   * @param path the full path of the file on the user's filesystem
+   * @param fileName the name under which to store the file in the archive
    */
-  public void addFile(String path, String name) {
-    files.put(name, path);
+  public void addFile(String path, String fileName) {
+    files.put(fileName, path);
   }
 
   /**
-   * Copy an InputStream into the archive
+   * Copy an <code>InputStream</code> into the archive
    * 
-   * @param name
-   *          the name under which to store the contents of the stream
-   * @param stream
-   *          the stream to copy
+   * @param fileName the name under which to store the contents of the stream
+   * @param in the stream to copy
    */
-  public void addFile(String name, InputStream stream) {
+  public void addFile(String fileName, InputStream in) {
     try {
-      files.put(name, IOUtils.getBytes(stream));
+      files.put(fileName, IOUtils.getBytes(in));
     }
-    catch (IOException ex) {
-      ErrorLog.log(ex);
+    catch (IOException e) {
+      ReadErrorDialog.error(e, fileName);
     }
   }
 
-  public void addFile(String name, byte[] content) {
-    files.put(name, content);
+  public void addFile(String fileName, byte[] content) {
+    files.put(fileName, content);
   }
 
   /**
@@ -193,40 +188,35 @@ public class ArchiveWriter extends DataArchive {
    * been added to the archive but not yet written to disk.
    */
   @Override
-  public InputStream getFileStream(String name) throws IOException {
+  public InputStream getFileStream(String fileName) throws IOException {
     if (closeWhenNotInUse && archive == null && archiveName != null) {
       archive = new ZipFile(archiveName);
     }
-    InputStream stream;
-    stream = getAddedStream(images, name);
-    if (stream == null) {
-      stream = getAddedStream(files, name);
-    }
-    if (stream == null) {
-      stream = getAddedStream(sounds, name);
-    }
-    if (stream == null) {
-      if (archive != null) {
-        stream = super.getFileStream(name);
-      }
-      else {
-        throw new FileNotFoundException(name + " not found");
-      }
-    }
-    return stream;
+
+    InputStream in = getAddedStream(images, fileName);
+    if (in != null) return in;
+    in = getAddedStream(files, fileName);
+    if (in != null) return in;
+    in = getAddedStream(sounds, fileName);
+    if (in != null) return in;
+
+    if (archive != null) return super.getFileStream(fileName);
+
+    throw new FileNotFoundException(fileName + " not found");
   }
 
-  private InputStream getAddedStream(Map<String,Object> table,
-                                     String name) throws IOException {
-    InputStream stream = null;
-    final Object file = table.get(name);
+  private InputStream getAddedStream(Map<String,Object> table, String fileName)
+                                                           throws IOException {
+    final Object file = table.get(fileName);
     if (file instanceof String) {
-      stream = new FileInputStream((String) file);
+      return new FileInputStream((String) file);
     }
     else if (file instanceof byte[]) {
-      stream = new ByteArrayInputStream((byte[]) file);
+      return new ByteArrayInputStream((byte[]) file);
     }
-    return stream;
+    else {
+      return null;
+    }
   }
 
   public void saveAs() throws IOException {
@@ -239,10 +229,10 @@ public class ArchiveWriter extends DataArchive {
   }
 
   /**
-   * If the ArchiveWriter was initialized with non-null file name, then write
-   * the contents of the archive to the named archive. If it was initialized
-   * with a null name, prompt the user to select a new file into which to write
-   * archive
+   * If the ArchiveWriter was initialized with non-null file name, then
+   * write the contents of the archive to the named archive. If it was
+   * initialized with a null name, prompt the user to select a new file
+   * into which to write archive.
    */
   public void write() throws IOException {
     write(false);
@@ -258,87 +248,83 @@ public class ArchiveWriter extends DataArchive {
       archiveName = fc.getSelectedFile().getPath();
     }
     
-    String temp = (new File(archiveName)).getParent();
+    String temp = new File(archiveName).getParent();
     temp = temp == null ? "temp" : temp + File.separator + "temp";
     int n = 1;
     while ((new File(temp + n + ".zip")).exists()) {
       n++;
     }
-    temp = temp + n + ".zip";
+    temp += n + ".zip";
 
-    final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(temp));
+    ZipOutputStream out = null;
     try {
+// FIXME: check whether buffering here affects performance
+      out = new ZipOutputStream(
+              new BufferedOutputStream(
+                new FileOutputStream(temp)));
+      
       if (closeWhenNotInUse && archive == null && archiveName != null) {
         try {
           archive = new ZipFile(archiveName);
         }
-        catch (Exception exc) {
-           // No stack trace 
+        catch (IOException e) {
+          // Not an error, either the archive doesn't exist yet,
+          // or it isn't a ZIP file and we're going to overwrite it.
+          // In the case that this is a bona fide I/O error, we'll
+          // surely hit it again when we try to write later, so it
+          // can be ignored here.
         }
       }
+
       if (archive != null) {
-          // Copy old non-overwritten entries into temp file
-          final ZipInputStream zis =
-            new ZipInputStream(new FileInputStream(archive.getName()));
-          try { 
-            ZipEntry entry = null;
-            while ((entry = zis.getNextEntry()) != null) {
-              if (!images.containsKey(entry.getName()) &&
-                  !sounds.containsKey(entry.getName()) &&
-                  !files.containsKey(entry.getName())) {
-                // System.err.println("Copying "+entry.getName());
-    
-                // FIXME: can we do this wihout getting the whole contents
-                // of zis in memory at once? Could be very large.
-                final byte[] contents = IOUtils.toByteArray(zis);
-                final ZipEntry newEntry = new ZipEntry(entry.getName());
-                newEntry.setMethod(entry.getMethod());
-                if (newEntry.getMethod() == ZipEntry.STORED) {
-                  newEntry.setSize(contents.length);
-                  final CRC32 checksum = new CRC32();
-                  checksum.update(contents);
-                  newEntry.setCrc(checksum.getValue());
-                }
-                out.putNextEntry(newEntry);
-                out.write(contents, 0, contents.length);
-              }
-            }
+        // Copy old unmodified entries into temp file
+        final byte[] buf = new byte[8192];
+
+        ZipInputStream in = null;
+        try {
+// FIXME: check whether buffering here affects performance
+          in = new ZipInputStream(
+                new BufferedInputStream(
+                  new FileInputStream(archive.getName())));
+
+          ZipEntry entry = null;
+          while ((entry = in.getNextEntry()) != null) {
+            // skip modified or new entries
+            if (images.containsKey(entry.getName()) || 
+                sounds.containsKey(entry.getName()) ||
+                files.containsKey(entry.getName())) continue;
+
+            // write out unmodified entries 
+            out.putNextEntry(entry);
+            IOUtils.copy(in, out, buf);
           }
-          finally {
-            try {
-              zis.close();
-            }
-            catch (IOException e) {
-              ErrorLog.log(e);
-            }
-          }
+          in.close();
+        }
+        finally {
+          IOUtils.closeQuietly(in);
+        }
       }
 
       // Write new entries into temp file
-      writeEntries(images, ZipEntry.STORED, out);
-      writeEntries(sounds, ZipEntry.STORED, out);
-      writeEntries(files, ZipEntry.DEFLATED, out);
+      writeEntries(images, ZipEntry.STORED,   out);
+      writeEntries(sounds, ZipEntry.STORED,   out);
+      writeEntries(files,  ZipEntry.DEFLATED, out);
+
+      out.close();
     }
     finally {
-      try {
-        out.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(out);
     }
-    
+
     if (archive != null) {
       archive.close();
       archive = null;
     }
 
     final File original = new File(archiveName);
-    if (original.exists()) {
-      if (!original.delete()) {
-        throw new IOException("Unable to overwrite " + archiveName +
-                              "\nData stored in " + temp);
-      }
+    if (original.exists() && !original.delete()) {
+      throw new IOException("Unable to overwrite " + archiveName +
+                            "\nData stored in " + temp);
     }
 
     final File f = new File(temp);
@@ -358,37 +344,85 @@ public class ArchiveWriter extends DataArchive {
 
   private void writeEntries(Map<String,Object> h, int method,
                             ZipOutputStream out) throws IOException {
-    // Note: This method does not close the ouput stream. The caller
-    // is expected to handle that.
-
-    byte[] contents;
-    ZipEntry entry;
-
     for (String name : h.keySet()) {
       final Object o = h.get(name);
-      if (o instanceof String) {
-        if (name.toLowerCase().endsWith(".svg")) {
-          contents = SVGImageUtils.relativizeExternalReferences((String) o);
+
+      final ZipEntry entry = new ZipEntry(name);
+      entry.setMethod(method);
+
+      if (o instanceof String && !name.toLowerCase().endsWith(".svg")) {
+        FileInputStream in = null;
+        try {
+          // o is a filename 
+          in = new FileInputStream((String) o);
+
+          if (method == ZipEntry.STORED) {
+            // find the checksum
+            final CRC32 checksum = new CRC32();
+            final byte[] buf = new byte[8192];
+            
+            int count = 0;
+            int n = 0;
+            try {
+              while ((n = in.read(buf)) > 0) {
+                checksum.update(buf, 0, n);
+                count += n;
+              }
+              in.close();
+            }
+            finally {
+              IOUtils.closeQuietly(in);
+            }
+
+            entry.setSize(count);
+            entry.setCrc(checksum.getValue());
+
+            // reset the stream
+            in = new FileInputStream((String) o);
+          }
+
+          out.putNextEntry(entry);
+          IOUtils.copy(in, out);
+          in.close();
         }
-        else contents = IOUtils.getBytes(new FileInputStream((String) o));
-      }
-      else if (o instanceof byte[]) {
-        contents = (byte[]) o;
+        finally {
+          IOUtils.closeQuietly(in);
+        }
       }
       else {
-        System.err.println("Could not write entry " + name + " = " + o);
-        break;
+        byte[] contents;
+
+        if (o instanceof String) {
+          contents = SVGImageUtils.relativizeExternalReferences((String) o);
+        }
+        else if (o instanceof byte[]) {
+          contents = (byte[]) o;
+        }
+        else {
+          // unrecognized type
+          try {
+            throw new IllegalStateException(
+              "Entry '" + name + "' is of an unrecognized type.");
+          }
+          catch (IllegalStateException e) {
+            // Note: we catch here and continue becuase the user will
+            // appreciate being able to save whatever he can.
+            ErrorDialog.bug(e);
+          }
+
+          continue;
+        }
+
+        if (method == ZipEntry.STORED) {
+          entry.setSize(contents.length);
+          final CRC32 checksum = new CRC32();
+          checksum.update(contents);
+          entry.setCrc(checksum.getValue());
+        }
+        
+        out.putNextEntry(entry);
+        out.write(contents);
       }
-      entry = new ZipEntry(name);
-      entry.setMethod(method);
-      if (method == ZipEntry.STORED) {
-        entry.setSize(contents.length);
-        final CRC32 checksum = new CRC32();
-        checksum.update(contents);
-        entry.setCrc(checksum.getValue());
-      }
-      out.putNextEntry(entry);
-      out.write(contents);
     }
   }
 
@@ -400,6 +434,24 @@ public class ArchiveWriter extends DataArchive {
       }
     }
     return s;
+  }
+
+  /**
+   * Ensure the specified Zip archive exists. Create it and the specified
+   * entry if it does not.
+   * 
+   * @param archiveName Archive file
+   * @param entryName Entry Name
+   */ 
+  public static void ensureExists(File archiveFile, String entryName)
+      throws IOException {
+
+    if (archiveFile.exists()) return;
+
+    final ZipOutputStream zis =
+      new ZipOutputStream(new FileOutputStream(archiveFile));
+    zis.putNextEntry(new ZipEntry(entryName));
+    zis.close();
   }
 
   /** @deprecated Use {@link getImageNameSet()} instead. */
@@ -420,23 +472,4 @@ public class ArchiveWriter extends DataArchive {
   protected void listImageNames(Collection v) {
     v.addAll(setOfImageNames());
   }
-
-  /**
-   * Ensure the specified Zip archive exists. Create it and the specified
-   * entry if it does not.
-   * 
-   * @param archiveName Archive file
-   * @param entryName Entry Name
-   */ 
-  public static void ensureExists(File archiveFile, String entryName) throws FileNotFoundException, IOException {
-    if (!archiveFile.exists()) {
-      ZipOutputStream zis = new ZipOutputStream(
-        (OutputStream)new FileOutputStream(archiveFile));
-      ZipEntry entry = new ZipEntry(entryName);
-      zis.putNextEntry(entry);
-      zis.finish();
-      zis.close();
-    }
-  }
-
 }

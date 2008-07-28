@@ -88,6 +88,7 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           exSepX = Integer.parseInt((String) value);
         }
+        // FIXME: review error message
         catch (NumberFormatException NaN) {
         }
       }
@@ -100,6 +101,7 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           exSepY = Integer.parseInt((String) value);
         }
+        // FIXME: review error message
         catch (NumberFormatException NaN) {
         }
       }
@@ -112,6 +114,7 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           unexSepX = Integer.parseInt((String) value);
         }
+        // FIXME: review error message
         catch (NumberFormatException NaN) {
         }
       }
@@ -124,6 +127,7 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           unexSepY = Integer.parseInt((String) value);
         }
+        // FIXME: review error message
         catch (NumberFormatException NaN) {
         }
       }
@@ -235,7 +239,8 @@ public class StackMetrics extends AbstractConfigurable {
    * If expanded, all GamePieces are drawn with separation given by
    * {@link #relativePosition}.  GamePiece that are selected are
    * drawn in front of other GamePieces, even those above them in
-   * the stack*/
+   * the stack.
+   */
   public void draw(Stack stack, Graphics g, int x, int y, Component obs, double zoom) {
     Highlighter highlighter = stack.getMap() == null ? BasicPiece.getHighlighter() : stack.getMap().getHighlighter();
     Point[] positions = new Point[stack.getPieceCount()];
@@ -472,11 +477,14 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   public Point relativePosition(Stack parent, GamePiece c) {
-    int index = Math.min(parent.indexOf(c),parent.getMaximumVisiblePieceCount()-1);
+    final int index =
+      Math.min(parent.indexOf(c),parent.getMaximumVisiblePieceCount()-1);
+
     if (index < 0) {
-      throw new RuntimeException(c + " is not contained in " + parent);
+      throw new IllegalArgumentException(c + " is not contained in " + parent);
     }
-    Point[] pos = new Point[parent.getMaximumVisiblePieceCount()];
+
+    final Point[] pos = new Point[parent.getMaximumVisiblePieceCount()];
     getContents(parent, pos, null, null, 0, 0);
     return pos[index];
   }

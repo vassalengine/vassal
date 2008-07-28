@@ -133,8 +133,9 @@ public class PrototypeDefinition extends AbstractConfigurable
     GamePiece piece = pieces.get(def);
     if (piece == null && def != null) {
       try {
-        AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
+        final AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
         if (comm == null) {
+      // FIXME: review error message
           System.err.println("Couldn't build piece " + def); //$NON-NLS-1$
           def = null;
         }
@@ -143,6 +144,7 @@ public class PrototypeDefinition extends AbstractConfigurable
           piece.setState(comm.getState());
         }
       }
+      // FIXME: review error message
       catch (RuntimeException e) {
         ErrorLog.log(e);
         def = null;

@@ -31,6 +31,8 @@ import java.net.Socket;
 import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.menu.MenuManager;
 
@@ -97,19 +99,27 @@ public abstract class Launcher {
         // read the module manager's socket port and launch request from stdin
         final ObjectInputStream in = new ObjectInputStream(System.in);
         final int port = in.readInt();
+        
         lr = (LaunchRequest) in.readObject();
 
         // set up our command client
         cmdC = new CommandClient(new Socket((String) null, port));
       }
       catch (ClassNotFoundException e) {
-        ErrorLog.log(e);
+        ErrorDialog.bug(e);
+        System.exit(1);
       }
       catch (IOException e) {
-        ErrorLog.log(e);
+        // What we've got here is a failure to communicate.
+        ErrorDialog.error(
+          Resources.getString("Error.communication_error"),
+          Resources.getString("Error.communication_error"),
+          e,
+          Resources.getString("Error.communication_error_message",
+            Resources.getString(getClass().getSimpleName() + ".app_name"))
+        );         
+        System.exit(1);
       }
-  
-      if (cmdC == null || cmdS == null) System.exit(1);
     }
 
     this.lr = lr;
@@ -121,9 +131,42 @@ public abstract class Launcher {
         try {
           launch();
         }
-        catch (IOException e) {
-// FIXME: show a proper dialog here, on load failure
-          ErrorLog.warn(e);
+        catch (IOException e1) {
+          if (cmdC == null) {
+            // we are standalone, so warn the user directly
+            ErrorDialog.error(
+              Resources.getString("Launcher.load_error"),
+              Resources.getString("Launcher.load_error"),
+              e1,
+              Resources.getString("Launcher.load_error_message"),
+              e1.getMessage()
+            );
+          }
+          else {
+            // we have a manager, so pass the load failure back to it
+            try {
+              cmdC.request(new LoadFailedCmd(e1));
+            }
+            catch (IOException e2) {
+              // warn the user directly as a last resort 
+              ErrorDialog.error(
+                Resources.getString("Launcher.load_error"),
+                Resources.getString("Launcher.load_error"),
+                e1,
+                Resources.getString("Launcher.load_error_message"),
+                e1.getMessage()
+              );
+
+              ErrorDialog.error(
+                Resources.getString("Launcher.communication_error"),
+                Resources.getString("Launcher.communication_error"),
+                e2,
+                Resources.getString("Launcher.communication_error_message",
+                  Resources.getString(getClass().getSimpleName() + ".app_name"))
+              );
+            }
+          }
+
           System.exit(1);
         }
       }
@@ -135,27 +178,42 @@ public abstract class Launcher {
   protected abstract MenuManager createMenuManager();
 
   protected abstract CommandServer createCommandServer(ServerSocket s);
-  
+ 
+  public static class LoadFailedCmd implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    protected final Throwable t;
+
+    public LoadFailedCmd(Throwable throwable) {
+      t = throwable;
+    }
+
+    public Throwable getThrowable() {
+      return t;
+    }
+  }
+ 
   /**
    * Send a message to the ModuleManager that a file has been saved by the
    * Editor or the Player
    * @param f
    */
+// FIXME: this isn't called from anywhere yet!
   public void sendSaveCmd(File f) {
     if (cmdC != null) {
       try {
         cmdC.request(new SaveFileCmd(f));
       }
+      // FIXME: review error message
       catch (IOException e) {
-// FIXME: warn here?
       }
     }
   }
   
   public static class SaveFileCmd implements Serializable {
-
     private static final long serialVersionUID = 1L;
-    protected File file;
+
+    protected final File file;
     
     public SaveFileCmd(File f) {
       file = f;

@@ -83,6 +83,7 @@ public class HttpRequestWrapper {
       try {
         in.close();
       }
+      // FIXME: review error message
       catch (IOException e) {
         e.printStackTrace();
       }
@@ -123,6 +124,7 @@ public class HttpRequestWrapper {
       try {
         out.close();
       }
+      // FIXME: review error message
       catch (IOException e) {
         e.printStackTrace();
       }
@@ -140,6 +142,7 @@ public class HttpRequestWrapper {
       try {
         input.close();
       }
+      // FIXME: review error message
       catch (IOException e) {
         e.printStackTrace();
       }

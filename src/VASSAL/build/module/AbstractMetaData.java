@@ -17,8 +17,10 @@
  */
 package VASSAL.build.module;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,6 +54,7 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Translation;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 
@@ -169,22 +172,12 @@ public abstract class AbstractMetaData {
    */
   public static AbstractMetaData buildMetaData(File file) {
     // Check the file exists and is a file
-    if (!file.exists() || !file.isFile()) {
-      return null;
-    }
+    if (!file.exists() || !file.isFile()) return null;
     
-    // Check it is a Zip file
     ZipFile zip = null;
     try { 
-      try {
-        zip = new ZipFile(file);
-      }
-      catch (ZipException e) {
-        return null;
-      }
-      catch (IOException e) {
-        return null;
-      } 
+      // Check it is a Zip file
+      zip = new ZipFile(file);
 
       // Check if it is a Save Game file
       ZipEntry entry = zip.getEntry(GameState.SAVEFILE_ZIP_ENTRY);
@@ -218,21 +211,23 @@ public abstract class AbstractMetaData {
           final String s = br.readLine();
           if (s.indexOf(BUILDFILE_MODULE_ELEMENT1) > 0 ||
               s.indexOf(BUILDFILE_MODULE_ELEMENT2) > 0) {
-            br.close();
             return new ModuleMetaData(zip);
           }  
           else if (s.indexOf(BUILDFILE_EXTENSION_ELEMENT) > 0) {
-            br.close();
             return new ExtensionMetaData(zip);
           }
         }
-      }
-      catch (IOException e) {
       }
       finally {
         IOUtils.closeQuietly(br);
       }
     }
+    catch (ZipException e) {
+      ErrorLog.log(e);
+    }
+    catch (IOException e) {
+      ErrorLog.log(e);
+    } 
     finally {
       IOUtils.closeQuietly(zip);
     }    
@@ -274,7 +269,8 @@ public abstract class AbstractMetaData {
       }
       
       e = doc.createElement(DATE_SAVED_ELEMENT);
-      e.appendChild(doc.createTextNode(String.valueOf(System.currentTimeMillis())));
+      e.appendChild(doc.createTextNode(
+        String.valueOf(System.currentTimeMillis())));
       root.appendChild(e);
       
       if (descriptionAttr != null) {
@@ -285,11 +281,12 @@ public abstract class AbstractMetaData {
 
     }
     catch (ParserConfigurationException ex) {
+      ErrorDialog.bug(ex);
       // FIXME: switch to IOException(Throwable) ctor in Java 1.6
       throw (IOException) new IOException().initCause(ex);
     }
 
-// FIXME: could we replace BridgeStream by a pair of Pipe streams?
+    // FIXME: could we replace BridgeStream by a pair of Pipe streams?
     final BridgeStream out = new BridgeStream();
     try {
       final Transformer xformer = TransformerFactory.newInstance()
@@ -300,10 +297,12 @@ public abstract class AbstractMetaData {
       xformer.transform(new DOMSource(doc), new StreamResult(out));
     }
     catch (TransformerConfigurationException ex) {
+      ErrorDialog.bug(ex);
       // FIXME: switch to IOException(Throwable) ctor in Java 1.6
       throw (IOException) new IOException().initCause(ex);
     }
     catch (TransformerFactoryConfigurationError ex) {
+      ErrorDialog.bug(ex);
       // FIXME: switch to IOException(Throwable) ctor in Java 1.6
       throw (IOException) new IOException().initCause(ex);
     }
@@ -323,14 +322,16 @@ public abstract class AbstractMetaData {
    * @throws IOException
    */
   public void copyModuleMetadata(ArchiveWriter archive) throws IOException {
-    InputStream in = null;
+    BufferedInputStream in = null;
     try {
-      in = GameModule.getGameModule()
-                     .getDataArchive()
-                     .getFileStream(ModuleMetaData.ZIP_ENTRY_NAME);
+      in = new BufferedInputStream(
+        GameModule.getGameModule()
+                  .getDataArchive()
+                  .getFileStream(ModuleMetaData.ZIP_ENTRY_NAME));
       archive.addFile(ModuleMetaData.ZIP_ENTRY_NAME, in);
+      in.close();
     }
-    catch (IOException e) {
+    catch (FileNotFoundException e) {
       // No Metatdata in source module, create a fresh copy 
       new ModuleMetaData(GameModule.getGameModule()).save(archive);
     }
@@ -475,7 +476,6 @@ public abstract class AbstractMetaData {
 
       // Track language for localizable attributes
       language = getAttr(attrs, LANG_ATTR); 
-
     }
     
     protected String getAttr(Attributes attrs, String qName) {

@@ -32,20 +32,18 @@ public class Deobfuscator {
   private String plain;
 
   public Deobfuscator(InputStream in) throws IOException {
-    final String s;
+    String s = null;
     try {
       s = IOUtils.toString(in, "UTF-8");
+      in.close();
     }
     catch (UnsupportedEncodingException e) {
-      throw new Error("UTF-8 not supported");
+      // should never happen
+      ErrorDialog.bug(e);
+      throw e;
     }
     finally {
-      try {
-        in.close();
-      }
-      catch (IOException e) {
-        ErrorLog.log(e);
-      }
+      IOUtils.closeQuietly(in);
     }
 
     int offset = Obfuscator.HEADER.length();

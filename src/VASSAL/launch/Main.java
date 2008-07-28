@@ -69,7 +69,9 @@ public class Main {
     System.err.println("-- Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
     System.err.println("-- VASSAL version " + Info.getVersion()); //$NON-NLS-1$
 
-    new Thread(new ErrorLog.Group(), "Main Thread") { //$NON-NLS-1$
+    Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
+
+    new Thread("Main Thread") { //$NON-NLS-1$
       public void run() {
         Runnable runnable = new Runnable() {
           public void run() {

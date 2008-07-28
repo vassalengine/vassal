@@ -204,7 +204,8 @@ public class Translate extends Decorator implements TranslatablePiece {
         x = (int)Math.round(b.getMagnification()*x);
       }
     }
-    catch (Exception e) {
+    // FIXME: review error message
+    catch (NumberFormatException e) {
       
     }
     
@@ -214,7 +215,8 @@ public class Translate extends Decorator implements TranslatablePiece {
         y = (int)Math.round(b.getMagnification()*y);
       }
     }
-    catch (Exception e) {
+    // FIXME: review error message
+    catch (NumberFormatException e) {
       
     }
     

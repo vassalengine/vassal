@@ -55,9 +55,11 @@ import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ErrorLog;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
+import VASSAL.tools.imageop.OpErrorDialog;
 import VASSAL.tools.imageop.Repainter;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
@@ -336,13 +338,14 @@ public class Board extends AbstractConfigurable implements GridContainer {
                 g.drawImage(fim.get(), tx, ty, obs);
               }
               catch (CancellationException e) {
-                ErrorLog.warn(e);
+                // FIXME: bug until we permit cancellation 
+                ErrorDialog.bug(e);
               }
               catch (InterruptedException e) {
-                ErrorLog.warn(e);
+                ErrorDialog.bug(e);
               }
               catch (ExecutionException e) {
-                ErrorLog.warn(e);
+                OpErrorDialog.error(e, op);
               }
   
               requested.remove(tile);
@@ -377,11 +380,14 @@ public class Board extends AbstractConfigurable implements GridContainer {
               g.drawImage(throbber, tx+tw/2-thxoff, ty+th/2-thyoff, tobs);
             }
           }
+// FIXME: should getTileFuture() throw these?
           catch (CancellationException e) {
-            ErrorLog.warn(e);
+            // FIXME: bug until we permit cancellation
+            ErrorDialog.bug(e);
           }
           catch (ExecutionException e) {
-            ErrorLog.warn(e);
+            // FIXME: bug until we figure out why getTileFuture() throws this
+            ErrorDialog.bug(e);
           }
         }
 
@@ -465,13 +471,13 @@ public class Board extends AbstractConfigurable implements GridContainer {
       return (reversed ? Op.rotate(sop, 180) : sop).getImage(null);
     }
     catch (CancellationException e) {
-      ErrorLog.warn(e);
+      ErrorDialog.bug(e);
     }
     catch (InterruptedException e) {
-      ErrorLog.warn(e);
+      ErrorDialog.bug(e);
     }
     catch (ExecutionException e) {
-      ErrorLog.warn(e);
+      OpErrorDialog.error(e, boardImageOp);
     }
     return null;
   }
@@ -555,8 +561,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   * @deprecated Images are now fixed automagically using {@link ImageOp}s.
   */
   @Deprecated
-  public void fixImage() {
-  }
+  public void fixImage() { }
 
   public String locationName(Point p) {
     return grid == null ? null : grid.locationName(localCoordinates(p));

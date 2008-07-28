@@ -89,7 +89,7 @@ import VASSAL.configure.PropertiesWindow;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 
 public class RegionGrid extends AbstractConfigurable implements MapGrid, ConfigureTree.Mutable {
   private static final long serialVersionUID = 1L;
@@ -731,11 +731,12 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         
         // begin dragging
         try {
-          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR), new StringSelection(""), this); // DEBUG
+          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
+                        new StringSelection(""), this); // DEBUG
           dge.getDragSource().addDragSourceMotionListener(this);
         }
         catch (InvalidDnDOperationException e) {
-          ErrorLog.log(e);
+          ErrorDialog.bug(e);
         }
       }
 

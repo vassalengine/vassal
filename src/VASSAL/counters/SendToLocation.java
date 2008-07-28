@@ -249,10 +249,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           switch (destination.charAt(0)) {
           case 'L':
             try {
-              dest = new Point(Integer.parseInt(x.getText(outer)), Integer.parseInt(y.getText(outer)));
+              dest = new Point(Integer.parseInt(x.getText(outer)),
+                               Integer.parseInt(y.getText(outer)));
             }
-            catch (Exception e) {
-              ;
+            // FIXME: review error message
+            catch (NumberFormatException e) {
             }
             Board b = map.getBoardByName(boardName.getText(outer));
             if (b != null && dest != null) {
