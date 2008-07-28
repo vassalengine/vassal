@@ -27,6 +27,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,9 +75,10 @@ public class SVGRenderer {
     // load the SVG
     try {
       doc = docFactory.createDocument(file, in);
+      in.close();
     }
     finally {
-      if (in != null) in.close();
+      IOUtils.closeQuietly(in);
     }
 
     // get the default image size
@@ -166,11 +168,13 @@ public class SVGRenderer {
         GameModule.getGameModule().getDataArchive().getImagePrefix() +
         (new File((new URL(uri)).getPath())).getName();
 
-      final InputStream in = GameModule.getGameModule()
-                                       .getDataArchive()
-                                       .getFileStream(file);
+      BufferedInputStream in = null;
       try {
-        return loadDocument(uri, in);
+        in = new BufferedInputStream(
+          GameModule.getGameModule().getDataArchive().getFileStream(file));
+        final Document doc = loadDocument(uri, in);
+        in.close();
+        return doc;
       }
       finally {
         IOUtils.closeQuietly(in);

@@ -22,6 +22,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -105,8 +106,9 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     ZipInputStream in = null;
     try {
       try {
-        in = new ZipInputStream(GameModule.getGameModule().getDataArchive()
-              .getFileStream("help/" + getContentsResource())); //$NON-NLS-1$
+        in = new ZipInputStream(new BufferedInputStream(
+              GameModule.getGameModule().getDataArchive()
+                .getFileStream("help/" + getContentsResource()))); //$NON-NLS-1$
       }
       // FIXME: review error message
       catch (IOException e) {

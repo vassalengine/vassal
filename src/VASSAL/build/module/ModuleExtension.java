@@ -20,6 +20,7 @@ package VASSAL.build.module;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -115,10 +116,11 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     // Record that we are currently building this Extension
     GameModule.getGameModule().setGpIdSupport(this);
 
-    InputStream in = null;
+    BufferedInputStream in = null;
     try {
-      in = archive.getFileStream(fileName);
+      in = new BufferedInputStream(archive.getFileStream(fileName));
     }
+// FIXME: should this be a FileNotFoundException?
     catch (IOException e) {
     }
 
@@ -129,6 +131,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       try {
         final Document doc = Builder.createDocument(in);
         build(doc.getDocumentElement());
+        in.close();
       }
       // FIXME: review error message
       catch (IOException e) {
