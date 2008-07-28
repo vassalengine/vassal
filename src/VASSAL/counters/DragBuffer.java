@@ -200,11 +200,7 @@ public class DragBuffer {
   }
 
   public void sort(Comparator<GamePiece> comp) {
-    try {
-      Collections.sort(pieces, comp);
-    }
-    catch (Exception e) {
-    }
+    Collections.sort(pieces, comp);
   }
 
   /**
