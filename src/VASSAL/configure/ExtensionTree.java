@@ -88,12 +88,21 @@ public class ExtensionTree extends ConfigureTree {
   }
 
   protected Action buildAddAction(final Configurable target, final Class<? extends Buildable> newConfig) {
-    AbstractAction action = new AbstractAction("Add " + getConfigureName(newConfig)) {
+    return new AbstractAction("Add " + getConfigureName(newConfig)) {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {
+        Configurable ch = null;
         try {
-          final Configurable child = (Configurable) newConfig.newInstance();
+          ch = (Configurable) newConfig.getConstructor().newInstance();
+        }
+        catch (Throwable t) {
+          ErrorUtils.handleNewInstanceFailure(t);
+        }  
+
+        if (ch != null) {
+          final Configurable child = ch;
+
           child.build(null);
           if (child instanceof PieceSlot) {
             ((PieceSlot) child).updateGpId(extension);
@@ -126,13 +135,8 @@ public class ExtensionTree extends ConfigureTree {
             }
           }
         }
-        // FIXME: review error message
-        catch (Exception err) {
-//          ErrorLog.log(err);
-        }
       }
     };
-    return action;
   }
 
   protected Action buildImportAction(final Configurable target) {
@@ -215,23 +219,26 @@ public class ExtensionTree extends ConfigureTree {
             }
           }
           else if (copyData != null) {
-            try {
-              final Configurable copyTarget =
-                (Configurable) copyData.getUserObject();
-              final Configurable clone =
-                copyTarget.getClass().getConstructor().newInstance();
+            final Configurable copyTarget =
+              (Configurable) copyData.getUserObject();
 
+            Configurable clone = null;
+            try {
+              clone = copyTarget.getClass().getConstructor().newInstance();
+            }
+            catch (Throwable t) {
+              ErrorUtils.handleNewInstanceFailure(t);
+            }
+
+            if (clone != null) {
               clone.build(
-                copyTarget.getBuildElement(Builder.createNewDocument()));
+                  copyTarget.getBuildElement(Builder.createNewDocument()));
 
               if (insert(target, clone, getTreeNode(target).getChildCount())) {
                 updateGpIds(clone);
                 extension.add(
                   new ExtensionElement(clone, getPath(getTreeNode(target))));
               }
-            }
-            catch (Throwable t) {
-              ErrorUtils.handleNewInstanceFailure(t);
             }
           }
           cutData = null;
@@ -311,18 +318,21 @@ public class ExtensionTree extends ConfigureTree {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent evt) {
+          Configurable clone = null;
           try {
-            final Configurable clone =
-              target.getClass().getConstructor().newInstance();
+            clone = target.getClass().getConstructor().newInstance();
+          }
+          catch (Throwable t) {
+            ErrorUtils.handleNewInstanceFailure(t);
+          }
+
+          if (clone != null) {
             clone.build(target.getBuildElement(Builder.createNewDocument()));
 
             if (insert((Configurable) parentNode.getUserObject(),
                        clone, parentNode.getChildCount())) {
               extension.add(new ExtensionElement(clone, getPath(parentNode)));
             }
-          }
-          catch (Throwable t) {
-            ErrorUtils.handleNewInstanceFailure(t);
           }
         }
       };

@@ -63,6 +63,7 @@ import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.menu.MenuManager;
@@ -286,17 +287,18 @@ public class BasicModule extends GameModule {
   }
 
   protected void addComponent(Class<? extends Buildable> componentClass) {
+    Buildable child = null;
     try {
-      final Buildable child = componentClass.newInstance();
+      child = componentClass.getConstructor().newInstance();
+    }
+    catch (Throwable t) {
+      ErrorUtils.handleNewInstanceFailure(t);
+    }
+
+    if (child != null) {
       child.build(null);
       child.addTo(this);
       add(child);
-    }
-    catch (InstantiationException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (IllegalAccessException e) {
-      ErrorDialog.bug(e);
     }
   }
   
