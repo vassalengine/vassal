@@ -54,8 +54,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.URLUtils;
 import VASSAL.tools.menu.ChildProxy;
-import VASSAL.tools.menu.ChildProxy;
-import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;

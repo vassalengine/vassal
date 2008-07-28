@@ -115,7 +115,6 @@ public class Editor extends Launcher {
     if (cmdC != null) {
       try {
         cmdC.request(req);
-        req = "NOTIFY_OPEN_OK";
       }
       catch (IOException e) {
         // This is not fatal, since we've successfully opened the module,
