@@ -127,7 +127,7 @@ public class PrivateMap extends Map {
 
   public String getAttributeValueString(String key) {
     if (VISIBLE.equals(key)) {
-      return "" + visibleToAll; //$NON-NLS-1$
+      return String.valueOf(visibleToAll);
     }
     else if (SIDE.equals(key)) {
       return StringArrayConfigurer.arrayToString(owners);

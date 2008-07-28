@@ -65,16 +65,14 @@ public class NodePlayer extends SimplePlayer {
     setStatus(new SimpleStatus("true".equals(p.getProperty(LOOKING)),"true".equals(p.getProperty(AWAY)),p.getProperty(PROFILE,""))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
-
-
   public Properties toProperties() {
     Properties p1 = new Properties();
     if (name != null) {
       p1.put(NAME,name);
     }
     SimpleStatus status = (SimpleStatus)getStatus();
-    p1.put(LOOKING,""+status.isLooking()); //$NON-NLS-1$
-    p1.put(AWAY,""+status.isAway()); //$NON-NLS-1$
+    p1.put(LOOKING, String.valueOf(status.isLooking()));
+    p1.put(AWAY, String.valueOf(status.isAway()));
     String profile = status.getProfile();
     if (profile != null) {
       p1.put(PROFILE,profile);
@@ -83,5 +81,4 @@ public class NodePlayer extends SimplePlayer {
     p.put(ID,id);
     return p;
   }
-
 }

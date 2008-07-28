@@ -209,7 +209,7 @@ public class RandomTextButton extends DiceButton {
 
   public String getAttributeValueString(String key) {
     if (NUMERIC.equals(key)) {
-      return "" + isNumeric; //$NON-NLS-1$
+      return String.valueOf(isNumeric);
     }
     else if (FACES.equals(key)) {
       return StringArrayConfigurer.arrayToString(m_faces);

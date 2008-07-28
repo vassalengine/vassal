@@ -18,6 +18,8 @@
  */
 package VASSAL.configure;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -25,6 +27,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import VASSAL.build.GameModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
@@ -34,7 +39,7 @@ import VASSAL.tools.filechooser.FileChooser;
  * A Configurer for java.io.File values
  */
 public class FileConfigurer extends Configurer {
-  protected VASSAL.tools.ArchiveWriter archive;
+  protected ArchiveWriter archive;
   protected JPanel p;
   protected JTextField tf;
   protected FileChooser fc;
@@ -117,19 +122,21 @@ public class FileConfigurer extends Configurer {
       p.add(new JLabel(getName()));
       JButton b = new JButton("Select");
       p.add(b);
+
       tf = new JTextField(getValueString());
       tf.setEditable(editable);
-      tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width, tf.getPreferredSize().height));
-      tf.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-        public void changedUpdate(javax.swing.event.DocumentEvent evt) {
+      tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
+                                               tf.getPreferredSize().height));
+      tf.getDocument().addDocumentListener(new DocumentListener() {
+        public void changedUpdate(DocumentEvent evt) {
           update();
         }
 
-        public void insertUpdate(javax.swing.event.DocumentEvent evt) {
+        public void insertUpdate(DocumentEvent evt) {
           update();
         }
 
-        public void removeUpdate(javax.swing.event.DocumentEvent evt) {
+        public void removeUpdate(DocumentEvent evt) {
           update();
         }
 
@@ -165,11 +172,12 @@ public class FileConfigurer extends Configurer {
   }
 
   public static void main(String args[]) {
-    JFrame f = new JFrame();
-    FileConfigurer c = new ImageConfigurer(null, "Test file", new VASSAL.tools.ArchiveWriter("testArchive"));
-    c.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-      public void propertyChange(java.beans.PropertyChangeEvent evt) {
-        System.err.println("" + evt.getNewValue());
+    final JFrame f = new JFrame();
+    final FileConfigurer c =
+      new ImageConfigurer(null, "Test file", new ArchiveWriter("testArchive"));
+    c.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        System.err.println(String.valueOf(evt.getNewValue()));
       }
     });
     f.getContentPane().add(c.getControls());

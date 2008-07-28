@@ -35,7 +35,7 @@ public class KeySpecifier extends JPanel implements KeyListener {
 
   public KeySpecifier(char c) {
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-    key = "" + c;
+    key = String.valueOf(c);
 
     add(new JLabel("CTRL-"));
     tf.setMaximumSize(tf.getPreferredSize());
@@ -79,7 +79,7 @@ public class KeySpecifier extends JPanel implements KeyListener {
 
   public void setKey(char c) {
     if (Character.isDefined(c)) {
-      setKey("" + c);
+      setKey(String.valueOf(c));
     }
     else {
       setKey("");

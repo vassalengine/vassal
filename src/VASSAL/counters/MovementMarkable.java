@@ -97,7 +97,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   }
 
   public String myGetState() {
-    return "" + hasMoved;
+    return String.valueOf(hasMoved);
   }
 
   public String myGetType() {

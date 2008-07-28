@@ -116,7 +116,7 @@ public class BoxWidget extends Widget
   private String getKey(Object o) {
     String s = keys.get(o);
     if (s == null) {
-      s = "" + new Integer(count++);
+      s = String.valueOf(count++);
       keys.put(o, s);
     }
     return s;

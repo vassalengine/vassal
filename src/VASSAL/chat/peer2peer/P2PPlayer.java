@@ -48,8 +48,8 @@ public class P2PPlayer extends SimplePlayer {
 
   private void setProps() {
     props.put(NAME, getName());
-    props.put(LOOKING, "" + ((SimpleStatus)status).isLooking()); //$NON-NLS-1$
-    props.put(AWAY, "" + ((SimpleStatus)getStatus()).isAway()); //$NON-NLS-1$
+    props.put(LOOKING, String.valueOf(((SimpleStatus)status).isLooking()));
+    props.put(AWAY, String.valueOf(((SimpleStatus)getStatus()).isAway()));
     props.put(PROFILE, ((SimpleStatus)status).getProfile());
     info.setChatName(new PropertiesEncoder(props).getStringValue());
   }

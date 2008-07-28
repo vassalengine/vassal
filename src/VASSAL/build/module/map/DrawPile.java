@@ -325,10 +325,10 @@ public class DrawPile extends SetupStack {
   }
   public String getAttributeValueString(String key) {
     if (WIDTH.equals(key)) {
-      return "" + dummy.getSize().width;
+      return String.valueOf(dummy.getSize().width);
     }
     else if (HEIGHT.equals(key)) {
-      return "" + dummy.getSize().height;
+      return String.valueOf(dummy.getSize().height);
     }
     else if (FACE_DOWN.equals(key)) {
       return dummy.getFaceDownOption();
@@ -340,13 +340,13 @@ public class DrawPile extends SetupStack {
       return dummy.getShuffleOption();
     }
     else if (REVERSIBLE.equals(key)) {
-      return "" + dummy.isReversible();
+      return String.valueOf(dummy.isReversible());
     }
     else if (ALLOW_MULTIPLE.equals(key)) {
-      return "" + dummy.isAllowMultipleDraw();
+      return String.valueOf(dummy.isAllowMultipleDraw());
     }
     else if (ALLOW_SELECT.equals(key)) {
-      return "" + dummy.isAllowSelectDraw();
+      return String.valueOf(dummy.isAllowSelectDraw());
     }
     else if (SELECT_DISPLAY_PROPERTY.equals(key)) {
       return dummy.getSelectDisplayProperty();
@@ -355,22 +355,22 @@ public class DrawPile extends SetupStack {
       return dummy.getSelectSortProperty();
     }
     else if (DRAW.equals(key)) {
-      return "" + dummy.isDrawOutline();
+      return String.valueOf(dummy.isDrawOutline());
     }
     else if (COLOR.equals(key)) {
       return ColorConfigurer.colorToString(dummy.getOutlineColor());
     }
     else if (MAXSTACK.equals(key)) {
-      return "" + dummy.getMaxStack();
+      return String.valueOf(dummy.getMaxStack());
     }
     else if (EXPRESSIONCOUNTING.equals(key)) {
-      return "" + dummy.doesExpressionCounting();
+      return String.valueOf(dummy.doesExpressionCounting());
     }
     else if (COUNTEXPRESSIONS.equals(key)) {
       return StringArrayConfigurer.arrayToString(dummy.getCountExpressions());
     }
     else if (RESHUFFLABLE.equals(key)) {
-      return "" + (dummy.getReshuffleCommand().length() > 0);
+      return String.valueOf(dummy.getReshuffleCommand().length() > 0);
     }
     else if (RESHUFFLE_COMMAND.equals(key)) {
       return dummy.getReshuffleCommand();

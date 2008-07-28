@@ -253,7 +253,7 @@ public abstract class Builder {
     for (int i = 0; i < 500000; ++i) {
       buf.append("  "); //$NON-NLS-1$
       if (i % 10000 == 0) {
-        System.err.println("" + buf.length()); //$NON-NLS-1$
+        System.err.println(buf.length()); //$NON-NLS-1$
       }
     }
   }

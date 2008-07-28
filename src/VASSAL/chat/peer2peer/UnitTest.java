@@ -123,7 +123,7 @@ public class UnitTest implements UserDialog {
             reader = new PeerReader(s.getInputStream());
             while (true) {
               final String msg = reader.readLine();
-              System.err.println("" + msg); //$NON-NLS-1$
+              System.err.println(msg == null ? "" : msg); //$NON-NLS-1$
               if (msg == null) {
                 break;
               }

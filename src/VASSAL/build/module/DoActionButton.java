@@ -266,11 +266,13 @@ public class DoActionButton extends AbstractConfigurable {
   }
   
   protected String encodeHotkeys() {
-     SequenceEncoder se = new SequenceEncoder(',');
+    final SequenceEncoder se = new SequenceEncoder(',');
     for (KeyStroke key : hotkeys) {
       se.append(HotKeyConfigurer.encode(key));
     }
-    return "" + se.getValue();
+
+    final String val = se.getValue();
+    return val == null ? "" : val;
   }
 
   protected List<KeyStroke> decodeHotkeys(String s) {

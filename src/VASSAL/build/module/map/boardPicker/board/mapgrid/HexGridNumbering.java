@@ -109,7 +109,7 @@ public class HexGridNumbering extends RegularGridNumbering {
 
   public String getAttributeValueString(String key) {
     if (STAGGER.equals(key)) {
-      return "" + stagger;
+      return String.valueOf(stagger);
     }
     else {
       return super.getAttributeValueString(key);

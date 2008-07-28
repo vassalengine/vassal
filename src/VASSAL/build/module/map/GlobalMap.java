@@ -193,7 +193,7 @@ public class GlobalMap implements AutoConfigurable,
 
   public String getAttributeValueString(String key) {
     if (SCALE.equals(key)) {
-      return "" + scale;
+      return String.valueOf(scale);
     }
     else if (COLOR.equals(key)) {
       return ColorConfigurer.colorToString(rectColor);

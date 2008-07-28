@@ -341,10 +341,10 @@ public class FreeRotator extends Decorator
 
   public String myGetState() {
     if (validAngles.length == 1) {
-      return "" + validAngles[0];
+      return String.valueOf(validAngles[0]);
     }
     else {
-      return "" + angleIndex;
+      return String.valueOf(angleIndex);
     }
   }
 

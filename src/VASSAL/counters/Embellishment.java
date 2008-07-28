@@ -1220,8 +1220,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       resetKey.setValue(e.resetKey);
       resetCommand.setText(e.resetCommand);
       resetLevel.setText(e.resetLevel.getFormat());
-      xOffInput.setText("" + e.xOff);
-      yOffInput.setText("" + e.yOff);
+      xOffInput.setText(String.valueOf(e.xOff));
+      yOffInput.setText(String.valueOf(e.yOff));
       images.setImageList(e.imageName);
 
       followConfig.setValue(Boolean.valueOf(e.followProperty));

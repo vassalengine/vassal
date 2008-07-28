@@ -129,8 +129,11 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
   }
 
   public String getType() {
-    final SequenceEncoder se = new SequenceEncoder(cloneKey > 0 ? "" + cloneKey : "", ';');
-    return ID + se.append(deleteKey > 0 ? "" + deleteKey : "").append(imageName).append(commonName).getValue();
+    final SequenceEncoder se =
+      new SequenceEncoder(cloneKey > 0 ? String.valueOf(cloneKey) : "", ';');
+    return ID + se.append(deleteKey > 0 ? String.valueOf(deleteKey) : "")
+                  .append(imageName)
+                  .append(commonName).getValue();
   }
 
   public void setMap(Map map) {

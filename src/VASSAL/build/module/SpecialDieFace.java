@@ -108,7 +108,7 @@ public class SpecialDieFace extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (NUMERICAL_VALUE.equals(key)) {
-      return "" + value; //$NON-NLS-1$
+      return String.valueOf(value);
     }
     else if (ICON.equals(key)) {
       return imageName;

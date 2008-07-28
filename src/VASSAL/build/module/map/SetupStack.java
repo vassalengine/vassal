@@ -294,10 +294,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       return location;
     }
     else if (X_POSITION.equals(key)) {
-      return "" + pos.x;
+      return String.valueOf(pos.x);
     }
     else if (Y_POSITION.equals(key)) {
-      return "" + pos.y;
+      return String.valueOf(pos.y);
     }
     else {
       return null;

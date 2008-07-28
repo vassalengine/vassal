@@ -203,14 +203,14 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   public String getAttributeValueString(String key) {
     if (VISIBLE.equals(key)) {
-      return "" + visible;
+      return String.valueOf(visible);
     }
     else if (FONT_SIZE.equals(key)) {
-      return "" + fontSize;
+      return String.valueOf(fontSize);
     }
-  else if (SNAPTO.equals(key)) {
-    return "" + snapTo;
-  }
+    else if (SNAPTO.equals(key)) {
+      return String.valueOf(snapTo);
+    }
     return null;
   }
 

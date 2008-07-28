@@ -367,13 +367,13 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   public String getAttributeValueString(String key) {
     if (DRAW_RANGE.equals(key)) {
-      return "" + drawRange;
+      return String.valueOf(drawRange);
     }
     else if (NAME.equals(key)) {
       return getConfigureName();
     }
     else if (RANGE_SCALE.equals(key)) {
-      return "" + rangeScale;
+      return String.valueOf(rangeScale);
     }
     else if (RANGE_ROUNDING.equals(key)) {
       if (rangeRounding == 1.0) {
@@ -387,7 +387,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       }
     }
     else if (HIDE_COUNTERS.equals(key)) {
-      return "" + hideCounters;
+      return String.valueOf(hideCounters);
     }
     else if (HIDE_OPACITY.equals(key)) {
       return String.valueOf(hideOpacity);

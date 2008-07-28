@@ -99,55 +99,55 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
 
   public String getAttributeValueString(String key) {
     if (FIRST.equals(key)) {
-      return "" + first;
+      return String.valueOf(first);
     }
     else if (SEP.equals(key)) {
       return sep;
     }
     else if (H_TYPE.equals(key)) {
-      return "" + hType;
+      return String.valueOf(hType);
     }
     else if (V_TYPE.equals(key)) {
-      return "" + vType;
+      return String.valueOf(vType);
     }
     else if (H_LEADING.equals(key)) {
-      return "" + hLeading;
+      return String.valueOf(hLeading);
     }
     else if (V_LEADING.equals(key)) {
-      return "" + vLeading;
+      return String.valueOf(vLeading);
     }
     else if (H_OFF.equals(key)) {
-      return "" + hOff;
+      return String.valueOf(hOff);
     }
     else if (V_OFF.equals(key)) {
-      return "" + vOff;
+      return String.valueOf(vOff);
     }
     else if (H_DESCEND.equals(key)) {
-      return "" + hDescending;
+      return String.valueOf(hDescending);
     }
     else if (V_DESCEND.equals(key)) {
-      return "" + vDescending;
+      return String.valueOf(vDescending);
     }
     else if (FONT_SIZE.equals(key)) {
-      return "" + fontSize;
+      return String.valueOf(fontSize);
     }
     else if (COLOR.equals(key)) {
       return ColorConfigurer.colorToString(color);
     }
     else if (VISIBLE.equals(key)) {
-      return "" + visible;
+      return String.valueOf(visible);
     }
     else if (LOCATION_FORMAT.equals(key)) {
       return locationFormat;
     }
     else if (ROTATE_TEXT.equals(key)) {
-      return "" + rotateTextDegrees;
+      return String.valueOf(rotateTextDegrees);
     }
     else if (H_DRAW_OFF.equals(key)) {
-      return "" + hDrawOff;
+      return String.valueOf(hDrawOff);
     }
     else if (V_DRAW_OFF.equals(key)) {
-      return "" + vDrawOff;
+      return String.valueOf(vDrawOff);
     }
     else {
       return null;

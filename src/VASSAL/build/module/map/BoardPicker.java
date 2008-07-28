@@ -712,17 +712,19 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
 
   public String encode(Command c) {
     if (c instanceof SetBoards && map != null && ((SetBoards) c).target == this) {
-      SequenceEncoder se = new SequenceEncoder(map.getIdentifier() + ID, '\t');
-      List<Board> bds = ((SetBoards) c).boards;
+      final SequenceEncoder se =
+        new SequenceEncoder(map.getIdentifier() + ID, '\t');
+      final List<Board> bds = ((SetBoards) c).boards;
       if (bds != null) {
         for (Board b : bds) {
           if (b.getName() != null) {
-            SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
+            final SequenceEncoder se2 = new SequenceEncoder(b.getName(), '/');
             if (b.isReversed()) {
               se2.append("rev"); //$NON-NLS-1$
             }
-            se.append(se2.getValue());
-            se.append("" + b.relativePosition().x).append("" + b.relativePosition().y); //$NON-NLS-1$ //$NON-NLS-2$
+            se.append(se2.getValue())
+              .append(b.relativePosition().x)
+              .append(b.relativePosition().y);
           }
         }
       }

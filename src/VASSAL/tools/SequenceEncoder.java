@@ -86,6 +86,10 @@ public class SequenceEncoder {
     return append(String.valueOf(i));
   }
 
+  public SequenceEncoder append(long l) {
+    return append(String.valueOf(l));
+  }
+
   public SequenceEncoder append(double d) {
     return append(String.valueOf(d));
   }
@@ -197,6 +201,17 @@ public class SequenceEncoder {
       if (val != null) {
         try {
           defaultValue = Integer.parseInt(nextToken());
+        }
+        catch (NumberFormatException e) {
+        }
+      }
+      return defaultValue;
+    }
+
+    public long nextLong(long defaultValue) {
+      if (val != null) {
+        try {
+          defaultValue = Long.parseLong(nextToken());
         }
         catch (NumberFormatException e) {
         }

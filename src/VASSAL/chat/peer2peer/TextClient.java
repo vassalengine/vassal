@@ -44,7 +44,7 @@ public class TextClient {
   }
 
   private void statusReceived(PropertyChangeEvent evt) {
-    System.out.println(""+evt.getNewValue()); //$NON-NLS-1$
+    System.out.println(String.valueOf(evt.getNewValue())); //$NON-NLS-1$
   }
 
   private void incomingMessageReceived(PropertyChangeEvent evt) {

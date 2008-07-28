@@ -163,19 +163,19 @@ public class StackMetrics extends AbstractConfigurable {
 
   public String getAttributeValueString(String name) {
     if (EXSEP_X.equals(name)) {
-      return "" + exSepX;
+      return String.valueOf(exSepX);
     }
     else if (EXSEP_Y.equals(name)) {
-      return "" + exSepY;
+      return String.valueOf(exSepY);
     }
     else if (UNEXSEP_X.equals(name)) {
-      return "" + unexSepX;
+      return String.valueOf(unexSepX);
     }
     else if (UNEXSEP_Y.equals(name)) {
-      return "" + unexSepY;
+      return String.valueOf(unexSepY);
     }
     else if (DISABLED.equals(name)) {
-      return "" + disabled;
+      return String.valueOf(disabled);
     }
     else if (TOP_KEY.equals(name)) {
       return HotKeyConfigurer.encode(topKey);

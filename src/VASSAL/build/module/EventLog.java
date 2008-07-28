@@ -150,7 +150,7 @@ public class EventLog extends AbstractBuildable
     final SequenceEncoder se = new SequenceEncoder('|');
     for (Event e : events) {
       final SequenceEncoder sub = new SequenceEncoder(',');
-      sub.append("" + e.getTime()) //$NON-NLS-1$
+      sub.append(e.getTime())
          .append(e.getUser())
          .append(e.getAction());
       se.append(sub.getValue());
@@ -161,13 +161,13 @@ public class EventLog extends AbstractBuildable
   /** Use {@link #encodedEvents(Iterable<Event>)} instead. */
   @Deprecated
   public static String encodeEvents(Enumeration e) {
-    SequenceEncoder se = new SequenceEncoder('|');
+    final SequenceEncoder se = new SequenceEncoder('|');
     while (e.hasMoreElements()) {
-      Event evt = (Event) e.nextElement();
-      SequenceEncoder sub = new SequenceEncoder(',');
-      sub.append("" + evt.getTime()) //$NON-NLS-1$
-          .append(evt.getUser())
-          .append(evt.getAction());
+      final Event evt = (Event) e.nextElement();
+      final SequenceEncoder sub = new SequenceEncoder(',');
+      sub.append(evt.getTime())
+         .append(evt.getUser())
+         .append(evt.getAction());
       se.append(sub.getValue());
     }
     return se.getValue();

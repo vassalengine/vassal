@@ -208,13 +208,13 @@ public class PanelWidget extends Widget {
       return getConfigureName();
     }
     else if (FIXED.equals(name)) {
-      return "" + fixed;
+      return String.valueOf(fixed);
     }
     else if (COLS.equals(name)) {
-      return "" + nColumns;
+      return String.valueOf(nColumns);
     }
     else if (VERTICAL.equals(name)) {
-      return "" + vertical;
+      return String.valueOf(vertical);
     }
     return null;
   }

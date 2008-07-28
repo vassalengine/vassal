@@ -136,10 +136,10 @@ public class Region extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (X.equals(key)) {
-      return "" + origin.x;
+      return String.valueOf(origin.x);
     }
     else if (Y.equals(key)) {
-      return "" + origin.y;
+      return String.valueOf(origin.y);
     }
     return null;
   }

@@ -447,25 +447,25 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return getConfigureName();
     }
     else if (RESULT_CHATTER.equals(key)) {
-      return "" + reportResultAsText; //$NON-NLS-1$
+      return String.valueOf(reportResultAsText);
     }
     else if (CHAT_RESULT_FORMAT.equals(key)) {
       return chatResultFormat;
     }
     else if (RESULT_BUTTON.equals(key)) {
-      return "" + reportResultInButton; //$NON-NLS-1$
+      return String.valueOf(reportResultInButton);
     }
     else if (RESULT_WINDOW.equals(key)) {
-      return "" + reportResultInWindow; //$NON-NLS-1$
+      return String.valueOf(reportResultInWindow);
     }
     else if (WINDOW_TITLE_RESULT_FORMAT.equals(key)) {
       return windowTitleResultFormat;
     }
     else if (WINDOW_X.equals(key)) {
-      return "" + resultsIcon.width; //$NON-NLS-1$
+      return String.valueOf(resultsIcon.width);
     }
     else if (WINDOW_Y.equals(key)) {
-      return "" + resultsIcon.height; //$NON-NLS-1$
+      return String.valueOf(resultsIcon.height);
     }
     else if (BACKGROUND_COLOR.equals(key)) {
       return ColorConfigurer.colorToString(bgColor);

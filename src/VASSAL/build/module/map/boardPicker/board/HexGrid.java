@@ -286,31 +286,31 @@ public class HexGrid extends AbstractConfigurable
 
   public String getAttributeValueString(String key) {
     if (X0.equals(key)) {
-      return "" + origin.x;
+      return String.valueOf(origin.x);
     }
     else if (Y0.equals(key)) {
-      return "" + origin.y;
+      return String.valueOf(origin.y);
     }
     else if (DY.equals(key)) {
-      return "" + dy;
+      return String.valueOf(dy);
     }
     else if (DX.equals(key)) {
-      return "" + dx;
+      return String.valueOf(dx);
     }
     else if (CORNERS.equals(key)) {
-      return "" + cornersLegal;
+      return String.valueOf(cornersLegal);
     }
     else if (EDGES.equals(key)) {
-      return "" + edgesLegal;
+      return String.valueOf(edgesLegal);
     }
     else if (SIDEWAYS.equals(key)) {
-      return "" + sideways;
+      return String.valueOf(sideways);
     }
     else if (VISIBLE.equals(key)) {
-      return "" + visible;
+      return String.valueOf(visible);
     }
     else if (DOTS_VISIBLE.equals(key)) {
-      return "" + dotsVisible;
+      return String.valueOf(dotsVisible);
     }
     else if (COLOR.equals(key)) {
       return visible ? ColorConfigurer.colorToString(color) : null;

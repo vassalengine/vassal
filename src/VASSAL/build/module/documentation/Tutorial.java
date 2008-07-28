@@ -160,7 +160,7 @@ public class Tutorial extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (LAUNCH_ON_STARTUP.equals(key)) {
-      return "" + launchOnFirstStartup; //$NON-NLS-1$
+      return String.valueOf(launchOnFirstStartup);
     }
     else if (PROMPT_MESSAGE.equals(key)) {
       return promptMessage;
