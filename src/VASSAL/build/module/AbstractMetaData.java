@@ -228,7 +228,7 @@ public abstract class AbstractMetaData {
       zip.close();
     }
     catch (ZipException e) {
-      ErrorLog.log(e);
+      // Ignore. This (usually) means that the module has no metadata.
     }
     catch (IOException e) {
       ErrorLog.log(e);
