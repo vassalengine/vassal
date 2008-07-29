@@ -488,15 +488,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return Op.load(name).getImage(null);
     }
     catch (CancellationException e) {
-      // FIXME: use chaining when we move to 1.6+
       throw (IOException) new IOException().initCause(e);
     }
     catch (InterruptedException e) {
-      // FIXME: use chaining when we move to 1.6+
       throw (IOException) new IOException().initCause(e);
     }
     catch (ExecutionException e) {
-      // FIXME: use chaining when we move to 1.6+
       throw (IOException) new IOException().initCause(e);
     }
   }
