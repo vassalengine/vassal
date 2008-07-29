@@ -67,8 +67,9 @@ public class VassalVersionTokenizer implements VersionTokenizer {
   // alone need to be maintined here. (E.g., the 3.1.0 tags may be removed
   // as soon as 3.1.1 is released.)
   static {
-    tags.put("3.1.0-beta1", 3606);
-    tags.put("3.1.0-beta2", 3664);
+    // 3.1.0
+    tags.put("beta1", 3606);
+    tags.put("beta2", 3664);
   }
 
   /**
@@ -175,6 +176,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
         "1.2.foo",
         "1.2-foo",
         "1.2-svn1234.8",
+        "3.1.0-beta2",
         "3.0b6"
       };
     }
