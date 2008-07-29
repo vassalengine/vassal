@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.ReadErrorDialog;
 
 /**
@@ -35,28 +36,26 @@ public class OpErrorDialog {
 
   public static void error(ExecutionException e, ImageOp op) {
     // unpack the exception
-    for (Throwable c = e; c != null; c = c.getCause()) {
-      if (c instanceof IOException) {
-        for (ImageOp src = op; src != null; src = src.getSource()) {
-          if (src instanceof SourceOp) {
-            // we had a file read error
-            ReadErrorDialog.error(e, (IOException) c,
-                                  ((SourceOp) src).getName());
-            return;
-          }
+    final IOException ioe = ErrorUtils.getAncestorOfClass(IOException.class, e);
+    if (ioe != null) {
+      for (ImageOp src = op; src != null; src = src.getSource()) {
+        if (src instanceof SourceOp) {
+          // we had a file read error
+          ReadErrorDialog.error(e, ioe, ((SourceOp) src).getName());
+          return;
         }
-
-        // otherwise we had some other kind of I/O problem
-        ErrorDialog.error(
-          Resources.getString("Error.io_error"),
-          Resources.getString("Error.io_error"),
-          e,
-          Resources.getString("IOErrorDialog.io_error"),
-          c.getMessage()
-        );
-
-        return;
       }
+
+      // otherwise we had some other kind of I/O problem
+      ErrorDialog.error(
+        Resources.getString("Error.io_error"),
+        Resources.getString("Error.io_error"),
+        e,
+        Resources.getString("IOErrorDialog.io_error"),
+        ioe.getMessage()
+      );
+
+      return;
     }
 
     // otherwise this is a bug
