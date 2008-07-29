@@ -34,11 +34,8 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -564,21 +561,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         imagePainter[value-1] == null ||
         imagePainter[value-1].getSource() == null) return null;
     
-    try {
-      return imagePainter[value-1].getSource().getImage(null);
-    }
-    catch (CancellationException e) {
-      // FIXME: use chaining when we move to 1.6+
-      throw (IOException) new IOException().initCause(e);
-    }
-    catch (InterruptedException e) {
-      // FIXME: use chaining when we move to 1.6+
-      throw (IOException) new IOException().initCause(e);
-    }
-    catch (ExecutionException e) {
-      // FIXME: use chaining when we move to 1.6+
-      throw (IOException) new IOException().initCause(e);
-    }
+    return imagePainter[value-1].getSource().getImage();
   }
 
   public Rectangle boundingBox() {

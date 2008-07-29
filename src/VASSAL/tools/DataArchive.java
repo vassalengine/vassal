@@ -27,8 +27,6 @@ import java.awt.image.FilteredImageSource;
 import java.awt.Toolkit;
 import java.awt.Rectangle;
 import java.util.Collection;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipInputStream;
 import javax.swing.ImageIcon;
 import VASSAL.tools.imageop.Op;
@@ -484,18 +482,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated
   public Image getCachedImage(String name) throws IOException {
     // An ugly hack, but nothing should be using this method anyway.
-    try {
-      return Op.load(name).getImage(null);
-    }
-    catch (CancellationException e) {
-      throw (IOException) new IOException().initCause(e);
-    }
-    catch (InterruptedException e) {
-      throw (IOException) new IOException().initCause(e);
-    }
-    catch (ExecutionException e) {
-      throw (IOException) new IOException().initCause(e);
-    }
+    return Op.load(name).getImage();
   }
 
   /**
@@ -510,18 +497,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated
   public Image getTransformedImage(Image base, double scale, double theta) {
     // An ugly hack, but nothing should be using this method anyway.
-    try {
-      return Op.rotateScale(Op.load(base), theta, scale).getImage(null);
-    }
-    catch (CancellationException e) {
-      return null;
-    }
-    catch (InterruptedException e) {
-      return null;
-    }
-    catch (ExecutionException e) {
-      return null;
-    }
+    return Op.rotateScale(Op.load(base), theta, scale).getImage();
   }
   
   /**
