@@ -75,6 +75,9 @@ public class ModuleManager {
       System.exit(1);
     }
 
+    // do this before the graphics subsystem fires up or it won't stick
+    System.setProperty("swing.boldMetal", "false");
+
     // set up security key so other users can't talk with our socket
     final LongConfigurer keyConfig =
       new LongConfigurer(MODULE_MANAGER_KEY, null, -1L);
