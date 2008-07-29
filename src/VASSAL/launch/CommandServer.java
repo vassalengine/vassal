@@ -64,9 +64,8 @@ public abstract class CommandServer implements Runnable {
         out.writeObject(reply(cmd));
       }
 
-      out.close();
-      in.close();
       clientSocket.close();
+      serverSocket.close();
     }
     catch (ClassNotFoundException e) {
       ErrorDialog.bug(e);
@@ -78,9 +77,8 @@ public abstract class CommandServer implements Runnable {
       CommunicationErrorDialog.error(e);
     }
     finally {
-      IOUtils.closeQuietly(in);
-      IOUtils.closeQuietly(out);
       IOUtils.closeQuietly(clientSocket);
+      IOUtils.closeQuietly(serverSocket);
     }
   }
 }
