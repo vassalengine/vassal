@@ -24,11 +24,13 @@ import java.awt.Image;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -37,6 +39,7 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
 
 /**
  * A Configurer for configuring Configurable components
@@ -65,7 +68,7 @@ public class AutoConfigurer extends Configurer
     });
 
     p = new JPanel();
-    p.setLayout(new javax.swing.BoxLayout(p, javax.swing.BoxLayout.Y_AXIS));
+    p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
     String[] name = c.getAttributeNames();
     String[] prompt = c.getAttributeDescriptions();
@@ -91,7 +94,7 @@ public class AutoConfigurer extends Configurer
     }
   }
 
-  public static Configurer createConfigurer(Class type,
+  public static Configurer createConfigurer(Class<?> type,
                                             String key,
                                             String prompt,
                                             AutoConfigurable target) {
@@ -119,7 +122,7 @@ public class AutoConfigurer extends Configurer
     else if (KeyStroke.class.isAssignableFrom(type)) {
       config = new HotKeyConfigurer(key, prompt);
     }
-    else if (java.io.File.class.isAssignableFrom(type)) {
+    else if (File.class.isAssignableFrom(type)) {
       config = new FileConfigurer(key, prompt,
         GameModule.getGameModule().getArchiveWriter());
     }
@@ -130,34 +133,34 @@ public class AutoConfigurer extends Configurer
       config = new IconConfigurer(key,prompt,null);
     }
     else if (PropertyExpression.class.isAssignableFrom(type)) {
-      config = new PropertyExpressionConfigurer(key,prompt);
+      config = new PropertyExpressionConfigurer(key, prompt);
     }
     else if (StringEnum.class.isAssignableFrom(type)) {
+      StringEnum se = null;
       try {
-        final String[] validValues =
-          ((StringEnum) type.newInstance()).getValidValues(target);
+        se = (StringEnum) type.getConstructor().newInstance();
+      }
+      catch (Throwable t) {
+        ErrorUtils.handleNewInstanceFailure(t);
+        config = new StringConfigurer(key, prompt);
+      }
+
+      if (se != null) {
+        final String[] validValues = se.getValidValues(target);
         config = new StringEnumConfigurer(key, prompt, validValues);
-      }
-      catch (IllegalAccessException e) {
-        ErrorDialog.bug(e);
-        config = new StringConfigurer(key, prompt);
-      }
-      catch (InstantiationException e) {
-        ErrorDialog.bug(e);
-        config = new StringConfigurer(key, prompt);
       }
     }
     else if (ConfigurerFactory.class.isAssignableFrom(type)) {
+      ConfigurerFactory cf = null;
       try {
-        final ConfigurerFactory f = (ConfigurerFactory) type.newInstance();
-        config = f.getConfigurer(target, key,prompt);
+        cf = (ConfigurerFactory) type.getConstructor().newInstance();
       }
-      catch (IllegalAccessException e) {
-// FIXME: do this, or throw?
-        ErrorDialog.bug(e);
+      catch (Throwable t) {
+        ErrorUtils.handleNewInstanceFailure(t);
       }
-      catch (InstantiationException e) {
-        ErrorDialog.bug(e);
+
+      if (cf != null) {
+        config = cf.getConfigurer(target, key, prompt);
       }
     }
     else {
