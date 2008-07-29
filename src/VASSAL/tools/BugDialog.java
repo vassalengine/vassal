@@ -1,4 +1,21 @@
-
+/*
+ * $Id: Info.java 3905 2008-07-28 13:55:03Z uckelman $
+ *
+ * Copyright (c) 2008 by Joel Uckelman
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.tools;
 
 import java.awt.Component;
@@ -8,6 +25,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -37,9 +55,15 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import VASSAL.Info;
 //import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.FlowLabel;
 
+/**
+ * 
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class BugDialog {
   private static final long serialVersionUID = 1L;
 
@@ -86,7 +110,7 @@ public class BugDialog {
     String tmp = null;
     FileReader r = null;
     try {
-      r = new FileReader("errorLog");
+      r = new FileReader(new File(Info.getConfDir(), "errorLog"));
       tmp = IOUtils.toString(r);
     }
     catch (IOException e) {
