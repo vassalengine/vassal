@@ -130,7 +130,9 @@ public class HotKeyConfigurer extends Configurer implements KeyListener {
    * Decode a String into a KeyStroke
    */
   public static KeyStroke decode(String s) {
-    int index = s.indexOf(","); //$NON-NLS-1$
+    final int index = s.indexOf(","); //$NON-NLS-1$
+    if (index < 0) return null;
+
     try {
       return KeyStroke.getKeyStroke
           (Integer.parseInt(s.substring(0, index)),
