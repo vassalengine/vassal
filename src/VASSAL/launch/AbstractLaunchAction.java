@@ -22,6 +22,7 @@ package VASSAL.launch;
 import java.awt.Cursor;
 import java.awt.Window;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
@@ -120,6 +121,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     for (CommandClient child : children) {
       try {
         if ("NOK".equals(child.request("REQUEST_CLOSE"))) return false;
+      }
+      catch (EOFException e) {
+        // Normal. Child closed.
       }
       catch (IOException e) {
         CommunicationErrorDialog.error(e);
