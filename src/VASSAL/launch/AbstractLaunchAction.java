@@ -166,11 +166,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     protected final LaunchRequest lr =
       new LaunchRequest(AbstractLaunchAction.this.lr); 
 
-    protected ServerSocket serverSocket;
-    protected Socket clientSocket;
+    protected ServerSocket serverSocket = null;
+    protected Socket clientSocket = null;
   
-    protected CommandClient cmdC;
-    protected CommandServer cmdS;
+    protected CommandClient cmdC = null;
+    protected CommandServer cmdS = null;
 
     @Override
     public Void doInBackground() throws InterruptedException, IOException {
@@ -228,7 +228,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
 
       // create a socket for communicating which the child process
-      final ServerSocket serverSocket = new ServerSocket(0);
+      serverSocket = new ServerSocket(0);
       cmdS = new LaunchCommandServer(serverSocket);
       new Thread(cmdS).start();
 
@@ -281,7 +281,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       new Thread(new StreamPump(p.getInputStream(), System.out)).start();
 
       // create the client for the child's socket
-      cmdC = new CommandClient(new Socket((String) null, childPort));
+      clientSocket = new Socket((String) null, childPort);
+      cmdC = new CommandClient(clientSocket);
       children.add(cmdC);
 
       // block until the process ends
