@@ -19,6 +19,7 @@
 
 package VASSAL.launch;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -69,6 +70,9 @@ public abstract class CommandServer implements Runnable {
     }
     catch (ClassNotFoundException e) {
       ErrorDialog.bug(e);
+    }
+    catch (EOFException e) {
+      // Normal. This happens when the socket is closed from the other end.
     }
     catch (IOException e) {
       CommunicationErrorDialog.error(e);
