@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
@@ -59,9 +60,17 @@ public abstract class CommandServer implements Runnable {
       out = new ObjectOutputStream(clientSocket.getOutputStream());
       in = new ObjectInputStream(clientSocket.getInputStream());
      
-      Object cmd;
-      while ((cmd = in.readObject()) != null) {
-        out.writeObject(reply(cmd));
+      try {
+        Object cmd;
+        while ((cmd = in.readObject()) != null) {
+          out.writeObject(reply(cmd));
+        }
+      }
+      catch (EOFException e) {
+        // Normal. This happens when the socket is closed from the other end.
+      }
+      catch (SocketException e) {
+        // Normal. This happens when the socket is closed from the other end.
       }
 
       clientSocket.close();
@@ -69,9 +78,6 @@ public abstract class CommandServer implements Runnable {
     }
     catch (ClassNotFoundException e) {
       ErrorDialog.bug(e);
-    }
-    catch (EOFException e) {
-      // Normal. This happens when the socket is closed from the other end.
     }
     catch (IOException e) {
       CommunicationErrorDialog.error(e);
