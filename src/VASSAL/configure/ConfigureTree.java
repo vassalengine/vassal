@@ -362,18 +362,19 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
         }
         else if (copyData != null) {
+          final Configurable copyBase = (Configurable) copyData.getUserObject();
+          Configurable clone = null;
           try {
-            final Configurable copyBase =
-              (Configurable) copyData.getUserObject();
-            final Configurable clone =
-              copyBase.getClass().getConstructor().newInstance();
-
-            clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
-            insert(target, clone, getTreeNode(target).getChildCount());
-            updateGpIds(clone);
+            clone = copyBase.getClass().getConstructor().newInstance();
           }
           catch (Throwable t) {
             ErrorUtils.handleNewInstanceFailure(t);
+          }
+
+          if (clone != null) {
+            clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
+            insert(target, clone, getTreeNode(target).getChildCount());
+            updateGpIds(clone);
           }
         }
         cutData = null;
@@ -475,12 +476,22 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {
+        Configurable ch = null;
         try {
-          final Configurable child = (Configurable) newConfig.newInstance();
+          ch = (Configurable) newConfig.getConstructor().newInstance();
+        }
+        catch (Throwable t) {
+          ErrorUtils.handleNewInstanceFailure(t);
+        } 
+
+        if (ch != null) {
+          final Configurable child = ch;
           child.build(null);
+
           if (child instanceof PieceSlot) {
             ((PieceSlot) child).updateGpId(GameModule.getGameModule());
           }
+
           final Configurable c = target;
           if (child.getConfigurer() != null) {
             if (insert(target, child, getTreeNode(target).getChildCount())) {
@@ -502,10 +513,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           else {
             insert(c, child, getTreeNode(c).getChildCount());
           }
-        }
-        // FIXME: review error message
-        catch (Exception err) {
-          ErrorLog.log(err);
         }
       }
     };
@@ -532,16 +539,18 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent evt) {
+          Configurable clone = null;
           try {
-            final Configurable clone =
-              target.getClass().getConstructor().newInstance();
-
-            clone.build(target.getBuildElement(Builder.createNewDocument()));
-            insert(getParent(targetNode), clone,
-                   targetNode.getParent().getIndex(targetNode) + 1);
+            clone = target.getClass().getConstructor().newInstance();
           }
           catch (Throwable t) {
             ErrorUtils.handleNewInstanceFailure(t);
+          }
+
+          if (clone != null) {
+            clone.build(target.getBuildElement(Builder.createNewDocument()));
+            insert(getParent(targetNode), clone,
+                   targetNode.getParent().getIndex(targetNode) + 1);
           }
         }
       };
@@ -730,6 +739,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       config = null;
       try {
         Class<?> c = GameModule.getGameModule().getDataArchive().loadClass(className);
+// FIXME: should use getConstructor().newInstance().
         Object o = c.newInstance();
         if (o instanceof Configurable) {
           config = (Configurable) o;

@@ -53,6 +53,7 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
 
 /**
  * This is the GamePiece designer dialog.  It appears when you edit
@@ -155,13 +156,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       }
       if (!contains) {
         try {
-          availableModel.addElement(piece.getClass().newInstance());
+          availableModel.addElement(
+            piece.getClass().getConstructor().newInstance());
         }
-        catch (IllegalAccessException e) {
-          ErrorDialog.bug(e);
-        }
-        catch (InstantiationException e) {
-          ErrorDialog.bug(e);
+        catch (Throwable t) {
+          ErrorUtils.handleNewInstanceFailure(t);
         }
       }
       piece = ((Decorator) piece).piece;
@@ -290,8 +289,15 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
           }
         }
         else if (selected instanceof GamePiece && inUseModel.getSize() == 0) {
+          GamePiece p = null; 
           try {
-            GamePiece p = (GamePiece) selected.getClass().newInstance();
+            p = (GamePiece) selected.getClass().getConstructor().newInstance();
+          }
+          catch (Throwable t) {
+            ErrorUtils.handleNewInstanceFailure(t);
+          }
+
+          if (p != null) {
             setPiece(p);
             if (inUseModel.getSize() > 0) {
               if (edit(0)) {  // Add was successful
@@ -300,12 +306,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
                 removeTrait(0);
               }
             }
-          }
-          catch (IllegalAccessException e) {
-            ErrorDialog.bug(e);
-          }
-          catch (InstantiationException e) {
-            ErrorDialog.bug(e);
           }
         }
       }
@@ -621,19 +621,20 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   protected void addTrait(Decorator c) {
+    Decorator d = null;
     try {
-      c = c.getClass().newInstance();
-      if (c instanceof PlaceMarker) {
-        ((PlaceMarker) c).updateGpId(gpidSupport);
+      d = c.getClass().getConstructor().newInstance();
+    }
+    catch (Throwable t) {
+      ErrorUtils.handleNewInstanceFailure(t);
+    }
+
+    if (d != null) {
+      if (d instanceof PlaceMarker) {
+        ((PlaceMarker) d).updateGpId(gpidSupport);
       }
-      c.setInner((GamePiece) inUseModel.lastElement());
-      inUseModel.addElement(c);
-    }
-    catch (IllegalAccessException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (InstantiationException e) {
-      ErrorDialog.bug(e);
+      d.setInner((GamePiece) inUseModel.lastElement());
+      inUseModel.addElement(d);
     }
 
     refresh();
