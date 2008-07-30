@@ -30,6 +30,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,6 +125,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         if ("NOK".equals(child.request("REQUEST_CLOSE"))) return false;
       }
       catch (EOFException e) {
+        // Normal. Child closed.
+      }
+      catch (SocketException e) {
         // Normal. Child closed.
       }
       catch (IOException e) {
@@ -285,6 +289,21 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
       finally {
         IOUtils.closeQuietly(oout);
+      }
+
+      // check whether the child is still alive
+      try {
+        p.exitValue();
+        
+        ErrorDialog.error(
+          Resources.getString("Error.launch_failed"),
+          Resources.getString("Error.launch_failed"),
+          Resources.getString("Error.launch_failed_message")
+        );
+        return null;
+      }
+      catch (IllegalThreadStateException e) {
+        // It's alive! It's ALIIIIIIVE!!!
       }
 
       // read the port for the child's socket from its stdout
