@@ -1,5 +1,5 @@
 /*
- * $Id: ImageFileFilter.java 3562 2008-05-06 12:46:57Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *

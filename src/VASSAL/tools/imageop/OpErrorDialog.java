@@ -1,5 +1,5 @@
 /*
- * $Id: SourceOpSVGImpl.java 3665 2008-05-26 21:02:09Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: DataArchive.java 3807 2008-07-09 23:13:30Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *

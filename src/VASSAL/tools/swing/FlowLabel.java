@@ -1,5 +1,5 @@
 /*
- * $Id: ErrorLog.java 3570 2008-05-07 14:36:57Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *

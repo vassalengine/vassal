@@ -1,5 +1,5 @@
 /*
- * $Id: UsernameAndPasswordDialog.java 3625 2008-05-22 05:47:59Z rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *

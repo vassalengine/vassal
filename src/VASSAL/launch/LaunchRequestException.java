@@ -1,5 +1,5 @@
 /*
- * $Id: LaunchRequest.java 3675 2008-05-29 21:54:25Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman 
  *

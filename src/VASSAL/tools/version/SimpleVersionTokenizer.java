@@ -1,5 +1,5 @@
 /*
- * $Id: VersionTokenizer.java 3723 2008-06-08 11:38:25Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2007 by Joel Uckelman
  *
