@@ -57,6 +57,7 @@ import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.WinRegUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
 
@@ -238,7 +239,16 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // build the child process
       final ArrayList<String> al = new ArrayList<String>();
-      al.add("java");
+      
+      if (Info.isWindows()) {
+        // check the registry to find java.exe
+        final String java = WinRegUtils.getJavaPath();
+        al.add(java == null ? "java" : java);
+      }
+      else {
+        al.add("java");
+      }
+
       al.add("-Xms" + initialHeap + "M");
       al.add("-Xmx" + maximumHeap + "M");
       al.add("-cp");
