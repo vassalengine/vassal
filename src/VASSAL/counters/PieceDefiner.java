@@ -261,8 +261,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         String className = JOptionPane.showInputDialog(PieceDefiner.this, "Enter fully-qualified name of Java class to import");
         importPiece(className);
       }
-    }
-    );
+    });
 
     availablePanel.add(importButton);
 
@@ -476,10 +475,11 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   protected void moveDecoratorUp(int index) {
-    GamePiece selm2 = (GamePiece) inUseModel.elementAt(index - 2);
-    Decorator sel = (Decorator) inUseModel.elementAt(index);
-    Decorator selm1 = (Decorator) inUseModel.elementAt(index - 1);
-    Decorator selp1 = index < inUseModel.size() - 1 ? (Decorator) inUseModel.elementAt(index + 1) : null;
+    final GamePiece selm2 = (GamePiece) inUseModel.elementAt(index - 2);
+    final Decorator sel = (Decorator) inUseModel.elementAt(index);
+    final Decorator selm1 = (Decorator) inUseModel.elementAt(index - 1);
+    final Decorator selp1 = index < inUseModel.size() - 1 ?
+      (Decorator) inUseModel.elementAt(index + 1) : null;
     sel.setInner(selm2);
     selm1.setInner(sel);
     if (selp1 != null) {
@@ -493,33 +493,28 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   protected void importPiece(String className) {
-    try {
-      final Class<?> c =
-        GameModule.getGameModule().getDataArchive().loadClass(className);
+    if (className == null) return;
 
-      if (c.isAssignableFrom(GamePiece.class)) {
-        availableModel.addElement(c.newInstance());
-      }
-      else {
-        ErrorDialog.error(
-          Resources.getString("PieceDefiner.class_not_a_gamepiece"),
-          Resources.getString("PieceDefiner.class_not_a_gamepiece"),
-          Resources.getString("PieceDefiner.class_not_a_gamepiece_message")
-        );
-      }
+    Object o = null;
+    try {
+      o = GameModule.getGameModule().getDataArchive()
+                    .loadClass(className).getConstructor().newInstance();
     }
-    catch (ClassNotFoundException e) {
+    catch (Throwable t) {
+      ErrorUtils.handleImportClassFailure(t, className);
+    }
+
+    if (o == null) return;
+
+    if (o instanceof GamePiece) {
+      availableModel.addElement((GamePiece) o);
+    }
+    else {
       ErrorDialog.error(
-        Resources.getString("PieceDefiner.class_not_found"),
-        Resources.getString("PieceDefiner.class_not_found"),
-        Resources.getString("PieceDefiner.class_not_foundc_message")
+        Resources.getString("Error.not_a_gamepiece"),
+        Resources.getString("Error.not_a_gamepiece"),
+        Resources.getString("Error.not_a_gamepiece_message", className)
       );
-    }
-    catch (InstantiationException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (IllegalAccessException e) {
-      ErrorDialog.bug(e);
     }
   }
 
@@ -639,7 +634,6 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
     refresh();
   }
-
 
   private JPanel availablePanel;
   private JScrollPane availableScroll;

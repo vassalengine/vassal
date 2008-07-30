@@ -70,6 +70,7 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.menu.MenuManager;
 
@@ -733,41 +734,64 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       getTopLevelAncestor(),
       "Enter fully-qualified name of Java class to import");
 
+    if (className == null) return null;
+
+    Object o = null;
+    try {
+      o = GameModule.getGameModule().getDataArchive()
+                    .loadClass(className).getConstructor().newInstance();
+    }
+    catch (Throwable t) {
+      ErrorUtils.handleImportClassFailure(t, className);
+    }
+
+    if (o == null) return null;
+
+    if (o instanceof Configurable) return (Configurable) o;
+
+    ErrorDialog.error(
+      Resources.getString("Error.not_a_configurable"),
+      Resources.getString("Error.not_a_configurable"),
+      Resources.getString("Error.not_a_configurable_message", className)
+    );
+
+    return null;
+
+/*
     Configurable config = null;
-    if (className != null) {
-      config = null;
-      try {
-        Class<?> c = GameModule.getGameModule().getDataArchive().loadClass(className);
+    try {
+      Class<?> c = GameModule.getGameModule().getDataArchive().loadClass(className);
 // FIXME: should use getConstructor().newInstance().
-        Object o = c.newInstance();
-        if (o instanceof Configurable) {
-          config = (Configurable) o;
-        }
-        else {
-          JOptionPane.showMessageDialog(getTopLevelAncestor(), "Class must implement the Configurable interface.", "Class error", JOptionPane.ERROR_MESSAGE);
-        }
+      Object o = c.newInstance();
+      if (o instanceof Configurable) {
+        config = (Configurable) o;
       }
-      // FIXME: review error message
-      catch (ClassNotFoundException noClass) {
-        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Couldn't find class.\nClass file must exist in module zipfile with correct package structure.",
-            "Class not found", JOptionPane.ERROR_MESSAGE);
-      }
-      // FIXME: review error message
-      catch (InstantiationException iex) {
-        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Couldn't instantiate class.\nClass must have a no-argument constructor.",
-            "Class not initialized", JOptionPane.ERROR_MESSAGE);
-      }
-      // FIXME: review error message
-      catch (IllegalAccessException ilex) {
-        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error accessing class", "Access error", JOptionPane.ERROR_MESSAGE);
-      }
-      // FIXME: review error message
-catch (NoSuchMethodError noMethod) {
-        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Couldn't instantiate class.\nClass must have a no-argument constructor.",
-            "Class not initialized", JOptionPane.ERROR_MESSAGE);
+      else {
+        JOptionPane.showMessageDialog(getTopLevelAncestor(), "Class must implement the Configurable interface.", "Class error", JOptionPane.ERROR_MESSAGE);
       }
     }
+    // FIXME: review error message
+    catch (ClassNotFoundException noClass) {
+      JOptionPane.showMessageDialog(getTopLevelAncestor(), "Couldn't find class.\nClass file must exist in module zipfile with correct package structure.",
+          "Class not found", JOptionPane.ERROR_MESSAGE);
+    }
+    // FIXME: review error message
+    catch (InstantiationException iex) {
+      JOptionPane.showMessageDialog(getTopLevelAncestor(), "Couldn't instantiate class.\nClass must have a no-argument constructor.",
+          "Class not initialized", JOptionPane.ERROR_MESSAGE);
+    }
+    // FIXME: review error message
+    catch (IllegalAccessException ilex) {
+      JOptionPane.showMessageDialog(getTopLevelAncestor(), "Error accessing class", "Access error", JOptionPane.ERROR_MESSAGE);
+    }
+    // FIXME: review error message
+    catch (NoSuchMethodError noMethod) {
+      JOptionPane.showMessageDialog(getTopLevelAncestor(), "Couldn't instantiate class.\nClass must have a no-argument constructor.",
+          "Class not initialized", JOptionPane.ERROR_MESSAGE);
+    }
+
     return config;
+*/
   }
 
   public void mousePressed(MouseEvent e) {
