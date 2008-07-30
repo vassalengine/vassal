@@ -17,14 +17,10 @@
  */
 package VASSAL.tools;
 
-import javax.swing.JOptionPane;
-
+import VASSAL.i18n.Resources;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
-
-import VASSAL.build.GameModule;
-import VASSAL.i18n.Resources;
 
 // FIXME: Use java.awt.Desktop for this when we move to Java 1.6+.
 

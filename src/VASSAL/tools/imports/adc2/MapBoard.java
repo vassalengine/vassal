@@ -36,7 +36,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1649,7 +1648,7 @@ public class MapBoard extends Importer {
     boolean draw(Graphics2D g) {
       if (getSize() != 0) {
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                           RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g.setFont(getFont());
         g.setColor(color);
         Point p = getPosition(g);

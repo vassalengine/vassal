@@ -30,33 +30,22 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JScrollPane;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
-//import org.jdesktop.swingx.JXHyperlink;
-//import org.jdesktop.swingx.action.LinkAction;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Closeable;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 
 import VASSAL.Info;
-//import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.FlowLabel;
 
 /**

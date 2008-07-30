@@ -19,7 +19,6 @@
 
 package VASSAL.tools;
 
-import java.io.File;
 import java.io.IOException;
 
 import VASSAL.i18n.Resources;

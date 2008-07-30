@@ -21,17 +21,14 @@ package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.GameModule;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ImageUtils;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.SVGRenderer;
 

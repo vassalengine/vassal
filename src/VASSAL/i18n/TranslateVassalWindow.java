@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
+
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -42,7 +43,6 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.ShowHelpAction;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;

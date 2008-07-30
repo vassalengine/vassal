@@ -31,7 +31,6 @@ import java.util.Properties;
 
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.WriteErrorDialog;
 
 /**
  * Utility class to allow translation of VASSAL using the Component

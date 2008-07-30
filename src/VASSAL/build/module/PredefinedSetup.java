@@ -32,7 +32,6 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;

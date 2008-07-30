@@ -24,7 +24,6 @@ import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -62,7 +61,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;

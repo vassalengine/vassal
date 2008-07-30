@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -38,7 +39,6 @@ import javax.swing.KeyStroke;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorUtils;
 
 /**

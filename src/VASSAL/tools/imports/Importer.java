@@ -28,7 +28,6 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.map.LayeredPieceCollection;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.DataArchive;
 
 /**
  * Abstract parent of all importer classes.

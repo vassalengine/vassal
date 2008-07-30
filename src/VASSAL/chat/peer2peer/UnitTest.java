@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
+
 import org.litesoft.p2pchat.ActivePeerManager;
 import org.litesoft.p2pchat.MyInfo;
 import org.litesoft.p2pchat.PeerInfo;
@@ -11,8 +12,6 @@ import org.litesoft.p2pchat.PeerReader;
 import org.litesoft.p2pchat.PeerWriter;
 import org.litesoft.p2pchat.PendingPeerManager;
 import org.litesoft.p2pchat.UserDialog;
-
-import VASSAL.tools.IOUtils;
 
 public class UnitTest implements UserDialog {
   private String id;

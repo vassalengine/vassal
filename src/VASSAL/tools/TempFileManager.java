@@ -22,12 +22,8 @@ package VASSAL.tools;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import VASSAL.Info;
-import VASSAL.tools.ErrorLog;
-import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.imageop.Op;
 
 /**

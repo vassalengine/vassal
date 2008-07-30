@@ -25,9 +25,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 
-import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.version.VersionFormatException;
 import VASSAL.tools.version.VassalVersionTokenizer;
+import VASSAL.tools.version.VersionFormatException;
 import VASSAL.tools.version.VersionTokenizer;
 
 /**

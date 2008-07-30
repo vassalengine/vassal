@@ -25,7 +25,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,9 +35,9 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.WriteErrorDialog;
 
 /**
  * A set of preferences.  Each set of preferences is identified by a name, and

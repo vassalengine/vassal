@@ -27,11 +27,10 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.GameModule;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ImageUtils;
+import VASSAL.tools.ReadErrorDialog;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.

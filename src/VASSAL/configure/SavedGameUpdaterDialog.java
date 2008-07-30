@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.Properties;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
@@ -45,11 +46,11 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.SavedGameUpdater;
 import VASSAL.tools.ScrollPane;

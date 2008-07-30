@@ -58,7 +58,6 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.LaunchButton;

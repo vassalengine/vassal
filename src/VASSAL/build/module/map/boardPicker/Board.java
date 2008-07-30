@@ -36,6 +36,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
 import javax.swing.ImageIcon;
 
 import VASSAL.build.AbstractConfigurable;
@@ -55,7 +56,6 @@ import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;

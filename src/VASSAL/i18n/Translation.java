@@ -22,7 +22,6 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -34,8 +33,8 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.ReadErrorDialog;
 
 public class Translation extends AbstractConfigurable
                          implements Comparable<Translation> {

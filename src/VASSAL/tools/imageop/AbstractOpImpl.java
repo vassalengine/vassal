@@ -27,17 +27,14 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
-// FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
-//import javax.swing.SwingWorker;
 import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.tools.ConcurrentSoftHashMap;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThreadManager;
 
 /**

@@ -70,7 +70,6 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.menu.MenuManager;
 
