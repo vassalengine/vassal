@@ -29,8 +29,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
@@ -124,20 +122,22 @@ public class SaveMetaData extends AbstractMetaData {
       final ZipEntry data = zip.getEntry(getZipEntryName());
       if (data == null) return;
 
-      final XMLReader parser = XMLReaderFactory.createXMLReader();
-
       // set up the handler
       final XMLHandler handler = new XMLHandler();
-      parser.setContentHandler(handler);
-      parser.setDTDHandler(handler);
-      parser.setEntityResolver(handler);
-      parser.setErrorHandler(handler);
 
       // parse! parse!
       BufferedInputStream in = null;
       try {
         in = new BufferedInputStream(zip.getInputStream(data));
-        parser.parse(new InputSource(in));
+
+        synchronized (parser) {
+          parser.setContentHandler(handler);
+          parser.setDTDHandler(handler);
+          parser.setEntityResolver(handler);
+          parser.setErrorHandler(handler);
+          parser.parse(new InputSource(in));
+        }
+
         in.close();
       }
       finally {

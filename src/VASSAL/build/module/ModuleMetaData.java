@@ -28,9 +28,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.ErrorLog;
@@ -96,7 +94,6 @@ public class ModuleMetaData extends AbstractMetaData {
     nameAttr.generateXML(doc, root, NAME_ELEMENT);
   }
 
-
   /**
    * Read and validate a Module file.
    *  - Check it has a Zip Entry named buildfile
@@ -111,7 +108,6 @@ public class ModuleMetaData extends AbstractMetaData {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
       // the first lines of the buildFile
-      final XMLReader parser = XMLReaderFactory.createXMLReader();
       DefaultHandler handler = null;
 
       ZipEntry data = zip.getEntry(ZIP_ENTRY_NAME);
@@ -124,23 +120,25 @@ public class ModuleMetaData extends AbstractMetaData {
       else {
         handler = new MetadataXMLHandler();
       }
-        
-      parser.setContentHandler(handler);
-      parser.setDTDHandler(handler);
-      parser.setEntityResolver(handler);
-      parser.setErrorHandler(handler);
-
-      // parse! parse!
+      
       BufferedInputStream in = null;
       try {
         in = new BufferedInputStream(zip.getInputStream(data));
-        parser.parse(new InputSource(in));
-        in.close();
+
+        synchronized (parser) {
+          parser.setContentHandler(handler);
+          parser.setDTDHandler(handler);
+          parser.setEntityResolver(handler);
+          parser.setErrorHandler(handler);
+          parser.parse(new InputSource(in));
+        }
+
+        in.close(); 
       }
       finally {
         IOUtils.closeQuietly(in);
       }
-
+ 
       zip.close();
     }
     catch (IOException e) {

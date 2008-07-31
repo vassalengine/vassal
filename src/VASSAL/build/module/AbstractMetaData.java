@@ -45,7 +45,9 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import VASSAL.Info;
 import VASSAL.build.Configurable;
@@ -77,7 +79,6 @@ public abstract class AbstractMetaData {
   protected static final String MODULE_NAME_ATTR = "moduleName";
   protected static final String MODULE_VERSION_ATTR = "moduleVersion";
   protected static final String LANG_ATTR = "lang";
-
 
   protected static final String ROOT_ELEMENT = "data";
   protected static final String VERSION_ELEMENT = "version";
@@ -462,7 +463,30 @@ public abstract class AbstractMetaData {
       }
     }
   }
-  
+
+  /** 
+   * This is the shared parser for all subclasses of AbstractMetaData.
+   * We use a shared parser because the call to
+   * {@link XMLReaderFactory.createXMLReader()} is extremely expensive.
+   * All uses of this parser <i>must</i> be wrapped in a block synchronized
+   * on the parser itself.
+   */
+  protected static XMLReader parser;
+
+// FIXME: Synchronizing on the parser will cause very bad performance if
+// multiple threads are trying to read metadata simultaneously. We should
+// build a mechanism by which we keep a pool of parsers, and allocate a
+// new one only when there is not an unused one available in the pool.
+  static {
+    try {
+      parser = XMLReaderFactory.createXMLReader();
+    }
+    catch (SAXException e) {
+      // This should never happen.
+      ErrorDialog.bug(e);
+    }
+  }
+ 
   /*************************************************************************
    * Base XML Handler for all metadata classes
    *
