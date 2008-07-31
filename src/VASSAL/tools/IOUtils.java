@@ -202,6 +202,20 @@ public class IOUtils {
 
   /**
    * Copies bytes from an <code>InputStream</code> to a <code>String</code>
+   * using the default character encoding. This method buffers input
+   * internally, so the input stream should not be a
+   * <code>BufferedInputStream</code>.
+   *
+   * @param in the source
+   * @return the source as a string
+   * @throws IOException if one occurs while reading.
+   */
+  public static String toString(InputStream in) throws IOException {
+    return toString(in, null);
+  }
+
+  /**
+   * Copies bytes from an <code>InputStream</code> to a <code>String</code>
    * using the specified character encoding. This method buffers input
    * internally, so the input stream should not be a
    * <code>BufferedInputStream</code>.
