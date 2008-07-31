@@ -92,7 +92,7 @@ public class HtmlChart extends Widget implements MouseListener {
     try {
       in = new BufferedInputStream(
         GameModule.getGameModule().getDataArchive().getFileStream(fname));
-      s =  IOUtils.toString(in, "UTF-8");
+      s =  IOUtils.toString(in);
       in.close();
     }
     catch (IOException e) {
