@@ -57,8 +57,9 @@ import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.HeapFinder;
 import VASSAL.tools.IOUtils;
-import VASSAL.tools.WinRegUtils;
+import VASSAL.tools.StringUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
 
@@ -203,6 +204,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           if (iheap != null) {
             try {
               initialHeap = Integer.parseInt(iheap);
+              if (initialHeap <= 0) throw new NumberFormatException();
             }
             catch (NumberFormatException ex) {
               ErrorDialog.warning(
@@ -221,6 +223,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           if (mheap != null) {
             try {
               maximumHeap = Integer.parseInt(mheap);
+              if (maximumHeap <= 0) throw new NumberFormatException();
             }
             catch (NumberFormatException ex) {
               ErrorDialog.warning(
@@ -234,6 +237,18 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             }
           }
         }
+
+        // make sure that the initial heap is sane
+        if (initialHeap > maximumHeap) {
+          ErrorDialog.warning(
+            Resources.getString("Error.initial_gt_maximum_heap"),
+            Resources.getString("Error.initial_gt_maximum_heap"),
+            Resources.getString("Error.initial_gt_maximum_heap_message",
+             DEFAULT_INITIAL_HEAP, DEFAULT_MAXIMUM_HEAP)
+          );
+
+          initialHeap = maximumHeap / 2;
+        }
       }
 
       // create a socket for communicating which the child process
@@ -241,23 +256,15 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       cmdS = new LaunchCommandServer(serverSocket);
       new Thread(cmdS).start();
 
-      // build the child process
+      // build the argument list
       final ArrayList<String> al = new ArrayList<String>();
-      
-      if (Info.isWindows()) {
-        // check the registry to find java.exe
-        final String java = WinRegUtils.getJavaPath();
-        al.add(java == null ? "java" : java);
-      }
-      else {
-        al.add("java");
-      }
-
-      al.add("-Xms" + initialHeap + "M");
-      al.add("-Xmx" + maximumHeap + "M");
+      al.add(Info.javaBinPath);
+      al.add("");   // reserved for initial heap 
+      al.add("");   // reserved for maximum heap 
       al.add("-cp");
       al.add(System.getProperty("java.class.path"));
 
+      // set the MacOS X dock parameters
       if (Info.isMacOSX()) {
         // use the module name for the dock if we found a module name
         al.add("-Xdock:name=" + 
@@ -270,45 +277,84 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       al.add(entryPoint);
 
       final String[] args = al.toArray(new String[al.size()]);
+     
+      Process p = null;
+      boolean maxHeapWarning = false;
+      while (true) {
+        args[1] = "-Xms" + initialHeap + "M";
+        args[2] = "-Xmx" + maximumHeap + "M";
 
-      final ProcessBuilder pb = new ProcessBuilder(args);
-      pb.directory(Info.getBinDir());
+        System.err.println(StringUtils.join(args, " "));
 
-      final Process p = pb.start();
+        // set up and start the child process
+        final ProcessBuilder pb = new ProcessBuilder(args);
+        pb.directory(Info.getBinDir());
+        p = pb.start();
 
-      // pump child's stderr to our own stderr
-      new Thread(new StreamPump(p.getErrorStream(), System.err)).start();
+        // write the port for this socket to child's stdin and close
+        ObjectOutputStream oout = null;
+        try {
+          oout = new ObjectOutputStream(p.getOutputStream());
+          oout.writeInt(serverSocket.getLocalPort());
+          oout.writeObject(lr);
+          oout.close();
+        }
+        finally {
+          IOUtils.closeQuietly(oout);
+        }
+/*
+        // Check that the child's port is sane. Reading stdout from a
+        // failed launch tends to give impossible port numbers.
+        if (0 < childPort || childPort > 65535) {      
+        }
+*/
+// FIXME: this is probably too long
+        try {
+          Thread.sleep(1000);
+        }
+        catch (InterruptedException e) {
+        }
 
-      // write the port for this socket to child's stdin and close
-      ObjectOutputStream oout = null;
-      try {
-        oout = new ObjectOutputStream(p.getOutputStream());
-        oout.writeInt(serverSocket.getLocalPort());
-        oout.writeObject(lr);
-        oout.close();
-      }
-      finally {
-        IOUtils.closeQuietly(oout);
-      }
+        // check whether the child is still alive
+        try {
+          // If this doesn't throw, our baby is dead.
+          p.exitValue();
+          System.err.println(IOUtils.toString(p.getErrorStream()));
 
-      // check whether the child is still alive
-      try {
-        p.exitValue();
-        
-        ErrorDialog.error(
-          Resources.getString("Error.launch_failed"),
-          Resources.getString("Error.launch_failed"),
-          Resources.getString("Error.launch_failed_message")
-        );
-        return null;
-      }
-      catch (IllegalThreadStateException e) {
-        // It's alive! It's ALIIIIIIVE!!!
+          // Try to determine heuristically what the max max heap is.
+          final int maxMaximumHeap = HeapFinder.getMaxMaxHeap();
+          if (maximumHeap < maxMaximumHeap) {
+            // Either we're on a 64-bit machine, so we can't have
+            // an overlarge maximum heap size problem, or something
+            // else weird happened. We give up.
+            ErrorDialog.error(
+              Resources.getString("Error.launch_failed"),
+              Resources.getString("Error.launch_failed"),
+              Resources.getString("Error.launch_failed_message")
+            );
+            return null;
+          }
+          else {
+            // We had an infeasibly large maximum heap setting, try again
+            // with something smaller and warn the user to lower it.
+            maximumHeap = (int) (0.75 * maxMaximumHeap);
+            initialHeap = Math.min(DEFAULT_INITIAL_HEAP, maximumHeap);
+            maxHeapWarning = true;
+            continue;
+          }
+        }
+        catch (IllegalThreadStateException e) {
+          // It's alive! It's ALIIIIIIVE!!!
+          break;
+        }
       }
 
       // read the port for the child's socket from its stdout
       final DataInputStream din = new DataInputStream(p.getInputStream());
       final int childPort = din.readInt();
+
+      // pump child's stderr to our own stderr
+      new Thread(new StreamPump(p.getErrorStream(), System.err)).start();
 
       // pump child's stdout to our own stdout
       new Thread(new StreamPump(p.getInputStream(), System.out)).start();
@@ -317,6 +363,14 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       clientSocket = new Socket((String) null, childPort);
       cmdC = new CommandClient(clientSocket);
       children.add(cmdC);
+
+      if (maxHeapWarning) {
+        ErrorDialog.warning(
+          Resources.getString("Error.set_lower_maximum_heap"),
+          Resources.getString("Error.set_lower_maximum_heap"),
+          Resources.getString("Error.set_lower_maximum_heap_message")
+        );
+      }
 
       // block until the process ends
       p.waitFor();
