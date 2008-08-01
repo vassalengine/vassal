@@ -30,6 +30,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -708,16 +709,39 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     }
   }
 
+  /**
+   * Returns the name of the class for display purposes. Reflection is
+   * used to call <code>getConfigureTypeName()</code>, which should be
+   * a static method if it exists in the given class. (This is necessary
+   * because static methods are not permitted in interfaces.)
+   *  
+   * @param the class whose configure name will be returned
+   * @return the configure name of the class
+   */
   public static String getConfigureName(Class<?> c) {
-// FIXME: Wouldn't it be better if some superclass had getConfigureTypeName()
-// as a method?!
     try {
       return (String) c.getMethod("getConfigureTypeName").invoke(null);
     }
-    catch (Throwable t) {
-      ErrorUtils.handleMethodFailure(t);
-      return c.getName().substring(c.getName().lastIndexOf(".") + 1);
+    catch (NoSuchMethodException e) {
+      // Ignore. This is normal, since some classes won't have this method.
+    } 
+    catch (IllegalAccessException e) {
+      ErrorDialog.bug(e);
     }
+    catch (IllegalArgumentException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (InvocationTargetException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (NullPointerException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (ExceptionInInitializerError e) {
+      ErrorDialog.bug(e);
+    }
+
+    return c.getName().substring(c.getName().lastIndexOf(".") + 1);
   }
 
   public static String getConfigureName(Configurable c) {
