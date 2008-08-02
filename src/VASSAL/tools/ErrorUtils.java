@@ -199,19 +199,6 @@ public class ErrorUtils {
     );
   }
 
-  public static void handleMethodFailure(Throwable t) {
-    // find and rethrow causes which are not bugs
-    throwAncestorOfClass(OutOfMemoryError.class, t);
-
-    handle(t, IllegalAccessException.class,
-              IllegalArgumentException.class,
-              InvocationTargetException.class,
-              NoSuchMethodException.class,
-              SecurityException.class,
-              ExceptionInInitializerError.class
-    );
-  }
-
   private static void handle(Throwable t, Class<?>... args) {
     // these errors are expected
     for (Class<?> cl : args) {
