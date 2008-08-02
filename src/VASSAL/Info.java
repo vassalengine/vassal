@@ -33,7 +33,7 @@ import VASSAL.tools.version.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-svn3931"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-svn3950"; //$NON-NLS-1$
   private static File homeDir;
 
   private static final boolean isWindows;
@@ -45,6 +45,15 @@ public final class Info {
     isWindows =  os.startsWith("windows");
     isMacOSX = os.startsWith("mac os x");
   }
+
+  /** The path to the JVM binary. */
+  public static final String javaBinPath =
+    new StringBuilder(System.getProperty("java.home"))
+        .append(File.separator)
+        .append("bin")
+        .append(File.separator)
+        .append("java")
+        .toString();
 
   /** This class should not be instantiated */
   private Info() { }
