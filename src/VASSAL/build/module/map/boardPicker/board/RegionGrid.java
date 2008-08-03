@@ -278,7 +278,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return container.getBoard();
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{Region.class};
   }
 
@@ -336,48 +336,22 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   public String locationName(Point p) {
 
-    Point checkPoint;
-
     if (regionList.isEmpty()) {
       return null;
     }
 
-    //
-    // If snap-to is turned off, then p has not been snapped to a grid point yet
-    //
-    if (snapTo) {
-      checkPoint = p;
-    }
-    else {
-      checkPoint = doSnap(p);
-    }
-
-    final Region region = regionList.get(checkPoint);
+    final Region region = regionList.get(doSnap(p));
     return region != null ? region.getName() : null;
-
   }
   
   public String localizedLocationName(Point p) {
 
-    Point checkPoint;
-
     if (regionList.isEmpty()) {
       return null;
     }
 
-    //
-    // If snap-to is turned off, then p has not been snapped to a grid point yet
-    //
-    if (snapTo) {
-      checkPoint = p;
-    }
-    else {
-      checkPoint = doSnap(p);
-    }
-
-    final Region region = regionList.get(checkPoint);
+    final Region region = regionList.get(doSnap(p));
     return region != null ? region.getLocalizedName() : null;
-
   }
 
   /**
