@@ -377,7 +377,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     
     checkPropertyLevel();
     
-    if (value <= 0) {
+    if (!isActive()) {
       return;
     }
 

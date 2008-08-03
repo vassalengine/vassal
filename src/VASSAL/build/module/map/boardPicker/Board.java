@@ -144,6 +144,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
       "Background color:  "
     };
   }
+  
+  public static String getConfigureTypeName() {
+    return "Board";
+  }
 
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[] {

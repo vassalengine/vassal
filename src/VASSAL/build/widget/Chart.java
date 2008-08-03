@@ -176,4 +176,8 @@ public class Chart extends Widget {
     }
     return null;
   }
+  
+  public static String getConfigureTypeName() {
+    return "Chart";
+  }
 }

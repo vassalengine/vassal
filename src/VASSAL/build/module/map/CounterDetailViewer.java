@@ -20,6 +20,7 @@
 package VASSAL.build.module.map;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -36,8 +37,10 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -227,16 +230,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   protected void drawGraphics(Graphics g, Point pt, JComponent comp, List<GamePiece> pieces) {
 
-    for (int i = 0; i < pieces.size(); i++) {
-      GamePiece piece = pieces.get(i);
-      if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
-      Rectangle pieceBounds = piece.getShape().getBounds();
-      if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
-      bounds.width += (int) (pieceBounds.width * graphicsZoomLevel) + borderWidth;
-      bounds.height = Math.max(bounds.height, (int) (pieceBounds.height * graphicsZoomLevel) + borderWidth * 2);
-    }
-    bounds.width += borderWidth;
-    bounds.y -= bounds.height;
+    fixBounds(pieces);
 
     if (bounds.width > 0) {
 
@@ -266,8 +260,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         // Draw the next piece
         // pt is the location of the left edge of the piece
         GamePiece piece = pieces.get(i);
+        Rectangle pieceBounds = getBounds(piece);
         if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
-        Rectangle pieceBounds = piece.getShape().getBounds();
         g.setClip(bounds.x - 3, bounds.y - 3, bounds.width + 5, bounds.height + 5);
         piece.draw(g, bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset, bounds.y - (int) (pieceBounds.y * graphicsZoom) + borderWidth, comp,
             graphicsZoom);
@@ -290,6 +284,25 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
   }
 
+  /** Set the bounds field large enough to accommodate the given set of pieces */
+  protected void fixBounds(List<GamePiece> pieces) {
+    for (int i = 0; i < pieces.size(); i++) {
+      GamePiece piece = pieces.get(i);
+      Dimension pieceBounds = getBounds(piece).getSize();
+      bounds.width += (int) Math.round(pieceBounds.width * graphicsZoomLevel) + borderWidth;
+      bounds.height = Math.max(bounds.height, (int) Math.round(pieceBounds.height * graphicsZoomLevel) + borderWidth * 2);
+    }
+    bounds.width += borderWidth;
+    bounds.y -= bounds.height;
+  }
+
+  protected Rectangle getBounds(GamePiece piece) {
+    if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.TRUE);
+    Rectangle pieceBounds = piece.getShape().getBounds();
+    if (unrotatePieces) piece.setProperty(Properties.USE_UNROTATED_SHAPE, Boolean.FALSE);
+    return pieceBounds;
+  }
+  
   protected boolean isTextUnderCounters() {
     return textVisible && counterReportFormat.getFormat().length() > 0;
   }
