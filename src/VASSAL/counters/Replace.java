@@ -18,18 +18,25 @@
  */
 package VASSAL.counters;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * GamePiece trait that replaces a GamePiece with another one
  */
 public class Replace extends PlaceMarker {
   public static final String ID = "replace;";
+  protected boolean above;
 
   public Replace() {
     this(ID + "Replace;R;null", null);
@@ -72,8 +79,38 @@ public class Replace extends PlaceMarker {
     return HelpFile.getReferenceManualPage("Replace.htm");
   }
 
+  public void mySetType(String type) {
+	  SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+	  st.nextToken();
+	  String name = st.nextToken();
+	  key = st.nextKeyStroke(null);
+	  command = new KeyCommand(name, key, this, this);
+	  if (name.length() > 0 && key != null) {
+		  commands = new KeyCommand[]{command};
+	  }
+	  else {
+		  commands = new KeyCommand[0];
+	  }
+	  markerSpec = st.nextToken();
+	  if ("null".equals(markerSpec)) {
+		  markerSpec = null;
+	  }
+	  markerText = st.nextToken("null");
+	  if ("null".equals(markerText)) {
+		  markerText = null;
+	  }
+	  xOffset = st.nextInt(0);
+	  yOffset = st.nextInt(0);
+	  matchRotation = st.nextBoolean(false);
+	  afterBurnerKey = st.nextKeyStroke(null);
+	  description = st.nextToken("");
+	  setGpId(st.nextToken(""));
+	  above = st.nextBoolean(false);
+  }
+
+  
   public String myGetType() {
-    return ID + super.myGetType().substring(PlaceMarker.ID.length());
+    return ID + super.myGetType().substring(PlaceMarker.ID.length()) + ";" + String.valueOf(above);
   }
 
   public PieceEditor getEditor() {
@@ -82,9 +119,13 @@ public class Replace extends PlaceMarker {
 
   public GamePiece createMarker() {
     GamePiece marker = super.createMarker();
-    if (marker != null
-        && matchRotation) {
-      matchTraits(Decorator.getOutermost(this), marker);
+    if (marker != null && matchRotation) {
+    	if (above) {
+    		matchTraits(this, marker);
+    	}
+    	else {
+    		matchTraits(Decorator.getOutermost(this), marker);
+    	}
     }
     return marker;
   }
@@ -131,9 +172,19 @@ public class Replace extends PlaceMarker {
   }
 
   protected static class Ed extends PlaceMarker.Ed {
+	  protected BooleanConfigurer aboveConfig = new BooleanConfigurer(null, "Only match states above this trait?");
+	  
     public Ed(Replace piece) {
       super(piece);
       defineButton.setText("Define Replacement");
+      JPanel p = (JPanel) getControls();
+      p.add(aboveConfig.getControls(), 7);
+      aboveConfig.setValue(Boolean.valueOf(piece.above));
+      ((JCheckBox) matchRotationConfig.getControls()).addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			aboveConfig.getControls().setVisible(((JCheckBox) matchRotationConfig.getControls()).isSelected());
+		}
+      });
     }
 
     protected BooleanConfigurer createMatchRotationConfig() {
@@ -142,7 +193,7 @@ public class Replace extends PlaceMarker {
 
     public String getType() {
       String s = super.getType();
-      s = ID + s.substring(PlaceMarker.ID.length());
+      s = ID + s.substring(PlaceMarker.ID.length()) + ";" + aboveConfig.getValueString();
       return s;
     }
   }
