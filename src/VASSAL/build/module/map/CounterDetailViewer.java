@@ -276,9 +276,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         if (isTextUnderCounters()) {
           String text = counterReportFormat.getLocalizedText(piece);
-          int x = bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset;
-          int y = bounds.y + bounds.height + 10;
-          drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
+          if (text.length() > 0) {
+        	  int x = bounds.x - (int) (pieceBounds.x * graphicsZoom) + borderOffset;
+        	  int y = bounds.y + bounds.height + 10;
+        	  drawLabel(g, new Point(x, y), text, Labeler.CENTER, Labeler.CENTER);
+          }
         }
 
         bounds.translate((int) (pieceBounds.width * graphicsZoom), 0);
