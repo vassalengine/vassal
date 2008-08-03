@@ -362,7 +362,8 @@ public class ADC2Module extends Importer {
   private final HashSet<String> uniquePieceNames = new HashSet<String>();
   
   public class Piece {
-    public final PieceClass pieceClass;
+    private static final String PIECE_PROPERTIES = "Piece Properties";
+	public final PieceClass pieceClass;
     public final HideState hideState;
     private final int[] values = new int[8];
     private final ValueType[] types = new ValueType[8];
@@ -372,6 +373,8 @@ public class ADC2Module extends Importer {
     private GamePiece gamePiece;
     private PieceSlot pieceSlot;
     private final int position;
+	private PropertySheet classPS;
+	private PropertySheet piecePS;
   
     public Piece(PieceClass cl) {
       this.name = null;
@@ -491,17 +494,30 @@ public class ADC2Module extends Importer {
       String path = se.getValue();
       
       // find insertion point
-      GamePiece outer;
-      if (gamePiece.getClass() == Hideable.class || gamePiece.getClass() == Obscurable.class) {
-        outer = gamePiece; 
-        gamePiece = ((Decorator) gamePiece).getInner();
+      // try to place between class and piece property sheets.
+      GamePiece outer = null;
+      GamePiece candidate = Decorator.getDecorator(gamePiece, PropertySheet.class);
+      if (candidate == null) {
+    	  if (gamePiece.getClass() == Hideable.class || gamePiece.getClass() == Obscurable.class) {
+    		  outer = gamePiece; 
+    		  gamePiece = ((Decorator) gamePiece).getInner();
+    	  }
       }
-      else
-        outer = null;
-      
+      else {
+    	  PropertySheet prop = (PropertySheet) candidate;
+    	  if (prop == classPS) {
+    		  outer = classPS;
+    		  gamePiece = prop.getInner();
+    	  }
+    	  else if (prop == piecePS) {
+    		  outer = prop.getOuter();
+    		  gamePiece = prop;
+    	  }
+      }
+            
       // set replacement
       se = new SequenceEncoder(path, ';');
-      se.append("null").append(0).append(0).append(true);
+      se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(true);
       gamePiece = new Replace(Replace.ID + "Flip;F;" + se.getValue(), gamePiece);
       if (outer != null) {
         ((Decorator) outer).setInner(gamePiece);
@@ -519,7 +535,6 @@ public class ADC2Module extends Importer {
         // TODO: implement a YES_NO field type for PropertySheets
         // and a stack property viewer.
         // Piece values
-        appendDecorator(getPropertySheet());
         appendDecorator(getDynamicProperty());
         appendDecorator(getPieceValueMask());
         appendDecorator(getMovementMarkable());
@@ -527,6 +542,8 @@ public class ADC2Module extends Importer {
         appendDecorator(getAttackedEmbellishment());
         appendDecorator(getFreeRotator());
         appendDecorator(getUsePrototype());
+        appendDecorator(getPiecePropertySheet());
+        appendDecorator(getClassPropertySheet());
         appendDecorator(getHidden());
       }
       
@@ -617,66 +634,59 @@ public class ADC2Module extends Importer {
 
      //TODO:  add more math functions to MouseOverStackViewer including min(), max(), and mean().
     //     and antialiased characters in MouseOverStackViewer
-    protected PropertySheet getPropertySheet() {
-      PropertySheet p = pieceClass.getPropertySheetDecorator();
-      
-      if (p != null) {
-        SequenceEncoder.Decoder decoder = new SequenceEncoder.Decoder(p.myGetType().substring(PropertySheet.ID.length()), ';');
-          String definition = decoder.nextToken();
-          String menuName = decoder.nextToken();
-          char launchKey = decoder.nextChar('\0');
-          int commitStyle = decoder.nextInt(0);
-          String red = decoder.hasMoreTokens() ? decoder.nextToken() : "";
-          String green = decoder.hasMoreTokens() ? decoder.nextToken() : "";
-          String blue = decoder.hasMoreTokens() ? decoder.nextToken() : "";
-    
-        SequenceEncoder se = new SequenceEncoder('~');
-        SequenceEncoder state = new SequenceEncoder('~');
-        for(int i = 0; i < pieceValues.length; ++i) {
-          if (pieceValues[i] != null && !pieceValues[i].equals("")) {
-            se.append("0" + pieceValues[i]);
-            Object o = getValue(i);
-            if (o instanceof String)
-              state.append((String) o);
-            else if (o instanceof Integer)
-              state.append(o.toString());
-            else if (o instanceof Boolean)
-              state.append(o.equals(Boolean.TRUE) ? "yes" : "no");
-            else
-              state.append("");
-          }
-        }
-        
-        if (definition.length() == 0) {
-          definition = se.getValue();
-        }
-        else if (se.getValue() != null) {
-          definition = definition + "~" + se.getValue();
-        }
-        
-        String st = p.myGetState();
-        if (st == null) {
-          st = state.getValue();
-        }
-        else if (state.getValue() != null) {
-          st = p.myGetState() + "~" + state.getValue();
-        }
-        
-        if (definition != null && definition.length() > 0) {
-          se = new SequenceEncoder(definition, ';'); // properties
-          se.append(menuName); // menu name
-          se.append(launchKey); // key
-          se.append(commitStyle); // commit
-          se.append(red).append(green).append(blue); // colour
-          p.mySetType(PropertySheet.ID + se.getValue());
-          p.mySetState(st);
-        }
-        else {
-          p = null;
-        }
-      }
+    protected PropertySheet getPiecePropertySheet() {
+    	if (piecePS == null) {
+    		piecePS = new PropertySheet();
+    		SequenceEncoder se = new SequenceEncoder('~');
+    		SequenceEncoder state = new SequenceEncoder('~');
+    		for(int i = 0; i < pieceValues.length; ++i) {
+    			if (pieceValues[i] != null && !pieceValues[i].equals("")) {
+    				se.append("0" + pieceValues[i]);
+    				Object o = getValue(i);
+    				if (o instanceof String)
+    					state.append((String) o);
+    				else if (o instanceof Integer)
+    					state.append(o.toString());
+    				else if (o instanceof Boolean)
+    					state.append(o.equals(Boolean.TRUE) ? "yes" : "no");
+    				else
+    					state.append("");
+    			}
+    		}
 
-      return p;
+    		String definition = se.getValue();
+
+    		String st = piecePS.myGetState();
+    		if (st == null) {
+    			st = state.getValue();
+    		}
+    		else if (state.getValue() != null) {
+    			st = piecePS.myGetState() + "~" + state.getValue();
+    		}
+
+    		if (definition != null && definition.length() > 0) {
+    			se = new SequenceEncoder(';'); // properties
+    			se.append(definition);
+    			se.append(PIECE_PROPERTIES); // menu name
+    			se.append('P'); // key
+    			se.append(0); // commit
+    			se.append("").append("").append(""); // colour
+    			piecePS.mySetType(PropertySheet.ID + se.getValue());
+    			piecePS.mySetState(st);
+    		}
+    		else {
+    			piecePS = null;
+    		}
+    	}
+    	
+    	return piecePS;
+    }
+    
+    protected PropertySheet getClassPropertySheet() {
+    	if (classPS == null) {
+    		classPS = pieceClass.getPropertySheetDecorator();
+    	}
+    	return classPS;
     }
     
     protected DynamicProperty getDynamicProperty() {
@@ -997,7 +1007,8 @@ public class ADC2Module extends Importer {
    */
   public class PieceClass {
     
-    protected static final int NO_HIDDEN_SYMBOL = 30001;
+    public static final String CLASS_PROPERTIES = "Class Properties";
+	protected static final int NO_HIDDEN_SYMBOL = 30001;
     protected static final int PLAYER_DEFAULT_HIDDEN_SYMBOL = 30000;
     private final int[] values = new int[8];
     private final ValueType[] types = new ValueType[8];
@@ -1069,15 +1080,18 @@ public class ADC2Module extends Importer {
         }
       }
 
-      PropertySheet p = new PropertySheet();
-      SequenceEncoder se = new SequenceEncoder(';'); // properties
-      se.append(type.getValue() == null ? "" : type.getValue());
-      se.append("Properties"); // menu name
-      se.append('P'); // key
-      se.append(0); // commit
-      se.append("").append("").append(""); // colour
-      p.mySetType(PropertySheet.ID + se.getValue());
-      p.mySetState(state.getValue());
+      PropertySheet p = null;
+      if (type.getValue() != null) {
+    	  p = new PropertySheet();
+    	  SequenceEncoder se = new SequenceEncoder(';'); // properties
+    	  se.append(type.getValue() == null ? "" : type.getValue());
+    	  se.append(CLASS_PROPERTIES); // menu name
+    	  se.append('C'); // key
+    	  se.append(0); // commit
+    	  se.append("").append("").append(""); // colour
+    	  p.mySetType(PropertySheet.ID + se.getValue());
+    	  p.mySetState(state.getValue());
+      }
 
       return p;
     }
