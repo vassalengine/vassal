@@ -280,18 +280,17 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
         bounds.translate((int) (pieceBounds.width * graphicsZoom), 0);
         borderOffset += borderWidth;
       }
-
     }
   }
 
   /** Set the bounds field large enough to accommodate the given set of pieces */
   protected void fixBounds(List<GamePiece> pieces) {
-    for (int i = 0; i < pieces.size(); i++) {
-      GamePiece piece = pieces.get(i);
-      Dimension pieceBounds = getBounds(piece).getSize();
+    for (GamePiece piece : pieces) {
+      final Dimension pieceBounds = getBounds(piece).getSize();
       bounds.width += (int) Math.round(pieceBounds.width * graphicsZoomLevel) + borderWidth;
       bounds.height = Math.max(bounds.height, (int) Math.round(pieceBounds.height * graphicsZoomLevel) + borderWidth * 2);
     }
+
     bounds.width += borderWidth;
     bounds.y -= bounds.height;
   }
