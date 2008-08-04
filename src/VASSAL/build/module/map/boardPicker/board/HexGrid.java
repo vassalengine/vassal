@@ -83,6 +83,7 @@ public class HexGrid extends AbstractConfigurable
   public static final String EDGES = "edgesLegal";
   public static final String SIDEWAYS = "sideways";
   public static final String COLOR = "color";
+  public static final String SNAP_SCALE = "snapscale";
 
   protected static final double sqrt3_2 = sqrt(3) / 2.;
 
@@ -383,6 +384,12 @@ public class HexGrid extends AbstractConfigurable
         val = ColorConfigurer.stringToColor((String) val);
       }
       color = (Color) val;
+    }
+    else if (SNAP_SCALE.equals(key)) {
+      if (val instanceof String) {
+        val = Integer.valueOf((String)val);
+      }
+      snapScale = (Integer)val;
     }
     shapeCache.clear();
   }
