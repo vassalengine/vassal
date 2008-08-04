@@ -556,7 +556,8 @@ System.out.println("throwing, sync: " + this);
     if (fim != null && fim.isDone()) {
       try {
         final Image im = fim.get();
-        return new Dimension(im.getWidth(null), im.getHeight(null));
+        return im == null ? new Dimension() :
+          new Dimension(im.getWidth(null), im.getHeight(null));
       }
       catch (CancellationException e) {
         // FIXME: a bug until we permit cancellation

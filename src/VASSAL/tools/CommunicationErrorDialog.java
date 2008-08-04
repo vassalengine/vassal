@@ -45,7 +45,7 @@ public class CommunicationErrorDialog {
       Resources.getString("Error.communication_error"),
       Resources.getString("Error.communication_error"),
       t,
-      Resources.getString("Error.communication_error")
+      Resources.getString("Error.communication_error_message")
     );
   }
 

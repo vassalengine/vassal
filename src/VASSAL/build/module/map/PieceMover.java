@@ -134,6 +134,7 @@ public class PieceMover extends AbstractBuildable
                  map.getAttributeValueString(Map.MARK_UNMOVED_ICON));
   }
 
+
   protected MovementReporter createMovementReporter(Command c) {
     return new MovementReporter(c);
   }
@@ -520,9 +521,8 @@ public class PieceMover extends AbstractBuildable
    */
   public Command movePieces(Map map, Point p) {
     final PieceIterator it = DragBuffer.getBuffer().getIterator();
-    if (!it.hasMoreElements()) {
-      return null;
-    }
+    if (!it.hasMoreElements()) return null;
+
     Point offset = null;
     Command comm = new NullCommand();
     final BoundsTracker tracker = new BoundsTracker();
@@ -548,13 +548,16 @@ public class PieceMover extends AbstractBuildable
       else {
         draggedPieces = new GamePiece[]{dragging};
       }
+
       for (int i = 0; i < draggedPieces.length; i++) {
         KeyBuffer.getBuffer().add(draggedPieces[i]);
       }
+
       if (offset != null) {
         p = new Point(dragging.getPosition().x + offset.x,
                       dragging.getPosition().y + offset.y);
       }
+
       List<GamePiece> mergeCandidates = mergeTargets.get(p);
       GamePiece mergeWith = null;
       // Find an already-moved piece that we can merge with at the destination
@@ -607,6 +610,7 @@ public class PieceMover extends AbstractBuildable
       }
       tracker.addPiece(dragging);
     }
+
     if (GlobalOptions.getInstance().autoReportEnabled()) {
       final Command report = createMovementReporter(comm).getReportCommand().append(new MovementReporter.HiddenMovementReporter(comm).getReportCommand());
       report.execute();
@@ -749,6 +753,10 @@ public class PieceMover extends AbstractBuildable
     return pieceSorter.compare(p1, p2);
   }
 
+
+// FIXME: It would be better to break this out, and have two implementations,
+// one for systems where isDragImageSupported is false, and one where
+// isDragImageSupported is true.
   /**
    * Implements a psudo-cursor that follows the mouse cursor when user
    * drags gamepieces. Supports map zoom by resizing cursor when it enters
@@ -764,9 +772,13 @@ public class PieceMover extends AbstractBuildable
                                              DragSourceListener,
                                              DragSourceMotionListener,
                                              DropTargetListener {
-    final int CURSOR_ALPHA = 127; // psuedo cursor is 50% transparent
-    final int EXTRA_BORDER = 4; // psuedo cursor is includes a 4 pixel border
+    final static int CURSOR_ALPHA = 127; // psuedo cursor is 50% transparent
+    final static int EXTRA_BORDER = 4; // psuedo cursor is includes a 4 pixel border
     final static private DragHandler theDragHandler = new DragHandler();
+    
+    final static private boolean isDragImageSupported =
+      DragSource.isDragImageSupported();
+
     private JLabel dragCursor; // An image label. Lives on current DropTarget's
     // LayeredPane.
     private BufferedImage dragImage; // An image label. Lives on current DropTarget's LayeredPane.
@@ -1129,12 +1141,14 @@ public class PieceMover extends AbstractBuildable
         dragWin = dge.getComponent();
         drawWin = null;
         dropWin = null;
-        if (!DragSource.isDragImageSupported()) {
+
+        if (!isDragImageSupported) {
           makeDragCursor(dragPieceOffCenterZoom);
           setDrawWinToOwnerOf(dragWin);
           SwingUtilities.convertPointToScreen(mousePosition, drawWin);
           moveDragCursor(mousePosition.x, mousePosition.y);
         }
+
         final BufferedImage dragImage = makeDragImage(dragPieceOffCenterZoom);
 
         // begin dragging
@@ -1158,7 +1172,7 @@ public class PieceMover extends AbstractBuildable
     //
     ///////////////////////////////////////////////////////////////////////////
     public void dragDropEnd(DragSourceDropEvent e) {
-      if (!DragSource.isDragImageSupported()) {
+      if (!isDragImageSupported) {
         removeDragCursor();
       }
     }
@@ -1188,7 +1202,7 @@ public class PieceMover extends AbstractBuildable
 
     /** Moves cursor after mouse */
     public void dragMouseMoved(DragSourceDragEvent event) {
-      if (!DragSource.isDragImageSupported()) {
+      if (!isDragImageSupported) {
         if (!event.getLocation().equals(lastDragLocation)) {
           lastDragLocation = event.getLocation();
           moveDragCursor(event.getX(), event.getY());
@@ -1206,7 +1220,7 @@ public class PieceMover extends AbstractBuildable
     ///////////////////////////////////////////////////////////////////////////
     /** switches current drawWin when mouse enters a new DropTarget */
     public void dragEnter(DropTargetDragEvent event) {
-      if (!DragSource.isDragImageSupported()) {
+      if (!isDragImageSupported) {
         final Component newDropWin =
           event.getDropTargetContext().getComponent();
         if (newDropWin != dropWin) {
@@ -1219,9 +1233,9 @@ public class PieceMover extends AbstractBuildable
           dropWin = newDropWin;
         }
       }
+
       final DropTargetListener forward = getListener(event);
-      if (forward != null)
-        forward.dragEnter(event);
+      if (forward != null) forward.dragEnter(event);
     }
 
     /**
@@ -1230,9 +1244,10 @@ public class PieceMover extends AbstractBuildable
      * listener chain.
      */
     public void drop(DropTargetDropEvent event) {
-      if (!DragSource.isDragImageSupported()) {
+      if (!isDragImageSupported) {
         removeDragCursor();
       }
+
       // EVENT uses UNSCALED, DROP-TARGET coordinate system
       event.getLocation().translate(currentPieceOffsetX, currentPieceOffsetY);
       final DropTargetListener forward = getListener(event);

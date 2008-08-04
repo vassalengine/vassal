@@ -131,7 +131,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, name);
-      return new Dimension(-1,-1);
+      return new Dimension();
     }
   }
 

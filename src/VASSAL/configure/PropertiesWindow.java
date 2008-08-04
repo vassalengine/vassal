@@ -35,9 +35,12 @@ import javax.swing.JDialog;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.configure.ConfigureTree;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * Window for editing properties of a {@link Configurable} object
@@ -61,16 +64,26 @@ public class PropertiesWindow extends JDialog {
     while (child != null) {
       Node nextChild = child.getNextSibling();
       if (Node.ELEMENT_NODE == child.getNodeType()) {
+        // Cull Buildables from the state.
         try {
-          Class.forName(((Element)child).getTagName());
-          originalState.removeChild(child);
+          final Class<?> c = Class.forName(((Element)child).getTagName());
+          if (Buildable.class.isAssignableFrom(c)) {
+            originalState.removeChild(child);
+          }
         }
-        catch (ClassNotFoundException e1) {
-          // If the child element isn't a Buildable component, leave it there.
+        catch (ClassNotFoundException e) {
+          // This element doesn't correspond to a class. Skip it.
+        }
+        catch (ExceptionInInitializerError e) {
+          ErrorDialog.bug(e);
+        }
+        catch (LinkageError e) {
+          ErrorDialog.bug(e);
         }
       }
       child = nextChild;
     }
+
     setLayout(new BoxLayout(getContentPane(),BoxLayout.Y_AXIS));
     configurer = target.getConfigurer();
     target.addPropertyChangeListener(new PropertyChangeListener() {
@@ -81,16 +94,19 @@ public class PropertiesWindow extends JDialog {
       }
     });
     add(configurer.getControls());
-    setTitle(VASSAL.configure.ConfigureTree.getConfigureName(target));
-    Box buttonBox = Box.createHorizontalBox();
-    JButton okButton = new JButton("Ok");
+
+    setTitle(ConfigureTree.getConfigureName(target));
+
+    final Box buttonBox = Box.createHorizontalBox();
+    final JButton okButton = new JButton("Ok");
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         save();
       }
     });
     buttonBox.add(okButton);
-    JButton cancelButton = new JButton("Cancel");
+
+    final JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         cancel();
@@ -99,8 +115,9 @@ public class PropertiesWindow extends JDialog {
     buttonBox.add(cancelButton);
 
     if (target.getHelpFile() != null) {
-      Action helpAction = new ShowHelpAction(target.getHelpFile().getContents(), null); 
-      JButton helpButton = new JButton(helpAction);
+      final Action helpAction =
+        new ShowHelpAction(target.getHelpFile().getContents(), null); 
+      final JButton helpButton = new JButton(helpAction);
       buttonBox.add(helpButton);
       pack();
     }

@@ -41,8 +41,8 @@ public class WriteErrorDialog {
       Resources.getString("Error.file_write_error"),
       Resources.getString("Error.file_write_error"),
       t,
-      e.getClass().getName() + "@" + filename,
-      Resources.getString("Error.file_write_error", filename)
+      (Object) e.getClass().getName() + "@" + filename,
+      Resources.getString("Error.file_write_error_message", filename)
     );
   }
 

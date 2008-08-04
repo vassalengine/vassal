@@ -106,7 +106,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
       }
       catch (IOException e) {
         ReadErrorDialog.error(e, name);
-        size = new Dimension(-1,-1);
+        size = new Dimension();
       }
     }
 

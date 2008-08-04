@@ -51,7 +51,7 @@ public class OpErrorDialog {
         Resources.getString("Error.io_error"),
         Resources.getString("Error.io_error"),
         e,
-        Resources.getString("IOErrorDialog.io_error"),
+        Resources.getString("Error.io_error_message"),
         ioe.getMessage()
       );
 

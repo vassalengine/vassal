@@ -68,11 +68,17 @@ public class ArchiveWriter extends DataArchive {
     closeWhenNotInUse = false;
 
     if (archiveName != null) {
-      try {
-        archive = new ZipFile(archiveName);
-      }
-      catch (IOException e) {
-        ReadErrorDialog.error(e, archiveName);
+      final File f = new File(archiveName);
+      if (f.exists()) {
+        try {
+          archive = new ZipFile(f);
+        }
+        catch (IOException e) {
+// FIXME: This isn't quite right, e.g., in the case where the user intends
+// to overwrite the given file, but it isn't a zip file. How to distinguish
+// between that situation and a bona fide I/O error?
+          ReadErrorDialog.error(e, archiveName);
+        }
       }
     }
   }
@@ -261,6 +267,7 @@ public class ArchiveWriter extends DataArchive {
       out = new ZipOutputStream(
               new BufferedOutputStream(
                 new FileOutputStream(temp)));
+      out.setLevel(9);
       
       if (closeWhenNotInUse && archive == null && archiveName != null) {
         try {
@@ -288,9 +295,16 @@ public class ArchiveWriter extends DataArchive {
           ZipEntry entry = null;
           while ((entry = in.getNextEntry()) != null) {
             // skip modified or new entries
-            if (images.containsKey(entry.getName()) || 
-                sounds.containsKey(entry.getName()) ||
-                files.containsKey(entry.getName())) continue;
+            final String name = entry.getName();
+
+            if (images.containsKey(name) || 
+                sounds.containsKey(name) ||
+                files.containsKey(name)) continue;
+
+            if (entry.getMethod() == ZipEntry.DEFLATED) {
+              // the new compressed size will be set on output
+              entry.setCompressedSize(-1);
+            }
 
             // write out unmodified entries 
             out.putNextEntry(entry);

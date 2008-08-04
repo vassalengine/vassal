@@ -656,8 +656,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     }
   }
 
-  public org.w3c.dom.Element getBuildElement(org.w3c.dom.Document doc) {
-    org.w3c.dom.Element el = doc.createElement(getClass().getName());
+  public Element getBuildElement(Document doc) {
+    final Element el = doc.createElement(getClass().getName());
     el.setAttribute(SLOT_WIDTH, String.valueOf(psize.width));
     el.setAttribute(SLOT_HEIGHT, String.valueOf(psize.height));
     el.setAttribute(SCALE, String.valueOf(getSlotScale()));

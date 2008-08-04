@@ -56,23 +56,25 @@ public class ColoredBorder implements Highlighter {
   
   public void draw(GamePiece p, Graphics g, int x, int y,
                    Component obs, double zoom) {
-    if (thickness != 0) {
-      if (c != null || thickness > 0) {
-        if (g instanceof Graphics2D) {
-          Graphics2D g2d = (Graphics2D) g;
-          Stroke str = g2d.getStroke();
-          g2d.setStroke(new BasicStroke(Math.max(1,Math.round(zoom*thickness))));
+    if (thickness > 0) {
+      if (c != null) {
+        // Find the border by outsetting the bounding box, and then scaling
+        // the shape to fill the outset.
+        final Shape s = p.getShape();
+        final Rectangle br = s.getBounds();
+
+        // Don't bother if the shape is empty.
+        if (!br.isEmpty()) {
+          final double xzoom = (br.getWidth()+1) / br.getWidth();
+          final double yzoom = (br.getHeight()+1) / br.getHeight();
+          final AffineTransform t = AffineTransform.getTranslateInstance(x,y);
+          t.scale(xzoom*zoom, yzoom*zoom);
+
+          final Graphics2D g2d = (Graphics2D) g;
+          final Stroke str = g2d.getStroke();
+          g2d.setStroke(
+            new BasicStroke(Math.max(1, Math.round(zoom*thickness))));
           g2d.setColor(c);
-
-          // Find the border by outsetting the bounding box, and then scaling
-          // the shape to fill the outset.
-          Shape s = p.getShape();
-          Rectangle br = s.getBounds();
-          double xzoom = (br.getWidth()+1)/br.getWidth();
-          double yzoom = (br.getHeight()+1)/br.getHeight();
-          AffineTransform t = AffineTransform.getTranslateInstance(x,y);
-          t.scale(xzoom*zoom,yzoom*zoom);
-
           g2d.draw(t.createTransformedShape(s));
           g2d.setStroke(str);
         }
@@ -86,7 +88,6 @@ public class ColoredBorder implements Highlighter {
     for (Highlighter h : highlighters) {
       h.draw(p, g, x, y, obs, zoom);
     }
-    
   }
 
   protected void highlightSelectionBounds(GamePiece p, Graphics g, int x, int y, Component obs, double zoom) {
@@ -99,7 +100,7 @@ public class ColoredBorder implements Highlighter {
                  (int) (zoom * r.height) + 2 * i - 1);
   }
 
-  public java.awt.Rectangle boundingBox(GamePiece p) {
+  public Rectangle boundingBox(GamePiece p) {
     Rectangle r = p.getShape().getBounds();
     r.translate(-thickness, -thickness);
     r.setSize(r.width + 2 * thickness, r.height + 2 * thickness);

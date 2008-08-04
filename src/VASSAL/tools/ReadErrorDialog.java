@@ -44,7 +44,7 @@ public class ReadErrorDialog {
         Resources.getString("Error.file_not_found"),
         Resources.getString("Error.file_not_found"),
         t,
-        e.getClass().getName() + "@" + filename,
+        (Object) (e.getClass().getName() + "@" + filename),
         Resources.getString("Error.file_not_found_message", filename)
       );
     }
@@ -54,8 +54,8 @@ public class ReadErrorDialog {
         Resources.getString("Error.file_read_error"),
         Resources.getString("Error.file_read_error"),
         t,
-        e.getClass().getName() + "@" + filename,
-        Resources.getString("Error.file_read_error", filename)
+        (Object) (e.getClass().getName() + "@" + filename),
+        Resources.getString("Error.file_read_error_message", filename)
       );
     }
   }

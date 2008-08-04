@@ -308,7 +308,8 @@ public class ImageUtils {
 
   public static Image getSmallImage(InputStream in) throws IOException {
     final BufferedImage img = ImageIO.read(new MemoryCacheImageInputStream(in));
-     
+    if (img == null) throw new IOException("Unrecognized image format");    
+ 
     return img.getType() != BufferedImage.TYPE_INT_ARGB
       ? ImageUtils.toIntARGBSmall(img) : img;
   }

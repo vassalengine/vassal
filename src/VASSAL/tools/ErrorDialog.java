@@ -29,6 +29,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -58,15 +60,102 @@ public class ErrorDialog {
     return disabled.contains(key);
   }
 
-// FIXME: make method which takes Throwable but doesn't use it for details
+  private static class Bug {
+    public final Throwable t;
 
-  public static void bug(Throwable t) {
-    synchronized (ErrorDialog.class) {
-      reportBug(t);
+    public Bug(Throwable t) {
+      this.t = t;
     }
   }
 
-  private static void reportBug(Throwable t) {
+  private static class Message {
+    public final Component parent;
+    public final String title;
+    public final String header;
+    public final String[] message;
+    public final String details;
+    public final int messageType;
+    public final Object key;
+
+    public Message(
+      Component parent,
+      String title,
+      String header,
+      String[] message,
+      String details,
+      int messageType,
+      Object key)
+    {
+      this.parent = parent;
+      this.title = title;
+      this.header = header;
+      this.message = message;
+      this.details = details;
+      this.messageType = messageType;
+      this.key = key;
+    }
+  }
+
+  private static final BlockingQueue<Object> queue =
+    new LinkedBlockingQueue<Object>();
+
+  // This thread consumes error messages so as not to block the threads
+  // which are generating them or the EDT.
+  static {
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          while (true) {
+            final Object o = queue.take();
+          
+            if (o instanceof Message) {
+              final Message m = (Message) o;                
+
+              if (isDisabled(m.key)) return;
+
+              try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                  public void run() {
+                    showDialog(m.parent, m.title, m.header,
+                               m.message, m.messageType, m.key);
+                  }
+                });
+              }
+              catch (InterruptedException e) {
+                ErrorLog.log(e);
+              }
+              catch (InvocationTargetException e) {
+                ErrorLog.log(e);
+              }
+            }
+            else if (o instanceof Bug) {
+              try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                  public void run() {
+                    BugDialog.reportABug();
+                  }
+                });
+              }
+              catch (InterruptedException e) {
+                ErrorLog.log(e);
+              }
+              catch (InvocationTargetException e) {
+                ErrorLog.log(e);
+              }
+            }
+          }
+        }
+        catch (InterruptedException e) {
+          ErrorLog.log(e);
+        }
+      }
+    }.start();
+  }
+
+// FIXME: make method which takes Throwable but doesn't use it for details
+
+  public static void bug(Throwable t) {
     ErrorLog.log(t);
 
     // determine whether an OutOfMemoryError is in our causal chain
@@ -82,7 +171,7 @@ public class ErrorDialog {
       }
     }
 
-    BugDialog.reportABug();
+    queue.add(new Bug(t));
 
 /*
     // otherwise determine (i.e., guess) who to blame for the bug
@@ -136,7 +225,7 @@ public class ErrorDialog {
     String header,
     String... message)
   {
-    error(getFrame(), title, header, message); 
+    error(getFrame(), title, header, null, message); 
   }
 
   public static void error(
@@ -145,26 +234,7 @@ public class ErrorDialog {
     Object key,
     String... message)
   {
-    error(getFrame(), title, header, key, message); 
-  }
-
-  public static void error(
-    Component parent,
-    String title,
-    String header,
-    String... message)
-  {
-    error(parent, title, header, (Object) null, message);     
-  }
-
-  public static void error(
-    Component parent,
-    String title,
-    String header,
-    Object key,
-    String... message)
-  {
-    show(parent, title, header, message, JOptionPane.ERROR_MESSAGE, key);
+    show(getFrame(), title, header, message, JOptionPane.ERROR_MESSAGE, key); 
   }
 
   public static void error(
@@ -173,7 +243,7 @@ public class ErrorDialog {
     Throwable thrown,
     String... message)
   {
-    error(getFrame(), title, header, thrown, message); 
+    error(getFrame(), title, header, thrown, null, message); 
   }
 
   public static void error(
@@ -184,16 +254,6 @@ public class ErrorDialog {
     String... message)
   {
     error(getFrame(), title, header, thrown, key, message); 
-  }
-
-  public static void error(
-    Component parent,
-    String title,
-    String header,
-    Throwable thrown,
-    String... message)
-  {
-    error(parent, title, header, thrown, null, message);     
   }
 
   public static void error(
@@ -214,7 +274,7 @@ public class ErrorDialog {
     String header,
     String... message)
   {
-    warning(getFrame(), title, header, message); 
+    warning(getFrame(), title, header, null, message); 
   }
 
   public static void warning(
@@ -223,26 +283,7 @@ public class ErrorDialog {
     Object key,
     String... message)
   {
-    warning(getFrame(), title, header, key, message); 
-  }
-
-  public static void warning(
-    Component parent,
-    String title,
-    String header,
-    String... message)
-  {
-    warning(parent, title, header, (Object) null, message);     
-  }
-
-  public static void warning(
-    Component parent,
-    String title,
-    String header,
-    Object key,
-    String... message)
-  {
-    show(parent, title, header, message, JOptionPane.WARNING_MESSAGE, key);
+    show(getFrame(), title, header, message, JOptionPane.WARNING_MESSAGE, key);
   }
 
   public static void warning(
@@ -251,7 +292,7 @@ public class ErrorDialog {
     Throwable thrown,
     String... message)
   {
-    warning(getFrame(), title, header, thrown, message); 
+    warning(getFrame(), title, header, thrown, null, message); 
   }
 
   public static void warning(
@@ -262,16 +303,6 @@ public class ErrorDialog {
     String... message)
   {
     warning(getFrame(), title, header, thrown, key, message); 
-  }
-
-  public static void warning(
-    Component parent,
-    String title,
-    String header,
-    Throwable thrown,
-    String... message)
-  {
-    warning(parent, title, header, thrown, null, message);     
   }
 
   public static void warning(
@@ -296,27 +327,11 @@ public class ErrorDialog {
     final Object key)
   {
     if (disabled.contains(key)) return;
+  
+    final Message m =
+      new Message(parent, title, header, message, null, messageType, key);
 
-    synchronized (ErrorDialog.class) {
-      if (SwingUtilities.isEventDispatchThread()) {
-        showDialog(parent, title, header, message, messageType, key);
-      }
-      else {
-        try {
-          SwingUtilities.invokeAndWait(new Runnable() {
-            public void run() {
-              showDialog(parent, title, header, message, messageType, key);
-            }
-          });
-        }
-        catch (InterruptedException e) {
-          reportBug(e);
-        }
-        catch (InvocationTargetException e) {
-          reportBug(e);
-        }
-      }
-    }
+    queue.add(m);
   }
 
   public static void show(
@@ -330,27 +345,10 @@ public class ErrorDialog {
   {
     if (disabled.contains(key)) return;
 
-    synchronized (ErrorDialog.class) {
-      if (SwingUtilities.isEventDispatchThread()) {
-        showDialog(parent, title, header, message, details, messageType, key);
-      }
-      else {
-        try {
-          SwingUtilities.invokeAndWait(new Runnable() {
-            public void run() {
-              showDialog(parent, title, header, message,
-                         details, messageType, key);
-            }
-          });
-        }
-        catch (InterruptedException e) {
-          reportBug(e);
-        }
-        catch (InvocationTargetException e) {
-          reportBug(e);
-        }
-      }
-    }
+    final Message m =
+      new Message(parent, title, header, message, details, messageType, key);
+
+    queue.add(m);
   }
   
   private static void showDialog(
@@ -369,12 +367,8 @@ public class ErrorDialog {
     headerLabel.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
 
     // put together the paragraphs of the message
-    final StringBuilder sb = new StringBuilder(message[0]);
-    for (int i = 1; i < message.length; i++) {
-      sb.append("\n\n").append(message[i]);
-    }
-
-    final FlowLabel messageLabel = new FlowLabel(sb.toString());
+    final FlowLabel messageLabel =
+      new FlowLabel(StringUtils.join(message, "\n\n"));
 
     final JCheckBox disableCheck;
 
@@ -455,12 +449,8 @@ public class ErrorDialog {
     headerLabel.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
 
     // put together the paragraphs of the message
-    final StringBuilder sb = new StringBuilder(message[0]);
-    for (int i = 1; i < message.length; i++) {
-      sb.append("\n\n").append(message[i]);
-    }
-
-    final FlowLabel messageLabel = new FlowLabel(sb.toString());
+   final FlowLabel messageLabel =
+      new FlowLabel(StringUtils.join(message, "\n\n"));
 
     final JCheckBox disableCheck;
 

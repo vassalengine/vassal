@@ -267,11 +267,6 @@ public class Labeler extends Decorator implements TranslatablePiece {
       
     imagePainter.draw(g, labelX, labelY, zoom, obs);    
 
-/*
-        Image scaled = labelImage;
-        scaled = GameModule.getGameModule().getDataArchive().getScaledImage(labelImage, zoom);
-        g2d.drawImage(scaled, labelX, labelY, obs);
-*/
     if (rotateDegrees != 0) {
       g2d.setTransform(saveXForm);
     }
@@ -281,22 +276,27 @@ public class Labeler extends Decorator implements TranslatablePiece {
     final String label = getLocalizedLabel();
     if (label != null && !label.equals(lastCachedLabel)) {
       imagePainter.setSource(null);
+      lastCachedLabel = null;
     }
-    if (imagePainter.getSource() == null && label != null && label.length() > 0) {
-      imagePainter.setSource(new LabelOp(getLocalizedLabel(), lbl, textBg));
+
+    if (imagePainter.getSource() == null &&
+        label != null && label.length() > 0) {
+      lastCachedLabel = label;
+      imagePainter.setSource(new LabelOp(lastCachedLabel, lbl, textBg));
     }
   }
 
   /**
-   * Return the relative position of the upper-left corner of the label, for a piece at position (0,0)
+   * Return the relative position of the upper-left corner of the label,
+   * for a piece at position (0,0).
    */
   private Point getLabelPosition() {
     int x = horizontalOffset;
     int y = verticalOffset;
 
-    Dimension lblSize = imagePainter.getImageSize();
-    
-    Rectangle selBnds = piece.getShape().getBounds();
+    final Dimension lblSize = imagePainter.getImageSize();
+    final Rectangle selBnds = piece.getShape().getBounds();
+
     switch (verticalPos) {
       case 't':
         y += selBnds.y;
@@ -304,6 +304,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
       case 'b':
         y += selBnds.y + selBnds.height;
     }
+
     switch (horizontalPos) {
       case 'l':
         x += selBnds.x;
@@ -311,20 +312,23 @@ public class Labeler extends Decorator implements TranslatablePiece {
       case 'r':
         x += selBnds.x + selBnds.width;
     }
+
     switch (verticalJust) {
       case 'b':
-        y -= lblSize.getHeight();
+        y -= lblSize.height;
         break;
       case 'c':
-        y -= lblSize.getHeight() / 2;
+        y -= lblSize.height / 2;
     }
+
     switch (horizontalJust) {
       case 'c':
-        x -= lblSize.getWidth() / 2;
+        x -= lblSize.width / 2;
         break;
       case 'r':
-        x -= lblSize.getWidth();
+        x -= lblSize.width;
     }
+
     return new Point(x, y);
   }
 
@@ -368,7 +372,6 @@ public class Labeler extends Decorator implements TranslatablePiece {
       this.lab = lab;
       this.bg = bg;
       hash = HashCode.hash(txt) ^
-             HashCode.hash(lab) ^
              HashCode.hash(bg);
     }
 
@@ -410,8 +413,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
       if (this == o) return true;
       if (!(o instanceof LabelOp)) return false;
       LabelOp lop = (LabelOp) o;
-      return lab.equals(lop.lab) &&
-             ((txt != null && txt.equals(lop.txt)) ||
+      return ((txt != null && txt.equals(lop.txt)) ||
               (txt == null && lop.txt == null)) &&
              ((bg != null && bg.equals(lop.txt)) ||
               (bg == null && lop.bg == null));

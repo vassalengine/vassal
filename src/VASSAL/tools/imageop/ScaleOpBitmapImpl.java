@@ -43,6 +43,13 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
   private final RenderingHints hints;
   private final int hash;
 
+  // FIXME: We try to always use the same hints object because hints is
+  // used in our equals() and RenderingHints.equals() is ridiculously slow
+  // if a full comparison is made. This way hints == defaultHints, usually,
+  // and so a quick equality comparison succeeds.
+  private static final RenderingHints defaultHints =
+    ImageUtils.getDefaultHints();
+
   /**
    * Constructs an <code>ImageOp</code> which will scale
    * the image produced by its source <code>ImageOp</code>.
@@ -51,7 +58,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
    * @param scale the scale factor
    */
   public ScaleOpBitmapImpl(ImageOp sop, double scale) {
-    this(sop, scale, ImageUtils.getDefaultHints());
+    this(sop, scale, defaultHints);
   }
 
   /**
@@ -225,8 +232,8 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
     final ScaleOp op = (ScaleOp) o;
     return scale == op.getScale() && 
-           hints.equals(op.getHints()) &&
-           sop.equals(op.getSource());
+           sop.equals(op.getSource()) && 
+           hints.equals(op.getHints());
   }
 
   /** {@inheritDoc} */
