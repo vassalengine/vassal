@@ -30,6 +30,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.GregorianCalendar;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -62,7 +63,117 @@ public class BugDialog {
       ? null : GameModule.getGameModule().getFrame());
 */
 // FIXME: do something to find our top-level frame
-    reportABug(null);
+
+    final GregorianCalendar expiry = new GregorianCalendar(2008, 8, 5);
+    final GregorianCalendar now = new GregorianCalendar();
+
+    if (now.after(expiry)) oldReportABug(null);
+    else reportABug(null);
+  }
+
+  public static void oldReportABug(Frame parent) {
+    final JDialog dialog;
+
+    final JLabel header = new JLabel("Congratulations! You've found a bug.");
+    final Font f = header.getFont();
+    header.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
+
+    final FlowLabel notice = new FlowLabel("VASSAL had an internal error. Becasue this beta version of VASSAL is more than 30 days old, bug reporting is disabled. If you can reproduce this bug with a current verision of VASSAL, please do so and alert the VASSAL developers to the problem.");
+
+    // prevents FlowLabel from being a single line
+    // FIXME: why is this necessary?
+    final Dimension d = notice.getPreferredSize();
+    d.width = 0;
+    notice.setPreferredSize(d);
+
+    String tmp = null;
+    FileReader r = null;
+    try {
+      r = new FileReader(new File(Info.getConfDir(), "errorLog"));
+      tmp = IOUtils.toString(r);
+    }
+    catch (IOException e) {
+      // Don't bother logging this---if we can't read the errorLog,
+      // then we probably can't write to it either.
+      IOUtils.closeQuietly(r);
+    }
+
+    final String errorLog = tmp;
+  
+    final JTextArea log = new JTextArea(errorLog, 10, 26);
+    log.setEditable(false);
+
+    final JScrollPane logScroll = new JScrollPane(log);
+    logScroll.setVisible(false);
+
+    final JLabel logLabel = new JLabel("Error Log:");
+    logLabel.setLabelFor(log);
+
+    final JButton detailsButton = new JButton();
+
+    final JLabel detailsLabel = new JLabel("Error Log:");
+    detailsLabel.setLabelFor(detailsButton); 
+
+    final JPanel panel = new JPanel();
+
+    final GroupLayout layout = new GroupLayout(panel);
+    panel.setLayout(layout);
+
+    layout.setAutocreateGaps(true);
+    layout.setAutocreateContainerGaps(true);
+    
+    layout.setHorizontalGroup(
+      layout.createParallelGroup(GroupLayout.LEADING, true)
+        .add(header)
+        .add(notice)
+        .add(layout.createSequentialGroup()
+          .add(layout.createParallelGroup(GroupLayout.LEADING, true)
+            .add(detailsLabel))
+          .add(layout.createParallelGroup(GroupLayout.LEADING, true)
+            .add(detailsButton)
+            .add(logScroll))));
+
+    layout.setVerticalGroup(
+      layout.createSequentialGroup()
+        .add(header)
+        .addPreferredGap(LayoutStyle.UNRELATED)
+        .add(layout.createParallelGroup(GroupLayout.BASELINE, false)
+          .add(notice))
+        .addPreferredGap(LayoutStyle.UNRELATED)
+        .add(layout.createParallelGroup(GroupLayout.BASELINE, true)
+          .add(detailsLabel)
+          .add(detailsButton))
+        .add(logScroll));
+
+    final String[] buttons = { "Ok" };
+    
+    final JOptionPane opt = new JOptionPane(
+      panel,
+      JOptionPane.ERROR_MESSAGE,
+      JOptionPane.DEFAULT_OPTION,
+      new ImageIcon(BugDialog.class.getResource("/images/bug.png")),
+      buttons
+    );
+
+    dialog = opt.createDialog(parent, "Uncaught Exception");
+
+    detailsButton.setAction(new AbstractAction("<html>Details &raquo;</html>") {
+      private static final long serialVersionUID = 1L;
+    
+      public void actionPerformed(ActionEvent e) {
+        logScroll.setVisible(!logScroll.isVisible());
+        putValue(NAME, logScroll.isVisible() ?
+          "<html>Details &laquo;</html>" : "<html>Details &raquo;</html>");
+        dialog.pack(); 
+      }
+    });
+
+    dialog.setModal(true);
+    dialog.setLocationRelativeTo(parent);
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    dialog.setResizable(true);
+    dialog.pack();
+    dialog.setVisible(true);
   }
 
   public static void reportABug(Frame parent) {
@@ -209,7 +320,7 @@ public class BugDialog {
                                     String description,
                                     String errorLog) {
     final long time = System.currentTimeMillis();
-    final String summary = "Automated bug reporter test, #" + time + "\n";
+    final String summary = "Automated bug report #" + time + "\n";
 
     final String boundary = "---------------------------" +
                             Long.toString(time, 16);
@@ -341,7 +452,7 @@ public class BugDialog {
     d.pack();
     d.setVisible(true);
 */
-
+    oldReportABug(null);
     reportABug();
     System.exit(0);
   }
