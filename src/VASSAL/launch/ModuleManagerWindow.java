@@ -938,13 +938,8 @@ public class ModuleManagerWindow extends JFrame {
       }
     }
     
-    /*
-     * Sort by Type, then File name.
-     */
     public int compareTo(AbstractInfo info) {
-      final int typeCompare = info.getSortKey().compareTo(getSortKey());
-      return typeCompare == 0 ? getFile().getName().toLowerCase().compareTo(
-        info.getFile().getName().toLowerCase()) : typeCompare;
+      return getSortKey().compareTo(info.getSortKey());
     }
     
     public JPopupMenu buildPopup(int row) {
@@ -1013,9 +1008,7 @@ public class ModuleManagerWindow extends JFrame {
      * 
      * @return sort key
      */
-    public String getSortKey() {
-      return "5";
-    }
+    public abstract String getSortKey();
     
     /**
      * Return the color of the text used to display the name in column 1.
@@ -1047,6 +1040,10 @@ public class ModuleManagerWindow extends JFrame {
   private class RootInfo extends AbstractInfo {
     public RootInfo() {
       super(null);
+    }
+
+    public String getSortKey() {
+      return "";
     } 
   }
   
@@ -1302,6 +1299,10 @@ public class ModuleManagerWindow extends JFrame {
       return column == SPARE_COLUMN ?
         getLocalizedDescription() : super.getValueAt(column);
     }
+    
+    public String getSortKey() {
+      return metadata.getLocalizedName();
+    }
   }
   
   /** *************************************************************************
@@ -1431,6 +1432,13 @@ public class ModuleManagerWindow extends JFrame {
         treeModel.setValueAt("", extNode, 0);
       }
     }
+
+    /**
+     * Sort Extensions by File Name
+     */
+    public String getSortKey() {
+      return getFile().getName();
+    }
   }
   
   /** *************************************************************************
@@ -1513,12 +1521,11 @@ public class ModuleManagerWindow extends JFrame {
           getTreeNode().findInsertIndex(fileInfo));
     }
     
-    /*
+    /**
      * Force Game Folders to sort after extensions
-     */
-    @Override 
+     */ 
     public String getSortKey() {
-      return "3";
+      return "~~~"+getFile().getName();
     }
   }
   
@@ -1602,6 +1609,13 @@ public class ModuleManagerWindow extends JFrame {
     @Override 
     public String getVersion() {
       return metadata.getModuleVersion();
+    }
+
+    /**
+     * Sort Save Files by file name
+     */
+    public String getSortKey() {
+      return this.getFile().getName();
     }
   }
   
