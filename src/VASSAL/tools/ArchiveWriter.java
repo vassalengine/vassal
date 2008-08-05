@@ -302,8 +302,10 @@ public class ArchiveWriter extends DataArchive {
                 files.containsKey(name)) continue;
 
             if (entry.getMethod() == ZipEntry.DEFLATED) {
-              // the new compressed size will be set on output
-              entry.setCompressedSize(-1);
+              // we can't reuse entries for compressed files
+              // because there's no way to reset the fields
+              // to acceptable values
+              entry = new ZipEntry(name);
             }
 
             // write out unmodified entries 
