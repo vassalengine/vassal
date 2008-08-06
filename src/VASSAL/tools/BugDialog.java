@@ -56,6 +56,7 @@ import VASSAL.tools.swing.FlowLabel;
  */
 public class BugDialog {
   private static final long serialVersionUID = 1L;
+  private static boolean disabled;
 
   public static void reportABug() {
 /*
@@ -177,6 +178,9 @@ public class BugDialog {
   }
 
   public static void reportABug(Frame parent) {
+    if (disabled) {
+      return;
+    }
     final JDialog dialog;
 
     final JLabel header = new JLabel("Congratulations! You've found a bug.");
@@ -184,6 +188,7 @@ public class BugDialog {
     header.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
 
     final FlowLabel notice = new FlowLabel("VASSAL had an internal error. You can help the VASSAL developers fix it by sending them this error report with a description of what you were doing when the error happened.");
+    notice.setEditable(false);
 
     // prevents FlowLabel from being a single line
     // FIXME: why is this necessary?
@@ -280,7 +285,7 @@ public class BugDialog {
 
     layout.linkSize(new Component[]{emailLabel, email}, GroupLayout.VERTICAL);
 
-    final String[] buttons = { "Submit Report", "Cancel" };
+    final String[] buttons = { "Submit Report", "Cancel", "Don't show this dialog again"};
     
     final JOptionPane opt = new JOptionPane(
       panel,
@@ -313,6 +318,9 @@ public class BugDialog {
     final Object selected = opt.getValue();
     if (buttons[0].equals(selected)) {
       sendBugReport(email.getText(), description.getText(), errorLog);
+    }
+    else if (buttons[2].equals(selected)) {
+      disabled=true;
     }
   }
 
