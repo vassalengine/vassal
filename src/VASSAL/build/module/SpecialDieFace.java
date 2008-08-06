@@ -21,6 +21,7 @@ package VASSAL.build.module;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
@@ -94,8 +95,8 @@ public class SpecialDieFace extends AbstractConfigurable {
         }
         value = ((Integer) o).intValue();
       }
-      // FIXME: review error message
       catch (NumberFormatException e) {
+        throw new IllegalBuildException(e);
       }
     }
     else if (ICON.equals(key)) {

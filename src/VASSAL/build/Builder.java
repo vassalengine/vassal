@@ -193,7 +193,6 @@ public abstract class Builder {
       xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); //$NON-NLS-1$ //$NON-NLS-2$
       xformer.transform(source, result);
     }
-    // FIXME: review error message
     catch (TransformerException e) {
       // FIXME: switch to IOException(Throwable) ctor in Java 1.6
       throw (IOException) new IOException().initCause(e);

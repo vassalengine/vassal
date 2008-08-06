@@ -116,11 +116,9 @@ public class ExtensionsLoader implements CommandEncoder {
       catch (ZipException e) {
         // Not a zip file. Ignore.
       }
-      // FIXME: review error message
       catch (IOException e) {
         reportBuildError(e, extname);
       }
-      // FIXME: review error message
       catch (IllegalBuildException e) {
         reportBuildError(e, extname);
       }

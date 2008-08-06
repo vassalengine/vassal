@@ -1055,7 +1055,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           dragCount = Math.min(dragCount, getPieceCount());
           if (dragCount >= 0) break;
         }
-        // FIXME: review error message
         catch (NumberFormatException ex) {
         }
       }

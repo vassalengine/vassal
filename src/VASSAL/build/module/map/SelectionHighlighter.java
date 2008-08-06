@@ -32,6 +32,7 @@ import java.awt.geom.AffineTransform;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
@@ -174,12 +175,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       if (value instanceof String) {
         value = new Integer((String) value);
       }
-      try {
-        thickness = ((Integer) value).intValue();
-      }
-      // FIXME: review error message
-      catch (NumberFormatException ex) {
-      }
+      thickness = ((Integer) value).intValue();
     }
     else if (key.equals(IMAGE)) {
       imageName = (String) value;
@@ -192,8 +188,8 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       try {
         x = ((Integer) value).intValue();
       }
-      // FIXME: review error message
       catch (NumberFormatException ex) {
+        throw new IllegalBuildException(ex);
       }
     }
     else if (key.equals(Y_OFFSET)) {
@@ -203,8 +199,8 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
       try {
         y = ((Integer) value).intValue();
       }
-      // FIXME: review error message
       catch (NumberFormatException ex) {
+        throw new IllegalBuildException(ex);
       }
     }
   }

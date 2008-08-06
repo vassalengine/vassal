@@ -20,6 +20,8 @@
 package VASSAL.build.module.properties;
 
 import java.util.Collection;
+
+import VASSAL.build.BadDataException;
 import VASSAL.counters.GamePiece;
 
 /**
@@ -48,8 +50,8 @@ public class SumProperties implements PropertySource {
           try {
             sum += Integer.parseInt(val.toString());
           }
-          // FIXME: review error message
           catch (NumberFormatException e) {
+            // Treat non-numeric values as zero
           }
         }
       }

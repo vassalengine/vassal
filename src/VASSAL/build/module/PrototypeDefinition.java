@@ -22,10 +22,14 @@ import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
+
 import javax.swing.Box;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.BadDataException;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -45,7 +49,6 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PieceEditor;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
 
@@ -135,20 +138,15 @@ public class PrototypeDefinition extends AbstractConfigurable
       try {
         final AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
         if (comm == null) {
-      // FIXME: review error message
-          System.err.println("Couldn't build piece " + def); //$NON-NLS-1$
-          def = null;
+          throw new BadDataException("Couldn't build piece " + def); //$NON-NLS-1$
         }
         else {
           piece = comm.getTarget();
           piece.setState(comm.getState());
         }
       }
-      // FIXME: review error message
       catch (RuntimeException e) {
-        ErrorLog.log(e);
-        def = null;
-        piece = null;
+        throw new BadDataException("Couldn't build piece "+def,e);
       }
     }
     return piece;

@@ -30,6 +30,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -48,6 +49,7 @@ import javax.swing.text.TabExpander;
 import javax.swing.text.Utilities;
 import javax.swing.text.View;
 import javax.swing.text.WrappedPlainView;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
@@ -56,7 +58,7 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FontConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.ScrollPane;
 
@@ -327,9 +329,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
         }
       }
     }
-    // FIXME: review error message
     catch (BadLocationException e) {
-      ErrorLog.log(e);
+      ErrorDialog.bug(e);
     }
     return col == null ? Color.black : col;
   }

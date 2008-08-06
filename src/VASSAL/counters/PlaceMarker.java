@@ -28,12 +28,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
+import VASSAL.build.BadDataException;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
@@ -227,8 +230,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
           newGpId = ((PieceSlot) conf).getGpId();
         }
       }
-      // FIXME: review error message
       catch (ComponentPathBuilder.PathFormatException e) {
+        throw new BadDataException(e);
       }
     }
     return piece;

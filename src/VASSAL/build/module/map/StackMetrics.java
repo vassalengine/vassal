@@ -34,6 +34,7 @@ import javax.swing.KeyStroke;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.AddPiece;
@@ -88,8 +89,8 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           exSepX = Integer.parseInt((String) value);
         }
-        // FIXME: review error message
         catch (NumberFormatException NaN) {
+          throw new IllegalBuildException(NaN);
         }
       }
       else if (value != null) {
@@ -101,8 +102,8 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           exSepY = Integer.parseInt((String) value);
         }
-        // FIXME: review error message
         catch (NumberFormatException NaN) {
+          throw new IllegalBuildException(NaN);
         }
       }
       else if (value != null) {
@@ -114,8 +115,8 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           unexSepX = Integer.parseInt((String) value);
         }
-        // FIXME: review error message
         catch (NumberFormatException NaN) {
+          throw new IllegalBuildException(NaN);
         }
       }
       else if (value != null) {
@@ -127,8 +128,8 @@ public class StackMetrics extends AbstractConfigurable {
         try {
           unexSepY = Integer.parseInt((String) value);
         }
-        // FIXME: review error message
         catch (NumberFormatException NaN) {
+          throw new IllegalBuildException(NaN);
         }
       }
       else if (value != null) {

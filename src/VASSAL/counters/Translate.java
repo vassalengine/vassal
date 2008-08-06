@@ -39,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.BadDataException;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -198,26 +199,30 @@ public class Translate extends Decorator implements TranslatablePiece {
     GamePiece outer = Decorator.getOutermost(this);
     
     Board b = outer.getMap().findBoard(p);
+    String dist = xDist.getText(outer);
+    String index = xIndex.getText(outer);
+    String offset = xOffset.getText(outer);
     try {
-      x = Integer.parseInt(xDist.getText(outer)) + Integer.parseInt(xIndex.getText(outer)) * Integer.parseInt(xOffset.getText(outer));
+      x = Integer.parseInt(dist) + Integer.parseInt(index) * Integer.parseInt(offset);
       if (b != null) {
         x = (int)Math.round(b.getMagnification()*x);
       }
     }
-    // FIXME: review error message
     catch (NumberFormatException e) {
-      
+      throw new BadDataException("'"+dist+"', '"+index+"', and '"+offset+"' are not all numbers",e);      
     }
     
+    dist = yDist.getText(outer);
+    index = yIndex.getText(outer);
+    offset = yOffset.getText(outer);
     try {
-      y = Integer.parseInt(yDist.getText(outer)) + Integer.parseInt(yIndex.getText(outer)) * Integer.parseInt(yOffset.getText(outer));
+      y = Integer.parseInt(dist) + Integer.parseInt(index) * Integer.parseInt(offset);
       if (b != null) {
         y = (int)Math.round(b.getMagnification()*y);
       }
     }
-    // FIXME: review error message
     catch (NumberFormatException e) {
-      
+      throw new BadDataException("'"+dist+"', '"+index+"', and '"+offset+"' are not all numbers",e);      
     }
     
     p.translate(x, -y);

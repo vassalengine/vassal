@@ -1,8 +1,11 @@
 package VASSAL.build.module.properties;
 
 import java.beans.PropertyChangeListener;
+
 import javax.swing.JToolBar;
+
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.BadDataException;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
@@ -255,7 +258,6 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       try {
         max = Integer.parseInt(format.getText(this));
       }
-      // FIXME: review error message
       catch (NumberFormatException e) {
       }
     }
@@ -269,7 +271,6 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       try {
         min = Integer.parseInt(format.getText(this));
       }
-      // FIXME: review error message
       catch (NumberFormatException e) {
       }
     }

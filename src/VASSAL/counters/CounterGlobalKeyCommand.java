@@ -26,14 +26,17 @@ import java.awt.Shape;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
+import VASSAL.build.BadDataException;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
-import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
@@ -177,12 +180,12 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
     if (restrictRange) {
       int r = range;
       if (!fixedRange) {
+        String rangeValue = (String) Decorator.getOutermost(this).getProperty(rangeProperty);
         try {
-          r = Integer.parseInt(
-            (String) Decorator.getOutermost(this).getProperty(rangeProperty));
+          r = Integer.parseInt(rangeValue);
         }
-        // FIXME: review error message
         catch (NumberFormatException e) {
+          throw new BadDataException("'"+rangeValue+"' is not a number",e);
         }
       }
       filter = new BooleanAndPieceFilter(filter,new RangeFilter(getMap(), getPosition(), r));

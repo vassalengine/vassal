@@ -469,7 +469,6 @@ public class Inventory extends AbstractConfigurable
     try {
       count = Integer.parseInt(s);
     }
-    // FIXME: review error message
     catch (NumberFormatException e) {
       count = 1;
     }
@@ -1037,7 +1036,6 @@ public class Inventory extends AbstractConfigurable
               CounterNode childNode = (CounterNode) results.getChild(node, i);
               sum += Integer.parseInt((String) (childNode.getCounter()).getProperty(key));
             }
-            // FIXME: review error message
             catch (NumberFormatException e) {
               sum++;
             }

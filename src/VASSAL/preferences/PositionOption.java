@@ -29,6 +29,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.StringTokenizer;
 
+import VASSAL.tools.ErrorDialog;
+
 public class PositionOption extends VASSAL.configure.Configurer
   implements ComponentListener {
   public static String key = "BoundsOf";
@@ -90,8 +92,8 @@ public class PositionOption extends VASSAL.configure.Configurer
                              Integer.parseInt(st.nextToken()),
                              Integer.parseInt(st.nextToken())));
     }
-    // FIXME: review error message
     catch (NumberFormatException e) {
+      ErrorDialog.bug(e);
     }
   }
 

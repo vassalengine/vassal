@@ -139,7 +139,6 @@ public class PropertiesPieceFilter {
       try {
         return Integer.valueOf(property).compareTo(Integer.valueOf(value));
       }
-      // FIXME: review error message
       catch (NumberFormatException e) {
         return property.compareTo(value);
       }

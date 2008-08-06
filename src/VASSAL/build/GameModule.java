@@ -227,8 +227,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       try {
         nextGpId = Integer.parseInt((String) value);
       }
-      // FIXME: review error message
       catch (NumberFormatException e) {
+        throw new IllegalBuildException(e);
       }
     }
     else if (DESCRIPTION.equals(name)) {

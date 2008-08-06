@@ -30,6 +30,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -39,6 +40,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.BadDataException;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -252,8 +254,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
               dest = new Point(Integer.parseInt(x.getText(outer)),
                                Integer.parseInt(y.getText(outer)));
             }
-            // FIXME: review error message
             catch (NumberFormatException e) {
+              throw new BadDataException("'"+x.getText(outer)+"' and '"+y.getText(outer)+"' are not both numbers",e);
             }
             Board b = map.getBoardByName(boardName.getText(outer));
             if (b != null && dest != null) {

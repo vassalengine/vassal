@@ -46,6 +46,7 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
+import VASSAL.build.BadDataException;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.FlowLabel;
@@ -65,6 +66,13 @@ public class ErrorDialog {
 
     public Bug(Throwable t) {
       this.t = t;
+    }
+  }
+  
+  private static class BadData {
+    public final BadDataException cause;
+    public BadData(BadDataException e) {
+      cause = e;
     }
   }
 
@@ -144,6 +152,18 @@ public class ErrorDialog {
                 ErrorLog.log(e);
               }
             }
+            else if (o instanceof BadData) {
+              try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                  public void run() {
+                    BugDialog.reportModuleProblem();
+                  }
+                });
+              }
+              catch (InvocationTargetException e) {
+                ErrorLog.log(e);
+              }
+            }
           }
         }
         catch (InterruptedException e) {
@@ -170,8 +190,13 @@ public class ErrorDialog {
         return;
       }
     }
-
-    queue.add(new Bug(t));
+    
+    if (t instanceof BadDataException) {
+      queue.add(new BadData((BadDataException)t));
+    }
+    else {
+      queue.add(new Bug(t));
+    }
 
 /*
     // otherwise determine (i.e., guess) who to blame for the bug

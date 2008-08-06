@@ -48,6 +48,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionListener;
 
+import VASSAL.build.BadDataException;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -401,9 +402,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (!followProperty || propertyName.length() == 0) {
       return;
     }
+    final String val = (String) Decorator.getOutermost(this)
+    .getProperty(propertyName);
     try {
-      final String val = (String) Decorator.getOutermost(this)
-                                           .getProperty(propertyName);
       int v = Integer.parseInt(val) - firstLevelValue + 1;
       if (v <= 0) v = 1;
       if (v > nValues) v = nValues;
@@ -414,8 +415,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         value = -v;
       }
     }
-    // FIXME: review error message
     catch (NumberFormatException e) {
+      throw new BadDataException("'"+val+"' is not a number",e);
     }
     return;
   }
@@ -523,7 +524,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           setValue(Math.abs(level) - 1);
           setActive(level > 0);
         }
-        // FIXME: review error message
         catch (NumberFormatException e) {
         }
       }
@@ -1045,7 +1045,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       try {
         Integer.parseInt(xOffInput.getText());
       }
-      // FIXME: review error message
       catch (NumberFormatException xNAN) {
         xOffInput.setText("0");
       }
@@ -1053,7 +1052,6 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       try {
         Integer.parseInt(yOffInput.getText());
       }
-      // FIXME: review error message
       catch (NumberFormatException yNAN) {
         yOffInput.setText("0");
       }
@@ -1115,14 +1113,12 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       try {
         Integer.parseInt(xOffInput.getText());
       }
-      // FIXME: review error message
       catch (NumberFormatException xNAN) {
         xOffInput.setText("0");
       }
       try {
         Integer.parseInt(yOffInput.getText());
       }
-      // FIXME: review error message
       catch (NumberFormatException yNAN) {
         yOffInput.setText("0");
       }

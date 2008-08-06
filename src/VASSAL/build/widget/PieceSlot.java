@@ -280,7 +280,6 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
         width = Integer.parseInt(e.getAttribute(WIDTH));
         height = Integer.parseInt(e.getAttribute(HEIGHT));
       }
-      // FIXME: review error message
       catch (NumberFormatException ex) {
         width = 60;
         height = 60;

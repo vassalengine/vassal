@@ -37,6 +37,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import VASSAL.build.BadDataException;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GlobalOptions;
@@ -539,8 +540,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     if (!"null".equals(mapId)) {
       newMap = Map.getMapById(mapId);
       if (newMap == null) {
-        System.err.println("Could not find map " + mapId);
-        return;
+        throw new BadDataException("Could not find map " + mapId);
       }
     }
     final Point newPos = new Point(st.nextInt(0), st.nextInt(0));

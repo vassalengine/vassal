@@ -79,6 +79,7 @@ import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.BoardPicker;
 import VASSAL.build.module.map.CounterDetailViewer;
@@ -296,8 +297,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       try {
         edgeBuffer = new Dimension(((Integer) value).intValue(), edgeBuffer.height);
       }
-      // FIXME: review error message
       catch (NumberFormatException ex) {
+        throw new IllegalBuildException(ex);
       }
     }
     else if (EDGE_HEIGHT.equals(key)) {
@@ -307,8 +308,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       try {
         edgeBuffer = new Dimension(edgeBuffer.width, ((Integer) value).intValue());
       }
-      // FIXME: review error message
       catch (NumberFormatException ex) {
+        throw new IllegalBuildException(ex);
       }
     }
     else if (BACKGROUND_COLOR.equals(key)) {

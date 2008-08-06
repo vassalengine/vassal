@@ -1,5 +1,6 @@
 package VASSAL.build.module.properties;
 
+import VASSAL.build.BadDataException;
 import VASSAL.tools.FormattedString;
 
 /**
@@ -41,9 +42,8 @@ public class IncrementProperty implements PropertyChanger {
       }
       return String.valueOf(value);
     }
-    // FIXME: review error message
     catch (NumberFormatException e) {
-      return oldValue;
+      throw new BadDataException("'"+format.getText(constraints)+"' is not a number",e);
     }
   }
 

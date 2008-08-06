@@ -62,9 +62,8 @@ public class KeyModifiersConfigurer extends Configurer implements KeyListener {
     try {
       setValue(new Integer(s));
     }
-    // FIXME: review error message
     catch (NumberFormatException e) {
-      setValue(new Integer(s));
+      setValue(null);
     }
   }
 

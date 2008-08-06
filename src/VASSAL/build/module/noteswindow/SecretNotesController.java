@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -51,6 +52,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
+
+import VASSAL.build.BadDataException;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameComponent;
@@ -124,12 +127,12 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       Date date = null;
 
       if (st.hasMoreTokens()) {
+        String formattedDate = st.nextToken();
         try {
-          date = INTERNAL_DATE_FORMATTER.parse(st.nextToken());
+          date = INTERNAL_DATE_FORMATTER.parse(formattedDate);
         }
-        // FIXME: review error message
         catch (ParseException e) {
-          date = null;
+          throw new BadDataException("Illegal date format:  "+formattedDate,e);
         }
       }
 

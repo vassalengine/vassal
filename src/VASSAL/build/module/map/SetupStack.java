@@ -74,6 +74,7 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.BadDataException;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
@@ -178,8 +179,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       try {
         Point p = getConfigureBoard().getGrid().getLocation(location);
       }
-      // FIXME: review error message
       catch (BadCoords e) {
+        throw new BadDataException("Invalid board location:  "+location,e);
       }
     }
   }
@@ -193,7 +194,6 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         try {
           getConfigureBoard().getGrid().getLocation(location);
         }
-        // FIXME: review error message
         catch (BadCoords e) {
           String msg = "Bad location name "+location+" in "+getConfigureName();
           if (e.getMessage() != null) {

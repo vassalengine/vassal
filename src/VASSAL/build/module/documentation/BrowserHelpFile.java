@@ -110,7 +110,6 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
               GameModule.getGameModule().getDataArchive()
                 .getFileStream("help/" + getContentsResource()))); //$NON-NLS-1$
       }
-      // FIXME: review error message
       catch (IOException e) {
         // The help file was created with empty contents.
         // Assume an absolute URL as the starting page.

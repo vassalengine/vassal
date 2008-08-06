@@ -318,7 +318,6 @@ public class WizardSupport {
           try {
             new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
           }
-          // FIXME: review error message
           catch (IOException e1) {
             ErrorLog.log(e1);
             controller.setProblem(Resources.getString("WizardSupport.ErrorLoadingTutorial")); //$NON-NLS-1$

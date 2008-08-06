@@ -28,13 +28,14 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 
+import VASSAL.build.BadDataException;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.command.Command;
-import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.EnumeratedIterator;
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * A collection of GamePieces which can be moved as a single unit
@@ -463,7 +464,7 @@ public class Stack implements GamePiece, StateMergeable {
     if (!"null".equals(mapId)) {
       m = Map.getMapById(mapId);
       if (m == null) {
-        throw new IllegalStateException("Could not find map " + mapId);
+        throw new BadDataException("Could not find map " + mapId);
       }
     }
 
@@ -573,7 +574,7 @@ public class Stack implements GamePiece, StateMergeable {
 
   public void setParent(Stack s) {
     if (s != null) {
-      throw new RuntimeException("Cannot add Stack to parent");
+      throw new BadDataException("Tried to add stack "+this+" to another stack");
     }
   }
 

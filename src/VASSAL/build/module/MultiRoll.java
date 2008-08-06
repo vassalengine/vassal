@@ -479,7 +479,6 @@ public class MultiRoll extends JDialog implements ActionListener {
           try {
             rolls[myRow].setPlus(Integer.valueOf(col3.getText()).intValue());
           }
-          // FIXME: review error message
           catch (NumberFormatException ev) {
             rolls[myRow].setPlus(0);
           }

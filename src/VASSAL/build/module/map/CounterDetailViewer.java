@@ -45,6 +45,7 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
@@ -999,8 +1000,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       try {
         minimumDisplayablePieces = Integer.parseInt((String) value);
       }
-      // FIXME: review error message
       catch (NumberFormatException e) {
+        throw new IllegalBuildException(e);
       }
     }
     else if (VERSION.equals(name)) {
