@@ -140,6 +140,7 @@ public class PropertiesPieceFilter {
         return Integer.valueOf(property).compareTo(Integer.valueOf(value));
       }
       catch (NumberFormatException e) {
+        // If both properties are not numbers, compare alphabetically
         return property.compareTo(value);
       }
     }

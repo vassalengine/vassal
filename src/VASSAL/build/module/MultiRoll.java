@@ -480,6 +480,7 @@ public class MultiRoll extends JDialog implements ActionListener {
             rolls[myRow].setPlus(Integer.valueOf(col3.getText()).intValue());
           }
           catch (NumberFormatException ev) {
+            // TODO use IntConfigurer for col3
             rolls[myRow].setPlus(0);
           }
         }

@@ -63,6 +63,7 @@ public class KeyModifiersConfigurer extends Configurer implements KeyListener {
       setValue(new Integer(s));
     }
     catch (NumberFormatException e) {
+      // Set to null if saved value is not a number
       setValue(null);
     }
   }

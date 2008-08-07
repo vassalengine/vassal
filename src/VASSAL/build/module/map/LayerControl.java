@@ -71,6 +71,7 @@ public class LayerControl extends AbstractConfigurable {
           pieceCollection.setLayerEnabled(i, true);
         }
         catch (NumberFormatException e) {
+          // User specified a layer name instead of an index
           pieceCollection.setLayerEnabled(layers[i], true);
         }
       }
@@ -82,6 +83,7 @@ public class LayerControl extends AbstractConfigurable {
           pieceCollection.setLayerEnabled(i, false);
         }
         catch (NumberFormatException e) {
+          // User specified a layer name instead of an index
           pieceCollection.setLayerEnabled(layers[i], false);
         }
       }
@@ -93,6 +95,7 @@ public class LayerControl extends AbstractConfigurable {
           pieceCollection.toggleLayerEnabled(i);
         }
         catch (NumberFormatException e) {
+          // User specified a layer name instead of an index
           pieceCollection.toggleLayerEnabled(layers[i]);
         }
       }

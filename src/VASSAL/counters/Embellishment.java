@@ -525,6 +525,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           setActive(level > 0);
         }
         catch (NumberFormatException e) {
+          throw new BadDataException("'"+resetLevel.getText(Decorator.getOutermost(this))+"' is not a number",e);
         }
       }
       // random layers
@@ -1046,6 +1047,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         Integer.parseInt(xOffInput.getText());
       }
       catch (NumberFormatException xNAN) {
+        // TODO use IntConfigurer
         xOffInput.setText("0");
       }
 
@@ -1053,6 +1055,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         Integer.parseInt(yOffInput.getText());
       }
       catch (NumberFormatException yNAN) {
+        // TODO use IntConfigurer
         yOffInput.setText("0");
       }
 
@@ -1114,6 +1117,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         Integer.parseInt(xOffInput.getText());
       }
       catch (NumberFormatException xNAN) {
+        // TODO use IntConfigurer
         xOffInput.setText("0");
       }
       try {

@@ -1056,6 +1056,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           if (dragCount >= 0) break;
         }
         catch (NumberFormatException ex) {
+          // Ignore if user doesn't enter a number
         }
       }
       else {

@@ -470,6 +470,7 @@ public class Inventory extends AbstractConfigurable
       count = Integer.parseInt(s);
     }
     catch (NumberFormatException e) {
+      // Count each piece as 1 if the property isn't a number
       count = 1;
     }
 
@@ -1037,6 +1038,7 @@ public class Inventory extends AbstractConfigurable
               sum += Integer.parseInt((String) (childNode.getCounter()).getProperty(key));
             }
             catch (NumberFormatException e) {
+              // Count each piece as 1 if property isn't a number
               sum++;
             }
           }

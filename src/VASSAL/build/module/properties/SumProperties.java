@@ -21,7 +21,6 @@ package VASSAL.build.module.properties;
 
 import java.util.Collection;
 
-import VASSAL.build.BadDataException;
 import VASSAL.counters.GamePiece;
 
 /**
