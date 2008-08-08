@@ -40,7 +40,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.BadDataException;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -57,6 +57,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 /**
@@ -255,7 +256,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
                                Integer.parseInt(y.getText(outer)));
             }
             catch (NumberFormatException e) {
-              throw new BadDataException("'"+x.getText(outer)+"' and '"+y.getText(outer)+"' are not both numbers",e);
+              ErrorDialog.dataError(new BadDataReport("'"+x.getText(outer)+"' and '"+y.getText(outer)+"' are not both numbers",e));
             }
             Board b = map.getBoardByName(boardName.getText(outer));
             if (b != null && dest != null) {

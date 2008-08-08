@@ -48,7 +48,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionListener;
 
-import VASSAL.build.BadDataException;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -60,6 +60,7 @@ import VASSAL.configure.KeyModifiersConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
@@ -416,7 +417,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
     }
     catch (NumberFormatException e) {
-      throw new BadDataException("'"+val+"' is not a number",e);
+      ErrorDialog.dataError(new BadDataReport("'"+val+"' is not a number",e));
     }
     return;
   }
@@ -525,7 +526,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           setActive(level > 0);
         }
         catch (NumberFormatException e) {
-          throw new BadDataException("'"+resetLevel.getText(Decorator.getOutermost(this))+"' is not a number",e);
+          ErrorDialog.dataError(new BadDataReport("'"+resetLevel.getText(Decorator.getOutermost(this))+"' is not a number",e));
         }
       }
       // random layers

@@ -74,7 +74,7 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
-import VASSAL.build.BadDataException;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
@@ -177,10 +177,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected void updatePosition() {
     if (isUseGridLocation() && location != null && !location.equals("")) {
       try {
-        Point p = getConfigureBoard().getGrid().getLocation(location);
+        getConfigureBoard().getGrid().getLocation(location);
       }
       catch (BadCoords e) {
-        throw new BadDataException("Invalid board location:  "+location,e);
+        ErrorDialog.dataError(new BadDataReport("Invalid board location:  "+location,e));
       }
     }
   }

@@ -53,7 +53,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
-import VASSAL.build.BadDataException;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GameComponent;
@@ -63,6 +63,7 @@ import VASSAL.command.CommandEncoder;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
@@ -132,7 +133,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
           date = INTERNAL_DATE_FORMATTER.parse(formattedDate);
         }
         catch (ParseException e) {
-          throw new BadDataException("Illegal date format:  "+formattedDate,e);
+          ErrorDialog.dataError(new BadDataReport("Illegal date format:  "+formattedDate,e));
         }
       }
 

@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import VASSAL.build.AbstractConfigurable;
-import VASSAL.build.BadDataException;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -49,6 +49,7 @@ import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.PieceEditor;
 import VASSAL.counters.Properties;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.UniqueIdManager;
 
@@ -138,7 +139,7 @@ public class PrototypeDefinition extends AbstractConfigurable
       try {
         final AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
         if (comm == null) {
-          throw new BadDataException("Couldn't build piece " + def); //$NON-NLS-1$
+          ErrorDialog.dataError(new BadDataReport("Couldn't build piece " + def)); //$NON-NLS-1$
         }
         else {
           piece = comm.getTarget();
@@ -146,7 +147,7 @@ public class PrototypeDefinition extends AbstractConfigurable
         }
       }
       catch (RuntimeException e) {
-        throw new BadDataException("Couldn't build piece "+def,e);
+        ErrorDialog.dataError(new BadDataReport("Couldn't build piece "+def,e));
       }
     }
     return piece;

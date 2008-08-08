@@ -36,7 +36,6 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -58,7 +57,6 @@ import VASSAL.tools.swing.FlowLabel;
 public class BugDialog {
   private static final long serialVersionUID = 1L;
   private static boolean bugReportingDisabled;
-  private static boolean moduleProblemReportingDisabled;
 
   public static void reportABug() {
 /*
@@ -484,122 +482,5 @@ public class BugDialog {
 
   private static void writeEnd(StringBuilder sb, String boundary) {
     sb.append("--").append(boundary).append("--").append("\r\n");
-  }
-
-  public static void reportModuleProblem() {
-      if (moduleProblemReportingDisabled) {
-        return;
-      }
-      final JFrame parent = null;
-      final JDialog dialog;
-
-      final JLabel header = new JLabel("Module Data Error");
-      final Font f = header.getFont();
-      header.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
-
-      final FlowLabel notice = new FlowLabel("VASSAL has encountered a problem with this module.  This is probably caused by a version incompatibility or other error when creating the module.  Please report this error to the author of the module.");
-      notice.setEditable(false);
-
-      // prevents FlowLabel from being a single line
-      // FIXME: why is this necessary?
-      final Dimension d = notice.getPreferredSize();
-      d.width = 0;
-      notice.setPreferredSize(d);
-
-      String tmp = null;
-      FileReader r = null;
-      try {
-        r = new FileReader(new File(Info.getConfDir(), "errorLog"));
-        tmp = IOUtils.toString(r);
-      }
-      catch (IOException e) {
-        // Don't bother logging this---if we can't read the errorLog,
-        // then we probably can't write to it either.
-        IOUtils.closeQuietly(r);
-      }
-
-      final String errorLog = tmp;
-    
-      final JTextArea log = new JTextArea(errorLog, 10, 20);
-      log.setEditable(false);
-
-      final JScrollPane logScroll = new JScrollPane(log);
-      logScroll.setVisible(false);
-
-      final JLabel logLabel = new JLabel("Error Log:");
-      logLabel.setLabelFor(log);
-
-      final JButton detailsButton = new JButton();
-
-      final JLabel detailsLabel = new JLabel("Error Log:");
-      detailsLabel.setLabelFor(detailsButton); 
-
-      final JPanel panel = new JPanel();
-
-      final GroupLayout layout = new GroupLayout(panel);
-      panel.setLayout(layout);
-
-      layout.setAutocreateGaps(true);
-      layout.setAutocreateContainerGaps(true);
-      
-      layout.setHorizontalGroup(
-        layout.createParallelGroup(GroupLayout.LEADING, true)
-          .add(header)
-          .add(notice)
-          .add(layout.createSequentialGroup()
-            .add(layout.createParallelGroup(GroupLayout.LEADING, true)
-              .add(detailsLabel))
-            .add(layout.createParallelGroup(GroupLayout.LEADING, true)
-              .add(detailsButton)
-              .add(logScroll))));
-
-      layout.setVerticalGroup(
-        layout.createSequentialGroup()
-          .add(header)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(layout.createParallelGroup(GroupLayout.BASELINE, false)
-            .add(notice))
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(layout.createParallelGroup(GroupLayout.BASELINE, true)
-            .add(detailsLabel)
-            .add(detailsButton))
-          .add(logScroll));
-
-      final String[] buttons = { "Ok", "Don't show this dialog again"};
-      
-      final JOptionPane opt = new JOptionPane(
-        panel,
-        JOptionPane.ERROR_MESSAGE,
-        JOptionPane.DEFAULT_OPTION,
-        new ImageIcon(BugDialog.class.getResource("/images/bug.png")),
-        buttons
-      );
-
-      dialog = opt.createDialog(parent, "Uncaught Exception");
-
-      detailsButton.setAction(new AbstractAction("<html>Details &raquo;</html>") {
-        private static final long serialVersionUID = 1L;
-      
-        public void actionPerformed(ActionEvent e) {
-          logScroll.setVisible(!logScroll.isVisible());
-          putValue(NAME, logScroll.isVisible() ?
-            "<html>Details &laquo;</html>" : "<html>Details &raquo;</html>");
-          dialog.pack(); 
-        }
-      });
-
-      dialog.setModal(true);
-      dialog.setLocationRelativeTo(parent);
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      dialog.setResizable(true);
-      dialog.pack();
-      dialog.setVisible(true);
-
-      final Object selected = opt.getValue();
-      if (buttons[1].equals(selected)) {
-        moduleProblemReportingDisabled=true;
-      }
   }
 }

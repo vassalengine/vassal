@@ -39,7 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.BadDataException;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -52,6 +52,7 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -209,7 +210,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       }
     }
     catch (NumberFormatException e) {
-      throw new BadDataException("'"+dist+"', '"+index+"', and '"+offset+"' are not all numbers",e);      
+      ErrorDialog.dataError(new BadDataReport("'"+dist+"', '"+index+"', and '"+offset+"' are not all numbers",e));      
     }
     
     dist = yDist.getText(outer);
@@ -222,7 +223,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       }
     }
     catch (NumberFormatException e) {
-      throw new BadDataException("'"+dist+"', '"+index+"', and '"+offset+"' are not all numbers",e);      
+      ErrorDialog.dataError(new BadDataReport("'"+dist+"', '"+index+"', and '"+offset+"' are not all numbers",e));      
     }
     
     p.translate(x, -y);

@@ -1,6 +1,7 @@
 package VASSAL.build.module.properties;
 
-import VASSAL.build.BadDataException;
+import VASSAL.build.BadDataReport;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 
 /**
@@ -43,7 +44,8 @@ public class IncrementProperty implements PropertyChanger {
       return String.valueOf(value);
     }
     catch (NumberFormatException e) {
-      throw new BadDataException("'"+format.getText(constraints)+"' is not a number",e);
+      ErrorDialog.dataError(new BadDataReport("'"+format.getText(constraints)+"' is not a number",e));
+      return oldValue;
     }
   }
 

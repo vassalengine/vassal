@@ -46,7 +46,7 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
-import VASSAL.build.BadDataException;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.FlowLabel;
@@ -69,13 +69,6 @@ public class ErrorDialog {
     }
   }
   
-  private static class BadData {
-    public final BadDataException cause;
-    public BadData(BadDataException e) {
-      cause = e;
-    }
-  }
-
   private static class Message {
     public final Component parent;
     public final String title;
@@ -152,18 +145,6 @@ public class ErrorDialog {
                 ErrorLog.log(e);
               }
             }
-            else if (o instanceof BadData) {
-              try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                  public void run() {
-                    BugDialog.reportModuleProblem();
-                  }
-                });
-              }
-              catch (InvocationTargetException e) {
-                ErrorLog.log(e);
-              }
-            }
           }
         }
         catch (InterruptedException e) {
@@ -191,12 +172,7 @@ public class ErrorDialog {
       }
     }
     
-    if (t instanceof BadDataException) {
-      queue.add(new BadData((BadDataException)t));
-    }
-    else {
-      queue.add(new Bug(t));
-    }
+    queue.add(new Bug(t));
 
 /*
     // otherwise determine (i.e., guess) who to blame for the bug
@@ -341,6 +317,10 @@ public class ErrorDialog {
     ErrorLog.log(thrown);
     show(parent, title, header, message,
          getStackTrace(thrown), JOptionPane.WARNING_MESSAGE, key);
+  }
+  
+  public static void dataError(BadDataReport e) {
+    System.err.println(e.getMessage());
   }
 
   public static void show(

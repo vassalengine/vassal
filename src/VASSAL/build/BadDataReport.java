@@ -18,31 +18,38 @@
 package VASSAL.build;
 
 /**
- * General-purpose exception indicating that VASSAL has encountered data that's inconsistent with the current module.
+ * General-purpose condition indicating that VASSAL has encountered data that's inconsistent with the current module.
  * A typical example would be failing to find a map/board/image/prototype from the supplied name.  Covers a variety of 
  * situations where the most likely cause is a module version compatibility issue.
  * 
- * This exception handled errors that occur during game play, as opposed to {@link IllegalBuildException}, 
+ * This is for recoverable errors that occur during game play, as opposed to {@link IllegalBuildException}, 
  * which covers errors when building a module
+ * @see ErrorDialog.dataError()
  * @author rodneykinney
  *
  */
-public class BadDataException extends RuntimeException {
+public class BadDataReport {
+  private String message;
+  private Throwable cause;
 
-  public BadDataException() {
-    super();
+  public BadDataReport() {
   }
 
-  public BadDataException(String message, Throwable cause) {
-    super(message, cause);
+  public BadDataReport(String message, Throwable cause) {
+    this.message = message;
+    this.cause = cause;
   }
 
-  public BadDataException(String message) {
-    super(message);
+  public BadDataReport(String message) {
+    this(message,null);
   }
 
-  public BadDataException(Throwable cause) {
-    super(cause);
+  public String getMessage() {
+    return message;
+  }
+
+  public Throwable getCause() {
+    return cause;
   }
 
 }
