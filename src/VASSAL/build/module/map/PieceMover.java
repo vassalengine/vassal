@@ -753,6 +753,14 @@ public class PieceMover extends AbstractBuildable
     return pieceSorter.compare(p1, p2);
   }
 
+  // We force the loading of these classes because otherwise they would
+  // be loaded when the user initiates the first drag, which makes the
+  // start of the drag choppy.
+  static {
+    Class<?> c;
+    c = MovementReporter.class;
+    c = KeyBuffer.class;  
+  }
 
 // FIXME: It would be better to break this out, and have two implementations,
 // one for systems where isDragImageSupported is false, and one where
