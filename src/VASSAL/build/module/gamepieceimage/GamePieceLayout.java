@@ -89,10 +89,10 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public Point getPosition(Item item) {
-    String s = getCompassPoint(item.getLocation());
+    final String s = getCompassPoint(item.getLocation());
 
     int x,y;
-    Dimension d = item.getSize();
+    final Dimension d = item.getSize();
     switch (s.charAt(s.length() - 1)) {
       case 'E':
         x = getLayoutWidth() - d.width;
@@ -113,9 +113,8 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
       default:
         y = getLayoutHeight() / 2 - d.height / 2;
     }
-    Point p = new Point(x, y);
-    p.translate(item.getXoffset(), item.getYoffset());
-    return p;
+
+    return new Point(x + item.getXoffset(), y + item.getYoffset());
   }
 
   protected int width = 54;
