@@ -226,7 +226,7 @@ public class ErrorDialog {
     String header,
     String... message)
   {
-    error(getFrame(), title, header, null, message); 
+    error(title, header, (Object) null, message); 
   }
 
   public static void error(
@@ -275,7 +275,7 @@ public class ErrorDialog {
     String header,
     String... message)
   {
-    warning(getFrame(), title, header, null, message); 
+    warning(title, header, (Object) null, message); 
   }
 
   public static void warning(
