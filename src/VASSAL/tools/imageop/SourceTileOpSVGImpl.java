@@ -23,9 +23,12 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.SVGRenderer;
 
@@ -73,12 +76,33 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     hash = result;
   }
 
+  @Override
+  public Image getImage() {
+    try {
+      return getImage(null);
+    }
+    catch (CancellationException e) {
+      // FIXME: bug until we permit cancellation 
+      ErrorDialog.bug(e);
+    }
+    catch (InterruptedException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (ExecutionException e) {
+      OpErrorDialog.error(e, this);
+    }
+
+    return null;
+  }
+
   public Image apply() throws Exception {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
-    final String path = archive.getImagePrefix() + sop.getName();
+    final String path = sop.getName().startsWith("/") ? sop.getName() :
+      archive.getImagePrefix() + sop.getName();
+
     final SVGRenderer renderer = new SVGRenderer(
-      archive.getArchiveURL() + path,
-      new BufferedInputStream(archive.getFileStream(path)));
+      archive.getURL(path).toString(),
+      new BufferedInputStream(archive.getImageInputStream(path)));
 
     final Rectangle2D aoi = new Rectangle2D.Float(x0, y0, x1-x0, y1-y0); 
     return renderer.render(0.0, 1.0, aoi);

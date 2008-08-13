@@ -210,6 +210,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       "\'" + imageDir + fileName + "\' not found in " + getName());
   }
 
+// FIXME: combine this with getURL()
   public String getArchiveURL() {
     return archive != null ? "jar:file://" + archive.getName() + "!/" : "";
   }
@@ -274,6 +275,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   public URL getURL(String fileName) throws IOException {
+    if (fileName.startsWith("/")) {
+      return getClass().getResource(fileName); 
+    }
+
     if (archive == null) {
       throw new IOException("Must save before accessing contents");
     }
