@@ -148,8 +148,14 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
   }
 
+  /**
+   * Returns an {@link Image} from the archive.
+   *
+   * @param name the name of the image file
+   * @return the <code>Image</code> contained in the image file
+   * @throws IOException if there is a problem reading the image file
+   */
   public Image getImage(String name) throws IOException {
-    final String path = imageDir + name;
     final ImageSource src;
 
     if (name.startsWith("/")) {
@@ -173,7 +179,16 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
   }
 
-  public InputStream getImageInputStream(String fileName) throws IOException {
+  /**
+   * Get an {@link InputStream} for the given image file in the archive.
+   *
+   * @param fileName the name of the image file
+   * @return an <code>InputStream</code> which contains the image file
+   * @throws IOException if there is a problem reading the image file
+   * @throws FileNotFoundException if the image file doesn't exist
+   */
+  public InputStream getImageInputStream(String fileName)
+                                    throws IOException, FileNotFoundException {
 // FIXME: We should give notice that we're going to stop searching for
 // GIFs by appending ".gif" to them. In general, a way of marking obsolete
 // features would be good---something which pops up a dialog alerting the
@@ -211,11 +226,15 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   /**
-   * Get an {@link InputStream} for the given filename in the archive.
+   * Get an {@link InputStream} for the given file in the archive.
    *
+   * @param fileName the name of the file
+   * @return an <code>InputStream</code> which contains the file
    * @throws IOException if there is a problem reading the file
+   * @throws FileNotFoundException if the file doesn't exist
    */
-  public InputStream getInputStream(String fileName) throws IOException {
+  public InputStream getInputStream(String fileName)
+                                    throws IOException, FileNotFoundException {
     final ZipEntry entry = archive.getEntry(fileName);
     if (entry != null) return archive.getInputStream(entry);
    
@@ -233,11 +252,29 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       "\'" + fileName + "\' not found in " + getName());
   }
 
+  /**
+   * Returns a URL pointing to the archive.
+   *
+   * @return a URL corresponding to this archive, or <code>null</code>
+   * if it has not yet been saved
+   */
   public URL getURL() throws IOException {
+    if (archive == null) {
+      throw new IOException("Must save before accessing contents");
+    }
+
     return URLUtils.toJarURL(new File(archive.getName()));
   }
 
-  public URL getURL(String fileName) throws IOException {
+  /**
+   * Returns a URL pointing to the named file.
+   * 
+   * @param fileName the name of the file
+   * @return a URL corresponding to the file
+   * @throws FileNotFoundException if the file doesn't exist
+   * @throws IOException if some other problem occurs 
+   */
+  public URL getURL(String fileName) throws IOException, FileNotFoundException {
     // requested file is a resource
     if (fileName.startsWith("/")) {
       return getClass().getResource(fileName); 
@@ -265,8 +302,16 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       "\'" + fileName + "\' not found in " + getName());
   }
 
-
-  public URL getImageURL(String fileName) throws IOException {
+  /**
+   * Returns a URL pointing to the named image file.
+   * 
+   * @param fileName the name of the image file
+   * @return a URL corresponding to the image file
+   * @throws FileNotFoundException if the file doesn't exist
+   * @throws IOException if some other problem occurs 
+   */
+  public URL getImageURL(String fileName) throws IOException,
+                                                 FileNotFoundException {
     return getURL(
       fileName.startsWith("/") ? fileName : getImagePrefix() + fileName);
   }
