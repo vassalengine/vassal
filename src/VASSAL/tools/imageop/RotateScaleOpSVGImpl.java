@@ -94,10 +94,12 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
    */
   public Image apply() throws Exception {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
-    final String path = archive.getImagePrefix() + sop.getName();
+    final String name = getName();
+
     final SVGRenderer renderer = new SVGRenderer(
-      archive.getArchiveURL() + path,
-      new BufferedInputStream(archive.getFileStream(path)));
+      archive.getImageURL(name),
+      new BufferedInputStream(archive.getImageInputStream(name))
+    );
  
     if (size == null) fixSize();
 

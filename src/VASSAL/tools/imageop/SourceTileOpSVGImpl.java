@@ -97,27 +97,15 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
 
   public Image apply() throws Exception {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
-    final String path = sop.getName().startsWith("/") ? sop.getName() :
-      archive.getImagePrefix() + sop.getName();
+    final String name = getName();
 
     final SVGRenderer renderer = new SVGRenderer(
-      archive.getURL(path).toString(),
-      new BufferedInputStream(archive.getImageInputStream(path)));
+      archive.getURL(name),
+      new BufferedInputStream(archive.getImageInputStream(name))
+    );
 
     final Rectangle2D aoi = new Rectangle2D.Float(x0, y0, x1-x0, y1-y0); 
     return renderer.render(0.0, 1.0, aoi);
-
-/*
-    final BufferedImage dst =
-      new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
-
-    final Graphics2D g = dst.createGraphics();
-    g.drawImage(sop.getImage(null), 0, 0, size.width, size.height,
-                                    x0, y0, x1, y1, null);
-    g.dispose();
-
-    return dst;
-*/
   }
 
   protected void fixSize() { }

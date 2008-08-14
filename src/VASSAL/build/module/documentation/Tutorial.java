@@ -233,7 +233,7 @@ public class Tutorial extends AbstractConfigurable {
   }
 
   public InputStream getTutorialContents() throws IOException {
-    return GameModule.getGameModule().getDataArchive().getFileStream(fileName);
+    return GameModule.getGameModule().getDataArchive().getInputStream(fileName);
   }
 
   public boolean isFirstRun() {

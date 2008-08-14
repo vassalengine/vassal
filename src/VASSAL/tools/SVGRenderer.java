@@ -71,6 +71,10 @@ public class SVGRenderer {
   private final float defaultW, defaultH;
   private final Rasterizer r = new Rasterizer();
 
+  public SVGRenderer(URL file, InputStream in) throws IOException {
+    this(file.toString(), in);
+  }
+
   public SVGRenderer(String file, InputStream in) throws IOException {
     // load the SVG
     try {
@@ -164,14 +168,14 @@ public class SVGRenderer {
     @Override
     public Document loadDocument(String uri)
         throws MalformedURLException, IOException {
-      final String file =
-        GameModule.getGameModule().getDataArchive().getImagePrefix() +
-        (new File((new URL(uri)).getPath())).getName();
+      final String file = new File((new URL(uri)).getPath()).getName();
 
       BufferedInputStream in = null;
       try {
         in = new BufferedInputStream(
-          GameModule.getGameModule().getDataArchive().getFileStream(file));
+          GameModule.getGameModule()
+                    .getDataArchive()
+                    .getImageInputStream(file));
         final Document doc = loadDocument(uri, in);
         in.close();
         return doc;

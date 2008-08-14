@@ -55,14 +55,14 @@ public class JarArchive extends DataArchive {
   }
 
   @Override
-  public InputStream getFileStream(String fileName) throws IOException {
+  public InputStream getInputStream(String fileName) throws IOException {
     final InputStream in =
       getClass().getResourceAsStream(getAbsolutePath(fileName));
     if (in != null) return in;
 
     for (DataArchive ext : extensions) {
       try {
-        return ext.getFileStream(fileName);
+        return ext.getInputStream(fileName);
       }
       catch (FileNotFoundException e) {
         // not found in this extension, try the next
@@ -80,5 +80,12 @@ public class JarArchive extends DataArchive {
   @Override
   public String getName() {
     return prefix != null ? prefix : super.getName();
+  }
+
+  /** @deprecated Use {@link #getInputStream(String)} instead. */
+  @Deprecated
+  @Override
+  public InputStream getFileStream(String fileName) throws IOException {
+    return getInputStream(fileName);
   }
 }

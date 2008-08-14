@@ -117,7 +117,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
     BufferedInputStream in = null;
     try {
-      in = new BufferedInputStream(archive.getFileStream(fileName));
+      in = new BufferedInputStream(archive.getInputStream(fileName));
     }
 // FIXME: should this be a FileNotFoundException?
     catch (IOException e) {

@@ -57,7 +57,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
    *    if <code>name</code> is <code>null</code>.
    */
   public SourceOpBitmapImpl(String name) {
-    this(name,GameModule.getGameModule().getDataArchive());
+    this(name, GameModule.getGameModule().getDataArchive());
   }
   
   public SourceOpBitmapImpl(String name, DataArchive archive) {

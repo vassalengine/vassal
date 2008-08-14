@@ -190,11 +190,11 @@ public class ArchiveWriter extends DataArchive {
   }
 
   /**
-   * Overrides {@link DataArchive#getFileStream} to return streams that have
-   * been added to the archive but not yet written to disk.
+   * Overrides {@link DataArchive#getInputStream(String)} to return streams
+   * that have been added to the archive but not yet written to disk.
    */
   @Override
-  public InputStream getFileStream(String fileName) throws IOException {
+  public InputStream getInputStream(String fileName) throws IOException {
     if (closeWhenNotInUse && archive == null && archiveName != null) {
       archive = new ZipFile(archiveName);
     }
@@ -206,7 +206,7 @@ public class ArchiveWriter extends DataArchive {
     in = getAddedStream(sounds, fileName);
     if (in != null) return in;
 
-    if (archive != null) return super.getFileStream(fileName);
+    if (archive != null) return super.getInputStream(fileName);
 
     throw new FileNotFoundException(fileName + " not found");
   }
@@ -492,5 +492,17 @@ public class ArchiveWriter extends DataArchive {
   @SuppressWarnings("unchecked")
   protected void listImageNames(Collection v) {
     v.addAll(setOfImageNames());
+  }
+
+  /**
+   * Overrides {@link DataArchive#getInputStream(String)} to return streams
+   * that have been added to the archive but not yet written to disk.
+   *
+   * @deprecated Use {@link #getInputStream(String)} instead.
+   */
+  @Deprecated
+  @Override
+  public InputStream getFileStream(String fileName) throws IOException {
+    return getInputStream(fileName);
   }
 }

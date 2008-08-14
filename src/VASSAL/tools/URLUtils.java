@@ -30,6 +30,19 @@ public class URLUtils {
   private URLUtils() {}
 
   /**
+   * Returns a URL corresponding to a file.
+   *
+   * @param f the file for which the URL is wanted
+   * @return the URL of the file
+   * @throws MalformedURLException if the URL can't be created
+   */
+  public static URL toURL(String f) throws MalformedURLException {
+    return toURL(new File(f));
+  }
+
+  /**
+   * Returns a URL corresponding to a file.
+   *
    * @param f the file for which the URL is wanted
    * @return the URL of the file
    * @throws MalformedURLException if the URL can't be created
@@ -50,5 +63,27 @@ public class URLUtils {
     }
 
     return new URL("file", "", path); //$NON-NLS-1$ //$NON-NLS-2$
+  }
+
+  /**
+   * Returns a URL corresponding to a JAR file.
+   *
+   * @param f the JAR file for which the URL is wanted
+   * @return the URL of the JAR file
+   * @throws MalformedURLException if the URL can't be created
+   */
+  public static URL toJarURL(String f) throws MalformedURLException {
+    return toJarURL(new File(f));
+  }
+
+  /**
+   * Returns a URL corresponding to a JAR file.
+   *
+   * @param f the JAR file for which the URL is wanted
+   * @return the URL of the JAR file
+   * @throws MalformedURLException if the URL can't be created
+   */
+  public static URL toJarURL(File f) throws MalformedURLException {
+    return new URL("jar:" + toURL(f).toString() + "!/");
   }
 }

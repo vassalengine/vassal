@@ -113,7 +113,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final String path = SOUNDS_DIR + name;
     AudioClip clip = soundCache.get(path);
     if (clip == null) {
-      clip = new AppletAudioClip(IOUtils.getBytes(getFileStream(path)));
+      clip = new AppletAudioClip(IOUtils.getBytes(getInputStream(path)));
       soundCache.put(path,clip);
     }
     return clip;
@@ -153,9 +153,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final ImageSource src;
 
     if (name.startsWith("/")) {
-      if (name.toLowerCase().endsWith(".svg")) { 
-        return new SVGRenderer(getArchiveURL() + path,
-                               getFileStream(path)).render();
+      if (name.toLowerCase().endsWith(".svg")) {
+        return new SVGRenderer(getImageURL(name),
+                               getImageInputStream(name)).render();
       }
       else {
         return ImageUtils.getImage(getImageInputStream(name));
@@ -165,8 +165,8 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return src.getImage();
     }
     else if (name.toLowerCase().endsWith(".svg")) {
-      return new SVGRenderer(getArchiveURL() + path,
-                             getFileStream(path)).render();
+      return new SVGRenderer(getImageURL(name),
+                             getImageInputStream(name)).render();
     }
     else {
       return ImageUtils.getImage(getImageInputStream(name));
@@ -186,7 +186,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
 
     try {
-      return getFileStream(imageDir + fileName);
+      return getInputStream(imageDir + fileName);
     }
     catch (FileNotFoundException e) {
     }
@@ -195,7 +195,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 // FIXME: Appending .gif should be considered deprecated behavior.
 //
     try {
-      return getFileStream(imageDir + fileName + ".gif");
+      return getInputStream(imageDir + fileName + ".gif");
     }
     catch (FileNotFoundException e) {
     }
@@ -210,9 +210,69 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       "\'" + imageDir + fileName + "\' not found in " + getName());
   }
 
-// FIXME: combine this with getURL()
-  public String getArchiveURL() {
-    return archive != null ? "jar:file://" + archive.getName() + "!/" : "";
+  /**
+   * Get an {@link InputStream} for the given filename in the archive.
+   *
+   * @throws IOException if there is a problem reading the file
+   */
+  public InputStream getInputStream(String fileName) throws IOException {
+    final ZipEntry entry = archive.getEntry(fileName);
+    if (entry != null) return archive.getInputStream(entry);
+   
+    // we don't have it, try our extensions 
+    for (DataArchive ext : extensions) {
+      try {
+        return ext.getInputStream(fileName);
+      }
+      catch (FileNotFoundException e) {
+        // not found in this extension, try the next
+      }
+    }
+
+    throw new FileNotFoundException(
+      "\'" + fileName + "\' not found in " + getName());
+  }
+
+  public URL getURL() throws IOException {
+    return URLUtils.toJarURL(new File(archive.getName()));
+  }
+
+  public URL getURL(String fileName) throws IOException {
+    // requested file is a resource
+    if (fileName.startsWith("/")) {
+      return getClass().getResource(fileName); 
+    }
+
+    if (archive == null) {
+      throw new IOException("Must save before accessing contents");
+    }
+
+    final ZipEntry entry = archive.getEntry(fileName);
+    if (entry != null) {
+      return new URL(getURL(), fileName);
+    }
+    
+    for (DataArchive ext : extensions) {
+      try {
+        return ext.getURL(fileName); 
+      }      
+      catch (FileNotFoundException e) {
+        // not found in this extension, try the next
+      }
+    }
+
+    throw new FileNotFoundException(
+      "\'" + fileName + "\' not found in " + getName());
+  }
+
+
+  public URL getImageURL(String fileName) throws IOException {
+    return getURL(
+      fileName.startsWith("/") ? fileName : getImagePrefix() + fileName);
+  }
+
+  public void close() throws IOException {
+    if (archive != null) archive.close();
   }
 
   /**
@@ -274,35 +334,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     return s;
   }
 
-  public URL getURL(String fileName) throws IOException {
-    if (fileName.startsWith("/")) {
-      return getClass().getResource(fileName); 
-    }
-
-    if (archive == null) {
-      throw new IOException("Must save before accessing contents");
-    }
-
-    final ZipEntry entry = archive.getEntry(fileName);
-    if (entry != null) {
-      final String archiveURL =
-        URLUtils.toURL(new File(archive.getName())).toString();
-      return new URL("jar:" + archiveURL + "!/" + fileName);
-    }
-    
-    for (DataArchive ext : extensions) {
-      try {
-        return ext.getURL(fileName); 
-      }      
-      catch (FileNotFoundException e) {
-        // not found in this extension, try the next
-      }
-    }
-
-    throw new FileNotFoundException(
-      "\'" + fileName + "\' not found in " + getName());
-  }
-
   /**
    * DataArchives can extend other archives. The extensions will be
    * searched for data if not found in the parent archive.
@@ -330,30 +361,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     return null;
   }
 
-  /**
-   * Get an inputstream from the given filename in the archive
-   */
-  public InputStream getFileStream(String fileName) throws IOException {
-    final ZipEntry entry = archive.getEntry(fileName);
-    if (entry != null) return archive.getInputStream(entry);
-   
-    // we don't have it, try our extensions 
-    for (DataArchive ext : extensions) {
-      try {
-        return ext.getFileStream(fileName);
-      }
-      catch (FileNotFoundException e) {
-        // not found in this extension, try the next
-      }
-    }
-
-    throw new FileNotFoundException(
-      "\'" + fileName + "\' not found in " + getName());
-  }
-
-  public void close() throws IOException {
-    if (archive != null) archive.close();
-  }
+/////////////////////////////////////////////////////////////////////
+// Methods overridden from SecureClassLoader 
+/////////////////////////////////////////////////////////////////////
 
   @Override
   public synchronized Class<?> loadClass(String name, boolean resolve)
@@ -391,7 +401,8 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   protected Class<?> findClass(String name) throws ClassNotFoundException {
     try {
       final String slashname = name.replace('.', '/');
-      final byte[] data = IOUtils.getBytes(getFileStream(slashname + ".class"));
+      final byte[] data =
+        IOUtils.getBytes(getInputStream(slashname + ".class"));
       return defineClass(name, data, 0, data.length, cs);
     }
     catch (IOException e) {
@@ -615,10 +626,26 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
   }
 
+  /**
+   * Get an {@link InputStream} for the given filename in the archive.
+   *
+   * @deprecated Use {@link #getInputStream(String)} instead.
+   */
+  @Deprecated
+  public InputStream getFileStream(String fileName) throws IOException {
+    return getInputStream(fileName);
+  }
+
   /** Use {@link ImageUtils.getImage(InputStream)} instead. */
   @Deprecated  
   public static Image getImage(InputStream in) throws IOException {
     return ImageUtils.getImage(in);
+  }
+
+  /** @deprecated Use {@link getURL()} instead. */
+  @Deprecated
+  public String getArchiveURL() {
+    return archive != null ? "jar:file://" + archive.getName() + "!/" : "";
   }
 
   /**

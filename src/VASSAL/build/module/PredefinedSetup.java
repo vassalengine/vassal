@@ -186,7 +186,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   }
 
   public InputStream getSavedGameContents() throws IOException {
-    return GameModule.getGameModule().getDataArchive().getFileStream(fileName);
+    return GameModule.getGameModule().getDataArchive().getInputStream(fileName);
   }
 
   private ChildProxy<?> getMenuInUse() {

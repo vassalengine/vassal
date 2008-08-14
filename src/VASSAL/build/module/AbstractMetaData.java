@@ -331,7 +331,7 @@ public abstract class AbstractMetaData {
       in = new BufferedInputStream(
         GameModule.getGameModule()
                   .getDataArchive()
-                  .getFileStream(ModuleMetaData.ZIP_ENTRY_NAME));
+                  .getInputStream(ModuleMetaData.ZIP_ENTRY_NAME));
       archive.addFile(ModuleMetaData.ZIP_ENTRY_NAME, in);
       in.close();
     }

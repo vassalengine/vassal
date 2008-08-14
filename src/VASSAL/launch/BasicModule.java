@@ -79,7 +79,7 @@ public class BasicModule extends GameModule {
 
     BufferedInputStream in = null;
     try {
-      in = new BufferedInputStream(getDataArchive().getFileStream(fileName));
+      in = new BufferedInputStream(getDataArchive().getInputStream(fileName));
     }    
     // FIXME: review error message
     // FIXME: this should be more specific, to separate the case where

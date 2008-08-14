@@ -175,7 +175,7 @@ public class Translation extends AbstractConfigurable
           in = new BufferedInputStream(
             GameModule.getGameModule()
                       .getDataArchive()
-                      .getFileStream(getBundleFileName())
+                      .getInputStream(getBundleFileName())
           );
         }
         catch (FileNotFoundException e) {
@@ -201,7 +201,7 @@ public class Translation extends AbstractConfigurable
       in = new BufferedInputStream(
         GameModule.getGameModule()
                   .getDataArchive()
-                  .getFileStream(getBundleFileName())
+                  .getInputStream(getBundleFileName())
       );
 
       final VassalResourceBundle b = new VassalResourceBundle(in);

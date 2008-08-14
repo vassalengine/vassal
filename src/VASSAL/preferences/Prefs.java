@@ -133,7 +133,7 @@ public class Prefs implements Closeable {
 
     BufferedInputStream in = null;
     try {
-      in = new BufferedInputStream(editor.getArchive().getFileStream(name));
+      in = new BufferedInputStream(editor.getArchive().getInputStream(name));
       storedValues.clear();
       storedValues.load(in);
       in.close();

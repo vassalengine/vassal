@@ -108,7 +108,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       try {
         in = new ZipInputStream(new BufferedInputStream(
               GameModule.getGameModule().getDataArchive()
-                .getFileStream("help/" + getContentsResource()))); //$NON-NLS-1$
+                .getInputStream("help/" + getContentsResource()))); //$NON-NLS-1$
       }
       catch (IOException e) {
         // The help file was created with empty contents.
