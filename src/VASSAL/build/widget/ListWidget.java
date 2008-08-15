@@ -20,8 +20,10 @@ package VASSAL.build.widget;
 
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -29,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
 import VASSAL.build.Widget;
@@ -50,6 +53,8 @@ public class ListWidget extends Widget
   private DefaultListModel widgets = new DefaultListModel();
   private CardLayout layout;
   private JPanel multiPanel;
+  private int width, height, divider;
+  private static final String DIVIDER="divider";
 
   private Map<Object,String> keys = new HashMap<Object,String>();
   private int count = 0;
@@ -85,6 +90,13 @@ public class ListWidget extends Widget
       list.setVisibleRowCount(3);
       split.setLeftComponent(multiPanel);
       split.setRightComponent(new ScrollPane(list));
+      
+      if (width > 0 && height > 0) {
+        split.setPreferredSize(new Dimension(width,height));
+      }
+      if (divider > 0){
+        split.setDividerLocation(divider);
+      }
     }
     return split;
   }
@@ -125,7 +137,7 @@ public class ListWidget extends Widget
   }
 
   public String[] getAttributeNames() {
-    String s[] = {NAME,WIDTH,HEIGHT};
+    String s[] = {NAME,WIDTH,HEIGHT,DIVIDER};
     return s;
   }
 
@@ -141,11 +153,29 @@ public class ListWidget extends Widget
     if (NAME.equals(name)) {
       setConfigureName((String) value);
     }
+    else if (WIDTH.equals(name)) {
+      width = Integer.parseInt((String)value);
+    }
+    else if (HEIGHT.equals(name)) {
+      height = Integer.parseInt((String)value);
+    }
+    else if (DIVIDER.equals(name)) {
+      divider = Integer.parseInt((String)value);  
+    }
   }
 
   public String getAttributeValueString(String name) {
     if (NAME.equals(name)) {
       return getConfigureName();
+    }
+    else if (WIDTH.equals(name)) {
+      return String.valueOf(split == null ? width : split.getWidth());
+    }
+    else if (HEIGHT.equals(name)) {
+      return String.valueOf(split == null ? height : split.getHeight());
+    }
+    else if (DIVIDER.equals(name)) {
+      return String.valueOf(split == null ? divider : split.getDividerLocation());
     }
     return null;
   }
