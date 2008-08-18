@@ -1090,6 +1090,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     }
 
+    @Deprecated
     public String oldgetType() {
       final SequenceEncoder imageList = new SequenceEncoder(';');
       int i = 0;
