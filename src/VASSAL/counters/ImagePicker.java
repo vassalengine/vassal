@@ -44,7 +44,7 @@ import VASSAL.tools.imageop.OpIcon;
 public class ImagePicker extends JPanel
                          implements MouseListener, ItemListener {
   private static final long serialVersionUID = 1L;
-  private String imageName = " ";
+  private String imageName = null;
   protected static Font FONT = new Font("Dialog", 0, 11);
   private final JTextArea noImage;
   private final JComboBox select;
@@ -100,7 +100,6 @@ public class ImagePicker extends JPanel
       if (d.height > 400) d.height = 400;
       imageScroller.setPreferredSize(d);
         
-      name = imageName;   // FIXME: why do this?
       add(imageViewer,0);
 /*
       try {
