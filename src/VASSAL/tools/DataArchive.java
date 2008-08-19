@@ -78,13 +78,16 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   protected SortedSet<String> localImages = null;
 
   public static final String IMAGE_DIR = "images/";
-  protected String imageDir;
-  public static final String SOUNDS_DIR = "sounds/";
-  protected String soundsDir = SOUNDS_DIR;
+  protected String imageDir = IMAGE_DIR;
+
+  public static final String SOUND_DIR = "sounds/";
+  protected String soundDir = SOUND_DIR;
+
+  @Deprecated public static final String SOUNDS_DIR = SOUND_DIR;
+  @Deprecated protected String soundsDir = SOUND_DIR;
 
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
-    this.imageDir = IMAGE_DIR;
   }
 
   public DataArchive(String zipName, String imageDir) throws IOException {
@@ -110,7 +113,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   public AudioClip getCachedAudioClip(String name) throws IOException {
-    final String path = SOUNDS_DIR + name;
+    final String path = soundDir + name;
     AudioClip clip = soundCache.get(path);
     if (clip == null) {
       clip = new AppletAudioClip(IOUtils.getBytes(getInputStream(path)));
