@@ -255,8 +255,8 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   /**
    * Returns a URL pointing to the archive.
    *
-   * @return a URL corresponding to this archive, or <code>null</code>
-   * if it has not yet been saved
+   * @return a URL corresponding to this archive
+   * @throws IOException if the archive has not yet been saved
    */
   public URL getURL() throws IOException {
     if (archive == null) {

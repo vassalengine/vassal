@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -189,16 +190,18 @@ public class ArchiveWriter extends DataArchive {
     files.put(fileName, content);
   }
 
+  private void openIfClosed() throws IOException {
+    if (closeWhenNotInUse && archive == null && archiveName != null) {
+      archive = new ZipFile(archiveName);
+    }
+  }
+
   /**
    * Overrides {@link DataArchive#getInputStream(String)} to return streams
    * that have been added to the archive but not yet written to disk.
    */
   @Override
   public InputStream getInputStream(String fileName) throws IOException {
-    if (closeWhenNotInUse && archive == null && archiveName != null) {
-      archive = new ZipFile(archiveName);
-    }
-
     InputStream in = getAddedStream(images, fileName);
     if (in != null) return in;
     in = getAddedStream(files, fileName);
@@ -206,6 +209,7 @@ public class ArchiveWriter extends DataArchive {
     in = getAddedStream(sounds, fileName);
     if (in != null) return in;
 
+    openIfClosed();
     if (archive != null) return super.getInputStream(fileName);
 
     throw new FileNotFoundException(fileName + " not found");
@@ -219,6 +223,32 @@ public class ArchiveWriter extends DataArchive {
     }
     else if (file instanceof byte[]) {
       return new ByteArrayInputStream((byte[]) file);
+    }
+    else {
+      return null;
+    }
+  }
+
+  @Override
+  public URL getURL(String fileName) throws IOException, FileNotFoundException {
+    String file = getAddedFile(images, fileName);
+    if (file != null) return new URL("file", null, file);
+    file = getAddedFile(files, fileName); 
+    if (file != null) return new URL("file", null, file);
+    file = getAddedFile(sounds, fileName);
+    if (file != null) return new URL("file", null, file);
+
+    openIfClosed();
+    if (archive != null) return super.getURL(fileName);
+
+    throw new FileNotFoundException(fileName + " not found");
+  }
+
+  private String getAddedFile(Map<String,Object> table, String fileName)
+                                                          throws IOException {
+    final Object o = table.get(fileName);
+    if (o instanceof String) {
+      return (String) o;
     }
     else {
       return null;
