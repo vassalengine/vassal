@@ -30,12 +30,22 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.Iterator;
+
+import javax.swing.Box;
+import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.PlayerRoster;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * A GamePiece with the Restricted trait can only be manipulated by the player playing a specific side
@@ -43,6 +53,9 @@ import VASSAL.configure.StringArrayConfigurer;
 public class Restricted extends Decorator implements EditablePiece {
   public static final String ID = "restrict;";
   private String[] side;
+  private boolean restrictByPlayer;
+  private String owningPlayer="";
+  private static PlayerRoster.SideChangeListener handleRetirement;
 
   public Restricted() {
     this(ID, null);
@@ -51,6 +64,10 @@ public class Restricted extends Decorator implements EditablePiece {
   public Restricted(String type, GamePiece p) {
     setInner(p);
     mySetType(type);
+    if (handleRetirement == null) {
+      handleRetirement = new RetirementHandler();
+      PlayerRoster.addSideChangeListener(handleRetirement);
+    }
   }
 
   public String getDescription() {
@@ -63,7 +80,9 @@ public class Restricted extends Decorator implements EditablePiece {
 
   public void mySetType(String type) {
     type = type.substring(ID.length());
-    side = StringArrayConfigurer.stringToArray(type);
+    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type,';');
+    side = st.nextStringArray(0);
+    restrictByPlayer = st.nextBoolean(false);
   }
 
   public Shape getShape() {
@@ -87,18 +106,43 @@ public class Restricted extends Decorator implements EditablePiece {
   }
 
   public boolean isRestricted() {
-    if (PlayerRoster.isActive()
-      && GameModule.getGameModule().getGameState().isGameStarted()) {
+    boolean restricted = false;
+    if (restrictByPlayer) {
+      restricted = owningPlayer.length() > 0 && !GameModule.getUserId().equals(owningPlayer);
+    }
+    if (restricted 
+        && PlayerRoster.isActive()
+        && GameModule.getGameModule().getGameState().isGameStarted()) {
+      restricted = true;
       for (int i = 0; i < side.length; ++i) {
         if (side[i].equals(PlayerRoster.getMySide())) {
-          return false;
+          restricted = false;
+          break;
         }
       }
-      return true;
     }
-    else {
-      return false;
+    return restricted;
+  }
+  
+/*  @Override
+  public void setMap(Map m) {
+    if (m != null && restrictByPlayer && owningPlayer.length() == 0) {
+      owningPlayer = GameModule.getUserId();
     }
+    super.setMap(m);
+  }
+*/  
+  @Override
+  public void setProperty(Object key, Object val) {
+    if (Properties.SELECTED.equals(key) && Boolean.TRUE.equals(val) && restrictByPlayer && owningPlayer.length() == 0) {
+      if (getMap() != null) {
+        owningPlayer = GameModule.getUserId();
+      }
+      else {
+        System.err.println("Selected, but map == null");
+      }
+    }
+    super.setProperty(key, val);
   }
 
   protected KeyCommand[] getKeyCommands() {
@@ -120,11 +164,11 @@ public class Restricted extends Decorator implements EditablePiece {
   }
 
   public String myGetState() {
-    return "";
+    return owningPlayer;
   }
 
   public String myGetType() {
-    return ID + StringArrayConfigurer.arrayToString(side);
+    return ID + new SequenceEncoder(';').append(side).append(restrictByPlayer).getValue();
   }
 
   public Command myKeyEvent(KeyStroke stroke) {
@@ -141,6 +185,7 @@ public class Restricted extends Decorator implements EditablePiece {
   }
 
   public void mySetState(String newState) {
+    owningPlayer = newState;
   }
 
   public PieceEditor getEditor() {
@@ -148,14 +193,21 @@ public class Restricted extends Decorator implements EditablePiece {
   }
 
   public static class Ed implements PieceEditor {
+    private BooleanConfigurer byPlayer;
     private StringArrayConfigurer config;
+    private Box box;
 
     public Ed(Restricted r) {
+      byPlayer = new BooleanConfigurer(null,"Also belongs to initially-placing player",r.restrictByPlayer);
       config = new StringArrayConfigurer(null, "Belongs to side", r.side);
+      box = Box.createVerticalBox();
+      ((JComponent)byPlayer.getControls()).setAlignmentX(Box.RIGHT_ALIGNMENT);
+      box.add(config.getControls());
+      box.add(byPlayer.getControls());
     }
 
     public Component getControls() {
-      return config.getControls();
+      return box;
     }
 
     public String getState() {
@@ -163,7 +215,49 @@ public class Restricted extends Decorator implements EditablePiece {
     }
 
     public String getType() {
-      return ID + config.getValueString();
+      return ID + new SequenceEncoder(';').append(config.getValueString()).append(byPlayer.booleanValue()).getValue();
     }
+  }
+  /**
+   * When a player changes sides to become an observer, relinquish ownership of all pieces
+   * @author rodneykinney
+   *
+   */
+  private static class RetirementHandler implements PlayerRoster.SideChangeListener, PieceVisitor {
+
+    public void sideChanged(String oldSide, String newSide) {
+      if (newSide == null) {
+        PieceVisitorDispatcher d = new PieceVisitorDispatcher(this);
+        Command c = new NullCommand();
+        for(Map m : GameModule.getGameModule().getComponentsOf(Map.class)) {
+          for (GamePiece piece : m.getPieces()) {
+            c = c.append((Command)d.accept(piece));
+          }
+        }
+        GameModule.getGameModule().sendAndLog(c);
+      }
+    }
+
+    public Object visitDefault(GamePiece p) {
+      Restricted r = (Restricted)Decorator.getDecorator(p, Restricted.class);
+      if (r != null
+          && r.restrictByPlayer
+          && GameModule.getUserId().equals(r.owningPlayer)) {
+        
+        ChangeTracker t = new ChangeTracker(p);
+        r.owningPlayer = "";
+        return t.getChangeCommand();
+      }
+      return null;
+    }
+
+    public Object visitStack(Stack s) {
+      Command c = new NullCommand();
+      for (Iterator<GamePiece> it = s.getPiecesIterator(); it.hasNext();) {
+        c = c.append((Command)visitDefault(it.next()));
+      }
+      return c;
+    }
+    
   }
 }

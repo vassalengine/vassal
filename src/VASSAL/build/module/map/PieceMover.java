@@ -549,10 +549,6 @@ public class PieceMover extends AbstractBuildable
         draggedPieces = new GamePiece[]{dragging};
       }
 
-      for (int i = 0; i < draggedPieces.length; i++) {
-        KeyBuffer.getBuffer().add(draggedPieces[i]);
-      }
-
       if (offset != null) {
         p = new Point(dragging.getPosition().x + offset.x,
                       dragging.getPosition().y + offset.y);
@@ -605,12 +601,14 @@ public class PieceMover extends AbstractBuildable
         comm = comm.append(movedPiece(dragging, mergeWith.getPosition()));
         comm = comm.append(map.getStackMetrics().merge(mergeWith, dragging));
       }
+      for (int i = 0; i < draggedPieces.length; i++) {
+        KeyBuffer.getBuffer().add(draggedPieces[i]);
+      }
       if (map.getMoveKey() != null) {
         applyKeyAfterMove(draggedPieces, comm, map.getMoveKey());
       }
       tracker.addPiece(dragging);
     }
-
     if (GlobalOptions.getInstance().autoReportEnabled()) {
       final Command report = createMovementReporter(comm).getReportCommand().append(new MovementReporter.HiddenMovementReporter(comm).getReportCommand());
       report.execute();
