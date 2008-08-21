@@ -568,6 +568,7 @@ public class PieceMover extends AbstractBuildable
           }
         }
       }
+
       // Now look for an already-existing piece at the destination point
       if (mergeWith == null) {
         mergeWith = map.findAnyPiece(p, dropTargetSelector);
@@ -586,6 +587,7 @@ public class PieceMover extends AbstractBuildable
           mergeTargets.put(p, mergeCandidates);
         }
       }
+
       if (mergeWith == null) {
         comm = comm.append(movedPiece(dragging, p));
         comm = comm.append(map.placeAt(dragging, p));
@@ -601,19 +603,24 @@ public class PieceMover extends AbstractBuildable
         comm = comm.append(movedPiece(dragging, mergeWith.getPosition()));
         comm = comm.append(map.getStackMetrics().merge(mergeWith, dragging));
       }
+
       for (int i = 0; i < draggedPieces.length; i++) {
         KeyBuffer.getBuffer().add(draggedPieces[i]);
       }
+
       if (map.getMoveKey() != null) {
         applyKeyAfterMove(draggedPieces, comm, map.getMoveKey());
       }
+
       tracker.addPiece(dragging);
     }
+
     if (GlobalOptions.getInstance().autoReportEnabled()) {
       final Command report = createMovementReporter(comm).getReportCommand().append(new MovementReporter.HiddenMovementReporter(comm).getReportCommand());
       report.execute();
       comm = comm.append(report);
     }
+
     tracker.repaint();
     return comm;
   }
