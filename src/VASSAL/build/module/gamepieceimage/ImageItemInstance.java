@@ -50,11 +50,11 @@ public class ImageItemInstance extends ItemInstance {
   }
 
   public String encode() {
-    SequenceEncoder se = new SequenceEncoder(';');
-    se.append(getType());
-    se.append(getName());
-    se.append(getLocation());
-    se.append(imageName+""); //$NON-NLS-1$
+    final SequenceEncoder se = new SequenceEncoder(';');
+    se.append(getType())
+      .append(getName())
+      .append(getLocation())
+      .append(imageName);
     return se.getValue();
   }
 

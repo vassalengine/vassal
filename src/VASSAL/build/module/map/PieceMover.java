@@ -463,8 +463,8 @@ public class PieceMover extends AbstractBuildable
       locationName = m.locationName(pos);
     }
     
-    p.setProperty(BasicPiece.OLD_X, pos.x+""); //$NON-NLS-1$
-    p.setProperty(BasicPiece.OLD_Y, pos.y+""); //$NON-NLS-1$
+    p.setProperty(BasicPiece.OLD_X, String.valueOf(pos.x));
+    p.setProperty(BasicPiece.OLD_Y, String.valueOf(pos.y));
     p.setProperty(BasicPiece.OLD_MAP, mapName);
     p.setProperty(BasicPiece.OLD_BOARD, boardName);
     p.setProperty(BasicPiece.OLD_ZONE, zoneName);
