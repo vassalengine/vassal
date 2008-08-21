@@ -46,6 +46,9 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
   /** The cached hash code of this object. */
   protected final int hash;
 
+  /** The zip file from which the image will be loaded */
+  protected DataArchive archive;
+
   /**
    * Constructs an <code>ImageOp</code> which will load the given file.
    *
@@ -54,11 +57,16 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    *    if <code>name</code> is <code>null</code>.
    */
   public SourceOpSVGImpl(String name) {
-    if (name == null || name.length() == 0)
+    this(name, GameModule.getGameModule().getDataArchive());
+  }
+  
+  public SourceOpSVGImpl(String name, DataArchive archive) {
+    if (name == null || name.length() == 0 || archive == null)
       throw new IllegalArgumentException();
 
     this.name = name;
-    hash = name.hashCode();
+    this.archive = archive;
+    hash = name.hashCode() ^ archive.hashCode();
   }
 
   @Override
@@ -140,8 +148,10 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof SourceOp)) return false;
-    return name.equals(((SourceOp) o).getName());
+    if (o == null || !(o instanceof SourceOpSVGImpl)) return false;
+
+    final SourceOpSVGImpl s = (SourceOpSVGImpl) o;
+    return archive == s.archive && name.equals(s.getName());
   }
 
   /** {@inheritDoc} */

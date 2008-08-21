@@ -61,11 +61,12 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   }
   
   public SourceOpBitmapImpl(String name, DataArchive archive) {
-    if (name == null || name.length() == 0)
+    if (name == null || name.length() == 0 || archive == null)
       throw new IllegalArgumentException();
+
     this.name = name;
     this.archive = archive;
-    hash = name.hashCode();
+    hash = name.hashCode() ^ archive.hashCode();
   }
 
  /** {@inheritDoc} */
@@ -158,11 +159,8 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     if (this == o) return true;
     if (o == null || !(o instanceof SourceOpBitmapImpl)) return false;
 
-// FIXME: should this be a cast to SourceOp instead?
     final SourceOpBitmapImpl s = (SourceOpBitmapImpl) o;
-    if (!name.equals(s.getName())) return false;
-    return archive == null ? s.archive == null :
-      archive.getName().equals(s.archive.getName());
+    return archive == s.archive && name.equals(s.getName());
   }
 
   /** {@inheritDoc} */
