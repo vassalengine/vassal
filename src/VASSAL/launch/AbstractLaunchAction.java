@@ -121,20 +121,25 @@ public abstract class AbstractLaunchAction extends AbstractAction {
    */
   public static boolean shutDown() {
     ModuleManagerWindow.getInstance().toBack();
-    for (CommandClient child : children) {
-      try {
-        if ("NOK".equals(child.request("REQUEST_CLOSE"))) return false;
-      }
-      catch (EOFException e) {
-        // Normal. Child closed.
-      }
-      catch (SocketException e) {
-        // Normal. Child closed.
-      }
-      catch (IOException e) {
-        CommunicationErrorDialog.error(e);
+
+    // must synchronize when iterating over a Collections.synchronizedList()
+    synchronized (children) {
+      for (CommandClient child : children) {
+        try {
+          if ("NOK".equals(child.request("REQUEST_CLOSE"))) return false;
+        }
+        catch (EOFException e) {
+          // Normal. Child closed.
+        }
+        catch (SocketException e) {
+          // Normal. Child closed.
+        }
+        catch (IOException e) {
+          CommunicationErrorDialog.error(e);
+        }
       }
     }
+
     return true;
   }
 
