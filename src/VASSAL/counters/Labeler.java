@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -92,7 +93,6 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
   protected ScaledImagePainter imagePainter = new ScaledImagePainter();
 
-  private JLabel lbl;
   private char verticalJust = 'b';
   private char horizontalJust = 'c';
   private char verticalPos = 't';
@@ -108,7 +108,6 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
 
   public Labeler(String s, GamePiece d) {
-    lbl = new JLabel();
     mySetType(s);
     setInner(d);
   }
@@ -134,8 +133,6 @@ public class Labeler extends Decorator implements TranslatablePiece {
     font = new Font(fontFamily, fontStyle, fontSize);
     rotateDegrees = st.nextInt(0);
     propertyName = st.nextToken("TextLabel");
-    lbl.setForeground(textFg);
-    lbl.setFont(font);
   }
 
   public Object getProperty(Object key) {
@@ -282,7 +279,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
     if (imagePainter.getSource() == null &&
         label != null && label.length() > 0) {
       lastCachedLabel = label;
-      imagePainter.setSource(new LabelOp(lastCachedLabel, lbl, textBg));
+      imagePainter.setSource(
+        new LabelOp(lastCachedLabel, font, textFg, textBg));
     }
   }
 
@@ -345,7 +343,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
     label = s;
     labelFormat.setFormat(label);
     if (getMap() != null && label != null && label.length() > 0) {
-      imagePainter.setSource(new LabelOp(getLocalizedLabel(), lbl, textBg));
+      imagePainter.setSource(
+        new LabelOp(getLocalizedLabel(), font, textFg, textBg));
     }
     else {
       imagePainter.setSource(null);
@@ -362,45 +361,62 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
   protected class LabelOp extends AbstractTileOpImpl {
     private final String txt;
-    private final JLabel lab;
+    private final Font font;
+    private final Color fg;
     private final Color bg;
     private final int hash;
     
-    public LabelOp(String txt, JLabel lab, Color bg) {
-      if (lab == null) throw new IllegalArgumentException();
+    public LabelOp(String txt, Font font, Color fg, Color bg) {
       this.txt = txt;
-      this.lab = lab;
+      this.font = font;
+      this.fg = fg;
       this.bg = bg;
       hash = HashCode.hash(txt) ^
+             HashCode.hash(font) ^
+             HashCode.hash(fg) ^
              HashCode.hash(bg);
     }
 
 // FIXME: not implementing asynchronicity; maybe no point, here.
     public Image apply() throws Exception {
-      lab.setText(txt);
-      lab.setSize(lab.getPreferredSize());
-      
-      final int width = lab.getWidth();
-      final int height = lab.getHeight();
+      if (size == null) fixSize();
+ 
+      final int w = size.width; 
+      final int h = size.height;
+
       final BufferedImage im =
-        new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+
       final Graphics2D g = im.createGraphics();
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
       if (bg != null) {
         g.setColor(bg);
-        g.fillRect(0, 0, width, height);
+        g.fillRect(0, 0, w, h);
       }
-      lab.paint(g);
+
+      if (fg != null) {
+        g.setColor(fg);
+        g.setFont(font);
+
+        final FontMetrics fm = g.getFontMetrics(font);
+        g.drawString(txt, 0, h - fm.getDescent());
+      }
+
       g.dispose();
       return im;
     }
 
     protected void fixSize() {
       if ((size = getSizeFromCache()) == null) {
-        lab.setText(txt);
-        lab.setSize(lab.getPreferredSize());
-        size = lab.getSize();
+        final BufferedImage dummy =
+          new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g = dummy.createGraphics();
+        final FontMetrics fm = g.getFontMetrics(font);
+      
+        size = new Dimension(fm.stringWidth(txt), fm.getHeight());
+
+        g.dispose();
       }
     }
 
@@ -412,11 +428,12 @@ public class Labeler extends Decorator implements TranslatablePiece {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (!(o instanceof LabelOp)) return false;
-      LabelOp lop = (LabelOp) o;
-      return ((txt != null && txt.equals(lop.txt)) ||
-              (txt == null && lop.txt == null)) &&
-             ((bg != null && bg.equals(lop.txt)) ||
-              (bg == null && lop.bg == null));
+
+      final LabelOp lop = (LabelOp) o;
+      return (txt == null ? lop.txt == null : txt.equals(lop.txt)) &&
+             (font == null ? lop.font == null : font.equals(lop.font)) &&
+             (fg == null ? lop.fg == null : fg.equals(lop.fg)) &&
+             (bg == null ? lop.bg == null : bg.equals(lop.bg));
     }
 
     @Override
@@ -424,30 +441,6 @@ public class Labeler extends Decorator implements TranslatablePiece {
       return hash;
     }
   }
-
-/*
-  protected Image createImage(Component obs) {
-    lastCachedLabel = getLocalizedLabel();
-    lbl.setText(lastCachedLabel);
-    lbl.setSize(lbl.getPreferredSize());
-    final int width = lbl.getWidth();
-    final int height = lbl.getHeight();
-    BufferedImage im =
-      new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-    final Graphics2D g = im.createGraphics();
-    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                       RenderingHints.VALUE_ANTIALIAS_ON);
-    if (textBg != null) {
-      g.setColor(textBg);
-      g.fillRect(0, 0, width, height);
-    }
-    lbl.paint(g);
-
-    g.dispose();
-
-    return im;
-  }
-*/
 
   public String getLabel() {
     return labelFormat.getText(Decorator.getOutermost(this));
@@ -460,12 +453,10 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
 
   public Rectangle boundingBox() {
-    lbl.setText(getLabel());
-    lbl.setSize(lbl.getPreferredSize());
     final Rectangle r = piece.boundingBox();
     final Rectangle r2 = piece.getShape().getBounds();
     final Point p2 = getLabelPosition();
-    final Rectangle r3 = new Rectangle(p2, lbl.getSize());
+    final Rectangle r3 = new Rectangle(p2, imagePainter.getImageSize());
     return r.union(r2).union(r3);
   }
 
@@ -475,7 +466,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
     }
     else {
       final Area a = new Area(piece.getShape());
-      final Rectangle r = new Rectangle(getLabelPosition(), lbl.getSize());
+      final Rectangle r =
+        new Rectangle(getLabelPosition(), imagePainter.getImageSize());
       a.add(new Area(r));
       return a;
     }
