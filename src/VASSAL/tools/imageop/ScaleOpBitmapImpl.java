@@ -159,14 +159,19 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
       hash = result;
     }
 
+    private static final BufferedImage NULL_IMAGE =
+      new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB); 
+
     public Image apply() throws Exception {
-      BufferedImage src = (BufferedImage) sop.getImage(null);
+      if (dw < 1 || dh < 1) return NULL_IMAGE;
  
+      final BufferedImage src = (BufferedImage) sop.getImage(null);
+
       final Rectangle sr =
         new Rectangle(0, 0,
                       (int)(sop.getWidth()*scale),
                       (int)(sop.getHeight()*scale));
- 
+
       final WritableRaster dstR = src.getColorModel()
                                      .createCompatibleWritableRaster(dw, dh)
                                      .createWritableTranslatedChild(dx0, dy0);
