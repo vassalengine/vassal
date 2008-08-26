@@ -75,6 +75,7 @@ public class WrapLayout extends FlowLayout {
    * @return the preferred dimensions to lay out the
    * subcomponents of the specified container
    */
+  @Override
   public Dimension preferredLayoutSize(Container target) {
     return layoutSize(target, true);
   }
@@ -86,6 +87,7 @@ public class WrapLayout extends FlowLayout {
    * @return the minimum dimensions to lay out the
    * subcomponents of the specified container
    */
+  @Override
   public Dimension minimumLayoutSize(Container target) {
     return layoutSize(target, false);
   }
@@ -179,6 +181,7 @@ public class WrapLayout extends FlowLayout {
    * this <code>WrapLayout</code> object.
    * @param target the specified component being laid out
    */
+  @Override
   public void layoutContainer(final Container target) {
     Dimension size = preferredLayoutSize(target);
 
