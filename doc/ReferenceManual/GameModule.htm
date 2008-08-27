@@ -1,137 +1,111 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-
-
-  
-  
-  
-  
   <title>VASSAL Reference Manual - Game Module</title>
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 </head>
-
-
 <body>
-
 
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
-
   <tbody>
-
 
     <tr align="center">
 
-
       <td valign="top">
+      
       
       
       <h1>VASSAL Reference Manual</h1>
 
-
       <small><a href="index.htm">Home</a> &gt; <b>Module</b></small><br>
-
 
       <br>
 
-
       </td>
-
 
     </tr>
 
-
     <tr>
 
-
       <td valign="top">
+      
       
       
       <hr size="2" width="100%">
       
       
+      
       <h2>Module<br>
-
 
       </h2>
 
-
+      
       
       
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
-
         <tbody>
 
-
           <tr>
-
 
             <td valign="top"> The Module is the top component in the
 Configuration Window. &nbsp;Its properties are simply the name of the
 game and a version number. </td>
 
-
-            <td valign="top"><img src="images/GameModule.png" alt=""  title=""> <br>
-
+            <td valign="top"><img src="images/GameModule.png" alt="" title=""> <br>
 
             </td>
 
-
           </tr>
 
-
+        
         
         
         </tbody>
       
       
+      
       </table>
 
-
+      
       
       
       <hr size="2" width="100%">
       
       
+      
       <h2>Sub-Components</h2>
-
 
       <br>
 
-
+      
       
       
       <h3><a href="HelpMenu.htm">Help Menu</a></h3>
-
 
 Every module has a Help menu in the main controls window. &nbsp;Only
 one Help menu is allowed, and it may not be removed.
       
       
+      
       <h3><a name="Definition_of_Player_Sides"></a>Definition of Player
 Sides</h3>
 
-
+      
       
       
       <table cellpadding="2" cellspacing="2" width="100%">
 
-
         <tbody>
 
-
           <tr>
-
 
             <td valign="top">In general, it is not necessary to define
 player sides for a module. &nbsp;If you define no sides, then all
 windows and all game pieces are visible and accessible to all players.<br>
 
-
             <br>
-
 
 If you wish to create components that are available only to one side in
 a game (e.g. a <a href="PrivateWindow.htm">Private Window</a>), you
@@ -139,9 +113,7 @@ must define the player sides here.
 &nbsp;Simply type a name for each side and refer to that name in the
 restricted component<br>
 
-
             <br>
-
 
 Only one player may be assigned to a side. &nbsp;When joining a game,
 players will be prompted to take one of the remaining available sides.
@@ -151,189 +123,158 @@ relinquish his side (making it available to the next player joining the
 game). You can specify the text, icon, and mouse-over tooltip for the
 toolbar button.<br>
 
-
             <br>
 
-
             </td>
-
 
             <td valign="top"><img src="images/PlayerSides.png" alt=""> <br>
 
-
             </td>
-
 
           </tr>
 
-
+        
         
         
         </tbody>
       
       
+      
       </table>
-
 
       <br>
 
-
+      
       
       
       <h3><a href="GlobalOptions.htm">Global Options</a></h3>
 
-
       A set of options that apply to the module overall.
       <br>
 
-
       <br>
 
-
+      
       
       
       <h3><a href="Map.htm">Map Window</a></h3>
 
-
 By default, every module has one Map Window, although it may be removed
 and others added.<br>
 
-
       <br>
 
-
+      
       
       
       <h3><a href="PieceWindow.htm">Game Piece Palette</a></h3>
 
-
 By default, every module has one Game Piece Palette, although it may be
 removed and others added.<br>
 
-
       <br>
 
-
+      
       
       
       <h3><a href="Prototypes.htm">Game Piece Prototypes Definitions</a></h3>
 
-
 Allows you to define sets of commonly-used traits for Game Pieces.<br>
-
 
       <br>
 
-
+      
       
       
       <h3><a href="GlobalProperties.htm">Global Properties</a></h3>
 
-
 Allows you to define default values for <a href="Properties.htm">Properties</a><br>
-
 
       <br>
 
-
+      
       
       
       <h3><a href="ToolbarMenu.htm">Toolbar Menu</a></h3>
 
-
 Groups buttons in the toolbar into a single drop-down menu.<br>
-
 
       <br>
 
-
+      
       
       
       <h3><a href="MultiActionButton.htm">Multi-Action Button</a></h3>
 
-
 Combines multiple&nbsp;buttons in the toolbar into a single button.<br>
 
-
-      <br> 
+      <br>
+ 
 	  
 	  
-	  <h3><a href="DoActionButton.htm">Action Button</a></h3>
-
+	  
+      <h3><a href="DoActionButton.htm">Action Button</a></h3>
 
 A button that displays a message, plays a sound or sends Hotkeys.<br>
 
-
       <br>
 
-
-	  <h3><a href="TurnTracker.htm">Turn Counter</a></h3>
-
+	  
+      <h3><a href="TurnTracker.htm">Turn Counter</a></h3>
 
 Track the current game turn and phase.<br>
-
 
       <br>
 	        
       
+      
       <h3><a href="GamePieceImageDefinitions.htm">Game Piece Image
 Definitions</a></h3>
-
 
 Allows you to define re-usable layouts for building custom images to
 use in Game Pieces.<br>
 
-
       <br>
 
-
+      
       
       
       <h3><a href="Map.htm#GlobalKeyCommand">Global Key Command<br>
 
-
       </a></h3>
-
 
 A button that applies a given command to many pieces at once.&nbsp;
 Applies to all Map Windows simultaneously.<br>
 
-
+      
       
       
       <h3><a href="Inventory.htm">Game Piece Inventory Window</a></h3>
-
 
 Shows a separate window that summarizes the pieces in the current
 game.&nbsp; Can be configured to select a particular subset of pieces,
 and to organize them by their properties.<br>
 
-
       <br>
 
-
       <br>
-
 
       <a name="DiceButton">
       
       
+      
       <h3>Dice Button</h3>
-
 
       </a> <br>
 
-
+      
       
       
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
 
-
         <tbody>
 
-
           <tr>
-
 
             <td valign="top">A button to generate random numbers in
 the text area of the main control window. You may add any number of
@@ -349,9 +290,7 @@ reported individually (e.g. as "2,6,3"). &nbsp;If the <span style="font-weight: 
 then players will be asked to select the number of sides/dice every
 time they press the dice button during a game.&nbsp; <br>
 
-
             <br>
-
 
 The <span style="font-weight: bold;">Report Format</span> specifies
 the <a href="MessageFormat.htm">Message Format</a> for reporting the
@@ -363,48 +302,40 @@ is the result of the roll, <span style="font-style: italic;">nDice</span> is the
             <br>
 The <span style="font-style: italic;">result</span> of the dice roll is stored as a global <a href="Properties.htm">Property</a> under the name &lt;name&gt;_result, where &lt;name&gt; is the name given to the component. (<span style="font-style: italic;">Example:</span> A dice button is named "2d6" After a roll of 11, the property name $2d6_result$ will resolve to "11" until the next roll.<br>
 
-
             <br>
 
-
             </td>
 
-
-            <td valign="top"><img src="images/DiceButton.png" alt=""  title=""> <br>
-
+            <td valign="top"><img src="images/DiceButton.png" alt="" title=""> <br>
 
             </td>
-
 
           </tr>
 
-
+        
         
         
         </tbody>
       
       
+      
       </table>
-
 
       <br>
 
-
+      
       
       
       <h3><a name="InternetDiceButton"></a>Internet Dice Button</h3>
 
-
+      
       
       
       <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
 
-
         <tbody>
 
-
           <tr>
-
 
             <td style="vertical-align: top;">An Internet Dice Button
 functions just the same as a regular Dice Button, except that it uses a
@@ -415,9 +346,7 @@ of
 each roll may optionally be sent to one or more email addresses, which
 may be specified in the preferences.<br>
 
-
             <br>
-
 
 The <span style="font-style: italic;">put multiple rolls into single
 email</span> option will prompt the player to combine multiple dice
@@ -427,48 +356,40 @@ Format<span style="font-style: italic;"><span style="font-weight: bold;"><span s
 place of the <span style="font-style: italic;">rollDetails</span>
 variable.<br>
 
-
             </td>
 
-
-            <td style="vertical-align: top;"><img src="images/InternetDiceButton.png" title="" alt="" ><br>
-
+            <td style="vertical-align: top;"><img src="images/InternetDiceButton.png" title="" alt=""><br>
 
             </td>
-
 
           </tr>
 
-
+        
         
         
         </tbody>
       
       
+      
       </table>
-
 
       <br>
 
-
+      
       
       
       <h3><a name="RandomTextButton"></a>Random Text Button</h3>
 
-
       <br>
 
-
+      
       
       
       <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
 
-
         <tbody>
 
-
           <tr>
-
 
             <td style="vertical-align: top;">A Random Text Button can
 be used to randomly select a text message from a list defined
@@ -482,156 +403,132 @@ a six-sided die with values 2,3,3,4,4,5.&nbsp; If the values are
 numerical check the "Faces have numeric values" box, which enables the
 "report total" and "add to each die" options.<br>
 
-
             </td>
 
-
-            <td style="vertical-align: top;"><img src="images/RandomTextButton.png" title="" alt="" ><br>
-
+            <td style="vertical-align: top;"><img src="images/RandomTextButton.png" title="" alt=""><br>
 
             </td>
-
 
           </tr>
 
-
+        
         
         
         </tbody>
       
       
+      
       </table>
-
 
       <br>
 
-
+      
       
       
       <h3><a name="SpecialDiceButton"></a><a href="SpecialDiceButton.htm">Symbolic Dice Button</a></h3>
 
-
 Rolls dice whose faces are represented by graphical images.<br>
-
 
       <br>
 
-
+      
       
       
       <h3><a name="PredefinedSetup"></a>Pre-defined setup<a href="SpecialDiceButton.htm"></a></h3>
 
-
+      
       
       
       <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
 
-
         <tbody>
 
-
           <tr>
-
 
             <td style="vertical-align: top;">Replaces the "New Game"
 menu item in the File menu of the controls window with a new menu item
 that loads a saved game that you specify in advance.<br>
 
-
             <br>
-
 
             <span style="font-weight: bold;">Name:&nbsp; </span>Text
 of the menu item.<br>
-
 
             <span style="font-weight: bold;"></span><span style="font-weight: bold;">Contains sub-menus:</span>&nbsp;
 Instead of specifying a saved game, you can check this box to add a
 sub-menu with the given name to the File menu.&nbsp; Then you can add
 more Pre-defined setups to this one to create entries in the sub-menu.<br>
 
-
             <span style="font-weight: bold;">Use pre-defined file:</span>&nbsp;
 If left unchecked, this menu entry will start a new game from scratch,
 like the normal "New Game" action.<br>
-
 
             <span style="font-weight: bold;">Saved Game:</span>&nbsp;
 Select a saved game from your local disk.&nbsp; This game will be
 loaded when the menu item is selected.&nbsp; If the file does not
 exist, then the menu item behaves like the normal "New Game" item.<br>
 
-
             <br>
-
 
             <span style="font-style: italic;">Example:</span>&nbsp; Add
 a Pre-defined setup named "Play Scenario" to the module and check <span style="font-style: italic;">contains sub-menus.</span>&nbsp; Then add
 another set of Pre-defined setups named <span style="font-style: italic;">1939, 1940, 1941, 1942</span> to the first
 and select a saved game file for each one.&nbsp;&nbsp; Players may now
 select File-&gt;Play Scenario-&gt;1939 to load the 1939 scenario, etc.<br>
-
-
-            </td>
-
-
-            <td style="vertical-align: top;"><img alt="" src="images/PredefinedSetup1.png" ><br>
-
-
-            <img alt="" src="images/PredefinedSetup2.png" ><br>
-
+            <br>
+            <span style="font-style: italic;">Note</span>: &nbsp;When creating a Pre-defined setup in a module with <a href="GameModule.htm#Definition_of_Player_Sides">defined sides</a>, always remember to hit the&nbsp;<span style="font-style: italic;">Retire</span> button before saving. &nbsp;Otherwise, the side you chose when creating the game you will be permanently assigned to you.
 
             </td>
 
+            <td style="vertical-align: top;"><img alt="" src="images/PredefinedSetup1.png"><br>
+
+            <img alt="" src="images/PredefinedSetup2.png"><br>
+
+            </td>
 
           </tr>
 
-
+        
         
         
         </tbody>
       
       
+      
       </table>
-
 
       <br>
 
-
+      
       
       
       <h3><a href="ChartWindow.htm">Charts</a></h3>
 
-
 Adds a window that can contain gameplay-related charts and tables for
 player reference.<br>
 
-
+      
       
       
       <h3><a href="PrivateWindow.htm">Private Window</a></h3>
 
-
 A map window that can be seen only by the owning player.<br>
-
 
       <a name="NotesWindow">
       
       
+      
       <h3>Notes Window</h3>
-
 
       </a>
       
       
+      
       <table border="0" cellpadding="2" cellspacing="2" width="100%">
-
 
         <tbody>
 
-
           <tr>
-
 
             <td valign="top">A window for saving text notes along with
 a game. &nbsp;A "Notes" button will be added to the toolbar of the main
@@ -648,67 +545,52 @@ the
 text of the message, at which point other players may read the contents
 of the message.<br>
 
-
             <br>
 
-
             </td>
-
 
             <td valign="top">
-<img src="images/NotesWindow2.png">
-<img src="images/NotesWindow.png" alt=""  title=""> <br>
-
+            <img src="images/NotesWindow2.png">
+            <img src="images/NotesWindow.png" alt="" title=""> <br>
 
             </td>
-
 
           </tr>
 
-
+        
         
         
         </tbody>
       
       
+      
       </table>
 
-
       <br>
 
-
       <br>
-
 
       </td>
 
-
     </tr>
-
 
     <tr>
 
-
     </tr>
 
-
+  
   
   
   </tbody>
 </table>
 
+<br>
 
 <br>
 
-
 <br>
 
-
 <br>
-
-
-<br>
-
 
 </body>
 </html>
