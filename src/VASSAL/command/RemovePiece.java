@@ -18,6 +18,8 @@
  */
 package VASSAL.command;
 
+import java.awt.Rectangle;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
@@ -45,39 +47,43 @@ public class RemovePiece extends Command {
   /**
    * Removes a piece by invoking {@link Map#removePiece} if the
    * piece belongs to a {@link Map}, followed by {@link
-   * GameState#removePiece}.  */
+   * GameState#removePiece}. 
+   */
   protected void executeCommand() {
     if (target == null) {
       target = GameModule.getGameModule().getGameState().getPieceForId(id);
+      if (target == null) return;
     }
-    if (target != null) {
-      undo = new AddPiece(target, target.getState());
-      java.awt.Rectangle r = null;
-      Map m = target.getMap();
-      Stack parent = target.getParent();
-      m.getIdentifier();
 
-      // Highlight the stack the piece was removed from - Ben
-      HighlightLastMoved.setLastMoved(target);
+    undo = new AddPiece(target, target.getState());
 
-      if (m != null) {
-        r = parent == null ?
-          m.boundingBoxOf(target) : m.boundingBoxOf(parent);
-        target.getMap().removePiece(target);
-        target.setMap(null);
-      }
-      if (parent != null) {
-        String stateWithPiece = parent.getState();
-        parent.remove(target);
-        undo = undo.append(new ChangePiece(parent.getId(),parent.getState(), stateWithPiece));
-        target.setParent(null);
-      }
-      if (m != null) {
-        m.repaint(r);
-      }
-      GameModule.getGameModule().getGameState().removePiece(target.getId());
-      KeyBuffer.getBuffer().remove(target);
+    Rectangle r = null;
+    final Map m = target.getMap();
+    final Stack parent = target.getParent();
+
+    // Highlight the stack the piece was removed from - Ben
+    HighlightLastMoved.setLastMoved(target);
+
+    if (m != null) {
+      r = parent == null ?  m.boundingBoxOf(target) : m.boundingBoxOf(parent);
+      m.removePiece(target);
+      target.setMap(null);
     }
+
+    if (parent != null) {
+      final String stateWithPiece = parent.getState();
+      parent.remove(target);
+      undo = undo.append(
+        new ChangePiece(parent.getId(),parent.getState(), stateWithPiece));
+      target.setParent(null);
+    }
+
+    if (m != null) {
+      m.repaint(r);
+    }
+
+    GameModule.getGameModule().getGameState().removePiece(target.getId());
+    KeyBuffer.getBuffer().remove(target);
   }
 
   protected Command myUndoCommand() {
