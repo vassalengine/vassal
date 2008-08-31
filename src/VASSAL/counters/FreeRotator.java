@@ -262,6 +262,7 @@ public class FreeRotator extends Decorator
 
       if (gpOp.isChanged()) {
         gpOp = Op.piece(piece);
+        rotOp.clear();
         op = Op.rotateScale(gpOp, angle, zoom);        
         rotOp.put(angle, op);
       }
