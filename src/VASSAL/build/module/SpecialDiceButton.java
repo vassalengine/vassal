@@ -180,6 +180,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       SpecialDie die = dice.get(i);
       total += die.getIntValue(results[i]);
     }
+    format.setFormat(chatResultFormat);
     String msg = format.getLocalizedText();
     if (msg.length() > 0) {
       if (msg.startsWith("*")) { //$NON-NLS-1$
