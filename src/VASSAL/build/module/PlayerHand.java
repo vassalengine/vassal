@@ -75,6 +75,7 @@ public class PlayerHand extends PrivateMap {
     for (int i=0;i<stack.length;++i) {
       r = r.union(boundingBoxOf(stack[i]));
     }
+    r = r.union(new Rectangle(super.mapSize()));
     return r.getSize();
   }
 
