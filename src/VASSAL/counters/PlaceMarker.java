@@ -155,7 +155,15 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       if (!Boolean.TRUE.equals(marker.getProperty(Properties.IGNORE_GRID))) {
         p = getMap().snapTo(p);
       }
-      c = getMap().placeOrMerge(marker, p);
+      if (getMap().getStackMetrics().isStackingEnabled() 
+          && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))
+          && !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK))
+          && getMap().getPieceCollection().canMerge(outer, marker)) {
+        return getMap().getStackMetrics().merge(outer, marker);
+      }
+      else {
+        c = getMap().placeAt(marker, p);
+      }
       if (afterBurnerKey != null) {
         marker.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(marker));
         c.append(marker.keyEvent(afterBurnerKey));
