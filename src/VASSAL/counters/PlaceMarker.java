@@ -77,6 +77,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   protected String gpId = "";
   protected String newGpId;
   protected GpIdSupport gpidSupport; // The component that generates unique Slot Id's for us
+  protected boolean placeOnTop = true;
 
 
   public PlaceMarker() {
@@ -119,7 +120,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       .append(matchRotation)
       .append(afterBurnerKey)
       .append(description)
-      .append(gpId);
+      .append(gpId)
+      .append(placeOnTop);
     return ID + se.getValue();
   }
 
@@ -159,7 +161,11 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
           && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))
           && !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK))
           && getMap().getPieceCollection().canMerge(outer, marker)) {
-        return getMap().getStackMetrics().merge(outer, marker);
+        GamePiece target = getParent();
+        if (target == null || !placeOnTop) {
+          target = outer;
+        }
+        return getMap().getStackMetrics().merge(target, marker);
       }
       else {
         c = getMap().placeAt(marker, p);
@@ -299,6 +305,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     afterBurnerKey = st.nextKeyStroke(null);
     description = st.nextToken("");
     setGpId(st.nextToken(""));
+    placeOnTop=st.nextBoolean(true);
   }
 
   public PieceEditor getEditor() {
@@ -337,6 +344,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     protected IntConfigurer xOffsetConfig = new IntConfigurer(null, "Horizontal offset:  ");
     protected IntConfigurer yOffsetConfig = new IntConfigurer(null, "Vertical offset:  ");
     protected BooleanConfigurer matchRotationConfig;
+    protected BooleanConfigurer placeOnTopConfig;
     protected HotKeyConfigurer afterBurner;
     protected StringConfigurer descConfig;
     private String slotId;
@@ -389,6 +397,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       p.add(yOffsetConfig.getControls());
       matchRotationConfig.setValue(Boolean.valueOf(piece.matchRotation));
       p.add(matchRotationConfig.getControls());
+      placeOnTopConfig = new BooleanConfigurer(null, "Place on top of stack?");
+      placeOnTopConfig.setValue(Boolean.valueOf(piece.placeOnTop));
+      p.add(placeOnTopConfig.getControls());
       p.add(afterBurner.getControls());
       slotId = piece.getGpId();
     }
@@ -427,6 +438,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       se.append((KeyStroke) afterBurner.getValue());
       se.append(descConfig.getValueString());
       se.append(slotId);
+      se.append(placeOnTopConfig.getValueString());
       return ID + se.getValue();
     }
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
