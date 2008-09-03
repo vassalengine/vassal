@@ -32,6 +32,8 @@ import java.awt.geom.Point2D;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -46,6 +48,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.AddPiece;
+import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ChooseComponentPathDialog;
@@ -77,7 +80,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   protected String gpId = "";
   protected String newGpId;
   protected GpIdSupport gpidSupport; // The component that generates unique Slot Id's for us
-  protected boolean placeOnTop = true;
+  private static final int STACK_TOP=0, STACK_BOTTOM=1, ABOVE=2, BELOW=3;
+  protected int placement = STACK_TOP;
 
 
   public PlaceMarker() {
@@ -121,7 +125,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       .append(afterBurnerKey)
       .append(description)
       .append(gpId)
-      .append(placeOnTop);
+      .append(placement);
     return ID + se.getValue();
   }
 
@@ -161,11 +165,28 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
           && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))
           && !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK))
           && getMap().getPieceCollection().canMerge(outer, marker)) {
-        GamePiece target = getParent();
-        if (target == null || !placeOnTop) {
+        Stack parent = getParent();
+        GamePiece target = outer;
+        int index=-1;
+        switch (placement) {
+        case ABOVE:
           target = outer;
+          break;
+        case BELOW:
+          index = parent == null ? 0 : parent.indexOf(outer);
+          break;
+        case STACK_BOTTOM:
+          index = 0;
+          break;
+        case STACK_TOP:
+          target = parent;
         }
-        return getMap().getStackMetrics().merge(target, marker);
+        c = getMap().getStackMetrics().merge(target, marker);
+        if (index >= 0) {
+          ChangeTracker ct = new ChangeTracker(parent);
+          parent.insert(marker,index);
+          c = c.append(ct.getChangeCommand());
+        }
       }
       else {
         c = getMap().placeAt(marker, p);
@@ -305,7 +326,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     afterBurnerKey = st.nextKeyStroke(null);
     description = st.nextToken("");
     setGpId(st.nextToken(""));
-    placeOnTop=st.nextBoolean(true);
+    placement=st.nextInt(STACK_TOP);
   }
 
   public PieceEditor getEditor() {
@@ -344,7 +365,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     protected IntConfigurer xOffsetConfig = new IntConfigurer(null, "Horizontal offset:  ");
     protected IntConfigurer yOffsetConfig = new IntConfigurer(null, "Vertical offset:  ");
     protected BooleanConfigurer matchRotationConfig;
-    protected BooleanConfigurer placeOnTopConfig;
+    protected JComboBox placementConfig;
     protected HotKeyConfigurer afterBurner;
     protected StringConfigurer descConfig;
     private String slotId;
@@ -397,9 +418,12 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       p.add(yOffsetConfig.getControls());
       matchRotationConfig.setValue(Boolean.valueOf(piece.matchRotation));
       p.add(matchRotationConfig.getControls());
-      placeOnTopConfig = new BooleanConfigurer(null, "Place on top of stack?");
-      placeOnTopConfig.setValue(Boolean.valueOf(piece.placeOnTop));
-      p.add(placeOnTopConfig.getControls());
+      placementConfig = new JComboBox(new String[]{"On top of stack","On bottom of stack","Above this piece","Below this piece"});
+      placementConfig.setSelectedIndex(piece.placement);
+      Box placementBox = Box.createHorizontalBox();
+      placementBox.add(new JLabel("Place marker:  "));
+      placementBox.add(placementConfig);
+      p.add(placementBox);
       p.add(afterBurner.getControls());
       slotId = piece.getGpId();
     }
@@ -438,7 +462,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       se.append((KeyStroke) afterBurner.getValue());
       se.append(descConfig.getValueString());
       se.append(slotId);
-      se.append(placeOnTopConfig.getValueString());
+      se.append(placementConfig.getSelectedIndex());
       return ID + se.getValue();
     }
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
