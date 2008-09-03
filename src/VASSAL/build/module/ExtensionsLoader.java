@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.zip.ZipException;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.IllegalBuildException;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.DirectoryConfigurer;
@@ -78,6 +77,7 @@ public class ExtensionsLoader implements CommandEncoder {
     }
     for (File ext : extMgr.getActiveExtensions()) {
       if (!addExtension(ext)) {
+        GameModule.getGameModule().warn(Resources.getString("ExtensionsLoader.deactivating_extension",ext.getName()));
         extMgr.setActive(ext, false);
       }
     }
@@ -96,7 +96,7 @@ public class ExtensionsLoader implements CommandEncoder {
         if (id.length() > 0) {
           for (String loadedId : loadedIds.keySet()) {
             if (loadedId.equals(id)) {
-              idMsg = Resources.getString("ExtensionsLoader.id_conflict", extname, id, loadedIds.get(id));              
+              idMsg = Resources.getString("ExtensionsLoader.id_conflict", extension.getName(), id, loadedIds.get(id));              
             }
           }
           loadedIds.put(id, extname);
@@ -117,10 +117,10 @@ public class ExtensionsLoader implements CommandEncoder {
         // Not a zip file. Ignore.
       }
       catch (IOException e) {
-        reportBuildError(e, extname);
+        reportBuildError(e, extension.getName());
       }
-      catch (IllegalBuildException e) {
-        reportBuildError(e, extname);
+      catch (LoadExtensionException e) {
+        reportBuildError(e, extension.getName());
       }
     }
     return success;
@@ -166,5 +166,24 @@ public class ExtensionsLoader implements CommandEncoder {
       s = COMMAND_PREFIX + se.getValue();
     }
     return s;
+  }
+  
+  public static class LoadExtensionException extends RuntimeException {
+
+    public LoadExtensionException() {
+      super();
+    }
+
+    public LoadExtensionException(String message, Throwable cause) {
+      super(message, cause);
+    }
+
+    public LoadExtensionException(String message) {
+      super(message);
+    }
+
+    public LoadExtensionException(Throwable cause) {
+      super(cause);
+    }
   }
 }

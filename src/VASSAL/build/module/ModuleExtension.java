@@ -134,7 +134,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       }
       // FIXME: review error message
       catch (IOException e) {
-        throw new IllegalBuildException(e);
+        throw new ExtensionsLoader.LoadExtensionException(e);
       }
       finally {
         IOUtils.closeQuietly(in);
@@ -275,7 +275,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
   public void setAttribute(String key, Object value) {
     if (BASE_MODULE_NAME.equals(key)) {
       if (!universal && !GameModule.getGameModule().getGameName().equals(value)) {
-        throw new IllegalBuildException(Resources.getString("ModuleExtension.extension_built", getName(), (String) value)); //$NON-NLS-1$
+        throw new ExtensionsLoader.LoadExtensionException(Resources.getString("ModuleExtension.extension_built", getName(), (String) value)); //$NON-NLS-1$
       }
     }
     else if (BASE_MODULE_VERSION.equals(key)) {

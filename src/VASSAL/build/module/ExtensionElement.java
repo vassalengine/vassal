@@ -21,11 +21,11 @@ package VASSAL.build.module;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
-import VASSAL.build.IllegalBuildException;
 import VASSAL.tools.ComponentPathBuilder;
 
 /**
@@ -59,7 +59,7 @@ public class ExtensionElement implements Buildable {
         ComponentPathBuilder.getInstance().getPath(e.getAttribute(TARGET));
     }
     catch (ComponentPathBuilder.PathFormatException e1) {
-      throw new IllegalBuildException(e1);
+      throw new ExtensionsLoader.LoadExtensionException(e1.getMessage());
     }
 
     // find and build first child which is an element
