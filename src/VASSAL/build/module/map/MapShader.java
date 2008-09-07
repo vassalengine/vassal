@@ -36,6 +36,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashMap;
 
 import javax.swing.KeyStroke;
 
@@ -95,6 +96,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected String boardSelection = ALL_BOARDS;
   protected String[] boardList = new String[0];
   protected boolean shadingVisible;
+  protected boolean scaleImage;
   protected Map map;
   protected String id;
 
@@ -106,6 +108,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   public static final String PATTERN = "pattern";
   public static final String COLOR = "color";
   public static final String IMAGE = "image";
+  public static final String SCALE_IMAGE = "scaleImage";
   public static final String OPACITY = "opacity";
   public static final String BORDER = "border";
   public static final String BORDER_COLOR = "borderColor";
@@ -139,6 +142,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected ImageOp srcOp;
 
   protected TexturePaint texture = null;
+  protected java.util.Map<Double,TexturePaint> textures = new HashMap<Double, TexturePaint>();
   protected AlphaComposite composite = null;
   protected AlphaComposite borderComposite = null;
   protected BasicStroke stroke = null;
@@ -158,7 +162,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
       g2.setComposite(getComposite());
       g2.setColor(getColor());
-      g2.setPaint(getTexture());
+      g2.setPaint(scaleImage && pattern.equals(TYPE_IMAGE) && imageName != null ? getTexture(zoom) : getTexture());
       Area area = getShadeShape(map);
       if (zoom != 1.0) {
         area = new Area(AffineTransform.getScaleInstance(zoom,zoom)
@@ -252,8 +256,17 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     return ImageUtils.toBufferedImage(srcOp.getImage());
   }
 
+  protected BufferedImage getShadePattern(double zoom) {
+    if (srcOp == null) buildShadePattern();
+    return ImageUtils.toBufferedImage(Op.scale(srcOp,zoom).getImage());
+  }
+
   protected Rectangle getPatternRect() {
     return patternRect;
+  }
+
+  protected Rectangle getPatternRect(double zoom) {
+    return new Rectangle((int)Math.round(zoom*patternRect.width),(int)Math.round(zoom*patternRect.height));
   }
 
   protected void buildShadePattern() {
@@ -361,6 +374,18 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     return texture;
   }
+  
+  protected TexturePaint getTexture(double zoom) {
+    if (zoom == 1.0) {
+      return getTexture();
+    }
+    TexturePaint texture = textures.get(zoom);
+    if (texture == null) {
+      texture = new TexturePaint(getShadePattern(zoom),getPatternRect(zoom));
+      textures.put(zoom,texture);
+    }
+    return texture;
+  }
 
   protected void buildTexture() {
     texture = new TexturePaint(getShadePattern(), getPatternRect());
@@ -393,6 +418,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       PATTERN,
       COLOR,
       IMAGE,
+      SCALE_IMAGE,
       OPACITY,
       BORDER,
       BORDER_COLOR,
@@ -417,6 +443,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       PatternPrompt.class,
       Color.class,
       Image.class,
+      Boolean.class,
       Integer.class,
       Boolean.class,
       Color.class,
@@ -441,6 +468,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       "Shade Pattern:  ",
       "Color:  ",
       "Image:  ",
+      "Scale image with map zoom?  ",
       "Opacity(%)",
       "Border?  ",
       "Border Color:  ",
@@ -632,7 +660,14 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       }
       imageName = (String) value;
       buildShadePattern();
+      textures.clear();
       buildTexture();
+    }
+    else if (SCALE_IMAGE.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String)value);
+      }
+      scaleImage = ((Boolean)value).booleanValue();
     }
     else if (BORDER.equals(key)) {
       if (value instanceof String) {
@@ -712,6 +747,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     else if (IMAGE.equals(key)) {
       return imageName;
     }
+    else if (SCALE_IMAGE.equals(key)) {
+      return String.valueOf(scaleImage);
+    }
     else if (BORDER.equals(key)) {
       return String.valueOf(border);
     }
@@ -761,6 +799,12 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
           return pattern.equals(TYPE_IMAGE);
         }
       };
+    }
+    else if (SCALE_IMAGE.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return pattern.equals(TYPE_IMAGE);
+        }};
     }
     else if (BORDER_COLOR.equals(name) || BORDER_WIDTH.equals(name) || BORDER_OPACITY.equals(name)) {
       return new VisibilityCondition() {
