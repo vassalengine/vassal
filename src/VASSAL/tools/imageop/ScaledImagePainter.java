@@ -42,7 +42,7 @@ public class ScaledImagePainter {
   }
 
   public void draw(Graphics g, int x, int y, double scale, ImageObserver obs) {
-    if (srcOp == null) return;
+    if (srcOp == null || scale <= 0) return;
   
     final Image img;
     if (scale == 1.0) {
