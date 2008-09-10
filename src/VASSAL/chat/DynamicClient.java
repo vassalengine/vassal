@@ -43,17 +43,10 @@ public class DynamicClient extends HybridClient {
     this.serverConfigURL = serverConfigURL;
   }
 
-  protected ChatServerConnection buildDelegate() {
+  protected ChatServerConnection buildDelegate() throws IOException {
     ChatServerConnection c = null;
-    try {
-      Properties p = getServerConfig();
-      c = ChatServerFactory.build(p);
-    }
-    // FIXME: review error message
-    catch (IOException e) {
-      e.printStackTrace();
-      fireStatus("Unable to initiate connection to server"); //$NON-NLS-1$
-    }
+    Properties p = getServerConfig();
+    c = ChatServerFactory.build(p);
     return c;
   }
 
@@ -78,7 +71,13 @@ public class DynamicClient extends HybridClient {
 
   public void setConnected(boolean connect) {
     if (connect && !isConnected()) {
-      setDelegate(buildDelegate());
+      try {
+        setDelegate(buildDelegate());
+      }
+      catch (IOException e) {
+        fireStatus(Resources.getString("Server.bad_address3"));
+        return;
+      }
     }
     super.setConnected(connect);
     if (!connect && !isConnected()) {
