@@ -29,7 +29,6 @@ import VASSAL.tools.SequenceEncoder;
 import java.util.*;
 import java.io.IOException;
 
-
 public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   private HttpRequestWrapper welcomeURL;
   private HttpRequestWrapper getMessagesURL;
@@ -38,7 +37,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
 
   public HttpMessageServer(PeerPoolInfo info) {
     this("http://www.vassalengine.org/util/getMessages", "http://www.vassalengine.org/util/postMessage", //$NON-NLS-1$ //$NON-NLS-2$
-        "http://www.vassalengine.org/util/motd",info); //$NON-NLS-1$
+        "http://www.vassalengine.org/util/motd", info); //$NON-NLS-1$
   }
 
   public HttpMessageServer(String getMessagesURL, String postMessageURL, String welcomeURL, PeerPoolInfo info) {
@@ -57,8 +56,8 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
         }
       }
     }
-    // FIXME: review error message
     catch (IOException e) {
+      System.err.println("IOException retrieving welcome message from "+welcomeURL);
     }
     return motd;
   }
@@ -67,37 +66,41 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     ArrayList<Message> msgList = new ArrayList<Message>();
     try {
       for (String msg : getMessagesURL.doGet(prepareInfo())) {
-        StringTokenizer st = new StringTokenizer(msg, "&"); //$NON-NLS-1$
-        String s = st.nextToken();
-        String sender = s.substring(s.indexOf("=") + 1); //$NON-NLS-1$
-        String date = st.nextToken();
-        date = date.substring(date.indexOf("=") + 1); //$NON-NLS-1$
-        s = st.nextToken(""); //$NON-NLS-1$
-        SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|'); //$NON-NLS-1$
-        String content = ""; //$NON-NLS-1$
-        while (st2.hasMoreTokens()) {
-          content += st2.nextToken();
-          if (st2.hasMoreTokens()) {
-            content += "\n"; //$NON-NLS-1$
-          }
-        }
-        content = restorePercent(content);
-        Date created = null;
         try {
-          long time = Long.parseLong(date);
-          TimeZone t = TimeZone.getDefault();
-          time += t.getOffset(Calendar.ERA, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_YEAR, Calendar.DAY_OF_WEEK, Calendar.MILLISECOND);
-          created = new Date(time);
+          StringTokenizer st = new StringTokenizer(msg, "&"); //$NON-NLS-1$
+          String s = st.nextToken();
+          String sender = s.substring(s.indexOf("=") + 1); //$NON-NLS-1$
+          String date = st.nextToken();
+          date = date.substring(date.indexOf("=") + 1); //$NON-NLS-1$
+          s = st.nextToken(""); //$NON-NLS-1$
+          SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|'); //$NON-NLS-1$
+          String content = ""; //$NON-NLS-1$
+          while (st2.hasMoreTokens()) {
+            content += st2.nextToken();
+            if (st2.hasMoreTokens()) {
+              content += "\n"; //$NON-NLS-1$
+            }
+          }
+          content = restorePercent(content);
+          Date created = null;
+          try {
+            long time = Long.parseLong(date);
+            TimeZone t = TimeZone.getDefault();
+            time += t.getOffset(Calendar.ERA, Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_YEAR, Calendar.DAY_OF_WEEK, Calendar.MILLISECOND);
+            created = new Date(time);
+          }
+          catch (NumberFormatException e1) {
+            created = new Date();
+          }
+          msgList.add(new Message(sender, content, created));
         }
-        catch (NumberFormatException e1) {
-          created = new Date();
+        catch (NoSuchElementException ex) {
+          System.err.println("Badly formatted message in HttpMessageServer:  "+msg);
         }
-        msgList.add(new Message(sender, content, created));
       }
     }
-    // FIXME: review error message
     catch (IOException ex) {
-      ex.printStackTrace();
+      System.err.println("IOException retrieving messages from "+getMessagesURL);
     }
     return msgList.toArray(new Message[msgList.size()]);
   }
@@ -110,19 +113,18 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
 
   private String removePercent(String input) {
     final StringBuilder buff = new StringBuilder();
-    final StringTokenizer st =
-      new StringTokenizer(input, "%#", true); //$NON-NLS-1$
+    final StringTokenizer st = new StringTokenizer(input, "%#", true); //$NON-NLS-1$
     while (st.hasMoreTokens()) {
       String s = st.nextToken();
       switch (s.charAt(0)) {
-        case '%':
-          buff.append("/#/"); //$NON-NLS-1$
-          break;
-        case '#':
-          buff.append("/##/"); //$NON-NLS-1$
-          break;
-        default:
-          buff.append(s);
+      case '%':
+        buff.append("/#/"); //$NON-NLS-1$
+        break;
+      case '#':
+        buff.append("/##/"); //$NON-NLS-1$
+        break;
+      default:
+        buff.append(s);
       }
     }
     return buff.toString();
@@ -130,19 +132,18 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
 
   private String restorePercent(String input) {
     for (int i = input.indexOf("/#/"); //$NON-NLS-1$
-         i >= 0; i = input.indexOf("/#/")) { //$NON-NLS-1$
+    i >= 0; i = input.indexOf("/#/")) { //$NON-NLS-1$
       input = input.substring(0, i) + "%" + input.substring(i + 3); //$NON-NLS-1$
     }
     for (int i = input.indexOf("/##/"); //$NON-NLS-1$
-         i >= 0; i = input.indexOf("/##/")) { //$NON-NLS-1$
+    i >= 0; i = input.indexOf("/##/")) { //$NON-NLS-1$
       input = input.substring(0, i) + "#" + input.substring(i + 4); //$NON-NLS-1$
     }
     return input;
   }
 
   public void postMessage(String content) {
-    if (content == null
-      || content.length() == 0) {
+    if (content == null || content.length() == 0) {
       return;
     }
     content = removePercent(content);
@@ -151,7 +152,6 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
     while (st.hasMoreTokens()) {
       se.append(st.nextToken());
     }
-
     Properties p = prepareInfo();
     p.put("sender", info.getUserName()); //$NON-NLS-1$
     p.put("content", se.getValue()); //$NON-NLS-1$
