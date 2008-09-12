@@ -154,7 +154,7 @@ public class PolygonEditor extends JPanel {
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
       g2d.fill(polygon);
 
-      if (selected >= 0) {
+      if (selected >= 0 && selected < polygon.xpoints.length) {
         g2d.setColor(Color.red);
         int x = polygon.xpoints[selected];
         int y = polygon.ypoints[selected];
@@ -183,7 +183,7 @@ public class PolygonEditor extends JPanel {
     }
 
     private void moveSelectedPoint(MouseEvent e) {
-      if (selected >= 0) {
+      if (selected >= 0 && selected < polygon.xpoints.length) {
         polygon.xpoints[selected] = e.getX();
         polygon.ypoints[selected] = e.getY();
       }
