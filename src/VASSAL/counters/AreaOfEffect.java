@@ -175,7 +175,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     if ((alwaysActive || active) && mapShaderName == null) {
 // The transparency is only draw on a Map.View component.  Only the GamePiece is drawn within
 // other windows (Counter Palette, etc.)
-      if (obs instanceof Map.View) {
+      if (obs instanceof Map.View && getMap() != null) {
         Graphics2D g2d = (Graphics2D) g;
 
         Color oldColor = g2d.getColor();
