@@ -26,11 +26,11 @@ import java.io.InputStream;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ImageUtils;
-import VASSAL.tools.ReadErrorDialog;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
@@ -131,7 +131,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       return archive.getImageSize(name);
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, name);
+      ErrorDialog.dataError(new BadDataReport("Image not found",name,e));
       return new Dimension();
     }
   }

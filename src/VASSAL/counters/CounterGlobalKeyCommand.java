@@ -186,7 +186,7 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
           r = Integer.parseInt(rangeValue);
         }
         catch (NumberFormatException e) {
-          ErrorDialog.dataError(new BadDataReport("'"+rangeValue+"' is not a number",e));
+          ErrorDialog.dataError(new BadDataReport("Not a number",rangeValue,e));
         }
       }
       filter = new BooleanAndPieceFilter(filter,new RangeFilter(getMap(), getPosition(), r));

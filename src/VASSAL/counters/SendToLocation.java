@@ -251,12 +251,21 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         if (map != null) {
           switch (destination.charAt(0)) {
           case 'L':
+            Integer xValue=null,yValue=null; 
             try {
-              dest = new Point(Integer.parseInt(x.getText(outer)),
-                               Integer.parseInt(y.getText(outer)));
+              xValue = Integer.valueOf(x.getText(outer));
             }
             catch (NumberFormatException e) {
-              ErrorDialog.dataError(new BadDataReport("'"+x.getText(outer)+"' and '"+y.getText(outer)+"' are not both numbers",e));
+              ErrorDialog.dataError(new BadDataReport("Not a number",x.getText(outer),e));
+            }
+            try {
+              yValue = Integer.valueOf(y.getText(outer));
+            }
+            catch (NumberFormatException e) {
+              ErrorDialog.dataError(new BadDataReport("Not a number",y.getText(outer),e));
+            }
+            if (xValue != null && yValue != null) {
+              dest = new Point(xValue,yValue);
             }
             Board b = map.getBoardByName(boardName.getText(outer));
             if (b != null && dest != null) {

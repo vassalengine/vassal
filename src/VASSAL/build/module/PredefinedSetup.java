@@ -27,12 +27,13 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -176,7 +177,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
                   .loadGameInBackground(fileName, getSavedGameContents());
       }
       catch (IOException e) {
-        ReadErrorDialog.error(e, fileName);
+        ErrorDialog.dataError(new BadDataReport("Setup not found",fileName,e));
       }
     }
     else {

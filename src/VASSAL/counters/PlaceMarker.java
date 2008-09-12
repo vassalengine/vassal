@@ -267,7 +267,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         }
       }
       catch (ComponentPathBuilder.PathFormatException e) {
-        ErrorDialog.dataError(new BadDataReport(e.getMessage(),e));
+        ErrorDialog.dataError(new BadDataReport(e.getMessage(),markerSpec,e));
       }
     }
     return piece;

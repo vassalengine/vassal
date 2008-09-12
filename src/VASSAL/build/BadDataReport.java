@@ -30,18 +30,16 @@ package VASSAL.build;
  */
 public class BadDataReport {
   private String message;
+  private String data;
   private Throwable cause;
 
   public BadDataReport() {
   }
 
-  public BadDataReport(String message, Throwable cause) {
+  public BadDataReport(String message, String data, Throwable cause) {
     this.message = message;
     this.cause = cause;
-  }
-
-  public BadDataReport(String message) {
-    this(message,null);
+    this.data = data;
   }
 
   public String getMessage() {
@@ -50,6 +48,10 @@ public class BadDataReport {
 
   public Throwable getCause() {
     return cause;
+  }
+
+  public String getData() {
+    return data;
   }
 
 }

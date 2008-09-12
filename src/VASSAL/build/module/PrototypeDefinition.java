@@ -139,7 +139,7 @@ public class PrototypeDefinition extends AbstractConfigurable
       try {
         final AddPiece comm = (AddPiece) GameModule.getGameModule().decode(def);
         if (comm == null) {
-          ErrorDialog.dataError(new BadDataReport("Couldn't build piece " + def)); //$NON-NLS-1$
+          ErrorDialog.dataError(new BadDataReport("Couldn't build piece ",def,null)); //$NON-NLS-1$
         }
         else {
           piece = comm.getTarget();
@@ -147,7 +147,7 @@ public class PrototypeDefinition extends AbstractConfigurable
         }
       }
       catch (RuntimeException e) {
-        ErrorDialog.dataError(new BadDataReport("Couldn't build piece "+def,e));
+        ErrorDialog.dataError(new BadDataReport("Couldn't build piece",def,e));
       }
     }
     return piece;

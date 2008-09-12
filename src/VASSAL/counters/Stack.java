@@ -465,7 +465,7 @@ public class Stack implements GamePiece, StateMergeable {
     if (!"null".equals(mapId)) {
       m = Map.getMapById(mapId);
       if (m == null) {
-        ErrorDialog.dataError(new BadDataReport("Could not find map " + mapId));
+        ErrorDialog.dataError(new BadDataReport("Could not find map",mapId,null));
       }
     }
 
@@ -575,7 +575,7 @@ public class Stack implements GamePiece, StateMergeable {
 
   public void setParent(Stack s) {
     if (s != null) {
-      ErrorDialog.dataError(new BadDataReport("Tried to add stack "+this+" to another stack"));
+      ErrorDialog.dataError(new BadDataReport("Cannot add stack to another stack",toString(),null));
     }
   }
 

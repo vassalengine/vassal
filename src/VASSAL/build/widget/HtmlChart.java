@@ -27,6 +27,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -41,12 +42,14 @@ import javax.swing.text.ViewFactory;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
-import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
@@ -96,7 +99,7 @@ public class HtmlChart extends Widget implements MouseListener {
       in.close();
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, fname);
+      ErrorDialog.dataError(new BadDataReport("Chart not found",fname,e));
     }
     finally {
       IOUtils.closeQuietly(in);

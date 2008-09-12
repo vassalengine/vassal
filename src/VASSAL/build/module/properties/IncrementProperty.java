@@ -44,7 +44,7 @@ public class IncrementProperty implements PropertyChanger {
       return String.valueOf(value);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport("'"+format.getText(constraints)+"' is not a number",e));
+      ErrorDialog.dataError(new BadDataReport("Not a number",format.getText(constraints),e));
       return oldValue;
     }
   }

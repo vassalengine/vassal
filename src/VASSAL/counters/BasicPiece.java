@@ -541,7 +541,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     if (!"null".equals(mapId)) {
       newMap = Map.getMapById(mapId);
       if (newMap == null) {
-        ErrorDialog.dataError(new BadDataReport("Could not find map " + mapId));
+        ErrorDialog.dataError(new BadDataReport("Could not find map",mapId,null));
       }
     }
     final Point newPos = new Point(st.nextInt(0), st.nextInt(0));

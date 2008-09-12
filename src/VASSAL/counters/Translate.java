@@ -210,7 +210,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       }
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport("'"+dist+"', '"+index+"', and '"+offset+"' are not all numbers",e));      
+      ErrorDialog.dataError(new BadDataReport("Not all numbers",dist+","+index+","+offset,e));      
     }
     
     dist = yDist.getText(outer);
@@ -223,7 +223,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       }
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport("'"+dist+"', '"+index+"', and '"+offset+"' are not all numbers",e));      
+      ErrorDialog.dataError(new BadDataReport("Not all numbers",dist+","+index+","+offset,e));      
     }
     
     p.translate(x, -y);

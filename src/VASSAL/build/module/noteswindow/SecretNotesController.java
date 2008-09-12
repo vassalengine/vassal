@@ -133,7 +133,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
           date = INTERNAL_DATE_FORMATTER.parse(formattedDate);
         }
         catch (ParseException e) {
-          ErrorDialog.dataError(new BadDataReport("Illegal date format:  "+formattedDate,e));
+          ErrorDialog.dataError(new BadDataReport("Illegal date format",formattedDate,e));
         }
       }
 

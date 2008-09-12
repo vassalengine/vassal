@@ -417,7 +417,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport("'"+val+"' is not a number",e));
+      ErrorDialog.dataError(new BadDataReport("Not a number",val,e));
     }
     return;
   }
@@ -526,7 +526,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           setActive(level > 0);
         }
         catch (NumberFormatException e) {
-          ErrorDialog.dataError(new BadDataReport("'"+resetLevel.getText(Decorator.getOutermost(this))+"' is not a number",e));
+          ErrorDialog.dataError(new BadDataReport("Not a number",resetLevel.getText(Decorator.getOutermost(this)),e));
         }
       }
       // random layers

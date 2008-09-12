@@ -26,6 +26,7 @@ import java.io.IOException;
 import VASSAL.i18n.Resources;
 
 /**
+ * Utility class for reporting an IOException reading from the local system or a resource bundled with the VASSAL engine
  * @author Joel Uckelman
  * @since 3.1.0
  */

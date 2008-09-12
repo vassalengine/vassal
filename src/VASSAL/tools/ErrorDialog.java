@@ -56,6 +56,8 @@ public class ErrorDialog {
 
   private static final Set<Object> disabled =
     Collections.synchronizedSet(new HashSet<Object>());
+  
+  private static final Set<String> reportedDataErrors = Collections.synchronizedSet(new HashSet<String>());
 
   public static boolean isDisabled(Object key) {
     return disabled.contains(key);
@@ -320,7 +322,17 @@ public class ErrorDialog {
   }
   
   public static void dataError(BadDataReport e) {
-    System.err.println(e.getMessage());
+    if (!reportedDataErrors.contains(e.getData())) {
+      reportedDataErrors.add(e.getData());
+      // When playing a module, send a warning to the controls window
+      if (GameModule.getGameModule().getArchiveWriter() == null) {
+        GameModule.getGameModule().warn(Resources.getString("Error.data_error_message")+":  "+e.getData());        
+      }
+      // If editing, show a warning dialog
+      else {
+        warning(Resources.getString("Error.data_error"), Resources.getString("Error.data_error_message"), (Object)e.getData(),e.getMessage()+":  "+e.getData());
+      }
+    }
   }
 
   public static void show(

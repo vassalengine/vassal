@@ -22,10 +22,10 @@ package VASSAL.tools.imageop;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorUtils;
-import VASSAL.tools.ReadErrorDialog;
 
 /**
  * @author Joel Uckelman
@@ -40,8 +40,8 @@ public class OpErrorDialog {
     if (ioe != null) {
       for (ImageOp src = op; src != null; src = src.getSource()) {
         if (src instanceof SourceOp) {
-          // we had a file read error
-          ReadErrorDialog.error(e, ioe, ((SourceOp) src).getName());
+          // Failed to find this image in the module
+          ErrorDialog.dataError(new BadDataReport("Image not found",((SourceOp) src).getName(),ioe));
           return;
         }
       }
