@@ -101,11 +101,14 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
       setBoard(null);
     }
     else {
-      Board b = picker.getLocalizedBoard((String) boards.getSelectedItem());
-      if (picker.getBoardsFromControls().contains(b)) {
-        b = b.copy();
+      String selectedBoard = (String) boards.getSelectedItem();
+      if (selectedBoard != null) {
+        Board b = picker.getLocalizedBoard(selectedBoard);
+        if (picker.getBoardsFromControls().contains(b)) {
+          b = b.copy();
+        }
+        setBoard(b);
       }
-      setBoard(b);
     }
   }
 

@@ -109,11 +109,13 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   public String getLocalizedName() {
-    return getLocalizedConfigureName();
+    String s = getLocalizedConfigureName();
+    return s != null ? s : " ";
   }
   
   public String getName() {
-    return getConfigureName();
+    String s = getConfigureName();
+    return s != null ? s : " ";
   }
 
   public void addTo(Buildable b) {

@@ -461,12 +461,6 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
           }
         }
       }
-
-      if ((currentBoards == null || currentBoards.size() == 0) &&
-            possibleBoards.size() > 0) {
-        selectBoards(GameModule.getGameModule().getFrame());
-      }
-
       map.setBoards(getSelectedBoards());
     }
     else {
