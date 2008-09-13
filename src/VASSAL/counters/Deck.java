@@ -52,6 +52,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
@@ -68,6 +69,7 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.KeyStrokeListener;
@@ -748,8 +750,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     if (!"null".equals(mapId)) { //$NON-NLS-1$
       m = Map.getMapById(mapId);
       if (m == null) {
-        throw new IllegalStateException(
-          Resources.getString("Deck.could_not_find", mapId)); //$NON-NLS-1$
+        ErrorDialog.dataError(new BadDataReport("No such map",mapId,null));
       }
     }
 
