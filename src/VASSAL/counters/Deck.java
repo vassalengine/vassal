@@ -344,7 +344,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       shuffleListener = new KeyStrokeListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           GameModule.getGameModule().sendAndLog(shuffle());
-          map.repaint();
+          repaintMap();
         }
       });
       GameModule.getGameModule().addKeyStrokeListener(shuffleListener);
@@ -355,7 +355,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       reshuffleListener = new KeyStrokeListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           GameModule.getGameModule().sendAndLog(sendToDeck());
-          map.repaint();
+          repaintMap();
         }
       });
       GameModule.getGameModule().addKeyStrokeListener(reshuffleListener);
@@ -929,7 +929,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           public void actionPerformed(ActionEvent e) {
             GameModule.getGameModule().sendAndLog(shuffle());
-            map.repaint();
+            repaintMap();
           }
         };
         l.add(c);
@@ -940,7 +940,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           public void actionPerformed(ActionEvent evt) {
             GameModule.getGameModule().sendAndLog(sendToDeck());
-            map.repaint();
+            repaintMap();
           }
         };
         l.add(c);
@@ -952,7 +952,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           public void actionPerformed(ActionEvent e) {
             Command c = setContentsFaceDown(!faceDown);
             GameModule.getGameModule().sendAndLog(c);
-            map.repaint();
+            repaintMap();
           }
         };
         l.add(faceDownAction);
@@ -964,7 +964,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           public void actionPerformed(ActionEvent e) {
             Command c = reverse();
             GameModule.getGameModule().sendAndLog(c);
-            map.repaint();
+            repaintMap();
           }
         };
         l.add(c);
@@ -985,7 +985,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           public void actionPerformed(ActionEvent e) {
             promptForNextDraw();
-            map.repaint();
+            repaintMap();
           }
         };
         l.add(c);
@@ -996,7 +996,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           public void actionPerformed(ActionEvent e) {
             GameModule.getGameModule().sendAndLog(saveDeck());
-            map.repaint();
+            repaintMap();
           }
         };
         l.add(c);
@@ -1005,7 +1005,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
           public void actionPerformed(ActionEvent e) {
             GameModule.getGameModule().sendAndLog(loadDeck());
-            map.repaint();
+            repaintMap();
           }
         };
         l.add(c);
@@ -1430,5 +1430,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public String getSelectSortProperty() {
     return selectSortProperty;
+  }
+
+  public void repaintMap() {
+    if (map != null) {
+      map.repaint();
+    }
   }
 }
