@@ -231,7 +231,8 @@ public class Footprint extends MovementMarkable {
   public void setMoved(boolean justMoved) {
     if (justMoved) {
       recordCurrentPosition();
-      startMapId = getMap().getId();
+      Map map = getMap();
+      startMapId = map != null ? map.getId() : null;
     }
     else {
       clearTrail();
