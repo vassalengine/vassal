@@ -47,7 +47,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   protected final int hash;
   
   /** The zip file from which the image will be loaded */
-  protected DataArchive archive;
+  protected final DataArchive archive;
 
   /**
    * Constructs an <code>ImageOp</code> which will load the given file.

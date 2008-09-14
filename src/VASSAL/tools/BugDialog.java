@@ -80,6 +80,7 @@ public class BugDialog {
     header.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
 
     final FlowLabel notice = new FlowLabel("VASSAL had an internal error. Because this beta version of VASSAL is more than 30 days old, bug reporting is disabled. If you can reproduce this bug with a current verision of VASSAL, please do so and alert the VASSAL developers to the problem.");
+    notice.setEditable(false);
 
     // prevents FlowLabel from being a single line
     // FIXME: why is this necessary?

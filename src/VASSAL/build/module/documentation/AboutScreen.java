@@ -86,9 +86,10 @@ public class AboutScreen extends AbstractConfigurable {
     if (window == null) {
       initComponents();
     }
-
-    window.setVisible(true);
-    window.toFront();
+    if (window != null) { // Null means no image specified 
+      window.setVisible(true);
+      window.toFront();
+    }
   }
 
   protected void initComponents() {
@@ -190,7 +191,7 @@ public class AboutScreen extends AbstractConfigurable {
       title = (String) val;
 
       // don't permit "About VASSAL"
-      if (title.equals(Resources.getString("AboutScreen.about_vassal"))) {
+      if (title != null && title.equals(Resources.getString("AboutScreen.about_vassal"))) {
         title = Resources.getString("Documentation.about_module");
       } 
 
@@ -239,11 +240,6 @@ public class AboutScreen extends AbstractConfigurable {
    */
   public void addTo(Buildable b) {
     MenuManager.getInstance().addAction("Documentation.about_module", launch);
-
-    if (op == null) {
-      // use the VASSAL about image in case there is no image given
-      op = Op.load("/images/Splash.png");
-    }
   }
 
   public HelpFile getHelpFile() {
