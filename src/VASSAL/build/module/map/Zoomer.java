@@ -247,7 +247,9 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
     ActionListener zoomPick = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
+        if (zoomPickButton.isShowing()) {
+          zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
+        }
       } 
     };
 
