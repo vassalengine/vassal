@@ -136,7 +136,7 @@ public class ErrorDialog {
               try {
                 SwingUtilities.invokeAndWait(new Runnable() {
                   public void run() {
-                    BugDialog.reportABug();
+                    BugDialog.reportABug(((Bug)o).t);
                   }
                 });
               }
@@ -176,51 +176,6 @@ public class ErrorDialog {
     
     queue.add(new Bug(t));
 
-/*
-    // otherwise determine (i.e., guess) who to blame for the bug
-    for (StackTraceElement trace : t.getStackTrace()) {
-      final String cn = trace.getClassName();
-      final String loc = ErrorDialog.class.getResource(cn);
-      
-      if (loc.contains("/rt.jar!/") ||    // Java runtime
-          loc.contains("/jce.jar!/") ||   // javax.crypto
-      
-
-        // are we a JRE class?
-
-      }
-    }
- 
-
-// FIXME: not right. We need to start at the deepest point and work
-// our way up until we find a non-JDK class. We can find where a class
-// came from using  getResource("classname").getFile().
-
-    if (trace.length == 0 || trace[0].getClassName().startsWith("VASSAL.")) {
-      // it's our fault
-      BugDialog.reportABug();
-    }
-    else {
-      // it's the module's fault
-      BugDialog.reportABug();
-    }
-*/
-
-/*
-    // determine whether an OutOfMemoryError is in our causal chain
-    for (Throwable cause = t; cause != null; cause = cause.getCause()) {
-      if (t instanceof OutOfMemoryError) {
-        ErrorDialog.error(
-          Resources.getString("Error.out_of_memory"),
-          Resources.getString("Error.out_of_memory"),
-          Resources.getString("Error.out_of_memory_message")
-        );
-        return;
-      }
-    }
-
-    BugDialog.reportABug();
-*/
   }
 
   public static void error(

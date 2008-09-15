@@ -47,6 +47,7 @@ import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
 import VASSAL.Info;
+import VASSAL.build.GameModule;
 import VASSAL.tools.swing.FlowLabel;
 
 /**
@@ -58,21 +59,36 @@ public class BugDialog {
   private static final long serialVersionUID = 1L;
   private static boolean bugReportingDisabled;
 
-  public static void reportABug() {
-/*
-    reportABug(GameModule.getGameModule() == null
-      ? null : GameModule.getGameModule().getFrame());
-*/
-// FIXME: do something to find our top-level frame
-
+  public static void reportABug(Throwable t) {
     final GregorianCalendar expiry = new GregorianCalendar(2008, 8, 5);
     final GregorianCalendar now = new GregorianCalendar();
 
-    if (now.after(expiry)) oldReportABug(null);
-    else reportABug(null);
+    Frame f = GameModule.getGameModule() == null ? null : GameModule.getGameModule().getFrame();
+    if (now.after(expiry)) oldReportABug(f,t);
+    else reportABug(f,t);
+  }
+  
+  private static String getSummary(Throwable t) {
+    String summary;
+    if (t == null) {
+      summary = "Automated bug report #" + System.currentTimeMillis() + "\n";
+    }
+    else {
+      summary=t.getClass().getName().substring(t.getClass().getName().lastIndexOf('.')+1);
+      if (t.getMessage() != null) {
+        summary += ": "+t.getMessage();
+      }
+      for (StackTraceElement e : t.getStackTrace()) {
+        if (e.getClassName().startsWith("VASSAL")) {
+          summary += " at "+e.getClassName()+"."+e.getMethodName()+" (line "+e.getLineNumber()+")";
+          break;
+        }
+      }
+    }
+    return summary;
   }
 
-  public static void oldReportABug(Frame parent) {
+  public static void oldReportABug(Frame parent, Throwable t) {
     final JDialog dialog;
 
     final JLabel header = new JLabel("Congratulations! You've found a bug.");
@@ -178,7 +194,7 @@ public class BugDialog {
     dialog.setVisible(true);
   }
 
-  public static void reportABug(Frame parent) {
+  public static void reportABug(Frame parent, Throwable t) {
     if (bugReportingDisabled) {
       return;
     }
@@ -318,7 +334,7 @@ public class BugDialog {
 
     final Object selected = opt.getValue();
     if (buttons[0].equals(selected)) {
-      sendBugReport(email.getText(), description.getText(), errorLog);
+      sendBugReport(email.getText(), description.getText(), errorLog, t);
     }
     else if (buttons[2].equals(selected)) {
       bugReportingDisabled=true;
@@ -327,9 +343,10 @@ public class BugDialog {
 
   private static void sendBugReport(String email,
                                     String description,
-                                    String errorLog) {
+                                    String errorLog,
+                                    Throwable t) {
     final long time = System.currentTimeMillis();
-    final String summary = "Automated bug report #" + time + "\n";
+    final String summary = getSummary(t);
 
     final String boundary = "---------------------------" +
                             Long.toString(time, 16);
@@ -461,8 +478,8 @@ public class BugDialog {
     d.pack();
     d.setVisible(true);
 */
-    oldReportABug(null);
-    reportABug();
+    oldReportABug(null,null);
+    reportABug(null);
     System.exit(0);
   }
 
