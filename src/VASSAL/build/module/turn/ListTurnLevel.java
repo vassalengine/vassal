@@ -120,8 +120,8 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     first = sd.nextInt(0);
 
     String[] s = sd.nextStringArray(0);
-    active = new boolean[s.length];
-    for (int i = 0; i < s.length; i++) {
+    active = new boolean[list.length];
+    for (int i = 0; i < Math.min(s.length,active.length); i++) {
       active[i] = s[i].equals("true"); //$NON-NLS-1$
     }
     for (int i = 0; i < getTurnLevelCount(); i++) {
