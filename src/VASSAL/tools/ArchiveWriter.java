@@ -44,6 +44,7 @@ import VASSAL.launch.Launcher;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.imageop.Op;
 
 /**
  * An ArchiveWriter is a writeable DataArchive. New files may be added
@@ -138,6 +139,7 @@ public class ArchiveWriter extends DataArchive {
       files.put(imageDir + name, path);
     }
 
+    Op.load(name).update();
     localImages = null;
   }
 
@@ -147,8 +149,8 @@ public class ArchiveWriter extends DataArchive {
     localImages = null;
   } 
   
-  public void addSound(String file, String name) {
-    files.put(soundDir + name, file);
+  public void addSound(String path, String fileName) {
+    addFile(path, soundDir + fileName);
   }
 
   public boolean isImageAdded(String name) {

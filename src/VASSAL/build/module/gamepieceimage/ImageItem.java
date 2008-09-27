@@ -29,6 +29,8 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.StringEnum;
@@ -129,7 +131,7 @@ public class ImageItem extends Item {
       return imageName;
     }  
     else if (SOURCE.equals(key)) {
-      return imageSource + ""; //$NON-NLS-1$
+      return imageSource;
     }
     else {
       return super.getAttributeValueString(key);
@@ -278,6 +280,10 @@ public class ImageItem extends Item {
       return null;
     }
 
+    public List<VASSAL.tools.opcache.Op<?>> depends() {
+      return Collections.emptyList();
+    }
+
     // NB: This ImageOp doesn't need custom equals() or hashCode()
     // because it's a singleton.
   }
@@ -296,8 +302,8 @@ public class ImageItem extends Item {
   public String encode() {
     final SequenceEncoder se1 = new SequenceEncoder(TYPE, ';');
     
-    se1.append(imageName+"")    //$NON-NLS-1$
-       .append(imageSource+""); //$NON-NLS-1$
+    se1.append(imageName)
+       .append(imageSource);
    
     final SequenceEncoder se2 = new SequenceEncoder(se1.getValue(), '|');
     se2.append(super.encode());

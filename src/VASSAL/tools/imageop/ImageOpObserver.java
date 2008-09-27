@@ -19,6 +19,10 @@
 
 package VASSAL.tools.imageop;
 
+import java.awt.Image;
+
+import VASSAL.tools.opcache.OpObserver;
+
 /**
  * <code>ImageOpObserver</code>s can be notified on the completion
  * of an <code>ImageOp</code>.
@@ -35,7 +39,7 @@ package VASSAL.tools.imageop;
  * @author Joel Uckelman
  * @see VASSAL.tools.imageop.Repainter
  */
-public interface ImageOpObserver {
+public interface ImageOpObserver extends OpObserver<Image> {
   /**
    * Called when the <code>ImageOp</code> under observation completes.
    *

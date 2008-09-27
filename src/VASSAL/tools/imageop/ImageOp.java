@@ -27,7 +27,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public interface ImageOp {
+public interface ImageOp extends VASSAL.tools.opcache.Op<Image> {
   public ImageOp getSource();
 
   public Image apply() throws Exception;
@@ -67,6 +67,10 @@ public interface ImageOp {
 
   public Future<Image> getFutureTile(int tileX, int tileY, ImageOpObserver obs)
     throws ExecutionException;
+
+  public ImageOp getTileOp(Point p); 
+
+  public ImageOp getTileOp(int tileX, int tileY);
 
   public Point[] getTileIndices(Rectangle rect);
 }

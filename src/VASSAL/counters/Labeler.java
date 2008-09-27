@@ -33,6 +33,8 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -377,7 +379,10 @@ public class Labeler extends Decorator implements TranslatablePiece {
              HashCode.hash(bg);
     }
 
-// FIXME: not implementing asynchronicity; maybe no point, here.
+    public List<VASSAL.tools.opcache.Op<?>> depends() {
+      return Collections.emptyList();
+    }
+
     public Image apply() throws Exception {
       if (size == null) fixSize();
  

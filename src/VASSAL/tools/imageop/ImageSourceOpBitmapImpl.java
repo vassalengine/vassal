@@ -21,6 +21,10 @@ package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.util.Collections;
+import java.util.List;
+
+import VASSAL.tools.opcache.Op;
 
 /**
  * An {@link ImageOp} which uses a fixed image as its source.
@@ -48,6 +52,10 @@ public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
     if (image == null) throw new IllegalArgumentException();
     this.image = image;
     hash = image.hashCode();
+  }
+
+  public List<Op<?>> depends() {
+    return Collections.emptyList();
   }
 
   /** {@inheritDoc} */

@@ -36,7 +36,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.KeyStroke;
 
@@ -327,6 +329,10 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     @Override
     public int getHeight() {
       return 2;
+    }
+
+    public List<VASSAL.tools.opcache.Op<?>> depends() {
+      return Collections.emptyList();
     }
 
     public ImageOp getSource() {

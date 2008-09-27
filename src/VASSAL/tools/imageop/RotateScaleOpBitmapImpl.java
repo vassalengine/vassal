@@ -23,9 +23,12 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.List;
 
 import VASSAL.tools.HashCode;
 import VASSAL.tools.ImageUtils;
+import VASSAL.tools.opcache.Op;
 
 /**
  * An {@link ImageOp} which rotates and scales its source. Rotation
@@ -82,6 +85,10 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
            HashCode.hash(angle) ^
            HashCode.hash(hints) ^
            HashCode.hash(sop);
+  }
+
+  public List<VASSAL.tools.opcache.Op<?>> depends() {
+    return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 
   /**

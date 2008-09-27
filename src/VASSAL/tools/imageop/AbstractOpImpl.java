@@ -24,18 +24,11 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
-import org.jdesktop.swingworker.SwingWorker;
-
-import VASSAL.tools.ConcurrentSoftHashMap;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ThreadManager;
+import VASSAL.tools.opcache.OpCache;
 
 /**
  * An abstract representation of an operation which may be applied to an
@@ -58,177 +51,21 @@ import VASSAL.tools.ThreadManager;
  * @since 3.1.0
  * @author Joel Uckelman
  */
-public abstract class AbstractOpImpl implements ImageOp {
+public abstract class AbstractOpImpl
+  extends VASSAL.tools.opcache.AbstractOpImpl<Image> implements ImageOp {
+
   /** The cached size of this operation's resulting <code>Image</code>. */
   protected Dimension size;
 
   /** The cache which contains calculated <code>Image</code>s. */
-  protected static final ConcurrentMap<ImageOp,Future<Image>> cache =
-    new ConcurrentSoftHashMap<ImageOp,Future<Image>>();
-
-// NOTE: How to handle cancellation? In order to tell whether a Future
-// can be cancelled, we need to know how many times it's been retrieved
-// from the cache and handed out. We can do that by keeping count of
-// how many times that happens. Everytime cancel() is called, we decrement
-// the count. Once the count goes to 0, we can really cancel the request.
-// Whenever we cancel a request, we should reduce the count for any
-// requests it depends on, as well. (How to find those?)
-
-  private static final Future<Image> failure = new Future<Image>() {
-    public boolean cancel(boolean mayInterruptIfRunning) {
-      return false;
-    }
-
-    public Image get() {
-      return null;
-    }
-
-    public Image get(long timeout, TimeUnit unit) {
-      return null;
-    }
-
-    public boolean isCancelled() {
-      return false;
-    }
-
-    public boolean isDone() {
-      return true;
-    }
-  };
-
-  private static final class Waiter implements Future<Image> {
-    private Image im = null;
-    private boolean done = false;  
- 
-    private static final long serialVersionUID = 1L;
- 
-    private final Sync sync =  new Sync();
-  
-    public Waiter() {
-      sync.acquire(1);
-    }
-  
-    public void set(Image im) {
-      this.im = im;
-      this.done = true;
-      sync.release(1);
-    }
-  
-  // FIXME: properly implement cancel, isCancelled, isDone, timeout get 
-    public boolean cancel(boolean mayInterruptIfRunning) {
-      return false;
-    }
-  
-    public boolean isCancelled() {
-      return false;
-    }
-  
-    public boolean isDone() {
-      return done;
-    }
-  
-    public Image get() throws InterruptedException, ExecutionException {
-      sync.acquireShared(0);
-      try {
-        return im;
-      }
-      finally {
-        sync.releaseShared(0);
-      }
-    }
-  
-  // FIXME: is this correct? 
-    public Image get(long timeout, TimeUnit unit)
-      throws InterruptedException, ExecutionException, TimeoutException {
-      if (sync.tryAcquireSharedNanos(0, unit.toNanos(timeout))) {
-        try {
-          return im;
-        }
-        finally {
-          sync.releaseShared(0);
-        }
-      }
-      throw new TimeoutException();
-    }
-   
-    private static class Sync extends AbstractQueuedSynchronizer {
-      private static final long serialVersionUID = 1L;
-
-      protected boolean tryAcquire(int acquires) {
-        if (compareAndSetState(0,1)) {
-// FIXME: reinstate this once we move to 1.6+.
-//          setExclusiveOwnerThread(Thread.currentThread());
-          return true;
-        }
-        return false;
-      }
-  
-      protected boolean tryRelease(int releases) {
-        if (getState() == 0) throw new IllegalMonitorStateException();
-// FIXME: reinstate this once we move to 1.6+.
-//        setExclusiveOwnerThread(null);
-        setState(0);
-        return true;
-      }
-  
-      protected int tryAcquireShared(int acquires) {
-        return getState() == 0 ? 1 : -1;
-      }
-  
-      protected boolean tryReleaseShared(int releases) {
-        return getState() == 0;
-      }
-    }
-  }
-
-  private static final class Request extends SwingWorker<Image,Void> {
-    private final ImageOp op;
-    private final ImageOpObserver obs;
-    
-    public Request(ImageOp op, ImageOpObserver obs) {
-      if (op == null) throw new IllegalArgumentException();
-      if (obs == null) throw new IllegalArgumentException();
-
-      this.op = op;
-      this.obs = obs;
-    }
-
-    @Override
-    protected Image doInBackground() throws Exception {
-      return op.apply();
-    }
-
-    @Override
-    protected void done() {
-      // We catch get() exceptions here to handle the case where this
-      // Request was returned by getFutureImage() or getFutureTile().
-
-      try {
-        get();
-        obs.imageOpChange(op, true);
-      }
-      catch (CancellationException e) {
-        // FIXME: should not call bug once we implement cancellation
-        ErrorDialog.bug(e);
-        cache.remove(op, this);
-        obs.imageOpChange(op, false);
-      }
-      catch (InterruptedException e) {
-        ErrorDialog.bug(e);
-        cache.remove(op, this);
-        obs.imageOpChange(op, false);
-      }
-      catch (ExecutionException e) {
-        OpErrorDialog.error(e, op);
-        cache.replace(op, this, failure);
-        obs.imageOpChange(op, false);
-      }
-      // System.out.println("finishing, async: " + op);
-    }
-  }
+  protected static final OpCache cache = new OpCache();
 
   public static void clearCache() {
     cache.clear();  
+  }
+
+  public AbstractOpImpl() {
+    super(cache);
   }
 
   /**
@@ -241,6 +78,10 @@ public abstract class AbstractOpImpl implements ImageOp {
    * could be anything, so any exception may be thrown.
    */
   public abstract Image apply() throws Exception;
+
+  public Image eval() throws Exception {
+    return apply();
+  }
 
   /**
    * Calculates the <code>Image</code> produced by this operation. Calls
@@ -301,161 +142,11 @@ public abstract class AbstractOpImpl implements ImageOp {
    * @see #getFutureTile
    * @see #getFutureImage
    */
-  public Image getImage(ImageOpObserver obs)
-    throws CancellationException, InterruptedException, ExecutionException {
-    // The code in this method was inspired by the article at
-    // http://www.javaspecialists.eu/archive/Issue125.html.
-
-    Future<Image> fim = cache.get(this);
-
-    if (obs == null) {  // no observer, block on the op
-      // System.out.println("start, sync: " + this);
-      if (fim == null) {
-        // check whether any other op has beat us into the cache
-        final Waiter of = new Waiter();
-        fim = cache.putIfAbsent(this, of);
-
-        // if not, then apply the op
-        if (fim == null) {
-          Image im = null;
-          try {
-            im = apply();
-          }
-          catch (Exception e) {
-            // System.out.println("throwing, sync: " + this);
-            cache.put(this, failure);
-            throw new ExecutionException(e);
-          }
-          finally {
-            of.set(im); 
-          }
-
-          // System.out.println("finishing, sync: " + this);
-          return im;
-/*
-          catch (Exception e) {
-System.out.println("throwing, sync: " + this);
-            ErrorLog.log(e);
-//            cache.remove(this, of);
-            cache.put(this, failure);
-            ErrorDialog.raiseErrorDialog(e, e.getMessage());
-          }    
-
-// NOTE: if we make getImage throw, we need to have a finally block here
-// which includes:
-//         cache.put(this,failure);
-//         of.set(im);
-
-          of.set(im);
-          // System.out.println("finishing, sync: " + this);
-          return im;
-*/
-        }
-      }
-
-      // the image already has a future, so block on it
-      try {
-        return fim.get();
-        /*
-          System.out.println("blocking: " + this);
-          final Image im = fim.get();
-          System.out.println("finishing, sync: " + this);
-          return im;
-        */
-      }
-      catch (CancellationException e) {
-        cache.remove(this, fim);
-        throw e;
-      }
-      catch (InterruptedException e) {
-        cache.remove(this, fim);
-        throw e;
-      }
-      catch (ExecutionException e) {
-        cache.replace(this, fim, failure);
-        throw e;
-      }
-
-//      return null;
-/*
-      catch (CancellationException e) {
-System.out.println("throwing: " + this);
-        cache.remove(this, fim);
-        ErrorLog.log(e);
-      }
-      catch (InterruptedException e) {
-System.out.println("throwing: " + this);
-        cache.remove(this, fim);
-        ErrorLog.log(e);
-      }
-      catch (ExecutionException e) {
-System.out.println("throwing: " + this);
-//        cache.remove(this, fim);
-        ErrorLog.log(e);
-      }
-// NOTE: if we make getImage throw, we need to separate out the exceptions
-// in which fim should be removed, and rethrow those.
-
-      return null;
-*/
-    }
-    else {  // we have an observer, don't block on the op
-      // System.out.println("start, async: " + this);
-      if (fim == null) {
-        final Request req = new Request(this, obs);
-        fim = cache.putIfAbsent(this, req);
-
-        if (fim == null) {
-          // System.out.println("submitting: " + this);
-          ThreadManager.submit(req);
-          return null;
-// FIXME: what happens if req throws an exception internally?
-        }
-      }
-        
-      // check if the future is now
-      if (fim.isDone()) {
-        try {
-          return fim.get();
-        }
-        catch (CancellationException e) {
-          cache.remove(this, fim);
-          throw e;
-        }
-        catch (InterruptedException e) {
-          cache.remove(this, fim);
-          throw e;
-        }
-        catch (ExecutionException e) {
-          cache.replace(this, fim, failure);
-          throw e;
-        }
-
-/*
-        catch (CancellationException e) {
-System.out.println("throwing: " + this);
-          cache.remove(this, fim);
-          ErrorLog.log(e);
-        }
-        catch (InterruptedException e) {
-System.out.println("throwing: " + this);
-          cache.remove(this, fim);
-          ErrorLog.log(e);
-        }
-        catch (ExecutionException e) {
-System.out.println("throwing: " + this);
-//          cache.remove(this, fim);
-          cache.replace(this, fim, failure);
-          ErrorLog.log(e);
-        }
-*/
-      }
-// NOTE: if we make getImage throw, we need to separate out the exceptions
-// in which fim should be removed from the replace case, and rethrow all
-// of these.
-
-      return null;
-    }
+  public Image getImage(ImageOpObserver obs) throws CancellationException,
+                                                    InterruptedException,
+                                                    ExecutionException
+  {
+    return get(obs);
   }
 
   /**
@@ -487,60 +178,9 @@ System.out.println("throwing: " + this);
    * @see #getImage
    */
   public Future<Image> getFutureImage(ImageOpObserver obs)
-    throws ExecutionException {
+                                                    throws ExecutionException {
 
-    Future<Image> fim = cache.get(this);
-
-    if (obs == null) {  // no observer
-      // System.out.println("start, sync: " + this);
-      if (fim == null) {
-        // check whether any other op has beat us into the cache
-        final Waiter of = new Waiter();
-        fim = cache.putIfAbsent(this, of);
-
-        // if not, then apply the op
-        if (fim == null) {
-          Image im = null;
-          try {
-            im = apply();
-          }
-          catch (Exception e) {
-            cache.put(this, failure);
-            throw new ExecutionException(e);
-          }
-          finally {
-            of.set(im); 
-          }
-
-          fim = of;
-/*
-          catch (Exception e) {
-System.out.println("throwing, sync: " + this);
-            ErrorLog.log(e);
-            cache.put(this, failure);
-          }
-
-          of.set(im);
-          // System.out.println("finishing, sync: " + this);
-          fim = of;
-*/
-        }
-      }
-    }
-    else {  // we have an observer
-      // System.out.println("start, async: " + this);
-      if (fim == null) {
-        final Request req = new Request(this, obs);
-        fim = cache.putIfAbsent(this, req);
-
-        if (fim == null) {
-          // System.out.println("submitting: " + this);
-          fim = ThreadManager.submit(req);
-        }
-      }
-    }
-
-    return fim;       
+    return getFuture(obs);
   }
 
   /**
@@ -552,25 +192,9 @@ System.out.println("throwing, sync: " + this);
    * <code>null</code> if the <code>Image</code> isn't cached
    */
   protected Dimension getSizeFromCache() {
-    final Future<Image> fim = cache.get(this);
-    if (fim != null && fim.isDone()) {
-      try {
-        final Image im = fim.get();
-        return im == null ? new Dimension() :
-          new Dimension(im.getWidth(null), im.getHeight(null));
-      }
-      catch (CancellationException e) {
-        // FIXME: a bug until we permit cancellation
-        ErrorDialog.bug(e);
-      }
-      catch (InterruptedException e) {
-        ErrorDialog.bug(e);
-      }
-      catch (ExecutionException e) {
-        // ignore this, as this means that the size isn't cached
-      }
-    }
-    return null;    
+    final Image im = cache.getIfDone(newKey());
+    return im == null ? null :
+      new Dimension(im.getWidth(null), im.getHeight(null));
   }
 
   /**
@@ -587,6 +211,7 @@ System.out.println("throwing, sync: " + this);
    * @return the size of the resulting <code>Image</code> in pixels
    * @see #getHeight
    * @see #getWidth
+   * iii
    */
   public Dimension getSize() {
     if (size == null) fixSize();
@@ -770,6 +395,12 @@ System.out.println("throwing, sync: " + this);
   public abstract Future<Image> getFutureTile(int tileX, int tileY,
                                               ImageOpObserver obs)
     throws ExecutionException;
+
+  public ImageOp getTileOp(Point p) {
+    return getTileOp(p.x, p.y);
+  }
+
+  public abstract ImageOp getTileOp(int tileX, int tileY);
 
   /**
    * Returns an array of <code>Point</code>s representing the tiles

@@ -23,6 +23,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
@@ -87,6 +89,10 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     }
 
     return null;
+  }
+
+  public List<VASSAL.tools.opcache.Op<?>> depends() {
+    return Collections.emptyList();
   }
 
   /**

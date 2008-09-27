@@ -25,6 +25,8 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.util.Collections;
+import java.util.List;
 
 import VASSAL.tools.GeneralFilter;
 import VASSAL.tools.HashCode;
@@ -82,6 +84,10 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
            HashCode.hash(sop);
   }
 
+  public List<VASSAL.tools.opcache.Op<?>> depends() {
+    return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
+  }
+
   /**
    * {@inheritDoc}
    *
@@ -132,7 +138,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
            tileY < 0 || tileY >= rop.getNumYTiles())
          throw new IndexOutOfBoundsException();
  
-      this.sop = rop.getSource();
+      sop = rop.getSource();
  
       scale = rop.getScale();
       hints = rop.getHints();
@@ -162,6 +168,10 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     private static final BufferedImage NULL_IMAGE =
       new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB); 
 
+    public List<VASSAL.tools.opcache.Op<?>> depends() {
+      return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
+    }
+
     public Image apply() throws Exception {
       if (dw < 1 || dh < 1) return NULL_IMAGE;
  
@@ -185,7 +195,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
       return new BufferedImage(src.getColorModel(),
         dstR.createWritableTranslatedChild(0,0), false, null);
     }
- 
+
     protected void fixSize() { }
  
     public ImageOp getSource() {

@@ -23,6 +23,8 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.io.BufferedInputStream;
+import java.util.Collections;
+import java.util.List;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
@@ -85,6 +87,10 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
            HashCode.hash(angle) ^
            HashCode.hash(hints) ^
            HashCode.hash(sop);
+  }
+
+  public List<VASSAL.tools.opcache.Op<?>> depends() {
+    return Collections.emptyList();
   }
 
   /**

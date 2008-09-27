@@ -23,6 +23,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
@@ -31,6 +33,7 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.SVGRenderer;
+import VASSAL.tools.opcache.Op;
 
 /**
  * An {@link ImageOp} for producing tiles directly from a source,
@@ -93,6 +96,10 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     }
 
     return null;
+  }
+
+  public List<Op<?>> depends() {
+    return Collections.emptyList();
   }
 
   public Image apply() throws Exception {

@@ -23,6 +23,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
@@ -31,6 +33,7 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.SVGRenderer;
+import VASSAL.tools.opcache.Op;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
@@ -86,6 +89,10 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
     }
 
     return null;
+  }
+
+  public List<Op<?>> depends() {
+    return Collections.emptyList();
   }
 
   /**

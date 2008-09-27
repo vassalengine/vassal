@@ -23,9 +23,16 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Properties;
+import VASSAL.tools.opcache.Op;
+import VASSAL.tools.opcache.OpObserver;
 
 /**
  * An {@link ImageOp} which uses a {@link GamePiece} as its source.
@@ -51,6 +58,28 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
     piece = gp;
     state = String.valueOf(piece.getProperty(Properties.VISIBLE_STATE));
     hash = piece.hashCode();
+  }
+
+// NB: GamePieceOpImpl CANNOT be called asynchronously becuase it cannot
+// reliably report on its dependencies.
+
+  @Override
+  public Image get(OpObserver<Image> obs) throws CancellationException,
+                                                 InterruptedException,
+                                                 ExecutionException {
+    if (obs != null) throw new UnsupportedOperationException();
+    return super.get(obs);
+  }
+
+  @Override
+  public Future<Image> getFuture(OpObserver<Image> obs)
+                                                  throws ExecutionException {
+    if (obs != null) throw new UnsupportedOperationException();
+    return super.getFuture(obs);
+  }
+
+  public List<Op<?>> depends() {
+    return Collections.emptyList();
   }
 
   /** {@inheritDoc} */

@@ -23,6 +23,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.List;
 
 import VASSAL.tools.HashCode;
 
@@ -67,6 +69,10 @@ public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
     result = PRIME * result + HashCode.hash(x1);
     result = PRIME * result + HashCode.hash(y1);
     hash = result;
+  }
+
+  public List<VASSAL.tools.opcache.Op<?>> depends() {
+    return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 
   public Image apply() throws Exception {

@@ -114,6 +114,14 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
     return getFutureImage(obs);
   }
 
+  public ImageOp getTileOp(int tileX, int tileY) {
+    // we are but a single humble tile
+    if (tileX != 0 || tileY != 0)
+      throw new IndexOutOfBoundsException();
+
+    return this;
+  }
+
   /**
    * {@inheritDoc}
    *

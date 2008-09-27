@@ -20,7 +20,13 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Component;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.opcache.Op;
 
 /**
  * An <code>ImageOpObserver</code> which repaints {@link Component}s.
@@ -102,5 +108,21 @@ public class Repainter implements ImageOpObserver {
     if (c != null && success) {
       c.repaint(x, y, w, h);
     }
+  }
+
+  public void succeeded(Op<Image> op, Image img) {
+    c.repaint(x, y, w, h);
+  }
+
+  public void cancelled(Op<Image> op, CancellationException e) {
+    ErrorDialog.bug(e);
+  }
+
+  public void interrupted(Op<Image> op, InterruptedException e) {
+    ErrorDialog.bug(e);
+  }
+
+  public void failed(Op<Image> op, ExecutionException e) {
+    OpErrorDialog.error(e, (ImageOp) op);
   }
 }

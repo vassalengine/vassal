@@ -82,7 +82,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
    *
    * @return the <code>ImageOp</code> for tile <code>(tileX,tileY)</code>
    */
-  protected ImageOp getTileOp(int tileX, int tileY) {
+  public ImageOp getTileOp(int tileX, int tileY) {
     ImageOp top = tiles[tileY*numXTiles + tileX];
     if (top == null) {
       top = tiles[tileY*numXTiles + tileX] = createTileOp(tileX, tileY);

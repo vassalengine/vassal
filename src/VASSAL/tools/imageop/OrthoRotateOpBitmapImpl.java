@@ -24,6 +24,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.List;
 
 import VASSAL.tools.HashCode;
 import VASSAL.tools.ImageUtils;
@@ -46,6 +48,10 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     this.angle = angle / 90;
 
     hash = HashCode.hash(sop) ^ HashCode.hash(angle);
+  }
+
+  public List<VASSAL.tools.opcache.Op<?>> depends() {
+    return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 
   public Image apply() throws Exception {
@@ -88,7 +94,8 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
   }
 
   public RenderingHints getHints() {
-    return ImageUtils.getDefaultHints();
+//    return ImageUtils.getDefaultHints();
+    return null;
   }
 
   protected ImageOp createTileOp(int tileX, int tileY) {
@@ -147,9 +154,13 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
 
       size = new Dimension(sx1-sx0, sy1-sy0);
 
-      this.sop = new CropOpBitmapImpl(rop.sop, sx0, sy0, sx1, sy1);
+      sop = new CropOpBitmapImpl(rop.sop, sx0, sy0, sx1, sy1);
                             
       hash = HashCode.hash(sop) ^ HashCode.hash(angle);
+    }
+
+    public List<VASSAL.tools.opcache.Op<?>> depends() {
+      return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
     }
 
     public Image apply() throws Exception {

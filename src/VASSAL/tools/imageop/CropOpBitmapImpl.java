@@ -25,6 +25,9 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
 
 import VASSAL.tools.HashCode;
 
@@ -73,7 +76,16 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     hash = result;
   }
 
-// FIXME: make crop ask for tiles
+  public List<VASSAL.tools.opcache.Op<?>> depends() {
+    final ArrayList<VASSAL.tools.opcache.Op<?>> ops =
+      new ArrayList<VASSAL.tools.opcache.Op<?>>();
+
+    for (Point tile : sop.getTileIndices(new Rectangle(x0, y0, x1-x0, y1-y0))) {
+      ops.add(sop.getTileOp(tile));
+    }
+
+    return ops; 
+  }
 
   /**
    * {@inheritDoc}
@@ -91,7 +103,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
       new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
 
     final Graphics2D g = dst.createGraphics();
-    
+
     for (Point tile : tiles) {
       g.drawImage(sop.getTile(tile, null), tile.x*tw-x0, tile.y*th-y0, null);
     }
