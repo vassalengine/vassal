@@ -83,7 +83,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
   }
 
   /** {@inheritDoc} */
-  public Image apply() {
+  public Image eval() {
     final Rectangle b = piece.boundingBox();
     BufferedImage im = new BufferedImage(Math.max(b.width, 1),
                                          Math.max(b.height, 1),

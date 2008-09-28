@@ -93,7 +93,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
    *
    * @throws Exception passed up from the source <code>ImageOp</code>.
    */
-  public Image apply() throws Exception {
+  public Image eval() throws Exception {
 // FIXME: should not cast to BufferedImage without conversion first!
     return ImageUtils.transform(
       (BufferedImage) sop.getImage(null), scale, 0.0, hints);
@@ -172,7 +172,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
       return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
     }
 
-    public Image apply() throws Exception {
+    public Image eval() throws Exception {
       if (dw < 1 || dh < 1) return NULL_IMAGE;
  
       final BufferedImage src = (BufferedImage) sop.getImage(null);

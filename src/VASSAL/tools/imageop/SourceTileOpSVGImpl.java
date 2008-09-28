@@ -102,7 +102,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     return Collections.emptyList();
   }
 
-  public Image apply() throws Exception {
+  public Image eval() throws Exception {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
 

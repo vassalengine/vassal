@@ -69,9 +69,9 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   /**
    * {@inheritDoc}
    *
-   * @throws CancellationException if <code>obs</code> was cancelled
-   * @throws InterruptedException if <code>obs</code> was interrupted
-   * @throws ExecutionException if <code>obs</code> failed
+   * @throws CancellationException if the operation was cancelled
+   * @throws InterruptedException if the operation was interrupted
+   * @throws ExecutionException if the operation failed
    */
   public V get(OpObserver<V> obs) throws CancellationException,
                                          InterruptedException,
@@ -82,9 +82,9 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   /**
    * {@inheritDoc}
    *
-   * @throws CancellationException if <code>obs</code> was cancelled
-   * @throws InterruptedException if <code>obs</code> was interrupted
-   * @throws ExecutionException if <code>obs</code> failed
+   * @throws CancellationException if the operation was cancelled
+   * @throws InterruptedException if the operation was interrupted
+   * @throws ExecutionException if the operation failed
    */  
   public Future<V> getFuture(OpObserver<V> obs) throws ExecutionException {
     return cache.getFuture(newKey(), obs);

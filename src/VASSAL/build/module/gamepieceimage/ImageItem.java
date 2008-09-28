@@ -247,7 +247,7 @@ public class ImageItem extends Item {
 
     private static final BaseOp op = new BaseOp();
 
-    public Image apply() throws Exception {
+    public Image eval() throws Exception {
       final BufferedImage im =
         new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
       final Graphics2D bg = im.createGraphics();

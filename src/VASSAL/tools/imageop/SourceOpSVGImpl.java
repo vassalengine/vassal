@@ -100,7 +100,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    *
    * @throws IOException if the image cannot be loaded from the image file.
    */
-  public Image apply() throws IOException {
+  public Image eval() throws IOException {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
 
     final SVGRenderer renderer = new SVGRenderer(

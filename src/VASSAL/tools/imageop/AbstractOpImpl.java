@@ -68,30 +68,10 @@ public abstract class AbstractOpImpl
     super(cache);
   }
 
-  /**
-   * The image computation itself happens in this method.
-   *
-   * <p><b>Warning:</b> This method is not intended to be called from
-   * anywhere except {@link #getImage}.</p>
-   *
-   * @throws Exception The operation represented by this <code>ImageOp</code>
-   * could be anything, so any exception may be thrown.
-   */
-  public abstract Image apply() throws Exception;
+  /** {@inheritDoc} */
+  public abstract Image eval() throws Exception;
 
-  public Image eval() throws Exception {
-    return apply();
-  }
-
-  /**
-   * Calculates the <code>Image</code> produced by this operation. Calls
-   * to this method are memoized to prevent redundant computations.
-   *
-   * <p><b>Warning:</b> <code>Image</code>s returned by this method
-   * <em>must not</em> be modified.</p>
-   *
-   * @return the resulting <code>Image</code>
-   */
+  /** {@inheritDoc} */
   public Image getImage() {
     try {
       return getImage(null);
@@ -110,38 +90,7 @@ public abstract class AbstractOpImpl
     return null;
   }
 
-  /**
-   * Calculates the <code>Image</code> produced by this operation, and
-   * reports completion or failure to the specified
-   * <code>ImageOpObserver</code>. Calls to this method are memoized
-   * to prevent redundant computations. If a non-<code>null</code> observer
-   * is given, then the operation may be done asynchronously. If the
-   * observer is <code>null</code>, then this method will block on
-   * completion of the operation.
-   * 
-   * <p> When a non-blocking call is made (i.e., when
-   * <code>obs != null</code>), the cache is checked and if the image is
-   * found, it is returned immediately. If the image is already being
-   * calculated, <code>obs</code> is notified when the pre-existing request
-   * completes. Otherwise, a new request is queued and <code>obs</code> is
-   * notified when that completes.</p>
-   *
-   * <p>When a blocking call is made (i.e., when <code>obs == null</code>),
-   * the cache is checked and if the image is found, it is returned
-   * immediately. If the image is already being calculated, this method
-   * blocks on the completion of the existing calculation. Otherwise,
-   * a new calculation is started and this method blocks on it. In
-   * all cases, when a calculation is completed, the result is cached.</p>
-   * 
-   * <p><b>Warning:</b> <code>Image</code>s returned by this method
-   * <em>must not</em> be modified.</p>
-   *
-   * @param obs the observer to be notified on completion
-   * @return the resulting <code>Image</code>
-   * @see #getTile
-   * @see #getFutureTile
-   * @see #getFutureImage
-   */
+  /** {@inheritDoc} */
   public Image getImage(ImageOpObserver obs) throws CancellationException,
                                                     InterruptedException,
                                                     ExecutionException
@@ -149,34 +98,7 @@ public abstract class AbstractOpImpl
     return get(obs);
   }
 
-  /**
-   * Submits a request for the <code>Image</code> produced by this operation,
-   * and returns a reference to that request.
-   * 
-   * If a non-<code>null</code> observer is given, then the operation may
-   * be done asynchronously. If the observer is <code>null</code>, then
-   * this method will block on completion of the operation.
-   *
-   * <p>This implementaion uses a memory-sensitive cache to memoize
-   * calls to <code>getFutureImage</code>. It returns a
-   * {@code Future<Image>} so that the request may be cancelled if no
-   * longer needed.</p>
-   * 
-   *  <p><code>Future</code>s are returned immediately, except in the
-   * case where the is no observer and no pre-existing <code>Future</code>
-   * for this <code>ImageOp</code>'s <code>Image</code>, in which case
-   * this method blocks on completion of the computation.</p>
-   *
-   * <p><b>Warning:</b> <code>Image</code>s obtained from the
-   * <code>Future</code>s returned by this method <em>must not</em> be
-   * modified.</p>
-   *
-   * @param obs the observer to be notified on completion
-   * @return a <code>Future</code> for the resulting <code>Image</code>
-   * @see #getTile
-   * @see #getFutureTile
-   * @see #getImage
-   */
+  /** {@inheritDoc} */
   public Future<Image> getFutureImage(ImageOpObserver obs)
                                                     throws ExecutionException {
 
@@ -203,212 +125,68 @@ public abstract class AbstractOpImpl
    */
   protected abstract void fixSize();
 
-  /**
-   * Returns the size of the <code>Image</code> which would be returned
-   * by {@link #getImage}. The size is cached so that it need not be
-   * recalculated on each call.
-   *
-   * @return the size of the resulting <code>Image</code> in pixels
-   * @see #getHeight
-   * @see #getWidth
-   * iii
-   */
+  /** {@inheritDoc} */
   public Dimension getSize() {
     if (size == null) fixSize();
     return new Dimension(size);
   }
 
-  /**
-   * Returns the width of the <code>Image</code> which would be returned
-   * by {@link #getImage}. The width is cached so that it need not be
-   * recalculated on each call.
-   *
-   * @return the width of the resulting <code>Image</code> in pixels
-   * @see #getHeight
-   * @see #getSize
-   */
+  /** {@inheritDoc} */
   public int getWidth() {
     if (size == null) fixSize();
     return size.width;
   }
 
- /**
-   * Returns the height of the <code>Image</code> which would be returned
-   * by {@link #getImage}. The height is cached so that it need not be
-   * recalculated on each call.
-   *
-   * @return the height of the resulting <code>Image</code> in pixels
-   * @see #getWidth
-   * @see #getSize
-   */
+  /** {@inheritDoc} */
   public int getHeight() {
     if (size == null) fixSize();
     return size.height;
   }
 
-  /**
-   * Returns the standard size of the <code>Image</code> tiles which are
-   * returned by {@link #getTile}. Tiles which are in the extreme right
-   * column will not have full width if the <code>Image</code> width
-   * is not an integral multiple of the tile width. Similarly, tiles in
-   * the bottom row will not have full height if the <code>Image</code>
-   * height is not an integral multiple of the tile height.
-   *
-   * @return the size of <code>Image</code> tiles in pixels
-   * @see #getTileHeight
-   * @see #getTileWidth
-   */
+  /** {@inheritDoc} */
   public abstract Dimension getTileSize();
 
-  /**
-   * Returns the standard height of the <code>Image</code> tiles which are
-   * returned by {@link #getTile}.
-   *
-   * @return the height of <code>Image</code> tiles in pixels
-   * @see #getTileSize
-   * @see #getTileWidth
-   */
+  /** {@inheritDoc} */
   public abstract int getTileHeight();
 
-  /**
-   * Returns the standard width of the <code>Image</code> tiles which are
-   * returned by {@link #getTile}.
-   *
-   * @return the width of <code>Image</code> tiles in pixels
-   * @see #getTileSize
-   * @see #getTileHeight
-   */
+  /** {@inheritDoc} */
   public abstract int getTileWidth();
 
-  /**
-   * Returns the number of tiles along the x-axis. There will always be at
-   * least one column of tiles. The number of columns <em>should</em>
-   * equal <code>(int) Math.ceil((double) getWidth() / getTileWidth())</code>.
-   *
-   * @return the number of tiles along the x-axis
-   */
+  /** {@inheritDoc} */
   public abstract int getNumXTiles();
 
-  /**
-   * Returns the number of tiles along the y-axis. There will always be at
-   * least one row of tiles. The number of rows <em>should</em> equal
-   * <code>(int) Math.ceil((double) getHeight() / getTileHeight())</code>.
-   *
-   * @return the number of tiles along the y-axis
-   */
+  /** {@inheritDoc} */
   public abstract int getNumYTiles();
 
-  /**
-   * Calculates tile <code>(p.x,p.y)</code>, and reports
-   * completion or failure to the specified <code>ImageOpObserver</code>.
-   * If a non-<code>null</code> observer is given, then the operation may
-   * be done asynchronously. If the observer is <code>null</code>, then
-   * this method will block on completion of the operation. Tiles are
-   * numbered from zero, so the tile in the upper-left corner of the main
-   * <code>Image</code> is <code>(0,0)</code>. Note that <code>p.x</code>
-   * and <code>p.y</code> are indices into the tile array, not pixel
-   * locations.
-   *
-   * <p>This convenience method is equivalent to
-   * <code>getTile(p.x, p.y, obs)</code>.</p>
-   *
-   * <p><b>Warning:</b> <code>Image</code>s returned by this method
-   * <em>must not</em> be modified.</p>
-   *
-   * @param p the tile at position <code>(p.x,p.y)</code>
-   * @param obs the observer
-   * @return the resulting <code>Image</code>
-   */
+  /** {@inheritDoc} */
   public Image getTile(Point p, ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException {
     return getTile(p.x, p.y, obs);
   }
 
-  /**
-   * Calculates tile <code>(tileX,tileY)</code>, and reports
-   * completion or failure to the specified <code>ImageOpObserver</code>.
-   * If a non-<code>null</code> observer is given, then the operation may
-   * be done asynchronously. If the observer is <code>null</code>, then
-   * this method will block on completion of the operation. Tiles are
-   * numbered from zero, so the tile in the upper-left corner of the main
-   * <code>Image</code> is <code>(0,0)</code>. Note that <code>tileX</code>
-   * and <code>tileY</code> are indices into the tile array, not pixel
-   * locations.
-   *
-   * <p><b>Warning:</b> <code>Image</code>s returned by this method
-   * <em>must not</em> be modified.</p>
-   *
-   * @param tileX the x position of the requested tile
-   * @param tileY the y position of the requested tile
-   * @param obs the observer to be notified on completion
-   * @return the resulting <code>Image</code>
-   */
+  /** {@inheritDoc} */
   public abstract Image getTile(int tileX, int tileY, ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException;
 
-  /**
-   * Submits a request for tile <code>(tileX,tileY)</code>, and returns a
-   * reference to that request. If a non-<code>null</code> observer is given,
-   * then the operation may be done asynchronously. If the observer is
-   * <code>null</code>, then this method will block on completion of the
-   * operation. Tiles are numbered from zero, so the tile in the upper-left
-   * corner of the main <code>Image</code> is <code>(0,0)</code>. Note that
-   * <code>tileX</code> and <code>tileY</code> are indices into the tile
-   * array, not pixel locations.
-   * 
-   * <p>This convenience method is equivalent to
-   * <code>getFutureTile(p.x, p.y, obs)</code>.</p>
-   *
-   * <p><b>Warning:</b> <code>Image</code>s obtained from the
-   * <code>Future</code>s returned by this method <em>must not</em> be
-   * modified.</p>
-   *
-   * @param tileX the x position of the requested tile
-   * @param tileY the y position of the requested tile
-   * @param obs the observer to be notified on completion
-   * @return a <code>Future</code> for the resulting <code>Image</code>
-   */
+  /** {@inheritDoc} */
   public Future<Image> getFutureTile(Point p, ImageOpObserver obs)
     throws ExecutionException {
     return getFutureTile(p.x, p.y, obs);
   }
 
-  /**
-   * Submits a request for tile <code>(tileX,tileY)</code>, and returns a
-   * reference to that request. If a non-<code>null</code> observer is given,
-   * then the operation may be done asynchronously. If the observer is
-   * <code>null</code>, then this method will block on completion of the
-   * operation. Tiles are numbered from zero, so the tile in the upper-left
-   * corner of the main <code>Image</code> is <code>(0,0)</code>. Note that
-   * <code>tileX</code> and <code>tileY</code> are indices into the tile
-   * array, not pixel locations.
-   *
-   * <p><b>Warning:</b> <code>Image</code>s obtained from the
-   * <code>Future</code>s returned by this method <em>must not</em> be
-   * modified.</p>
-   *
-   * @param tileX the x position of the requested tile
-   * @param tileY the y position of the requested tile
-   * @param obs the observer to be notified on completion
-   * @return a <code>Future</code> for the resulting <code>Image</code>
-   */
+  /** {@inheritDoc} */
   public abstract Future<Image> getFutureTile(int tileX, int tileY,
                                               ImageOpObserver obs)
     throws ExecutionException;
 
+  /** {@inheritDoc} */
   public ImageOp getTileOp(Point p) {
     return getTileOp(p.x, p.y);
   }
 
+  /** {@inheritDoc} */
   public abstract ImageOp getTileOp(int tileX, int tileY);
 
-  /**
-   * Returns an array of <code>Point</code>s representing the tiles
-   * intersecting the given <code>Rectangle</code>. 
-   * 
-   * @param rect the rectangle
-   * @return the positions of the tiles hit by the rectangle
-   * @throws IllegalArgumentException if <code>rect == null</code>.
-   */
+  /** {@inheritDoc} */
   public abstract Point[] getTileIndices(Rectangle rect);
 }

@@ -92,7 +92,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
    *
    * @throws Exception passed up from the source <code>ImageOp</code>.
    * */
-  public Image apply() throws Exception {
+  public Image eval() throws Exception {
     // cobble source from tiles
     final Point[] tiles =
       sop.getTileIndices(new Rectangle(x0, y0, x1-x0, y1-y0));

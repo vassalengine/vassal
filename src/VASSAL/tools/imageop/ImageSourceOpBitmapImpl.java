@@ -59,7 +59,7 @@ public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
   }
 
   /** {@inheritDoc} */
-  public Image apply() {
+  public Image eval() {
     return image;
   }
 

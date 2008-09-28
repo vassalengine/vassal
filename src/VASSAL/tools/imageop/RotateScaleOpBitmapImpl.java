@@ -96,7 +96,7 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
    *
    * @throws Exception passed up from the source <code>ImageOp</code>.
    */
-  public Image apply() throws Exception {
+  public Image eval() throws Exception {
 // FIXME: should not cast to BufferedImage without conversion first!
     return ImageUtils.transform(
       (BufferedImage) sop.getImage(null), scale, angle, hints);

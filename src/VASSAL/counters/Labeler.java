@@ -383,7 +383,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
       return Collections.emptyList();
     }
 
-    public Image apply() throws Exception {
+    public Image eval() throws Exception {
       if (size == null) fixSize();
  
       final int w = size.width; 

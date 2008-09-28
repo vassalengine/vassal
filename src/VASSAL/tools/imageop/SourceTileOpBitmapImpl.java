@@ -75,7 +75,7 @@ public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
     return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 
-  public Image apply() throws Exception {
+  public Image eval() throws Exception {
     final BufferedImage dst =
       new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
 
