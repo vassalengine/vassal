@@ -473,61 +473,60 @@ private static final String CHARTS = "Charts";
     }
     
     protected void setReplace() {
-      if (pieceClass.getFlipClass() == null)
-        return;
-
-      // get tree configure path
-      // TODO: find a different way to do this so that we don't have to generate unique class names.
-      PieceWindow pw = GameModule.getGameModule().getAllDescendantComponentsOf(PieceWindow.class).iterator().next();
-      ListWidget lw = pw.getAllDescendantComponentsOf(ListWidget.class).iterator().next();
-      Piece p = pieceClass.getFlipClass().getDefaultPiece();      
-      PieceSlot ps = p.getPieceSlot();
-      SequenceEncoder se2 = new SequenceEncoder(pw.getClass().getName(), ':');
-      if (pw.getConfigureName() != null)
-        se2.append(pw.getConfigureName());
-      SequenceEncoder se = new SequenceEncoder(se2.getValue(), '/');
-      se2 = new SequenceEncoder(lw.getClass().getName(), ':');
-      if (lw.getConfigureName() != null)
-        se2.append(lw.getConfigureName());
-      se.append(se2.getValue());
-      se2 = new SequenceEncoder(ps.getClass().getName(), ':');
-      if (ps.getConfigureName() != null)
-        se2.append(ps.getConfigureName());
-      se.append(se2.getValue());
-      String path = se.getValue();
+      final PieceClass flipClass = pieceClass.getFlipClass();
+      if (flipClass == null)
+    	  return;
+      
+      if (flipClass.getFlipClass() != null && flipClass.getFlipClass() != pieceClass) {
+    	  flipClass.backReplace = pieceClass;
+      }
+      
+      SequenceEncoder se;
+		String path = getTreeConfigurePath(flipClass);
       
       // find insertion point
       // try to place between class and piece property sheets.
-      GamePiece outer = null;
+      GamePiece outer, inner;
+      inner = null;
+      outer = null;
       GamePiece candidate = Decorator.getDecorator(gamePiece, PropertySheet.class);
+      // set inner to the inner trait and outer to ther outer trait relative to the
+      // inserted PropertySheet
       if (candidate == null) { // no class or piece properties
-    	  // make sure flip is inaccessible when hidden
-    	  if (gamePiece.getClass() == Hideable.class || gamePiece.getClass() == Obscurable.class) {
+    	  Class<? extends GamePiece> outerClass = gamePiece.getClass();
+		// make sure flip is inaccessible when hidden
+    	  // the Hideable or Obscureable trait is outermost at this point if it exists
+    	  if (outerClass == Hideable.class || outerClass == Obscurable.class) {
     		  outer = gamePiece; 
-    		  gamePiece = ((Decorator) gamePiece).getInner();
+    		  inner = ((Decorator) gamePiece).getInner();
+    	  }
+    	  else {
+    		  inner = gamePiece; // outer = null;
     	  }
       }
       else { // piece has either class or piece properties
     	  PropertySheet prop = (PropertySheet) candidate;
     	  if (prop == classPS) { // make sure class properties change if flipped
     		  outer = classPS;
-    		  gamePiece = prop.getInner();
+    		  inner = prop.getInner();
     	  }
     	  else if (prop == piecePS) { // make sure piece properties don't change if flipped
     		  outer = prop.getOuter();
-    		  gamePiece = prop;
+    		  inner = prop;
     	  }
       }
             
       // set replacement
       se = new SequenceEncoder(path, ';');
       se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(true);
-      gamePiece = new Replace(Replace.ID + "Flip;F;" + se.getValue(), gamePiece);
+      inner = new Replace(Replace.ID + "Flip;F;" + se.getValue(), inner);
       if (outer != null) {
-        ((Decorator) outer).setInner(gamePiece);
-        gamePiece = outer;
+        ((Decorator) outer).setInner(inner);
       }
-      getPieceSlot().setPiece(gamePiece);
+      else {
+    	  gamePiece = inner;
+          getPieceSlot().setPiece(gamePiece);          
+      }
     }
     
     protected GamePiece getGamePiece() throws IOException {
@@ -812,7 +811,52 @@ private static final String CHARTS = "Charts";
 
     protected PieceSlot getPieceSlot() {
       return pieceSlot;
-    }    
+    }
+
+	protected void setBackReplace() {
+	      final PieceClass flipClass = pieceClass.getBackFlipClass();
+	      if (flipClass == null)
+	    	  return;
+	      
+	      final String path = getTreeConfigurePath(flipClass);
+	      
+	      // find insertion point
+	      // place before forward flip Replace
+	      final GamePiece candidate = Decorator.getDecorator(gamePiece, Replace.class);
+	      
+	      // TODO: what happens in ADC2 if the flip definitions are not reciprocal?
+	      assert(candidate != null);
+	      final Replace rep = (Replace) candidate;
+	      final GamePiece outer = rep;
+	      GamePiece inner = rep.getInner();
+	            
+	      final SequenceEncoder se = new SequenceEncoder(path, ';');
+	      se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(true);
+	      inner = new Replace(Replace.ID + "Flip Back;B;" + se.getValue(), inner);
+	      ((Decorator) outer).setInner(inner);
+	}
+
+    // TODO: find a different way to do this so that we don't have to generate unique class names.
+	private String getTreeConfigurePath(final PieceClass flipClass) {
+	      PieceWindow pw = GameModule.getGameModule().getAllDescendantComponentsOf(PieceWindow.class).iterator().next();
+	      ListWidget lw = pw.getAllDescendantComponentsOf(ListWidget.class).iterator().next();
+	      Piece p = flipClass.getDefaultPiece();      
+	      PieceSlot ps = p.getPieceSlot();
+	      SequenceEncoder se2 = new SequenceEncoder(pw.getClass().getName(), ':');
+	      if (pw.getConfigureName() != null)
+	        se2.append(pw.getConfigureName());
+	      SequenceEncoder se = new SequenceEncoder(se2.getValue(), '/');
+	      se2 = new SequenceEncoder(lw.getClass().getName(), ':');
+	      if (lw.getConfigureName() != null)
+	        se2.append(lw.getConfigureName());
+	      se.append(se2.getValue());
+	      se2 = new SequenceEncoder(ps.getClass().getName(), ':');
+	      if (ps.getConfigureName() != null)
+	        se2.append(ps.getConfigureName());
+	      se.append(se2.getValue());
+	      String path = se.getValue();
+		return path;
+	}    
   }
 
   public enum ValueType {
@@ -1026,7 +1070,8 @@ private static final String CHARTS = "Charts";
    */
   public class PieceClass {
     
-    public static final String CLASS_PROPERTIES = "Class Properties";
+    public PieceClass backReplace;
+	public static final String CLASS_PROPERTIES = "Class Properties";
 	protected static final int NO_HIDDEN_SYMBOL = 30001;
     protected static final int PLAYER_DEFAULT_HIDDEN_SYMBOL = 30000;
     private final int[] values = new int[8];
@@ -1048,7 +1093,11 @@ private static final String CHARTS = "Charts";
       this.facing = facing;
     }
 
-    public DynamicProperty getDynamicPropertyDecorator() {
+    public PieceClass getBackFlipClass() {
+		return backReplace;
+	}
+
+	public DynamicProperty getDynamicPropertyDecorator() {
       SequenceEncoder type = new SequenceEncoder(';');
       type.append("Layer");
       SequenceEncoder constraints = new SequenceEncoder(',');
@@ -2446,6 +2495,9 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     
     for (PieceClass c : pieceClasses)
       c.getDefaultPiece().setReplace();
+    
+    for (PieceClass c : pieceClasses)
+    	c.getDefaultPiece().setBackReplace();
   }
 
   protected void writePlayersToArchive(GameModule gameModule) {
@@ -2758,6 +2810,9 @@ private void configureMainMap(GameModule gameModule) throws IOException {
         pc.writeToArchive(pile);
         pc.setReplace();
       }
+      for (Piece pc : fp.getPieces()) {
+    	  pc.setBackReplace();
+      }
     }
   }
   
@@ -2799,6 +2854,9 @@ private void configureMainMap(GameModule gameModule) throws IOException {
       for (Piece pc : s) {
         pc.writeToArchive(stack);
         pc.setReplace();
+      }
+      for (Piece pc : s) {
+    	  pc.setBackReplace();
       }
     }
   }
