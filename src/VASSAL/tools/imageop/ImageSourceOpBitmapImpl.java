@@ -54,7 +54,7 @@ public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
     hash = image.hashCode();
   }
 
-  public List<Op<?>> depends() {
+  public List<Op<?>> getSources() {
     return Collections.emptyList();
   }
 

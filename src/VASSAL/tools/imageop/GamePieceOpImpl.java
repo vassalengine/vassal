@@ -78,7 +78,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
     return super.getFuture(obs);
   }
 
-  public List<Op<?>> depends() {
+  public List<Op<?>> getSources() {
     return Collections.emptyList();
   }
 

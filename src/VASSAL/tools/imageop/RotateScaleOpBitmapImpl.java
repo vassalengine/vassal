@@ -87,7 +87,7 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
            HashCode.hash(sop);
   }
 
-  public List<VASSAL.tools.opcache.Op<?>> depends() {
+  public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 

@@ -276,7 +276,7 @@ public class ImageItem extends Item {
       return 10;
     }
 
-    public List<VASSAL.tools.opcache.Op<?>> depends() {
+    public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Collections.emptyList();
     }
 

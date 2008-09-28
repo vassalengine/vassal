@@ -71,9 +71,7 @@ public class OpCache {
       this.op = op; 
       this.version = version;
 
-      for (Op<?> dop : op.depends()) {
-        deps.add(dop.newKey());
-      }
+      for (Op<?> dop : op.getSources()) deps.add(dop.newKey());
 
       hash = op.hashCode() ^ version ^ deps.hashCode();
     }
@@ -342,6 +340,7 @@ public class OpCache {
   }
 
 /////
+// FIXME: finalize this...
   private final BlockingQueue<Runnable> requestQueue =
     new LinkedBlockingQueue<Runnable>();
 

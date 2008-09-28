@@ -91,7 +91,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     return null;
   }
 
-  public List<VASSAL.tools.opcache.Op<?>> depends() {
+  public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.emptyList();
   }
 

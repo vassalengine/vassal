@@ -71,7 +71,7 @@ public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
     hash = result;
   }
 
-  public List<VASSAL.tools.opcache.Op<?>> depends() {
+  public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 

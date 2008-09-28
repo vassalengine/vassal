@@ -89,7 +89,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
            HashCode.hash(sop);
   }
 
-  public List<VASSAL.tools.opcache.Op<?>> depends() {
+  public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.emptyList();
   }
 

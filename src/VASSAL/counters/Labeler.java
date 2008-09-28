@@ -379,7 +379,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
              HashCode.hash(bg);
     }
 
-    public List<VASSAL.tools.opcache.Op<?>> depends() {
+    public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Collections.emptyList();
     }
 

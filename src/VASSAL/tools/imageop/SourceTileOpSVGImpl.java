@@ -98,7 +98,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     return null;
   }
 
-  public List<Op<?>> depends() {
+  public List<Op<?>> getSources() {
     return Collections.emptyList();
   }
 

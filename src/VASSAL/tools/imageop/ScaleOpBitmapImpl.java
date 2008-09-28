@@ -84,7 +84,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
            HashCode.hash(sop);
   }
 
-  public List<VASSAL.tools.opcache.Op<?>> depends() {
+  public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 
@@ -168,7 +168,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     private static final BufferedImage NULL_IMAGE =
       new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB); 
 
-    public List<VASSAL.tools.opcache.Op<?>> depends() {
+    public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
     }
 

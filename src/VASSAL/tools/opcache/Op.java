@@ -41,7 +41,7 @@ public interface Op<V> {
    *
    * @return the <code>Op</code>s on which this <code>Op</code> depends
    */  
-  public List<Op<?>> depends();
+  public List<Op<?>> getSources();
 
   /**
    * Returns the current cache key for this <code>Op</code>.

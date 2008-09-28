@@ -56,7 +56,7 @@ public abstract class AbstractOpImpl<V> implements Op<V> {
   }
 
   /** {@inheritDoc} */
-  public abstract List<Op<?>> depends();
+  public abstract List<Op<?>> getSources();
 
   /** {@inheritDoc} */
   public abstract V eval() throws Exception;
