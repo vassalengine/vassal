@@ -49,7 +49,7 @@ public class ErrorLog implements Thread.UncaughtExceptionHandler {
   }
 
   /**
-   * @inheritDocs
+   * {@inheritDoc}
    * 
    * Needed to implement {@link Thread.UncaughtExceptionHandler}. Do
    * not call this method directly.
