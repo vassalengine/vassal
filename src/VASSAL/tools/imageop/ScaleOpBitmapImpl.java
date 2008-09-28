@@ -131,14 +131,14 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
      private static final GeneralFilter.Filter upFilter =
        new GeneralFilter.MitchellFilter();
  
-     public TileOp(ScaleOp rop, int tileX, int tileY) {
+     public TileOp(ScaleOpBitmapImpl rop, int tileX, int tileY) {
        if (rop == null) throw new IllegalArgumentException();
  
        if (tileX < 0 || tileX >= rop.getNumXTiles() ||
            tileY < 0 || tileY >= rop.getNumYTiles())
          throw new IndexOutOfBoundsException();
  
-      sop = rop.getSource();
+      sop = rop.sop;
  
       scale = rop.getScale();
       hints = rop.getHints();
@@ -198,10 +198,6 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
     protected void fixSize() { }
  
-    public ImageOp getSource() {
-      return sop;
-    }
-
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
@@ -222,10 +218,6 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     }
   }
 
-  public ImageOp getSource() {
-    return sop;
-  }
-
   public RenderingHints getHints() {
     return hints;
   }
@@ -243,11 +235,11 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof ScaleOp)) return false;
+    if (o == null || !(o instanceof ScaleOpBitmapImpl)) return false;
 
-    final ScaleOp op = (ScaleOp) o;
+    final ScaleOpBitmapImpl op = (ScaleOpBitmapImpl) o;
     return scale == op.getScale() && 
-           sop.equals(op.getSource()) && 
+           sop.equals(op.sop) && 
            hints.equals(op.getHints());
   }
 

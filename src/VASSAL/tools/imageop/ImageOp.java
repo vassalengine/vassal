@@ -28,8 +28,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public interface ImageOp extends VASSAL.tools.opcache.Op<Image> {
-  public ImageOp getSource();
-
   public Image apply() throws Exception;
 
   public Image getImage();

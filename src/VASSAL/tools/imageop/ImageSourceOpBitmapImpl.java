@@ -79,10 +79,6 @@ public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
     return new SourceTileOpBitmapImpl(this, tileX, tileY);
   }
 
-  public ImageOp getSource() {
-    return null;
-  }
-
   public String getName() {
     return null;
   }

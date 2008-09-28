@@ -110,10 +110,6 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
     }
   }
 
-  public ImageOp getSource() {
-    return sop;
-  }
-
   /**
    * Returns the angle of rotation.
    *
@@ -140,13 +136,13 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof RotateScaleOp)) return false;
+    if (o == null || !(o instanceof RotateScaleOpBitmapImpl)) return false;
 
-    final RotateScaleOp op = (RotateScaleOp) o;
+    final RotateScaleOpBitmapImpl op = (RotateScaleOpBitmapImpl) o;
     return scale == op.getScale() && 
            angle == op.getAngle() && 
            hints.equals(op.getHints()) &&
-           sop.equals(op.getSource());
+           sop.equals(op.sop);
   }
 
   /** {@inheritDoc} */

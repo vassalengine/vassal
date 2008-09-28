@@ -89,10 +89,6 @@ public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
 
   protected void fixSize() { }
 
-  public ImageOp getSource() {
-    return null;
-  }
- 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

@@ -335,10 +335,6 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       return Collections.emptyList();
     }
 
-    public ImageOp getSource() {
-      return null;
-    }
-
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;

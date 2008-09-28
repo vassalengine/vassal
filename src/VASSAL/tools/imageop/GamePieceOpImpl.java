@@ -101,10 +101,6 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
     if (size.height < 1) size.height = 1;
   }
 
-  public ImageOp getSource() {
-    return null;
-  }
-
   /**
    * Returns the source <code>GamePiece</code>.
    *

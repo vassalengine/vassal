@@ -38,6 +38,7 @@ public class OpErrorDialog {
     // unpack the exception
     final IOException ioe = ErrorUtils.getAncestorOfClass(IOException.class, e);
     if (ioe != null) {
+/*
       for (ImageOp src = op; src != null; src = src.getSource()) {
         if (src instanceof SourceOp) {
           // Failed to find this image in the module
@@ -45,7 +46,7 @@ public class OpErrorDialog {
           return;
         }
       }
-
+*/
       // otherwise we had some other kind of I/O problem
       ErrorDialog.error(
         Resources.getString("Error.io_error"),

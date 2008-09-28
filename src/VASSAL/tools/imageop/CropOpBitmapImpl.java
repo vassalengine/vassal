@@ -143,10 +143,6 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
                          Math.min((tileY+1)*tileSize.height, size.height));
   }
 
-  public ImageOp getSource() {
-    return sop;
-  }
-
   /**
    * Returns the crop rectangle.
    *
@@ -176,14 +172,14 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || o.getClass() != this.getClass()) return false;
+    if (o == null || !(o instanceof CropOpBitmapImpl)) return false;
 
-    final CropOp op = (CropOp) o;
+    final CropOpBitmapImpl op = (CropOpBitmapImpl) o;
     return x0 == op.getX0() &&
            y0 == op.getY0() &&
            x1 == op.getX1() &&
            y1 == op.getY1() &&
-           sop.equals(op.getSource()); 
+           sop.equals(op.sop); 
   }
 
   /** {@inheritDoc} */

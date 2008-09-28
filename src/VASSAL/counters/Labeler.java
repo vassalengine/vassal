@@ -425,10 +425,6 @@ public class Labeler extends Decorator implements TranslatablePiece {
       }
     }
 
-    public ImageOp getSource() {
-      return null; 
-    }
-
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;

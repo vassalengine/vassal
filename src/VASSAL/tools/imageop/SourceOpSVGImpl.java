@@ -138,10 +138,6 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
     return new SourceTileOpSVGImpl(this, tileX, tileY);
   }
 
-  public ImageOp getSource() {
-    return null;
-  }
-
   /**
    * Returns the name of the image which {@link #getImage} will produce.
    *

@@ -85,10 +85,6 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     tiles = new ImageOp[numXTiles*numYTiles];
   }
 
-  public ImageOp getSource() {
-    return sop;
-  }
-
   public double getAngle() {
     return angle * 90;
   }
@@ -177,10 +173,6 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
 
     protected void fixSize() { }
   
-    public ImageOp getSource() {
-      return sop;
-    }
- 
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
@@ -200,10 +192,10 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof RotateOp)) return false;
+    if (o == null || !(o instanceof OrthoRotateOpBitmapImpl)) return false;
     
-    final RotateOp op = (RotateOp) o;
-    return angle == op.getAngle() && sop.equals(op.getSource());
+    final OrthoRotateOpBitmapImpl op = (OrthoRotateOpBitmapImpl) o;
+    return angle == op.getAngle() && sop.equals(op.sop);
   }
 
   @Override
