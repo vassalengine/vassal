@@ -506,12 +506,15 @@ public class Board extends AbstractConfigurable implements GridContainer {
    */
   public Point localCoordinates(Point p) {
     if (reversed) {
-      p = new Point(bounds().width - p.x, bounds().height - p.y);
+      p.x = bounds().width - p.x;
+      p.y = bounds().height - p.y;
     }
+
     if (magnification != 1.0) {
       p.x = (int) Math.round(p.x/magnification);
       p.y = (int) Math.round(p.y/magnification);
     }
+
     return p;
   }
 
@@ -520,12 +523,15 @@ public class Board extends AbstractConfigurable implements GridContainer {
    */
   public Point globalCoordinates(Point p) {
     if (magnification != 1.0) {
-      p.x = (int)Math.round(p.x*magnification);
-      p.y = (int)Math.round(p.y*magnification);
+      p.x = (int) Math.round(p.x*magnification);
+      p.y = (int) Math.round(p.y*magnification);
     }
+
     if (reversed) {
-      p = new Point(bounds().width - p.x, bounds().height - p.y);
+      p.x = bounds().width - p.x;
+      p.y =  bounds().height - p.y;
     }
+
     return p;
   }
 
@@ -606,7 +612,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
   public Rectangle bounds() {
     if (imageFile != null && boardImageOp != null && !fixedBoundaries) {
       boundaries.setSize(boardImageOp.getSize());
-      boundaries.setSize((int)Math.round(magnification*boundaries.width), (int)Math.round(magnification*boundaries.height));
+
+      if (magnification != 1.0) {
+        boundaries.setSize((int)Math.round(magnification*boundaries.width),
+                           (int)Math.round(magnification*boundaries.height));
+      }
+
       fixedBoundaries = true;
     }
     return new Rectangle(boundaries);

@@ -212,18 +212,22 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     int myRadius = getRadius();
 
     if (grid instanceof GeometricGrid) {
-      GeometricGrid gGrid = (GeometricGrid) grid;
+      final GeometricGrid gGrid = (GeometricGrid) grid;
       a = gGrid.getGridShape(position, myRadius);
-      double mag = board.getMagnification();
+      final double mag = board.getMagnification();
       if (mag != 1.0) {
-        AffineTransform t = AffineTransform.getTranslateInstance(position.x, position.y);
-        t.concatenate(AffineTransform.getScaleInstance(mag, mag));
-        t.concatenate(AffineTransform.getTranslateInstance(-position.x, -position.y));
+        final AffineTransform t =
+          AffineTransform.getTranslateInstance(position.x, position.y);
+        t.scale(mag, mag);
+        t.translate(-position.x, -position.y);
         a = a.createTransformedArea(t);
       }
     }
     else {
-      a = new Area(new Ellipse2D.Double(position.x - myRadius, position.y - myRadius, myRadius * 2, myRadius * 2));
+      a = new Area(
+        new Ellipse2D.Double(position.x - myRadius,
+                             position.y - myRadius,
+                             myRadius * 2, myRadius * 2));
     }
     return a;
   }

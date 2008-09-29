@@ -206,21 +206,24 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
                               Integer.parseInt(e.getAttribute(SLOT_HEIGHT)));
       }
       catch (NumberFormatException ex) {
-        // Use default values if attribute doesn't parse.  Correct value will be written when module is saved
+        // Use default values if attribute doesn't parse. 
+        // Correct value will be written when module is saved.
       }
 
       try {
         slotScale = Double.valueOf(e.getAttribute(SCALE)).doubleValue();
       }
       catch (NumberFormatException ex) {
-        // Use default values if attribute doesn't parse.  Correct value will be written when module is saved
+        // Use default values if attribute doesn't parse. 
+        // Correct value will be written when module is saved.
       }
 
       try {
         maxColumns = Integer.parseInt(e.getAttribute(MAX_COLUMNS));
       }
       catch (NumberFormatException ex) {
-        // Use default values if attribute doesn't parse.  Correct value will be written when module is saved
+        // Use default values if attribute doesn't parse.
+        // Correct value will be written when module is saved.
         maxColumns = 0;
       }
 

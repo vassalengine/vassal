@@ -197,14 +197,15 @@ public class Translate extends Decorator implements TranslatablePiece {
   protected void translate(Point p) {
     int x = 0;
     int y = 0;
-    GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = Decorator.getOutermost(this);
     
-    Board b = outer.getMap().findBoard(p);
+    final Board b = outer.getMap().findBoard(p);
     String dist = xDist.getText(outer);
     String index = xIndex.getText(outer);
     String offset = xOffset.getText(outer);
     try {
-      x = Integer.parseInt(dist) + Integer.parseInt(index) * Integer.parseInt(offset);
+      x = Integer.parseInt(dist) + Integer.parseInt(index) *
+          Integer.parseInt(offset);
       if (b != null) {
         x = (int)Math.round(b.getMagnification()*x);
       }
@@ -217,7 +218,8 @@ public class Translate extends Decorator implements TranslatablePiece {
     index = yIndex.getText(outer);
     offset = yOffset.getText(outer);
     try {
-      y = Integer.parseInt(dist) + Integer.parseInt(index) * Integer.parseInt(offset);
+      y = Integer.parseInt(dist) + Integer.parseInt(index) *
+          Integer.parseInt(offset);
       if (b != null) {
         y = (int)Math.round(b.getMagnification()*y);
       }
@@ -230,7 +232,7 @@ public class Translate extends Decorator implements TranslatablePiece {
   }
   
   protected GamePiece findTarget(KeyStroke stroke) {
-    GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = Decorator.getOutermost(this);
     GamePiece target = outer;
     if (moveStack
         && outer.getParent() != null
