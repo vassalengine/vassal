@@ -502,11 +502,24 @@ public class FreeRotator extends Decorator
     super.setProperty(key, val);
   }
 
-  public Object getProperty(Object key) {
-    if ((name+FACING).equals(key)) {
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    if ((name + FACING).equals(key)) {
       return String.valueOf(angleIndex + 1);
     } 
-    else if ((name+DEGREES).equals(key)) {
+    else if ((name + DEGREES).equals(key)) {
+      return String.valueOf((int) (Math.abs(validAngles[angleIndex])));
+    }
+    else {
+      return super.getLocalizedProperty(key);
+    }    
+  }
+  
+  public Object getProperty(Object key) {
+    if ((name + FACING).equals(key)) {
+      return String.valueOf(angleIndex + 1);
+    } 
+    else if ((name + DEGREES).equals(key)) {
       return String.valueOf((int) (Math.abs(validAngles[angleIndex])));
     }
     else {

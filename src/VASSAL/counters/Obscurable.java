@@ -280,6 +280,18 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (obscuredToMe()) {
       return ((BasicPiece) Decorator.getInnermost(this)).getLocalizedPublicProperty(key);
     }
+    else if (Properties.OBSCURED_TO_ME.equals(key)) {
+    	return Boolean.valueOf(obscuredToMe());
+    }
+    else if (Properties.OBSCURED_TO_OTHERS.equals(key)) {
+    	return Boolean.valueOf(obscuredToOthers());
+    }
+    else if (ID.equals(key)) {
+    	return obscuredBy;
+    }
+    else if (Properties.VISIBLE_STATE.equals(key)) {
+    	return myGetState()+isPeeking()+piece.getProperty(key);
+    }
     else {
       return super.getLocalizedProperty(key);
     }

@@ -19,6 +19,8 @@
 package VASSAL.counters;
 
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -31,10 +33,11 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
 
 /**
- * A generic Decorator that retains in its state the value of a
- * property.  That is, if setProperty() is invoked with a key that's one of
- * getKeys(), the String value of that property will be reflected in
- * the myGetState() method.  */
+ * A generic Decorator that retains in its state the value of a property. 
+ * That is, if {@link #setProperty(Object,Object)} is invoked with a key
+ * that is one of {@link #getKeys()}, the <code>String</code> value of that
+ * property will be reflected in the {@link #myGetState(String)} method.
+ */
 public class Marker extends Decorator implements EditablePiece {
   public static final String ID = "mark;";
 
@@ -66,7 +69,7 @@ public class Marker extends Decorator implements EditablePiece {
     Arrays.fill(values, "");
   }
 
-  public void draw(java.awt.Graphics g, int x, int y, java.awt.Component obs, double zoom) {
+  public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     piece.draw(g, x, y, obs, zoom);
   }
 
@@ -74,7 +77,7 @@ public class Marker extends Decorator implements EditablePiece {
     return piece.getName();
   }
 
-  public java.awt.Rectangle boundingBox() {
+  public Rectangle boundingBox() {
     return piece.boundingBox();
   }
 
@@ -92,7 +95,12 @@ public class Marker extends Decorator implements EditablePiece {
   }
   
   public Object getLocalizedProperty(Object key) {
-    return getProperty(key);
+    for (int i = 0; i < keys.length; ++i) {
+      if (keys[i].equals(key)) {
+        return values[i];
+      }
+    }
+    return super.getLocalizedProperty(key);
   }
 
   public void setProperty(Object key, Object value) {

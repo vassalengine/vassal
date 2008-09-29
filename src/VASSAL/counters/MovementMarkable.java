@@ -166,6 +166,16 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     return HelpFile.getReferenceManualPage("MarkMoved.htm");
   }
 
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    if (Properties.MOVED.equals(key)) {
+      return isMoved() ? Boolean.TRUE : Boolean.FALSE;
+    }
+    else {
+      return super.getLocalizedProperty(key);
+    }    
+  }
+  
   public Object getProperty(Object key) {
     if (Properties.MOVED.equals(key)) {
       return isMoved() ? Boolean.TRUE : Boolean.FALSE;

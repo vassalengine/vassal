@@ -162,6 +162,31 @@ public class Immobilized extends Decorator implements EditablePiece {
     return null;
   }
 
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    if (Properties.NO_STACK.equals(key)) {
+      return Boolean.TRUE;
+    }
+    else if (Properties.TERRAIN.equals(key)) {
+      return Boolean.valueOf(moveIfSelected || neverMove);
+    }
+    else if (Properties.IGNORE_GRID.equals(key)) {
+      return Boolean.valueOf(ignoreGrid);
+    }
+    else if (Properties.SELECT_EVENT_FILTER.equals(key)) {
+      return selectFilter;
+    }
+    else if (Properties.MOVE_EVENT_FILTER.equals(key)) {
+      return moveFilter;
+    }
+    else if (Properties.NON_MOVABLE.equals(key)) {
+      return neverMove;
+    }
+    else {
+      return super.getLocalizedProperty(key);
+    }    
+  }
+  
   public Object getProperty(Object key) {
     if (Properties.NO_STACK.equals(key)) {
       return Boolean.TRUE;

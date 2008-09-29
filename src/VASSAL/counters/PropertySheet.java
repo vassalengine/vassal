@@ -560,16 +560,17 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    final Object value = properties.get(key);
+    return value == null ? super.getLocalizedProperty(key) : value;
+  }
+  
   public Object getProperty(Object key) {
     final Object value = properties.get(key);
     return value == null ? super.getProperty(key) : value;
   }
   
-  public Object getLocalizedProperty(Object key) {
-    final Object value = properties.get(key);
-    return value == null ? super.getLocalizedProperty(key) : value;
-  }
-
   public String getDescription() {
     return "Property Sheet";
   }
@@ -582,8 +583,10 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     return new Ed(this);
   }
 
-
-  /** A generic panel for editing unit traits. Not directly related to "PropertySheets" **/
+  /**
+   * A generic panel for editing unit traits.
+   * Not directly related to "PropertySheets".
+   */
   static class PropertyPanel extends JPanel implements FocusListener {
     private static final long serialVersionUID = 1L;
 

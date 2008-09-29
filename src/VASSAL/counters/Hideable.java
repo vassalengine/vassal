@@ -67,6 +67,29 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
   }
 
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    if (invisibleToMe()) {
+      return ((BasicPiece) Decorator.getInnermost(this)).getLocalizedPublicProperty(key);
+    }
+    else if (HIDDEN_BY.equals(key)) {
+      return hiddenBy;
+    }
+    else if (Properties.INVISIBLE_TO_ME.equals(key)) {
+      return invisibleToMe() ? Boolean.TRUE : Boolean.FALSE;
+    }
+    else if (Properties.INVISIBLE_TO_OTHERS.equals(key)) {
+      return invisibleToOthers() ? Boolean.TRUE : Boolean.FALSE;
+    }
+    else if (Properties.VISIBLE_STATE.equals(key)) {
+      return String.valueOf(invisibleToOthers()) +
+             invisibleToMe() + piece.getProperty(key);
+    }
+    else {
+      return super.getLocalizedProperty(key);
+    }    
+  }
+  
   public Object getProperty(Object key) {
     if (HIDDEN_BY.equals(key)) {
       return hiddenBy;
@@ -78,7 +101,8 @@ public class Hideable extends Decorator implements TranslatablePiece {
       return invisibleToOthers() ? Boolean.TRUE : Boolean.FALSE;
     }
     else if (Properties.VISIBLE_STATE.equals(key)) {
-        return String.valueOf(invisibleToOthers())+invisibleToMe()+piece.getProperty(key);
+        return String.valueOf(invisibleToOthers()) +
+               invisibleToMe() + piece.getProperty(key);
       }
     else {
       return super.getProperty(key);

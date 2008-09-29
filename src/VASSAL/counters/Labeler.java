@@ -137,6 +137,19 @@ public class Labeler extends Decorator implements TranslatablePiece {
     propertyName = st.nextToken("TextLabel");
   }
 
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    if (key.equals(propertyName)) {
+      return getLocalizedLabel();
+    }
+    else if (Properties.VISIBLE_STATE.equals(key)) {
+      return getLocalizedLabel() + piece.getProperty(key);
+    }
+    else {
+      return super.getLocalizedProperty(key);
+    }
+  }
+  
   public Object getProperty(Object key) {
     if (key.equals(propertyName)) {
       return getLabel();

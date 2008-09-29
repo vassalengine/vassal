@@ -212,10 +212,18 @@ public class Footprint extends MovementMarkable {
     }
   }
 
+  @Override
+  public Object getLocalizedProperty(Object key) {
+    if (Properties.MOVED.equals(key)) {
+      final Object value = piece.getProperty(key);
+      return value == null ? super.getProperty(key) : value;    
+    }
+    return super.getLocalizedProperty(key);    
+  }
+  
   public Object getProperty(Object key) {
-    /* If this piece has a real MovementMarkable trait,
-     * use it to store the MOVED status
-     */
+    // If this piece has a real MovementMarkable trait,
+    // use it to store the MOVED status
     if (Properties.MOVED.equals(key)) {
       final Object value = piece.getProperty(key);
       return value == null ? super.getProperty(key) : value;    
@@ -227,7 +235,6 @@ public class Footprint extends MovementMarkable {
    * setMoved is called with an argument of true each time the piece is moved.
    * The argument is false when the unit is marked as not moved.
    */
-  
   public void setMoved(boolean justMoved) {
     if (justMoved) {
       recordCurrentPosition();

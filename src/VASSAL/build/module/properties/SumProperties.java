@@ -25,13 +25,12 @@ import VASSAL.counters.GamePiece;
 
 /**
  * For property names of the form sum(name), returns the value of
- * the named property summed over a list of pieces
- * @author rkinney
+ * the named property summed over a list of pieces.
  *
+ * @author rkinney
  */
 public class SumProperties implements PropertySource {
   protected Collection<GamePiece> pieces;
-
 
   public SumProperties(Collection<GamePiece> pieces) {
     this.pieces = pieces;
@@ -39,22 +38,31 @@ public class SumProperties implements PropertySource {
 
   public Object getProperty(Object key) {
     Object value = null;
-    String keyString = key.toString();
+    final String keyString = key.toString();
     if (keyString.startsWith("sum(") && keyString.endsWith(")")) {
-      String propertyName = keyString.substring(4,keyString.length()-1);
+      final String propertyName = keyString.substring(4,keyString.length()-1);
       int sum = 0;
+      boolean indeterminate = false;
       for (GamePiece p : pieces) {
-        final Object val = p.getProperty(propertyName);
+        final Object val = p.getLocalizedProperty(propertyName);
         if (val != null) {
           try {
             sum += Integer.parseInt(val.toString());
           }
           catch (NumberFormatException e) {
-            // Treat non-numeric values as zero
           }
         }
+        else {
+          indeterminate = true;
+        }
       }
-      value = String.valueOf(sum);
+
+      if (sum == 0 && indeterminate) {
+        value = "?";
+      }
+      else {
+        value = String.valueOf(sum) + (indeterminate ? "+?" : "");
+      }
     }
     else if (pieces.size() > 0) {
       value = pieces.iterator().next().getProperty(key);

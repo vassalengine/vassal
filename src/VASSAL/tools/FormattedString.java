@@ -78,6 +78,7 @@ public class FormattedString {
   public String getText(PropertySource ps) {
     return getText(ps, false);
   }
+
   public String getLocalizedText(PropertySource ps) {
     return getText(ps, true);
   }
@@ -88,7 +89,7 @@ public class FormattedString {
       new SequenceEncoder.Decoder(formatString, '$');
     boolean isProperty = true;
     while (st.hasMoreTokens()) {
-      String token = st.nextToken();
+      final String token = st.nextToken();
       isProperty = !isProperty;
       if (token.length() > 0) {
         /*
@@ -98,17 +99,18 @@ public class FormattedString {
           buffer.append(token);
         }
         else if (props.containsKey(token)) {
-          String value = props.get(token);
+          final String value = props.get(token);
           if (value != null) {
             buffer.append(value);
           }
         }
         else if (ps != null) {
-          Object value = localized ? ps.getLocalizedProperty(token) : ps.getProperty(token);
+          final Object value =
+            localized ? ps.getLocalizedProperty(token) : ps.getProperty(token);
           if (value != null) {
             buffer.append(value.toString());
           }
-          else {
+          else if (!localized) {
             buffer.append(token);
           } 
         }
@@ -128,5 +130,4 @@ public class FormattedString {
   public void setDefaultProperties(PropertySource defaultProperties) {
     this.defaultProperties = defaultProperties;
   }
-
 }
