@@ -91,10 +91,10 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   }
 
   public Rectangle boundingBox(GamePiece p) {
-    Rectangle r = p.getShape().getBounds();
+    final Rectangle r = p.getShape().getBounds();
     if (accept(p)) {
       if (useImage) {
-        r = r.union(ImageUtils.getBounds(imagePainter.getImageSize()));
+        r.add(ImageUtils.getBounds(imagePainter.getImageSize()));
       }
       else {
         r.translate(-thickness, -thickness);

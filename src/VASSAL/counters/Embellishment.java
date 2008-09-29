@@ -567,12 +567,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   public Rectangle boundingBox() {
-    if (value > 0) {
-      return getCurrentImageBounds().union(piece.boundingBox());
-    }
-    else {
-      return piece.boundingBox();
-    }
+    final Rectangle r = piece.boundingBox();
+    if (value > 0) r.add(getCurrentImageBounds());
+    return r;
   }
 
   public Rectangle getCurrentImageBounds() {

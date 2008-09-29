@@ -101,13 +101,11 @@ public class ColoredBorder implements Highlighter {
   }
 
   public Rectangle boundingBox(GamePiece p) {
-    Rectangle r = p.getShape().getBounds();
+    final Rectangle r = p.getShape().getBounds();
     r.translate(-thickness, -thickness);
     r.setSize(r.width + 2 * thickness, r.height + 2 * thickness);
 
-    for (Highlighter h : highlighters) {
-      r = r.union(h.boundingBox(p));
-    }
+    for (Highlighter h : highlighters) r.add(h.boundingBox(p));
     return r;
   }
 

@@ -65,32 +65,38 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     dispatcher = new DeckVisitorDispatcher(this);
   }
 
-  /** Returns a Command that moves all pieces so that their centroid is centered on the map */
+  /**
+   * Returns a Command that moves all pieces so that their centroid is
+   * centered on the map.
+   */
   public Command recenter(Map map) {
-    Command c = new NullCommand();
-    GamePiece[] p = map.getPieces();
-    Rectangle r=null;
-    for (int i=0;i<p.length;++i) {
-      if (Boolean.TRUE.equals(dispatcher.accept(p[i]))) {
-        Point pt = p[i].getPosition();
-        Rectangle pRect = p[i].getShape().getBounds();
+    final Command c = new NullCommand();
+    final GamePiece[] pieces = map.getPieces();
+    final Rectangle r = new Rectangle(0,0,-1,-1);
+
+    for (GamePiece p : pieces) {
+      if (Boolean.TRUE.equals(dispatcher.accept(p))) {
+        final Point pt = p.getPosition();
+        final Rectangle pRect = p.getShape().getBounds();
         pRect.translate(pt.x,pt.y);
-        r = r == null ? pRect : r.union(pRect);
+        r.add(pRect);
       }
     }
-    if (r != null) {
-      int dx = map.mapSize().width/2-(r.x+r.width/2);
-      int dy = map.mapSize().height/2-(r.y+r.height/2);
-      for (int i=0;i<p.length;++i) {
-        if (Boolean.TRUE.equals(dispatcher.accept(p[i]))) {
-          ChangeTracker tracker = new ChangeTracker(p[i]);
-          Point pt = p[i].getPosition();
+
+    if (r.height >= 0 && r.width >= 0) {
+      final int dx = map.mapSize().width/2-(r.x+r.width/2);
+      final int dy = map.mapSize().height/2-(r.y+r.height/2);
+      for (GamePiece p : pieces) {
+        if (Boolean.TRUE.equals(dispatcher.accept(p))) {
+          final ChangeTracker tracker = new ChangeTracker(p);
+          final Point pt = p.getPosition();
           pt.translate(dx,dy);
-          p[i].setPosition(pt);
+          p.setPosition(pt);
           c.append(tracker.getChangeCommand());
         }
       }
     }
+
     map.repaint();
     return c;
   }

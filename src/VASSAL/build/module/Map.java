@@ -841,10 +841,8 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
 // FIXME: why synchronized?
   public synchronized Dimension mapSize() {
-    Rectangle r = new Rectangle(0, 0);
-    for (Board b : boards) {
-      r = r.union(b.bounds());
-    }
+    final Rectangle r = new Rectangle(0,0);
+    for (Board b : boards) r.add(b.bounds());
     r.width += edgeBuffer.width;
     r.height += edgeBuffer.height;
     return r.getSize();
@@ -1526,16 +1524,18 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     Rectangle r = null;
     if (p.getMap() == this) {
       r = p.boundingBox();
-      Point pos = p.getPosition();
+      final Point pos = p.getPosition();
       r.translate(pos.x, pos.y);
+
       if (Boolean.TRUE.equals(p.getProperty(Properties.SELECTED))) {
-        r = r.union(highlighter.boundingBox(p));
+        r.add(highlighter.boundingBox(p));
         for (Iterator<Highlighter> i = getHighlighters(); i.hasNext();) {
-          r = r.union(i.next().boundingBox(p));
+          r.add(i.next().boundingBox(p));
         }
       }
+
       if (p.getParent() != null) {
-        Point pt = getStackMetrics().relativePosition(p.getParent(), p);
+        final Point pt = getStackMetrics().relativePosition(p.getParent(), p);
         r.translate(pt.x, pt.y);
       }
     }

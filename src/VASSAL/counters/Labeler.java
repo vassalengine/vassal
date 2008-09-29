@@ -455,10 +455,9 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
-    final Rectangle r2 = piece.getShape().getBounds();
-    final Point p2 = getLabelPosition();
-    final Rectangle r3 = new Rectangle(p2, imagePainter.getImageSize());
-    return r.union(r2).union(r3);
+    r.add(piece.getShape().getBounds());
+    r.add(new Rectangle(getLabelPosition(), imagePainter.getImageSize()));
+    return r;
   }
 
   public Shape getShape() {

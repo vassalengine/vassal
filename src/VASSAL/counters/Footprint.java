@@ -535,11 +535,9 @@ public class Footprint extends MovementMarkable {
    * just return the standard piece bounding box
    */
   public Rectangle boundingBox() {
-    if (isTrailVisible() && getMap() != null) {
-      return piece.boundingBox().union(getMyBoundingBox());
-    }
-    else
-      return piece.boundingBox();
+    final Rectangle r = piece.boundingBox();
+    if (isTrailVisible() && getMap() != null) r.add(getMyBoundingBox());
+    return r;
   }
 
   /**

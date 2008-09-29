@@ -341,14 +341,19 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
 
   protected Rectangle bBoxObscuredToOthers() {
+    final Rectangle r;
     switch (displayStyle) {
       case BACKGROUND:
-        return bBoxObscuredToMe();
+        r = bBoxObscuredToMe();
+        break;
       case IMAGE:
-        return piece.boundingBox().union(obscuredToOthersView.boundingBox());
+        r = piece.boundingBox();
+        r.add(obscuredToOthersView.boundingBox());
+        break;
       default:
-        return piece.boundingBox();
+        r = piece.boundingBox();
     }
+    return r;
   }
 
   public String getLocalizedName() {

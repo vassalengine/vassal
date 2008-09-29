@@ -297,15 +297,17 @@ public class Stack implements GamePiece, StateMergeable {
   }
 
   public Rectangle boundingBox() {
-    Rectangle r = new Rectangle();
-    Rectangle[] childBounds = new Rectangle[getPieceCount()];
+    final Rectangle r = new Rectangle();
+    final Rectangle[] childBounds = new Rectangle[getPieceCount()];
     getMap().getStackMetrics().getContents(this, null, null, childBounds, 0, 0);
+
     final PieceIterator visibleFilter =
       PieceIterator.visible(getPiecesIterator());
     while (visibleFilter.hasMoreElements()) {
-      GamePiece p = visibleFilter.nextPiece();
-      r = r.union(childBounds[indexOf(p)]);
+      final GamePiece p = visibleFilter.nextPiece();
+      r.add(childBounds[indexOf(p)]);
     }
+
     return r;
   }
 

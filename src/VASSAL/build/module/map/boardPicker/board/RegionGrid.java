@@ -1026,7 +1026,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
           rect = sel;
         }
         else {
-          rect = rect.union(sel);
+          rect.add(sel);
         }
       }
       return rect;
@@ -1087,17 +1087,22 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (!e.isMetaDown()) {
         scrollAtEdge(e.getPoint(), 15);
       }
+
       if (selectionRect != null) {
+        // FIXME: inefficient, could be done with only one new Rectangle
         final Rectangle repaintRect =
           new Rectangle(selectionRect.x-1, selectionRect.y-1,
                         selectionRect.width+3, selectionRect.height+3);
+
         selectionRect.x = Math.min(e.getX(), anchor.x);
         selectionRect.y = Math.min(e.getY(), anchor.y);
         selectionRect.width = Math.abs(e.getX() - anchor.x);
-        selectionRect.height = Math.abs(e.getY() - anchor.y);        
-        view.repaint(repaintRect.union(
+        selectionRect.height = Math.abs(e.getY() - anchor.y);
+
+        repaintRect.add(
           new Rectangle(selectionRect.x-1, selectionRect.y-1,
-                        selectionRect.width+3, selectionRect.height+3)));
+                        selectionRect.width+3, selectionRect.height+3));
+        view.repaint(repaintRect);
       }
     }
 
