@@ -72,8 +72,15 @@ public class Player extends Launcher {
     protected Object reply(Object cmd) {
       if ("REQUEST_CLOSE".equals(cmd)) {
         final GameModule module = GameModule.getGameModule();
-        module.getFrame().toFront();
-        final boolean shutDown = module.shutDown();
+        final boolean shutDown;
+        if (module != null) {
+          module.getFrame().toFront();
+          shutDown = module.shutDown();
+        }
+        else {
+          shutDown = true;
+        }
+
         try {
           return shutDown ? "OK" : "NOK";
         }
