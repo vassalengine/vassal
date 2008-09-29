@@ -60,13 +60,12 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
     hash = piece.hashCode();
   }
 
-// NB: GamePieceOpImpl CANNOT be called asynchronously becuase it cannot
-// reliably report on its dependencies.
-
   @Override
   public Image get(OpObserver<Image> obs) throws CancellationException,
                                                  InterruptedException,
                                                  ExecutionException {
+    // GamePieceOpImpl CANNOT be called asynchronously becuase it cannot
+    // reliably report on its dependencies.
     if (obs != null) throw new UnsupportedOperationException();
     return super.get(obs);
   }
@@ -74,6 +73,8 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
   @Override
   public Future<Image> getFuture(OpObserver<Image> obs)
                                                   throws ExecutionException {
+    // GamePieceOpImpl CANNOT be called asynchronously becuase it cannot
+    // reliably report on its dependencies.
     if (obs != null) throw new UnsupportedOperationException();
     return super.getFuture(obs);
   }
