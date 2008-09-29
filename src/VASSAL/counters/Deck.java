@@ -528,7 +528,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return untranslatedDeckName == null ? deckName : untranslatedDeckName;
   }
 
-
   public String getLocalizedDeckName() {
     return deckName;
   }
@@ -554,7 +553,6 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public void setReshuffleKey(KeyStroke reshuffleKey) {
     this.reshuffleKey = reshuffleKey;
   }
-  
 
   /**
    * The name of the {@link VASSAL.build.module.map.DrawPile} to which the
@@ -633,11 +631,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   /** Shuffle the contents of the Deck */
   public Command shuffle() {
-    ArrayList<Integer> indices = new ArrayList<Integer>();
+    final ArrayList<Integer> indices = new ArrayList<Integer>();
     for (int i = 0; i < getPieceCount(); ++i) {
       indices.add(i);
     }
-    ArrayList<GamePiece> newContents = new ArrayList<GamePiece>();
+    final ArrayList<GamePiece> newContents = new ArrayList<GamePiece>();
     DragBuffer.getBuffer().clear();
 // FIXME: check whether this is a good shuffle
     for (int count = getPieceCount(); count > 0; --count) {
@@ -661,8 +659,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       it = nextDraw.iterator();
     }
     else if (getPieceCount() == 0) {
-      List<GamePiece> empty = Collections.emptyList();
-      it = empty.iterator();
+      it = Collections.<GamePiece>emptyList().iterator();
     }
     else {
       int count = Math.max(dragCount, Math.min(1, getPieceCount()));
@@ -674,18 +671,17 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           indices.add(i);
         }
         while (count-- > 0 && indices.size() > 0) {
-          int i = GameModule.getGameModule().getRNG().nextInt(indices.size());
-          int index = indices.get(i);
+          final int i =
+            GameModule.getGameModule().getRNG().nextInt(indices.size());
+          final int index = indices.get(i);
           indices.remove(i);
-          GamePiece p = getPieceAt(index);
+          final GamePiece p = getPieceAt(index);
           pieces.add(p);
         }
       }
       else {
         final Iterator<GamePiece> i = getPiecesReverseIterator();
-        while (count-- > 0 && i.hasNext()) {
-          pieces.add(i.next());
-        }
+        while (count-- > 0 && i.hasNext()) pieces.add(i.next());
       }
       it = pieces.iterator();
     }
@@ -950,7 +946,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
-            Command c = setContentsFaceDown(!faceDown);
+            final Command c = setContentsFaceDown(!faceDown);
             GameModule.getGameModule().sendAndLog(c);
             repaintMap();
           }
@@ -962,7 +958,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
-            Command c = reverse();
+            final Command c = reverse();
             GameModule.getGameModule().sendAndLog(c);
             repaintMap();
           }
@@ -1432,7 +1428,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     return selectSortProperty;
   }
 
-  public void repaintMap() {
+  protected void repaintMap() {
     if (map != null) {
       map.repaint();
     }
