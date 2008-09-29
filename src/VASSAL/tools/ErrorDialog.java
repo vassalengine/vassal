@@ -222,7 +222,7 @@ public class ErrorDialog {
     Object key,
     String... message)
   {
-    ErrorLog.log(thrown);
+    if (thrown != null) ErrorLog.log(thrown);
     show(parent, title, header, message,
          getStackTrace(thrown), JOptionPane.ERROR_MESSAGE, key);
   }
@@ -271,7 +271,7 @@ public class ErrorDialog {
     Object key,
     String... message)
   {
-    ErrorLog.log(thrown);
+    if (thrown != null) ErrorLog.log(thrown);
     show(parent, title, header, message,
          getStackTrace(thrown), JOptionPane.WARNING_MESSAGE, key);
   }
