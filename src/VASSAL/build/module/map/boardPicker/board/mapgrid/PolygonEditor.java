@@ -50,8 +50,7 @@ public class PolygonEditor extends JPanel {
 
   public PolygonEditor(Polygon p) {
     polygon = p;
-    if (polygon == null
-        || polygon.npoints == 0) {
+    if (polygon == null || polygon.npoints == 0) {
       setupForCreate();
     }
     else {
@@ -148,10 +147,11 @@ public class PolygonEditor extends JPanel {
   public void paint(Graphics g) {
     paintBackground(g);
     if (polygon != null && polygon.npoints > 0) {
-      Graphics2D g2d = (Graphics2D) g;
+      final Graphics2D g2d = (Graphics2D) g;
 
       g2d.setColor(Color.white);
-      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
+      g2d.setComposite(
+        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
       g2d.fill(polygon);
 
       if (selected >= 0 && selected < polygon.xpoints.length) {

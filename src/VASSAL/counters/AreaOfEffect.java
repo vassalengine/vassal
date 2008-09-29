@@ -173,22 +173,25 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
     if ((alwaysActive || active) && mapShaderName == null) {
-// The transparency is only draw on a Map.View component.  Only the GamePiece is drawn within
-// other windows (Counter Palette, etc.)
+      // The transparency is only drawn on a Map.View component. Only the
+      // GamePiece is drawn within other windows (Counter Palette, etc.).
       if (obs instanceof Map.View && getMap() != null) {
-        Graphics2D g2d = (Graphics2D) g;
+        final Graphics2D g2d = (Graphics2D) g;
 
-        Color oldColor = g2d.getColor();
+        final Color oldColor = g2d.getColor();
         g2d.setColor(transparencyColor);
 
-        Composite oldComposite = g2d.getComposite();
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparencyLevel));
+        final Composite oldComposite = g2d.getComposite();
+        g2d.setComposite(AlphaComposite.getInstance(
+          AlphaComposite.SRC_OVER, transparencyLevel));
 
         Area a = getArea();
 
         if (zoom != 1.0) {
-          a = new Area(AffineTransform.getScaleInstance(zoom,zoom).createTransformedShape(a));
+          a = new Area(AffineTransform.getScaleInstance(zoom,zoom)
+                                      .createTransformedShape(a));
         }
+
         g2d.fill(a);
 
         g2d.setColor(oldColor);
@@ -196,7 +199,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       }
     }
 
-// Draw the GamePiece
+    // Draw the GamePiece
     piece.draw(g, x, y, obs, zoom);
   }
 
