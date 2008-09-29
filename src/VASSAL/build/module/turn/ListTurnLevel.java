@@ -114,19 +114,22 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
    * Set the state of the level
    */
   protected void setState(String code) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(code, ';');
     current = sd.nextInt(start);
     currentSubLevel = sd.nextInt(-1);
     first = sd.nextInt(0);
 
-    String[] s = sd.nextStringArray(0);
+    final String[] s = sd.nextStringArray(0);
     active = new boolean[list.length];
-    for (int i = 0; i < Math.min(s.length,active.length); i++) {
+    final int l = Math.min(s.length, active.length);
+    for (int i = 0; i < l; i++) {
       active[i] = s[i].equals("true"); //$NON-NLS-1$
     }
+
     for (int i = 0; i < getTurnLevelCount(); i++) {
       getTurnLevel(i).setState(sd.nextToken("")); //$NON-NLS-1$
     }
+
     myValue.setPropertyValue(getValueString());
   }
 

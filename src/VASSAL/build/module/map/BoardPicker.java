@@ -440,7 +440,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
 
   protected Board getBoard(String boardName, boolean localized) {
     for (Board b : possibleBoards) {
-      String checkName = localized ? b.getLocalizedName() : b.getName();
+      final String checkName = localized ? b.getLocalizedName() : b.getName();
       if (checkName.equals(boardName)) {
         return b;
       }
