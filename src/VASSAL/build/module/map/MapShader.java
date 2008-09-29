@@ -144,7 +144,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   protected ImageOp srcOp;
 
   protected TexturePaint texture = null;
-  protected java.util.Map<Double,TexturePaint> textures = new HashMap<Double, TexturePaint>();
+  protected java.util.Map<Double,TexturePaint> textures =
+    new HashMap<Double,TexturePaint>();
   protected AlphaComposite composite = null;
   protected AlphaComposite borderComposite = null;
   protected BasicStroke stroke = null;
@@ -164,7 +165,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
       g2.setComposite(getComposite());
       g2.setColor(getColor());
-      g2.setPaint(scaleImage && pattern.equals(TYPE_IMAGE) && imageName != null ? getTexture(zoom) : getTexture());
+      g2.setPaint(
+        scaleImage && pattern.equals(TYPE_IMAGE) && imageName != null ?
+        getTexture(zoom) : getTexture());
       Area area = getShadeShape(map);
       if (zoom != 1.0) {
         area = new Area(AffineTransform.getScaleInstance(zoom,zoom)
@@ -260,6 +263,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   protected BufferedImage getShadePattern(double zoom) {
     if (srcOp == null) buildShadePattern();
+// FIXME: switch all ImageOps to return BufferedImages
     return ImageUtils.toBufferedImage(Op.scale(srcOp,zoom).getImage());
   }
 

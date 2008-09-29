@@ -80,7 +80,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   protected String gpId = "";
   protected String newGpId;
   protected GpIdSupport gpidSupport; // The component that generates unique Slot Id's for us
-  private static final int STACK_TOP=0, STACK_BOTTOM=1, ABOVE=2, BELOW=3;
+  private static final int STACK_TOP = 0;
+  private static final int STACK_BOTTOM = 1;
+  private static final int ABOVE = 2;
+  private static final int BELOW = 3;
   protected int placement = STACK_TOP;
 
 
@@ -158,16 +161,18 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
           p = new Point((int) markerPosition.getX(), (int) markerPosition.getY());
         }
       }
+
       if (!Boolean.TRUE.equals(marker.getProperty(Properties.IGNORE_GRID))) {
         p = getMap().snapTo(p);
       }
+
       if (getMap().getStackMetrics().isStackingEnabled() 
           && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))
           && !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK))
           && getMap().getPieceCollection().canMerge(outer, marker)) {
-        Stack parent = getParent();
+        final Stack parent = getParent();
         GamePiece target = outer;
-        int index=-1;
+        int index = -1;
         switch (placement) {
         case ABOVE:
           target = outer;
@@ -183,7 +188,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         }
         c = getMap().getStackMetrics().merge(target, marker);
         if (index >= 0) {
-          ChangeTracker ct = new ChangeTracker(parent);
+          final ChangeTracker ct = new ChangeTracker(parent);
           parent.insert(marker,index);
           c = c.append(ct.getChangeCommand());
         }
@@ -326,7 +331,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     afterBurnerKey = st.nextKeyStroke(null);
     description = st.nextToken("");
     setGpId(st.nextToken(""));
-    placement=st.nextInt(STACK_TOP);
+    placement = st.nextInt(STACK_TOP);
   }
 
   public PieceEditor getEditor() {

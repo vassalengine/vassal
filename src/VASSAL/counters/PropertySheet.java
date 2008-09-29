@@ -561,19 +561,13 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   }
 
   public Object getProperty(Object key) {
-    Object value = properties.get(key);
-    if (value == null) {
-      value = super.getProperty(key);
-    }
-    return value;
+    final Object value = properties.get(key);
+    return value == null ? super.getProperty(key) : value;
   }
   
   public Object getLocalizedProperty(Object key) {
-    Object value = properties.get(key);
-    if (value == null) {
-      value = super.getLocalizedProperty(key);
-    }
-    return value;
+    final Object value = properties.get(key);
+    return value == null ? super.getLocalizedProperty(key) : value;
   }
 
   public String getDescription() {
