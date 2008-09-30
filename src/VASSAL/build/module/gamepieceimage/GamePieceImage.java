@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.imageio.ImageIO;
 
 import VASSAL.build.AbstractConfigurable;
@@ -36,7 +37,6 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ImageSource;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.SourceOp;
@@ -44,7 +44,7 @@ import VASSAL.tools.imageop.SourceOp;
 /**
  * 
  */
-public class GamePieceImage extends AbstractConfigurable implements Visualizable, Cloneable, ImageSource, UniqueIdManager.Identifyable {
+public class GamePieceImage extends AbstractConfigurable implements Visualizable, Cloneable, UniqueIdManager.Identifyable {
 
   protected static final String NAME = "name"; //$NON-NLS-1$
   protected static final String PROPS = "props"; //$NON-NLS-1$
@@ -56,8 +56,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   public static final String BG_COLOR = "bgColor"; //$NON-NLS-1$
   public static final String BORDER_COLOR = "borderColor"; //$NON-NLS-1$
 
-// FIXME: Why size 5? Comment this to indicate the reason.
-  protected List<ItemInstance> instances = new ArrayList<ItemInstance>(5);
+  protected List<ItemInstance> instances = new ArrayList<ItemInstance>();
   protected InstanceConfigurer defnConfig = null;
   protected GamePieceLayout layout;
   protected ColorSwatch bgColor = ColorSwatch.getWhite();
@@ -66,6 +65,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   protected static UniqueIdManager idMgr = new UniqueIdManager("GamePieceImage"); //$NON-NLS-1$
   protected String nameInUse;
+  protected Image visImage = null;
  
   // empty image for images scaled to zero size
   protected static final Image NULL_IMAGE =
@@ -86,7 +86,6 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     this();
     setConfigureName(l.getConfigureName());
     layout = l;
-    rebuildInstances();
   }
 
   public GamePieceImage(GamePieceImage defn) {
@@ -145,6 +144,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       id = (GamePieceImage) c;
       id.defnConfig = new InstanceConfigurer(key, name, id);
+      id.rebuildInstances();
       return id.defnConfig;
     }
 
@@ -170,6 +170,12 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       final String newName = (String) value;
+      final String oldName = getConfigureName();
+      if (newName != oldName && oldName.length() > 0) {
+        GameModule.getGameModule().getDataArchive().removeImageSource(oldName);
+        GameModule.getGameModule().getArchiveWriter().removeImage(oldName);
+        GameModule.getGameModule().getArchiveWriter().addImage(newName, getEncodedImage((BufferedImage) visImage));
+      }
       setConfigureName(newName);
     }
     else if (BG_COLOR.equals(key)) {
@@ -203,7 +209,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
         defnConfig.repack();
       }
     }
-    rebuildVisualizerImage();
+    if (defnConfig != null) {
+      rebuildVisualizerImage();
+    }
   }
 
   public String getAttributeValueString(String key) {
@@ -260,7 +268,6 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     layout = (GamePieceLayout) parent;
     idMgr.add(this);
     validator = idMgr;
-    rebuildInstances();
     setAllAttributesUntranslatable();
   }
 
@@ -292,59 +299,27 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     return getLayout().getVisualizerWidth();
   }
 
-  // Let the DataArchive cache the image
   public Image getVisualizerImage() {
-/*
-    try {
-      return GameModule.getGameModule().getDataArchive().getCachedImage(getConfigureName());
+    if (visImage == null) {
+      rebuildVisualizerImage();
     }
-    catch (IOException e) {
-      return NULL_IMAGE;
-    }
-*/
-    if (getConfigureName() == null || getConfigureName().length() == 0) {
-      return NULL_IMAGE;
-    }
-    
-    srcOp = Op.load(getConfigureName());
-
-    final Image img = srcOp.getImage();
-    return img == null ? NULL_IMAGE : img;
+    return visImage;
   }
 
-  // Called by the DataArchive only when the image is needed
-  // This only happens in edit mode, so we add the image data to the archive
-  // here
-  public Image getImage() {
-    final Image i = layout.buildImage(this);
-    GameModule.getGameModule()
-              .getArchiveWriter()
-              .addImage(getConfigureName(), getEncodedImage((BufferedImage) i));
-    return i;
-  }
-
-  // Invalidate the image data in the Data Archive
-  // If we've changed names, remove the data under the old name
-  // This only happens in edit mode
+  // Build the new image and add to the archive
   public void rebuildVisualizerImage() {
-    if (GameModule.getGameModule().getArchiveWriter() != null) {
-      if (nameInUse != null) {
-//        GameModule.getGameModule().getDataArchive().unCacheImage(nameInUse);
-// FIXME: this is probably not right at all---we need to do something here!
-//        ImageCache.remove(new SourceOp(nameInUse));
-        if (!nameInUse.equals(getConfigureName())) {
-          GameModule.getGameModule().getDataArchive().removeImageSource(nameInUse);
-          GameModule.getGameModule().getArchiveWriter().removeImage(nameInUse);
-          nameInUse = null;
-        }
-      }
-      if (nameInUse == null &&
-          getConfigureName() != null &&
-          getConfigureName().length() > 0 &&
+    
+    if (layout != null) {
+      visImage = layout.buildImage(this);
+
+      if (GameModule.getGameModule().getArchiveWriter() != null) {
+        if (getConfigureName() != null && getConfigureName().length() > 0) {
           GameModule.getGameModule()
-                    .getDataArchive()
-                    .addImageSource(getConfigureName(), this)) {
-        nameInUse = getConfigureName();
+                    .getArchiveWriter()
+                    .addImage(getConfigureName(), getEncodedImage((BufferedImage) visImage));
+          SourceOp op = Op.load(getConfigureName());
+          op.update();
+        }       
       }
     }
   }
@@ -440,22 +415,24 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       }
     }
 
-    for (Item item : layout.getItems()) {
-      final String name = item.getConfigureName();
-      final String type = item.getType();
-      final String location = item.getLocation();
+    if (layout != null) {
+      for (Item item : layout.getItems()) {
+        final String name = item.getConfigureName();
+        final String type = item.getType();
+        final String location = item.getLocation();
 
-      boolean found = false;
-      for (ItemInstance prop : instances) {
-        found = name.equals(prop.getName());
-        if (found) break;
-      }
+        boolean found = false;
+        for (ItemInstance prop : instances) {
+          found = name.equals(prop.getName());
+          if (found) break;
+        }
 
-      if (!found) {
-        final ItemInstance instance =
-          ItemInstance.newDefaultInstance(name, type, location);
-        instance.addTo(this);
-        newInstances.add(instance);
+        if (!found) {
+          final ItemInstance instance =
+            ItemInstance.newDefaultInstance(name, type, location);
+          instance.addTo(this);
+          newInstances.add(instance);
+        }
       }
     }
 

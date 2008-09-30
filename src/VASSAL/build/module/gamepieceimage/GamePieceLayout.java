@@ -374,7 +374,6 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   protected void invalidate() {
-    imageDefn.rebuildVisualizerImage();
     for (GamePieceImage i : getComponentsOf(GamePieceImage.class)) {
       i.rebuildVisualizerImage();
     }
