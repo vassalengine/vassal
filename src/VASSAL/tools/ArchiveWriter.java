@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.SortedSet;
@@ -42,7 +43,6 @@ import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.launch.Launcher;
 import VASSAL.preferences.Prefs;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imageop.Op;
 
@@ -53,7 +53,10 @@ import VASSAL.tools.imageop.Op;
 public class ArchiveWriter extends DataArchive {
   private final Map<String,Object> files =
     new ConcurrentHashMap<String,Object>();
-
+  
+  // List of existing images removed by changing the name of Game Piece Images
+  private final ArrayList<String> removedImages = new ArrayList<String>();
+  
   private String archiveName;
   private boolean closeWhenNotInUse;
 
@@ -144,8 +147,8 @@ public class ArchiveWriter extends DataArchive {
   }
 
   public void addImage(String name, byte[] contents) {
-//    ImageCache.remove(new SourceOp(name));
     files.put(imageDir + name, contents);
+    removedImages.remove(imageDir + name);
     localImages = null;
   } 
   
@@ -159,7 +162,12 @@ public class ArchiveWriter extends DataArchive {
 
   public void removeImage(String name) {
 //    ImageCache.remove(new SourceOp(name));
-    files.remove(imageDir + name);
+    final String path = imageDir + name;
+    
+    files.remove(path);
+    if (!removedImages.contains(path)) {
+      removedImages.add(path);
+    }
     localImages = null;
   }
 
@@ -298,11 +306,16 @@ public class ArchiveWriter extends DataArchive {
                   new FileInputStream(archive.getName())));
 
           ZipEntry entry = null;
+
           while ((entry = in.getNextEntry()) != null) {
             // skip modified or new entries
             final String name = entry.getName();
 
+            // Skip entries that have been added this editing session
             if (files.containsKey(name)) continue;
+
+            // Skip images removed via Game Piece Image name changes
+            if (removedImages.contains(name)) continue;
 
             if (entry.getMethod() == ZipEntry.DEFLATED) {
               // we can't reuse entries for compressed files
