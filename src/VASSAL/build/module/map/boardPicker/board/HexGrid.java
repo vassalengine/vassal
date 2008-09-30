@@ -394,7 +394,7 @@ public class HexGrid extends AbstractConfigurable
     shapeCache.clear();
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{HexGridNumbering.class};
   }
 
@@ -414,6 +414,8 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public Point snapTo(Point p) {
+    Point center = snapToHex(p);
+    
     if (edgesLegal && cornersLegal) {
       Point edge = snapToHexSide(p);
       Point vertex = snapToHexVertex(p);
@@ -421,22 +423,36 @@ public class HexGrid extends AbstractConfigurable
           + (p.y - edge.y) * (p.y - edge.y)
           < (p.x - vertex.x) * (p.x - vertex.x)
           + (p.y - vertex.y) * (p.y - vertex.y)) {
-        return edge;
+        return checkCenter(center, edge);
       }
       else {
-        return vertex;
+        return checkCenter(center, vertex);
       }
     }
     else if (edgesLegal) {
-      return snapToHexSide(p);
+      return checkCenter(center, snapToHexSide(p));
     }
     else if (cornersLegal) {
-      return snapToHexVertex(p);
+      return checkCenter(center, snapToHexVertex(p));
     }
     else {
       return snapToHex(p);
     }
   }
+  
+  // FIXME: snapToHexVertex() does not always return the correct X co-ordinate 
+  // if the point is close to the center of the Hex. Workaround by returning 
+  // the real hex center if it is within 1 pixel x/y 
+  protected Point checkCenter(Point center, Point target) { 
+    if ((center.x - target.x) * (center.x - target.x) 
+          + (center.y - target.y) * (center.y - target.y) <= 2) { 
+      return center; 
+    } 
+    else { 
+      return target; 
+    } 
+  } 
+
 
   public boolean isLocationRestricted(Point p) {
     return true;
@@ -679,6 +695,10 @@ public class HexGrid extends AbstractConfigurable
     }
   }
 
+  // FIXME: vertexX does not always return the same value as HexX for hex 
+  // centres, it is sometimes 1 pixel off. The values returned for the 
+  // vertices are fine, so snapTo() has been changed to work around this. 
+  // There is a rounding error in here if someone else wants to track it down. 
   protected int vertexX(int x, int y) {
     int ny = (int) floor((y - origin.y + dy / 4) * 2 / dy);
     if (ny % 2 == 0) {
