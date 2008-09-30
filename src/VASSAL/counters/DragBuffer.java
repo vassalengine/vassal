@@ -33,26 +33,17 @@ import javax.swing.JFrame;
 import VASSAL.build.module.Map;
 
 public class DragBuffer {
-  private static DragBuffer theBuffer;
-  private List<GamePiece> pieces;
+  private final static DragBuffer theBuffer = new DragBuffer();
+
+  private final List<GamePiece> pieces = new ArrayList<GamePiece>();
   private MouseEvent lastRelease;
   private Component dropTarget;
   private MouseListener dropHandler;
   private Map dragFromMap;
 
-  private DragBuffer() {
-    pieces = new ArrayList<GamePiece>();
-  }
-
-  public static void init(DragBuffer db) {
-    if (theBuffer == null)
-      theBuffer = db;
-  }
+  private DragBuffer() { }
 
   public static DragBuffer getBuffer() {
-    if (theBuffer == null) {
-      theBuffer = new DragBuffer();
-    }
     return theBuffer;
   }
 
@@ -211,5 +202,9 @@ public class DragBuffer {
   public void sort(VASSAL.tools.Sort.Comparator comp) {
     sort((Comparator) comp);
   }
-}
 
+  /** @deprecated */
+  @Deprecated
+  public static void init(DragBuffer db) {
+  }
+}
