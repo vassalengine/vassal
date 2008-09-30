@@ -110,13 +110,16 @@ public class PieceMover extends AbstractBuildable
   protected String markUnmovedIcon;
   public static final String ICON_NAME = "icon"; //$NON-NLS-1$
   protected String iconName;
-  protected PieceFinder dragTargetSelector; // Selects drag target from mouse
-  // click on the Map
-  protected PieceFinder dropTargetSelector; // Selects piece to merge with at
-  // the drop destination
-  protected PieceVisitorDispatcher selectionProcessor; // Processes drag target
-  // after having been
-  // selected
+
+  // Selects drag target from mouse click on the Map
+  protected PieceFinder dragTargetSelector;
+
+  // Selects piece to merge with at the drop destination
+  protected PieceFinder dropTargetSelector;
+ 
+  // Processes drag target  after having been selected
+  protected PieceVisitorDispatcher selectionProcessor;
+
   protected Comparator<GamePiece> pieceSorter = new PieceSorter();
 
   public void addTo(Buildable b) {
@@ -133,7 +136,6 @@ public class PieceMover extends AbstractBuildable
     setAttribute(Map.MARK_UNMOVED_ICON,
                  map.getAttributeValueString(Map.MARK_UNMOVED_ICON));
   }
-
 
   protected MovementReporter createMovementReporter(Command c) {
     return new MovementReporter(c);
@@ -841,8 +843,8 @@ public class PieceMover extends AbstractBuildable
       DragHandler.getTheDragHandler().dropTargetListeners.remove(theComponent);
     }
 
-    protected DropTargetListener getListener(DropTargetEvent event) {
-      final Component component = event.getDropTargetContext().getComponent();
+    protected DropTargetListener getListener(DropTargetEvent e) {
+      final Component component = e.getDropTargetContext().getComponent();
       return dropTargetListeners.get(component);
     }
 
@@ -1109,77 +1111,81 @@ public class PieceMover extends AbstractBuildable
     ///////////////////////////////////////////////////////////////////////////
     /** Fires after user begins moving the mouse several pixels over a map. */
     public void dragGestureRecognized(DragGestureEvent dge) {
-      /* 
-       * Ensure the user has dragged on a counter before starting the drag. 
-       */
-      if (!DragBuffer.getBuffer().isEmpty()) {
-        final Map map = dge.getComponent() instanceof Map.View
-                      ? ((Map.View) dge.getComponent()).getMap() : null;
+      // Ensure the user has dragged on a counter before starting the drag. 
+      final DragBuffer db = DragBuffer.getBuffer();
+      if (db.isEmpty()) return;
+
+      // Remove any Immovable pieces from the DragBuffer that were
+      // selected in a selection rectangle, unless they are being
+      // dragged from a piece palette (i.e., getMap() == null).
+      final List<GamePiece> pieces = new ArrayList<GamePiece>();              
+      for (PieceIterator i = db.getIterator();
+           i.hasMoreElements(); pieces.add(i.nextPiece()));
+      for (GamePiece piece : pieces) {
+        if (piece.getMap() != null &&
+            Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE))) {
+            db.remove(piece);
+        }
+      }        
+
+      // Bail out if this leaves no pieces to drag.
+      if (db.isEmpty()) return;
                       
-        // Remove any Immovable pieces from the DragBuffer that were
-        // selected in a selection rectangle, unless they are being
-        // dragged from a piece palette (i.e., getMap() == null).
-        final List<GamePiece> pieces = new ArrayList<GamePiece>();              
-        for (PieceIterator i = DragBuffer.getBuffer().getIterator();
-             i.hasMoreElements(); pieces.add(i.nextPiece()));
-        for (GamePiece piece : pieces) {
-          if (piece.getMap() != null &&
-              Boolean.TRUE.equals(piece.getProperty(Properties.NON_MOVABLE))) {
-             DragBuffer.getBuffer().remove(piece);
-          }
-        }        
+      final GamePiece piece = db.getIterator().nextPiece();
+
+      final Map map = dge.getComponent() instanceof Map.View ?
+                      ((Map.View) dge.getComponent()).getMap() : null;
                       
-        final GamePiece piece =
-          DragBuffer.getBuffer().getIterator().nextPiece();
-        final Point mousePosition = map == null ?
-          dge.getDragOrigin() : map.componentCoordinates(dge.getDragOrigin());
-        Point piecePosition = map == null ?
-          piece.getPosition() : map.componentCoordinates(piece.getPosition());
-        // If DragBuffer holds a piece with invalid coordinates (for example, a
-        // card drawn from a deck),
-        // drag from center of piece
-        if (piecePosition.x <= 0 || piecePosition.y <= 0) {
-          piecePosition = mousePosition;
-        }
-        // Account for offset of piece within stack
-        // We do this even for un-expanded stacks, since the offset can still be significant if the stack is large
-        dragPieceOffCenterZoom = map == null ? 1.0 : map.getZoom();
-        if (piece.getParent() != null && map != null) {
-          final Point offset = piece.getParent().getStackMetrics().relativePosition(piece.getParent(), piece);
-          piecePosition.translate((int) Math.round(offset.x * dragPieceOffCenterZoom), (int) Math.round(offset.y * dragPieceOffCenterZoom));
-        }
-        originalPieceOffsetX = piecePosition.x - mousePosition.x; // dragging
-        // from UL
-        // results in
-        // positive
-        // offsets
-        originalPieceOffsetY = piecePosition.y - mousePosition.y;
-        dragWin = dge.getComponent();
-        drawWin = null;
-        dropWin = null;
+      final Point mousePosition = map == null ?
+        dge.getDragOrigin() : map.componentCoordinates(dge.getDragOrigin());
+      Point piecePosition = map == null ?
+        piece.getPosition() : map.componentCoordinates(piece.getPosition());
+      // If DragBuffer holds a piece with invalid coordinates (for example, a
+      // card drawn from a deck), drag from center of piece
+      if (piecePosition.x <= 0 || piecePosition.y <= 0) {
+        piecePosition = mousePosition;
+      }
+      // Account for offset of piece within stack
+      // We do this even for un-expanded stacks, since the offset can
+      // still be significant if the stack is large
+      dragPieceOffCenterZoom = map == null ? 1.0 : map.getZoom();
+      if (piece.getParent() != null && map != null) {
+        final Point offset = piece.getParent()
+                                  .getStackMetrics()
+                                  .relativePosition(piece.getParent(), piece);
+        piecePosition.translate(
+          (int) Math.round(offset.x * dragPieceOffCenterZoom),
+          (int) Math.round(offset.y * dragPieceOffCenterZoom));
+      }
 
-        if (!isDragImageSupported) {
-          makeDragCursor(dragPieceOffCenterZoom);
-          setDrawWinToOwnerOf(dragWin);
-          SwingUtilities.convertPointToScreen(mousePosition, drawWin);
-          moveDragCursor(mousePosition.x, mousePosition.y);
-        }
+      // dragging from UL results in positive offsets
+      originalPieceOffsetX = piecePosition.x - mousePosition.x;
+      originalPieceOffsetY = piecePosition.y - mousePosition.y;
+      dragWin = dge.getComponent();
+      drawWin = null;
+      dropWin = null;
 
-        final BufferedImage dragImage = makeDragImage(dragPieceOffCenterZoom);
+      if (!isDragImageSupported) {
+        makeDragCursor(dragPieceOffCenterZoom);
+        setDrawWinToOwnerOf(dragWin);
+        SwingUtilities.convertPointToScreen(mousePosition, drawWin);
+        moveDragCursor(mousePosition.x, mousePosition.y);
+      }
 
-        // begin dragging
-        try {
-          final Point dragPointOffset = new Point(
-            boundingBox.x + currentPieceOffsetX - EXTRA_BORDER,
-            boundingBox.y + currentPieceOffsetY - EXTRA_BORDER);
-          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
-                        dragImage, dragPointOffset,
-                        new StringSelection(""), this); //$NON-NLS-1$
-          dge.getDragSource().addDragSourceMotionListener(this);
-        }
-        catch (InvalidDnDOperationException e) {
-          ErrorDialog.bug(e);
-        }
+      final BufferedImage dragImage = makeDragImage(dragPieceOffCenterZoom);
+
+      // begin dragging
+      try {
+        final Point dragPointOffset = new Point(
+          boundingBox.x + currentPieceOffsetX - EXTRA_BORDER,
+          boundingBox.y + currentPieceOffsetY - EXTRA_BORDER);
+        dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
+                      dragImage, dragPointOffset,
+                      new StringSelection(""), this); //$NON-NLS-1$
+        dge.getDragSource().addDragSourceMotionListener(this);
+      }
+      catch (InvalidDnDOperationException e) {
+        ErrorDialog.bug(e);
       }
     }
 
@@ -1217,11 +1223,11 @@ public class PieceMover extends AbstractBuildable
     Point lastDragLocation = new Point();
 
     /** Moves cursor after mouse */
-    public void dragMouseMoved(DragSourceDragEvent event) {
+    public void dragMouseMoved(DragSourceDragEvent e) {
       if (!isDragImageSupported) {
-        if (!event.getLocation().equals(lastDragLocation)) {
-          lastDragLocation = event.getLocation();
-          moveDragCursor(event.getX(), event.getY());
+        if (!e.getLocation().equals(lastDragLocation)) {
+          lastDragLocation = e.getLocation();
+          moveDragCursor(e.getX(), e.getY());
           if (dragCursor != null && !dragCursor.isVisible()) {
             dragCursor.setVisible(true);
           }
@@ -1235,23 +1241,22 @@ public class PieceMover extends AbstractBuildable
     // EVENT uses UNSCALED, DROP-TARGET coordinate system
     ///////////////////////////////////////////////////////////////////////////
     /** switches current drawWin when mouse enters a new DropTarget */
-    public void dragEnter(DropTargetDragEvent event) {
+    public void dragEnter(DropTargetDragEvent e) {
       if (!isDragImageSupported) {
-        final Component newDropWin =
-          event.getDropTargetContext().getComponent();
+        final Component newDropWin = e.getDropTargetContext().getComponent();
         if (newDropWin != dropWin) {
           final double newZoom = newDropWin instanceof Map.View
             ? ((Map.View) newDropWin).getMap().getZoom() : 1.0;
           if (Math.abs(newZoom - dragCursorZoom) > 0.01) {
             makeDragCursor(newZoom);
           }
-          setDrawWinToOwnerOf(event.getDropTargetContext().getComponent());
+          setDrawWinToOwnerOf(e.getDropTargetContext().getComponent());
           dropWin = newDropWin;
         }
       }
 
-      final DropTargetListener forward = getListener(event);
-      if (forward != null) forward.dragEnter(event);
+      final DropTargetListener forward = getListener(e);
+      if (forward != null) forward.dragEnter(e);
     }
 
     /**
@@ -1259,37 +1264,31 @@ public class PieceMover extends AbstractBuildable
      * off-center drag, remove the cursor, and pass the event along
      * listener chain.
      */
-    public void drop(DropTargetDropEvent event) {
-      if (!isDragImageSupported) {
-        removeDragCursor();
-      }
+    public void drop(DropTargetDropEvent e) {
+      if (!isDragImageSupported) removeDragCursor();
 
       // EVENT uses UNSCALED, DROP-TARGET coordinate system
-      event.getLocation().translate(currentPieceOffsetX, currentPieceOffsetY);
-      final DropTargetListener forward = getListener(event);
-      if (forward != null)
-        forward.drop(event);
+      e.getLocation().translate(currentPieceOffsetX, currentPieceOffsetY);
+      final DropTargetListener forward = getListener(e);
+      if (forward != null) forward.drop(e);
     }
 
     /** ineffectual. Passes event along listener chain */
-    public void dragExit(DropTargetEvent event) {
-      final DropTargetListener forward = getListener(event);
-      if (forward != null)
-        forward.dragExit(event);
+    public void dragExit(DropTargetEvent e) {
+      final DropTargetListener forward = getListener(e);
+      if (forward != null) forward.dragExit(e);
     }
 
     /** ineffectual. Passes event along listener chain */
-    public void dragOver(DropTargetDragEvent event) {
-      final DropTargetListener forward = getListener(event);
-      if (forward != null)
-        forward.dragOver(event);
+    public void dragOver(DropTargetDragEvent e) {
+      final DropTargetListener forward = getListener(e);
+      if (forward != null) forward.dragOver(e);
     }
 
     /** ineffectual. Passes event along listener chain */
-    public void dropActionChanged(DropTargetDragEvent event) {
-      final DropTargetListener forward = getListener(event);
-      if (forward != null)
-        forward.dropActionChanged(event);
+    public void dropActionChanged(DropTargetDragEvent e) {
+      final DropTargetListener forward = getListener(e);
+      if (forward != null) forward.dropActionChanged(e);
     }
   }
 }
