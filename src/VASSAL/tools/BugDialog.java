@@ -23,7 +23,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileReader;
@@ -371,12 +370,11 @@ public class BugDialog {
     final String content = sb.toString();
 
     DataOutputStream out = null;
-    DataInputStream in = null;
     try {
       final URL url = new URL("http://sourceforge.net/tracker/index.php");    
       final HttpURLConnection http = (HttpURLConnection) url.openConnection();
       http.setDoInput(true);
-      http.setDoOutput(true);
+      http.setDoOutput(false);
       http.setUseCaches(false);
       http.setAllowUserInteraction(false);
 
@@ -391,10 +389,6 @@ public class BugDialog {
       out.writeBytes(content);
       out.flush();
       out.close(); 
-      
-      in = new DataInputStream(http.getInputStream());
-      IOUtils.copy(in, System.err);
-      in.close();
     }
     // FIXME: review error message
     catch (IOException e) {
@@ -415,7 +409,6 @@ public class BugDialog {
     }
     finally {
       IOUtils.closeQuietly(out);
-      IOUtils.closeQuietly(in);
     }
   }
 
