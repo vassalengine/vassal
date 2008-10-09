@@ -56,23 +56,25 @@ public class FlowLabel extends JTextPane {
    * and width.
    *
    * @param message the text for the label
-   * @param width the initial width of the label in ems.
+   * @param width the initial width of the label in em.
    */
   public FlowLabel(String message, int width) {
     super();
     this.width = width;
 
     setText(message);
-     
+    setEditable(false);    
+
+    // set up full justification 
     final SimpleAttributeSet sa = new SimpleAttributeSet();
     StyleConstants.setAlignment(sa, StyleConstants.ALIGN_JUSTIFIED);
     getStyledDocument().setParagraphAttributes(0, message.length(), sa, false);
 
-    // set mesasge area to have the background a JLabel would have
+    // set text area to have the background a JLabel would have
     setBackground(UIManager.getColor("Label.background"));
   }
 
-  private boolean firstTimeLayout;
+  private boolean firstTimeLayout = true;
 
   /** {@inheritDoc} */
   @Override
@@ -97,14 +99,13 @@ public class FlowLabel extends JTextPane {
     setSize(d);
     setMaximumSize(d);
 
-    // signal to doLayout() to clear the maximum size
     firstTimeLayout = true;
   }
 
   /** {@inheritDoc} */
   @Override
-  public void doLayout() {
-    super.doLayout(); 
+  public void validate() {
+    super.validate();
 
     if (firstTimeLayout) {
       // clear the maximum size now that initial layout is done
