@@ -18,12 +18,20 @@
 * RFE 1566177: Implement JAI tiled images to reduce memory usage
 * RFE 1565958: Zooming to larger than 100%
 
-* Bug 1926512: Updated Private notes not written to save file
-* Bug 1877899: Return To Deck Stacking Problem 
+* Bug 1716071: Multiple selection isn't drawn in drag ghosts
+* Bug 1716080: Piece traits editor allows removal of BasicPiece trait
 * Bug 1866161: Exception when deleting initial elements from tabs
 * Bug 1860941: Do not prompt to start new logfile when already recording
-* Bug 1716080: Piece traits editor allows removal of BasicPiece trait
-* Bug 1716071: Multiple selection isn't drawn in drag ghosts
+* Bug 1877899: Return To Deck Stacking Problem 
+* Bug 1926512: Updated Private notes not written to save file
+* Bug 2038103: NullPointerException in BoardPicker
+* Bug 2087474: NullPointerException in PolygonEditor
+* Bug 2042928: NullPointerException in Deck
+* Bug 2043946: NullPointerException in Footprint
+* Bug 2074670: NullPointerException in AreaOfEffect
+* Bug 2078197: NullPointerException in RemovePiece
+* Bug 2087474: ArrayIndexOutOfBoundsException in PolygonEditor
+* Bug 2099742: NullPointerException in Deck
 * Bug: Zooming now correctly maintains view center
 * Bug: Fixed player name bug which falsely reported empty player
 * Bug: LaunchButton return focus to previous focus owner
@@ -42,6 +50,8 @@ to show
 showing pieces
 * Bug: Fix bug in RestrictCommands not re-enabling commands
 * Bug: Properly handle px units in width and height of SVG images
+* Bug: Fixed bug in SendToLocation when using offsets.
+* Bug:  SpecialDiceButton use correct format for text/window-title
 
 3.0.18 - 3 February 2008
 * Remove LOS_Thread console output.
