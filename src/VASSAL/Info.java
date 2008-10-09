@@ -33,7 +33,7 @@ import VASSAL.tools.version.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-svn3950"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-svn4192"; //$NON-NLS-1$
   private static File homeDir;
 
   private static final boolean isWindows;
@@ -138,7 +138,7 @@ public final class Info {
    * version string. It is <em>not</em> guaranteed to correctly
    * compare two arbitrary version strings.
    *
-   * @return negative if {@code v0 > v1}, positive if {@code v0 < v1}, and
+   * @return negative if {@code v0 < v1}, positive if {@code v0 > v1}, and
    * zero if {@code v0 == v1} or if the ordering cannot be determined from
    * the parseable parts of the two <code>String</code>s.
    */
