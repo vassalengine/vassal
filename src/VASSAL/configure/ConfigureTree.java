@@ -689,18 +689,21 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     DefaultMutableTreeNode newValue = getTreeNode((Configurable) evt.getSource());
     ((DefaultTreeModel) getModel()).nodeChanged(newValue);
   }
+
   static class Renderer extends javax.swing.tree.DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1L;
 
     public Renderer() {
     }
 
+    @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
       Configurable c = null;
       if (value instanceof DefaultMutableTreeNode) {
         c = (Configurable) ((DefaultMutableTreeNode) value).getUserObject();
         leaf = c.getAllowableConfigureComponents().length == 0;
       }
+
       super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
       if (c != null) {
         setText((c.getConfigureName() != null ? c.getConfigureName() : "") + " [" + getConfigureName(c.getClass()) + "]");

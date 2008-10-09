@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module.gamepieceimage;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ItemEvent;
@@ -134,22 +135,24 @@ public class FontConfigurer extends Configurer {
   }
 
   protected void updateValue() {
-
-    int style = Font.PLAIN + 
-       (bold.booleanValue().booleanValue() ? Font.BOLD : 0) + 
+    final int style = Font.PLAIN | 
+       (bold.booleanValue().booleanValue() ? Font.BOLD : 0) | 
        (italic.booleanValue().booleanValue() ? Font.ITALIC : 0); 
    
-    OutlineFont font = new OutlineFont((String) family.getSelectedItem(), style, Integer.parseInt(size.getValueString()), outline.booleanValue().booleanValue());
+    final OutlineFont font = new OutlineFont(
+      (String) family.getSelectedItem(),
+      style,
+      Integer.parseInt(size.getValueString()),
+      outline.booleanValue().booleanValue()
+    );
 
     setValue(font);
-
     demo.setFont(font);
     
-    Window w = SwingUtilities.getWindowAncestor(getControls());
+    final Window w = SwingUtilities.getWindowAncestor(getControls());
     if (w != null) {
       w.pack();
     }
-    
   }
 
   protected OutlineFont getFontValue() {
@@ -157,7 +160,7 @@ public class FontConfigurer extends Configurer {
   }
 
   public static OutlineFont decode(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     return new OutlineFont(
         sd.nextToken(FontManager.DIALOG), 
         sd.nextInt(Font.PLAIN), 
@@ -174,17 +177,14 @@ public class FontConfigurer extends Configurer {
   }
 
   public boolean isBold() {
-    int style = (getFontValue()).getStyle();
-    return style == Font.BOLD || style == (Font.BOLD + Font.ITALIC);
+    return (getFontValue().getStyle() & Font.BOLD) != 0;
   }
 
   public boolean isItalic() {
-    int style = (getFontValue()).getStyle();
-    return style == Font.ITALIC || style == (Font.BOLD + Font.ITALIC);
+    return (getFontValue().getStyle() & Font.ITALIC) != 0;
   }
   
   public boolean isOutline() {
     return getFontValue().isOutline();
   }
-
 }
