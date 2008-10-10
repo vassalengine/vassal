@@ -1301,7 +1301,7 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     public String getSortKey() {
-      return metadata.getLocalizedName();
+      return metadata == null ? "" : metadata.getLocalizedName();
     }
   }
   
