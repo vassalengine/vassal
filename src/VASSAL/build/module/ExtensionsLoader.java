@@ -169,6 +169,7 @@ public class ExtensionsLoader implements CommandEncoder {
   }
   
   public static class LoadExtensionException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
     public LoadExtensionException() {
       super();
