@@ -66,8 +66,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -314,14 +312,8 @@ public class ModuleManagerWindow extends JFrame {
     final Font font = UIManager.getFont("Label.font");
     ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule(
       "body { font: " + font.getFamily() + " " + font.getSize() + "pt }");
-    
-    l.addHyperlinkListener(new HyperlinkListener() {
-      public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-          BrowserSupport.openURL(e.getURL().toString());
-        }
-      }
-    });
+
+    l.addHyperlinkListener(BrowserSupport.getListener());
 
     // this is necessary to get proper vertical alignment
     final JPanel p = new JPanel(new GridBagLayout());

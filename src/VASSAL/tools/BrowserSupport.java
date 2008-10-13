@@ -17,6 +17,9 @@
  */
 package VASSAL.tools;
 
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+
 import VASSAL.i18n.Resources;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
@@ -59,4 +62,16 @@ public class BrowserSupport {
       );
     }
   }
+
+  private static final HyperlinkListener listener = new HyperlinkListener() {
+    public void hyperlinkUpdate(HyperlinkEvent e) {
+      if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+        openURL(e.getURL().toString());
+      }
+    }
+  };
+
+  public static HyperlinkListener getListener() {
+    return listener;
+  } 
 }
