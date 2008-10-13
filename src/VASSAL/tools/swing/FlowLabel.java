@@ -16,7 +16,6 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-
 package VASSAL.tools.swing;
 
 import java.awt.Dimension;
@@ -27,7 +26,7 @@ import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-import javax.swing.text.View;
+import javax.swing.text.StyledDocument;
 
 /**
  * A label which word-wraps and fully justifies its text, and which
@@ -39,7 +38,7 @@ import javax.swing.text.View;
 public class FlowLabel extends JTextPane {
   private static final long serialVersionUID = 1L;
 
-  private final int width;
+  private static final int DEFAULT_WIDTH = 40;
 
   /**
    * Creates a <code>FlowLabel</code> with the desired message and
@@ -48,7 +47,7 @@ public class FlowLabel extends JTextPane {
    * @param message the text for the label
    */
   public FlowLabel(String message) {
-    this(message, 40);
+    this(message, DEFAULT_WIDTH);
   }
 
   /**
@@ -56,62 +55,63 @@ public class FlowLabel extends JTextPane {
    * and width.
    *
    * @param message the text for the label
-   * @param width the initial width of the label in em.
+   * @param width the initial width of the label in em
    */
   public FlowLabel(String message, int width) {
+    this(message, width, false);
+  }
+
+  /**
+   * Creates a <code>FlowLabel</code> with the desired message
+   * and width.
+   *
+   * @param message the text for the label
+   * @param html true if <code>message</code> should be interpreted as HTML
+   */
+  public FlowLabel(String message, boolean html) {
+    this(message, DEFAULT_WIDTH, html);
+  }
+
+  /**
+   * Creates a <code>FlowLabel</code> with the desired message
+   * and width.
+   *
+   * @param message the text for the label
+   * @param width the initial width of the label in em
+   * @param html true if <code>message</code> should be interpreted as HTML
+   */
+  public FlowLabel(String message, int width, boolean html) {
     super();
-    this.width = width;
 
+    // FIXME: This is a workaround for Redhat Bugzilla Bug #459967: 
+    // JTextPane.setBackground() fails when using GTK LookAndFeel. Once this
+    // bug is resolved, there is no need to make this component nonopaque.
+    setOpaque(false);
+
+    setEditable(false);
+    if (html) setContentType("text/html");
     setText(message);
-    setEditable(false);    
 
-    // set up full justification 
+    // set the colors and font a JLabel would have
+    putClientProperty(HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+    setFont(UIManager.getFont("Label.font"));
+    setForeground(UIManager.getColor("Label.foreground"));
+    setBackground(UIManager.getColor("Label.background"));
+
+    // set full justification for the text 
+    final StyledDocument doc = getStyledDocument();
     final SimpleAttributeSet sa = new SimpleAttributeSet();
     StyleConstants.setAlignment(sa, StyleConstants.ALIGN_JUSTIFIED);
-    getStyledDocument().setParagraphAttributes(0, message.length(), sa, false);
+    doc.setParagraphAttributes(0, doc.getLength(), sa, false);
 
-    // set text area to have the background a JLabel would have
-    setBackground(UIManager.getColor("Label.background"));
-  }
-
-  private boolean firstTimeLayout = true;
-
-  /** {@inheritDoc} */
-  @Override
-  public void addNotify() {
-    super.addNotify();
-
-    // The purpose of this is to find the correct height for the
-    // pane given the initial width, prior to the first layout.
-    // Once the pane has been laid out once, we clear the maximum
-    // size, as it's only needed for fixing the initial width.
-
-    // fix the initial width in em
-    final int w = width * getFontMetrics(getFont()).stringWidth("M");
+    // convert the initial width from em to pixels
+    final int w = width * getFont().getSize();
       
     // determine the preferred height at the initial width
-    final View v = getUI().getRootView(this);
-    v.setSize(w, Integer.MAX_VALUE);
-    final int h = (int) v.getPreferredSpan(View.Y_AXIS) + 1;
-
-    // set the maximum size to the initial width and height
-    final Dimension d = new Dimension(w,h);
+    final Dimension d = new Dimension(w, Integer.MAX_VALUE);
     setSize(d);
-    setMaximumSize(d);
-
-    firstTimeLayout = true;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void validate() {
-    super.validate();
-
-    if (firstTimeLayout) {
-      // clear the maximum size now that initial layout is done
-      setMaximumSize(null);
-      firstTimeLayout = false;
-    }
+    d.height = getPreferredSize().height;
+    setPreferredSize(d);
   }
 
   public static void main(String[] args) {
