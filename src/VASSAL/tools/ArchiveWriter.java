@@ -314,6 +314,9 @@ public class ArchiveWriter extends DataArchive {
             // Skip entries that have been added this editing session
             if (files.containsKey(name)) continue;
 
+// FIXME: modify this so that removed images are in files, but with a
+// null value? (Simpler.)
+
             // Skip images removed via Game Piece Image name changes
             if (removedImages.contains(name)) continue;
 
@@ -448,6 +451,7 @@ public class ArchiveWriter extends DataArchive {
                             "\nData stored in " + temp);
     }
 
+// FIXME: use a listener here?
     if (notifyModuleManager) {
       Launcher.getInstance().sendSaveCmd(original);
     }
