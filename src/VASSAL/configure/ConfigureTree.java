@@ -905,6 +905,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       insert(parent, target, 0);
     }
   }
+
   /**
    * Configurers that add or remove their own children directly should implement the Mutable interface so that
    * ConfigureTree can refresh the changed node.
