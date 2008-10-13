@@ -14,18 +14,16 @@ VERSION:=$(VNUM)-svn$(SVNVERSION)
 #VERSION:=$(VNUM)-beta2
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
-#JAVAPATH:=/usr/lib/jvm/java-1.6.0-sun
 
 CLASSPATH:=$(CLASSDIR):$(shell echo $(LIBDIR)/*.jar | tr ' ' ':')
-JAVAPATH:=/usr/lib/jdk
+JAVAPATH:=/usr/bin
 
-#JC:=/usr/bin/javac
-JC:=$(JAVAPATH)/bin/javac
+JC:=$(JAVAPATH)/javac
 JCFLAGS:=-d $(CLASSDIR) -source 5 -target 5 -Xlint -classpath $(CLASSPATH) \
 				 -sourcepath $(SRCDIR)
 
-JAR:=/usr/bin/jar
-JDOC:=/usr/bin/javadoc
+JAR:=$(JAVAPATH)/jar
+JDOC:=$(JAVAPATH)/javadoc
 
 NSIS:=PATH=$$PATH:~/java/nsis makensis
 
@@ -39,7 +37,8 @@ vpath %.class $(shell find $(CLASSDIR) -type d)
 vpath %.java  $(shell find $(SRCDIR) -type d -name .svn -prune -o -print)
 vpath %.jar $(LIBDIR)
 
-all: $(CLASSDIR) $(CLASSES) i18n images help
+#all: $(CLASSDIR) $(CLASSES) i18n images help
+all: $(CLASSDIR) fast-compile i18n images help
 
 $(CLASSDIR):
 	mkdir -p $(CLASSDIR)
