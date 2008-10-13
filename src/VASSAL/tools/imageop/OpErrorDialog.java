@@ -38,6 +38,7 @@ public class OpErrorDialog {
     // unpack the exception
     final IOException ioe = ErrorUtils.getAncestorOfClass(IOException.class, e);
     if (ioe != null) {
+// FIXME!
 /*
       for (ImageOp src = op; src != null; src = src.getSource()) {
         if (src instanceof SourceOp) {
