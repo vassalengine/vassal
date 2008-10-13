@@ -112,7 +112,7 @@ public class MapBoard extends Importer {
     void writeToArchive() throws IOException {
       // write piece
       Rectangle r = writeImageToArchive();
-      if (imageName != null) {
+      if (imageName != null && r != null && r.width > 0 && r.height > 0) {
         SequenceEncoder se = new SequenceEncoder(';');
         se.append("").append("").append(imageName).append(getName());
         GamePiece gp = new BasicPiece(BasicPiece.ID + se.getValue());
@@ -178,6 +178,9 @@ public class MapBoard extends Importer {
       final BufferedImage image = getLayerImage();
       if (image != null) {
         final Rectangle r = getCropRectangle(image);
+        if (r.width == 0 || r.height == 0) {
+        	return null;
+        }
         final File f =
           TempFileManager.getInstance().createTempFile("map", ".png");
         ImageIO.write(image.getSubimage(r.x, r.y, r.width, r.height), "png", f);
@@ -204,6 +207,10 @@ public class MapBoard extends Importer {
           }
           ++r.x;
           --r.width;
+          if (r.width == 0) {
+        	  r.height = 0;
+        	  return r;
+          }
         }
       topside:
         while (true) {
