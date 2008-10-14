@@ -27,6 +27,8 @@ import javax.swing.UIManager;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.plaf.basic.BasicHTML;
+
 
 /**
  * A label which word-wraps and fully justifies its text, and which
@@ -41,56 +43,31 @@ public class FlowLabel extends JTextPane {
   private static final int DEFAULT_WIDTH = 40;
 
   /**
-   * Creates a <code>FlowLabel</code> with the desired message and
+   * Creates a <code>FlowLabel</code> with the desired text and
    * an initial width of 40em.
    *
-   * @param message the text for the label
+   * @param text the text for the label
    */
-  public FlowLabel(String message) {
-    this(message, DEFAULT_WIDTH);
+  public FlowLabel(String text) {
+    this(text, DEFAULT_WIDTH);
   }
 
   /**
-   * Creates a <code>FlowLabel</code> with the desired message
+   * Creates a <code>FlowLabel</code> with the desired text
    * and width.
    *
-   * @param message the text for the label
+   * @param text the text for the label
    * @param width the initial width of the label in em
    */
-  public FlowLabel(String message, int width) {
-    this(message, width, false);
-  }
-
-  /**
-   * Creates a <code>FlowLabel</code> with the desired message
-   * and width.
-   *
-   * @param message the text for the label
-   * @param html true if <code>message</code> should be interpreted as HTML
-   */
-  public FlowLabel(String message, boolean html) {
-    this(message, DEFAULT_WIDTH, html);
-  }
-
-  /**
-   * Creates a <code>FlowLabel</code> with the desired message
-   * and width.
-   *
-   * @param message the text for the label
-   * @param width the initial width of the label in em
-   * @param html true if <code>message</code> should be interpreted as HTML
-   */
-  public FlowLabel(String message, int width, boolean html) {
+  public FlowLabel(String text, int width) {
     super();
+    setEditable(false);
+    setText(text);
 
     // FIXME: This is a workaround for Redhat Bugzilla Bug #459967: 
     // JTextPane.setBackground() fails when using GTK LookAndFeel. Once this
     // bug is resolved, there is no need to make this component nonopaque.
     setOpaque(false);
-
-    setEditable(false);
-    if (html) setContentType("text/html");
-    setText(message);
 
     // set the colors and font a JLabel would have
     putClientProperty(HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
@@ -112,6 +89,14 @@ public class FlowLabel extends JTextPane {
     setSize(d);
     d.height = getPreferredSize().height;
     setPreferredSize(d);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setText(String text) {
+    // check for HTML
+    if (BasicHTML.isHTMLString(text)) setContentType("text/html");
+    super.setText(text);
   }
 
   public static void main(String[] args) {
