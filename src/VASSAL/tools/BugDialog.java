@@ -1,497 +1,1396 @@
-/*
- * $Id$
- *
- * Copyright (c) 2008 by Joel Uckelman
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License (LGPL) as published by the Free Software Foundation.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available
- * at http://www.opensource.org.
- */
 package VASSAL.tools;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.io.DataOutputStream;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.GregorianCalendar;
-
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.TimeUnit;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.UIManager;
 
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
+import org.jdesktop.swingworker.SwingWorker;
+import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.JXHeader;
+import org.jdesktop.swingx.JXLabel;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.swing.FlowLabel;
+import VASSAL.tools.version.VassalVersion;
+import VASSAL.tools.version.VersionUtils;
 
-/**
- * 
- * @author Joel Uckelman
- * @since 3.1.0
- */
-public class BugDialog {
+
+public class BugDialog extends JDialog {
   private static final long serialVersionUID = 1L;
-  private static boolean bugReportingDisabled;
 
-  public static void reportABug(Throwable t) {
-    final GregorianCalendar expiry = new GregorianCalendar(2008, 8, 5);
-    final GregorianCalendar now = new GregorianCalendar();
+  private static boolean bugReportingDisabled = false;
 
-    Frame f = GameModule.getGameModule() == null ? null : GameModule.getGameModule().getFrame();
-    if (now.after(expiry)) oldReportABug(f,t);
-    else reportABug(f,t);
+  public static void reportABug(Throwable thrown) {
+    if (bugReportingDisabled) return;
+
+    final Frame frame = GameModule.getGameModule() == null
+      ? null : GameModule.getGameModule().getFrame();
+
+    new BugDialog(frame, thrown).setVisible(true);
   }
-  
-  private static String getSummary(Throwable t) {
-    String summary;
-    if (t == null) {
-      summary = "Automated bug report #" + System.currentTimeMillis() + "\n";
-    }
-    else {
-      summary=t.getClass().getName().substring(t.getClass().getName().lastIndexOf('.')+1);
-      if (t.getMessage() != null) {
-        summary += ": "+t.getMessage();
+
+  private Throwable thrown;
+  private String errorLog;
+
+  private JPanel contents;
+  private CardLayout deck;
+
+  private JPanel buttons;
+  private CardLayout button_deck;
+
+  private JTextArea descriptionArea;
+  private JTextField emailField;
+
+/*
+    private JButton sendButton;
+    private JButton dontSendButton;
+    private JButton okButton;
+    private JButton cancelButton;
+*/
+
+  private JCheckBox dontShowAgainCheckBox;
+
+  public BugDialog(Frame owner, Throwable thrown) {
+    super(owner, true);
+
+    this.thrown = thrown;
+    this.errorLog = BugUtils.getErrorLog();
+
+    //
+    // header
+    //
+    final JXHeader header = new JXHeader(
+      "Eeek! A bug!", "VASSAL had an internal error",
+      new ImageIcon(BugDialog.class.getResource("/images/bug.png"))
+    );
+
+    //
+    // dialog
+    //
+    setTitle("Uncaught Exception");
+    setLocationRelativeTo(owner);
+    setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    setResizable(true);
+
+    addWindowListener(new WindowAdapter() {
+      public void windowClosed(WindowEvent e) {
+        if (checkRequest != null) 
+          checkRequest.cancel(true);
+       
+        if (sendRequest != null) 
+          sendRequest.cancel(true);
+ 
+        if (dontShowAgainCheckBox.isSelected())
+          bugReportingDisabled = true;
       }
-      for (StackTraceElement e : t.getStackTrace()) {
-        if (e.getClassName().startsWith("VASSAL")) {
-          summary += " at "+e.getClassName()+"."+e.getMethodName()+" (line "+e.getLineNumber()+")";
-          break;
+    });
+
+    add(header, BorderLayout.NORTH);
+    add(buildContentsPanel(), BorderLayout.CENTER);
+    add(buildButtonPanel(), BorderLayout.SOUTH);
+ 
+    showVersionCheckPanel(); 
+    pack();
+  }
+
+  private Component buildContentsPanel() {
+    deck = new CardLayout();
+    contents = new JPanel(deck);
+    contents.setBorder(BorderFactory.createEmptyBorder(12,12,0,12));
+    
+    contents.add(buildVersionCheckPanel(),     "versionCheckPanel");
+    contents.add(buildCurrentVersionPanel(),   "currentVersionPanel");
+    contents.add(buildSendingBugReportPanel(), "sendingBugReportPanel");
+    contents.add(buildOldVersionPanel(),       "oldVersionPanel");
+    contents.add(buildConnectionFailedPanel(), "connectionFailedPanel");
+    contents.add(buildEmergencySavePanel(),    "emergencySavePanel");
+
+    return contents;
+  }
+
+  private Component buildButtonPanel() {
+    dontShowAgainCheckBox = new JCheckBox("Don't show this dialog again");
+
+    button_deck = new CardLayout();
+    buttons = new JPanel(button_deck); 
+
+    buttons.add(buildVersionCheckButtons(),     "versionCheckButtons");
+    buttons.add(buildCurrentVersionButtons(),   "currentVersionButtons");
+    buttons.add(buildSendingBugReportButtons(), "sendingBugReportButtons");
+    buttons.add(buildOldVersionButtons(),       "oldVersionButtons");
+    buttons.add(buildConnectionFailedButtons(), "connectionFailedButtons");
+    buttons.add(buildEmergencySaveButtons(),    "emergencySaveButtons");
+
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+    panel.setBorder(BorderFactory.createEmptyBorder(17,12,12,12));
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(dontShowAgainCheckBox, c);
+
+    c.gridx = 1;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(Box.createHorizontalGlue(), c);
+
+    c.gridx = 2;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,12,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(buttons, c);
+
+/*
+    sendButton = new JButton("Send");
+//      sendButton.setEnabled(false);
+
+    dontSendButton = new JButton(
+      new AbstractAction("Don't Send") {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
         }
       }
-    }
-    return summary;
-  }
-
-  public static void oldReportABug(Frame parent, Throwable t) {
-    final JDialog dialog;
-
-    final JLabel header = new JLabel("Congratulations! You've found a bug.");
-    final Font f = header.getFont();
-    header.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
-
-    final FlowLabel notice = new FlowLabel("VASSAL had an internal error. Because this beta version of VASSAL is more than 30 days old, bug reporting is disabled. If you can reproduce this bug with a current verision of VASSAL, please do so and alert the VASSAL developers to the problem.");
-    notice.setEditable(false);
-
-    // prevents FlowLabel from being a single line
-    // FIXME: why is this necessary?
-    final Dimension d = notice.getPreferredSize();
-    d.width = 0;
-    notice.setPreferredSize(d);
-
-    String tmp = null;
-    FileReader r = null;
-    try {
-      r = new FileReader(new File(Info.getConfDir(), "errorLog"));
-      tmp = IOUtils.toString(r);
-    }
-    catch (IOException e) {
-      // Don't bother logging this---if we can't read the errorLog,
-      // then we probably can't write to it either.
-      IOUtils.closeQuietly(r);
-    }
-
-    final String errorLog = tmp;
-  
-    final JTextArea log = new JTextArea(errorLog, 10, 26);
-    log.setEditable(false);
-
-    final JScrollPane logScroll = new JScrollPane(log);
-    logScroll.setVisible(false);
-
-    final JLabel logLabel = new JLabel("Error Log:");
-    logLabel.setLabelFor(log);
-
-    final JButton detailsButton = new JButton();
-
-    final JLabel detailsLabel = new JLabel("Error Log:");
-    detailsLabel.setLabelFor(detailsButton); 
-
-    final JPanel panel = new JPanel();
-
-    final GroupLayout layout = new GroupLayout(panel);
-    panel.setLayout(layout);
-
-    layout.setAutocreateGaps(true);
-    layout.setAutocreateContainerGaps(true);
-    
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(GroupLayout.LEADING, true)
-        .add(header)
-        .add(notice)
-        .add(layout.createSequentialGroup()
-          .add(layout.createParallelGroup(GroupLayout.LEADING, true)
-            .add(detailsLabel))
-          .add(layout.createParallelGroup(GroupLayout.LEADING, true)
-            .add(detailsButton)
-            .add(logScroll))));
-
-    layout.setVerticalGroup(
-      layout.createSequentialGroup()
-        .add(header)
-        .addPreferredGap(LayoutStyle.UNRELATED)
-        .add(layout.createParallelGroup(GroupLayout.BASELINE, false)
-          .add(notice))
-        .addPreferredGap(LayoutStyle.UNRELATED)
-        .add(layout.createParallelGroup(GroupLayout.BASELINE, true)
-          .add(detailsLabel)
-          .add(detailsButton))
-        .add(logScroll));
-
-    final String[] buttons = { "Ok" };
-    
-    final JOptionPane opt = new JOptionPane(
-      panel,
-      JOptionPane.ERROR_MESSAGE,
-      JOptionPane.DEFAULT_OPTION,
-      new ImageIcon(BugDialog.class.getResource("/images/bug.png")),
-      buttons
     );
 
-    dialog = opt.createDialog(parent, "Uncaught Exception");
+    okButton = new JButton("Ok");
 
-    detailsButton.setAction(new AbstractAction("<html>Details &raquo;</html>") {
-      private static final long serialVersionUID = 1L;
-    
-      public void actionPerformed(ActionEvent e) {
-        logScroll.setVisible(!logScroll.isVisible());
-        putValue(NAME, logScroll.isVisible() ?
-          "<html>Details &laquo;</html>" : "<html>Details &raquo;</html>");
-        dialog.pack(); 
+    cancelButton = new JButton(
+      new AbstractAction("Cancel") {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          dispose();
+        }
       }
-    });
+    );
+*/
 
-    dialog.setModal(true);
-    dialog.setLocationRelativeTo(parent);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    dialog.setResizable(true);
-    dialog.pack();
-    dialog.setVisible(true);
+/*
+    final JPanel panel = new JPanel();
+    final GroupLayout layout = new GroupLayout(panel);
+
+    layout.setAutocreateGaps(true);
+    layout.setAutocreateContainerGaps(true);
+
+    layout.setHorizontalGroup(
+      layout.createSequentialGroup()
+        .add(dontShowAgainCheckBox)
+        .add(sendButton)
+        .add(dontSendButton));
+
+    layout.setVerticalGroup(
+      layout.createParallelGroup(GroupLayout.LEADING, true)
+        .add(dontShowAgainCheckBox)
+        .add(0, 0, Integer.MAX_VALUE)
+        .add(sendButton)
+        .add(dontSendButton));
+
+    layout.linkSize(
+      new Component[]{sendButton, dontSendButton},
+      GroupLayout.VERTICAL
+    );
+*/
+
+// FIXME: button width?
+/*   
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+    panel.setBorder(BorderFactory.createEmptyBorder(17,12,12,12));
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(dontShowAgainCheckBox, c);
+
+    c.gridx = 1;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(Box.createHorizontalGlue(), c);
+
+    c.gridx = 2;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(dontSendButton, c);
+
+    c.gridx = 3;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,5,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(sendButton, c);
+
+    c.gridx = 4;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,5,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(cancelButton, c);
+
+    c.gridx = 5;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,5,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(okButton, c);
+*/
+    return panel;     
   }
 
-  public static void reportABug(Frame parent, Throwable t) {
-    if (bugReportingDisabled) {
-      return;
-    }
-    final JDialog dialog;
+  private Component buildVersionCheckPanel() {
+    final JXBusyLabel spinner = new JXBusyLabel(new Dimension(40,40));
+    spinner.setBusy(true);
 
-    final JLabel header = new JLabel("Congratulations! You've found a bug.");
-    final Font f = header.getFont();
-    header.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
+//      final Label label = new Label("VASSAL had an internal error. Please wait while we collect the details.");
+    final FlowLabel label = new FlowLabel("VASSAL had an internal error. Please wait while we collect the details.");
 
-    final FlowLabel notice = new FlowLabel("VASSAL had an internal error. You can help the VASSAL developers fix it by sending them this error report with a description of what you were doing when the error happened.");
-    notice.setEditable(false);
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
 
-    // prevents FlowLabel from being a single line
-    // FIXME: why is this necessary?
-    final Dimension d = notice.getPreferredSize();
-    d.width = 0;
-    notice.setPreferredSize(d);
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.BOTH;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(label, c);
 
-    final JTextArea description = new JTextArea(10, 20);
-    description.setLineWrap(true);
-    description.setWrapStyleWord(true);
+    c.gridx = 0;
+    c.gridy = 1;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.VERTICAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 0.0;
+    c.weighty = 1.0;
+    panel.add(Box.createVerticalGlue(), c);
 
-    final JScrollPane descriptionScroll = new JScrollPane(description);
-    descriptionScroll.setPreferredSize(description.getPreferredSize());
+    c.gridx = 0;
+    c.gridy = 2;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.CENTER;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(spinner, c);
 
-    final JLabel descriptionLabel = new JLabel("Description:");
-    descriptionLabel.setLabelFor(description);
+    c.gridx = 0;
+    c.gridy = 3;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.VERTICAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 0.0;
+    c.weighty = 1.0;
+    panel.add(Box.createVerticalGlue(), c);
 
-    final JTextField email = new JTextField(26);
-
-//    final JLabel emailLabel = new JLabel("Email (Optional):"); 
-    final JLabel emailLabel = new JLabel("Your Email:"); 
-    emailLabel.setLabelFor(email);
-
-    String tmp = null;
-    FileReader r = null;
-    try {
-      r = new FileReader(new File(Info.getConfDir(), "errorLog"));
-      tmp = IOUtils.toString(r);
-    }
-    catch (IOException e) {
-      // Don't bother logging this---if we can't read the errorLog,
-      // then we probably can't write to it either.
-      IOUtils.closeQuietly(r);
-    }
-
-    final String errorLog = tmp;
-  
-    final JTextArea log = new JTextArea(errorLog, 10, 20);
-    log.setEditable(false);
-
-    final JScrollPane logScroll = new JScrollPane(log);
-    logScroll.setVisible(false);
-
-    final JLabel logLabel = new JLabel("Error Log:");
-    logLabel.setLabelFor(log);
-
-    final JButton detailsButton = new JButton();
-
-    final JLabel detailsLabel = new JLabel("Error Log:");
-    detailsLabel.setLabelFor(detailsButton); 
-
+/*
     final JPanel panel = new JPanel();
-
     final GroupLayout layout = new GroupLayout(panel);
     panel.setLayout(layout);
 
     layout.setAutocreateGaps(true);
     layout.setAutocreateContainerGaps(true);
-    
+
     layout.setHorizontalGroup(
       layout.createParallelGroup(GroupLayout.LEADING, true)
-        .add(header)
-        .add(notice)
+        .add(label)
         .add(layout.createSequentialGroup()
-          .add(layout.createParallelGroup(GroupLayout.LEADING, true)
-            .add(descriptionLabel)
-            .add(emailLabel)
-            .add(detailsLabel))
-          .add(layout.createParallelGroup(GroupLayout.LEADING, true)
-            .add(descriptionScroll)
-            .add(email)
-            .add(detailsButton)
-            .add(logScroll))));
+          .add(0, 0, Integer.MAX_VALUE)
+          .add(spinner)
+          .add(0, 0, Integer.MAX_VALUE)));
 
     layout.setVerticalGroup(
       layout.createSequentialGroup()
-        .add(header)
+        .add(label)
+        .add(0, 0, Integer.MAX_VALUE)
+        .add(spinner)
+        .add(0, 0, Integer.MAX_VALUE));
+*/
+
+    return panel;
+  }
+
+  private Component buildVersionCheckButtons() {
+    final JButton cancelButton = new JButton(
+      new AbstractAction("Cancel") {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          dispose();
+        }
+      }
+    );
+
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(Box.createHorizontalGlue(), c);
+
+    c.gridx = 1;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(cancelButton, c);
+
+    return panel;
+  }
+
+  private Component buildCurrentVersionPanel() {
+//      final Label label = new Label("VASSAL had an internal error. You can help the VASSAL developers fix it by sending them this error report with a description of what you were doing when the error happened.");
+    final FlowLabel label = new FlowLabel("VASSAL had an internal error. You can help the VASSAL developers fix it by sending them this error report with a description of what you were doing when the error happened.");
+   
+    descriptionArea = new JTextArea(10, 20);
+    descriptionArea.setLineWrap(true);
+    descriptionArea.setWrapStyleWord(true);
+
+    final JScrollPane descriptionScroll = new JScrollPane(descriptionArea);
+//      descriptionScroll.setPreferredSize(descriptionArea.getPreferredSize());
+
+    final JLabel descriptionLabel =
+      new JLabel("What were you doing when this dialog appeared?");
+    descriptionLabel.setFont(
+      descriptionLabel.getFont().deriveFont(Font.BOLD));
+    descriptionLabel.setLabelFor(descriptionScroll);
+
+    emailField = new JTextField(26);
+
+    final JLabel emailLabel = new JLabel("Your email address:"); 
+    emailLabel.setLabelFor(emailField);
+
+    final JScrollPane detailsScroll = buildDetailsScroll();
+    final JButton detailsButton = buildDetailsButton(detailsScroll);
+
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 2;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(label, c);
+
+    c.gridx = 0;
+    c.gridy = 1;
+    c.gridwidth = 2;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(12,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(descriptionLabel, c);
+
+    c.gridx = 0;
+    c.gridy = 2;
+    c.gridwidth = 2;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.BOTH;
+    c.insets = new Insets(6,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    panel.add(descriptionScroll, c);
+
+    c.gridx = 0;
+    c.gridy = 3;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(6,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(emailLabel, c);
+
+    c.gridx = 1;
+    c.gridy = 3;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(6,12,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(emailField, c);
+
+    c.gridx = 0;
+    c.gridy = 4;
+    c.gridwidth = 2;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(12,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(detailsButton, c);
+
+    c.gridx = 0;
+    c.gridy = 5;
+    c.gridwidth = 2;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.BOTH;
+    c.insets = new Insets(6,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    panel.add(detailsScroll, c);
+
+    c.gridx = 0;
+    c.gridy = 6;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.VERTICAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    panel.add(Box.createVerticalGlue(), c);
+
+/*
+    final JPanel detailsPanel = buildDetailsPanel();
+ 
+    final JPanel panel = new JPanel();
+    final GroupLayout layout = new GroupLayout(panel);
+    panel.setLayout(layout);
+
+    layout.setAutocreateGaps(true);
+    layout.setAutocreateContainerGaps(true);
+
+    layout.setHorizontalGroup(
+      layout.createParallelGroup(GroupLayout.LEADING, true)
+        .add(label)
+        .add(descriptionLabel)
+        .add(descriptionScroll)
+        .add(layout.createSequentialGroup()
+          .add(emailLabel)
+          .add(emailField))
+        .add(detailsPanel));
+
+    layout.setVerticalGroup(
+      layout.createSequentialGroup()
+        .add(label)
         .addPreferredGap(LayoutStyle.UNRELATED)
-        .add(layout.createParallelGroup(GroupLayout.BASELINE, false)
-          .add(notice))
-        .addPreferredGap(LayoutStyle.UNRELATED)
-        .add(layout.createParallelGroup(GroupLayout.BASELINE, true)
-          .add(descriptionLabel)
-          .add(descriptionScroll))
-        .addPreferredGap(LayoutStyle.UNRELATED)
+        .add(descriptionLabel)
+        .add(descriptionScroll)
         .add(layout.createParallelGroup(GroupLayout.BASELINE, true)
           .add(emailLabel)
-          .add(email))
+          .add(emailField))
         .addPreferredGap(LayoutStyle.UNRELATED)
-        .add(layout.createParallelGroup(GroupLayout.BASELINE, true)
-          .add(detailsLabel)
-          .add(detailsButton))
-        .add(logScroll));
+        .add(detailsPanel));
+*/
 
-    layout.linkSize(new Component[]{emailLabel, email}, GroupLayout.VERTICAL);
+    return panel;
+  }
 
-    final String[] buttons = { "Submit Report", "Cancel", "Don't show this dialog again"};
-    
-    final JOptionPane opt = new JOptionPane(
-      panel,
-      JOptionPane.ERROR_MESSAGE,
-      JOptionPane.DEFAULT_OPTION,
-      new ImageIcon(BugDialog.class.getResource("/images/bug.png")),
-      buttons
+  private Component buildCurrentVersionButtons() {
+    final JButton sendButton = new JButton(
+      new AbstractAction("Send") {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          showSendingBugReportPanel();
+        }
+      }
     );
 
-    dialog = opt.createDialog(parent, "Uncaught Exception");
+    final JButton dontSendButton = new JButton(
+      new AbstractAction("Don't Send") {
+        private static final long serialVersionUID = 1L;
 
-    detailsButton.setAction(new AbstractAction("<html>Details &raquo;</html>") {
-      private static final long serialVersionUID = 1L;
-    
-      public void actionPerformed(ActionEvent e) {
-        logScroll.setVisible(!logScroll.isVisible());
-        putValue(NAME, logScroll.isVisible() ?
-          "<html>Details &laquo;</html>" : "<html>Details &raquo;</html>");
-        dialog.pack(); 
+        public void actionPerformed(ActionEvent e) {
+          showEmergencySavePanel();
+        }
       }
-    });
+    );
 
-    dialog.setModal(true);
-    dialog.setLocationRelativeTo(parent);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    dialog.setResizable(true);
-    dialog.pack();
-    dialog.setVisible(true);
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
 
-    final Object selected = opt.getValue();
-    if (buttons[0].equals(selected)) {
-      sendBugReport(email.getText(), description.getText(), errorLog, t);
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(dontSendButton, c);
+
+    c.gridx = 1;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,5,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(sendButton, c);
+
+    return panel;
+  }
+
+  private JButton buildDetailsButton(final JScrollPane detailsScroll) {
+    final JButton detailsButton = new JButton();
+    detailsButton.setBorderPainted(false);
+    detailsButton.setContentAreaFilled(false);
+    final Insets i = detailsButton.getInsets();
+    detailsButton.setBorder(
+      BorderFactory.createEmptyBorder(i.top, 0, i.bottom, i.right));
+    detailsButton.setAction(
+      new AbstractAction("Show details",
+                         UIManager.getIcon("Tree.collapsedIcon")) {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          final boolean visible = detailsScroll.isVisible();
+          detailsButton.setText(visible ? "Show details" : "Hide details");
+          detailsButton.setIcon(UIManager.getIcon(
+            visible ? "Tree.collapsedIcon" : "Tree.expandedIcon"));
+          detailsScroll.setVisible(!visible);
+          pack();
+        }
+      }
+    );
+
+    return detailsButton;
+  }
+
+  private JScrollPane buildDetailsScroll() {
+    final JTextArea detailsArea = new JTextArea(errorLog, 10, 20);
+    detailsArea.setEditable(false);
+
+    final JScrollPane detailsScroll = new JScrollPane(detailsArea);
+    detailsScroll.setVisible(false);
+
+    return detailsScroll;
+  }
+
+/*
+  private Component buildDetailsPanel() {
+    final JPanel panel = new JPanel();
+    final GroupLayout layout = new GroupLayout(panel);
+    panel.setLayout(layout);
+
+    layout.setAutocreateGaps(true);
+    layout.setAutocreateContainerGaps(false);
+
+    final JTextArea logArea = new JTextArea(getErrorLog(), 10, 20);
+    logArea.setEditable(false);
+
+    final JScrollPane logScroll = new JScrollPane(logArea);
+    logScroll.setVisible(false);
+
+    final JButton detailsButton = new JButton();
+    detailsButton.setBorderPainted(false);
+    detailsButton.setContentAreaFilled(false);
+    detailsButton.setBorder(BorderFactory.createEmptyBorder());
+    detailsButton.setMargin(new Insets(0,0,0,0));
+    detailsButton.setAction(
+      new AbstractAction("Show details",
+                         UIManager.getIcon("Tree.collapsedIcon")) {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          final boolean visible = logScroll.isVisible();
+          detailsButton.setText(visible ? "Show details" : "Hide details");
+          detailsButton.setIcon(UIManager.getIcon(
+            visible ? "Tree.collapsedIcon" : "Tree.expandedIcon"));
+          logScroll.setVisible(!visible);
+          pack();
+        }
+      }
+    );
+
+    layout.setHorizontalGroup(
+      layout.createParallelGroup(GroupLayout.LEADING, true)
+        .add(detailsButton)
+        .add(logScroll));
+
+    layout.setVerticalGroup(
+      layout.createSequentialGroup()
+        .add(detailsButton)
+        .add(0, 0, Integer.MAX_VALUE)
+        .add(logScroll));
+
+    return panel;
+  }
+*/
+
+  private Component buildOldVersionPanel() {
+/*
+    final JPanel panel = new JPanel();
+    final GroupLayout layout = new GroupLayout(panel);
+    panel.setLayout(layout);
+
+    layout.setAutocreateGaps(true);
+    layout.setAutocreateContainerGaps(true);
+
+    final Label label = new Label("VASSAL had an internal error. Because this version of VASSAL is no longer current, bug reporting is disabled. If you can reproduce this bug with a current verision of VASSAL, please do so and alert the VASSAL developers to the problem.");
+
+    final JPanel detailsPanel = buildDetailsPanel();
+
+    layout.setHorizontalGroup(
+      layout.createParallelGroup(GroupLayout.LEADING, true)
+        .add(label)
+        .add(detailsPanel));
+
+    layout.setVerticalGroup(
+      layout.createSequentialGroup()
+        .add(label)
+        .addPreferredGap(LayoutStyle.UNRELATED)
+        .add(detailsPanel));
+*/
+
+    final FlowLabel label = new FlowLabel("<html>VASSAL had an internal error. Because this version of VASSAL is no longer current, bug reporting is disabled. If you can reproduce this bug with a <a href=\"http://sourceforge.net/project/showfiles.php?group_id=90612\">current verision</a> of VASSAL, please do so and alert the VASSAL developers to the problem.</html>");
+    label.addHyperlinkListener(BrowserSupport.getListener());
+
+    final JScrollPane detailsScroll = buildDetailsScroll();
+    final JButton detailsButton = buildDetailsButton(detailsScroll);
+
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(label, c);
+
+    c.gridy = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(12,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(detailsButton, c);
+
+    c.gridy = 2;
+    c.fill = GridBagConstraints.BOTH;
+    c.insets = new Insets(6,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    panel.add(detailsScroll, c);
+
+    c.gridy = 3;
+    c.fill = GridBagConstraints.VERTICAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    panel.add(Box.createVerticalGlue(), c);
+
+    return panel;
+  }
+
+  private Component buildOldVersionButtons() {
+    final JButton okButton = new JButton(
+      new AbstractAction("Ok") {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          showEmergencySavePanel();
+        }
+      }
+    );
+
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(Box.createHorizontalGlue(), c);
+
+    c.gridx = 1;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(okButton, c);
+
+    return panel;
+  }
+
+  private Component buildConnectionFailedPanel() {
+    final String errorLogPath =
+      new File(Info.getConfDir(), "errorLog").getAbsolutePath();
+    final FlowLabel label = new FlowLabel("<html>VASSAL was unable to submit your bug report. Please post the file <a href=\"file://" + errorLogPath + "\">" + errorLogPath + "</a> and a description of what you were doing when the bug occurred in the <a href=\"http://www.vassalengine.org/forums/viewforum.php?f=3\">Technical Support &amp; Bugs</a> section of the VASSAL Forum.</html>");
+    label.addHyperlinkListener(BrowserSupport.getListener());
+
+    final JScrollPane detailsScroll = buildDetailsScroll();
+    final JButton detailsButton = buildDetailsButton(detailsScroll);
+    
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(label, c);
+
+    c.gridy = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(12,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(detailsButton, c);
+
+    c.gridy = 2;
+    c.fill = GridBagConstraints.BOTH;
+    c.insets = new Insets(6,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    panel.add(detailsScroll, c);
+
+    c.gridy = 3;
+    c.fill = GridBagConstraints.VERTICAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    panel.add(Box.createVerticalGlue(), c);
+    
+    return panel;
+  }
+
+  private Component buildConnectionFailedButtons() {
+    final JButton okButton = new JButton(
+      new AbstractAction("Ok") {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          showEmergencySavePanel();
+        }
+      }
+    );
+
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(Box.createHorizontalGlue(), c);
+
+    c.gridx = 1;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(okButton, c);
+
+    return panel;
+  }
+
+  private Component buildEmergencySavePanel() {
+//      final FlowLabel label = new FlowLabel("Due to the error, VASSAL may be in an inconsistent state or may behave erratically. We recommend that you save copies of your open files using the \"Save\" button below, and restart VASSAL. Depending on what the error was, modules, saved games, and logs written after an error may be corrupt. Be sure to check any modules, saved games, or logs written after an error before continuing to use them.");
+    final FlowLabel label = new FlowLabel("Due to the error, VASSAL may be in an inconsistent state or may behave erratically. We recommend that you save your open files under different names and restart VASSAL.\n\nDepending on what the error was, modules, saved games, and logs written afterwards may be corrupt. Be sure to check any modules, saved games, or logs written after an error before continuing to use them.");
+
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(label, c);
+
+    c.gridy = 1;
+    c.fill = GridBagConstraints.VERTICAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    panel.add(Box.createVerticalGlue(), c);
+    
+    return panel;
+  }
+
+  private Component buildEmergencySaveButtons() {
+/*
+    final JButton saveButton = new JButton(
+      new AbstractAction("Save") {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          emergencySave();
+          dispose();
+        }
+      }
+    );
+
+    final JButton dontSaveButton = new JButton(
+      new AbstractAction("Don't Save") {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          dispose();
+        }
+      }
+    );
+
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(dontSaveButton, c);
+
+    c.gridx = 1;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,5,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(saveButton, c);
+*/
+
+    final JButton okButton = new JButton(
+      new AbstractAction("Ok") {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          dispose();
+        }
+      }
+    );
+
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(Box.createHorizontalGlue(), c);
+
+    c.gridx = 1;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(okButton, c);
+
+    return panel;
+  }
+
+  private void showVersionCheckPanel() {
+    deck.show(contents, "versionCheckPanel");
+    button_deck.show(buttons, "versionCheckButtons");
+/*
+    sendButton.setVisible(false);
+    dontSendButton.setVisible(false);
+    okButton.setVisible(false);
+    cancelButton.setVisible(true); 
+*/
+  }
+
+  private void showCurrentVersionPanel() {
+    deck.show(contents, "currentVersionPanel");
+    button_deck.show(buttons, "currentVersionButtons");
+/*
+    sendButton.setVisible(true);
+    dontSendButton.setVisible(true);
+    okButton.setVisible(false);
+    cancelButton.setVisible(false); 
+*/
+  }
+
+  private void showSendingBugReportPanel() {
+    deck.show(contents, "sendingBugReportPanel");
+    button_deck.show(buttons, "sendingBugReportButtons");
+
+    sendRequest = new SendRequest(); 
+    sendRequest.execute();
+
+/*
+    sendButton.setVisible(true);
+    dontSendButton.setVisible(true);
+    okButton.setVisible(false);
+    cancelButton.setVisible(false); 
+*/
+  }
+
+  private void showOldVersionPanel() {
+    deck.show(contents, "oldVersionPanel");
+    button_deck.show(buttons, "oldVersionButtons");
+/*
+    sendButton.setVisible(false);
+    dontSendButton.setVisible(false);
+    okButton.setVisible(true);
+    cancelButton.setVisible(false); 
+*/
+  }
+
+  private void showConnectionFailedPanel() {
+    deck.show(contents, "connectionFailedPanel");
+    button_deck.show(buttons, "connectionFailedButtons");
+/*
+    wardsn.setVisible(false);
+    dontSendButton.setVisible(false);
+    okButton.setVisible(true);
+    cancelButton.setVisible(false); 
+*/
+  }
+
+  private void showEmergencySavePanel() {
+    deck.show(contents, "emergencySavePanel");
+    button_deck.show(buttons, "emergencySaveButtons");
+/*
+    sendButton.setVisible(false);
+    dontSendButton.setVisible(false);
+    okButton.setVisible(true);
+    cancelButton.setVisible(false);
+*/
+  }
+
+  private CheckRequest checkRequest = null;
+
+  @Override
+  public void setVisible(boolean visible) {
+    if (visible && !isVisible()) {
+      checkRequest = new CheckRequest();
+      checkRequest.execute();
     }
-    else if (buttons[2].equals(selected)) {
-      bugReportingDisabled=true;
+    super.setVisible(visible);
+  }
+
+  private class CheckRequest extends SwingWorker<Boolean,Void> {
+    private Timer timer = null;
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+      final CountDownLatch latch = new CountDownLatch(1);
+
+      // Wait 3 seconds before counting down the latch to ensure
+      // that the user has sufficient time to read the message on
+      // the first pane.
+      timer = new Timer(2000, new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          latch.countDown();
+        }
+      });
+      timer.start();
+
+      // Make the request to the server and wait for the latch.
+      final VassalVersion running = new VassalVersion(Info.getVersion());
+      final Boolean cur = VersionUtils.isCurrent(running);
+      latch.await();
+      return cur;
+    }
+
+    @Override
+    protected void done() {
+      try {
+        if (get(10, TimeUnit.SECONDS)) showCurrentVersionPanel();
+//          else       showCurrentVersionPanel();
+        else       showOldVersionPanel();
+//          else       showConnectionFailedPanel();
+      }
+      catch (CancellationException e) {
+        // cancelled by user, do nothing
+        timer.stop();
+      }
+      catch (InterruptedException e) {
+        timer.stop();
+        e.printStackTrace();
+        showConnectionFailedPanel();
+      }
+      catch (ExecutionException e) {
+        timer.stop();
+        e.printStackTrace();
+        showConnectionFailedPanel();
+      }
+      catch (TimeoutException e) {
+        timer.stop();
+        e.printStackTrace();
+        showConnectionFailedPanel();
+      }
     }
   }
 
-  private static void sendBugReport(String email,
-                                    String description,
-                                    String errorLog,
-                                    Throwable t) {
-    final long time = System.currentTimeMillis();
-    final String summary = getSummary(t);
+  private Component buildSendingBugReportPanel() {
+    final JXBusyLabel spinner = new JXBusyLabel(new Dimension(40,40));
+    spinner.setBusy(true);
 
-    final String boundary = "---------------------------" +
-                            Long.toString(time, 16);
+    final FlowLabel label = new FlowLabel("Please wait while we send your bug report to the bug tracker.");
 
-    StringBuilder sb = new StringBuilder("Submitted by ");
-    sb.append(email).append("\n\n").append(description);
-    description = sb.toString();
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
 
-    sb = new StringBuilder();
-    writeParam("group_id", "90612", sb, boundary);
-    writeParam("atid", "594231", sb, boundary);
-    writeParam("func", "postadd", sb, boundary);
-    writeParam("category_id", "100", sb, boundary);
-    writeParam("artifact_group_id", "100", sb, boundary);
-    writeParam("summary", summary, sb, boundary);
-    writeParam("details", description, sb, boundary);
-    writeFile("input_file", "errorLog", "application/octet-stream", errorLog, sb, boundary);
-    writeParam("file_description", "the errorLog", sb, boundary);
-    writeParam("submit", "SUBMIT", sb, boundary);
-    writeEnd(sb, boundary);
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.BOTH;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(label, c);
 
-    final String content = sb.toString();
+    c.gridx = 0;
+    c.gridy = 1;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.VERTICAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 0.0;
+    c.weighty = 1.0;
+    panel.add(Box.createVerticalGlue(), c);
 
-    DataOutputStream out = null;
-    try {
-      final URL url = new URL("http://sourceforge.net/tracker/index.php");    
-      final HttpURLConnection http = (HttpURLConnection) url.openConnection();
-      http.setDoInput(true);
-      http.setDoOutput(false);
-      http.setUseCaches(false);
-      http.setAllowUserInteraction(false);
+    c.gridx = 0;
+    c.gridy = 2;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.CENTER;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(spinner, c);
 
-      http.setRequestMethod("POST");
+    c.gridx = 0;
+    c.gridy = 3;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.VERTICAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 0.0;
+    c.weighty = 1.0;
+    panel.add(Box.createVerticalGlue(), c);
 
-      http.setRequestProperty(
-        "Content-Type", "multipart/form-data; boundary=" + boundary);
-      http.setRequestProperty(
-        "Content-Length", String.valueOf(content.length()));
+/*
+    final JPanel panel = new JPanel();
+    final GroupLayout layout = new GroupLayout(panel);
+    panel.setLayout(layout);
 
-      out = new DataOutputStream(http.getOutputStream()); 
-      out.writeBytes(content);
-      out.flush();
-      out.close(); 
+    layout.setAutocreateGaps(true);
+    layout.setAutocreateContainerGaps(true);
+
+    layout.setHorizontalGroup(
+      layout.createParallelGroup(GroupLayout.LEADING, true)
+        .add(label)
+        .add(layout.createSequentialGroup()
+          .add(0, 0, Integer.MAX_VALUE)
+          .add(spinner)
+          .add(0, 0, Integer.MAX_VALUE)));
+
+    layout.setVerticalGroup(
+      layout.createSequentialGroup()
+        .add(label)
+        .add(0, 0, Integer.MAX_VALUE)
+        .add(spinner)
+        .add(0, 0, Integer.MAX_VALUE));
+*/
+
+    return panel;
+  }
+
+  private Component buildSendingBugReportButtons() {
+    final JButton cancelButton = new JButton(
+      new AbstractAction("Cancel") {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          dispose();
+        }
+      }
+    );
+
+    final GridBagConstraints c = new GridBagConstraints();
+    final GridBagLayout layout = new GridBagLayout();
+    final JPanel panel = new JPanel(layout);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    panel.add(Box.createHorizontalGlue(), c);
+
+    c.gridx = 1;
+    c.gridy = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(0,0,0,0);
+    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    panel.add(cancelButton, c);
+
+    return panel;
+  }
+
+  private SendRequest sendRequest = null;
+
+  private class SendRequest extends SwingWorker<Void,Void> {
+    private Timer timer = null;
+
+    @Override
+    protected Void doInBackground() throws Exception {
+      final CountDownLatch latch = new CountDownLatch(1);
+
+      // Wait 3 seconds before counting down the latch to ensure
+      // that the user has sufficient time to read the message on
+      // the first pane.
+      timer = new Timer(2000, new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          latch.countDown();
+        }
+      });
+      timer.start();
+
+      // Make the request to the server and wait for the latch.
+      BugUtils.sendBugReport(
+        emailField.getText(),
+        descriptionArea.getText(),
+        errorLog,
+        thrown
+      );
+
+      latch.await();
+      return null;
     }
-    // FIXME: review error message
-    catch (IOException e) {
-      // If we get here, then there is no path from the user to SourceForge.
-      e.printStackTrace();
-      System.err.println("\n");
-      System.err.println(content);      
 
-      final JLabel msg = new JLabel("<html>VASSAL was unable to submit your bug report. Please post the file \"" + /* Info.getHomeDir() */ "/home/uckelman/VASSAL/bugReport" + "\" in the Technical Support &amp; Bugs section of the <a href=\"http://forums.vassalengine.org/viewforum.php?f=3\">VASSAL Forum</a>.</html>");
+    @Override
+    protected void done() {
+      try {
+        get(10, TimeUnit.SECONDS);
+        showEmergencySavePanel();
+      }
+      catch (CancellationException e) {
+        // cancelled by user, do nothing
+        timer.stop();
+      }
+      catch (InterruptedException e) {
+        timer.stop();
+        e.printStackTrace();
+        showConnectionFailedPanel();
+      }
+      catch (ExecutionException e) {
+        timer.stop();
+        e.printStackTrace();
+        showConnectionFailedPanel();
+      }
+      catch (TimeoutException e) {
+        timer.stop();
+        e.printStackTrace();
+        showConnectionFailedPanel();
+      }
+    }
+  }
 
-      final JDialog d = new JOptionPane(msg, JOptionPane.ERROR_MESSAGE,
-                           JOptionPane.DEFAULT_OPTION)
-      .createDialog((Component) null, "Error");
-  
-      msg.setPreferredSize(new Dimension(400, 100));
-      d.pack();
-      d.setVisible(true);
+// FIXME: add a page thanking the user for his bug report and providing
+// a link to it at SF.
+
+  private void emergencySave() {
+// FIXME: GameModule and GameState need save methods which take a filename
+/*      
+    final GameModule mod = GameModule.getGameModule();
+    if (mod != null) mod.save(false);
+
+    final GameState state = mod.getGameState();
+    if (state != null && state.isModified()) {
+      state.saveGame();
     }
-    finally {
-      IOUtils.closeQuietly(out);
-    }
+*/       
   }
 
   public static void main(String[] args) {
-/*
-    final JPanel panel = new JPanel();
-    
-    final JLabel msg1 = new JLabel("<html>VASSAL was unable to submit your bug report. Please post the file");
-
-    final JXHyperlink fileLink = new JXHyperlink(
-      new LinkAction("/home/uckelman/VASSAL/bugReport") {
-        public void actionPerformed(ActionEvent e) {
-          setVisited(true);
-        }
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        final BugDialog bd = new BugDialog(null, null);
+        bd.setVisible(true);
+        System.err.println(bugReportingDisabled);
       }
-    );
-
-    final JLabel msg2 = new JLabel("in the Technical Support & Bugs section of the ");
-    
-    final JXHyperlink forumLink = new JXHyperlink(
-      new LinkAction("VASSAL Forum") {
-        public void actionPerformed(ActionEvent e) {
-          setVisited(true);
-//<a href=\"http://forums.vassalengine.org/viewforum.php?f=3\">VASSAL Forum</a>.</html>");
-        }
-      }
-    );
-
-    final GroupLayout layout = new GroupLayout(panel);
-    panel.setLayout(layout);
-
-    layout.setAutocreateGaps(true);
-    layout.setAutocreateContainerGaps(true);
-    
-    layout.setHorizontalGroup(
-      layout.createParallelGroup(GroupLayout.LEADING, true)
-        .add(msg1)
-        .add(layout.createSequentialGroup()
-          .add(0, 0, Integer.MAX_VALUE)
-          .add(fileLink)
-          .add(0, 0, Integer.MAX_VALUE))
-        .add(layout.createSequentialGroup()
-          .add(msg2)
-          .add(0)
-          .add(forumLink)));
-
-    layout.setVerticalGroup(
-      layout.createSequentialGroup()
-        .add(msg1)
-        .addPreferredGap(LayoutStyle.UNRELATED)
-        .add(fileLink)
-        .addPreferredGap(LayoutStyle.UNRELATED)
-        .add(layout.createParallelGroup(GroupLayout.BASELINE, true)
-          .add(msg2)
-          .add(forumLink)));
-
-      final JDialog d = new JOptionPane(panel, JOptionPane.ERROR_MESSAGE,
-                           JOptionPane.DEFAULT_OPTION).createDialog((Component) null, "Error");
-    d.setResizable(true);
-    d.pack();
-    d.setVisible(true);
-*/
-    oldReportABug(null,null);
-    reportABug(null);
-    System.exit(0);
-  }
-
-  private static void writeParam(String name, String value, StringBuilder sb, String boundary) {
-    sb.append("--").append(boundary).append("\r\n");
-    sb.append("Content-Disposition: form-data; name=\"").append(name).append("\"\r\n\r\n");
-    sb.append(value);
-    sb.append("\r\n");
-  }
-
-  private static void writeFile(String name, String filename, String type, String content, StringBuilder sb, String boundary) {
-    sb.append("--").append(boundary).append("\r\n");
-    sb.append("Content-Disposition: form-data; name=\"").append(name).append("\"; filename=\"").append(filename).append("\"\r\n");
-    sb.append("Content-Type: ").append(type).append("\r\n\r\n");
-    sb.append(content);
-    sb.append("\r\n");
-  }
-
-  private static void writeEnd(StringBuilder sb, String boundary) {
-    sb.append("--").append(boundary).append("--").append("\r\n");
+    });
   }
 }
