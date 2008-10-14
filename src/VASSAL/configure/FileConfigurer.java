@@ -18,6 +18,7 @@
  */
 package VASSAL.configure;
 
+import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -91,6 +92,7 @@ public class FileConfigurer extends Configurer {
   }
 
   public void setValue(Object o) {
+// FIXME: this creates a problem when the referenced file is in the JAR
     File f = (File) o;
     if (f != null && f.exists()) {
       if (archive != null) {
@@ -115,7 +117,7 @@ public class FileConfigurer extends Configurer {
     }
   }
 
-  public java.awt.Component getControls() {
+  public Component getControls() {
     if (p == null) {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
