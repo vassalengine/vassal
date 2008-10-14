@@ -77,6 +77,7 @@ Vengine.jar: all $(TMPDIR)
 		sed -e '/Vengine.jar/d' -e '/AppleJavaExtensions.jar/d' -e '/^  $$/d' \
 	) >>$(TMPDIR)/Vengine.mf
 	$(JAR) cvfm $(LIBDIR)/$@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) .
+	cd $(LIBDIR) ; $(JAR) i $@ ; cd ..
 
 $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
 	cp dist/windows/VASSAL.l4j.xml $(TMPDIR)
