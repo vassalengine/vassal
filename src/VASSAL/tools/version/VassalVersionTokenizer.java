@@ -60,6 +60,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
   private enum State { NUM, DELIM, TAG, EOS, END };
   private State state = State.NUM;
 
+// FIXME: should be synchronized?
   private static Map<String,Integer> tags = new HashMap<String,Integer>();
 
   // This is the mapping for tags to svn versions. Only tags which cannot
@@ -71,6 +72,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
     tags.put("beta1", 3606);
     tags.put("beta2", 3664);
     tags.put("beta3", 4023);
+    tags.put("beta4", 4259);
   }
 
   /**
