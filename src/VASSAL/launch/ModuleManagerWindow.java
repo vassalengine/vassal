@@ -109,6 +109,7 @@ import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
+import VASSAL.tools.version.UpdateCheckAction;
 
 public class ModuleManagerWindow extends JFrame {
   private static final long serialVersionUID = 1L;
@@ -246,6 +247,8 @@ public class ModuleManagerWindow extends JFrame {
 
     helpMenu.add(mm.addKey("General.help"));
     helpMenu.add(mm.addKey("Main.tour"));
+    helpMenu.addSeparator();
+    helpMenu.add(mm.addKey("UpdateCheckAction.update_check"));
 
     if (!Info.isMacOSX()) {
       helpMenu.addSeparator();
@@ -279,6 +282,7 @@ public class ModuleManagerWindow extends JFrame {
     
     mm.addAction("Main.tour", new LaunchTourAction(this));
     mm.addAction("AboutScreen.about_vassal", AboutVASSAL.getAction());
+    mm.addAction("UpdateCheckAction.update_check", new UpdateCheckAction(this));
 
     setJMenuBar(mm.getMenuBarFor(this));
 

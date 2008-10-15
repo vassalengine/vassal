@@ -61,6 +61,8 @@ public class ModuleManager {
   private static final String MODULE_MANAGER_PORT = "moduleManagerPort";
   private static final String MODULE_MANAGER_KEY = "moduleManagerKey";
 
+  private static final String NEXT_VERSION_CHECK = "nextVersionCheck";
+
   private static int port;
   private static long key;
 
@@ -83,7 +85,7 @@ public class ModuleManager {
       new LongConfigurer(MODULE_MANAGER_KEY, null, -1L);
     Prefs.getGlobalPrefs().addOption(keyConfig);
  
-    key = keyConfig.getLongValue(-1);
+    key = keyConfig.getLongValue(-1L);
     if (key == -1) {
       key = (long) (Math.random() * Long.MAX_VALUE);
       keyConfig.setValue(key);
@@ -241,8 +243,32 @@ public class ModuleManager {
 
     // ModuleManagerWindow.getInstance() != null now, so listen on the socket
     new Thread(new SocketListener(serverSocket)).start();
-  }
 
+    // determine when we should next check on the current version of VASSAL
+    final LongConfigurer nextVersionCheckConfig =
+      new LongConfigurer(NEXT_VERSION_CHECK, null, -1L);
+    Prefs.getGlobalPrefs().addOption(nextVersionCheckConfig);
+
+    long nextVersionCheck = nextVersionCheckConfig.getLongValue(-1L);
+    if (nextVersionCheck < System.currentTimeMillis()) {
+        new UpdateCheckRequest().execute();
+    }
+
+    // set the time for the next version check
+    if (nextVersionCheck == -1L) {
+      // this was our first check; randomly check after 0-10 days to
+      // to spread version checks evenly over a 10-day period
+      nextVersionCheck = System.currentTimeMillis() + 
+                         (long) (Math.random() * 10 * 86400000);
+    }
+    else {
+      // check again in 10 days
+      nextVersionCheck += 10 * 86400000;
+    }
+
+    nextVersionCheckConfig.setValue(nextVersionCheck);
+  }
+ 
   private class SocketListener implements Runnable {
     private final ServerSocket serverSocket;
 
