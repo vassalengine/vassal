@@ -175,7 +175,6 @@ public class ErrorDialog {
     }
     
     queue.add(new Bug(t));
-
   }
 
   public static void error(
@@ -277,6 +276,9 @@ public class ErrorDialog {
   }
   
   public static void dataError(BadDataReport e) {
+    ErrorLog.log(e.getMessage() + ": " + e.getData());
+    if (e.getCause() != null) ErrorLog.log(e.getCause());
+
     if (!reportedDataErrors.contains(e.getData())) {
       reportedDataErrors.add(e.getData());
       // When playing a module, send a warning to the controls window
