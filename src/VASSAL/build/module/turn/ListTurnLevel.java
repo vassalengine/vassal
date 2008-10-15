@@ -197,7 +197,7 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
           rolledOver = true;
         }
         idx--;
-        if (idx < 0) {
+        if (idx < 0 || idx > (list.length - 1)) {
           idx = list.length - 1;
         }
         done = active[idx];
