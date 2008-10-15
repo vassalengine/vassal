@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractLaunchAction.java 3939 2008-07-30 20:47:37Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman 
  *
