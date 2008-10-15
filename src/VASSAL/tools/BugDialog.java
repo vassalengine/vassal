@@ -184,13 +184,16 @@ public class BugDialog extends JDialog {
     final JPanel panel = new JPanel(layout);
     panel.setBorder(BorderFactory.createEmptyBorder(17,12,12,12));
 
+// FIXME: use BASELINE_LEADING, BASELINE_TRAILING instead of
+// LINE_START and LINE_END when we move to Java 6
+
     c.gridx = 0;
     c.gridy = 0;
     c.gridwidth = 1;
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(dontShowAgainCheckBox, c);
@@ -212,7 +215,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,12,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(buttons, c);
@@ -282,7 +285,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(dontShowAgainCheckBox, c);
@@ -293,7 +296,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 1.0;
     c.weighty = 0.0;
     panel.add(Box.createHorizontalGlue(), c);
@@ -304,7 +307,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(dontSendButton, c);
@@ -315,7 +318,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,5,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(sendButton, c);
@@ -326,7 +329,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,5,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(cancelButton, c);
@@ -337,7 +340,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,5,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(okButton, c);
@@ -362,7 +365,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.BOTH;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(label, c);
@@ -459,7 +462,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(cancelButton, c);
@@ -502,7 +505,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 1.0;
     c.weighty = 0.0;
     panel.add(label, c);
@@ -513,7 +516,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(12,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(descriptionLabel, c);
@@ -535,7 +538,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(6,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(emailLabel, c);
@@ -546,7 +549,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.insets = new Insets(6,12,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 1.0;
     c.weighty = 0.0;
     panel.add(emailField, c);
@@ -557,7 +560,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(12,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(detailsButton, c);
@@ -651,7 +654,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(dontSendButton, c);
@@ -662,7 +665,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,5,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(sendButton, c);
@@ -796,7 +799,7 @@ public class BugDialog extends JDialog {
     c.gridy = 0;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 1.0;
     c.weighty = 0.0;
     panel.add(label, c);
@@ -804,7 +807,7 @@ public class BugDialog extends JDialog {
     c.gridy = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(12,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(detailsButton, c);
@@ -860,7 +863,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(okButton, c);
@@ -885,7 +888,7 @@ public class BugDialog extends JDialog {
     c.gridy = 0;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 1.0;
     c.weighty = 0.0;
     panel.add(label, c);
@@ -893,7 +896,7 @@ public class BugDialog extends JDialog {
     c.gridy = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(12,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(detailsButton, c);
@@ -949,7 +952,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(okButton, c);
@@ -969,7 +972,7 @@ public class BugDialog extends JDialog {
     c.gridy = 0;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 1.0;
     c.weighty = 0.0;
     panel.add(label, c);
@@ -1018,7 +1021,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(dontSaveButton, c);
@@ -1029,7 +1032,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,5,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(saveButton, c);
@@ -1066,7 +1069,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(okButton, c);
@@ -1225,7 +1228,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.BOTH;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_LEADING;
+    c.anchor = GridBagConstraints.LINE_START;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(label, c);
@@ -1322,7 +1325,7 @@ public class BugDialog extends JDialog {
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
     c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.BASELINE_TRAILING;
+    c.anchor = GridBagConstraints.LINE_END;
     c.weightx = 0.0;
     c.weighty = 0.0;
     panel.add(cancelButton, c);
