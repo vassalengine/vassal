@@ -78,7 +78,12 @@ public class SVGRenderer {
   public SVGRenderer(String file, InputStream in) throws IOException {
     // load the SVG
     try {
-      doc = docFactory.createDocument(file, in);
+      // We synchronize on docFactory becuase it does internal caching
+      // of the Documents it produces. This ensures that a Document is
+      // being modified on one thread only.
+      synchronized (docFactory) {
+        doc = docFactory.createDocument(file, in);
+      }
       in.close();
     }
     finally {
