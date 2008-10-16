@@ -107,7 +107,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     final String name = getName();
 
     final SVGRenderer renderer = new SVGRenderer(
-      archive.getURL(name),
+      archive.getImageURL(name),
       new BufferedInputStream(archive.getImageInputStream(name))
     );
 
