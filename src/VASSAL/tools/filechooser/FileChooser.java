@@ -125,7 +125,7 @@ public abstract class FileChooser {
       if (name != null) {
         int index = name.lastIndexOf('.');
         if (index > 0) {
-          name = name.substring(0, index) + ".sav";
+          name = name.substring(0, index) + ".vsav";
           setSelectedFile(new File(name));
         }
       }
