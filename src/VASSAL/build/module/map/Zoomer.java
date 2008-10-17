@@ -74,6 +74,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.command.Command;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
@@ -730,7 +731,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   
         state = new State(levels,
           Math.min(state.getInitialLevel(), levels.size()-1));
-         init();
+        init();
       }
     }
     else if (FACTOR.equals(key)) {  // deprecated key
@@ -780,6 +781,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     for (int i = 0; i < levels.length; ++i)
       levels[i] = Math.pow(deprecatedFactor, -(i-1));
     state = new State(levels, state.getInitialLevel());
+    init();
   }
   // end deprecated keys
 
@@ -845,7 +847,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
   }
 
-  public VASSAL.build.module.documentation.HelpFile getHelpFile() {
+  public HelpFile getHelpFile() {
     return HelpFile.getReferenceManualPage("Map.htm", "Zoom"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
@@ -858,7 +860,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     zoomPickButton.setEnabled(gameStarting);
   }
 
-  public VASSAL.command.Command getRestoreCommand() {
+  public Command getRestoreCommand() {
     return null;
   }
 
