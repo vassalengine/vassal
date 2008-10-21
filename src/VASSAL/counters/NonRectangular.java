@@ -53,8 +53,8 @@ import VASSAL.tools.imageop.Op;
  */
 public class NonRectangular extends Decorator implements EditablePiece {
   public static final String ID = "nonRect;";
-  private static HashMap<String,Area> shapeCache =
-    new HashMap<String,Area>();
+  private static HashMap<String,Area> shapeCache = new HashMap<String,Area>();
+
   private String type;
   private Shape shape;
 
@@ -113,32 +113,34 @@ public class NonRectangular extends Decorator implements EditablePiece {
   }
 
   private Shape buildPath(String spec) {
-    Shape shape = shapeCache.get(spec);
-    if (shape != null) {
-      return shape;
-    }
-    GeneralPath path = new GeneralPath();
-    final StringTokenizer st = new StringTokenizer(spec, ",");
-    if (st.hasMoreTokens()) {        
-      while (st.hasMoreTokens()) {
-        final String token = st.nextToken();
-        switch (token.charAt(0)) {
-        case 'c':
-          path.closePath();
-          break;
-        case 'm':
-          path.moveTo(Integer.parseInt(st.nextToken()),
-                      Integer.parseInt(st.nextToken()));
-          break;
-        case 'l':
-          path.lineTo(Integer.parseInt(st.nextToken()),
-                      Integer.parseInt(st.nextToken()));
-          break;
+    Shape sh = shapeCache.get(spec);
+
+    if (sh == null) {
+      final GeneralPath path = new GeneralPath();
+      final StringTokenizer st = new StringTokenizer(spec, ",");
+      if (st.hasMoreTokens()) {        
+        while (st.hasMoreTokens()) {
+          final String token = st.nextToken();
+          switch (token.charAt(0)) {
+          case 'c':
+            path.closePath();
+            break;
+          case 'm':
+            path.moveTo(Integer.parseInt(st.nextToken()),
+                        Integer.parseInt(st.nextToken()));
+            break;
+          case 'l':
+            path.lineTo(Integer.parseInt(st.nextToken()),
+                        Integer.parseInt(st.nextToken()));
+            break;
+          }
         }
-      }        
-      shapeCache.put(spec, new Area(path));
+        sh = new Area(path);       
+        shapeCache.put(spec, sh);
+      }
     }
-    return path;
+
+    return sh;
   }
 
   public HelpFile getHelpFile() {
