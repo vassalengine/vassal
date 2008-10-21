@@ -117,28 +117,25 @@ public class NonRectangular extends Decorator implements EditablePiece {
     if (shape != null) {
       return shape;
     }
-    GeneralPath path = null;
-    if (path == null && !shapeCache.containsKey(spec)) {
-      final StringTokenizer st = new StringTokenizer(spec, ",");
-      if (st.hasMoreTokens()) {
-        path = new GeneralPath();
-        while (st.hasMoreTokens()) {
-          final String token = st.nextToken();
-          switch (token.charAt(0)) {
-          case 'c':
-            path.closePath();
-            break;
-          case 'm':
-            path.moveTo(Integer.parseInt(st.nextToken()),
-                        Integer.parseInt(st.nextToken()));
-            break;
-          case 'l':
-            path.lineTo(Integer.parseInt(st.nextToken()),
-                        Integer.parseInt(st.nextToken()));
-            break;
-          }
+    GeneralPath path = new GeneralPath();
+    final StringTokenizer st = new StringTokenizer(spec, ",");
+    if (st.hasMoreTokens()) {        
+      while (st.hasMoreTokens()) {
+        final String token = st.nextToken();
+        switch (token.charAt(0)) {
+        case 'c':
+          path.closePath();
+          break;
+        case 'm':
+          path.moveTo(Integer.parseInt(st.nextToken()),
+                      Integer.parseInt(st.nextToken()));
+          break;
+        case 'l':
+          path.lineTo(Integer.parseInt(st.nextToken()),
+                      Integer.parseInt(st.nextToken()));
+          break;
         }
-      }
+      }        
       shapeCache.put(spec, new Area(path));
     }
     return path;
