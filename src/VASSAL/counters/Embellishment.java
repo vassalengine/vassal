@@ -115,6 +115,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected KeyCommand[] commands;
   protected KeyCommand up = null;
   protected KeyCommand down = null;
+  
+  // Shape cache
+  protected Rectangle lastBounds = null;
+  protected Area lastShape = null;
 
   public Embellishment() {
     this(ID + "Activate", null);
@@ -592,15 +596,37 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       return new Rectangle();
     }
   }
-
+  
+  /**
+   * Return the Shape of the counter by adding the shape of this layer to the shape of all inner traits.
+   * Minimize generation of new Area objects. 
+   */
   public Shape getShape() {
+    final Shape innerShape = piece.getShape();
+    
     if (value > 0 && !drawUnderneathWhenSelected) {
-      final Area a = new Area(piece.getShape());
-      a.add(new Area(getCurrentImageBounds()));
-      return a;
+      final Rectangle r = getCurrentImageBounds();
+      
+      // If the label is completely enclosed in the current counter shape, then we can just return
+      // the current shape
+      if (innerShape.contains(r.x, r.y, r.width, r.height)) {
+        return innerShape;
+      }
+      else {
+        final Area a = new Area(innerShape);
+        
+        // Cache the Area object generated. Only recreate if the layer position or size has changed
+        if (!r.equals(lastBounds)) {
+          lastShape = new Area(r);
+          lastBounds = new Rectangle(r);          
+        }
+        
+        a.add(lastShape);
+        return a;
+      }
     }
     else {
-      return piece.getShape();
+      return innerShape;
     }
   }
 

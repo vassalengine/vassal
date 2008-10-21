@@ -129,7 +129,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
 
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
-    r.add(piece.getShape().getBounds());
+    r.add(piece.boundingBox());
     final Dimension d = getImageSize();
     r.add(new Rectangle(xOffset, yOffset, d.width, d.height));
     return r;

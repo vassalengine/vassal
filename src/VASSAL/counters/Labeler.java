@@ -62,7 +62,6 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
-import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 /**
@@ -105,6 +104,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
   protected String propertyName;
   protected KeyCommand menuKeyCommand;
 
+  private Point position = null; // Label position cache
+  
   public Labeler() {
     this(ID, null);
   }
@@ -298,12 +299,16 @@ public class Labeler extends Decorator implements TranslatablePiece {
         new LabelOp(lastCachedLabel, font, textFg, textBg));
     }
   }
-
+  
   /**
    * Return the relative position of the upper-left corner of the label,
-   * for a piece at position (0,0).
+   * for a piece at position (0,0). Cache the position of the label once the label
+   * image has been generated.
    */
   private Point getLabelPosition() {
+    if (position != null) {
+      return position;
+    }
     int x = horizontalOffset;
     int y = verticalOffset;
 
@@ -342,7 +347,14 @@ public class Labeler extends Decorator implements TranslatablePiece {
         x -= lblSize.width;
     }
 
-    return new Point(x, y);
+    final Point result = new Point(x, y);
+    
+    // Cache the position once the label image has been generated
+    if (lblSize.height > 0 && lblSize.width > 0 ) {
+      position = result;
+    }
+    
+    return result;
   }
 
   public void setLabel(String s) {
@@ -468,21 +480,44 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
   public Rectangle boundingBox() {
     final Rectangle r = piece.boundingBox();
-    r.add(piece.getShape().getBounds());
     r.add(new Rectangle(getLabelPosition(), imagePainter.getImageSize()));
     return r;
   }
 
+  protected Rectangle lastRect = null;
+  protected Area lastShape = null;
+  
+  /**
+   * Return the Shape of the counter by adding the shape of this label to the shape of all inner traits.
+   * Minimize generation of new Area objects. 
+   */
   public Shape getShape() {
+    Shape innerShape = piece.getShape();
+    
+    // If the label has a Control key, then the image of the label is NOT included in the selectable area of the
+    // counter
     if (labelKey != null) {
-      return piece.getShape();
+      return innerShape;
     }
-    else {
-      final Area a = new Area(piece.getShape());
-      final Rectangle r =
-        new Rectangle(getLabelPosition(), imagePainter.getImageSize());
-      a.add(new Area(r));
-      return a;
+    else {      
+      final Rectangle r = new Rectangle(getLabelPosition(), imagePainter.getImageSize());
+      
+      // If the label is completely enclosed in the current counter shape, then we can just return
+      // the current shape
+      if (innerShape.contains(r.x, r.y, r.width, r.height)) {
+        return innerShape;
+      }
+      else {
+        final Area a = new Area(innerShape);
+
+        // Cache the Area object generated. Only recreate if the label position or size has changed
+        if (!r.equals(lastRect)) {
+          lastShape = new Area(r);
+          lastRect = new Rectangle(r);          
+        }
+        a.add(lastShape);
+        return a;
+      }
     }
   }
 

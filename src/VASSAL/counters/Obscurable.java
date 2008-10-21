@@ -188,8 +188,22 @@ public class Obscurable extends Decorator implements TranslatablePiece {
             return obscuredToMeView.getShape();
           }
         case IMAGE:
-          Area area = new Area(obscuredToOthersView.getShape());
-          area.add(new Area(piece.getShape()));
+          final Shape obscuredToOthersShape = obscuredToOthersView.getShape(); 
+          Area area;
+          if (obscuredToOthersShape instanceof Area) {
+            area = (Area) ((Area) obscuredToOthersShape).clone();
+          }
+          else {
+            area = new Area(obscuredToOthersShape);
+          }
+          
+          final Shape innerShape = piece.getShape();
+          if (innerShape instanceof Area) {
+            area.add((Area) innerShape);
+          }
+          else {
+            area.add(new Area(innerShape));
+          }
           return area;
       }
       return piece.getShape();

@@ -53,8 +53,8 @@ import VASSAL.tools.imageop.Op;
  */
 public class NonRectangular extends Decorator implements EditablePiece {
   public static final String ID = "nonRect;";
-  private static HashMap<String,GeneralPath> shapeCache =
-    new HashMap<String,GeneralPath>();
+  private static HashMap<String,Area> shapeCache =
+    new HashMap<String,Area>();
   private String type;
   private Shape shape;
 
@@ -112,8 +112,12 @@ public class NonRectangular extends Decorator implements EditablePiece {
     shape = buildPath(shapeSpec);
   }
 
-  private GeneralPath buildPath(String spec) {
-    GeneralPath path = shapeCache.get(spec);
+  private Shape buildPath(String spec) {
+    Shape shape = shapeCache.get(spec);
+    if (shape != null) {
+      return shape;
+    }
+    GeneralPath path = null;
     if (path == null && !shapeCache.containsKey(spec)) {
       final StringTokenizer st = new StringTokenizer(spec, ",");
       if (st.hasMoreTokens()) {
@@ -135,7 +139,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
           }
         }
       }
-      shapeCache.put(spec, path);
+      shapeCache.put(spec, new Area(path));
     }
     return path;
   }
