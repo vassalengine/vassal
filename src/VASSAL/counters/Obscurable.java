@@ -176,37 +176,30 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     }
     else if (obscuredToOthers()) {
       switch (displayStyle) {
-        case BACKGROUND:
-          return obscuredToMeView.getShape();
-        case INSET:
+      case BACKGROUND:
+        return obscuredToMeView.getShape();
+      case INSET:
+        return piece.getShape();
+      case PEEK:
+        if (peeking && Boolean.TRUE.equals(getProperty(Properties.SELECTED))) {
           return piece.getShape();
-        case PEEK:
-          if (peeking && Boolean.TRUE.equals(getProperty(Properties.SELECTED))) {
-            return piece.getShape();
-          }
-          else {
-            return obscuredToMeView.getShape();
-          }
-        case IMAGE:
-          final Shape obscuredToOthersShape = obscuredToOthersView.getShape(); 
-          Area area;
-          if (obscuredToOthersShape instanceof Area) {
-            area = (Area) ((Area) obscuredToOthersShape).clone();
-          }
-          else {
-            area = new Area(obscuredToOthersShape);
-          }
-          
-          final Shape innerShape = piece.getShape();
-          if (innerShape instanceof Area) {
-            area.add((Area) innerShape);
-          }
-          else {
-            area.add(new Area(innerShape));
-          }
-          return area;
+        }
+        else {
+          return obscuredToMeView.getShape();
+        }
+      case IMAGE:
+        final Area area = new Area(obscuredToOthersView.getShape());
+        final Shape innerShape = piece.getShape();
+        if (innerShape instanceof Area) {
+          area.add((Area) innerShape);
+        }
+        else {
+          area.add(new Area(innerShape));
+        }
+        return area;
+      default:
+        return piece.getShape();
       }
-      return piece.getShape();
     }
     else {
       return piece.getShape();
