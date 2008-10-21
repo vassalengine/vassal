@@ -53,7 +53,7 @@ import VASSAL.tools.imageop.Op;
  */
 public class NonRectangular extends Decorator implements EditablePiece {
   public static final String ID = "nonRect;";
-  private static HashMap<String,Area> shapeCache = new HashMap<String,Area>();
+  private static HashMap<String,Shape> shapeCache = new HashMap<String,Shape>();
 
   private String type;
   private Shape shape;
