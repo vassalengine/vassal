@@ -134,10 +134,10 @@ public abstract class Launcher {
           if (cmdC == null) {
             // we are standalone, so warn the user directly
             ErrorDialog.error(
-              Resources.getString("Launcher.load_error"),
-              Resources.getString("Launcher.load_error"),
+              Resources.getString("Launcher.module_load_error"),
+              Resources.getString("Launcher.module_load_error"),
               e1,
-              Resources.getString("Launcher.load_error_message"),
+              Resources.getString("Launcher.module_load_error_message"),
               e1.getMessage()
             );
           }
@@ -149,10 +149,10 @@ public abstract class Launcher {
             catch (IOException e2) {
               // warn the user directly as a last resort 
               ErrorDialog.error(
-                Resources.getString("Launcher.load_error"),
-                Resources.getString("Launcher.load_error"),
+                Resources.getString("Launcher.module_load_error"),
+                Resources.getString("Launcher.module_load_error"),
                 e1,
-                Resources.getString("Launcher.load_error_message"),
+                Resources.getString("Launcher.module_load_error_message"),
                 e1.getMessage()
               );
 

@@ -447,10 +447,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         final Throwable thrown = ((Launcher.LoadFailedCmd) cmd).getThrowable();
 
         ErrorDialog.error(
-          Resources.getString("Error.load_error"),
-          Resources.getString("Error.load_error"),
+          Resources.getString("Launcher.module_load_error"),
+          Resources.getString("Launcher.module_load_error"),
           thrown,
-          Resources.getString("Error.load_error_message"),
+          Resources.getString("Launcher.module_load_error_message"),
           thrown.getMessage()
         );
 
