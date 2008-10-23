@@ -128,10 +128,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         try {
           if ("NOK".equals(child.request("REQUEST_CLOSE"))) return false;
         }
-        catch (EOFException e) {
+        catch (EOFException ignore) {
           // Normal. Child closed.
         }
-        catch (SocketException e) {
+        catch (SocketException ignore) {
           // Normal. Child closed.
         }
         catch (IOException e) {
@@ -149,14 +149,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     getLaunchTask().execute();
   }
 
-  protected void setWaitCursor(boolean b) {
-    if (b) {
-      window.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-    }
-    else {
-      window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-    }
+  protected void setWaitCursor(boolean wait) {
+    window.setCursor(Cursor.getPredefinedCursor(
+      wait ? Cursor.WAIT_CURSOR : Cursor.DEFAULT_CURSOR
+    ));
   }
+
   protected abstract LaunchTask getLaunchTask(); 
 
   protected File promptForFile() {
