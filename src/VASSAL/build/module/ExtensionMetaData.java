@@ -84,6 +84,10 @@ public class ExtensionMetaData extends AbstractMetaData {
     return DATA_VERSION;
   }
  
+  public FileType getFileType() {
+    return FileType.EXTENSION;
+  }
+  
   /**
    * Write Extension metadata to the specified Archive
    * @param archive Save game Archive
@@ -221,4 +225,5 @@ public class ExtensionMetaData extends AbstractMetaData {
       }
     }
   }
+
 }

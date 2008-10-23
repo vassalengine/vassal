@@ -146,22 +146,39 @@ public abstract class AbstractMetaData {
       // Not a Module, Extension or Saved game of any type, old or new.
       return FileType.UNKNOWN;
     }
-    else if (data instanceof SaveMetaData) {
-      return FileType.SAVE;
-    }
-    else if (data instanceof ExtensionMetaData) {
-      return FileType.EXTENSION;
-    }
-    else if (data instanceof ModuleMetaData) {
-      return FileType.MODULE;
-    }
     else {
-      // Some other type of metadata we don't know about.
-      // This should not happen, they should all be listed here.
-      throw new IllegalStateException();
+      return data.getFileType();
     }
+//    else if (data instanceof SaveMetaData) {
+//      return FileType.SAVE;
+//    }
+//    else if (data instanceof ExtensionMetaData) {
+//      return FileType.EXTENSION;
+//    }
+//    else if (data instanceof ModuleMetaData) {
+//      return FileType.MODULE;
+//    }
+//    else {
+//      // Some other type of metadata we don't know about.
+//      // This should not happen, they should all be listed here.
+//      throw new IllegalStateException();
+//    }
   }
 
+  public abstract FileType getFileType();
+  
+  public boolean isSaveData() {
+    return (getFileType() == FileType.SAVE);
+  }
+  
+  public boolean isModuleData() {
+    return (getFileType() == FileType.MODULE);
+  }
+  
+  public boolean isExtensionData() {
+    return (getFileType() == FileType.EXTENSION);
+  }
+  
   /**
    * Factory method to build and return an appropriate MetaData class based 
    * on the contents of the file. Return null if the file is not a Zip archive,

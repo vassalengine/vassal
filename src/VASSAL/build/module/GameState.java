@@ -20,10 +20,10 @@ package VASSAL.build.module;
 
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -34,9 +34,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -289,8 +289,50 @@ public class GameState implements CommandEncoder {
     final File f = fc.getSelectedFile();
     try {
       if (!f.exists()) throw new FileNotFoundException(
-        "Unalbe to locate " + f.getPath());
+        "Unable to locate " + f.getPath());
 
+      // Check the Save game for validity
+      final AbstractMetaData metaData = AbstractMetaData.buildMetaData(f);
+      if (metaData == null || ! metaData.isSaveData()) {
+        ErrorDialog.warning(
+            Resources.getString("GameState.invalid_save_file"),
+            Resources.getString("GameState.invalid_save_file"),
+            Resources.getString("GameState.invalid_save_file_message",
+                f.getPath())
+          );
+        GameModule.getGameModule().warn(Resources.getString("GameState.unable_to_load", f.getName()));
+        return;
+      }
+      
+      // Check it belongs to this module and matches the version if is a
+      // post 3.0 save file
+      final SaveMetaData saveData = (SaveMetaData) metaData;
+      if (saveData.getModuleData() != null) {
+        final String saveModuleName = saveData.getModuleName();
+        final String saveModuleVersion = saveData.getModuleVersion();
+        final String moduleName = GameModule.getGameModule().getGameName();
+        final String moduleVersion = GameModule.getGameModule().getGameVersion();
+        String message = null;
+        
+        if (! saveModuleName.equals(moduleName)) {
+          message = Resources.getString("GameState.load_module_mismatch", f.getName(), saveModuleName, moduleName);
+        }
+        else if (! saveModuleVersion.equals(moduleVersion)) {
+          message = Resources.getString("GameState.load_version_mismatch", f.getName(), saveModuleVersion, moduleVersion);
+        }
+        if (message != null) {
+          if (JOptionPane.showConfirmDialog(
+              null,
+              message,
+              Resources.getString("GameState.load_mismatch"),              
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
+            GameModule.getGameModule().warn(Resources.getString("GameState.cancel_load", f.getName()));            
+            return;
+          }
+        }
+      }
+      
       if (gameStarted) {
         loadContinuation(f);
       }

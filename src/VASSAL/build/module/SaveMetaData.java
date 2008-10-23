@@ -79,12 +79,20 @@ public class SaveMetaData extends AbstractMetaData {
     return moduleData == null ? "" : moduleData.getVersion();
   }
   
+  public ModuleMetaData getModuleData() {
+    return moduleData;
+  }
+  
   public String getZipEntryName() {
     return ZIP_ENTRY_NAME;
   }
   
   public String getMetaDataVersion() {
     return DATA_VERSION;
+  }
+  
+  public FileType getFileType() {
+    return FileType.SAVE;
   }
 
   /**

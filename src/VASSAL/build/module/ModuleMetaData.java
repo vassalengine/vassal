@@ -84,6 +84,10 @@ public class ModuleMetaData extends AbstractMetaData {
     return DATA_VERSION;
   }
   
+  public FileType getFileType() {
+    return FileType.MODULE;
+  }
+  
   /**
    * Add elements specific to a ModuleMetaData 
    * 

@@ -145,10 +145,18 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
   /** {@inheritDoc} */  
   public void actionPerformed(ActionEvent e) {
-    window.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    setWaitCursor(true);
     getLaunchTask().execute();
   }
 
+  protected void setWaitCursor(boolean b) {
+    if (b) {
+      window.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    }
+    else {
+      window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
+  }
   protected abstract LaunchTask getLaunchTask(); 
 
   protected File promptForFile() {
@@ -198,6 +206,18 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       // find module-specific heap settings, if any
       if (lr.module != null) {
         final AbstractMetaData data = AbstractMetaData.buildMetaData(lr.module);
+        
+        if (data == null) {
+          ErrorDialog.warning(
+              Resources.getString("Error.invalid_vassal_file"),
+              Resources.getString("Error.invalid_vassal_file"),
+              Resources.getString("Error.invalid_vassal_file_message",
+                lr.module.getAbsolutePath())
+            );
+          setWaitCursor(false);
+          return null;
+        }
+        
         if (data != null && data instanceof ModuleMetaData) {
           moduleName = ((ModuleMetaData) data).getName();
 
@@ -386,8 +406,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     protected void done() {
       try {
         get();
-        clientSocket.close();
-        serverSocket.close();
       }
       catch (CancellationException e) {
         // FIXME: bug until we enable cancellation of loading
@@ -405,9 +423,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         else {
           ErrorDialog.bug(e);
         }
-      }
-      catch (IOException e) {
-        CommunicationErrorDialog.error(e);
       }
       finally {
         IOUtils.closeQuietly(clientSocket);
@@ -430,19 +445,19 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
       else if ("NOTIFY_OPEN_OK".equals(cmd)) {
         ModuleManagerWindow.getInstance().addModule(lr.module);
-        window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        setWaitCursor(false);
         return "OK";
       }
       else if ("NOTIFY_NEW_OK".equals(cmd)) {
-        window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        setWaitCursor(false);
         return "OK";
       }
       else if ("NOTIFY_IMPORT_OK".equals(cmd)) {
-        window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        setWaitCursor(false);
         return "OK";
       }
       else if (cmd instanceof Launcher.LoadFailedCmd) {
-        window.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        setWaitCursor(false);
 
         final Throwable thrown = ((Launcher.LoadFailedCmd) cmd).getThrowable();
 

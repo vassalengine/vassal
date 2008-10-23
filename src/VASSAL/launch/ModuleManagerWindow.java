@@ -1106,7 +1106,7 @@ public class ModuleManagerWindow extends JFrame {
     
     protected void loadMetaData() {
       AbstractMetaData data = AbstractMetaData.buildMetaData(file);
-      if (data != null && data instanceof ModuleMetaData) {
+      if (data != null && data.isModuleData()) {
         setValid(true);
         metadata = (ModuleMetaData) data;
       }
@@ -1319,7 +1319,7 @@ public class ModuleManagerWindow extends JFrame {
     
     protected void loadMetaData() {   
       AbstractMetaData data = AbstractMetaData.buildMetaData(file);
-      if (data != null && data instanceof ExtensionMetaData) {
+      if (data != null && data.isExtensionData()) {
         setValid(true);
         metadata = (ExtensionMetaData) data;
       }
@@ -1491,10 +1491,19 @@ public class ModuleManagerWindow extends JFrame {
         }
       }
       
-      // Refresh any that are
-      File[] files = getFile().listFiles();
+      // Refresh any that are. Only include Save files belonging to this
+      // module, or that are pre vassal 3.1
+      final File[] files = getFile().listFiles();
       for (int i = 0; i < files.length; i++) {
-        update(files[i]);
+        final AbstractMetaData fdata = AbstractMetaData.buildMetaData(files[i]);
+        if (fdata != null) {
+          if (fdata.isSaveData()) {
+            final String moduleName = ((SaveMetaData) fdata).getModuleName();
+            if (moduleName == null || moduleName.length() == 0 || moduleName.equals(getModuleInfo().getModuleName())) {
+              update(files[i]);
+            }
+          }
+        }
       }
     }
     
@@ -1541,7 +1550,7 @@ public class ModuleManagerWindow extends JFrame {
     
     protected void loadMetaData() {
       AbstractMetaData data = AbstractMetaData.buildMetaData(file);
-      if (data != null && data instanceof SaveMetaData) {
+      if (data != null && data.isSaveData()) {
         metadata = (SaveMetaData) data;
         setValid(true);
       }
@@ -1581,19 +1590,19 @@ public class ModuleManagerWindow extends JFrame {
     private String buildComments() {
       String comments = "";
       if (!belongsToModule()) {
-        if (metadata.getModuleName().length() > 0) {
+        if (metadata != null && metadata.getModuleName().length() > 0) {
           comments = "[" + metadata.getModuleName() +  "] ";
         }
       }
-      comments += metadata.getDescription();
+      comments += (metadata == null ? "" : metadata.getDescription());
       return comments;
     }
     
     private boolean belongsToModule() {
       return metadata != null 
-        && metadata.getModuleName().length() == 0 ||
+        && (metadata.getModuleName().length() == 0 ||
         folderInfo.getModuleInfo().getModuleName().equals(
-          metadata.getModuleName());
+          metadata.getModuleName()));
     }
     
     @Override 
@@ -1604,7 +1613,7 @@ public class ModuleManagerWindow extends JFrame {
    
     @Override 
     public String getVersion() {
-      return metadata.getModuleVersion();
+      return metadata == null ? "" : metadata.getModuleVersion();
     }
 
     /**
