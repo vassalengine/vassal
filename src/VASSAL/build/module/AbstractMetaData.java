@@ -149,20 +149,6 @@ public abstract class AbstractMetaData {
     else {
       return data.getFileType();
     }
-//    else if (data instanceof SaveMetaData) {
-//      return FileType.SAVE;
-//    }
-//    else if (data instanceof ExtensionMetaData) {
-//      return FileType.EXTENSION;
-//    }
-//    else if (data instanceof ModuleMetaData) {
-//      return FileType.MODULE;
-//    }
-//    else {
-//      // Some other type of metadata we don't know about.
-//      // This should not happen, they should all be listed here.
-//      throw new IllegalStateException();
-//    }
   }
 
   public abstract FileType getFileType();
