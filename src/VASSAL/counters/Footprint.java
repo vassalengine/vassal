@@ -37,11 +37,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -291,7 +293,10 @@ public class Footprint extends MovementMarkable {
   }
 
   public void redraw() {
-    piece.getMap().repaint(getMyBoundingBox());
+    final Map m = getMap();
+    if (m != null) {
+      m.repaint(getMyBoundingBox());
+    }
   }
 
   public String getDescription() {
