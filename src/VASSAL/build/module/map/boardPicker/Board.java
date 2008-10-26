@@ -18,15 +18,17 @@
  */
 package VASSAL.build.module.map.boardPicker;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.image.ImageObserver;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -34,10 +36,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
+
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
+
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -264,8 +273,11 @@ public class Board extends AbstractConfigurable implements GridContainer {
                zoom, obs);
   }
 
-  private java.util.Map<Point,Future<Image>> requested =
+  private ConcurrentMap<Point,Future<Image>> requested =
     new ConcurrentHashMap<Point,Future<Image>>();
+
+  private java.util.Map<Point,Float> alpha =
+    new ConcurrentHashMap<Point,Float>();
 
   private static Comparator<Point> tileOrdering = new Comparator<Point>() {
     public int compare(Point t1, Point t2) {
@@ -274,22 +286,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
       return t1.x - t2.x;
     }
   };
-
-  protected static final Image throbber;
-  protected static final int thxoff;
-  protected static final int thyoff;
-  protected static final Color tileOutlineColor = new Color(0xCCCCCC);
-
-  static {
-    // The throbber must not be loaded with something which
-    // produces a BufferedImage, becuase it's an animated GIF.
-    throbber = Toolkit.getDefaultToolkit().createImage(
-      Board.class.getResource("/images/roller.gif"));
-               
-    new ImageIcon(throbber);  // force complete loading
-    thxoff = throbber.getWidth(null)/2;
-    thyoff = throbber.getHeight(null)/2;
-  }
 
   public void drawRegion(final Graphics g,
                          final Point location,
@@ -339,7 +335,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
 
           try {
             final Future<Image> fim = op.getFutureTile(tile.x, tile.y, rep);
-            if (fim.isDone() || obs == null) {
+
+            if (obs == null) {
               try {
                 g.drawImage(fim.get(), tx, ty, obs);
               }
@@ -351,39 +348,93 @@ public class Board extends AbstractConfigurable implements GridContainer {
                 ErrorDialog.bug(e);
               }
               catch (ExecutionException e) {
+// FIXME: don't use this
                 OpErrorDialog.error(e, op);
               }
-  
-              requested.remove(tile);
-
-              final ThrobberObserver tobs = throbberObservers.remove(tile);
-              if (tobs != null) tobs.stop();
             }
             else {
-              if (requested.get(tile) == null) {
-                requested.put(tile, fim);
-              }
+              if (fim.isDone()) {
+                if (requested.containsKey(tile)) {
+                  requested.remove(tile);
+           
+/* 
+                  alpha.put(tile, 0.0f);
 
-              // draw tile outline
-              final Color oldColor = g.getColor();
-              g.setColor(tileOutlineColor); 
-              g.drawRect(tx, ty, tw, th);
-              g.setColor(oldColor);
+                  final Point t = tile;
+
+                  final Timer timer = new Timer(100, null);
   
-              // draw animated throbber
-              ThrobberObserver tobs  = throbberObservers.get(tile);
-              if (tobs == null) {
-                tobs = throbberObservers.put(tile,
-                  new ThrobberObserver(obs, zoom));
-              }
-              else if (zoom != tobs.getZoom()) {
-                throbberObservers.remove(tobs);
-                tobs.stop();
-                tobs = throbberObservers.put(tile,
-                  new ThrobberObserver(obs, zoom));
-              }
+                  final AbstractAction act = new AbstractAction() {
+                    public void actionPerformed(ActionEvent e) {
+                      obs.repaint(tx, ty, tw, th);
+                      final Float a = alpha.get(t);
+                      if (a == null || a >= 1.0f) timer.stop();
+                    } 
+                  };
 
-              g.drawImage(throbber, tx+tw/2-thxoff, ty+th/2-thyoff, tobs);
+                  timer.addActionListener(act);
+                  timer.start();
+*/
+                  final Point t = tile;
+
+                  final Animator a = new Animator(100,
+                    new TimingTargetAdapter() {
+                      @Override
+                      public void timingEvent(float fraction) {
+                        alpha.put(t, fraction);
+                        obs.repaint(tx, ty, tw, th); 
+                      }
+                    }
+                  );
+
+                  a.setResolution(20);
+                  a.start();
+                }
+                else {
+                  Float a = alpha.get(tile);
+                  if (a != null && a < 1.0f) {
+                    final Graphics2D g2d = (Graphics2D) g;
+                    final Composite oldComp = g2d.getComposite();
+                    g2d.setComposite(AlphaComposite.SrcOver.derive(a));
+ 
+                    try {
+                      g2d.drawImage(fim.get(), tx, ty, obs);
+                    }
+                    catch (CancellationException e) {
+                      // FIXME: bug until we permit cancellation 
+                      ErrorDialog.bug(e);
+                    }
+                    catch (InterruptedException e) {
+                      ErrorDialog.bug(e);
+                    }
+                    catch (ExecutionException e) {
+                      OpErrorDialog.error(e, op);
+                    }
+
+                    g2d.setComposite(oldComp);
+                  }
+                  else {
+                    alpha.remove(tile);                   
+ 
+                    try {
+                      g.drawImage(fim.get(), tx, ty, obs);
+                    }
+                    catch (CancellationException e) {
+                      // FIXME: bug until we permit cancellation 
+                      ErrorDialog.bug(e);
+                    }
+                    catch (InterruptedException e) {
+                      ErrorDialog.bug(e);
+                    }
+                    catch (ExecutionException e) {
+                      OpErrorDialog.error(e, op);
+                    }
+                  } 
+                }
+              }
+              else {
+                requested.putIfAbsent(tile, fim);
+              }
             }
           }
 // FIXME: should getTileFuture() throw these?
@@ -400,8 +451,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
         for (Point tile : requested.keySet().toArray(new Point[0])) {
           if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
             requested.remove(tile);
-            final ThrobberObserver tobs = throbberObservers.remove(tile);
-            if (tobs != null) tobs.stop();
           }
         }
 
@@ -443,33 +492,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
-  private java.util.Map<Point,ThrobberObserver> throbberObservers =
-    new ConcurrentHashMap<Point,ThrobberObserver>();
-
-  public static class ThrobberObserver implements ImageObserver {
-    private final Component c;
-    private final double zoom;
-    private boolean done = false;
-
-    public ThrobberObserver(Component c, double zoom) {
-      this.c = c;
-      this.zoom = zoom;
-    }
-
-    public double getZoom() {
-      return zoom;
-    }
-
-    public void stop() {
-      done = true;
-    }
-
-    public boolean imageUpdate(Image img, int flags,
-                               int x, int y, int w, int h) {
-      return !done && c.imageUpdate(img, flags, x, y, w, h);
-    }
-  }
- 
   @Deprecated
   public synchronized Image getScaledImage(double zoom, Component obs) {
     try {

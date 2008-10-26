@@ -25,7 +25,9 @@ import java.awt.Rectangle;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.opcache.Op;
 
 /**
@@ -60,10 +62,11 @@ public class Repainter implements ImageOpObserver {
    *          rectangle to repaint
    * @param w the width of the rectangle to repaint 
    * @param h the height of the rectangle to repaint
+   *
+   * @throws IllegalArgumentException if <code>c == null</code>
    */
   public Repainter(Component c, int x, int y, int w, int h) {
-// FIXME: It would be better not to create repainters with null Components.
-//    if (c == null) throw new IllegalArgumentException();
+    if (c == null) throw new IllegalArgumentException();
 
     this.c = c;
     this.x = x;
@@ -77,25 +80,19 @@ public class Repainter implements ImageOpObserver {
    *
    * @param c the component to be repainted
    * @param r the area to be repainted
+   *
+   * @throws IllegalArgumentException if <code>c == null</code>
    */
   public Repainter(Component c, Rectangle r) {
-//    if (c == null) throw new IllegalArgumentException();
+    if (c == null) throw new IllegalArgumentException();
     this.c = c;
 
-    if (c == null) {
-      this.x = 0;
-      this.y = 0;
-      this.w = 0;
-      this.h = 0;
-    }
-    else {
-      if (r == null) r = c.getBounds();
+    if (r == null) r = c.getBounds();
 
-      this.x = r.x;
-      this.y = r.y;
-      this.w = r.width;
-      this.h = r.height;
-    }
+    this.x = r.x;
+    this.y = r.y;
+    this.w = r.width;
+    this.h = r.height;
   }
 
   /**
@@ -105,9 +102,7 @@ public class Repainter implements ImageOpObserver {
    * @param success repaint the <code>Component</code> iff <code>true</code> 
    */
   public void imageOpChange(ImageOp op, boolean success) {
-    if (c != null && success) {
-      c.repaint(x, y, w, h);
-    }
+    if (success) c.repaint(x, y, w, h);
   }
 
   public void succeeded(Op<Image> op, Image img) {
@@ -123,6 +118,15 @@ public class Repainter implements ImageOpObserver {
   }
 
   public void failed(Op<Image> op, ExecutionException e) {
-    OpErrorDialog.error(e, (ImageOp) op);
+    // don't display dialog for missing images
+    final MissingImageException mie =
+      ErrorUtils.getAncestorOfClass(MissingImageException.class, e);
+    if (mie != null) {
+      ErrorDialog.dataError(new BadDataReport(
+        "Image not found", mie.getFile().getAbsolutePath(), mie));
+    }
+    else {
+      ErrorDialog.bug(e);
+    }
   }
 }

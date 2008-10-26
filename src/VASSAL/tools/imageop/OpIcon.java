@@ -28,7 +28,9 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
 
 /**
  * An implementation of {@link Icon} using an {@link ImageOp} as a source.
@@ -69,8 +71,11 @@ public class OpIcon extends ImageIcon implements Icon {
   @Override
   public void paintIcon(Component c, Graphics g, int x, int y) {
     if (sop != null) {
+      final Repainter r =
+        c == null ? null : new Repainter(c, g.getClipBounds());
+
       try {
-        g.drawImage(sop.getImage(new Repainter(c, g.getClipBounds())), x, y, c);
+        g.drawImage(sop.getImage(r), x, y, c);
       }
       catch (CancellationException e) {
         ErrorDialog.bug(e);
@@ -79,7 +84,16 @@ public class OpIcon extends ImageIcon implements Icon {
         ErrorDialog.bug(e);
       }
       catch (ExecutionException e) {
-        OpErrorDialog.error(e, sop);
+        // don't display dialog for missing images
+        final MissingImageException mie =
+          ErrorUtils.getAncestorOfClass(MissingImageException.class, e);
+        if (mie != null) {
+          ErrorDialog.dataError(new BadDataReport(
+            "Image not found", mie.getFile().getAbsolutePath(), mie));
+        }
+        else {
+          ErrorDialog.bug(e);
+        }
       }
     }
   }
