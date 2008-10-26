@@ -105,13 +105,6 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
       size = ImageUtils.transform(
         new Rectangle(sop.getSize()), scale, 0.0).getSize();
     }
-
-    tileSize = new Dimension(256,256);
-
-    numXTiles = (int) Math.ceil((double)size.width/tileSize.width);
-    numYTiles = (int) Math.ceil((double)size.height/tileSize.height);
-
-    tiles = new ImageOp[numXTiles*numYTiles];
   }
 
   protected ImageOp createTileOp(int tileX, int tileY) {

@@ -76,13 +76,6 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
       if (angle == 1 || angle == 3) 
         size.setSize(size.height, size.width);
     }
-
-    tileSize = new Dimension(256,256);
-
-    numXTiles = (int) Math.ceil((double)size.width/tileSize.width);
-    numYTiles = (int) Math.ceil((double)size.height/tileSize.height);
-
-    tiles = new ImageOp[numXTiles*numYTiles];
   }
 
   public double getAngle() {

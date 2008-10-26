@@ -34,6 +34,8 @@ import java.util.concurrent.Future;
  * @author Joel Uckelman
  */
 public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
+  private static final Dimension DEFAULT_TILE_SIZE = new Dimension(256, 256);
+
   /** The standard size of this <code>ImageOp</code>s tiles. */
   protected Dimension tileSize;
 
@@ -46,33 +48,49 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
   /** The tiles already created, stored as <code>y*numXTiles + x</code>. */
   protected ImageOp[] tiles; 
 
+  /**
+   * Sets the <code>tileSize</code> which is used by {@link getTileSize},
+   * {@link getTileHeight}, {@link getTileWidth}, {@link getNumXTiles},
+   * {@link getNumYTiles}, and all other tile methods.
+   */
+  protected void fixTileSize() {
+    if (size == null) fixSize();
+
+    tileSize = DEFAULT_TILE_SIZE;
+
+    numXTiles = (int) Math.ceil((double)size.width/tileSize.width);
+    numYTiles = (int) Math.ceil((double)size.height/tileSize.height);
+
+    tiles = new ImageOp[numXTiles*numYTiles];
+  }
+
   /** {@inheritDoc} */
   public Dimension getTileSize() {
-    if (tileSize == null) fixSize();
+    if (tileSize == null) fixTileSize();
     return new Dimension(tileSize);
   }
 
   /** {@inheritDoc} */
   public int getTileHeight() {
-    if (tileSize == null) fixSize();
+    if (tileSize == null) fixTileSize();
     return tileSize.height;
   }
     
   /** {@inheritDoc} */
   public int getTileWidth() {
-    if (tileSize == null) fixSize();
+    if (tileSize == null) fixTileSize();
     return tileSize.width;
   }
 
   /** {@inheritDoc} */
   public int getNumXTiles() {
-    if (tileSize == null) fixSize();
+    if (tileSize == null) fixTileSize();
     return numXTiles;
   }
   
   /** {@inheritDoc} */
   public int getNumYTiles() {
-    if (tileSize == null) fixSize();
+    if (tileSize == null) fixTileSize();
     return numYTiles;
   }
 
@@ -131,7 +149,7 @@ public abstract class AbstractTiledOpImpl extends AbstractOpImpl {
   public Point[] getTileIndices(Rectangle rect) {
     if (rect == null) throw new IllegalArgumentException();
 
-    if (size == null) fixSize();
+    if (size == null || tileSize == null) fixTileSize();
 
 // FIXME: maybe do this without creating new Rectangles
     rect = rect.intersection(new Rectangle(size));

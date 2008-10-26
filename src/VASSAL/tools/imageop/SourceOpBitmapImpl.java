@@ -21,17 +21,16 @@ package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.ImageUtils;
 
 /**
@@ -71,26 +70,6 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     hash = name.hashCode() ^ archive.hashCode();
   }
 
- /** {@inheritDoc} */
-  @Override
-  public Image getImage() {
-    try {
-      return getImage(null);
-    }
-    catch (CancellationException e) {
-      // FIXME: bug until we permit cancellation 
-      ErrorDialog.bug(e);
-    }
-    catch (InterruptedException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (ExecutionException e) {
-      OpErrorDialog.error(e, this);
-    }
-
-    return null;
-  }
-
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.emptyList();
   }
@@ -104,42 +83,36 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     if (size == null) fixSize();
 
     if (ImageUtils.isLargeImage(size.width, size.height)) {
-      return ImageUtils.getLargeImage(getImageStream());
+      return ImageUtils.getLargeImage(archive.getImageInputStream(name));
     }
     else {
-      return ImageUtils.getSmallImage(getImageStream());
+      return ImageUtils.getSmallImage(archive.getImageInputStream(name));
     }
   }
-
-  protected InputStream getImageStream() throws IOException {
-    return archive.getImageInputStream(name);
-  }
-
-// FIXME: we need a way to invalidate ImageOps when an exception is thrown?
-// Maybe size should go to -1,-1 when invalid?
 
   /** {@inheritDoc} */
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
       size = getImageSize();
     }
-
-    tileSize = new Dimension(256,256);
-
-    numXTiles = (int) Math.ceil((double)size.width/tileSize.width);
-    numYTiles = (int) Math.ceil((double)size.height/tileSize.height);
-
-    tiles = new ImageOp[numXTiles*numYTiles];
   }
+
+// FIXME: we need a way to invalidate ImageOps when an exception is thrown?
+// Maybe size should go to -1,-1 when invalid?
 
   protected Dimension getImageSize() {
     try {
-      return archive.getImageSize(name);
+      return ImageUtils.getImageSize(archive.getImageInputStream(name));
+    }
+    catch (FileNotFoundException e) {
+      ErrorDialog.dataError(new BadDataReport("Image not found", name, e));
     }
     catch (IOException e) {
-      ErrorDialog.dataError(new BadDataReport("Image not found",name,e));
-      return new Dimension();
+// FIXME: maybe not bug?
+      ErrorDialog.bug(e);
     }
+    
+    return new Dimension();
   }
 
   protected ImageOp createTileOp(int tileX, int tileY) {
@@ -162,7 +135,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     if (o == null || !(o instanceof SourceOpBitmapImpl)) return false;
 
     final SourceOpBitmapImpl s = (SourceOpBitmapImpl) o;
-    return archive == s.archive && name.equals(s.getName());
+    return archive == s.archive && name.equals(s.name);
   }
 
   /** {@inheritDoc} */

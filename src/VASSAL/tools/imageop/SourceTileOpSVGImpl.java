@@ -23,14 +23,13 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.SVGRenderer;
 import VASSAL.tools.opcache.Op;
@@ -78,31 +77,12 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     result = PRIME * result + HashCode.hash(y1);
     hash = result;
   }
-
-  @Override
-  public Image getImage() {
-    try {
-      return getImage(null);
-    }
-    catch (CancellationException e) {
-      // FIXME: bug until we permit cancellation 
-      ErrorDialog.bug(e);
-    }
-    catch (InterruptedException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (ExecutionException e) {
-      OpErrorDialog.error(e, this);
-    }
-
-    return null;
-  }
-
+ 
   public List<Op<?>> getSources() {
     return Collections.emptyList();
   }
 
-  public Image eval() throws Exception {
+  public Image eval() throws IOException {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
 

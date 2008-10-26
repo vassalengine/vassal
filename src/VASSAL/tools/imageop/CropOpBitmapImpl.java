@@ -126,15 +126,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
 */
   }
 
-  /** {@inheritDoc} */
-  protected void fixSize() {
-    tileSize = new Dimension(256,256);
-
-    numXTiles = (int) Math.ceil((double)size.width/tileSize.width);
-    numYTiles = (int) Math.ceil((double)size.height/tileSize.height);
-
-    tiles = new ImageOp[numXTiles*numYTiles];
-  }
+  protected void fixSize() {} 
 
   protected ImageOp createTileOp(int tileX, int tileY) {
     return new CropOpBitmapImpl(this,

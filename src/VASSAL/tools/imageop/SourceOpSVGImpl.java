@@ -22,18 +22,18 @@ package VASSAL.tools.imageop;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.ErrorUtils;
+import VASSAL.tools.SVGImageUtils;
 import VASSAL.tools.SVGRenderer;
-import VASSAL.tools.opcache.Op;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
@@ -48,9 +48,9 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
 
   /** The cached hash code of this object. */
   protected final int hash;
-
+  
   /** The zip file from which the image will be loaded */
-  protected DataArchive archive;
+  protected final DataArchive archive;
 
   /**
    * Constructs an <code>ImageOp</code> which will load the given file.
@@ -72,26 +72,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
     hash = name.hashCode() ^ archive.hashCode();
   }
 
-  @Override
-  public Image getImage() {
-    try {
-      return getImage(null);
-    }
-    catch (CancellationException e) {
-      // FIXME: bug until we permit cancellation 
-      ErrorDialog.bug(e);
-    }
-    catch (InterruptedException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (ExecutionException e) {
-      OpErrorDialog.error(e, this);
-    }
-
-    return null;
-  }
-
-  public List<Op<?>> getSources() {
+  public List<VASSAL.tools.opcache.Op<?>> getSources() {
     return Collections.emptyList();
   }
 
@@ -101,8 +82,6 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    * @throws IOException if the image cannot be loaded from the image file.
    */
   public Image eval() throws IOException {
-    final DataArchive archive = GameModule.getGameModule().getDataArchive();
-
     final SVGRenderer renderer = new SVGRenderer(
       archive.getImageURL(name),
       new BufferedInputStream(archive.getImageInputStream(name))
@@ -111,27 +90,29 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
     return renderer.render();
   }
 
-// FIXME: we need a way to invalidate ImageOps when an exception is thrown?
-// Maybe size should go to -1,-1 when invalid?
+  // FIXME: we need a way to invalidate ImageOps when an exception is thrown?
+  // Maybe size should go to -1,-1 when invalid?
 
   /** {@inheritDoc} */
   protected void fixSize() {
     if ((size = getSizeFromCache()) == null) {
-      try {
-        size = GameModule.getGameModule().getDataArchive().getImageSize(name);
-      }
-      catch (IOException e) {
-        ReadErrorDialog.error(e, name);
-        size = new Dimension();
-      }
+      size = getImageSize();
+    }
+  }
+
+  protected Dimension getImageSize() {
+    try {
+      return SVGImageUtils.getImageSize(archive.getImageInputStream(name));
+    }
+    catch (FileNotFoundException e) {
+      ErrorDialog.dataError(new BadDataReport("Image not found", name, e));
+    }
+    catch (IOException e) {
+// FIXME: maybe not bug?
+      ErrorDialog.bug(e);
     }
 
-    tileSize = new Dimension(256,256);
-
-    numXTiles = (int) Math.ceil((double)size.width/tileSize.width);
-    numYTiles = (int) Math.ceil((double)size.height/tileSize.height);
-
-    tiles = new ImageOp[numXTiles*numYTiles];
+    return new Dimension();
   }
 
   protected ImageOp createTileOp(int tileX, int tileY) {
@@ -154,7 +135,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
     if (o == null || !(o instanceof SourceOpSVGImpl)) return false;
 
     final SourceOpSVGImpl s = (SourceOpSVGImpl) o;
-    return archive == s.archive && name.equals(s.getName());
+    return archive == s.archive && name.equals(s.name);
   }
 
   /** {@inheritDoc} */

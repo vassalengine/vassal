@@ -66,13 +66,6 @@ public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
   /** {@inheritDoc} */
   protected void fixSize() {
     size = new Dimension(image.getWidth(null), image.getHeight(null));
-
-    tileSize = new Dimension(256,256);
-
-    numXTiles = (int) Math.ceil((double)size.width/tileSize.width);
-    numYTiles = (int) Math.ceil((double)size.height/tileSize.height);
-
-    tiles = new ImageOp[numXTiles*numYTiles];
   }
 
   protected ImageOp createTileOp(int tileX, int tileY) {
