@@ -202,7 +202,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       String moduleName = null;
 
       // find module-specific heap settings, if any
-      if (lr.module != null) {
+      if (lr.module != null && lr.mode != LaunchRequest.Mode.IMPORT) {
         final AbstractMetaData data = AbstractMetaData.buildMetaData(lr.module);
         
         if (data == null) {
