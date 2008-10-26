@@ -40,6 +40,8 @@ import javax.swing.SwingUtilities;
 
 import static VASSAL.tools.IterableEnumeration.iterate;
 
+import VASSAL.tools.logging.Logger;
+
 /**
  * Automatically builds a .jar file that will update a Zip archive.
  * Usage:  java VASSAL.tools.ZipUpdater <oldArchiveName> <newArchiveName>
@@ -188,7 +190,7 @@ public class ZipUpdater implements Runnable {
         }
         // FIXME: review error message
         catch (IOException e) {
-          ErrorLog.log(e);
+          Logger.log(e);
         }
       } 
     }

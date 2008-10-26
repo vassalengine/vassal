@@ -33,8 +33,8 @@ import org.xml.sax.SAXException;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.logging.Logger;
 
 /**
  * Class representing the metadata for a Save Game/Log File. Details
@@ -158,10 +158,10 @@ public class SaveMetaData extends AbstractMetaData {
       zip.close();
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
     catch (SAXException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
     finally {
       IOUtils.closeQuietly(zip);

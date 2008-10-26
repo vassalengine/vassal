@@ -19,13 +19,8 @@
 
 package VASSAL.launch;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-
 import VASSAL.Info;
-import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.logging.Logger;
 
 /**
  * @author Joel Uckelman
@@ -61,36 +56,11 @@ public class StartUp {
     System.setProperty("awt.useSystemAAFontSettings", "on"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
-  public void setupErrorLog() {
-    //
-    // Error log setup
-    //
-    String stderr = "stderr";           //$NON-NLS-1$
-    final String errorLog = "errorLog"; //$NON-NLS-1$
-
-    // redirect stderr to errorLog by default
-    if (System.getProperty(stderr) == null) {
-      System.setProperty(stderr,
-        new File(Info.getHomeDir(), errorLog).getPath());
-    }
-
-    // write no log if stderr is set to null
-    stderr = System.getProperty(stderr); 
-    if (!"null".equals(stderr)) { //$NON-NLS-1$
-      try {
-        System.setErr(new PrintStream(new FileOutputStream(stderr)));
-      }
-      catch (IOException e) {
-        WriteErrorDialog.error(e, stderr);
-      }
-    }
-  }
-
   public void startErrorLog() {
     // begin the error log
-    System.err.println("[" + Info.getInstanceID() + "]");
-    System.err.println("-- OS " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
-    System.err.println("-- Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
-    System.err.println("-- VASSAL version " + Info.getVersion()); //$NON-NLS-1$
+    Logger.log("-- Starting"); //$NON-NLS-1$
+    Logger.log("-- OS " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
+    Logger.log("-- Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
+    Logger.log("-- VASSAL version " + Info.getVersion()); //$NON-NLS-1$
   }
 }

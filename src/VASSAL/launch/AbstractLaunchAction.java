@@ -62,6 +62,9 @@ import VASSAL.tools.IOUtils;
 import VASSAL.tools.StringUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
+import VASSAL.tools.logging.Logger;
+import VASSAL.tools.logging.LogEntry;
+import VASSAL.tools.logging.LogManager;
 
 /**
  * 
@@ -195,6 +198,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     @Override
     public Void doInBackground() throws InterruptedException, IOException {
+      // send some basic information to the log
+      if (lr.module != null)
+        Logger.log("-- Loading module file " + lr.module.getAbsolutePath());
+      if (lr.game != null)
+        Logger.log("-- Loading game file " + lr.game.getAbsolutePath());
+
       // set default heap setttings
       int initialHeap = DEFAULT_INITIAL_HEAP;
       int maximumHeap = DEFAULT_MAXIMUM_HEAP;
@@ -218,6 +227,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         
         if (data != null && data instanceof ModuleMetaData) {
           moduleName = ((ModuleMetaData) data).getName();
+
+          // log the module name
+          Logger.log("-- Loading module " + moduleName);
 
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
@@ -307,7 +319,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         args[1] = "-Xms" + initialHeap + "M";
         args[2] = "-Xmx" + maximumHeap + "M";
 
-        System.err.println(StringUtils.join(args, " "));
+        Logger.log(StringUtils.join(args, " "));
 
         // set up and start the child process
         final ProcessBuilder pb = new ProcessBuilder(args);
@@ -342,7 +354,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         try {
           // If this doesn't throw, our baby is dead.
           p.exitValue();
-          System.err.println(IOUtils.toString(p.getErrorStream()));
+          Logger.log(IOUtils.toString(p.getErrorStream()));
 
           // Try to determine heuristically what the max max heap is.
           final int maxMaximumHeap = HeapFinder.getMaxMaxHeap();
@@ -437,7 +449,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     @Override
     protected Object reply(Object cmd) {
-      if (cmd instanceof Launcher.SaveFileCmd) {
+      if (cmd instanceof LogEntry) {
+        LogManager.enqueue((LogEntry) cmd);
+        return "OK";
+      }
+      else if (cmd instanceof Launcher.SaveFileCmd) {
         return ModuleManagerWindow.getInstance().update(
           ((Launcher.SaveFileCmd) cmd).getFile());
       }

@@ -20,7 +20,7 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.logging.Logger;
 
 /**
  * Utility class for extracting strings from a {@link ResourceBundle}.
@@ -39,10 +39,10 @@ public class BundleHelper {
       return bundle.getString(id);
     }
     catch (ClassCastException e) {
-      ErrorLog.log("No Translation: " + id);
+      Logger.log("No Translation: " + id);
     }
     catch (MissingResourceException e) {
-      ErrorLog.log("No Translation: " + id);
+      Logger.log("No Translation: " + id);
     }
         
     // fallback: return the key

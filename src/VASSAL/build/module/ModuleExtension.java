@@ -55,8 +55,8 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.logging.Logger;
 
 /**
  * An optional extension to a GameModule
@@ -364,7 +364,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       }
       // FIXME: review error message
       catch (IOException e) {
-        ErrorLog.log(e);
+        Logger.log(e);
       }
 
       final String save = buildString();
@@ -387,7 +387,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       }
       // FIXME: review error message
       catch (IOException e) {
-        ErrorLog.log(e);
+        Logger.log(e);
       }
 
       final String save = buildString();

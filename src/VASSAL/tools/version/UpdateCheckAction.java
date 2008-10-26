@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 import VASSAL.Info;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.logging.Logger;
 
 /**
  * @since 3.1.0
@@ -79,7 +79,7 @@ public class UpdateCheckAction extends AbstractAction {
         ErrorDialog.bug(e);
       }
       catch (ExecutionException e) {
-        ErrorLog.log(e);
+        Logger.log(e);
       }
 
       JOptionPane.showMessageDialog(

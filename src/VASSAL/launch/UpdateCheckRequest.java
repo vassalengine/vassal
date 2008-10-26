@@ -24,7 +24,7 @@ import javax.swing.JOptionPane;
 import VASSAL.Info;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.logging.Logger;
 import VASSAL.tools.version.AbstractUpdateCheckRequest;
 import VASSAL.tools.version.VassalVersion;
 
@@ -52,10 +52,10 @@ public class UpdateCheckRequest extends AbstractUpdateCheckRequest {
       }
     }
     catch (InterruptedException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
     catch (ExecutionException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
   }
 }

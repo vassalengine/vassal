@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import VASSAL.Info;
 
@@ -98,5 +100,14 @@ public class BugUtils {
     }
 
     return log;
+  }
+
+
+  public static String getStackTrace(Throwable thrown) {
+    final StringWriter sw = new StringWriter();
+    final PrintWriter pw = new PrintWriter(sw);
+    thrown.printStackTrace(pw);
+    pw.flush();
+    return sw.toString();
   }
 }

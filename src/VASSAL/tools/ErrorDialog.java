@@ -49,7 +49,9 @@ import org.jdesktop.layout.LayoutStyle;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.logging.Logger;
 import VASSAL.tools.swing.FlowLabel;
+
 
 public class ErrorDialog {
   private ErrorDialog() {}
@@ -126,10 +128,10 @@ public class ErrorDialog {
                 });
               }
               catch (InterruptedException e) {
-                ErrorLog.log(e);
+                Logger.log(e);
               }
               catch (InvocationTargetException e) {
-                ErrorLog.log(e);
+                Logger.log(e);
               }
             }
             else if (o instanceof Bug) {
@@ -141,16 +143,16 @@ public class ErrorDialog {
                 });
               }
               catch (InterruptedException e) {
-                ErrorLog.log(e);
+                Logger.log(e);
               }
               catch (InvocationTargetException e) {
-                ErrorLog.log(e);
+                Logger.log(e);
               }
             }
           }
         }
         catch (InterruptedException e) {
-          ErrorLog.log(e);
+          Logger.log(e);
         }
       }
     }.start();
@@ -159,7 +161,7 @@ public class ErrorDialog {
 // FIXME: make method which takes Throwable but doesn't use it for details
 
   public static void bug(Throwable t) {
-    ErrorLog.log(t);
+    Logger.log(t);
 
     // determine whether an OutOfMemoryError is in our causal chain
     Throwable cause = t;
@@ -221,7 +223,7 @@ public class ErrorDialog {
     Object key,
     String... message)
   {
-    if (thrown != null) ErrorLog.log(thrown);
+    if (thrown != null) Logger.log(thrown);
     show(parent, title, header, message,
          getStackTrace(thrown), JOptionPane.ERROR_MESSAGE, key);
   }
@@ -270,14 +272,14 @@ public class ErrorDialog {
     Object key,
     String... message)
   {
-    if (thrown != null) ErrorLog.log(thrown);
+    if (thrown != null) Logger.log(thrown);
     show(parent, title, header, message,
          getStackTrace(thrown), JOptionPane.WARNING_MESSAGE, key);
   }
   
   public static void dataError(BadDataReport e) {
-    ErrorLog.log(e.getMessage() + ": " + e.getData());
-    if (e.getCause() != null) ErrorLog.log(e.getCause());
+    Logger.log(e.getMessage() + ": " + e.getData(), Logger.WARNING);
+    if (e.getCause() != null) Logger.log(e.getCause());
 
     if (!reportedDataErrors.contains(e.getData())) {
       reportedDataErrors.add(e.getData());

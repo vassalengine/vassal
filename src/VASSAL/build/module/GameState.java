@@ -62,7 +62,6 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.Deobfuscator;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.Obfuscator;
 import VASSAL.tools.ReadErrorDialog;
@@ -380,7 +379,7 @@ public class GameState implements CommandEncoder {
       catch (IOException e) {
         WriteErrorDialog.error(e, saveFile);
 /*
-        ErrorLog.log(err);
+        Logger.log(err);
         GameModule.getGameModule().warn(Resources.getString("GameState.save_failed"));  //$NON-NLS-1$
 */
       }
@@ -623,7 +622,7 @@ public class GameState implements CommandEncoder {
           }
           // FIXME: review error message
           catch (ExecutionException e) {
-            ErrorLog.log(e);
+            VASSAL.tools.logging.Logger.log(e);
             msg = Resources.getString("GameState.error_loading", shortName);  //$NON-NLS-1$
           }
   

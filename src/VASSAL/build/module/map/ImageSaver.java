@@ -57,12 +57,12 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ProgressDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.logging.Logger;
 
 
 /**
@@ -435,7 +435,7 @@ public class ImageSaver extends AbstractConfigurable {
         t.waitForID(0);
       }
       catch (Exception e) {
-        ErrorLog.log(e);
+        Logger.log(e);
       }
 
       try {
@@ -451,7 +451,7 @@ public class ImageSaver extends AbstractConfigurable {
           out[i].close();
         }
         catch (IOException e) {
-          ErrorLog.log(e);
+          Logger.log(e);
         }
       }
     }

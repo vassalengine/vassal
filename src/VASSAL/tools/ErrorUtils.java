@@ -21,6 +21,7 @@ package VASSAL.tools;
 import java.lang.reflect.InvocationTargetException;
 
 import VASSAL.i18n.Resources;
+import VASSAL.tools.logging.Logger;
 
 public class ErrorUtils {
   private ErrorUtils() {}
@@ -64,7 +65,7 @@ public class ErrorUtils {
         // If anything happens here, we're screwed anyway, since we're
         // already calling this during error handling. Just log it and
         // fight on.
-        ErrorLog.log(ignore);
+        Logger.log(ignore);
       }
 
       if (toThrow != null) throw toThrow;

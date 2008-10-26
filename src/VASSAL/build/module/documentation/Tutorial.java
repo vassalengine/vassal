@@ -37,7 +37,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.logging.Logger;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 
@@ -90,7 +90,7 @@ public class Tutorial extends AbstractConfigurable {
         }
         // FIXME: review error message
         catch (ExecutionException e) {
-          ErrorLog.log(e);
+          Logger.log(e);
           String msg = Resources.getString("Tutorial.unable_to_launch", name); //$NON-NLS-1$
           if (e.getMessage() != null) {
             msg += ":  " + e.getMessage(); //$NON-NLS-1$

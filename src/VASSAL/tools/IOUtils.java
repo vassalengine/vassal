@@ -16,8 +16,6 @@
  * License along with this library; if not, copies are available 
  * at http://www.opensource.org.
  */
-
-
 package VASSAL.tools;
 
 import java.io.ByteArrayInputStream;
@@ -36,6 +34,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.zip.ZipFile;
 import javax.imageio.stream.ImageInputStream;
+
+import VASSAL.tools.logging.Logger;
 
 /**
  * General I/O stream manipulation utilities. This class provides static
@@ -317,7 +317,7 @@ public class IOUtils {
       c.close();
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
   }
 
@@ -329,7 +329,7 @@ public class IOUtils {
       s.close();
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
   }
 
@@ -341,7 +341,7 @@ public class IOUtils {
       s.close();
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
   }
 
@@ -361,7 +361,7 @@ public class IOUtils {
       z.close();
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
   }
 
@@ -381,7 +381,7 @@ public class IOUtils {
       s.close();
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
   }
 }

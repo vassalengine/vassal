@@ -21,8 +21,10 @@ package VASSAL.launch;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -32,7 +34,12 @@ import javax.swing.SwingUtilities;
 import VASSAL.Info;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
+import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.logging.CommandClientAdapter;
+import VASSAL.tools.logging.LoggedOutputStream;
+import VASSAL.tools.logging.Logger;
+import VASSAL.tools.logging.LogManager;
+import VASSAL.tools.logging.LogOutputStreamAdapter;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -76,10 +83,30 @@ public abstract class Launcher {
 
     // start the error log and setup system properties
     final StartUp start = Info.isMacOSX() ? new MacOSXStartUp() : new StartUp();
-    if (standalone) start.setupErrorLog();
+
+    if (standalone) {
+      // start logging to the errorLog
+      final File errorLog = new File(Info.getHomeDir(), "errorLog");
+      try {
+        LogManager.addLogListener(
+          new LogOutputStreamAdapter(
+            new FileOutputStream(errorLog)));
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, errorLog);
+      }
+
+      LogManager.start();
+    }
+
     start.startErrorLog();
-    System.err.println("-- " + getClass().getSimpleName());
-    Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
+
+    // log everything which comes across our stderr
+    System.setErr(
+      new PrintStream(new LoggedOutputStream(Info.getInstanceID()), true));
+
+    Logger.log("-- " + getClass().getSimpleName());
+    Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
     start.initSystemProperties();
 
     // if we're not standalone, contact the module manager for instructions 
@@ -103,6 +130,9 @@ public abstract class Launcher {
 
         // set up our command client
         cmdC = new CommandClient(new Socket((String) null, port));
+
+        LogManager.addLogListener(new CommandClientAdapter(cmdC));
+        LogManager.start();
       }
       catch (ClassNotFoundException e) {
         ErrorDialog.bug(e);

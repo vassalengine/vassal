@@ -21,6 +21,7 @@ package VASSAL.launch;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -42,9 +43,12 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.LongConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.logging.LoggedOutputStream;
+import VASSAL.tools.logging.Logger;
+import VASSAL.tools.logging.LogManager;
+import VASSAL.tools.logging.LogOutputStreamAdapter;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -226,9 +230,27 @@ public class ModuleManager {
 
     final StartUp start = Info.isMacOSX() ?
       new ModuleManagerMacOSXStartUp() : new StartUp();
-    start.setupErrorLog();
+
+    // start logging to the errorLog
+    final File errorLog = new File(Info.getHomeDir(), "errorLog");
+    try {
+      LogManager.addLogListener(
+        new LogOutputStreamAdapter(
+          new FileOutputStream(errorLog)));
+    }
+    catch (IOException e) {
+      WriteErrorDialog.error(e, errorLog);
+    }
+
+    LogManager.start();
+
     start.startErrorLog();
-    Thread.setDefaultUncaughtExceptionHandler(new ErrorLog());
+
+    // log everything which comes across our stderr
+    System.setErr(
+      new PrintStream(new LoggedOutputStream(Info.getInstanceID()), true));
+
+    Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 
     start.initSystemProperties();
 
@@ -319,7 +341,7 @@ public class ModuleManager {
   }
 
   protected void launch() {
-    System.err.println("-- Manager");
+    Logger.log("-- Manager");
     final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
     window.setVisible(true);
 

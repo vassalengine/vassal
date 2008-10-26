@@ -25,6 +25,8 @@ import java.awt.Image;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RGBImageFilter;
 
+import VASSAL.tools.logging.Logger;
+
 /**
  * Sets the transparency of colors in an image
  * @deprecated Use a Graphics2D and an AlphaComposite, or
@@ -83,7 +85,7 @@ public class TransparentFilter extends RGBImageFilter {
       pg.grabPixels();
     }
     catch (InterruptedException ex) {
-      ErrorLog.log(ex);
+      Logger.log(ex);
     }
     return bg[0];
   }

@@ -38,6 +38,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,6 +55,7 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -105,6 +107,8 @@ import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
+import VASSAL.tools.logging.LogManager;
+import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -249,6 +253,7 @@ public class ModuleManagerWindow extends JFrame {
     helpMenu.add(mm.addKey("Main.tour"));
     helpMenu.addSeparator();
     helpMenu.add(mm.addKey("UpdateCheckAction.update_check"));
+    helpMenu.add(mm.addKey("Help.error_log"));
 
     if (!Info.isMacOSX()) {
       helpMenu.addSeparator();
@@ -283,6 +288,7 @@ public class ModuleManagerWindow extends JFrame {
     mm.addAction("Main.tour", new LaunchTourAction(this));
     mm.addAction("AboutScreen.about_vassal", AboutVASSAL.getAction());
     mm.addAction("UpdateCheckAction.update_check", new UpdateCheckAction(this));
+    mm.addAction("Help.error_log", new ShowErrorLogAction(this));
 
     setJMenuBar(mm.getMenuBarFor(this));
 
@@ -1722,5 +1728,41 @@ public class ModuleManagerWindow extends JFrame {
         }
       };
     } 
+  }
+
+  private class ShowErrorLogAction extends AbstractAction {
+    private static final long serialVersionUID = 1L;
+
+    private JDialog d;
+    private Frame frame;
+
+    public ShowErrorLogAction(Frame frame) {
+      super(Resources.getString("Help.error_log"));
+      this.frame = frame;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (d == null) {
+        final LogPane lp = new LogPane();
+
+        FileInputStream in = null;
+        try {
+          in = new FileInputStream(new File(Info.getHomeDir(), "errorLog"));
+          lp.setText(IOUtils.toString(in));
+        }
+        catch (IOException ex) {
+          // What to do here????
+        }
+
+        LogManager.addLogListener(lp);
+
+        d = new JDialog(frame, Resources.getString("Help.error_log"));
+        d.add(new JScrollPane(lp));
+        d.pack();
+      }
+
+      d.setVisible(true);
+    }
   }
 }

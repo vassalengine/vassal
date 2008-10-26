@@ -15,9 +15,9 @@ import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DieRoll;
 import VASSAL.build.module.InternetDiceButton;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.logging.Logger;
 
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;
@@ -206,7 +206,7 @@ public abstract class DieServer {
         }
         // FIXME: review error message
         catch (ExecutionException e) {
-          ErrorLog.log(e);
+          Logger.log(e);
 
           final String s = "- Internet dice roll attempt " +
                            mroll.getDescription() + " failed.";

@@ -86,9 +86,9 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.UsernameAndPasswordDialog;
+import VASSAL.tools.logging.Logger;
 
 /**
  * Provides support for two different wizards. The WelcomeWizard is the initial screen shown to the user when loading a
@@ -319,7 +319,7 @@ public class WizardSupport {
             new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
           }
           catch (IOException e1) {
-            ErrorLog.log(e1);
+            Logger.log(e1);
             controller.setProblem(Resources.getString("WizardSupport.ErrorLoadingTutorial")); //$NON-NLS-1$
           }
         }

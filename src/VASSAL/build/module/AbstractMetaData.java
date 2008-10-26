@@ -56,8 +56,8 @@ import VASSAL.i18n.Translation;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.BridgeStream;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.logging.Logger;
 
 /**
  * 
@@ -234,7 +234,7 @@ public abstract class AbstractMetaData {
       // Ignore. This (usually) means that the module has no metadata.
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     } 
     finally {
       IOUtils.closeQuietly(zip);
@@ -541,12 +541,12 @@ public abstract class AbstractMetaData {
 
     @Override
     public void warning(SAXParseException e) throws SAXException {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
 
     @Override
     public void error(SAXParseException e) throws SAXException {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
 
     @Override
@@ -588,12 +588,12 @@ public abstract class AbstractMetaData {
 
     @Override
     public void warning(SAXParseException e) throws SAXException {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
 
     @Override
     public void error(SAXParseException e) throws SAXException {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
 
     @Override

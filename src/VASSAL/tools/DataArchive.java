@@ -59,6 +59,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import sun.applet.AppletAudioClip;
 
+import VASSAL.tools.logging.Logger;
+
 /**
  * Wrapper around a Zip archive with methods to cache images
  */
@@ -516,7 +518,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         }
       }
       catch (IOException e) {
-        ErrorLog.log(e);
+        Logger.log(e);
       }
     }
     for (DataArchive ext : extensions) {

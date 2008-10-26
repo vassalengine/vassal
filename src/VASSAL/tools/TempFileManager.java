@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import VASSAL.Info;
 import VASSAL.tools.imageop.Op;
+import VASSAL.tools.logging.Logger;
 
 /**
  * Handles temporary files. <code>TempFileManager</code> cleans up
@@ -87,7 +88,7 @@ public class TempFileManager {
             catch (IOException e) {
               if (sleep > maxsleep) {
                 // just log, since shutdown hooks don't have long to run
-                ErrorLog.log(e);
+                Logger.log(e);
                 break;
               }
 
@@ -111,7 +112,7 @@ public class TempFileManager {
           }
           catch (IOException e) {
             // just log, since shutdown hooks don't have long to run
-            ErrorLog.log(e);
+            Logger.log(e);
           }
         }
       });

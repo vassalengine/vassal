@@ -54,6 +54,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.logging.Logger;
 
 /**
  * Render an SVG image to a {@link BufferedImage}.
@@ -127,7 +128,7 @@ public class SVGRenderer {
     }
     // FIXME: review error message
     catch (TranscoderException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
 
     return null;
@@ -159,7 +160,7 @@ public class SVGRenderer {
     }
     // FIXME: review error message
     catch (TranscoderException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
 
     return null; 

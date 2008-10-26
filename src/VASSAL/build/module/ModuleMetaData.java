@@ -31,8 +31,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.logging.Logger;
 
 /**
  * 
@@ -146,13 +146,13 @@ public class ModuleMetaData extends AbstractMetaData {
       zip.close();
     }
     catch (IOException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
     catch (SAXEndException e) {
       // Indicates End of module/extension parsing. not an error.
     }
     catch (SAXException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
     finally {
       IOUtils.closeQuietly(zip);

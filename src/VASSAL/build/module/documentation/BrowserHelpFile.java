@@ -50,9 +50,9 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.ErrorLog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.logging.Logger;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 
@@ -151,7 +151,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
     // FIXME: review error message
     catch (IOException e) {
-      ErrorLog.log(e);
+      Logger.log(e);
     }
     finally {
       IOUtils.closeQuietly(in);

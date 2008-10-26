@@ -47,6 +47,7 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
 import VASSAL.build.GameModule;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.tools.imageop.Op;
+import VASSAL.tools.logging.Logger;
 import VASSAL.tools.memmap.MappedBufferedImage;
 
 public class ImageUtils {
@@ -361,7 +362,7 @@ public class ImageUtils {
             }
             catch (IOException e) {
               // ignore, we throw an OutOfMemoryError at the bottom 
-              ErrorLog.log(e);
+              Logger.log(e);
             }
             break;
           case RAM:
@@ -371,7 +372,7 @@ public class ImageUtils {
             }
             catch (OutOfMemoryError e) {
               // ignore, we throw an OutOfMemoryError at the bottom 
-              ErrorLog.log(e);
+              Logger.log(e);
             }
             break;
           default:
@@ -429,7 +430,7 @@ public class ImageUtils {
         }
         catch (IOException e) {
           // ignore, we throw an OutOfMemoryError at bottom
-          ErrorLog.log(e);
+          Logger.log(e);
         }
         break;
       case RAM:
@@ -438,7 +439,7 @@ public class ImageUtils {
         }
         catch (OutOfMemoryError e) {
           // ignore, we throw an OutOfMemoryError at bottom
-          ErrorLog.log(e);
+          Logger.log(e);
         }
         break;
       default:
@@ -463,7 +464,7 @@ public class ImageUtils {
         }
         catch (IOException e) {
           // ignore, we throw an OutOfMemoryError at bottom
-          ErrorLog.log(e);
+          Logger.log(e);
         }
         break;
       case RAM:
@@ -476,7 +477,7 @@ public class ImageUtils {
         }
         catch (OutOfMemoryError e) {
           // ignore, we throw an OutOfMemoryError at bottom
-          ErrorLog.log(e);
+          Logger.log(e);
         }
         break;
       default:
