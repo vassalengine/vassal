@@ -180,13 +180,17 @@ public abstract class Importer {
    * If an alternate is created, it is of the form <code><tt>name</tt> + "(<tt>n</tt>)"</code>
    * where <tt>n</tt> is an integer.
    */
-  public static String getUniqueImageFileName(String s) {
+  public static String getUniqueImageFileName(String s, String ext) {
     String t = s;
     int index = 0;
     final ArchiveWriter writer = GameModule.getGameModule().getArchiveWriter();
-    while (writer.isImageAdded(writer.getImagePrefix() + t))
+    while (writer.isImageAdded(writer.getImagePrefix() + t + ext))
       t = s + '(' + (++index) + ')';
-    return t;
+    return t + ext;
+  }
+  
+  public static String getUniqueImageFileName(String s) {
+    return getUniqueImageFileName(s, ".png");
   }
 
   /**

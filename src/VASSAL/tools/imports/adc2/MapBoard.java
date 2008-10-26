@@ -185,7 +185,7 @@ public class MapBoard extends Importer {
           TempFileManager.getInstance().createTempFile("map", ".png");
         ImageIO.write(image.getSubimage(r.x, r.y, r.width, r.height), "png", f);
 
-        imageName = getUniqueImageFileName(getName());
+        imageName = getUniqueImageFileName(getName(), ".png");
         GameModule.getGameModule()
                   .getArchiveWriter()
                   .addImage(f.getPath(), imageName);

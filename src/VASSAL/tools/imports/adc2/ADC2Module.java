@@ -1508,7 +1508,7 @@ private PieceWindow pieceWin;
         BufferedImage icon = new BufferedImage(10, 15, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = icon.createGraphics();
         drawFlagImage(g);
-        imageName = getUniqueImageFileName(name);
+        imageName = getUniqueImageFileName(name, ".png");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(icon, "png", out);
