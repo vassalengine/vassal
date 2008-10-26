@@ -27,7 +27,9 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.opcache.OpCache;
 
 /**
@@ -84,7 +86,16 @@ public abstract class AbstractOpImpl
       ErrorDialog.bug(e);
     }
     catch (ExecutionException e) {
-      ErrorDialog.bug(e);
+      // don't display dialog for missing images
+      final MissingImageException mie =
+        ErrorUtils.getAncestorOfClass(MissingImageException.class, e);
+      if (mie != null) {
+        ErrorDialog.dataError(new BadDataReport(
+          "Image not found", mie.getFile().getAbsolutePath(), mie));
+      }
+      else {
+        ErrorDialog.bug(e);
+      }
     }
 
     return null;
@@ -101,7 +112,6 @@ public abstract class AbstractOpImpl
   /** {@inheritDoc} */
   public Future<Image> getFutureImage(ImageOpObserver obs)
                                                     throws ExecutionException {
-
     return getFuture(obs);
   }
 

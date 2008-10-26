@@ -82,12 +82,17 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    * @throws IOException if the image cannot be loaded from the image file.
    */
   public Image eval() throws IOException {
-    final SVGRenderer renderer = new SVGRenderer(
-      archive.getImageURL(name),
-      new BufferedInputStream(archive.getImageInputStream(name))
-    );
+    try {
+      final SVGRenderer renderer = new SVGRenderer(
+        archive.getImageURL(name),
+        new BufferedInputStream(archive.getImageInputStream(name))
+      );
 
-    return renderer.render();
+      return renderer.render();
+    }
+    catch (FileNotFoundException e) {
+      throw new MissingImageException(name, e);
+    }
   }
 
   // FIXME: we need a way to invalidate ImageOps when an exception is thrown?

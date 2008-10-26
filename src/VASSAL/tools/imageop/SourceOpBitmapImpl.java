@@ -82,11 +82,16 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   public Image eval() throws IOException {
     if (size == null) fixSize();
 
-    if (ImageUtils.isLargeImage(size.width, size.height)) {
-      return ImageUtils.getLargeImage(archive.getImageInputStream(name));
+    try {
+      if (ImageUtils.isLargeImage(size.width, size.height)) {
+        return ImageUtils.getLargeImage(archive.getImageInputStream(name));
+      }
+      else {
+        return ImageUtils.getSmallImage(archive.getImageInputStream(name));
+      }
     }
-    else {
-      return ImageUtils.getSmallImage(archive.getImageInputStream(name));
+    catch (FileNotFoundException e) {
+      throw new MissingImageException(name, e);
     }
   }
 

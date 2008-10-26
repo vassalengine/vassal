@@ -86,13 +86,18 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
 
-    final SVGRenderer renderer = new SVGRenderer(
-      archive.getImageURL(name),
-      new BufferedInputStream(archive.getImageInputStream(name))
-    );
+    try {
+      final SVGRenderer renderer = new SVGRenderer(
+        archive.getImageURL(name),
+        new BufferedInputStream(archive.getImageInputStream(name))
+      );
 
-    final Rectangle2D aoi = new Rectangle2D.Float(x0, y0, x1-x0, y1-y0); 
-    return renderer.render(0.0, 1.0, aoi);
+      final Rectangle2D aoi = new Rectangle2D.Float(x0, y0, x1-x0, y1-y0); 
+      return renderer.render(0.0, 1.0, aoi);
+    }
+    catch (FileNotFoundException e) {
+      throw new MissingImageException(name, e);
+    }
   }
 
   protected void fixSize() { }
