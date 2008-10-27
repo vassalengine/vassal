@@ -70,7 +70,6 @@ import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.MissingImageException;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.OpErrorDialog;
 import VASSAL.tools.imageop.Repainter;
 import VASSAL.tools.imageop.ScaleOp;
 import VASSAL.tools.imageop.SourceOp;
@@ -475,7 +474,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       ErrorDialog.bug(e);
     }
     catch (ExecutionException e) {
-      OpErrorDialog.error(e, boardImageOp);
+      ErrorDialog.bug(e);
     }
     return null;
   }
