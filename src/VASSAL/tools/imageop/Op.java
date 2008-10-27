@@ -22,6 +22,7 @@ package VASSAL.tools.imageop;
 import java.awt.Image;
 
 import VASSAL.counters.GamePiece;
+import VASSAL.tools.ImageUtils;
 
 public class Op {
   public static SourceOp load(String name) {
@@ -34,7 +35,16 @@ public class Op {
   public static SourceOp load(Image image) {
     return new ImageSourceOpBitmapImpl(image);
   }
-  
+ 
+  public static SourceOp loadLarge(String name) {
+    if (name.endsWith(".svg"))
+      return new SourceOpSVGImpl(name);
+    else if (ImageUtils.useMappedImages())
+      return new SourceOpMappedBitmapImpl(name);
+    else
+      return new SourceOpBitmapImpl(name);
+  }
+ 
   public static ScaleOp scale(ImageOp sop, double scale) {
     if (sop instanceof SVGOp)
       return new RotateScaleOpSVGImpl((SVGOp) sop, 0.0, scale);

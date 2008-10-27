@@ -46,9 +46,9 @@ public class MappedBufferedImage extends BufferedImage {
     super(cm, raster, cm.isAlphaPremultiplied(), null);
   }
 
-  public static BufferedImage createMemoryMappedImage(ColorModel cm,
-                                                      SampleModel sm)
-                                                      throws IOException {
+  public static MappedBufferedImage createMemoryMappedImage(ColorModel cm,
+                                                            SampleModel sm)
+                                                           throws IOException {
     // determine how many banks the DataBuffer should have
     int maxBank = 0;
     if (sm instanceof ComponentSampleModel) {
@@ -92,8 +92,8 @@ public class MappedBufferedImage extends BufferedImage {
     return new MappedBufferedImage(cm ,raster);
   }
 
-  public static BufferedImage createIntARGBMemoryMappedImage(int w, int h)
-      throws IOException {
+  public static MappedBufferedImage createIntARGBMemoryMappedImage(int w, int h)
+                                                           throws IOException {
     return createMemoryMappedImage(
       new DirectColorModel(
         32,

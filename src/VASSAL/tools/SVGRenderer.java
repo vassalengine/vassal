@@ -242,7 +242,8 @@ public class SVGRenderer {
       BufferedImage rend = renderer.getOffScreen();
       renderer = null; // We're done with it...
 
-      final BufferedImage dest = createImage(w, h);
+      final BufferedImage dest =
+        new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
       final Graphics2D g2d = GraphicsUtil.createGraphics(dest);
       if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
@@ -259,12 +260,6 @@ public class SVGRenderer {
       rend = null; // We're done with it...
         
       writeImage(dest, output);
-    }
-
-    private BufferedImage createImage(int w, int h) {
-      return ImageUtils.isLargeImage(w, h) ?
-        ImageUtils.createEmptyLargeImage(w, h) :
-        new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
     }
 
     private void writeImage(BufferedImage image, TranscoderOutput output) {

@@ -47,8 +47,8 @@ import javax.swing.Timer;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
@@ -66,7 +66,9 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.MissingImageException;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpErrorDialog;
 import VASSAL.tools.imageop.Repainter;
@@ -223,7 +225,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       }
       imageFile = (String) val;
       boardImageOp = imageFile == null || imageFile.trim().length() == 0
-                   ? null : Op.load(imageFile);
+                   ? null : Op.loadLarge(imageFile);
     }
     else if (WIDTH.equals(key)) {
       if (val instanceof String) {
@@ -287,6 +289,31 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   };
 
+  protected void drawTile(Graphics g, Future<Image> fim,
+                          int tx, int ty, Component obs) {
+    try {
+      g.drawImage(fim.get(), tx, ty, obs);
+    }
+    catch (CancellationException e) {
+      // FIXME: bug until we permit cancellation 
+      ErrorDialog.bug(e);
+    }
+    catch (InterruptedException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (ExecutionException e) {
+      final MissingImageException mie =
+        ErrorUtils.getAncestorOfClass(MissingImageException.class, e);
+      if (mie != null) {
+        ErrorDialog.dataError(new BadDataReport(
+          "Image not found", mie.getFile().getAbsolutePath(), mie));
+      }
+      else {
+        ErrorDialog.bug(e);
+      }
+    }
+  }
+
   public void drawRegion(final Graphics g,
                          final Point location,
                          Rectangle visibleRect,
@@ -337,26 +364,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
             final Future<Image> fim = op.getFutureTile(tile.x, tile.y, rep);
 
             if (obs == null) {
-              try {
-                g.drawImage(fim.get(), tx, ty, obs);
-              }
-              catch (CancellationException e) {
-                // FIXME: bug until we permit cancellation 
-                ErrorDialog.bug(e);
-              }
-              catch (InterruptedException e) {
-                ErrorDialog.bug(e);
-              }
-              catch (ExecutionException e) {
-// FIXME: don't use this
-                OpErrorDialog.error(e, op);
-              }
+              drawTile(g, fim, tx, ty, obs);
             }
             else {
               if (fim.isDone()) {
                 if (requested.containsKey(tile)) {
                   requested.remove(tile);
-           
                   final Point t = tile;
 
                   final Animator a = new Animator(100,
@@ -379,39 +392,12 @@ public class Board extends AbstractConfigurable implements GridContainer {
                     final Composite oldComp = g2d.getComposite();
                     g2d.setComposite(
                       AlphaComposite.getInstance(AlphaComposite.SRC_OVER, a));
- 
-                    try {
-                      g2d.drawImage(fim.get(), tx, ty, obs);
-                    }
-                    catch (CancellationException e) {
-                      // FIXME: bug until we permit cancellation 
-                      ErrorDialog.bug(e);
-                    }
-                    catch (InterruptedException e) {
-                      ErrorDialog.bug(e);
-                    }
-                    catch (ExecutionException e) {
-                      OpErrorDialog.error(e, op);
-                    }
-
+                    drawTile(g2d, fim, tx, ty, obs);
                     g2d.setComposite(oldComp);
                   }
                   else {
                     alpha.remove(tile);                   
- 
-                    try {
-                      g.drawImage(fim.get(), tx, ty, obs);
-                    }
-                    catch (CancellationException e) {
-                      // FIXME: bug until we permit cancellation 
-                      ErrorDialog.bug(e);
-                    }
-                    catch (InterruptedException e) {
-                      ErrorDialog.bug(e);
-                    }
-                    catch (ExecutionException e) {
-                      OpErrorDialog.error(e, op);
-                    }
+                    drawTile(g, fim, tx, ty, obs);
                   } 
                 }
               }
@@ -420,7 +406,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
               }
             }
           }
-// FIXME: should getTileFuture() throw these?
+// FIXME: should getTileFuture() throw these? Yes, probably, because it's
+// synchronous when obs is null.
           catch (CancellationException e) {
             // FIXME: bug until we permit cancellation
             ErrorDialog.bug(e);

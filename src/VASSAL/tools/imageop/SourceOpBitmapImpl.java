@@ -80,15 +80,8 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
    * @throws IOException if the image cannot be loaded from the image file.
    */
   public Image eval() throws IOException {
-    if (size == null) fixSize();
-
     try {
-      if (ImageUtils.isLargeImage(size.width, size.height)) {
-        return ImageUtils.getLargeImage(archive.getImageInputStream(name));
-      }
-      else {
-        return ImageUtils.getSmallImage(archive.getImageInputStream(name));
-      }
+      return ImageUtils.getImage(archive.getImageInputStream(name));
     }
     catch (FileNotFoundException e) {
       throw new MissingImageException(name, e);

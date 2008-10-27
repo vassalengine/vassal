@@ -28,7 +28,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.ColorModel;
-import java.awt.image.SampleModel;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -38,9 +37,6 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.stream.FileCacheImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
@@ -65,11 +61,15 @@ public class ImageUtils {
   private static final ImageUtils instance = new ImageUtils();
 
   public static final String PREFER_MEMORY_MAPPED = "preferMemoryMapped"; //$NON-NLS-1$
-  public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
   private static final int MAPPED = 0;
   private static final int RAM = 1;
   private int largeImageLoadMethod = RAM;
 
+  public static boolean useMappedImages() {
+    return instance.largeImageLoadMethod == MAPPED;
+  }
+
+  public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
   private static final int MEDIUM = 1;
   private static final int GOOD = 2;
   private int scalingQuality = GOOD;
@@ -78,12 +78,12 @@ public class ImageUtils {
     new HashMap<RenderingHints.Key,Object>();
 
   private ImageUtils() {
-    // create configurer for memory-mappedf file preference
+    // create configurer for memory-mapped file preference
     final BooleanConfigurer mappedPref = new BooleanConfigurer(
       PREFER_MEMORY_MAPPED,
       "Prefer memory-mapped files for large images?", //$NON-NLS-1$
       Boolean.FALSE);
-//Resources.getString("GlobalOptions.smooth_scaling"), Boolean.TRUE); //$NON-NLS-1$
+
     mappedPref.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         largeImageLoadMethod =
@@ -91,7 +91,7 @@ public class ImageUtils {
       }
     });
 
-    GameModule.getGameModule().getPrefs().addOption(mappedPref);
+    GameModule.getGameModule().getPrefs().addOption(mappedPref); 
 
     // create configurer for scaling quality
     final BooleanConfigurer scalingPref = new BooleanConfigurer(
@@ -303,111 +303,10 @@ public class ImageUtils {
     }
   }
 
-  public static Image getImage(InputStream in) throws IOException {
-    return getSmallImage(in);
-  }
-
-  public static Image getSmallImage(InputStream in) throws IOException {
+  public static BufferedImage getImage(InputStream in) throws IOException {
     final BufferedImage img = ImageIO.read(new MemoryCacheImageInputStream(in));
     if (img == null) throw new IOException("Unrecognized image format");    
- 
-    return img.getType() != BufferedImage.TYPE_INT_ARGB
-      ? ImageUtils.toIntARGBSmall(img) : img;
-  }
-
-  public static Image getLargeImage(InputStream in) throws IOException {
-    final BufferedImage img = getLargeBufferedImage(in);
-
-    return img.getType() != BufferedImage.TYPE_INT_ARGB ?
-      ImageUtils.toIntARGBLarge(img) : img;
-  }
-
-  public static BufferedImage getLargeBufferedImage(InputStream in)
-      throws IOException {
-    BufferedImage img = null;
-
-    // first try preferred storage type 
-    int method = instance.largeImageLoadMethod;
-    done:
-    for (int tries = 0; tries < 2; ++tries, ++method) {
-      final ImageInputStream stream = new FileCacheImageInputStream(
-        in, TempFileManager.getInstance().getSessionRoot());
-      try {
-        final Iterator<ImageReader> i = ImageIO.getImageReaders(stream);
-        if (!i.hasNext()) throw new IOException("Unrecognized image format");
-
-        final ImageReader reader = i.next();
-        try {
-          reader.setInput(stream);
-  
-          final int w = reader.getWidth(0);
-          final int h = reader.getHeight(0);
-  
-          switch (method % 2) {
-          case MAPPED:
-            try {
-              final ImageTypeSpecifier type = reader.getImageTypes(0).next();
-  
-              // get our ColorModel and SampleModel
-              final ColorModel cm = type.getColorModel();
-              final SampleModel sm =
-                type.getSampleModel().createCompatibleSampleModel(w,h);
-      
-              img = MappedBufferedImage.createMemoryMappedImage(cm, sm);
-      
-              final ImageReadParam param = reader.getDefaultReadParam();
-              param.setDestination(img);
-              reader.read(0, param);
-              break done;
-            }
-            catch (IOException e) {
-              // ignore, we throw an OutOfMemoryError at the bottom 
-              Logger.log(e);
-            }
-            break;
-          case RAM:
-            try {
-              img = reader.read(0);
-              break done;
-            }
-            catch (OutOfMemoryError e) {
-              // ignore, we throw an OutOfMemoryError at the bottom 
-              Logger.log(e);
-            }
-            break;
-          default:
-            assert false;
-          }  
-        }
-        finally {
-          reader.dispose();
-        }
-
-        stream.close();
-      }
-      finally {
-        IOUtils.closeQuietly(stream);
-      }
-    }
-
-    if (img == null) throw new OutOfMemoryError();
-  
-    return img;
-  }
-
-  public static boolean isLargeImage(int w, int h) {
-    return 4*w*h > 1024*1024;
-  }
-
-  private static BufferedImage rowByRowCopy(BufferedImage src,
-                                            BufferedImage dst) {
-    final int h = src.getHeight();
-    final int[] row = new int[src.getWidth()];
-    for (int y = 0; y < h; ++y) {
-      src.getRGB(0, y, row.length, 1, row, 0, row.length);
-      dst.setRGB(0, y, row.length, 1, row, 0, row.length);
-    }
-    return dst;
+    return img.getType() != BufferedImage.TYPE_INT_ARGB ? toIntARGB(img) : img;
   }
 
   private static BufferedImage colorConvertCopy(BufferedImage src,
@@ -420,102 +319,12 @@ public class ImageUtils {
     return dst;
   }
 
-  public static BufferedImage createEmptyLargeImage(int w, int h) {
-    int method = instance.largeImageLoadMethod;
-    for (int tries = 0; tries < 2; ++tries, ++method) {
-      switch (method % 2) {
-      case MAPPED:
-        try {
-          return MappedBufferedImage.createIntARGBMemoryMappedImage(w, h);
-        }
-        catch (IOException e) {
-          // ignore, we throw an OutOfMemoryError at bottom
-          Logger.log(e);
-        }
-        break;
-      case RAM:
-        try {
-          return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        }
-        catch (OutOfMemoryError e) {
-          // ignore, we throw an OutOfMemoryError at bottom
-          Logger.log(e);
-        }
-        break;
-      default:
-        assert false;
-      }  
-    }
-
-    throw new OutOfMemoryError();
-  }
-
-  public static BufferedImage toIntARGBLarge(BufferedImage src) {
-    final int w = src.getWidth();
-    final int h = src.getHeight();
-
-    int method = instance.largeImageLoadMethod;
-    for (int tries = 0; tries < 2; ++tries, ++method) {
-      switch (method % 2) {
-      case MAPPED:
-        try {
-          return rowByRowCopy(src,
-            MappedBufferedImage.createIntARGBMemoryMappedImage(w, h));
-        }
-        catch (IOException e) {
-          // ignore, we throw an OutOfMemoryError at bottom
-          Logger.log(e);
-        }
-        break;
-      case RAM:
-        try {
-          final BufferedImage dst =
-            new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-
-          return src instanceof MappedBufferedImage
-            ? rowByRowCopy(src, dst) : colorConvertCopy(src, dst);
-        }
-        catch (OutOfMemoryError e) {
-          // ignore, we throw an OutOfMemoryError at bottom
-          Logger.log(e);
-        }
-        break;
-      default:
-        assert false;
-      }  
-    }
-
-    throw new OutOfMemoryError();
-  }
-
-  public static BufferedImage toIntARGBSmall(BufferedImage src) {
+  public static BufferedImage toIntARGB(BufferedImage src) {
     final BufferedImage dst = new BufferedImage(
       src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_ARGB);
     return colorConvertCopy(src, dst);
   }
-
-  public static BufferedImage toIntARGB(BufferedImage src) {
-    return toIntARGBSmall(src);
-  }
-
-  /**
-   * Create a memory-mapped image from an existing image.
-   *
-   * @param src the source image
-   * @return a memory-mapped copy
-   * @throws IOException if the memory-mapped image cannot be created
-   */
-  public static BufferedImage toMemoryMapped(Image src) throws IOException {
-    final BufferedImage dst =
-      MappedBufferedImage.createIntARGBMemoryMappedImage(
-        src.getWidth(null), src.getHeight(null));
-
-    final Graphics2D g = dst.createGraphics();
-    g.drawImage(src, 0, 0, null);
-    g.dispose();
-    return dst;
-  }
-
+ 
   /**
    * Transform an <code>Image</code> to a <code>BufferedImage</code>.
    * 
@@ -533,5 +342,9 @@ public class ImageUtils {
     g.dispose();
 
     return bi;
+  }
+
+  public static BufferedImage createImage(int w, int h) {
+    return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
   }
 }
