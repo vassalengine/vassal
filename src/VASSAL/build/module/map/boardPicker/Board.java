@@ -357,24 +357,6 @@ public class Board extends AbstractConfigurable implements GridContainer {
                 if (requested.containsKey(tile)) {
                   requested.remove(tile);
            
-/* 
-                  alpha.put(tile, 0.0f);
-
-                  final Point t = tile;
-
-                  final Timer timer = new Timer(100, null);
-  
-                  final AbstractAction act = new AbstractAction() {
-                    public void actionPerformed(ActionEvent e) {
-                      obs.repaint(tx, ty, tw, th);
-                      final Float a = alpha.get(t);
-                      if (a == null || a >= 1.0f) timer.stop();
-                    } 
-                  };
-
-                  timer.addActionListener(act);
-                  timer.start();
-*/
                   final Point t = tile;
 
                   final Animator a = new Animator(100,
@@ -395,7 +377,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
                   if (a != null && a < 1.0f) {
                     final Graphics2D g2d = (Graphics2D) g;
                     final Composite oldComp = g2d.getComposite();
-                    g2d.setComposite(AlphaComposite.SrcOver.derive(a));
+                    g2d.setComposite(
+                      AlphaComposite.getInstance(AlphaComposite.SRC_OVER, a));
  
                     try {
                       g2d.drawImage(fim.get(), tx, ty, obs);
