@@ -27,7 +27,6 @@ public class LogManager {
   private static Thread thread = null;
 
   private static final Runnable task = new Runnable() {
-    @Override
     public void run() {
       while (true) {
         try {

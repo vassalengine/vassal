@@ -1741,7 +1741,6 @@ public class ModuleManagerWindow extends JFrame {
       this.frame = frame;
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
       if (d == null) {
         final LogPane lp = new LogPane();
