@@ -20,7 +20,7 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -81,7 +81,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    *
    * @throws IOException if the image cannot be loaded from the image file.
    */
-  public Image eval() throws IOException {
+  public BufferedImage eval() throws IOException {
     try {
       final SVGRenderer renderer = new SVGRenderer(
         archive.getImageURL(name),

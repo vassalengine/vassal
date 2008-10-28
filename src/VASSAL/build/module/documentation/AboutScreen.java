@@ -42,6 +42,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
@@ -79,7 +80,7 @@ public class AboutScreen extends AbstractConfigurable {
   @Deprecated
   public AboutScreen(Image i) {
     this();
-    this.op = Op.load(i);
+    this.op = Op.load(ImageUtils.toBufferedImage(i));
   }
 
   public void launch() {

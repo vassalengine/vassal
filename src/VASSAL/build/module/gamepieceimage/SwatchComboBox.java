@@ -32,6 +32,8 @@ import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import VASSAL.tools.ImageUtils;
+
 public class SwatchComboBox extends JComboBox {
   private static final long serialVersionUID = 1L;
 
@@ -84,23 +86,20 @@ public class SwatchComboBox extends JComboBox {
 
       //Set the icon and text. If icon was null, say so.
       //String name = (String) list.get
-      BufferedImage bi = new BufferedImage(25, 12, BufferedImage.TYPE_INT_ARGB);
-      Graphics2D g = bi.createGraphics();
+      final BufferedImage img = ImageUtils.createCompatibleImage(25, 12);
+      final Graphics2D g = img.createGraphics();
       g.setColor(swatch.getColor());
       g.fillRect(0, 0, 25, 12);
       g.setColor(Color.black);
       g.drawRect(0, 0, 24, 11);
       g.dispose();
 
-      ImageIcon icon = new ImageIcon(bi);
-
-      setIcon(icon);
+      setIcon(new ImageIcon(img));
       setText((String) value);
       setFont(list.getFont());
 
       return this;
     }
-
   }
   
   class SwatchTableRenderer extends JLabel implements TableCellRenderer  {
@@ -134,22 +133,19 @@ public class SwatchComboBox extends JComboBox {
 
       //Set the icon and text. If icon was null, say so.
       //String name = (String) list.get
-      BufferedImage bi = new BufferedImage(25, 12, BufferedImage.TYPE_INT_ARGB);
-      Graphics2D g = bi.createGraphics();
+      final BufferedImage img = ImageUtils.createCompatibleImage(25, 12);
+      final Graphics2D g = img.createGraphics();
       g.setColor(swatch.getColor());
       g.fillRect(0, 0, 25, 12);
       g.setColor(Color.black);
       g.drawRect(0, 0, 24, 11);
       g.dispose();
 
-      ImageIcon icon = new ImageIcon(bi);
-
-      setIcon(icon);
+      setIcon(new ImageIcon(img));
       setText(swatch.getConfigureName());
       setFont(table.getFont());
 
       return this;
     }
-
   }
 }

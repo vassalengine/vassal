@@ -20,8 +20,8 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Component;
-import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
@@ -105,19 +105,19 @@ public class Repainter implements ImageOpObserver {
     if (success) c.repaint(x, y, w, h);
   }
 
-  public void succeeded(Op<Image> op, Image img) {
+  public void succeeded(Op<BufferedImage> op, BufferedImage img) {
     c.repaint(x, y, w, h);
   }
 
-  public void cancelled(Op<Image> op, CancellationException e) {
+  public void cancelled(Op<BufferedImage> op, CancellationException e) {
     ErrorDialog.bug(e);
   }
 
-  public void interrupted(Op<Image> op, InterruptedException e) {
+  public void interrupted(Op<BufferedImage> op, InterruptedException e) {
     ErrorDialog.bug(e);
   }
 
-  public void failed(Op<Image> op, ExecutionException e) {
+  public void failed(Op<BufferedImage> op, ExecutionException e) {
     // don't display dialog for missing images
     final MissingImageException mie =
       ErrorUtils.getAncestorOfClass(MissingImageException.class, e);

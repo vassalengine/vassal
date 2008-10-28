@@ -91,6 +91,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ImageUtils;
 
 public class RegionGrid extends AbstractConfigurable implements MapGrid, ConfigureTree.Mutable {
   private static final long serialVersionUID = 1L;
@@ -789,9 +790,10 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         drawOffset.move(dragStart.x - boundingBox.x, dragStart.y - boundingBox.y);
         
         final BufferedImage cursorImage =
-          new BufferedImage(boundingBox.width,
-                            boundingBox.height,
-                            BufferedImage.TYPE_INT_ARGB);
+          ImageUtils.createCompatibleTranslucentImage(
+            boundingBox.width,
+            boundingBox.height
+          );
         final Graphics2D g = cursorImage.createGraphics();
  
         g.setComposite(

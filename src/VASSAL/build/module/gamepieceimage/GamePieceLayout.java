@@ -37,6 +37,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.StringEnum;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
 
 public class GamePieceLayout extends AbstractConfigurable implements Visualizable {
@@ -318,10 +319,11 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
 
   public Image buildImage(GamePieceImage defn) {
     // Create our base image
-    BufferedImage image = new BufferedImage(Math.max(width,1),
-                                            Math.max(height,1),
-                                            BufferedImage.TYPE_INT_ARGB);
-    Graphics2D g = image.createGraphics();
+    final BufferedImage image = ImageUtils.createCompatibleTranslucentImage(
+      Math.max(width,1),
+      Math.max(height,1)
+    );
+    final Graphics2D g = image.createGraphics();
 
     // Fill in the sample Background color
     Color bgColor = defn.getBgColor().getColor();

@@ -20,7 +20,6 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
@@ -31,6 +30,7 @@ import java.util.concurrent.Future;
 
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Properties;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.opcache.Op;
 import VASSAL.tools.opcache.OpObserver;
 
@@ -61,9 +61,9 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
   }
 
   @Override
-  public Image get(OpObserver<Image> obs) throws CancellationException,
-                                                 InterruptedException,
-                                                 ExecutionException {
+  public BufferedImage get(OpObserver<BufferedImage> obs)
+    throws CancellationException, InterruptedException, ExecutionException
+  {
     // GamePieceOpImpl CANNOT be called asynchronously becuase it cannot
     // reliably report on its dependencies.
     if (obs != null) throw new UnsupportedOperationException();
@@ -71,7 +71,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
   }
 
   @Override
-  public Future<Image> getFuture(OpObserver<Image> obs)
+  public Future<BufferedImage> getFuture(OpObserver<BufferedImage> obs)
                                                   throws ExecutionException {
     // GamePieceOpImpl CANNOT be called asynchronously becuase it cannot
     // reliably report on its dependencies.
@@ -84,11 +84,12 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
   }
 
   /** {@inheritDoc} */
-  public Image eval() {
+  public BufferedImage eval() {
     final Rectangle b = piece.boundingBox();
-    BufferedImage im = new BufferedImage(Math.max(b.width, 1),
-                                         Math.max(b.height, 1),
-                                         BufferedImage.TYPE_INT_ARGB);
+    final BufferedImage im = ImageUtils.createCompatibleTranslucentImage(
+      Math.max(b.width, 1),
+      Math.max(b.height, 1)
+    );
     final Graphics2D g = im.createGraphics();
     piece.draw(g, -b.x, -b.y, null, 1.0);
     g.dispose();

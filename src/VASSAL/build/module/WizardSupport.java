@@ -86,6 +86,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.UsernameAndPasswordDialog;
 import VASSAL.tools.logging.Logger;
@@ -686,16 +687,18 @@ public class WizardSupport {
 
   public void setBackgroundImage(Image image) {
     if (image != null) {
-      ImageIcon icon = new ImageIcon(image);
+      final ImageIcon icon = new ImageIcon(image);
       logoSize = new Dimension(icon.getIconWidth(), icon.getIconHeight());
-      BufferedImage buffIm = new BufferedImage(logoSize.width, logoSize.height, BufferedImage.TYPE_4BYTE_ABGR);
-      Graphics2D g = buffIm.createGraphics();
+      final BufferedImage img =
+        ImageUtils.createCompatibleTranslucentImage(logoSize.width,
+                                                    logoSize.height);
+      Graphics2D g = img.createGraphics();
       g.setColor(Color.white);
       g.fillRect(0, 0, icon.getIconWidth(), icon.getIconHeight());
       g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
       icon.paintIcon(null, g, 0, 0);
       g.dispose();
-      UIManager.put("wizard.sidebar.image", buffIm); //$NON-NLS-1$
+      UIManager.put("wizard.sidebar.image", img); //$NON-NLS-1$
     }
   }
   /**

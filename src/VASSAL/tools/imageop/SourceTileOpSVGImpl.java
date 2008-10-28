@@ -20,7 +20,7 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
@@ -82,7 +82,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     return Collections.emptyList();
   }
 
-  public Image eval() throws IOException {
+  public BufferedImage eval() throws IOException {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
 

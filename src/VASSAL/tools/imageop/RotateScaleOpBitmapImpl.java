@@ -19,7 +19,6 @@
 
 package VASSAL.tools.imageop;
 
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -96,10 +95,8 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
    *
    * @throws Exception passed up from the source <code>ImageOp</code>.
    */
-  public Image eval() throws Exception {
-// FIXME: should not cast to BufferedImage without conversion first!
-    return ImageUtils.transform(
-      (BufferedImage) sop.getImage(null), scale, angle, hints);
+  public BufferedImage eval() throws Exception {
+    return ImageUtils.transform(sop.getImage(null), scale, angle, hints);
   }
 
   /** {@inheritDoc} */

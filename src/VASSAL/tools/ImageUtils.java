@@ -40,6 +40,8 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
+import org.jdesktop.swingx.graphics.GraphicsUtilities;
+
 import VASSAL.build.GameModule;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.tools.imageop.Op;
@@ -50,20 +52,17 @@ public class ImageUtils {
   // negative, because historically we've done it this way
   private static final double DEGTORAD = -Math.PI/180.0;
 
-  private static final BufferedImage NULL_IMAGE =
-    new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+  public static final BufferedImage NULL_IMAGE = createCompatibleImage(1,1);
 
   private static final GeneralFilter.Filter upscale =
     new GeneralFilter.MitchellFilter();
   private static final GeneralFilter.Filter downscale =
     new GeneralFilter.Lanczos3Filter();
 
-  private static final ImageUtils instance = new ImageUtils();
-
   public static final String PREFER_MEMORY_MAPPED = "preferMemoryMapped"; //$NON-NLS-1$
   private static final int MAPPED = 0;
   private static final int RAM = 1;
-  private int largeImageLoadMethod = RAM;
+  private static int largeImageLoadMethod = RAM;
 
   public static boolean useMappedImages() {
     return instance.largeImageLoadMethod == MAPPED;
@@ -72,50 +71,58 @@ public class ImageUtils {
   public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
   private static final int MEDIUM = 1;
   private static final int GOOD = 2;
-  private int scalingQuality = GOOD;
+  private static int scalingQuality = GOOD;
 
-  private final Map<RenderingHints.Key,Object> defaultHints =
+  private static final Map<RenderingHints.Key,Object> defaultHints =
     new HashMap<RenderingHints.Key,Object>();
 
+  private static final ImageUtils instance = new ImageUtils();
+
+//  private ImageUtils() {}
+
+//  static {
   private ImageUtils() {
-    // create configurer for memory-mapped file preference
-    final BooleanConfigurer mappedPref = new BooleanConfigurer(
-      PREFER_MEMORY_MAPPED,
-      "Prefer memory-mapped files for large images?", //$NON-NLS-1$
-      Boolean.FALSE);
-
-    mappedPref.addPropertyChangeListener(new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        largeImageLoadMethod =
-          Boolean.TRUE.equals(mappedPref.getValue()) ? MAPPED : RAM;
-      }
-    });
-
-    GameModule.getGameModule().getPrefs().addOption(mappedPref); 
-
-    // create configurer for scaling quality
-    final BooleanConfigurer scalingPref = new BooleanConfigurer(
-      SCALER_ALGORITHM,
-      "High-quality scaling?", //$NON-NLS-1$ 
-      Boolean.TRUE);
-//      Resources.getString("GlobalOptions.smooth_scaling"), Boolean.TRUE); //$NON-NLS-1$
-    scalingPref.addPropertyChangeListener(new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        final int newQual =
-          Boolean.TRUE.equals(scalingPref.getValue()) ? GOOD : MEDIUM;
-        if (newQual != scalingQuality) {
-          scalingQuality = newQual;
-          Op.clearCache();
-
-          defaultHints.put(RenderingClues.KEY_EXT_INTERPOLATION,
-            scalingQuality == GOOD ?
-              RenderingClues.VALUE_INTERPOLATION_LANCZOS_MITCHELL :
-              RenderingClues.VALUE_INTERPOLATION_BILINEAR);
+//    if (GameModule.getGameModule() != null) {
+// FIXME: this stuff belongs somewhere else
+      // create configurer for memory-mapped file preference
+      final BooleanConfigurer mappedPref = new BooleanConfigurer(
+        PREFER_MEMORY_MAPPED,
+        "Prefer memory-mapped files for large images?", //$NON-NLS-1$
+        Boolean.FALSE);
+  
+      mappedPref.addPropertyChangeListener(new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          largeImageLoadMethod =
+            Boolean.TRUE.equals(mappedPref.getValue()) ? MAPPED : RAM;
         }
-      }
-    });
-
-    GameModule.getGameModule().getPrefs().addOption(scalingPref);
+      });
+  
+      GameModule.getGameModule().getPrefs().addOption(mappedPref); 
+  
+      // create configurer for scaling quality
+      final BooleanConfigurer scalingPref = new BooleanConfigurer(
+        SCALER_ALGORITHM,
+        "High-quality scaling?", //$NON-NLS-1$ 
+        Boolean.TRUE);
+  //      Resources.getString("GlobalOptions.smooth_scaling"), Boolean.TRUE); //$NON-NLS-1$
+      scalingPref.addPropertyChangeListener(new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+          final int newQual =
+            Boolean.TRUE.equals(scalingPref.getValue()) ? GOOD : MEDIUM;
+          if (newQual != scalingQuality) {
+            scalingQuality = newQual;
+            Op.clearCache();
+  
+            defaultHints.put(RenderingClues.KEY_EXT_INTERPOLATION,
+              scalingQuality == GOOD ?
+                RenderingClues.VALUE_INTERPOLATION_LANCZOS_MITCHELL :
+                RenderingClues.VALUE_INTERPOLATION_BILINEAR);
+          }
+        }
+      });
+  
+      GameModule.getGameModule().getPrefs().addOption(scalingPref);
+//    }
 
     // set up map for creating default RenderingHints
     defaultHints.put(RenderingHints.KEY_INTERPOLATION,
@@ -185,9 +192,10 @@ public class ImageUtils {
       final Rectangle ubox = getBounds(src);
       final Rectangle tbox = transform(ubox, scale, angle);
 
-      final BufferedImage trans =
-        new BufferedImage(tbox.width, tbox.height,
-                          BufferedImage.TYPE_INT_ARGB);
+      // keep opaque destination for orthogonal rotation of an opaque source
+      final BufferedImage trans = createCompatibleImage(
+        tbox.width, tbox.height, src.getTransparency() != BufferedImage.OPAQUE
+      );
 
       final AffineTransform t = new AffineTransform();
       t.translate(-tbox.x, -tbox.y);
@@ -211,11 +219,15 @@ public class ImageUtils {
 
         final Rectangle rbox = transform(ubox, 1.0, angle);
 
-// FIXME: rotation via bilinear interpolation probably decreases quality
-        final BufferedImage rot =
-          new BufferedImage(rbox.width, rbox.height,
-                            BufferedImage.TYPE_INT_ARGB);
+        // keep opaque destination for orthogonal rotation of an opaque source
+        final BufferedImage rot = new BufferedImage(
+          rbox.width,
+          rbox.height,
+          src.getTransparency() == BufferedImage.OPAQUE && angle % 90.0 == 0.0 ?
+            BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB
+        );
 
+// FIXME: rotation via bilinear interpolation probably decreases quality
         final AffineTransform tx = new AffineTransform();
         tx.translate(-rbox.x, -rbox.y);
         tx.rotate(DEGTORAD*angle, ubox.getCenterX(), ubox.getCenterY());
@@ -227,13 +239,9 @@ public class ImageUtils {
         g.dispose();
         src = rot;
       }
-
-/*
-      // make sure that we have a TYPE_INT_ARGB before using GeneralFilter
-      if (src.getType() != BufferedImage.TYPE_INT_ARGB) {
-        src = toIntARGB(src);
+      else {
+        src = coerceToIntType(src);
       }
-*/
 
       final Rectangle sbox = transform(getBounds(src), scale, 0.0);
       return GeneralFilter.zoom(sbox, src, scale > 1.0 ? upscale : downscale);
@@ -243,9 +251,12 @@ public class ImageUtils {
       final Rectangle ubox = getBounds(src);
       final Rectangle tbox = transform(ubox, scale, angle);
 
-      final BufferedImage trans =
-        new BufferedImage(tbox.width, tbox.height,
-                          BufferedImage.TYPE_INT_ARGB);
+      // keep opaque destination for orthogonal rotation of an opaque source
+      final BufferedImage trans = createCompatibleImage(
+        tbox.width,
+        tbox.height,
+        src.getTransparency() == BufferedImage.OPAQUE && angle % 90.0 == 0.0
+      );
 
       final AffineTransform t = new AffineTransform();
       t.translate(-tbox.x, -tbox.y);
@@ -258,6 +269,21 @@ public class ImageUtils {
       g.drawImage(src, t, null);
       g.dispose();
       return trans;
+    }
+  }
+
+  @SuppressWarnings("fallthrough")
+  public static BufferedImage coerceToIntType(BufferedImage img) {
+    // ensure that img is a type which GeneralFilter can handle
+    switch (img.getType()) {
+    case BufferedImage.TYPE_INT_RGB:  
+    case BufferedImage.TYPE_INT_ARGB:
+      return img;
+    case BufferedImage.TYPE_CUSTOM:
+      if (img instanceof MappedBufferedImage) return img;
+    default:
+      return toType(img, img.getTransparency() == BufferedImage.OPAQUE ?
+        BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
     }
   }
 
@@ -305,10 +331,11 @@ public class ImageUtils {
 
   public static BufferedImage getImage(InputStream in) throws IOException {
     final BufferedImage img = ImageIO.read(new MemoryCacheImageInputStream(in));
-    if (img == null) throw new IOException("Unrecognized image format");    
-    return img.getType() != BufferedImage.TYPE_INT_ARGB ? toIntARGB(img) : img;
+    if (img == null) throw new IOException("Unrecognized image format");
+    return toCompatibleImage(img);
   }
 
+// FIXME: check speed
   private static BufferedImage colorConvertCopy(BufferedImage src,
                                                 BufferedImage dst) {
     final ColorConvertOp op = new ColorConvertOp(
@@ -319,12 +346,12 @@ public class ImageUtils {
     return dst;
   }
 
-  public static BufferedImage toIntARGB(BufferedImage src) {
-    final BufferedImage dst = new BufferedImage(
-      src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_ARGB);
+  public static BufferedImage toType(BufferedImage src, int type) {
+    final BufferedImage dst =
+      new BufferedImage(src.getWidth(), src.getHeight(), type);
     return colorConvertCopy(src, dst);
   }
- 
+
   /**
    * Transform an <code>Image</code> to a <code>BufferedImage</code>.
    * 
@@ -332,19 +359,35 @@ public class ImageUtils {
    */
   public static BufferedImage toBufferedImage(Image src) {
     if (src == null) return null;
-    if (src instanceof BufferedImage) return (BufferedImage) src;
+    if (src instanceof BufferedImage)
+      return toCompatibleImage((BufferedImage) src);
 
-    final BufferedImage bi = new BufferedImage(src.getWidth(null),
-                                               src.getHeight(null),
-                                               BufferedImage.TYPE_INT_ARGB);
-    final Graphics2D g = bi.createGraphics();
+    final BufferedImage dst =
+      createCompatibleTranslucentImage(src.getWidth(null),
+                                       src.getHeight(null));
+    final Graphics2D g = dst.createGraphics();
     g.drawImage(src, 0, 0, null);
     g.dispose();
 
-    return bi;
+    return dst;
   }
 
-  public static BufferedImage createImage(int w, int h) {
-    return new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+  public static BufferedImage createCompatibleImage(int w, int h) {
+    return GraphicsUtilities.createCompatibleImage(w, h);  
+  }
+
+  public static BufferedImage createCompatibleImage(int w, int h,
+                                                    boolean transparent) {
+    return transparent ?
+      GraphicsUtilities.createCompatibleTranslucentImage(w, h) :
+      GraphicsUtilities.createCompatibleImage(w, h);
+  }
+
+  public static BufferedImage createCompatibleTranslucentImage(int w, int h) {
+    return GraphicsUtilities.createCompatibleTranslucentImage(w, h);
+  }
+
+  public static BufferedImage toCompatibleImage(BufferedImage src) {
+    return GraphicsUtilities.toCompatibleImage(src);
   }
 }

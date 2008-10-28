@@ -31,6 +31,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JTextPane;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
 
 public class TextBoxItem extends TextItem {
@@ -214,14 +215,16 @@ public class TextBoxItem extends TextItem {
     FontStyle fs = FontManager.getFontManager().getFontStyle(fontStyleName);
     Font f = fs.getFont();
     l.setFont(f);
-    BufferedImage bi = new BufferedImage(Math.max(l.getWidth(), 1),
-                                         Math.max(l.getHeight(), 1),
-                                         BufferedImage.TYPE_INT_ARGB);
-    Graphics2D big = bi.createGraphics();
+
+    final BufferedImage img = ImageUtils.createCompatibleTranslucentImage(
+      Math.max(l.getWidth(), 1),
+      Math.max(l.getHeight(), 1)
+    );
+    final Graphics2D big = img.createGraphics();
     l.paint(big);
     big.dispose();
 
-    g.drawImage(bi, origin.x+1, origin.y+1, null);
+    g.drawImage(img, origin.x+1, origin.y+1, null);
   }
   
   public String getType() {

@@ -29,6 +29,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -274,8 +275,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
                zoom, obs);
   }
 
-  private ConcurrentMap<Point,Future<Image>> requested =
-    new ConcurrentHashMap<Point,Future<Image>>();
+  private ConcurrentMap<Point,Future<BufferedImage>> requested =
+    new ConcurrentHashMap<Point,Future<BufferedImage>>();
 
   private java.util.Map<Point,Float> alpha =
     new ConcurrentHashMap<Point,Float>();
@@ -288,7 +289,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   };
 
-  protected void drawTile(Graphics g, Future<Image> fim,
+  protected void drawTile(Graphics g, Future<BufferedImage> fim,
                           int tx, int ty, Component obs) {
     try {
       g.drawImage(fim.get(), tx, ty, obs);
@@ -360,7 +361,8 @@ public class Board extends AbstractConfigurable implements GridContainer {
             new Repainter(obs, tx, ty, tw, th);
 
           try {
-            final Future<Image> fim = op.getFutureTile(tile.x, tile.y, rep);
+            final Future<BufferedImage> fim =
+              op.getFutureTile(tile.x, tile.y, rep);
 
             if (obs == null) {
               drawTile(g, fim, tx, ty, obs);

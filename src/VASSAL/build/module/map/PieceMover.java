@@ -89,6 +89,7 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.imageop.Op;
 
@@ -924,14 +925,13 @@ public class PieceMover extends AbstractBuildable
       final ArrayList<Point> relativePositions = new ArrayList<Point>();
       buildBoundingBox(relativePositions, zoom, false);
       
-      final int width = boundingBox.width + EXTRA_BORDER * 2;
-      final int height = boundingBox.height + EXTRA_BORDER * 2;
+      final int w = boundingBox.width + EXTRA_BORDER * 2;
+      final int h = boundingBox.height + EXTRA_BORDER * 2;
       
-      dragImage = new BufferedImage(width, height,
-                                    BufferedImage.TYPE_4BYTE_ABGR);
+      dragImage = ImageUtils.createCompatibleTranslucentImage(w, h);
       
       drawDragImage(dragImage, null, relativePositions, zoom);
-      featherDragImage(dragImage, width, height);
+      featherDragImage(dragImage, w, h);
       
       // return the image
       return dragImage;
@@ -955,16 +955,17 @@ public class PieceMover extends AbstractBuildable
       final ArrayList<Point> relativePositions = new ArrayList<Point>();
       buildBoundingBox(relativePositions, zoom, true);
       
-      final int width = boundingBox.width + EXTRA_BORDER * 2;
-      final int height = boundingBox.height + EXTRA_BORDER * 2;
+      final int w = boundingBox.width + EXTRA_BORDER * 2;
+      final int h = boundingBox.height + EXTRA_BORDER * 2;
       
       final BufferedImage cursorImage =
-        new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+        ImageUtils.createCompatibleTranslucentImage(w, h);
+
       drawDragImage(cursorImage, dragCursor, relativePositions, zoom);
 
-      dragCursor.setSize(width, height);
+      dragCursor.setSize(w, h);
       
-      featherDragImage(cursorImage, width, height);
+      featherDragImage(cursorImage, w, h);
       dragCursor.setIcon(new ImageIcon(cursorImage));
     }
     
@@ -1070,6 +1071,7 @@ public class PieceMover extends AbstractBuildable
     }
     
     private void featherDragImage(BufferedImage image, int width, int height) {
+// FIXME: this will unmanage the image!!!
       // Make bitmap 50% transparent
       final WritableRaster alphaRaster = image.getAlphaRaster();
       final int size = width * height;

@@ -21,7 +21,6 @@ package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
@@ -54,15 +53,18 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 
-  public Image eval() throws Exception {
+  public BufferedImage eval() throws Exception {
+    final BufferedImage src = sop.getImage(null);
     if (size == null) fixSize();
 
-    final BufferedImage dst =
-      new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+    // remain opaque if our parent image is
+    final BufferedImage dst = ImageUtils.createCompatibleImage(
+        size.width, size.height, src.getTransparency() != BufferedImage.OPAQUE
+    );
 
     final Graphics2D g = dst.createGraphics();
-    g.rotate(Math.PI/2.0*angle, sop.getWidth()/2.0, sop.getHeight()/2.0);
-    g.drawImage(sop.getImage(null), 0, 0, null);
+    g.rotate(Math.PI/2.0*angle, src.getWidth()/2.0, src.getHeight()/2.0);
+    g.drawImage(src, 0, 0, null);
     g.dispose();
 
     return dst;
@@ -152,13 +154,17 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
       return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
     }
 
-    public Image eval() throws Exception {
-      final BufferedImage dst =
-        new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+    public BufferedImage eval() throws Exception {
+      final BufferedImage src = sop.getImage(null);
+
+      // remain opaque if our parent image is
+      final BufferedImage dst = ImageUtils.createCompatibleImage(
+        size.width, size.height, src.getTransparency() != BufferedImage.OPAQUE
+      );
 
       final Graphics2D g = dst.createGraphics();
-      g.rotate(Math.PI/2.0*angle, sop.getWidth()/2.0, sop.getHeight()/2.0);
-      g.drawImage(sop.getImage(null), 0, 0, null);
+      g.rotate(Math.PI/2.0*angle, src.getWidth()/2.0, src.getHeight()/2.0);
+      g.drawImage(src, 0, 0, null);
       g.dispose();
 
       return dst; 

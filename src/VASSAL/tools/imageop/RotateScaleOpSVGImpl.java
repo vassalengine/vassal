@@ -19,9 +19,9 @@
 
 package VASSAL.tools.imageop;
 
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.util.Collections;
 import java.util.List;
@@ -98,7 +98,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
    *
    * @throws Exception passed up from the source <code>ImageOp</code>.
    */
-  public Image eval() throws Exception {
+  public BufferedImage eval() throws Exception {
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
 

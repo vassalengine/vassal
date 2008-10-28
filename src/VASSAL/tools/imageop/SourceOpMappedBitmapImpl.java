@@ -18,7 +18,7 @@
  */
 package VASSAL.tools.imageop;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -45,7 +45,7 @@ public class SourceOpMappedBitmapImpl extends SourceOpBitmapImpl
    * @throws IOException if the image cannot be loaded from the image file.
    */
   @Override
-  public Image eval() throws IOException {
+  public BufferedImage eval() throws IOException {
     try {
       return MappedImageUtils.getImage(archive.getImageInputStream(name));
     }

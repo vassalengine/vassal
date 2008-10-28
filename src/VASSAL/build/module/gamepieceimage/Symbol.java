@@ -28,6 +28,8 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 
+import VASSAL.tools.ImageUtils;
+
 public class Symbol {
 
   protected static final String NATO = "NATO Unit Symbols";
@@ -444,8 +446,7 @@ public class Symbol {
     protected static BufferedImage createImage(int count, int sym_w, int sym_h, int gap) {
       int w = sym_w * count + gap * (count-1)+1;
       if (w < 1) w = sym_w;
-      BufferedImage bi = new BufferedImage(w, sym_h+1, BufferedImage.TYPE_INT_ARGB);
-      return bi;
+      return ImageUtils.createCompatibleTranslucentImage(w, sym_h+1);
     }
       
     public static BufferedImage buildSizeImage(Graphics g, int count, String type, int sym_w, int sym_h, int gap) {

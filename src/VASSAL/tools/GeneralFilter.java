@@ -46,6 +46,7 @@ import javax.imageio.ImageIO;
       678   r45   copy scr part from src to Raster (not BufferedImage)
       659   r55   let zoom() create destination BufferedImage
       777   r65   downsampling narrow, short images fixed; upsampling fixed
+  699 619   r2494 with/without alpha channel
 */  
 
 /** 
@@ -204,36 +205,39 @@ public final class GeneralFilter {
     public float getSamplingRadius() { return 2.0f; }
   }
 
- /** Filters the entire source image.
+  /**
+   * Filters the entire source image.
+   *
    * <p>This is a convenience function which calls
    * {@link zoom(WritableRaster, Rectangle, BufferedImage, Filter)},
    * setting the destination rectangle as the bounds of the destination
    * tile.</p>
    * 
-   * <p>Note that <code>src</code> <em>must</em> be be of type
-   * <code>BufferedImage.TYPE_INT_ARGB</code> or everything will crash and
-   * burn!</p>
+   * <p>Note that <code>src</code> <em>must</em> be be 
+   * <code>TYPE_INT_ARGB</code> or <code>TYPE_INT_RGB</code>, or it will
+   * fail catastrophically.</p>
    *
    * @param dst the destination rectangle
    * @param src the soure image
    * @param filter the filter to apply
    */ 
-  public static BufferedImage zoom(Rectangle dst, BufferedImage src,
-    final Filter filter) {
+  public static BufferedImage zoom(
+    Rectangle dst, BufferedImage src, final Filter filter) {
 
     final WritableRaster dstR =
-      src.getColorModel()
-         .createCompatibleWritableRaster(dst.width, dst.height);
+      src.getColorModel().createCompatibleWritableRaster(dst.width, dst.height);
     zoom(dstR, dstR.getBounds(), src, filter);
     // FIXME: check whether this affects hardware acceleration
     return new BufferedImage(src.getColorModel(), dstR, false, null);
   }
 
-  /** Filters a portion of the source image.
+  /**
+   * Filters a portion of the source image.
+   *
    * Note that <code>dstR</code> <em>must</em> contain a
    * <code>DataBufferInt</code> and <code>srcI</code> <em>must</em>
-   * be of type <code>BufferedImage.TYPE_INT_ARGB</code> or everything
-   * will crash and burn!
+   * be <code>TYPE_INT_ARGB</code> or <code>TYPE_INT_RGB</code>, or it will
+   * fail catastrophically.
    *
    * @param dstR the destination tile to calculate
    * @param dst the bounds of the whole destination image
@@ -244,7 +248,6 @@ public final class GeneralFilter {
                           Rectangle dst,
                           BufferedImage srcI,
                           final Filter filter) {
-
     final int dx0 = dstR.getMinX();
     final int dy0 = dstR.getMinY();
     final int dx1 = dx0 + dstR.getWidth() - 1;
@@ -285,11 +288,20 @@ public final class GeneralFilter {
       calc_ycontrib(dh, fwidth, yscale, dy0, sy0, sh, filter);
     final CList xcontrib = new CList();
     
-    // apply the filter 
-    for (int xx = 0; xx < dw; xx++) {
-      calc_xcontrib(xscale, fwidth, xcontrib, xx, dx0, sx0, sw, filter);
-      apply_horizontal(sh, xcontrib, src_data, sw, work);
-      apply_vertical(dh, ycontrib, work, dst_data, xx, dw);
+    // apply the filter
+    if (srcI.getTransparency() == BufferedImage.OPAQUE) {
+      for (int xx = 0; xx < dw; xx++) {
+        calc_xcontrib(xscale, fwidth, xcontrib, xx, dx0, sx0, sw, filter);
+        apply_horizontal_opaque(sh, xcontrib, src_data, sw, work);
+        apply_vertical_opaque(dh, ycontrib, work, dst_data, xx, dw);
+      }
+    }
+    else {
+      for (int xx = 0; xx < dw; xx++) {
+        calc_xcontrib(xscale, fwidth, xcontrib, xx, dx0, sx0, sw, filter);
+        apply_horizontal(sh, xcontrib, src_data, sw, work);
+        apply_vertical(dh, ycontrib, work, dst_data, xx, dw);
+      }
     }
   }
 
@@ -428,6 +440,58 @@ public final class GeneralFilter {
     } 
   }
 
+  private static void apply_horizontal_opaque(final int sh,
+                                              final CList xcontrib,
+                                              final int[] src_data,
+                                              final int sw,
+                                              final int[] work) {
+    // Apply pre-computed filter to sample horizontally from src to work
+    for (int k = 0; k < sh; k++) {
+      float s_r = 0.0f;  // red sample
+      float s_g = 0.0f;  // green sample
+      float s_b = 0.0f;  // blue sample
+        
+      final CList c = xcontrib;
+      final int max = c.n;
+      final int pel = src_data[c.pixel[0] + k*sw];
+      boolean bPelDelta = false;
+
+      // Check for areas of constant color. It is *much* faster to
+      // to check first and then calculate weights only if needed.
+      for (int j = 0; j < max; j++) {
+        final float w = c.weight[j];
+        if (w == 0.0f) continue;
+
+        final int sd = src_data[c.pixel[j] + k*sw];
+        if (sd != pel) { bPelDelta = true; break; }
+      }
+
+      if (bPelDelta) {
+        // There is a color change from 0 to max; we need to use weights.
+        for (int j = 0; j < max; j++) {
+          final float w = c.weight[j];
+          if (w == 0.0f) continue;
+
+          final int sd = src_data[c.pixel[j] + k*sw];
+
+          s_r += ((sd >> 16) & 0xff) * w;
+          s_g += ((sd >>  8) & 0xff) * w;
+          s_b += ( sd        & 0xff) * w;
+        }
+
+        // Ugly, but fast.        
+        work[k] =
+         (s_r < 0 ? 0 : s_r > 255 ? 255 : (int)(s_r+0.5f)) << 16 |
+         (s_g < 0 ? 0 : s_g > 255 ? 255 : (int)(s_g+0.5f)) <<  8 |
+         (s_b < 0 ? 0 : s_b > 255 ? 255 : (int)(s_b+0.5f));
+      }
+      else {
+        // If there's no color change from 0 to max, maintain that.
+        work[k] = pel;
+      }
+    } 
+  }
+
   private static void apply_vertical(final int dh,
                                      final CList[] ycontrib,
                                      final int[] work,
@@ -485,21 +549,70 @@ public final class GeneralFilter {
     }
   }
 
+  private static void apply_vertical_opaque(final int dh,
+                                            final CList[] ycontrib,
+                                            final int[] work,
+                                            final int[] dst_data,
+                                            final int xx,
+                                            final int dw) {
+    // Apply pre-computed filter to sample vertically from work to dst
+    for (int i = 0; i < dh; i++) {
+      float s_r = 0.0f;  // red sample
+      float s_g = 0.0f;  // green sample
+      float s_b = 0.0f;  // blue sample
+
+      final CList c = ycontrib[i];
+      final int max = c.n;
+      final int pel = work[c.pixel[0]];
+      boolean bPelDelta = false;
+
+      // Check for areas of constant color. It is *much* faster to
+      // to check first and then calculate weights only if needed.
+      for (int j = 0; j < max; j++) {
+        final float w = c.weight[j];
+        if (w == 0.0f) continue;
+
+        final int wd = work[c.pixel[j]];
+        if (wd != pel) { bPelDelta = true; break; }
+      }
+
+      if (bPelDelta) {
+        // There is a color change from 0 to max; we need to use weights.
+        for (int j = 0; j < max; j++) {
+          final float w = c.weight[j];
+          if (w == 0.0f) continue;
+
+          final int wd = work[c.pixel[j]];
+          if (wd != pel) bPelDelta = true;
+
+          s_r += ((wd >> 16) & 0xff) * w;
+          s_g += ((wd >>  8) & 0xff) * w;
+          s_b += ( wd        & 0xff) * w;
+        }
+
+        // Ugly, but fast.
+        dst_data[xx + i*dw] = 
+         (s_r < 0 ? 0 : s_r > 255 ? 255 : (int)(s_r+0.5f)) << 16 |
+         (s_g < 0 ? 0 : s_g > 255 ? 255 : (int)(s_g+0.5f)) <<  8 |
+         (s_b < 0 ? 0 : s_b > 255 ? 255 : (int)(s_b+0.5f));
+      }
+      else {
+        // If there's no color change from 0 to max, maintain that.
+        dst_data[xx + i*dw] = pel; 
+      }
+    }
+  }
+
   /** A program for running filter benchmarks. */
   public static void main(String[] args) throws java.io.IOException {
-    BufferedImage src = null;
-    try {
-      src = ImageIO.read(new File(args[0]));
-    }
-    catch (Exception e) {
-    }
+    BufferedImage src = ImageIO.read(new File(args[0]));
+    final float scale = Float.parseFloat(args[1]);
 
-    float scale = Float.parseFloat(args[1]);
+    final int dw = (int) (src.getWidth() * scale);
+    final int dh = (int) (src.getHeight() * scale);
 
-    int newwidth = (int) (src.getWidth() * scale);
-    int newheight = (int) (src.getHeight() * scale);
-
-    if (src.getType() != BufferedImage.TYPE_INT_ARGB) {
+    if (src.getType() != BufferedImage.TYPE_INT_ARGB &&
+        src.getType() != BufferedImage.TYPE_INT_RGB) {
       String type = null;
       switch (src.getType()) {
       case BufferedImage.TYPE_3BYTE_BGR:
@@ -529,12 +642,13 @@ public final class GeneralFilter {
       case BufferedImage.TYPE_USHORT_GRAY:
         type = "TYPE_USHORT_GRAY"; break;
       }
-      System.out.println("src is a " + type + ", converting...");
 
+      System.out.println("src is a " + type + ", converting...");
+ 
       // convert to TYPE_INT_ARGB if not already
-      BufferedImage tmp = new BufferedImage(src.getWidth(),
-                                            src.getHeight(),
-                                            BufferedImage.TYPE_INT_ARGB);
+      final BufferedImage tmp = new BufferedImage(src.getWidth(),
+                                                  src.getHeight(),
+                                                  BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = tmp.createGraphics();
       g.drawImage(src, 0, 0, null);
       g.dispose();
@@ -542,11 +656,7 @@ public final class GeneralFilter {
       src = tmp;
     }
 
-    @SuppressWarnings("unused")
     BufferedImage dst = null;
-
-    final int dw = newwidth; 
-    final int dh = newheight; 
 
     final Filter filter = new Lanczos3Filter();
 //    final Filter filter = new MitchellFilter();

@@ -32,6 +32,8 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import VASSAL.tools.ImageUtils;
+
 public class SymbolConfigurer extends StringEnumConfigurer {
 
   public SymbolConfigurer(String key, String name) {
@@ -93,19 +95,19 @@ public class SymbolConfigurer extends StringEnumConfigurer {
           setForeground(list.getForeground());
         }
 
-        BufferedImage bi =
-          new BufferedImage(sample_w, sample_h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = bi.createGraphics();
+        final BufferedImage img =
+          ImageUtils.createCompatibleTranslucentImage(sample_w, sample_h);
+        final Graphics2D g = img.createGraphics();
 
-        String symbol1 = (String) value;
-        String symbol2 = Symbol.NatoUnitSymbolSet.NONE;
-        Rectangle bounds = new Rectangle(0, 0, sample_w-1, sample_h-1);   
-        Symbol.NatoUnitSymbolSet.draw(symbol1, symbol2, g, bounds, Color.BLACK, Color.WHITE, Color.BLACK, 1.0f, ""); //$NON-NLS-1$
+        final String symbol1 = (String) value;
+        final String symbol2 = Symbol.NatoUnitSymbolSet.NONE;
+        final Rectangle bounds = new Rectangle(0, 0, sample_w-1, sample_h-1);   
+        Symbol.NatoUnitSymbolSet.draw(
+          symbol1, symbol2, g, bounds,
+          Color.BLACK, Color.WHITE, Color.BLACK, 1.0f, ""); //$NON-NLS-1$
         g.dispose();       
  
-        ImageIcon icon = new ImageIcon(bi);
-
-        setIcon(icon);
+        setIcon(new ImageIcon(img));
         setText((String) value);
         this.setHorizontalTextPosition(SwingConstants.LEFT);
         this.setHorizontalAlignment(SwingConstants.RIGHT);

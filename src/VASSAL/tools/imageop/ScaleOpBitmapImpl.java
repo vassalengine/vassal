@@ -93,10 +93,8 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
    *
    * @throws Exception passed up from the source <code>ImageOp</code>.
    */
-  public Image eval() throws Exception {
-// FIXME: should not cast to BufferedImage without conversion first!
-    return ImageUtils.transform(
-      (BufferedImage) sop.getImage(null), scale, 0.0, hints);
+  public BufferedImage eval() throws Exception {
+    return ImageUtils.transform(sop.getImage(null), scale, 0.0, hints);
   }
 
   /** {@inheritDoc} */
@@ -158,17 +156,15 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
       hash = result;
     }
 
-    private static final BufferedImage NULL_IMAGE =
-      new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB); 
-
     public List<VASSAL.tools.opcache.Op<?>> getSources() {
       return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
     }
 
-    public Image eval() throws Exception {
-      if (dw < 1 || dh < 1) return NULL_IMAGE;
+    public BufferedImage eval() throws Exception {
+      if (dw < 1 || dh < 1) return ImageUtils.NULL_IMAGE;
  
-      final BufferedImage src = (BufferedImage) sop.getImage(null);
+      // ensure that src is a type which GeneralFilter can handle
+      final BufferedImage src = ImageUtils.coerceToIntType(sop.getImage(null));
 
       final Rectangle sr =
         new Rectangle(0, 0,
@@ -180,13 +176,11 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
                                      .createWritableTranslatedChild(dx0, dy0);
       // zoom! zoom!
       GeneralFilter.zoom(dstR, sr, src, scale < 1.0f ? downFilter : upFilter);
-/*
-      final BufferedImage si = new BufferedImage(src.getColorModel(),
-      dstR.createWritableTranslatedChild(0,0), false, null);
-      return angle == 0.0 ? si : ImageUtils.transform(si, 1.0, angle, hints);
-*/
-      return new BufferedImage(src.getColorModel(),
-        dstR.createWritableTranslatedChild(0,0), false, null);
+
+      return ImageUtils.toCompatibleImage(new BufferedImage(
+        src.getColorModel(),
+        dstR.createWritableTranslatedChild(0,0), false, null)
+      );
     }
 
     protected void fixSize() { }

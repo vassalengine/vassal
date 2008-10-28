@@ -20,9 +20,9 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -54,8 +54,9 @@ import VASSAL.tools.opcache.OpCache;
  * @author Joel Uckelman
  */
 public abstract class AbstractOpImpl
-  extends VASSAL.tools.opcache.AbstractOpImpl<Image> implements ImageOp {
-
+  extends VASSAL.tools.opcache.AbstractOpImpl<BufferedImage>
+  implements ImageOp
+{
   /** The cached size of this operation's resulting <code>Image</code>. */
   protected Dimension size;
 
@@ -71,10 +72,10 @@ public abstract class AbstractOpImpl
   }
 
   /** {@inheritDoc} */
-  public abstract Image eval() throws Exception;
+  public abstract BufferedImage eval() throws Exception;
 
   /** {@inheritDoc} */
-  public Image getImage() {
+  public BufferedImage getImage() {
     try {
       return getImage(null);
     }
@@ -102,15 +103,14 @@ public abstract class AbstractOpImpl
   }
 
   /** {@inheritDoc} */
-  public Image getImage(ImageOpObserver obs) throws CancellationException,
-                                                    InterruptedException,
-                                                    ExecutionException
+  public BufferedImage getImage(ImageOpObserver obs)
+    throws CancellationException, InterruptedException, ExecutionException
   {
     return get(obs);
   }
 
   /** {@inheritDoc} */
-  public Future<Image> getFutureImage(ImageOpObserver obs)
+  public Future<BufferedImage> getFutureImage(ImageOpObserver obs)
                                                     throws ExecutionException {
     return getFuture(obs);
   }
@@ -124,9 +124,8 @@ public abstract class AbstractOpImpl
    * <code>null</code> if the <code>Image</code> isn't cached
    */
   protected Dimension getSizeFromCache() {
-    final Image im = cache.getIfDone(newKey());
-    return im == null ? null :
-      new Dimension(im.getWidth(null), im.getHeight(null));
+    final BufferedImage im = cache.getIfDone(newKey());
+    return im == null ? null : new Dimension(im.getWidth(), im.getHeight());
   }
 
   /**
@@ -169,25 +168,27 @@ public abstract class AbstractOpImpl
   public abstract int getNumYTiles();
 
   /** {@inheritDoc} */
-  public Image getTile(Point p, ImageOpObserver obs)
-    throws CancellationException, InterruptedException, ExecutionException {
+  public BufferedImage getTile(Point p, ImageOpObserver obs)
+    throws CancellationException, InterruptedException, ExecutionException
+  {
     return getTile(p.x, p.y, obs);
   }
 
   /** {@inheritDoc} */
-  public abstract Image getTile(int tileX, int tileY, ImageOpObserver obs)
+  public abstract BufferedImage getTile(int tileX, int tileY,
+                                        ImageOpObserver obs)
     throws CancellationException, InterruptedException, ExecutionException;
 
   /** {@inheritDoc} */
-  public Future<Image> getFutureTile(Point p, ImageOpObserver obs)
-    throws ExecutionException {
+  public Future<BufferedImage> getFutureTile(Point p, ImageOpObserver obs)
+    throws ExecutionException
+  {
     return getFutureTile(p.x, p.y, obs);
   }
 
   /** {@inheritDoc} */
-  public abstract Future<Image> getFutureTile(int tileX, int tileY,
-                                              ImageOpObserver obs)
-    throws ExecutionException;
+  public abstract Future<BufferedImage> getFutureTile(
+    int tileX, int tileY, ImageOpObserver obs) throws ExecutionException;
 
   /** {@inheritDoc} */
   public ImageOp getTileOp(Point p) {

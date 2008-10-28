@@ -258,13 +258,12 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
    */
   protected BufferedImage getShadePattern() {
     if (srcOp == null) buildShadePattern();
-    return ImageUtils.toBufferedImage(srcOp.getImage());
+    return srcOp.getImage();
   }
 
   protected BufferedImage getShadePattern(double zoom) {
     if (srcOp == null) buildShadePattern();
-// FIXME: switch all ImageOps to return BufferedImages
-    return ImageUtils.toBufferedImage(Op.scale(srcOp,zoom).getImage());
+    return Op.scale(srcOp,zoom).getImage();
   }
 
   protected Rectangle getPatternRect() {
@@ -294,9 +293,9 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       hash = HashCode.hash(color) ^ HashCode.hash(pattern);
     }
 
-    public Image eval() throws Exception {
+    public BufferedImage eval() throws Exception {
       final BufferedImage im =
-        new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
+        ImageUtils.createCompatibleTranslucentImage(2, 2);
       final Graphics2D g = im.createGraphics();
       g.setColor(color);
       if (TYPE_25_PERCENT.equals(pattern)) {

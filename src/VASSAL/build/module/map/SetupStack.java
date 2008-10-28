@@ -99,6 +99,7 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.menu.MenuManager;
 
@@ -700,10 +701,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
      */
     public BufferedImage getDummyImage() {
       if (dummyImage == null) {
-        dummyImage = new BufferedImage(dummySize.width*2,
-                                       dummySize.height*2,
-                                       BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = dummyImage.createGraphics();
+        dummyImage = ImageUtils.createCompatibleTranslucentImage(
+          dummySize.width*2, dummySize.height*2);
+        final Graphics2D g = dummyImage.createGraphics();
         g.setColor(Color.white);
         g.fillRect(0, 0, dummySize.width, dummySize.height);
         g.setColor(Color.black);
@@ -847,7 +847,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
 
   }
-    
+   
+// FIXME: check for duplication with PieceMover
+ 
     public static class View extends JPanel implements DropTargetListener, DragGestureListener, DragSourceListener, DragSourceMotionListener {
       
       private static final long serialVersionUID = 1L;
@@ -1102,12 +1104,15 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         int width = boundingBox.width + EXTRA_BORDER * 2;
         int height = boundingBox.height + EXTRA_BORDER * 2;
 
-        BufferedImage cursorImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics2D graphics = cursorImage.createGraphics();
+        final BufferedImage cursorImage =
+          ImageUtils.createCompatibleTranslucentImage(width, height);
+        final Graphics2D graphics = cursorImage.createGraphics();
  
         myStack.stackConfigurer.drawImage(graphics, EXTRA_BORDER - boundingBox.x, EXTRA_BORDER - boundingBox.y, dragCursor, 1.0);
         dragCursor.setSize(width, height);
 
+// FIXME: this code is duplicated from PieceMover
+// FIXME: this unmanages the image!
         // Make bitmap 50% transparent
         WritableRaster alphaRaster = cursorImage.getAlphaRaster();
         int size = width * height;

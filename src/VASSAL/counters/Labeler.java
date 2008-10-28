@@ -25,7 +25,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -60,6 +59,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.HashCode;
+import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ScaledImagePainter;
@@ -408,14 +408,14 @@ public class Labeler extends Decorator implements TranslatablePiece {
       return Collections.emptyList();
     }
 
-    public Image eval() throws Exception {
+    public BufferedImage eval() throws Exception {
       if (size == null) fixSize();
  
       final int w = size.width; 
       final int h = size.height;
 
       final BufferedImage im =
-        new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        ImageUtils.createCompatibleTranslucentImage(w, h);
 
       final Graphics2D g = im.createGraphics();
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -439,9 +439,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
     protected void fixSize() {
       if ((size = getSizeFromCache()) == null) {
-        final BufferedImage dummy =
-          new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-        final Graphics2D g = dummy.createGraphics();
+        final Graphics2D g = ImageUtils.NULL_IMAGE.createGraphics();
         final FontMetrics fm = g.getFontMetrics(font);
       
         size = new Dimension(fm.stringWidth(txt), fm.getHeight());

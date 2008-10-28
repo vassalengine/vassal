@@ -19,7 +19,7 @@
 
 package VASSAL.tools.imageop;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 import VASSAL.counters.GamePiece;
 import VASSAL.tools.ImageUtils;
@@ -32,7 +32,7 @@ public class Op {
       return new SourceOpBitmapImpl(name);
   }
 
-  public static SourceOp load(Image image) {
+  public static SourceOp load(BufferedImage image) {
     return new ImageSourceOpBitmapImpl(image);
   }
  

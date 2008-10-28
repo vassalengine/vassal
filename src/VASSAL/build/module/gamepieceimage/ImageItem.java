@@ -181,7 +181,7 @@ public class ImageItem extends Item {
     }
 
     if (srcOp != null) {
-      final Image img = srcOp.getImage();
+      final BufferedImage img = srcOp.getImage();
       if (img != null) {
         g.drawImage(img, origin.x, origin.y, null);
       }
@@ -247,16 +247,16 @@ public class ImageItem extends Item {
 
     private static final BaseOp op = new BaseOp();
 
-    public Image eval() throws Exception {
-      final BufferedImage im =
-        new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
-      final Graphics2D bg = im.createGraphics();
+    public BufferedImage eval() throws Exception {
+      final BufferedImage img =
+        ImageUtils.createCompatibleTranslucentImage(10, 10);
+      final Graphics2D bg = img.createGraphics();
       bg.setColor(Color.black);
       bg.drawRect(0, 0, 9, 9);
       bg.drawLine(0, 0, 9, 9);
       bg.drawLine(0, 9, 9, 0);
       bg.dispose();
-      return im;
+      return img;
     }
 
     protected void fixSize() { }

@@ -31,6 +31,8 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import VASSAL.tools.ImageUtils;
+
 public class SizeConfigurer extends StringEnumConfigurer {
 
   public SizeConfigurer(String key, String name) {
@@ -89,7 +91,6 @@ public class SizeConfigurer extends StringEnumConfigurer {
           setForeground(list.getForeground());
         }
 
-
         final int sample_w = 6;
         final int sample_h = 12;
         final int sample_g = 1;
@@ -97,21 +98,20 @@ public class SizeConfigurer extends StringEnumConfigurer {
         final int w = sample_w*6 + sample_g*5 + 1;
         final int h = sample_h+1;
         
-        BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = image.createGraphics();
+        final BufferedImage img = ImageUtils.createCompatibleImage(w, h);
+        final Graphics2D g = img.createGraphics();
         g.setColor(Color.white);
         g.fillRect(0, 0, w, h);
         g.setColor(Color.black);
         g.drawRect(0, 0, w-1, h-1);
-        
-        BufferedImage bi = Symbol.NatoUnitSymbolSet.buildSizeImage((String) value, sample_w, sample_h, sample_g);
-        int x = (w/2) - (bi.getWidth()/2);
-        g.drawImage(bi, x, 0, null);
-        g.dispose();       
- 
-        ImageIcon icon = new ImageIcon(image);
 
-        setIcon(icon);
+        final BufferedImage simg = Symbol.NatoUnitSymbolSet.buildSizeImage(
+          (String) value, sample_w, sample_h, sample_g);
+        int x = (w/2) - (simg.getWidth()/2);
+        g.drawImage(simg, x, 0, null);
+        g.dispose();       
+
+        setIcon(new ImageIcon(img));
         setText((String) value);
         this.setHorizontalTextPosition(SwingConstants.LEFT);
         this.setHorizontalAlignment(SwingConstants.RIGHT);

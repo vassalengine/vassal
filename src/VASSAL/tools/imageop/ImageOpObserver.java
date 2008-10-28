@@ -19,7 +19,7 @@
 
 package VASSAL.tools.imageop;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 import VASSAL.tools.opcache.OpObserver;
 
@@ -39,7 +39,7 @@ import VASSAL.tools.opcache.OpObserver;
  * @author Joel Uckelman
  * @see VASSAL.tools.imageop.Repainter
  */
-public interface ImageOpObserver extends OpObserver<Image> {
+public interface ImageOpObserver extends OpObserver<BufferedImage> {
   /**
    * Called when the <code>ImageOp</code> under observation completes.
    *

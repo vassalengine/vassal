@@ -20,7 +20,7 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +38,7 @@ import VASSAL.tools.opcache.Op;
  */
 public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
                                      implements SourceOp {
-  private final Image image;
+  private final BufferedImage image;
   private final int hash;
 
   /**
@@ -48,7 +48,7 @@ public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
    * @param image the source image
    * @throws IllegalArgumentException if <code>image == null</code>.
    */
-  public ImageSourceOpBitmapImpl(Image image) {
+  public ImageSourceOpBitmapImpl(BufferedImage image) {
     if (image == null) throw new IllegalArgumentException();
     this.image = image;
     hash = image.hashCode();
@@ -59,7 +59,7 @@ public class ImageSourceOpBitmapImpl extends AbstractTiledOpImpl
   }
 
   /** {@inheritDoc} */
-  public Image eval() {
+  public BufferedImage eval() {
     return image;
   }
 

@@ -21,7 +21,6 @@ package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -30,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import VASSAL.tools.HashCode;
+import VASSAL.tools.ImageUtils;
 
 /**
  * An {@link ImageOp} which crops its source.
@@ -93,15 +93,18 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
    *
    * @throws Exception passed up from the source <code>ImageOp</code>.
    * */
-  public Image eval() throws Exception {
+  public BufferedImage eval() throws Exception {
     // cobble source from tiles
     final Point[] tiles =
       sop.getTileIndices(new Rectangle(x0, y0, x1-x0, y1-y0));
     final int tw = sop.getTileWidth();
     final int th = sop.getTileHeight();
 
-    final BufferedImage dst =
-      new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+    // match the transparency of the first tile
+    final BufferedImage dst = ImageUtils.createCompatibleImage(
+      size.width, size.height,
+      sop.getTile(tiles[0], null).getTransparency() != BufferedImage.OPAQUE
+    );
 
     final Graphics2D g = dst.createGraphics();
 
@@ -112,18 +115,6 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     g.dispose();
 
     return dst;
-/*
-    final Image src = sop.getImage(null);
-
-    final BufferedImage dst =
-      new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
-
-    final Graphics2D g = dst.createGraphics();
-    g.drawImage(src, 0, 0, size.width, size.height, x0, y0, x1, y1, null);
-    g.dispose();
-
-    return dst;
-*/
   }
 
   protected void fixSize() {} 

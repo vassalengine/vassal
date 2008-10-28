@@ -18,7 +18,7 @@ package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 
 /**
@@ -44,7 +44,7 @@ public class ScaledImagePainter {
   public void draw(Graphics g, int x, int y, double scale, ImageObserver obs) {
     if (srcOp == null || scale <= 0) return;
   
-    final Image img;
+    final BufferedImage img;
     if (scale == 1.0) {
       img = srcOp.getImage();
     }

@@ -20,9 +20,9 @@
 package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -89,8 +89,9 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    * @throws IndexOutOfBoundsException
    *    If <code>tileX != 0</code> or <code>tileY != 0</code>.
    */
-  public Image getTile(int tileX, int tileY, ImageOpObserver obs)
-    throws CancellationException, InterruptedException, ExecutionException {
+  public BufferedImage getTile(int tileX, int tileY, ImageOpObserver obs)
+    throws CancellationException, InterruptedException, ExecutionException
+  {
     // we are but a single humble tile
     if (tileX != 0 || tileY != 0)
       throw new IndexOutOfBoundsException();
@@ -105,8 +106,9 @@ public abstract class AbstractTileOpImpl extends AbstractOpImpl {
    * @throws IndexOutOfBoundsException
    *    If <code>tileX != 0</code> or <code>tileY != 0</code>.
    */
-  public Future<Image> getFutureTile(int tileX, int tileY, ImageOpObserver obs)
-    throws ExecutionException {
+  public Future<BufferedImage> getFutureTile(
+    int tileX, int tileY, ImageOpObserver obs) throws ExecutionException
+  {
     // we are but a single humble tile
     if (tileX != 0 || tileY != 0)
       throw new IndexOutOfBoundsException();

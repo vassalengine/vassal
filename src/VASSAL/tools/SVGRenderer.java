@@ -145,11 +145,7 @@ public class SVGRenderer {
     px.scale(scale, scale);
 
     final Rectangle2D rect = new Rectangle2D.Float(0, 0, defaultW, defaultH);
-    @SuppressWarnings("unused")
-    final Rectangle2D b = px.createTransformedShape(rect).getBounds2D();
 
-//    r.addTranscodingHint(Rasterizer.KEY_WIDTH, (float) b.getWidth());
-//    r.addTranscodingHint(Rasterizer.KEY_HEIGHT, (float) b.getHeight());
     r.addTranscodingHint(Rasterizer.KEY_WIDTH, (float) aoi.getWidth());
     r.addTranscodingHint(Rasterizer.KEY_HEIGHT, (float) aoi.getHeight());
     r.addTranscodingHint(Rasterizer.KEY_AOI, aoi);
@@ -242,8 +238,10 @@ public class SVGRenderer {
       BufferedImage rend = renderer.getOffScreen();
       renderer = null; // We're done with it...
 
-      final BufferedImage dest =
-        new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+      // produce an opaque image if our background color is set
+      final BufferedImage dest = ImageUtils.createCompatibleImage(
+        w, h, hints.containsKey(KEY_BACKGROUND_COLOR)
+      );
 
       final Graphics2D g2d = GraphicsUtil.createGraphics(dest);
       if (hints.containsKey(KEY_BACKGROUND_COLOR)) {

@@ -21,12 +21,12 @@ package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.List;
 
 import VASSAL.tools.HashCode;
+import VASSAL.tools.ImageUtils;
 
 /**
  * An {@link ImageOp} for producing tiles directly from a source,
@@ -75,13 +75,14 @@ public class SourceTileOpBitmapImpl extends AbstractTileOpImpl {
     return Collections.<VASSAL.tools.opcache.Op<?>>singletonList(sop);
   }
 
-  public Image eval() throws Exception {
-    final BufferedImage dst =
-      new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+  public BufferedImage eval() throws Exception {
+    final BufferedImage src = sop.getImage(null);
+    final BufferedImage dst = ImageUtils.createCompatibleImage(
+      size.width, size.height, src.getTransparency() != BufferedImage.OPAQUE
+    );
 
     final Graphics2D g = dst.createGraphics();
-    g.drawImage(sop.getImage(null), 0, 0, size.width, size.height,
-                                    x0, y0, x1, y1, null);
+    g.drawImage(src, 0, 0, size.width, size.height, x0, y0, x1, y1, null);
     g.dispose();
 
     return dst;

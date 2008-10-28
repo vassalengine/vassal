@@ -142,9 +142,9 @@ public class ZoneHighlight extends AbstractConfigurable  {
       }
       else {
 // FIXME: Make this an ImageOp?
-        final BufferedImage bi =
-          new BufferedImage(6, 6, BufferedImage.TYPE_INT_ARGB);
-        final Graphics2D g = bi.createGraphics();  
+        final BufferedImage img =
+          ImageUtils.createCompatibleTranslucentImage(6, 6);
+        final Graphics2D g = img.createGraphics();  
         g.setColor(color);
         if (style.equals(STYLE_STRIPES)) {
           g.drawLine(0, 5, 5, 0);
@@ -154,7 +154,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
           g.drawLine(1, 0, 5, 4);
         }
         g.dispose();
-        paint = new TexturePaint(bi, new Rectangle(0,0,6,6));
+        paint = new TexturePaint(img, new Rectangle(0,0,6,6));
       }
     }
     return paint;

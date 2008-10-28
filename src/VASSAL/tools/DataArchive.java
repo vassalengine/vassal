@@ -37,6 +37,7 @@ import static VASSAL.tools.IterableEnumeration.iterate;
 import java.applet.AudioClip;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -160,7 +161,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    * @return the <code>Image</code> contained in the image file
    * @throws IOException if there is a problem reading the image file
    */
-  public Image getImage(String name) throws IOException {
+  public BufferedImage getImage(String name) throws IOException {
     final ImageSource src;
 
     if (name.startsWith("/")) {
@@ -173,7 +174,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       }
     }
     else if ((src = imageSources.get(name)) != null) {
-      return src.getImage();
+      return ImageUtils.toBufferedImage(src.getImage());
     }
     else if (name.toLowerCase().endsWith(".svg")) {
       return new SVGRenderer(getImageURL(name),
@@ -563,7 +564,8 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   @Deprecated
   public Image getTransformedImage(Image base, double scale, double theta) {
     // An ugly hack, but nothing should be using this method anyway.
-    return Op.rotateScale(Op.load(base), theta, scale).getImage();
+    return Op.rotateScale(Op.load(
+      ImageUtils.toBufferedImage(base)), theta, scale).getImage();
   }
   
   /**

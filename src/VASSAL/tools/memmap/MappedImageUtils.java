@@ -26,7 +26,15 @@ public class MappedImageUtils {
   public static MappedBufferedImage getImage(InputStream in)
                                                            throws IOException {
     final MappedBufferedImage img = loadImage(in);
-    return img.getType() != BufferedImage.TYPE_INT_ARGB ? toIntARGB(img) : img;
+
+    switch (img.getType()) {
+    case BufferedImage.TYPE_INT_RGB:
+    case BufferedImage.TYPE_INT_ARGB:
+      return img;
+    default:
+      return toType(img, img.getTransparency() == BufferedImage.OPAQUE ?
+        BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
+    }
   }
 
   private static MappedBufferedImage loadImage(InputStream in)
@@ -55,7 +63,7 @@ public class MappedImageUtils {
       final SampleModel sm =
         type.getSampleModel().createCompatibleSampleModel(w,h);
       
-      img = MappedBufferedImage.createMemoryMappedImage(cm, sm);
+      img = new MappedBufferedImage(cm, sm);
       
       final ImageReadParam param = reader.getDefaultReadParam();
       param.setDestination(img);
@@ -73,12 +81,11 @@ public class MappedImageUtils {
     }
   }
 
-  private static MappedBufferedImage toIntARGB(MappedBufferedImage src)
+  private static MappedBufferedImage toType(MappedBufferedImage src, int type)
                                                            throws IOException {
     return rowByRowCopy(
       src, 
-      MappedBufferedImage.createIntARGBMemoryMappedImage(
-        src.getWidth(), src.getHeight())
+      new MappedBufferedImage(src.getWidth(), src.getHeight(), type)
     );
   }
 
@@ -91,14 +98,5 @@ public class MappedImageUtils {
       dst.setRGB(0, y, row.length, 1, row, 0, row.length);
     }
     return dst;
-  }
-
-  public static MappedBufferedImage createImage(int w, int h) {
-    try {
-      return MappedBufferedImage.createIntARGBMemoryMappedImage(w, h);
-    }
-    catch (IOException e) {
-      throw (OutOfMemoryError) (new OutOfMemoryError().initCause(e));
-    }
   }
 }
