@@ -1505,7 +1505,8 @@ private PieceWindow pieceWin;
     
     public String getStatusIconName() throws IOException {
       if (imageName == null) {
-        BufferedImage icon = new BufferedImage(10, 15, BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage icon =
+          new BufferedImage(10, 15, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = icon.createGraphics();
         drawFlagImage(g);
         imageName = getUniqueImageFileName(name, ".png");
@@ -1555,7 +1556,8 @@ private PieceWindow pieceWin;
       int tabHeight = 15;
       int tabSpace = height < 43 ? (height-tabHeight)/2 : tabHeight-1;
       int tabWidth = 10;
-      BufferedImage icon = new BufferedImage(tabWidth, height, BufferedImage.TYPE_INT_ARGB);
+      final BufferedImage icon =
+        new BufferedImage(tabWidth, height, BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = icon.createGraphics();
       g.translate(0, tabSpace*flag.tab);
       flag.drawFlagImage(g);
@@ -1587,7 +1589,8 @@ private PieceWindow pieceWin;
       int tabHeight = 15;
       int tabSpace = d.height < 43 ? (d.height-tabHeight)/2 : tabHeight-1;
       int tabWidth = 10;
-      BufferedImage icon = new BufferedImage(d.width + 2*tabWidth, d.height, BufferedImage.TYPE_INT_ARGB);
+      final BufferedImage icon = new BufferedImage(
+        d.width + 2*tabWidth, d.height, BufferedImage.TYPE_INT_ARGB);
       Graphics2D g = icon.createGraphics();
       g.translate(d.width+tabWidth, tabSpace*flag.tab);
       flag.drawFlagImage(g);
@@ -2623,7 +2626,8 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     final Dimension d = panel.getPreferredSize();    
     panel.setSize(d);
     panel.doLayout();
-    final BufferedImage poolImage = new BufferedImage(d.width, d.height, BufferedImage.TYPE_3BYTE_BGR);
+    final BufferedImage poolImage =
+      new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
     final Graphics2D g = poolImage.createGraphics();
     panel.printAll(g);
     
@@ -2766,7 +2770,8 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     final Dimension d = panel.getPreferredSize();    
     panel.setSize(d);
     panel.doLayout();
-    final BufferedImage forcePool = new BufferedImage(d.width, d.height, BufferedImage.TYPE_3BYTE_BGR);
+    final BufferedImage forcePool =
+      new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
     final Graphics2D g = forcePool.createGraphics();
     panel.printAll(g);
     
