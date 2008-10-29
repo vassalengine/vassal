@@ -942,6 +942,10 @@ public class HexGrid extends AbstractConfigurable
       
       int r = abs(p1.x - p2.x);
       int width = r * 3 / 2;
+      if (width < 1) {
+        reportShapeError();
+        return;
+      }
       int height = abs(p3.y - p2.y) * 2;
       
       int Xoff = min(p1.x, p2.x) % width + r/2;
