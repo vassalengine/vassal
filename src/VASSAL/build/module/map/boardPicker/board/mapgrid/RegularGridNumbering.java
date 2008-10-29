@@ -256,7 +256,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     propSupport.addPropertyChangeListener(l);
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

@@ -318,7 +318,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     }
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
   

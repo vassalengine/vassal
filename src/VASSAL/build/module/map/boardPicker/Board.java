@@ -28,7 +28,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
@@ -40,10 +39,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-import javax.swing.Timer;
 
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
@@ -257,7 +252,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     }
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[] {
       HexGrid.class,
       SquareGrid.class,

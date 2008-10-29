@@ -314,7 +314,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     shapeCache.clear();
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{SquareGridNumbering.class};
   }
 

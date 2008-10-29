@@ -108,7 +108,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
     background = grid;
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return background == null ? new Class[]{Zone.class, HexGrid.class, SquareGrid.class, RegionGrid.class}
         : new Class[]{Zone.class};
   }
