@@ -184,7 +184,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
           index = 0;
           break;
         case STACK_TOP:
-          target = parent;
+          target = parent == null ? outer : parent;
         }
         c = getMap().getStackMetrics().merge(target, marker);
         if (index >= 0) {
