@@ -78,7 +78,9 @@ public class ForwardToKeyBuffer implements Buildable, KeyListener {
     else {
       lastConsumedEvent = null;
     }
-    if (!e.isConsumed()) {
+    final int c = e.getKeyCode();
+    // Don't pass SHIFT or CONTROL only to counters
+    if (!e.isConsumed() && c != KeyEvent.VK_SHIFT && c != KeyEvent.VK_CONTROL) {
       Command comm = KeyBuffer.getBuffer().keyCommand
           (KeyStroke.getKeyStrokeForEvent(e));
       if (comm != null && !comm.isNull()) {
