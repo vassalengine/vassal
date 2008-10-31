@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2006 by Rodney Kinney
+ * Copyright (c) 2006-2008 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -48,10 +48,10 @@ public class PropertyChangerConfigurer extends Configurer {
   protected static final char PROMPT_CODE = 'R';
   protected static final char ENUM_CODE = 'E';
   protected static final char INCR_CODE = 'I';
-  protected static final Map<Class,Character> typeToCode =
-    new HashMap<Class,Character>();
-  protected static final Map<Class,String> typeToDescription =
-    new HashMap<Class,String>();
+  protected static final Map<Class<? extends PropertyChanger>,Character> typeToCode =
+    new HashMap<Class<? extends PropertyChanger>,Character>();
+  protected static final Map<Class<? extends PropertyChanger>,String> typeToDescription =
+    new HashMap<Class<? extends PropertyChanger>,String>();
   protected static final Map<String,Character> descriptionToCode =
     new HashMap<String,Character>();
   static {

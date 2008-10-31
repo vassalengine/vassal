@@ -1,5 +1,5 @@
 /*
- * $Id: BugDialog.java 4263 2008-10-15 21:46:16Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
  *

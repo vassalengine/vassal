@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * $Id$
+ * *
+ * Copyright (c) 2000-2008 by Rodney Kinney
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

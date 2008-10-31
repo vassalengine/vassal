@@ -44,7 +44,7 @@ public class ZoneProperty extends GlobalProperty {
     return "Global Property";
   }
   
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
   

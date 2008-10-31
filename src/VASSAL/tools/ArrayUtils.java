@@ -1,5 +1,5 @@
 /*
- * $Id: FlowLabel.java 4206 2008-10-10 20:08:48Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *

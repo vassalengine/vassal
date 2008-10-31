@@ -1,5 +1,5 @@
 /*
- * $Id: SourceTileOpSVGImpl.java 4268 2008-10-16 18:46:15Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *

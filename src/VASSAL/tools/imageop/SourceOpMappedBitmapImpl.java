@@ -1,5 +1,5 @@
 /*
- * $Id: Board.java 4333 2008-10-26 14:13:58Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman 
  *
