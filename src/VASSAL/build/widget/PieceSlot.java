@@ -132,10 +132,12 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
                                 panel.getSize().height / 2));
       }
     }
+
     if (c != null) {
       c.setProperty(Properties.PIECE_ID, getGpId());
     }
-    return c;
+
+    return PieceCloner.getInstance().clonePiece(c);
   }
 
   public void paint(Graphics g) {
