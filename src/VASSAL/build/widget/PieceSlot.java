@@ -68,6 +68,7 @@ import VASSAL.i18n.ComponentI18nData;
 public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public static final String GP_ID = "gpid";
   private GamePiece c;
+  private GamePiece expanded;
   private String name;
   private String pieceDefinition;
   protected static Font FONT = new Font("Dialog", 0, 12);
@@ -106,6 +107,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   public void setPiece(GamePiece p) {
     c = p;
+    expanded = null;
     if (c != null) {
       c.setPosition(new Point(panel.getSize().width / 2,
                               panel.getSize().height / 2));
@@ -117,7 +119,25 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       GameModule.getGameModule().encode(new AddPiece(c));
   }
 
+  /**
+   * Return defined GamePiece with prototypes fully expanded.
+   * 
+   * @return expanded piece
+   */
+  protected GamePiece getExpandedPiece() {
+    if (expanded == null) {
+      expanded = PieceCloner.getInstance().clonePiece(getPiece());
+    }
+    return expanded;
+  }
+  
+  /**
+   * Return defined GamePiece with prototypes unexpanded.
+   * 
+   * @return unexpanded piece
+   */
   public GamePiece getPiece() {
+    
     if (c == null && pieceDefinition != null) {
       final AddPiece comm =
         (AddPiece) GameModule.getGameModule().decode(pieceDefinition);
@@ -136,8 +156,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     if (c != null) {
       c.setProperty(Properties.PIECE_ID, getGpId());
     }
-
-    return PieceCloner.getInstance().clonePiece(c);
+    
+    return c;
   }
 
   public void paint(Graphics g) {
@@ -146,7 +166,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     g.fillRect(0, 0, panel.getSize().width, panel.getSize().height);
     g.setColor(c);
 
-    if (getPiece() == null) {
+    if (getExpandedPiece() == null) {
       final FontMetrics fm = g.getFontMetrics();
       g.drawRect(0, 0, panel.getSize().width - 1, panel.getSize().height - 1);
       g.setFont(FONT);
@@ -155,10 +175,10 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
         panel.getSize().height/2);
     }
     else {
-      getPiece().draw(g, panel.getSize().width / 2,
+      getExpandedPiece().draw(g, panel.getSize().width / 2,
                          panel.getSize().height / 2, panel, 1.0);
-      if (Boolean.TRUE.equals(getPiece().getProperty(Properties.SELECTED))) {
-        BasicPiece.getHighlighter().draw(getPiece(), g,
+      if (Boolean.TRUE.equals(getExpandedPiece().getProperty(Properties.SELECTED))) {
+        BasicPiece.getHighlighter().draw(getExpandedPiece(), g,
           panel.getSize().width / 2, panel.getSize().height / 2, panel, 1.0);
       }
     }
