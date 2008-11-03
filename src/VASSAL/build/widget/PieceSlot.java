@@ -109,8 +109,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     c = p;
     expanded = null;
     if (c != null) {
-      c.setPosition(new Point(panel.getSize().width / 2,
-                              panel.getSize().height / 2));
+      final Dimension size = panel.getSize();
+      c.setPosition(new Point(size.width / 2, size.height / 2));
       name = Decorator.getInnermost(c).getName();
     }
     panel.revalidate();
@@ -148,8 +148,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       else {
         c = comm.getTarget();
         c.setState(comm.getState());
-        c.setPosition(new Point(panel.getSize().width / 2,
-                                panel.getSize().height / 2));
+
+        final Dimension size = panel.getSize();
+        c.setPosition(new Point(size.width / 2, size.height / 2));
       }
     }
 
@@ -161,25 +162,28 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   }
 
   public void paint(Graphics g) {
+    final Dimension size = panel.getSize();
+
     final Color c = g.getColor();
     g.setColor(Color.WHITE);
-    g.fillRect(0, 0, panel.getSize().width, panel.getSize().height);
+    g.fillRect(0, 0, size.width, size.height);
     g.setColor(c);
 
     if (getExpandedPiece() == null) {
       final FontMetrics fm = g.getFontMetrics();
-      g.drawRect(0, 0, panel.getSize().width - 1, panel.getSize().height - 1);
+      g.drawRect(0, 0, size.width - 1, size.height - 1);
       g.setFont(FONT);
       g.drawString(" nil ", 
-        panel.getSize().width/2 - fm.stringWidth(" nil ")/2,
-        panel.getSize().height/2);
+        size.width/2 - fm.stringWidth(" nil ")/2,
+        size.height/2
+      );
     }
     else {
-      getExpandedPiece().draw(g, panel.getSize().width / 2,
-                         panel.getSize().height / 2, panel, 1.0);
-      if (Boolean.TRUE.equals(getExpandedPiece().getProperty(Properties.SELECTED))) {
+      getExpandedPiece().draw(g, size.width / 2, size.height / 2, panel, 1.0);
+      if (Boolean.TRUE.equals(
+          getExpandedPiece().getProperty(Properties.SELECTED))) {
         BasicPiece.getHighlighter().draw(getExpandedPiece(), g,
-          panel.getSize().width / 2, panel.getSize().height / 2, panel, 1.0);
+          size.width / 2, size.height / 2, panel, 1.0);
       }
     }
   }
@@ -211,7 +215,8 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
     // Recenter piece; panel may have been resized at some point resulting
     // in pieces with inaccurate positional information.
-    getPiece().setPosition(new Point(panel.getSize().width / 2, panel.getSize().height / 2));
+    final Dimension size = panel.getSize();
+    getPiece().setPosition(new Point(size.width / 2, size.height / 2));
 
     // Erase selection border to avoid leaving selected after mouse dragged out
     getPiece().setProperty(Properties.SELECTED, null);
