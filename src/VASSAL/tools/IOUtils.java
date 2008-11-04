@@ -381,7 +381,16 @@ public class IOUtils {
       s.close();
     }
     catch (IOException e) {
-      Logger.log(e);
+      // ImageInputStreamImpl.close() rather ridiculously throws an
+      // IOException if the stream is already closed. This is always done
+      // via ImageInputStreamImpl.checkClosed(). We check the top of the
+      // stack trace to see if the exception came from checkClosed(), and
+      // only log IOExceptions which did not.
+      final StackTraceElement stack[] = e.getStackTrace();
+      if (stack.length == 0 ||
+          !"checkClosed".equals(stack[0].getMethodName())) {
+        Logger.log(e);
+      }
     }
   }
 }
