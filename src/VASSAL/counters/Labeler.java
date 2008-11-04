@@ -477,7 +477,6 @@ public class Labeler extends Decorator implements TranslatablePiece {
       return label; 
     }
 
-    @Override
     protected void fixSize() {
       if ((size = getSizeFromCache()) == null) {
         buildDimensions();
