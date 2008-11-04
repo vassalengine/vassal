@@ -45,6 +45,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
+import javax.swing.plaf.basic.BasicHTML;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -218,10 +219,12 @@ public class Labeler extends Decorator implements TranslatablePiece {
     }
   }
 
+// FIXME: This doesn't belong here. Should be in ImageUtils instead?
   public static void drawLabel(Graphics g, String text, int x, int y, int hAlign, int vAlign, Color fgColor, Color bgColor) {
     drawLabel(g, text, x, y, new Font("Dialog", Font.PLAIN, 10), hAlign, vAlign, fgColor, bgColor, null);
   }
 
+// FIXME: This doesn't belong here. Should be in ImageUtils instead?
   public static void drawLabel(Graphics g, String text, int x, int y, Font f, int hAlign, int vAlign, Color fgColor, Color bgColor, Color borderColor) {
     g.setFont(f);
     final int width = g.getFontMetrics().stringWidth(text + "  ");
@@ -409,42 +412,80 @@ public class Labeler extends Decorator implements TranslatablePiece {
     }
 
     public BufferedImage eval() throws Exception {
-      if (size == null) fixSize();
- 
-      final int w = size.width; 
-      final int h = size.height;
+      // determine whether we are HTML and fix our size
+      final JLabel label = buildDimensions();
 
-      final BufferedImage im =
-        ImageUtils.createCompatibleTranslucentImage(w, h);
+      // draw nothing if our size is zero
+      if (size.width <= 0 || size.height <= 0) return ImageUtils.NULL_IMAGE;
+ 
+      // prepare the target image
+      final BufferedImage im = ImageUtils.createCompatibleImage(
+        size.width,
+        size.height,
+        bg == null || bg.getTransparency() != Color.OPAQUE
+      );
 
       final Graphics2D g = im.createGraphics();
       g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
+      
+      // paint the background  
       if (bg != null) {
         g.setColor(bg);
-        g.fillRect(0, 0, w, h);
+        g.fillRect(0, 0, size.width, size.height);
       }
 
+      // paint the foreground
       if (fg != null) {
-        g.setColor(fg);
-        g.setFont(font);
-
-        final FontMetrics fm = g.getFontMetrics(font);
-        g.drawString(txt, 0, h - fm.getDescent());
+        if (label != null) {
+          label.paint(g);
+        }
+        else {
+          g.setColor(fg);
+          g.setFont(font);
+  
+          final FontMetrics fm = g.getFontMetrics(font);
+          g.drawString(txt, 0, size.height - fm.getDescent());
+        }
       }
 
       g.dispose();
       return im;
     }
 
-    protected void fixSize() {
-      if ((size = getSizeFromCache()) == null) {
+    private JLabel buildDimensions() {
+      // Build and return a JLabel if we need to render HTML,
+      // then determine the dimensions of the label.
+      final JLabel label;
+
+      if (BasicHTML.isHTMLString(txt)) {
+        label = new JLabel(txt);
+        label.setForeground(fg);
+        label.setFont(font);
+        label.setSize(label.getPreferredSize());
+        size = label.getSize();
+      }
+      else {
+        label = null;
+
         final Graphics2D g = ImageUtils.NULL_IMAGE.createGraphics();
         final FontMetrics fm = g.getFontMetrics(font);
-      
         size = new Dimension(fm.stringWidth(txt), fm.getHeight());
-
         g.dispose();
+      }
+
+      return label; 
+    }
+
+    @Override
+    protected void fixSize() {
+      if ((size = getSizeFromCache()) == null) {
+        buildDimensions();
+      
+        // ensure that our area is nonempty
+        if (size.width <= 0 || size.height <= 0) {
+          size.width = size.height = 1;
+        } 
       }
     }
 
