@@ -18,22 +18,19 @@
  */
 package VASSAL.launch;
 
-import VASSAL.tools.BugDialog;
+import VASSAL.tools.BugCatcher;
 import VASSAL.tools.logging.Logger;
+import VASSAL.tools.logging.LogManager;
 
 /**
- * Handles uncaught exceptions. The first uncaught exception will raise
- * a {@link BugDialog}. None of the methods in this class are intended
- * to be called in our code, but must be public in order to be accessible
- * to {@link Thread} and {@link EventDispatchThread}.
+ * Handles uncaught exceptions. None of the methods in this class are
+ * intended to be called in our code, but must be public in order to be
+ * accessible to {@link Thread} and {@link EventDispatchThread}.
  *
  * @author Joel Uckelman
  * @since 3.1.0
  */
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
-
-  private static boolean firstTime = false;
-
   // Sets this class to handle exceptions occurring on the EDT.
   // See Java code in {@link EventDispatchThread.handleException()}.
   // In the case of an exception, the class is instantiated using its
@@ -42,6 +39,8 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
   static {
     System.getProperties().put("sun.awt.exception.handler", //$NON-NLS-1$
                                ExceptionHandler.class.getName());
+
+    LogManager.addLogListener(new BugCatcher());
   }
 
   public ExceptionHandler() {}
@@ -52,19 +51,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
    * @param thrown the <code>Throwable</code> which was not caught.
    */ 
   public void handle(Throwable thrown) {
-    final boolean showBugDialog;
-  
-    // lock on the class to ensure that the bug dialog is shown only once
-    synchronized (ExceptionHandler.class) {
-      showBugDialog = firstTime;
-      if (firstTime) firstTime = false;
-    }
-
-    Logger.log(thrown, Logger.ERROR);
-
-    // do this outside the lock so that the BugDialog doesn't
-    // block the handling of further exceptions
-    if (showBugDialog) BugDialog.reportABug(thrown);
+    Logger.log(thrown, Logger.BUG);
   }
 
   /**

@@ -43,7 +43,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -60,7 +59,6 @@ import org.jdesktop.layout.LayoutStyle;
 import org.jdesktop.swingworker.SwingWorker;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXHeader;
-import org.jdesktop.swingx.JXLabel;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
@@ -76,11 +74,7 @@ import VASSAL.tools.version.VersionUtils;
 public class BugDialog extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  private static boolean bugReportingDisabled = false;
-
   public static void reportABug(Throwable thrown) {
-    if (bugReportingDisabled) return;
-
     final Frame frame = GameModule.getGameModule() == null
       ? null : GameModule.getGameModule().getFrame();
 
@@ -105,8 +99,6 @@ public class BugDialog extends JDialog {
     private JButton okButton;
     private JButton cancelButton;
 */
-
-  private JCheckBox dontShowAgainCheckBox;
 
   public BugDialog(Frame owner, Throwable thrown) {
     super(owner, true);
@@ -137,9 +129,6 @@ public class BugDialog extends JDialog {
        
         if (sendRequest != null) 
           sendRequest.cancel(true);
- 
-        if (dontShowAgainCheckBox.isSelected())
-          bugReportingDisabled = true;
       }
     });
 
@@ -167,8 +156,6 @@ public class BugDialog extends JDialog {
   }
 
   private Component buildButtonPanel() {
-    dontShowAgainCheckBox = new JCheckBox("Don't show this dialog again");
-
     button_deck = new CardLayout();
     buttons = new JPanel(button_deck); 
 
@@ -191,17 +178,6 @@ public class BugDialog extends JDialog {
     c.gridy = 0;
     c.gridwidth = 1;
     c.gridheight = 1;
-    c.fill = GridBagConstraints.NONE;
-    c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.LINE_START;
-    c.weightx = 0.0;
-    c.weighty = 0.0;
-    panel.add(dontShowAgainCheckBox, c);
-
-    c.gridx = 1;
-    c.gridy = 0;
-    c.gridwidth = 1;
-    c.gridheight = 1;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.insets = new Insets(0,0,0,0);
     c.anchor = GridBagConstraints.NORTHWEST;
@@ -209,7 +185,7 @@ public class BugDialog extends JDialog {
     c.weighty = 0.0;
     panel.add(Box.createHorizontalGlue(), c);
 
-    c.gridx = 2;
+    c.gridx = 1;
     c.gridy = 0;
     c.gridwidth = 1;
     c.gridheight = 1;
@@ -1413,7 +1389,6 @@ public class BugDialog extends JDialog {
       public void run() {
         final BugDialog bd = new BugDialog(null, null);
         bd.setVisible(true);
-        System.err.println(bugReportingDisabled);
       }
     });
   }

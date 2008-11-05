@@ -1733,7 +1733,6 @@ public class ModuleManagerWindow extends JFrame {
   private class ShowErrorLogAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
-    private JDialog d;
     private Frame frame;
 
     public ShowErrorLogAction(Frame frame) {
@@ -1742,25 +1741,31 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public void actionPerformed(ActionEvent e) {
-      if (d == null) {
-        final LogPane lp = new LogPane();
+      final LogPane lp = new LogPane();
 
-        FileInputStream in = null;
-        try {
-          in = new FileInputStream(new File(Info.getHomeDir(), "errorLog"));
-          lp.setText(IOUtils.toString(in));
-        }
-        catch (IOException ex) {
-          // What to do here????
-        }
-
-        LogManager.addLogListener(lp);
-
-        d = new JDialog(frame, Resources.getString("Help.error_log"));
-        d.add(new JScrollPane(lp));
-        d.pack();
+      FileInputStream in = null;
+      try {
+        in = new FileInputStream(new File(Info.getHomeDir(), "errorLog"));
+        lp.setText(IOUtils.toString(in));
+      }
+      catch (IOException ex) {
+        // FIXME: What to do here????
       }
 
+      LogManager.addLogListener(lp);
+
+      final JDialog d =
+        new JDialog(frame, Resources.getString("Help.error_log"));
+      d.add(new JScrollPane(lp));
+      d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      d.addWindowListener(new WindowAdapter() {
+        public void windowClosed(WindowEvent e) {
+          // unregister the LogPane when this dialog is closed
+          LogManager.removeLogListener(lp);
+        }
+      });
+
+      d.pack();
       d.setVisible(true);
     }
   }

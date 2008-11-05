@@ -16,7 +16,7 @@ public class CommandClientAdapter implements LogListener{
       cmdC.request(entry);
     }
     catch (IOException e) {
-      // What to do here????
+      // FIXME: What to do here????
     }
   }
 }

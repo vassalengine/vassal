@@ -10,8 +10,9 @@ public class LogEntry implements Serializable {
   public static final int MESSAGE = 0;
   public static final int WARNING = 1;
   public static final int ERROR = 2;
-  public static final int DEBUG = 3;
-  public static final int SYSTEM = 4;
+  public static final int BUG = 3;
+  public static final int DEBUG = 4;
+  public static final int SYSTEM = 5;
 
   public final long timestamp;
   public final long pid;

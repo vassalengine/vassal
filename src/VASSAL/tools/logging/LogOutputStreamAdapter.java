@@ -17,7 +17,7 @@ public class LogOutputStreamAdapter implements LogListener {
       out.write('\n');
     }
     catch (IOException e) {
-      // What to do here????
+      // FIXME: What to do here????
     }
   }
 }

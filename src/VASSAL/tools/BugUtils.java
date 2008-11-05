@@ -96,7 +96,6 @@ public class BugUtils {
       // Don't bother logging this---if we can't read the errorLog,
       // then we probably can't write to it either.
       IOUtils.closeQuietly(r);
-      e.printStackTrace();
     }
 
     return log;

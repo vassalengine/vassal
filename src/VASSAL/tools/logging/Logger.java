@@ -8,6 +8,7 @@ public class Logger {
   public static final int MESSAGE = LogEntry.MESSAGE;
   public static final int WARNING = LogEntry.WARNING;
   public static final int ERROR =   LogEntry.ERROR;
+  public static final int BUG =     LogEntry.BUG;
   public static final int DEBUG =   LogEntry.DEBUG;
   public static final int SYSTEM =  LogEntry.SYSTEM;
 

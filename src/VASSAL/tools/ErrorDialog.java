@@ -22,48 +22,29 @@ package VASSAL.tools;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
+import java.awt.Frame;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.logging.Logger;
-import VASSAL.tools.swing.FlowLabel;
-
+import VASSAL.tools.swing.DetailsDialog;
+import VASSAL.tools.swing.Dialogs;
 
 public class ErrorDialog {
   private ErrorDialog() {}
 
-  private static final Set<Object> disabled =
-    Collections.synchronizedSet(new HashSet<Object>());
-  
-  private static final Set<String> reportedDataErrors = Collections.synchronizedSet(new HashSet<String>());
-
-  public static boolean isDisabled(Object key) {
-    return disabled.contains(key);
-  }
+  private static final Set<String> reportedDataErrors =
+    Collections.synchronizedSet(new HashSet<String>());
 
   private static class Bug {
     public final Throwable t;
@@ -101,82 +82,25 @@ public class ErrorDialog {
     }
   }
 
-  private static final BlockingQueue<Object> queue =
-    new LinkedBlockingQueue<Object>();
-
-  // This thread consumes error messages so as not to block the threads
-  // which are generating them or the EDT.
-  static {
-    new Thread() {
-      @Override
-      public void run() {
-        try {
-          while (true) {
-            final Object o = queue.take();
-          
-            if (o instanceof Message) {
-              final Message m = (Message) o;                
-
-              if (isDisabled(m.key)) return;
-
-              try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                  public void run() {
-                    showDialog(m.parent, m.title, m.header,
-                               m.message, m.messageType, m.key);
-                  }
-                });
-              }
-              catch (InterruptedException e) {
-                Logger.log(e);
-              }
-              catch (InvocationTargetException e) {
-                Logger.log(e);
-              }
-            }
-            else if (o instanceof Bug) {
-              try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                  public void run() {
-                    BugDialog.reportABug(((Bug)o).t);
-                  }
-                });
-              }
-              catch (InterruptedException e) {
-                Logger.log(e);
-              }
-              catch (InvocationTargetException e) {
-                Logger.log(e);
-              }
-            }
-          }
-        }
-        catch (InterruptedException e) {
-          Logger.log(e);
-        }
-      }
-    }.start();
-  }
-
 // FIXME: make method which takes Throwable but doesn't use it for details
 
-  public static void bug(Throwable t) {
-    Logger.log(t);
+  public static void bug(Throwable thrown) {
+    Logger.log(thrown);
 
+// FIXME: does this work?
     // determine whether an OutOfMemoryError is in our causal chain
-    Throwable cause = t;
-    for ( ; cause != null; cause = cause.getCause()) {
-      if (t instanceof OutOfMemoryError) {
-        ErrorDialog.error(
-          Resources.getString("Error.out_of_memory"),
-          Resources.getString("Error.out_of_memory"),
-          Resources.getString("Error.out_of_memory_message")
-        );
-        return;
-      }
+    final OutOfMemoryError oom =
+      ErrorUtils.getAncestorOfClass(OutOfMemoryError.class, thrown);
+    if (oom != null) {
+      ErrorDialog.error(
+        Resources.getString("Error.out_of_memory"),
+        Resources.getString("Error.out_of_memory"),
+        Resources.getString("Error.out_of_memory_message")
+      );
     }
-    
-    queue.add(new Bug(t));
+    else {
+      Logger.log(thrown, Logger.BUG);
+    }
   }
 
   public static void error(
@@ -302,12 +226,14 @@ public class ErrorDialog {
     final int messageType,
     final Object key)
   {
-    if (disabled.contains(key)) return;
-  
-    final Message m =
-      new Message(parent, title, header, message, null, messageType, key);
-
-    queue.add(m);
+    showDialog(
+      parent,
+      title,
+      header,
+      StringUtils.join(message, "\n\n"),
+      messageType,
+      key
+    );
   }
 
   public static void show(
@@ -319,228 +245,72 @@ public class ErrorDialog {
     final int messageType,
     final Object key)
   {
-    if (disabled.contains(key)) return;
+    if (DialogUtils.isDisabled(key)) return;
 
-    final Message m =
-      new Message(parent, title, header, message, details, messageType, key);
-
-    queue.add(m);
+    DialogUtils.enqueue(new Runnable() {
+      public void run() {
+        try {
+          SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+              DetailsDialog.showDialog(
+                parent,
+                title,
+                header,
+                StringUtils.join(message, "\n\n"),
+                details,
+                messageType,
+                key
+              );
+            }
+          });
+        }
+        catch (InterruptedException e) {
+          Logger.log(e);
+        }
+        catch (InvocationTargetException e) {
+          Logger.log(e);
+        }
+      }
+    });
   }
   
   private static void showDialog(
     final Component parent,
     final String title,
     final String header,
-    final String[] message,
+    final String message,
     final int messageType,
     final Object key)
   {
-    final JPanel panel = new JPanel();
+    if (DialogUtils.isDisabled(key)) return;
 
-    // set a slightly larger, bold font for the header
-    final JLabel headerLabel = new JLabel(header);
-    final Font f = headerLabel.getFont();
-    headerLabel.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
-
-    // put together the paragraphs of the message
-    final FlowLabel messageLabel =
-      new FlowLabel(StringUtils.join(message, "\n\n"));
-
-    final JCheckBox disableCheck;
-
-    // layout the panel  
-    final GroupLayout layout = new GroupLayout(panel);
-    panel.setLayout(layout);
-
-    layout.setAutocreateGaps(true);
-    layout.setAutocreateContainerGaps(true);
-
-    if (key != null) {
-      disableCheck = new JCheckBox("Do not show this dialog again");
-
-      layout.setHorizontalGroup(
-        layout.createParallelGroup(GroupLayout.LEADING, true)
-          .add(headerLabel)
-          .add(messageLabel)
-          .add(disableCheck));
-  
-      layout.setVerticalGroup(
-        layout.createSequentialGroup()
-          .add(headerLabel)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(messageLabel, GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(disableCheck));
-    }
-    else {
-      disableCheck = null;
-
-      layout.setHorizontalGroup(
-        layout.createParallelGroup(GroupLayout.LEADING, true)
-          .add(headerLabel)
-          .add(messageLabel));
-  
-      layout.setVerticalGroup(
-        layout.createSequentialGroup()
-          .add(headerLabel)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(messageLabel, GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE));
-    }
-
-    final JDialog dialog = new JOptionPane(
-      panel,
-      messageType,
-      JOptionPane.DEFAULT_OPTION
-    ).createDialog(parent, title);
-  
- // FIXME: setModal() is obsolete. Use setModalityType() in 1.6+.
-//    d.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
-    dialog.setModal(true);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    dialog.setResizable(true);
-    dialog.pack();
-    dialog.setVisible(true);
-
-    if (disableCheck != null && disableCheck.isSelected()) disabled.add(key);
-  }
-
-  private static void showDialog(
-    final Component parent,
-    final String title,
-    final String header,
-    final String[] message,
-    final String details,
-    final int messageType,
-    final Object key)
-  {
-    final JPanel panel = new JPanel();
-
-    // set a slightly larger, bold font for the header
-    final JLabel headerLabel = new JLabel(header);
-    final Font f = headerLabel.getFont();
-    headerLabel.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
-
-    // put together the paragraphs of the message
-   final FlowLabel messageLabel =
-      new FlowLabel(StringUtils.join(message, "\n\n"));
-
-    final JCheckBox disableCheck;
-
-    // set up the details view
-    final JTextArea detailsArea = new JTextArea(details, 10, 36);
-    detailsArea.setEditable(false);
-
-    final JScrollPane detailsScroll = new JScrollPane(detailsArea);
-    detailsScroll.setVisible(false);
-
-    // layout the panel  
-    final GroupLayout layout = new GroupLayout(panel);
-    panel.setLayout(layout);
-
-    layout.setAutocreateGaps(true);
-    layout.setAutocreateContainerGaps(true);
-
-    if (key != null) {
-      disableCheck = new JCheckBox("Do not show this dialog again");
-
-      layout.setHorizontalGroup(
-        layout.createParallelGroup(GroupLayout.LEADING, true)
-          .add(headerLabel)
-          .add(messageLabel)
-          .add(detailsScroll)
-          .add(disableCheck));
-  
-      layout.setVerticalGroup(
-        layout.createSequentialGroup()
-          .add(headerLabel)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(messageLabel, GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(detailsScroll, 0,
-                              GroupLayout.PREFERRED_SIZE,
-                              Integer.MAX_VALUE)
-          .add(disableCheck));
-    }
-    else {
-      disableCheck = null;
-
-      layout.setHorizontalGroup(
-        layout.createParallelGroup(GroupLayout.LEADING, true)
-          .add(headerLabel)
-          .add(messageLabel)
-          .add(detailsScroll));
-  
-      layout.setVerticalGroup(
-        layout.createSequentialGroup()
-          .add(headerLabel)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(messageLabel, GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(detailsScroll, 0,
-                              GroupLayout.PREFERRED_SIZE,
-                              Integer.MAX_VALUE));
-    }
-
-    final JButton okButton = new JButton();
-    final JButton detailsButton = new JButton();
-
-    final JDialog dialog = new JOptionPane(
-      panel,
-      messageType,
-      JOptionPane.DEFAULT_OPTION,
-      null,
-      new JButton[] { okButton, detailsButton }
-    ).createDialog(parent, title);
-
-    okButton.setAction(new AbstractAction("Ok") {
-      private static final long serialVersionUID = 1L;
-
-      public void actionPerformed(ActionEvent e) {
-        dialog.dispose();
+    DialogUtils.enqueue(new Runnable() {
+      public void run() {
+        try {
+          SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+              Dialogs.showMessageDialog(
+                parent,
+                title,
+                header,
+                message,
+                messageType,
+                key
+              );
+            }
+          });
+        }
+        catch (InterruptedException e) {
+          Logger.log(e);
+        }
+        catch (InvocationTargetException e) {
+          Logger.log(e);
+        }
       }
     });
-
-    detailsButton.setAction(new AbstractAction("<html>Details &raquo;</html>") {
-      private static final long serialVersionUID = 1L;
-    
-      public void actionPerformed(ActionEvent e) {
-        detailsScroll.setVisible(!detailsScroll.isVisible());
-        putValue(NAME, detailsScroll.isVisible() ?
-          "<html>Details &laquo;</html>" : "<html>Details &raquo;</html>");
-
-        // ensure that neither expansion nor collapse changes the dialog width
-        final Dimension d = messageLabel.getSize();
-        d.height = Integer.MAX_VALUE;
-        detailsScroll.setMaximumSize(d);
-        messageLabel.setMaximumSize(d);
-
-        dialog.pack();
-
-        detailsScroll.setMaximumSize(null);
-        messageLabel.setMaximumSize(null);
-      }
-    });
- 
-// FIXME: setModal() is obsolete. Use setModalityType() in 1.6+.
-//    d.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
-    dialog.setModal(true);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    dialog.setResizable(true);
-    dialog.pack();
-    dialog.setVisible(true);
-
-    if (disableCheck != null && disableCheck.isSelected()) disabled.add(key);
   }
 
-  private static Component getFrame() {
+  private static Frame getFrame() {
     return GameModule.getGameModule() == null
       ? null : GameModule.getGameModule().getFrame();
   }
@@ -564,7 +334,7 @@ public class ErrorDialog {
 
     new Thread(new Runnable() {
       public void run() {
-        while (!isDisabled(0)) {
+        while (!DialogUtils.isDisabled(0)) {
           ErrorDialog.warning("Oh Shit!", "Oh Shit!", 0,
                               loremIpsum, loremIpsum);
         }
@@ -573,7 +343,7 @@ public class ErrorDialog {
 
     new Thread(new Runnable() {
       public void run() {
-        while (!isDisabled(1)) {
+        while (!DialogUtils.isDisabled(1)) {
           ErrorDialog.error("Oh Shit!", "Oh Shit!", 1,
                               loremIpsum, loremIpsum);
         }
