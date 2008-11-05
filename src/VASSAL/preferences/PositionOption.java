@@ -29,6 +29,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.StringTokenizer;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.tools.ErrorDialog;
 
 public class PositionOption extends VASSAL.configure.Configurer
@@ -91,8 +92,14 @@ public class PositionOption extends VASSAL.configure.Configurer
                              Integer.parseInt(st.nextToken()),
                              Integer.parseInt(st.nextToken()),
                              Integer.parseInt(st.nextToken())));
-    }
+    }    
     catch (NumberFormatException e) {
+      // This can happen if a VisibilityOption has the same name
+      // as a PositionOption, either currently, or due to editing. 
+      // Don't throw a bug, just log it.
+      if (in.indexOf("\t") > 0) {
+        ErrorDialog.dataError(new BadDataReport("Map or Chart window with same name as piece Palette", getKey(), e));
+      }
       ErrorDialog.bug(e);
     }
   }
