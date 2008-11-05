@@ -128,8 +128,10 @@ public class FreeRotator extends Decorator
   }
 
   public void setInner(GamePiece p) {
-    gpOp = p == null ? null : Op.piece(p);
-    super.setInner(p);
+    // The GamePiece stack can be in an invalid state during a setInner()
+    // call, so cannot regenerate gpOp now.
+    gpOp = null;
+    super.setInner(p);    
   }
 
   private double centerX() {
@@ -151,7 +153,7 @@ public class FreeRotator extends Decorator
     }
 
     Rectangle r;
-    if (gpOp.isChanged() || (r = bounds.get(angle)) == null) {
+    if ((getGpOp() != null && getGpOp().isChanged()) || (r = bounds.get(angle)) == null) {
 
       r = AffineTransform.getRotateInstance(getAngleInRadians(),
                                             centerX(),
@@ -162,6 +164,15 @@ public class FreeRotator extends Decorator
     return new Rectangle(r);
   }
 
+  protected GamePieceOp getGpOp() {
+    if (gpOp == null) {
+      if (getInner() != null) {
+        gpOp = Op.piece(getInner());
+      }
+    }
+    return gpOp; 
+  }
+  
   public double getAngle() {
     return useUnrotatedShape ? 0.0 : validAngles[angleIndex];
   }
@@ -260,7 +271,7 @@ public class FreeRotator extends Decorator
       final double angle = getAngle();
       RotateScaleOp op;
 
-      if (gpOp.isChanged()) {
+      if (getGpOp() != null && getGpOp().isChanged()) {
         gpOp = Op.piece(piece);
         rotOp.clear();
         op = Op.rotateScale(gpOp, angle, zoom);        
