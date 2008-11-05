@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2008 by Rodney Kinney, Brent Easton, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,7 +28,9 @@ import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.tools.ColorButton;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * Configurer for {@link Color} values.
@@ -99,13 +101,14 @@ public class ColorConfigurer extends Configurer {
                        Integer.parseInt(st.nextToken()),
                        Integer.parseInt(st.nextToken()));
     }
-    // FIXME: review error message
-    // FIXME: should this method throw when it fails?
     catch (NumberFormatException e) {
-      return null;
+      ErrorDialog.dataError(new BadDataReport("not an integer", s, e));
     }
     catch (IllegalArgumentException e) {
-      return null;
+      ErrorDialog.dataError(new BadDataReport("bad color", s, e));
     }
+
+    // default to black in case of bad data
+    return Color.BLACK;
   }
 }
