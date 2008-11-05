@@ -1,0 +1,220 @@
+The VASSAL Team is happy to announce the release of VASSAL 3.1.0-beta5.
+
+*********************
+Download
+*********************
+
+For Windows:
+
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta5-windows.exe
+
+For Mac OS X:
+
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta5-macosx.dmg
+
+For Linux (and other platforms):
+
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta5-generic.zip
+
+Source code:
+
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta5-src.zip
+
+
+*********************
+Changes since beta4:
+*********************
+
+New features in 3.1.0-beta5:
+
+* Show player count for each room in the Server Status window.
+* The Error Log is now viewable from the Module Manager Help menu.
+* Zooming is now 12% faster.
+
+A number of problems present in 3.1.0-beta4 are fixed in 3.1.0-beta5:
+
+* Bug: Using wrong URL to get SVG tiles
+* Bug: Do not attempt to find heap settings for imported modules
+* Bug: Ensure that LabelOp is set before getting label position
+* Bug 2202296: Hang when moving trait up
+* Bug 2189633: NPE in Footprint.redraw()
+* Bug 2198485: NPE in PlaceMarker.updateGpId()
+* Bug 2194826: ArithmeticException in HexGrid.HexGridEditor.check()
+* Bug 2191296: HTML not working in Text Label traits
+* Bug 2180966: Only allow valid module files to be opened or edited
+* Bug 2179397: Poor performance for counters with multiple Text Labels
+* Bug 2176550: NumberFormatException in PositionOption.setValue()
+* Bug 2175571: NoSuchElementException in ColorConfigurer.stringToColor()
+* Bug 2172904: NPE in StackMetrics.merge()
+* Bug 2169452: Don't raise a dialog for missing images
+* Bug 2146393: No zoom levels in zoom menu
+* Bugs 2124682, 2172556: Synchronize on shared SAXSVGDocumentFactory
+* Bug 2107274: GeneralFilter gets images with wrong data type
+* RFE 2193791: Pieces in palette to show correct dynamic property values.
+* Suggest .vsav instead of .sav as the save extension.
+* Updated JRE download URL to fetch current JRE 1.6.0_6u10.
+* Improved error messages when loading an invalid module.
+* Show Bug Report dialog only once.
+
+
+*********************
+Changes since beta3:
+*********************
+
+New features in 3.1.0-beta4:
+
+* Improved error reporting
+* Update notification: VASSAL will now check for new releases.
+* MapShader: Added option to scale shading image with map zoom
+* RFE 1475953: Place Marker: can place marker on top/bottom or above/below 
+
+A number of problems present in 3.1.0-beta3 are fixed in 3.1.0-beta4:
+
+* Bug 2165377: ArrayIndexOutOfBoundsException in ListTurnLevel.advance()
+* Bug 2147580: NullPointerException in ModuleManagerWindow
+* Bug 2134943: Various problems with GamePieceImages
+* Bug 2129537: NullPointerException in MutableProperty.Impl.addTo()
+* Bug 2120889: NullPointerException in DragHandler.buildBoundingBox()
+* Bug 2118880: NullPointerException in ErrorLog.log()
+* Bug 2102066: NullPointerException in Player.PlayerCommandServer.reply()
+* Bug 2099742: NullPointerException in Deck
+* Bug 2087474: ArrayIndexOutOfBoundsException in PolygonEditor
+* Bug 2078197: NullPointerException in RemovePiece.executeCommand()
+* Bug 2074670: NullPointerException in AreaOfEffect.getArea()
+* Bug 2043946: NullPointerException in Footprint.setMoved()
+* Bug 2042928: Deck.setState() throws when Map is null
+* Bug 2042454: NullPointerException in DragHandler.dragGestureRecognized()
+* Bug 2038103: Board.getBoard() should not return null
+* Bug 2018316: Non-movable counters can be moved
+* Bug: Fixed broken location name feature for placing At-Start Stacks.
+* Bug: Prevent two separate stacks of units in the center of each hex when
+  hex vertices are valid snap locations
+* Bug: Don't attempt to scale images to < 1px
+* Bug: PlayerHand: Use size of boards as minimum map size
+* Bug: FreeRotator: Clear cache when piece state changes
+* Bug: SpecialDiceButton to use correct format for text/window-title
+* Bug: Imageless layers should not get the image filename " "
+* Bug: Load SVG resources in JARs properly
+* Bug: Fixed order-of-requests problem which can deadlock the tile queue
+* Preload classes involved in drag-and-drop to make first DnD smoother
+* Paint Labels directly instead of using JLabel as a proxy
+* ListWidget: save scroll-list size and divider when editing
+* Property sources return empty string if localized and no property match
+* TurnTracker fixes for backward compatibility of saved games
+* Various improvements to ADC2 module importer
+* Better error handling
+* Numerous other minor fixes
+
+There are several known issues remaining to be resolved, among which are:
+
+* Missing application and file type icons.
+* Various bugs listed in our bug tracker:
+  
+  https://sourceforge.net/tracker2/?group_id=90612&atid=594231
+
+Please report all bugs in beta4, even if they are bugs which you've
+already reported against other betas.
+
+
+*********************
+Changes since beta2:
+*********************
+
+New features in 3.1.0-beta3:
+
+* Improved error reporting.
+* Replace trait now has option to match only on traits above itself.
+* Added Dutch translation.
+
+A number of problems present in 3.1.0-beta2 are fixed in 3.1.0-beta3:
+
+* Fixed bug in Labeler which caused poor performance.
+* Fixed ConcurrentModificationException in DiceButton.
+* Fixed Server Status pane display bug.
+* Fixed bug in SendToLocation when using offsets.
+* Fix NullPointerException when copying and pasting a Replace trait in
+  the PieceDefiner.
+* Immovable units selected with movable units are no longer moved with them.
+* Overly large maximum heap no longer prevents modules from loading on
+  32-bit systems.
+* More efficient handling of ZIP files.
+* Show the correct menus in Editor on MacOS X.
+* Numerous ADC2 importer fixes.
+* Numerous other minor fixes.
+
+There are several known issues remaining to be resolved, among which are:
+
+* Modules which use autoextensions are cannot be loaded.
+* Missing application and file type icons.
+
+We hope to have these fixed by the beta4 release.
+
+Note that because our error handling strategy changed in this release, you
+might see some problems reported to you as bugs which you were not notified
+of previously. Please tell us when this happens, so that we can adjust the
+code to handle such problems properly.
+
+
+*********************
+Changes since beta1:
+*********************
+
+A number of problems present in 3.1.0-beta1 are fixed in 3.1.0-beta2:
+
+* Board Picker was not being displayed when starting a new game.
+* Fixed IllegalArgumentException when starting modules with private maps.
+* Heap settings in preferences work now, and are configurable per module.
+* Fixed several NullPointerExceptions.
+* Updated README.
+* Attempting to open unrecognized file types no longer fails in odd ways.
+* Various ADC2 importer fixes.
+
+
+*********************
+New Features in 3.1.0
+*********************
+
+* Improved installation: For Windows, a real Windows installer/uninstaller.
+For Macs, a single-file disk image. Download, click, and install.
+
+* File associations: Files with .vmod, .vsav, and .vlog extensions are
+now associated with VASSAL (on Windows and Macs). Double-click a module
+to load it in VASSAL!
+
+* New Module Manager frontend: The Module Manager displays all of your
+modules and save/log files, giving you a convenient way to organize
+them all.
+
+* Improved memory management: VASSAL now uses significantly less memory
+for various graphics-related tasks. Heap sizes may be set from within
+VASSAL via the Preferences.
+
+* Improved zooming: Zoom your maps to whatever size you want.
+
+* Aide de Camp 2 module importer: Convert any ADC2 module to a VASSAL
+module with one click.
+
+* Many, many other minor improvements, and scores of bug fixes.
+
+
+*********************
+Help us test
+*********************
+
+This is a beta release, and may still contain some rough edges. Should
+you find any problems/oddities/bugs, please tell us so that we can fix
+them before VASSAL 3.1.0 is released. Also, if you've had problems with
+3.0.x, 3.1.0-beta1, 3.1.0-beta2, or 3.1.0-beta3, please check and let
+us know if those problems are resolved in 3.1.0-beta4.
+
+Report bugs here in the Technical Support & Bugs category at the VASSAL
+forums:
+
+http://vassalengine.org/forums/viewforum.php?f=3
+
+or by email to uckelman@nomic.net.
+
+
+Cheers,
+
+Joel Uckelman, for the VASSAL Team
