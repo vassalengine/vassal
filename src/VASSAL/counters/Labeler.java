@@ -315,6 +315,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
     int x = horizontalOffset;
     int y = verticalOffset;
 
+    updateCachedImage();  // ensure that the LabelOp is set
     final Dimension lblSize = imagePainter.getImageSize();
     final Rectangle selBnds = piece.getShape().getBounds();
 
@@ -462,8 +463,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
         label = new JLabel(txt);
         label.setForeground(fg);
         label.setFont(font);
-        label.setSize(label.getPreferredSize());
-        size = label.getSize();
+        size = label.getPreferredSize();
+        label.setSize(size);
       }
       else {
         label = null;
