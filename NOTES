@@ -55,7 +55,7 @@ A number of problems present in 3.1.0-beta4 are fixed in 3.1.0-beta5:
 * Updated JRE download URL to fetch current JRE 1.6.0_6u10.
 * Improved error messages when loading an invalid module.
 * Show Bug Report dialog only once.
-
+* Several bug fixes in the ADC2 importer.
 
 Please report all bugs in beta4, even if they are bugs which you've
 already reported against other betas. We take your bug reports very
