@@ -33,7 +33,7 @@ import VASSAL.tools.version.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.1.0-beta4"; //$NON-NLS-1$
+  private static final String VERSION = "3.1.0-beta5"; //$NON-NLS-1$
   private static File homeDir;
 
   private static final boolean isWindows;
