@@ -332,19 +332,9 @@ public class MapBoard extends Importer {
         // FIXME: review error message
         catch (IOException e) {}
       }
-      else {
+      else if (getSet().underlay != null) {
         // If sml file doesn't exist, see if there is a single-sheet underlay image
-        File underlay = action.getCaseInsensitiveFile(new File(stripExtension(path) + "-Z" + (zoomLevel+1) + ".bmp"), 
-            null, false, null);
-        if (underlay != null) {
-          BufferedImage img;
-          try {
-            img = ImageIO.read(underlay);
-            g.drawImage(img, null, 0, 0);
-          }
-          // FIXME: review error message
-          catch (IOException e) {}          
-        }
+    	g.drawImage(getSet().underlay, null, 0, 0);
       }  
       return true;      
     }    

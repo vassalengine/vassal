@@ -306,6 +306,8 @@ public class SymbolSet extends Importer{
 
   private int header;
 
+  BufferedImage underlay;
+
   /**
    * Read symbol images based on basename and suffix. Bitmap filenames are of the form
    * <tt>name + "-CN.bmp"</tt> where C is the specified suffix ('M' for masks; 'U' for
@@ -315,16 +317,26 @@ public class SymbolSet extends Importer{
    *                 symbol set file.
    * @param suffix   single character suffix
    */
-  BufferedImage loadSymbolImage(String filename, char suffix) throws IOException {
+  BufferedImage loadSymbolImage(String filename, char suffix, boolean queryIfNotFound) throws IOException {
     String fn;
     if (suffix == '\0')
       fn = filename + (zoomLevel + 1) + ".bmp";
     else
       fn = filename + '-' + suffix + (zoomLevel + 1) + ".bmp";
-    File f = action.getCaseInsensitiveFile(new File(fn), null, true, new BMPFileFilter());
-    if (f == null)
+    File f = action.getCaseInsensitiveFile(new File(fn), null, queryIfNotFound, new BMPFileFilter());
+    if (f == null && queryIfNotFound) {
       throw new FileNotFoundException("Missing bitmap file: " + fn);
-    return ImageIO.read(f);
+    }
+    else if (f == null) {
+      return null;
+    }
+    else {
+      return ImageIO.read(f);
+    }
+  }
+  
+  BufferedImage loadSymbolImage(String filename, char suffix) throws IOException {
+	  return loadSymbolImage(filename, suffix, true);
   }
 
   /**
@@ -537,6 +549,9 @@ public class SymbolSet extends Importer{
       }
 
       in.close();
+      
+      /* See if there is a single-image underlay for the map. */
+      underlay = loadSymbolImage(baseName, 'z', false);
     }
     finally {
       IOUtils.closeQuietly(in);
