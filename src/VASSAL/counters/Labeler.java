@@ -362,9 +362,10 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
 
   public void setLabel(String s) {
-    if (s == null) {
-      s = "";
-    }
+    if (s == null) s = "";
+
+    position = null;  // clear position cache
+
     int index = s.indexOf("$" + propertyName + "$");
     while (index >= 0) {
       s = s.substring(0, index) +
@@ -373,6 +374,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
     }
     label = s;
     labelFormat.setFormat(label);
+
     if (getMap() != null && label != null && label.length() > 0) {
       imagePainter.setSource(
         new LabelOp(getLocalizedLabel(), font, textFg, textBg));

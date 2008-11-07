@@ -19,6 +19,7 @@
 package VASSAL.build.widget;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -32,7 +33,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -72,7 +77,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   private String name;
   private String pieceDefinition;
   protected static Font FONT = new Font("Dialog", 0, 12);
-  private javax.swing.JPanel panel;
+  private JPanel panel;
   private int width, height;
   private String gpId = ""; // Unique PieceSlot Id
   private GpIdSupport gpidSupport;
@@ -83,7 +88,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     panel.addKeyListener(this);
   }
 
-  private class Panel extends javax.swing.JPanel {
+  private class Panel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public Panel() {
@@ -107,7 +112,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   public void setPiece(GamePiece p) {
     c = p;
-    expanded = null;
+    clearExpandedPiece();
     if (c != null) {
       final Dimension size = panel.getSize();
       c.setPosition(new Point(size.width / 2, size.height / 2));
@@ -130,7 +135,11 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
     return expanded;
   }
-  
+ 
+  protected void clearExpandedPiece() {
+    expanded = null;
+  }
+ 
   /**
    * Return defined GamePiece with prototypes unexpanded.
    * 
@@ -205,9 +214,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       KeyBuffer.getBuffer().add(getPiece());
     }
 
+    clearExpandedPiece();
     panel.requestFocus();
     panel.repaint();
-
   }
 
   // Puts counter in DragBuffer. Call when mouse gesture recognized
@@ -234,21 +243,23 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public void mouseReleased(MouseEvent e) {
     if (getPiece() != null && e.isMetaDown()) {
       JPopupMenu popup = MenuDisplayer.createPopup(getPiece());
-      popup.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
-        public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+      popup.addPopupMenuListener(new PopupMenuListener() {
+        public void popupMenuCanceled(PopupMenuEvent evt) {
           panel.repaint();
         }
 
-        public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
+          clearExpandedPiece();
           panel.repaint();
         }
 
-        public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+        public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
         }
       });
       popup.show(panel, e.getX(), e.getY());
     }
 
+    clearExpandedPiece();
   }
 
   public void mouseClicked(MouseEvent e) {
@@ -259,24 +270,28 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
 
   public void mouseExited(MouseEvent e) {
     KeyBuffer.getBuffer().remove(getPiece());
+    clearExpandedPiece();
     panel.repaint();
   }
 
   public void keyPressed(KeyEvent e) {
-    KeyBuffer.getBuffer().keyCommand(javax.swing.KeyStroke.getKeyStrokeForEvent(e));
+    KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
     e.consume();
+    clearExpandedPiece();
     panel.repaint();
   }
 
   public void keyTyped(KeyEvent e) {
-    KeyBuffer.getBuffer().keyCommand(javax.swing.KeyStroke.getKeyStrokeForEvent(e));
+    KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
     e.consume();
+    clearExpandedPiece();
     panel.repaint();
   }
 
   public void keyReleased(KeyEvent e) {
-    KeyBuffer.getBuffer().keyCommand(javax.swing.KeyStroke.getKeyStrokeForEvent(e));
+    KeyBuffer.getBuffer().keyCommand(KeyStroke.getKeyStrokeForEvent(e));
     e.consume();
+    clearExpandedPiece();
     panel.repaint();
   }
 
@@ -284,7 +299,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     return "Single piece";
   }
 
-  public java.awt.Component getComponent() {
+  public Component getComponent() {
     return panel;
   }
 
@@ -484,7 +499,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
       return slot;
     }
 
-    public java.awt.Component getControls() {
+    public Component getControls() {
       return definer;
     }
   }
