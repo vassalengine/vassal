@@ -33,7 +33,7 @@
 !define IROOT "${VROOT}\${VNAME}"
 !define AROOT "Software\Classes"
 !define JRE_MINIMUM "1.5.0"
-!define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=24943"
+!define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=24934"
 
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
@@ -696,8 +696,9 @@ Section "-Application" Application
     ${Else}
       ; provide a JRE installer requiring no user interaction
       ; options reference: http://java.sun.com/javase/6/docs/technotes/guides/deployment/deployment-guide/silent.html
-      ExecWait "$0 /qr ADDLOCAL=ALL" 
-;      ExecWait "$0 /qr /log $TEMP\jre_install.log ADDLOCAL=ALL" 
+      ExecWait "$0 /qr ADDLOCAL=ALL"
+      ; silently uninstall the OpenOffice installer which 6u10 installs, grrr!
+      ExecWait "MsiExec.exe /qn /X{0D499481-22C6-4B25-8AC2-6D3F6C885FB9}"
     ${EndIf}
 
     Delete $0
