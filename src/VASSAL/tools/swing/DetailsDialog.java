@@ -1,5 +1,5 @@
 /*
- * $Id: ErrorDialog.java 4289 2008-10-20 20:26:48Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *
