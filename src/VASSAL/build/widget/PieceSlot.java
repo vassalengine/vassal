@@ -189,8 +189,10 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
     }
     else {
       getExpandedPiece().draw(g, size.width / 2, size.height / 2, panel, 1.0);
-      if (Boolean.TRUE.equals(
-          getExpandedPiece().getProperty(Properties.SELECTED))) {
+
+      // NB: The piece, not the expanded piece, receives events, so we check
+      // the piece, not the expanded piece, for its selection status.
+      if (Boolean.TRUE.equals(getPiece().getProperty(Properties.SELECTED))) {
         BasicPiece.getHighlighter().draw(getExpandedPiece(), g,
           size.width / 2, size.height / 2, panel, 1.0);
       }
