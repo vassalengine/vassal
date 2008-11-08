@@ -85,21 +85,22 @@ public class ErrorDialog {
 // FIXME: make method which takes Throwable but doesn't use it for details
 
   public static void bug(Throwable thrown) {
-    Logger.log(thrown);
-
-// FIXME: does this work?
     // determine whether an OutOfMemoryError is in our causal chain
     final OutOfMemoryError oom =
       ErrorUtils.getAncestorOfClass(OutOfMemoryError.class, thrown);
     if (oom != null) {
-      ErrorDialog.error(
+      Logger.log(thrown);
+
+      error(
         Resources.getString("Error.out_of_memory"),
         Resources.getString("Error.out_of_memory"),
         Resources.getString("Error.out_of_memory_message")
       );
     }
-    else {
-      Logger.log(thrown, Logger.BUG);
+    // show a bug report dialog if one has not been shown before
+    else if (!DialogUtils.setDisabled(BugDialog.class, true)) {
+      Logger.logAndWait(thrown, Logger.BUG);
+      BugDialog.reportABug(thrown);
     }
   }
 

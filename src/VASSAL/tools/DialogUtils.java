@@ -39,15 +39,21 @@ public class DialogUtils {
     return disabled.contains(key);
   }
 
-  public static synchronized boolean setDisabledIfNot(Object key) {
-    final boolean result = isDisabled(key);
-    if (!result) setDisabled(key, true);
-    return result;
-  }
+  public static boolean setDisabled(Object key, boolean disable) {
+    // we synchronize here to make atomic getting the previous
+    // value and (possibly) setting a new one
+    synchronized (disabled) {
+      final boolean wasDisabled = isDisabled(key);
 
-  public static void setDisabled(Object key, boolean disable) {
-    if (disable) disabled.add(key);
-    else disabled.remove(key);
+      if (wasDisabled) {
+        if (!disable) disabled.remove(key);
+      }
+      else {
+        if (disable) disabled.add(key);
+      }
+
+      return wasDisabled;
+    }
   }
 
   private static final ExecutorService ex = Executors.newSingleThreadExecutor();

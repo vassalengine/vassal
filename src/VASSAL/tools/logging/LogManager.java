@@ -1,6 +1,7 @@
 package VASSAL.tools.logging;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import VASSAL.tools.ArrayUtils;
@@ -31,28 +32,27 @@ public class LogManager {
       while (true) {
         try {
           final LogEntry entry = queue.take();
-          synchronized (LogManager.class) {
-            for (LogListener l : listeners) l.handle(entry);
-          }
+          for (LogListener l : listeners) l.handle(entry);
         }
         catch (InterruptedException e) {
-          // What do to here????
+          // FIXME: What do to here????
         }
       }
     }
   };
 
-  private static LogListener[] listeners = new LogListener[0];
+  private static CopyOnWriteArrayList<LogListener> listeners =
+    new CopyOnWriteArrayList<LogListener>();
 
-  public static synchronized void addLogListener(LogListener l) {
-    listeners = ArrayUtils.append(listeners, l);
+  public static void addLogListener(LogListener l) {
+    listeners.add(l);
   }
 
-  public static synchronized void removeLogListener(LogListener l) {
-    listeners = ArrayUtils.remove(listeners, l);
+  public static void removeLogListener(LogListener l) {
+    listeners.remove(l);
   }
 
-  public static synchronized LogListener[] getLogListeners() {
-    return ArrayUtils.copyOf(listeners);
+  public static LogListener[] getLogListeners() {
+    return listeners.toArray(new LogListener[0]);
   }
 }

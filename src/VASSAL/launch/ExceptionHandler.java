@@ -18,9 +18,7 @@
  */
 package VASSAL.launch;
 
-import VASSAL.tools.BugCatcher;
-import VASSAL.tools.logging.Logger;
-import VASSAL.tools.logging.LogManager;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * Handles uncaught exceptions. None of the methods in this class are
@@ -39,8 +37,6 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
   static {
     System.getProperties().put("sun.awt.exception.handler", //$NON-NLS-1$
                                ExceptionHandler.class.getName());
-
-    LogManager.addLogListener(new BugCatcher());
   }
 
   public ExceptionHandler() {}
@@ -51,7 +47,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
    * @param thrown the <code>Throwable</code> which was not caught.
    */ 
   public void handle(Throwable thrown) {
-    Logger.log(thrown, Logger.BUG);
+    ErrorDialog.bug(thrown);
   }
 
   /**
