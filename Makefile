@@ -11,7 +11,7 @@ DISTDIR:=dist
 VNUM:=3.1.0
 SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
 VERSION:=$(VNUM)-svn$(SVNVERSION)
-#VERSION:=$(VNUM)-beta2
+#VERSION:=$(VNUM)-beta5
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
@@ -139,7 +139,7 @@ release-generic: $(TMPDIR)/VASSAL-$(VERSION)-generic.zip
 
 release-src: $(TMPDIR)/VASSAL-$(VERSION)-src.zip
 
-release: release-generic release-windows release-macosx
+release: clean release-generic release-windows release-macosx
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
