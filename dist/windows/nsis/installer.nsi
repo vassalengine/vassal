@@ -525,7 +525,7 @@ Function preJavaCheck
   nsDialogs::Create /NOUNLOAD 1018
   Pop $0
 
-  ${If} $R1 == 0
+  ${If} $1 == ""
     StrCpy $0 "The installer has not found a Java Runtime Environment (JRE) installed on your computer."
   ${Else}
     StrCpy $0 "The installer has found version $1 of the Java Runtime Environment (JRE) installed on your computer."
