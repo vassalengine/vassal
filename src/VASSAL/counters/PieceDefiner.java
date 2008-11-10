@@ -50,7 +50,6 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.module.documentation.HelpWindowExtension;
 import VASSAL.build.widget.PieceSlot;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorUtils;
@@ -510,11 +509,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       availableModel.addElement((GamePiece) o);
     }
     else {
-      ErrorDialog.error(
-        Resources.getString("Error.not_a_gamepiece"),
-        Resources.getString("Error.not_a_gamepiece"),
-        Resources.getString("Error.not_a_gamepiece_message", className)
-      );
+      ErrorDialog.error("Error.not_a_gamepiece", className);
     }
   }
 

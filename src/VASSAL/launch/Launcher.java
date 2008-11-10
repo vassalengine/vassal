@@ -141,11 +141,9 @@ public abstract class Launcher {
       catch (IOException e) {
         // What we've got here is a failure to communicate.
         ErrorDialog.error(
-          Resources.getString("Error.communication_error"),
-          Resources.getString("Error.communication_error"),
+          "Error.communication_error", 
           e,
-          Resources.getString("Error.communication_error_message",
-            Resources.getString(getClass().getSimpleName() + ".app_name"))
+          Resources.getString(getClass().getSimpleName() + ".app_name")
         );         
         System.exit(1);
       }
@@ -164,12 +162,7 @@ public abstract class Launcher {
           if (cmdC == null) {
             // we are standalone, so warn the user directly
             ErrorDialog.error(
-              Resources.getString("Launcher.module_load_error"),
-              Resources.getString("Launcher.module_load_error"),
-              e1,
-              Resources.getString("Launcher.module_load_error_message"),
-              e1.getMessage()
-            );
+              "Launcher.module_load_error", e1, e1.getMessage());
           }
           else {
             // we have a manager, so pass the load failure back to it
@@ -179,19 +172,12 @@ public abstract class Launcher {
             catch (IOException e2) {
               // warn the user directly as a last resort 
               ErrorDialog.error(
-                Resources.getString("Launcher.module_load_error"),
-                Resources.getString("Launcher.module_load_error"),
-                e1,
-                Resources.getString("Launcher.module_load_error_message"),
-                e1.getMessage()
-              );
+                "Launcher.module_load_error", e1, e1.getMessage());
 
               ErrorDialog.error(
-                Resources.getString("Launcher.communication_error"),
-                Resources.getString("Launcher.communication_error"),
+                "Launcher.communication_error",
                 e2,
-                Resources.getString("Launcher.communication_error_message",
-                  Resources.getString(getClass().getSimpleName() + ".app_name"))
+                Resources.getString(getClass().getSimpleName() + ".app_name")
               );
             }
           }

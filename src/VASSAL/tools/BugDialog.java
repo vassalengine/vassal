@@ -62,7 +62,7 @@ import org.jdesktop.swingx.JXHeader;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
-import VASSAL.tools.IOUtils;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.version.VassalVersion;
 import VASSAL.tools.version.VersionUtils;
@@ -110,14 +110,15 @@ public class BugDialog extends JDialog {
     // header
     //
     final JXHeader header = new JXHeader(
-      "Eeek! A bug!", "VASSAL had an internal error",
+      Resources.getString("BugDialog.heading"),
+      Resources.getString("BugDialog.message"),
       new ImageIcon(BugDialog.class.getResource("/images/bug.png"))
     );
 
     //
     // dialog
     //
-    setTitle("Uncaught Exception");
+    setTitle(Resources.getString("BugDialog.title"));
     setLocationRelativeTo(owner);
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     setResizable(true);
@@ -328,8 +329,8 @@ public class BugDialog extends JDialog {
     final JXBusyLabel spinner = new JXBusyLabel(new Dimension(40,40));
     spinner.setBusy(true);
 
-//      final Label label = new Label("VASSAL had an internal error. Please wait while we collect the details.");
-    final FlowLabel label = new FlowLabel("VASSAL had an internal error. Please wait while we collect the details.");
+    final FlowLabel label =
+      new FlowLabel(Resources.getString("BugDialog.collecting_details"));
 
     final GridBagConstraints c = new GridBagConstraints();
     final GridBagLayout layout = new GridBagLayout();
@@ -408,7 +409,7 @@ public class BugDialog extends JDialog {
 
   private Component buildVersionCheckButtons() {
     final JButton cancelButton = new JButton(
-      new AbstractAction("Cancel") {
+      new AbstractAction(Resources.getString(Resources.CANCEL)) {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
@@ -447,25 +448,25 @@ public class BugDialog extends JDialog {
   }
 
   private Component buildCurrentVersionPanel() {
-//      final Label label = new Label("VASSAL had an internal error. You can help the VASSAL developers fix it by sending them this error report with a description of what you were doing when the error happened.");
-    final FlowLabel label = new FlowLabel("VASSAL had an internal error. You can help the VASSAL developers fix it by sending them this error report with a description of what you were doing when the error happened.");
+    final FlowLabel label = new FlowLabel(
+      Resources.getString("BugDialog.current_version_instructions"));
    
     descriptionArea = new JTextArea(10, 20);
     descriptionArea.setLineWrap(true);
     descriptionArea.setWrapStyleWord(true);
 
     final JScrollPane descriptionScroll = new JScrollPane(descriptionArea);
-//      descriptionScroll.setPreferredSize(descriptionArea.getPreferredSize());
 
     final JLabel descriptionLabel =
-      new JLabel("What were you doing when this dialog appeared?");
+      new JLabel(Resources.getString("BugDialog.bug_description"));
     descriptionLabel.setFont(
       descriptionLabel.getFont().deriveFont(Font.BOLD));
     descriptionLabel.setLabelFor(descriptionScroll);
 
     emailField = new JTextField(26);
 
-    final JLabel emailLabel = new JLabel("Your email address:"); 
+    final JLabel emailLabel = new JLabel(
+      Resources.getString("BugDialog.user_email_address"));
     emailLabel.setLabelFor(emailField);
 
     final JScrollPane detailsScroll = buildDetailsScroll();
@@ -590,7 +591,7 @@ public class BugDialog extends JDialog {
 
   private Component buildCurrentVersionButtons() {
     final JButton sendButton = new JButton(
-      new AbstractAction("Send") {
+      new AbstractAction(Resources.getString("BugDialog.send_button")) {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
@@ -600,7 +601,7 @@ public class BugDialog extends JDialog {
     );
 
     final JButton dontSendButton = new JButton(
-      new AbstractAction("Don't Send") {
+      new AbstractAction(Resources.getString("BugDialog.dont_send_button")) {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
@@ -646,7 +647,7 @@ public class BugDialog extends JDialog {
     detailsButton.setBorder(
       BorderFactory.createEmptyBorder(i.top, 0, i.bottom, i.right));
     detailsButton.setAction(
-      new AbstractAction("Show details",
+      new AbstractAction(Resources.getString("BugDialog.show_details"),
                          UIManager.getIcon("Tree.collapsedIcon")) {
         private static final long serialVersionUID = 1L;
 
@@ -654,7 +655,9 @@ public class BugDialog extends JDialog {
           final Dimension d = detailsScroll.getSize();
 
           final boolean visible = !detailsScroll.isVisible();
-          detailsButton.setText(visible ? "Hide details" : "Show details");
+          detailsButton.setText(visible ?
+            Resources.getString("BugDialog.hide_details") :
+            Resources.getString("BugDialog.show_details"));
           detailsButton.setIcon(UIManager.getIcon(
             visible ? "Tree.expandedIcon" : "Tree.collapsedIcon"));
           detailsScroll.setVisible(visible);
@@ -757,7 +760,8 @@ public class BugDialog extends JDialog {
         .add(detailsPanel));
 */
 
-    final FlowLabel label = new FlowLabel("<html>VASSAL had an internal error. Because this version of VASSAL is no longer current, bug reporting is disabled. If you can reproduce this bug with a <a href=\"http://sourceforge.net/project/showfiles.php?group_id=90612\">current verision</a> of VASSAL, please do so and alert the VASSAL developers to the problem.</html>");
+    final FlowLabel label =
+      new FlowLabel(Resources.getString("BugDialog.old_version_instructions"));
     label.addHyperlinkListener(BrowserSupport.getListener());
 
     final JScrollPane detailsScroll = buildDetailsScroll();
@@ -797,7 +801,7 @@ public class BugDialog extends JDialog {
 
   private Component buildOldVersionButtons() {
     final JButton okButton = new JButton(
-      new AbstractAction("Ok") {
+      new AbstractAction(Resources.getString(Resources.OK)) {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
@@ -838,7 +842,8 @@ public class BugDialog extends JDialog {
   private Component buildConnectionFailedPanel() {
     final String errorLogPath =
       new File(Info.getConfDir(), "errorLog").getAbsolutePath();
-    final FlowLabel label = new FlowLabel("<html>VASSAL was unable to submit your bug report. Please post the file <a href=\"file://" + errorLogPath + "\">" + errorLogPath + "</a> and a description of what you were doing when the bug occurred in the <a href=\"http://www.vassalengine.org/forums/viewforum.php?f=3\">Technical Support &amp; Bugs</a> section of the VASSAL Forum.</html>");
+    final FlowLabel label = new FlowLabel(Resources.getString(
+      "BugDialog.connection_failed_instructions", errorLogPath));
     label.addHyperlinkListener(BrowserSupport.getListener());
 
     final JScrollPane detailsScroll = buildDetailsScroll();
@@ -886,7 +891,7 @@ public class BugDialog extends JDialog {
 
   private Component buildConnectionFailedButtons() {
     final JButton okButton = new JButton(
-      new AbstractAction("Ok") {
+      new AbstractAction(Resources.getString(Resources.OK)) {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
@@ -926,7 +931,8 @@ public class BugDialog extends JDialog {
 
   private Component buildEmergencySavePanel() {
 //      final FlowLabel label = new FlowLabel("Due to the error, VASSAL may be in an inconsistent state or may behave erratically. We recommend that you save copies of your open files using the \"Save\" button below, and restart VASSAL. Depending on what the error was, modules, saved games, and logs written after an error may be corrupt. Be sure to check any modules, saved games, or logs written after an error before continuing to use them.");
-    final FlowLabel label = new FlowLabel("Due to the error, VASSAL may be in an inconsistent state or may behave erratically. We recommend that you save your open files under different names and restart VASSAL.\n\nDepending on what the error was, modules, saved games, and logs written afterwards may be corrupt. Be sure to check any modules, saved games, or logs written after an error before continuing to use them.");
+    final FlowLabel label =
+      new FlowLabel(Resources.getString("BugDialog.how_to_proceed"));
 
     final GridBagConstraints c = new GridBagConstraints();
     final GridBagLayout layout = new GridBagLayout();
@@ -1003,7 +1009,7 @@ public class BugDialog extends JDialog {
 */
 
     final JButton okButton = new JButton(
-      new AbstractAction("Ok") {
+      new AbstractAction(Resources.getString(Resources.OK)) {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
@@ -1180,7 +1186,8 @@ public class BugDialog extends JDialog {
     final JXBusyLabel spinner = new JXBusyLabel(new Dimension(40,40));
     spinner.setBusy(true);
 
-    final FlowLabel label = new FlowLabel("Please wait while we send your bug report to the bug tracker.");
+    final FlowLabel label =
+      new FlowLabel(Resources.getString("BugDialog.sending_bug_report"));
 
     final GridBagConstraints c = new GridBagConstraints();
     final GridBagLayout layout = new GridBagLayout();
@@ -1259,7 +1266,7 @@ public class BugDialog extends JDialog {
 
   private Component buildSendingBugReportButtons() {
     final JButton cancelButton = new JButton(
-      new AbstractAction("Cancel") {
+      new AbstractAction(Resources.getString(Resources.CANCEL)) {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {

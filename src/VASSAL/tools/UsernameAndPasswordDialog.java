@@ -78,7 +78,7 @@ public class UsernameAndPasswordDialog extends JDialog {
     final JLabel error = new JLabel(Resources.getString(
       "WizardSupport.EnterNameAndPassword")); //$NON-NLS-1$
    
-    final JButton ok = new JButton(Resources.getString("General.ok"));
+    final JButton ok = new JButton(Resources.getString(Resources.OK));
     ok.setEnabled(false);
     ok.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -100,7 +100,7 @@ public class UsernameAndPasswordDialog extends JDialog {
       }
     });
 
-    final JButton cancel = new JButton(Resources.getString("General.cancel"));
+    final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
     cancel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         UsernameAndPasswordDialog.this.dispose(); 

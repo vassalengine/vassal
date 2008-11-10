@@ -1095,7 +1095,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       final Box buttonBox = new Box(BoxLayout.X_AXIS);
       buttonBox.add(Box.createHorizontalGlue());
 
-      okButton = new JButton(Resources.getString("General.ok"));
+      okButton = new JButton(Resources.getString(Resources.OK));
       okButton.addActionListener(this);
       getRootPane().setDefaultButton(okButton);
       buttonBox.add(okButton);
@@ -1103,7 +1103,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       buttonBox.add(Box.createHorizontalStrut(hsep));
  
       final JButton cancelButton = new JButton(
-        Resources.getString("General.cancel"));
+        Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(this);
       buttonBox.add(cancelButton);
 

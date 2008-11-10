@@ -20,7 +20,6 @@ package VASSAL.tools;
 
 import java.lang.reflect.InvocationTargetException;
 
-import VASSAL.i18n.Resources;
 import VASSAL.tools.logging.Logger;
 
 public class ErrorUtils {
@@ -80,53 +79,28 @@ public class ErrorUtils {
     // thrown by Class.forName()
     //
     if (t instanceof ClassNotFoundException) {
-      ErrorDialog.error(
-        Resources.getString("Error.class_not_found"),
-        Resources.getString("Error.class_not_found"),
-        t,
-        Resources.getString("Error.class_not_found_message", className)
-      );
+      ErrorDialog.error("Error.class_not_found", t, className);
     }
     else if (t instanceof ExceptionInInitializerError) {
-      ErrorDialog.error(
-        Resources.getString("Error.class_init_failed"),
-        Resources.getString("Error.class_init_failed"),
-        t,
-        Resources.getString("Error.class_init_failed_message", className)
-      );
+      ErrorDialog.error("Error.class_init_failed", t, className);
     }
     else if (t instanceof LinkageError) {
-      ErrorDialog.error(
-        Resources.getString("Error.class_linkage_failed"),
-        Resources.getString("Error.class_linkage_failed"),
-        t,
-        Resources.getString("Error.class_linkage_failed_message", className)
-      );
+      ErrorDialog.error("Error.class_linkage_failed", t, className);
     }
     //
     // thrown by Class.getConstructor()
     //
     else if (t instanceof NoSuchMethodException) {
-      ErrorDialog.error(
-        Resources.getString("Error.no_nullary_ctor"),
-        Resources.getString("Error.no_nullary_ctor"),
-        t,
-        Resources.getString("Error.no_nullary_ctor_message", className)
-      );
+      ErrorDialog.error("Error.no_nullary_ctor", t, className);
     }
     else if (t instanceof SecurityException) {
-      
+      // FIXME: shoud not happen? what to do?  
     }
     //
     // thrown by Constructor.newInstance()
     //
     else if (t instanceof IllegalAccessException) {
-      ErrorDialog.error(
-        Resources.getString("Error.nonpublic_ctor"),
-        Resources.getString("Error.nonpublic_ctor"),
-        t,
-        Resources.getString("Error.nonpublic_ctor_message", className)
-      );
+      ErrorDialog.error("Error.nonpublic_ctor", t, className);
     }
     else if (t instanceof IllegalArgumentException) {
       // This ought to be impossible, since the ctor is supposed to be
@@ -135,20 +109,10 @@ public class ErrorUtils {
       ErrorDialog.bug(t);
     }
     else if (t instanceof InstantiationException) {
-      ErrorDialog.error(
-        Resources.getString("Error.class_not_concrete"),
-        Resources.getString("Error.class_not_concrete"),
-        t,
-        Resources.getString("Error.class_not_concrete_message", className)
-      );
+      ErrorDialog.error("Error.class_not_concrete", t, className);
     }
     else if (t instanceof InvocationTargetException) {
-      ErrorDialog.error(
-        Resources.getString("Error.exception_in_ctor"),
-        Resources.getString("Error.exception_in_ctor"),
-        t,
-        Resources.getString("Error.exception_in_ctor_message", className)
-      );
+      ErrorDialog.error("Error.exception_in_ctor", t, className);
     }
     //
     // extremal cases

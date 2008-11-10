@@ -216,11 +216,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       String runningVersion = Info.getVersion();
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
         ErrorDialog.warning(
-          Resources.getString("GameModule.version_error"),
-          Resources.getString("GameModule.version_error"),
-          Resources.getString("GameModule.version_error_message",
-                              vassalVersionCreated, runningVersion)
-        );
+          "GameModule.version_error", vassalVersionCreated, runningVersion);
       }
     }
     else if (NEXT_PIECESLOT_ID.equals(name)) {
@@ -891,12 +887,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       lastSavedConfiguration = save;
     }
     catch (IOException e) {
-      ErrorDialog.error(
-        Resources.getString("GameModule.save_error"),
-        Resources.getString("GameModule.save_error"),
-        e,
-        Resources.getString("GameModule.save_error_message")
-      );
+      ErrorDialog.error("GameModule.save_error", e);
     }
   }
 

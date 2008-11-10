@@ -293,13 +293,8 @@ public class GameState implements CommandEncoder {
       // Check the Save game for validity
       final AbstractMetaData metaData = AbstractMetaData.buildMetaData(f);
       if (metaData == null || ! metaData.isSaveData()) {
-        ErrorDialog.warning(
-            Resources.getString("GameState.invalid_save_file"),
-            Resources.getString("GameState.invalid_save_file"),
-            Resources.getString("GameState.invalid_save_file_message",
-                f.getPath())
-          );
-        GameModule.getGameModule().warn(Resources.getString("GameState.unable_to_load", f.getName()));
+        ErrorDialog.warning("GameState.invalid_save_file", f.getPath());
+//        GameModule.getGameModule().warn(Resources.getString("GameState.unable_to_load", f.getName()));
         return;
       }
       

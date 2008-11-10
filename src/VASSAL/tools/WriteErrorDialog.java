@@ -22,8 +22,6 @@ package VASSAL.tools;
 import java.io.File;
 import java.io.IOException;
 
-import VASSAL.i18n.Resources;
-
 /**
  * @author Joel Uckelman
  * @since 3.1.0
@@ -38,11 +36,10 @@ public class WriteErrorDialog {
    */
   public static void error(Throwable t, IOException e, String filename) {
     ErrorDialog.error(
-      Resources.getString("Error.file_write_error"),
-      Resources.getString("Error.file_write_error"),
+      "Error.file_write_error",
       t,
       (Object) e.getClass().getName() + "@" + filename,
-      Resources.getString("Error.file_write_error_message", filename)
+      filename
     );
   }
 

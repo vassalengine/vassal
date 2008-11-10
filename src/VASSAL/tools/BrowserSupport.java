@@ -20,7 +20,6 @@ package VASSAL.tools;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import VASSAL.i18n.Resources;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
@@ -55,11 +54,7 @@ public class BrowserSupport {
       browserLauncher.openURLinBrowser(url);
     }
     else {
-      ErrorDialog.error(
-        Resources.getString("BrowserSupport.unable_to_launch"),
-        Resources.getString("BrowserSupport.unable_to_launch"),
-        Resources.getString("BrowserSupport.open_browser", url)
-      );
+      ErrorDialog.error("BrowserSupport.unable_to_launch", url);
     }
   }
 

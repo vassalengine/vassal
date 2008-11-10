@@ -33,7 +33,7 @@ public class ProgressDialog extends JDialog {
     progbar.setStringPainted(true);
     progbar.setValue(0);
   
-    cancel = new JButton(Resources.getString("General.cancel"));
+    cancel = new JButton(Resources.getString(Resources.CANCEL));
     cancel.setSelected(true);
 
     final JPanel panel = new JPanel();
@@ -88,7 +88,7 @@ public class ProgressDialog extends JDialog {
 
     final Box bb = Box.createHorizontalBox();
     bb.add(Box.createHorizontalGlue());
-    cancel = new JButton(Resources.getString("General.cancel"));
+    cancel = new JButton(Resources.getString(Resources.CANCEL));
     cancel.setSelected(true);
     bb.add(cancel);
     bb.add(Box.createHorizontalGlue());

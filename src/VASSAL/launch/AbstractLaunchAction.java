@@ -52,7 +52,6 @@ import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.ModuleMetaData;
 import VASSAL.configure.DirectoryConfigurer;
-import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.CommunicationErrorDialog;
@@ -215,12 +214,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         final AbstractMetaData data = AbstractMetaData.buildMetaData(lr.module);
         
         if (data == null) {
-          ErrorDialog.warning(
-            Resources.getString("Error.invalid_vassal_file"),
-            Resources.getString("Error.invalid_vassal_file"),
-            Resources.getString("Error.invalid_vassal_file_message",
-              lr.module.getAbsolutePath())
-          );
+          ErrorDialog.warning("Error.invalid_vassal_file",
+                              lr.module.getAbsolutePath());
           setWaitCursor(false);
           return null;
         }
@@ -242,12 +237,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
               if (initialHeap <= 0) throw new NumberFormatException();
             }
             catch (NumberFormatException ex) {
-              ErrorDialog.warning(
-                Resources.getString("Error.bad_initial_heap"),
-                Resources.getString("Error.bad_initial_heap"),
-                Resources.getString("Error.bad_initial_heap_message",
-                  DEFAULT_INITIAL_HEAP)
-              );
+              ErrorDialog.warning("Error.bad_initial_heap",
+                                  DEFAULT_INITIAL_HEAP);
  
               initialHeap = DEFAULT_INITIAL_HEAP;
             }
@@ -261,12 +252,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
               if (maximumHeap <= 0) throw new NumberFormatException();
             }
             catch (NumberFormatException ex) {
-              ErrorDialog.warning(
-                Resources.getString("Error.bad_maximum_heap"),
-                Resources.getString("Error.bad_maximum_heap"),
-                Resources.getString("Error.bad_maximum_heap_message",
-                  DEFAULT_MAXIMUM_HEAP)
-              );
+              ErrorDialog.warning("Error.bad_maximum_heap",
+                                  DEFAULT_MAXIMUM_HEAP);
 
               maximumHeap = DEFAULT_MAXIMUM_HEAP;
             }
@@ -276,10 +263,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         // make sure that the initial heap is sane
         if (initialHeap > maximumHeap) {
           ErrorDialog.warning(
-            Resources.getString("Error.initial_gt_maximum_heap"),
-            Resources.getString("Error.initial_gt_maximum_heap"),
-            Resources.getString("Error.initial_gt_maximum_heap_message",
-             DEFAULT_INITIAL_HEAP, DEFAULT_MAXIMUM_HEAP)
+             "Error.initial_gt_maximum_heap",
+             DEFAULT_INITIAL_HEAP, DEFAULT_MAXIMUM_HEAP
           );
 
           initialHeap = maximumHeap / 2;
@@ -362,11 +347,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             // Either we're on a 64-bit machine, so we can't have
             // an overlarge maximum heap size problem, or something
             // else weird happened. We give up.
-            ErrorDialog.error(
-              Resources.getString("Error.launch_failed"),
-              Resources.getString("Error.launch_failed"),
-              Resources.getString("Error.launch_failed_message")
-            );
+            ErrorDialog.error("Error.launch_failed");
             return null;
           }
           else {
@@ -400,11 +381,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       children.add(cmdC);
 
       if (maxHeapWarning) {
-        ErrorDialog.warning(
-          Resources.getString("Error.set_lower_maximum_heap"),
-          Resources.getString("Error.set_lower_maximum_heap"),
-          Resources.getString("Error.set_lower_maximum_heap_message")
-        );
+        ErrorDialog.warning("Error.set_lower_maximum_heap");
       }
 
       // block until the process ends
@@ -476,11 +453,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         final Throwable thrown = ((Launcher.LoadFailedCmd) cmd).getThrowable();
 
         ErrorDialog.error(
-          Resources.getString("Launcher.module_load_error"),
-          Resources.getString("Launcher.module_load_error"),
-          thrown,
-          Resources.getString("Launcher.module_load_error_message"),
-          thrown.getMessage()
+          "Launcher.module_load_error", thrown, thrown.getMessage()
         );
 
         return "OK";

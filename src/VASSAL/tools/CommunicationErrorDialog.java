@@ -21,14 +21,12 @@ package VASSAL.tools;
 
 import java.io.IOException;
 
-import VASSAL.i18n.Resources;
-
 /**
  * An error dialog for indicating a communication error between the
  * Module Manager and a child process.
  *
- * What we've got here is a failure to communicate.<br>
- * &emdash;warden, <em>Cool Hand Luke</em> (19xx)
+ * What we've got here is failure to communicate.<br>
+ * &emdash;The Captain, <em>Cool Hand Luke</em> (1967)
  *
  * @author Joel Uckelman
  * @since 3.1.0
@@ -41,12 +39,7 @@ public class CommunicationErrorDialog {
    * @param e the communication exception
    */
   public static void error(Throwable t, IOException e) {
-    ErrorDialog.error(
-      Resources.getString("Error.communication_error"),
-      Resources.getString("Error.communication_error"),
-      t,
-      Resources.getString("Error.communication_error_message")
-    );
+    ErrorDialog.error("Error.communication_error", t);
   }
 
   /**

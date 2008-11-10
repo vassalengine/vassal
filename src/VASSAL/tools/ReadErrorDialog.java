@@ -23,8 +23,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import VASSAL.i18n.Resources;
-
 /**
  * Utility class for reporting an IOException reading from the local system or a resource bundled with the VASSAL engine
  * @author Joel Uckelman
@@ -42,21 +40,19 @@ public class ReadErrorDialog {
     if (e instanceof FileNotFoundException) {
       // file is missing
       ErrorDialog.warning(
-        Resources.getString("Error.file_not_found"),
-        Resources.getString("Error.file_not_found"),
+        "Error.file_not_found",
         t,
         (Object) (e.getClass().getName() + "@" + filename),
-        Resources.getString("Error.file_not_found_message", filename)
+        filename
       );
     }
     else { 
       // something more serious happened during I/O
       ErrorDialog.error(
-        Resources.getString("Error.file_read_error"),
-        Resources.getString("Error.file_read_error"),
+        "Error.file_read_error",
         t,
         (Object) (e.getClass().getName() + "@" + filename),
-        Resources.getString("Error.file_read_error_message", filename)
+        filename
       );
     }
   }
