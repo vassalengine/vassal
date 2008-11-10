@@ -28,6 +28,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.ColorModel;
+import java.awt.image.PixelGrabber;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -39,6 +40,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
+import javax.swing.ImageIcon;
 
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
@@ -362,9 +364,22 @@ public class ImageUtils {
     if (src instanceof BufferedImage)
       return toCompatibleImage((BufferedImage) src);
 
-    final BufferedImage dst =
-      createCompatibleTranslucentImage(src.getWidth(null),
-                                       src.getHeight(null));
+    // ensure that the image is loaded
+    src = new ImageIcon(src).getImage();
+
+    // determine whether this image has an alpha channel
+    final PixelGrabber pg = new PixelGrabber(src, 0, 0, 1, 1, false);
+    try {
+      pg.grabPixels();
+    }
+    catch (InterruptedException e) {
+      ErrorDialog.bug(e);
+    }
+
+    final BufferedImage dst = createCompatibleImage(
+      src.getWidth(null), src.getHeight(null), pg.getColorModel().hasAlpha()
+    );
+
     final Graphics2D g = dst.createGraphics();
     g.drawImage(src, 0, 0, null);
     g.dispose();
