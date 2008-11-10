@@ -220,7 +220,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           return null;
         }
         
-        if (data != null && data instanceof ModuleMetaData) {
+        if (data instanceof ModuleMetaData) {
           moduleName = ((ModuleMetaData) data).getName();
 
           // log the module name
