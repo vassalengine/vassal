@@ -240,7 +240,7 @@ public class SVGRenderer {
 
       // produce an opaque image if our background color is set
       final BufferedImage dest = ImageUtils.createCompatibleImage(
-        w, h, hints.containsKey(KEY_BACKGROUND_COLOR)
+        w, h, !hints.containsKey(KEY_BACKGROUND_COLOR)
       );
 
       final Graphics2D g2d = GraphicsUtil.createGraphics(dest);
