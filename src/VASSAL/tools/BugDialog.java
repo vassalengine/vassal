@@ -549,19 +549,8 @@ public class BugDialog extends JDialog {
     c.insets = new Insets(6,0,0,0);
     c.anchor = GridBagConstraints.NORTHWEST;
     c.weightx = 1.0;
-    c.weighty = 1.0;
+    c.weighty = 5.0;
     panel.add(detailsScroll, c);
-
-    c.gridx = 0;
-    c.gridy = 6;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.VERTICAL;
-    c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.NORTHWEST;
-    c.weightx = 1.0;
-    c.weighty = 1.0;
-    panel.add(Box.createVerticalGlue(), c);
 
 /*
     final JPanel detailsPanel = buildDetailsPanel();
@@ -662,12 +651,19 @@ public class BugDialog extends JDialog {
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
-          final boolean visible = detailsScroll.isVisible();
-          detailsButton.setText(visible ? "Show details" : "Hide details");
+          final Dimension d = detailsScroll.getSize();
+
+          final boolean visible = !detailsScroll.isVisible();
+          detailsButton.setText(visible ? "Hide details" : "Show details");
           detailsButton.setIcon(UIManager.getIcon(
-            visible ? "Tree.collapsedIcon" : "Tree.expandedIcon"));
-          detailsScroll.setVisible(!visible);
+            visible ? "Tree.expandedIcon" : "Tree.collapsedIcon"));
+          detailsScroll.setVisible(visible);
+
+          // ensure that the dialog width remains constant
+          d.height = Integer.MAX_VALUE;
+          detailsScroll.setMaximumSize(d);
           pack();
+          detailsScroll.setMaximumSize(null);
         }
       }
     );
@@ -795,14 +791,6 @@ public class BugDialog extends JDialog {
     c.weightx = 1.0;
     c.weighty = 1.0;
     panel.add(detailsScroll, c);
-
-    c.gridy = 3;
-    c.fill = GridBagConstraints.VERTICAL;
-    c.insets = new Insets(0,0,0,0);
-    c.anchor = GridBagConstraints.NORTHWEST;
-    c.weightx = 1.0;
-    c.weighty = 1.0;
-    panel.add(Box.createVerticalGlue(), c);
 
     return panel;
   }
