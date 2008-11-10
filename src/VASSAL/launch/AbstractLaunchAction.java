@@ -216,11 +216,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         
         if (data == null) {
           ErrorDialog.warning(
-              Resources.getString("Error.invalid_vassal_file"),
-              Resources.getString("Error.invalid_vassal_file"),
-              Resources.getString("Error.invalid_vassal_file_message",
-                lr.module.getAbsolutePath())
-            );
+            Resources.getString("Error.invalid_vassal_file"),
+            Resources.getString("Error.invalid_vassal_file"),
+            Resources.getString("Error.invalid_vassal_file_message",
+              lr.module.getAbsolutePath())
+          );
           setWaitCursor(false);
           return null;
         }
