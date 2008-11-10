@@ -107,6 +107,9 @@ public class ColorConfigurer extends Configurer {
     catch (IllegalArgumentException e) {
       ErrorDialog.dataError(new BadDataReport("bad color", s, e));
     }
+    catch (NoSuchElementException e) {
+      ErrorDialog.dataError(new BadDataReport("bad color", s, e));
+    }
 
     // default to black in case of bad data
     return Color.BLACK;
