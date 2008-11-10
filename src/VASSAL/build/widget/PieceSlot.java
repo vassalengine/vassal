@@ -130,8 +130,11 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * @return expanded piece
    */
   protected GamePiece getExpandedPiece() {
-    if (expanded == null) {
-      expanded = PieceCloner.getInstance().clonePiece(getPiece());
+    if (expanded == null) { 
+      final GamePiece p = getPiece();
+      if (p != null) {  // Possible when PlaceMarker is building
+        expanded = PieceCloner.getInstance().clonePiece(p);
+      }
     }
     return expanded;
   }
@@ -146,7 +149,6 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * @return unexpanded piece
    */
   public GamePiece getPiece() {
-    
     if (c == null && pieceDefinition != null) {
       final AddPiece comm =
         (AddPiece) GameModule.getGameModule().decode(pieceDefinition);
@@ -405,7 +407,7 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    * @return an array of Configurer objects representing all possible classes of
    *         Buildable children of this Configurable object
    */
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
