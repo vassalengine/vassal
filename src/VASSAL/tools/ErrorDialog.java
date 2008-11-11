@@ -39,9 +39,6 @@ import VASSAL.tools.swing.Dialogs;
 public class ErrorDialog {
   private ErrorDialog() {}
 
-  private static final Set<String> reportedDataErrors =
-    Collections.synchronizedSet(new HashSet<String>());
-
 // FIXME: make method which takes Throwable but doesn't use it for details
 
   public static void bug(Throwable thrown) {
@@ -240,28 +237,6 @@ public class ErrorDialog {
          BugUtils.getStackTrace(thrown), JOptionPane.WARNING_MESSAGE, key);
   }
   
-  public static void dataError(BadDataReport e) {
-    Logger.log(e.getMessage() + ": " + e.getData(), Logger.WARNING);
-    if (e.getCause() != null) Logger.log(e.getCause());
-
-    if (!reportedDataErrors.contains(e.getData())) {
-      reportedDataErrors.add(e.getData());
-      // When playing a module, send a warning to the controls window
-      if (GameModule.getGameModule().getArchiveWriter() == null) {
-        GameModule.getGameModule().warn(Resources.getString("Error.data_error_message")+":  "+e.getData());        
-      }
-      // If editing, show a warning dialog
-      else {
-        warning(
-          Resources.getString("Error.data_error"),
-          Resources.getString("Error.data_error"),
-          Resources.getString("Error.data_error_message") + "\n\n" + e.getMessage()+":  "+e.getData(),
-          (Object) e.getData()
-        );
-      }
-    }
-  }
-
   public static void show(
     final Component parent,
     final String title,
@@ -358,6 +333,32 @@ public class ErrorDialog {
     return GameModule.getGameModule() == null
       ? null : GameModule.getGameModule().getFrame();
   }
+
+  private static final Set<String> reportedDataErrors =
+    Collections.synchronizedSet(new HashSet<String>());
+
+  public static void dataError(BadDataReport e) {
+    Logger.log(e.getMessage() + ": " + e.getData(), Logger.WARNING);
+    if (e.getCause() != null) Logger.log(e.getCause());
+
+    if (!reportedDataErrors.contains(e.getData())) {
+      reportedDataErrors.add(e.getData());
+      // When playing a module, send a warning to the controls window
+      if (GameModule.getGameModule().getArchiveWriter() == null) {
+        GameModule.getGameModule().warn(Resources.getString("Error.data_error_message")+":  "+e.getData());        
+      }
+      // If editing, show a warning dialog
+      else {
+        warning(
+          "Error.data_error",
+          (Object) e.getData(),
+          e.getMessage(),
+          e.getData() 
+        );
+      }
+    }
+  }
+
 
   public static void main(String[] args) {
     final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";

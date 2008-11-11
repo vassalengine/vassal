@@ -22,6 +22,10 @@ import java.lang.reflect.InvocationTargetException;
 
 import VASSAL.tools.logging.Logger;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class ErrorUtils {
   private ErrorUtils() {}
 
