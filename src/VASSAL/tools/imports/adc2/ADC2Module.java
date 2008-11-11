@@ -1066,7 +1066,12 @@ private static final String CHARTS = "Charts";
 	}
 
 	public PieceClass getBackFlipClass() {
-		return backReplace;
+    if (backReplace == this) { // this will probably never happen
+      return null;
+    }
+    else {
+      return backReplace;
+    }
 	}
 
 	public DynamicProperty getDynamicPropertyDecorator() {
@@ -1335,7 +1340,12 @@ private static final String CHARTS = "Charts";
     }
     
     public PieceClass getFlipClass() {
-      return flipClass;
+      if (flipClass == this) { // if the flip class is this, then it doesn't count
+        return null;
+      }
+      else {
+        return flipClass;
+      }
     }
 
     public String getName() {

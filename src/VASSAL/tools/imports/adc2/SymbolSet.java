@@ -18,6 +18,7 @@
 package VASSAL.tools.imports.adc2;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -205,20 +206,33 @@ public class SymbolSet extends Importer{
     /**
      * Get image corresponding to this symbol. Generates the image and applies
      * optional mask if not already done so.
+     * @param rect2 width and height are taken from this for otherwise invalid masks
      */
-    BufferedImage getImage() {
+    private BufferedImage getImage(Rectangle rect2) {
       if (img == null) {
+        if ((rect.width <= 0 || rect.height <= 0) && isMask) {
+          // Images with invalid masks appear to be completely transparent.
+          // This is a hassle generating new ones all the time, but there's nothing
+          // to say that the real mask can't be different sizes at every call,
+          // and anything else seems like overkill -- so this is an ugly kludge.
+          // Hopefully, this crime against nature doesn't happen very often.
+          return new BufferedImage(rect2.width, rect2.height, BufferedImage.TYPE_INT_ARGB);
+        }
         img = bitmap.getSubimage(rect.x, rect.y, rect.width, rect.height);
         if (getMask() != null) {
           final BufferedImage bi = new BufferedImage(rect.width, rect.height, BufferedImage.TYPE_INT_ARGB);
           final Graphics2D g = bi.createGraphics();
           g.drawImage(img, null, 0, 0);
           g.setComposite(AlphaComposite.DstAtop);
-          g.drawImage(getMask().getImage(), null, 0, 0);
+          g.drawImage(getMask().getImage(rect), null, 0, 0);
           img = bi;
         }
       }
       return img;
+    }
+    
+    BufferedImage getImage() {
+      return getImage(rect);
     }
 
     /**
