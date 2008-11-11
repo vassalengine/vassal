@@ -24,6 +24,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
@@ -38,11 +39,15 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
+import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.swing.ImageIcon;
 
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.BooleanConfigurer;
@@ -331,10 +336,130 @@ public class ImageUtils {
     }
   }
 
+  /**
+   * @deprecated Use {@link #getImage(String,DataArchive)} until such time
+   * as ImageIO can load all images properly. Then undeprecate this and
+   * deprecate {@link #getImage(String,DataArchive)}.
+   */ 
+  @Deprecated
   public static BufferedImage getImage(InputStream in) throws IOException {
     final BufferedImage img = ImageIO.read(new MemoryCacheImageInputStream(in));
     if (img == null) throw new IOException("Unrecognized image format");
     return toCompatibleImage(img);
+  }
+
+  public static ImageReader checkImageIOCanRead(ImageInputStream in)
+                                                          throws IOException {
+    final Iterator<ImageReader> i = ImageIO.getImageReaders(in);
+    if (!i.hasNext()) throw new IOException("Unrecognized image format");
+    
+    boolean readerOk = false;
+    ImageReader reader = i.next();
+    try {
+      reader.setInput(in);
+
+      final IIOMetadata md = reader.getImageMetadata(0);
+      final Node root = md.getAsTree(md.getNativeMetadataFormatName());
+
+      boolean eightBitRGB = true;
+      boolean transparent = false;
+      for (Node n = root.getFirstChild(); n != null; n = n.getNextSibling()) {
+        if (!(n instanceof Element)) continue;
+
+        final Element e = (Element) n; 
+        final String ename = e.getNodeName();
+        if ("IHDR".equals(ename)) {
+          if (! "8".equals(e.getAttribute("bitDepth")) ||
+              ! "RGB".equals(e.getAttribute("colorType"))) {
+            eightBitRGB = false;
+            break;
+          }
+        }
+        else if ("tRNS".equals(ename)) {
+          transparent = true;
+          if (eightBitRGB) break;
+        }
+      }
+
+      // ImageIO chokes on this kind of image, don't use it
+      if (eightBitRGB && transparent) {
+        readerOk = false;
+        return null; 
+      }
+      else {
+        readerOk = true;
+        return reader;
+      }
+    }
+    finally {
+      if (!readerOk) reader.dispose();
+    } 
+  }
+
+  private static BufferedImage loadWithImageIOIfOk(InputStream in)
+                                                          throws IOException {
+    final ImageInputStream iis = new MemoryCacheImageInputStream(in);
+    final ImageReader reader = checkImageIOCanRead(iis);
+    if (reader == null) return null;
+
+    try {
+      final BufferedImage img = reader.read(0);
+      if (img == null) throw new IOException("Unrecognized image format");
+      return toCompatibleImage(img);
+    }
+    finally {
+      reader.dispose();
+    }
+  }
+
+  private static BufferedImage loadWithToolkit(InputStream in)
+                                                          throws IOException {
+    return toBufferedImage(
+      Toolkit.getDefaultToolkit().createImage(IOUtils.getBytes(in))
+    );
+  }
+
+  public static BufferedImage getImage(String name, DataArchive archive)
+                                                           throws IOException {
+    // FIXME: At present, ImageIO does not honor the tRNS chunk in 8-bit
+    // color type 2 (RGB) PNGs. This is not a bug per se, as the PNG 
+    // standard the does not require compliant decoders to use ancillary
+    // chunks. However, every other PNG decoder we can find *does* honor
+    // the tRNS chunk for this type of image, and so the appearance for
+    // users is that VASSAL is broken when their 8-bit RGB PNGs don't show
+    // the correct transparency.
+    //
+    // Therefore, we provide a workaround: Check the image metadata to see
+    // whether we have an image which ImageIO will not handle fully, and if
+    // we find one, load it using Toolkit.createImage() instead.
+    // 
+    // Someday, when both ImageIO is fixed and everyone's JRE contains
+    // that fix, we can once again do this the simple way:
+    //
+    // final BufferedImage img =
+    //   ImageIO.read(new MemoryCacheImageInputStream(in));
+    // if (img == null) throw new IOException("Unrecognized image format");
+    // return toCompatibleImage(img);
+    //
+
+    BufferedImage img = null;
+    InputStream in = null;
+    try {
+      in = archive.getImageInputStream(name);
+      img = loadWithImageIOIfOk(in);
+      in.close();
+
+      if (img == null) {
+        in = archive.getImageInputStream(name);
+        img = loadWithToolkit(in);
+        in.close();
+      }
+
+      return img; 
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
   }
 
 // FIXME: check speed
@@ -354,6 +479,24 @@ public class ImageUtils {
     return colorConvertCopy(src, dst);
   }
 
+  public static Image forceLoad(Image img) {
+    // ensure that the image is loaded
+    return new ImageIcon(img).getImage();
+  }
+
+  public static boolean isTransparent(Image img) {
+    // determine whether this image has an alpha channel
+    final PixelGrabber pg = new PixelGrabber(img, 0, 0, 1, 1, false);
+    try {
+      pg.grabPixels();
+    }
+    catch (InterruptedException e) {
+      ErrorDialog.bug(e);
+    }
+
+    return pg.getColorModel().hasAlpha();
+  }
+
   /**
    * Transform an <code>Image</code> to a <code>BufferedImage</code>.
    * 
@@ -365,19 +508,10 @@ public class ImageUtils {
       return toCompatibleImage((BufferedImage) src);
 
     // ensure that the image is loaded
-    src = new ImageIcon(src).getImage();
-
-    // determine whether this image has an alpha channel
-    final PixelGrabber pg = new PixelGrabber(src, 0, 0, 1, 1, false);
-    try {
-      pg.grabPixels();
-    }
-    catch (InterruptedException e) {
-      ErrorDialog.bug(e);
-    }
+    src = forceLoad(src);
 
     final BufferedImage dst = createCompatibleImage(
-      src.getWidth(null), src.getHeight(null), pg.getColorModel().hasAlpha()
+      src.getWidth(null), src.getHeight(null), isTransparent(src)
     );
 
     final Graphics2D g = dst.createGraphics();

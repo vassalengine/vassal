@@ -47,7 +47,7 @@ public class SourceOpMappedBitmapImpl extends SourceOpBitmapImpl
   @Override
   public BufferedImage eval() throws IOException {
     try {
-      return MappedImageUtils.getImage(archive.getImageInputStream(name));
+      return MappedImageUtils.getImage(name, archive);
     }
     catch (FileNotFoundException e) {
       throw new MissingImageException(name, e);

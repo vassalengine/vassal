@@ -170,7 +170,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
                                getImageInputStream(name)).render();
       }
       else {
-        return ImageUtils.getImage(getImageInputStream(name));
+        return ImageUtils.getImage(name, this);
       }
     }
     else if ((src = imageSources.get(name)) != null) {
@@ -181,7 +181,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
                              getImageInputStream(name)).render();
     }
     else {
-      return ImageUtils.getImage(getImageInputStream(name));
+      return ImageUtils.getImage(name, this);
     }
   }
 
