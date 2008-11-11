@@ -358,6 +358,13 @@ public class ImageUtils {
     try {
       reader.setInput(in);
 
+      // check that we are reading a PNG, since only PNGs are a problem
+      final String format = reader.getFormatName().toUpperCase();
+      if (!"PNG".equals(format)) {
+        readerOk = true;
+        return reader;
+      }
+
       final IIOMetadata md = reader.getImageMetadata(0);
       final Node root = md.getAsTree(md.getNativeMetadataFormatName());
 
