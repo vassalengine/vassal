@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
@@ -90,7 +91,9 @@ public final class ImportAction extends EditModuleAction {
     SymbolSet.class,
   };
 
-  public static FileChooser getFileChooser(Window w) {
+  public static FileChooser getFileChooser(Component c) {
+    final Window w = SwingUtilities.getWindowAncestor(c);
+
     final FileChooser chooser = FileChooser.createFileChooser(w,
       (DirectoryConfigurer)
         Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
@@ -284,19 +287,17 @@ public final class ImportAction extends EditModuleAction {
           "File Warning", JOptionPane.WARNING_MESSAGE);
   
       if (fc == null) {
-        fc = getFileChooser(null);
+        fc = getFileChooser(comp);
       }
 
       fc.resetChoosableFileFilters();
-      if (filter != null)
-        fc.setFileFilter(filter);
+      if (filter != null) fc.setFileFilter(filter);
   
       fc.setSelectedFile(new File(f.getName()));
       
       if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
-        File p = fc.getSelectedFile();
-        if (p.exists())
-          return p;
+        final File p = fc.getSelectedFile();
+        if (p.exists()) return p;
       }
     }
   
