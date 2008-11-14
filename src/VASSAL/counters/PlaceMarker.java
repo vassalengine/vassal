@@ -44,6 +44,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.Chatter;
+import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.build.widget.PieceSlot;
@@ -143,77 +144,94 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   }
 
   protected Command placeMarker() {
+    final Map m = getMap();
+    if (m == null) return null;
+
     final GamePiece marker = createMarker();
+    if (marker == null) return null;
+
     Command c = null;
-    if (marker != null) {
-      GamePiece outer = getOutermost(this);
-      Point p = getPosition();
-      p.translate(xOffset, -yOffset);
-      if (matchRotation) {
-        FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(outer, FreeRotator.class);
-        FreeRotator markerRotation = (FreeRotator) Decorator.getDecorator(marker, FreeRotator.class);
-        if (myRotation != null && markerRotation != null) {
-          markerRotation.setAngle(myRotation.getAngle());
-          Point2D myPosition = getPosition().getLocation();
-          Point2D markerPosition = p.getLocation();
-          markerPosition = AffineTransform.getRotateInstance(myRotation.getAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(markerPosition,
-              null);
-          p = new Point((int) markerPosition.getX(), (int) markerPosition.getY());
-        }
+    final GamePiece outer = getOutermost(this);
+    Point p = getPosition();
+    p.translate(xOffset, -yOffset);
+    if (matchRotation) {
+      final FreeRotator myRotation =
+        (FreeRotator) Decorator.getDecorator(outer, FreeRotator.class);
+      final FreeRotator markerRotation =
+        (FreeRotator) Decorator.getDecorator(marker, FreeRotator.class);
+      if (myRotation != null && markerRotation != null) {
+        markerRotation.setAngle(myRotation.getAngle());
+        final Point2D myPosition = getPosition().getLocation();
+        Point2D markerPosition = p.getLocation();
+        markerPosition = AffineTransform.getRotateInstance(
+            myRotation.getAngleInRadians(),
+            myPosition.getX(), myPosition.getY()
+          ).transform(markerPosition, null);
+        p = new Point((int) markerPosition.getX(), (int) markerPosition.getY());
       }
+    }
 
-      if (!Boolean.TRUE.equals(marker.getProperty(Properties.IGNORE_GRID))) {
-        p = getMap().snapTo(p);
-      }
+    if (!Boolean.TRUE.equals(marker.getProperty(Properties.IGNORE_GRID))) {
+      p = getMap().snapTo(p);
+    }
 
-      if (getMap().getStackMetrics().isStackingEnabled() 
-          && !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK))
-          && !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK))
-          && getMap().getPieceCollection().canMerge(outer, marker)) {
-        final Stack parent = getParent();
-        GamePiece target = outer;
-        int index = -1;
-        switch (placement) {
-        case ABOVE:
-          target = outer;
-          break;
-        case BELOW:
-          index = parent == null ? 0 : parent.indexOf(outer);
-          break;
-        case STACK_BOTTOM:
-          index = 0;
-          break;
-        case STACK_TOP:
-          target = parent == null ? outer : parent;
-        }
-        c = getMap().getStackMetrics().merge(target, marker);
-        if (index >= 0) {
-          final ChangeTracker ct = new ChangeTracker(parent);
-          parent.insert(marker,index);
-          c = c.append(ct.getChangeCommand());
-        }
+    if (m.getStackMetrics().isStackingEnabled() &&  
+        !Boolean.TRUE.equals(marker.getProperty(Properties.NO_STACK)) &&
+        !Boolean.TRUE.equals(outer.getProperty(Properties.NO_STACK)) &&
+        m.getPieceCollection().canMerge(outer, marker)) {
+      final Stack parent = getParent();
+      GamePiece target = outer;
+      int index = -1;
+      switch (placement) {
+      case ABOVE:
+        target = outer;
+        break;
+      case BELOW:
+        index = parent == null ? 0 : parent.indexOf(outer);
+        break;
+      case STACK_BOTTOM:
+        index = 0;
+        break;
+      case STACK_TOP:
+        target = parent == null ? outer : parent;
       }
-      else {
-        c = getMap().placeAt(marker, p);
+      c = m.getStackMetrics().merge(target, marker);
+      if (index >= 0) {
+        final ChangeTracker ct = new ChangeTracker(parent);
+        parent.insert(marker,index);
+        c = c.append(ct.getChangeCommand());
       }
-      if (afterBurnerKey != null) {
-        marker.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(marker));
-        c.append(marker.keyEvent(afterBurnerKey));
-      }
-      selectMarker(marker);
-      if (markerText != null && getMap() != null) {
-        if (!Boolean.TRUE.equals(outer.getProperty(Properties.OBSCURED_TO_OTHERS)) && !Boolean.TRUE.equals(outer.getProperty(Properties.OBSCURED_TO_ME))
-            && !Boolean.TRUE.equals(outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
-          String location = getMap().locationName(getPosition());
-          if (location != null) {
-            Command display = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), " * " + location + ":  " + outer.getName() + " " + markerText
-                + " * ");
-            display.execute();
-            c = c == null ? display : c.append(display);
-          }
+    }
+    else {
+      c = m.placeAt(marker, p);
+    }
+
+    if (afterBurnerKey != null) {
+      marker.setProperty(Properties.SNAPSHOT,
+                         PieceCloner.getInstance().clonePiece(marker));
+      c.append(marker.keyEvent(afterBurnerKey));
+    }
+      
+    selectMarker(marker);
+    if (markerText != null) {
+      if (!Boolean.TRUE.equals(
+            outer.getProperty(Properties.OBSCURED_TO_OTHERS)) &&
+          !Boolean.TRUE.equals(
+            outer.getProperty(Properties.OBSCURED_TO_ME)) &&
+          !Boolean.TRUE.equals(
+            outer.getProperty(Properties.INVISIBLE_TO_OTHERS))) {
+        final String location = m.locationName(getPosition());
+        if (location != null) {
+          Command display = new Chatter.DisplayText(
+            GameModule.getGameModule().getChatter(),
+            " * " + location + ":  " + outer.getName() +
+              " " + markerText + " * ");
+          display.execute();
+          c = c == null ? display : c.append(display);
         }
       }
     }
+
     return c;
   }
 
