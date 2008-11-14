@@ -93,13 +93,17 @@ public class FormattedStringConfigurer
       item = "$" + optionsModel.getElementAt(selectedIndex) + "$";
       String work = nameField.getText();
 
+      int pos = nameField.getCaretPosition();
       // Cut out any selected text
       if (nameField.getSelectedText() != null) {
         int start = nameField.getSelectionStart();
         int end = nameField.getSelectionEnd();
         work = work.substring(0, start) + work.substring(end);
+        if (pos > work.length()) {
+          pos = work.length();
+        }
       }
-      int pos = nameField.getCaretPosition();
+      
       String news = work.substring(0, pos) + item + work.substring(pos);
       nameField.setText(news);
       nameField.setCaretPosition(pos + item.length());
