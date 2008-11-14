@@ -457,12 +457,12 @@ public class FreeRotator extends Decorator
   }
  
   public void beginInteractiveRotate() {
-    getMap().pushMouseListener(this);
-    getMap().addDrawComponent(this);
-    getMap().getView().addMouseMotionListener(this);
-    getMap().getView()
-            .setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));    
-    getMap().saveAndRemoveKeyListeners();
+    final Map m = getMap();
+    m.pushMouseListener(this);
+    m.addDrawComponent(this);
+    m.getView().addMouseMotionListener(this);
+    m.getView().setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));     m.disableKeyListeners();
+
     pivot = getPosition();
   }
 
@@ -486,6 +486,8 @@ public class FreeRotator extends Decorator
   }
 
   public void mouseReleased(MouseEvent e) {
+    final Map m = getMap();
+
     try {
       final Point ghostPosition = getGhostPosition();
       Command c = null;
@@ -493,7 +495,7 @@ public class FreeRotator extends Decorator
       if (!getPosition().equals(ghostPosition)) {
         final GamePiece outer = Decorator.getOutermost(this);
         outer.setProperty(Properties.MOVED, Boolean.TRUE);
-        c = getMap().placeOrMerge(outer, getMap().snapTo(ghostPosition));
+        c = m.placeOrMerge(outer, m.snapTo(ghostPosition));
       }
       setAngle(tempAngle);
       c = tracker.getChangeCommand().append(c);
@@ -501,11 +503,11 @@ public class FreeRotator extends Decorator
       GameModule.getGameModule().sendAndLog(c);
     }
     finally {
-      getMap().getView().setCursor(null);
-      getMap().removeDrawComponent(this);
-      getMap().popMouseListener();
-      getMap().getView().removeMouseMotionListener(this);
-      getMap().restoreKeyListeners();
+      m.getView().setCursor(null);
+      m.removeDrawComponent(this);
+      m.popMouseListener();
+      m.getView().removeMouseMotionListener(this);
+      m.enableKeyListeners();
     }
   }
 

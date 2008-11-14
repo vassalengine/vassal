@@ -228,7 +228,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   };
   protected PieceMover pieceMover;
-  protected KeyListener[] saveKeyListeners = new KeyListener[0];
+  protected KeyListener[] saveKeyListeners = null;
 
   public Map() {
     getView();
@@ -1228,22 +1228,28 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * map. Used by Traits that need to prevent Key Commands 
    * at certain times.
    */
-  public void saveAndRemoveKeyListeners() {
-    saveKeyListeners = getView().getKeyListeners();
+  public void enableKeyListeners() {
+    if (saveKeyListeners == null) return;
+
     for (KeyListener kl : saveKeyListeners) {
-      getView().removeKeyListener(kl);
+      theMap.addKeyListener(kl);
     }
+
+    saveKeyListeners = null;
   }
-  
+
   /**
-   * Restore the previously saved KeyListeners
+   * Restore the previously disabled KeyListeners
    */
-  public void restoreKeyListeners() {
+  public void disableKeyListeners() {
+    if (saveKeyListeners != null) return;
+    
+    saveKeyListeners = theMap.getKeyListeners();
     for (KeyListener kl : saveKeyListeners) {
-      getView().addKeyListener(kl);
+      theMap.removeKeyListener(kl);
     }
   }
-  
+
   /**
    * This listener will be notified when a drag event is initiated, assuming that no MouseListeners are on the stack.
    * 
