@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
 
+import VASSAL.Info;
 import VASSAL.tools.IOUtils;
 
 
@@ -97,5 +98,10 @@ public class VersionUtils {
 
   private static int sgn(int i) {
     return i < 0 ? -1 : (i > 0 ? 1 : 0);
+  }
+
+  public static void main(String[] args) throws IOException {
+    final VassalVersion v = new VassalVersion(Info.getVersion());
+    System.out.println(v.toString() + " is current? " + isCurrent(v));
   }
 }
