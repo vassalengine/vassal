@@ -168,9 +168,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     getInputMap().put(cutKey, cutCmd);
     getInputMap().put(copyKey, copyCmd);
     getInputMap().put(pasteKey, pasteCmd);
+    getInputMap().put(deleteKey, deleteCmd);
     getActionMap().put(cutCmd, cutAction);
     getActionMap().put(copyCmd, copyAction);
     getActionMap().put(pasteCmd, pasteAction);
+    getActionMap().put(deleteCmd, deleteAction);
     this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
   }
 
