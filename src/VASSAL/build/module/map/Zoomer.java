@@ -780,7 +780,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     final double[] levels = new double[deprecatedMax+1];
     for (int i = 0; i < levels.length; ++i)
       levels[i] = Math.pow(deprecatedFactor, -(i-1));
-    state = new State(levels, state.getInitialLevel());
+    final int initial = Math.min(state.getInitialLevel(), levels.length-1);
+    state = new State(levels, initial);
     init();
   }
   // end deprecated keys
