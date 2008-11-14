@@ -18,8 +18,10 @@
  */
 package VASSAL.counters;
 
+import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
@@ -103,7 +105,7 @@ public class KeyCommand extends AbstractAction {
     this.global = global;
   }
 
-  public void actionPerformed(java.awt.event.ActionEvent evt) {
+  public void actionPerformed(ActionEvent evt) {
     if (stroke != null) {
       if (global) {
         GameModule.getGameModule().sendAndLog(KeyBuffer.getBuffer().keyCommand(stroke));
