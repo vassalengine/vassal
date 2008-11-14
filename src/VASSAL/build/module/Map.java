@@ -45,6 +45,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -227,6 +228,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
   };
   protected PieceMover pieceMover;
+  protected KeyListener[] saveKeyListeners = new KeyListener[0];
 
   public Map() {
     getView();
@@ -1221,6 +1223,27 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     activeMap = this;
   }
 
+  /**
+   * Save all current Key Listeners and remove them from the
+   * map. Used by Traits that need to prevent Key Commands 
+   * at certain times.
+   */
+  public void saveAndRemoveKeyListeners() {
+    saveKeyListeners = getView().getKeyListeners();
+    for (KeyListener kl : saveKeyListeners) {
+      getView().removeKeyListener(kl);
+    }
+  }
+  
+  /**
+   * Restore the previously saved KeyListeners
+   */
+  public void restoreKeyListeners() {
+    for (KeyListener kl : saveKeyListeners) {
+      getView().addKeyListener(kl);
+    }
+  }
+  
   /**
    * This listener will be notified when a drag event is initiated, assuming that no MouseListeners are on the stack.
    * 
@@ -2243,8 +2266,8 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     }
   }
 
-  public Class[] getAllowableConfigureComponents() {
-    Class[] c = { GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, HidePiecesButton.class, Zoomer.class,
+  public Class<?>[] getAllowableConfigureComponents() {
+    Class<?>[] c = { GlobalMap.class, LOS_Thread.class, ToolbarMenu.class, MultiActionButton.class, HidePiecesButton.class, Zoomer.class,
         CounterDetailViewer.class, HighlightLastMoved.class, LayeredPieceCollection.class, ImageSaver.class, TextSaver.class, DrawPile.class, SetupStack.class,
         MassKeyCommand.class, MapShader.class, PieceRecenterer.class };
     return c;

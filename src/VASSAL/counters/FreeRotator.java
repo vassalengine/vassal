@@ -38,6 +38,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -454,13 +455,14 @@ public class FreeRotator extends Decorator
     // end random rotation
     return c;
   }
-
+ 
   public void beginInteractiveRotate() {
     getMap().pushMouseListener(this);
     getMap().addDrawComponent(this);
     getMap().getView().addMouseMotionListener(this);
     getMap().getView()
-            .setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+            .setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));    
+    getMap().saveAndRemoveKeyListeners();
     pivot = getPosition();
   }
 
@@ -503,6 +505,7 @@ public class FreeRotator extends Decorator
       getMap().removeDrawComponent(this);
       getMap().popMouseListener();
       getMap().getView().removeMouseMotionListener(this);
+      getMap().restoreKeyListeners();
     }
   }
 
