@@ -104,20 +104,22 @@ public class KeyCommand extends AbstractAction {
   }
 
   public void actionPerformed(java.awt.event.ActionEvent evt) {
-    if (global) {
-      GameModule.getGameModule().sendAndLog(KeyBuffer.getBuffer().keyCommand(stroke));
-    }
-    else {
-      BoundsTracker t = new BoundsTracker();
-      GamePiece outer = Decorator.getOutermost(target);
-      t.addPiece(outer);
-      outer.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(outer)); // save state prior to command
-      Command c = outer.keyEvent(stroke);
-      if (target.getId() != null) {
-        GameModule.getGameModule().sendAndLog(c);
+    if (stroke != null) {
+      if (global) {
+        GameModule.getGameModule().sendAndLog(KeyBuffer.getBuffer().keyCommand(stroke));
       }
-      t.addPiece(outer);
-      t.repaint();
+      else {
+        BoundsTracker t = new BoundsTracker();
+        GamePiece outer = Decorator.getOutermost(target);
+        t.addPiece(outer);
+        outer.setProperty(Properties.SNAPSHOT, PieceCloner.getInstance().clonePiece(outer)); // save state prior to command
+        Command c = outer.keyEvent(stroke);
+        if (target.getId() != null) {
+          GameModule.getGameModule().sendAndLog(c);
+        }
+        t.addPiece(outer);
+        t.repaint();
+      }
     }
   }
 
