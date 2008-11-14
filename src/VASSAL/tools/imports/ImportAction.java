@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
@@ -92,9 +91,7 @@ public final class ImportAction extends EditModuleAction {
   };
 
   public static FileChooser getFileChooser(Component c) {
-    final Window w = SwingUtilities.getWindowAncestor(c);
-
-    final FileChooser chooser = FileChooser.createFileChooser(w,
+    final FileChooser chooser = FileChooser.createFileChooser(c,
       (DirectoryConfigurer)
         Prefs.getGlobalPrefs().getOption(Prefs.MODULES_DIR_KEY));
 
