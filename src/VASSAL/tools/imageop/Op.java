@@ -91,7 +91,7 @@ public class Op {
       if (c instanceof ImageNotFoundException) {
         ErrorDialog.dataError(new BadDataReport(
           "Image not found",
-          ((ImageNotFoundException) c).getFile().getAbsolutePath(),
+          ((ImageNotFoundException) c).getFile().getName(),
           c
         ));
         return true;
@@ -99,7 +99,7 @@ public class Op {
       else if (c instanceof UnrecognizedImageTypeException) {
         ErrorDialog.dataError(new BadDataReport(
           "Unrecognized image type",
-          ((UnrecognizedImageTypeException) c).getFile().getAbsolutePath(),
+          ((UnrecognizedImageTypeException) c).getFile().getName(),
           c
         ));
         return true;
@@ -107,7 +107,7 @@ public class Op {
       else if (c instanceof ImageIOException) {
         ErrorDialog.dataError(new BadDataReport(
           "Error reading image",
-          ((ImageIOException) c).getFile().getAbsolutePath(),
+          ((ImageIOException) c).getFile().getName(),
           c
         ));
         return true;
