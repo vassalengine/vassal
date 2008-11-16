@@ -37,10 +37,15 @@ public class PropertyPrompt implements PropertyChanger {
   }
 
   public String getNewValue(String oldValue) {
+    String newValue = null;
     if (constraints != null && constraints.isNumeric()) {
-      return new NumericPropertyPrompt(constraints.getComponent(), promptText, constraints.getMinimumValue(), constraints.getMaximumValue()).getNewValue(oldValue);
+      newValue = new NumericPropertyPrompt(constraints.getComponent(), promptText, constraints.getMinimumValue(), constraints.getMaximumValue()).getNewValue(oldValue);
     }
-    return (String) JOptionPane.showInputDialog(constraints.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null, null, oldValue);
+    else {
+      newValue = (String) JOptionPane.showInputDialog(constraints.getComponent(), promptText, null, JOptionPane.QUESTION_MESSAGE, null, null, oldValue);
+    }
+    
+    return newValue == null ? oldValue : newValue;
   }
 
   public String getPrompt() {
