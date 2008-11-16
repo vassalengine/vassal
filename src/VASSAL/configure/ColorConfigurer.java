@@ -92,7 +92,7 @@ public class ColorConfigurer extends Configurer {
   }
 
   public static Color stringToColor(String s) {
-    if (s == null || "null".equals(s)) {
+    if (s == null || s.length() == 0 || "null".equals(s)) {
       return null;
     }
 
