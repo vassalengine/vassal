@@ -322,12 +322,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         finally {
           IOUtils.closeQuietly(oout);
         }
-/*
-        // Check that the child's port is sane. Reading stdout from a
-        // failed launch tends to give impossible port numbers.
-        if (0 < childPort || childPort > 65535) {      
-        }
-*/
+
 // FIXME: this is probably too long
         try {
           Thread.sleep(1000);
@@ -374,6 +369,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // pump child's stdout to our own stdout
       new Thread(new StreamPump(p.getInputStream(), System.out)).start();
+
+      // Check that the child's port is sane. Reading stdout from a
+      // failed launch tends to give impossible port numbers.
+      if (childPort < 0 || childPort > 65535) {
+        throw new IOException("port out of range: " + childPort);
+      }
 
       // create the client for the child's socket
       clientSocket = new Socket((String) null, childPort);
