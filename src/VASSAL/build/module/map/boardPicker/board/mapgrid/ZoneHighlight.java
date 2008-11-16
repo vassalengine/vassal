@@ -50,7 +50,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.SourceOp;
 

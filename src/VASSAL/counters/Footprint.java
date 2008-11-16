@@ -55,8 +55,8 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
-import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.image.ImageUtils;
 
 /**
  * Displays a movement trail indicating where a piece has been moved

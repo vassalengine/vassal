@@ -28,7 +28,7 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 
 public class Symbol {
 

@@ -28,9 +28,9 @@ import java.awt.image.WritableRaster;
 import java.util.Collections;
 import java.util.List;
 
-import VASSAL.tools.GeneralFilter;
 import VASSAL.tools.HashCode;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.GeneralFilter;
+import VASSAL.tools.image.ImageUtils;
 
 /**
  * An {@link ImageOp} which scales its source.

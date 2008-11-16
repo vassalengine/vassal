@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import VASSAL.tools.HashCode;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.opcache.Op;
 
 /**

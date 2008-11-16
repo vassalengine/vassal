@@ -62,9 +62,7 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.SingleChildInstance;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.imageop.ImageOp;
-import VASSAL.tools.imageop.MissingImageException;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.Repainter;
 import VASSAL.tools.imageop.ScaleOp;
@@ -297,15 +295,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
       ErrorDialog.bug(e);
     }
     catch (ExecutionException e) {
-      final MissingImageException mie =
-        ErrorUtils.getAncestorOfClass(MissingImageException.class, e);
-      if (mie != null) {
-        ErrorDialog.dataError(new BadDataReport(
-          "Image not found", mie.getFile().getAbsolutePath(), mie));
-      }
-      else {
-        ErrorDialog.bug(e);
-      }
+      if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
   }
 

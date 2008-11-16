@@ -271,7 +271,10 @@ public class ErrorDialog {
       reportedDataErrors.add(e.getData());
       // When playing a module, send a warning to the controls window
       if (GameModule.getGameModule().getArchiveWriter() == null) {
-        GameModule.getGameModule().warn(Resources.getString("Error.data_error_message")+":  "+e.getData());        
+        GameModule.getGameModule().warn(
+          Resources.getString("Error.data_error_message",
+                              e.getMessage(), e.getData())
+        );
       }
       // If editing, show a warning dialog
       else {

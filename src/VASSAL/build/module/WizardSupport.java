@@ -86,9 +86,9 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.UsernameAndPasswordDialog;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.logging.Logger;
 
 /**

@@ -29,8 +29,8 @@ import java.util.List;
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.HashCode;
-import VASSAL.tools.ImageUtils;
-import VASSAL.tools.SVGRenderer;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.SVGRenderer;
 
 /**
  * An {@link ImageOp} which rotates and scales its source. Rotation

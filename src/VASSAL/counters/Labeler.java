@@ -60,8 +60,8 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.HashCode;
-import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
 import VASSAL.tools.imageop.ScaledImagePainter;
 

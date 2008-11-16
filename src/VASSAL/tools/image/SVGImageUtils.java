@@ -17,10 +17,11 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools;
+package VASSAL.tools.image;
 
 import java.awt.Dimension;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -41,6 +42,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import VASSAL.tools.DataArchive;
+import VASSAL.tools.IOUtils;
 
 /**
  * Utility methods for manipulating SVG images.
@@ -66,6 +70,42 @@ public class SVGImageUtils {
     try {
       doc = factory.createDocument(null, in);
       in.close();
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
+
+    // get the default image width and height
+    final Element root = doc.getDocumentElement();
+    final int width = (int) (Float.parseFloat(
+      root.getAttributeNS(null, "width").replaceFirst("px", ""))+0.5);
+    final int height = (int) (Float.parseFloat(
+      root.getAttributeNS(null, "height").replaceFirst("px", ""))+0.5);
+
+    return new Dimension(width, height);
+  }
+
+  /**
+   * Returns the default dimensions of the SVG image.
+   * 
+   * @return the image dimensions
+   * @throws IOException if the image cannot be read
+   */
+  public static Dimension getImageSize(String name, DataArchive archive)
+                                                          throws IOException {
+    // get the SVG
+    InputStream in = null;
+    final Document doc;
+    try {
+      in = archive.getImageInputStream(name);
+      doc = factory.createDocument(null, in);
+      in.close();
+    }
+    catch (FileNotFoundException e) {
+      throw new ImageNotFoundException(name, e);
+    }
+    catch (IOException e) {
+      throw new ImageIOException(name, e);
     }
     finally {
       IOUtils.closeQuietly(in);

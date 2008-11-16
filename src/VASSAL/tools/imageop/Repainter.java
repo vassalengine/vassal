@@ -25,9 +25,7 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.opcache.Op;
 
 /**
@@ -118,14 +116,7 @@ public class Repainter implements ImageOpObserver {
   }
 
   public void failed(Op<BufferedImage> op, ExecutionException e) {
-    // don't display dialog for missing images
-    final MissingImageException mie =
-      ErrorUtils.getAncestorOfClass(MissingImageException.class, e);
-    if (mie != null) {
-      ErrorDialog.dataError(new BadDataReport(
-        "Image not found", mie.getFile().getAbsolutePath(), mie));
-    }
-    else {
+    if (!VASSAL.tools.imageop.Op.handleException(e)) {
       ErrorDialog.bug(e);
     }
   }

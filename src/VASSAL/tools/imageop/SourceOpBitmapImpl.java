@@ -26,12 +26,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorUtils;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
@@ -80,12 +78,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
    * @throws IOException if the image cannot be loaded from the image file.
    */
   public BufferedImage eval() throws IOException {
-    try {
-      return ImageUtils.getImage(name, archive);
-    }
-    catch (FileNotFoundException e) {
-      throw new MissingImageException(name, e);
-    }
+    return ImageUtils.getImage(name, archive);
   }
 
   /** {@inheritDoc} */
@@ -100,14 +93,10 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
 
   protected Dimension getImageSize() {
     try {
-      return ImageUtils.getImageSize(archive.getImageInputStream(name));
-    }
-    catch (FileNotFoundException e) {
-      ErrorDialog.dataError(new BadDataReport("Image not found", name, e));
+      return ImageUtils.getImageSize(name, archive);
     }
     catch (IOException e) {
-// FIXME: maybe not bug?
-      ErrorDialog.bug(e);
+      if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
     
     return new Dimension();

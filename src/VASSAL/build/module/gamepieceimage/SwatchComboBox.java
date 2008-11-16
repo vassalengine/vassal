@@ -32,7 +32,7 @@ import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 
 public class SwatchComboBox extends JComboBox {
   private static final long serialVersionUID = 1L;

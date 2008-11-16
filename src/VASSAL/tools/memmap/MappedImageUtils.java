@@ -25,6 +25,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.SampleModel;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -37,9 +38,12 @@ import javax.imageio.stream.ImageInputStream;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ImageUtils;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.TempFileManager;
+import VASSAL.tools.image.ImageIOException;
+import VASSAL.tools.image.ImageNotFoundException;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.UnrecognizedImageTypeException;
 
 /**
  * @author Joel Uckelman
@@ -51,30 +55,41 @@ public class MappedImageUtils {
 
   public static MappedBufferedImage getImage(String name, DataArchive archive)
                                                            throws IOException {
-    MappedBufferedImage img = null;
-    InputStream in = null;
     try {
-      in = archive.getImageInputStream(name);
-      img = loadWithImageIOIfOk(in);
-      in.close();
-
-      if (img == null) {
+      MappedBufferedImage img = null;
+      InputStream in = null;
+      try {
         in = archive.getImageInputStream(name);
-        img = loadWithToolkit(in);
+        img = loadWithImageIOIfOk(in);
         in.close();
+
+        if (img == null) {
+          in = archive.getImageInputStream(name);
+          img = loadWithToolkit(in);
+          in.close();
+        }
+      }
+      catch (FileNotFoundException e) {
+        throw new ImageNotFoundException(name, e);
+      }
+      catch (UnrecognizedImageTypeException e) {
+        throw new UnrecognizedImageTypeException(name, e);
+      }
+      finally {
+        IOUtils.closeQuietly(in);
+      }
+
+      switch (img.getType()) {
+      case BufferedImage.TYPE_INT_RGB:
+      case BufferedImage.TYPE_INT_ARGB:
+        return img;
+      default:
+        return toType(img, img.getTransparency() == BufferedImage.OPAQUE ?
+          BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
       }
     }
-    finally {
-      IOUtils.closeQuietly(in);
-    }
-
-    switch (img.getType()) {
-    case BufferedImage.TYPE_INT_RGB:
-    case BufferedImage.TYPE_INT_ARGB:
-      return img;
-    default:
-      return toType(img, img.getTransparency() == BufferedImage.OPAQUE ?
-        BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
+    catch (IOException e) {
+      throw new ImageIOException(name, e);
     }
   }
 

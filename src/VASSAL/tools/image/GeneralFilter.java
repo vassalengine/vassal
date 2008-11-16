@@ -16,7 +16,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.tools;
+package VASSAL.tools.image;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;

@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: MissingImageException.java 4372 2008-10-31 22:47:59Z uckelman $
  *
  * Copyright (c) 2008 by Joel Uckelman
  *
@@ -17,30 +17,34 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools.imageop;
+package VASSAL.tools.image;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
-public class MissingImageException extends FileNotFoundException {
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
+public class ImageIOException extends IOException {
   private static final long serialVersionUID = 1L;
 
   private final File file; 
 
-  public MissingImageException(String filename) {
+  public ImageIOException(String filename) {
     this(new File(filename));
   }
 
-  public MissingImageException(File file) {
+  public ImageIOException(File file) {
     this.file = file;
   }
 
-  public MissingImageException(String filename, Throwable cause) {
+  public ImageIOException(String filename, Throwable cause) {
     this(filename);
     initCause(cause);
   }
 
-  public MissingImageException(File file, Throwable cause) {
+  public ImageIOException(File file, Throwable cause) {
     this(file);
     initCause(cause);
   }

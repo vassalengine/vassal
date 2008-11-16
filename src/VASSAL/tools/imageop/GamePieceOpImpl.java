@@ -30,7 +30,7 @@ import java.util.concurrent.Future;
 
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Properties;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.opcache.Op;
 import VASSAL.tools.opcache.OpObserver;
 

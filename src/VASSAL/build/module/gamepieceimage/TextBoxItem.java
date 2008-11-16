@@ -31,8 +31,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.JTextPane;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.configure.VisibilityCondition;
-import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.image.ImageUtils;
 
 public class TextBoxItem extends TextItem {
 

@@ -60,6 +60,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import sun.applet.AppletAudioClip;
 
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.SVGImageUtils;
+import VASSAL.tools.image.SVGRenderer;
 import VASSAL.tools.logging.Logger;
 
 /**
@@ -136,9 +139,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
     if (name.startsWith("/")) {
       if (name.toLowerCase().endsWith(".svg")) 
-        return SVGImageUtils.getImageSize(getImageInputStream(name));
+        return SVGImageUtils.getImageSize(name, this);
       else
-        return ImageUtils.getImageSize(getImageInputStream(name));
+        return ImageUtils.getImageSize(name, this);
     }
     else if ((src = imageSources.get(name)) != null) {
       final Image image = src.getImage();
@@ -147,10 +150,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         new Dimension();
     }
     else if (name.toLowerCase().endsWith(".svg")) {
-      return SVGImageUtils.getImageSize(getImageInputStream(name));
+      return SVGImageUtils.getImageSize(name, this);
     }
     else {
-      return ImageUtils.getImageSize(getImageInputStream(name));
+      return ImageUtils.getImageSize(name, this);
     }
   }
 

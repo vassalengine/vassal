@@ -27,13 +27,13 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorUtils;
-import VASSAL.tools.SVGImageUtils;
-import VASSAL.tools.SVGRenderer;
+import VASSAL.tools.image.ImageIOException;
+import VASSAL.tools.image.ImageNotFoundException;
+import VASSAL.tools.image.SVGImageUtils;
+import VASSAL.tools.image.SVGRenderer;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
@@ -91,7 +91,10 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
       return renderer.render();
     }
     catch (FileNotFoundException e) {
-      throw new MissingImageException(name, e);
+      throw new ImageNotFoundException(name, e);
+    }
+    catch (IOException e) {
+      throw new ImageIOException(name, e);
     }
   }
 
@@ -107,14 +110,10 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
 
   protected Dimension getImageSize() {
     try {
-      return SVGImageUtils.getImageSize(archive.getImageInputStream(name));
-    }
-    catch (FileNotFoundException e) {
-      ErrorDialog.dataError(new BadDataReport("Image not found", name, e));
+      return SVGImageUtils.getImageSize(name, archive);
     }
     catch (IOException e) {
-// FIXME: maybe not bug?
-      ErrorDialog.bug(e);
+      if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
 
     return new Dimension();

@@ -37,8 +37,8 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.StringEnum;
-import VASSAL.tools.ImageUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.image.ImageUtils;
 
 public class GamePieceLayout extends AbstractConfigurable implements Visualizable {
 

@@ -89,8 +89,8 @@ import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ImageUtils;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 
 /**

@@ -42,7 +42,7 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
 public class SelectionHighlighter extends AbstractConfigurable implements Highlighter {

@@ -21,8 +21,13 @@ package VASSAL.tools.imageop;
 
 import java.awt.image.BufferedImage;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.counters.GamePiece;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.image.ImageNotFoundException;
+import VASSAL.tools.image.ImageIOException;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.image.UnrecognizedImageTypeException;
 
 public class Op {
   public static SourceOp load(String name) {
@@ -79,5 +84,36 @@ public class Op {
 
   public static void clearCache() {
     AbstractOpImpl.clearCache();
+  }
+
+  public static boolean handleException(Exception e) {
+    for (Throwable c = e; c != null; c = c.getCause()) {
+      if (c instanceof ImageNotFoundException) {
+        ErrorDialog.dataError(new BadDataReport(
+          "Image not found",
+          ((ImageNotFoundException) c).getFile().getAbsolutePath(),
+          c
+        ));
+        return true;
+      }
+      else if (c instanceof UnrecognizedImageTypeException) {
+        ErrorDialog.dataError(new BadDataReport(
+          "Unrecognized image type",
+          ((UnrecognizedImageTypeException) c).getFile().getAbsolutePath(),
+          c
+        ));
+        return true;
+      }
+      else if (c instanceof ImageIOException) {
+        ErrorDialog.dataError(new BadDataReport(
+          "Error reading image",
+          ((ImageIOException) c).getFile().getAbsolutePath(),
+          c
+        ));
+        return true;
+      }
+    }
+
+    return false;
   }
 }

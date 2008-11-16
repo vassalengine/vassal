@@ -42,7 +42,7 @@ import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;

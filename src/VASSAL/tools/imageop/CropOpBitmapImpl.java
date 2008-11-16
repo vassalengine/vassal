@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import VASSAL.tools.HashCode;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 
 /**
  * An {@link ImageOp} which crops its source.

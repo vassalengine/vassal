@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import VASSAL.tools.HashCode;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 
 public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
                                      implements RotateOp {

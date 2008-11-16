@@ -43,7 +43,7 @@ import javax.swing.border.TitledBorder;
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
 
 /**

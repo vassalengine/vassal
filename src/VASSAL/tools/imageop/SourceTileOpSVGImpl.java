@@ -31,7 +31,9 @@ import java.util.List;
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.HashCode;
-import VASSAL.tools.SVGRenderer;
+import VASSAL.tools.image.ImageIOException;
+import VASSAL.tools.image.ImageNotFoundException;
+import VASSAL.tools.image.SVGRenderer;
 import VASSAL.tools.opcache.Op;
 
 /**
@@ -96,7 +98,10 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
       return renderer.render(0.0, 1.0, aoi);
     }
     catch (FileNotFoundException e) {
-      throw new MissingImageException(name, e);
+      throw new ImageNotFoundException(name, e);
+    }
+    catch (IOException e) {
+      throw new ImageIOException(name, e);
     }
   }
 

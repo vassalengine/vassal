@@ -91,7 +91,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 
 public class RegionGrid extends AbstractConfigurable implements MapGrid, ConfigureTree.Mutable {
   private static final long serialVersionUID = 1L;

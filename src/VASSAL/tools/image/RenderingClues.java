@@ -17,7 +17,7 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools;
+package VASSAL.tools.image;
 
 import java.awt.RenderingHints;
 import java.util.Map;

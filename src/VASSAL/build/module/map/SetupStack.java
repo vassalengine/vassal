@@ -99,8 +99,8 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ImageUtils;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.menu.MenuManager;
 
 /**

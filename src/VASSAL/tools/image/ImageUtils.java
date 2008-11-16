@@ -17,7 +17,7 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools;
+package VASSAL.tools.image;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -32,6 +32,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -51,6 +52,9 @@ import org.w3c.dom.Node;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.tools.DataArchive;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.IOUtils;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.logging.Logger;
 import VASSAL.tools.memmap.MappedBufferedImage;
@@ -313,11 +317,12 @@ public class ImageUtils {
                           d.height);
   }
 
+  @Deprecated
   public static Dimension getImageSize(InputStream in) throws IOException {
     final ImageInputStream stream = new MemoryCacheImageInputStream(in);
     try {
       final Iterator<ImageReader> i = ImageIO.getImageReaders(stream);
-      if (!i.hasNext()) throw new IOException("Unrecognized image format");
+      if (!i.hasNext()) throw new UnrecognizedImageTypeException();
 
       final ImageReader reader = i.next();
       try {
@@ -336,6 +341,39 @@ public class ImageUtils {
     }
   }
 
+  public static Dimension getImageSize(String name, DataArchive archive)
+                                                           throws IOException {
+    InputStream in = null;
+    try {
+      in = archive.getImageInputStream(name);
+      final ImageInputStream stream = new MemoryCacheImageInputStream(in);
+
+      final Iterator<ImageReader> i = ImageIO.getImageReaders(stream);
+      if (!i.hasNext()) throw new UnrecognizedImageTypeException(name);
+
+      final ImageReader reader = i.next();
+      try {
+        reader.setInput(stream);
+        final Dimension size =
+          new Dimension(reader.getWidth(0), reader.getHeight(0));
+        in.close();
+        return size;
+      }
+      finally {
+        reader.dispose();
+      }
+    }
+    catch (FileNotFoundException e) {
+      throw new ImageNotFoundException(name, e);
+    }
+    catch (IOException e) {
+      throw new ImageIOException(name, e);
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
+  }
+
   /**
    * @deprecated Use {@link #getImage(String,DataArchive)} until such time
    * as ImageIO can load all images properly. Then undeprecate this and
@@ -344,14 +382,14 @@ public class ImageUtils {
   @Deprecated
   public static BufferedImage getImage(InputStream in) throws IOException {
     final BufferedImage img = ImageIO.read(new MemoryCacheImageInputStream(in));
-    if (img == null) throw new IOException("Unrecognized image format");
+    if (img == null) throw new UnrecognizedImageTypeException();
     return toCompatibleImage(img);
   }
 
   public static ImageReader checkImageIOCanRead(ImageInputStream in)
                                                           throws IOException {
     final Iterator<ImageReader> i = ImageIO.getImageReaders(in);
-    if (!i.hasNext()) throw new IOException("Unrecognized image format");
+    if (!i.hasNext()) throw new UnrecognizedImageTypeException();
     
     boolean readerOk = false;
     ImageReader reader = i.next();
@@ -411,7 +449,7 @@ public class ImageUtils {
 
     try {
       final BufferedImage img = reader.read(0);
-      if (img == null) throw new IOException("Unrecognized image format");
+      if (img == null) throw new UnrecognizedImageTypeException();
       return toCompatibleImage(img);
     }
     finally {
@@ -445,7 +483,7 @@ public class ImageUtils {
     //
     // final BufferedImage img =
     //   ImageIO.read(new MemoryCacheImageInputStream(in));
-    // if (img == null) throw new IOException("Unrecognized image format");
+    // if (img == null) throw new UnrecognizedImageTypeException();
     // return toCompatibleImage(img);
     //
 
@@ -462,7 +500,16 @@ public class ImageUtils {
         in.close();
       }
 
-      return img; 
+      return img;
+    }
+    catch (FileNotFoundException e) {
+      throw new ImageNotFoundException(name, e);
+    }
+    catch (UnrecognizedImageTypeException e) {
+      throw new UnrecognizedImageTypeException(name, e);
+    }
+    catch (IOException e) {
+      throw new ImageIOException(name, e);
     }
     finally {
       IOUtils.closeQuietly(in);

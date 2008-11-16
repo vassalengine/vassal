@@ -27,9 +27,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorUtils;
 import VASSAL.tools.opcache.OpCache;
 
 /**
@@ -87,26 +85,7 @@ public abstract class AbstractOpImpl
       ErrorDialog.bug(e);
     }
     catch (ExecutionException e) {
-      // don't display dialog for missing images
-      final MissingImageException mie =
-        ErrorUtils.getAncestorOfClass(MissingImageException.class, e);
-      if (mie != null) {
-        ErrorDialog.dataError(new BadDataReport(
-          "Image not found", mie.getFile().getAbsolutePath(), mie));
-//        return null;
-      }
-/*    
-      // display an error dialog for I/O problems
-      final IOException ioe =
-        ErrorUtils.getAncestorOfClass(IOException.class, e);
-      if (ioe != null) {
-        ErrorDialog
-      }
-*/
-      else {
-// FIXME: should check for IOException here also and show a read error dialog
-        ErrorDialog.bug(e);
-      }
+      if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
 
     return null;

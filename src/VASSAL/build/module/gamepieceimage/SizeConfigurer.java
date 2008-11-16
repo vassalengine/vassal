@@ -31,7 +31,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
-import VASSAL.tools.ImageUtils;
+import VASSAL.tools.image.ImageUtils;
 
 public class SizeConfigurer extends StringEnumConfigurer {
 
