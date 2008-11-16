@@ -90,6 +90,7 @@ import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
 import VASSAL.tools.ToolBarComponent;
+import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 
@@ -215,8 +216,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        ErrorDialog.warning(
-          "GameModule.version_error", vassalVersionCreated, runningVersion);
+        WarningDialog.show("GameModule.version_error",
+                           vassalVersionCreated, runningVersion);
       }
     }
     else if (NEXT_PIECESLOT_ID.equals(name)) {
@@ -887,7 +888,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       lastSavedConfiguration = save;
     }
     catch (IOException e) {
-      ErrorDialog.error("GameModule.save_error", e);
+      ErrorDialog.show(e, "GameModule.save_error");
     }
   }
 

@@ -93,8 +93,18 @@ public abstract class AbstractOpImpl
       if (mie != null) {
         ErrorDialog.dataError(new BadDataReport(
           "Image not found", mie.getFile().getAbsolutePath(), mie));
+//        return null;
       }
+/*    
+      // display an error dialog for I/O problems
+      final IOException ioe =
+        ErrorUtils.getAncestorOfClass(IOException.class, e);
+      if (ioe != null) {
+        ErrorDialog
+      }
+*/
       else {
+// FIXME: should check for IOException here also and show a read error dialog
         ErrorDialog.bug(e);
       }
     }

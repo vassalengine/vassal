@@ -65,6 +65,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.Obfuscator;
 import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
@@ -293,7 +294,7 @@ public class GameState implements CommandEncoder {
       // Check the Save game for validity
       final AbstractMetaData metaData = AbstractMetaData.buildMetaData(f);
       if (metaData == null || ! metaData.isSaveData()) {
-        ErrorDialog.warning("GameState.invalid_save_file", f.getPath());
+        WarningDialog.show("GameState.invalid_save_file", f.getPath());
 //        GameModule.getGameModule().warn(Resources.getString("GameState.unable_to_load", f.getName()));
         return;
       }

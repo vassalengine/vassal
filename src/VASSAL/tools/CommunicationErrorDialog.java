@@ -39,7 +39,7 @@ public class CommunicationErrorDialog {
    * @param e the communication exception
    */
   public static void error(Throwable t, IOException e) {
-    ErrorDialog.error("Error.communication_error", t);
+    ErrorDialog.show(t, "Error.communication_error");
   }
 
   /**

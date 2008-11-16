@@ -35,10 +35,10 @@ public class WriteErrorDialog {
    * @param filename the file which was being written
    */
   public static void error(Throwable t, IOException e, String filename) {
-    ErrorDialog.error(
-      "Error.file_write_error",
-      t,
+    ErrorDialog.show(
       (Object) e.getClass().getName() + "@" + filename,
+      t,
+      "Error.file_write_error",
       filename
     );
   }

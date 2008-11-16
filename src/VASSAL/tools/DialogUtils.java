@@ -19,11 +19,14 @@
 
 package VASSAL.tools;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+
+import javax.swing.SwingUtilities;
 
 /**
  * @author Joel Uckelman
@@ -58,7 +61,19 @@ public class DialogUtils {
 
   private static final ExecutorService ex = Executors.newSingleThreadExecutor();
 
-  public static void enqueue(Runnable runnable) {
-    ex.submit(runnable);
+  public static void enqueue(final Runnable runnable) {
+    ex.submit(new Runnable() {
+      public void run() {
+        try {
+          SwingUtilities.invokeAndWait(runnable);
+        }
+        catch (InterruptedException e) {
+          ErrorDialog.bug(e);
+        }
+        catch (InvocationTargetException e) {
+          ErrorDialog.bug(e);
+        }
+      }
+    });
   }
 }

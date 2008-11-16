@@ -778,7 +778,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
     if (o instanceof Configurable) return (Configurable) o;
 
-    ErrorDialog.error("Error.not_a_configurable", className);
+    ErrorDialog.show("Error.not_a_configurable", className);
 
     return null;
 

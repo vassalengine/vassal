@@ -66,6 +66,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.WarningDialog;
 
 public class SecretNotesController implements GameComponent, CommandEncoder, AddSecretNoteCommand.Interface {
   public static final String COMMAND_PREFIX = "SNOTE\t"; //$NON-NLS-1$
@@ -386,28 +387,44 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     }
 
     public void createNewNote() {
-      Dialog parent = (Dialog) SwingUtilities.getAncestorOfClass(Dialog.class, this);
-      JDialog tmp = null;
+      final Dialog parent =
+        (Dialog) SwingUtilities.getAncestorOfClass(Dialog.class, this);
+
+      final JDialog d;
       if (parent != null) {
-        tmp = new JDialog(parent, true);
+        d = new JDialog(parent, true);
       }
       else {
-        tmp = new JDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, this), true);
+        d = new JDialog(
+          (Frame) SwingUtilities.getAncestorOfClass(Frame.class, this),
+          true
+        );
       }
-      final JDialog d = tmp;
+
       d.setTitle(Resources.getString("Notes.delayed_note")); //$NON-NLS-1$
-      final StringConfigurer name = new StringConfigurer(null, Resources.getString("Notes.name")); //$NON-NLS-1$
-      final TextConfigurer text = new TextConfigurer(null, Resources.getString("Notes.text")); //$NON-NLS-1$
+
+      final StringConfigurer name = new StringConfigurer(null,
+        Resources.getString("Notes.name")); //$NON-NLS-1$
+      final TextConfigurer text = new TextConfigurer(null,
+        Resources.getString("Notes.text")); //$NON-NLS-1$
+
       d.setLayout(new BoxLayout(d.getContentPane(), BoxLayout.Y_AXIS));
       d.add(name.getControls());
       d.add(text.getControls());
-      Box buttonPanel = Box.createHorizontalBox();
+
+      final Box buttonPanel = Box.createHorizontalBox();
       final JButton okButton = new JButton(Resources.getString(Resources.OK));
       okButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          SecretNote note = new SecretNote(name.getValueString(), GameModule.getUserId(), (String) text.getValue(), true);
+          final SecretNote note = new SecretNote(
+            name.getValueString(), 
+            GameModule.getUserId(),
+            (String) text.getValue(),
+            true
+          );
+
           if (notes.contains(note)) {
-            JOptionPane.showMessageDialog(Controls.this, Resources.getString("Notes.note_exists")); //$NON-NLS-1$
+            WarningDialog.show(Controls.this, "Notes.note_exists");
           }
           else {
             notes.add(0, note);
@@ -416,7 +433,8 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
           }
         }
       });
-      PropertyChangeListener l = new PropertyChangeListener() {
+
+      final PropertyChangeListener l = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           okButton.setEnabled(name.getValueString() != null
                               && name.getValueString().length() > 0
@@ -426,15 +444,18 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       };
       name.addPropertyChangeListener(l);
       text.addPropertyChangeListener(l);
+
       okButton.setEnabled(false);
       buttonPanel.add(okButton);
-      JButton cancelButton = new JButton(Resources.getString(Resources.CANCEL));
+      final JButton cancelButton =
+        new JButton(Resources.getString(Resources.CANCEL));
       cancelButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           d.dispose();
         }
       });
       d.add(buttonPanel);
+
       d.pack();
       d.setLocationRelativeTo(d.getOwner());
       d.setVisible(true);

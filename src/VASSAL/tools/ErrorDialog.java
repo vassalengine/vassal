@@ -20,21 +20,17 @@
 package VASSAL.tools;
 
 import java.awt.Component;
-import java.awt.Frame;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.logging.Logger;
 import VASSAL.tools.swing.DetailsDialog;
-import VASSAL.tools.swing.Dialogs;
 
 public class ErrorDialog {
   private ErrorDialog() {}
@@ -47,7 +43,7 @@ public class ErrorDialog {
       ErrorUtils.getAncestorOfClass(OutOfMemoryError.class, thrown);
     if (oom != null) {
       Logger.log(thrown);
-      error("Error.out_of_memory");
+      show("Error.out_of_memory");
     }
     // show a bug report dialog if one has not been shown before
     else if (!DialogUtils.setDisabled(BugDialog.class, true)) {
@@ -56,283 +52,213 @@ public class ErrorDialog {
     }
   }
 
-  public static void error(String type) {
-    error(
-      Resources.getString(type + "_title"),
-      Resources.getString(type + "_heading"),
-      Resources.getString(type + "_message")
-    );
-  }
-
-  public static void error(String type, Object... args) {
-    error(
-      Resources.getString(type + "_title"),
-      Resources.getString(type + "_heading"),
-      Resources.getString(type + "_message", args)
-    );
-  }
-
-  public static void error(
-    String type,
-    Throwable thrown,
-    Object key,
+  public static void show(
+    String messageKey,
     Object... args)
   {
-    error(
-      Resources.getString(type + "_title"),
-      Resources.getString(type + "_heading"),
-      Resources.getString(type + "_message", args),
-      thrown,
-      key
-    );
+    ProblemDialog.show(JOptionPane.ERROR_MESSAGE, messageKey, args);
   }
 
-  public static void error(String type, Throwable thrown) {
-    error(
-      Resources.getString(type + "_title"),
-      Resources.getString(type + "_heading"),
-      Resources.getString(type + "_message"),
-      thrown 
-    );
-  }
-
-  public static void error(String type, Object key) {
-    error(
-      Resources.getString(type + "_title"),
-      Resources.getString(type + "_heading"),
-      Resources.getString(type + "_message"),
-      key
-    );
-  }
-
-  public static void error(
-    String title,
-    String header,
-    String message)
-  {
-    error(title, header, message, (Object) null); 
-  }
-
-  public static void error(
-    String title,
-    String header,
-    String message,
-    Object key)
-  {
-    show(getFrame(), title, header, message, JOptionPane.ERROR_MESSAGE, key); 
-  }
-
-  public static void error(
-    String title,
-    String header,
-    String message,
-    Throwable thrown)
-  {
-    error(getFrame(), title, header, message, thrown, null); 
-  }
-
-  public static void error(
-    String title,
-    String header,
-    String message,
-    Throwable thrown,
-    Object key)
-  {
-    error(getFrame(), title, header, message, thrown, key); 
-  }
-
-  public static void error(
-    Component parent,
-    String title,
-    String header,
-    String message,
-    Throwable thrown,
-    Object key)
-  {
-    if (thrown != null) Logger.log(thrown);
-    show(parent, title, header, message,
-         BugUtils.getStackTrace(thrown), JOptionPane.ERROR_MESSAGE, key);
-  }
-
-  public static void warning(String type) {
-    warning(
-      Resources.getString(type + "_title"),
-      Resources.getString(type + "_heading"),
-      Resources.getString(type + "_message")
-    );
-  }
-
-  public static void warning(String type, Object... args) {
-    warning(
-      Resources.getString(type + "_title"),
-      Resources.getString(type + "_heading"),
-      Resources.getString(type + "_message", args)
-    );
-  }
-
-  public static void warning(String type, Throwable thrown) {
-    warning(
-      Resources.getString(type + "_title"),
-      Resources.getString(type + "_heading"),
-      Resources.getString(type + "_message"),
-      thrown 
-    );
-  }
-
-  public static void warning(String type, Object key) {
-    warning(
-      Resources.getString(type + "_title"),
-      Resources.getString(type + "_heading"),
-      Resources.getString(type + "_message"),
-      key
-    );
-  }
-
-  public static void warning(
-    String title,
-    String header,
-    String message)
-  {
-    warning(title, header, message, (Object) null); 
-  }
-
-  public static void warning(
-    String title,
-    String header,
-    String message,
-    Object key)
-  {
-    show(getFrame(), title, header, message, JOptionPane.WARNING_MESSAGE, key);
-  }
-
-  public static void warning(
-    String title,
-    String header,
-    String message,
-    Throwable thrown)
-  {
-    warning(getFrame(), title, header, message, thrown, null); 
-  }
-
-  public static void warning(
-    String title,
-    String header,
-    String message,
-    Throwable thrown,
-    Object key)
-  {
-    warning(getFrame(), title, header, message, thrown, key); 
-  }
-
-  public static void warning(
-    Component parent,
-    String title,
-    String header,
-    String message,
-    Throwable thrown,
-    Object key)
-  {
-    if (thrown != null) Logger.log(thrown);
-    show(parent, title, header, message,
-         BugUtils.getStackTrace(thrown), JOptionPane.WARNING_MESSAGE, key);
-  }
-  
   public static void show(
-    final Component parent,
-    final String title,
-    final String header,
-    final String message,
-    final int messageType,
-    final Object key)
+    Component parent,
+    String messageKey,
+    Object... args)
   {
-    showDialog(
-      parent,
-      title,
-      header,
-      message,
-      messageType,
-      key
-    );
+    ProblemDialog.show(JOptionPane.ERROR_MESSAGE, parent, messageKey, args);
+  }
+
+  public static void show(
+    Throwable thrown,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.show(JOptionPane.ERROR_MESSAGE, thrown, messageKey, args);
   }
 
   public static void show(
     final Component parent,
-    final String title,
-    final String header,
-    final String message,
-    final String details,
-    final int messageType,
-    final Object key)
+    final Throwable thrown,
+    final String messageKey,
+    final Object... args)
   {
-    if (DialogUtils.isDisabled(key)) return;
+    ProblemDialog.show(JOptionPane.ERROR_MESSAGE, parent,
+                       thrown, messageKey, args);
+  }
 
-    DialogUtils.enqueue(new Runnable() {
-      public void run() {
-        try {
-          SwingUtilities.invokeAndWait(new Runnable() {
-            public void run() {
-              DetailsDialog.showDialog(
-                parent,
-                title,
-                header,
-                message,
-                details,
-                messageType,
-                key
-              );
-            }
-          });
-        }
-        catch (InterruptedException e) {
-          Logger.log(e);
-        }
-        catch (InvocationTargetException e) {
-          Logger.log(e);
-        }
-      }
-    });
+  public static void show(
+    final Component parent,
+    final Throwable thrown,
+    final String title,
+    final String heading,
+    final String message)
+  {
+    ProblemDialog.show(JOptionPane.ERROR_MESSAGE, parent,
+                       thrown, title, heading, message);
+  }
+
+  public static void showDisableable(
+    Object key,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDisableable(JOptionPane.ERROR_MESSAGE,
+                                  key, messageKey, args);
+  }
+
+  public static void showDisableable(
+    Component parent,
+    Object key,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDisableable(JOptionPane.ERROR_MESSAGE,
+                                  parent, key, messageKey, args);
+  }
+
+  public static void showDisableable(
+    Throwable thrown,
+    Object key,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDisableable(JOptionPane.ERROR_MESSAGE,
+                                  thrown, key, messageKey, args);
+  }
+
+  public static void showDisableable(
+    Component parent,
+    Throwable thrown,
+    Object key,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDisableable(JOptionPane.ERROR_MESSAGE, parent,
+                                  thrown, key, messageKey, args);
+  }
+
+  public static void showDisableable(
+    Component parent,
+    Throwable thrown,
+    Object key,
+    String title,
+    String heading,
+    String message)
+  {
+    ProblemDialog.showDisableable(JOptionPane.ERROR_MESSAGE, parent,
+                                  thrown, key, title, heading, message);
+  }
+
+  public static void showDetails(
+    String details,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDetails(JOptionPane.ERROR_MESSAGE,
+                              details, messageKey, args);
+  }
+
+  public static void showDetails(
+    Component parent,
+    String details,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDetails(JOptionPane.ERROR_MESSAGE,
+                              parent, details, messageKey, args);
   }
   
-  private static void showDialog(
-    final Component parent,
-    final String title,
-    final String header,
-    final String message,
-    final int messageType,
-    final Object key)
+  public static void showDetails(
+    Throwable thrown,
+    String details,
+    String messageKey,
+    Object... args)
   {
-    if (DialogUtils.isDisabled(key)) return;
-
-    DialogUtils.enqueue(new Runnable() {
-      public void run() {
-        try {
-          SwingUtilities.invokeAndWait(new Runnable() {
-            public void run() {
-              Dialogs.showMessageDialog(
-                parent,
-                title,
-                header,
-                message,
-                messageType,
-                key
-              );
-            }
-          });
-        }
-        catch (InterruptedException e) {
-          Logger.log(e);
-        }
-        catch (InvocationTargetException e) {
-          Logger.log(e);
-        }
-      }
-    });
+    ProblemDialog.showDetails(JOptionPane.ERROR_MESSAGE,
+                              thrown, details, messageKey, args);
   }
 
-  private static Frame getFrame() {
-    return GameModule.getGameModule() == null
-      ? null : GameModule.getGameModule().getFrame();
+  public static void showDetails(
+    Component parent,
+    Throwable thrown,
+    String details,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDetails(JOptionPane.ERROR_MESSAGE,
+                              parent, thrown, details, messageKey, args);
   }
+
+   public static void showDetails(
+    Component parent,
+    Throwable thrown,
+    String details,
+    String title,
+    String heading,
+    String message)
+  {
+    ProblemDialog.showDetails(JOptionPane.ERROR_MESSAGE,
+                              parent, thrown, details, title, heading, message);
+  }
+
+    public static void showDetailsDisableable(
+    String details,
+    Object key,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDetailsDisableable(JOptionPane.ERROR_MESSAGE,
+                                         details, key, messageKey, args);
+  }
+
+  public static void showDetailsDisableable(
+    Component parent,
+    String details,
+    Object key,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDetailsDisableable(JOptionPane.ERROR_MESSAGE,
+      parent, details, key, messageKey, args);
+  }
+  
+  public static void showDetailsDisableable(
+    Throwable thrown,
+    String details,
+    Object key,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDetailsDisableable(JOptionPane.ERROR_MESSAGE,
+      thrown, details, key, messageKey, args);
+  }
+
+  public static void showDetailsDisableable(
+    Component parent,
+    Throwable thrown,
+    String details,
+    Object key,
+    String messageKey,
+    Object... args)
+  {
+    ProblemDialog.showDetailsDisableable(JOptionPane.ERROR_MESSAGE,
+      parent, thrown, details, key, messageKey, args);
+  }
+
+  public static void showDetailsDisableable(
+    Component parent,
+    Throwable thrown,
+    String details,
+    Object key,
+    String title,
+    String heading,
+    String message)
+  {
+    ProblemDialog.showDetailsDisableable(JOptionPane.ERROR_MESSAGE,
+      parent, thrown, details, key, title, heading, message);
+  }
+
+////////////////
+
 
   private static final Set<String> reportedDataErrors =
     Collections.synchronizedSet(new HashSet<String>());
@@ -349,9 +275,9 @@ public class ErrorDialog {
       }
       // If editing, show a warning dialog
       else {
-        warning(
-          "Error.data_error",
+        WarningDialog.showDisableable(
           (Object) e.getData(),
+          "Error.data_error",
           e.getMessage(),
           e.getData() 
         );
@@ -359,32 +285,17 @@ public class ErrorDialog {
     }
   }
 
+///////////////////
 
-  public static void main(String[] args) {
+
+  public static void main(String[] args) throws Exception {
     final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
-    ErrorDialog.warning("Oh Shit!", "Oh Shit!", loremIpsum);
-    ErrorDialog.error("Oh Shit!", "Oh Shit!", loremIpsum);
+    while (!DialogUtils.isDisabled(0)) {
+      showDisableable(null, null, 0, "Oh Shit!", "Oh Shit!", loremIpsum);
+      Thread.sleep(1000);
+    }
 
-    ErrorDialog.warning("Oh Shit!", "Oh Shit!", loremIpsum, true);
-    ErrorDialog.error("Oh Shit!", "Oh Shit!", loremIpsum, true);
-
-    new Thread(new Runnable() {
-      public void run() {
-        while (!DialogUtils.isDisabled(0)) {
-          ErrorDialog.warning("Oh Shit!", "Oh Shit!", loremIpsum, 0);
-        }
-      }
-    }).start();
-
-    new Thread(new Runnable() {
-      public void run() {
-        while (!DialogUtils.isDisabled(1)) {
-          ErrorDialog.error("Oh Shit!", "Oh Shit!", loremIpsum, 1);
-        }
-      }
-    }).start();
-
-//    System.exit(0); 
+    System.exit(0); 
   }
 }

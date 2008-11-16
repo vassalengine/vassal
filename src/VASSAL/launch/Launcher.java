@@ -139,10 +139,10 @@ public abstract class Launcher {
         System.exit(1);
       }
       catch (IOException e) {
-        // What we've got here is a failure to communicate.
-        ErrorDialog.error(
-          "Error.communication_error", 
+        // What we've got here is failure to communicate.
+        ErrorDialog.show(
           e,
+          "Error.communication_error", 
           Resources.getString(getClass().getSimpleName() + ".app_name")
         );         
         System.exit(1);
@@ -161,8 +161,8 @@ public abstract class Launcher {
         catch (IOException e1) {
           if (cmdC == null) {
             // we are standalone, so warn the user directly
-            ErrorDialog.error(
-              "Launcher.module_load_error", e1, e1.getMessage());
+            ErrorDialog.show(
+              e1, "Launcher.module_load_error", e1.getMessage());
           }
           else {
             // we have a manager, so pass the load failure back to it
@@ -171,12 +171,12 @@ public abstract class Launcher {
             }
             catch (IOException e2) {
               // warn the user directly as a last resort 
-              ErrorDialog.error(
-                "Launcher.module_load_error", e1, e1.getMessage());
+              ErrorDialog.show(
+                e1, "Launcher.module_load_error", e1.getMessage());
 
-              ErrorDialog.error(
-                "Launcher.communication_error",
+              ErrorDialog.show(
                 e2,
+                "Launcher.communication_error",
                 Resources.getString(getClass().getSimpleName() + ".app_name")
               );
             }

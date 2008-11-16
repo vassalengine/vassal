@@ -29,7 +29,8 @@ public class Main {
     System.setProperty("swing.boldMetal", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("awt.useSystemAAFontSettings", "on"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    ErrorDialog.warning(
+    ErrorDialog.show(
+      null, null,
       "Obsolete Entry Point",
       "The Entry Point VASSAL.launch.Main is Obsolete",
       "You have attempted to start VASSAL from the VASSAL.launch.Main entry point. This entry point is no longer current. The current entry points are VASSAL.launch.ModuleManager, VASSAL.launch.Player, and VASSAL.launch.Editor.\n\nIf this message makes no sense to you, or you were trying to load a module, please ask for help at the VASSAL Forum."

@@ -39,19 +39,19 @@ public class ReadErrorDialog {
   public static void error(Throwable t, IOException e, String filename) {
     if (e instanceof FileNotFoundException) {
       // file is missing
-      ErrorDialog.warning(
-        "Error.file_not_found",
+      WarningDialog.showDisableable(
         t,
         (Object) (e.getClass().getName() + "@" + filename),
+        "Error.file_not_found",
         filename
       );
     }
     else { 
       // something more serious happened during I/O
-      ErrorDialog.error(
-        "Error.file_read_error",
+      ErrorDialog.showDisableable(
         t,
         (Object) (e.getClass().getName() + "@" + filename),
+        "Error.file_read_error",
         filename
       );
     }

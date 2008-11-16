@@ -54,7 +54,7 @@ public class BrowserSupport {
       browserLauncher.openURLinBrowser(url);
     }
     else {
-      ErrorDialog.error("BrowserSupport.unable_to_launch", url);
+      ErrorDialog.show("BrowserSupport.unable_to_launch", url);
     }
   }
 

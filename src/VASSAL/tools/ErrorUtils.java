@@ -83,19 +83,19 @@ public class ErrorUtils {
     // thrown by Class.forName()
     //
     if (t instanceof ClassNotFoundException) {
-      ErrorDialog.error("Error.class_not_found", t, className);
+      ErrorDialog.show(t, "Error.class_not_found", className);
     }
     else if (t instanceof ExceptionInInitializerError) {
-      ErrorDialog.error("Error.class_init_failed", t, className);
+      ErrorDialog.show(t, "Error.class_init_failed", className);
     }
     else if (t instanceof LinkageError) {
-      ErrorDialog.error("Error.class_linkage_failed", t, className);
+      ErrorDialog.show(t, "Error.class_linkage_failed", className);
     }
     //
     // thrown by Class.getConstructor()
     //
     else if (t instanceof NoSuchMethodException) {
-      ErrorDialog.error("Error.no_nullary_ctor", t, className);
+      ErrorDialog.show(t, "Error.no_nullary_ctor", className);
     }
     else if (t instanceof SecurityException) {
       // FIXME: shoud not happen? what to do?  
@@ -104,7 +104,7 @@ public class ErrorUtils {
     // thrown by Constructor.newInstance()
     //
     else if (t instanceof IllegalAccessException) {
-      ErrorDialog.error("Error.nonpublic_ctor", t, className);
+      ErrorDialog.show(t, "Error.nonpublic_ctor", className);
     }
     else if (t instanceof IllegalArgumentException) {
       // This ought to be impossible, since the ctor is supposed to be
@@ -113,10 +113,10 @@ public class ErrorUtils {
       ErrorDialog.bug(t);
     }
     else if (t instanceof InstantiationException) {
-      ErrorDialog.error("Error.class_not_concrete", t, className);
+      ErrorDialog.show(t, "Error.class_not_concrete", className);
     }
     else if (t instanceof InvocationTargetException) {
-      ErrorDialog.error("Error.exception_in_ctor", t, className);
+      ErrorDialog.show(t, "Error.exception_in_ctor", className);
     }
     //
     // extremal cases
