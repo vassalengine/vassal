@@ -65,7 +65,7 @@ public class LogEntry implements Serializable {
     final StringBuilder sb = new StringBuilder();
     sb.append(timestamp).append(' ').append(pid);
     if (message != null) sb.append(' ').append(message);
-    if (thrown != null) sb.append(BugUtils.getStackTrace(thrown));
+    if (thrown  != null) sb.append(' ').append(BugUtils.getStackTrace(thrown));
     return sb.toString();
   }
 }
