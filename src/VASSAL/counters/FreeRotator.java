@@ -154,7 +154,8 @@ public class FreeRotator extends Decorator
     }
 
     Rectangle r;
-    if ((getGpOp() != null && getGpOp().isChanged()) || (r = bounds.get(angle)) == null) {
+    if ((getGpOp() != null && getGpOp().isChanged()) ||
+        (r = bounds.get(angle)) == null) {
 
       r = AffineTransform.getRotateInstance(getAngleInRadians(),
                                             centerX(),
@@ -162,6 +163,7 @@ public class FreeRotator extends Decorator
                          .createTransformedShape(b).getBounds();
       bounds.put(angle, r);
     }
+
     return new Rectangle(r);
   }
 
@@ -274,6 +276,7 @@ public class FreeRotator extends Decorator
 
       if (getGpOp() != null && getGpOp().isChanged()) {
         gpOp = Op.piece(piece);
+        bounds.clear();
         rotOp.clear();
         op = Op.rotateScale(gpOp, angle, zoom);        
         rotOp.put(angle, op);
