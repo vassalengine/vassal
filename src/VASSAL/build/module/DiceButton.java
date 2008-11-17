@@ -288,6 +288,7 @@ public class DiceButton extends AbstractConfigurable {
   public void addTo(Buildable parent) {
     ran = GameModule.getGameModule().getRNG();
     GameModule.getGameModule().getToolBar().add(getComponent());
+    property.setPropertyValue("1"); // Initialize with a numeric value
     property.addTo((MutablePropertiesContainer)parent);
   }
 
