@@ -77,7 +77,7 @@ public class GlobalOptions extends AbstractConfigurable {
   private String promptString = "Opponents can unmask my pieces";
   private String nonOwnerUnmaskable = NEVER;
   private String centerOnMoves = ALWAYS;
-  private String autoReport = NEVER;
+  private String autoReport = ALWAYS;
   private String markMoved = NEVER;
 
   private Map<String,Object> properties = new HashMap<String,Object>();
@@ -147,7 +147,7 @@ public class GlobalOptions extends AbstractConfigurable {
     }
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[] {StringPreference.class, 
         TextPreference.class,
         EnumPreference.class,
