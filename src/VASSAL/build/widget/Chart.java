@@ -137,7 +137,7 @@ public class Chart extends Widget {
    * 
    * return config; }
    */
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

@@ -126,7 +126,7 @@ public class MapWidget extends Widget {
     return null;
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
   protected static class TabSwitcher implements DropTargetListener {

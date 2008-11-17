@@ -24,6 +24,13 @@ public class WidgetMap extends Map {
       toolBar.setVisible(false);
     }
   }
+  
+  /**
+   * Widget maps are always undocked
+   */
+  public boolean shouldDockIntoMainWindow() {
+    return false;
+  }
 
   /*
    * Hide options relating to toolbar buttons
