@@ -41,6 +41,7 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MovementReporter;
@@ -431,11 +432,13 @@ public class Translate extends Decorator implements TranslatablePiece {
         move.map.repaint();
       }
       MovementReporter r = new MovementReporter(comm);
-      Command reportCommand = r.getReportCommand();
-      if (reportCommand != null) {
-        reportCommand.execute();
+      if (GlobalOptions.getInstance().autoReportEnabled()) {        
+        Command reportCommand = r.getReportCommand();
+        if (reportCommand != null) {
+          reportCommand.execute();
+        }
+        comm.append(reportCommand);
       }
-      comm.append(reportCommand);
       comm.append(r.markMovedPieces());
       if (stroke != null) {
         for (GamePiece gamePiece : innerPieces) {
