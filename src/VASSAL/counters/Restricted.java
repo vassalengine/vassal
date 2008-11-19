@@ -110,7 +110,7 @@ public class Restricted extends Decorator implements EditablePiece {
     if (restrictByPlayer) {
       restricted = owningPlayer.length() > 0 && !GameModule.getUserId().equals(owningPlayer);
     }
-    if (restricted 
+    if ((restricted || !restrictByPlayer) 
         && PlayerRoster.isActive()
         && GameModule.getGameModule().getGameState().isGameStarted()) {
       restricted = true;
