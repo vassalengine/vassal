@@ -27,6 +27,16 @@ Changes since beta5:
 
 A number of problems present in 3.1.0-beta5 are fixed in 3.1.0-beta6:
 
+HEAD=4508
+
+* Bug 2309593: Move Fixed Distance auto-report never turns off
+* Bug 2306908: Default option for 'Auto-Report Moves' should be Always
+* Bug 2306873: Not a Number when referencing DiceButton value in Edit mode
+* Bug 2305254: Chart Maps not Visible if Main map undocked
+* Bug 2294041: Bad Image generates IOException instead of Bad Data report
+* Bug 2292450: Corrupted Color Preference causing NoSuchElement Exception
+* Bug 2290225: Cancel when setting a Dynamic/Global Property sets to null
+* Bug 2285925: NPE in FileChooser.NativeFileChooser.awt_file_dialog_init()
 * Bug 2282205: ArrayIndexOutOfBoundsException in ZoomMenu.initZoomItems()
 * Bug 2280943: Delete key no longer deletes elements in Edit Mode
 * Bug 2280253: NPE if no Key Command specified
@@ -37,9 +47,12 @@ A number of problems present in 3.1.0-beta5 are fixed in 3.1.0-beta6:
 * Bug 2248313: NoSuchElementException in ColorConfigurer.stringToColor()
 * Bug 2199032: NPE in FileChooser.NativeFileChooser.awt_file_dialog_init()
 * Bug 2174283: SymbolSet$SymbolData.getImage() creates 0-width image
+* Bug: Restricted Access trait works again
+* Bug: Must recalculate bounding box for rotation when inner piece changes
+* Bug: Check that child port is in [0,65535] when launching Player or Editor
 * Bug: Problem when adding a Place Marker to a Place Marker definition
 * Bug: Transparent SVG has an opaque black background
-* Bug: Transparent 8-bit RGB PNGs not loaded properly by ImageIO
+* Bug: Some transparent PNGs not loaded properly by ImageIO
 * Cosmetic changes to the Bug Report dialog
 * ADC2: If a flip definition points to itself, then it's not really valid
 * ADC2: Invalid masks cause the piece to be completely transparent
