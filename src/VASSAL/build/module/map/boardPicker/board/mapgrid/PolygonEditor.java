@@ -50,6 +50,10 @@ public class PolygonEditor extends JPanel {
 
   public PolygonEditor(Polygon p) {
     polygon = p;
+    reset();
+  }
+  
+  protected void reset() {
     if (polygon == null || polygon.npoints == 0) {
       setupForCreate();
     }
@@ -60,6 +64,10 @@ public class PolygonEditor extends JPanel {
 
   public Polygon getPolygon() {
     return polygon;
+  }
+  
+  public Polygon clonePolygon() {
+    return new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
   }
 
   public void setPolygon(Polygon polygon) {

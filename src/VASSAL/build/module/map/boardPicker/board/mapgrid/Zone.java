@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module.map.boardPicker.board.mapgrid;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -566,6 +567,8 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     private Board board;
     private JDialog frame;
     protected AdjustableSpeedScrollPane scroll;
+    protected Polygon savePoly;
+    final protected JLabel warning = new JLabel("Zone has not been defined");
 
     public Editor(final Zone zone) {
       super(PATH, null);
@@ -587,18 +590,23 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
           else {
             super.paintBackground(g);
           }
+          warning.setVisible(editor != null && (editor.getPolygon() == null || editor.getPolygon().npoints == 0));
         }
       };
       frame = new JDialog((Frame) null, zone.getConfigureName(), true);
       frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
       final JPanel labels = new JPanel();
-      labels.setLayout(new GridLayout(2, 2));
+      labels.setLayout(new GridLayout(3, 2));
       labels.add(new JLabel("Drag to create initial shape"));
       labels.add(new JLabel("Right-click to add point"));
       labels.add(new JLabel("Left-click to move points"));
       labels.add(new JLabel("DEL to remove point"));
+      warning.setForeground(Color.red);
+      warning.setVisible(false);      
+      labels.add(warning);
       labels.setAlignmentX(0.0f);
       frame.add(labels);
+      
       final JButton direct = new JButton("Set Coordinates directly");
       direct.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -620,31 +628,40 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
         }
       });
       direct.setAlignmentX(0.0f);
-      frame.add(direct);
+      frame.add(direct);     
+      
       scroll = new AdjustableSpeedScrollPane(editor);
       editor.setScroll(scroll);
       frame.add(scroll);
       final JPanel buttonPanel = new JPanel();
+      
       final JButton closeButton = new JButton("Ok");
       closeButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           setValue((Object) getValueString());
           frame.setVisible(false);
-//          GameModule.getGameModule().getDataArchive().clearTransformedImageCache();
         }
       });
+      
+      final JButton canButton = new JButton("Cancel");
+      canButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          editor.setPolygon(savePoly);
+          setValue((Object) getValueString());
+          frame.setVisible(false);
+        }
+      });
+      
       buttonPanel.add(closeButton);
+      buttonPanel.add(canButton);
       frame.add(buttonPanel);
     }
-
+    
     private void init(Zone zone) {
       board = zone.getBoard();
-/*
-      if (board != null) {
-        board.fixImage();
-      }
-*/
       editor.setPreferredSize(board != null ? board.getSize() : DEFAULT_SIZE);
+      editor.reset();
+      savePoly = editor.clonePolygon();
       final Rectangle polyBounds = editor.getPolygon().getBounds();
       final Point polyCenter = new Point(polyBounds.x + polyBounds.width/2,
           polyBounds.y + polyBounds.height/2);
