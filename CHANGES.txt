@@ -51,7 +51,7 @@ showing pieces
 * Bug: Fix bug in RestrictCommands not re-enabling commands
 * Bug: Properly handle px units in width and height of SVG images
 * Bug: Fixed bug in SendToLocation when using offsets.
-* Bug:  SpecialDiceButton use correct format for text/window-title
+* Bug: SpecialDiceButton use correct format for text/window-title
 
 3.0.18 - 3 February 2008
 * Remove LOS_Thread console output.
