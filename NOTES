@@ -27,8 +27,7 @@ Changes since beta5:
 
 A number of problems present in 3.1.0-beta5 are fixed in 3.1.0-beta6:
 
-HEAD=4508
-
+* Bug 2316022: ArithmeticException in PropertySheet.TickLabel.mouseClicked
 * Bug 2309593: Move Fixed Distance auto-report never turns off
 * Bug 2306908: Default option for 'Auto-Report Moves' should be Always
 * Bug 2306873: Not a Number when referencing DiceButton value in Edit mode
@@ -41,6 +40,7 @@ HEAD=4508
 * Bug 2280943: Delete key no longer deletes elements in Edit Mode
 * Bug 2280253: NPE if no Key Command specified
 * Bug 2273032: NPE in PlaceMarker.placeMarker()
+* Bug 2261405: Unable to move region in irregular grid
 * Bug 2259361: NPE in FreeRotator.mouseReleased()
 * Bug 2254357: StringIndexOutOfBoundsException in FormattedStringConfigurer
 * Bug 2250058: NPE when adding a Place Marker to a prototype.

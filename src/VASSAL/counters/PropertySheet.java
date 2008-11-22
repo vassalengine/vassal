@@ -1209,7 +1209,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         numRows = dx < 3 ? 3 : dx < 6 ? 2 : 1;
 
         dx = Math.min(displayWidth * numRows / maxTicks, Math.min(getHeight() / numRows, 10));
-
+        if (dx < 1) dx = 1;
+        
         numCols = (maxTicks + numRows - 1) / numRows;
 
         int dy = dx;
