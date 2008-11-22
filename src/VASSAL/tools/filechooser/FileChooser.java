@@ -299,19 +299,28 @@ public abstract class FileChooser {
     protected FileDialog awt_file_dialog_init(Component parent) {
       final FileDialog fd;
 
-      final Window w = parent instanceof Window ? (Window) parent :
-        SwingUtilities.getWindowAncestor(parent);
-
-      if (w instanceof Dialog) {
-        fd = new FileDialog((Dialog) w, title);
-      }
-      else if (w instanceof Frame) {
-        fd = new FileDialog((Frame) w, title);
-      }
-      else {
+      if (parent == null) {
         fd = new FileDialog((Frame) null, title);
       }
-
+      else {
+        final Dialog d =
+          (Dialog) SwingUtilities.getAncestorOfClass(Dialog.class, parent);
+        if (d != null) {
+          fd = new FileDialog(d, title);
+        }
+        else {
+          final Frame f =
+            (Frame) SwingUtilities.getAncestorOfClass(Frame.class, parent);
+          if (f != null) {
+            fd = new FileDialog(f, title);
+          }
+          else {
+            // should be impossible, parent is not in a dialog or frame!
+            fd = new FileDialog((Frame) null, title);
+          }
+        }
+      }     
+ 
       fd.setModal(true);
       fd.setFilenameFilter(filter);
       if (cur != null) {
