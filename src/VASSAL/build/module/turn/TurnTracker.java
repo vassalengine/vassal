@@ -176,7 +176,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     // Create preferences
     final IntConfigurer size = new IntConfigurer(FONT_SIZE, Resources.getString("TurnTracker.size_pref"), new Integer(14)); //$NON-NLS-1$
     final BooleanConfigurer bold = new BooleanConfigurer(FONT_BOLD,  Resources.getString("TurnTracker.bold_pref"), Boolean.FALSE); //$NON-NLS-1$
-    final BooleanConfigurer docked = new BooleanConfigurer(DOCKED,  Resources.getString("TurnTracker.docked_pref"), Boolean.TRUE); //$NON-NLS-1$
+    final BooleanConfigurer docked = new BooleanConfigurer(DOCKED,  Resources.getString("TurnTracker.docked_pref"), Boolean.FALSE); //$NON-NLS-1$
     
     String prefTab = Resources.getString("TurnTracker.turn_counter"); //$NON-NLS-1$
     GameModule.getGameModule().getPrefs().addOption(prefTab, size);
@@ -275,9 +275,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         value = new Integer((String) value);
       }
       width = ((Integer) value).intValue();
-      if (width == 0) { // Compatibility with previous version
-        lengthStyle = LENGTH_VARIABLE;
-      }
     }
     else if (LENGTH_STYLE.equals(key)) {
       lengthStyle = (String) value;
@@ -486,8 +483,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
   }
   
-  @SuppressWarnings("unchecked")
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[] { CounterTurnLevel.class, ListTurnLevel.class, TurnGlobalHotkey.class };
   }
 
