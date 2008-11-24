@@ -27,6 +27,7 @@ Changes since beta5:
 
 A number of problems present in 3.1.0-beta5 are fixed in 3.1.0-beta6:
 
+* Bug 2339611: Try to load PNGs with bad metadata anyway
 * Bug 2316022: ArithmeticException in PropertySheet.TickLabel.mouseClicked
 * Bug 2311318: Setting Label length to 0 in Turn Tracker changes to Fixed
 * Bug 2309593: Move Fixed Distance auto-report never turns off
