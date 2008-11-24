@@ -83,19 +83,25 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   private GpIdSupport gpidSupport;
 
   public PieceSlot() {
-    panel = new PieceSlot.Panel();
+    panel = new PieceSlot.Panel(this);
     panel.addMouseListener(this);
     panel.addKeyListener(this);
   }
 
-  private class Panel extends JPanel {
+  public class Panel extends JPanel {
     private static final long serialVersionUID = 1L;
-
-    public Panel() {
+    protected PieceSlot pieceSlot;
+    
+    public Panel(PieceSlot slot) {
       super();
-      setFocusTraversalKeysEnabled(false); 
+      setFocusTraversalKeysEnabled(false);
+      pieceSlot = slot;
     }
 
+    public PieceSlot getPieceSlot() {
+      return pieceSlot;
+    }
+    
     public void paint(Graphics g) {
       PieceSlot.this.paint(g);
     }
