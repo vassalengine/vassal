@@ -36,6 +36,7 @@ A number of problems present in 3.1.0-beta5 are fixed in 3.1.0-beta6:
 * Bug 2294041: Bad Image generates IOException instead of Bad Data report
 * Bug 2292450: Corrupted Color Preference causing NoSuchElement Exception
 * Bug 2290225: Cancel when setting a Dynamic/Global Property sets to null
+* Bug 2286888: NPE in FileChooser$NativeFileChooser.awt_file_dialog_init
 * Bug 2285925: NPE in FileChooser.NativeFileChooser.awt_file_dialog_init()
 * Bug 2282205: ArrayIndexOutOfBoundsException in ZoomMenu.initZoomItems()
 * Bug 2280943: Delete key no longer deletes elements in Edit Mode
