@@ -32,6 +32,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.DataInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +41,6 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
-import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.swing.ImageIcon;
@@ -386,82 +386,42 @@ public class ImageUtils {
     return toCompatibleImage(img);
   }
 
-  public static ImageReader checkImageIOCanRead(ImageInputStream in)
-                                                          throws IOException {
-    final Iterator<ImageReader> i = ImageIO.getImageReaders(in);
-    if (!i.hasNext()) throw new UnrecognizedImageTypeException();
-    
-    boolean readerOk = false;
-    ImageReader reader = i.next();
-    try {
-      reader.setInput(in);
+  public static boolean isMasked8BitRGBPNG(InputStream in) throws IOException {
+    final DataInputStream din = new DataInputStream(in);
 
-      // check that we are reading a PNG, since only PNGs are a problem
-      final String format = reader.getFormatName().toUpperCase();
-      if (!"PNG".equals(format)) {
-        readerOk = true;
-        return reader;
-      }
+    // Bail immediately if this stream is not a PNG.
+    if (!PNGDecoder.decodeSignature(din)) return false;
 
-      final IIOMetadata md = reader.getImageMetadata(0);
-      final Node root = md.getAsTree(md.getNativeMetadataFormatName());
+    // IHDR is required to be first, and tRNS is required to appear before
+    // the first IDAT chunk; therefore, if we find an IDAT we're done.
+    PNGDecoder.Chunk ch;
 
-      boolean eightBitRGB = true;
-      boolean transparent = false;
-      for (Node n = root.getFirstChild(); n != null; n = n.getNextSibling()) {
-        if (!(n instanceof Element)) continue;
+    ch = PNGDecoder.decodeChunk(din);
+    if (ch.type != PNGDecoder.IHDR) return false;
+    if (ch.data[8] != 8 || ch.data[9] != 2) return false;
 
-        final Element e = (Element) n; 
-        final String ename = e.getNodeName();
-        if ("IHDR".equals(ename)) {
-          if (! "8".equals(e.getAttribute("bitDepth")) ||
-              ! "RGB".equals(e.getAttribute("colorType"))) {
-            eightBitRGB = false;
-            break;
-          }
-        }
-        else if ("tRNS".equals(ename)) {
-          transparent = true;
-          if (eightBitRGB) break;
-        }
-      }
+    while (true) {
+      ch = PNGDecoder.decodeChunk(din);
 
-      // ImageIO chokes on this kind of image, don't use it
-      if (eightBitRGB && transparent) {
-        readerOk = false;
-        return null; 
-      }
-      else {
-        readerOk = true;
-        return reader;
+/*
+      System.out.println(new char[]{
+        (char)((ch.type >> 24) & 0xff),
+        (char)((ch.type >> 16) & 0xff),
+        (char)((ch.type >> 8) & 0xff),
+        (char)(ch.type & 0xff)
+      });
+*/      
+
+      // Numbers here refer to sections in the PNG standard, found
+      // at http://www.w3.org/TR/PNG/
+      switch (ch.type) {
+      case PNGDecoder.tRNS:  // 11.3.2
+        return true;      
+      case PNGDecoder.IDAT:  // 12.2.4
+        return false;
+      default:
       }
     }
-    finally {
-      if (!readerOk) reader.dispose();
-    } 
-  }
-
-  private static BufferedImage loadWithImageIOIfOk(InputStream in)
-                                                          throws IOException {
-    final ImageInputStream iis = new MemoryCacheImageInputStream(in);
-    final ImageReader reader = checkImageIOCanRead(iis);
-    if (reader == null) return null;
-
-    try {
-      final BufferedImage img = reader.read(0);
-      if (img == null) throw new UnrecognizedImageTypeException();
-      return toCompatibleImage(img);
-    }
-    finally {
-      reader.dispose();
-    }
-  }
-
-  private static BufferedImage loadWithToolkit(InputStream in)
-                                                          throws IOException {
-    return toBufferedImage(
-      Toolkit.getDefaultToolkit().createImage(IOUtils.getBytes(in))
-    );
   }
 
   public static BufferedImage getImage(String name, DataArchive archive)
@@ -491,14 +451,21 @@ public class ImageUtils {
     InputStream in = null;
     try {
       in = archive.getImageInputStream(name);
-      img = loadWithImageIOIfOk(in);
+      final boolean useToolkit = isMasked8BitRGBPNG(in);
       in.close();
+      in = archive.getImageInputStream(name);
 
-      if (img == null) {
-        in = archive.getImageInputStream(name);
-        img = loadWithToolkit(in);
-        in.close();
+      if (useToolkit) {
+        img = toBufferedImage(
+          Toolkit.getDefaultToolkit().createImage(IOUtils.getBytes(in)));
       }
+      else {
+        img = ImageIO.read(new MemoryCacheImageInputStream(in));
+        if (img == null) throw new UnrecognizedImageTypeException();
+        img = toCompatibleImage(img);
+      }
+
+      in.close();
 
       return img;
     }

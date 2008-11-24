@@ -28,6 +28,7 @@ import java.awt.image.SampleModel;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -60,14 +61,11 @@ public class MappedImageUtils {
       InputStream in = null;
       try {
         in = archive.getImageInputStream(name);
-        img = loadWithImageIOIfOk(in);
+        final boolean useToolkit = ImageUtils.isMasked8BitRGBPNG(in);
         in.close();
-
-        if (img == null) {
-          in = archive.getImageInputStream(name);
-          img = loadWithToolkit(in);
-          in.close();
-        }
+        in = archive.getImageInputStream(name);
+        img = useToolkit ? loadWithToolkit(in) : loadWithImageIO(in);
+        in.close();
       }
       catch (FileNotFoundException e) {
         throw new ImageNotFoundException(name, e);
@@ -93,13 +91,17 @@ public class MappedImageUtils {
     }
   }
 
-  private static MappedBufferedImage loadWithImageIOIfOk(InputStream in)
+  private static MappedBufferedImage loadWithImageIO(InputStream in)
                                                           throws IOException {
     final ImageInputStream iis = new FileCacheImageInputStream(in,
       TempFileManager.getInstance().getSessionRoot());
 
-    final ImageReader reader = ImageUtils.checkImageIOCanRead(iis);
+    final Iterator<ImageReader> i = ImageIO.getImageReaders(iis);
+    if (!i.hasNext()) throw new UnrecognizedImageTypeException();
+
+    final ImageReader reader = i.next();
     if (reader == null) return null;
+    reader.setInput(iis);
 
     try {
       final int w = reader.getWidth(0);
