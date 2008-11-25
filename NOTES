@@ -27,7 +27,9 @@ Changes since beta5:
 
 A number of problems present in 3.1.0-beta5 are fixed in 3.1.0-beta6:
 
+* Bug 2340311: Edit All pieces, no change, should not update pieces
 * Bug 2339611: Try to load PNGs with bad metadata anyway
+* Bug 2319018: Triggering multiple 'Move Fixed Distance' traits doesn't work
 * Bug 2316022: ArithmeticException in PropertySheet.TickLabel.mouseClicked
 * Bug 2311318: Setting Label length to 0 in Turn Tracker changes to Fixed
 * Bug 2309593: Move Fixed Distance auto-report never turns off
@@ -56,6 +58,7 @@ A number of problems present in 3.1.0-beta5 are fixed in 3.1.0-beta6:
 * Bug: Problem when adding a Place Marker to a Place Marker definition
 * Bug: Transparent SVG has an opaque black background
 * Bug: Some transparent PNGs not loaded properly by ImageIO
+* Bug: Added missing Cancel button, close window handling to several dialogs 
 * Cosmetic changes to the Bug Report dialog
 * ADC2: If a flip definition points to itself, then it's not really valid
 * ADC2: Invalid masks cause the piece to be completely transparent
