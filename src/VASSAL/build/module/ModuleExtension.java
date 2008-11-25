@@ -55,7 +55,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 
 /**

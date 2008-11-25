@@ -16,7 +16,7 @@ import VASSAL.build.module.DieRoll;
 import VASSAL.build.module.InternetDiceButton;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6

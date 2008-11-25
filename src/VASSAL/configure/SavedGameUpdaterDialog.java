@@ -51,9 +51,9 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.SavedGameUpdater;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.io.IOUtils;
 
 public class SavedGameUpdaterDialog extends JDialog {
   private static final long serialVersionUID = 1L;

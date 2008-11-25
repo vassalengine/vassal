@@ -35,9 +35,9 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * A set of preferences.  Each set of preferences is identified by a name, and

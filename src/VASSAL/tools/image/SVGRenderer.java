@@ -54,7 +54,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 
 /**

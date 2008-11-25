@@ -54,10 +54,10 @@ import VASSAL.build.GameModule;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.IOUtils;
-import VASSAL.tools.RereadableInputStream;
 import VASSAL.tools.image.memmap.MappedBufferedImage;
 import VASSAL.tools.imageop.Op;
+import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.io.RereadableInputStream;
 import VASSAL.tools.logging.Logger;
 
 public class ImageUtils {

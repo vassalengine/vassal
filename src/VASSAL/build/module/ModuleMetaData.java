@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 
 /**

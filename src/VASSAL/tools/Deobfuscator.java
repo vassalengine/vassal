@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import VASSAL.tools.io.IOUtils;
+
 /**
  * Converts an file created with {@link Obfuscator} back into plain text.
  * Additionally, plain text will be passed through unchanged.

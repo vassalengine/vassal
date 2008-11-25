@@ -40,6 +40,7 @@ import javax.swing.SwingUtilities;
 
 import static VASSAL.tools.IterableEnumeration.iterate;
 
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 
 /**

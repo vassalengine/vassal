@@ -34,7 +34,7 @@ import java.util.Vector;
 import VASSAL.build.module.DieRoll;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 
 public class BonesDiceServer extends DieServer {
 

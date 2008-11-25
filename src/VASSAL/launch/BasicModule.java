@@ -62,8 +62,8 @@ import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorUtils;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.menu.MenuManager;
 
 public class BasicModule extends GameModule {

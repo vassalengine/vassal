@@ -48,12 +48,12 @@ import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.imageop.SourceOp;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * An HtmlChart is used for displaying html information for the module. The

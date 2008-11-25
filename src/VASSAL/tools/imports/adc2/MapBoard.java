@@ -78,12 +78,12 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Immobilized;
 import VASSAL.counters.Marker;
 import VASSAL.counters.UsePrototype;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.TempFileManager;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * The map board itself.

@@ -28,7 +28,7 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 
 public class ShutDownAction extends AbstractAction {
   private static final long serialVersionUID = 1L;

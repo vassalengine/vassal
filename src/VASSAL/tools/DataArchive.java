@@ -63,6 +63,7 @@ import sun.applet.AppletAudioClip;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.SVGImageUtils;
 import VASSAL.tools.image.SVGRenderer;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 
 /**

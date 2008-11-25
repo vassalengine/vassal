@@ -96,11 +96,11 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.io.IOUtils;
 
 public class Inventory extends AbstractConfigurable
                        implements GameComponent,

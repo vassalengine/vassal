@@ -44,7 +44,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * Utility methods for manipulating SVG images.

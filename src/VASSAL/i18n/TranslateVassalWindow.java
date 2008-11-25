@@ -43,11 +43,11 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.ShowHelpAction;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.io.IOUtils;
 
 public class TranslateVassalWindow extends TranslateWindow {
   private static final long serialVersionUID = 1L;

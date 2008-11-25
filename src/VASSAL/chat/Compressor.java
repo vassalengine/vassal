@@ -30,7 +30,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 
 public abstract class Compressor {
   public static byte[] compress(byte[] in) throws IOException {

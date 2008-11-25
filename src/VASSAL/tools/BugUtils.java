@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import VASSAL.Info;
+import VASSAL.tools.io.IOUtils;
 
 public class BugUtils {
 

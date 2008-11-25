@@ -46,6 +46,7 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.image.SVGImageUtils;
 import VASSAL.tools.imageop.Op;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * An ArchiveWriter is a writeable DataArchive. New files may be added

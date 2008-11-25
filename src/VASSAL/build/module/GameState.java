@@ -59,16 +59,16 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.BridgeStream;
 import VASSAL.tools.Deobfuscator;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.Obfuscator;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
+import VASSAL.tools.io.BridgeStream;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.menu.MenuManager;
 
 /**

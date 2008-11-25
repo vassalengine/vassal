@@ -33,8 +33,8 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.io.IOUtils;
 
 public class Translation extends AbstractConfigurable
                          implements Comparable<Translation> {

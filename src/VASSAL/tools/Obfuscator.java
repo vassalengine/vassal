@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Random;
 
+import VASSAL.tools.io.IOUtils;
+
 /**
  * Utility class that handles simple obfuscation of a file's contents,
  * to prevent the casual cheat of hand-editing a logfile.

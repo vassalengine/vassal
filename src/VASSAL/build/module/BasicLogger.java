@@ -53,11 +53,11 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.BridgeStream;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.Obfuscator;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.io.BridgeStream;
 import VASSAL.tools.menu.MenuManager;
 
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {

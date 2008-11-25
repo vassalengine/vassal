@@ -29,8 +29,8 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Properties;
 
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * Utility class to allow translation of VASSAL using the Component

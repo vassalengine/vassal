@@ -39,11 +39,11 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.filechooser.BMPFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.imports.Importer;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * ADC2 game piece and terrain symbols.

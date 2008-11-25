@@ -39,13 +39,13 @@ import javax.imageio.stream.ImageInputStream;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.IOUtils;
-import VASSAL.tools.RereadableInputStream;
 import VASSAL.tools.TempFileManager;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.UnrecognizedImageTypeException;
+import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.io.RereadableInputStream;
 
 /**
  * @author Joel Uckelman

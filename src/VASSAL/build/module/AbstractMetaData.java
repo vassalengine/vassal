@@ -54,9 +54,9 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Translation;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.BridgeStream;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.BridgeStream;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 
 /**

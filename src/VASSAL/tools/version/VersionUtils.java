@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import VASSAL.Info;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 
 
 public class VersionUtils {

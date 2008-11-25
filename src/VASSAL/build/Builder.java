@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ErrorUtils;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * This class holds static convenience methods for building {@link Buildable}

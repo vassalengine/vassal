@@ -29,7 +29,7 @@ import java.net.SocketException;
 
 import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * The base class for socket servers for communication between the

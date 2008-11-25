@@ -38,10 +38,10 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.counters.GamePiece;
-import VASSAL.tools.IOUtils;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.io.IOUtils;
 
 public class TextSaver extends AbstractConfigurable {
   

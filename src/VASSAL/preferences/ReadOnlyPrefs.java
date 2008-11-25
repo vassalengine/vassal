@@ -29,7 +29,7 @@ import java.util.zip.ZipEntry;
 
 import VASSAL.Info;
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.IOUtils;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * A simple prefernces class which permits reading stored values.

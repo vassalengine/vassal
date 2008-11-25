@@ -15,7 +15,7 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools;
+package VASSAL.tools.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
