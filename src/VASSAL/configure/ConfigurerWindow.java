@@ -18,13 +18,16 @@
  */
 package VASSAL.configure;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.WindowConstants;
+import javax.swing.JPanel;
 
 /**
  * A Window for displaying a {@link Configurer}.  The title of the window
@@ -33,15 +36,25 @@ import javax.swing.WindowConstants;
 public class ConfigurerWindow extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  private JButton okButton = new JButton("Ok");
-
+  protected JButton okButton = new JButton("Ok");
+  protected JButton canButton = new JButton("Cancel");
+  protected boolean cancelled;
+  
   public ConfigurerWindow(Configurer c) {
     this(c, true);
   }
 
   public ConfigurerWindow(final Configurer c, boolean modal) {
     super((JFrame) null, modal);
-    setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent we) {
+         dispose();
+         cancelled = true;
+      }
+    });
+    
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     add(c.getControls());
     c.addPropertyChangeListener
@@ -54,14 +67,33 @@ public class ConfigurerWindow extends JDialog {
         }
       });
     setTitle(c.getName());
+    
     okButton.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent e) {
         c.getValue();
         dispose();
+        cancelled = false;
       }
     });
-    add(okButton);
+    
+    canButton.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent e) {
+        dispose();
+        cancelled = true;
+      }
+    });
+    
+    final JPanel buttonPanel = new JPanel();
+    buttonPanel.add(okButton);
+    buttonPanel.add(canButton);
+    add(buttonPanel);
+    cancelled = false;
+    
     pack();
+  }
+  
+  public boolean isCancelled() {
+    return cancelled;
   }
 }
 

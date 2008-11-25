@@ -117,7 +117,9 @@ public class DiceButton extends AbstractConfigurable {
           for (String key : keepAttributes) {
             setAttribute(key, delegate.getAttributeValueString(key));
           }
-          DR();
+          if (! w.isCancelled()) {
+            DR();
+          }
         }
         else {
           DR();

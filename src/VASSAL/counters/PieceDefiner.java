@@ -70,6 +70,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   protected String pieceId = "";
   protected JLabel pieceIdLabel = new JLabel("");
   protected GpIdSupport gpidSupport;
+  protected boolean changed;
 
   /** Creates new form test */
   public PieceDefiner() {
@@ -79,6 +80,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     slot = new PieceSlot();
     initComponents();
     availableList.setSelectedIndex(0);
+    setChanged(false);
   }
   
   public PieceDefiner(String id, GpIdSupport s) {
@@ -193,6 +195,14 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     return piece;
   }
 
+  public void setChanged(boolean b) {
+    changed = b;
+  }
+  
+  public boolean isChanged() {
+    return changed;
+  }
+  
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -471,6 +481,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     ((GamePiece) inUseModel.lastElement()).setProperty(Properties.OUTER, null);
     inUseList.setSelectedIndex(index + 1);
     refresh();
+    setChanged(true);
   }
 
   protected void moveDecoratorUp(int index) {
@@ -489,6 +500,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     ((GamePiece) inUseModel.lastElement()).setProperty(Properties.OUTER, null);
     inUseList.setSelectedIndex(index - 1);
     refresh();
+    setChanged(true);
   }
 
   protected void importPiece(String className) {
@@ -539,6 +551,8 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       else {
         ed = new Ed((Frame) null, p);
       }
+      final String oldState = p.getState();
+      final String oldType = p.getType();
       ed.setVisible(true);
       PieceEditor c = ed.getEditor();
       if (c != null) {
@@ -548,6 +562,9 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
         else {
           p.setState(c.getState());
+        }
+        if ((! p.getType().equals(oldType)) || (! p.getState().equals(oldState))) {
+          setChanged(true);
         }
         refresh();
         return true;
@@ -608,6 +625,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       ((Decorator) inUseModel.elementAt(index)).setInner((GamePiece) inUseModel.elementAt(index - 1));
     }
     refresh();
+    setChanged(true);
   }
 
   protected void addTrait(Decorator c) {
@@ -625,6 +643,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       }
       d.setInner((GamePiece) inUseModel.lastElement());
       inUseModel.addElement(d);
+      setChanged(true);
     }
 
     refresh();

@@ -78,7 +78,9 @@ public class RandomTextButton extends DiceButton {
           ac.getConfigurer(REPORT_TOTAL).getControls().setVisible(true);
           ac.getConfigurer(FACES).getControls().setVisible(true);
           ac.getConfigurer(NUMERIC).getControls().setVisible(true);
-          DR();
+          if (! w.isCancelled()) {
+            DR();
+          }
           promptAlways = true;
         }
         else {

@@ -30,11 +30,12 @@ import VASSAL.build.widget.PieceSlot;
 public class MassPieceDefiner extends PieceDefiner {
   private static final long serialVersionUID = 1L;
 
-  private List<Entry> definers;
+  protected List<Entry> definers;
 
   public MassPieceDefiner(Configurable top) {
     super();
     definers = new ArrayList<Entry>();
+    changed = false;
     init(top);
     if (!definers.isEmpty()) {
       setPiece(definers.get(0).slot.getPiece());

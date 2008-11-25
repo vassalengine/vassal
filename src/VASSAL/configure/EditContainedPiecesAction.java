@@ -19,7 +19,9 @@
 package VASSAL.configure;
 
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
+
 import VASSAL.build.Configurable;
 import VASSAL.counters.MassPieceDefiner;
 
@@ -50,7 +52,11 @@ public class EditContainedPiecesAction extends AbstractAction {
         return "";
       }
     };
-    new ConfigurerWindow(c).setVisible(true);
-    mass.save();
+    final ConfigurerWindow w =  new ConfigurerWindow(c);
+    w.setVisible(true);
+    if (! w.isCancelled() && mass.isChanged()) {
+      mass.save();
+    }
   }
+  
 }
