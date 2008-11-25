@@ -40,6 +40,7 @@ import javax.imageio.stream.ImageInputStream;
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.RereadableInputStream;
 import VASSAL.tools.TempFileManager;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
@@ -58,12 +59,14 @@ public class MappedImageUtils {
                                                            throws IOException {
     try {
       MappedBufferedImage img = null;
-      InputStream in = null;
+      RereadableInputStream in = null;
       try {
-        in = archive.getImageInputStream(name);
+        in = new RereadableInputStream(archive.getImageInputStream(name));
+        in.mark(512);
+
         final boolean useToolkit = ImageUtils.isMasked8BitRGBPNG(in);
-        in.close();
-        in = archive.getImageInputStream(name);
+        in.reset();
+
         img = useToolkit ? loadWithToolkit(in) : loadWithImageIO(in);
         in.close();
       }

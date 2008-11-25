@@ -55,6 +55,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.IOUtils;
+import VASSAL.tools.RereadableInputStream;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.logging.Logger;
 import VASSAL.tools.memmap.MappedBufferedImage;
@@ -448,12 +449,13 @@ public class ImageUtils {
     //
 
     BufferedImage img = null;
-    InputStream in = null;
+    RereadableInputStream in = null;
     try {
-      in = archive.getImageInputStream(name);
+      in = new RereadableInputStream(archive.getImageInputStream(name));
+      in.mark(512);
+
       final boolean useToolkit = isMasked8BitRGBPNG(in);
-      in.close();
-      in = archive.getImageInputStream(name);
+      in.reset();
 
       if (useToolkit) {
         img = toBufferedImage(
