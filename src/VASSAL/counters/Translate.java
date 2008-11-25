@@ -179,8 +179,20 @@ public class Translate extends Decorator implements TranslatablePiece {
   }
 
   protected Command moveTarget(GamePiece target) {
-    Point p = new Point(getPosition());
+    // Has this piece already got a move scheduled? If so, then we
+    // need to use the endpoint of any exsiting moves as our
+    // starting point.
+    Point p = mover.getUpdatedPosition(target);
+    
+    // First move, so use the current location.
+    if (p == null) {
+      p = new Point(getPosition());
+    }
+    
+    // Perform the move fixed distance
     translate(p);
+    
+    // Handle rotation of the piece
     FreeRotator myRotation = (FreeRotator) Decorator.getDecorator(this, FreeRotator.class);
     if (myRotation != null) {
       Point2D myPosition = getPosition().getLocation();
@@ -188,9 +200,13 @@ public class Translate extends Decorator implements TranslatablePiece {
       p2d = AffineTransform.getRotateInstance(myRotation.getCumulativeAngleInRadians(), myPosition.getX(), myPosition.getY()).transform(p2d, null);
       p = new Point((int) p2d.getX(), (int) p2d.getY());
     }
+    
+    // And snap to the grid if required.
     if (!Boolean.TRUE.equals(Decorator.getOutermost(this).getProperty(Properties.IGNORE_GRID))) {
       p = getMap().snapTo(p);
     }
+    
+    // Add to the list of scheduled moves
     mover.add(target.getMap(), target, p);
     return null;
   }
@@ -461,6 +477,23 @@ public class Translate extends Decorator implements TranslatablePiece {
       this.stroke = stroke;
     }
 
+    /** 
+     * Return the updated position of a piece that has a move
+     * calculation recorded
+     * 
+     * @param target piece to check
+     * @return updated position
+     */
+    public Point getUpdatedPosition(GamePiece target) {
+      Point p = null;
+      for (Move move : moves) {
+        if (move.piece == target) {
+          p = move.pos;
+        }
+      }
+      return p;
+    }
+    
     private static class Move {
       private Map map;
       private GamePiece piece;
