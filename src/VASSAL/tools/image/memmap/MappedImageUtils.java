@@ -17,7 +17,7 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools.memmap;
+package VASSAL.tools.image.memmap;
 
 import java.awt.Graphics2D;
 import java.awt.Image;

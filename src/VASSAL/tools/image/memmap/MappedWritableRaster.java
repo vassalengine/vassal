@@ -17,7 +17,7 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools.memmap;
+package VASSAL.tools.image.memmap;
 
 import java.awt.Point;
 import java.awt.image.DataBuffer;

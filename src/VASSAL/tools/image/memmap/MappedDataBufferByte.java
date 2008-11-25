@@ -17,13 +17,13 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools.memmap;
+package VASSAL.tools.image.memmap;
 
 import java.awt.image.DataBuffer;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ShortBuffer;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 import VASSAL.tools.TempFileManager;
@@ -35,23 +35,23 @@ import VASSAL.tools.TempFileManager;
  * @since 3.1.0
  * @author Joel Uckelman
  */
-public class MappedDataBufferUShort extends DataBuffer {
-  private ShortBuffer buf = null;
+public class MappedDataBufferByte extends DataBuffer {
+  private ByteBuffer buf = null;
   private final File file;
 
   private final int bankSize;
   private final int bankNum;
 
   /**
-   * Constructs an integer-based <code>DataBuffer</code> with a single
+   * Constructs a byte-based <code>DataBuffer</code> with a single
    * bank and the specified size, with data stored in a memory-mapped
    * temporary file.
    *
    * @param size the size, in <code>int</code>s, of the buffer
    * @throws IOException if the file cannot be created.
    */
-  public MappedDataBufferUShort(int size, int bankNum) throws IOException {
-    super(DataBuffer.TYPE_USHORT, size);
+  public MappedDataBufferByte(int size, int bankNum) throws IOException {
+    super(DataBuffer.TYPE_BYTE, size);
 
     this.bankSize = size;
     this.bankNum = bankNum;
@@ -63,8 +63,7 @@ public class MappedDataBufferUShort extends DataBuffer {
 
     try { 
       buf = raf.getChannel()
-               .map(FileChannel.MapMode.READ_WRITE, 0, 2*bankSize*bankNum)
-               .asShortBuffer();
+               .map(FileChannel.MapMode.READ_WRITE, 0, bankSize*bankNum);
     }
     finally {
       raf.close();
@@ -94,13 +93,13 @@ public class MappedDataBufferUShort extends DataBuffer {
   @Override
   public int getElem(int bank, int i) {
     if (bank >= bankNum) throw new IllegalArgumentException();
-    return buf.get(bank*bankSize+i) & 0xffff;
+    return (int) buf.get(bank*bankSize+i) & 0xff;
   }
 
   /** {@inheritDoc} */
   @Override
   public void setElem(int bank, int i, int val) {
     if (bank >= bankNum) throw new IllegalArgumentException();
-    buf.put(bank*bankSize+i, (short) (val & 0xffff));
+    buf.put(bank*bankSize+i, (byte) val);
   }
 }

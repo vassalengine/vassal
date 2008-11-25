@@ -22,7 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.memmap.MappedImageUtils;
+import VASSAL.tools.image.memmap.MappedImageUtils;
 
 /**
  * @author Joel Uckelman

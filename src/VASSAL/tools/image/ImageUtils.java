@@ -56,9 +56,9 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.IOUtils;
 import VASSAL.tools.RereadableInputStream;
+import VASSAL.tools.image.memmap.MappedBufferedImage;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.logging.Logger;
-import VASSAL.tools.memmap.MappedBufferedImage;
 
 public class ImageUtils {
   // negative, because historically we've done it this way
