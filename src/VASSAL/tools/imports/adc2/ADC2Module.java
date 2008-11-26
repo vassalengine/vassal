@@ -2876,10 +2876,16 @@ private void configureMainMap(GameModule gameModule) throws IOException {
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    DataInputStream in = new DataInputStream(new FileInputStream(f));
-    int header = in.readByte();
-    boolean valid = header == -3 || header == -2;
-    in.close();
-    return valid;
+    DataInputStream in = null;
+    try { 
+      in = new DataInputStream(new FileInputStream(f));
+      int header = in.readByte();
+      boolean valid = header == -3 || header == -2;
+      in.close();
+      return valid;
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
   }
 }

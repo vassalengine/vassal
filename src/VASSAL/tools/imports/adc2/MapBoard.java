@@ -3085,9 +3085,15 @@ public class MapBoard extends Importer {
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    DataInputStream in = new DataInputStream(new FileInputStream(f));
-    boolean valid = in.readByte() == -3;
-    in.close();
-    return valid;
+    DataInputStream in = null;
+    try {
+      in = new DataInputStream(new FileInputStream(f));
+      boolean valid = in.readByte() == -3;
+      in.close();
+      return valid;
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
   }
 }

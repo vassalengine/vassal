@@ -640,9 +640,15 @@ public class SymbolSet extends Importer{
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    DataInputStream in = new DataInputStream(new FileInputStream(f));
-    boolean valid = in.readUnsignedByte() >= 0xFA;
-    in.close();
-    return valid;
+    DataInputStream in = null;
+    try {
+      in = new DataInputStream(new FileInputStream(f));
+      boolean valid = in.readUnsignedByte() >= 0xFA;
+      in.close();
+      return valid;
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
   }
 }
