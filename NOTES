@@ -38,6 +38,7 @@ A number of problems present in 3.1.0-beta5 are fixed in 3.1.0-beta6:
 * Bug 2306908: Default option for 'Auto-Report Moves' should be Always
 * Bug 2306873: Not a Number when referencing DiceButton value in Edit mode
 * Bug 2305254: Chart Maps not Visible if Main map undocked
+* Bug 2301594: LoadExtensionException trying to open an Extension
 * Bug 2294041: Bad Image generates IOException instead of Bad Data report
 * Bug 2292450: Corrupted Color Preference causing NoSuchElement Exception
 * Bug 2290225: Cancel when setting a Dynamic/Global Property sets to null
