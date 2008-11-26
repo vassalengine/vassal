@@ -18,16 +18,10 @@
 package VASSAL.build.module;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -92,7 +86,7 @@ public abstract class AbstractMetaData {
   protected static final String BUILDFILE_MODULE_ELEMENT1 = "VASSAL.launch.BasicModule";
   protected static final String BUILDFILE_MODULE_ELEMENT2 = "VASSAL.build.GameModule";
   protected static final String BUILDFILE_EXTENSION_ELEMENT = "VASSAL.build.module.ModuleExtension";
-  
+
   protected String version;
   protected String vassalVersion;
   protected Attribute descriptionAttr;
@@ -132,116 +126,8 @@ public abstract class AbstractMetaData {
   public String getLocalizedDescription() {
     return descriptionAttr == null ? "" : descriptionAttr.getLocalizedValue();
   }
-
-  public enum FileType { MODULE, EXTENSION, SAVE, UNKNOWN }
-
-  public static FileType getFileType(String filename) {
-    return getFileType(new File(filename));
-  }
+  
  
-  public static FileType getFileType(File file) {
-    final AbstractMetaData data = AbstractMetaData.buildMetaData(file);
-
-    if (data == null) {
-      // Not a Module, Extension or Saved game of any type, old or new.
-      return FileType.UNKNOWN;
-    }
-    else {
-      return data.getFileType();
-    }
-  }
-
-  public abstract FileType getFileType();
-  
-  public boolean isSaveData() {
-    return (getFileType() == FileType.SAVE);
-  }
-  
-  public boolean isModuleData() {
-    return (getFileType() == FileType.MODULE);
-  }
-  
-  public boolean isExtensionData() {
-    return (getFileType() == FileType.EXTENSION);
-  }
-  
-  /**
-   * Factory method to build and return an appropriate MetaData class based 
-   * on the contents of the file. Return null if the file is not a Zip archive,
-   * or it is not a VASSAL Module, Extension or Save Game. 
-   * 
-   * @param file metadata file
-   * @return MetaData object
-   */
-  public static AbstractMetaData buildMetaData(File file) {
-    // Check the file exists and is a file
-    if (!file.exists() || !file.isFile()) return null;
-    
-    ZipFile zip = null;
-    try { 
-      // Check it is a Zip file
-      zip = new ZipFile(file);
-
-      // Check if it is a Save Game file
-      ZipEntry entry = zip.getEntry(GameState.SAVEFILE_ZIP_ENTRY);
-      if (entry != null) {
-        return new SaveMetaData(zip);
-      }
-    
-      // Check if it has a buildFile
-      ZipEntry buildFileEntry = zip.getEntry(GameModule.BUILDFILE);
-      if (buildFileEntry == null) {
-        return null;
-      }
-    
-      // It's either a module or an Extension, check for existence of metadata
-      entry = zip.getEntry(ExtensionMetaData.ZIP_ENTRY_NAME);
-      if (entry != null) {
-        return new ExtensionMetaData(zip);
-      }
-    
-      entry = zip.getEntry(ModuleMetaData.ZIP_ENTRY_NAME);
-      if (entry != null) {
-        return new ModuleMetaData(zip);
-      }
-
-      // read the first few lines of the buildFile    
-      BufferedReader br = null;
-      try {
-        br = new BufferedReader(
-          new InputStreamReader(zip.getInputStream(buildFileEntry)));
-        for (int i = 0; i < 10; i++) {
-          final String s = br.readLine();
-          if (s.indexOf(BUILDFILE_MODULE_ELEMENT1) > 0 ||
-              s.indexOf(BUILDFILE_MODULE_ELEMENT2) > 0) {
-            br.close();
-            return new ModuleMetaData(zip);
-          }  
-          else if (s.indexOf(BUILDFILE_EXTENSION_ELEMENT) > 0) {
-            br.close();
-            return new ExtensionMetaData(zip);
-          }
-        }
-        br.close();
-      }
-      finally {
-        IOUtils.closeQuietly(br);
-      }
-    
-      zip.close();
-    }
-    catch (ZipException e) {
-      // Ignore. This (usually) means that the module has no metadata.
-    }
-    catch (IOException e) {
-      Logger.log(e);
-    } 
-    finally {
-      IOUtils.closeQuietly(zip);
-    }    
-
-    return null;
-  }
   
   /**
    * Write common metadata to the specified Archive. Call addElements to

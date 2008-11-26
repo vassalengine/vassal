@@ -38,6 +38,7 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
 import VASSAL.build.module.AbstractMetaData;
+import VASSAL.build.module.MetaDataFactory;
 import VASSAL.build.module.SaveMetaData;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.LongConfigurer;
@@ -45,10 +46,10 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.LoggedOutputStream;
-import VASSAL.tools.logging.Logger;
 import VASSAL.tools.logging.LogManager;
 import VASSAL.tools.logging.LogOutputStreamAdapter;
+import VASSAL.tools.logging.LoggedOutputStream;
+import VASSAL.tools.logging.Logger;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -372,7 +373,7 @@ public class ModuleManager {
     
         if (lr.module == null && lr.game != null) {
           // attempt to find the module for the saved game or log
-          final AbstractMetaData data = AbstractMetaData.buildMetaData(lr.game);
+          final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.game);
           if (data != null && data instanceof SaveMetaData) {
             // we found save metadata
             final String moduleName = ((SaveMetaData) data).getModuleName();
@@ -409,7 +410,7 @@ public class ModuleManager {
         new Editor.LaunchAction(window, lr.module).actionPerformed(null);
         break;
       case IMPORT:
-        new Editor.ImportLaunchAction(window, lr.module).actionPerformed(null);
+        new Editor.ImportLaunchAction(window, lr.importFile).actionPerformed(null);
         break;
       case NEW:
         new Editor.NewModuleLaunchAction(window).actionPerformed(null);

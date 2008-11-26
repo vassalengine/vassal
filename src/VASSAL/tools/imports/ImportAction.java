@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.AbstractMetaData;
-import VASSAL.build.module.ModuleMetaData;
+import VASSAL.build.module.ImportMetaData;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
@@ -44,6 +44,7 @@ import VASSAL.tools.imports.adc2.ADC2Module;
 import VASSAL.tools.imports.adc2.ADC2Utils;
 import VASSAL.tools.imports.adc2.MapBoard;
 import VASSAL.tools.imports.adc2.SymbolSet;
+import VASSAL.tools.logging.Logger;
 
 /**
  * Action for importing foreign modules into VASSAL.
@@ -111,28 +112,30 @@ public final class ImportAction extends EditModuleAction {
   }
 
   public static Class<?> getImporterClass(File f) throws IOException {
-    int[] indeces = new int[IMPORTERS.length];
-    for (int i = 0; i < indeces.length; ++i) {
-      indeces[i] = i;
+    final int[] indices = new int[IMPORTERS.length];
+    for (int i = 0; i < indices.length; ++i) {
+      indices[i] = i;
     }
     
-    String s = '.' + Importer.getExtension(f.getName());
+    final String s = '.' + Importer.getExtension(f.getName());
     for (int i = 0; i < EXTENSIONS.length; ++i) {
       if (EXTENSIONS[i].compareToIgnoreCase(s) == 0) {
-        indeces[0] = i;
-        indeces[i] = 0;
+        indices[0] = i;
+        indices[i] = 0;
         break;
       }
     }
     
-    for (int i = 0; i < indeces.length; ++i) {
+    for (int i = 0; i < indices.length; ++i) {
       try {
-        if (((Importer) (IMPORTERS[indeces[i]].newInstance())).isValidImportFile(f)) {
-          return IMPORTERS[indeces[i]];
+        if (((Importer) (IMPORTERS[indices[i]].newInstance())).isValidImportFile(f)) {
+          return IMPORTERS[indices[i]];
         }
-      } catch (InstantiationException e) {
+      }
+      catch (InstantiationException e) {
         ErrorDialog.bug(e);
-      } catch (IllegalAccessException e) {
+      }
+      catch (IllegalAccessException e) {
         ErrorDialog.bug(e);
       }
     }
@@ -140,7 +143,6 @@ public final class ImportAction extends EditModuleAction {
     return null;
   }
   
-  @Override
   public void performAction(ActionEvent e) throws IOException {
     actionCancelled = true;
   
@@ -151,7 +153,7 @@ public final class ImportAction extends EditModuleAction {
           new String[] {EXTENSIONS[i]})
       );
     }
-  
+
     if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
       File f = fc.getSelectedFile();
       if (f != null && f.exists()) {
@@ -161,19 +163,20 @@ public final class ImportAction extends EditModuleAction {
     }    
   }
 
-  @Override
   public void loadModule(File f) throws IOException {
-    final GameModule module = new BasicModule(new ArchiveWriter((String) null)); 
-    GameModule.init(module);
-
     final Class<?> impClass = getImporterClass(f);
     if (impClass == null) {      
       throw new FileFormatException("Unrecognized file format");
     }
+    
+    Logger.log("-- Importing file " + f.getPath());
+  
+    final GameModule module = new BasicModule(new ArchiveWriter((String) null));
+    GameModule.init(module);
 
     final Importer imp;
     try {
-      imp = (Importer) (impClass.newInstance());
+      imp = (Importer) (impClass.newInstance());      
       imp.importFile(this, f);
       imp.writeToArchive();
     }
@@ -330,11 +333,10 @@ public final class ImportAction extends EditModuleAction {
         // not a recognized file
         return null;
       }
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       return null;
     }
-    String name = Importer.stripExtension(module.getName());
-    ModuleMetaData metaData = new ModuleMetaData(name, "0.1");    
-    return metaData;
+    return new ImportMetaData();    
   }
 }

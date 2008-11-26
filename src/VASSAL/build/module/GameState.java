@@ -292,8 +292,8 @@ public class GameState implements CommandEncoder {
         "Unable to locate " + f.getPath());
 
       // Check the Save game for validity
-      final AbstractMetaData metaData = AbstractMetaData.buildMetaData(f);
-      if (metaData == null || ! metaData.isSaveData()) {
+      final AbstractMetaData metaData = MetaDataFactory.buildMetaData(f);
+      if (metaData == null || ! (metaData instanceof SaveMetaData)) {
         WarningDialog.show("GameState.invalid_save_file", f.getPath());
 //        GameModule.getGameModule().warn(Resources.getString("GameState.unable_to_load", f.getName()));
         return;

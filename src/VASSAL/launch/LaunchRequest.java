@@ -19,18 +19,22 @@
 
 package VASSAL.launch;
 
+import gnu.getopt.Getopt;
+import gnu.getopt.LongOpt;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import gnu.getopt.Getopt;
-import gnu.getopt.LongOpt;
-
-import VASSAL.build.module.AbstractMetaData;
-import VASSAL.i18n.Resources;
 import VASSAL.Info;
+import VASSAL.build.module.AbstractMetaData;
+import VASSAL.build.module.ExtensionMetaData;
+import VASSAL.build.module.MetaDataFactory;
+import VASSAL.build.module.ModuleMetaData;
+import VASSAL.build.module.SaveMetaData;
+import VASSAL.i18n.Resources;
 
 /**
  * Encapsulates and parses command-line arguments.
@@ -57,6 +61,7 @@ public class LaunchRequest implements Serializable {
   public File module;
   public File game;
   public File extension;
+  public File importFile;
 
   public boolean standalone;
 
@@ -92,6 +97,7 @@ public class LaunchRequest implements Serializable {
     this.module = lr.module;
     this.game = lr.game;
     this.extension = lr.extension;
+    this.importFile = lr.importFile;
 
     this.standalone = lr.standalone;
     
@@ -133,6 +139,9 @@ public class LaunchRequest implements Serializable {
       else if (extension != null) {
         args.add(extension.getPath());
       }
+    }
+    else if (importFile != null) {
+      args.add(importFile.getPath());
     }
 
     return args.toArray(new String[args.size()]);
@@ -282,24 +291,23 @@ public class LaunchRequest implements Serializable {
     case LOAD:
       while (i < args.length) {
         final File file = new File(args[i++]);
-        switch (AbstractMetaData.getFileType(file)) {
-        case MODULE:
+        final AbstractMetaData data = MetaDataFactory.buildMetaData(file);
+        if (data instanceof ModuleMetaData) {
           if (lr.module != null)
             die("LaunchRequest.only_one", "module");
           lr.module = file;
-          break;
-        case EXTENSION:
+        }
+        else if (data instanceof ExtensionMetaData) {
           if (lr.extension != null) die("");
           lr.extension = file;
-          break;
-        case SAVE:
+        }
+        else if (data instanceof SaveMetaData) {
           if (lr.game != null)
             die("LaunchRequest.only_one", "saved game or log");
           lr.game = file;
-          break;
-        case UNKNOWN:
+        }
+        else {
           die("LaunchRequest.unknown_file_type", file.toString());
-          break;
         }
       }
 
@@ -309,7 +317,7 @@ public class LaunchRequest implements Serializable {
       break;
     case IMPORT:
       if (i < args.length) {
-        lr.module = new File(args[i++]);
+        lr.importFile = new File(args[i++]);
       }
       else {
         die("LaunchRequest.missing_module");
@@ -319,15 +327,16 @@ public class LaunchRequest implements Serializable {
     case NEW_EXT:
       if (i < args.length) {
         final File file = new File(args[i++]);
-        switch (AbstractMetaData.getFileType(file)) {
-        case MODULE:
+        final AbstractMetaData data = MetaDataFactory.buildMetaData(file);        
+        if (data instanceof ModuleMetaData) {
           lr.module = file;
-          break;
-        case EXTENSION:
-        case SAVE:
-        case UNKNOWN:
+        }
+        else if (data instanceof ExtensionMetaData) {
+        }
+        else if (data instanceof SaveMetaData) {
+        }
+        else {
           die("LaunchRequest.unknown_file_type", file.toString());
-          break;
         }
       }
       else {
@@ -337,20 +346,20 @@ public class LaunchRequest implements Serializable {
     case EDIT_EXT:
       while (i < args.length) {
         final File file = new File(args[i++]);
-        switch (AbstractMetaData.getFileType(file)) {
-        case MODULE:
+        final AbstractMetaData data = MetaDataFactory.buildMetaData(file);        
+        if (data instanceof ModuleMetaData) {
           if (lr.module != null)
             die("LaunchRequest.only_one", "module");
           lr.module = file;
-          break;
-        case EXTENSION:
+        }
+        else if (data instanceof ExtensionMetaData) {
           if (lr.extension != null) die("");
           lr.extension = file;
-          break;
-        case SAVE:
-        case UNKNOWN:
+        }
+        else if (data instanceof SaveMetaData) {
+        }
+        else {
           die("LaunchRequest.unknown_file_type", file.toString());
-          break;
         }
       }
 

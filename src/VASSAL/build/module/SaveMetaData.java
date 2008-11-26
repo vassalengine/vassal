@@ -90,10 +90,6 @@ public class SaveMetaData extends AbstractMetaData {
   public String getMetaDataVersion() {
     return DATA_VERSION;
   }
-  
-  public FileType getFileType() {
-    return FileType.SAVE;
-  }
 
   /**
    * Write Save Game metadata to the specified Archive

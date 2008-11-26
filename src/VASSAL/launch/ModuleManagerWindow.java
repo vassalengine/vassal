@@ -86,6 +86,7 @@ import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ExtensionMetaData;
 import VASSAL.build.module.ExtensionsManager;
+import VASSAL.build.module.MetaDataFactory;
 import VASSAL.build.module.ModuleMetaData;
 import VASSAL.build.module.SaveMetaData;
 import VASSAL.chat.CgiServerStatus;
@@ -578,11 +579,11 @@ public class ModuleManagerWindow extends JFrame {
    * @return
    */
   public String update(File f) {
-    AbstractMetaData.FileType type = AbstractMetaData.getFileType(f);
+    final AbstractMetaData data = MetaDataFactory.buildMetaData(f);
     
     // Module.
     // If we already have this module added, just refresh it, otherwise add it in.    
-    if (type == AbstractMetaData.FileType.MODULE) {
+    if (data instanceof ModuleMetaData) {
       final MyTreeNode moduleNode = rootNode.findNode(f);
       if (moduleNode == null) {
         addModule(f);
@@ -595,7 +596,7 @@ public class ModuleManagerWindow extends JFrame {
     // Extension.
     // Check to see if it has been saved into one of the extension directories
     // for any module we already know of. Refresh the module
-    else if (type == AbstractMetaData.FileType.EXTENSION) {
+    else if (data instanceof ExtensionMetaData) {
       for (int i = 0; i < rootNode.getChildCount(); i++) {
         final MyTreeNode moduleNode = rootNode.getChild(i); 
         final ModuleInfo moduleInfo = (ModuleInfo) moduleNode.getNodeInfo();
@@ -611,7 +612,7 @@ public class ModuleManagerWindow extends JFrame {
     // Save Game or Log file. 
     // If the parent of the save file is already recorded as a Game Folder, 
     // pass the file off to the Game Folder to handle. Otherwise, ignore it.
-    else if (type == AbstractMetaData.FileType.SAVE) {
+    else if (data instanceof SaveMetaData) {
       for (int i = 0; i < rootNode.getChildCount(); i++) {
         final MyTreeNode moduleNode = rootNode.getChild(i);
         final MyTreeNode folderNode = moduleNode.findNode(f.getParentFile());
@@ -1111,8 +1112,8 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     protected void loadMetaData() {
-      AbstractMetaData data = AbstractMetaData.buildMetaData(file);
-      if (data != null && data.isModuleData()) {
+      AbstractMetaData data = MetaDataFactory.buildMetaData(file);
+      if (data != null && data instanceof ModuleMetaData) {
         setValid(true);
         metadata = (ModuleMetaData) data;
       }
@@ -1324,8 +1325,8 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     protected void loadMetaData() {   
-      AbstractMetaData data = AbstractMetaData.buildMetaData(file);
-      if (data != null && data.isExtensionData()) {
+      AbstractMetaData data = MetaDataFactory.buildMetaData(file);
+      if (data != null && data instanceof ExtensionMetaData) {
         setValid(true);
         metadata = (ExtensionMetaData) data;
       }
@@ -1501,9 +1502,9 @@ public class ModuleManagerWindow extends JFrame {
       // module, or that are pre vassal 3.1
       final File[] files = getFile().listFiles();
       for (int i = 0; i < files.length; i++) {
-        final AbstractMetaData fdata = AbstractMetaData.buildMetaData(files[i]);
+        final AbstractMetaData fdata = MetaDataFactory.buildMetaData(files[i]);
         if (fdata != null) {
-          if (fdata.isSaveData()) {
+          if (fdata instanceof SaveMetaData) {
             final String moduleName = ((SaveMetaData) fdata).getModuleName();
             if (moduleName == null || moduleName.length() == 0 || moduleName.equals(getModuleInfo().getModuleName())) {
               update(files[i]);
@@ -1555,8 +1556,8 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     protected void loadMetaData() {
-      AbstractMetaData data = AbstractMetaData.buildMetaData(file);
-      if (data != null && data.isSaveData()) {
+      AbstractMetaData data = MetaDataFactory.buildMetaData(file);
+      if (data != null && data instanceof SaveMetaData) {
         metadata = (SaveMetaData) data;
         setValid(true);
       }

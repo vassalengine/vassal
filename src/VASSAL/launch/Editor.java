@@ -30,11 +30,16 @@ import javax.swing.JMenuBar;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.AbstractMetaData;
+import VASSAL.build.module.ImportMetaData;
+import VASSAL.build.module.MetaDataFactory;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.WarningDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imports.ImportAction;
+import VASSAL.tools.logging.Logger;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -97,7 +102,7 @@ public class Editor extends Launcher {
       req = "NOTIFY_OPEN_OK";
       break;
     case IMPORT:
-      new ImportAction(null).loadModule(lr.module);
+      new ImportAction(null).loadModule(lr.importFile);
       req = "NOTIFY_IMPORT_OK";
       break;
     case NEW:
@@ -183,11 +188,25 @@ public class Editor extends Launcher {
       final FileChooser fc = ImportAction.getFileChooser(window);
 
       if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
-        lr.module = fc.getSelectedFile();
-        if (lr.module != null && !lr.module.exists()) lr.module = null;
+        lr.importFile = fc.getSelectedFile();
+        
+        if (lr.importFile != null) {
+          if (lr.importFile.exists()) {
+            final AbstractMetaData metadata = MetaDataFactory.buildMetaData(lr.importFile);
+            if (metadata == null || ! (metadata instanceof ImportMetaData)) {
+              WarningDialog.show(
+                  "Error.invalid_import_file", lr.importFile.getAbsolutePath());
+              Logger.log("-- Import of " + lr.importFile.getAbsolutePath() + " failed: unrecognized import type");
+              lr.importFile = null;
+            }
+          }
+          else {
+            lr.importFile = null;
+          }
+        }
       } 
     
-      return lr.module;
+      return lr.importFile;
     }
   }
 

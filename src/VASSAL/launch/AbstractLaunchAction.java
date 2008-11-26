@@ -51,6 +51,7 @@ import VASSAL.Info;
 import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.ModuleMetaData;
+import VASSAL.build.module.MetaDataFactory;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
@@ -171,10 +172,21 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     addFileFilters(fc);
 
     // loop until cancellation or we get an existing file
-    while (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
+    if (fc.showOpenDialog() == FileChooser.APPROVE_OPTION) {
       lr.module = fc.getSelectedFile();
       if (lr.module != null) {
-        if (lr.module.exists()) break;
+        if (lr.module.exists()) {
+          final AbstractMetaData metadata = MetaDataFactory.buildMetaData(lr.module);
+          if (metadata == null || ! (metadata instanceof ModuleMetaData)) {
+            WarningDialog.show(
+                "Error.invalid_vassal_module", lr.module.getAbsolutePath());
+            Logger.log("-- Load of " + lr.module.getAbsolutePath() + " failed: Not a Vassal module");
+            lr.module = null;
+          }
+        }
+        else {
+          lr.module = null;
+        }
 // FIXME: do something to warn about nonexistant file
 //        FileNotFoundDialog.warning(window, lr.module);
       }
@@ -214,14 +226,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // find module-specific heap settings, if any
       if (lr.module != null) {
-        final AbstractMetaData data;
-        
-        if (lr.mode == LaunchRequest.Mode.IMPORT) {
-          data = ImportAction.buildMetaData(lr.module);
-        }
-        else {
-          data = AbstractMetaData.buildMetaData(lr.module);
-        }
+        final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
         
         if (data == null) {
           WarningDialog.show(

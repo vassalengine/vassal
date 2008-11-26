@@ -83,10 +83,6 @@ public class ExtensionMetaData extends AbstractMetaData {
   public String getMetaDataVersion() {
     return DATA_VERSION;
   }
- 
-  public FileType getFileType() {
-    return FileType.EXTENSION;
-  }
   
   /**
    * Write Extension metadata to the specified Archive
