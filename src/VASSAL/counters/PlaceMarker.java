@@ -350,6 +350,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     description = st.nextToken("");
     setGpId(st.nextToken(""));
     placement = st.nextInt(STACK_TOP);
+    gpidSupport = GameModule.getGameModule().getGpIdSupport();
   }
 
   public PieceEditor getEditor() {

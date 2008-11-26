@@ -81,6 +81,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     initComponents();
     availableList.setSelectedIndex(0);
     setChanged(false);
+    gpidSupport = GameModule.getGameModule().getGpIdSupport();
   }
   
   public PieceDefiner(String id, GpIdSupport s) {
