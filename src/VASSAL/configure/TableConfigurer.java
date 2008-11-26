@@ -164,13 +164,13 @@ public class TableConfigurer extends Configurer implements ActionListener  {
   }
 
   protected class Column {
-    protected Class type;
+    protected Class<?> type;
     protected String name;
     protected List<Configurer> configurers = new ArrayList<Configurer>();
     protected Box controls;
     protected JPanel contents;
     
-    public Column(String name, Class type) {
+    public Column(String name, Class<?> type) {
       this.name = name;
       this.type = type;
     }

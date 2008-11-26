@@ -36,7 +36,7 @@ public class BooleanPreference extends BasicPreference {
     return "Checkbox Preference";
   }
 
-  public Class getDefaultClass() {
+  public Class<?> getDefaultClass() {
     return Boolean.class;
   }
 
@@ -61,5 +61,4 @@ public class BooleanPreference extends BasicPreference {
     }
     return config;
   }
-
 }

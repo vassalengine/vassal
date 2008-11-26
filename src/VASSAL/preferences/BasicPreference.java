@@ -122,7 +122,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
       return null;
   }
   
-  public abstract Class getDefaultClass();
+  public abstract Class<?> getDefaultClass();
   public abstract String getDefaultValue();
   public abstract void setDefaultValue(Object value);
   public abstract Configurer getPreferenceConfigurer();
@@ -149,8 +149,8 @@ public abstract class BasicPreference extends AbstractConfigurable {
     return HelpFile.getReferenceManualPage("GlobalOptions.htm");
   }
 
-  public Class[] getAllowableConfigureComponents() {
-    return new Class[0];
+  public Class<?>[] getAllowableConfigureComponents() {
+    return new Class<?>[0];
   }
   
   public String getDescription() {

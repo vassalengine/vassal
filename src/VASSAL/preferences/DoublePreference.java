@@ -36,7 +36,7 @@ public class DoublePreference extends BasicPreference {
     return "Decimal Number Preference";
   }
 
-  public Class getDefaultClass() {
+  public Class<?> getDefaultClass() {
     return Double.class;
   }
 

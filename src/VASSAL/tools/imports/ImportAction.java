@@ -87,7 +87,7 @@ public final class ImportAction extends EditModuleAction {
      * These classes must descend from Importer.
      */
     
-  private static final Class[] IMPORTERS = { 
+  private static final Class<?>[] IMPORTERS = { 
     ADC2Module.class,
     MapBoard.class,
     SymbolSet.class,
@@ -110,7 +110,7 @@ public final class ImportAction extends EditModuleAction {
     return chooser;
   }
 
-  public static Class getImporterClass(File f) throws IOException {
+  public static Class<?> getImporterClass(File f) throws IOException {
     int[] indeces = new int[IMPORTERS.length];
     for (int i = 0; i < indeces.length; ++i) {
       indeces[i] = i;
@@ -166,7 +166,7 @@ public final class ImportAction extends EditModuleAction {
     final GameModule module = new BasicModule(new ArchiveWriter((String) null)); 
     GameModule.init(module);
 
-    final Class impClass = getImporterClass(f);
+    final Class<?> impClass = getImporterClass(f);
     if (impClass == null) {      
       throw new FileFormatException("Unrecognized file format");
     }

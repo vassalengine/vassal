@@ -350,7 +350,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
         }
       }
 
-      public Class getColumnClass(int c) {
+      public Class<?> getColumnClass(int c) {
         return getValueAt(0, c).getClass();
       }
 

@@ -35,7 +35,7 @@ public class IntegerPreference extends BasicPreference {
     return "Whole Number Preference";
   }
 
-  public Class getDefaultClass() {
+  public Class<?> getDefaultClass() {
     return Integer.class;
   }
 

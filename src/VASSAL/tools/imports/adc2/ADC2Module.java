@@ -134,10 +134,10 @@ private static final String CHARTS = "Charts";
     private static final long serialVersionUID = 1L;  
     
     private class ForcePoolIterator implements Iterator<Pool> {      
-      private final Class type;
+      private final Class<?> type;
       private int cursor = 0;
 
-      private ForcePoolIterator(Class type) {
+      private ForcePoolIterator(Class<?> type) {
         this.type = type;
         setNext();
       }      
@@ -167,7 +167,7 @@ private static final String CHARTS = "Charts";
       }      
     }
     
-    public int count(Class type) {
+    public int count(Class<?> type) {
       int size = 0;
       Iterator<Pool> iter = iterator(type);
       while (iter.hasNext()) {
@@ -178,7 +178,7 @@ private static final String CHARTS = "Charts";
       return size;
     }
     
-    public Iterator<ADC2Module.Pool> iterator(Class type) {
+    public Iterator<ADC2Module.Pool> iterator(Class<?> type) {
       return new ForcePoolIterator(type);
     }
   }
@@ -367,7 +367,7 @@ private static final String CHARTS = "Charts";
   
   public class Piece {
     private static final String PIECE_PROPERTIES = "Piece Properties";
-	public final PieceClass pieceClass;
+    public final PieceClass pieceClass;
     public final HideState hideState;
     private final int[] values = new int[8];
     private final ValueType[] types = new ValueType[8];
@@ -377,9 +377,9 @@ private static final String CHARTS = "Charts";
     private GamePiece gamePiece;
     private PieceSlot pieceSlot;
     private final int position;
-	private PropertySheet classPS = null;
-	private PropertySheet piecePS = null;
-	private Marker pieceNameMarker = null;
+    private PropertySheet classPS = null;
+    private PropertySheet piecePS = null;
+    private Marker pieceNameMarker = null;
   
     public Piece(PieceClass cl) {
       this.name = null;
@@ -502,27 +502,27 @@ private static final String CHARTS = "Charts";
     }
 
     private Decorator getReplaceWithPrevious() throws IOException {
-		return pieceClass.getReplaceWithPreviousDecorator();
-	}
+    return pieceClass.getReplaceWithPreviousDecorator();
+  }
 
-	private Decorator getReplaceWithOther() throws IOException {
-		return pieceClass.getReplaceWithOtherDecorator();
-	}
+  private Decorator getReplaceWithOther() throws IOException {
+    return pieceClass.getReplaceWithOtherDecorator();
+  }
 
-	private Marker getPieceNameMarker() {
-    	if (pieceNameMarker == null) {
-    		if (name != null && name.length() > 0) {
-    			usePieceNames = true;
-    		}
-    		pieceNameMarker = new Marker(Marker.ID + "pcName", null);
-    		final SequenceEncoder se = new SequenceEncoder(',');
-    		se.append(name == null ? "" : name);
-    		pieceNameMarker.mySetState(se.getValue());
-    	}
-    	return pieceNameMarker;
-	}
+  private Marker getPieceNameMarker() {
+      if (pieceNameMarker == null) {
+        if (name != null && name.length() > 0) {
+          usePieceNames = true;
+        }
+        pieceNameMarker = new Marker(Marker.ID + "pcName", null);
+        final SequenceEncoder se = new SequenceEncoder(',');
+        se.append(name == null ? "" : name);
+        pieceNameMarker.mySetState(se.getValue());
+      }
+      return pieceNameMarker;
+  }
 
-	private void appendDecorator(Decorator p) {
+  private void appendDecorator(Decorator p) {
       if (p != null) {
         p.setInner(gamePiece);
         gamePiece = p;
@@ -607,58 +607,58 @@ private static final String CHARTS = "Charts";
      //TODO:  add more math functions to MouseOverStackViewer including min(), max(), and mean().
     //     and antialiased characters in MouseOverStackViewer
     protected PropertySheet getPiecePropertySheet() {
-    	if (piecePS == null) {
-    		piecePS = new PropertySheet();
-    		SequenceEncoder se = new SequenceEncoder('~');
-    		SequenceEncoder state = new SequenceEncoder('~');
-    		for(int i = 0; i < pieceValues.length; ++i) {
-    			if (pieceValues[i] != null && !pieceValues[i].equals("")) {
-    				se.append("0" + pieceValues[i]);
-    				Object o = getValue(i);
-    				if (o instanceof String)
-    					state.append((String) o);
-    				else if (o instanceof Integer)
-    					state.append(o.toString());
-    				else if (o instanceof Boolean)
-    					state.append(o.equals(Boolean.TRUE) ? "yes" : "no");
-    				else
-    					state.append("");
-    			}
-    		}
+      if (piecePS == null) {
+        piecePS = new PropertySheet();
+        SequenceEncoder se = new SequenceEncoder('~');
+        SequenceEncoder state = new SequenceEncoder('~');
+        for(int i = 0; i < pieceValues.length; ++i) {
+          if (pieceValues[i] != null && !pieceValues[i].equals("")) {
+            se.append("0" + pieceValues[i]);
+            Object o = getValue(i);
+            if (o instanceof String)
+              state.append((String) o);
+            else if (o instanceof Integer)
+              state.append(o.toString());
+            else if (o instanceof Boolean)
+              state.append(o.equals(Boolean.TRUE) ? "yes" : "no");
+            else
+              state.append("");
+          }
+        }
 
-    		String definition = se.getValue();
+        String definition = se.getValue();
 
-    		String st = piecePS.myGetState();
-    		if (st == null) {
-    			st = state.getValue();
-    		}
-    		else if (state.getValue() != null) {
-    			st = piecePS.myGetState() + "~" + state.getValue();
-    		}
+        String st = piecePS.myGetState();
+        if (st == null) {
+          st = state.getValue();
+        }
+        else if (state.getValue() != null) {
+          st = piecePS.myGetState() + "~" + state.getValue();
+        }
 
-    		if (definition != null && definition.length() > 0) {
-    			se = new SequenceEncoder(';'); // properties
-    			se.append(definition);
-    			se.append(PIECE_PROPERTIES); // menu name
-    			se.append('P'); // key
-    			se.append(0); // commit
-    			se.append("").append("").append(""); // colour
-    			piecePS.mySetType(PropertySheet.ID + se.getValue());
-    			piecePS.mySetState(st);
-    		}
-    		else {
-    			piecePS = null;
-    		}
-    	}
-    	
-    	return piecePS;
+        if (definition != null && definition.length() > 0) {
+          se = new SequenceEncoder(';'); // properties
+          se.append(definition);
+          se.append(PIECE_PROPERTIES); // menu name
+          se.append('P'); // key
+          se.append(0); // commit
+          se.append("").append("").append(""); // colour
+          piecePS.mySetType(PropertySheet.ID + se.getValue());
+          piecePS.mySetState(st);
+        }
+        else {
+          piecePS = null;
+        }
+      }
+      
+      return piecePS;
     }
     
     protected PropertySheet getClassPropertySheet() {
-    	if (classPS == null) {
-    		classPS = pieceClass.getPropertySheetDecorator();
-    	}
-    	return classPS;
+      if (classPS == null) {
+        classPS = pieceClass.getPropertySheetDecorator();
+      }
+      return classPS;
     }
     
     protected DynamicProperty getDynamicProperty() {
@@ -695,11 +695,11 @@ private static final String CHARTS = "Charts";
     }
 
     public String getUniqueClassName() {
-    	return pieceClass.getUniqueName();
+      return pieceClass.getUniqueName();
     }
     
     public String getClassName() {
-    	return pieceClass.getName();
+      return pieceClass.getName();
     }
     
     protected void setValue(int index, String value) {
@@ -981,8 +981,8 @@ private static final String CHARTS = "Charts";
   public class PieceClass {
     
     public PieceClass backReplace;
-	public static final String CLASS_PROPERTIES = "Class Properties";
-	protected static final int NO_HIDDEN_SYMBOL = 30001;
+  public static final String CLASS_PROPERTIES = "Class Properties";
+  protected static final int NO_HIDDEN_SYMBOL = 30001;
     protected static final int PLAYER_DEFAULT_HIDDEN_SYMBOL = 30000;
     private final int[] values = new int[8];
     private final ValueType[] types = new ValueType[8];
@@ -994,8 +994,8 @@ private static final String CHARTS = "Charts";
     private PieceClass flipClass;
     private Piece defaultPiece;
     private String uniqueName;
-	private boolean flipClassAdded = false;
-	private Piece flipDefinition;
+  private boolean flipClassAdded = false;
+  private Piece flipDefinition;
     
     public PieceClass(String name, SymbolSet.SymbolData symbol, int owner, int hiddenSymbol, int facing) {
       this.name = name;
@@ -1006,47 +1006,47 @@ private static final String CHARTS = "Charts";
     }
 
     public Decorator getReplaceWithPreviousDecorator() throws IOException {
-    	final PieceClass flipClass = getBackFlipClass();
-    	if (flipClass == null)
-    		return null;
-    	// don't bother if there are only two counters that flip back and forth
-    	else if (getFlipClass() == flipClass)
-    		return null;
+      final PieceClass flipClass = getBackFlipClass();
+      if (flipClass == null)
+        return null;
+      // don't bother if there are only two counters that flip back and forth
+      else if (getFlipClass() == flipClass)
+        return null;
 
-    	final GameModule gameModule = GameModule.getGameModule();
-    	final String path = flipClass.getFlipClassTreeConfigurePath();
+      final GameModule gameModule = GameModule.getGameModule();
+      final String path = flipClass.getFlipClassTreeConfigurePath();
 
-    	final SequenceEncoder se = new SequenceEncoder(path, ';');
-    	se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(true);
-    	
-    	flipClass.writeFlipDefinition(gameModule);
-    	
-    	return new Replace(Replace.ID + "Flip Back;B;" + se.getValue(), null);
-	}
+      final SequenceEncoder se = new SequenceEncoder(path, ';');
+      se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(true);
+      
+      flipClass.writeFlipDefinition(gameModule);
+      
+      return new Replace(Replace.ID + "Flip Back;B;" + se.getValue(), null);
+  }
 
-	// TODO: find a different way to do this so that we don't have to generate unique class names.
-	private String getFlipClassTreeConfigurePath() {
-		SequenceEncoder se2 = new SequenceEncoder(PieceWindow.class.getName(), ':');
-		se2.append(FLIP_DEFINITIONS);
-		final SequenceEncoder se = new SequenceEncoder(se2.getValue(), '/');
-		se2 = new SequenceEncoder(ListWidget.class.getName(), ':');
-		se.append(se2.getValue());
-		se2 = new SequenceEncoder(PieceSlot.class.getName(), ':');
-		se2.append(getUniqueName());
-		se.append(se2.getValue());
-		final String path = se.getValue();
-		return path;
-	}    
+  // TODO: find a different way to do this so that we don't have to generate unique class names.
+  private String getFlipClassTreeConfigurePath() {
+    SequenceEncoder se2 = new SequenceEncoder(PieceWindow.class.getName(), ':');
+    se2.append(FLIP_DEFINITIONS);
+    final SequenceEncoder se = new SequenceEncoder(se2.getValue(), '/');
+    se2 = new SequenceEncoder(ListWidget.class.getName(), ':');
+    se.append(se2.getValue());
+    se2 = new SequenceEncoder(PieceSlot.class.getName(), ':');
+    se2.append(getUniqueName());
+    se.append(se2.getValue());
+    final String path = se.getValue();
+    return path;
+  }    
     
     public Decorator getReplaceWithOtherDecorator() throws IOException {
-    	GameModule gameModule = GameModule.getGameModule();
-    	
+      GameModule gameModule = GameModule.getGameModule();
+      
         final PieceClass flipClass = getFlipClass();
         if (flipClass == null)
-      	  return null;
+          return null;
         
         SequenceEncoder se;
-  		String path = flipClass.getFlipClassTreeConfigurePath();
+      String path = flipClass.getFlipClassTreeConfigurePath();
         
         se = new SequenceEncoder(path, ';');
         se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(true);
@@ -1054,27 +1054,27 @@ private static final String CHARTS = "Charts";
         flipClass.writeFlipDefinition(gameModule);
 
         return new Replace(Replace.ID + "Flip;F;" + se.getValue(), null);               
-	}
+  }
 
-	private void writeFlipDefinition(GameModule gameModule) throws IOException {
-		if (!flipClassAdded) {
-			flipClassAdded = true;
-			
-		    ListWidget list = flipDefs.getAllDescendantComponentsOf(ListWidget.class).iterator().next();
-		    getFlipDefinition().writeToArchive(list);
-		}
-	}
+  private void writeFlipDefinition(GameModule gameModule) throws IOException {
+    if (!flipClassAdded) {
+      flipClassAdded = true;
+      
+        ListWidget list = flipDefs.getAllDescendantComponentsOf(ListWidget.class).iterator().next();
+        getFlipDefinition().writeToArchive(list);
+    }
+  }
 
-	public PieceClass getBackFlipClass() {
+  public PieceClass getBackFlipClass() {
     if (backReplace == this) { // this will probably never happen
       return null;
     }
     else {
       return backReplace;
     }
-	}
+  }
 
-	public DynamicProperty getDynamicPropertyDecorator() {
+  public DynamicProperty getDynamicPropertyDecorator() {
       SequenceEncoder type = new SequenceEncoder(';');
       type.append("Layer");
       SequenceEncoder constraints = new SequenceEncoder(',');
@@ -1128,15 +1128,15 @@ private static final String CHARTS = "Charts";
 
       PropertySheet p = null;
       if (type.getValue() != null && type.getValue().length() > 0) {
-    	  p = new PropertySheet();
-    	  SequenceEncoder se = new SequenceEncoder(';'); // properties
-    	  se.append(type.getValue() == null ? "" : type.getValue());
-    	  se.append(CLASS_PROPERTIES); // menu name
-    	  se.append('C'); // key
-    	  se.append(0); // commit
-    	  se.append("").append("").append(""); // colour
-    	  p.mySetType(PropertySheet.ID + se.getValue());
-    	  p.mySetState(state.getValue());
+        p = new PropertySheet();
+        SequenceEncoder se = new SequenceEncoder(';'); // properties
+        se.append(type.getValue() == null ? "" : type.getValue());
+        se.append(CLASS_PROPERTIES); // menu name
+        se.append('C'); // key
+        se.append(0); // commit
+        se.append("").append("").append(""); // colour
+        p.mySetType(PropertySheet.ID + se.getValue());
+        p.mySetState(state.getValue());
       }
 
       return p;
@@ -1335,8 +1335,8 @@ private static final String CHARTS = "Charts";
     }
     
     protected void setBackFlipClass(int from) {
-    	backReplace = pieceClasses.get(from);
-    	assert(backReplace.getFlipClass() == this);
+      backReplace = pieceClasses.get(from);
+      assert(backReplace.getFlipClass() == this);
     }
     
     public PieceClass getFlipClass() {
@@ -1425,10 +1425,10 @@ private static final String CHARTS = "Charts";
     }
     
     protected Piece getFlipDefinition() {
-    	if (flipDefinition == null) {
-    		flipDefinition = new Piece(this);
-    	}
-    	return flipDefinition;
+      if (flipDefinition == null) {
+        flipDefinition = new Piece(this);
+      }
+      return flipDefinition;
     }
 
     protected SymbolSet.SymbolData getSymbol() throws IOException {
@@ -1908,7 +1908,7 @@ private PieceWindow pieceWin;
     in.readUnsignedByte(); // unknown byte
     
     nFlipDefs = ADC2Utils.readBase250Word(in);
-	for (int i = 0; i < nFlipDefs; ++i) {
+  for (int i = 0; i < nFlipDefs; ++i) {
       int from = ADC2Utils.readBase250Word(in);
       int to = ADC2Utils.readBase250Word(in);
       if (from >= 0 && from < pieceClasses.size() && to >= 0 && to < pieceClasses.size()) {
@@ -2276,7 +2276,7 @@ private PieceWindow pieceWin;
     configureStatusFlagButtons();
     configureMapLayers();
     pieceWin = gameModule.getAllDescendantComponentsOf(PieceWindow.class).iterator().next();
-	configureFlipDefinitions(gameModule);
+  configureFlipDefinitions(gameModule);
     writeClassesToArchive(gameModule);
     writeForcePoolsToArchive(gameModule);
     writeDecksToArchive(gameModule);
@@ -2295,27 +2295,27 @@ private PieceWindow pieceWin;
   }
 
 private void configureFlipDefinitions(GameModule gameModule) {
-	if (nFlipDefs > 0) {
-		flipDefs = new PieceWindow();
-		insertComponent(flipDefs, gameModule);
-		flipDefs.setAttribute(PieceWindow.NAME, FLIP_DEFINITIONS);
-		flipDefs.setAttribute(PieceWindow.HIDDEN, Boolean.TRUE);
-		flipDefs.setAttribute(PieceWindow.BUTTON_TEXT, "");
-		flipDefs.setAttribute(PieceWindow.TOOLTIP, "");
-		
-	    ListWidget list = new ListWidget();
-	    insertComponent(list, flipDefs);
-	}
+  if (nFlipDefs > 0) {
+    flipDefs = new PieceWindow();
+    insertComponent(flipDefs, gameModule);
+    flipDefs.setAttribute(PieceWindow.NAME, FLIP_DEFINITIONS);
+    flipDefs.setAttribute(PieceWindow.HIDDEN, Boolean.TRUE);
+    flipDefs.setAttribute(PieceWindow.BUTTON_TEXT, "");
+    flipDefs.setAttribute(PieceWindow.TOOLTIP, "");
+    
+      ListWidget list = new ListWidget();
+      insertComponent(list, flipDefs);
+  }
 }
 
 private void configureMainMap(GameModule gameModule) throws IOException {
-	final Map mainMap = getMainMap();
-	mainMap.setAttribute(Map.MARK_UNMOVED_ICON, StateFlag.MOVE.getStatusIconName());
-//	if (usePieceNames) {
-//		mainMap.setAttribute(Map.MOVE_WITHIN_FORMAT, "$" + Map.PIECE_NAME + "$" + "/" + PC_NAME + " moves $" + Map.OLD_LOCATION + "$ -> $" + Map.LOCATION + "$ *");
-//		mainMap.setAttribute(Map.MOVE_TO_FORMAT, "$" + Map.PIECE_NAME + "$" + "/" + PC_NAME + " moves $" + Map.OLD_LOCATION + "$ -> $" + Map.LOCATION + "$ *");
-//		mainMap.setAttribute(Map.CREATE_FORMAT, "$" + Map.PIECE_NAME + "$/" + PC_NAME + " created in $" + Map.LOCATION + "$");
-//	}
+  final Map mainMap = getMainMap();
+  mainMap.setAttribute(Map.MARK_UNMOVED_ICON, StateFlag.MOVE.getStatusIconName());
+//  if (usePieceNames) {
+//    mainMap.setAttribute(Map.MOVE_WITHIN_FORMAT, "$" + Map.PIECE_NAME + "$" + "/" + PC_NAME + " moves $" + Map.OLD_LOCATION + "$ -> $" + Map.LOCATION + "$ *");
+//    mainMap.setAttribute(Map.MOVE_TO_FORMAT, "$" + Map.PIECE_NAME + "$" + "/" + PC_NAME + " moves $" + Map.OLD_LOCATION + "$ -> $" + Map.LOCATION + "$ *");
+//    mainMap.setAttribute(Map.CREATE_FORMAT, "$" + Map.PIECE_NAME + "$/" + PC_NAME + " created in $" + Map.LOCATION + "$");
+//  }
 }
 
   private void configureStatusFlagButtons() throws IOException {
@@ -2494,7 +2494,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     viewer.setAttribute(CounterDetailViewer.MINIMUM_DISPLAYABLE, "1");
     viewer.setAttribute(CounterDetailViewer.SUMMARY_REPORT_FORMAT, sb.toString() + "($LocationName$)");
     if (usePieceNames) {
-    	viewer.setAttribute(CounterDetailViewer.COUNTER_REPORT_FORMAT, PC_NAME);
+      viewer.setAttribute(CounterDetailViewer.COUNTER_REPORT_FORMAT, PC_NAME);
     }
     viewer.setAttribute(CounterDetailViewer.UNROTATE_PIECES, Boolean.TRUE);
     viewer.setAttribute(CounterDetailViewer.BG_COLOR, Color.WHITE);
@@ -2507,7 +2507,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     insertComponent(list, pieceWin);
     
     for (PieceClass c : pieceClasses) {
-    	c.writeToArchive(list);
+      c.writeToArchive(list);
     }
   }
 

@@ -480,7 +480,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       TableColumn tableColumn = getColumnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
       if (renderer == null) {
-        Class c = getColumnClass(column);
+        Class<?> c = getColumnClass(column);
         if( c.equals(Object.class) )
         {
           Object o = getValueAt(row,column);
@@ -496,7 +496,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
       TableColumn tableColumn = getColumnModel().getColumn(column);
       TableCellEditor editor = tableColumn.getCellEditor();
       if (editor == null) {
-        Class c = getColumnClass(column);
+        Class<?> c = getColumnClass(column);
         if( c.equals(Object.class) )
         {
           Object o = getValueAt(row,column);

@@ -36,7 +36,7 @@ public class StringPreference extends BasicPreference {
     return "String Preference";
   }
 
-  public Class getDefaultClass() {
+  public Class<?> getDefaultClass() {
     return String.class;
   }
 

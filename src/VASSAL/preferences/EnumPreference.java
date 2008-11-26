@@ -39,7 +39,7 @@ public class EnumPreference extends BasicPreference {
     return "Drop-down List Preference";
   }
 
-  public Class getDefaultClass() {
+  public Class<?> getDefaultClass() {
     return String.class;
   }
 
