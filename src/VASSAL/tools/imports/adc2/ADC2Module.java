@@ -2873,4 +2873,13 @@ private void configureMainMap(GameModule gameModule) throws IOException {
   protected SymbolSet getSet() {
     return getMap().getSet();
   }
+
+  @Override
+  public boolean isValidImportFile(File f) throws IOException {
+    DataInputStream in = new DataInputStream(new FileInputStream(f));
+    int header = in.readByte();
+    boolean valid = header == -3 || header == -2;
+    in.close();
+    return valid;
+  }
 }

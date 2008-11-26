@@ -61,6 +61,8 @@ import VASSAL.tools.StringUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
+import VASSAL.tools.imports.ImportAction;
+import VASSAL.tools.imports.Importer;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 import VASSAL.tools.logging.LogEntry;
@@ -211,8 +213,15 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       String moduleName = null;
 
       // find module-specific heap settings, if any
-      if (lr.module != null && lr.mode != LaunchRequest.Mode.IMPORT) {
-        final AbstractMetaData data = AbstractMetaData.buildMetaData(lr.module);
+      if (lr.module != null) {
+        final AbstractMetaData data;
+        
+        if (lr.mode == LaunchRequest.Mode.IMPORT) {
+          data = ImportAction.buildMetaData(lr.module);
+        }
+        else {
+          data = AbstractMetaData.buildMetaData(lr.module);
+        }
         
         if (data == null) {
           WarningDialog.show(
@@ -225,7 +234,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           moduleName = ((ModuleMetaData) data).getName();
 
           // log the module name
-          Logger.log("-- Loading module " + moduleName);
+          if (lr.mode == LaunchRequest.Mode.IMPORT) {
+            Logger.log("-- Importing module " + moduleName);
+          }
+          else {
+            Logger.log("-- Loading module " + moduleName);
+          }
 
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);

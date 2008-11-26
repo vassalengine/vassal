@@ -20,7 +20,6 @@
 package VASSAL.tools.imports;
 
 import java.awt.Component;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +27,8 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.AbstractMetaData;
+import VASSAL.build.module.ModuleMetaData;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
@@ -66,6 +67,8 @@ public final class ImportAction extends EditModuleAction {
 
   /*
    * The following three arrays describe the import file types that we can handle.
+   * They should be ordered in priority from most likely to least likely. File formats
+   * with complex file headers should take greater priority.
    */
   
   private static final String[] EXTENSIONS = {
@@ -107,6 +110,36 @@ public final class ImportAction extends EditModuleAction {
     return chooser;
   }
 
+  public static Class getImporterClass(File f) throws IOException {
+    int[] indeces = new int[IMPORTERS.length];
+    for (int i = 0; i < indeces.length; ++i) {
+      indeces[i] = i;
+    }
+    
+    String s = '.' + Importer.getExtension(f.getName());
+    for (int i = 0; i < EXTENSIONS.length; ++i) {
+      if (EXTENSIONS[i].compareToIgnoreCase(s) == 0) {
+        indeces[0] = i;
+        indeces[i] = 0;
+        break;
+      }
+    }
+    
+    for (int i = 0; i < indeces.length; ++i) {
+      try {
+        if (((Importer) (IMPORTERS[indeces[i]].newInstance())).isValidImportFile(f)) {
+          return IMPORTERS[indeces[i]];
+        }
+      } catch (InstantiationException e) {
+        ErrorDialog.bug(e);
+      } catch (IllegalAccessException e) {
+        ErrorDialog.bug(e);
+      }
+    }
+    
+    return null;
+  }
+  
   @Override
   public void performAction(ActionEvent e) throws IOException {
     actionCancelled = true;
@@ -133,38 +166,27 @@ public final class ImportAction extends EditModuleAction {
     final GameModule module = new BasicModule(new ArchiveWriter((String) null)); 
     GameModule.init(module);
 
-    // try to import the module on the basis of the extension
-    for (int i = 0; i < IMPORTERS.length; ++i) {
-      if (f.getName().toLowerCase().endsWith(EXTENSIONS[i].toLowerCase())) {
-        try {
-          Importer imp = null;
-//          JFrame frame = ModuleManager.getInstance().getFrame();
-          try {
-//            frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            imp = (Importer) (IMPORTERS[i].newInstance());
-            imp.importFile(this, f);
-            imp.writeToArchive();
-          }
-          finally {
-//            frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-          }
-          
-          module.getFrame().setVisible(true);
-          new ModuleEditorWindow(module).setVisible(true);
-        }
-        // some serious problems.
-        catch (IllegalAccessException e) {
-          ErrorDialog.bug(e);
-        }
-        catch (InstantiationException e) {
-          ErrorDialog.bug(e);
-        }
-        return;
-      }
+    final Class impClass = getImporterClass(f);
+    if (impClass == null) {      
+      throw new FileFormatException("Unrecognized file format");
     }
-    
-    // went through all of the extensions.
-    throw new FileFormatException("Unrecognized filename extension");
+
+    final Importer imp;
+    try {
+      imp = (Importer) (impClass.newInstance());
+      imp.importFile(this, f);
+      imp.writeToArchive();
+    }
+    // these should never happen
+    catch (IllegalAccessException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (InstantiationException e) {
+      ErrorDialog.bug(e);
+    }
+
+    module.getFrame().setVisible(true);
+    new ModuleEditorWindow(module).setVisible(true);    
   }
 
   /**
@@ -300,5 +322,19 @@ public final class ImportAction extends EditModuleAction {
   
     // total failure
     return null;
+  }
+
+  public static AbstractMetaData buildMetaData(File module) {
+    try {
+      if (getImporterClass(module) == null) {
+        // not a recognized file
+        return null;
+      }
+    } catch (IOException e) {
+      return null;
+    }
+    String name = Importer.stripExtension(module.getName());
+    ModuleMetaData metaData = new ModuleMetaData(name, "0.1");    
+    return metaData;
   }
 }

@@ -18,7 +18,6 @@
 package VASSAL.tools.imports.adc2;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -637,5 +636,13 @@ public class SymbolSet extends Importer{
     // for testing purposes only
 //    for (SymbolData terrain : mapBoardData)
 //      terrain.writeToArchive();
+  }
+
+  @Override
+  public boolean isValidImportFile(File f) throws IOException {
+    DataInputStream in = new DataInputStream(new FileInputStream(f));
+    boolean valid = in.readUnsignedByte() >= 0xFA;
+    in.close();
+    return valid;
   }
 }

@@ -18,6 +18,7 @@
 package VASSAL.tools.imports;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -224,5 +225,14 @@ public abstract class Importer {
     if (s.equals(".") || s.equals(".."))
       return s;
     return Importer.stripExtension(s) + '.' + ext;
-  }    
+  }
+
+  /**
+   * Determine whether the file is valid for the given importer.
+   * @param f
+   * @return <code>true</code> if <code>f</code> is a valid file for this type.
+   * @throws FileNotFoundException 
+   * @throws IOException 
+   */
+  public abstract boolean isValidImportFile(File f) throws IOException;
 }
