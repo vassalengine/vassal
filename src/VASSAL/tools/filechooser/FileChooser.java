@@ -300,7 +300,15 @@ public abstract class FileChooser {
       final FileDialog fd;
 
       if (parent == null) {
+        // FIXME: this will throw an IllegalArgumentException with Java 1.5
+        // Probably we should disallow null parents anyway?
         fd = new FileDialog((Frame) null, title);
+      }
+      else if (parent instanceof Dialog) {
+        fd = new FileDialog((Dialog) parent, title);
+      }
+      else if (parent instanceof Frame) {
+        fd = new FileDialog((Frame) parent, title);
       }
       else {
         final Dialog d =
@@ -316,7 +324,8 @@ public abstract class FileChooser {
           }
           else {
             // should be impossible, parent is not in a dialog or frame!
-            fd = new FileDialog((Frame) null, title);
+            throw new IllegalArgumentException(
+              "parent is contained in neither a Dialog nor a Frame");
           }
         }
       }     
