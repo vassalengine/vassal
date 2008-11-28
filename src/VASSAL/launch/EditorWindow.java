@@ -245,7 +245,7 @@ public abstract class EditorWindow extends JFrame {
     mm.addAction("Editor.ModuleEditor.reference_manual", helpAction);
     toolBar.add(helpAction);
   
-    mm.addAction("AboutScreen.about_vassal", AboutVASSAL.getAction());
+    mm.addAction("AboutScreen.about_vassal", AboutVASSAL.getAction(this));
  
     setJMenuBar(mm.getMenuBarFor(this));
 

@@ -20,9 +20,9 @@
 package VASSAL.launch;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -32,7 +32,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JWindow;
-import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
 import VASSAL.i18n.Resources;
@@ -44,8 +43,8 @@ public class AboutVASSAL extends JWindow {
     initComponents();
   }
 
-  public AboutVASSAL(Component c) {
-    super(SwingUtilities.getWindowAncestor(c));
+  public AboutVASSAL(Window w) {
+    super(w);
     initComponents();
   }
 
@@ -81,12 +80,12 @@ public class AboutVASSAL extends JWindow {
     });
   }
 
-  public static Action getAction() {
+  public static Action getAction(final Window w) {
     final Action action = new AbstractAction() {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent e) {
-        final AboutVASSAL about = new AboutVASSAL();
+        final AboutVASSAL about = new AboutVASSAL(w);
         about.setVisible(true);
         about.toFront();
       }
