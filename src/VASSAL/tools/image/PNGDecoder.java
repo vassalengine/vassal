@@ -1,5 +1,5 @@
 /*
- * $Id: ImageUtils.java 4483 2008-11-16 18:15:32Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *

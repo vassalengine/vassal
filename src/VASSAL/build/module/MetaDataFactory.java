@@ -1,4 +1,4 @@
-/* $Id: MetaDataFactory.java 4509 2008-11-20 22:37:52Z swampwallaby $
+/* $Id$
  *
  * Copyright (c) 2008 by Brent Easton and Joel Uckelman
  *

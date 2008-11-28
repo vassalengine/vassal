@@ -1,5 +1,5 @@
 /*
- * $Id: MissingImageException.java 4372 2008-10-31 22:47:59Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *
