@@ -636,8 +636,10 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           // Update the Component configurer to reflect the change
           xConfig.setValue(String.valueOf(myStack.pos.x));
           yConfig.setValue(String.valueOf(myStack.pos.y));
-          updateLocation();
-          locationConfig.setValue(location);
+          if (locationConfig != null) { // DrawPile's do not have a location
+            updateLocation();
+            locationConfig.setValue(location);
+          }
         }
       });
       JPanel okPanel = new JPanel();
