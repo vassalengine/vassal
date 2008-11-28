@@ -125,7 +125,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
     map.getToolBar().add(launch);
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

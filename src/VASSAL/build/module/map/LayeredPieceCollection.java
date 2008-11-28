@@ -112,7 +112,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     return tempToolBar.getToolBar();
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[] { LayerControl.class };
   }
 

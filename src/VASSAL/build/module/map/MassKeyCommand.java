@@ -130,7 +130,7 @@ public class MassKeyCommand extends AbstractConfigurable {
     GameModule.getGameModule().sendAndLog(globalCommand.apply(m, getFilter()));
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

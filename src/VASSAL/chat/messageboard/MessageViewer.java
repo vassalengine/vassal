@@ -47,7 +47,7 @@ public class MessageViewer extends JPanel {
     initComponents();
   }
 
-  public void setMessages(Enumeration msgEnum) {
+  public void setMessages(Enumeration<Message> msgEnum) {
     msgList.clear();
     msgText.setText("");  //$NON-NLS-1$
     Vector<Vector<String>> rows = new Vector<Vector<String>>();
@@ -55,7 +55,7 @@ public class MessageViewer extends JPanel {
     names.addElement(Resources.getString("Chat.sender"));  //$NON-NLS-1$
     names.addElement(Resources.getString("Chat.date"));  //$NON-NLS-1$
     while (msgEnum.hasMoreElements()) {
-      Message msg = (Message) msgEnum.nextElement();
+      Message msg = msgEnum.nextElement();
       msgList.add(msg);
       Vector<String> cols = new Vector<String>();
       cols.addElement(msg.getSender());

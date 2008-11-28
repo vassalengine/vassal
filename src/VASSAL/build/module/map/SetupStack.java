@@ -357,7 +357,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     setAttributeTranslatable(NAME, false);
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{PieceSlot.class};
   }
 

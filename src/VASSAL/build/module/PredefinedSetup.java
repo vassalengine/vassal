@@ -237,7 +237,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     GameModule.getGameModule().getWizardSupport().removePredefinedSetup(this);
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return isMenu ? new Class[]{PredefinedSetup.class} : new Class[0];
   }
 

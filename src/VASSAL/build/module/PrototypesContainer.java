@@ -69,7 +69,7 @@ public class PrototypesContainer extends AbstractConfigurable {
     validator = new SingleChildInstance(GameModule.getGameModule(),getClass());
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{PrototypeDefinition.class};
   }
 

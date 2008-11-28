@@ -494,7 +494,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

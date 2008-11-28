@@ -47,7 +47,7 @@ public class ValidationReportDialog extends JDialog {
     add(reportBox);
     JPanel buttonPanel = new JPanel();
     add(buttonPanel, BorderLayout.SOUTH);
-    List warnings = report.getWarnings();
+    List<String> warnings = report.getWarnings();
     switch (warnings.size()) {
       case 0:
         reportBox.add(new JLabel("No problems found"));

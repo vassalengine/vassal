@@ -215,7 +215,7 @@ public class Tutorial extends AbstractConfigurable {
                .removeFromSection("Documentation.Module", launchItem);
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

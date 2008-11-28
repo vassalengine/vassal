@@ -127,6 +127,7 @@ public class EventLog extends AbstractBuildable
   }
 
   /** Use {@link #decodedEvents()} instead. */
+  @SuppressWarnings("unchecked")
   @Deprecated
   public static Enumeration decodeEvents(String s) {
     ArrayList<Event> l = new ArrayList<Event>();
@@ -159,6 +160,7 @@ public class EventLog extends AbstractBuildable
   }
 
   /** Use {@link #encodedEvents(Iterable<Event>)} instead. */
+  @SuppressWarnings("unchecked")
   @Deprecated
   public static String encodeEvents(Enumeration e) {
     final SequenceEncoder se = new SequenceEncoder('|');

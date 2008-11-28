@@ -47,7 +47,7 @@ public class SelectionHighlighters extends AbstractConfigurable {
     return null;
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{SelectionHighlighter.class};
   }
 

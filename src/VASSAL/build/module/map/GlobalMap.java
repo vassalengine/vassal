@@ -309,7 +309,7 @@ public class GlobalMap implements AutoConfigurable,
     return new Configurable[0];
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

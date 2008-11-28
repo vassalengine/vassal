@@ -21,7 +21,6 @@ package VASSAL.tools.imageop;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;

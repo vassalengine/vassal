@@ -26,7 +26,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
 
 import VASSAL.tools.HashCode;
 import VASSAL.tools.image.ImageUtils;

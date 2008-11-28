@@ -201,7 +201,7 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
     return "Last Move Highlighter";
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 }

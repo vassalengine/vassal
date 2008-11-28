@@ -481,7 +481,7 @@ public class Inventory extends AbstractConfigurable
     return HelpFile.getReferenceManualPage("Inventory.htm"); //$NON-NLS-1$
   }
   
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

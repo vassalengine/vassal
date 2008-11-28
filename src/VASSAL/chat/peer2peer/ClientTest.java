@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
 import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.Player;
 import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.WelcomeMessageServer;
 import VASSAL.chat.messageboard.MessageBoard;
@@ -65,7 +67,7 @@ public class ClientTest extends P2PClient implements Runnable, PropertyChangeLis
     final StringBuilder buffer = new StringBuilder();
     for (int i = 0; i < r.length; ++i) {
       buffer.append(r[i].getName() + ": "); //$NON-NLS-1$
-      List l = r[i].getPlayerList();
+      List<Player> l = r[i].getPlayerList();
       for (int j = 0; j < l.size(); ++j) {
         buffer.append(l.get(j));
         if (j < l.size() - 1) {

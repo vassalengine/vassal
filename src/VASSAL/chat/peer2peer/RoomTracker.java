@@ -52,11 +52,11 @@ public class RoomTracker {
     }
   }
 
-  public Enumeration getJoinedPlayers() {
+  public Enumeration<Player> getJoinedPlayers() {
     return Collections.enumeration(joinedPlayers);
   }
 
-  public Enumeration getLeftPlayers() {
+  public Enumeration<Player> getLeftPlayers() {
     return Collections.enumeration(leftPlayers);
   }
 }

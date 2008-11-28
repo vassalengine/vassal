@@ -31,13 +31,12 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.stream.FileCacheImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 
-import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.TempFileManager;
 import VASSAL.tools.image.ImageIOException;

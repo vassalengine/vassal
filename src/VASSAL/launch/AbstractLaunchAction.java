@@ -62,8 +62,6 @@ import VASSAL.tools.StringUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
-import VASSAL.tools.imports.ImportAction;
-import VASSAL.tools.imports.Importer;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 import VASSAL.tools.logging.LogEntry;

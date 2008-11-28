@@ -36,7 +36,7 @@ public class TextPreference extends BasicPreference {
     return "Text Box Preference";
   }
 
-  public Class getDefaultClass() {
+  public Class<?> getDefaultClass() {
     return TextConfigurer.class;
   }
 

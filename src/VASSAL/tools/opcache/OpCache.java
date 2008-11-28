@@ -20,7 +20,6 @@
 package VASSAL.tools.opcache;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentMap;
@@ -36,10 +35,8 @@ import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.tools.ConcurrentSoftHashMap;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ThreadManager;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -82,7 +79,7 @@ public class OpCache {
       if (o == this) return true;
       if (!(o instanceof Key)) return false;
 
-      final Key k = (Key) o;
+      final Key<?> k = (Key<?>) o;
       return version == k.version &&
              op.equals(k.op) &&
              deps.equals(k.deps);

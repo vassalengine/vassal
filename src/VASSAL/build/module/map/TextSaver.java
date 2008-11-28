@@ -171,7 +171,7 @@ public class TextSaver extends AbstractConfigurable {
   /** @return an array of Configurer objects representing
    * all possible classes of Buildable children of this Configurable object
    */
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 }

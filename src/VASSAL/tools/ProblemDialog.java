@@ -3,8 +3,6 @@ package VASSAL.tools;
 import java.awt.Component;
 import java.awt.Frame;
 
-import javax.swing.JOptionPane;
-
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.logging.Logger;

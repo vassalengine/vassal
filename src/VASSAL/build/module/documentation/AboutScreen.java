@@ -227,7 +227,7 @@ public class AboutScreen extends AbstractConfigurable {
     }
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

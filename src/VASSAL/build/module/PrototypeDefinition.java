@@ -67,7 +67,7 @@ public class PrototypeDefinition extends AbstractConfigurable
     propSupport.addPropertyChangeListener(l);
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

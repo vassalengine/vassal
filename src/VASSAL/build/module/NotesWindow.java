@@ -266,7 +266,7 @@ public class NotesWindow extends AbstractConfigurable
     return new Configurable[0];
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

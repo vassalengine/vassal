@@ -219,7 +219,7 @@ public class LayerControl extends AbstractConfigurable {
     return pieceLayers.getMap();
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

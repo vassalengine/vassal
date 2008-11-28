@@ -465,7 +465,7 @@ public class ImageSaver extends AbstractConfigurable {
     return "Image Capture Tool";
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 }

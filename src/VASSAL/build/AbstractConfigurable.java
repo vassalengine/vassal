@@ -86,7 +86,7 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
    * 
    * The order of classes should be the same as the order of names in {@link AbstractBuildable#getAttributeNames}
    */
-  public abstract Class[] getAttributeTypes();
+  public abstract Class<?>[] getAttributeTypes();
 
   /**
    * By default, all attributes are visible

@@ -27,7 +27,6 @@ import java.util.List;
 
 import VASSAL.tools.HashCode;
 import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.opcache.Op;
 
 /**
  * An {@link ImageOp} which rotates and scales its source. Rotation

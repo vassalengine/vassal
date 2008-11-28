@@ -54,7 +54,7 @@ public class TableConfigurer extends Configurer implements ActionListener  {
   protected char rowDelimiter = ',';
   protected char colDelimiter = '|'; 
   
-  public TableConfigurer(String key, String name, String[] headings, Class[] types) {
+  public TableConfigurer(String key, String name, String[] headings, Class<?>[] types) {
     this(key, name);
     columns = new Column[headings.length];
     for (int i = 0; i < headings.length; i++) {

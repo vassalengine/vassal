@@ -242,7 +242,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     return new Configurable[0];
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

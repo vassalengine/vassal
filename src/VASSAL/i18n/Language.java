@@ -52,7 +52,7 @@ public class Language extends AbstractConfigurable {
   public void addTo(Buildable parent) {
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{Translation.class};
   }
 

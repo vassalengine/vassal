@@ -22,7 +22,6 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.awt.Window;
 import java.io.File;
 
 import javax.swing.JFileChooser;

@@ -786,7 +786,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   }
   // end deprecated keys
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

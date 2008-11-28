@@ -606,7 +606,7 @@ public class DrawPile extends SetupStack {
     }
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{CardSlot.class, DeckGlobalKeyCommand.class};
   }
 

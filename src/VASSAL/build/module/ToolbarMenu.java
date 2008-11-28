@@ -154,7 +154,7 @@ public class ToolbarMenu extends AbstractConfigurable
     scheduleBuildMenu();
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

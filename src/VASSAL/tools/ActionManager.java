@@ -18,7 +18,7 @@ public class ActionManager {
     return instance;  
   }
 
-  public Set getActionIds() {
+  public Set<?> getActionIds() {
     return map.keySet();
   }
 

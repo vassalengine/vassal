@@ -218,7 +218,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     propSupport.addPropertyChangeListener(l);
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 
@@ -356,7 +356,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       BrowserHelpFile.this.addPropertyChangeListener(l);
     }
 
-    public Class[] getAllowableConfigureComponents() {
+    public Class<?>[] getAllowableConfigureComponents() {
       return BrowserHelpFile.this.getAllowableConfigureComponents();
     }
 

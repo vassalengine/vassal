@@ -48,7 +48,7 @@ public abstract class ListConfigurer extends Configurer
     super(key, name, new ArrayList<Object>());
   }
 
-  public ListConfigurer(String key, String name, List val) {
+  public ListConfigurer(String key, String name, List<?> val) {
     super(key, name, val);
   }
 

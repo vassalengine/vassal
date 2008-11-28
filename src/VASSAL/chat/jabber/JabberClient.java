@@ -625,8 +625,8 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   public ModuleSummary[] getStatus() {
     ArrayList<ModuleSummary> entries = new ArrayList<ModuleSummary>();
     try {
-      for (Iterator iter = MultiUserChat.getHostedRooms(conn, conferenceService).iterator(); iter.hasNext();) {
-        HostedRoom room = (HostedRoom) iter.next();
+      for (Iterator<HostedRoom> iter = MultiUserChat.getHostedRooms(conn, conferenceService).iterator(); iter.hasNext();) {
+        HostedRoom room = iter.next();
         MultiUserChat.getRoomInfo(conn, room.getJid());
       }
     }

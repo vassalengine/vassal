@@ -92,7 +92,7 @@ public class RoomTree extends JTree {
 // Update players
     for (int i = 0; i < root.getChildCount(); ++i) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
-      List p = roomAt(i).getPlayerList();
+      List<Player> p = roomAt(i).getPlayerList();
       while (p.size()< node.getChildCount()) {
         model.removeNodeFromParent((DefaultMutableTreeNode) node.getChildAt(0));
       }

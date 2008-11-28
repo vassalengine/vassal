@@ -30,7 +30,6 @@ import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.logging.Logger;
-import VASSAL.tools.swing.DetailsDialog;
 
 public class ErrorDialog {
   private ErrorDialog() {}

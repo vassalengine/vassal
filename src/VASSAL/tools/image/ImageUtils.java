@@ -28,7 +28,6 @@ import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
-import java.awt.image.ColorModel;
 import java.awt.image.PixelGrabber;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -47,9 +46,6 @@ import javax.swing.ImageIcon;
 
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import VASSAL.build.GameModule;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.tools.DataArchive;
@@ -58,7 +54,6 @@ import VASSAL.tools.image.memmap.MappedBufferedImage;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.RereadableInputStream;
-import VASSAL.tools.logging.Logger;
 
 public class ImageUtils {
   // negative, because historically we've done it this way

@@ -57,7 +57,7 @@ public class HttpRequestWrapper {
     url = baseURL + url;
     if (props != null) {
        url += "?"; //$NON-NLS-1$
-      for (Enumeration e = props.keys(); e.hasMoreElements();) {
+      for (Enumeration<?> e = props.keys(); e.hasMoreElements();) {
         String key = (String) e.nextElement();
         String value = props.getProperty(key);
         url += key + "=" + URLEncoder.encode(value,"UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -100,7 +100,7 @@ public class HttpRequestWrapper {
     url = baseURL + url;
     String content = ""; //$NON-NLS-1$
     if (props != null) {
-      for (Enumeration e = props.keys(); e.hasMoreElements();) {
+      for (Enumeration<?> e = props.keys(); e.hasMoreElements();) {
         String key = (String) e.nextElement();
         String value = props.getProperty(key);
         content += key + "=" + URLEncoder.encode(value,"UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$

@@ -509,7 +509,7 @@ public class StackMetrics extends AbstractConfigurable {
     return HelpFile.getReferenceManualPage("Map.htm", "StackingOptions");
   }
 
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

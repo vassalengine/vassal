@@ -285,7 +285,7 @@ public class DoActionButton extends AbstractConfigurable {
     return list;    
   }
   
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

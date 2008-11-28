@@ -21,7 +21,6 @@ package VASSAL.tools.image;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.zip.CRC32;
 
 /**
  * @author Joel Uckelman
