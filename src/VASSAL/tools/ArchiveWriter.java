@@ -191,7 +191,7 @@ public class ArchiveWriter extends DataArchive {
    */
   public void addFile(String fileName, InputStream in) {
     try {
-      files.put(fileName, IOUtils.getBytes(in));
+      files.put(fileName, IOUtils.toByteArray(in));
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, fileName);

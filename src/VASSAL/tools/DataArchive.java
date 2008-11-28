@@ -123,7 +123,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final String path = soundDir + name;
     AudioClip clip = soundCache.get(path);
     if (clip == null) {
-      clip = new AppletAudioClip(IOUtils.getBytes(getInputStream(path)));
+      clip = new AppletAudioClip(IOUtils.toByteArray(getInputStream(path)));
       soundCache.put(path,clip);
     }
     return clip;
@@ -457,7 +457,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     try {
       final String slashname = name.replace('.', '/');
       final byte[] data =
-        IOUtils.getBytes(getInputStream(slashname + ".class"));
+        IOUtils.toByteArray(getInputStream(slashname + ".class"));
       return defineClass(name, data, 0, data.length, cs);
     }
     catch (IOException e) {
@@ -706,11 +706,11 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   /**
    * Read all available bytes from the given InputStream.
-   * @deprecated Use {@link IOUtils.getBytes(InputStream)} instead.
+   * @deprecated Use {@link IOUtils.toBytesArray(InputStream)} instead.
    */
   @Deprecated
   public static byte[] getBytes(InputStream in) throws IOException {
-    return IOUtils.getBytes(in);
+    return IOUtils.toByteArray(in);
   }
 
   /**

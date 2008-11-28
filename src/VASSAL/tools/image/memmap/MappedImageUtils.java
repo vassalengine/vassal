@@ -132,7 +132,7 @@ public class MappedImageUtils {
   private static MappedBufferedImage loadWithToolkit(InputStream in)
                                                           throws IOException {
     final Image src = ImageUtils.forceLoad(
-      Toolkit.getDefaultToolkit().createImage(IOUtils.getBytes(in)));
+      Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(in)));
 
     final MappedBufferedImage dst = new MappedBufferedImage(
       src.getWidth(null), src.getHeight(null),

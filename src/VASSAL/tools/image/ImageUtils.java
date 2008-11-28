@@ -459,7 +459,7 @@ public class ImageUtils {
 
       if (useToolkit) {
         img = toBufferedImage(
-          Toolkit.getDefaultToolkit().createImage(IOUtils.getBytes(in)));
+          Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(in)));
       }
       else {
         img = ImageIO.read(new MemoryCacheImageInputStream(in));
