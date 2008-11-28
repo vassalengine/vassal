@@ -67,7 +67,7 @@ import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
-import VASSAL.tools.io.BridgeStream;
+import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.menu.MenuManager;
 
@@ -553,7 +553,7 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
-    final BridgeStream out = new BridgeStream();
+    final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
     final String save = saveString();
     new Obfuscator(save.getBytes("UTF-8")).write(out);  //$NON-NLS-1$
     lastSave = save;

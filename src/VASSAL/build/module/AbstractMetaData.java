@@ -49,7 +49,7 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Translation;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.io.BridgeStream;
+import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 
@@ -180,7 +180,7 @@ public abstract class AbstractMetaData {
       throw (IOException) new IOException().initCause(ex);
     }
 
-    final BridgeStream out = new BridgeStream();
+    final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
     try {
       final Transformer xformer =
         TransformerFactory.newInstance().newTransformer();

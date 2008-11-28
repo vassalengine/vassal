@@ -57,7 +57,7 @@ import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.Obfuscator;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.io.BridgeStream;
+import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.menu.MenuManager;
 
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
@@ -282,7 +282,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }
 
       final String s = GameModule.getGameModule().encode(log);
-      final BridgeStream out = new BridgeStream();
+      final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
       new Obfuscator(s.getBytes("UTF-8")).write(out); //$NON-NLS-1$    
 
       final ArchiveWriter saver = new ArchiveWriter(outputFile.getPath());
