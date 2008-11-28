@@ -607,7 +607,7 @@ public class DrawPile extends SetupStack {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{CardSlot.class, DeckGlobalKeyCommand.class};
+    return new Class<?>[]{CardSlot.class, DeckGlobalKeyCommand.class};
   }
 
   public Point getPosition() {

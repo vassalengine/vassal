@@ -202,6 +202,6 @@ public class HighlightLastMoved extends AbstractConfigurable implements Drawable
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 }

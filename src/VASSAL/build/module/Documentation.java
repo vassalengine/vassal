@@ -99,7 +99,7 @@ public class Documentation extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{
+    return new Class<?>[]{
       BrowserHelpFile.class,
       AboutScreen.class,
       Tutorial.class,

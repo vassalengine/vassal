@@ -53,7 +53,7 @@ public class Language extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{Translation.class};
+    return new Class<?>[]{Translation.class};
   }
 
   public static String getConfigureTypeName() {

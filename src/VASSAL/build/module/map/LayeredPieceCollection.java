@@ -113,7 +113,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[] { LayerControl.class };
+    return new Class<?>[] { LayerControl.class };
   }
 
   public HelpFile getHelpFile() {

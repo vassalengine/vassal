@@ -480,7 +480,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[] {SpecialDie.class};
+    return new Class<?>[] {SpecialDie.class};
   }
 
   public HelpFile getHelpFile() {

@@ -168,10 +168,11 @@ public class TextSaver extends AbstractConfigurable {
     return "Text Capture Tool";
   }
 
-  /** @return an array of Configurer objects representing
+  /** 
+   * @return an array of Configurer objects representing
    * all possible classes of Buildable children of this Configurable object
    */
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 }

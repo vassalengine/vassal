@@ -386,7 +386,7 @@ public class DieManager extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{InternetDiceButton.class};
+    return new Class<?>[]{InternetDiceButton.class};
   }
 
   public void addTo(Buildable parent) {

@@ -153,7 +153,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
    * PanelWidget}, a {@link BoxWidget}, a {@link ListWidget}, or a
    * {@link PieceSlot} */
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{
+    return new Class<?>[]{
       TabWidget.class,
       PanelWidget.class,
       BoxWidget.class,

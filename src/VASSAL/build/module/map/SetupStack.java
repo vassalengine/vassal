@@ -358,7 +358,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{PieceSlot.class};
+    return new Class<?>[]{PieceSlot.class};
   }
 
   public HelpFile getHelpFile() {

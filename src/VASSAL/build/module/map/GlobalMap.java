@@ -310,7 +310,7 @@ public class GlobalMap implements AutoConfigurable,
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   public void addPropertyChangeListener(java.beans.PropertyChangeListener l) {

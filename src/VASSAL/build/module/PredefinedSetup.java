@@ -238,7 +238,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return isMenu ? new Class[]{PredefinedSetup.class} : new Class[0];
+    return isMenu ? new Class<?>[]{PredefinedSetup.class} : new Class<?>[0];
   }
 
   public static String getConfigureTypeName() {

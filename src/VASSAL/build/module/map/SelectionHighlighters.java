@@ -48,7 +48,7 @@ public class SelectionHighlighters extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{SelectionHighlighter.class};
+    return new Class<?>[]{SelectionHighlighter.class};
   }
 
   public void addTo(Buildable parent) {

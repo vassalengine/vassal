@@ -70,7 +70,7 @@ public class PrototypesContainer extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{PrototypeDefinition.class};
+    return new Class<?>[]{PrototypeDefinition.class};
   }
 
   public static String getConfigureTypeName() {

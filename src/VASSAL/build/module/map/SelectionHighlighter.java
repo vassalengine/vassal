@@ -242,7 +242,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   public void addTo(Buildable parent) {

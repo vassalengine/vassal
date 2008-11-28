@@ -219,7 +219,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   public Configurable[] getConfigureComponents() {

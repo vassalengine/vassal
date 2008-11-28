@@ -155,7 +155,7 @@ public class ToolbarMenu extends AbstractConfigurable
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   public HelpFile getHelpFile() {

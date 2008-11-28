@@ -97,7 +97,7 @@ public class SpecialDie extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[]{SpecialDieFace.class};
+    return new Class<?>[]{SpecialDieFace.class};
   }
 
   public void addTo(Buildable parent) {

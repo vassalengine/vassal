@@ -68,7 +68,7 @@ public class PrototypeDefinition extends AbstractConfigurable
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[0];
+    return new Class<?>[0];
   }
 
   public Configurable[] getConfigureComponents() {
