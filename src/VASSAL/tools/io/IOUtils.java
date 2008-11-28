@@ -19,7 +19,6 @@
 package VASSAL.tools.io;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.InputStream;
@@ -259,47 +258,14 @@ public class IOUtils {
    * @throws IOException if one occurs while reading.
    */
   public static byte[] toByteArray(InputStream in) throws IOException {
-    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    // try to size the buffer correctly if the stream provides size information
+    final int available = in.available();
+    final FastByteArrayOutputStream out = available > 0 ? 
+      new FastByteArrayOutputStream(available) :
+      new FastByteArrayOutputStream();
+
     copy(in, out);
     return out.toByteArray();
-  }
-
-  /**
-   * Copies bytes from an <code>InputStream</code> to a <code>byte[]</code>.
-   *
-   * @param in the source
-   * @return the source as a <code>byte[]</code> 
-   * @throws IOException if one occurs while reading.
-   */
-  public static byte[] getBytes(InputStream in) throws IOException {
-    // Note: This is here because it is 1/3 faster than toByteArray.
-    // The tradeoff is hugely more memory use.
-    byte buffer[] = null;
-    final BufferedInputStream bufIn = new BufferedInputStream(in);
-    try {
-      final byte abyte0[] = new byte[bufIn.available()];
-
-      int nCurBytes = 0;
-      while ((nCurBytes = bufIn.read(abyte0, 0, abyte0.length)) != -1) {
-        if (buffer == null) {
-          buffer = new byte[nCurBytes];
-          System.arraycopy(abyte0, 0, buffer, 0, nCurBytes);
-        }
-        else {
-          final byte oldbuf[] = buffer;
-  
-          buffer = new byte[oldbuf.length + nCurBytes];
-  
-          System.arraycopy(oldbuf, 0, buffer, 0, oldbuf.length);
-          System.arraycopy(abyte0, 0, buffer, oldbuf.length, nCurBytes);
-        }
-      }
-    }
-    finally {
-      closeQuietly(bufIn);
-    }
-
-    return buffer != null ? buffer : new byte[0];
   }
 
   /**
