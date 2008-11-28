@@ -27,8 +27,8 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import VASSAL.build.GameModule;
-import VASSAL.build.module.AbstractMetaData;
-import VASSAL.build.module.ImportMetaData;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.ImportMetaData;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;

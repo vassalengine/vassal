@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: ImportMetaData.java 4344 2008-10-26 21:54:16Z uckelman $
  *
  * Copyright (c) 2008 by Brent Easton and Joel Uckelman
  *
@@ -16,7 +16,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.build.module;
+package VASSAL.build.module.metadata;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

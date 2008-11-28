@@ -1,4 +1,4 @@
-/* $Id$
+/* $Id: MetaDataFactory.java 4509 2008-11-20 22:37:52Z swampwallaby $
  *
  * Copyright (c) 2008 by Brent Easton and Joel Uckelman
  *
@@ -15,7 +15,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.build.module;
+package VASSAL.build.module.metadata;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,8 +26,9 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.io.IOUtils;
+import VASSAL.build.module.GameState;
 import VASSAL.tools.imports.ImportAction;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 
 public class MetaDataFactory {

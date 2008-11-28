@@ -46,6 +46,9 @@ import javax.swing.JOptionPane;
 import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
+import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.command.AddPiece;
 import VASSAL.command.AlertCommand;
 import VASSAL.command.Command;

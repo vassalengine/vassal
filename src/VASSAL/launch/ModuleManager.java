@@ -37,9 +37,9 @@ import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
-import VASSAL.build.module.AbstractMetaData;
-import VASSAL.build.module.MetaDataFactory;
-import VASSAL.build.module.SaveMetaData;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
+import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.LongConfigurer;
 import VASSAL.preferences.Prefs;

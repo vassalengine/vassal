@@ -30,9 +30,9 @@ import javax.swing.JMenuBar;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.AbstractMetaData;
-import VASSAL.build.module.ImportMetaData;
-import VASSAL.build.module.MetaDataFactory;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.ImportMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.DataArchive;

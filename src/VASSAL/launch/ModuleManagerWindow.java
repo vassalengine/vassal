@@ -82,13 +82,13 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
 import VASSAL.Info;
-import VASSAL.build.module.AbstractMetaData;
 import VASSAL.build.module.Documentation;
-import VASSAL.build.module.ExtensionMetaData;
 import VASSAL.build.module.ExtensionsManager;
-import VASSAL.build.module.MetaDataFactory;
-import VASSAL.build.module.ModuleMetaData;
-import VASSAL.build.module.SaveMetaData;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.ExtensionMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
+import VASSAL.build.module.metadata.ModuleMetaData;
+import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ui.ServerStatusView;
 import VASSAL.configure.BooleanConfigurer;

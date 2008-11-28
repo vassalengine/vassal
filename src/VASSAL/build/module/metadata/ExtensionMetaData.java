@@ -15,7 +15,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.build.module;
+package VASSAL.build.module.metadata;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -30,6 +30,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.ModuleExtension;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
