@@ -43,7 +43,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.io.IOUtils;
 
 /**
@@ -91,13 +90,11 @@ public class SVGImageUtils {
    * @return the image dimensions
    * @throws IOException if the image cannot be read
    */
-  public static Dimension getImageSize(String name, DataArchive archive)
+  public static Dimension getImageSize(String name, InputStream in)
                                                           throws IOException {
     // get the SVG
-    InputStream in = null;
     final Document doc;
     try {
-      in = archive.getImageInputStream(name);
       doc = factory.createDocument(null, in);
       in.close();
     }

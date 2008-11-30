@@ -140,9 +140,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
     if (name.startsWith("/")) {
       if (name.toLowerCase().endsWith(".svg")) 
-        return SVGImageUtils.getImageSize(name, this);
+        return SVGImageUtils.getImageSize(name, getImageInputStream(name));
       else
-        return ImageUtils.getImageSize(name, this);
+        return ImageUtils.getImageSize(name, getImageInputStream(name));
     }
     else if ((src = imageSources.get(name)) != null) {
       final Image image = src.getImage();
@@ -151,10 +151,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         new Dimension();
     }
     else if (name.toLowerCase().endsWith(".svg")) {
-      return SVGImageUtils.getImageSize(name, this);
+      return SVGImageUtils.getImageSize(name, getImageInputStream(name));
     }
     else {
-      return ImageUtils.getImageSize(name, this);
+      return ImageUtils.getImageSize(name, getImageInputStream(name));
     }
   }
 
@@ -174,7 +174,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
                                getImageInputStream(name)).render();
       }
       else {
-        return ImageUtils.getImage(name, this);
+        return ImageUtils.getImage(name, getImageInputStream(name));
       }
     }
     else if ((src = imageSources.get(name)) != null) {
@@ -185,7 +185,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
                              getImageInputStream(name)).render();
     }
     else {
-      return ImageUtils.getImage(name, this);
+      return ImageUtils.getImage(name, getImageInputStream(name));
     }
   }
 

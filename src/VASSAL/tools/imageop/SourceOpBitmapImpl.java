@@ -77,7 +77,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
    * @throws IOException if the image cannot be loaded from the image file.
    */
   public BufferedImage eval() throws IOException {
-    return ImageUtils.getImage(name, archive);
+    return ImageUtils.getImage(name, archive.getImageInputStream(name));
   }
 
   /** {@inheritDoc} */
@@ -92,7 +92,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
 
   protected Dimension getImageSize() {
     try {
-      return ImageUtils.getImageSize(name, archive);
+      return ImageUtils.getImageSize(name, archive.getImageInputStream(name));
     }
     catch (IOException e) {
       if (!Op.handleException(e)) ErrorDialog.bug(e);

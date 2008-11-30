@@ -48,7 +48,6 @@ import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.BooleanConfigurer;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.memmap.MappedBufferedImage;
 import VASSAL.tools.imageop.Op;
@@ -89,7 +88,7 @@ public class ImageUtils {
 
 //  static {
   private ImageUtils() {
-//    if (GameModule.getGameModule() != null) {
+    if (GameModule.getGameModule() != null) {
 // FIXME: this stuff belongs somewhere else
       // create configurer for memory-mapped file preference
       final BooleanConfigurer mappedPref = new BooleanConfigurer(
@@ -129,7 +128,7 @@ public class ImageUtils {
       });
   
       GameModule.getGameModule().getPrefs().addOption(scalingPref);
-//    }
+    }
 
     // set up map for creating default RenderingHints
     defaultHints.put(RenderingHints.KEY_INTERPOLATION,
@@ -337,11 +336,9 @@ public class ImageUtils {
     }
   }
 
-  public static Dimension getImageSize(String name, DataArchive archive)
+  public static Dimension getImageSize(String name, InputStream in)
                                                            throws IOException {
-    InputStream in = null;
     try {
-      in = archive.getImageInputStream(name);
       final ImageInputStream stream = new MemoryCacheImageInputStream(in);
 
       final Iterator<ImageReader> i = ImageIO.getImageReaders(stream);
@@ -371,9 +368,7 @@ public class ImageUtils {
   }
 
   /**
-   * @deprecated Use {@link #getImage(String,DataArchive)} until such time
-   * as ImageIO can load all images properly. Then undeprecate this and
-   * deprecate {@link #getImage(String,DataArchive)}.
+   * @deprecated Use {@link #getImage(String,InputStream)} instead.
    */ 
   @Deprecated
   public static BufferedImage getImage(InputStream in) throws IOException {
@@ -420,7 +415,7 @@ public class ImageUtils {
     }
   }
 
-  public static BufferedImage getImage(String name, DataArchive archive)
+  public static BufferedImage getImage(String name, InputStream in)
                                                            throws IOException {
     // FIXME: At present, ImageIO does not honor the tRNS chunk in 8-bit
     // color type 2 (RGB) PNGs. This is not a bug per se, as the PNG 
@@ -444,25 +439,25 @@ public class ImageUtils {
     //
 
     BufferedImage img = null;
-    RereadableInputStream in = null;
+    RereadableInputStream rin = null;
     try {
-      in = new RereadableInputStream(archive.getImageInputStream(name));
-      in.mark(512);
+      rin = new RereadableInputStream(in);
+      rin.mark(512);
 
-      final boolean useToolkit = isMasked8BitRGBPNG(in);
-      in.reset();
+      final boolean useToolkit = isMasked8BitRGBPNG(rin);
+      rin.reset();
 
       if (useToolkit) {
         img = toBufferedImage(
-          Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(in)));
+          Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(rin)));
       }
       else {
-        img = ImageIO.read(new MemoryCacheImageInputStream(in));
+        img = ImageIO.read(new MemoryCacheImageInputStream(rin));
         if (img == null) throw new UnrecognizedImageTypeException();
         img = toCompatibleImage(img);
       }
 
-      in.close();
+      rin.close();
 
       return img;
     }
@@ -476,7 +471,7 @@ public class ImageUtils {
       throw new ImageIOException(name, e);
     }
     finally {
-      IOUtils.closeQuietly(in);
+      IOUtils.closeQuietly(rin);
     }
   }
 
