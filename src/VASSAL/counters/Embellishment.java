@@ -404,21 +404,16 @@ public class Embellishment extends Decorator implements TranslatablePiece {
    * Calculate the new level to display based on a property?
    */
   protected void checkPropertyLevel() {
-    if (!followProperty || propertyName.length() == 0) {
-      return;
-    }
-    final String val = (String) Decorator.getOutermost(this)
-    .getProperty(propertyName);
+    if (!followProperty || propertyName.length() == 0) return;
+
+    final String val =
+      (String) Decorator.getOutermost(this).getProperty(propertyName);
     try {
       int v = Integer.parseInt(val) - firstLevelValue + 1;
       if (v <= 0) v = 1;
       if (v > nValues) v = nValues;
-      if (isActive()) {
-        value = v;
-      }
-      else {
-        value = -v;
-      }
+
+      value = isActive() ? v : -v;
     }
     catch (NumberFormatException e) {
       ErrorDialog.dataError(new BadDataReport("Not a number",val,e));
