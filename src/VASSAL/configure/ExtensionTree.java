@@ -40,7 +40,7 @@ import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.documentation.HelpWindow;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.launch.EditorWindow;
-import VASSAL.tools.ErrorUtils;
+import VASSAL.tools.ReflectionUtils;
 
 /**
  * The configuration tree for editing a module extension
@@ -97,7 +97,7 @@ public class ExtensionTree extends ConfigureTree {
           ch = (Configurable) newConfig.getConstructor().newInstance();
         }
         catch (Throwable t) {
-          ErrorUtils.handleNewInstanceFailure(t);
+          ReflectionUtils.handleNewInstanceFailure(t, newConfig);
         }  
 
         if (ch != null) {
@@ -227,7 +227,8 @@ public class ExtensionTree extends ConfigureTree {
               clone = copyTarget.getClass().getConstructor().newInstance();
             }
             catch (Throwable t) {
-              ErrorUtils.handleNewInstanceFailure(t);
+              ReflectionUtils.handleNewInstanceFailure(
+                t, copyTarget.getClass());
             }
 
             if (clone != null) {
@@ -323,7 +324,7 @@ public class ExtensionTree extends ConfigureTree {
             clone = target.getClass().getConstructor().newInstance();
           }
           catch (Throwable t) {
-            ErrorUtils.handleNewInstanceFailure(t);
+            ReflectionUtils.handleNewInstanceFailure(t, target.getClass());
           }
 
           if (clone != null) {

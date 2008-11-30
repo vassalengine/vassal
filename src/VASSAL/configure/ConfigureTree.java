@@ -72,7 +72,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorUtils;
+import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -371,7 +371,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             clone = copyBase.getClass().getConstructor().newInstance();
           }
           catch (Throwable t) {
-            ErrorUtils.handleNewInstanceFailure(t);
+            ReflectionUtils.handleNewInstanceFailure(t, copyBase.getClass());
           }
 
           if (clone != null) {
@@ -484,7 +484,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           ch = (Configurable) newConfig.getConstructor().newInstance();
         }
         catch (Throwable t) {
-          ErrorUtils.handleNewInstanceFailure(t);
+          ReflectionUtils.handleNewInstanceFailure(t, newConfig);
         } 
 
         if (ch != null) {
@@ -547,7 +547,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
             clone = target.getClass().getConstructor().newInstance();
           }
           catch (Throwable t) {
-            ErrorUtils.handleNewInstanceFailure(t);
+            ReflectionUtils.handleNewInstanceFailure(t, target.getClass());
           }
 
           if (clone != null) {
@@ -771,7 +771,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
                     .loadClass(className).getConstructor().newInstance();
     }
     catch (Throwable t) {
-      ErrorUtils.handleImportClassFailure(t, className);
+      ReflectionUtils.handleImportClassFailure(t, className);
     }
 
     if (o == null) return null;

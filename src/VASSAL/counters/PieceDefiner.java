@@ -52,7 +52,7 @@ import VASSAL.build.module.documentation.HelpWindowExtension;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorUtils;
+import VASSAL.tools.ReflectionUtils;
 
 /**
  * This is the GamePiece designer dialog.  It appears when you edit
@@ -148,31 +148,36 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   public void setPiece(GamePiece piece) {
     inUseModel.clear();
     while (piece instanceof Decorator) {
+      final Class<?> pieceClass = piece.getClass();
+
       inUseModel.insertElementAt(piece, 0);
       boolean contains = false;
       for (int i = 0,j = availableModel.size(); i < j; ++i) {
-        if (piece.getClass().isInstance(availableModel.elementAt(i))) {
+        if (pieceClass.isInstance(availableModel.elementAt(i))) {
           contains = true;
           break;
         }
       }
+
       if (!contains) {
         try {
-          availableModel.addElement(
-            piece.getClass().getConstructor().newInstance());
+          availableModel.addElement(pieceClass.getConstructor().newInstance());
         }
         catch (Throwable t) {
-          ErrorUtils.handleNewInstanceFailure(t);
+          ReflectionUtils.handleNewInstanceFailure(t, pieceClass);
         }
       }
+
       piece = ((Decorator) piece).piece;
     }
+
     if (piece == null) {
       inUseModel.insertElementAt(new BasicPiece(), 0);
     }
     else {
       inUseModel.insertElementAt(piece, 0);
     }
+
     inUseList.setSelectedIndex(0);
     refresh();
   }
@@ -298,12 +303,12 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
           }
         }
         else if (selected instanceof GamePiece && inUseModel.getSize() == 0) {
-          GamePiece p = null; 
+          GamePiece p = null;
           try {
             p = (GamePiece) selected.getClass().getConstructor().newInstance();
           }
           catch (Throwable t) {
-            ErrorUtils.handleNewInstanceFailure(t);
+            ReflectionUtils.handleNewInstanceFailure(t, selected.getClass());
           }
 
           if (p != null) {
@@ -513,7 +518,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
                     .loadClass(className).getConstructor().newInstance();
     }
     catch (Throwable t) {
-      ErrorUtils.handleImportClassFailure(t, className);
+      ReflectionUtils.handleImportClassFailure(t, className);
     }
 
     if (o == null) return;
@@ -630,12 +635,13 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
   }
 
   protected void addTrait(Decorator c) {
+    final Class<? extends Decorator> cClass = c.getClass();
     Decorator d = null;
     try {
-      d = c.getClass().getConstructor().newInstance();
+      d = cClass.getConstructor().newInstance();
     }
     catch (Throwable t) {
-      ErrorUtils.handleNewInstanceFailure(t);
+      ReflectionUtils.handleNewInstanceFailure(t, cClass);
     }
 
     if (d != null) {

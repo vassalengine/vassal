@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
 
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorUtils;
+import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.io.IOUtils;
 
 /**
@@ -105,7 +105,7 @@ public abstract class Builder {
     }
     catch (Throwable t) {
       // find and rethrow causes which are not bugs
-      ErrorUtils.throwAncestorOfClass(OutOfMemoryError.class, t);
+      ThrowableUtils.throwAncestorOfClass(OutOfMemoryError.class, t);
 
       if (t instanceof ClassCastException ||
           t instanceof ClassNotFoundException ||

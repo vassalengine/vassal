@@ -101,13 +101,4 @@ public class BugUtils {
 
     return log;
   }
-
-
-  public static String getStackTrace(Throwable thrown) {
-    final StringWriter sw = new StringWriter();
-    final PrintWriter pw = new PrintWriter(sw);
-    thrown.printStackTrace(pw);
-    pw.flush();
-    return sw.toString();
-  }
 }

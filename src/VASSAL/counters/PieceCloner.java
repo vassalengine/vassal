@@ -22,7 +22,7 @@ package VASSAL.counters;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.command.AddPiece;
-import VASSAL.tools.ErrorUtils;
+import VASSAL.tools.ReflectionUtils;
 
 /**
  * Utility class for cloning {@link GamePiece}s
@@ -65,7 +65,7 @@ public class PieceCloner {
         ((Decorator)clone).mySetState(((Decorator)piece).myGetState());
       }
       catch (Throwable t) {
-        ErrorUtils.handleNewInstanceFailure(t);
+        ReflectionUtils.handleNewInstanceFailure(t, piece.getClass());
       }
     }
     else {

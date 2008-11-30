@@ -61,7 +61,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ErrorUtils;
+import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.menu.MenuManager;
@@ -290,7 +290,7 @@ public class BasicModule extends GameModule {
       child = componentClass.getConstructor().newInstance();
     }
     catch (Throwable t) {
-      ErrorUtils.handleNewInstanceFailure(t);
+      ReflectionUtils.handleNewInstanceFailure(t, componentClass);
     }
 
     if (child != null) {

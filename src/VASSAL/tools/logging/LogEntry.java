@@ -21,7 +21,7 @@ package VASSAL.tools.logging;
 
 import java.io.Serializable;
 
-import VASSAL.tools.BugUtils;
+import VASSAL.tools.ThrowableUtils;
 
 /**
  * @author Joel Uckelman
@@ -64,8 +64,13 @@ public class LogEntry implements Serializable {
   public String toString() {
     final StringBuilder sb = new StringBuilder();
     sb.append(timestamp).append(' ').append(pid);
-    if (message != null) sb.append(' ').append(message);
-    if (thrown  != null) sb.append(' ').append(BugUtils.getStackTrace(thrown));
+
+    if (message != null)
+      sb.append(' ').append(message);
+
+    if (thrown  != null)
+      sb.append(' ').append(ThrowableUtils.getStackTrace(thrown));
+
     return sb.toString();
   }
 }

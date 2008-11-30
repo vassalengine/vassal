@@ -39,7 +39,7 @@ import javax.swing.KeyStroke;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
-import VASSAL.tools.ErrorUtils;
+import VASSAL.tools.ReflectionUtils;
 
 /**
  * A Configurer for configuring Configurable components
@@ -141,7 +141,7 @@ public class AutoConfigurer extends Configurer
         se = (StringEnum) type.getConstructor().newInstance();
       }
       catch (Throwable t) {
-        ErrorUtils.handleNewInstanceFailure(t);
+        ReflectionUtils.handleNewInstanceFailure(t, type);
         config = new StringConfigurer(key, prompt);
       }
 
@@ -156,7 +156,7 @@ public class AutoConfigurer extends Configurer
         cf = (ConfigurerFactory) type.getConstructor().newInstance();
       }
       catch (Throwable t) {
-        ErrorUtils.handleNewInstanceFailure(t);
+        ReflectionUtils.handleNewInstanceFailure(t, type);
       }
 
       if (cf != null) {
@@ -171,7 +171,7 @@ public class AutoConfigurer extends Configurer
 
   public void reset() {
     String[] s = target.getAttributeNames();
-    for (int i=0;i<s.length;++i) {
+    for (int i = 0; i < s.length; ++i) {
       Configurer config = getConfigurer(s[i]);
       if (config != null) {
         config.setValue(target.getAttributeValueString(s[i]));

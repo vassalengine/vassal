@@ -39,7 +39,7 @@ public class ErrorDialog {
   public static void bug(Throwable thrown) {
     // determine whether an OutOfMemoryError is in our causal chain
     final OutOfMemoryError oom =
-      ErrorUtils.getAncestorOfClass(OutOfMemoryError.class, thrown);
+      ThrowableUtils.getAncestorOfClass(OutOfMemoryError.class, thrown);
     if (oom != null) {
       Logger.log(thrown);
       show("Error.out_of_memory");

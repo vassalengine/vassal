@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.ErrorUtils;
+import VASSAL.tools.ThrowableUtils;
 
 /**
  * Command is an abstract class that does something. Any action that takes
@@ -73,7 +73,7 @@ public abstract class Command {
 
   private void handleFailure(Throwable t) {
     // find and rethrow causes which are not bugs
-    ErrorUtils.throwAncestorOfClass(OutOfMemoryError.class, t);
+    ThrowableUtils.throwAncestorOfClass(OutOfMemoryError.class, t);
 
     if (t instanceof Error) {
       // some unusual problem occurred    
