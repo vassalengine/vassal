@@ -123,7 +123,7 @@ public class PlayerWindow extends JFrame {
     }
     mm.addAction("General.help", new ShowHelpAction(url, null));
 
-    mm.addAction("AboutScreen.about_vassal", AboutVASSAL.getAction(this));
+    mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));
     
     mb.add(fileMenu);
     mb.add(mm.addMarker("Editor.MenuBar.start"));

@@ -287,7 +287,7 @@ public class ModuleManagerWindow extends JFrame {
     mm.addAction("General.help", new ShowHelpAction(url, null));
     
     mm.addAction("Main.tour", new LaunchTourAction(this));
-    mm.addAction("AboutScreen.about_vassal", AboutVASSAL.getAction(this));
+    mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));
     mm.addAction("UpdateCheckAction.update_check", new UpdateCheckAction(this));
     mm.addAction("Help.error_log", new ShowErrorLogAction(this));
 

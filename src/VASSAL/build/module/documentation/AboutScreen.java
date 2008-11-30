@@ -18,21 +18,12 @@
  */
 package VASSAL.build.module.documentation;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JWindow;
 
 import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
@@ -47,6 +38,7 @@ import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.swing.AboutWindow;
 
 /**
  * Places an entry in the <code>Help</code> menu.  Selecting the entry
@@ -59,7 +51,6 @@ public class AboutScreen extends AbstractConfigurable {
   protected String title;
   protected String fileName;
   protected Action launch;
-  protected Window window;
 
   public AboutScreen() {
     launch = new AbstractAction() {
@@ -84,61 +75,33 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   public void launch() {
-    if (window == null) {
-      initComponents();
-    }
-    if (window != null) { // Null means no image specified 
-      window.setVisible(true);
-      window.toFront();
-    }
-  }
-
-  protected void initComponents() {
     if (op == null) return;
 
-    final JWindow w = new JWindow(GameModule.getGameModule() != null ?
-      GameModule.getGameModule().getFrame() : null);
-    w.getContentPane().setBackground(Color.black);
-    w.setLayout(new BoxLayout(w.getContentPane(), BoxLayout.Y_AXIS));
+    final GameModule g = GameModule.getGameModule();
+    if (g == null) return;
 
-    final JLabel l = new JLabel(new OpIcon(op));
-    l.setAlignmentX(0.5F);
-    w.add(l);
+    final StringBuilder sb = new StringBuilder("<html><center>");
 
-    w.add(createLabel(
-        Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
-        GameModule.getGameModule().getGameName(),
-        GameModule.getGameModule().getGameVersion())));
+    sb.append(
+      Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
+        g.getGameName(), g.getGameVersion()));
 
-    for (ModuleExtension ext :
-         GameModule.getGameModule().getComponentsOf(ModuleExtension.class)) {
-      w.add(createLabel(
-          Resources.getString("AboutScreen.extension_version", ext.getName(), ext.getVersion()))); //$NON-NLS-1$
+    for (ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
+      sb.append("<br/>").append(
+        Resources.getString("AboutScreen.extension_version",  //$NON-NLS-1$
+          ext.getName(), ext.getVersion()));
     }
+   
+    sb.append("<br/>").append(
+      Resources.getString("AboutScreen.vassal_version",  //$NON-NLS-1$
+        Info.getVersion()));
 
-    w.add(createLabel(
-        Resources.getString("AboutScreen.vassal_version", Info.getVersion()))); //$NON-NLS-1$
+    sb.append("</center></html>");
 
-    w.pack();
-
-    final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-    w.setLocation(d.width / 2 - w.getSize().width / 2,
-                  d.height / 2 - w.getSize().height / 2);
-    window = w;
-    window.addMouseListener(new MouseAdapter() {
-      public void mouseReleased(MouseEvent evt) {
-        window.setVisible(false);
-      }
-    });
-  }
-
-  private JLabel createLabel(String text) {
-    final JLabel l2 = new JLabel(text);
-    l2.setBackground(Color.blue);
-    l2.setForeground(Color.white);
-    l2.setHorizontalAlignment(JLabel.CENTER);
-    l2.setAlignmentX(0.5F);
-    return l2;
+    final AboutWindow w =
+      new AboutWindow(g.getFrame(), op.getImage(), sb.toString());
+    w.setVisible(true);
+    w.toFront();
   }
 
   public static String getConfigureTypeName() {
@@ -222,8 +185,6 @@ public class AboutScreen extends AbstractConfigurable {
           }
         }
       }
-
-      window = null;
     }
   }
 
