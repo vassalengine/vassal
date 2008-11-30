@@ -26,7 +26,9 @@ import java.util.concurrent.ExecutionException;
 
 import VASSAL.Info;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.WarningDialog;
 import VASSAL.tools.logging.Logger;
 
 /**
@@ -64,13 +66,13 @@ public class UpdateCheckAction extends AbstractAction {
         else {
           // running version is obsolete
           if (JOptionPane.showConfirmDialog(
-            frame,
-            Resources.getString(
-              "UpdateCheckAction.update_available_message",
-              Info.getVersion(), update.toString()),
+              frame,
+              Resources.getString("UpdateCheckAction.update_available_message"),
               Resources.getString("UpdateCheckAction.update_available_title"),
               JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+              JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+            BrowserSupport.openURL(
+              "https://sourceforge.net/project/showfiles.php?group_id=90612");
           }
         }
         return;
@@ -82,12 +84,7 @@ public class UpdateCheckAction extends AbstractAction {
         Logger.log(e);
       }
 
-      JOptionPane.showMessageDialog(
-        frame,
-        Resources.getString("UpdateCheckAction.check_failed_message"),
-        Resources.getString("UpdateCheckAction.check_failed_title"),
-        JOptionPane.ERROR_MESSAGE
-      ); 
+      WarningDialog.show(frame, "UpdateCheckAction.check_failed");
     }
   }
 }

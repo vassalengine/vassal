@@ -40,14 +40,13 @@ public class UpdateCheckRequest extends AbstractUpdateCheckRequest {
       if (update != null) {
         // running version is obsolete
         if (JOptionPane.showConfirmDialog(
-          ModuleManagerWindow.getInstance(),
-          Resources.getString(
-           "UpdateCheckAction.update_available_message",
-            Info.getVersion(), update.toString()),
-          Resources.getString("UpdateCheckAction.update_available_title"),
-          JOptionPane.YES_NO_OPTION,
-          JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-            BrowserSupport.openURL("https://sourceforge.net/project/showfiles.php?group_id=90612");
+            ModuleManagerWindow.getInstance(),
+            Resources.getString("UpdateCheckAction.update_available_message"),
+            Resources.getString("UpdateCheckAction.update_available_title"),
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+          BrowserSupport.openURL(
+              "https://sourceforge.net/project/showfiles.php?group_id=90612");
         }
       }
     }
