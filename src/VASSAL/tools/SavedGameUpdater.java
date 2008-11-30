@@ -61,8 +61,9 @@ public class SavedGameUpdater {
       catch (InterruptedException e) {
       }
     }
-    for (GamePiece p :
-         GameModule.getGameModule().getGameState().getAllPieces()) {
+    
+    GamePiece[] gp_array = GameModule.getGameModule().getGameState().getAllPieces().toArray(new GamePiece[0]);
+    for (GamePiece p : gp_array) {
       if (!(p instanceof Stack)) {
         String slotId = pieceSlot.getProperty(p.getType());
         if (slotId != null) {
