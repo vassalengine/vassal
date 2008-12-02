@@ -24,7 +24,9 @@ import java.awt.Image;
 /**
  * Used for lazy initialization of images in a DataArchive
  * @see DataArchive#addImageSource
+ * @deprecated Use an {@link ImageOp} instead.
  */
+@Deprecated
 public interface ImageSource {
   /** The lazy creation of the image */
   Image getImage();

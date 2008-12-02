@@ -36,6 +36,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.Op;
@@ -168,9 +169,9 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       final String newName = (String) value;
       final String oldName = getConfigureName();
       if (newName != oldName && oldName.length() > 0) {
-        GameModule.getGameModule().getDataArchive().removeImageSource(oldName);
-        GameModule.getGameModule().getArchiveWriter().removeImage(oldName);
-        GameModule.getGameModule().getArchiveWriter().addImage(newName, getEncodedImage((BufferedImage) visImage));
+        final ArchiveWriter w = GameModule.getGameModule().getArchiveWriter();
+        w.removeImage(oldName);
+        w.addImage(newName, getEncodedImage((BufferedImage) visImage));
       }
       setConfigureName(newName);
     }
@@ -248,7 +249,6 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   };
 
   public void removeFrom(Buildable parent) {
-    GameModule.getGameModule().getDataArchive().removeImageSource(getConfigureName());
     idMgr.remove(this);
   }
 
@@ -304,15 +304,14 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
 
   // Build the new image and add to the archive
   public void rebuildVisualizerImage() {
-    
     if (layout != null) {
       visImage = layout.buildImage(this);
 
-      if (GameModule.getGameModule().getArchiveWriter() != null) {
+      final ArchiveWriter w = GameModule.getGameModule().getArchiveWriter();
+      if (w != null) {
         if (getConfigureName() != null && getConfigureName().length() > 0) {
-          GameModule.getGameModule()
-                    .getArchiveWriter()
-                    .addImage(getConfigureName(), getEncodedImage((BufferedImage) visImage));
+          w.addImage(getConfigureName(),
+                     getEncodedImage((BufferedImage) visImage));
           SourceOp op = Op.load(getConfigureName());
           op.update();
         }       

@@ -78,10 +78,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   private final Map<String,AudioClip> soundCache =
     new HashMap<String,AudioClip>();
 
-// FIXME: this could be done with ImageSourceOp instead?
-  private final Map<String,ImageSource> imageSources =
-    new HashMap<String,ImageSource>();
-
   protected SortedSet<String> localImages = null;
 
   public static final String IMAGE_DIR = "images/";
@@ -89,9 +85,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   public static final String SOUND_DIR = "sounds/";
   protected String soundDir = SOUND_DIR;
-
-  @Deprecated public static final String SOUNDS_DIR = SOUND_DIR;
-  @Deprecated protected String soundsDir = SOUND_DIR;
 
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
@@ -127,66 +120,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       soundCache.put(path,clip);
     }
     return clip;
-  }
-
-  /**
-   * Get the size of an image without loading and decoding it.
-   *
-   * @param name filename of the image
-   * @return the size of the image
-   */
-  public Dimension getImageSize(String name) throws IOException {
-    final ImageSource src;
-
-    if (name.startsWith("/")) {
-      if (name.toLowerCase().endsWith(".svg")) 
-        return SVGImageUtils.getImageSize(name, getImageInputStream(name));
-      else
-        return ImageUtils.getImageSize(name, getImageInputStream(name));
-    }
-    else if ((src = imageSources.get(name)) != null) {
-      final Image image = src.getImage();
-      return image != null ?
-        new Dimension(image.getWidth(null), image.getHeight(null)) :
-        new Dimension();
-    }
-    else if (name.toLowerCase().endsWith(".svg")) {
-      return SVGImageUtils.getImageSize(name, getImageInputStream(name));
-    }
-    else {
-      return ImageUtils.getImageSize(name, getImageInputStream(name));
-    }
-  }
-
-  /**
-   * Returns an {@link Image} from the archive.
-   *
-   * @param name the name of the image file
-   * @return the <code>Image</code> contained in the image file
-   * @throws IOException if there is a problem reading the image file
-   */
-  public BufferedImage getImage(String name) throws IOException {
-    final ImageSource src;
-
-    if (name.startsWith("/")) {
-      if (name.toLowerCase().endsWith(".svg")) {
-        return new SVGRenderer(getImageURL(name),
-                               getImageInputStream(name)).render();
-      }
-      else {
-        return ImageUtils.getImage(name, getImageInputStream(name));
-      }
-    }
-    else if ((src = imageSources.get(name)) != null) {
-      return ImageUtils.toBufferedImage(src.getImage());
-    }
-    else if (name.toLowerCase().endsWith(".svg")) {
-      return new SVGRenderer(getImageURL(name),
-                             getImageInputStream(name)).render();
-    }
-    else {
-      return ImageUtils.getImage(name, getImageInputStream(name));
-    }
   }
 
   /**
@@ -330,28 +263,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     if (archive != null) archive.close();
   }
 
-  /**
-   * Add an ImageSource under the given name, but only if no source is
-   * yet registered under this name.
-   *
-   * @param name
-   * @param src
-   * @return true if the ImageSource was added, false if it existed already
-   */
-  public boolean addImageSource(String name, ImageSource src) {
-    if (!imageSources.containsKey(name)) {
-      imageSources.put(name,src);
-      localImages = null;
-      return true;
-    }
-    return false;
-  }
-
-  public void removeImageSource(String name) {
-    imageSources.remove(name);
-    localImages = null;
-  }
-
   public String[] getImageNames() {
     final SortedSet<String> s = getImageNameSet();
     return s.toArray(new String[s.size()]);
@@ -376,8 +287,6 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   protected SortedSet<String> getLocalImageNames() {
     final TreeSet<String> s =
       new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-
-    s.addAll(imageSources.keySet());
 
     if (archive != null) {
       for (ZipEntry entry : iterate(archive.entries())) {
@@ -468,6 +377,104 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 /////////////////////////////////////////////////////////////////////
 // All methods deprecated below this point.
 /////////////////////////////////////////////////////////////////////
+
+  @Deprecated public static final String SOUNDS_DIR = SOUND_DIR;
+  @Deprecated protected String soundsDir = SOUND_DIR;
+
+  @Deprecated
+  private final Map<String,ImageSource> imageSources =
+    new HashMap<String,ImageSource>();
+
+  /**
+   * Add an ImageSource under the given name, but only if no source is
+   * yet registered under this name.
+   *
+   * @param name
+   * @param src
+   * @return true if the ImageSource was added, false if it existed already
+   * @deprecated
+   */
+  @Deprecated
+  public boolean addImageSource(String name, ImageSource src) {
+    if (!imageSources.containsKey(name)) {
+      imageSources.put(name,src);
+      localImages = null;
+      return true;
+    }
+    return false;
+  }
+
+  @Deprecated
+  public void removeImageSource(String name) {
+    imageSources.remove(name);
+    localImages = null;
+  }
+
+  /**
+   * Get the size of an image without loading and decoding it.
+   *
+   * @param name filename of the image
+   * @return the size of the image
+   * @deprecated Use {@link ImageUtils.getImageSize} or
+   *    {@link SVGImageUtils.getImageSize} instead.
+   */
+  @Deprecated
+  public Dimension getImageSize(String name) throws IOException {
+    final ImageSource src;
+
+    if (name.startsWith("/")) {
+      if (name.toLowerCase().endsWith(".svg")) 
+        return SVGImageUtils.getImageSize(name, getImageInputStream(name));
+      else
+        return ImageUtils.getImageSize(name, getImageInputStream(name));
+    }
+    else if ((src = imageSources.get(name)) != null) {
+      final Image image = src.getImage();
+      return image != null ?
+        new Dimension(image.getWidth(null), image.getHeight(null)) :
+        new Dimension();
+    }
+    else if (name.toLowerCase().endsWith(".svg")) {
+      return SVGImageUtils.getImageSize(name, getImageInputStream(name));
+    }
+    else {
+      return ImageUtils.getImageSize(name, getImageInputStream(name));
+    }
+  }
+
+  /**
+   * Returns an {@link Image} from the archive.
+   *
+   * @param name the name of the image file
+   * @return the <code>Image</code> contained in the image file
+   * @throws IOException if there is a problem reading the image file
+   * @deprecated Use {@link ImageUtils.getImage} or
+   *    {@link SVGImageUtils.getImage} instead.
+   */
+  @Deprecated
+  public BufferedImage getImage(String name) throws IOException {
+    final ImageSource src;
+
+    if (name.startsWith("/")) {
+      if (name.toLowerCase().endsWith(".svg")) {
+        return new SVGRenderer(getImageURL(name),
+                               getImageInputStream(name)).render();
+      }
+      else {
+        return ImageUtils.getImage(name, getImageInputStream(name));
+      }
+    }
+    else if ((src = imageSources.get(name)) != null) {
+      return ImageUtils.toBufferedImage(src.getImage());
+    }
+    else if (name.toLowerCase().endsWith(".svg")) {
+      return new SVGRenderer(getImageURL(name),
+                             getImageInputStream(name)).render();
+    }
+    else {
+      return ImageUtils.getImage(name, getImageInputStream(name));
+    }
+  }
 
   /**
    * Does the actual work of transforming an image.
