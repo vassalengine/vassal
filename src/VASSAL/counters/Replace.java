@@ -24,6 +24,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+
+import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
@@ -106,6 +108,7 @@ public class Replace extends PlaceMarker {
 	  description = st.nextToken("");
 	  setGpId(st.nextToken(""));
 	  above = st.nextBoolean(false);
+	  gpidSupport = GameModule.getGameModule().getGpIdSupport();
   }
 
   
