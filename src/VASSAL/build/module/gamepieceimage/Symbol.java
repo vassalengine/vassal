@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
@@ -464,8 +465,9 @@ public class Symbol {
       big.setColor(g2.getColor());
       big.setBackground(null);
    
-      big.setStroke(g2.getStroke());
-      //big2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      // Force Size symbol to be drawn 1 pixel wide with anti-aliasing to ensure readability
+      big.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+      big.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
       int x_pos = 0;
       for (int i = 0; i < count; i++) {
@@ -482,8 +484,6 @@ public class Symbol {
           big.drawLine(x_pos+sym_w/2, 0, x_pos+sym_w/2, sym_h);
         }
         else if (type.equals(BRIGADE_SYMBOL)) {
-          BasicStroke stroke = new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-          g2.setStroke(stroke);
           big.drawLine(x_pos, 0, x_pos+sym_w, sym_h);
           big.drawLine(x_pos, sym_h, x_pos+sym_w, 0);
         }
