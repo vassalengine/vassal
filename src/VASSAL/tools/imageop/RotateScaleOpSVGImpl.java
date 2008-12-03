@@ -23,12 +23,16 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.HashCode;
+import VASSAL.tools.image.ImageIOException;
+import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.SVGRenderer;
 
@@ -102,14 +106,22 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
 
-    final SVGRenderer renderer = new SVGRenderer(
-      archive.getImageURL(name),
-      new BufferedInputStream(archive.getImageInputStream(name))
-    );
- 
-    if (size == null) fixSize();
+    try {
+      final SVGRenderer renderer = new SVGRenderer(
+        archive.getImageURL(name),
+        new BufferedInputStream(archive.getImageInputStream(name))
+      );
 
-    return renderer.render(angle, scale);
+      if (size == null) fixSize();
+
+      return renderer.render(angle, scale);
+    }
+    catch (FileNotFoundException e) {
+      throw new ImageNotFoundException(name, e);
+    }
+    catch (IOException e) {
+      throw new ImageIOException(name, e);
+    }
   }
 
   /** {@inheritDoc} */

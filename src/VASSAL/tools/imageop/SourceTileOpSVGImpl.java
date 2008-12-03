@@ -85,6 +85,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
   }
 
   public BufferedImage eval() throws IOException {
+// FIXME: getting archive this way is a kludge, we should get it from sop
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
 

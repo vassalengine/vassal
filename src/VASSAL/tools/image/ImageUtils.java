@@ -32,7 +32,6 @@ import java.awt.image.PixelGrabber;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.DataInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -356,9 +355,6 @@ public class ImageUtils {
         reader.dispose();
       }
     }
-    catch (FileNotFoundException e) {
-      throw new ImageNotFoundException(name, e);
-    }
     catch (IOException e) {
       throw new ImageIOException(name, e);
     }
@@ -460,9 +456,6 @@ public class ImageUtils {
       rin.close();
 
       return img;
-    }
-    catch (FileNotFoundException e) {
-      throw new ImageNotFoundException(name, e);
     }
     catch (UnrecognizedImageTypeException e) {
       throw new UnrecognizedImageTypeException(name, e);

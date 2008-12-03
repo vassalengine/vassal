@@ -23,6 +23,7 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -110,8 +111,18 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
 
   protected Dimension getImageSize() {
     try {
-      return SVGImageUtils.getImageSize(name,
-                                        archive.getImageInputStream(name));
+      InputStream in = null;
+      try {
+        in = archive.getImageInputStream(name);
+      }
+      catch (FileNotFoundException e) {
+        throw new ImageNotFoundException(name, e);
+      }
+      catch (IOException e) {
+        throw new ImageIOException(name, e);
+      } 
+
+      return SVGImageUtils.getImageSize(name, in);
     }
     catch (IOException e) {
       if (!Op.handleException(e)) ErrorDialog.bug(e);

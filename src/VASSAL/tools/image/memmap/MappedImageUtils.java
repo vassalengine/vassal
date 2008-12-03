@@ -25,7 +25,6 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.SampleModel;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -40,7 +39,6 @@ import javax.imageio.stream.ImageInputStream;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.TempFileManager;
 import VASSAL.tools.image.ImageIOException;
-import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.UnrecognizedImageTypeException;
 import VASSAL.tools.io.IOUtils;
@@ -54,23 +52,20 @@ public class MappedImageUtils {
 
   private MappedImageUtils() {}
 
-  public static MappedBufferedImage getImage(String name, DataArchive archive)
+  public static MappedBufferedImage getImage(String name, InputStream in)
                                                            throws IOException {
     try {
       MappedBufferedImage img = null;
-      RereadableInputStream in = null;
+      RereadableInputStream rin = null;
       try {
-        in = new RereadableInputStream(archive.getImageInputStream(name));
-        in.mark(512);
+        rin = new RereadableInputStream(in);
+        rin.mark(512);
 
-        final boolean useToolkit = ImageUtils.isMasked8BitRGBPNG(in);
-        in.reset();
+        final boolean useToolkit = ImageUtils.isMasked8BitRGBPNG(rin);
+        rin.reset();
 
-        img = useToolkit ? loadWithToolkit(in) : loadWithImageIO(in);
-        in.close();
-      }
-      catch (FileNotFoundException e) {
-        throw new ImageNotFoundException(name, e);
+        img = useToolkit ? loadWithToolkit(rin) : loadWithImageIO(rin);
+        rin.close();
       }
       catch (UnrecognizedImageTypeException e) {
         throw new UnrecognizedImageTypeException(name, e);
