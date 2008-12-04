@@ -71,8 +71,10 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
    * @param hints rendering hints
    */
   public ScaleOpBitmapImpl(ImageOp sop, double scale, RenderingHints hints) {
-    if (sop == null) throw new IllegalArgumentException("Attempt to scale null image");
-    if (scale <= 0) throw new IllegalArgumentException("Cannot scale image at "+scale);
+    if (sop == null)
+      throw new IllegalArgumentException("Attempt to scale null image");
+    if (scale <= 0)
+      throw new IllegalArgumentException("Cannot scale image at " + scale);
 
     this.sop = sop;
     this.scale = scale;
