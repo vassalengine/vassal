@@ -96,20 +96,25 @@ public class OpCache {
     new ConcurrentSoftHashMap<Key<?>,Future<?>>();
 
   /**
-   * A request for execution of an {@link Op} which is waiting on another
-   * prior request for the same <code>Op</code>.
+   * A request for execution of an {@link Op} which will be completed
+   * synchronously and set manually.
    */ 
-  private final class Waiter<V> implements Future<V> {
+  private final class Result<V> implements Future<V> {
     private static final long serialVersionUID = 1L;
 
     private V value = null;
+    private boolean failed = false;
     private final CountDownLatch done = new CountDownLatch(1); 
   
     public void set(V value) {
       this.value = value;
       done.countDown();
     }
-  
+ 
+    public void fail() {
+      failed = true;
+    }
+ 
     public boolean cancel(boolean mayInterruptIfRunning) {
       return false;
     }
@@ -124,6 +129,7 @@ public class OpCache {
   
     public V get() throws InterruptedException, ExecutionException {
       done.await();
+      if (failed) throw new ExecutionException(new OpFailedException());
       return value;
     }
 
@@ -131,27 +137,28 @@ public class OpCache {
                                                      ExecutionException,
                                                      TimeoutException
     {
-      if (done.await(timeout, unit)) return value;
+      if (done.await(timeout, unit)) {
+        if (failed) throw new ExecutionException(new OpFailedException());
+        return value;
+      }
       throw new TimeoutException();
     }
   }
  
   /**
-   * A {@link Future} which is cached on failure of an {@link Op}.
+   * The {@link Future} which is cached on failure of an {@link Op}.
    */ 
-  private static class Failure<V> implements Future<V> {
-    private static final long serialVersionUID = 1L;
-
+  private static final Future<Void> failure = new Future<Void>() {
     public boolean cancel(boolean mayInterruptIfRunning) {
       return false;
     }
 
-    public V get() {
-      return null;
+    public Void get() throws ExecutionException {
+      throw new ExecutionException(new OpFailedException());
     }
 
-    public V get(long timeout, TimeUnit unit) {
-      return null;
+    public Void get(long timeout, TimeUnit unit) throws ExecutionException {
+      throw new ExecutionException(new OpFailedException());
     }
 
     public boolean isCancelled() {
@@ -161,7 +168,7 @@ public class OpCache {
     public boolean isDone() {
       return true;
     }
-  }
+  };
 
   /**
    * A request for execution of an {@link Op}, to be queued.
@@ -198,7 +205,7 @@ public class OpCache {
         if (obs != null) obs.interrupted(key.op, e);
       }
       catch (ExecutionException e) {
-        cache.replace(key, this, new Failure<V>());
+        cache.replace(key, this, failure);
         if (obs != null) obs.failed(key.op, e);
       }
     }
@@ -261,7 +268,7 @@ public class OpCache {
         throw (InterruptedException) new InterruptedException().initCause(e);
       }
       catch (ExecutionException e) {
-        cache.replace(key, fut, new Failure<V>());
+        cache.replace(key, fut, failure);
         throw new ExecutionException(e);
       }
     }
@@ -294,8 +301,8 @@ public class OpCache {
     if (fut == null) {
       if (obs == null) {
         // check whether any other op has beat us into the cache
-        final Waiter<V> w = new Waiter<V>();
-        fut = (Future<V>) cache.putIfAbsent(key, w);
+        final Result<V> res = new Result<V>();
+        fut = (Future<V>) cache.putIfAbsent(key, res);
 
         // if not, then apply the op
         if (fut == null) {
@@ -304,14 +311,15 @@ public class OpCache {
             val = key.op.eval();
           }
           catch (Exception e) {
-            cache.put(key, new Failure<V>());
+            res.fail(); 
+            cache.put(key, failure);
             throw new ExecutionException(e);
           }
           finally {
-            w.set(val);
+            res.set(val);
           }
 
-          fut = w;
+          fut = res;
         }
       }
       else {

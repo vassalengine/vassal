@@ -28,6 +28,7 @@ import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.UnrecognizedImageTypeException;
+import VASSAL.tools.opcache.OpFailedException;
 
 public class Op {
   public static SourceOp load(String name) {
@@ -88,7 +89,12 @@ public class Op {
 
   public static boolean handleException(Exception e) {
     for (Throwable c = e; c != null; c = c.getCause()) {
-      if (c instanceof ImageNotFoundException) {
+      if (c instanceof OpFailedException) {
+        // We ignore OpFailedExceptions since the original exceptions
+        // which caused them have already been reported.
+        return true;
+      }
+      else if (c instanceof ImageNotFoundException) {
         ErrorDialog.dataError(new BadDataReport(
           "Image not found",
           ((ImageNotFoundException) c).getFile().getName(),
