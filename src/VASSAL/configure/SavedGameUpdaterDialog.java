@@ -271,6 +271,10 @@ public class SavedGameUpdaterDialog extends JDialog {
         showErrorMessage(e,"Import failed","Unable to import info");
         oldPieceInfo = null;
       }
+      catch (IllegalArgumentException e) { // catches malformed input files
+        showErrorMessage(e, "Import failed", "Malformed input file");
+        oldPieceInfo = null;
+      }
       finally {
         IOUtils.closeQuietly(in);
       }
