@@ -216,7 +216,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       vassalVersionCreated = (String) value;
       String runningVersion = Info.getVersion();
       if (Info.compareVersions(vassalVersionCreated, runningVersion) > 0) {
-        WarningDialog.show("GameModule.version_error",
+        WarningDialog.show("GameModule.version_warning",
                            vassalVersionCreated, runningVersion);
       }
     }
@@ -888,7 +888,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       lastSavedConfiguration = save;
     }
     catch (IOException e) {
-      ErrorDialog.show(e, "GameModule.save_error");
+      WriteErrorDialog.error(e, writer.getName());
     }
   }
 

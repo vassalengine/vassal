@@ -59,6 +59,7 @@ import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.HeapFinder;
 import VASSAL.tools.StringUtils;
+import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
@@ -174,11 +175,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       lr.module = fc.getSelectedFile();
       if (lr.module != null) {
         if (lr.module.exists()) {
-          final AbstractMetaData metadata = MetaDataFactory.buildMetaData(lr.module);
+          final AbstractMetaData metadata =
+            MetaDataFactory.buildMetaData(lr.module);
           if (metadata == null || ! (metadata instanceof ModuleMetaData)) {
-            WarningDialog.show(
-                "Error.invalid_vassal_module", lr.module.getAbsolutePath());
-            Logger.log("-- Load of " + lr.module.getAbsolutePath() + " failed: Not a Vassal module");
+            ErrorDialog.show(
+              "Error.invalid_vassal_module", lr.module.getAbsolutePath());
+            Logger.log("-- Load of " + lr.module.getAbsolutePath() +
+                       " failed: Not a Vassal module");
             lr.module = null;
           }
         }
@@ -227,7 +230,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
         
         if (data == null) {
-          WarningDialog.show(
+          ErrorDialog.show(
             "Error.invalid_vassal_file", lr.module.getAbsolutePath());
           setWaitCursor(false);
           return null;
@@ -256,7 +259,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             }
             catch (NumberFormatException ex) {
               WarningDialog.show(
-                "Error.bad_initial_heap", DEFAULT_INITIAL_HEAP);
+                "Warning.bad_initial_heap", DEFAULT_INITIAL_HEAP);
  
               initialHeap = DEFAULT_INITIAL_HEAP;
             }
@@ -271,7 +274,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             }
             catch (NumberFormatException ex) {
               WarningDialog.show(
-                "Error.bad_maximum_heap", DEFAULT_MAXIMUM_HEAP);
+                "Warning.bad_maximum_heap", DEFAULT_MAXIMUM_HEAP);
 
               maximumHeap = DEFAULT_MAXIMUM_HEAP;
             }
@@ -280,7 +283,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
         // make sure that the initial heap is sane
         if (initialHeap > maximumHeap) {
-          WarningDialog.show("Error.initial_gt_maximum_heap",
+          WarningDialog.show("Warning.initial_gt_maximum_heap",
              DEFAULT_INITIAL_HEAP, DEFAULT_MAXIMUM_HEAP
           );
 
@@ -359,8 +362,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             // Either we're on a 64-bit machine, so we can't have
             // an overlarge maximum heap size problem, or something
             // else weird happened. We give up.
-            ErrorDialog.show("Error.launch_failed");
-            return null;
+            throw new IllegalStateException();
           }
           else {
             // We had an infeasibly large maximum heap setting, try again
@@ -470,8 +472,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
         final Throwable thrown = ((Launcher.LoadFailedCmd) cmd).getThrowable();
 
-        ErrorDialog.show(
-          thrown, "Launcher.module_load_error", thrown.getMessage()
+        ErrorDialog.showDetails(
+          thrown,
+          ThrowableUtils.getStackTrace(thrown),
+          "Error.module_load_failed",
+          thrown.getMessage()
         );
 
         return "OK";

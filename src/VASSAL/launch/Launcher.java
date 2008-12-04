@@ -34,6 +34,7 @@ import javax.swing.SwingUtilities;
 import VASSAL.Info;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.logging.CommandClientAdapter;
 import VASSAL.tools.logging.LoggedOutputStream;
@@ -161,8 +162,12 @@ public abstract class Launcher {
         catch (IOException e1) {
           if (cmdC == null) {
             // we are standalone, so warn the user directly
-            ErrorDialog.show(
-              e1, "Launcher.module_load_error", e1.getMessage());
+            ErrorDialog.showDetails(
+              e1,
+              ThrowableUtils.getStackTrace(e1),
+              "Error.module_load_failed",
+              e1.getMessage()
+            );
           }
           else {
             // we have a manager, so pass the load failure back to it
@@ -171,12 +176,16 @@ public abstract class Launcher {
             }
             catch (IOException e2) {
               // warn the user directly as a last resort 
-              ErrorDialog.show(
-                e1, "Launcher.module_load_error", e1.getMessage());
+              ErrorDialog.showDetails(
+                e1,
+                ThrowableUtils.getStackTrace(e1),
+                "Error.module_load_failed",
+                e1.getMessage()
+              );
 
               ErrorDialog.show(
                 e2,
-                "Launcher.communication_error",
+                "Error.communication_error",
                 Resources.getString(getClass().getSimpleName() + ".app_name")
               );
             }

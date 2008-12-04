@@ -35,12 +35,12 @@ public class WriteErrorDialog {
    * @param filename the file which was being written
    */
   public static void error(Throwable t, IOException e, String filename) {
-    ErrorDialog.show(
-      (Object) e.getClass().getName() + "@" + filename,
+    ErrorDialog.showDetails(
       t,
+      ThrowableUtils.getStackTrace(e),
       "Error.file_write_error",
       filename
-    );
+    ); 
   }
 
   /**

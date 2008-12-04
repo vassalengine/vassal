@@ -298,7 +298,6 @@ public class GameState implements CommandEncoder {
       final AbstractMetaData metaData = MetaDataFactory.buildMetaData(f);
       if (metaData == null || ! (metaData instanceof SaveMetaData)) {
         WarningDialog.show("GameState.invalid_save_file", f.getPath());
-//        GameModule.getGameModule().warn(Resources.getString("GameState.unable_to_load", f.getName()));
         return;
       }
       
@@ -578,7 +577,6 @@ public class GameState implements CommandEncoder {
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, f);
-//      GameModule.getGameModule().warn(Resources.getString("GameState.invalid_savefile", f.getPath()));
     }
   }
 

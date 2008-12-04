@@ -36,7 +36,7 @@ import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.WarningDialog;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.logging.Logger;
@@ -192,11 +192,13 @@ public class Editor extends Launcher {
         
         if (lr.importFile != null) {
           if (lr.importFile.exists()) {
-            final AbstractMetaData metadata = MetaDataFactory.buildMetaData(lr.importFile);
+            final AbstractMetaData metadata =
+              MetaDataFactory.buildMetaData(lr.importFile);
             if (metadata == null || ! (metadata instanceof ImportMetaData)) {
-              WarningDialog.show(
-                  "Error.invalid_import_file", lr.importFile.getAbsolutePath());
-              Logger.log("-- Import of " + lr.importFile.getAbsolutePath() + " failed: unrecognized import type");
+              ErrorDialog.show(
+                "Error.invalid_import_file", lr.importFile.getAbsolutePath());
+              Logger.log("-- Import of " + lr.importFile.getAbsolutePath() +
+                " failed: unrecognized import type");
               lr.importFile = null;
             }
           }
