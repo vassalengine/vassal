@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.1.0-beta6.
+The VASSAL Team is happy to announce the release of VASSAL 3.1.0-beta7.
 
 *********************
 Download
@@ -6,70 +6,35 @@ Download
 
 For Windows:
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta6-windows.exe
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta7-windows.exe
 
 For Mac OS X:
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta6-macosx.dmg
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta7-macosx.dmg
 
 For Linux (and other platforms):
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta6-generic.zip
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta7-generic.zip
 
 Source code:
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta6-src.zip
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta7-src.zip
 
 
 *********************
-Changes since beta5:
+Changes since beta6:
 *********************
 
-A number of problems present in 3.1.0-beta5 are fixed in 3.1.0-beta6:
+A number of problems present in 3.1.0-beta6 are fixed in 3.1.0-beta7:
 
-* Bug 2346899: file chooser fails with null owner window in Java 1.5
-* Bug 2344403: gpidSupport not set on pieces coming from PieceDefiner  
-* Bug 2340311: Edit All pieces, no change, should not update pieces
-* Bug 2339611: Try to load PNGs with bad metadata anyway
-* Bug 2319018: Triggering multiple 'Move Fixed Distance' traits doesn't work
-* Bug 2316022: ArithmeticException in PropertySheet.TickLabel.mouseClicked
-* Bug 2311318: Setting Label length to 0 in Turn Tracker changes to Fixed
-* Bug 2309593: Move Fixed Distance auto-report never turns off
-* Bug 2306908: Default option for 'Auto-Report Moves' should be Always
-* Bug 2306873: Not a Number when referencing DiceButton value in Edit mode
-* Bug 2305254: Chart Maps not Visible if Main map undocked
-* Bug 2301594: LoadExtensionException trying to open an Extension
-* Bug 2294041: Bad Image generates IOException instead of Bad Data report
-* Bug 2292450: Corrupted Color Preference causing NoSuchElement Exception
-* Bug 2290225: Cancel when setting a Dynamic/Global Property sets to null
-* Bug 2286888: NPE in FileChooser$NativeFileChooser.awt_file_dialog_init
-* Bug 2285925: NPE in FileChooser.NativeFileChooser.awt_file_dialog_init()
-* Bug 2282205: ArrayIndexOutOfBoundsException in ZoomMenu.initZoomItems()
-* Bug 2280943: Delete key no longer deletes elements in Edit Mode
-* Bug 2280253: NPE if no Key Command specified
-* Bug 2273032: NPE in PlaceMarker.placeMarker()
-* Bug 2261405: Unable to move region in irregular grid
-* Bug 2259361: NPE in FreeRotator.mouseReleased()
-* Bug 2254357: StringIndexOutOfBoundsException in FormattedStringConfigurer
-* Bug 2250058: NPE when adding a Place Marker to a prototype.
-* Bug 2248313: NoSuchElementException in ColorConfigurer.stringToColor()
-* Bug 2199032: NPE in FileChooser.NativeFileChooser.awt_file_dialog_init()
-* Bug 2198485: NPE in PlaceMarker.updateGpId()
-* Bug 2176712: NPE in SetupStack.StackConfigurer.actionPerformed()
-* Bug 2174283: SymbolSet$SymbolData.getImage() creates 0-width image
-* Bug: Restricted Access trait works again
-* Bug: Must recalculate bounding box for rotation when inner piece changes
-* Bug: Check that child port is in [0,65535] when launching Player or Editor
-* Bug: Problem when adding a Place Marker to a Place Marker definition
-* Bug: Transparent SVG has an opaque black background
-* Bug: Some transparent PNGs not loaded properly by ImageIO
-* Bug: Added missing Cancel button, close window handling to several dialogs 
-* Cosmetic changes to the Bug Report dialog
-* ADC2: If a flip definition points to itself, then it's not really valid
-* ADC2: Invalid masks cause the piece to be completely transparent
-* ADC2: Better method for recognizing files to import
+* Bug 2380245: FileNotFoundException not being caught during image loading
+* Bug 2373956: NPE in child ImageOp when parent fails
+* Bug 2372199: NPE in PieceSlot.updateGpId() 
+* Bug 2225711: Fixed ConcurrentModificationException in SavedGameUpdater
+* Bug 2187303: IllegalArgumentException in SavedGameUpdaterDialog
+* Bug: Canonicalize $0 in case VASSAL.sh is being invoked via a symbolic link
 
-Please report all bugs in beta6, even if they are bugs which you've
+Please report all bugs in beta7, even if they are bugs which you've
 already reported against other betas. We take your bug reports very
 seriously---they're the reason we've been able to fix so many bugs.
 
@@ -109,7 +74,7 @@ This is a beta release, and may still contain some rough edges. Should
 you find any problems/oddities/bugs, please tell us so that we can fix
 them before VASSAL 3.1.0 is released. Also, if you've had problems with
 3.0.x or a previous 3.1.0 beta, please check and let us know if those
-problems are resolved in 3.1.0-beta6.
+problems are resolved in 3.1.0-beta7.
 
 Report bugs here in the Technical Support & Bugs category at the VASSAL
 forums:
