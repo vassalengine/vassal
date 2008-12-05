@@ -21,6 +21,7 @@ package VASSAL.chat;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -30,6 +31,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+import VASSAL.tools.io.IOUtils;
 
 /**
  * Performs Get and Post operations to a given URL
@@ -43,6 +45,22 @@ public class HttpRequestWrapper {
 
   public List<String> doGet(Properties p) throws IOException {
     return doGet("", p); //$NON-NLS-1$
+  }
+
+  private List<String> readLines(InputStream is) throws IOException {
+    BufferedReader in = null;
+    try {
+      in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+
+      final ArrayList<String> l = new ArrayList<String>();
+      String line;
+      while ((line = in.readLine()) != null) l.add(line);
+
+      return l; 
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
   }
 
   /**
@@ -69,26 +87,7 @@ public class HttpRequestWrapper {
 
     final URLConnection conn = new URL(url).openConnection();
     conn.setUseCaches(false);
-
-    final ArrayList<String> l = new ArrayList<String>();
-
-    final BufferedReader in = new BufferedReader(
-      new InputStreamReader(conn.getInputStream(), "UTF-8"));
-
-    try {
-      String line;
-      while ((line = in.readLine()) != null) l.add(line); 
-    }
-    finally {
-      try {
-        in.close();
-      }
-      // FIXME: review error message
-      catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    return l;
+    return readLines(conn.getInputStream());
   }
 
   public List<String> doPost(Properties p) throws IOException {
@@ -116,36 +115,15 @@ public class HttpRequestWrapper {
     conn.setUseCaches(false);
     //      conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
 
-    final DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+    DataOutputStream out = null;
     try {
+      out = new DataOutputStream(conn.getOutputStream());
       out.writeBytes(content);
     }
     finally {
-      try {
-        out.close();
-      }
-      // FIXME: review error message
-      catch (IOException e) {
-        e.printStackTrace();
-      }
+      IOUtils.closeQuietly(out);
     }
 
-    final BufferedReader input = new BufferedReader(
-      new InputStreamReader(conn.getInputStream(), "UTF-8")); //$NON-NLS-1$
-    try {
-      final ArrayList<String> l = new ArrayList<String>();
-      String line;
-      while ((line = input.readLine()) != null) l.add(line);
-      return l;
-    }
-    finally {
-      try {
-        input.close();
-      }
-      // FIXME: review error message
-      catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+    return readLines(conn.getInputStream());
   }
 }
