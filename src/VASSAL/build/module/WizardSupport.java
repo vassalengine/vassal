@@ -62,6 +62,8 @@ import javax.swing.JList;
 import javax.swing.JRadioButton;
 import javax.swing.UIManager;
 
+import org.jdesktop.swingworker.SwingWorker;
+
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardBranchController;
@@ -143,28 +145,35 @@ public class WizardSupport {
    * 
    */
   public void showWelcomeWizard() {
-    BooleanConfigurer wizardConf = new BooleanConfigurer("welcomeWizard", Resources.getString("WizardSupport.ShowWizard"), Boolean.TRUE);
+    BooleanConfigurer wizardConf = new BooleanConfigurer(
+      "welcomeWizard",
+      Resources.getString("WizardSupport.ShowWizard"),
+      Boolean.TRUE
+    );
+
     Prefs.getGlobalPrefs().addOption(wizardConf);
+
+    final GameModule g = GameModule.getGameModule();
+
     if (!wizardConf.booleanValue()) {
-      GameModule.getGameModule().getFrame().setVisible(true);
+      g.getFrame().setVisible(true);
 
       // prompt for username and password if wizard is off 
       // but no username is set
       // FIXME: this belongs outside of the wizard, not here
-      final String name = (String) GameModule.getGameModule()
-                                             .getPrefs()
-                                             .getValue(GameModule.REAL_NAME);
+      final String name = (String) g.getPrefs().getValue(GameModule.REAL_NAME);
       if (name == null || name.equals("newbie")) {
-        new UsernameAndPasswordDialog(
-          GameModule.getGameModule().getFrame()).setVisible(true);
+        new UsernameAndPasswordDialog(g.getFrame()).setVisible(true);
       }
 
       return;
     }
-    WizardBranchController c = createWelcomeWizard();
-    Wizard welcomeWizard = c.createWizard();
-    HashMap<String, Wizard> props = new HashMap<String, Wizard>();
+
+    final WizardBranchController c = createWelcomeWizard();
+    final Wizard welcomeWizard = c.createWizard();
+    final HashMap<String, Wizard> props = new HashMap<String, Wizard>();
     props.put(WELCOME_WIZARD_KEY, welcomeWizard);
+
     Action help = null;
     try {
       help = new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null);
@@ -172,23 +181,34 @@ public class WizardSupport {
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-    Object result = WizardDisplayer.showWizard(welcomeWizard, null, help, props);
+
+    final Object result =
+      WizardDisplayer.showWizard(welcomeWizard, null, help, props);
+
     if (result instanceof Map) {
-      Map m = (Map) result;
-      Object action = m.get(ACTION_KEY);
+      final Map m = (Map) result;
+      final Object action = m.get(ACTION_KEY);
       if (PLAY_ONLINE_ACTION.equals(action)) {
-        final ChatServerControls controls = ((BasicModule) GameModule.getGameModule()).getServerControls();
-        GameModule.getGameModule().getFrame().setVisible(true);
+        final ChatServerControls controls =
+          ((BasicModule) g).getServerControls();
+        g.getFrame().setVisible(true);
         controls.toggleVisible();
-        controls.getClient().setConnected(true);
+
+        new SwingWorker<Void,Void>() {
+          @Override
+          protected Void doInBackground() {
+            controls.getClient().setConnected(true);
+            return null;
+          }
+        }.execute();
       }
       else {
-        GameModule.getGameModule().getGameState().setup(true);
-        GameModule.getGameModule().getFrame().setVisible(true);
+        g.getGameState().setup(true);
+        g.getFrame().setVisible(true);
       }
     }
     else {
-      GameModule.getGameModule().getFrame().setVisible(true);
+      g.getFrame().setVisible(true);
     }
   }
 
