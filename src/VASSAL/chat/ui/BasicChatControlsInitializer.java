@@ -62,7 +62,6 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
         new SwingWorker<Void,Void>() {
           @Override
           protected Void doInBackground() {
-            
             client.setConnected(true);
             return null;
           }
