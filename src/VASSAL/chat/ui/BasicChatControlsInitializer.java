@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -27,6 +28,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+
+import org.jdesktop.swingworker.SwingWorker;
+
 import VASSAL.build.module.ServerConnection;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.i18n.Resources;
@@ -47,13 +51,30 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
 
   public void initializeControls(final ChatServerControls controls) {
     JToolBar toolbar = controls.getToolbar();
-    connectAction = new AbstractAction(Resources.getString("Chat.connect")) {  //$NON-NLS-1$
+
+    connectAction = new AbstractAction(
+                          Resources.getString("Chat.connect")) {  //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {
-        client.setConnected(true);
+        setEnabled(false);
+
+        new SwingWorker<Void,Void>() {
+          @Override
+          protected Void doInBackground() {
+            
+            client.setConnected(true);
+            return null;
+          }
+
+          @Override
+          protected void done() {
+            if (!client.isConnected()) setEnabled(true);
+          }
+        }.execute();
       }
     };
+
     URL imageURL = getClass().getResource("/images/connect.gif");  //$NON-NLS-1$
     if (imageURL != null) {
       connectAction.putValue(Action.SHORT_DESCRIPTION, connectAction.getValue(Action.NAME));
@@ -61,40 +82,58 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
       connectAction.putValue(Action.SMALL_ICON, new ImageIcon(imageURL));
     }
     connectAction.setEnabled(true);
-    disconnectAction = new AbstractAction(Resources.getString("Chat.disconnect")) {  //$NON-NLS-1$
+
+    disconnectAction = new AbstractAction(
+                        Resources.getString("Chat.disconnect")) {  //$NON-NLS-1$
       private static final long serialVersionUID = 1L; 
 
       public void actionPerformed(ActionEvent evt) {
-        client.setConnected(false);
+        setEnabled(false);
+
+        new SwingWorker<Void,Void>() {
+          @Override
+          protected Void doInBackground() {
+            client.setConnected(false);
+            return null;
+          }
+
+          @Override
+          protected void done() {
+            if (client.isConnected()) setEnabled(true);
+          }
+        }.execute();
       }
     };
+
     imageURL = getClass().getResource("/images/disconnect.gif");  //$NON-NLS-1$
     if (imageURL != null) {
       disconnectAction.putValue(Action.SHORT_DESCRIPTION, disconnectAction.getValue(Action.NAME));
       disconnectAction.putValue(Action.NAME, "");  //$NON-NLS-1$
       disconnectAction.putValue(Action.SMALL_ICON, new ImageIcon(imageURL));
     }
+
     disconnectAction.setEnabled(false);
     connectButton = toolbar.add(connectAction);
     disconnectButton = toolbar.add(disconnectAction);
-    connectionListener = new PropertyChangeListener() {
-          public void propertyChange(final PropertyChangeEvent evt) {
-            Runnable runnable = new Runnable() {
-              public void run() {
-                  boolean connected = Boolean.TRUE.equals(evt.getNewValue());
-                  connectAction.setEnabled(!connected);
-                  disconnectAction.setEnabled(connected);
-                  if (!connected) {
-                    controls.getRoomTree().setRooms(new VASSAL.chat.Room[0]);
-                    controls.getCurrentRoom().setRooms(new VASSAL.chat.Room[0]);
-                  }
-              }
-            };
-            SwingUtilities.invokeLater(runnable);
-          }
-        };
-    client.addPropertyChangeListener(ServerConnection.CONNECTED, connectionListener);
 
+    connectionListener = new PropertyChangeListener() {
+      public void propertyChange(final PropertyChangeEvent evt) {
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            boolean connected = Boolean.TRUE.equals(evt.getNewValue());
+            connectAction.setEnabled(!connected);
+            disconnectAction.setEnabled(connected);
+            if (!connected) {
+              controls.getRoomTree().setRooms(new VASSAL.chat.Room[0]);
+              controls.getCurrentRoom().setRooms(new VASSAL.chat.Room[0]);
+            }
+          }
+        });
+      }
+    };
+
+    client.addPropertyChangeListener(
+      ServerConnection.CONNECTED, connectionListener);
   }
 
   public void uninitializeControls(ChatServerControls controls) {
