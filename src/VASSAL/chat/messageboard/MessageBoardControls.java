@@ -82,15 +82,42 @@ public class MessageBoardControls {
     msgFrame.add(viewer);
 
     Box box = Box.createHorizontalBox();
-    JButton b = new JButton(Resources.getString("Chat.refresh"));  //$NON-NLS-1$
-    b.addActionListener(new ActionListener() {
+    final JButton refresh = new JButton(
+      Resources.getString("Chat.refresh"));  //$NON-NLS-1$
+    refresh.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
-        msgFrame.setTitle(serverName != null ? Resources.getString("Chat.message_board_title", serverName) : Resources.getString("Chat.message_board"));   //$NON-NLS-1$ //$NON-NLS-2$
-        showMessages(server.getMessages());
+        refresh.setEnabled(false);
+
+        new SwingWorker<Message[],Void>() {
+          @Override
+          protected Message[] doInBackground() {
+            return server.getMessages();
+          }
+
+          @Override
+          protected void done() {
+            try {
+              showMessages(get());
+            }          
+            catch (InterruptedException e) {
+              ErrorDialog.bug(e);
+            }
+            catch (ExecutionException e) {
+              ErrorDialog.bug(e);
+            }
+
+            msgFrame.setTitle(serverName != null ?
+              Resources.getString("Chat.message_board_title", serverName) :
+              Resources.getString("Chat.message_board"));   //$NON-NLS-1$
+
+            refresh.setEnabled(true);
+          }
+        }.execute();
       }
     });
-    box.add(b);
-    b = new JButton(Resources.getString(Resources.CLOSE)); 
+    box.add(refresh);
+
+    final JButton b = new JButton(Resources.getString(Resources.CLOSE)); 
     b.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         msgFrame.setVisible(false);

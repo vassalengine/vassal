@@ -22,8 +22,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ThrowableUtils;
 
 /**
  * Determines server implementation at run-time by downloading properties from the vassalengine.org site. Refreshes
@@ -76,9 +79,16 @@ public class DynamicClient extends HybridClient {
       }
       catch (IOException e) {
         fireStatus(Resources.getString("Server.bad_address3"));
+
+        ErrorDialog.showDetails(
+          e,
+          ThrowableUtils.getStackTrace(e),
+          "Error.network_communication_error"
+        );
         return;
       }
     }
+
     super.setConnected(connect);
     if (!connect && !isConnected()) {
       setDelegate(new DummyClient());
