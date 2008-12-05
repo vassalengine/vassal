@@ -310,10 +310,10 @@ public class OpCache {
           try {
             val = key.op.eval();
           }
-          catch (Exception e) {
+          catch (Throwable t) {
             res.fail(); 
             cache.put(key, failure);
-            throw new ExecutionException(e);
+            throw new ExecutionException(t);
           }
           finally {
             res.set(val);
