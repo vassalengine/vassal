@@ -27,12 +27,21 @@ Changes since beta6:
 
 A number of problems present in 3.1.0-beta6 are fixed in 3.1.0-beta7:
 
+* Bug 2393130: Zoom menu not initialized at time of Zoomer creation
+* Bug 2393526: Cache requests not marked as failed when Errors occured
+* Bug 2390630: Connecting to server blocks GUI when server is down
 * Bug 2380245: FileNotFoundException not being caught during image loading
 * Bug 2373956: NPE in child ImageOp when parent fails
-* Bug 2372199: NPE in PieceSlot.updateGpId() 
+* Bug 2372199: NPE in PieceSlot.updateGpId()
+* Bug 2315230: ConnectException in HttpRequestWrapper.doGet()
 * Bug 2225711: Fixed ConcurrentModificationException in SavedGameUpdater
 * Bug 2187303: IllegalArgumentException in SavedGameUpdaterDialog
+* Bug 2186983: EmptyStackException in ModuleManagerWindow.GameFolderInfo
+* Bug 2162266: NPE in HybridClient.setDelegate()
+* Bug 2129550: UnknownHostException in HttpRequestWrapper.doGet()
 * Bug: Canonicalize $0 in case VASSAL.sh is being invoked via a symbolic link
+
+* Updated Windows installer to download JRE 1.6.0_11.
 
 Please report all bugs in beta7, even if they are bugs which you've
 already reported against other betas. We take your bug reports very

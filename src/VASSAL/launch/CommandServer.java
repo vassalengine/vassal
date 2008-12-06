@@ -23,9 +23,12 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+
+import javax.swing.SwingUtilities;
 
 import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
@@ -48,7 +51,25 @@ public abstract class CommandServer implements Runnable {
     this.serverSocket = serverSocket;
   }
 
+  /**
+   * Executes a command and returns a reply.
+   *
+   * Unlike the rest of <code>CommandServer</code>, this method will be run
+   * on the EDT, so it is safe to call Swing methods from here.
+   *
+   * @param cmd a command object
+   * @return the reply
+   */
   protected abstract Object reply(Object cmd);
+
+  private class Query implements Runnable {
+    public Object cmd;
+    public Object result;
+
+    public void run() {
+      result = reply(cmd);
+    }
+  }
 
   public void run() {
     Socket clientSocket = null;
@@ -60,10 +81,21 @@ public abstract class CommandServer implements Runnable {
       out = new ObjectOutputStream(clientSocket.getOutputStream());
       in = new ObjectInputStream(clientSocket.getInputStream());
      
+      final Query q = new Query();
       try {
-        Object cmd;
-        while ((cmd = in.readObject()) != null) {
-          out.writeObject(reply(cmd));
+        while ((q.cmd = in.readObject()) != null) {
+          // Execute commands on the EDT
+          try {
+            SwingUtilities.invokeAndWait(q);
+          }
+          catch (InterruptedException e) {
+            ErrorDialog.bug(e);
+          }
+          catch (InvocationTargetException e) {
+            ErrorDialog.bug(e);
+          }
+
+          out.writeObject(q.result);
         }
       }
       catch (EOFException e) {
