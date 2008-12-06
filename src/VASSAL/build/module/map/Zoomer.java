@@ -273,6 +273,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     zoomOutButton.setAttribute(OUT_ICON_NAME, OUT_DEFAULT_ICON);
 
     setConfigureName(null);
+
+    init();
   }
 
   protected void init() {
