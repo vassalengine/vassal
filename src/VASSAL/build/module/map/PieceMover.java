@@ -1178,53 +1178,23 @@ public class PieceMover extends AbstractBuildable
       }
 
       final BufferedImage dragImage = makeDragImage(dragPieceOffCenterZoom);
-      String thisDrag = ""; //FIXME: Remove after Debugging
+
       // begin dragging
       try {
         final Point dragPointOffset = new Point(
           boundingBox.x + currentPieceOffsetX - EXTRA_BORDER,
           boundingBox.y + currentPieceOffsetY - EXTRA_BORDER);
-        thisDrag = getDragInfo(dge);  //FIXME: Remove after Debugging
         dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
                       dragImage, dragPointOffset,
                       new StringSelection(""), this); //$NON-NLS-1$
-        lastDrag = thisDrag;  //FIXME: Remove after Debugging
         dge.getDragSource().addDragSourceMotionListener(this);
       }
-      catch (InvalidDnDOperationException e) {   
-        Logger.log("This Drag: "+thisDrag); //FIXME: Debugging
-        Logger.log("Last Drag: "+lastDrag); //FIXME: Debugging
-        ErrorDialog.bug(e);
-      }
-    }
-    
-    // FIXME: Remove after Debugging
-    protected String lastDrag = "";
-    protected String getDragInfo(DragGestureEvent dge) {
-      String message = "time=" + System.currentTimeMillis();
-      Component c = dge.getComponent();
-      message += " type=" + c.getClass().toString();
-      if (c instanceof Map.View) {
-        Map m = ((Map.View) c).getMap();
-        if (m != null) {          
-          message += ", name=" + m.getMapName();
-        }
-      }
-      else if (c instanceof PieceSlot.Panel) {
-        PieceSlot slot = ((PieceSlot.Panel) c).getPieceSlot();
-        if (slot != null) {
-          message += ", name=" + slot.getConfigureName();
-        }
-      }
-      for (Iterator<InputEvent> i = dge.iterator(); i.hasNext();) {
-        InputEvent e = i.next();
-        message += ", event="+e.toString() + ", when="+e.getWhen();
-        
-      }
       
-      return message;
-    }
-    //FIXME: End Debugging 
+      // FIXME: Fix by replacing AWT Drag 'n Drop with Swing DnD.
+      // Catch and ignore spurious DragGestures 
+      catch (InvalidDnDOperationException e) {   
+      }
+    }    
     
     ///////////////////////////////////////////////////////////////////////////
     // DRAG SOURCE LISTENER INTERFACE
