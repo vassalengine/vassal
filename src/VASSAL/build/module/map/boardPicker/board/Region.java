@@ -44,9 +44,11 @@ public class Region extends AbstractConfigurable {
   private boolean selected = false;
 
   public Region() {
+    setConfigureName("New Region");
   }
 
   public Region(Point p) {
+    this();
     origin = p;
   }
   
