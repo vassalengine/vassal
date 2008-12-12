@@ -268,22 +268,11 @@ public class ErrorDialog {
 
     if (!reportedDataErrors.contains(e.getData())) {
       reportedDataErrors.add(e.getData());
-      // When playing a module, send a warning to the controls window
-      if (GameModule.getGameModule().getArchiveWriter() == null) {
-        GameModule.getGameModule().warn(
-          Resources.getString("Error.data_error_message",
-                              e.getMessage(), e.getData())
-        );
-      }
-      // If editing, show a warning dialog
-      else {
-        WarningDialog.showDisableable(
-          (Object) e.getData(),
-          "Error.data_error",
-          e.getMessage(),
-          e.getData() 
-        );
-      }
+
+      // send a warning to the controls window
+      GameModule.getGameModule().warn(Resources.getString(
+        "Error.data_error_message", e.getMessage(), e.getData()
+      ));
     }
   }
 
