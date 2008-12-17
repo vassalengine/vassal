@@ -47,6 +47,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
@@ -99,7 +100,7 @@ public class HtmlChart extends Widget implements MouseListener {
       in.close();
     }
     catch (IOException e) {
-      ErrorDialog.dataError(new BadDataReport("Chart not found",fname,e));
+      ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"),fname,e));
     }
     finally {
       IOUtils.closeQuietly(in);

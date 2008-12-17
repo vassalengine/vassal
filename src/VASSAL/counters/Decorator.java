@@ -19,12 +19,16 @@
 package VASSAL.counters;
 
 import java.awt.Point;
+
 import javax.swing.KeyStroke;
+
+import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -353,4 +357,16 @@ public abstract class Decorator implements GamePiece, StateMergeable {
     String fullKey = TranslatablePiece.PREFIX + key;
     return Localization.getInstance().translate(fullKey, key);
   }
+  
+  /**
+   * Report a Data Error detected by a trait
+   */
+  protected static void reportDataError(EditablePiece piece, String message, String data, Throwable e) {
+    ErrorDialog.dataError(new BadDataReport(piece, message, data, e));  
+  }
+
+  protected static void reportDataError(EditablePiece piece, String message, String data) {
+    ErrorDialog.dataError(new BadDataReport(piece, message, data));  
+  }
+   
 }

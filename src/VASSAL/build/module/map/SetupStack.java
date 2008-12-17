@@ -181,7 +181,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
         pos = getConfigureBoard().getGrid().getLocation(location);
       }
       catch (BadCoords e) {
-        ErrorDialog.dataError(new BadDataReport("Invalid board location",location,e));
+        ErrorDialog.dataError(new BadDataReport(this, "Error.setup_stack_position_error", location,e));
       }
     }
   }

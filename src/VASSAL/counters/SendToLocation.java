@@ -40,7 +40,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -56,8 +55,8 @@ import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 /**
@@ -73,6 +72,7 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class SendToLocation extends Decorator implements TranslatablePiece {
   public static final String ID = "sendto;";
+  private static final String _0 = "0";
   public static final String BACK_MAP = "backMap";
   public static final String BACK_POINT = "backPoint";
   protected static final String DEST_LOCATION = "Location on selected Map";
@@ -251,22 +251,11 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         if (map != null) {
           switch (destination.charAt(0)) {
           case 'L':
-            Integer xValue=null,yValue=null; 
-            try {
-              xValue = Integer.valueOf(x.getText(outer));
-            }
-            catch (NumberFormatException e) {
-              ErrorDialog.dataError(new BadDataReport("Not a number",x.getText(outer),e));
-            }
-            try {
-              yValue = Integer.valueOf(y.getText(outer));
-            }
-            catch (NumberFormatException e) {
-              ErrorDialog.dataError(new BadDataReport("Not a number",y.getText(outer),e));
-            }
-            if (xValue != null && yValue != null) {
-              dest = new Point(xValue,yValue);
-            }
+            final int xValue = x.getTextAsInt(outer, "Xlocation", this);
+            final int yValue = y.getTextAsInt(outer, "YLocation", this);
+
+            dest = new Point(xValue,yValue);
+            
             Board b = map.getBoardByName(boardName.getText(outer));
             if (b != null && dest != null) {
               dest.translate(b.bounds().x, b.bounds().y);
@@ -274,8 +263,12 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             break;
             
           case 'Z':
-            Zone z = map.findZone(zone.getText(outer));
-            if (z != null) {
+            final String zoneName = zone.getText(outer); 
+            Zone z = map.findZone(zoneName);
+            if (z == null) {
+              reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone"));
+            }
+            else {
               Rectangle r = z.getBounds();
               Rectangle r2 = z.getBoard().bounds();
               dest = new Point(r2.x + r.x + r.width/2, r2.y + r.y + r.height/2);
@@ -283,10 +276,16 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             break;
             
           case 'R':
-            Region r = map.findRegion(region.getText(outer));
-            Rectangle r2 = r.getBoard().bounds();
-            if (r != null) {
-              dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
+            final String regionName = region.getText(outer);           
+            Region r = map.findRegion(regionName);
+            if (r == null) {
+              reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region"));              
+            }
+            else {
+              Rectangle r2 = r.getBoard().bounds();
+              if (r != null) {
+                dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
+              }
             }
             break;
           }
@@ -335,8 +334,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
    * Offset the destination by the Advanced Options offset 
    */
   protected Point offsetDestination(int x, int y, GamePiece outer) {
-    int xPos = x + Integer.parseInt(xIndex.getText(outer)) * Integer.parseInt(xOffset.getText(outer));
-    int yPos = y + Integer.parseInt(yIndex.getText(outer)) * Integer.parseInt(yOffset.getText(outer));
+    int xPos = x + Integer.parseInt(xIndex.getText(outer, _0)) * Integer.parseInt(xOffset.getText(outer, _0));
+    int yPos = y + Integer.parseInt(yIndex.getText(outer, _0)) * Integer.parseInt(yOffset.getText(outer, _0));
     return new Point(xPos, yPos);
   }
   

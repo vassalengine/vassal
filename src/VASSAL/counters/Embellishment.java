@@ -48,7 +48,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.ListSelectionListener;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
@@ -59,8 +58,8 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.KeyModifiersConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
@@ -416,7 +415,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       value = isActive() ? v : -v;
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport("Not a number",val,e));
+      reportDataError(this, Resources.getString("Error.non_number_error"), "followProperty["+propertyName+"]="+val, e);
     }
     return;
   }
@@ -517,15 +516,15 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         if (tracker == null) {
           tracker = new ChangeTracker(this);
         }
-
+        final GamePiece outer = Decorator.getOutermost(this);
+        final String levelText = resetLevel.getText(outer);
         try {
-          final int level = Integer.parseInt(
-            resetLevel.getText(Decorator.getOutermost(this)));
+          final int level = Integer.parseInt(levelText);
           setValue(Math.abs(level) - 1);
           setActive(level > 0);
         }
         catch (NumberFormatException e) {
-          ErrorDialog.dataError(new BadDataReport("Not a number",resetLevel.getText(Decorator.getOutermost(this)),e));
+           reportDataError(this, Resources.getString("Error.non_number_error"), resetLevel.debugInfo(levelText, "resetLevel"), e);
         }
       }
       // random layers

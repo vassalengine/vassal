@@ -32,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -46,8 +45,8 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -186,7 +185,7 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
           r = Integer.parseInt(rangeValue);
         }
         catch (NumberFormatException e) {
-          ErrorDialog.dataError(new BadDataReport("Not a number",rangeValue,e));
+          reportDataError(this, Resources.getString("Error.non_number_error"), "range["+rangeProperty+"]="+rangeValue, e);
         }
       }
       filter = new BooleanAndPieceFilter(filter,new RangeFilter(getMap(), getPosition(), r));

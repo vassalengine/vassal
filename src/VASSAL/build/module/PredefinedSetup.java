@@ -33,6 +33,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.menu.ChildProxy;
 import VASSAL.tools.menu.MenuItemProxy;
@@ -177,7 +178,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
                   .loadGameInBackground(fileName, getSavedGameContents());
       }
       catch (IOException e) {
-        ErrorDialog.dataError(new BadDataReport("Setup not found",fileName,e));
+        ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Setup"),fileName,e));
       }
     }
     else {

@@ -154,7 +154,7 @@ public class PropertyChangerConfigurer extends Configurer {
       p = new PropertyPrompt(constraints, promptConfig.getValueString());
       break;
     case INCR_CODE:
-      p = new IncrementProperty(incrConfig.getValueString(), constraints);
+      p = new IncrementProperty(this, incrConfig.getValueString(), constraints);
       break;
     case ENUM_CODE:
       p = new EnumeratedPropertyPrompt(constraints,
@@ -208,7 +208,7 @@ public class PropertyChangerConfigurer extends Configurer {
       p = new PropertyPrompt(constraints, sd.nextToken("Enter new value"));
       break;
     case INCR_CODE:
-      p = new IncrementProperty(sd.nextToken("1"), constraints);
+      p = new IncrementProperty(this, sd.nextToken("1"), constraints);
       break;
     case ENUM_CODE:
       p = new EnumeratedPropertyPrompt(constraints, sd.nextToken("Select new value"), sd.nextStringArray(0));

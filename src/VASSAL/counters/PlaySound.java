@@ -29,7 +29,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
@@ -39,8 +38,8 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -112,7 +111,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
         }
       }
       catch (IOException e) {
-        ErrorDialog.dataError(new BadDataReport("Audio clip not found",clipName,e));
+        reportDataError(this, Resources.getString("Error.not_found", "Audio Clip"), "Clip="+clipName, e);
       }
     }
     return c;

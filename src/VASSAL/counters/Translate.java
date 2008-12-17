@@ -39,7 +39,6 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
@@ -53,7 +52,6 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -62,6 +60,7 @@ import VASSAL.tools.SequenceEncoder;
  * direction, optionally tracking the current rotation of the piece.
  */
 public class Translate extends Decorator implements TranslatablePiece {
+  private static final String _0 = "0";
   public static final String ID = "translate;";
   protected KeyCommand[] commands;
   protected String commandName;
@@ -99,13 +98,13 @@ public class Translate extends Decorator implements TranslatablePiece {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken("Move Forward");
     keyCommand = st.nextKeyStroke('M');
-    xDist.setFormat(st.nextToken("0"));
+    xDist.setFormat(st.nextToken(_0));
     yDist.setFormat(st.nextToken("60"));
     moveStack = st.nextBoolean(true);
-    xIndex.setFormat(st.nextToken("0"));
-    yIndex.setFormat(st.nextToken("0"));
-    xOffset.setFormat(st.nextToken("0"));
-    yOffset.setFormat(st.nextToken("0"));
+    xIndex.setFormat(st.nextToken(_0));
+    yIndex.setFormat(st.nextToken(_0));
+    xOffset.setFormat(st.nextToken(_0));
+    yOffset.setFormat(st.nextToken(_0));
     description = st.nextToken("");
     commands = null;
   }
@@ -215,36 +214,26 @@ public class Translate extends Decorator implements TranslatablePiece {
     int x = 0;
     int y = 0;
     final GamePiece outer = Decorator.getOutermost(this);
-    
     final Board b = outer.getMap().findBoard(p);
-    String dist = xDist.getText(outer);
-    String index = xIndex.getText(outer);
-    String offset = xOffset.getText(outer);
-    try {
-      x = Integer.parseInt(dist) + Integer.parseInt(index) *
-          Integer.parseInt(offset);
-      if (b != null) {
-        x = (int)Math.round(b.getMagnification()*x);
-      }
-    }
-    catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport("Not all numbers",dist+","+index+","+offset,e));      
+    
+    final int Xdist = xDist.getTextAsInt(outer, "Xdistance", this);
+    final int Xindex = xIndex.getTextAsInt(outer, "Xindex", this);
+    final int Xoffset = xOffset.getTextAsInt(outer, "Xoffset", this);
+
+    x = Xdist + Xindex * Xoffset;
+    if (b != null) {
+      x = (int)Math.round(b.getMagnification()*x);
     }
     
-    dist = yDist.getText(outer);
-    index = yIndex.getText(outer);
-    offset = yOffset.getText(outer);
-    try {
-      y = Integer.parseInt(dist) + Integer.parseInt(index) *
-          Integer.parseInt(offset);
-      if (b != null) {
-        y = (int)Math.round(b.getMagnification()*y);
-      }
+    final int Ydist = yDist.getTextAsInt(outer, "Ydistance", this);
+    final int Yindex = yIndex.getTextAsInt(outer, "Yindex", this);
+    final int Yoffset = yOffset.getTextAsInt(outer, "Yoffset", this);
+
+    y = Ydist + Yindex * Yoffset;
+    if (b != null) {
+      y = (int)Math.round(b.getMagnification()*y);
     }
-    catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport("Not all numbers",dist+","+index+","+offset,e));      
-    }
-    
+        
     p.translate(x, -y);
   }
   

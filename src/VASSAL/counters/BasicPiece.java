@@ -37,7 +37,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.GlobalOptions;
@@ -51,8 +50,8 @@ import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
@@ -541,7 +540,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     if (!"null".equals(mapId)) {
       newMap = Map.getMapById(mapId);
       if (newMap == null) {
-        ErrorDialog.dataError(new BadDataReport("Could not find map",mapId,null));
+        Decorator.reportDataError(this, Resources.getString("Error.not_found", "Map"), "mapId="+mapId);
       }
     }
     final Point newPos = new Point(st.nextInt(0), st.nextInt(0));

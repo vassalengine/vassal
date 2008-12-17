@@ -19,6 +19,7 @@
 package VASSAL.build.module.properties;
 
 import VASSAL.build.BadDataReport;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 
@@ -32,16 +33,27 @@ import VASSAL.tools.FormattedString;
 public class IncrementProperty implements PropertyChanger {
   protected Constraints constraints;
   protected FormattedString format = new FormattedString();
+  protected PropertyChangerConfigurer prop;
 
-  public IncrementProperty(String incr, Constraints constraints) {
+  public IncrementProperty(PropertyChangerConfigurer prop, String incr, Constraints constraints) {
     super();
+    this.prop = prop;
     this.constraints = constraints;
     format.setFormat(incr);
   }
-
+  
   public String getNewValue(String oldValue) {
+    int value = 0;
     try {
-      int value = Integer.parseInt(oldValue);
+      value = Integer.parseInt(oldValue);
+    }
+    catch (NumberFormatException e) {
+      ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.non_number_error"),"Increment "+prop.getName()+": oldValue "+"="+oldValue,e));
+      return oldValue;
+    }
+    
+    try {
+      
       int incr = Integer.parseInt(format.getText(constraints)); 
       if (constraints.isWrap()) {
         if (value + incr > constraints.getMaximumValue()) {
@@ -62,7 +74,7 @@ public class IncrementProperty implements PropertyChanger {
       return String.valueOf(value);
     }
     catch (NumberFormatException e) {
-      ErrorDialog.dataError(new BadDataReport("Not a number",format.getText(constraints),e));
+      ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.non_number_error"),"Increment "+prop.getName()+": format="+format.getFormat()+", value="+format.getText(constraints),e));
       return oldValue;
     }
   }

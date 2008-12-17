@@ -38,7 +38,6 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.GpIdSupport;
@@ -58,9 +57,9 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.ComponentPathBuilder;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -290,7 +289,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
         }
       }
       catch (ComponentPathBuilder.PathFormatException e) {
-        ErrorDialog.dataError(new BadDataReport(e.getMessage(),markerSpec,e));
+        reportDataError(this, Resources.getString("Resources.place_error"), e.getMessage()+" markerSpec="+markerSpec, e);
       }
     }
     return piece;

@@ -185,6 +185,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   public void addTo(Buildable parent) {
     property = (GlobalProperty) parent;
     property.getToolBar().add(launch);
+    propChangeConfig.setName(property.getConfigureName());
   }
 
   public static String getConfigureTypeName() {
