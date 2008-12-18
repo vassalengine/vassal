@@ -372,6 +372,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
           removeButton.setEnabled(false);
           copyButton.setEnabled(false);
         }
+        copyButton.setEnabled(index > 0);
         pasteButton.setEnabled(clipBoard != null);
         moveUpButton.setEnabled(index > 1);
         moveDownButton.setEnabled(index > 0
