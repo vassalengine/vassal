@@ -27,13 +27,19 @@ Changes since beta6:
 
 A number of problems present in 3.1.0-beta6 are fixed in 3.1.0-beta7:
 
+* Bug 2442887: Exception if no Layer levels and type new level name
+* Bug 2432774: ClassCastException: PrototypeDefinition$Config$Definer$Plain
+    cannot be cast to VASSAL.counters.Decorator
+* Bug 2418907: NPE When SendToLocation sends to Region that does not exist
 * Bug 2393130: Zoom menu not initialized at time of Zoomer creation
 * Bug 2393526: Cache requests not marked as failed when Errors occured
 * Bug 2390630: Connecting to server blocks GUI when server is down
+* Bug 2381419: NPE in RegionGrid.Config.EditRegionAction.windowClosed()
 * Bug 2380245: FileNotFoundException not being caught during image loading
 * Bug 2373956: NPE in child ImageOp when parent fails
 * Bug 2372199: NPE in PieceSlot.updateGpId()
 * Bug 2315230: ConnectException in HttpRequestWrapper.doGet()
+* Bug 2296067: InvalidDnDOperationException in PieceMover.DragHandler
 * Bug 2225711: Fixed ConcurrentModificationException in SavedGameUpdater
 * Bug 2187303: IllegalArgumentException in SavedGameUpdaterDialog
 * Bug 2186983: EmptyStackException in ModuleManagerWindow.GameFolderInfo
