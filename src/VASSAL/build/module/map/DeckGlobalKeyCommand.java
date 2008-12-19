@@ -45,6 +45,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
 
   public DeckGlobalKeyCommand() {
     globalCommand = new DeckGlobalCommand();
+    setConfigureName("");
   }
   
   public DeckGlobalKeyCommand(String code) {
