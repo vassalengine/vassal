@@ -433,6 +433,9 @@ public class ImageUtils {
     // if (img == null) throw new UnrecognizedImageTypeException();
     // return toCompatibleImage(img);
     //
+    // See Sun Bug 6788458, at
+    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6788458
+    //
 
     BufferedImage img = null;
     RereadableInputStream rin = null;
