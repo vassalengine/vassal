@@ -31,6 +31,8 @@ A number of problems present in 3.1.0-beta6 are fixed in 3.1.0-beta7:
 * Bug 2432774: ClassCastException: PrototypeDefinition$Config$Definer$Plain
     cannot be cast to VASSAL.counters.Decorator
 * Bug 2418907: NPE When SendToLocation sends to Region that does not exist
+* Bug 2418813: NPE Sending PrivateMsg to person who is 'Ignoring' you
+* Bug 2415632: NPE in DeckGlobalKeyCommand.encode()
 * Bug 2393130: Zoom menu not initialized at time of Zoomer creation
 * Bug 2393526: Cache requests not marked as failed when Errors occured
 * Bug 2390630: Connecting to server blocks GUI when server is down
