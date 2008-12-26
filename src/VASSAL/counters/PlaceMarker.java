@@ -32,6 +32,7 @@ import java.awt.geom.Point2D;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -80,12 +81,12 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   protected String gpId = "";
   protected String newGpId;
   protected GpIdSupport gpidSupport; // The component that generates unique Slot Id's for us
-  private static final int STACK_TOP = 0;
-  private static final int STACK_BOTTOM = 1;
-  private static final int ABOVE = 2;
-  private static final int BELOW = 3;
+  protected static final int STACK_TOP = 0;
+  protected static final int STACK_BOTTOM = 1;
+  protected static final int ABOVE = 2;
+  protected static final int BELOW = 3;
   protected int placement = STACK_TOP;
-
+  protected boolean above;
 
   public PlaceMarker() {
     this(ID + "Place Marker;M;null;null;null", null);
@@ -128,7 +129,8 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       .append(afterBurnerKey)
       .append(description)
       .append(gpId)
-      .append(placement);
+      .append(placement)
+      .append(above);
     return ID + se.getValue();
   }
 
@@ -349,6 +351,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     description = st.nextToken("");
     setGpId(st.nextToken(""));
     placement = st.nextInt(STACK_TOP);
+    above = st.nextBoolean(false);
     gpidSupport = GameModule.getGameModule().getGpIdSupport();
   }
 
@@ -388,6 +391,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     protected IntConfigurer xOffsetConfig = new IntConfigurer(null, "Horizontal offset:  ");
     protected IntConfigurer yOffsetConfig = new IntConfigurer(null, "Vertical offset:  ");
     protected BooleanConfigurer matchRotationConfig;
+    protected BooleanConfigurer aboveConfig;
     protected JComboBox placementConfig;
     protected HotKeyConfigurer afterBurner;
     protected StringConfigurer descConfig;
@@ -395,6 +399,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
     protected Ed(PlaceMarker piece) {
       matchRotationConfig = createMatchRotationConfig();
+      aboveConfig = createAboveConfig();
       descConfig = new StringConfigurer(null, "Description:  ", piece.description);
       keyInput = new HotKeyConfigurer(null, "Keyboard Command:  ", piece.key);
       afterBurner = new HotKeyConfigurer(null, "Keystroke to apply after placement:  ", piece.afterBurnerKey);
@@ -442,6 +447,16 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       p.add(yOffsetConfig.getControls());
       matchRotationConfig.setValue(Boolean.valueOf(piece.matchRotation));
       p.add(matchRotationConfig.getControls());
+      if (aboveConfig != null) {
+        aboveConfig.setValue(Boolean.valueOf(piece.above));
+        p.add(aboveConfig.getControls());
+        ((JCheckBox) matchRotationConfig.getControls()).addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            aboveConfig.getControls().setVisible(((JCheckBox) matchRotationConfig.getControls()).isSelected());
+          }
+        });
+        aboveConfig.getControls().setVisible(Boolean.valueOf(piece.matchRotation));
+      }
       placementConfig = new JComboBox(new String[]{"On top of stack","On bottom of stack","Above this piece","Below this piece"});
       placementConfig.setSelectedIndex(piece.placement);
       Box placementBox = Box.createHorizontalBox();
@@ -454,6 +469,10 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
 
     protected BooleanConfigurer createMatchRotationConfig() {
       return new BooleanConfigurer(null, "Match Rotation?");
+    }
+    
+    protected BooleanConfigurer createAboveConfig() {
+      return null;
     }
 
     public Component getControls() {
@@ -487,6 +506,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       se.append(descConfig.getValueString());
       se.append(slotId);
       se.append(placementConfig.getSelectedIndex());
+      se.append(aboveConfig == null ? "false" : aboveConfig.getValueString());
       return ID + se.getValue();
     }
     public static class ChoosePieceDialog extends ChooseComponentPathDialog {
