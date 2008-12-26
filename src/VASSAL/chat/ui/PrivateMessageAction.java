@@ -45,12 +45,16 @@ public class PrivateMessageAction extends AbstractAction {
        && mgr != null 
        && !p.equals(client.getUserInfo()));
     }
-    public void actionPerformed(ActionEvent evt) {
-  PrivateChatter chat = mgr.getChatterFor(p);
-  java.awt.Window f = (java.awt.Window)chat.getTopLevelAncestor();
-  f.setVisible(true);
-  f.toFront();
+    
+  public void actionPerformed(ActionEvent evt) {
+    PrivateChatter chat = mgr.getChatterFor(p);
+    // Chat is null of other player is ignoring us.
+    if (chat != null) {
+      java.awt.Window f = (java.awt.Window)chat.getTopLevelAncestor();
+      f.setVisible(true);
+      f.toFront();
     }
+  }
     
     public static PlayerActionFactory factory(final ChatServerConnection client, final PrivateChatManager chatMgr) {
       return new PlayerActionFactory() {
