@@ -31,6 +31,10 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.logging.Logger;
 
+/**
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */
 public class ErrorDialog {
   private ErrorDialog() {}
 

@@ -22,9 +22,7 @@ package VASSAL.tools.swing;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -33,12 +31,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
+import net.miginfocom.swing.MigLayout;
 
 import VASSAL.tools.DialogUtils;
-
 
 /**
  * @author Joel Uckelman
@@ -52,130 +49,102 @@ public class DetailsDialog {
     final String header,
     final String message,
     final String details,
+    final String disableText,
+    final String showText,
+    final String hideText,
     final int messageType,
     final Object key)
   {
-    final JPanel panel = new JPanel();
-
     // set a slightly larger, bold font for the header
     final JLabel headerLabel = new JLabel(header);
     final Font f = headerLabel.getFont();
     headerLabel.setFont(f.deriveFont(Font.BOLD, f.getSize()*1.2f));
 
     // put together the paragraphs of the message
-   final FlowLabel messageLabel = new FlowLabel(message);
-
-    final JCheckBox disableCheck;
+    final FlowLabel messageLabel = new FlowLabel(message);
 
     // set up the details view
-    final JTextArea detailsArea = new JTextArea(details, 10, 36);
+    final JTextArea detailsArea = new JTextArea(details, 25, 80);
     detailsArea.setEditable(false);
+    detailsArea.setLineWrap(true);
 
     final JScrollPane detailsScroll = new JScrollPane(detailsArea);
     detailsScroll.setVisible(false);
 
-    // layout the panel  
-    final GroupLayout layout = new GroupLayout(panel);
-    panel.setLayout(layout);
+    final DetailsButton detailsButton =
+      new DetailsButton(showText, hideText, detailsScroll);
 
-    layout.setAutocreateGaps(true);
-    layout.setAutocreateContainerGaps(false);
+    // build the contents panel
+    final JPanel panel = new JPanel();
+    panel.setLayout(new MigLayout("hidemode 3", "",
+      key != null ? "[]unrel[]unrel[]rel[]unrel[]" : "[]unrel[]unrel[]rel[]"));
+
+    panel.add(headerLabel, "cell 0 0, growx, pushx");
+    panel.add(messageLabel, "cell 0 1, growx, pushx");
+    panel.add(detailsButton, "cell 0 2");
+    panel.add(detailsScroll, "cell 0 3, grow, push");
+
+    final JCheckBox disableCheck;
 
     if (key != null) {
-      disableCheck = new JCheckBox("Do not show this dialog again");
-
-      layout.setHorizontalGroup(
-        layout.createParallelGroup(GroupLayout.LEADING, true)
-          .add(headerLabel)
-          .add(messageLabel)
-          .add(detailsScroll)
-          .add(disableCheck));
-  
-      layout.setVerticalGroup(
-        layout.createSequentialGroup()
-          .add(headerLabel)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(messageLabel, GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(detailsScroll, 0,
-                              GroupLayout.PREFERRED_SIZE,
-                              Integer.MAX_VALUE)
-          .add(disableCheck));
+      disableCheck = new JCheckBox(disableText);
+      panel.add(disableCheck, "cell 0 4");
     }
     else {
       disableCheck = null;
-
-      layout.setHorizontalGroup(
-        layout.createParallelGroup(GroupLayout.LEADING, true)
-          .add(headerLabel)
-          .add(messageLabel)
-          .add(detailsScroll));
-  
-      layout.setVerticalGroup(
-        layout.createSequentialGroup()
-          .add(headerLabel)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(messageLabel, GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE,
-                             GroupLayout.PREFERRED_SIZE)
-          .addPreferredGap(LayoutStyle.UNRELATED)
-          .add(detailsScroll, 0,
-                              GroupLayout.PREFERRED_SIZE,
-                              Integer.MAX_VALUE));
     }
-
-    final JButton okButton = new JButton();
-    final JButton detailsButton = new JButton();
 
     final JDialog dialog = new JOptionPane(
       panel,
       messageType,
-      JOptionPane.DEFAULT_OPTION,
-      null,
-      new JButton[] { okButton, detailsButton }
+      JOptionPane.DEFAULT_OPTION
     ).createDialog(parent, title);
 
-    okButton.setAction(new AbstractAction("Ok") {
-      private static final long serialVersionUID = 1L;
-
-      public void actionPerformed(ActionEvent e) {
-        dialog.dispose();
-      }
-    });
-
-    detailsButton.setAction(new AbstractAction("<html>Details &raquo;</html>") {
-      private static final long serialVersionUID = 1L;
-    
-      public void actionPerformed(ActionEvent e) {
-        detailsScroll.setVisible(!detailsScroll.isVisible());
-        putValue(NAME, detailsScroll.isVisible() ?
-          "<html>Details &laquo;</html>" : "<html>Details &raquo;</html>");
-
-        // ensure that neither expansion nor collapse changes the dialog width
-        final Dimension d = messageLabel.getSize();
-        d.height = Integer.MAX_VALUE;
-        detailsScroll.setMaximumSize(d);
-        messageLabel.setMaximumSize(d);
-
-        dialog.pack();
-
-        detailsScroll.setMaximumSize(null);
-        messageLabel.setMaximumSize(null);
-      }
-    });
- 
 // FIXME: setModal() is obsolete. Use setModalityType() in 1.6+.
 //    d.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
     dialog.setModal(true);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.setResizable(true);
+    dialog.setLocationRelativeTo(parent);
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
     dialog.setVisible(true);
 
     if (disableCheck != null && disableCheck.isSelected()) {
       DialogUtils.setDisabled(key, true);
     }
+  }
+
+  public static void main(String[] args) {
+    final String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+  
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        DetailsDialog.showDialog(
+          null,
+          "Test",
+          "Test Header",
+          loremIpsum,
+          loremIpsum,
+          "Don't show this dialog again",
+          "Show Details",
+          "Hide Details",
+          JOptionPane.WARNING_MESSAGE,
+          true
+        );
+
+        DetailsDialog.showDialog(
+          null,
+          "Test",
+          "Test Header",
+          loremIpsum,
+          loremIpsum,
+          "Don't show this dialog again",
+          "Show Details",
+          "Hide Details",
+          JOptionPane.ERROR_MESSAGE,
+          null
+        );
+      }
+    });
   }
 }
