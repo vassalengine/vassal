@@ -1017,7 +1017,7 @@ private static final String CHARTS = "Charts";
       final String path = flipClass.getFlipClassTreeConfigurePath();
 
       final SequenceEncoder se = new SequenceEncoder(path, ';');
-      se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(true);
+      se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(2).append(true);
       
       flipClass.writeFlipDefinition(gameModule);
       
@@ -1049,7 +1049,7 @@ private static final String CHARTS = "Charts";
       String path = flipClass.getFlipClassTreeConfigurePath();
         
         se = new SequenceEncoder(path, ';');
-        se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(true);
+        se.append("null").append(0).append(0).append(true).append((KeyStroke) null).append("").append("").append(2).append(true);
 
         flipClass.writeFlipDefinition(gameModule);
 
