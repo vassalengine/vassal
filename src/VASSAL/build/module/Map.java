@@ -25,7 +25,6 @@ import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -159,6 +158,7 @@ import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
+import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuManager;
 
 /*
@@ -233,7 +233,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public Map() {
     getView();
     theMap.addMouseListener(this);
-    toolBar.setLayout(new VASSAL.tools.WrapLayout(FlowLayout.LEFT, 0, 0));
+    toolBar.setLayout(new WrapLayout(WrapLayout.LEFT, 0, 0));
     toolBar.setAlignmentX(0.0F);
     toolBar.setFloatable(false);
   }
