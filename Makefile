@@ -25,7 +25,7 @@ JCFLAGS:=-d $(CLASSDIR) -source 5 -target 5 -Xlint -classpath $(CLASSPATH) \
 JAR:=$(JAVAPATH)/jar
 JDOC:=$(JAVAPATH)/javadoc
 
-NSIS:=PATH=$$PATH:~/java/nsis makensis
+NSIS:=PATH=$$PATH:~/java/nsis/bin makensis
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
