@@ -570,7 +570,10 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   public Stack createStack(GamePiece p) {
-    if (isStackingEnabled()) {
+    return createStack(p, false);  
+  }
+  public Stack createStack(GamePiece p, boolean force) {
+    if (isStackingEnabled() || force) {
       Stack s = new Stack(p);
       return s;
     }
@@ -640,7 +643,7 @@ public class StackMetrics extends AbstractConfigurable {
             index = fixedParent.getPieceCount();
           }
           else {
-            fixedParent = createStack(fixed);
+            fixedParent = createStack(fixed, true);
             GameModule.getGameModule().getGameState().addPiece(fixedParent);
             fixed.getMap().addPiece(fixedParent);
             comm = comm.append(new AddPiece(fixedParent));
