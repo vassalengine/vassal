@@ -32,7 +32,7 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
   public static final String OWNER = "owner"; //$NON-NLS-1$
   public static final String MEMBERS = "members"; //$NON-NLS-1$
   public static final String STATUS = "status"; //$NON-NLS-1$
-  private static final String LOCKED = "locked"; //$NON-NLS-1$
+  public static final String LOCKED = "locked"; //$NON-NLS-1$
 
   private String owner; // The userId (as in GameModule.getUserId() of the player who created the room
   private String[] members; // The players who were in the room at the time it was closed;

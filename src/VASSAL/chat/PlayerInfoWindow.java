@@ -30,6 +30,7 @@ public class PlayerInfoWindow extends JDialog {
   public PlayerInfoWindow(java.awt.Frame f, SimplePlayer p) {
     super(f, p.getName());
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    
     Box b = Box.createHorizontalBox();
     JTextField tf = new JTextField(p.getName().length());
     tf.setText(p.getName());
@@ -40,6 +41,33 @@ public class PlayerInfoWindow extends JDialog {
     b.add(tf);
     add(b);
 
+    String client = ((SimpleStatus)p.getStatus()).getClient();
+    if (client == null || client.length() == 0) {
+      client = "< 3.1";
+    }
+    b = Box.createHorizontalBox();
+    tf = new JTextField(client.length());
+    tf.setText(client);
+    tf.setEditable(false);
+    tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
+                                             tf.getPreferredSize().height));
+    b.add(new JLabel(Resources.getString("Chat.client_version"))); //$NON-NLS-1$
+    b.add(tf);
+    add(b);
+    
+    final String ip = ((SimpleStatus)p.getStatus()).getIp();
+    if (ip != null && ip.length() > 0) {
+      b = Box.createHorizontalBox();
+      tf = new JTextField(ip.length());
+      tf.setText(ip);
+      tf.setEditable(false);
+      tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
+                                             tf.getPreferredSize().height));
+      b.add(new JLabel(Resources.getString("Chat.ip_address"))); //$NON-NLS-1$
+      b.add(tf);
+      add(b);
+    }
+    
     JCheckBox box = new JCheckBox(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
     box.setSelected(((SimpleStatus)p.getStatus()).isLooking());
     box.setEnabled(false);
@@ -55,7 +83,7 @@ public class PlayerInfoWindow extends JDialog {
     ta.setText(((SimpleStatus)p.getStatus()).getProfile());
     ta.setEditable(false);
     add(new JScrollPane(ta));
-
+  
     pack();
   }
 }

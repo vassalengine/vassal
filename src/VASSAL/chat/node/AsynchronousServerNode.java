@@ -22,13 +22,16 @@
  */
 package VASSAL.chat.node;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import VASSAL.chat.HttpRequestWrapper;
+import VASSAL.tools.PropertiesEncoder;
 
 
 /**
@@ -100,6 +103,27 @@ public class AsynchronousServerNode extends ServerNode {
         logger.fine("Sending contents of "+module.getId()); //$NON-NLS-1$
         Node[] players = module.getLeafDescendants();
         Node[] rooms = module.getChildren();
+        
+        // Check if any rooms have lost their first player
+        for (int i = 1; i < rooms.length; i++) {
+          Node[] c = rooms[i].getChildren();
+          if (c.length > 0) {
+            try {
+              final Properties roomProps = new PropertiesEncoder(rooms[i].getInfo()).getProperties();
+              final String roomOwner = roomProps.getProperty("owner");
+              final String playerId = new PropertiesEncoder(c[0].getInfo()).getProperties().getProperty("id");
+              if (roomOwner == null || (! roomOwner.equals(playerId))) {
+                roomProps.setProperty("owner", playerId);
+                rooms[i].setInfo(new PropertiesEncoder(roomProps).toString());
+              }
+            }
+            catch (IOException e) {
+              // Error encoding/decoding properties. Shouldn't happen.
+              e.printStackTrace();
+            }
+          }
+        }
+        
         String listCommand = Protocol.encodeListCommand(players);
         logger.finer(listCommand);
         module.send(listCommand);

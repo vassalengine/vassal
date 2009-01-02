@@ -45,7 +45,6 @@ public class AboutVASSALAction extends AbstractAction {
     window = w;
   }
 
-  @Override
   public void actionPerformed(ActionEvent evt) {
     final String name = "/images/Splash.png";
 

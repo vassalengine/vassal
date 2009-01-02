@@ -21,11 +21,11 @@
  */
 package VASSAL.chat.node;
 
-import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.PropertiesEncoder;
-
-import java.util.Properties;
 import java.io.IOException;
+import java.util.Properties;
+
+import VASSAL.tools.PropertiesEncoder;
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * Utility method for encoding server-related commands into strings. Messages
@@ -43,6 +43,7 @@ public class Protocol {
   public static final String NODE_INFO = "NODE_INFO\t"; //$NON-NLS-1$
   public static final String ROOM_INFO = "ROOM_INFO\t"; //$NON-NLS-1$
   public static final String LOGIN = "LOGIN\t"; //$NON-NLS-1$
+  public static final String KICK = "KICK\t"; //$NON-NLS-1$
 
   /**
    * Contains registration information sent when a client initially connects to
@@ -82,13 +83,30 @@ public class Protocol {
   }
 
   /**
+   * Sent when a player is invited to join a locked room
+   * 
+   * @param newParentPath
+   * @param password
+   * @return
+   */
+  public static String encodeJoinCommand(String newParentPath, String password) {
+    return JOIN + newParentPath + "\t" + password;
+  }
+  
+  /**
    * @see #encodeJoinCommand
    * @return newParentPath
    */
   public static String[] decodeJoinCommand(String cmd) {
     String[] info = null;
     if (cmd.startsWith(JOIN)) {
-      info = new String[] {cmd.substring(JOIN.length())};
+      final String[] parts = cmd.split("\\t");
+      if (parts.length == 2) {
+        info = new String[] {parts[1]};
+      }
+      else if (parts.length == 3) {
+        info = new String[] {parts[1], parts[2]}; 
+      }
     }
     return info;
   }
@@ -273,6 +291,24 @@ public class Protocol {
     return username;
   }
 
+  /**
+   * Sent by the owner of a room to kick another player back to the Main Room
+   * 
+   * @param p
+   * @return
+   */
+  public static String encodeKickCommand(String kickeeId) {
+    return KICK + kickeeId;
+  }
+  
+  public static String[] decodeKickCommand(String cmd) {
+    String[] player = null;
+    if (cmd.startsWith(KICK)) {
+      player = new String[] {cmd.substring(KICK.length())};
+    }
+    return player;
+  }
+  
   /**
    * A dump of the current connections to the server. Includes a path name and
    * info for each player node, and info for each room node as well

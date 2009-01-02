@@ -22,9 +22,13 @@
 package VASSAL.chat.node;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Properties;
+import java.net.SocketAddress;
 import java.util.Iterator;
+import java.util.Properties;
+
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * Node representing a single player.
@@ -82,11 +86,32 @@ public class PlayerNode extends Node implements SocketWatcher {
     Properties p;
     String cmd;
     if ((info = Protocol.decodeRegisterCommand(line)) != null) {
+      String ip = "";
+      SocketAddress addr = input.sock.getRemoteSocketAddress();
+      if (addr instanceof InetSocketAddress) {
+        ip = ((InetSocketAddress) addr).getAddress().getHostAddress();
+      }
       id = info[0];
-      this.info = info[2];
+      this.info = info[2] + (ip.length() > 0 ? "|ip=" + ip : "");
       server.registerNode(info[1],this);
     }
     else if ((info = Protocol.decodeJoinCommand(line)) != null) {
+      // Requests to move to a locked room must be accompanied by the rooms 'password' which
+      // is the owner of the room. This allows 'Invited' clients to join Locked rooms.
+      // Rooms are reused, so clients are allowed to enter an empty locked room without a password.
+      final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(info[0], '/');
+      sd.nextToken("");
+      final String joinRoomName = sd.nextToken("");
+      final Node room = server.getModule(this).getDescendant(joinRoomName);
+      if (room != null) {
+        final boolean locked = "true".equals(room.getInfoProperty(NodeRoom.LOCKED));
+        if (locked && room.getChildren().length > 0) {
+          final String owner = room.getInfoProperty(NodeRoom.OWNER);
+          if (info.length < 2 || !owner.equals(info[1])) {
+            return;
+          }
+        }
+      }
       server.move(this,info[0]);
     }
     else if ((info = Protocol.decodeForwardCommand(line)) != null) {
@@ -95,6 +120,9 @@ public class PlayerNode extends Node implements SocketWatcher {
     else if ((info = Protocol.decodeStatsCommand(line)) != null) {
       this.info = info[0];
       server.updateInfo(this);
+    }
+    else if ((info = Protocol.decodeKickCommand(line)) != null) {
+      server.kick(this, info[0]);
     }
     else if ((p = Protocol.decodeRoomsInfo(line)) != null) {
 // FIXME: Use Properties.stringPropertyNames() in 1.6+.

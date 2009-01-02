@@ -25,56 +25,58 @@ import javax.swing.JTree;
 
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.LockableRoom;
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;
-import VASSAL.chat.SynchCommand;
+import VASSAL.chat.node.NodeClient;
+import VASSAL.chat.node.NodeRoom;
 import VASSAL.i18n.Resources;
 
 /**
- * When invoked, will request synchronization info from another player
+ * When invoked, will Kick another player out of his current room back to the Main Room.
  */
-public class SynchAction extends AbstractAction {
+public class InviteAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private Player p;
+  private Player target;
   private ChatServerConnection client;
 
-  public SynchAction(Player p, ChatServerConnection client) {
-    super(Resources.getString("Chat.synchronize")); //$NON-NLS-1$
-    this.p = p;
+
+  public InviteAction(ChatServerConnection client, Player target) {
+    super(Resources.getString("Chat.invite")); //$NON-NLS-1$
+    this.target = target;
     this.client = client;
-    
-    // Find which room our target player is in
-    Room targetRoom = null;
-    for (Room room : client.getAvailableRooms()) {
-      if (room.getPlayerList().contains(p)) {
-        targetRoom = room;
+    boolean enabled = false;
+ 
+    if (target != null) {
+      if (GameModule.getGameModule() != null) {
+        final Room room = client.getRoom();
+        if (room instanceof LockableRoom && ((LockableRoom) room).isLocked()) {
+          if (room instanceof NodeRoom) {
+            final String owner = ((NodeRoom) room).getOwner();
+            if (owner.equals(client.getUserInfo().getId()) && !owner.equals(target.getId())) {
+              enabled = true;
+            }
+          }
+        }
       }
     }
-    
-    if (p != null
-      && GameModule.getGameModule() != null
-      && !p.equals(client.getUserInfo())
-      && client.getRoom() != null
-      && client.getRoom().equals(targetRoom)) {
-      setEnabled(true);
-    }
-    else {
-      setEnabled(false);
-    }
+    setEnabled(enabled);
   }
 
   public void actionPerformed(ActionEvent evt) {
     if (isEnabled()) {
-      GameModule.getGameModule().getGameState().setup(false);
-      client.sendTo(p, new SynchCommand(client.getUserInfo(),client));
+      if (client instanceof NodeClient) {        
+        ((NodeClient) client).sendInvite(target);
+        GameModule.getGameModule().warn(Resources.getString("Chat.invite_sent", target.getName()));
+      }
     }
   }
   
   public static PlayerActionFactory factory(final ChatServerConnection client) {
     return new PlayerActionFactory() {
       public Action getAction(Player p, JTree tree) {
-        return new SynchAction(p,client);
+        return new InviteAction(client, p);
       }
     };
   }

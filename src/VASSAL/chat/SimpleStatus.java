@@ -27,15 +27,28 @@ public class SimpleStatus implements PlayerStatus {
   private boolean looking;
   private boolean away;
   private String profile;
+  private String client;
+  private String ip; 
+ 
 
   public SimpleStatus() {
     this(false, false, ""); //$NON-NLS-1$
   }
 
   public SimpleStatus(boolean looking, boolean away, String profile) {
+    this(looking, away, profile, "");
+  }
+  
+  public SimpleStatus(boolean looking, boolean away, String profile, String client) {
+    this(looking, away, profile, client, "");
+  }
+  
+  public SimpleStatus(boolean looking, boolean away, String profile, String client, String ip) {
     this.looking = looking;
     this.away = away;
     this.profile = profile;
+    this.client = client;
+    this.ip = ip;
   }
 
   public boolean isAway() {
@@ -49,5 +62,12 @@ public class SimpleStatus implements PlayerStatus {
   public String getProfile() {
     return profile;
   }
+  
+  public String getClient() {
+    return client;
+  }
 
+  public String getIp() {
+    return ip;
+  }
 }

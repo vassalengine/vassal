@@ -58,24 +58,34 @@ public class NodePlayer extends SimplePlayer {
   public static final String LOOKING = "looking"; //$NON-NLS-1$
   public static final String AWAY = "away"; //$NON-NLS-1$
   public static final String PROFILE = "profile"; //$NON-NLS-1$
+  public static final String CLIENT = "client"; //$NON-NLS-1$
+  public static final String IP = "ip"; //$NON-NLS-1$
 
   public void setInfo(Properties p) {
     name = p.getProperty(NAME,"???"); //$NON-NLS-1$
     id = p.getProperty(ID,id);
-    setStatus(new SimpleStatus("true".equals(p.getProperty(LOOKING)),"true".equals(p.getProperty(AWAY)),p.getProperty(PROFILE,""))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    setStatus(new SimpleStatus("true".equals(p.getProperty(LOOKING)),"true".equals(p.getProperty(AWAY)),p.getProperty(PROFILE,""), p.getProperty(CLIENT, ""), p.getProperty(IP, ""))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
   public Properties toProperties() {
-    Properties p1 = new Properties();
+    final Properties p1 = new Properties();
     if (name != null) {
       p1.put(NAME,name);
     }
-    SimpleStatus status = (SimpleStatus)getStatus();
+    final SimpleStatus status = (SimpleStatus)getStatus();
     p1.put(LOOKING, String.valueOf(status.isLooking()));
     p1.put(AWAY, String.valueOf(status.isAway()));
-    String profile = status.getProfile();
+    final String profile = status.getProfile();
     if (profile != null) {
       p1.put(PROFILE,profile);
+    }
+    final String client = status.getClient();
+    if (client != null) {
+      p1.put(CLIENT,client);
+    }
+    final String ip = status.getIp();
+    if (ip != null) {
+      p1.put(IP,ip);
     }
     Properties p = p1;
     p.put(ID,id);

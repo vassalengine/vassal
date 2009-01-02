@@ -18,6 +18,7 @@
  */
 package VASSAL.chat.node;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,18 +27,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 
+import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
 
 public class ServerNode extends Node {
-  private static final Logger logger =
-    Logger.getLogger(ServerNode.class.getName());
+  private static final Logger logger = Logger.getLogger(ServerNode.class.getName());
   private SendContentsTask sendContents;
 
   public ServerNode() {
     super(null, null, null);
     sendContents = new SendContentsTask();
     Timer t = new Timer();
-    t.schedule(sendContents,0,1000);
+    t.schedule(sendContents, 0, 1000);
   }
 
   public synchronized void forward(String senderPath, String msg) {
@@ -46,7 +47,7 @@ public class ServerNode extends Node {
   }
 
   public synchronized MsgSender getMsgSender(String path) {
-    Node[] target = new Node[] {this};
+    Node[] target = new Node[]{this};
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(path, '/');
     while (st.hasMoreTokens()) {
       String childId = st.nextToken();
@@ -75,7 +76,7 @@ public class ServerNode extends Node {
         for (; i < n; ++i) {
           Node child = target[i].getChild(childId);
           if (child != null) {
-            target = new Node[] {child};
+            target = new Node[]{child};
             break;
           }
         }
@@ -111,17 +112,7 @@ public class ServerNode extends Node {
   }
 
   protected synchronized void sendContents(Node module) {
-    logger.fine("Sending contents of " + module.getId()); //$NON-NLS-1$
-    Node[] players = module.getLeafDescendants();
-    Node[] rooms = module.getChildren();
-    String listCommand = Protocol.encodeListCommand(players);
-    module.send(listCommand);
-    logger.finer(listCommand);
-    String roomInfo = Protocol.encodeRoomsInfo(rooms);
-    module.send(roomInfo);
-    logger.finer(roomInfo);
-
-//    sendContents.markChanged(module);
+    sendContents.markChanged(module);
   }
 
   public synchronized void registerNode(String parentPath, Node newNode) {
@@ -161,8 +152,40 @@ public class ServerNode extends Node {
     }
   }
 
+  /**
+   * One client has requested to kick another out of a room. Validate that - Both players are in the same room - Kicker
+   * is the owner of the room
+   * 
+   * @param kickerId
+   *          Id of Kicking player
+   * @param kickeeId
+   *          Id of Player to be kicked
+   */
+  public synchronized void kick(PlayerNode kicker, String kickeeId) {
+    // Check the kicker owns the room he is in
+    final Node roomNode = kicker.getParent();
+    String roomOwnerId;
+    try {
+      roomOwnerId = new PropertiesEncoder(roomNode.getInfo()).getProperties().getProperty(NodeRoom.OWNER);
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+      return;
+    }
+    if (roomOwnerId == null || !roomOwnerId.equals(kicker.getId())) {
+      return;
+    }
+    // Check the kickee belongs to the same room
+    final Node kickeeNode = roomNode.getChild(kickeeId);
+    if (kickeeNode == null) {
+      return;
+    }
+    // Kick to the default room and tell them they have been kicked
+    final Node defaultRoomNode = roomNode.getParent().getChildren()[0];
+    move(kickeeNode, defaultRoomNode.getPath());
+  }
   private static class SendContentsTask extends TimerTask {
-// FIXME: should modules be wrapped by Collections.synchronizedMap()?
+    // FIXME: should modules be wrapped by Collections.synchronizedMap()?
     private Set<Node> modules = new HashSet<Node>();
 
     public void markChanged(Node module) {
@@ -173,11 +196,9 @@ public class ServerNode extends Node {
 
     public void run() {
       HashSet<Node> s = new HashSet<Node>();
-
       synchronized (modules) {
         s.addAll(modules);
       }
-
       for (Node module : s) {
         logger.fine("Sending contents of " + module.getId()); //$NON-NLS-1$
         Node[] players = module.getLeafDescendants();
@@ -189,7 +210,6 @@ public class ServerNode extends Node {
         module.send(roomInfo);
         logger.finer(roomInfo);
       }
-
       synchronized (modules) {
         modules.clear();
       }

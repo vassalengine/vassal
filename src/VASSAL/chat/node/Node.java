@@ -22,11 +22,13 @@
  */
 package VASSAL.chat.node;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
 
+import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -57,6 +59,15 @@ public class Node implements MsgSender {
     return info;
   }
 
+  public String getInfoProperty(String propName) {
+    try {
+      return new PropertiesEncoder(info).getProperties().getProperty(propName);
+    }
+    catch (IOException e) {
+      return null;
+    }
+  }
+  
   public void setInfo(String info) {
     this.info = info;
   }
@@ -224,7 +235,7 @@ public class Node implements MsgSender {
     synchronized (children) {
       SequenceEncoder se = new SequenceEncoder('/');
       List<Node> path = getPathList();
-      for (ListIterator<Node> i = path.listIterator(path.size()-1);
+      for (ListIterator<Node> i = path.listIterator(path.size());
            i.hasPrevious(); ) {
         se.append(i.previous().getId());
       }
