@@ -172,6 +172,10 @@ public class ArchiveWriter extends DataArchive {
     }
     localImages = null;
   }
+  
+  public void uncacheFile(String name) {
+    files.remove(name);
+  }
 
   /**
    * Copy a file from the user's filesystem to the archive.

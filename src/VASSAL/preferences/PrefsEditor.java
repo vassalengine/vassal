@@ -53,7 +53,7 @@ import VASSAL.tools.WriteErrorDialog;
 public class PrefsEditor {
   private JDialog dialog;
   private List<Configurer> options = new ArrayList<Configurer>();
-  private Map<Configurer,Object> savedValues;
+  private Map<Configurer, Object> savedValues;
   private List<Prefs> prefs;
   private JButton save, cancel;
   private JTabbedPane optionsTab;
@@ -63,10 +63,8 @@ public class PrefsEditor {
   private final JPanel buttonPanel = new JPanel();
 
   public PrefsEditor(ArchiveWriter archive) {
-
-    savedValues = new HashMap<Configurer,Object>();
+    savedValues = new HashMap<Configurer, Object>();
     this.archive = archive;
-
     prefs = new ArrayList<Prefs>();
     optionsTab = new JTabbedPane();
   }
@@ -76,14 +74,12 @@ public class PrefsEditor {
       dialog = new JDialog(parent, true);
       dialog.setTitle(Resources.getString("Prefs.preferences")); //$NON-NLS-1$
       dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
-      //Handle window closing correctly.
+      // Handle window closing correctly.
       dialog.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent we) {
           cancel();
         }
       });
-
       save = new JButton(Resources.getString(Resources.OK));
       save.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -96,12 +92,9 @@ public class PrefsEditor {
           cancel();
         }
       });
-
       buttonPanel.add(save);
       buttonPanel.add(cancel);
-      
-      dialog.setLayout(
-        new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
+      dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
       dialog.add(optionsTab);
       dialog.add(buttonPanel);
     }
@@ -120,8 +113,7 @@ public class PrefsEditor {
       if (setupDialog == null) {
         setupDialog = new JDialog((Frame) null, true);
         setupDialog.setTitle(Resources.getString("Prefs.initial_setup")); //$NON-NLS-1$
-        setupDialog.setLayout(
-          new BoxLayout(setupDialog.getContentPane(), BoxLayout.Y_AXIS));
+        setupDialog.setLayout(new BoxLayout(setupDialog.getContentPane(), BoxLayout.Y_AXIS));
         setupDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setupDialog.addComponentListener(new ComponentAdapter() {
           public void componentShown(ComponentEvent e) {
@@ -144,8 +136,7 @@ public class PrefsEditor {
       setupDialog.add(p);
       setupDialog.pack();
       Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-      setupDialog.setLocation(d.width / 2 - setupDialog.getSize().width / 2,
-                              d.height / 2 - setupDialog.getSize().height / 2);
+      setupDialog.setLocation(d.width / 2 - setupDialog.getSize().width / 2, d.height / 2 - setupDialog.getSize().height / 2);
       setupDialog.setVisible(true);
       setupDialog.removeAll();
     }
@@ -200,17 +191,17 @@ public class PrefsEditor {
 
   protected void save() {
     for (Configurer c : options) {
-      c.fireUpdate();
+      if ((savedValues.get(c) == null && c.getValue() != null) || !savedValues.get(c).equals(c.getValue())) {
+        c.fireUpdate();
+      }
       c.setFrozen(false);
     }
-
     try {
       write();
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, archive.getName());
     }
-
     dialog.setVisible(false);
   }
 
@@ -229,7 +220,7 @@ public class PrefsEditor {
       };
       // FIMXE: setting nmemonic from first letter could cause collisions in
       // some languages
-      editAction.putValue(Action.MNEMONIC_KEY, (int)Resources.getString("Prefs.edit_preferences").charAt(0));
+      editAction.putValue(Action.MNEMONIC_KEY, (int) Resources.getString("Prefs.edit_preferences").charAt(0));
     }
     return editAction;
   }
@@ -245,4 +236,3 @@ public class PrefsEditor {
     archive.close();
   }
 }
-
