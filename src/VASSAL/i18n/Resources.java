@@ -22,10 +22,12 @@ import java.awt.Component;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -70,6 +72,7 @@ public class Resources {
   ));
 
   protected static Locale locale = Locale.getDefault();
+  protected static String DATE_FORMAT = "{0,date}";
 
   static {
     // If the user has a resource bundle for their default language on their
@@ -324,5 +327,14 @@ public class Resources {
 
   public static Locale getLocale() {
     return locale;
+  }
+  
+  /**
+   * Return a standard formatted localised date
+   * @param date date to format
+   * @return formatted localized date
+   */
+  public static String formatDate(Date date) {
+    return new MessageFormat(DATE_FORMAT).format(new Object[] {date});
   }
 }

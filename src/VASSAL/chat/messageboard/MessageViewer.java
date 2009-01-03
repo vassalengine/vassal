@@ -59,8 +59,7 @@ public class MessageViewer extends JPanel {
       msgList.add(msg);
       Vector<String> cols = new Vector<String>();
       cols.addElement(msg.getSender());
-      cols.addElement(
-        Resources.getString(Resources.DATE_DISPLAY, msg.getDate()));
+      cols.addElement(Resources.formatDate(msg.getDate()));
       rows.addElement(cols);
     }
     model = new DefaultTableModel(rows,names);
