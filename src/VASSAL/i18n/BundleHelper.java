@@ -50,7 +50,15 @@ public class BundleHelper {
   }
 
   public String getString(String id, Object... args) {
-    return new MessageFormat(getString(id)).format(args);
+    try {
+      return new MessageFormat(getString(id)).format(args);
+    }
+    catch (IllegalArgumentException e) {
+      Logger.log("Illegal Message Format: " + id);
+    }
+    
+    // fallback: return the key
+    return id;
   }
 
   public ResourceBundle getResourceBundle() {
