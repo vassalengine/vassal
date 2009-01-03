@@ -27,6 +27,7 @@ Changes since beta6:
 
 A number of problems present in 3.1.0-beta6 are fixed in 3.1.0-beta7:
 
+* Bug 2476838: IllegalArgumentException in BundleHelper.getString()
 * Bug 2442887: Exception if no Layer levels and type new level name
 * Bug 2432774: ClassCastException: PrototypeDefinition$Config$Definer$Plain
     cannot be cast to VASSAL.counters.Decorator
@@ -43,6 +44,7 @@ A number of problems present in 3.1.0-beta6 are fixed in 3.1.0-beta7:
 * Bug 2315230: ConnectException in HttpRequestWrapper.doGet()
 * Bug 2296067: InvalidDnDOperationException in PieceMover.DragHandler
 * Bug 2225711: Fixed ConcurrentModificationException in SavedGameUpdater
+* Bug 2199683: NPE in GameState.addPiece()
 * Bug 2187303: IllegalArgumentException in SavedGameUpdaterDialog
 * Bug 2186983: EmptyStackException in ModuleManagerWindow.GameFolderInfo
 * Bug 2162266: NPE in HybridClient.setDelegate()
