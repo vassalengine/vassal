@@ -297,6 +297,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     if (r.getOwner().equals(me.getId())) {
       r.lock();
       sendRoomInfo(r);
+      propSupport.firePropertyChange(AVAILABLE_ROOMS, null, allRooms);
     }
   }
 
@@ -387,6 +388,14 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
         }
       }
       rooms[i] = new NodeRoom(roomNodes[i].getId(), players);
+      
+      // Lock room to start with. The ROOM_INFO message will unlock
+      // any rooms that are not locked. Prevents unwanted clients from
+      // connecting while room is in an undefined state.
+      if (! rooms[i].getName().equals(defaultRoomName)) {
+        rooms[i].lock();
+      }
+      
       try {
         if (roomNodes[i].getInfo() != null) {
           rooms[i].setInfo(new PropertiesEncoder(roomNodes[i].getInfo()).getProperties());
@@ -414,8 +423,10 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
       allRooms[0] = allRooms[defaultRoomIndex];
       allRooms[defaultRoomIndex] = swap;
     }
-    propSupport.firePropertyChange(ROOM, null, currentRoom);
-    propSupport.firePropertyChange(AVAILABLE_ROOMS, null, allRooms);
+    // Do not fire a PropertyChange request, The server will be following immediately
+    // with a Room List refresh which can cause Icons to flash unexpectedly.
+    // propSupport.firePropertyChange(ROOM, null, currentRoom);
+    // propSupport.firePropertyChange(AVAILABLE_ROOMS, null, allRooms);
   }
 
   public MessageBoard getMessageServer() {

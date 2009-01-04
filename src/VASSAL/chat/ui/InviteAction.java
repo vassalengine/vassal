@@ -51,11 +51,16 @@ public class InviteAction extends AbstractAction {
     if (target != null) {
       if (GameModule.getGameModule() != null) {
         final Room room = client.getRoom();
+        // Is this a locked room?
         if (room instanceof LockableRoom && ((LockableRoom) room).isLocked()) {
           if (room instanceof NodeRoom) {
-            final String owner = ((NodeRoom) room).getOwner();
-            if (owner.equals(client.getUserInfo().getId()) && !owner.equals(target.getId())) {
-              enabled = true;
+            // Is the target player in a different room?
+            if (!((NodeRoom) room).contains(target)) {
+              final String owner = ((NodeRoom) room).getOwner();
+              // Do I own this room and the target is not me?
+              if (owner.equals(client.getUserInfo().getId()) && !owner.equals(target.getId())) {
+                enabled = true;
+              }
             }
           }
         }
