@@ -106,6 +106,10 @@ public class NodeRoom extends SimpleRoom implements LockableRoom {
   public void lock() {
     locked = true;
   }
+  
+  public void toggleLock() {
+    locked = !locked;
+  }
 
   public boolean isLocked() {
     return locked;

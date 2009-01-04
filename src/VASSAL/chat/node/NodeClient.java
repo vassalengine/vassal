@@ -295,7 +295,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
 
   public void lockRoom(NodeRoom r) {
     if (r.getOwner().equals(me.getId())) {
-      r.lock();
+      r.toggleLock();
       sendRoomInfo(r);
       propSupport.firePropertyChange(AVAILABLE_ROOMS, null, allRooms);
     }

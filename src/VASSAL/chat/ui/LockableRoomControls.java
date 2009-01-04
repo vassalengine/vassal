@@ -109,8 +109,8 @@ public class LockableRoomControls extends RoomInteractionControlsInitializer {
     private NodeRoom target;
 
     public LockRoomAction(NodeRoom target, NodeClient client) {
-      super(Resources.getString("Chat.lock_room")); //$NON-NLS-1$
-      setEnabled(client.getMyInfo().getId().equals(target.getOwner()) && ! target.isLocked());      
+      super(target.isLocked() ? Resources.getString("Chat.unlock_room") : Resources.getString("Chat.lock_room")); //$NON-NLS-1$
+      setEnabled(client.getMyInfo().getId().equals(target.getOwner()));
       this.target = target;
       this.client = client;
     }
