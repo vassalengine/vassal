@@ -213,11 +213,22 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     @Override
     public Void doInBackground() throws InterruptedException, IOException {
+// FIXME: this should be in an abstract method and farmed out to subclasses
       // send some basic information to the log
-      if (lr.module != null)
+      if (lr.module != null) {
         Logger.log("-- Loading module file " + lr.module.getAbsolutePath());
-      if (lr.game != null)
+      }
+
+      if (lr.game != null) {
         Logger.log("-- Loading game file " + lr.game.getAbsolutePath());
+      }
+
+      if (lr.importFile != null) {
+        Logger.log("-- Importing module file " +
+          lr.importFile.getAbsolutePath());
+      }
+// end FIXME
+
 
       // set default heap setttings
       int initialHeap = DEFAULT_INITIAL_HEAP;
@@ -225,6 +236,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       String moduleName = null;
 
+// FIXME: this should be in an abstract method and farmed out to subclasses
       // find module-specific heap settings, if any
       if (lr.module != null) {
         final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
@@ -240,12 +252,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           moduleName = ((ModuleMetaData) data).getName();
 
           // log the module name
-          if (lr.mode == LaunchRequest.Mode.IMPORT) {
-            Logger.log("-- Importing module " + moduleName);
-          }
-          else {
-            Logger.log("-- Loading module " + moduleName);
-          }
+          Logger.log("-- Loading module " + moduleName);
 
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
@@ -254,7 +261,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           final String iheap = p.getStoredValue(GlobalOptions.INITIAL_HEAP);
           if (iheap != null) {
             try {
-              initialHeap = Integer.parseInt(iheap);
+              initialHeap = Integer.parseInt(iheap.toString());
               if (initialHeap <= 0) throw new NumberFormatException();
             }
             catch (NumberFormatException ex) {
@@ -269,7 +276,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           final String mheap = p.getStoredValue(GlobalOptions.MAXIMUM_HEAP);
           if (mheap != null) {
             try {
-              maximumHeap = Integer.parseInt(mheap);
+              maximumHeap = Integer.parseInt(mheap.toString());
               if (maximumHeap <= 0) throw new NumberFormatException();
             }
             catch (NumberFormatException ex) {
@@ -280,15 +287,49 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             }
           }
         }
+      }
+      else if (lr.importFile != null) {
+        final Prefs p = Prefs.getGlobalPrefs();
 
-        // make sure that the initial heap is sane
-        if (initialHeap > maximumHeap) {
-          WarningDialog.show("Warning.initial_gt_maximum_heap",
-             DEFAULT_INITIAL_HEAP, DEFAULT_MAXIMUM_HEAP
-          );
-
-          initialHeap = maximumHeap / 2;
+        // read initial heap size, if it exists
+        final Object iheap = p.getValue(GlobalOptions.INITIAL_HEAP);
+        if (iheap != null) {
+          try {
+            initialHeap = Integer.parseInt(iheap.toString());
+            if (initialHeap <= 0) throw new NumberFormatException();
+          }
+          catch (NumberFormatException ex) {
+            WarningDialog.show(
+              "Warning.bad_initial_heap", DEFAULT_INITIAL_HEAP);
+ 
+            initialHeap = DEFAULT_INITIAL_HEAP;
+          }
         }
+
+        // read maximum heap size, if it exists
+        final Object mheap = p.getStoredValue(GlobalOptions.MAXIMUM_HEAP);
+        if (mheap != null) {
+          try {
+            maximumHeap = Integer.parseInt(mheap.toString());
+            if (maximumHeap <= 0) throw new NumberFormatException();
+          }
+          catch (NumberFormatException ex) {
+            WarningDialog.show(
+              "Warning.bad_maximum_heap", DEFAULT_MAXIMUM_HEAP);
+
+            maximumHeap = DEFAULT_MAXIMUM_HEAP;
+          }
+        }
+      }
+// end FIXME
+
+      // make sure that the initial heap is sane
+      if (initialHeap > maximumHeap) {
+        WarningDialog.show("Warning.initial_gt_maximum_heap",
+           DEFAULT_INITIAL_HEAP, DEFAULT_MAXIMUM_HEAP
+        );
+
+        initialHeap = maximumHeap / 2;
       }
 
       // create a socket for communicating which the child process
@@ -314,10 +355,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 //        al.add("-Xdock:icon=" + );
       }
 
-      // Disable the 2D to Directx3D pipeline?
-      Boolean disableD3d = (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_D3D);
-      if (Boolean.TRUE.equals(disableD3d)) {
-        al.add("-Dsun.java2d.d3d=false");
+      if (Info.isWindows()) {
+        // Disable the 2D to Direct3D pipeline?
+        final Boolean disableD3d =
+          (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_D3D);
+        if (Boolean.TRUE.equals(disableD3d)) {
+          al.add("-Dsun.java2d.d3d=false");
+        }
       }
       
       al.add(entryPoint);

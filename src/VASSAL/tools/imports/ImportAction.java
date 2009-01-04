@@ -44,7 +44,6 @@ import VASSAL.tools.imports.adc2.ADC2Module;
 import VASSAL.tools.imports.adc2.ADC2Utils;
 import VASSAL.tools.imports.adc2.MapBoard;
 import VASSAL.tools.imports.adc2.SymbolSet;
-import VASSAL.tools.logging.Logger;
 
 /**
  * Action for importing foreign modules into VASSAL.
@@ -78,15 +77,15 @@ public final class ImportAction extends EditModuleAction {
     ADC2Utils.SET_EXTENSION,
   };
   
-    private static final String[] DESCRIPTIONS = {
-      ADC2Utils.MODULE_DESCRIPTION,
-      ADC2Utils.MAP_DESCRIPTION,
-      ADC2Utils.SET_DESCRIPTION,
-    };
+  private static final String[] DESCRIPTIONS = {
+    ADC2Utils.MODULE_DESCRIPTION,
+    ADC2Utils.MAP_DESCRIPTION,
+    ADC2Utils.SET_DESCRIPTION,
+  };
 
-    /*
-     * These classes must descend from Importer.
-     */
+  /*
+   * These classes must descend from Importer.
+   */
     
   private static final Class<?>[] IMPORTERS = { 
     ADC2Module.class,
@@ -169,8 +168,6 @@ public final class ImportAction extends EditModuleAction {
       throw new FileFormatException("Unrecognized file format");
     }
     
-    Logger.log("-- Importing file " + f.getPath());
-  
     final GameModule module = new BasicModule(new ArchiveWriter((String) null));
     GameModule.init(module);
 

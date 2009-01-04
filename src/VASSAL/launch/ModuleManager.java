@@ -42,6 +42,7 @@ import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.LongConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
@@ -67,6 +68,9 @@ public class ModuleManager {
   private static final String MODULE_MANAGER_KEY = "moduleManagerKey";
 
   private static final String NEXT_VERSION_CHECK = "nextVersionCheck";
+
+  public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
+  public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
 
   private static int port;
   private static long key;
@@ -267,10 +271,12 @@ public class ModuleManager {
     // ModuleManagerWindow.getInstance() != null now, so listen on the socket
     new Thread(new SocketListener(serverSocket)).start();
 
+    final Prefs globalPrefs = Prefs.getGlobalPrefs();
+
     // determine when we should next check on the current version of VASSAL
     final LongConfigurer nextVersionCheckConfig =
       new LongConfigurer(NEXT_VERSION_CHECK, null, -1L);
-    Prefs.getGlobalPrefs().addOption(null, nextVersionCheckConfig);
+    globalPrefs.addOption(null, nextVersionCheckConfig);
 
     long nextVersionCheck = nextVersionCheckConfig.getLongValue(-1L);
     if (nextVersionCheck < System.currentTimeMillis()) {
@@ -290,6 +296,23 @@ public class ModuleManager {
     }
 
     nextVersionCheckConfig.setValue(nextVersionCheck);
+
+// FIXME: the importer heap size configurers don't belong here
+    // the initial heap size for the module importer
+    final IntConfigurer initHeapConf = new IntConfigurer(
+      INITIAL_HEAP,
+      Resources.getString("GlobalOptions.initial_heap"),  //$NON-NLS-1$
+      Integer.valueOf(256)
+    );
+    globalPrefs.addOption("Importer", initHeapConf);
+
+    // the maximum heap size for the module importer
+    final IntConfigurer maxHeapConf = new IntConfigurer(
+      MAXIMUM_HEAP,
+      Resources.getString("GlobalOptions.maximum_heap"),  //$NON-NLS-1$
+      Integer.valueOf(512)
+    );
+    globalPrefs.addOption("Importer", maxHeapConf);
   }
  
   private class SocketListener implements Runnable {

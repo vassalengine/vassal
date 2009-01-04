@@ -242,7 +242,8 @@ public class Prefs implements Closeable {
   }
   
   /**
-   * Initialize visible Global Preferences that are shared between the Module Manager and the Editor/Player.
+   * Initialize visible Global Preferences that are shared between the
+   * Module Manager and the Editor/Player.
    * 
    */
   public static void initSharedGlobalPrefs() {
@@ -253,17 +254,17 @@ public class Prefs implements Closeable {
       final BooleanConfigurer d3dConf = new BooleanConfigurer(
         DISABLE_D3D,
         Resources.getString("Prefs.disable_d3d"),
-        Boolean.FALSE);
+        Boolean.FALSE
+      );
       globalPrefs.addOption(d3dConf);
     }
     
     final BooleanConfigurer wizardConf = new BooleanConfigurer(
-        WizardSupport.WELCOME_WIZARD_KEY,
-        Resources.getString("WizardSupport.ShowWizard"),
-        Boolean.TRUE
-      );
+      WizardSupport.WELCOME_WIZARD_KEY,
+      Resources.getString("WizardSupport.ShowWizard"),
+      Boolean.TRUE
+    );
 
-    Prefs.getGlobalPrefs().addOption(wizardConf);
-    
+    globalPrefs.addOption(wizardConf);
   }
 }
