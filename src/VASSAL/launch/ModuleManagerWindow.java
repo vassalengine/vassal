@@ -212,6 +212,8 @@ public class ModuleManagerWindow extends JFrame {
     fileMenu.add(mm.addKey("Main.edit_module"));
     fileMenu.add(mm.addKey("Main.new_module"));
     fileMenu.add(mm.addKey("Editor.import_module"));
+    fileMenu.addSeparator();
+    fileMenu.add(mm.addKey("Prefs.edit_preferences"));
 
     if (!Info.isMacOSX()) {
       fileMenu.addSeparator();
@@ -222,6 +224,10 @@ public class ModuleManagerWindow extends JFrame {
     final MenuProxy toolsMenu =
       new MenuProxy(Resources.getString("General.tools"));
    
+    // Initialize Global Preferences
+    Prefs.getGlobalPrefs().getEditor().initDialog(this);
+    Prefs.initSharedGlobalPrefs();
+    
     final BooleanConfigurer serverStatusConfig =
       new BooleanConfigurer(SHOW_STATUS_KEY, null, Boolean.FALSE);
     Prefs.getGlobalPrefs().addOption(null, serverStatusConfig); 
@@ -271,6 +277,7 @@ public class ModuleManagerWindow extends JFrame {
     mm.addAction("Main.new_module", new Editor.NewModuleLaunchAction(this));
     mm.addAction("Editor.import_module",
       new Editor.PromptImportLaunchAction(this));
+    mm.addAction("Prefs.edit_preferences", Prefs.getGlobalPrefs().getEditor().getEditAction());
     mm.addAction("General.quit", shutDownAction);
 
     mm.addAction("Editor.ModuleEditor.translate_vassal",

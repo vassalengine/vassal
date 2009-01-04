@@ -145,17 +145,11 @@ public class WizardSupport {
    * 
    */
   public void showWelcomeWizard() {
-    BooleanConfigurer wizardConf = new BooleanConfigurer(
-      "welcomeWizard",
-      Resources.getString("WizardSupport.ShowWizard"),
-      Boolean.TRUE
-    );
-
-    Prefs.getGlobalPrefs().addOption(wizardConf);
 
     final GameModule g = GameModule.getGameModule();
-
-    if (!wizardConf.booleanValue()) {
+    final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WELCOME_WIZARD_KEY);
+    
+    if (! Boolean.TRUE.equals(showWizard)) {
       g.getFrame().setVisible(true);
 
       // prompt for username and password if wizard is off 

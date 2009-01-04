@@ -128,6 +128,7 @@ public class BasicModule extends GameModule {
     }
 
     initIdentityPreferences();
+    Prefs.initSharedGlobalPrefs();
     initGameState();
     initLogger();
     initServer();

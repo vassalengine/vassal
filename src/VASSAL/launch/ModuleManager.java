@@ -88,7 +88,7 @@ public class ModuleManager {
     // set up security key so other users can't talk with our socket
     final LongConfigurer keyConfig =
       new LongConfigurer(MODULE_MANAGER_KEY, null, -1L);
-    Prefs.getGlobalPrefs().addOption(keyConfig);
+    Prefs.getGlobalPrefs().addOption(null, keyConfig);
  
     key = keyConfig.getLongValue(-1L);
     if (key == -1) {
@@ -107,7 +107,7 @@ public class ModuleManager {
     // set up prefs for port to listen on
     final IntConfigurer portConfig =
       new IntConfigurer(MODULE_MANAGER_PORT, null, -1); 
-    Prefs.getGlobalPrefs().addOption(portConfig);
+    Prefs.getGlobalPrefs().addOption(null, portConfig);
  
     // set port from command-line if specified; else try the prefs 
     if (lr.port >= 0) {
@@ -270,7 +270,7 @@ public class ModuleManager {
     // determine when we should next check on the current version of VASSAL
     final LongConfigurer nextVersionCheckConfig =
       new LongConfigurer(NEXT_VERSION_CHECK, null, -1L);
-    Prefs.getGlobalPrefs().addOption(nextVersionCheckConfig);
+    Prefs.getGlobalPrefs().addOption(null, nextVersionCheckConfig);
 
     long nextVersionCheck = nextVersionCheckConfig.getLongValue(-1L);
     if (nextVersionCheck < System.currentTimeMillis()) {

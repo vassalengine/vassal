@@ -35,6 +35,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import VASSAL.Info;
+import VASSAL.build.module.WizardSupport;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
@@ -50,6 +52,7 @@ import VASSAL.tools.io.IOUtils;
 public class Prefs implements Closeable {
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; // $NON_NLS-1$
+  public static final String DISABLE_D3D = "disableD3d";
   private static Prefs globalPrefs;
   private Map<String, Configurer> options = new HashMap<String, Configurer>();
   private Properties storedValues = new Properties();
@@ -236,5 +239,31 @@ public class Prefs implements Closeable {
       globalPrefs.addOption(null, c);
     }
     return globalPrefs;
+  }
+  
+  /**
+   * Initialize visible Global Preferences that are shared between the Module Manager and the Editor/Player.
+   * 
+   */
+  public static void initSharedGlobalPrefs() {
+    getGlobalPrefs();
+    
+    // Option to disable D3D pipeline
+    if (Info.isWindows()) {
+      final BooleanConfigurer d3dConf = new BooleanConfigurer(
+        DISABLE_D3D,
+        Resources.getString("Prefs.disable_d3d"),
+        Boolean.FALSE);
+      globalPrefs.addOption(d3dConf);
+    }
+    
+    final BooleanConfigurer wizardConf = new BooleanConfigurer(
+        WizardSupport.WELCOME_WIZARD_KEY,
+        Resources.getString("WizardSupport.ShowWizard"),
+        Boolean.TRUE
+      );
+
+    Prefs.getGlobalPrefs().addOption(wizardConf);
+    
   }
 }

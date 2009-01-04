@@ -314,6 +314,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 //        al.add("-Xdock:icon=" + );
       }
 
+      // Disable the 2D to Directx3D pipeline?
+      Boolean disableD3d = (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_D3D);
+      if (Boolean.TRUE.equals(disableD3d)) {
+        al.add("-Dsun.java2d.d3d=false");
+      }
+      
       al.add(entryPoint);
 
       final String[] args = al.toArray(new String[al.size()]);
