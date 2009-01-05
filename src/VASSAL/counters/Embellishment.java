@@ -60,11 +60,13 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
+import VASSAL.tools.logging.Logger;
 
 /**
  * The "Layer" trait. Contains a list of images that the user may cycle through.
@@ -571,24 +573,40 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   public Rectangle getCurrentImageBounds() {
-    if (value > 0) {
-      final int i = value - 1;
+    try {
+      if (value > 0) {
+        final int i = value - 1;
 
-      if (size[i] == null) {
-        if (imagePainter[i] != null) {
-          size[i] = ImageUtils.getBounds(imagePainter[i].getImageSize());
-          size[i].translate(xOff, yOff);
+        if (size[i] == null) {
+          if (imagePainter[i] != null) {
+            size[i] = ImageUtils.getBounds(imagePainter[i].getImageSize());
+            size[i].translate(xOff, yOff);
+          }
+          else {
+            size[i] = new Rectangle();
+          }
         }
-        else {
-          size[i] = new Rectangle();
-        }
+ 
+        return size[i];
       }
-
-      return size[i];
+      else {
+        return new Rectangle();
+      }
     }
-    else {
-      return new Rectangle();
+    catch (ArrayIndexOutOfBoundsException e) {
+      // FIXME: Bug [2432256] diagnostics
+      Logger.log("Bug [2432256] Seen");      
+      Logger.log("Piece Name = "+getProperty(BasicPiece.BASIC_NAME));
+      Logger.log("Embellishment name = "+name);
+      Logger.log("nValues = "+nValues);
+      Logger.log("value = "+value);
+      Logger.log("size of size = "+(size == null ? "null" : size.length));
+      Logger.log("size of imagePainter = "+(imagePainter == null ? "null" : imagePainter.length));
+      Logger.log("size of imageName = "+(imageName == null ? "null" : imageName.length));
+      Logger.log("size of commonName = "+(commonName == null ? "null" : commonName.length));
+      ErrorDialog.bug(e); 
     }
+    return new Rectangle();
   }
   
   /**
