@@ -58,7 +58,7 @@ public class KickAction extends AbstractAction {
             if (((NodeRoom) room).contains(target)) {
               final String owner = ((NodeRoom) room).getOwner();
               // Do I own this room and the target is not me?
-              if (owner.equals(client.getUserInfo().getId()) && !owner.equals(target.getId())) {
+              if (owner != null && owner.equals(client.getUserInfo().getId()) && !owner.equals(target.getId())) {
                 enabled = true;
               }
             }

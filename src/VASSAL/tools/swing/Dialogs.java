@@ -110,10 +110,25 @@ public class Dialogs {
     int messageType,
     Icon icon,
     int optionType,
-    Object key)
+    Object key) {
+      return showConfirmDialog(parent, title, heading, message, messageType,
+                          icon, optionType, key, Resources.getString("Dialogs.disable"));
+                          
+  }
+  
+  public static int showConfirmDialog(
+      Component parent,
+      String title,
+      String heading,
+      String message,
+      int messageType,
+      Icon icon,
+      int optionType,
+      Object key,
+      String disableMsg)
   {
     final Object o = showDialog(parent, title, buildContents(heading, message),
-      messageType, icon, optionType, null, null, key);
+      messageType, icon, optionType, null, null, key, disableMsg);
 
     if (o == null || !(o instanceof Integer))
       return JOptionPane.CLOSED_OPTION;
@@ -130,7 +145,23 @@ public class Dialogs {
     int optionType,
     Object[] options,
     Object initialValue,
-    Object key)
+    Object key) {
+      return showDialog(parent, title, content, messageType, icon, optionType,
+                    options, initialValue, key, Resources.getString("Dialogs.disable"));
+  }
+  
+  
+  public static Object showDialog(
+      Component parent,
+      String title,
+      Component content,
+      int messageType,
+      Icon icon,
+      int optionType,
+      Object[] options,
+      Object initialValue,
+      Object key,
+      String disableMsg)
   {
     // set up the "don't show again" check box, if applicable
     final JCheckBox disableCheck;
@@ -138,7 +169,7 @@ public class Dialogs {
     if (key != null) {
       if (DialogUtils.isDisabled(key)) return null;
 
-      disableCheck = new JCheckBox(Resources.getString("Dialogs.disable"));
+      disableCheck = new JCheckBox(disableMsg == null ? Resources.getString("Dialogs.disable") : disableMsg);
 
       final JPanel panel = new JPanel();
       final GroupLayout layout = new GroupLayout(panel);

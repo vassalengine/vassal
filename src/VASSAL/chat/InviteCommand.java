@@ -61,7 +61,16 @@ public class InviteCommand extends Command {
   
   protected void executeCommand() {
     if (client instanceof NodeClient) {
-      int i = Dialogs.showConfirmDialog(GameModule.getGameModule().getFrame(), null, null, Resources.getString("Chat.invitation", player, room), JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
+      final int i = Dialogs.showConfirmDialog(
+            GameModule.getGameModule().getFrame(), 
+            "",
+            "",
+            Resources.getString("Chat.invitation", player, room), 
+            JOptionPane.QUESTION_MESSAGE, 
+            null, 
+            JOptionPane.YES_NO_OPTION,
+            "Invite"+playerId, 
+            Resources.getString("Chat.ignore_invitation"));
       if (i == 0) {
         ((NodeClient) client).doInvite(playerId, room);
       }
