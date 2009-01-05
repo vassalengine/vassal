@@ -45,12 +45,18 @@ A number of problems present in 3.1.0-beta6 are fixed in 3.1.0-beta7:
 * Bug 2315230: ConnectException in HttpRequestWrapper.doGet()
 * Bug 2296067: InvalidDnDOperationException in PieceMover.DragHandler
 * Bug 2225711: Fixed ConcurrentModificationException in SavedGameUpdater
+* Bug 2219448: Can Synchronize with players in Locked Rooms
 * Bug 2199683: NPE in GameState.addPiece()
 * Bug 2187303: IllegalArgumentException in SavedGameUpdaterDialog
 * Bug 2186983: EmptyStackException in ModuleManagerWindow.GameFolderInfo
 * Bug 2162266: NPE in HybridClient.setDelegate()
 * Bug 2129550: UnknownHostException in HttpRequestWrapper.doGet()
 * Bug: Canonicalize $0 in case VASSAL.sh is being invoked via a symbolic link
+
+New features:
+
+* Importer heap settings in Preferences in the Module Manager
+* Invite, kick players from locked rooms
 
 Other changes:
 
