@@ -62,15 +62,18 @@ public class InviteCommand extends Command {
   protected void executeCommand() {
     if (client instanceof NodeClient) {
       final int i = Dialogs.showConfirmDialog(
-            GameModule.getGameModule().getFrame(), 
-            "",
-            "",
-            Resources.getString("Chat.invitation", player, room), 
-            JOptionPane.QUESTION_MESSAGE, 
-            null, 
-            JOptionPane.YES_NO_OPTION,
-            "Invite"+playerId, 
-            Resources.getString("Chat.ignore_invitation"));
+        GameModule.getGameModule().getFrame(),
+// FIXME: should have title, possibly heading 
+        "",
+        "",
+        Resources.getString("Chat.invitation", player, room), 
+        JOptionPane.QUESTION_MESSAGE, 
+        null, 
+        JOptionPane.YES_NO_OPTION,
+        "Invite"+playerId, 
+        Resources.getString("Chat.ignore_invitation")
+      );
+ 
       if (i == 0) {
         ((NodeClient) client).doInvite(playerId, room);
       }

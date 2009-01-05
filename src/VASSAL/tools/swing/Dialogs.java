@@ -31,7 +31,6 @@ import javax.swing.JOptionPane;
 import org.jdesktop.layout.GroupLayout;
 import org.jdesktop.layout.LayoutStyle;
 
-import VASSAL.i18n.Resources;
 import VASSAL.tools.DialogUtils;
 
 /**
@@ -59,9 +58,11 @@ public class Dialogs {
     String heading,
     String message,
     int messageType,
-    Object key)
+    Object key,
+    String disableMsg)
   {
-    showMessageDialog(parent, title, heading, message, messageType, null, key); 
+    showMessageDialog(parent, title, heading, message,
+                      messageType, null, key, disableMsg); 
   }
 
   public static void showMessageDialog(
@@ -71,10 +72,11 @@ public class Dialogs {
     String message,
     int messageType,
     Icon icon,
-    Object key)
+    Object key,
+    String disableMsg)
   {
     showDialog(parent, title, buildContents(heading, message), messageType,
-               icon, JOptionPane.DEFAULT_OPTION, null, null, key);
+               icon, JOptionPane.DEFAULT_OPTION, null, null, key, disableMsg);
   }
 
   public static int showConfirmDialog(
@@ -86,7 +88,7 @@ public class Dialogs {
     int optionType)
   {
     return showConfirmDialog(parent, title, heading, message,
-                             messageType, null, optionType, null);
+                             messageType, null, optionType, null, null);
   }
 
   public static int showConfirmDialog(
@@ -96,26 +98,13 @@ public class Dialogs {
     String message,
     int messageType,
     int optionType,
-    Object key)
+    Object key,
+    String disableMsg)
   {
-    return showConfirmDialog(parent, title, heading, message,
-                             messageType, null, optionType, key);
+    return showConfirmDialog(parent, title, heading, message, messageType,
+                             null, optionType, key, disableMsg);
   }
 
-  public static int showConfirmDialog(
-    Component parent,
-    String title,
-    String heading,
-    String message,
-    int messageType,
-    Icon icon,
-    int optionType,
-    Object key) {
-      return showConfirmDialog(parent, title, heading, message, messageType,
-                          icon, optionType, key, Resources.getString("Dialogs.disable"));
-                          
-  }
-  
   public static int showConfirmDialog(
       Component parent,
       String title,
@@ -137,21 +126,6 @@ public class Dialogs {
   }
 
   public static Object showDialog(
-    Component parent,
-    String title,
-    Component content,
-    int messageType,
-    Icon icon,
-    int optionType,
-    Object[] options,
-    Object initialValue,
-    Object key) {
-      return showDialog(parent, title, content, messageType, icon, optionType,
-                    options, initialValue, key, Resources.getString("Dialogs.disable"));
-  }
-  
-  
-  public static Object showDialog(
       Component parent,
       String title,
       Component content,
@@ -169,7 +143,7 @@ public class Dialogs {
     if (key != null) {
       if (DialogUtils.isDisabled(key)) return null;
 
-      disableCheck = new JCheckBox(disableMsg == null ? Resources.getString("Dialogs.disable") : disableMsg);
+      disableCheck = new JCheckBox(disableMsg);
 
       final JPanel panel = new JPanel();
       final GroupLayout layout = new GroupLayout(panel);
@@ -268,7 +242,8 @@ public class Dialogs {
       "This Is the Header",
       loremIpsum,
       JOptionPane.INFORMATION_MESSAGE,
-      Boolean.TRUE 
+      Boolean.TRUE,
+      "Don't show this again"
     );
 
     showMessageDialog(
@@ -277,7 +252,8 @@ public class Dialogs {
       "This Is the Header",
       loremIpsum,
       JOptionPane.INFORMATION_MESSAGE,
-      Boolean.TRUE 
+      Boolean.TRUE, 
+      "Don't show this again"
     );
 
     showConfirmDialog(

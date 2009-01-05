@@ -91,8 +91,7 @@ public class ProblemDialog {
           title,
           heading,
           message,
-          messageType, 
-          null
+          messageType
         );
       }
     });
@@ -160,7 +159,8 @@ public class ProblemDialog {
           heading,
           message,
           messageType, 
-          key 
+          key,
+          Resources.getString("Dialogs.disable") 
         );
       }
     });
