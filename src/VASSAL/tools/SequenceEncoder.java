@@ -117,19 +117,20 @@ public class SequenceEncoder {
   }
 
   private void appendEscapedString(String s) {
+    final String ss = (s == null ? "" : s);
     int begin = 0;
-    int end = s.indexOf(delimit);
+    int end = ss.indexOf(delimit);
     int length = buffer.length();
 
     while (begin <= end) {
-      buffer.append(s.substring(begin, end)).append('\\');
+      buffer.append(ss.substring(begin, end)).append('\\');
       begin = end;
-      end = s.indexOf(delimit, end + 1);
+      end = ss.indexOf(delimit, end + 1);
     }
-    buffer.append(s.substring(begin));
-    if (s.endsWith("\\")
-        || (s.startsWith("\'")
-        && s.endsWith("\'"))) {
+    buffer.append(ss.substring(begin));
+    if (ss.endsWith("\\")
+        || (ss.startsWith("\'")
+        && ss.endsWith("\'"))) {
       buffer.insert(length, "'").append("'");
     }
   }
