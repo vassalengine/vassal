@@ -29,6 +29,8 @@ public class SimpleStatus implements PlayerStatus {
   private String profile;
   private String client;
   private String ip; 
+  private String moduleVersion;
+  private String crc;
  
 
   public SimpleStatus() {
@@ -36,19 +38,17 @@ public class SimpleStatus implements PlayerStatus {
   }
 
   public SimpleStatus(boolean looking, boolean away, String profile) {
-    this(looking, away, profile, "");
+    this(looking, away, profile, "", "", "", "");
   }
   
-  public SimpleStatus(boolean looking, boolean away, String profile, String client) {
-    this(looking, away, profile, client, "");
-  }
-  
-  public SimpleStatus(boolean looking, boolean away, String profile, String client, String ip) {
+  public SimpleStatus(boolean looking, boolean away, String profile, String client, String ip, String module, String crc) {
     this.looking = looking;
     this.away = away;
     this.profile = profile;
     this.client = client;
     this.ip = ip;
+    this.moduleVersion = module;
+    this.crc = crc;
   }
 
   public boolean isAway() {
@@ -69,5 +69,13 @@ public class SimpleStatus implements PlayerStatus {
 
   public String getIp() {
     return ip;
+  }
+  
+  public String getModuleVersion() {
+    return moduleVersion;
+  }
+  
+  public String getCrc() {
+    return crc;
   }
 }

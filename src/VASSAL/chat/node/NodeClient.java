@@ -129,7 +129,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
       public void propertyChange(PropertyChangeEvent evt) {
         SimplePlayer p = (SimplePlayer) getUserInfo();
         SimpleStatus s = (SimpleStatus) p.getStatus();
-        s = new SimpleStatus(s.isLooking(), s.isAway(), (String) evt.getNewValue(), s.getClient(), s.getIp());
+        s = new SimpleStatus(s.isLooking(), s.isAway(), (String) evt.getNewValue(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc());
         p.setStatus(s);
         setUserInfo(p);
       }
@@ -465,16 +465,24 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     messageBoardControls.initializeControls(controls);
     roomControls.initializeControls(controls);
     serverStatusControls.initializeControls(controls);
-    GameModule.getGameModule().addCommandEncoder(synchEncoder);
-    GameModule.getGameModule().addCommandEncoder(privateChatEncoder);
-    GameModule.getGameModule().addCommandEncoder(soundEncoder);
-    GameModule.getGameModule().addCommandEncoder(inviteEncoder);
-    me.setName((String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
-    GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).addPropertyChangeListener(nameChangeListener);
+    final GameModule g = GameModule.getGameModule();
+    g.addCommandEncoder(synchEncoder);
+    g.addCommandEncoder(privateChatEncoder);
+    g.addCommandEncoder(soundEncoder);
+    g.addCommandEncoder(inviteEncoder);
+    me.setName((String) g.getPrefs().getValue(GameModule.REAL_NAME));
+    g.getPrefs().getOption(GameModule.REAL_NAME).addPropertyChangeListener(nameChangeListener);
     SimpleStatus s = (SimpleStatus) me.getStatus();
-    s = new SimpleStatus(s.isLooking(), s.isAway(), (String) GameModule.getGameModule().getPrefs().getValue(GameModule.PERSONAL_INFO), Info.getVersion(), s.getIp());
+    s = new SimpleStatus(
+              s.isLooking(), 
+              s.isAway(), 
+              (String) g.getPrefs().getValue(GameModule.PERSONAL_INFO), 
+              Info.getVersion(), 
+              s.getIp(), 
+              g.getGameVersion() + ((g.getArchiveWriter() == null) ? "" : " (Editing)"), 
+              "Crc");
     me.setStatus(s);
-    GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).addPropertyChangeListener(profileChangeListener);
+    g.getPrefs().getOption(GameModule.PERSONAL_INFO).addPropertyChangeListener(profileChangeListener);
     controls.getRoomTree().setCellRenderer(new LockableRoomTreeRenderer());
   }
 

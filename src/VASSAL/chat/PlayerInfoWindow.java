@@ -55,6 +55,19 @@ public class PlayerInfoWindow extends JDialog {
     b.add(tf);
     add(b);
     
+    final String moduleVersion = ((SimpleStatus)p.getStatus()).getModuleVersion();
+    if (moduleVersion != null && moduleVersion.length() > 0) {
+      b = Box.createHorizontalBox();
+      tf = new JTextField(moduleVersion.length());
+      tf.setText(moduleVersion);
+      tf.setEditable(false);
+      tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
+                                             tf.getPreferredSize().height));
+      b.add(new JLabel(Resources.getString("Chat.module_version"))); //$NON-NLS-1$
+      b.add(tf);
+      add(b);
+    }   
+    
     final String ip = ((SimpleStatus)p.getStatus()).getIp();
     if (ip != null && ip.length() > 0) {
       b = Box.createHorizontalBox();

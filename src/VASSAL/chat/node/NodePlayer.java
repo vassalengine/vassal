@@ -60,11 +60,20 @@ public class NodePlayer extends SimplePlayer {
   public static final String PROFILE = "profile"; //$NON-NLS-1$
   public static final String CLIENT = "client"; //$NON-NLS-1$
   public static final String IP = "ip"; //$NON-NLS-1$
+  public static final String MODULE_VERSION = "moduleVersion"; //$NON-NLS-1$
+  public static final String CRC = "crc"; //$NON-NLS-1$
 
   public void setInfo(Properties p) {
     name = p.getProperty(NAME,"???"); //$NON-NLS-1$
     id = p.getProperty(ID,id);
-    setStatus(new SimpleStatus("true".equals(p.getProperty(LOOKING)),"true".equals(p.getProperty(AWAY)),p.getProperty(PROFILE,""), p.getProperty(CLIENT, ""), p.getProperty(IP, ""))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    setStatus(new SimpleStatus(
+                    "true".equals(p.getProperty(LOOKING)), //$NON-NLS-1$
+                    "true".equals(p.getProperty(AWAY)), //$NON-NLS-1$
+                    p.getProperty(PROFILE,""), //$NON-NLS-1$
+                    p.getProperty(CLIENT, ""), //$NON-NLS-1$
+                    p.getProperty(IP, ""), //$NON-NLS-1$
+                    p.getProperty(MODULE_VERSION, ""), //$NON-NLS-1$
+                    p.getProperty(CRC, ""))); //$NON-NLS-1$
   }
 
   public Properties toProperties() {
@@ -86,6 +95,14 @@ public class NodePlayer extends SimplePlayer {
     final String ip = status.getIp();
     if (ip != null) {
       p1.put(IP,ip);
+    }
+    final String moduleVersion = status.getModuleVersion();
+    if (moduleVersion != null) {
+      p1.put(MODULE_VERSION,moduleVersion);
+    }
+    final String crc = status.getCrc();
+    if (ip != null) {
+      p1.put(CRC,crc);
     }
     Properties p = p1;
     p.put(ID,id);
