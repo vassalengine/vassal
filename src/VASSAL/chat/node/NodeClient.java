@@ -25,7 +25,6 @@ import java.util.Properties;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
-import VASSAL.chat.Base64;
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Compressor;
@@ -63,6 +62,7 @@ import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.Base64;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
 

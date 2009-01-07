@@ -1,4 +1,4 @@
-package VASSAL.chat;
+package VASSAL.tools;
 
 /**
  * <p>Encodes and decodes to and from Base64 notation.</p>
