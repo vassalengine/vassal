@@ -75,6 +75,7 @@ public class VassalVersionTokenizer implements VersionTokenizer {
     tags.put("beta4", 4266);
     tags.put("beta5", 4409);
     tags.put("beta6", 4577);
+    tags.put("beta6", 4767);
   }
 
   /**

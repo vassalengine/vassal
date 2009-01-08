@@ -27,8 +27,10 @@ Changes since beta6:
 
 A number of problems present in 3.1.0-beta6 are fixed in 3.1.0-beta7:
 
+* Bug 2493325: Don't add Preferences to Module Manager File menu on MacOS X
 * Bug 2486596: NPE in SequenceEncoder.appendEscapedString()
 * Bug 2476838: IllegalArgumentException in BundleHelper.getString()
+* Bug 2475197: Chat classes call Swing methods off the EDT
 * Bug 2442887: Exception if no Layer levels and type new level name
 * Bug 2432774: ClassCastException: PrototypeDefinition$Config$Definer$Plain
     cannot be cast to VASSAL.counters.Decorator
