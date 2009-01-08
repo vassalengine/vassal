@@ -14,7 +14,7 @@ com/DTDs/PropertyList-1.0.dtd">
   <key>NSHumanReadableCopyright</key>
   <string>2008, The VASSAL Team</string>
   <key>CFBundleIconFile</key>
-  <string></string>
+  <string>VASSAL.icns</string>
   <key>CFBundleExecutable</key>
   <string>JavaApplicationStub</string>
   <key>CFBundleAllowMixedLocalizations</key>

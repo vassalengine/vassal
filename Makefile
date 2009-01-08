@@ -96,6 +96,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
          -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $@/Contents/Info.plist
 	cp dist/macosx/JavaApplicationStub $@/Contents/MacOS
+	cp dist/macosx/VASSAL.icns $@/Contents/Resources
 	svn export $(LIBDIR) $@/Contents/Resources/Java
 	rm $@/Contents/Resources/Java/AppleJavaExtensions.jar
 	svn export $(DOCDIR) $@/Contents/Resources/doc
