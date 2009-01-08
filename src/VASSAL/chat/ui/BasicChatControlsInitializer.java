@@ -57,20 +57,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
       private static final long serialVersionUID = 1L;
 
       public void actionPerformed(ActionEvent evt) {
-        setEnabled(false);
-
-        new SwingWorker<Void,Void>() {
-          @Override
-          protected Void doInBackground() {
-            client.setConnected(true);
-            return null;
-          }
-
-          @Override
-          protected void done() {
-            if (!client.isConnected()) setEnabled(true);
-          }
-        }.execute();
+        client.setConnected(true);
       }
     };
 
@@ -87,20 +74,7 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
       private static final long serialVersionUID = 1L; 
 
       public void actionPerformed(ActionEvent evt) {
-        setEnabled(false);
-
-        new SwingWorker<Void,Void>() {
-          @Override
-          protected Void doInBackground() {
-            client.setConnected(false);
-            return null;
-          }
-
-          @Override
-          protected void done() {
-            if (client.isConnected()) setEnabled(true);
-          }
-        }.execute();
+        client.setConnected(false);
       }
     };
 

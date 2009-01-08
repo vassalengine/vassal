@@ -22,6 +22,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+
+import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
@@ -37,6 +40,7 @@ import VASSAL.tools.ThrowableUtils;
  */
 public class DynamicClient extends HybridClient {
   private String serverConfigURL;
+  private boolean connecting;
 
   public DynamicClient() {
     this("http://www.vassalengine.org/util/getServerImpl"); //$NON-NLS-1$
@@ -63,7 +67,6 @@ public class DynamicClient extends HybridClient {
       throw new IOException(Resources.getString("Server.empty_response")); //$NON-NLS-1$
     }
     p = new Properties();
-
     final StringBuilder buff = new StringBuilder();
     for (String s : l) {
       buff.append(s).append('\n');
@@ -72,26 +75,40 @@ public class DynamicClient extends HybridClient {
     return p;
   }
 
-  public void setConnected(boolean connect) {
+  public void setConnected(final boolean connect) {
     if (connect && !isConnected()) {
-      try {
-        setDelegate(buildDelegate());
-      }
-      catch (IOException e) {
-        fireStatus(Resources.getString("Server.bad_address3"));
+      if (!connecting) {
+        connecting = true;
+        new SwingWorker<ChatServerConnection, Void>() {
+          @Override
+          protected ChatServerConnection doInBackground() throws Exception {
+            return buildDelegate();
+          }
 
-        ErrorDialog.showDetails(
-          e,
-          ThrowableUtils.getStackTrace(e),
-          "Error.network_communication_error"
-        );
-        return;
+          @Override
+          protected void done() {
+            try {
+              setDelegate(get());
+              DynamicClient.super.setConnected(connect);
+            }
+            catch (InterruptedException e) {
+            }
+            catch (ExecutionException ex) {
+              Throwable e = ex.getCause();
+              fireStatus(Resources.getString("Server.bad_address3"));
+              ErrorDialog.showDetails(e, ThrowableUtils.getStackTrace(e), "Error.network_communication_error");
+              e.printStackTrace();
+            }
+            connecting = false;
+          }
+        }.execute();
       }
     }
-
-    super.setConnected(connect);
-    if (!connect && !isConnected()) {
-      setDelegate(new DummyClient());
+    else {
+      super.setConnected(connect);
+      if (!isConnected()) {
+        setDelegate(new DummyClient());
+      }
     }
   }
 }
