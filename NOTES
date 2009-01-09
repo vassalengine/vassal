@@ -75,6 +75,8 @@ seriously---they're the reason we've been able to fix so many bugs.
 New Features in 3.1.0
 *********************
 
+* Improved room management: Invite and kick players from locked rooms.
+
 * Improved installation: For Windows, a real Windows installer/uninstaller.
 For Macs, a single-file disk image. Download, click, and install.
 
