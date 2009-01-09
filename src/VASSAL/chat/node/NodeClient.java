@@ -187,6 +187,10 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     this.defaultRoomName = defaultRoomName;
   }
 
+  public String getDefaultRoomName() {
+    return defaultRoomName;
+  }
+  
   protected void sendStats() {
     if (isConnected()) {
       send(Protocol.encodeStatsCommand(new PropertiesEncoder(me.toProperties()).getStringValue()));
@@ -387,7 +391,8 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
           e.printStackTrace();
         }
       }
-      rooms[i] = new NodeRoom(roomNodes[i].getId(), players);
+      
+      rooms[i] = new NodeRoom(roomNodes[i].getId(), players);      
       
       // Lock room to start with. The ROOM_INFO message will unlock
       // any rooms that are not locked. Prevents unwanted clients from
