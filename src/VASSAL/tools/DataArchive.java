@@ -61,8 +61,8 @@ import java.util.zip.ZipFile;
 import sun.applet.AppletAudioClip;
 
 import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.image.SVGImageUtils;
-import VASSAL.tools.image.SVGRenderer;
+import VASSAL.tools.image.svg.SVGImageUtils;
+import VASSAL.tools.image.svg.SVGRenderer;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 

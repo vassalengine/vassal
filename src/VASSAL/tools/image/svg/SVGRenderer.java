@@ -17,7 +17,7 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools.image;
+package VASSAL.tools.image.svg;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
@@ -54,6 +54,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 

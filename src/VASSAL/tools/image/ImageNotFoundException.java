@@ -20,36 +20,27 @@
 package VASSAL.tools.image;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 /**
  * @author Joel Uckelman
  * @since 3.1.0
  */
-public class ImageNotFoundException extends FileNotFoundException {
+public class ImageNotFoundException extends ImageIOException {
   private static final long serialVersionUID = 1L;
 
-  private final File file; 
-
   public ImageNotFoundException(String filename) {
-    this(new File(filename));
+    super(new File(filename));
   }
 
   public ImageNotFoundException(File file) {
-    this.file = file;
+    super(file);
   }
 
   public ImageNotFoundException(String filename, Throwable cause) {
-    this(filename);
-    initCause(cause);
+    super(filename, cause);
   }
 
   public ImageNotFoundException(File file, Throwable cause) {
-    this(file);
-    initCause(cause);
-  }
-
-  public File getFile() {
-    return file;
+    super(file, cause);
   }
 }

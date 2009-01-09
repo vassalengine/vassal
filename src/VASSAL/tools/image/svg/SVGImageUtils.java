@@ -17,7 +17,7 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools.image;
+package VASSAL.tools.image.svg;
 
 import java.awt.Dimension;
 import java.io.File;
@@ -43,6 +43,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import VASSAL.tools.image.ImageIOException;
+import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.io.IOUtils;
 
 /**

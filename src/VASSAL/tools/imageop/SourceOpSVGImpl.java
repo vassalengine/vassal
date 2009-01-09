@@ -33,8 +33,8 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
-import VASSAL.tools.image.SVGImageUtils;
-import VASSAL.tools.image.SVGRenderer;
+import VASSAL.tools.image.svg.SVGImageUtils;
+import VASSAL.tools.image.svg.SVGRenderer;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
@@ -82,7 +82,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
    *
    * @throws IOException if the image cannot be loaded from the image file.
    */
-  public BufferedImage eval() throws IOException {
+  public BufferedImage eval() throws ImageIOException {
     try {
       final SVGRenderer renderer = new SVGRenderer(
         archive.getImageURL(name),

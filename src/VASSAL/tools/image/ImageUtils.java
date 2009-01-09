@@ -336,7 +336,7 @@ public class ImageUtils {
   }
 
   public static Dimension getImageSize(String name, InputStream in)
-                                                           throws IOException {
+                                                      throws ImageIOException {
     try {
       final ImageInputStream stream = new MemoryCacheImageInputStream(in);
 
@@ -411,8 +411,15 @@ public class ImageUtils {
     }
   }
 
+  public static BufferedImage getImageResource(String name)
+                                                      throws ImageIOException {
+    final InputStream in = ImageUtils.class.getResourceAsStream(name);
+    if (in == null) throw new ImageNotFoundException(name);
+    return getImage(name, in);
+  }
+
   public static BufferedImage getImage(String name, InputStream in)
-                                                           throws IOException {
+                                                      throws ImageIOException {
     // FIXME: At present, ImageIO does not honor the tRNS chunk in 8-bit
     // color type 2 (RGB) PNGs. This is not a bug per se, as the PNG 
     // standard the does not require compliant decoders to use ancillary

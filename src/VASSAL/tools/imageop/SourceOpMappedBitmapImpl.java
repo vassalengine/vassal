@@ -48,7 +48,7 @@ public class SourceOpMappedBitmapImpl extends SourceOpBitmapImpl
    * @throws IOException if the image cannot be loaded from the image file.
    */
   @Override
-  public BufferedImage eval() throws IOException {
+  public BufferedImage eval() throws ImageIOException {
     InputStream in = null;
     try {
       in = archive.getImageInputStream(name);

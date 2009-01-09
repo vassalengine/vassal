@@ -34,7 +34,7 @@ import VASSAL.tools.HashCode;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.image.SVGRenderer;
+import VASSAL.tools.image.svg.SVGRenderer;
 
 /**
  * An {@link ImageOp} which rotates and scales its source. Rotation

@@ -44,8 +44,8 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.launch.Launcher;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.image.SVGImageUtils;
 import VASSAL.tools.imageop.Op;
+import VASSAL.tools.image.svg.SVGImageUtils;
 import VASSAL.tools.io.IOUtils;
 
 /**

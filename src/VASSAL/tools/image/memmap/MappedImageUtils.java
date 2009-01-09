@@ -53,7 +53,7 @@ public class MappedImageUtils {
   private MappedImageUtils() {}
 
   public static MappedBufferedImage getImage(String name, InputStream in)
-                                                           throws IOException {
+                                                      throws ImageIOException {
     try {
       MappedBufferedImage img = null;
       RereadableInputStream rin = null;

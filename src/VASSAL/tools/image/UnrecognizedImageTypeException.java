@@ -20,40 +20,31 @@
 package VASSAL.tools.image;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * @author Joel Uckelman
  * @since 3.1.0
  */
-public class UnrecognizedImageTypeException extends IOException {
+public class UnrecognizedImageTypeException extends ImageIOException {
   private static final long serialVersionUID = 1L;
 
-  private final File file; 
-
   public UnrecognizedImageTypeException() {
-    this.file = null;
+    super((File) null);
   }
 
   public UnrecognizedImageTypeException(String filename) {
-    this(new File(filename));
+    super(filename);
   }
 
   public UnrecognizedImageTypeException(File file) {
-    this.file = file;
+    super(file);
   }
 
   public UnrecognizedImageTypeException(String filename, Throwable cause) {
-    this(filename);
-    initCause(cause);
+    super(filename, cause);
   }
 
   public UnrecognizedImageTypeException(File file, Throwable cause) {
-    this(file);
-    initCause(cause);
-  }
-
-  public File getFile() {
-    return file;
+    super(file, cause);
   }
 }

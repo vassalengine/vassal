@@ -33,7 +33,7 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
-import VASSAL.tools.image.SVGRenderer;
+import VASSAL.tools.image.svg.SVGRenderer;
 import VASSAL.tools.opcache.Op;
 
 /**
@@ -84,7 +84,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     return Collections.emptyList();
   }
 
-  public BufferedImage eval() throws IOException {
+  public BufferedImage eval() throws ImageIOException {
 // FIXME: getting archive this way is a kludge, we should get it from sop
     final DataArchive archive = GameModule.getGameModule().getDataArchive();
     final String name = getName();
