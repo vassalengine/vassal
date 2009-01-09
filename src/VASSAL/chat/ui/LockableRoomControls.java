@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2006 by Rodney Kinney
  *
@@ -102,6 +103,7 @@ public class LockableRoomControls extends RoomInteractionControlsInitializer {
       super.createRoom(name);
     }
   }
+
   public static class LockRoomAction extends AbstractAction {
     private static final long serialVersionUID = 1L; 
 
@@ -109,8 +111,10 @@ public class LockableRoomControls extends RoomInteractionControlsInitializer {
     private NodeRoom target;
 
     public LockRoomAction(NodeRoom target, NodeClient client) {
-      super(target.isLocked() ? Resources.getString("Chat.unlock_room") : Resources.getString("Chat.lock_room")); //$NON-NLS-1$
-      setEnabled(client.getMyInfo().getId().equals(target.getOwner()) && ! target.getName().equals(client.getDefaultRoomName()));
+      super(target.isLocked() ? Resources.getString("Chat.unlock_room")
+                              : Resources.getString("Chat.lock_room"));
+      setEnabled(client.getMyInfo().getId().equals(target.getOwner()) &&
+                 !target.getName().equals(client.getDefaultRoomName()));
       this.target = target;
       this.client = client;
     }
@@ -118,7 +122,5 @@ public class LockableRoomControls extends RoomInteractionControlsInitializer {
     public void actionPerformed(ActionEvent e) {
       client.lockRoom(target);
     }
-  }
-
-  
+  }  
 }
