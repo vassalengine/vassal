@@ -11,7 +11,7 @@
   <supportUrl>http://forums.vassalengine.org</supportUrl>
   <customProcName>true</customProcName>
   <stayAlive>false</stayAlive>
-  <icon></icon>
+  <icon>VASSAL.ico</icon>
   <classPath>
     <mainClass>VASSAL.launch.ModuleManager</mainClass>
     <cp>Vengine.jar</cp>
