@@ -80,7 +80,7 @@ Vengine.jar: all $(TMPDIR)
 	cd $(LIBDIR) ; $(JAR) i $@ ; cd ..
 
 $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
-	cp dist/windows/VASSAL.l4j.xml dist/windows/VASSAL.ico $(TMPDIR)
+	cp dist/windows/{VASSAL.l4j.xml,VASSAL.ico} $(TMPDIR)
 	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
          -e 's/%NUMVERSION%/$(VNUM)/g' \
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $(TMPDIR)/VASSAL.l4j.xml
