@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.1.0-beta7.
+The VASSAL Team is happy to announce the release of VASSAL 3.1.0-beta8.
 
 *********************
 Download
@@ -6,67 +6,40 @@ Download
 
 For Windows:
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta7-windows.exe
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta8-windows.exe
 
 For Mac OS X:
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta7-macosx.dmg
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta8-macosx.dmg
 
 For Linux (and other platforms):
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta7-generic.zip
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta8-generic.zip
 
 Source code:
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta7-src.zip
+http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta8-src.zip
 
 
 *********************
 Changes since beta6:
 *********************
 
-A number of problems present in 3.1.0-beta6 are fixed in 3.1.0-beta7:
+A number of problems present in 3.1.0-beta7 are fixed in 3.1.0-beta8:
 
-* Bug 2493325: Don't add Preferences to Module Manager File menu on MacOS X
-* Bug 2486596: NPE in SequenceEncoder.appendEscapedString()
-* Bug 2476838: IllegalArgumentException in BundleHelper.getString()
-* Bug 2475197: Chat classes call Swing methods off the EDT
-* Bug 2442887: Exception if no Layer levels and type new level name
-* Bug 2432774: ClassCastException: PrototypeDefinition$Config$Definer$Plain
-    cannot be cast to VASSAL.counters.Decorator
-* Bug 2418907: NPE When SendToLocation sends to Region that does not exist
-* Bug 2418813: NPE Sending PrivateMsg to person who is 'Ignoring' you
-* Bug 2415632: NPE in DeckGlobalKeyCommand.encode()
-* Bug 2393130: Zoom menu not initialized at time of Zoomer creation
-* Bug 2393526: Cache requests not marked as failed when Errors occured
-* Bug 2390630: Connecting to server blocks GUI when server is down
-* Bug 2381419: NPE in RegionGrid.Config.EditRegionAction.windowClosed()
-* Bug 2380245: FileNotFoundException not being caught during image loading
-* Bug 2373956: NPE in child ImageOp when parent fails
-* Bug 2372199: NPE in PieceSlot.updateGpId()
-* Bug 2358673: Piece transparency in LOS looks weird at non 100% zoom
-* Bug 2315230: ConnectException in HttpRequestWrapper.doGet()
-* Bug 2296067: InvalidDnDOperationException in PieceMover.DragHandler
-* Bug 2225711: Fixed ConcurrentModificationException in SavedGameUpdater
-* Bug 2219448: Can Synchronize with players in Locked Rooms
-* Bug 2199683: NPE in GameState.addPiece()
-* Bug 2187303: IllegalArgumentException in SavedGameUpdaterDialog
-* Bug 2186983: EmptyStackException in ModuleManagerWindow.GameFolderInfo
-* Bug 2162266: NPE in HybridClient.setDelegate()
-* Bug 2129550: UnknownHostException in HttpRequestWrapper.doGet()
-* Bug: Canonicalize $0 in case VASSAL.sh is being invoked via a symbolic link
+* Bug 2489325: SocketException in ModuleManager$SocketListener.run()
+* Bug: Main Room must not be lockable
 
 New features:
 
-* Importer heap settings in Preferences in the Module Manager
-* Invite, kick players from locked rooms
+* New VASSAL application icon.
+* Less ugly Windows installer theme.
 
 Other changes:
 
-* Updated Windows installer to download JRE 1.6.0_11.
-* RFE 2373999: Module Manager to have access to Global preferences
 
-Please report all bugs in beta7, even if they are bugs which you've
+
+Please report all bugs in beta8, even if they are bugs which you've
 already reported against other betas. We take your bug reports very
 seriously---they're the reason we've been able to fix so many bugs.
 
@@ -108,7 +81,7 @@ This is a beta release, and may still contain some rough edges. Should
 you find any problems/oddities/bugs, please tell us so that we can fix
 them before VASSAL 3.1.0 is released. Also, if you've had problems with
 3.0.x or a previous 3.1.0 beta, please check and let us know if those
-problems are resolved in 3.1.0-beta7.
+problems are resolved in 3.1.0-beta8.
 
 Report bugs here in the Technical Support & Bugs category at the VASSAL
 forums:
