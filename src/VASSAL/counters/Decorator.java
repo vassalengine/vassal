@@ -368,5 +368,8 @@ public abstract class Decorator implements GamePiece, StateMergeable {
   protected static void reportDataError(EditablePiece piece, String message, String data) {
     ErrorDialog.dataError(new BadDataReport(piece, message, data));  
   }
-   
+
+  protected static void reportDataError(EditablePiece piece, String message) {
+    ErrorDialog.dataError(new BadDataReport(piece, message));  
+  }
 }

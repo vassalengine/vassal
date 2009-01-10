@@ -25,6 +25,7 @@ import VASSAL.command.Command;
 import VASSAL.command.RemovePiece;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 
 /**
  * GamePiece trait that replaces a GamePiece with another one
@@ -51,9 +52,14 @@ public class Replace extends PlaceMarker {
   protected Command replacePiece() {
     Command c;
     c = placeMarker();
-    Command remove = new RemovePiece(Decorator.getOutermost(this));
-    remove.execute();
-    c.append(remove);
+    if (c == null) {
+      reportDataError(this, Resources.getString("Error.bad_replace"));
+    }
+    else {
+      Command remove = new RemovePiece(Decorator.getOutermost(this));
+      remove.execute();
+      c.append(remove);
+    }
     return c;
   }
   

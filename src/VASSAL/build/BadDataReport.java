@@ -71,6 +71,10 @@ public class BadDataReport {
   public BadDataReport(EditablePiece piece, String message, String data) { 
     this(Decorator.getOutermost(piece).getLocalizedName(), piece.getDescription(), message, data, null);
   }
+
+  public BadDataReport(EditablePiece piece, String message) { 
+    this(Decorator.getOutermost(piece).getLocalizedName(), piece.getDescription(), message, "", null);
+  }
   
   public BadDataReport(String pieceName, String traitDesc, String message, String data, Throwable cause) {
     String m = ((pieceName != null && pieceName.length() > 0) ? pieceName+" " : "");
