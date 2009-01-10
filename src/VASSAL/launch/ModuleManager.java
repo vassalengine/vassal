@@ -337,8 +337,8 @@ public class ModuleManager {
             in.close();
             clientSocket.close();
 
-            if (message == null) continue;
-            
+            if (message == null || clientSocket.isClosed()) continue;
+           
             out = new PrintStream(
                     new BufferedOutputStream(clientSocket.getOutputStream()));
             out.println(message);
