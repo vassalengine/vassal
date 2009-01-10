@@ -44,6 +44,7 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.LongConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.io.IOUtils;
@@ -344,9 +345,8 @@ public class ModuleManager {
             out.println(message);
             out.close();
           }
-          // FIXME: review error message
           catch (IOException e) {
-            ErrorDialog.bug(e); 
+            CommunicationErrorDialog.error(e); 
           }
           catch (ClassNotFoundException e) {
             ErrorDialog.bug(e);
