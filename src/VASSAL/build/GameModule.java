@@ -82,11 +82,12 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
@@ -153,6 +154,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected CommandEncoder[] commandEncoders = new CommandEncoder[0];
   protected List<String> deferredChat = new ArrayList<String>();
 
+  protected Long crc = null;
   protected int nextGpId = 0;
   
   /*
@@ -941,4 +943,27 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       return getProperty(key);
     }
   }
+  
+  public long getCrc() {
+    if (crc == null) {
+      crc = buildCrc();
+    }
+    return crc.longValue();
+  }
+  
+  protected Long buildCrc() {
+    final List<File> files = new ArrayList<File>();
+    files.add(new File(getDataArchive().getArchive().getName()));
+    for (ModuleExtension ext : getComponentsOf(ModuleExtension.class)) {
+      files.add(new File(ext.getDataArchive().getArchive().getName()));      
+    }
+    try {
+      return CRCUtils.getCRC(files);
+    }
+    catch (IOException e) {
+      VASSAL.tools.logging.Logger.log(e, "Error generating CRC");
+    }
+    return 0L;
+  }
+  
 }
