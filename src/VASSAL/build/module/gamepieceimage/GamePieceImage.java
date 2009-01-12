@@ -265,6 +265,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
     idMgr.add(this);
     validator = idMgr;
     setAllAttributesUntranslatable();
+    rebuildInstances();
   }
 
   public String getId() {
