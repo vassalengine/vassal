@@ -1,3 +1,19 @@
+#
+# Build dependencies:  This buildfile is only meant to work on Linux systems
+# Before building, you will need to install (at least) the following packages
+#
+# ant
+# launch4j (http://launch4j.sourceforge.net)
+# mingw32 (supplied with launch4j for some architectures)
+# nsis
+#   NOTE:  For intellectual property reasons, nsis will not work out of the box
+#          (it will fail with "Invalid command:  System::Call")
+#          The workaround is to install nsis on a Windows system, and copy
+#          the Plugins\System.dll file into /usr/share/nsis/plugins
+#          Alternatively, you can build nsis yourself as follows:
+#            scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/path/to/extracted/zip install-compiler
+#
+
 SHELL:=/bin/bash
 
 SRCDIR:=src
