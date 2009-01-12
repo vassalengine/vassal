@@ -27,9 +27,11 @@ Changes since beta6:
 
 A number of problems present in 3.1.0-beta7 are fixed in 3.1.0-beta8:
 
+* Bug 2499980: User Profile display reverting to pre 3.1 version
 * Bug 2495248: NPE in Replace.replacePiece()
 * Bug 2489325: SocketException in ModuleManager$SocketListener.run()
 * Bug 2446130: Better handling for ModuleManager socket errors
+* Bug 2373491: StackOverflowError due to infinite Send-to-location loop
 * Bug: Main Room must not be lockable
 
 New features:
