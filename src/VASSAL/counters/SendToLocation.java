@@ -100,6 +100,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   protected FormattedString zone = new FormattedString("");
   protected FormattedString region = new FormattedString("");
   protected PropertyExpression propertyFilter = new PropertyExpression("");
+  private Map map;
+  private Point dest;
 
   public SendToLocation() {
     this(ID + ";;;;0;0;;", null);
@@ -178,7 +180,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
                      getProperty(BACK_POINT) != null);
       }
       else {
-        c.setEnabled(getMap() != null);
+        Point p = getSendLocation();
+        c.setEnabled(getMap() != null &&
+            (map != getMap() || !p.equals(getPosition())) );
       }
     }
     return command;
@@ -203,101 +207,110 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     return se.getValue();
   }
 
+  private Point getSendLocation() {
+    GamePiece outer = Decorator.getOutermost(this);
+    map = null;
+    dest = null;
+    // Home in on a counter
+    if (destination.equals(DEST_COUNTER.substring(0, 1))) {
+      GamePiece target = null;
+      // Find first counter matching the properties
+      for (GamePiece piece :
+           GameModule.getGameModule().getGameState().getAllPieces()) {
+        if (piece instanceof Stack) {
+          Stack s = (Stack) piece;
+          for (int i = 0; i < s.getPieceCount(); i++) {
+            if (propertyFilter.accept(s.getPieceAt(i))) {
+              target = s.getPieceAt(i);
+              if (target != null) break;
+            }
+          }
+        }
+        else {
+          if (propertyFilter.accept(piece)) {
+            target = piece;
+          }
+        }
+        if (target != null) break;
+      }
+      // Determine target's position
+      if (target != null) {
+        map = target.getMap();
+        if (map != null) {
+          dest = target.getPosition();
+        }
+      }
+    }
+    // Location/Zone/Region processing all use specified map
+    else {
+      map = Map.getMapById(mapId.getText(outer));
+      if (map == null) {
+        map = getMap();
+      }
+      if (map != null) {
+        switch (destination.charAt(0)) {
+        case 'L':
+          final int xValue = x.getTextAsInt(outer, "Xlocation", this);
+          final int yValue = y.getTextAsInt(outer, "YLocation", this);
+
+          dest = new Point(xValue,yValue);
+          
+          Board b = map.getBoardByName(boardName.getText(outer));
+          if (b != null && dest != null) {
+            dest.translate(b.bounds().x, b.bounds().y);
+          }
+          break;
+          
+        case 'Z':
+          final String zoneName = zone.getText(outer); 
+          Zone z = map.findZone(zoneName);
+          if (z == null) {
+            reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone"));
+          }
+          else {
+            Rectangle r = z.getBounds();
+            Rectangle r2 = z.getBoard().bounds();
+            dest = new Point(r2.x + r.x + r.width/2, r2.y + r.y + r.height/2);
+           }
+          break;
+          
+        case 'R':
+          final String regionName = region.getText(outer);           
+          Region r = map.findRegion(regionName);
+          if (r == null) {
+            reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region"));              
+          }
+          else {
+            Rectangle r2 = r.getBoard().bounds();
+            if (r != null) {
+              dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
+            }
+          }
+          break;
+        }
+      }
+    }
+
+    // Offset destination by Advanced Options offsets
+    if (dest != null) {
+      dest = offsetDestination(dest.x, dest.y, outer);
+    }
+    
+    return dest;
+  }
+  
   public Command myKeyEvent(KeyStroke stroke) {
     Command c = null;
     myGetKeyCommands();
     if (sendCommand.matches(stroke)) {
       GamePiece outer = Decorator.getOutermost(this);
       Stack parent = outer.getParent();
-      Map map = null;
-      Point dest = null;
-      
-      // Home in on a counter
-      if (destination.equals(DEST_COUNTER.substring(0, 1))) {
-        GamePiece target = null;
-        // Find first counter matching the properties
-        for (GamePiece piece :
-             GameModule.getGameModule().getGameState().getAllPieces()) {
-          if (piece instanceof Stack) {
-            Stack s = (Stack) piece;
-            for (int i = 0; i < s.getPieceCount(); i++) {
-              if (propertyFilter.accept(s.getPieceAt(i))) {
-                target = s.getPieceAt(i);
-                if (target != null) break;
-              }
-            }
-          }
-          else {
-            if (propertyFilter.accept(piece)) {
-              target = piece;
-            }
-          }
-          if (target != null) break;
-        }
-        // Determine target's position
-        if (target != null) {
-          map = target.getMap();
-          if (map != null) {
-            dest = target.getPosition();
-          }
-        }
-      }
-      // Location/Zone/Region processing all use specified map
-      else {
-        map = Map.getMapById(mapId.getText(outer));
-        if (map == null) {
-          map = getMap();
-        }
-        if (map != null) {
-          switch (destination.charAt(0)) {
-          case 'L':
-            final int xValue = x.getTextAsInt(outer, "Xlocation", this);
-            final int yValue = y.getTextAsInt(outer, "YLocation", this);
-
-            dest = new Point(xValue,yValue);
-            
-            Board b = map.getBoardByName(boardName.getText(outer));
-            if (b != null && dest != null) {
-              dest.translate(b.bounds().x, b.bounds().y);
-            }
-            break;
-            
-          case 'Z':
-            final String zoneName = zone.getText(outer); 
-            Zone z = map.findZone(zoneName);
-            if (z == null) {
-              reportDataError(this, Resources.getString("Error.not_found", "Zone"), zone.debugInfo(zoneName, "Zone"));
-            }
-            else {
-              Rectangle r = z.getBounds();
-              Rectangle r2 = z.getBoard().bounds();
-              dest = new Point(r2.x + r.x + r.width/2, r2.y + r.y + r.height/2);
-             }
-            break;
-            
-          case 'R':
-            final String regionName = region.getText(outer);           
-            Region r = map.findRegion(regionName);
-            if (r == null) {
-              reportDataError(this, Resources.getString("Error.not_found", "Region"), region.debugInfo(regionName, "Region"));              
-            }
-            else {
-              Rectangle r2 = r.getBoard().bounds();
-              if (r != null) {
-                dest = new Point(r.getOrigin().x + r2.x, r.getOrigin().y + r2.y);
-              }
-            }
-            break;
-          }
-        }
-      }
-
-      // Offset destination by Advanced Options offsets
-      if (dest != null) {
-        dest = offsetDestination(dest.x, dest.y, outer);
-      }
-      
+      getSendLocation();
       if (map != null && dest != null) {
+        if (map == getMap() && dest.equals(getPosition())) {
+          // don't do anything if we're already there.
+          return null;
+        }
         setProperty(BACK_MAP, getMap());
         setProperty(BACK_POINT, getPosition());
         if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {

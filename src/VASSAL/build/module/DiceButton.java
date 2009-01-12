@@ -58,6 +58,7 @@ public class DiceButton extends AbstractConfigurable {
   protected int nSides = 6, nDice = 2, plus = 0, addToTotal=0;
   protected boolean reportTotal = false;
   protected boolean promptAlways = false;
+  protected boolean sortDice = false;
   protected FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** <$" + GlobalOptions.PLAYER_NAME + "$>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
   protected LaunchButton launch;
   protected String tooltip = ""; //$NON-NLS-1$
@@ -76,11 +77,12 @@ public class DiceButton extends AbstractConfigurable {
   public static final String REPORT_TOTAL = "reportTotal"; //$NON-NLS-1$
   public static final String PROMPT_ALWAYS = "prompt"; //$NON-NLS-1$
   public static final String REPORT_FORMAT = "reportFormat"; //$NON-NLS-1$
+  public static final String SORT_DICE_RESULTS = "sortDice";
 
   /** Variable name for reporting format */
   public static final String RESULT = "result"; //$NON-NLS-1$
   public static final String REPORT_NAME = "name"; //$NON-NLS-1$
-
+  
   public DiceButton() {
     initLaunchButton();
   }
@@ -158,27 +160,46 @@ public class DiceButton extends AbstractConfigurable {
    * method of the {@link Chatter} of the {@link GameModule}.  Format is
    * prefix+[comma-separated roll list]+suffix */
   protected void DR() {
-    String val = ""; //$NON-NLS-1$
+    StringBuilder val = new StringBuilder();
     int total = addToTotal;
+    int[] dice = null; // stays null if no sorting
+    
+    if (!reportTotal && nDice > 1 && sortDice) {
+      dice = new int[nDice];
+    }
+    
     for (int i = 0; i < nDice; ++i) {
       int roll = (int) (ran.nextFloat() * nSides + 1) + plus;
-      if (reportTotal) {
+      if (dice != null) {
+        dice[i] = roll;
+      }
+      else if (reportTotal) {
         total += roll;
       }
-      else {
-        val += roll;
+      else { // do not sort
+        val.append(roll);
         if (i < nDice - 1)
-          val += ","; //$NON-NLS-1$
+          val.append(","); //$NON-NLS-1$
       }
     }
 
-    if (reportTotal)
-      val += total;
+    if (reportTotal) {
+      val.append(total);
+    }
+    else if (dice != null) {
+      Arrays.sort(dice);
+      for (int i = 0; i < nDice; ++i) {
+        val.append(dice[i]);
+        if (i < nDice - 1) {
+          val.append(",");
+        }
+      }
+    }
 
-    String report = formatResult(val);
+    String report = formatResult(val.toString());
     Command c = report.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(),report);
     c.execute();
-    c.append(property.setPropertyValue(val));
+    c.append(property.setPropertyValue(val.toString()));
     GameModule.getGameModule().sendAndLog(c);
   }
 
@@ -215,7 +236,8 @@ public class DiceButton extends AbstractConfigurable {
       REPORT_TOTAL,
       HOTKEY,
       PROMPT_ALWAYS,
-      REPORT_FORMAT
+      REPORT_FORMAT,
+      SORT_DICE_RESULTS,
     };
   }
 
@@ -232,7 +254,8 @@ public class DiceButton extends AbstractConfigurable {
       "Report Total?",
       "Hotkey:  ",
       "Prompt for values when button pushed?",
-      "Report Format:  "
+      "Report Format:  ",
+      "Sort dice results:  ",
     };
   }
 
@@ -261,13 +284,20 @@ public class DiceButton extends AbstractConfigurable {
       Boolean.class,
       KeyStroke.class,
       Boolean.class,
-      ReportFormatConfig.class
+      ReportFormatConfig.class,
+      Boolean.class,
     };
   }
 
-  private VisibilityCondition cond = new VisibilityCondition() {
+  private final VisibilityCondition cond = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return !promptAlways;
+    }
+  };
+  
+  private final VisibilityCondition canSort = new VisibilityCondition() {
+    public boolean shouldBeVisible() {
+      return !reportTotal;
     }
   };
 
@@ -277,6 +307,9 @@ public class DiceButton extends AbstractConfigurable {
         || PLUS.equals(name)
         || ADD_TO_TOTAL.equals(name)) {
       return cond;
+    }
+    else if (SORT_DICE_RESULTS.equals(name)) {
+      return canSort;
     }
     else {
       return null;
@@ -366,6 +399,14 @@ public class DiceButton extends AbstractConfigurable {
       tooltip = (String) o;
       launch.setAttribute(key, o);
     }
+    else if (SORT_DICE_RESULTS.equals(key)) {
+      if (o instanceof Boolean) {
+        sortDice = ((Boolean) o).booleanValue();
+      }
+      else if (o instanceof String) {
+        sortDice = "true".equals(o);
+      }
+    }
     else {
       launch.setAttribute(key, o);
     }
@@ -396,8 +437,11 @@ public class DiceButton extends AbstractConfigurable {
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
     }
-    else if (TOOLTIP.equals(name)) {
-      return tooltip.length() == 0 ? launch.getAttributeValueString(name) : tooltip;
+    else if (TOOLTIP.equals(key)) {
+      return tooltip.length() == 0 ? launch.getAttributeValueString(BUTTON_TEXT) : tooltip;
+    }
+    else if (SORT_DICE_RESULTS.equals(key)) {
+      return String.valueOf(sortDice);
     }
     else {
       return launch.getAttributeValueString(key);
