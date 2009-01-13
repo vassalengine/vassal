@@ -37,6 +37,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.widget.CardSlot;
 import VASSAL.command.Command;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
@@ -628,6 +629,11 @@ public class DrawPile extends SetupStack {
   }
 
   public Command addToContents(GamePiece p) {
+    // If the piece is already in the Deck, do nothing
+    if (myDeck != null && myDeck.indexOf(p) >= 0) {
+      return new NullCommand();
+    }
+    // Merge it in
     return map.placeOrMerge(p, myDeck == null ? getPosition() : myDeck.getPosition());
   }
 
