@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -344,8 +345,6 @@ public class ArchiveWriter extends DataArchive {
       }
 
       // Write new entries into temp file
-      byte[] crcBuffer = new byte[CRCUtils.DEFAULT_BUFFER_SIZE];
-      
       for (String name : files.keySet()) {
         final Object o = files.get(name);
 
@@ -368,14 +367,24 @@ public class ArchiveWriter extends DataArchive {
             in = new FileInputStream((String) o);
 
             if (method == ZipEntry.STORED) {
-              
               // find the checksum
-              long checksum = 0;
+              final CRC32 checksum = new CRC32();
+          
               int count = 0;
-              CRCUtils.buildCRC(in, checksum, count, crcBuffer);
+              n = 0;
+              try {
+                while ((n = in.read(buf)) > 0) {
+                  checksum.update(buf, 0, n);
+                  count += n;
+                }
+                in.close();
+              }
+              finally {
+                IOUtils.closeQuietly(in);
+              }
 
               entry.setSize(count);
-              entry.setCrc(checksum);
+              entry.setCrc(checksum.getValue());
 
               // reset the stream
               in = new FileInputStream((String) o);
@@ -415,7 +424,9 @@ public class ArchiveWriter extends DataArchive {
 
           if (method == ZipEntry.STORED) {
             entry.setSize(contents.length);
-            entry.setCrc(CRCUtils.getCRC(contents));
+            final CRC32 checksum = new CRC32();
+            checksum.update(contents);
+            entry.setCrc(checksum.getValue());
           }
       
           out.putNextEntry(entry);

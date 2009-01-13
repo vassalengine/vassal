@@ -485,7 +485,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
               Info.getVersion(), 
               s.getIp(), 
               g.getGameVersion() + ((g.getArchiveWriter() == null) ? "" : " (Editing)"), 
-              Long.toHexString(g.getCrc()));
+              "Crc");
     me.setStatus(s);
     g.getPrefs().getOption(GameModule.PERSONAL_INFO).addPropertyChangeListener(profileChangeListener);
     controls.getRoomTree().setCellRenderer(new LockableRoomTreeRenderer());

@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarOutputStream;
+import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -67,14 +68,22 @@ public class ZipUpdater implements Runnable {
     }
   }
 
-  private long getCrc(ZipFile file, ZipEntry entry, byte[] buffer) throws IOException {
+  private long getCrc(ZipFile file, ZipEntry entry) throws IOException {
     long crc = -1;
     if (entry != null) {
       crc = entry.getCrc();
       if (crc < 0) {
+        CRC32 checksum = new CRC32();
+
         final InputStream in = file.getInputStream(entry);
         try {
-          crc = CRCUtils.getCRC(in, buffer);
+          final byte[] buffer = new byte[1024];
+          int count;
+          while ((count = in.read(buffer)) > 0) {
+            checksum.update(buffer, 0, count);
+          }
+          in.close();
+          crc = checksum.getValue();
         }
         finally {
           IOUtils.closeQuietly(in);
@@ -112,18 +121,18 @@ public class ZipUpdater implements Runnable {
     // FIXME: is there a better way to do this, so that the whole input
     // stream isn't in memory at once?
     final byte[] contents = IOUtils.toByteArray(zis);
-    final long crc = CRCUtils.getCRC(contents);
+    final CRC32 checksum = new CRC32();
+    checksum.update(contents);
     if (newEntry.getMethod() == ZipEntry.STORED) {
       newEntry.setSize(contents.length);
-      newEntry.setCrc(crc);
+      newEntry.setCrc(checksum.getValue());
     }
     output.putNextEntry(newEntry);
     output.write(contents, 0, contents.length);
-    return crc;
+    return checksum.getValue();
   }
 
   public void write(File destination) throws IOException {
-    final byte[] crcBuffer = new byte[CRCUtils.DEFAULT_BUFFER_SIZE];
     checkSums = new Properties();
 
     final InputStream rin =
@@ -150,7 +159,7 @@ public class ZipUpdater implements Runnable {
       try {
 // FIXME: reinstate when we move to 1.6+.
 //        for (String entryName : checkSums.stringPropertyNames()) {
-        for (Enumeration<?> e = checkSums.keys(); e.hasMoreElements();) {
+        for (Enumeration e = checkSums.keys(); e.hasMoreElements();) {
           final String entryName = (String) e.nextElement();
           long targetSum;
           try {
@@ -164,7 +173,7 @@ public class ZipUpdater implements Runnable {
           final ZipEntry entry = oldZipFile.getEntry(entryName);
           final ZipEntry newEntry = new ZipEntry(entryName);
           newEntry.setMethod(entry != null ? entry.getMethod() : ZipEntry.DEFLATED);
-          if (targetSum == getCrc(oldZipFile, entry, crcBuffer)) {
+          if (targetSum == getCrc(oldZipFile, entry)) {
             if (targetSum != copyEntry(output, newEntry)) {
               throw new IOException("Checksum mismatch for entry " + entry.getName());
             }
@@ -218,8 +227,6 @@ public class ZipUpdater implements Runnable {
   }
 
   public void createUpdater(File newFile, File updaterFile) throws IOException {
-    final byte[] crcBuffer = new byte[CRCUtils.DEFAULT_BUFFER_SIZE];
-    
     if (!updaterFile.getName().endsWith(".jar")) {
       final String newName = updaterFile.getName().replace('.','_')+".jar";
       updaterFile = new File(updaterFile.getParentFile(),newName);
@@ -237,9 +244,9 @@ public class ZipUpdater implements Runnable {
           out = new JarOutputStream(
                   new BufferedOutputStream(new FileOutputStream(updaterFile)));
           for (ZipEntry entry : iterate(goal.entries())) {
-            final long goalCrc = getCrc(goal, entry, crcBuffer);
+            final long goalCrc = getCrc(goal, entry);
             final long inputCrc =
-              getCrc(oldZipFile, oldZipFile.getEntry(entry.getName()), crcBuffer);
+              getCrc(oldZipFile, oldZipFile.getEntry(entry.getName()));
             if (goalCrc != inputCrc) {
               final ZipEntry outputEntry =
                 new ZipEntry(ENTRIES_DIR + entry.getName());

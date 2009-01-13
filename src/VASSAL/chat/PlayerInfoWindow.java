@@ -40,19 +40,6 @@ public class PlayerInfoWindow extends JDialog {
     b.add(new JLabel(Resources.getString("Chat.real_name"))); //$NON-NLS-1$
     b.add(tf);
     add(b);
-    
-    final String ip = ((SimpleStatus)p.getStatus()).getIp();
-    if (ip != null && ip.length() > 0) {
-      b = Box.createHorizontalBox();
-      tf = new JTextField(ip.length());
-      tf.setText(ip);
-      tf.setEditable(false);
-      tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
-                                             tf.getPreferredSize().height));
-      b.add(new JLabel(Resources.getString("Chat.ip_address"))); //$NON-NLS-1$
-      b.add(tf);
-      add(b);
-    }
 
     String client = ((SimpleStatus)p.getStatus()).getClient();
     if (client == null || client.length() == 0) {
@@ -81,19 +68,19 @@ public class PlayerInfoWindow extends JDialog {
       add(b);
     }   
     
-    final String crc = ((SimpleStatus)p.getStatus()).getCrc();
-    if (crc != null && crc.length() > 0) {
+    final String ip = ((SimpleStatus)p.getStatus()).getIp();
+    if (ip != null && ip.length() > 0) {
       b = Box.createHorizontalBox();
-      tf = new JTextField(crc.length());
-      tf.setText(crc);
+      tf = new JTextField(ip.length());
+      tf.setText(ip);
       tf.setEditable(false);
       tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
                                              tf.getPreferredSize().height));
-      b.add(new JLabel(Resources.getString("Chat.module_crc"))); //$NON-NLS-1$
+      b.add(new JLabel(Resources.getString("Chat.ip_address"))); //$NON-NLS-1$
       b.add(tf);
       add(b);
-    }  
-       
+    }
+    
     JCheckBox box = new JCheckBox(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
     box.setSelected(((SimpleStatus)p.getStatus()).isLooking());
     box.setEnabled(false);
