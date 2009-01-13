@@ -1,17 +1,39 @@
 #
-# Build dependencies:  This Makefile is only meant to work on Linux systems
-# Before building, you will need to install (at least) the following packages
+# $Id$
+#
+# This Makefile is intended for use on Linux systems. If you are trying to use
+# it elsewhere, you are on your own.
+#
+# Before building, you will need to install (at least) the following packages:
 #
 # ant
-# launch4j (http://launch4j.sourceforge.net)
-# mingw32 (supplied with launch4j for some architectures)
-# nsis
-#   NOTE:  For intellectual property reasons, nsis will not work out of the box
-#          (it will fail with "Invalid command:  System::Call")
-#          The workaround is to install nsis on a Windows system, and copy
-#          the Plugins\System.dll file into /usr/share/nsis/plugins
-#          Alternatively, you can build nsis yourself as follows:
-#            scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/path/to/extracted/zip install-compiler
+# Launch4j (http://launch4j.sourceforge.net)
+# NSIS     (http://nsis.sourceforge.net)
+#
+# Also you might possibly need mingw32 for use with launch4j, depending on
+# the architecture of your machine.
+# 
+# For intellectual property reasons, nsis will not work out of the box on
+# Linux. (It will fail with "Invalid command:  System::Call"). To remedy
+# this, you can either: 
+#
+# 1) Install nsis on a Windows system, and copy the Plugins\System.dll file
+# into /usr/share/nsis/plugins, or
+#
+# 2) Get both the (Windows) binary and source for NSIS and build with scons:
+#
+# scons SKIPSTUBS=all SKIPPLUGINS=all SKIPUTILS=all SKIPMISC=all \
+#       NSIS_CONFIG_CONST_DATA_PATH=no PREFIX=/path/to/extracted/zip \
+#       install-compiler
+#
+# You will need to set the LAUNCH4J and NSIS variables to reflect where you
+# have installed them on your system.
+#
+# If you want to build the Windows ICO file, you will need librsvg2,
+# ImageMagick, and the GIMP.
+#
+# If you want to build the Apple ICNS file, you will need librsvg2 and
+# png2icns.
 #
 
 SHELL:=/bin/bash
@@ -107,6 +129,19 @@ $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)
 
 version:
 	sed -ri 's/VERSION = ".*"/VERSION = "$(VERSION)"/' $(SRCDIR)/VASSAL/Info.java
+
+#dist/windows/VASSAL.ico:
+#	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
+#	rsvg -w 48 -h 48 -f png src/icons/scalable/VASSAL.svg $(TMPDIR)/VASSAL-48.png
+#	rsvg -w 256 -h 256 -f png src/icons/scalable/VASSAL.svg $(TMPDIR)/VASSAL-256.png
+#	Then put the 16x16, 24x24, 32x32, 48x48, and 256x256 into the GIMP as layers
+#	and save as an ICO file.
+
+#dist/macosx/VASSAL.icns:
+#	for i in 48 128 256 512 ; do \
+#		rsvg -w $$i -h $$i -f png src/icons/scalable/VASSAL.svg $(TMPDIR)/VASSAL-$$i.png ; \
+#	done
+#	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
 $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
 	mkdir -p $@/Contents/{MacOS,Resources}
