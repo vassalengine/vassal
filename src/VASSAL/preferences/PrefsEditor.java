@@ -191,7 +191,7 @@ public class PrefsEditor {
 
   protected void save() {
     for (Configurer c : options) {
-      if ((savedValues.get(c) == null && c.getValue() != null) || !savedValues.get(c).equals(c.getValue())) {
+      if ((savedValues.get(c) == null && c.getValue() != null) || (savedValues.get(c) != null && !savedValues.get(c).equals(c.getValue()))) {
         c.fireUpdate();
       }
       c.setFrozen(false);
