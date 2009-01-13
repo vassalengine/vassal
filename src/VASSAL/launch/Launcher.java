@@ -32,6 +32,7 @@ import java.net.Socket;
 import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
+import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -159,40 +160,47 @@ public abstract class Launcher {
         try {
           launch();
         }
+        catch (ExtensionsLoader.LoadExtensionException e2) {
+          warn(e2);
+        }
         catch (IOException e1) {
-          if (cmdC == null) {
-            // we are standalone, so warn the user directly
+          warn(e1);
+        }
+      }
+      
+      private void warn (Exception e1) {
+        if (cmdC == null) {
+          // we are standalone, so warn the user directly
+          ErrorDialog.showDetails(
+            e1,
+            ThrowableUtils.getStackTrace(e1),
+            "Error.module_load_failed",
+            e1.getMessage()
+          );
+        }
+        else {
+          // we have a manager, so pass the load failure back to it
+          try {
+            cmdC.request(new LoadFailedCmd(e1));
+          }
+          catch (IOException e2) {
+            // warn the user directly as a last resort 
             ErrorDialog.showDetails(
               e1,
               ThrowableUtils.getStackTrace(e1),
               "Error.module_load_failed",
               e1.getMessage()
             );
-          }
-          else {
-            // we have a manager, so pass the load failure back to it
-            try {
-              cmdC.request(new LoadFailedCmd(e1));
-            }
-            catch (IOException e2) {
-              // warn the user directly as a last resort 
-              ErrorDialog.showDetails(
-                e1,
-                ThrowableUtils.getStackTrace(e1),
-                "Error.module_load_failed",
-                e1.getMessage()
-              );
 
-              ErrorDialog.show(
-                e2,
-                "Error.communication_error",
-                Resources.getString(getClass().getSimpleName() + ".app_name")
-              );
-            }
+            ErrorDialog.show(
+              e2,
+              "Error.communication_error",
+              Resources.getString(getClass().getSimpleName() + ".app_name")
+            );
           }
-
-          System.exit(1);
         }
+
+        System.exit(1);
       }
     });
   }
