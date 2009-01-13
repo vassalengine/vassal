@@ -51,6 +51,7 @@ import VASSAL.configure.ShowHelpAction;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidationReportDialog;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ApplicationIcons;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.URLUtils;
 import VASSAL.tools.menu.ChildProxy;
@@ -88,6 +89,8 @@ public abstract class EditorWindow extends JFrame {
   protected EditorWindow() {
     setTitle("VASSAL " + getEditorType() + " Editor");    
     setLayout(new BorderLayout());
+
+    ApplicationIcons.setFor(this);
 
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {

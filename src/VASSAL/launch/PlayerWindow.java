@@ -33,6 +33,7 @@ import VASSAL.Info;
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ApplicationIcons;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.WrapLayout;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -57,6 +58,8 @@ public class PlayerWindow extends JFrame {
     setTitle("VASSAL");
     setLayout(new BorderLayout());
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    ApplicationIcons.setFor(this);
 
     // setup menubar and actions
     final MenuManager mm = MenuManager.getInstance();

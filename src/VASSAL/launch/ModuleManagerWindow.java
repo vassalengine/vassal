@@ -100,6 +100,7 @@ import VASSAL.configure.TranslateVassalAction;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ApplicationIcons;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.ErrorDialog;
@@ -167,6 +168,8 @@ public class ModuleManagerWindow extends JFrame {
   public ModuleManagerWindow() {
     setTitle("VASSAL");
     setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+
+    ApplicationIcons.setFor(this);
 
     final AbstractAction shutDownAction = new AbstractAction() {
       private static final long serialVersionUID = 1L;
