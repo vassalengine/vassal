@@ -18,12 +18,14 @@ package VASSAL.build.module;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.tools.ReadErrorDialog;
 
 /**
  * Convenience class for managing extensions relative to a module file.
@@ -127,14 +129,26 @@ public class ExtensionsManager {
     return newExt;
   }
 
+  private List<File> getExtensions(File dir) {
+    if ( dir.exists() ) {
+      File[] files = dir.listFiles(filter);
+      if (files == null) {
+        ReadErrorDialog.error(new IOException(), dir);
+      }
+      else {
+        return Arrays.asList(files);
+      }
+    }
+    
+    return new ArrayList<File>();
+  }
+  
   public List<File> getActiveExtensions() {
-    File dir = getExtensionsDirectory(false);
-    return dir.exists() ? Arrays.asList(dir.listFiles(filter)) : new ArrayList<File>();
+    return getExtensions(getExtensionsDirectory(false));
   }
 
   public List<File> getInactiveExtensions() {
-    File dir = getInactiveExtensionsDirectory(false);
-    return dir.exists() ? Arrays.asList(dir.listFiles(filter)) : new ArrayList<File>();
+    return getExtensions(getInactiveExtensionsDirectory(false));
   }
 
   public boolean isExtensionActive(File extension) {
