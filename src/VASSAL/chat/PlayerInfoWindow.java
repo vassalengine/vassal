@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -17,6 +18,8 @@
  */
 package VASSAL.chat;
 
+import java.awt.Dimension;
+import java.awt.Frame;
 import javax.swing.*;
 
 import VASSAL.i18n.Resources;
@@ -27,7 +30,7 @@ import VASSAL.i18n.Resources;
 public class PlayerInfoWindow extends JDialog {
   private static final long serialVersionUID = 1L;
 
-  public PlayerInfoWindow(java.awt.Frame f, SimplePlayer p) {
+  public PlayerInfoWindow(Frame f, SimplePlayer p) {
     super(f, p.getName());
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     
@@ -35,8 +38,8 @@ public class PlayerInfoWindow extends JDialog {
     JTextField tf = new JTextField(p.getName().length());
     tf.setText(p.getName());
     tf.setEditable(false);
-    tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
-                                             tf.getPreferredSize().height));
+    tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,
+                                    tf.getPreferredSize().height));
     b.add(new JLabel(Resources.getString("Chat.real_name"))); //$NON-NLS-1$
     b.add(tf);
     add(b);
@@ -47,8 +50,8 @@ public class PlayerInfoWindow extends JDialog {
       tf = new JTextField(ip.length());
       tf.setText(ip);
       tf.setEditable(false);
-      tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
-                                             tf.getPreferredSize().height));
+      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,
+                                      tf.getPreferredSize().height));
       b.add(new JLabel(Resources.getString("Chat.ip_address"))); //$NON-NLS-1$
       b.add(tf);
       add(b);
@@ -62,8 +65,8 @@ public class PlayerInfoWindow extends JDialog {
     tf = new JTextField(client.length());
     tf.setText(client);
     tf.setEditable(false);
-    tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
-                                             tf.getPreferredSize().height));
+    tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,
+                                    tf.getPreferredSize().height));
     b.add(new JLabel(Resources.getString("Chat.client_version"))); //$NON-NLS-1$
     b.add(tf);
     add(b);
@@ -74,8 +77,8 @@ public class PlayerInfoWindow extends JDialog {
       tf = new JTextField(moduleVersion.length());
       tf.setText(moduleVersion);
       tf.setEditable(false);
-      tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
-                                             tf.getPreferredSize().height));
+      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,
+                                      tf.getPreferredSize().height));
       b.add(new JLabel(Resources.getString("Chat.module_version"))); //$NON-NLS-1$
       b.add(tf);
       add(b);
@@ -87,8 +90,8 @@ public class PlayerInfoWindow extends JDialog {
       tf = new JTextField(crc.length());
       tf.setText(crc);
       tf.setEditable(false);
-      tf.setMaximumSize(new java.awt.Dimension(tf.getMaximumSize().width,
-                                             tf.getPreferredSize().height));
+      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,
+                                      tf.getPreferredSize().height));
       b.add(new JLabel(Resources.getString("Chat.module_crc"))); //$NON-NLS-1$
       b.add(tf);
       add(b);
