@@ -345,17 +345,22 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       al.add("-cp");
       al.add(System.getProperty("java.class.path"));
 
-      // set the MacOS X dock parameters
       if (Info.isMacOSX()) {
-        // use the module name for the dock if we found a module name
-        al.add("-Xdock:name=" + 
-          (moduleName != null && moduleName.length() > 0 ? moduleName :
-// FIXME: should be localized?
-          "Unnamed module"));  
-//        al.add("-Xdock:icon=" + );
-      }
+        // set the MacOS X dock parameters
 
-      if (Info.isWindows()) {
+        // use the module name for the dock if we found a module name
+// FIXME: should "Unnamed module" be localized?
+        final String d_name = moduleName != null && moduleName.length() > 0
+          ? moduleName : "Unnamed module";
+
+        // get the path to the app icon
+        final String d_icon = new File(Info.getBaseDir(),
+          "Contents/Resources/VASSAL.icns").getAbsolutePath();
+
+        al.add("-Xdock:name=" + d_name);
+        al.add("-Xdock:icon=" + d_icon);
+      }
+      else if (Info.isWindows()) {
         // Disable the 2D to Direct3D pipeline?
         final Boolean disableD3d =
           (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_D3D);
