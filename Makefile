@@ -1,5 +1,5 @@
 #
-# Build dependencies:  This buildfile is only meant to work on Linux systems
+# Build dependencies:  This Makefile is only meant to work on Linux systems
 # Before building, you will need to install (at least) the following packages
 #
 # ant
