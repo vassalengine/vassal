@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,7 +20,14 @@ package VASSAL.chat;
 
 import java.awt.Dimension;
 import java.awt.Frame;
-import javax.swing.*;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import net.miginfocom.swing.MigLayout;
 
 import VASSAL.i18n.Resources;
 
@@ -32,87 +39,110 @@ public class PlayerInfoWindow extends JDialog {
 
   public PlayerInfoWindow(Frame f, SimplePlayer p) {
     super(f, p.getName());
-    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+    setLayout(new MigLayout("insets dialog", "[align right][fill,grow]", ""));
+   
+    // player name 
+    final JTextField name_f = new JTextField(p.getName().length());
+    name_f.setText(p.getName());
+    name_f.setEditable(false);
     
-    Box b = Box.createHorizontalBox();
-    JTextField tf = new JTextField(p.getName().length());
-    tf.setText(p.getName());
-    tf.setEditable(false);
-    tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,
-                                    tf.getPreferredSize().height));
-    b.add(new JLabel(Resources.getString("Chat.real_name"))); //$NON-NLS-1$
-    b.add(tf);
-    add(b);
+    final JLabel name_l = new JLabel(Resources.getString("Chat.real_name"));
+    name_l.setLabelFor(name_f);
 
+    add(name_l);
+    add(name_f, "pushx, wrap");
+
+    // IP address
     final String ip = ((SimpleStatus)p.getStatus()).getIp();
     if (ip != null && ip.length() > 0) {
-      b = Box.createHorizontalBox();
-      tf = new JTextField(ip.length());
-      tf.setText(ip);
-      tf.setEditable(false);
-      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,
-                                      tf.getPreferredSize().height));
-      b.add(new JLabel(Resources.getString("Chat.ip_address"))); //$NON-NLS-1$
-      b.add(tf);
-      add(b);
+      final JTextField ip_f = new JTextField();
+      ip_f.setText(ip);
+      ip_f.setEditable(false);
+
+      final JLabel ip_l = new JLabel(Resources.getString("Chat.ip_address"));
+      ip_l.setLabelFor(ip_f);
+
+      add(ip_l);
+      add(ip_f, "pushx, wrap");
     }
-    
+   
+    // client version 
     String client = ((SimpleStatus)p.getStatus()).getClient();
-    if (client == null || client.length() == 0) {
-      client = "< 3.1";
-    }
-    b = Box.createHorizontalBox();
-    tf = new JTextField(client.length());
-    tf.setText(client);
-    tf.setEditable(false);
-    tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,
-                                    tf.getPreferredSize().height));
-    b.add(new JLabel(Resources.getString("Chat.client_version"))); //$NON-NLS-1$
-    b.add(tf);
-    add(b);
-    
-    final String moduleVersion = ((SimpleStatus)p.getStatus()).getModuleVersion();
+    if (client == null || client.length() == 0) client = "< 3.1";
+
+    final JTextField client_f = new JTextField();
+    client_f.setText(client);
+    client_f.setEditable(false);
+
+    final JLabel client_l =
+      new JLabel(Resources.getString("Chat.client_version"));
+    client_l.setLabelFor(client_f);
+
+    add(client_l);
+    add(client_f, "pushx, wrap");
+
+    // module version    
+    final String moduleVersion =
+      ((SimpleStatus)p.getStatus()).getModuleVersion();
     if (moduleVersion != null && moduleVersion.length() > 0) {
-      b = Box.createHorizontalBox();
-      tf = new JTextField(moduleVersion.length());
-      tf.setText(moduleVersion);
-      tf.setEditable(false);
-      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,
-                                      tf.getPreferredSize().height));
-      b.add(new JLabel(Resources.getString("Chat.module_version"))); //$NON-NLS-1$
-      b.add(tf);
-      add(b);
+      final JTextField mver_f = new JTextField();
+      mver_f.setText(moduleVersion);
+      mver_f.setEditable(false);
+
+      final JLabel mver_l =
+        new JLabel(Resources.getString("Chat.module_version"));
+      mver_l.setLabelFor(mver_f);
+
+      add(mver_l);
+      add(mver_f, "pushx, wrap");
     }   
-        
+       
+    // module checksum 
     final String crc = ((SimpleStatus)p.getStatus()).getCrc();
     if (crc != null && crc.length() > 0) {
-      b = Box.createHorizontalBox();
-      tf = new JTextField(crc.length());
-      tf.setText(crc);
-      tf.setEditable(false);
-      tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,
-                                      tf.getPreferredSize().height));
-      b.add(new JLabel(Resources.getString("Chat.module_crc"))); //$NON-NLS-1$
-      b.add(tf);
-      add(b);
-    }  
-    
-    JCheckBox box = new JCheckBox(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
-    box.setSelected(((SimpleStatus)p.getStatus()).isLooking());
-    box.setEnabled(false);
-    add(box);
-
-    box = new JCheckBox(Resources.getString("Chat.away_from_keyboard")); //$NON-NLS-1$
-    box.setSelected(((SimpleStatus)p.getStatus()).isAway());
-    box.setEnabled(false);
-    add(box);
-
-    add(new JLabel(Resources.getString("Chat.personal_info"))); //$NON-NLS-1$
-    JTextArea ta = new JTextArea();
-    ta.setText(((SimpleStatus)p.getStatus()).getProfile());
-    ta.setEditable(false);
-    add(new JScrollPane(ta));
+      final JTextField crc_f = new JTextField();
+      crc_f.setText(crc);
+      crc_f.setEditable(false);
   
+      final JLabel crc_l = new JLabel(Resources.getString("Chat.module_crc"));
+      crc_l.setLabelFor(crc_f);
+
+      add(crc_l);
+      add(crc_f, "pushx, wrap");
+    }  
+  
+    // looking for a game? 
+    final JCheckBox looking_b =
+      new JCheckBox(Resources.getString("Chat.looking_for_a_game"));
+    looking_b.setSelected(((SimpleStatus) p.getStatus()).isLooking());
+    looking_b.setEnabled(false);
+
+    add(looking_b, "gap top unrel, align left, span, wrap");
+
+    // away from keyboard?
+    final JCheckBox away_b =
+      new JCheckBox(Resources.getString("Chat.away_from_keyboard"));
+    away_b.setSelected(((SimpleStatus) p.getStatus()).isAway());
+    away_b.setEnabled(false);
+
+    add(away_b, "align left, span, wrap unrel");
+
+    // personal info
+    final JTextArea pinfo_a = new JTextArea();
+    pinfo_a.setText(((SimpleStatus) p.getStatus()).getProfile());
+    pinfo_a.setEditable(false);
+    pinfo_a.setLineWrap(true);
+    pinfo_a.setWrapStyleWord(true);
+  
+    final JScrollPane pinfo_s = new JScrollPane(pinfo_a);
+
+    final JLabel pinfo_l =
+      new JLabel(Resources.getString("Chat.personal_info"));
+    pinfo_l.setLabelFor(pinfo_s);
+
+    add(pinfo_l, "align left, wrap");
+    add(pinfo_s, "span, grow, push");
+
     pack();
   }
 }
