@@ -97,7 +97,7 @@ public class ApplicationIcons {
               dst,  // 24x24
               ImageUtils.getImageResource("/icons/32x32/VASSAL.png"),
               ImageUtils.getImageResource("/icons/48x48/VASSAL.png"),
-              ImageUtils.getImageResource("/icons/256x256/VASSAL.png")
+              ImageUtils.getImageResource("/images/VASSAL-256x256.png")
             );
           }
           else {
@@ -111,6 +111,7 @@ public class ApplicationIcons {
           }
         }
         else {
+          // we are using Java 1.5, so we can load but a single humble icon
           l = Collections.singletonList(
             ImageUtils.getImageResource("/icons/16x16/VASSAL.png")
           );
