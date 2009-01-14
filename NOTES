@@ -27,7 +27,7 @@ Changes since beta6:
 
 A number of problems present in 3.1.0-beta7 are fixed in 3.1.0-beta8:
 
-
+* Bug 2503662: NPE on connection with a newly created module
 * Bug 2502717: NPE in PrefsEditor.save()
 * Bug 2499980: User Profile display reverting to pre 3.1 version
 * Bug 2499446: NPE when extension directory does not exist
