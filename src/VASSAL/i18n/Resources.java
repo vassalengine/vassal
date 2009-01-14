@@ -60,7 +60,7 @@ public class Resources {
 
   // Note: The Locale ctor takes the lower-case two-letter ISO language code. 
   protected static final List<Locale> supportedLocales =
-    new ArrayList<Locale>(Arrays.asList(new Locale[]{
+    new ArrayList<Locale>(Arrays.asList(
       Locale.ENGLISH,
       Locale.GERMAN,
       Locale.FRENCH,
@@ -68,8 +68,8 @@ public class Resources {
       new Locale("es"), // Spanish
       Locale.JAPANESE,
       new Locale("nl")  // Dutch
-    }
-  ));
+    )
+  );
 
   protected static Locale locale = Locale.getDefault();
   protected static String DATE_FORMAT = "{0,date}";
