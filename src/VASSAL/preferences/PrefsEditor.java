@@ -44,6 +44,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
+import net.miginfocom.swing.MigLayout;
+
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
@@ -55,12 +57,10 @@ public class PrefsEditor {
   private List<Configurer> options = new ArrayList<Configurer>();
   private Map<Configurer, Object> savedValues;
   private List<Prefs> prefs;
-  private JButton save, cancel;
   private JTabbedPane optionsTab;
   private JDialog setupDialog;
   private ArchiveWriter archive;
   private Action editAction;
-  private final JPanel buttonPanel = new JPanel();
 
   public PrefsEditor(ArchiveWriter archive) {
     savedValues = new HashMap<Configurer, Object>();
@@ -74,29 +74,32 @@ public class PrefsEditor {
       dialog = new JDialog(parent, true);
       dialog.setTitle(Resources.getString("Prefs.preferences")); //$NON-NLS-1$
       dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
       // Handle window closing correctly.
       dialog.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent we) {
           cancel();
         }
       });
-      save = new JButton(Resources.getString(Resources.OK));
-      save.addActionListener(new ActionListener() {
+
+      final JButton ok = new JButton(Resources.getString(Resources.OK));
+      ok.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           save();
         }
       });
-      cancel = new JButton(Resources.getString(Resources.CANCEL));
+
+      final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
       cancel.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           cancel();
         }
       });
-      buttonPanel.add(save);
-      buttonPanel.add(cancel);
-      dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
-      dialog.add(optionsTab);
-      dialog.add(buttonPanel);
+
+      dialog.setLayout(new MigLayout("insets dialog"));
+      dialog.add(optionsTab, "push, grow, wrap unrelated");     
+      dialog.add(ok, "tag ok, split");
+      dialog.add(cancel, "tag cancel");
     }
   }
 
