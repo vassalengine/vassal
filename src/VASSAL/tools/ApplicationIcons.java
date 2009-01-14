@@ -19,6 +19,7 @@
 
 package VASSAL.tools;
 
+import java.awt.Graphics2D;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
@@ -81,14 +82,33 @@ public class ApplicationIcons {
       List<BufferedImage> l = null;
       try {
         if (setIconImages != null) {
-          l = Arrays.asList(
-            ImageUtils.getImageResource("/icons/16x16/VASSAL.png"),
-            ImageUtils.getImageResource("/icons/22x22/VASSAL.png"),
-            ImageUtils.getImageResource("/icons/24x24/VASSAL.png"),
-            ImageUtils.getImageResource("/icons/32x32/VASSAL.png"),
-            ImageUtils.getImageResource("/icons/48x48/VASSAL.png"),
-            ImageUtils.getImageResource("/icons/256x256/VASSAL.png")
-          );
+          if (Info.isWindows()) {
+            // Windows uses 24x24 instead of 22x22
+            final BufferedImage src =
+              ImageUtils.getImageResource("/icons/22x22/VASSAL.png");
+            final BufferedImage dst =
+              ImageUtils.createCompatibleTranslucentImage(24, 24);
+            final Graphics2D g = dst.createGraphics();
+            g.drawImage(src, 1, 1, null);
+            g.dispose();
+
+            l = Arrays.asList(
+              ImageUtils.getImageResource("/icons/16x16/VASSAL.png"),
+              dst,  // 24x24
+              ImageUtils.getImageResource("/icons/32x32/VASSAL.png"),
+              ImageUtils.getImageResource("/icons/48x48/VASSAL.png"),
+              ImageUtils.getImageResource("/icons/256x256/VASSAL.png")
+            );
+          }
+          else {
+            // load the standard Tango sizes
+            l = Arrays.asList(
+              ImageUtils.getImageResource("/icons/16x16/VASSAL.png"),
+              ImageUtils.getImageResource("/icons/22x22/VASSAL.png"),
+              ImageUtils.getImageResource("/icons/32x32/VASSAL.png"),
+              ImageUtils.getImageResource("/icons/48x48/VASSAL.png")
+            );
+          }
         }
         else {
           l = Collections.singletonList(
