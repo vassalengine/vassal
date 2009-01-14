@@ -32,9 +32,9 @@ import java.util.Iterator;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
-import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.AddPiece;
@@ -51,6 +51,8 @@ import VASSAL.counters.PieceFilter;
 import VASSAL.counters.PieceIterator;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * Encapsulates information on how to draw expanded and unexpanded
@@ -81,6 +83,12 @@ public class StackMetrics extends AbstractConfigurable {
   public static final String UP_KEY = "up";
   public static final String DOWN_KEY = "down";
   public static final String COLOR = "color";
+  
+  public static int DEFAULT_EXSEP_X = 6;
+  public static int DEFAULT_EXSEP_Y = 18;
+  public static int DEFAULT_UNEXSEP_X = 2;
+  public static int DEFAULT_UNEXSEP_Y = 4;
+  
   protected Map map;
 
   public void setAttribute(String name, Object value) {
@@ -90,7 +98,10 @@ public class StackMetrics extends AbstractConfigurable {
           exSepX = Integer.parseInt((String) value);
         }
         catch (NumberFormatException NaN) {
-          throw new IllegalBuildException(NaN);
+          exSepX = DEFAULT_EXSEP_X;
+          ErrorDialog.dataError(
+              new BadDataReport(
+                  Resources.getString("Error.bad_preference", EXSEP_X, "StackMetrics"), (String) value, NaN));
         }
       }
       else if (value != null) {
@@ -103,7 +114,10 @@ public class StackMetrics extends AbstractConfigurable {
           exSepY = Integer.parseInt((String) value);
         }
         catch (NumberFormatException NaN) {
-          throw new IllegalBuildException(NaN);
+          exSepY = DEFAULT_EXSEP_Y;
+          ErrorDialog.dataError(
+              new BadDataReport(
+                  Resources.getString("Error.bad_preference", EXSEP_Y, "StackMetrics"), (String) value, NaN));
         }
       }
       else if (value != null) {
@@ -116,7 +130,10 @@ public class StackMetrics extends AbstractConfigurable {
           unexSepX = Integer.parseInt((String) value);
         }
         catch (NumberFormatException NaN) {
-          throw new IllegalBuildException(NaN);
+          unexSepX = DEFAULT_UNEXSEP_X;
+          ErrorDialog.dataError(
+              new BadDataReport(
+                  Resources.getString("Error.bad_preference", UNEXSEP_X, "StackMetrics"), (String) value, NaN));
         }
       }
       else if (value != null) {
@@ -129,7 +146,10 @@ public class StackMetrics extends AbstractConfigurable {
           unexSepY = Integer.parseInt((String) value);
         }
         catch (NumberFormatException NaN) {
-          throw new IllegalBuildException(NaN);
+          unexSepY = DEFAULT_UNEXSEP_Y;
+          ErrorDialog.dataError(
+              new BadDataReport(
+                  Resources.getString("Error.bad_preference", UNEXSEP_Y, "StackMetrics"), (String) value, NaN));
         }
       }
       else if (value != null) {
@@ -203,7 +223,7 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   public StackMetrics() {
-    this(false, 6, 18, 2, 4);
+    this(false, DEFAULT_EXSEP_X, DEFAULT_EXSEP_Y, DEFAULT_UNEXSEP_X, DEFAULT_UNEXSEP_Y);
   }
 
   public StackMetrics(boolean dis,
