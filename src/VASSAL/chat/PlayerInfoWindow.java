@@ -98,17 +98,18 @@ public class PlayerInfoWindow extends JDialog {
     }   
        
     // module checksum 
-    final String crc = ((SimpleStatus)p.getStatus()).getCrc();
-    if (crc != null && crc.length() > 0) {
-      final JTextField crc_f = new JTextField();
-      crc_f.setText(crc);
-      crc_f.setEditable(false);
+    final String csum = ((SimpleStatus)p.getStatus()).getCrc();
+    if (csum != null && csum.length() > 0) {
+      final JTextField csum_f = new JTextField();
+      csum_f.setText(csum);
+      csum_f.setEditable(false);
   
-      final JLabel crc_l = new JLabel(Resources.getString("Chat.module_crc"));
-      crc_l.setLabelFor(crc_f);
+      final JLabel csum_l =
+        new JLabel(Resources.getString("Chat.module_checksum"));
+      csum_l.setLabelFor(csum_f);
 
-      add(crc_l);
-      add(crc_f, "pushx, wrap");
+      add(csum_l);
+      add(csum_f, "pushx, wrap");
     }  
   
     // looking for a game? 
