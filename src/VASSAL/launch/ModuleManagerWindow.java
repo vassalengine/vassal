@@ -77,6 +77,8 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
@@ -1766,9 +1768,15 @@ public class ModuleManagerWindow extends JFrame {
 
       LogManager.addLogListener(lp);
 
+// FIXME: this should have its own key. Probably keys should be renamed
+// to reflect what they are labeling, e.g., Help.show_error_log_menu_item,
+// Help.error_log_dialog_title.
       final JDialog d =
         new JDialog(frame, Resources.getString("Help.error_log"));
-      d.add(new JScrollPane(lp));
+      d.setLayout(new MigLayout("insets 0"));
+      d.add(new JScrollPane(lp), "grow, push, w 500, h 600");
+
+      d.setLocationRelativeTo(frame);
       d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       d.addWindowListener(new WindowAdapter() {
         public void windowClosed(WindowEvent e) {
