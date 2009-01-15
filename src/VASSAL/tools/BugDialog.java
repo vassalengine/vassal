@@ -104,7 +104,7 @@ public class BugDialog extends JDialog {
     final JXHeader header = new JXHeader(
       Resources.getString("BugDialog.heading"),
       Resources.getString("BugDialog.message"),
-      new ImageIcon(BugDialog.class.getResource("/images/bug.png"))
+      new ImageIcon(BugDialog.class.getResource("/icons/48x48/bug.png"))
     );
 
     //
