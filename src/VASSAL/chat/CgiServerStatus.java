@@ -21,7 +21,6 @@ package VASSAL.chat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +29,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.SortedMap;
-import java.util.TimeZone;
 import java.util.TreeMap;
+
 import VASSAL.i18n.Resources;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.SequenceEncoder;
@@ -112,13 +111,7 @@ public class CgiServerStatus implements ServerStatus {
   private ServerStatus.ModuleSummary[] getHistory(long time) {
     if (time <= 0) return getStatus();
 
-    final long now = System.currentTimeMillis() +
-      TimeZone.getDefault().getOffset(Calendar.ERA,
-                                      Calendar.YEAR,
-                                      Calendar.MONTH,
-                                      Calendar.DAY_OF_YEAR,
-                                      Calendar.DAY_OF_WEEK,
-                                      Calendar.MILLISECOND);
+    final long now = System.currentTimeMillis();
 
     // start with new interval
     final Interval req = new Interval(now - time, now);
