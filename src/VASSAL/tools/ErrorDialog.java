@@ -191,7 +191,7 @@ public class ErrorDialog {
                               parent, thrown, details, messageKey, args);
   }
 
-   public static void showDetails(
+  public static void showDetails(
     Component parent,
     Throwable thrown,
     String details,
@@ -203,7 +203,7 @@ public class ErrorDialog {
                               parent, thrown, details, title, heading, message);
   }
 
-    public static void showDetailsDisableable(
+  public static void showDetailsDisableable(
     String details,
     Object key,
     String messageKey,
