@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -43,9 +44,11 @@ import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.ThrowableUtils;
 
 /**
  * This component places a button into the controls window toolbar.
@@ -63,7 +66,7 @@ public class DoActionButton extends AbstractConfigurable {
   public static final String SOUND_CLIP = "soundClip"; //$NON-NLS-1$
   public static final String DO_HOTKEY = "doHotkey"; //$NON-NLS-1$
   public static final String HOTKEYS = "hotkeys"; //$NON-NLS-1$
-
+ 
   protected LaunchButton launch;
   protected boolean doReport = false;
   protected FormattedString reportFormat = new FormattedString(GameModule.getGameModule());
@@ -72,13 +75,29 @@ public class DoActionButton extends AbstractConfigurable {
   protected boolean doHotkey = false;
   protected List<KeyStroke> hotkeys = new ArrayList<KeyStroke>();
   
+  // Detect looping Action Buttons
+  protected static final int RECURSION_LIMIT = 50;
+  protected static int recursionDepth = 0;
+  
   public DoActionButton() {
     ActionListener rollAction = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        execute();
+        try {
+          execute();
+        }
+        catch (InfiniteLoopException ex) {
+          ErrorDialog.showDetails(
+            ex,
+            ThrowableUtils.getStackTrace(ex),
+            "Error.infinite_loop",
+            getConfigureTypeName(),
+            getConfigureName()
+          );
+        }        
       }
     };
-    launch = new LaunchButton("Do Action", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
+    launch = new LaunchButton(
+      "Do Action", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
     setAttribute(NAME, "Do Action");
     setAttribute(TOOLTIP, "Do Action");
     launch.setAttribute(BUTTON_TEXT, "Do Action");
@@ -89,23 +108,35 @@ public class DoActionButton extends AbstractConfigurable {
   }
 
   public String[] getAttributeNames() {
-    String s[] = {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY, DO_REPORT, REPORT_FORMAT, DO_SOUND, SOUND_CLIP, DO_HOTKEY, HOTKEYS};
-    return s;
+    return new String[]{
+      NAME,
+      BUTTON_TEXT,
+      TOOLTIP,
+      ICON,
+      HOTKEY,
+      DO_REPORT,
+      REPORT_FORMAT,
+      DO_SOUND,
+      SOUND_CLIP,
+      DO_HOTKEY,
+      HOTKEYS
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Description:  ",
-                        "Button text:  ",
-                        "Button Tooltip text:  ",
-                        "Button icon:  ",
-                        "Hot key:  ",
-                        "Display Message?",
-                        "Report Format:  ",
-                        "Play a sound?",
-                        "Sound Clip:  ",
-                        "Send Hotkeys?",
-                        "Hot Keys:  ",
-                        };
+    return new String[]{
+      "Description:  ",
+      "Button text:  ",
+      "Button Tooltip text:  ",
+      "Button icon:  ",
+      "Hot key:  ",
+      "Display Message?",
+      "Report Format:  ",
+      "Play a sound?",
+      "Sound Clip:  ",
+      "Send Hotkeys?",
+      "Hot Keys:  ",
+    };
   }
 
   public static class IconConfig implements ConfigurerFactory {
@@ -167,10 +198,11 @@ public class DoActionButton extends AbstractConfigurable {
   /**
    * The component to be added to the control window toolbar
    */
-  protected java.awt.Component getComponent() {
+  protected Component getComponent() {
     return launch;
   }
 
+  @SuppressWarnings("unchecked")
   public void setAttribute(String key, Object o) {
     if (NAME.equals(key)) {
       setConfigureName((String) o);
@@ -239,7 +271,6 @@ public class DoActionButton extends AbstractConfigurable {
       return launch.getAttributeValueString(key);
     }
   }
-
   
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REPORT_FORMAT.equals(name)) {
@@ -298,22 +329,42 @@ public class DoActionButton extends AbstractConfigurable {
     return HelpFile.getReferenceManualPage("MessageButton.htm"); //$NON-NLS-1$
   }
 
-  protected void execute() {
-    Command c = new NullCommand();
-    if (doReport) {
-      String report = reportFormat.getLocalizedText();
-      c.append(new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "* " + report));
-    }
-    if (doSound) {
-      String clipName = new FormattedString(soundClip).getText(GameModule.getGameModule());
-      c.append(new PlayAudioClipCommand(clipName));
-    }
-    if (doHotkey) {
-      for (KeyStroke key : hotkeys) {
-        GameModule.getGameModule().fireKeyStroke(key);
+  protected void execute() throws InfiniteLoopException {
+    try {
+      if (++recursionDepth > RECURSION_LIMIT) {
+        throw new InfiniteLoopException();
       }
+
+      final Command c = new NullCommand();
+      if (doReport) {
+        final String report = "* " + reportFormat.getLocalizedText();
+
+        c.append(new Chatter.DisplayText(
+          GameModule.getGameModule().getChatter(), report)); 
+      }
+
+      if (doSound) {
+        final String clipName =
+          new FormattedString(soundClip).getText(GameModule.getGameModule());
+
+        c.append(new PlayAudioClipCommand(clipName));
+      }
+
+      if (doHotkey) {
+        for (KeyStroke key : hotkeys) {
+          GameModule.getGameModule().fireKeyStroke(key);
+        }
+      }
+
+      c.execute();
+      GameModule.getGameModule().sendAndLog(c);
     }
-    c.execute();
-    GameModule.getGameModule().sendAndLog(c);
+    finally {
+      --recursionDepth;
+    }
+  }
+  
+  private static class InfiniteLoopException extends Exception {
+    private static final long serialVersionUID = 1L;
   }
 }
