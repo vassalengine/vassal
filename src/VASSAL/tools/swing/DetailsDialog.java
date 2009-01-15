@@ -67,6 +67,7 @@ public class DetailsDialog {
     final JTextArea detailsArea = new JTextArea(details, 25, 80);
     detailsArea.setEditable(false);
     detailsArea.setLineWrap(true);
+    detailsArea.setTabSize(2);
 
     final JScrollPane detailsScroll = new JScrollPane(detailsArea);
     detailsScroll.setVisible(false);

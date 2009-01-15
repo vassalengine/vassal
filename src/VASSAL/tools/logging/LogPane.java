@@ -10,6 +10,7 @@ public class LogPane extends JTextArea implements LogListener {
     setEditable(false);
     setLineWrap(true);
     setWrapStyleWord(true);
+    setTabSize(2);
   }
 
   public void handle(LogEntry entry) {
