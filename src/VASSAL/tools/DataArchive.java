@@ -206,7 +206,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       throw new IOException("Must save before accessing contents");
     }
 
-    return URLUtils.toJarURL(new File(archive.getName()));
+    return URLUtils.toJarURL(archive.getName());
   }
 
   /**

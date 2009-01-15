@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -48,21 +48,7 @@ public class URLUtils {
    * @throws MalformedURLException if the URL can't be created
    */ 
   public static URL toURL(File f) throws MalformedURLException {
-    String path = f.getAbsolutePath();
-
-    if (File.separatorChar != '/') {
-      path = path.replace(File.separatorChar, '/');
-    }
-
-    if (!path.startsWith("/")) { //$NON-NLS-1$
-      path = "/" + path;         //$NON-NLS-1$
-    }
-    
-    if (!path.endsWith("/") && f.isDirectory()) { //$NON-NLS-1$
-      path += "/";                                //$NON-NLS-1$
-    }
-
-    return new URL("file", "", path); //$NON-NLS-1$ //$NON-NLS-2$
+    return f.toURI().toURL();
   }
 
   /**
@@ -84,6 +70,9 @@ public class URLUtils {
    * @throws MalformedURLException if the URL can't be created
    */
   public static URL toJarURL(File f) throws MalformedURLException {
-    return new URL("jar:" + toURL(f).toString() + "!/");
+    // As as workaround for Sun Bug 4523159, we urlencode all '!' in
+    // our inner URL to prevent these from being misinterpreted by 
+    // Class.getResourceAsStream() as the JAR marker "!/".
+    return new URL("jar:" + toURL(f).toString().replace("!", "%21") + "!/");
   }
 }

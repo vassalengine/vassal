@@ -37,7 +37,10 @@ A number of problems present in 3.1.0-beta7 are fixed in 3.1.0-beta8:
 * Bug 2495248: NPE in Replace.replacePiece()
 * Bug 2489325: SocketException in ModuleManager$SocketListener.run()
 * Bug 2446130: Better handling for ModuleManager socket errors
+* Bug 2431468: NumberFormatException in StackMetrics.setAttribute()
 * Bug 2373491: StackOverflowError due to infinite Send-to-location loop
+* Bug 2300943: Module names with apostrophes don't appear in Server Status
+* Bug 2286774: Problems playing modules from folders with '!' in pathname
 * Bug: Main Room must not be lockable
 * Bug: Tooltip for dice button was completely broken.
 
