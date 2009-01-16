@@ -345,8 +345,9 @@ public class ArchiveWriter extends DataArchive {
       }
 
       // Write new entries into temp file
-      for (String name : files.keySet()) {
-        final Object o = files.get(name);
+      for (Map.Entry<String,Object> en : files.entrySet()) {
+        final String name = en.getKey();
+        final Object o = en.getValue();
 
         final ZipEntry entry = new ZipEntry(name);
 

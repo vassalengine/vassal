@@ -47,27 +47,29 @@ public class ValidationReportDialog extends JDialog {
     add(reportBox);
     JPanel buttonPanel = new JPanel();
     add(buttonPanel, BorderLayout.SOUTH);
-    List<String> warnings = report.getWarnings();
+
+    final List<String> warnings = report.getWarnings();
     switch (warnings.size()) {
-      case 0:
-        reportBox.add(new JLabel("No problems found"));
-        buttonPanel.add(createOkButton());
-        break;
-        case 1:
-        reportBox.add(new JLabel("A problem was found in this module."));
-        reportBox.add(new JLabel(warnings.get(0).toString()+"."));
-        buttonPanel.add(createOkButton());
-        buttonPanel.add(createCancelButton());
-        break;
-        default:
-        reportBox.add(new JLabel("The following problems were found in this module."));
-        reportBox.add(new JLabel("If not fixed, they could cause bugs during game play."));
-        JList list = new JList(warnings.toArray());
-        list.setVisibleRowCount(Math.min(list.getVisibleRowCount(),warnings.size()));
-        reportBox.add(new ScrollPane(list));
-        buttonPanel.add(createOkButton());
-        buttonPanel.add(createCancelButton());
+    case 0:
+      reportBox.add(new JLabel("No problems found"));
+      buttonPanel.add(createOkButton());
+      break;
+    case 1:
+      reportBox.add(new JLabel("A problem was found in this module."));
+      reportBox.add(new JLabel(warnings.get(0) + "."));
+      buttonPanel.add(createOkButton());
+      buttonPanel.add(createCancelButton());
+      break;
+    default:
+      reportBox.add(new JLabel("The following problems were found in this module."));
+      reportBox.add(new JLabel("If not fixed, they could cause bugs during game play."));
+      JList list = new JList(warnings.toArray());
+      list.setVisibleRowCount(Math.min(list.getVisibleRowCount(),warnings.size()));
+      reportBox.add(new ScrollPane(list));
+      buttonPanel.add(createOkButton());
+      buttonPanel.add(createCancelButton());
     }
+
     pack();
     setLocationRelativeTo(null);
   }

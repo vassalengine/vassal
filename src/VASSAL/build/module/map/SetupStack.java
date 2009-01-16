@@ -320,7 +320,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
     else if (USE_GRID_LOCATION.equals(key)) {
       if (value instanceof String) {
-        value = new Boolean((String) value);
+        value = Boolean.valueOf((String) value);
       }
       useGridLocation = ((Boolean) value).booleanValue();
     }

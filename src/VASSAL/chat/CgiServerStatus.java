@@ -174,8 +174,10 @@ public class CgiServerStatus implements ServerStatus {
     final HashMap<String,ServerStatus.ModuleSummary> entries =
       new HashMap<String,ServerStatus.ModuleSummary>();
 
-    for (Long when : records.subMap(req.l, req.r).keySet()) {
-      final String[] r = records.get(when);
+    for (Map.Entry<Long,String[]> e : records.subMap(req.l, req.r).entrySet()) {
+      final Long when = e.getKey();
+      final String[] r = e.getValue();
+
       final String moduleName = r[0]; 
       final String roomName = r[1];
       final String playerName = r[2];

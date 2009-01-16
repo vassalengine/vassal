@@ -232,7 +232,13 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
     private JTextArea text;
     private JTable table;
     private JButton revealButton;
-    private String[] columnNames = {Resources.getString("Notes.player"), Resources.getString("Notes.date_time"), Resources.getString("Notes.note_name"), Resources.getString("Notes.revealed")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+    private String[] columnNames = {
+      Resources.getString("Notes.player"),    //$NON-NLS-1$
+      Resources.getString("Notes.date_time"), //$NON-NLS-1$
+      Resources.getString("Notes.note_name"), //$NON-NLS-1$
+      Resources.getString("Notes.revealed")   //$NON-NLS-1$
+    };
 
     public Controls() {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -322,7 +328,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       private static final long serialVersionUID = 1L;
 
       public String getColumnName(int col) {
-        return columnNames[col].toString();
+        return columnNames[col];
       }
 
       public int getRowCount() {

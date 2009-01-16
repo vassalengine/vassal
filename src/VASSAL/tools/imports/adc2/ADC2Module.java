@@ -2826,15 +2826,17 @@ private void configureMainMap(GameModule gameModule) throws IOException {
   }
   
   // add option to show only top piece just like decks.
-  protected void writeSetupStacksToArchive(GameModule gameModule) throws IOException {
+  protected void writeSetupStacksToArchive(GameModule gameModule)
+                                                          throws IOException {
     final Map mainMap = getMainMap();
     
     final Point offset = getMap().getCenterOffset();
-    for (int hex : stacks.keySet()) {
+    for (java.util.Map.Entry<Integer,ArrayList<Piece>> en : stacks.entrySet()) {
+      final int hex = en.getKey();
       Point p = getMap().indexToPosition(hex);
-      if (p == null)
-        continue;
-      ArrayList<Piece> s = stacks.get(hex);
+      if (p == null) continue;
+
+      final ArrayList<Piece> s = en.getValue();
       SetupStack stack = new SetupStack();
       insertComponent(stack, mainMap);
 

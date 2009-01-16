@@ -35,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -418,26 +419,29 @@ public class SymbolSet extends Importer{
    * @return The most frequently occuring dimension for game pieces in this module.
    */
   public Dimension getModalSize() {
-    final HashMap<Dimension, Integer> histogram = new HashMap<Dimension, Integer>();
+    final HashMap<Dimension,Integer> histogram =
+      new HashMap<Dimension,Integer>();
+
     for (SymbolData piece : gamePieceData) {
-      BufferedImage im = piece.getImage();
-      Dimension d = new Dimension(im.getWidth(), im.getHeight());
-      Integer i = histogram.get(d);
-      if (i == null)
-        histogram.put(d, 1);
-      else
-        histogram.put(d, i+1);
+      final BufferedImage im = piece.getImage();
+      final Dimension d = new Dimension(im.getWidth(), im.getHeight());
+      final Integer i = histogram.get(d);
+      histogram.put(d, i == null ? 1 : i+1);
     }
+
     int max = 0;
     final Dimension maxDim = new Dimension(0,0);
-    for (Dimension d : histogram.keySet()) {
-      int n = histogram.get(d);
+    for (Map.Entry<Dimension,Integer> e : histogram.entrySet()) {
+      final Dimension d = e.getKey();
+      final int n = e.getValue();
+
       if (n > max) {
         max = n;          
         maxDim.height = d.height;
         maxDim.width = d.width;
       }
     }
+
     return maxDim;
   }
 

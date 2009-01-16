@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -342,12 +343,11 @@ public abstract class AbstractMetaData {
       e = doc.createElement(prefix);
       e.appendChild(doc.createTextNode(value));
       root.appendChild(e);
-      
-      for (String lang : translations.keySet()) {
-        String tx = translations.get(lang);
+     
+      for (Map.Entry<String,String> en : translations.entrySet()) { 
         e = doc.createElement(prefix);
-        e.setAttribute(LANG_ATTR, lang);
-        e.appendChild(doc.createTextNode(tx));
+        e.setAttribute(LANG_ATTR, en.getValue());
+        e.appendChild(doc.createTextNode(en.getKey()));
         root.appendChild(e);
       }
     }

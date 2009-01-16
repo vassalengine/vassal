@@ -148,33 +148,41 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[] {StringPreference.class, 
-        TextPreference.class,
-        EnumPreference.class,
-        IntegerPreference.class, 
-        DoublePreference.class, 
-        BooleanPreference.class} ;
+    return new Class<?>[]{
+      StringPreference.class, 
+      TextPreference.class,
+      EnumPreference.class,
+      IntegerPreference.class, 
+      DoublePreference.class, 
+      BooleanPreference.class
+    };
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Allow non-owners to unmask pieces:  ",
-                        null,
-                        "Center on opponent's moves:  ",
-                        "Auto-report moves:  ",
-                        "Player Id format:  "};
+    return new String[]{
+      "Allow non-owners to unmask pieces:  ",
+      null,
+      "Center on opponent's moves:  ",
+      "Auto-report moves:  ",
+      "Player Id format:  "
+    };
   }
 
   public String[] getAttributeNames() {
-    ArrayList<String> attributes = new ArrayList<String>(Arrays.asList(
-      new String[]{ NON_OWNER_UNMASKABLE,
-                    PROMPT_STRING,
-                    CENTER_ON_MOVE,
-                    AUTO_REPORT,
-                    PLAYER_ID_FORMAT }));
+    final ArrayList<String> attributes = new ArrayList<String>(
+      Arrays.asList(
+        NON_OWNER_UNMASKABLE,
+        PROMPT_STRING,
+        CENTER_ON_MOVE,
+        AUTO_REPORT,
+        PLAYER_ID_FORMAT
+      )
+    );
 
     for (String key : properties.keySet()) {
       attributes.add(key);
     }
+
     return attributes.toArray(new String[attributes.size()]);
   }
 

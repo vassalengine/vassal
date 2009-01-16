@@ -48,7 +48,7 @@ public class NumericPropertyPrompt extends PropertyPrompt {
 
   private boolean isValidValue(String s) {
     try {
-      int value = Integer.parseInt(s.toString());
+      final int value = Integer.parseInt(s);
       return value <= max && value >= min;
     }
     catch (NumberFormatException e) {

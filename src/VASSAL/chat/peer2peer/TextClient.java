@@ -12,6 +12,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
 import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.Player;
+import VASSAL.chat.Room;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 
@@ -57,15 +59,16 @@ public class TextClient {
   private void availableRoomsChanged(PropertyChangeEvent evt) {
     if (reportRooms) {
       System.out.println("----------" + (new Date()) + "---------"); //$NON-NLS-1$ //$NON-NLS-2$
-      System.out.print(report((VASSAL.chat.Room[]) evt.getNewValue()));
+      System.out.print(report((Room[]) evt.getNewValue()));
     }
   }
 
-  public static String report(VASSAL.chat.Room[] r) {
+  public static String report(Room[] r) {
     final StringBuilder buffer = new StringBuilder();
     for (int i = 0; i < r.length; ++i) {
       buffer.append(r[i].getName() + ": "); //$NON-NLS-1$
-      VASSAL.chat.Player[] p = (VASSAL.chat.Player[]) r[i].getPlayerList().toArray();
+
+      Player[] p = (Player[]) r[i].getPlayerList().toArray();
       for (int j = 0; j < p.length; ++j) {
         buffer.append(p[j]);
         if (j < p.length - 1) {
