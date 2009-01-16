@@ -52,7 +52,7 @@ public class SoundConfigurer extends Configurer {
   private JPanel controls;
   private JTextField textField;
   private AudioClipFactory clipFactory;
-  private final String NO_VALUE = "<disabled>";
+  private static final String NO_VALUE = "<disabled>";
 
   public SoundConfigurer(String key, String name, String defaultResource) {
     super(key, name);

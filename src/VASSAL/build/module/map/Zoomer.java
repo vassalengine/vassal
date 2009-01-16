@@ -419,7 +419,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         public void insertUpdate(DocumentEvent e) { validate(); }
         public void removeUpdate(DocumentEvent e) { validate(); }
 
-        private final String pattern =
+        private static final String pattern =
           "^(\\d*[1-9]\\d*(/\\d*[1-9]\\d*|\\.\\d*)?|0*\\.\\d*[1-9]\\d*)$";
 
         private void validate() {
