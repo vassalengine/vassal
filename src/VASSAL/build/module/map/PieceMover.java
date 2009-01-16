@@ -768,10 +768,15 @@ public class PieceMover extends AbstractBuildable
   // be loaded when the user initiates the first drag, which makes the
   // start of the drag choppy.
   static {
-    @SuppressWarnings("unused")
-    Class<?> c;
-    c = MovementReporter.class;
-    c = KeyBuffer.class;  
+    try {
+      Class.forName(MovementReporter.class.getName(),
+                    true, MovementReporter.class.getClassLoader());
+      Class.forName(KeyBuffer.class.getName(),
+                    true, KeyBuffer.class.getClassLoader());
+    }
+    catch (ClassNotFoundException e) {
+      throw new IllegalStateException(e); // impossible
+    }
   }
 
 // FIXME: It would be better to break this out, and have two implementations,
