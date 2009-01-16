@@ -26,6 +26,7 @@ import java.util.List;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.WriteErrorDialog;
 
 /**
  * Convenience class for managing extensions relative to a module file.
@@ -34,6 +35,7 @@ import VASSAL.tools.ReadErrorDialog;
  * @author rodneykinney
  * 
  */
+
 public class ExtensionsManager {
   private File moduleFile;
   private File extensionsDir;
@@ -79,6 +81,9 @@ public class ExtensionsManager {
         dir = ensureExists(dir);
       }
       extensionsDir = dir;
+      if ( extensionsDir == null ) {
+        return null;
+      }
     }
     if (mustExist && !extensionsDir.exists()) {
       extensionsDir = ensureExists(extensionsDir);
@@ -90,25 +95,36 @@ public class ExtensionsManager {
     extensionsDir = dir == null ? null : ensureExists(dir);
   }
 
+  
+  /**
+   * Ensure a directory exists.
+   * @param dir Directory
+   * @return Directory as <code>File</code> object; otherwise <code>null</code> if an error occurs.
+   */
   protected File ensureExists(File dir) {
-    if (dir.exists() && !dir.isDirectory()) {
-// FIXME: is this exception appropriate?
-      throw new IllegalStateException(dir + " is not a directory");
+    if ( dir.exists() && !dir.isDirectory() ) {
+      WriteErrorDialog.error(new IOException(dir + "is not a directory"), dir);
+      return null;
     }
-    if (!dir.exists()) {
-      if (!dir.mkdirs()) {
-// FIXME: is this exception appropriate?
-        throw new IllegalStateException("Could not create " + dir);
-      }
+    else if ( !dir.exists() && !dir.mkdirs() ) {
+      WriteErrorDialog.error(new IOException("Could not create " + dir), dir);
+      return null;
     }
     return dir;
   }
 
   public File getInactiveExtensionsDirectory(boolean mustExist) {
     if (inactiveDir == null) {
-      inactiveDir = new File(getExtensionsDirectory(mustExist), "inactive");
+      File extDir = getExtensionsDirectory(mustExist);
+      if (extDir == null) {
+        return null;
+      }
+      inactiveDir = new File(extDir, "inactive");
       if (mustExist) {
         inactiveDir = ensureExists(inactiveDir);
+        if ( inactiveDir == null ) {
+          return null;
+        }
       }
     }
     if (mustExist && !inactiveDir.exists()) {
@@ -120,17 +136,25 @@ public class ExtensionsManager {
   public File setActive(File extension, boolean active) {
     File newExt;
     if (active) {
-      newExt = new File(getExtensionsDirectory(true), extension.getName());
+      final File extensionsDirectory = getExtensionsDirectory(true);
+      if ( extensionsDirectory == null ) {
+        return extension;
+      }
+      newExt = new File(extensionsDirectory, extension.getName());
     }
     else {
-      newExt = new File(getInactiveExtensionsDirectory(true), extension.getName());
+      final File inactiveExtensionsDirectory = getInactiveExtensionsDirectory(true);
+      if ( inactiveExtensionsDirectory == null ) {
+        return extension;
+      }
+      newExt = new File(inactiveExtensionsDirectory, extension.getName());
     }
     extension.renameTo(newExt);
     return newExt;
   }
 
   private List<File> getExtensions(File dir) {
-    if ( dir.exists() ) {
+    if ( dir != null && dir.exists() ) {
       File[] files = dir.listFiles(filter);
       if (files == null) {
         ReadErrorDialog.error(new IOException(), dir);
