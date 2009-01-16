@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2007 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -518,9 +518,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   protected SortedSet<String> setOfImageNames() {
     final TreeSet<String> s = new TreeSet<String>();
     if (archive != null) {
+      ZipInputStream zis = null;
       try {
-        final ZipInputStream zis
-            = new ZipInputStream(new FileInputStream(archive.getName()));
+        zis = new ZipInputStream(new FileInputStream(archive.getName()));
 
         ZipEntry entry = null;
         while ((entry = zis.getNextEntry()) != null) {
@@ -528,9 +528,14 @@ public class DataArchive extends SecureClassLoader implements Closeable {
             s.add(entry.getName().substring(imageDir.length()));
           }
         }
+
+        zis.close();
       }
       catch (IOException e) {
         Logger.log(e);
+      }
+      finally {
+        IOUtils.closeQuietly(zis);
       }
     }
     for (DataArchive ext : extensions) {
