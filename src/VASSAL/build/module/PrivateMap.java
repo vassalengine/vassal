@@ -52,6 +52,7 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
 import VASSAL.tools.AdjustableSpeedScrollPane;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -69,34 +70,36 @@ public class PrivateMap extends Map {
   public static final String USE_BOARDS = "useBoards"; //$NON-NLS-1$
 
   public String[] getAttributeNames() {
-    String[] s1 = new String[]{SIDE, VISIBLE, USE_BOARDS};
-    String[] s2 = super.getAttributeNames();
-    String[] s = new String[s1.length + s2.length];
-    System.arraycopy(s1, 0, s, 0, s1.length);
-    System.arraycopy(s2, 0, s, s1.length, s2.length);
-    return s;
+    return ArrayUtils.append(
+      new String[]{
+        SIDE,
+        VISIBLE,
+        USE_BOARDS
+      },
+      super.getAttributeNames()
+    );
   }
 
   public String[] getAttributeDescriptions() {
-    String[] s1 = new String[]{"Belongs to side", "Visible to all players?", "Use same boards as this map:  "}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    String[] s2 = super.getAttributeDescriptions();
-    String[] s = new String[s1.length + s2.length];
-    System.arraycopy(s1, 0, s, 0, s1.length);
-    System.arraycopy(s2, 0, s, s1.length, s2.length);
-    return s;
+    return ArrayUtils.append(
+      new String[]{
+        "Belongs to side",                //$NON-NLS-1$
+        "Visible to all players?",        //$NON-NLS-1$
+        "Use same boards as this map:  "  //$NON-NLS-1$
+      },
+      super.getAttributeDescriptions()
+    );
   }
 
   public Class<?>[] getAttributeTypes() {
-    final Class<?>[] c1 = new Class<?>[]{
-      String[].class,
-      Boolean.class,
-      String.class
-    };
-    final Class<?>[] c2 = super.getAttributeTypes();
-    final Class<?>[] c = new Class<?>[c1.length + c2.length];
-    System.arraycopy(c1, 0, c, 0, c1.length);
-    System.arraycopy(c2, 0, c, c1.length, c2.length);
-    return c;
+    return ArrayUtils.append(
+      new Class<?>[]{
+        String[].class,
+        Boolean.class,
+        String.class
+      },
+      super.getAttributeTypes()
+    );
   }
 
   public void setAttribute(String key, Object value) {

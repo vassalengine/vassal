@@ -53,6 +53,7 @@ import javax.swing.JTextField;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.counters.Labeler;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.logging.Logger;
 
@@ -72,27 +73,24 @@ public class HexGridNumbering extends RegularGridNumbering {
   }
 
   public String[] getAttributeDescriptions() {
-    String[] s = super.getAttributeDescriptions();
-    String[] val = new String[s.length + 1];
-    System.arraycopy(s, 0, val, 0, s.length);
-    val[s.length] = "Odd-numbered rows numbered higher?";
-    return val;
+    return ArrayUtils.append(
+      super.getAttributeDescriptions(),
+      "Odd-numbered rows numbered higher?"
+    );
   }
 
   public String[] getAttributeNames() {
-    String[] s = super.getAttributeNames();
-    String[] val = new String[s.length + 1];
-    System.arraycopy(s, 0, val, 0, s.length);
-    val[s.length] = STAGGER;
-    return val;
+    return ArrayUtils.append(
+      super.getAttributeNames(),
+      STAGGER
+    );
   }
 
   public Class<?>[] getAttributeTypes() {
-    final Class<?>[] s = super.getAttributeTypes();
-    final Class<?>[] val = new Class<?>[s.length + 1];
-    System.arraycopy(s, 0, val, 0, s.length);
-    val[s.length] = Boolean.class;
-    return val;
+    return ArrayUtils.append(
+      super.getAttributeTypes(),
+      Boolean.class
+    );
   }
 
   public void setAttribute(String key, Object value) {

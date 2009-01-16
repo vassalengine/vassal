@@ -33,6 +33,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.tools.ArrayUtils;
 
 /**
  * This component places a button into the controls window toolbar. Pressing the button generates random numbers and
@@ -64,12 +65,9 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
 
   public static class InternetReportFormatConfig extends ReportFormatConfig {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      FormattedStringConfigurer config = (FormattedStringConfigurer) super.getConfigurer(c, key, name);
-      String[] options = config.getOptions();
-      String[] newOptions = new String[options.length + 1];
-      System.arraycopy(options, 0, newOptions, 0, options.length);
-      newOptions[options.length] = DETAILS;
-      config.setOptions(newOptions);
+      final FormattedStringConfigurer config =
+        (FormattedStringConfigurer) super.getConfigurer(c, key, name);
+      config.setOptions(ArrayUtils.append(config.getOptions(), DETAILS));
       return config;
     }
   }

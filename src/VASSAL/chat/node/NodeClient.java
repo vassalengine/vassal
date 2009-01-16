@@ -62,6 +62,7 @@ import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.Base64;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
@@ -418,9 +419,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
       }
     }
     if (defaultRoomIndex < 0) {
-      allRooms = new NodeRoom[rooms.length + 1];
-      System.arraycopy(rooms, 0, allRooms, 1, rooms.length);
-      allRooms[0] = new NodeRoom(defaultRoomName);
+      allRooms = ArrayUtils.prepend(rooms, new NodeRoom(defaultRoomName));
     }
     else {
       allRooms = rooms;

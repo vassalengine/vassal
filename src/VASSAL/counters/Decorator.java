@@ -28,6 +28,7 @@ import VASSAL.command.Command;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 
@@ -221,20 +222,13 @@ public abstract class Decorator implements GamePiece, StateMergeable {
    * @return the commands for this piece and its inner piece
    */
   protected KeyCommand[] getKeyCommands() {
-    KeyCommand myC[] = myGetKeyCommands();
-    KeyCommand c[] = (KeyCommand[]) piece.getProperty(Properties.KEY_COMMANDS);
-    if (c == null) {
-      return myC;
-    }
-    else if (myC == null) {
-      return c;
-    }
-    else {
-      KeyCommand all[] = new KeyCommand[c.length + myC.length];
-      System.arraycopy(myC, 0, all, 0, myC.length);
-      System.arraycopy(c, 0, all, myC.length, c.length);
-      return all;
-    }
+    final KeyCommand myC[] = myGetKeyCommands();
+    final KeyCommand c[] =
+      (KeyCommand[]) piece.getProperty(Properties.KEY_COMMANDS);
+
+    if (c == null) return myC;
+    else if (myC == null)  return c;
+    else return ArrayUtils.append(myC, c);
   }
 
   /**

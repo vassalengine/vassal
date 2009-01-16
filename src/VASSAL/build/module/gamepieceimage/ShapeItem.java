@@ -29,6 +29,7 @@ import java.awt.RenderingHints;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 
 public class ShapeItem extends Item {
@@ -64,38 +65,35 @@ public class ShapeItem extends Item {
   }
   
   public String[] getAttributeDescriptions() {
-    String a[] = new String[] { "Width:  ", "Height:  ", "Shape:  ", "Bevel:  " };
-    String b[] = super.getAttributeDescriptions();
-    String c[] = new String[a.length + b.length];
-    System.arraycopy(b, 0, c, 0, 2);
-    System.arraycopy(a, 0, c, 2, a.length);
-    System.arraycopy(b, 2, c, a.length+2, b.length-2);
-    return c;
+    return ArrayUtils.insert(
+      super.getAttributeDescriptions(), 2,
+      "Width:  ",
+      "Height:  ",
+      "Shape:  ",
+      "Bevel:  "
+    );
   }
 
   public Class<?>[] getAttributeTypes() {
-    final Class<?> a[] = new Class<?>[] {
-      Integer.class,
-      Integer.class,
-      ShapeConfig.class,
-      Integer.class
-    };
-    final Class<?> b[] = super.getAttributeTypes();
-    final Class<?> c[] = new Class<?>[a.length + b.length];
-    System.arraycopy(b, 0, c, 0, 2);
-    System.arraycopy(a, 0, c, 2, a.length);
-    System.arraycopy(b, 2, c, a.length+2, b.length-2);
-    return c;
+    return ArrayUtils.insert(
+      super.getAttributeTypes(), 2,
+      new Class<?>[] {
+        Integer.class,
+        Integer.class,
+        ShapeConfig.class,
+        Integer.class
+      }
+    );
   }
 
   public String[] getAttributeNames() {
-    String a[] = new String[] { WIDTH, HEIGHT, SHAPE, BEVEL };
-    String b[] = super.getAttributeNames();
-    String c[] = new String[a.length + b.length];
-    System.arraycopy(b, 0, c, 0, 2);
-    System.arraycopy(a, 0, c, 2, a.length);
-    System.arraycopy(b, 2, c, a.length+2, b.length-2);
-    return c;
+    return ArrayUtils.insert(
+      super.getAttributeNames(), 2,
+      WIDTH,
+      HEIGHT,
+      SHAPE,
+      BEVEL
+    );
   }
   
   public static class ShapeConfig extends StringEnum {

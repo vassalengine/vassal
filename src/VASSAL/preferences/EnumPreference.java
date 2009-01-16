@@ -23,6 +23,7 @@ import java.beans.PropertyChangeListener;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.tools.ArrayUtils;
 
 /**
  * A Drop-down list preference.
@@ -52,27 +53,24 @@ public class EnumPreference extends BasicPreference {
   }
   
   public String[] getAttributeNames() {
-    String[] a = super.getAttributeNames();
-    String[] b = new String[a.length+1];
-    System.arraycopy(a, 0, b, 0, a.length);
-    b[a.length] = LIST;
-    return b;
+    return ArrayUtils.append(
+      super.getAttributeNames(),
+      LIST
+    );
   }
 
   public String[] getAttributeDescriptions() {
-    String[] a = super.getAttributeDescriptions();
-    String[] b = new String[a.length+1];
-    System.arraycopy(a, 0, b, 0, a.length);
-    b[a.length] = "List Values:  ";
-    return b;
+    return ArrayUtils.append(
+      super.getAttributeDescriptions(),
+      "List Values:  "
+    );
   }
   
   public Class<?>[] getAttributeTypes() {
-    Class<?>[] a = super.getAttributeTypes();
-    Class<?>[] b = new Class<?>[a.length+1];
-    System.arraycopy(a, 0, b, 0, a.length);
-    b[a.length] = String[].class;
-    return b;
+    return ArrayUtils.append(
+      super.getAttributeTypes(),
+      String[].class
+    );
   }
   
   public void setAttribute(String key, Object value) {

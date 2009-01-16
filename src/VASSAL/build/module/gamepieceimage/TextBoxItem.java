@@ -31,6 +31,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JTextPane;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 
@@ -60,27 +61,25 @@ public class TextBoxItem extends TextItem {
   }
   
   public String[] getAttributeDescriptions() {
-    String a[] = new String[] { "Width:  ", "Height:  ", "Use HTML:  " };
-    String b[] = super.getAttributeDescriptions();
-    String c[] = new String[a.length + b.length];
-    System.arraycopy(b, 0, c, 0, 2);
-    System.arraycopy(a, 0, c, 2, a.length);
-    System.arraycopy(b, 2, c, a.length+2, b.length-2);
-    return c;
+    return ArrayUtils.insert(
+      super.getAttributeDescriptions(), 2,
+      "Width:  ",
+      "Height:  ",
+      "Use HTML:  "
+    );
   }
 
   public Class<?>[] getAttributeTypes() {
-    final Class<?> a[] = new Class<?>[] {
-      Integer.class,
-      Integer.class,
-      Boolean.class
-    };
-    final Class<?> b[] = super.getAttributeTypes();
-    final Class<?> c[] = new Class<?>[a.length + b.length];
-    System.arraycopy(b, 0, c, 0, 2);
-    System.arraycopy(a, 0, c, 2, a.length);
-    System.arraycopy(b, 2, c, a.length+2, b.length-2);
-    String[] names = getAttributeNames();
+    final Class<?> c[] = ArrayUtils.insert(
+      super.getAttributeTypes(), 2,
+      new Class<?>[] {
+        Integer.class,
+        Integer.class,
+        Boolean.class
+      }
+    );
+
+    final String[] names = getAttributeNames();
     // Change the type of the "Text" attribute to multi-line text
     for (int i = 0; i < names.length; i++) {
       if (TEXT.equals(names[i])) {
@@ -105,13 +104,12 @@ public class TextBoxItem extends TextItem {
   }
 
   public String[] getAttributeNames() {
-    String a[] = new String[] { WIDTH, HEIGHT, USE_HTML };
-    String b[] = super.getAttributeNames();
-    String c[] = new String[a.length + b.length];
-    System.arraycopy(b, 0, c, 0, 2);
-    System.arraycopy(a, 0, c, 2, a.length);
-    System.arraycopy(b, 2, c, a.length+2, b.length-2);
-    return c;
+    return ArrayUtils.insert(
+      super.getAttributeNames(), 2,
+      WIDTH,
+      HEIGHT,
+      USE_HTML
+    );
   }
   
   public void setAttribute(String key, Object o) {

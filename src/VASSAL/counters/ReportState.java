@@ -52,6 +52,7 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.SequenceEncoder;
 
@@ -146,9 +147,8 @@ public class ReportState extends Decorator implements TranslatablePiece {
     //     command was executed.
 
     if (isVisible || wasVisible) {
-      KeyStroke[] allKeys = new KeyStroke[keys.length+cycleDownKeys.length];
-      System.arraycopy(keys,0,allKeys,0,keys.length);
-      System.arraycopy(cycleDownKeys,0,allKeys,keys.length,cycleDownKeys.length);
+      final KeyStroke[] allKeys = ArrayUtils.append(keys, cycleDownKeys);
+
       for (int i = 0; i < allKeys.length; ++i) {
         if (stroke.equals(allKeys[i])) {
 

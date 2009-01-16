@@ -48,6 +48,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 
 public class Obscurable extends Decorator implements TranslatablePiece {
@@ -400,17 +401,12 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   public KeyCommand[] getKeyCommands() {
     if (obscuredToMe()) {
-      KeyCommand myC[] = myGetKeyCommands();
-      KeyCommand c[] = (KeyCommand[]) Decorator.getInnermost(this).getProperty(Properties.KEY_COMMANDS);
-      if (c == null) {
-        return myC;
-      }
-      else {
-        KeyCommand all[] = new KeyCommand[c.length + myC.length];
-        System.arraycopy(myC, 0, all, 0, myC.length);
-        System.arraycopy(c, 0, all, myC.length, c.length);
-        return all;
-      }
+      final KeyCommand myC[] = myGetKeyCommands();
+      final KeyCommand c[] = (KeyCommand[])
+        Decorator.getInnermost(this).getProperty(Properties.KEY_COMMANDS);
+
+      if (c == null) return myC;
+      else return ArrayUtils.append(myC, c); 
     }
     else {
       return super.getKeyCommands();

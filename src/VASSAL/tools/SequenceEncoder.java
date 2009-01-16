@@ -302,9 +302,7 @@ public class SequenceEncoder {
         retVal = StringArrayConfigurer.stringToArray(nextToken());
       }
       if (retVal.length < minLength) {
-        String[] old = retVal;
-        retVal = new String[minLength];
-        System.arraycopy(old,0,retVal,0,old.length);
+        retVal = ArrayUtils.copyOf(retVal, minLength);
       }
       return retVal;
     }

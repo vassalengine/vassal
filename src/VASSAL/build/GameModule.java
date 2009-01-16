@@ -82,6 +82,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ReadErrorDialog;
@@ -416,10 +417,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @see #encode
    */
   public void addCommandEncoder(CommandEncoder ce) {
-    final CommandEncoder[] oldValue = commandEncoders;
-    commandEncoders = new CommandEncoder[oldValue.length + 1];
-    System.arraycopy(oldValue, 0, commandEncoders, 0, oldValue.length);
-    commandEncoders[oldValue.length] = ce;
+    commandEncoders = ArrayUtils.append(commandEncoders, ce);
   }
 
   /**
@@ -431,17 +429,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @see #encode
    */
   public void removeCommandEncoder(CommandEncoder ce) {
-    for (int i = 0; i < commandEncoders.length; ++i) {
-      if (ce.equals(commandEncoders[i])) {
-        final CommandEncoder[] oldValue = commandEncoders;
-        commandEncoders = new CommandEncoder[oldValue.length - 1];
-        System.arraycopy(oldValue, 0, commandEncoders, 0, i);
-        if (i < commandEncoders.length) {
-          System.arraycopy(oldValue, i + 1, commandEncoders, i, commandEncoders.length - i);
-        }
-        break;
-      }
-    }
+    commandEncoders = ArrayUtils.remove(commandEncoders, ce);
   }
 
   /**

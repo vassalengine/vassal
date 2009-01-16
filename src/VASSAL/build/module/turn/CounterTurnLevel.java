@@ -26,6 +26,7 @@ import java.beans.PropertyChangeListener;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.SequenceEncoder;
 
 public class CounterTurnLevel extends TurnLevel {
@@ -151,35 +152,33 @@ public class CounterTurnLevel extends TurnLevel {
   }
 
   public String[] getAttributeDescriptions() {
-    String a[] = super.getAttributeDescriptions();
-    String b[] = new String[] { "Start Value:  ", "Increment By:  ", "Loop?", "Maximum value:  " };
-    String c[]= new String[a.length + b.length];
-    System.arraycopy(a, 0, c, 0, a.length);
-    System.arraycopy(b, 0, c, a.length, b.length);
-    return c;
+    return ArrayUtils.append(
+      super.getAttributeDescriptions(),
+      "Start Value:  ",
+      "Increment By:  ",
+      "Loop?",
+      "Maximum value:  "
+    );
   }
 
   public Class<?>[] getAttributeTypes() {
-    final Class<?> a[] = super.getAttributeTypes();
-    final Class<?> b[] = new Class<?>[] {
+    return ArrayUtils.append(
+      super.getAttributeTypes(),
       Integer.class,
       Integer.class,
       Boolean.class,
       Integer.class
-    };
-    final Class<?> c[]= new Class<?>[a.length + b.length];
-    System.arraycopy(a, 0, c, 0, a.length);
-    System.arraycopy(b, 0, c, a.length, b.length);
-    return c;
+    );
   }
 
   public String[] getAttributeNames() {
-    String a[] = super.getAttributeNames();
-    String b[] = new String[] { START, INCR, LOOP, LOOP_LIMIT };
-    String c[]= new String[a.length + b.length];
-    System.arraycopy(a, 0, c, 0, a.length);
-    System.arraycopy(b, 0, c, a.length, b.length);
-    return c;  
+    return ArrayUtils.append(
+      super.getAttributeNames(),
+      START,
+      INCR,
+      LOOP,
+      LOOP_LIMIT
+    );
   }
 
   public void setAttribute(String key, Object value) {

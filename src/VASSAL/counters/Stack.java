@@ -34,6 +34,7 @@ import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.StackMetrics;
 import VASSAL.command.Command;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.EnumeratedIterator;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
@@ -653,10 +654,10 @@ public class Stack implements GamePiece, StateMergeable {
 
   private class AllPieceIterator implements Iterator<GamePiece> {
     private int index = 0;
-    private final GamePiece[] p = new GamePiece[pieceCount];
+    private final GamePiece[] p;
 
     public AllPieceIterator() {
-      System.arraycopy(contents, 0, p, 0, pieceCount);
+      p = ArrayUtils.copyOf(contents, pieceCount);
     }
 
     public boolean hasNext() {
@@ -674,10 +675,10 @@ public class Stack implements GamePiece, StateMergeable {
 
   private class ReversePieceIterator implements Iterator<GamePiece> {
     private int index = pieceCount - 1;
-    private final GamePiece[] p = new GamePiece[pieceCount];    
+    private final GamePiece[] p;
 
     public ReversePieceIterator() {
-      System.arraycopy(contents, 0, p, 0, pieceCount);
+      p = ArrayUtils.copyOf(contents, pieceCount);
     }
 
     public boolean hasNext() {

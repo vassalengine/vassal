@@ -20,6 +20,7 @@ package VASSAL.tools.filechooser;
 
 import java.io.File;
 
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.StringUtils;
 
 /**
@@ -38,8 +39,7 @@ public class ExtensionFileFilter extends FileFilter {
   public ExtensionFileFilter(String desc, String[] types) {
     super();
     this.desc = desc + " (*" + StringUtils.join(types, ", *") + ")";
-    this.types = new String[types.length];
-    System.arraycopy(types, 0, this.types, 0, types.length);
+    this.types = ArrayUtils.copyOf(types);
   }
 
   /**

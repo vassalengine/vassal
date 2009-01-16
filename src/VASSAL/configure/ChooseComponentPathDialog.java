@@ -24,6 +24,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
+import VASSAL.tools.ArrayUtils;
 
 /**
  * Widget for selecting the full path of a Component in the Buildable hierarchy
@@ -40,12 +41,15 @@ public class ChooseComponentPathDialog extends ChooseComponentDialog {
 
   public void valueChanged(TreeSelectionEvent e) {
     super.valueChanged(e);
-    TreePath p = e.getPath();
+
+    final TreePath p = e.getPath();
     if (p != null) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
-      Object[] userObjectPath = node.getUserObjectPath();
-      path = new Configurable[userObjectPath.length - 1];
-      System.arraycopy(userObjectPath, 1, path, 0, userObjectPath.length - 1);
+      final DefaultMutableTreeNode node =
+        (DefaultMutableTreeNode) p.getLastPathComponent();
+
+      final Configurable[] userObjectPath =
+        (Configurable[]) node.getUserObjectPath();
+      path = ArrayUtils.copyOfRange(userObjectPath, 1, userObjectPath.length);
     }
     else {
       path = null;

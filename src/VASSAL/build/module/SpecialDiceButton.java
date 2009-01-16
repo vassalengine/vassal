@@ -53,6 +53,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
@@ -578,8 +579,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
     public ShowResults(SpecialDiceButton oTarget, int[] results) {
       target = oTarget;
-      rolls = new int[results.length];
-      System.arraycopy(results, 0, rolls, 0, results.length);
+      rolls = ArrayUtils.copyOf(results);
     }
 
     protected void executeCommand() {

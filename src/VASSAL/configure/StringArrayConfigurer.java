@@ -48,6 +48,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
@@ -73,34 +74,15 @@ public class StringArrayConfigurer extends Configurer {
   }
 
   public void addValue(String s) {
-    if (value == null) {
-      setValue(new String[]{s});
-    }
-    else {
-      String[] newValue = new String[Array.getLength(value) + 1];
-      System.arraycopy(value, 0, newValue, 0, newValue.length - 1);
-      newValue[newValue.length - 1] = s;
-      setValue(newValue);
-    }
+    setValue(value == null ?
+      new String[]{s} : ArrayUtils.append((String[]) value, s));
   }
 
   public void removeValue(String s) {
-    String[] oldValue = getStringArray();
-    for (int i = 0; i < oldValue.length; ++i) {
-      if (oldValue[i].equals(s)) {
-        String[] newValue = new String[Array.getLength(value) - 1];
-        if (i > 0) {
-          System.arraycopy(oldValue, 0, newValue, 0, i);
-        }
-        if (i < oldValue.length - 1) {
-          System.arraycopy(oldValue, i + 1, newValue, i, oldValue.length - 1 - i);
-        }
-        setValue(newValue);
-        return;
-      }
-    }
+    final String[] oldValue = getStringArray();
+    final String[] newValue = ArrayUtils.remove(oldValue, s);
+    if (oldValue != newValue) setValue(newValue);
   }
-
 
   public Component getControls() {
     if (panel == null) {
@@ -132,15 +114,7 @@ public class StringArrayConfigurer extends Configurer {
           else {
             int pos = list.getSelectedIndex();
             if (pos < 0) pos = list.getModel().getSize();
-            String[] newValue = new String[Array.getLength(value) + 1];
-            if (pos > 0) {
-              System.arraycopy(value, 0, newValue, 0, pos);
-            }
-            newValue[pos] = tf.getText();
-            if (pos < newValue.length) {
-              System.arraycopy(value, pos, newValue, pos + 1, newValue.length - pos - 1);
-            }
-            setValue(newValue);
+            setValue(ArrayUtils.insert((String[]) value, pos, tf.getText()));
             tf.setText("");
             list.setSelectedIndex(pos+1);
           }
