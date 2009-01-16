@@ -45,7 +45,7 @@ public class IntegerPreference extends BasicPreference {
 
   public void setDefaultValue(Object value) {
     if (value instanceof String) {
-      value = new Integer((String) value);
+      value = Integer.valueOf((String) value);
     }
     defaultValue = ((Integer) value).intValue();
       
@@ -53,7 +53,8 @@ public class IntegerPreference extends BasicPreference {
 
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
-      config = new IntConfigurer(getVariableName(), getDescription(), new Integer(defaultValue));
+      config =
+        new IntConfigurer(getVariableName(), getDescription(), defaultValue);
       config.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent e) {
           updateGlobalProperty(config.getValueString());          
@@ -61,5 +62,4 @@ public class IntegerPreference extends BasicPreference {
     }
     return config;
   }
-
 }

@@ -441,9 +441,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       });
       b.add(selectButton);
       p.add(b);
-      xOffsetConfig.setValue(new Integer(piece.xOffset));
+      xOffsetConfig.setValue(piece.xOffset);
       p.add(xOffsetConfig.getControls());
-      yOffsetConfig.setValue(new Integer(piece.yOffset));
+      yOffsetConfig.setValue(piece.yOffset);
       p.add(yOffsetConfig.getControls());
       matchRotationConfig.setValue(Boolean.valueOf(piece.matchRotation));
       p.add(matchRotationConfig.getControls());

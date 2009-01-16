@@ -805,9 +805,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private JPanel controls;
     private List<String> names;
     private List<Integer> isPrefix;
-    private static final Integer NEITHER = new Integer(0);
-    private static final Integer PREFIX = new Integer(1);
-    private static final Integer SUFFIX = new Integer(2);
+    private static final Integer NEITHER = 0;
+    private static final Integer PREFIX = 1;
+    private static final Integer SUFFIX = 2;
     // random layers
     private HotKeyConfigurer rndKeyConfig;
 
@@ -1230,13 +1230,13 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       activateKeyInput.setText(e.activateKey);
       activateCommand.setText(e.activateCommand);
-      activateModifiers.setValue(new Integer(e.activateModifiers));
+      activateModifiers.setValue(e.activateModifiers);
       upKeyInput.setText(e.upKey);
       upCommand.setText(e.upCommand);
-      upModifiers.setValue(new Integer(e.upModifiers));
+      upModifiers.setValue(e.upModifiers);
       downKeyInput.setText(e.downKey);
       downCommand.setText(e.downCommand);
-      downModifiers.setValue(new Integer(e.downModifiers));
+      downModifiers.setValue(e.downModifiers);
       resetKey.setValue(e.resetKey);
       resetCommand.setText(e.resetCommand);
       resetLevel.setText(e.resetLevel.getFormat());

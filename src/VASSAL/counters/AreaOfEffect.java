@@ -362,7 +362,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
       transparencyColorValue = new ColorConfigurer(null, "Fill Color:  ", trait.transparencyColor);
       panel.add(transparencyColorValue.getControls());
-      transparencyValue = new IntConfigurer(null, "Opacity (%):  ", new Integer((int) (trait.transparencyLevel * 100)));
+      transparencyValue = new IntConfigurer(null, "Opacity (%):  ", (int) (trait.transparencyLevel * 100));
       panel.add(transparencyValue.getControls());
       
       fixedRadius = new BooleanConfigurer(null, "Fixed Radius?", 
@@ -374,7 +374,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       });
       panel.add(fixedRadius.getControls());
       
-      radiusValue = new IntConfigurer(null, "Radius: ", new Integer(trait.radius));
+      radiusValue = new IntConfigurer(null, "Radius: ", trait.radius);
       panel.add(radiusValue.getControls());
       
       radiusMarker = new StringConfigurer(null, "Radius Marker: ", trait.radiusMarker);

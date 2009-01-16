@@ -294,9 +294,11 @@ public class SetGlobalProperty extends DynamicProperty {
       controls.add(nameBox);
       numericConfig = new BooleanConfigurer(null, "Is numeric?", m.isNumeric());
       controls.add(numericConfig.getControls());
-      minConfig = new IntConfigurer(null, "Minimum value:  ", new Integer(m.getMinimumValue()));
+      minConfig =
+        new IntConfigurer(null, "Minimum value:  ", m.getMinimumValue());
       controls.add(minConfig.getControls());
-      maxConfig = new IntConfigurer(null, "Maximum value:  ", new Integer(m.getMaximumValue()));
+      maxConfig =
+        new IntConfigurer(null, "Maximum value:  ", m.getMaximumValue());
       controls.add(maxConfig.getControls());
       wrapConfig = new BooleanConfigurer(null, "Wrap?", m.isWrap());
       controls.add(wrapConfig.getControls());

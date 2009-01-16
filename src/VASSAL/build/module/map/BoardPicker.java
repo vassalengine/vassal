@@ -803,7 +803,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
         }
       });
       controls.add(scale.getControls());
-      width = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_width"), new Integer(psize.width)); //$NON-NLS-1$
+      width = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_width"), psize.width); //$NON-NLS-1$
       width.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {
@@ -812,7 +812,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
         }
       });
       controls.add(width.getControls());
-      height = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_height"), new Integer(psize.height)); //$NON-NLS-1$
+      height = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_height"), psize.height); //$NON-NLS-1$
       height.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {

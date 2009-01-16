@@ -439,10 +439,9 @@ public class GameState implements CommandEncoder {
    */
   public String getNewPieceId() {
     long time = System.currentTimeMillis();
-    String id = (new Long(time)).toString();
+    String id = Long.toString(time);
     while (pieces.get(id) != null) {
-      time++;
-      id = (new Long(time)).toString();
+      id = Long.toString(++time);
     }
     return id;
   }

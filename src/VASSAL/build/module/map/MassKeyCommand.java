@@ -264,7 +264,7 @@ public class MassKeyCommand extends AbstractConfigurable {
       };
       PropertyChangeListener l2 = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-          setValue(new Integer(getIntValue()));
+          setValue(getIntValue());
         }
       };
       typeConfig.addPropertyChangeListener(l);
@@ -302,11 +302,11 @@ public class MassKeyCommand extends AbstractConfigurable {
           switch ((i).intValue()) {
           case 0:
             typeConfig.setValue(NONE);
-            intConfig.setValue(new Integer(1));
+            intConfig.setValue(1);
             break;
           case -1:
             typeConfig.setValue(ALL);
-            intConfig.setValue(new Integer(1));
+            intConfig.setValue(1);
             break;
           default:
             typeConfig.setValue(FIXED);
@@ -324,7 +324,7 @@ public class MassKeyCommand extends AbstractConfigurable {
 
     public void setValue(String s) {
       if (s != null) {
-        setValue(new Integer(s));
+        setValue(Integer.valueOf(s));
       }
     }
 

@@ -294,7 +294,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     else if (EDGE_WIDTH.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       try {
         edgeBuffer = new Dimension(((Integer) value).intValue(), edgeBuffer.height);
@@ -305,7 +305,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     else if (EDGE_HEIGHT.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       try {
         edgeBuffer = new Dimension(edgeBuffer.width, ((Integer) value).intValue());
@@ -339,7 +339,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     else if (HIGHLIGHT_THICKNESS.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       if (highlighter instanceof ColoredBorder) {
         ((ColoredBorder) highlighter).setThickness(((Integer) value).intValue());
@@ -644,7 +644,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     GameModule.getGameModule().getToolBar().add(launchButton);
     if (shouldDockIntoMainWindow()) {
       final IntConfigurer config =
-        new IntConfigurer(MAIN_WINDOW_HEIGHT, null, new Integer(-1));
+        new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);
       Prefs.getGlobalPrefs().addOption(null, config);
       final ComponentSplitter splitter = new ComponentSplitter();
 
@@ -686,7 +686,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       new IntConfigurer(
         PREFERRED_EDGE_DELAY,
         Resources.getString("Map.scroll_delay_preference"), //$NON-NLS-1$
-        new Integer(PREFERRED_EDGE_SCROLL_DELAY)
+        PREFERRED_EDGE_SCROLL_DELAY
       )
     );
 
@@ -1862,7 +1862,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       if (mainWindowDock != null) {
         if (mainWindowDock.getHideableComponent().isShowing()) {
           Prefs.getGlobalPrefs().getOption(MAIN_WINDOW_HEIGHT)
-              .setValue(new Integer(mainWindowDock.getTopLevelAncestor().getHeight()));
+               .setValue(mainWindowDock.getTopLevelAncestor().getHeight());
         }
         mainWindowDock.hideComponent();
         toolBar.setVisible(false);

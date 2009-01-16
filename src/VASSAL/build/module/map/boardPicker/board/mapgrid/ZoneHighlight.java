@@ -229,11 +229,10 @@ public class ZoneHighlight extends AbstractConfigurable  {
   }
 
   public static class OpacityConfig implements ConfigurerFactory {
-
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return ((ZoneHighlight) c).new PercentageConfigurer(key, name, new Integer(((ZoneHighlight) c).opacity));
+      final ZoneHighlight zh = (ZoneHighlight) c;
+      return zh.new PercentageConfigurer(key, name, zh.opacity);
     }
-    
   }
   
   public void addTo(Buildable b) {
@@ -297,7 +296,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     }
     else if (WIDTH.equals(key)) {
       if (val instanceof String) {
-        val = new Integer((String) val);
+        val = Integer.valueOf((String) val);
       }
       width = ((Integer) val).intValue();
     }
@@ -307,7 +306,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     }
     else if (OPACITY.equals(key)) {
       if (val instanceof String) {
-        val = new Integer((String) val);
+        val = Integer.valueOf((String) val);
       }
       opacity = ((Integer) val).intValue();
     }
@@ -354,7 +353,7 @@ public class ZoneHighlight extends AbstractConfigurable  {
     }
 
     public void setValue(String s) {
-      opacity = (new Integer(s)).intValue();   
+      opacity = Integer.parseInt(s);   
     }
 
     public Component getControls() {
@@ -362,8 +361,8 @@ public class ZoneHighlight extends AbstractConfigurable  {
       final JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,opacity);
 
       final HashMap<Integer,JLabel> labelTable = new HashMap<Integer,JLabel>();
-      labelTable.put(new Integer(0), new JLabel("Transparent"));
-      labelTable.put(new Integer(100), new JLabel("Opaque"));
+      labelTable.put(0, new JLabel("Transparent"));
+      labelTable.put(100, new JLabel("Opaque"));
 
       slider.setMajorTickSpacing(10);
       slider.setPaintTicks(true);

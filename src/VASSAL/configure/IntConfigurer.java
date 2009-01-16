@@ -23,7 +23,7 @@ package VASSAL.configure;
  */
 public class IntConfigurer extends StringConfigurer {
   public IntConfigurer(String key, String name) {
-    this(key, name, new Integer(0));
+    this(key, name, 0);
   }
 
   public IntConfigurer(String key, String name, Integer val) {

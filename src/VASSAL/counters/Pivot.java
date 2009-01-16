@@ -233,9 +233,9 @@ public class Pivot extends Decorator implements TranslatablePiece {
       controls.add(key.getControls());
 
       Box b = Box.createHorizontalBox();
-      xOff = new IntConfigurer(null, "Pivot point:  ", new Integer(p.pivotX));
+      xOff = new IntConfigurer(null, "Pivot point:  ", p.pivotX);
       b.add(xOff.getControls());
-      yOff = new IntConfigurer(null, ", ", new Integer(p.pivotY));
+      yOff = new IntConfigurer(null, ", ", p.pivotY);
       b.add(yOff.getControls());
       controls.add(b);
 

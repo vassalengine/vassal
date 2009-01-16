@@ -141,10 +141,10 @@ public class CounterTurnLevel extends TurnLevel {
 
   protected Component getSetControl() {
     
-    IntConfigurer config = new IntConfigurer("", " "+getConfigureName()+":  ", new Integer(current)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    final IntConfigurer config = new IntConfigurer("", " "+getConfigureName()+":  ", current); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     config.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
-        current = ((Integer) ((IntConfigurer) e.getSource()).getValue()).intValue();
+        current = (Integer) ((IntConfigurer) e.getSource()).getValue();
         myValue.setPropertyValue(getValueString());
       }});
     
@@ -185,7 +185,7 @@ public class CounterTurnLevel extends TurnLevel {
 
     if (START.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       start = ((Integer) value).intValue();
       current = start;
@@ -193,7 +193,7 @@ public class CounterTurnLevel extends TurnLevel {
     }
     else if (INCR.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       incr = ((Integer) value).intValue();
     }
@@ -205,7 +205,7 @@ public class CounterTurnLevel extends TurnLevel {
     }
     else if (LOOP_LIMIT.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       loopLimit = ((Integer) value).intValue();
     }

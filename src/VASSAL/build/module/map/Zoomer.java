@@ -690,7 +690,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   public void setAttribute(String key, Object val) {
     if (ZOOM_START.equals(key)) {
       if (val instanceof String) {
-        val = new Integer((String) val);
+        val = Integer.valueOf((String) val);
       }
 
       if (val != null) {
@@ -751,7 +751,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
     else if (MAX.equals(key)) {     // deprecated key
       if (val instanceof String) {
-        val = new Integer((String) val);
+        val = Integer.valueOf((String) val);
       }
   
       if (val != null) {
@@ -1233,8 +1233,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       ratioNumeratorSpinner.removeChangeListener(this);
       ratioDenominatorSpinner.removeChangeListener(this);
    
-      ratioNumeratorModel.setValue(new Integer(p1));
-      ratioDenominatorModel.setValue(new Integer(q1));
+      ratioNumeratorModel.setValue(p1);
+      ratioDenominatorModel.setValue(q1);
   
       ratioNumeratorSpinner.addChangeListener(this);
       ratioDenominatorSpinner.addChangeListener(this);

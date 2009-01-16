@@ -89,18 +89,15 @@ public class FontConfigurer extends Configurer {
       box.add(family);
       p.add(box);
 
-      size = new IntConfigurer(null, "Size:  ", new Integer(getFontValue().getSize()));
+      size = new IntConfigurer(null, "Size:  ", getFontValue().getSize());
       p.add(size.getControls());
 
       box = Box.createHorizontalBox();
-      bold =
-        new BooleanConfigurer(null, "Bold", Boolean.valueOf(isBold()));
+      bold = new BooleanConfigurer(null, "Bold", isBold());
       box.add(bold.getControls());
-      italic =
-        new BooleanConfigurer(null, "Italic", Boolean.valueOf(isItalic()));
+      italic = new BooleanConfigurer(null, "Italic", isItalic());
       box.add(italic.getControls());
-      outline =
-        new BooleanConfigurer(null, "Outline", Boolean.valueOf(isOutline()));
+      outline = new BooleanConfigurer(null, "Outline", isOutline());
       box.add(outline.getControls());
       p.add(box);
 

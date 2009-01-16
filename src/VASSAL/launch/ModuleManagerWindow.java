@@ -399,7 +399,7 @@ public class ModuleManagerWindow extends JFrame {
   }
   
   protected void setPreferredDividerLocation(int i) {
-    dividerLocationConfig.setValue(new Integer(i));
+    dividerLocationConfig.setValue(i);
   }
   
   protected int getPreferredDividerLocation() {

@@ -166,16 +166,17 @@ public class BoxWidget extends Widget
       return getConfigureName();
     }
     else if (WIDTH.equals(name)) {
-      int w = allChildrenBuilt() ? multiPanel.getLayout().preferredLayoutSize(multiPanel).width
-        : size.width;
-      return new Integer(w).toString();
+      final int w = allChildrenBuilt() ?
+        multiPanel.getLayout().preferredLayoutSize(multiPanel).width :
+        size.width;
+      return String.valueOf(w);
     }
     else if (HEIGHT.equals(name)) {
-      int h = allChildrenBuilt() ? multiPanel.getLayout().preferredLayoutSize(multiPanel).height
-        : size.height;
-      return new Integer(h).toString();
+      final int h = allChildrenBuilt() ?
+        multiPanel.getLayout().preferredLayoutSize(multiPanel).height :
+        size.height;
+      return String.valueOf(h);
     }
     return null;
   }
-
 }

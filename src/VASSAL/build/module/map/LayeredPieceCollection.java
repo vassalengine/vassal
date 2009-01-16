@@ -192,7 +192,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     }
 
     public Object visitDeck(Deck d) {
-      return new Integer(layerOrder.length);
+      return layerOrder.length;
     }
 
     public Object visitDefault(GamePiece p) {
@@ -204,13 +204,14 @@ public class LayeredPieceCollection extends AbstractConfigurable {
           break;
         }
       }
-      return new Integer(layer);
+
+      return layer;
     }
 
     public Object visitStack(Stack s) {
       GamePiece top = s.topPiece();
       if (top == null) {
-        return new Integer(layerOrder.length);
+        return layerOrder.length;
       }
       return visitDefault(top);
     }

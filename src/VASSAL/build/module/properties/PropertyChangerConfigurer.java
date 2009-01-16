@@ -55,20 +55,20 @@ public class PropertyChangerConfigurer extends Configurer {
   protected static final Map<String,Character> descriptionToCode =
     new HashMap<String,Character>();
   static {
-    typeToCode.put(PropertySetter.class, new Character(PLAIN_CODE));
-    typeToCode.put(PropertyPrompt.class, new Character(PROMPT_CODE));
-    typeToCode.put(NumericPropertyPrompt.class, new Character(PROMPT_CODE));
-    typeToCode.put(IncrementProperty.class, new Character(INCR_CODE));
-    typeToCode.put(EnumeratedPropertyPrompt.class, new Character(ENUM_CODE));
+    typeToCode.put(PropertySetter.class, PLAIN_CODE);
+    typeToCode.put(PropertyPrompt.class, PROMPT_CODE);
+    typeToCode.put(NumericPropertyPrompt.class, PROMPT_CODE);
+    typeToCode.put(IncrementProperty.class, INCR_CODE);
+    typeToCode.put(EnumeratedPropertyPrompt.class, ENUM_CODE);
     typeToDescription.put(PropertySetter.class, PLAIN_TYPE);
     typeToDescription.put(PropertyPrompt.class, PROMPT_TYPE);
     typeToDescription.put(NumericPropertyPrompt.class, PROMPT_TYPE);
     typeToDescription.put(IncrementProperty.class, INCREMENT_TYPE);
     typeToDescription.put(EnumeratedPropertyPrompt.class, SELECT_TYPE);
-    descriptionToCode.put(PLAIN_TYPE, new Character(PLAIN_CODE));
-    descriptionToCode.put(INCREMENT_TYPE, new Character(INCR_CODE));
-    descriptionToCode.put(PROMPT_TYPE, new Character(PROMPT_CODE));
-    descriptionToCode.put(SELECT_TYPE, new Character(ENUM_CODE));
+    descriptionToCode.put(PLAIN_TYPE, PLAIN_CODE);
+    descriptionToCode.put(INCREMENT_TYPE, INCR_CODE);
+    descriptionToCode.put(PROMPT_TYPE, PROMPT_CODE);
+    descriptionToCode.put(SELECT_TYPE, ENUM_CODE);
   }
   protected Constraints constraints;
   protected JPanel controls;

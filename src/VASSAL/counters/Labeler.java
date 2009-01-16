@@ -658,7 +658,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
       controls.add(b);
 
       b = Box.createHorizontalBox();
-      fontSize = new IntConfigurer(null, "Font size:  ", new Integer(l.font.getSize()));
+      fontSize = new IntConfigurer(null, "Font size:  ", l.font.getSize());
       b.add(fontSize.getControls());
       b.add(new JLabel("  Bold?"));
       final int fontStyle = l.font.getStyle();
@@ -681,21 +681,16 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
       renderer = new MyRenderer();
 
-      final Character[] rightLeft = new Character[]{new Character('c'),
-                                                    new Character('r'),
-                                                    new Character('l')};
-
-      final Character[] topBottom = new Character[]{new Character('c'),
-                                                    new Character('t'),
-                                                    new Character('b')};
+      final Character[] rightLeft = new Character[]{'c', 'r', 'l'};
+      final Character[] topBottom = new Character[]{'c', 't', 'b'};
 
       b = Box.createHorizontalBox();
       b.add(new JLabel("Vertical position:  "));
       vPos = new JComboBox(topBottom);
       vPos.setRenderer(renderer);
-      vPos.setSelectedItem(new Character(l.verticalPos));
+      vPos.setSelectedItem(l.verticalPos);
       b.add(vPos);
-      vOff = new IntConfigurer(null, "  Offset:  ", new Integer(l.verticalOffset));
+      vOff = new IntConfigurer(null, "  Offset:  ", l.verticalOffset);
       b.add(vOff.getControls());
       controls.add(b);
 
@@ -703,9 +698,9 @@ public class Labeler extends Decorator implements TranslatablePiece {
       b.add(new JLabel("Horizontal position:  "));
       hPos = new JComboBox(rightLeft);
       hPos.setRenderer(renderer);
-      hPos.setSelectedItem(new Character(l.horizontalPos));
+      hPos.setSelectedItem(l.horizontalPos);
       b.add(hPos);
-      hOff = new IntConfigurer(null, "  Offset:  ", new Integer(l.horizontalOffset));
+      hOff = new IntConfigurer(null, "  Offset:  ", l.horizontalOffset);
       b.add(hOff.getControls());
       controls.add(b);
 
@@ -713,7 +708,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
       b.add(new JLabel("Vertical text justification:  "));
       vJust = new JComboBox(topBottom);
       vJust.setRenderer(renderer);
-      vJust.setSelectedItem(new Character(l.verticalJust));
+      vJust.setSelectedItem(l.verticalJust);
       b.add(vJust);
       controls.add(b);
 
@@ -721,11 +716,11 @@ public class Labeler extends Decorator implements TranslatablePiece {
       b.add(new JLabel("Horizontal text justification:  "));
       hJust = new JComboBox(rightLeft);
       hJust.setRenderer(renderer);
-      hJust.setSelectedItem(new Character(l.horizontalJust));
+      hJust.setSelectedItem(l.horizontalJust);
       b.add(hJust);
       controls.add(b);
 
-      rotate = new IntConfigurer(null, "Rotate Text (Degrees):  ", new Integer(l.rotateDegrees));
+      rotate = new IntConfigurer(null, "Rotate Text (Degrees):  ", l.rotateDegrees);
       controls.add(rotate.getControls());
 
       propertyNameConfig = new StringConfigurer(null, "Property Name:  ", l.propertyName);
@@ -742,24 +737,21 @@ public class Labeler extends Decorator implements TranslatablePiece {
         .append(command.getValueString());
 
       Integer i = (Integer) fontSize.getValue();
-      if (i == null
-          || i.intValue() <= 0) {
-        i = new Integer(10);
+      if (i == null || i.intValue() <= 0) {
+        i = 10;
       }
       se.append(i.toString())
         .append(bg.getValueString())
         .append(fg.getValueString())
         .append(vPos.getSelectedItem().toString());
       i = (Integer) vOff.getValue();
-      if (i == null) {
-        i = new Integer(0);
-      }
+      if (i == null) i = 0;
+
       se.append(i.toString())
         .append(hPos.getSelectedItem().toString());
       i = (Integer) hOff.getValue();
-      if (i == null) {
-        i = new Integer(0);
-      }
+      if (i == null) i = 0;
+
       se.append(i.toString())
         .append(vJust.getSelectedItem().toString())
         .append(hJust.getSelectedItem().toString())
@@ -770,9 +762,8 @@ public class Labeler extends Decorator implements TranslatablePiece {
         (italic.booleanValue().booleanValue() ? Font.ITALIC : 0);
       se.append(style + "");
       i = (Integer) rotate.getValue();
-      if (i == null) {
-        i = new Integer(0);
-      }
+      if (i == null) i = 0;
+
       se.append(i.toString())
         .append(propertyNameConfig.getValueString());
 

@@ -660,7 +660,7 @@ public class Footprint extends MovementMarkable {
                                  Boolean.valueOf(p.globallyVisible));
       controls.add(gv.getControls());
 
-      cr = new IntConfigurer(null, "Circle Radius:  ", new Integer(p.circleRadius));
+      cr = new IntConfigurer(null, "Circle Radius:  ", p.circleRadius);
       controls.add(cr.getControls());
 
       fc = new ColorConfigurer(null, "Circle Fill Color:  ", p.fillColor);
@@ -669,23 +669,23 @@ public class Footprint extends MovementMarkable {
       lc = new ColorConfigurer(null, "Line Color:  ", p.lineColor);
       controls.add(lc.getControls());
 
-      lw = new DoubleConfigurer(null,"Line thickness:  ",new Double(p.lineWidth));
+      lw = new DoubleConfigurer(null,"Line thickness:  ", new Double(p.lineWidth));
       controls.add(lw.getControls());
 
-      st = new IntConfigurer(null, "Selected Unit Trail Transparency (0-100):  ", new Integer(p.selectedTransparency));
+      st = new IntConfigurer(null, "Selected Unit Trail Transparency (0-100):  ", p.selectedTransparency);
       controls.add(st.getControls());
 
-      ut = new IntConfigurer(null, "Unselected Unit Trail Transparency (0-100):  ", new Integer(p.unSelectedTransparency));
+      ut = new IntConfigurer(null, "Unselected Unit Trail Transparency (0-100):  ", p.unSelectedTransparency);
       controls.add(ut.getControls());
 
       b = Box.createHorizontalBox();
-      pb = new IntConfigurer(null, "Display Trail Points Off-map for ", new Integer(p.edgePointBuffer));
+      pb = new IntConfigurer(null, "Display Trail Points Off-map for ", p.edgePointBuffer);
       b.add(pb.getControls());
       b.add(new JLabel("pixels"));
       controls.add(b);
 
       b = Box.createHorizontalBox();
-      db = new IntConfigurer(null, "Display Trails Off-map for  ", new Integer(p.edgeDisplayBuffer));
+      db = new IntConfigurer(null, "Display Trails Off-map for  ", p.edgeDisplayBuffer);
       b.add(db.getControls());
       b.add(new JLabel("pixels"));
       controls.add(b);

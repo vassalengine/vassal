@@ -2141,7 +2141,7 @@ public class MapBoard extends Importer {
    *              |_______ Underline flag.
    */
   protected static Font getDefaultFont(int size, int font) {
-    Integer key = new Integer((size << 8) + font);
+    final Integer key = Integer.valueOf((size << 8) + font);
     Font f = defaultFonts.get(key);
     if (f == null) {
       int fontIndex = font & 0xf;

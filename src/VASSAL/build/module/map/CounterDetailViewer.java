@@ -180,7 +180,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
         new BooleanConfigurer(USE_KEYBOARD, Resources.getString("CounterDetailViewer.use_prompt", keyDesc), Boolean.FALSE));
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.general_tab"),
-        new IntConfigurer(PREFERRED_DELAY, Resources.getString("CounterDetailViewer.delay_prompt"), new Integer(delay)));
+        new IntConfigurer(PREFERRED_DELAY, Resources.getString("CounterDetailViewer.delay_prompt"), delay));
 
     view.addMouseMotionListener(this);
     view.addMouseListener(this);
@@ -649,7 +649,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   protected int getPreferredDelay() {
-    return ((Integer) GameModule.getGameModule().getPrefs().getValue(PREFERRED_DELAY)).intValue();
+    return (Integer)
+      GameModule.getGameModule().getPrefs().getValue(PREFERRED_DELAY);
   }
 
   public void mouseDragged(MouseEvent e) {
@@ -873,7 +874,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public void setAttribute(String name, Object value) {
     if (DELAY.equals(name)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       if (value != null) {
         delay = ((Integer) value).intValue();
@@ -934,7 +935,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (BORDER_WIDTH.equals(name)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       borderWidth = ((Integer) value).intValue();
     }
@@ -1021,7 +1022,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (FONT_SIZE.equals(name)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       if (value != null) {
         fontSize = ((Integer) value).intValue();

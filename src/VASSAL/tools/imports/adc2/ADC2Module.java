@@ -2332,7 +2332,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     command.setAttribute(MassKeyCommand.NAME, "Attacked");
     command.setAttribute(MassKeyCommand.KEY_COMMAND, KeyStroke.getKeyStroke('A', InputEvent.CTRL_DOWN_MASK));
     command.setAttribute(MassKeyCommand.PROPERTIES_FILTER, "Mark Attacked_Active = true");
-    command.setAttribute(MassKeyCommand.DECK_COUNT, new Integer(-1));
+    command.setAttribute(MassKeyCommand.DECK_COUNT, -1);
     command.setAttribute(MassKeyCommand.REPORT_SINGLE, Boolean.TRUE);
     command.setAttribute(MassKeyCommand.REPORT_FORMAT, "");
 
@@ -2346,7 +2346,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
     command.setAttribute(MassKeyCommand.NAME, "Defended");
     command.setAttribute(MassKeyCommand.KEY_COMMAND, KeyStroke.getKeyStroke('D', InputEvent.CTRL_DOWN_MASK));
     command.setAttribute(MassKeyCommand.PROPERTIES_FILTER, "Mark Defended_Active = true");
-    command.setAttribute(MassKeyCommand.DECK_COUNT, new Integer(-1));
+    command.setAttribute(MassKeyCommand.DECK_COUNT, -1);
     command.setAttribute(MassKeyCommand.REPORT_SINGLE, Boolean.TRUE);
     command.setAttribute(MassKeyCommand.REPORT_FORMAT, "");
     

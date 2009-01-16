@@ -639,7 +639,7 @@ public class FreeRotator extends Decorator
       anyConfig = new BooleanConfigurer(null, "Allow arbitrary rotations",
         Boolean.valueOf(p.validAngles.length == 1));
       anyKeyConfig = new HotKeyConfigurer(null, "Command to rotate:  ", p.setAngleKey);
-      facingsConfig = new IntConfigurer(null, "Number of allowed facings:  ", new Integer(p.validAngles.length == 1 ? 6 : p.validAngles.length));
+      facingsConfig = new IntConfigurer(null, "Number of allowed facings:  ", p.validAngles.length == 1 ? 6 : p.validAngles.length);
 
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

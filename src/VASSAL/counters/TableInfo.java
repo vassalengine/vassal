@@ -213,8 +213,8 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     private JPanel panel;
 
     public Ed(TableInfo p) {
-      rowConfig.setValue(new Integer(p.nRows));
-      colConfig.setValue(new Integer(p.nCols));
+      rowConfig.setValue(p.nRows);
+      colConfig.setValue(p.nCols);
       commandConfig.setValue(p.command);
       keyConfig = new HotKeyConfigurer(null,"Keyboard Command:  ",p.launchKey);
 

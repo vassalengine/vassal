@@ -174,7 +174,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     UNDOCK_COMMAND = Resources.getString("General.undock"); //$NON-NLS-1$
 
     // Create preferences
-    final IntConfigurer size = new IntConfigurer(FONT_SIZE, Resources.getString("TurnTracker.size_pref"), new Integer(14)); //$NON-NLS-1$
+    final IntConfigurer size = new IntConfigurer(FONT_SIZE, Resources.getString("TurnTracker.size_pref"), 14); //$NON-NLS-1$
     final BooleanConfigurer bold = new BooleanConfigurer(FONT_BOLD,  Resources.getString("TurnTracker.bold_pref"), Boolean.FALSE); //$NON-NLS-1$
     final BooleanConfigurer docked = new BooleanConfigurer(DOCKED,  Resources.getString("TurnTracker.docked_pref"), Boolean.FALSE); //$NON-NLS-1$
     
@@ -272,7 +272,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
     else if (LENGTH.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       width = ((Integer) value).intValue();
     }

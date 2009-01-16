@@ -145,13 +145,13 @@ public class ActionButton extends Decorator implements EditablePiece {
       box.add(descConfig.getControls());
       strokeConfig = new HotKeyConfigurer(null, "Invoke Key Command:  ", p.stroke);
       box.add(strokeConfig.getControls());
-      xConfig = new IntConfigurer(null, "Button X-offset:  ", new Integer(p.bounds.x));
+      xConfig = new IntConfigurer(null, "Button X-offset:  ", p.bounds.x);
       box.add(xConfig.getControls());
-      yConfig = new IntConfigurer(null, "Button Y-offset:  ", new Integer(p.bounds.y));
+      yConfig = new IntConfigurer(null, "Button Y-offset:  ", p.bounds.y);
       box.add(yConfig.getControls());
-      widthConfig = new IntConfigurer(null, "Button Width:  ", new Integer(p.bounds.width));
+      widthConfig = new IntConfigurer(null, "Button Width:  ", p.bounds.width);
       box.add(widthConfig.getControls());
-      heightConfig = new IntConfigurer(null, "Button Height:  ", new Integer(p.bounds.height));
+      heightConfig = new IntConfigurer(null, "Button Height:  ", p.bounds.height);
       box.add(heightConfig.getControls());
     }
 

@@ -254,7 +254,7 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
       controls.add(propertyMatch.getControls());
       
       deckPolicy = new MassKeyCommand.DeckPolicyConfig();
-      deckPolicy.setValue(new Integer(p.globalCommand.getSelectFromDeck()));
+      deckPolicy.setValue(p.globalCommand.getSelectFromDeck());
       controls.add(deckPolicy.getControls());
 
       restrictRange = new BooleanConfigurer(null, "Restrict Range?", p.restrictRange);
@@ -265,7 +265,7 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
       controls.add(fixedRange.getControls());
       fixedRange.addPropertyChangeListener(pl);
       
-      range = new IntConfigurer(null, "Range:  ", new Integer(p.range));
+      range = new IntConfigurer(null, "Range:  ", p.range);
       controls.add(range.getControls());
 
       rangeProperty = new StringConfigurer(null, "Range Property:  ", p.rangeProperty);
