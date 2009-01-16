@@ -122,12 +122,11 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public ColorSwatch getColorSwatch(Color color) {
-    ColorSwatch swatch = null;
-    
     if (color == null) {
       return new ColorSwatch("CLEAR", null);
     }
    
+    ColorSwatch swatch = null;
     for (ColorSwatch cs : userColors.values()) {
       if (cs.getColor().equals(color)) {
         swatch = cs;
@@ -178,7 +177,7 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[] { ColorSwatch.class };
+    return new Class<?>[] { ColorSwatch.class };
   }
 
   public static String getConfigureTypeName() {
