@@ -129,9 +129,9 @@ public class ColorManager extends AbstractConfigurable {
     }
    
     for (ColorSwatch cs : userColors.values()) {
-      if (swatch == null) break;
       if (cs.getColor().equals(color)) {
         swatch = cs;
+        break;
       }
     }
 
