@@ -25,6 +25,7 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.build.GameModule;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.StringUtils;
 
 import java.util.*;
 import java.io.IOException;
@@ -63,7 +64,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   }
 
   public Message[] getMessages() {
-    ArrayList<Message> msgList = new ArrayList<Message>();
+    final ArrayList<Message> msgList = new ArrayList<Message>();
     try {
       for (String msg : getMessagesURL.doGet(prepareInfo())) {
         try {
@@ -74,7 +75,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
           date = date.substring(date.indexOf("=") + 1); //$NON-NLS-1$
           s = st.nextToken(""); //$NON-NLS-1$
 
-          content = StringUtils.join("\n",
+          String content = StringUtils.join("\n",
             new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|'));
 
           content = restorePercent(content);
