@@ -163,7 +163,7 @@ public class TableConfigurer extends Configurer implements ActionListener  {
     }
   }
 
-  protected class Column {
+  protected static class Column {
     protected Class<?> type;
     protected String name;
     protected List<Configurer> configurers = new ArrayList<Configurer>();

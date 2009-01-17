@@ -855,8 +855,8 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     public static class View extends JPanel implements DropTargetListener, DragGestureListener, DragSourceListener, DragSourceMotionListener {
       
       private static final long serialVersionUID = 1L;
-      final int CURSOR_ALPHA = 127;
-      final int EXTRA_BORDER = 4;
+      protected static final int CURSOR_ALPHA = 127;
+      protected static final int EXTRA_BORDER = 4;
       protected Board myBoard;
       protected MapGrid myGrid;
       protected SetupStack myStack;

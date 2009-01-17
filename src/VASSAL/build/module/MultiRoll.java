@@ -310,7 +310,7 @@ public class MultiRoll extends JDialog implements ActionListener {
     setEmailHeader();
   }
 
-  class HeaderRow extends JPanel {
+  protected static class HeaderRow extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public HeaderRow() {
@@ -513,7 +513,7 @@ public class MultiRoll extends JDialog implements ActionListener {
   /*
    * An on/off button that changes state to show it's status
    */
-  class StateButton extends JButton {
+  protected static class StateButton extends JButton {
     private static final long serialVersionUID = 1L;
 
     boolean state = false;

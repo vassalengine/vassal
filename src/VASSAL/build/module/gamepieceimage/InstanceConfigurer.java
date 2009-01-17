@@ -169,10 +169,10 @@ public class InstanceConfigurer extends Configurer {
     protected int currentDetail;
     protected static final int NO_CURRENT_ITEM = -1;
 
-    final int NAME_COL = 0;
-    final int TYPE_COL = 1;
-    final int LOC_COL = 2;
-    final int MAX_COL = 2;
+    protected static final int NAME_COL = 0;
+    protected static final int TYPE_COL = 1;
+    protected static final int LOC_COL = 2;
+    protected static final int MAX_COL = 2;
     
     public SymbolPanel() {
       setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

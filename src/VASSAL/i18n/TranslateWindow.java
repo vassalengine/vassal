@@ -184,7 +184,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     tree.repaint();
   }
    
-  protected class MyPropertiesWindow extends PropertiesWindow {
+  protected static class MyPropertiesWindow extends PropertiesWindow {
     private static final long serialVersionUID = 1L;
     protected Configurable myTarget;
     protected TranslateWindow owningWindow;
@@ -514,7 +514,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * Custome Cell Renderer to support CopyButtons in JTable cells
    *
    */
-  class JComponentCellRenderer implements TableCellRenderer
+  protected static class JComponentCellRenderer implements TableCellRenderer
   {
       public Component getTableCellRendererComponent(JTable table, Object value,
       boolean isSelected, boolean hasFocus, int row, int column) {
@@ -526,7 +526,8 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
    * Custom CellEditor to support CopyButtons in JTable cells
    *
    */
-  public class JComponentCellEditor implements TableCellEditor, TreeCellEditor, Serializable {
+  protected static class JComponentCellEditor
+                     implements TableCellEditor, TreeCellEditor, Serializable {
     
     private static final long serialVersionUID = 1L;
     
@@ -771,8 +772,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
   /**
    * Custom Tree Node implementation
    */
-  class MyTreeNode extends DefaultMutableTreeNode {
-
+  protected static class MyTreeNode extends DefaultMutableTreeNode {
     private static final long serialVersionUID = 1L;
     Translatable component;
 
@@ -787,6 +787,5 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     public String toString() {
       return getDisplayName(component);
     }
-
   }
 }

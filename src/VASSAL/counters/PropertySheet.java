@@ -695,7 +695,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     String[] defaultValues;
 
 
-    public class SmartTable extends JTable {
+    public static class SmartTable extends JTable {
       private static final long serialVersionUID = 1L;
 
       SmartTable(TableModel m) {

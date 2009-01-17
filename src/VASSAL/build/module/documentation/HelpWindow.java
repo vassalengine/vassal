@@ -58,7 +58,7 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
      * where no pathname included in the image name.
      */
     pane.setContentType("text/html"); //$NON-NLS-1$
-    XTMLEditorKit myHTMLEditorKit = (new HtmlChart()).new XTMLEditorKit();
+    XTMLEditorKit myHTMLEditorKit = new HtmlChart.XTMLEditorKit();
     pane.setEditorKit(myHTMLEditorKit);
     
     JScrollPane scroll = new ScrollPane(pane);

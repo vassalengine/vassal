@@ -259,15 +259,14 @@ public class HtmlChart extends Widget implements MouseListener {
    * ImageView cannot be used as the standard Java HTML Renderer can only
    * display Images from an external URL.
    */
-  public class XTMLEditorKit extends HTMLEditorKit {
+  public static class XTMLEditorKit extends HTMLEditorKit {
     private static final long serialVersionUID = 1L;
 
     public ViewFactory getViewFactory() {
       return new XTMLFactory();
     }
 
-    public class XTMLFactory extends HTMLFactory implements ViewFactory {
-
+    public static class XTMLFactory extends HTMLFactory implements ViewFactory {
       public XTMLFactory() {
         super();
       }
@@ -284,7 +283,7 @@ public class HtmlChart extends Widget implements MouseListener {
         return super.create(element);
       }
 
-      public class ImageComponentView extends ComponentView {
+      public static class ImageComponentView extends ComponentView {
         protected String imageName;
         protected SourceOp srcOp;
 

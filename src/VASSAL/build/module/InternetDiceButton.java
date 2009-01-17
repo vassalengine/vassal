@@ -128,7 +128,8 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
     }
     return s;
   }
-  private class SetSecondaryEmail extends Command {
+
+  private static class SetSecondaryEmail extends Command {
     private String msg;
 
     private SetSecondaryEmail(String s) {

@@ -872,7 +872,7 @@ public class HexGrid extends AbstractConfigurable
     cfg.getConfigurer(SIDEWAYS).setValue(String.valueOf(sideways));
   }
   
-  public class HexGridEditor extends GridEditor {
+  public static class HexGridEditor extends GridEditor {
     private static final long serialVersionUID = 1L; 
 
     public HexGridEditor(EditableGrid grid) {

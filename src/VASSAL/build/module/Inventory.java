@@ -1069,7 +1069,7 @@ public class Inventory extends AbstractConfigurable
    * 
    * @author Brent Easton
    */
-  protected class Selector implements PieceFilter {
+  protected static class Selector implements PieceFilter {
 
     protected PieceFilter filter;
 

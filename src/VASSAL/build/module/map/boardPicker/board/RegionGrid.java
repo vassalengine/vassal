@@ -951,7 +951,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     /*
      * Version of EditProperties Action that repaints it's owning frame
      */
-    class EditRegionAction extends EditPropertiesAction {
+    protected static class EditRegionAction extends EditPropertiesAction {
 
       Config owner;
       Region origRegion;

@@ -548,7 +548,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     cfg.getConfigurer(Y0).setValue(String.valueOf(origin.y));
   }
   
-  public class SquareGridEditor extends GridEditor {
+  public static class SquareGridEditor extends GridEditor {
     private static final long serialVersionUID = 1L;
 
     public SquareGridEditor(EditableGrid grid) {

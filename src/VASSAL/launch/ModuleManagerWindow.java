@@ -707,8 +707,7 @@ public class ModuleManagerWindow extends JFrame {
    *  - Return column count
    *  - Return column headings
    */
-  private class MyTreeTableModel extends DefaultTreeTableModel {
-  
+  private static class MyTreeTableModel extends DefaultTreeTableModel {
     public MyTreeTableModel(MyTreeNode rootNode) {
       super(rootNode);
     }
@@ -734,14 +733,14 @@ public class ModuleManagerWindow extends JFrame {
    * Fix for bug on startup generating illegal column numbers
    *
    */
-  private class MyTree extends JXTreeTable {
-
+  private static class MyTree extends JXTreeTable {
     private static final long serialVersionUID = 1L;
 
     public MyTree(MyTreeTableModel treeModel) {
       super(treeModel);
     }
     
+// FIXME: Where's the rest of the comment???
     /**
      * There appears to be a bug/strange interaction between JXTreetable and the ComponentSplitter
      * when the Component
@@ -759,8 +758,7 @@ public class ModuleManagerWindow extends JFrame {
    *   - Gray out inactve extensions
    *   - Gray out Save Games that belong to other modules
    */
-  private class MyTreeCellRenderer extends DefaultTreeCellRenderer {
-
+  private static class MyTreeCellRenderer extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1L;
     
     public Component getTreeCellRendererComponent(
@@ -781,8 +779,7 @@ public class ModuleManagerWindow extends JFrame {
    * Custom cell render for Version column
    *   - Center data
    */
-  private class VersionCellRenderer extends DefaultTableCellRenderer  {
-    
+  private static class VersionCellRenderer extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 1L;
     
     public VersionCellRenderer() {

@@ -1369,7 +1369,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   /**
    * An object that parses expression strings from the config window
    */
-  protected class CountExpression {
+  protected static class CountExpression {
     private String fullstring;
     private String name;
     private String expression;

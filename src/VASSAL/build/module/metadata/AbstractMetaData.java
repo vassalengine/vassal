@@ -260,7 +260,7 @@ public abstract class AbstractMetaData {
    * Utility Exception class, used to cancel SAX parsing
    *
    */
-  class SAXEndException extends SAXException {
+  static class SAXEndException extends SAXException {
     private static final long serialVersionUID = 1L; 
   }
   
@@ -268,7 +268,7 @@ public abstract class AbstractMetaData {
    * Utility class representing a Configurable attribute and its translations
    * 
    */
-  class Attribute {
+  static class Attribute {
     protected String attributeName;
     protected String value;
     protected HashMap<String, String> translations =
