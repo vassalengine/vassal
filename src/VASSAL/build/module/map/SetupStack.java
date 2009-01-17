@@ -329,13 +329,13 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
     }
     else if (X_POSITION.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       pos.x = ((Integer) value).intValue();
     }
     else if (Y_POSITION.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       pos.y = ((Integer) value).intValue();
     }

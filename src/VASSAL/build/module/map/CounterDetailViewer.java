@@ -923,13 +923,13 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     }
     else if (ZOOM_LEVEL.equals(name)) {
       if (value instanceof String) {
-        value = new Double((String) value);
+        value = Double.valueOf((String) value);
       }
       zoomLevel = ((Double) value).doubleValue();
     }
     else if (DRAW_PIECES_AT_ZOOM.equals(name)) {
       if (value instanceof String) {
-        value = new Double((String) value);
+        value = Double.valueOf((String) value);
       }
       graphicsZoomLevel = ((Double) value).doubleValue();
     }

@@ -104,13 +104,13 @@ public class ShapeItem extends Item {
   public void setAttribute(String key, Object o) {
     if (WIDTH.equals(key)) {
       if (o instanceof String) {
-        o = new Integer((String) o);
+        o = Integer.valueOf((String) o);
       }
       width = ((Integer) o).intValue();
     }
     else if (HEIGHT.equals(key)) {
       if (o instanceof String) {
-        o = new Integer((String) o);
+        o = Integer.valueOf((String) o);
       }
       height = ((Integer) o).intValue();
     }  
@@ -119,7 +119,7 @@ public class ShapeItem extends Item {
     }
     else if (BEVEL.equals(key)) {
       if (o instanceof String) {
-        o = new Integer((String) o);
+        o = Integer.valueOf((String) o);
       }
       bevel = ((Integer) o).intValue();
     }  

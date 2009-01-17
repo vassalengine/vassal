@@ -104,19 +104,19 @@ public class SymbolItem extends Item {
     }
     else if (WIDTH.equals(key)) {
       if (o instanceof String) {
-        o = new Integer((String) o);
+        o = Integer.valueOf((String) o);
       }
       width = ((Integer) o).intValue();
     }
     else if (HEIGHT.equals(key)) {
       if (o instanceof String) {
-        o = new Integer((String) o);
+        o = Integer.valueOf((String) o);
       }
       height = ((Integer) o).intValue();
     }    
     else if (LINE_WIDTH.equals(key)) {
       if (o instanceof String) {
-        o = new Double(Double.parseDouble((String) o));
+        o = Double.valueOf((String) o);
       }
       lineWidth = ((Double) o).doubleValue();
     }
@@ -126,7 +126,6 @@ public class SymbolItem extends Item {
     if (layout != null) {
       layout.refresh();
     }
-
   }
   
   public String getAttributeValueString(String key) {

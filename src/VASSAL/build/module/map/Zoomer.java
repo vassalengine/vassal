@@ -738,7 +738,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
     else if (FACTOR.equals(key)) {  // deprecated key
       if (val instanceof String) {
-        val = new Double((String) val);
+        val = Double.valueOf((String) val);
       }
 
       if (val != null) {
@@ -1153,9 +1153,10 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       // disconnect listener to prevent circularity
       percentSpinner.removeChangeListener(this);
 
-      percentModel.setValue(new Double(
+      percentModel.setValue(
         ratioNumeratorModel.getNumber().doubleValue() /
-        ratioDenominatorModel.getNumber().doubleValue() * 100.0));
+        ratioDenominatorModel.getNumber().doubleValue() * 100.0
+      );
 
       percentSpinner.addChangeListener(this);
     }

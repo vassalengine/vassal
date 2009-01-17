@@ -794,7 +794,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
         }
       });
       controls.add(prompt.getControls());
-      scale = new DoubleConfigurer(null, Resources.getString("Editor.BoardPicker.cell_scale_factor"), new Double(slotScale)); //$NON-NLS-1$
+      scale = new DoubleConfigurer(null, Resources.getString("Editor.BoardPicker.cell_scale_factor"), slotScale); //$NON-NLS-1$
       scale.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           if (evt.getNewValue() != null) {

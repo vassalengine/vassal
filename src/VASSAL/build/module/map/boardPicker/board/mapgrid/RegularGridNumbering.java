@@ -169,25 +169,25 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
     else if (H_LEADING.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       hLeading = ((Integer) value).intValue();
     }
     else if (V_LEADING.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       vLeading = ((Integer) value).intValue();
     }
     else if (H_OFF.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       hOff = ((Integer) value).intValue();
     }
     else if (V_OFF.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       vOff = ((Integer) value).intValue();
     }
@@ -205,7 +205,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
     else if (FONT_SIZE.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       fontSize = ((Integer) value).intValue();
     }
@@ -226,19 +226,19 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     }
     else if (ROTATE_TEXT.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       rotateTextDegrees = ((Integer) value).intValue();
     }
     else if (H_DRAW_OFF.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       hDrawOff = ((Integer) value).intValue();
     }
     else if (V_DRAW_OFF.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       vDrawOff = ((Integer) value).intValue();
     }

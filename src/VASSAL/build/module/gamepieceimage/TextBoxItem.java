@@ -115,13 +115,13 @@ public class TextBoxItem extends TextItem {
   public void setAttribute(String key, Object o) {
     if (WIDTH.equals(key)) {
       if (o instanceof String) {
-        o = new Integer((String) o);
+        o = Integer.valueOf((String) o);
       }
       width = ((Integer) o).intValue();
     }
     else if (HEIGHT.equals(key)) {
       if (o instanceof String) {
-        o = new Integer((String) o);
+        o = Integer.valueOf((String) o);
       }
       height = ((Integer) o).intValue();
     }   

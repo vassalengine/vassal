@@ -243,7 +243,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     }
     else if (FONT_SIZE.equals(key)) {
       if (val instanceof String) {
-        val = new Integer((String) val);
+        val = Integer.valueOf((String) val);
       }
       fontSize = ((Integer) val).intValue();
     }

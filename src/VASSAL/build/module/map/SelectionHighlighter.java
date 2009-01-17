@@ -173,7 +173,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     }
     else if (key.equals(THICKNESS)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       thickness = ((Integer) value).intValue();
     }
@@ -183,7 +183,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     }
     else if (key.equals(X_OFFSET)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       try {
         x = ((Integer) value).intValue();
@@ -194,7 +194,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
     }
     else if (key.equals(Y_OFFSET)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       try {
         y = ((Integer) value).intValue();

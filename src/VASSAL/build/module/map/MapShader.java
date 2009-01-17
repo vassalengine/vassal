@@ -688,7 +688,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (BORDER_WIDTH.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       borderWidth = ((Integer) value).intValue();
       if (borderWidth < 0) {
@@ -698,7 +698,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (OPACITY.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       opacity = ((Integer) value).intValue();
       if (opacity < 0 || opacity > 100) {
@@ -708,7 +708,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (BORDER_OPACITY.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       borderOpacity = ((Integer) value).intValue();
       if (borderOpacity < 0 || borderOpacity > 100) {

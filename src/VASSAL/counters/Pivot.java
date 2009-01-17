@@ -243,7 +243,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
                                          Boolean.valueOf(p.fixedAngle));
       controls.add(fixedAngle.getControls());
 
-      angle = new DoubleConfigurer(null, "Angle:  ", new Double(p.angle));
+      angle = new DoubleConfigurer(null, "Angle:  ", p.angle);
       controls.add(angle.getControls());
 
       angle.getControls().setVisible(p.fixedAngle);

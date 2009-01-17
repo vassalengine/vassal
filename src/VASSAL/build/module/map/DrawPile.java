@@ -418,13 +418,13 @@ public class DrawPile extends SetupStack {
     }
     if (WIDTH.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       dummy.getSize().width = ((Integer) value).intValue();
     }
     else if (HEIGHT.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       dummy.getSize().height = ((Integer) value).intValue();
     }
@@ -496,7 +496,7 @@ public class DrawPile extends SetupStack {
     }
     if (MAXSTACK.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       dummy.setMaxStack(((Integer) value).intValue());
     }    

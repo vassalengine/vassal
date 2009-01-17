@@ -297,7 +297,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
     else if (HIDE_OPACITY.equals(key)) {
       if (value instanceof String) {
-        value = new Integer((String) value);
+        value = Integer.valueOf((String) value);
       }
       setTransparency(((Integer) value).intValue());
     }

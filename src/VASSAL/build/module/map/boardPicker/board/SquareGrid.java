@@ -256,25 +256,25 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       return;
     if (X0.equals(key)) {
       if (val instanceof String) {
-        val = new Integer((String) val);
+        val = Integer.valueOf((String) val);
       }
       origin.x = ((Integer) val).intValue();
     }
     else if (Y0.equals(key)) {
       if (val instanceof String) {
-        val = new Integer((String) val);
+        val = Integer.valueOf((String) val);
       }
       origin.y = ((Integer) val).intValue();
     }
     else if (DY.equals(key)) {
       if (val instanceof String) {
-        val = new Double((String) val);
+        val = Double.valueOf((String) val);
       }
       dy = ((Double) val).doubleValue();
     }
     else if (DX.equals(key)) {
       if (val instanceof String) {
-        val = new Double((String) val);
+        val = Double.valueOf((String) val);
       }
       dx = ((Double) val).doubleValue();
     }

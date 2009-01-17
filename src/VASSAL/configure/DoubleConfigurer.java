@@ -22,32 +22,33 @@ package VASSAL.configure;
  * A Configurer for Double values
  */
 public class DoubleConfigurer extends StringConfigurer {
+  public DoubleConfigurer(String key, String name) {
+    this(key, name, 0.0);
+  }
 
-    public DoubleConfigurer(String key, String name) {
-        this(key, name, new Double(0));
-    }
+  public DoubleConfigurer(String key, String name, Double val) {
+    super(key, name, val == null ? null : val.toString());
+  }
 
-    public DoubleConfigurer(String key, String name, Double val) {
-        super(key, name, val == null ? null : val.toString());
+  public void setValue(String s) {
+    Double d = null;
+    try {
+      d = Double.valueOf(s);
     }
+    catch (NumberFormatException e) {
+      d = null;
+    }
+    
+    if (d != null) {
+      setValue(d);
+    }
+    
+    if (!noUpdate && nameField != null) {
+      nameField.setText(d.toString());
+    }
+  }
 
-    public void setValue(String s) {
-        Double d = null;
-        try {
-            d = Double.valueOf(s);
-        }
-        catch (NumberFormatException e) {
-            d = null;
-        }
-        if (d != null) {
-            setValue(d);
-        }
-        if (!noUpdate && nameField != null) {
-            nameField.setText(d.toString());
-        }
-    }
-
-    public String getValueString() {
-        return value == null ? null : value.toString();
-    }
+  public String getValueString() {
+    return value == null ? null : value.toString();
+  }
 }
