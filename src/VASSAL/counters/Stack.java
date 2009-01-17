@@ -275,18 +275,17 @@ public class Stack implements GamePiece, StateMergeable {
    * Return a comma-separated list of the names of the pieces in this Stack
    */
   public String getName(boolean localized) {
-    String val = "";
+    final StringBuilder val = new StringBuilder();
     final PieceIterator visibleFilter =
       PieceIterator.visible(getPiecesReverseIterator());
     while (visibleFilter.hasMoreElements()) {
-      GamePiece p = visibleFilter.nextPiece();
-      String s = localized ? p.getLocalizedName() : p.getName();
-      val += s;
-      if (s.length() > 0 && visibleFilter.hasMoreElements()) {
-        val += ", ";
+      final GamePiece p = visibleFilter.nextPiece();
+      val.append(localized ? p.getLocalizedName() : p.getName());
+      if (val.length() > 0 && visibleFilter.hasMoreElements()) {
+        val.append(", ");
       }
     }
-    return val;
+    return val.toString();
   }
   
   public String getName() {

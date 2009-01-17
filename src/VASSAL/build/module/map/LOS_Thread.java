@@ -61,6 +61,7 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.StringUtils;
 import VASSAL.tools.UniqueIdManager;
 
 /**
@@ -647,12 +648,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   }
 
   protected String getLosCheckList() {
-// FIXME: should use StringBuilder?
-    String list = "";
-    for (String loc : checkList) {
-      list += (list.length() > 0 ? ", ": "") + loc;
-    }
-    return list;
+    return StringUtils.join(checkList, ", ");
   }
   
   /** Since we register ourselves as a MouseMotionListener directly,

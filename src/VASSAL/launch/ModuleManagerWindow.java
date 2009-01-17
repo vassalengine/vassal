@@ -1688,7 +1688,7 @@ public class ModuleManagerWindow extends JFrame {
   /**
    * Action to Edit an Extension in another process
    */
-  private class EditExtensionLaunchAction extends AbstractLaunchAction {
+  private static class EditExtensionLaunchAction extends AbstractLaunchAction {
     private static final long serialVersionUID = 1L;
 
     public EditExtensionLaunchAction(Frame frame, File extension, File module) {
@@ -1744,7 +1744,7 @@ public class ModuleManagerWindow extends JFrame {
     } 
   }
 
-  private class ShowErrorLogAction extends AbstractAction {
+  private static class ShowErrorLogAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
     private Frame frame;

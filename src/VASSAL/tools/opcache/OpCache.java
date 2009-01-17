@@ -99,7 +99,7 @@ public class OpCache {
    * A request for execution of an {@link Op} which will be completed
    * synchronously and set manually.
    */ 
-  private final class Result<V> implements Future<V> {
+  private static final class Result<V> implements Future<V> {
     private static final long serialVersionUID = 1L;
 
     private V value = null;

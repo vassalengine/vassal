@@ -190,7 +190,7 @@ public class SVGRenderer {
     }
   }
 
-  private class Rasterizer extends SVGAbstractTranscoder {
+  private static class Rasterizer extends SVGAbstractTranscoder {
     private DocumentLoader docLoader;
     private BufferedImage image;
     private AffineTransform xform;

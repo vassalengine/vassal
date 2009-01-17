@@ -392,7 +392,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
     this.textFg = textFg;
   }
 
-  protected class LabelOp extends AbstractTileOpImpl {
+  protected static class LabelOp extends AbstractTileOpImpl {
     private final String txt;
     private final Font font;
     private final Color fg;
