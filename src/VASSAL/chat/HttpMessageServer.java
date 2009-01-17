@@ -73,14 +73,10 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
           String date = st.nextToken();
           date = date.substring(date.indexOf("=") + 1); //$NON-NLS-1$
           s = st.nextToken(""); //$NON-NLS-1$
-          SequenceEncoder.Decoder st2 = new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|'); //$NON-NLS-1$
-          String content = ""; //$NON-NLS-1$
-          while (st2.hasMoreTokens()) {
-            content += st2.nextToken();
-            if (st2.hasMoreTokens()) {
-              content += "\n"; //$NON-NLS-1$
-            }
-          }
+
+          content = StringUtils.join("\n",
+            new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|'));
+
           content = restorePercent(content);
           Date created = null;
           try {

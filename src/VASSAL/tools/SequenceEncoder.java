@@ -20,18 +20,20 @@ package VASSAL.tools;
 
 import java.awt.Color;
 import java.awt.event.InputEvent;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import javax.swing.KeyStroke;
+
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 
 /**
  * Encodes a sequence of Strings into a single String with a given delimiter.
- * Escapes the delimiter character if it occurs in the element strings.
+ * Escapes the delimiter character if it occurs in the element strings. 
  *
- * This is a very handy class for storing structured data into flat text and quite a bit faster than parsing
- * an XML document.
+ * This is a very handy class for storing structured data into flat text and
+ * quite a bit faster than parsing an XML document.
  *
  * For example, a structure such as {A,{B,C}} can be encoded with
  *
@@ -135,7 +137,7 @@ public class SequenceEncoder {
     }
   }
 
-  public static class Decoder {
+  public static class Decoder implements Iterator<String> {
     private String val;
     private char delimit;
 
@@ -187,6 +189,18 @@ public class SequenceEncoder {
         value = value.substring(1, value.length() - 1);
       }
       return value;
+    }
+
+    public boolean hasNext() {
+      return hasMoreTokens();
+    }
+
+    public String next() {
+      return nextToken();
+    }
+  
+    public void remove() {
+      throw new UnsupportedOperationException();
     }
 
     public Decoder copy() {

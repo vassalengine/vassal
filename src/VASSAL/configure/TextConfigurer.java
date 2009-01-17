@@ -28,6 +28,7 @@ import javax.swing.border.TitledBorder;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.StringUtils;
 
 /**
  * A Configurer that allows multi-line string input via a JTextArea
@@ -116,15 +117,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
    * @return
    */
   public static String restoreNewlines(String s) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '|');
-    String text = "";
-    while (st.hasMoreTokens()) {
-      text += st.nextToken();
-      if (st.hasMoreTokens()) {
-        text += "\n";
-      }
-    }
-    return text;
+    return StringUtils.join("\n", new SequenceEncoder.Decoder(s, '|'));
   }
 
   public java.awt.Component getControls() {

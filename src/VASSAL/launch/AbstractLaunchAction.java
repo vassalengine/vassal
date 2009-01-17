@@ -379,7 +379,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         args[1] = "-Xms" + initialHeap + "M";
         args[2] = "-Xmx" + maximumHeap + "M";
 
-        Logger.log(StringUtils.join(args, " "));
+        Logger.log(StringUtils.join(" ", args));
 
         // set up and start the child process
         final ProcessBuilder pb = new ProcessBuilder(args);

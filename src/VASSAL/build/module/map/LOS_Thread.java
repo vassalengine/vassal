@@ -648,7 +648,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   }
 
   protected String getLosCheckList() {
-    return StringUtils.join(checkList, ", ");
+    return StringUtils.join(", ", checkList);
   }
   
   /** Since we register ourselves as a MouseMotionListener directly,
