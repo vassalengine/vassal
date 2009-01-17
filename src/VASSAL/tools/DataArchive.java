@@ -689,7 +689,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
         return new FileInputStream(new File(dir, file));
       }
     }
-    catch (Exception e) {
+    catch (IOException e) {
       return null;
     }
   }
