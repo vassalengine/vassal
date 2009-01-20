@@ -30,7 +30,10 @@ import VASSAL.tools.io.IOUtils;
 /**
  * Converts an file created with {@link Obfuscator} back into plain text.
  * Additionally, plain text will be passed through unchanged.
+ *
+ * @deprecated Use {@link DeobfuscatingInputStream} instead.
  */
+@Deprecated
 public class Deobfuscator {
   private String plain;
 
@@ -71,12 +74,9 @@ public class Deobfuscator {
  
   // Convert an obfuscated file into a plain-text file
   public static void main(String[] args) throws Exception {
-    System.out.println("Decoding "+args[0]);
-    Deobfuscator d = new Deobfuscator(new FileInputStream(args[0]));
-    BufferedWriter out = new BufferedWriter(new FileWriter(args[0]));
-    out.write(d.getString());
-    out.close();
-    System.out.println("Done!");
+    Deobfuscator d = new Deobfuscator(
+      args.length > 0 ? new FileInputStream(args[0]) : System.in);
+    IOUtils.copy(IOUtils.toInputStream(d.getString(), "UTF-8"), System.out);
     System.exit(0);
   }
 }

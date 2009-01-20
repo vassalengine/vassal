@@ -24,8 +24,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,16 +63,16 @@ import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.Deobfuscator;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.Obfuscator;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
+import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -554,13 +555,21 @@ public class GameState implements CommandEncoder {
   public static final String END_SAVE = "end_save";  //$NON-NLS-1$
 
   public void saveGame(File f) throws IOException {
-    final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
+// FIXME: Extremely inefficient! Write directly to ZipArchive OutputStream
     final String save = saveString();
-    new Obfuscator(save.getBytes("UTF-8")).write(out);  //$NON-NLS-1$
-    lastSave = save;
+    final FastByteArrayOutputStream ba = new FastByteArrayOutputStream();
+    OutputStream out = null;
+    try {
+      out = new ObfuscatingOutputStream(ba);
+      out.write(save.getBytes("UTF-8"));
+      out.close();
+    }
+    finally {
+      IOUtils.closeQuietly(out);
+    }
 
     final ArchiveWriter saver = new ArchiveWriter(f.getPath());
-    saver.addFile(SAVEFILE_ZIP_ENTRY, out.toInputStream());
+    saver.addFile(SAVEFILE_ZIP_ENTRY, ba.toInputStream());
     (new SaveMetaData()).save(saver);
     saver.write();
     Launcher.getInstance().sendSaveCmd(f);
@@ -681,8 +690,18 @@ public class GameState implements CommandEncoder {
       for (ZipEntry entry = zipInput.getNextEntry(); entry != null;
            entry = zipInput.getNextEntry()) {
         if (SAVEFILE_ZIP_ENTRY.equals(entry.getName())) {
-          return GameModule.getGameModule().decode(
-            new Deobfuscator(zipInput).getString());
+          InputStream din = null;
+          try {
+            din = new DeobfuscatingInputStream(zipInput);
+// FIXME: toString() is very inefficient, make decode() use the stream directly
+            final Command c = GameModule.getGameModule().decode(
+              IOUtils.toString(din, "UTF-8"));
+            din.close();
+            return c;
+          }
+          finally {
+            IOUtils.closeQuietly(din);
+          }
         }
       }
       zipInput.close();

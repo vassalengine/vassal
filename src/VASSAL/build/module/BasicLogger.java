@@ -28,6 +28,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,10 +56,11 @@ import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.KeyStrokeListener;
-import VASSAL.tools.Obfuscator;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.io.FastByteArrayOutputStream;
+import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.menu.MenuManager;
 
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
@@ -282,12 +284,22 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         log.append(new LogCommand(c, logInput, stepAction));
       }
 
+// FIXME: Extremely inefficient! Make encode write to an OutputStream
       final String s = GameModule.getGameModule().encode(log);
-      final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
-      new Obfuscator(s.getBytes("UTF-8")).write(out); //$NON-NLS-1$    
+      final FastByteArrayOutputStream ba = new FastByteArrayOutputStream();
+      OutputStream out = null;
+      try {
+        out = new ObfuscatingOutputStream(ba);
+        out.write(s.getBytes("UTF-8"));
+        out.close();
+      }
+      finally {
+        IOUtils.closeQuietly(out);
+      }
 
       final ArchiveWriter saver = new ArchiveWriter(outputFile.getPath());
-      saver.addFile(GameState.SAVEFILE_ZIP_ENTRY, out.toInputStream()); //$NON-NLS-1$
+      saver.addFile(GameState.SAVEFILE_ZIP_ENTRY, ba.toInputStream());
+
       metadata.save(saver);
       saver.write();
       Launcher.getInstance().sendSaveCmd(outputFile);
