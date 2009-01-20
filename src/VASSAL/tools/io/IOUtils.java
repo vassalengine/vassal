@@ -63,7 +63,7 @@ public class IOUtils {
   public static void copy(InputStream in, OutputStream out, byte[] buffer)
       throws IOException {
     int n = 0;
-    while ((n = in.read(buffer)) != 0) out.write(buffer, 0, n);
+    while ((n = in.read(buffer)) != -1) out.write(buffer, 0, n);
   }
 
   /**
@@ -94,7 +94,7 @@ public class IOUtils {
   public static void copy(Reader in, Writer out, char[] buffer)
       throws IOException {
     int n = 0;
-    while ((n = in.read(buffer)) != 0) out.write(buffer, 0, n);
+    while ((n = in.read(buffer)) != -1) out.write(buffer, 0, n);
   }
 
   /**
