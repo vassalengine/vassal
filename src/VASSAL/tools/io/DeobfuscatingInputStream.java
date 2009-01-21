@@ -66,14 +66,15 @@ public class DeobfuscatingInputStream extends FilterInputStream {
    */
   private static int readFully(InputStream in, byte[] bytes, int off, int len)
                                                            throws IOException {
-    int left = len;
-    int count = 0;
-    while (left > 0 && (count = in.read(bytes, off, left)) != -1) {
-      left -= count;
-      off += count;
+    int count;
+    int n = 0;
+    while (n < len) {
+      count = in.read(bytes, off + n, len - n);
+      if (count < 0) break; 
+      n += count;
     }
 
-    return len - left;
+    return n;
   }
 
   private static class DeobfuscatingInputStreamImpl extends FilterInputStream {
@@ -91,7 +92,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
     public int read(byte[] bytes, int off, int len) throws IOException {
       int b = 0;
       int i = 0;
-      while (i < len && (b = read()) != -1) bytes[(i++)+off] = (byte) b;
+      while (i < len && (b = read()) >= 0) bytes[(i++)+off] = (byte) b;
       return b == -1 && i == 0 ? -1 : i;
     }
 
