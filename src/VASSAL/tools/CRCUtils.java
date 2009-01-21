@@ -87,7 +87,7 @@ public class CRCUtils {
   private static void buildCRC(InputStream in, CRC32 crc, byte[] buffer) throws IOException {
       
     int count;
-    while ((count = in.read(buffer)) > 0) {
+    while ((count = in.read(buffer)) >= 0) {
       crc.update(buffer, 0, count);
     }
   }

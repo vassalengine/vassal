@@ -79,7 +79,7 @@ public class ZipUpdater implements Runnable {
         try {
           final byte[] buffer = new byte[1024];
           int count;
-          while ((count = in.read(buffer)) > 0) {
+          while ((count = in.read(buffer)) >= 0) {
             checksum.update(buffer, 0, count);
           }
           in.close();

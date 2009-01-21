@@ -374,7 +374,7 @@ public class ArchiveWriter extends DataArchive {
               int count = 0;
               n = 0;
               try {
-                while ((n = in.read(buf)) > 0) {
+                while ((n = in.read(buf)) >= 0) {
                   checksum.update(buf, 0, n);
                   count += n;
                 }
