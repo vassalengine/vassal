@@ -104,7 +104,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
       case  1:
         throw new IOException();
       case  2:
-        return ((unhex(pair[0]) << 4) | unhex(pair[1])) ^ key;
+        return (((unhex(pair[0]) << 4) | unhex(pair[1])) ^ key) & 0xFF;
       default:
         throw new IOException();
       }
