@@ -45,6 +45,7 @@ import javax.swing.ImageIcon;
 
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
+import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.tools.ErrorDialog;
@@ -443,6 +444,17 @@ public class ImageUtils {
     // See Sun Bug 6788458, at
     // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6788458
     //
+    // Additionally, Toolkit.createImage() is unforgiving about malformed
+    // PNGs, but instead of throwing an exception or returning null, it
+    // returns a useless Image with negative width and height. (Though it
+    // might also print a stack trace to the log.) There is at least one
+    // piece of software (SplitImage) which writes tRNS chunks for type 2
+    // images which are only 3 bytes long, and because this kind of thing
+    // is used by module designers for slicing up scans of countersheets,
+    // we can expect to see such crap from time to time. Therefore, if
+    // Toolkit.createImage() fails, we fallback to ImageIO.read() and hope
+    // for the best.
+    //
 
     BufferedImage img = null;
     RereadableInputStream rin = null;
@@ -454,10 +466,25 @@ public class ImageUtils {
       rin.reset();
 
       if (useToolkit) {
-        img = toBufferedImage(
-          Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(rin)));
+        rin.mark(4096);
+
+        final Image i =
+          Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(rin));
+
+        // check that we received a valid Image from the Toolkit 
+        if (i.getWidth(null) > 0 && i.getHeight(null) > 0) {
+          img = toBufferedImage(i);
+        }
+        else {
+          // Toolkit failed for some reason. Probably this means that
+          // we have a broken PNG, so gently notify the user and fallback
+          // to ImageIO.read().
+          ErrorDialog.dataError(new BadDataReport("Broken PNG image", name));
+          rin.reset();
+        } 
       }
-      else {
+
+      if (img == null) {
         img = ImageIO.read(new MemoryCacheImageInputStream(rin));
         if (img == null) throw new UnrecognizedImageTypeException();
         img = toCompatibleImage(img);
