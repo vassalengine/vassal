@@ -65,6 +65,7 @@ import VASSAL.launch.Launcher;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
@@ -631,8 +632,18 @@ public class GameState implements CommandEncoder {
           }
           // FIXME: review error message
           catch (ExecutionException e) {
-            VASSAL.tools.logging.Logger.log(e);
-            msg = Resources.getString("GameState.error_loading", shortName);  //$NON-NLS-1$
+// FIXME: This is a temporary hack to catch OutOfMemoryErrors; there should
+// be a better, more uniform and more permanent way of handling these, since
+// an OOME is neither a VASSAL bug, a module bug, nor due to bad data.
+            final OutOfMemoryError oom =
+              ThrowableUtils.getAncestorOfClass(OutOfMemoryError.class, e);
+            if (oom != null) {
+              ErrorDialog.bug(e);
+            }
+            else {
+              VASSAL.tools.logging.Logger.log(e);
+            }
+            msg = Resources.getString("GameState.error_loading", shortName);
           }
   
           if (loadCommand != null) {
