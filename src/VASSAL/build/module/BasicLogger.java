@@ -58,6 +58,7 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.filechooser.LogFileFilter;
 import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ObfuscatingOutputStream;
@@ -309,27 +310,45 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       endLogAction.setEnabled(false);
     }
   }
-  
-  protected void beginOutput() {
-    FileChooser fd = GameModule.getGameModule().getFileChooser();
-    String name = fd.getSelectedFile() == null ? null : fd.getSelectedFile().getName();
+ 
+  private File getSaveFile() {
+    final FileChooser fc = GameModule.getGameModule().getFileChooser();
+    fc.addChoosableFileFilter(new LogFileFilter());
+
+    String name = fc.getSelectedFile() == null
+      ? null : fc.getSelectedFile().getName();
     if (name != null) {
       int index = name.lastIndexOf('.');
       if (index > 0) {
-        name = name.substring(0, index) + ".log";  //$NON-NLS-1$
-        fd.setSelectedFile(new File(fd.getSelectedFile().getParentFile(), name));
+        name = name.substring(0, index) + ".vlog";  //$NON-NLS-1$
+        fc.setSelectedFile(new File(fc.getSelectedFile().getParent(), name));
       }
     }
-    if (fd.showSaveDialog() == FileChooser.APPROVE_OPTION) {
-      outputFile = fd.getSelectedFile();
-      logOutput.clear();
-      beginningState = GameModule.getGameModule().getGameState().getRestoreCommand();
-      undoAction.setEnabled(false);
-      endLogAction.setEnabled(true);
-      GameModule.getGameModule().appendToTitle(Resources.getString("BasicLogger.logging_to", outputFile.getName()));  //$NON-NLS-1$
-      newLogAction.setEnabled(false);
-      metadata = new SaveMetaData();
-    }
+
+    if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
+
+    File file = fc.getSelectedFile();
+    if (file.getName().indexOf('.') == -1)
+      file = new File(file.getParent(), file.getName() + ".vlog");
+
+    return file;
+  }
+ 
+  protected void beginOutput() {
+    outputFile = getSaveFile();
+    if (outputFile == null) return;
+
+    final GameModule gm = GameModule.getGameModule();
+
+    logOutput.clear();
+    beginningState = gm.getGameState().getRestoreCommand();
+
+    undoAction.setEnabled(false);
+    endLogAction.setEnabled(true);
+    gm.appendToTitle(Resources.getString("BasicLogger.logging_to",
+                     outputFile.getName()));
+    newLogAction.setEnabled(false);
+    metadata = new SaveMetaData();
   }
 
   protected void undo() {

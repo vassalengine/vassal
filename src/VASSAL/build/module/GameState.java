@@ -401,7 +401,11 @@ public class GameState implements CommandEncoder {
 
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return null;
 
-    return fc.getSelectedFile();
+    File file = fc.getSelectedFile();
+    if (file.getName().indexOf('.') == -1)
+      file = new File(file.getParent(), file.getName() + ".vsav");
+
+    return file;
   }
 
   /**
