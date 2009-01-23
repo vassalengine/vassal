@@ -60,10 +60,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JRadioButton;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.jdesktop.swingworker.SwingWorker;
-
 import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardBranchController;
@@ -297,7 +297,13 @@ public class WizardSupport {
         addButton(createPlayOnlineButton(controller, settings), group, box);
         addButton(createLoadSavedGameButton(controller, settings), group, box);
         if (tutorialButton != null) {
-          tutorialButton.doClick();
+          // Select tutorial button by default, but not until wizard is built.  Bug #2286742
+          final JRadioButton clickOnMe = tutorialButton;
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              clickOnMe.doClick();
+            }
+          });
           tutorialButton.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
               if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -307,8 +313,7 @@ public class WizardSupport {
           });
         }
         else if (tutorial != null) {
-          tutorialButton = createTutorialButton(controller, settings);
-          addButton(tutorialButton, group, box);
+          addButton(createTutorialButton(controller, settings), group, box);
         }
         actionControls = box;
         box.add(Box.createVerticalGlue());
