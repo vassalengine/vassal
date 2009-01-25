@@ -270,6 +270,7 @@ public class BugDialog extends JDialog {
   private JScrollPane buildDetailsScroll() {
     final JTextArea detailsArea = new JTextArea(errorLog, 10, 20);
     detailsArea.setEditable(false);
+    detailsArea.setTabSize(2);
     return new JScrollPane(detailsArea);
   }
 
