@@ -52,6 +52,8 @@ import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.RereadableInputStream;
 
 public class ImageUtils {
+  private ImageUtils() {}
+
   // negative, because historically we've done it this way
   private static final double DEGTORAD = -Math.PI/180.0;
 
@@ -79,8 +81,7 @@ public class ImageUtils {
   private static final Map<RenderingHints.Key,Object> defaultHints =
     new HashMap<RenderingHints.Key,Object>();
 
-  private ImageUtils() {  
-    
+  static {
     // Initialise Image prefs prior to Preferences being read.
     setPreferMemoryMappedFiles(false);
     setHighQualityScaling(true);
