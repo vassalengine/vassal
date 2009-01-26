@@ -29,14 +29,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.PixelGrabber;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -46,8 +45,6 @@ import javax.swing.ImageIcon;
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
 import VASSAL.build.BadDataReport;
-import VASSAL.build.GameModule;
-import VASSAL.configure.BooleanConfigurer;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.memmap.MappedBufferedImage;
 import VASSAL.tools.imageop.Op;
@@ -71,7 +68,7 @@ public class ImageUtils {
   private static int largeImageLoadMethod = RAM;
 
   public static boolean useMappedImages() {
-    return instance.largeImageLoadMethod == MAPPED;
+    return largeImageLoadMethod == MAPPED;
   }
 
   public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
@@ -82,54 +79,12 @@ public class ImageUtils {
   private static final Map<RenderingHints.Key,Object> defaultHints =
     new HashMap<RenderingHints.Key,Object>();
 
-  private static final ImageUtils instance = new ImageUtils();
-
-//  private ImageUtils() {}
-
-//  static {
-  private ImageUtils() {
-    if (GameModule.getGameModule() != null) {
-// FIXME: this stuff belongs somewhere else
-      // create configurer for memory-mapped file preference
-      final BooleanConfigurer mappedPref = new BooleanConfigurer(
-        PREFER_MEMORY_MAPPED,
-        "Prefer memory-mapped files for large images?", //$NON-NLS-1$
-        Boolean.FALSE);
-  
-      mappedPref.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          largeImageLoadMethod =
-            Boolean.TRUE.equals(mappedPref.getValue()) ? MAPPED : RAM;
-        }
-      });
-  
-      GameModule.getGameModule().getPrefs().addOption(mappedPref); 
-  
-      // create configurer for scaling quality
-      final BooleanConfigurer scalingPref = new BooleanConfigurer(
-        SCALER_ALGORITHM,
-        "High-quality scaling?", //$NON-NLS-1$ 
-        Boolean.TRUE);
-  //      Resources.getString("GlobalOptions.smooth_scaling"), Boolean.TRUE); //$NON-NLS-1$
-      scalingPref.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent evt) {
-          final int newQual =
-            Boolean.TRUE.equals(scalingPref.getValue()) ? GOOD : MEDIUM;
-          if (newQual != scalingQuality) {
-            scalingQuality = newQual;
-            Op.clearCache();
-  
-            defaultHints.put(RenderingClues.KEY_EXT_INTERPOLATION,
-              scalingQuality == GOOD ?
-                RenderingClues.VALUE_INTERPOLATION_LANCZOS_MITCHELL :
-                RenderingClues.VALUE_INTERPOLATION_BILINEAR);
-          }
-        }
-      });
-  
-      GameModule.getGameModule().getPrefs().addOption(scalingPref);
-    }
-
+  private ImageUtils() {  
+    
+    // Initialise Image prefs prior to Preferences being read.
+    setPreferMemoryMappedFiles(false);
+    setHighQualityScaling(true);
+    
     // set up map for creating default RenderingHints
     defaultHints.put(RenderingHints.KEY_INTERPOLATION,
                      RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -139,8 +94,25 @@ public class ImageUtils {
                      RenderingHints.VALUE_ANTIALIAS_ON);
   } 
 
+  public static void setPreferMemoryMappedFiles(boolean b) {
+    largeImageLoadMethod = b ? MAPPED : RAM;
+  }
+  
+  public static void setHighQualityScaling(boolean b) {
+    final int newQual = b ? GOOD : MEDIUM;
+    if (newQual != scalingQuality) {
+      scalingQuality = newQual;
+      Op.clearCache();
+
+      defaultHints.put(RenderingClues.KEY_EXT_INTERPOLATION,
+        scalingQuality == GOOD ?
+          RenderingClues.VALUE_INTERPOLATION_LANCZOS_MITCHELL :
+          RenderingClues.VALUE_INTERPOLATION_BILINEAR);
+    }
+  }
+  
   public static RenderingHints getDefaultHints() {
-    return new RenderingClues(instance.defaultHints);
+    return new RenderingClues(defaultHints);
   }
 
   public static Rectangle transform(Rectangle srect,
@@ -157,14 +129,14 @@ public class ImageUtils {
                                         double angle) {
     return transform(src, scale, angle,
                      getDefaultHints(),
-                     instance.scalingQuality);
+                     scalingQuality);
   }
 
   public static BufferedImage transform(BufferedImage src,
                                         double scale,
                                         double angle,
                                         RenderingHints hints) {
-    return transform(src, scale, angle, hints, instance.scalingQuality);
+    return transform(src, scale, angle, hints, scalingQuality);
   }
 
   public static BufferedImage transform(BufferedImage src,

@@ -53,6 +53,7 @@ import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
+import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.PasswordConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.TextConfigurer;
@@ -63,10 +64,13 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.menu.MenuManager;
 
 public class BasicModule extends GameModule {
+  public static final String PREFER_MEMORY_MAPPED = "preferMemoryMapped"; //$NON-NLS-1$
+  public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
   private static char COMMAND_SEPARATOR = (char) KeyEvent.VK_ESCAPE;
   protected ChatServerControls serverControls;
 
@@ -128,6 +132,7 @@ public class BasicModule extends GameModule {
     }
 
     initIdentityPreferences();
+    initImagePreferences();
     Prefs.initSharedGlobalPrefs();
     initGameState();
     initLogger();
@@ -158,6 +163,31 @@ public class BasicModule extends GameModule {
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), user);   //$NON-NLS-1$ //$NON-NLS-2$
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
     GameModule.setUserId(user.getValueString());
+  }
+  
+  protected void initImagePreferences() {
+    final BooleanConfigurer mappedPref = new BooleanConfigurer(
+        PREFER_MEMORY_MAPPED,
+        "Prefer memory-mapped files for large images?", //$NON-NLS-1$
+        Boolean.FALSE);
+    mappedPref.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        ImageUtils.setPreferMemoryMappedFiles(Boolean.TRUE.equals(mappedPref.getValue()));
+      }
+    });
+    GameModule.getGameModule().getPrefs().addOption(mappedPref); 
+    
+    
+    final BooleanConfigurer scalingPref = new BooleanConfigurer(
+        SCALER_ALGORITHM,
+        "High-quality scaling?", //$NON-NLS-1$ 
+        Boolean.TRUE);    
+    scalingPref.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        ImageUtils.setHighQualityScaling(Boolean.TRUE.equals(scalingPref.getValue()));
+      }
+    });
+    GameModule.getGameModule().getPrefs().addOption(scalingPref);
   }
 
   protected void initServer() {
