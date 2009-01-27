@@ -74,6 +74,7 @@ public class DetailsDialog {
 
     final DetailsButton detailsButton =
       new DetailsButton(showText, hideText, detailsScroll);
+    detailsButton.setBuddy(messageLabel);
 
     // build the contents panel
     final JPanel panel = new JPanel();

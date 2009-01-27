@@ -224,10 +224,10 @@ public class BugDialog extends JDialog {
       Resources.getString("Dialogs.hide_details"),
       detailsScroll
     );
+    detailsButton.setBuddy(label);
 
     final JPanel panel = new JPanel(new MigLayout(
       "hidemode 3", "", "[]unrel[]rel[]unrel[]unrel[]rel[]"));
-//      "hidemode 3, nocache", "", "[]unrel[]rel[]unrel[]unrel[]rel[shrinkprio 200, growprio 200]"));
     panel.add(label, "cell 0 0, growx, pushx");
     panel.add(descriptionLabel, "cell 0 1");
     panel.add(descriptionScroll, "cell 0 2, grow, push");
@@ -286,6 +286,7 @@ public class BugDialog extends JDialog {
       Resources.getString("Dialogs.hide_details"),
       detailsScroll
     );
+    detailsButton.setBuddy(label);
 
     final JPanel panel = new JPanel(new MigLayout(
       "hidemode 3", "", "[]unrel[]rel[]"));
@@ -328,6 +329,7 @@ public class BugDialog extends JDialog {
       Resources.getString("Dialogs.hide_details"),
       detailsScroll
     ); 
+    detailsButton.setBuddy(label);
 
     final JPanel panel = new JPanel(new MigLayout(
       "hidemode 3", "", "[]unrel[]rel[]"));
