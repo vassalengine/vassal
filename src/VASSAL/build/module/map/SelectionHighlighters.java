@@ -1,5 +1,8 @@
 package VASSAL.build.module.map;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
@@ -12,7 +15,8 @@ import VASSAL.counters.ColoredBorder;
  */
 public class SelectionHighlighters extends AbstractConfigurable {
   protected Map map;
-
+  protected List<SelectionHighlighter> highlighters = new ArrayList<SelectionHighlighter>();
+  
   public SelectionHighlighters() {
     super();
   }
@@ -40,9 +44,6 @@ public class SelectionHighlighters extends AbstractConfigurable {
     return null;
   }
 
-  public void removeFrom(Buildable parent) {
-  }
-
   public HelpFile getHelpFile() {
     return null;
   }
@@ -53,20 +54,43 @@ public class SelectionHighlighters extends AbstractConfigurable {
 
   public void addTo(Buildable parent) {
     map = (Map) parent;
+    for (SelectionHighlighter highlighter : highlighters) {
+      addToMap(highlighter);
+    }
   }
 
-  public void removeHighlighter(SelectionHighlighter highlighter) {
-    if (map.getHighlighter() instanceof ColoredBorder) {
-      ((ColoredBorder) map.getHighlighter()).removeHighlighter(highlighter);
+  public void removeFrom(Buildable parent) {
+    for (SelectionHighlighter highlighter : highlighters) {
+      removeFromMap(highlighter);
     }
+  }
+  
+  public void removeHighlighter(SelectionHighlighter highlighter) {
+    highlighters.add(highlighter);
+    removeFromMap(highlighter);
   }
 
   public void addHighlighter(SelectionHighlighter highlighter) {
-    if (map.getHighlighter() instanceof ColoredBorder) {
-      ((ColoredBorder) map.getHighlighter()).addHighlighter(highlighter);
-    }
+    highlighters.remove(highlighter);
+    addToMap(highlighter);
   }
 
+  protected void addToMap(SelectionHighlighter highlighter) {
+    if (map != null) {
+      if (map.getHighlighter() instanceof ColoredBorder) {
+        ((ColoredBorder) map.getHighlighter()).addHighlighter(highlighter);
+      }
+    }
+  }
+  
+  protected void removeFromMap(SelectionHighlighter highlighter) {
+    if (map != null) {
+      if (map.getHighlighter() instanceof ColoredBorder) {
+        ((ColoredBorder) map.getHighlighter()).removeHighlighter(highlighter);
+      }
+    }
+  }
+  
   public Configurer getConfigurer() {
     return null;
   }
