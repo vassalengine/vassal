@@ -28,11 +28,13 @@ public class DynamicClientFactory extends ChatServerFactory {
 
   public ChatServerConnection buildServer(Properties param) {
     String url = param.getProperty(URL);
-    if (url != null) {
-      return new DynamicClient(url);
+    DynamicClient client = url == null ? new DynamicClient() : new DynamicClient(url);
+    if (param.containsKey(DYNAMIC_TYPE)) {
+      param = new Properties(param);
+      // Force the type of the dynamically created server proxy
+      param.setProperty(ChatServerFactory.TYPE_KEY, param.getProperty(DYNAMIC_TYPE));
     }
-    else {
-      return new DynamicClient();
-    }
+    client.setOverrides(param);
+    return client;
   }
 }

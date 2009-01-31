@@ -191,10 +191,8 @@ public class BasicModule extends GameModule {
   }
 
   protected void initServer() {
-    DynamicClientFactory dynamicClientFactory = new DynamicClientFactory();
-    ChatServerFactory.register(ChatServerFactory.DEFAULT_TYPE, dynamicClientFactory);
-    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, NodeClientFactory.getInstance());
-    ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, dynamicClientFactory);
+    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new NodeClientFactory());
+    ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
     ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
     server = new HybridClient();

@@ -41,6 +41,7 @@ import VASSAL.tools.ThrowableUtils;
 public class DynamicClient extends HybridClient {
   private String serverConfigURL;
   private boolean connecting;
+  private Properties overrides;
 
   public DynamicClient() {
     this("http://www.vassalengine.org/util/getServerImpl"); //$NON-NLS-1$
@@ -72,6 +73,9 @@ public class DynamicClient extends HybridClient {
       buff.append(s).append('\n');
     }
     p.load(new ByteArrayInputStream(buff.toString().getBytes()));
+    if (overrides != null) {
+      p.putAll(overrides);
+    }
     return p;
   }
 
@@ -110,5 +114,9 @@ public class DynamicClient extends HybridClient {
         setDelegate(new DummyClient());
       }
     }
+  }
+
+  public void setOverrides(Properties override) {
+    this.overrides = override;
   }
 }

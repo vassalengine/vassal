@@ -33,14 +33,13 @@ import VASSAL.i18n.Resources;
  * @author rkinney
  */
 public class NodeClientFactory extends ChatServerFactory {
-  private static NodeClientFactory instance;
   private static final String UNNAMED_MODULE = Resources.getString("Chat.unknown_module");  //$NON-NLS-1$
   private static final String UNKNOWN_USER = Resources.getString("Chat.unknown_user");  //$NON-NLS-1$
   public static final String NODE_TYPE = "node";  //$NON-NLS-1$
   public static final String NODE_HOST = "nodeHost";  //$NON-NLS-1$
   public static final String NODE_PORT = "nodePort";  //$NON-NLS-1$
 
-  private NodeClientFactory() {
+  public NodeClientFactory() {
   }
 
   public ChatServerConnection buildServer(Properties param) {
@@ -75,12 +74,5 @@ public class NodeClientFactory extends ChatServerFactory {
     });
     server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
     return server;
-  }
-
-  public static NodeClientFactory getInstance() {
-    if (instance == null) {
-      instance = new NodeClientFactory();
-    }
-    return instance;
   }
 }

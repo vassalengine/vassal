@@ -32,7 +32,7 @@ import VASSAL.chat.CommandDecoder;
 public class JabberClientFactory extends ChatServerFactory {
   public static final String JABBER_SERVER_TYPE = "jabber"; //$NON-NLS-1$
   public static final String JABBER_PWD = "jabberPassword"; //$NON-NLS-1$
-  public static final String JABBER_LOGIN = "jabberPogin"; //$NON-NLS-1$
+  public static final String JABBER_LOGIN = "jabberLogin"; //$NON-NLS-1$
   public static final String JABBER_PORT = "jabberPort"; //$NON-NLS-1$
   public static final String JABBER_HOST = "jabberHost"; //$NON-NLS-1$
   public static final String DEFAULT_JABBER_PORT = "5222"; //$NON-NLS-1$
@@ -48,9 +48,8 @@ public class JabberClientFactory extends ChatServerFactory {
     catch (NumberFormatException e) {
       e.printStackTrace();
     }
-    ModuleAccountInfo account = new ModuleAccountInfo();
+    ModuleAccountInfo account = new ModuleAccountInfo(serverConfig.getProperty(JABBER_LOGIN),serverConfig.getProperty(JABBER_PWD));
     JabberClient client = new JabberClient(GameModule.getGameModule(), host, port, account);
-    account.init(client);
     client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         GameModule.getGameModule().warn((String) evt.getNewValue());

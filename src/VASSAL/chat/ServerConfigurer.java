@@ -17,7 +17,6 @@
 package VASSAL.chat;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
@@ -27,17 +26,34 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
-import javax.swing.Box;
+
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.jivesoftware.smack.util.StringUtils;
+
 import VASSAL.chat.jabber.JabberClientFactory;
+import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.menu.MacOSXMenuManager;
 
 /**
  * Specifies the server implementation in the Preferences
@@ -48,19 +64,22 @@ import VASSAL.i18n.Resources;
 public class ServerConfigurer extends Configurer {
   private static final String CONNECTED = Resources.getString("Server.please_disconnect"); //$NON-NLS-1$
   private static final String DISCONNECTED = Resources.getString("Server.select_server_type"); //$NON-NLS-1$
-  private static final String BUTTON = "Button"; //$NON-NLS-1$
-  private static final String DYNAMIC_BUTTON = Resources.getString("Server.default"); //$NON-NLS-1$
-  private static final String JABBER_BUTTON = "Jabber"; //$NON-NLS-1$
-  private static final String DIRECT_BUTTON = Resources.getString("Server.direct"); //$NON-NLS-1$
-  private static final String ENCODING = "ISO-8859-1"; //$NON-NLS-1$
-  private Box controls;
+  private static final String JABBER_BUTTON = Resources.getString("Server.jabber"); //$NON-NLS-1$
+  private static final String P2P_BUTTON = Resources.getString("Server.direct"); //$NON-NLS-1$
+  private static final String LEGACY_BUTTON = Resources.getString("Server.legacy"); //$NON-NLS-1$
+  private static final String ENCODING = "UTF-8"; //$NON-NLS-1$
+  private JComponent controls;
   private JTextField jabberHost;
   private HybridClient client;
-  private JRadioButton dynamicButton;
+  private JRadioButton legacyButton;
   private JRadioButton jabberButton;
-  private JRadioButton directButton;
+  private JTextField jabberAccountName;
+  private JPasswordField jabberPassword;
+  private JRadioButton p2pButton;
   private JLabel header;
-  private JLabel jabberHostPrompt;
+  private JCheckBox jabberHostPrompt;
+  private JLabel jabberAccountPrompt;
+  private JLabel jabberPasswordPrompt;
 
   public ServerConfigurer(String key, String name, HybridClient client) {
     super(key, name, new Properties());
@@ -71,30 +90,15 @@ public class ServerConfigurer extends Configurer {
       }
     });
     getControls();
-    setValue(buildDynamicProperties());
+    setValue(buildLegacyProperties());
   }
 
   public Component getControls() {
     if (controls == null) {
-      controls = Box.createVerticalBox();
+      controls = new JPanel(new MigLayout());
       header = new JLabel(DISCONNECTED);
-      controls.add(header);
+      controls.add(header, "wrap");
       ButtonGroup group = new ButtonGroup();
-      dynamicButton = new JRadioButton(DYNAMIC_BUTTON);
-      dynamicButton.setAlignmentX(0.0f);
-      dynamicButton.addItemListener(new ItemListener() {
-        public void itemStateChanged(ItemEvent e) {
-          if (e.getStateChange() == ItemEvent.SELECTED) {
-            noUpdate = true;
-            setValue(buildDynamicProperties());
-            noUpdate = false;
-          }
-        }
-      });
-      controls.add(dynamicButton);
-      group.add(dynamicButton);
-      Box box = Box.createHorizontalBox();
-      box.setAlignmentX(0.0f);
       jabberButton = new JRadioButton(JABBER_BUTTON);
       jabberButton.addItemListener(new ItemListener() {
         public void itemStateChanged(ItemEvent e) {
@@ -103,39 +107,82 @@ public class ServerConfigurer extends Configurer {
             setValue(buildJabberProperties());
             noUpdate = false;
           }
+          jabberHostPrompt.setEnabled(jabberButton.isSelected());
+          jabberHost.setEnabled(jabberButton.isSelected() && jabberHostPrompt.isSelected());
+          jabberAccountName.setEnabled(jabberButton.isSelected());
+          jabberPassword.setEnabled(jabberButton.isSelected());
+          jabberAccountPrompt.setEnabled(jabberButton.isSelected());
+          jabberPasswordPrompt.setEnabled(jabberButton.isSelected());
         }
       });
-      group.add(jabberButton);
-      box.add(jabberButton);
-      jabberHostPrompt = new JLabel(Resources.getString("Server.host")); //$NON-NLS-1$
-      box.add(jabberHostPrompt);
+      jabberAccountPrompt = new JLabel(Resources.getString("Server.account_name"));
+      jabberAccountPrompt.setEnabled(false);
+      jabberAccountName = new JTextField();
+      jabberAccountName.setEnabled(false);
+      jabberPasswordPrompt = new JLabel(Resources.getString("Server.password"));
+      jabberPasswordPrompt.setEnabled(false);
+      jabberPassword = new JPasswordField();
+      jabberPassword.setEnabled(false);
+      jabberHostPrompt = new JCheckBox(Resources.getString("Server.host")); //$NON-NLS-1$
+      jabberHostPrompt.setEnabled(false);
       jabberHost = new JTextField(18);
-      jabberHost.setMaximumSize(new Dimension(jabberHost.getMaximumSize().width, jabberHost.getPreferredSize().height));
-      jabberHost.setText(JabberClientFactory.DEFAULT_JABBER_HOST+":"+JabberClientFactory.DEFAULT_JABBER_PORT); //$NON-NLS-1$
-      jabberHost.getDocument().addDocumentListener(new DocumentListener() {
+      jabberHost.setEnabled(false);
+      jabberHostPrompt.addItemListener(new ItemListener() {
+        public void itemStateChanged(ItemEvent e) {
+          jabberHost.setEnabled(jabberHostPrompt.isSelected() && jabberButton.isSelected());
+        }
+      });
+      jabberHost.setText(JabberClientFactory.DEFAULT_JABBER_HOST + ":" + JabberClientFactory.DEFAULT_JABBER_PORT); //$NON-NLS-1$
+      DocumentListener docListener = new DocumentListener() {
         public void changedUpdate(DocumentEvent e) {
           updateValue();
         }
+
         private void updateValue() {
           noUpdate = true;
           setValue(buildJabberProperties());
           noUpdate = false;
         }
+
         public void insertUpdate(DocumentEvent e) {
           updateValue();
         }
+
         public void removeUpdate(DocumentEvent e) {
           updateValue();
         }
+      };
+      ((AbstractDocument) jabberAccountName.getDocument()).setDocumentFilter(new DocumentFilter() {
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+          if (text != null) {
+            super.replace(fb, offset, length, StringUtils.escapeNode(text).toLowerCase(), attrs);
+          }
+        }
+
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+          if (string != null) {
+            super.insertString(fb, offset, StringUtils.escapeNode(string).toLowerCase(), attr);
+          }
+        }
       });
-      box.add(jabberHost);
-//    Disable Jabber server until next release
+      jabberHost.getDocument().addDocumentListener(docListener);
+      jabberAccountName.getDocument().addDocumentListener(docListener);
+      jabberPassword.getDocument().addDocumentListener(docListener);
+      // Disable Jabber server until next release
       if ("true".equals(System.getProperty("enableJabber"))) {
-        controls.add(box);
+        group.add(jabberButton);
+        controls.add(jabberButton, "wrap");
+        controls.add(jabberAccountPrompt, "gap 40");
+        controls.add(jabberAccountName, "wrap, growx");
+        controls.add(jabberPasswordPrompt, "gap 40");
+        controls.add(jabberPassword, "wrap, growx");
+        controls.add(jabberHostPrompt, "gap 40");
+        controls.add(jabberHost, "wrap, growx");
       }
-      directButton = new JRadioButton(DIRECT_BUTTON);
-      directButton.setAlignmentX(0.0f);
-      directButton.addItemListener(new ItemListener() {
+      p2pButton = new JRadioButton(P2P_BUTTON);
+      p2pButton.addItemListener(new ItemListener() {
         public void itemStateChanged(ItemEvent e) {
           if (e.getStateChange() == ItemEvent.SELECTED) {
             noUpdate = true;
@@ -144,24 +191,53 @@ public class ServerConfigurer extends Configurer {
           }
         }
       });
-      group.add(directButton);
-      controls.add(directButton);
+      group.add(p2pButton);
+      controls.add(p2pButton, "wrap");
+      legacyButton = new JRadioButton(LEGACY_BUTTON);
+      legacyButton.addItemListener(new ItemListener() {
+        public void itemStateChanged(ItemEvent e) {
+          if (e.getStateChange() == ItemEvent.SELECTED) {
+            noUpdate = true;
+            setValue(buildLegacyProperties());
+            noUpdate = false;
+          }
+        }
+      });
+      controls.add(legacyButton);
+      group.add(legacyButton);
     }
     return controls;
   }
 
   private void enableControls(boolean connected) {
-    directButton.setEnabled(!connected);
-    dynamicButton.setEnabled(!connected);
+    p2pButton.setEnabled(!connected);
+    legacyButton.setEnabled(!connected);
     jabberButton.setEnabled(!connected);
     jabberHostPrompt.setEnabled(!connected);
-    jabberHost.setEnabled(!connected);
+    jabberHost.setEnabled(!connected && jabberHostPrompt.isSelected() && jabberButton.isSelected());
+    jabberAccountName.setEnabled(!connected && jabberButton.isSelected());
+    jabberPassword.setEnabled(!connected && jabberButton.isSelected());
     header.setText(connected ? CONNECTED : DISCONNECTED);
   }
 
   private Properties buildJabberProperties() {
     Properties p = new Properties();
-    p.setProperty(BUTTON, JABBER_BUTTON);
+    if (jabberHostPrompt.isSelected()) {
+      p.setProperty(ChatServerFactory.TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
+    }
+    else {
+      // Build a Jabber server with dynamically-determined host and server
+      p.setProperty(ChatServerFactory.TYPE_KEY, DynamicClientFactory.DYNAMIC_TYPE);
+      p.setProperty(DynamicClientFactory.DYNAMIC_TYPE, JabberClientFactory.JABBER_SERVER_TYPE);
+    }
+    p.putAll(getJabberConfigProperties());
+    return p;
+  }
+
+  private Properties getJabberConfigProperties() {
+    Properties p = new Properties();
+    p.setProperty(JabberClientFactory.JABBER_LOGIN, jabberAccountName.getText());
+    p.setProperty(JabberClientFactory.JABBER_PWD, new String(jabberPassword.getPassword()));
     String host = jabberHost.getText();
     String port = "5222"; //$NON-NLS-1$
     int idx = host.indexOf(":"); //$NON-NLS-1$
@@ -169,7 +245,6 @@ public class ServerConfigurer extends Configurer {
       port = host.substring(idx + 1);
       host = host.substring(0, idx);
     }
-    p.setProperty(ChatServerFactory.TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
     p.setProperty(JabberClientFactory.JABBER_HOST, host);
     p.setProperty(JabberClientFactory.JABBER_PORT, port);
     return p;
@@ -177,15 +252,17 @@ public class ServerConfigurer extends Configurer {
 
   private Properties buildPeerProperties() {
     Properties p = new Properties();
-    p.setProperty(BUTTON, DIRECT_BUTTON);
     p.setProperty(ChatServerFactory.TYPE_KEY, P2PClientFactory.P2P_TYPE);
+    p.putAll(getJabberConfigProperties());
     return p;
   }
 
-  private Properties buildDynamicProperties() {
+  private Properties buildLegacyProperties() {
     Properties p = new Properties();
-    p.setProperty(BUTTON, DYNAMIC_BUTTON);
+    // Build a legacy server with dynamically-determined host and server
     p.setProperty(ChatServerFactory.TYPE_KEY, DynamicClientFactory.DYNAMIC_TYPE);
+    p.setProperty(DynamicClientFactory.DYNAMIC_TYPE, NodeClientFactory.NODE_TYPE);
+    p.putAll(getJabberConfigProperties());
     return p;
   }
 
@@ -193,7 +270,10 @@ public class ServerConfigurer extends Configurer {
     String s = ""; //$NON-NLS-1$
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
-      getServerInfo().store(out, null);
+      Properties p = (Properties) getValue();
+      if (p != null) {
+        p.store(out, null);
+      }
       s = new String(out.toByteArray(), ENCODING);
     }
     // FIXME: review error message
@@ -211,21 +291,27 @@ public class ServerConfigurer extends Configurer {
     super.setValue(o);
     if (!noUpdate && o instanceof Properties && controls != null) {
       Properties p = (Properties) o;
-      String type = p.getProperty(BUTTON, DYNAMIC_BUTTON);
-      if (DYNAMIC_BUTTON.equals(type)) {
-        dynamicButton.setSelected(true);
+      String type = p.getProperty(ChatServerFactory.TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
+      String finalType = type;
+      if (DynamicClientFactory.DYNAMIC_TYPE.equals(type)) {
+        finalType = p.getProperty(DynamicClientFactory.DYNAMIC_TYPE);
       }
-      else if (JABBER_BUTTON.equals(type)) {
+      if (NodeClientFactory.NODE_TYPE.equals(finalType)) {
+        legacyButton.setSelected(true);
+      }
+      else if (JabberClientFactory.JABBER_SERVER_TYPE.equals(finalType)) {
         jabberButton.setSelected(true);
-        jabberHost.setText(p.getProperty(JabberClientFactory.JABBER_HOST, JabberClientFactory.DEFAULT_JABBER_HOST) + ":" //$NON-NLS-1$
-            + p.getProperty(JabberClientFactory.JABBER_PORT, JabberClientFactory.DEFAULT_JABBER_PORT));
+        jabberHostPrompt.setSelected(type.equals(finalType));
       }
-      else if (DIRECT_BUTTON.equals(type)) {
-        directButton.setSelected(true);
+      else if (P2PClientFactory.P2P_TYPE.equals(finalType)) {
+        p2pButton.setSelected(true);
       }
+      jabberAccountName.setText(p.getProperty(JabberClientFactory.JABBER_LOGIN));
+      jabberPassword.setText(p.getProperty(JabberClientFactory.JABBER_PWD));
+      jabberHost.setText(p.getProperty(JabberClientFactory.JABBER_HOST, JabberClientFactory.DEFAULT_JABBER_HOST) + ":" //$NON-NLS-1$
+          + p.getProperty(JabberClientFactory.JABBER_PORT, JabberClientFactory.DEFAULT_JABBER_PORT));
     }
-    if (client != null
-        && !CONNECTED.equals(header.getText())) {
+    if (client != null && !CONNECTED.equals(header.getText())) {
       client.setDelegate(ChatServerFactory.build(getServerInfo()));
     }
   }
@@ -251,6 +337,28 @@ public class ServerConfigurer extends Configurer {
     if (p == null) {
       p = new Properties();
     }
+    else {
+      p = new Properties(p);
+    }
+    if (DynamicClientFactory.DYNAMIC_TYPE.equals(p.getProperty(ChatServerFactory.TYPE_KEY))) {
+      p.remove(JabberClientFactory.JABBER_HOST);
+      p.remove(JabberClientFactory.JABBER_PORT);
+    }
     return p;
+  }
+
+  public static void main(String[] args) {
+    ChatServerFactory.register(NodeClientFactory.NODE_TYPE, new NodeClientFactory());
+    ChatServerFactory.register(DynamicClientFactory.DYNAMIC_TYPE, new DynamicClientFactory());
+    ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
+    ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
+    new MacOSXMenuManager();
+    HybridClient c = new HybridClient();
+    ServerConfigurer config = new ServerConfigurer("server", "server", c);
+    JFrame f = new JFrame();
+    f.getContentPane().add(config.getControls());
+    f.pack();
+    f.setVisible(true);
+    f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
   }
 }
