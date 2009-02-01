@@ -18,7 +18,9 @@
  */
 package VASSAL.configure;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,10 +28,14 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -42,6 +48,8 @@ public abstract class ListConfigurer extends Configurer
                                      implements PropertyChangeListener {
   protected Box controls;
   protected Box configControls;
+  protected JPanel panel;
+  protected Dimension fixedSize;
   protected List<Configurer> configurers = new ArrayList<Configurer>();
 
   public ListConfigurer(String key, String name) {
@@ -99,11 +107,13 @@ public abstract class ListConfigurer extends Configurer
   }
 
   public Component getControls() {
-    if (controls == null) {
+    if (panel == null) {
+      panel = new JPanel(new BorderLayout());
       controls = Box.createVerticalBox();
+      final JScrollPane scroll = new JScrollPane(controls); 
       controls.setBorder(BorderFactory.createTitledBorder(getName()));
       configControls = Box.createVerticalBox();
-      controls.add(configControls);
+      
       JButton addButton = new JButton("New");
       addButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -113,9 +123,11 @@ public abstract class ListConfigurer extends Configurer
         }
       });
       controls.add(addButton);
+      controls.add(configControls);
+      panel.add(scroll, BorderLayout.CENTER);
       updateControls();
     }
-    return controls;
+    return panel;
   }
 
   public List<Object> getListValue() {
@@ -158,6 +170,15 @@ public abstract class ListConfigurer extends Configurer
         b.add(delButton);
         b.add(c.getControls());
         configControls.add(b);
+        if (configurers.size() > 5) {
+          if (fixedSize == null) {
+            fixedSize = new Dimension(panel.getPreferredSize().width+20, 210);
+          }
+          panel.setPreferredSize(fixedSize);
+         }
+        else {
+          panel.setPreferredSize(null);
+        }
       }
       repack();
     }
