@@ -363,6 +363,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           if (remove(getParent(cutData), cutObj)) {
             insert(target, cutObj, targetNode.getChildCount());
           }
+          copyData = getTreeNode(cutObj);
         }
         else if (copyData != null) {
           final Configurable copyBase = (Configurable) copyData.getUserObject();
@@ -449,7 +450,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return a;
   }
 
-  @SuppressWarnings("unchecked")
   protected List<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<Action>();
     for (Class<? extends Buildable> newConfig :
