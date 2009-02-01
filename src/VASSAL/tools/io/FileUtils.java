@@ -97,6 +97,8 @@ public class FileUtils {
    * @throws IOException on failure
    */
   public static void move(File src, File dst) throws IOException {
+    if (src.equals(dst)) return;
+
     // done if File.renameTo() works on the first shot
     if (src.renameTo(dst)) return;
     // otherwise, maybe we're on a platform where we must delete dst first
@@ -116,6 +118,8 @@ public class FileUtils {
       finally {
         IOUtils.closeQuietly(out);
       }
+
+      in.close();
     }
     finally {
       IOUtils.closeQuietly(in);

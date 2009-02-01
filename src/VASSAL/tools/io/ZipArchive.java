@@ -1,3 +1,22 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2009 by Joel Uckelman
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
 package VASSAL.tools.io;
 
 import java.io.BufferedInputStream;
@@ -28,12 +47,11 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import VASSAL.tools.FileUtils;
 import static VASSAL.tools.IterableEnumeration.iterate;
 
 /**
  * @author Joel Uckelman
- * @since 3.1.0
+ * @since 3.2.0
  */
 public class ZipArchive implements FileArchive {
   private final File archiveFile;
@@ -234,49 +252,33 @@ public class ZipArchive implements FileArchive {
     flush();
   }
 
-  /**
-   * Returns the path to the archive.
-   *
-   * @return the path
-   */
+  /** {@inheritDoc} */
   public String getName() {
     return archiveFile.getPath();
   }
 
-  /**
-   * Returns the {@link File} for the archive.
-   *
-   * @return the file
-   */
+  /** {@inheritDoc} */
   public File getFile() {
     return archiveFile;
   }
 
-  /** 
-   * Queries whether the archive is closed.
-   *
-   * @return <code>true</code> if the archive is closed
-   */
+  /** {@inheritDoc} */ 
   public boolean isClosed() {
     return closed;
   } 
 
-  /** 
-   * Queries whether the archive is modified.
-   * 
-   * @return <code>true</code> if the archive is modified
-   */
+  /** {@inheritDoc} */ 
   public boolean isModified() {
     return modified;
   }
 
   /**
-   * Returns an {@link InputStream} for reading a file from the archive.
+   * {@inheritDoc}
    *
-   * @param path the file to read
-   * @return the <code>InputStream</code> 
-   * @throws IOException
-   */
+   * <b>Note:</b> It is impeative the that calling code ensures that this
+   * stream is eventually closed, since the returned stream holds a read
+   * lock on the archive.
+   */ 
   public InputStream read(String path) throws IOException {
     r.lock();
     try {
@@ -305,23 +307,26 @@ public class ZipArchive implements FileArchive {
   }
 
   /**
-   * Returns an {@link OutputStream} for writing a file to the archive.
-   * The file to be written will be compressed.
+   * {@inheritDoc} 
    *
-   * @param path the file to write
-   * @return the <code>OutputStream</code> 
-   * @throws IOException
-   */
+   * <b>Note:</b> It is imperative the that calling code ensures that this
+   * stream is eventually closed, since the returned stream holds a write
+   * lock on the archive.
+   */ 
   public OutputStream write(String path) throws IOException {
     return write(path, true);
   }
 
   /**
-   * Returns an {@link OutputStream} for writing a file to the archive.
+   * Gets an {@link OutputStream} to write to the given file.
    *
-   * @param path the file to write
-   * @param compress whether to compress the file 
-   * @return the <code>OutputStream</code> 
+   * <b>Note:</b> It is imperative the that calling code ensures that this
+   * stream is eventually closed, since the returned stream holds a write
+   * lock on the archive.
+   *
+   * @param path the path to the file in the archive
+   * @param compress whether to compress the file
+   * @return an <code>OutputStream</code> for the requested file
    * @throws IOException
    */
   public OutputStream write(String path, boolean compress) throws IOException {
@@ -347,7 +352,7 @@ public class ZipArchive implements FileArchive {
       if (e.file != null) e.file.delete();
 
       // create new temp file
-      e.file = File.createTempFile("zip", ".tmp");
+      e.file = TempFileManager.getInstance().createTempFile("zip", ".tmp");
 
       return new ZipArchiveOutputStream(
         new FileOutputStream(e.file), new CRC32(), e.ze);
@@ -358,10 +363,12 @@ public class ZipArchive implements FileArchive {
     }
   }
 
+  /** {@inheritDoc} */
   public void add(String path, String extPath) throws IOException {
     add(path, new File(extPath));
   }
 
+  /** {@inheritDoc} */
   public void add(String path, File extPath) throws IOException {
     FileInputStream in = null;
     try {
@@ -374,10 +381,12 @@ public class ZipArchive implements FileArchive {
     }
   }
 
+  /** {@inheritDoc} */
   public void add(String path, byte[] bytes) throws IOException {
     add(path, new ByteArrayInputStream(bytes));
   }
 
+  /** {@inheritDoc} */
   public void add(String path, InputStream in) throws IOException {
     OutputStream out = null;
     try {
@@ -390,13 +399,7 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  /**
-   * Removes a file from the archive.
-   *
-   * @param path the file to remove
-   * @return <code>true</code> if the file existed
-   * @throws IOException
-   */
+  /** {@inheritDoc} */
   public boolean remove(String path) throws IOException {
     w.lock();
     try {
@@ -413,11 +416,7 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  /**
-   * Reverts changes to the archive which have not yet been flushed.
-   *
-   * @throws IOException
-   */
+  /** {@inheritDoc} */
   public void revert() throws IOException {
     w.lock();
     try {
@@ -437,11 +436,7 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  /**
-   * Flushes all pending writes to disk.
-   *
-   * @throws IOException
-   */
+  /** {@inheritDoc} */
   public void flush() throws IOException {
     w.lock();
     try {
@@ -524,30 +519,22 @@ public class ZipArchive implements FileArchive {
       IOUtils.closeQuietly(out);
     }
 
-    FileUtils.move(tmpFile, archiveFile);
-
-/*
-      // Replace old archive by temp archive. Note that we must try to delete
-      // the old archive first because on some platforms (Windows, blech!)
-      // File.renameTo() fails if the destination file already exists.
-      if ((archiveFile.exists() && !archiveFile.delete()) ||
-           !tmpFile.renameTo(archiveFile)) {
-        throw new IOException(
-          "Unable to overwrite " + archiveFile.getAbsolutePath() +
-          ", data written to " + tmpFile.getAbsolutePath() + " instead.");
-      }
-*/
+    // Replace old archive with temp archive.
+    try {
+      FileUtils.move(tmpFile, archiveFile);
+    }
+    catch (IOException e) {
+      throw (IOException) new IOException(
+        "Unable to overwrite " + archiveFile.getAbsolutePath() +
+        ", data written to " + tmpFile.getAbsolutePath() + " instead."
+      ).initCause(e);
+    }
 
     readEntries();
     modified = false;
   }
 
-  /**
-   * Closes the archive. Attempts to manipulate the archive after calling
-   * close will result in an {@link IOException}.
-   *
-   * @throws IOException
-   */
+  /** {@inheritDoc} */
   public void close() throws IOException {
     w.lock();
     try {
@@ -565,13 +552,7 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  /**
-   * Queries whether a file in the archive.
-   *
-   * @param path the file's path
-   * @return <code>true</code> if the file is in the archive
-   * @throws IOException
-   */
+  /** {@inheritDoc} */
   public boolean contains(String path) throws IOException {
     r.lock();
     try {
@@ -583,14 +564,7 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  /**
-   * Returns the size of a file in the archive.
-   *
-   * @param path the file's path
-   * @return the file's size in bytes
-   * @throws FileNotFoundException if <code>path</code> is not in the archive
-   * @throws IOException
-   */
+  /** {@inheritDoc} */
   public long getSize(String path) throws IOException {
     r.lock();
     try {
@@ -605,12 +579,7 @@ public class ZipArchive implements FileArchive {
     }
   } 
 
-  /**
-   * Returns the list of files in the archive.
-   *
-   * @return the list of files in the archive
-   * @throws IOException
-   */
+  /** {@inheritDoc} */
   public List<String> getFiles() throws IOException {
     r.lock();
     try {
@@ -627,15 +596,7 @@ public class ZipArchive implements FileArchive {
     }
   }
 
-  /**
-   * Returns a list of files recursively from the given root directory in
-   * the archive.
-   *
-   * @param root a directory in the archive
-   * @return a list of files under the given directory
-   * @throws FileNotFoundException if <code>root</code> is not in the archive
-   * @throws IOException
-   */ 
+  /** {@inheritDoc} */
   public List<String> getFiles(String root) throws IOException {
     if (root.length() == 0) return getFiles();
 
@@ -753,7 +714,6 @@ public class ZipArchive implements FileArchive {
   }
 
   public static void main(String[] args) throws IOException {
-    
     final ZipArchive archive = new ZipArchive("test.zip");
 
     // write test
