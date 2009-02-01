@@ -27,6 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -85,10 +86,10 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
+import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
@@ -758,16 +759,51 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
       theModule.lastSavedConfiguration = theModule.buildString();
-      /* We are editing this Module. If no gpid's have been allocated,
-       * then the module was created with a previous version of Vassal.
-       * Run through every PieceSlot and generate new gpid's.
-       */
-      if (getGameModule().nextGpId == 0) {
-        for (PieceSlot pieceSlot :
-            theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
-          pieceSlot.updateGpId();
-        }  
+      
+      // Run through the module and identify all existing gpid's.
+      // Determine the maximum. Keep a list of of any PieceSlots that need
+      // a new Id generated.
+      final HashMap<String, PieceSlot> slots = new HashMap<String, PieceSlot>(0);
+      final ArrayList<PieceSlot> duplicates = new ArrayList<PieceSlot>(0);
+      int maxId = 0;
+      for (PieceSlot pieceSlot : theModule.getAllDescendantComponentsOf(PieceSlot.class)) {
+        final String id = pieceSlot.getGpId();
+        if (id == null || id.length() == 0) { // gpid not generated yet?
+          duplicates.add(pieceSlot);
+        }
+        else {
+          if (slots.get(id) != null) {        // duplicate gpid?
+            duplicates.add(pieceSlot);
+          }
+          int iid = -1;
+          try {
+            iid = Integer.parseInt(id);
+          }
+          catch (Exception e) {
+            // Do Nothing
+          }
+          if (iid == -1) {
+            duplicates.add(pieceSlot);        // non-numeric gpid?
+          }
+          else {
+            slots.put(id, pieceSlot);         // gpid is good.
+            if (iid > maxId) {
+              maxId = iid;
+            }
+          }
+        }
       }
+        
+      // Update the nextgpid if necessary
+      if (getGameModule().nextGpId < maxId) {
+        getGameModule().nextGpId = maxId+1;
+      }
+      
+      // Generate new gpid's for slots that need them.
+      for (PieceSlot pieceSlot : duplicates) {
+        pieceSlot.updateGpId();
+      }
+      
     }
     
     /*
