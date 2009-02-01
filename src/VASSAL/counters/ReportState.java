@@ -51,6 +51,7 @@ import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.FormattedString;
@@ -226,7 +227,13 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   public void mySetState(String newState) {
     if (newState.length() > 0) {
-      cycleIndex = Integer.parseInt(newState);
+      try {
+        cycleIndex = Integer.parseInt(newState);
+      }
+      catch (NumberFormatException e) {
+        cycleIndex = -1;
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Trying to init Message Index to "+newState);             
+      }
     }
     else {
       cycleIndex = -1;
