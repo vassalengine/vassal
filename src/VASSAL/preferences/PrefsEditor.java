@@ -51,6 +51,8 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.io.FileArchive;
+import VASSAL.tools.io.ZipArchive;
 
 public class PrefsEditor {
   private JDialog dialog;
@@ -59,14 +61,20 @@ public class PrefsEditor {
   private List<Prefs> prefs;
   private JTabbedPane optionsTab;
   private JDialog setupDialog;
-  private ArchiveWriter archive;
+  private FileArchive archive;
   private Action editAction;
 
-  public PrefsEditor(ArchiveWriter archive) {
+  public PrefsEditor(FileArchive archive) {
     savedValues = new HashMap<Configurer, Object>();
     this.archive = archive;
     prefs = new ArrayList<Prefs>();
     optionsTab = new JTabbedPane();
+  }
+
+  /** @deprecated Use {@link PrefsEditor(FileArchive)} instead. */
+  @Deprecated
+  public PrefsEditor(ArchiveWriter archive) throws IOException {
+    this(new ZipArchive(archive.getName()));
   }
 
   public void initDialog(Frame parent) {
@@ -180,7 +188,15 @@ public class PrefsEditor {
     }
   }
 
-  public ArchiveWriter getArchive() {
+  public FileArchive getFileArchive() {
+    if (archive.isClosed()) {
+      try {
+        archive = new ZipArchive(archive.getName());
+      }
+      catch (IOException e) {
+        archive = null;
+      }
+    }
     return archive;
   }
 
@@ -210,13 +226,14 @@ public class PrefsEditor {
 
   public Action getEditAction() {
     if (editAction == null) {
-      editAction = new AbstractAction(Resources.getString("Prefs.edit_preferences")) { //$NON-NLS-1$
+      editAction = new AbstractAction(
+          Resources.getString("Prefs.edit_preferences")) { //$NON-NLS-1$
         private static final long serialVersionUID = 1L;
 
         public void actionPerformed(ActionEvent e) {
           storeValues();
           dialog.pack();
-          Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+          final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
           dialog.setLocation(d.width / 2 - dialog.getWidth() / 2, 0);
           dialog.setVisible(true);
         }
@@ -229,10 +246,8 @@ public class PrefsEditor {
   }
 
   public void write() throws IOException {
-    for (Prefs p : prefs) {
-      p.save();
-    }
-    archive.write();
+    for (Prefs p : prefs) p.save();
+    archive.flush();
   }
 
   public void close() throws IOException {

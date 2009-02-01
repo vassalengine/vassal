@@ -62,7 +62,6 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
-import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -72,8 +71,10 @@ import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.FastByteArrayOutputStream;
+import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ObfuscatingOutputStream;
+import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -573,14 +574,18 @@ public class GameState implements CommandEncoder {
       IOUtils.closeQuietly(out);
     }
 
-    final ArchiveWriter saver = new ArchiveWriter(f.getPath());
-    saver.addFile(SAVEFILE_ZIP_ENTRY, ba.toInputStream());
-    (new SaveMetaData()).save(saver);
-    saver.write();
-    Launcher.getInstance().sendSaveCmd(f);
-    if (saver.getArchive() != null) {
-      saver.getArchive().close();
+    FileArchive archive = null;
+    try {
+      archive = new ZipArchive(f);
+      archive.add(SAVEFILE_ZIP_ENTRY, ba.toInputStream());
+      (new SaveMetaData()).save(archive);
+      archive.close();
     }
+    finally {
+      IOUtils.closeQuietly(archive);
+    }
+
+    Launcher.getInstance().sendSaveCmd(f);
   }
   
   public void loadGameInBackground(final File f) {

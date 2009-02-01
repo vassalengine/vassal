@@ -46,9 +46,12 @@ public class ModuleUpdaterDialog extends JDialog {
     super(owner, false);
     setTitle("Module Updater");
     setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-    final FileConfigurer fileConfig = new FileConfigurer(null, "File containing older version:  ");
+    final FileConfigurer fileConfig =
+      new FileConfigurer(null, "File containing older version:  ");
     add(fileConfig.getControls());
+
     Box b = Box.createHorizontalBox();
+
     final JButton saveButton = new JButton("Create Updater");
     saveButton.setEnabled(false);
     fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
@@ -58,17 +61,18 @@ public class ModuleUpdaterDialog extends JDialog {
     });
     saveButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        FileChooser fc = GameModule.getGameModule().getFileChooser();
+        final FileChooser fc = GameModule.getGameModule().getFileChooser();
         if (fc.showSaveDialog(getOwner()) != FileChooser.APPROVE_OPTION)
           return; 
         
-        File output = fc.getSelectedFile();
+        final File output = fc.getSelectedFile();
         ZipUpdater updater = null;
         try {
           updater = new ZipUpdater((File) fileConfig.getValue());
           updater.createUpdater(
-            new File(GameModule.getGameModule()
-              .getArchiveWriter().getArchive().getName()), output);
+            new File(GameModule.getGameModule().getArchiveWriter().getName()),
+            output
+          );
         }
         // FIXME: review error message
         catch (IOException e1) {
@@ -81,6 +85,7 @@ public class ModuleUpdaterDialog extends JDialog {
         }
       }
     });
+
     JButton cancelButton = new JButton("Close");
     cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {

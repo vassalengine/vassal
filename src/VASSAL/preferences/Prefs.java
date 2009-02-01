@@ -21,12 +21,10 @@ package VASSAL.preferences;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,10 +38,11 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.io.ZipArchive;
 
 /**
  * A set of preferences. Each set of preferences is identified by a name, and different sets may share a common editor,
@@ -78,7 +77,7 @@ public class Prefs implements Closeable {
   }
 
   public File getFile() {
-    return new File(editor.getArchive().getName());
+    return new File(editor.getFileArchive().getName());
   }
 
   public void addOption(Configurer o) {
@@ -146,7 +145,14 @@ public class Prefs implements Closeable {
   public void init(String moduleName) {
     name = moduleName;
     read();
-    editor.getArchive().closeWhenNotInUse();
+
+    try {
+      editor.close();
+    }
+    catch (IOException e) {
+// FIXME
+    }
+
     // FIXME: Use stringPropertyNames() in 1.6+
     // for (String key : storedValues.stringPropertyNames()) {
     for (Enumeration<?> e = storedValues.keys(); e.hasMoreElements();) {
@@ -160,21 +166,23 @@ public class Prefs implements Closeable {
   }
 
   private void read() {
-    BufferedInputStream in = null;
+    final FileArchive fa = editor.getFileArchive();
     try {
-      in = new BufferedInputStream(editor.getArchive().getInputStream(name));
-      storedValues.clear();
-      storedValues.load(in);
-      in.close();
-    }
-    catch (FileNotFoundException e) {
-      // First time for this module, not an error.
+      if (fa.contains(name)) { 
+        BufferedInputStream in = null;
+        try {
+          in = new BufferedInputStream(fa.read(name));
+          storedValues.clear();
+          storedValues.load(in);
+          in.close();
+        }
+        finally {
+          IOUtils.closeQuietly(in);
+        }
+      }
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, editor.getArchive().getName());
-    }
-    finally {
-      IOUtils.closeQuietly(in);
+      ReadErrorDialog.error(e, fa.getName());
     }
   }
 
@@ -182,8 +190,8 @@ public class Prefs implements Closeable {
    * Store this set of preferences in the editor, but don't yet save to disk
    */
   public void save() throws IOException {
-    editor.getArchive().uncacheFile(name);
     read();
+
     for (Configurer c : options.values()) {
       if (changed.contains(c.getKey())) {
         final String val = c.getValueString();
@@ -195,9 +203,17 @@ public class Prefs implements Closeable {
         }
       }
     }
-    final ByteArrayOutputStream out = new ByteArrayOutputStream();
-    storedValues.store(out, null);
-    editor.getArchive().addFile(name, new ByteArrayInputStream(out.toByteArray()));
+
+    OutputStream out = null;
+    try {
+      out = editor.getFileArchive().write(name);
+      storedValues.store(out, null);
+      out.close();
+    }
+    finally {
+      IOUtils.closeQuietly(out);
+    }
+
     changed.clear();
   }
 
@@ -220,24 +236,24 @@ public class Prefs implements Closeable {
    */
   public static Prefs getGlobalPrefs() {
     if (globalPrefs == null) {
-      final File prefsFile = new File(Info.getHomeDir(), "Preferences"); //$NON-NLS-1$
+      final File prefsFile = new File(Info.getHomeDir(), "Preferences");
+
       try {
-        ArchiveWriter.ensureExists(prefsFile, "VASSAL");
-      }
-      catch (IOException e) {
-        WriteErrorDialog.error(e, prefsFile);
-      }
-      globalPrefs = new Prefs(new PrefsEditor(new ArchiveWriter(prefsFile.getPath())), "VASSAL"); //$NON-NLS-1$
-      try {
+        globalPrefs = new Prefs(
+          new PrefsEditor(new ZipArchive(prefsFile)), "VASSAL"
+        );
         globalPrefs.write();
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, prefsFile);
       }
-      final DirectoryConfigurer c = new DirectoryConfigurer(MODULES_DIR_KEY, null);
+
+      final DirectoryConfigurer c =
+        new DirectoryConfigurer(MODULES_DIR_KEY, null);
       c.setValue(new File(System.getProperty("user.home")));
       globalPrefs.addOption(null, c);
     }
+
     return globalPrefs;
   }
   

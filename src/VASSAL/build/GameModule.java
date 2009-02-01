@@ -904,12 +904,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       writer.addFile(BUILDFILE,  
         new ByteArrayInputStream(save.getBytes("UTF-8")));  //$NON-NLS-1$
 
-      if (saveAs) {
-        writer.saveAs(true);
-      }
-      else {
-        writer.write(true);
-      }
+      if (saveAs) writer.saveAs(true);
+      else writer.save(true);
+
       lastSavedConfiguration = save;
     }
     catch (IOException e) {
@@ -978,19 +975,21 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected Long buildCrc() {
     final List<File> files = new ArrayList<File>();
     if (getDataArchive().getArchive() != null) {
-      files.add(new File(getDataArchive().getArchive().getName()));
+      files.add(new File(getDataArchive().getName()));
     }
+
     for (ModuleExtension ext : getComponentsOf(ModuleExtension.class)) {
       if (ext.getDataArchive().getArchive() != null) {
-        files.add(new File(ext.getDataArchive().getArchive().getName()));
+        files.add(new File(ext.getDataArchive().getName()));
       }
     }
+
     try {
       return CRCUtils.getCRC(files);
     }
     catch (IOException e) {
       VASSAL.tools.logging.Logger.log(e, "Error generating CRC");
+      return 0L;
     }
-    return 0L;
   }
 }

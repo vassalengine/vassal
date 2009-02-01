@@ -22,7 +22,6 @@ package VASSAL.launch;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import java.util.zip.ZipFile;
 
 import javax.swing.JFrame;
 
@@ -30,6 +29,7 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.io.ZipArchive;
 
 public class EditModuleAction extends LoadModuleAction {
   private static final long serialVersionUID = 1L;
@@ -45,13 +45,14 @@ public class EditModuleAction extends LoadModuleAction {
   }
 
   protected void loadModule(File f) throws IOException {
-    ArchiveWriter archive = new ArchiveWriter(new ZipFile(f.getPath()));
-    GameModule.init(new BasicModule(archive));
+    GameModule.init(new BasicModule(new ArchiveWriter(new ZipArchive(f))));
 // FIXME: really hide the MM?
 //    ModuleManagerWindow.getInstance().setVisible(false);
-    JFrame frame = GameModule.getGameModule().getFrame();
+    final JFrame frame = GameModule.getGameModule().getFrame();
     frame.setVisible(true);
-    ModuleEditorWindow w = new ModuleEditorWindow(GameModule.getGameModule());
+
+    final ModuleEditorWindow w =
+      new ModuleEditorWindow(GameModule.getGameModule());
     w.setLocation(0, frame.getY() + frame.getHeight());
     w.setSize(Info.getScreenBounds(frame).width/2,w.getHeight());
     w.setVisible(true);

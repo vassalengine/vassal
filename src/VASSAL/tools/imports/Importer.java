@@ -185,8 +185,14 @@ public abstract class Importer {
     String t = s;
     int index = 0;
     final ArchiveWriter writer = GameModule.getGameModule().getArchiveWriter();
-    while (writer.isImageAdded(writer.getImagePrefix() + t + ext))
-      t = s + '(' + (++index) + ')';
+    try {
+      while (writer.contains(writer.getImagePrefix() + t + ext))
+        t = s + '(' + (++index) + ')';
+    }
+    catch (IOException e) {
+// FIXME: ????      
+    }
+
     return t + ext;
   }
   
