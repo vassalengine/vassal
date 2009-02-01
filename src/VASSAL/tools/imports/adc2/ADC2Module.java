@@ -122,15 +122,15 @@ import VASSAL.tools.io.IOUtils;
 public class ADC2Module extends Importer {
   
   private static final String FLIP_DEFINITIONS = "Flip Definitions";
-private static final String ADD_NEW_PIECES = "Add New Pieces";
-private static final String PC_NAME = "$pcName$";
-private static final String CHARTS = "Charts";
+  private static final String ADD_NEW_PIECES = "Add New Pieces";
+  private static final String PC_NAME = "$pcName$";
+  private static final String CHARTS = "Charts";
   private static final String TRAY = "Tray";
   private static final String FORCE_POOL_PNG = "forcePool.png";
   private static final String FORCE_POOL = "Force Pool";
   private static final String DECKS = "Decks";
 
-  protected class ForcePoolList extends ArrayList<Pool> {
+  protected static class ForcePoolList extends ArrayList<Pool> {
     private static final long serialVersionUID = 1L;  
     
     private class ForcePoolIterator implements Iterator<Pool> {      
@@ -346,7 +346,7 @@ private static final String CHARTS = "Charts";
   public static final String DRAW_ON_TOP_OF_OTHERS = "Draw on top of others?";
   public static final String PIECE = "Pieces";
 
-  public static final double[] FACING_ANGLES = new double[46];
+  private static final double[] FACING_ANGLES = new double[46];
   
   static {
     for (int i = 0; i < 3; ++i) {
@@ -363,7 +363,7 @@ private static final String CHARTS = "Charts";
   }
   
   private final HashSet<String> uniquePieceNames = new HashSet<String>();
-  public static boolean usePieceNames = false;
+  private static boolean usePieceNames = false;
   
   public class Piece {
     private static final String PIECE_PROPERTIES = "Piece Properties";
@@ -435,13 +435,19 @@ private static final String CHARTS = "Charts";
     public boolean equals(Object obj) {
       if (!(obj instanceof Piece))
         return false;
-      if (getUniqueClassName().equals(((Piece) obj).getUniqueClassName()) && pieceClass == ((Piece) obj).pieceClass)
+      if (getUniqueClassName().equals(((Piece) obj).getUniqueClassName()) &&
+          pieceClass == ((Piece) obj).pieceClass)
         return true;
       else
         return false;
     }
 
-    protected void setValue(int index, int value) {
+    @Override
+  	public int hashCode() {
+	  	return getUniqueClassName().hashCode();
+  	}
+
+  	protected void setValue(int index, int value) {
       values[index] = value;
       types[index] = ValueType.NUMERIC;
     }
@@ -706,7 +712,7 @@ private static final String CHARTS = "Charts";
       byte[] b = value.getBytes();
       int result = 0;
       for (int i = 0; i < 4; ++i)
-        result = (result<<8) + b[i];
+        result = (result<<8) + (b[i]&0xff);
       values[index] = result;
       types[index] = ValueType.TEXT;
     }
@@ -1356,7 +1362,7 @@ private static final String CHARTS = "Charts";
       byte[] b = value.getBytes();
       int result = 0;
       for (int i = 0; i < 4; ++i)
-        result = (result<<8) + b[i];
+        result = (result<<8) + (b[i]&0xff);
       values[index] = result;
       types[index] = ValueType.TEXT;
     }
@@ -1719,7 +1725,7 @@ private PieceWindow pieceWin;
      * 
      * The purpose of the last byte in this block is unknown.
      */
-    in.read(new byte[4]);
+    in.readFully(new byte[4]);
   }
 
   // TODO: allow multiple players to see hidden units.
@@ -1739,7 +1745,7 @@ private PieceWindow pieceWin;
 
   protected void readInfoSizeBlock(DataInputStream in) throws IOException {
     ADC2Utils.readBlockHeader(in, "Info Size");    
-    in.read(new byte[4]);
+    in.readFully(new byte[4]);
   }
 
   protected void readInfoPageBlock(DataInputStream in) throws IOException {
@@ -1761,9 +1767,9 @@ private PieceWindow pieceWin;
               int idx = input.readUnsignedByte();
               int len = input.readUnsignedByte();
               byte dimensions[] = new byte[8];
-              input.read(dimensions);
+              input.readFully(dimensions);
               byte buf[] = new byte[len];
-              input.read(buf);
+              input.readFully(buf);
               String name = new String(buf);
               if (idx >=0 && idx <10 && infoPages[idx] == null) {
                 infoPages[idx] = name;
@@ -1835,7 +1841,7 @@ private PieceWindow pieceWin;
   protected void readLOSBlock(DataInputStream in) throws IOException {
     ADC2Utils.readBlockHeader(in, "LOS");
     
-    in.read(new byte[18]); // unknown
+    in.readFully(new byte[18]); // unknown
     /* int maxRange = */ in.readUnsignedShort();
     /* int degradeLOS = */ in.readByte();
     /* int pointsToBlockLOS = */ ADC2Utils.readBase250Word(in);
@@ -1845,7 +1851,7 @@ private PieceWindow pieceWin;
     if (version > 0x0206) {
       /* int hexSize = */ ADC2Utils.readBase250Word(in);
       byte[] units = new byte[10];
-      in.read(units);
+      in.readFully(units);
     }
     
     int nBlocks = ADC2Utils.readBase250Word(in);
@@ -1856,7 +1862,7 @@ private PieceWindow pieceWin;
       /* int whenSpotting = */ ADC2Utils.readBase250Word(in);
       /* int whenTarget = */ ADC2Utils.readBase250Word(in);
       byte[] color = new byte[3];
-      in.read(color);
+      in.readFully(color);
     }
   }
 
@@ -1896,7 +1902,7 @@ private PieceWindow pieceWin;
       int show = ADC2Utils.readBase250Word(in);
       int color = in.readUnsignedByte();
       int position = in.readByte();
-      in.read(size);
+      in.readFully(size);
       
       statusDots[i] = new StatusDots(type, show, ADC2Utils.getColorFromIndex(color), position, size[2]);
     }
@@ -1923,7 +1929,7 @@ private PieceWindow pieceWin;
     
     for (int i = 0; i < 3; ++i)
       /* scrollJumpSize[i] = */ in.readUnsignedByte();
-    in.read(new byte[3]); // unknown
+    in.readFully(new byte[3]); // unknown
     /* soundOn = */  in.readUnsignedByte();
   }
 
@@ -1964,7 +1970,7 @@ private PieceWindow pieceWin;
       /* int fillColor = */ in.readUnsignedByte();
       /* int outlineColor = */ in.readUnsignedByte();
       // zoom sizes
-      in.read(new byte[3]);
+      in.readFully(new byte[3]);
     }
   }
 
@@ -2005,7 +2011,7 @@ private PieceWindow pieceWin;
       nBytes = ADC2Utils.readBase250Integer(in);
     else
       nBytes = ADC2Utils.readBase250Word(in);
-    in.read(new byte[nBytes]);
+    in.readFully(new byte[nBytes]);
   }
 
   protected void readPoolBlock(DataInputStream in) throws IOException {
@@ -2015,7 +2021,7 @@ private PieceWindow pieceWin;
     for (int i = 0; i < nForcePools; ++i) {
       String n = readNullTerminatedString(in, 25);
       int type = in.readByte();
-      in.read(new byte[2]); // not sure what these do
+      in.readFully(new byte[2]); // not sure what these do
       int nunits = ADC2Utils.readBase250Word(in); // ignored
       if (nunits != FORCE_POOL_BLOCK_END) {
         switch (type) {
@@ -2049,7 +2055,7 @@ private PieceWindow pieceWin;
       // someday we may try to crack this, but since it doesn't actually encrypt anything
       // there's no real point.
       // byte[] password = new byte[20];
-      in.read(new byte[20]);
+      in.readFully(new byte[20]);
       /* int startingZoomLevel = */ in.readByte();
       /* int startingPosition = */ ADC2Utils.readBase250Word(in);
       SymbolSet.SymbolData hiddenSymbol = getSet().getGamePiece(ADC2Utils.readBase250Word(in));
@@ -2124,7 +2130,7 @@ private PieceWindow pieceWin;
         break;
       }
       
-      in.read(new byte[2]); // don't know what these do
+      in.readFully(new byte[2]); // don't know what these do
       
       int position = ADC2Utils.readBase250Word(in);      
       int flags = in.readUnsignedByte();
