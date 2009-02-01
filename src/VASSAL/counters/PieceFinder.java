@@ -111,9 +111,15 @@ public interface PieceFinder {
       for (Iterator<GamePiece> i = s.getPiecesInVisibleOrderIterator();
            i.hasNext();) {
         GamePiece child = i.next();
-        if (shapes[s.indexOf(child)].contains(pt)) {
-          selected = s.isExpanded() ? child : s;
-          break;
+        
+        // Pieces can be moved by background threads causing the size of
+        // the Stack to change after the Iterator is generated. 
+        final int index = s.indexOf(child);
+        if (index >= 0 && index < shapes.length) {
+          if (shapes[index].contains(pt)) {
+            selected = s.isExpanded() ? child : s;
+            break;
+          }
         }
       }
       return selected;
