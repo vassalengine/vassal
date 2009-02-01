@@ -17,13 +17,14 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools;
+package VASSAL.tools.io;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 
 import VASSAL.Info;
+import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.logging.Logger;
 

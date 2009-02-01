@@ -37,12 +37,12 @@ import javax.imageio.stream.FileCacheImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.TempFileManager;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.UnrecognizedImageTypeException;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.RereadableInputStream;
+import VASSAL.tools.io.TempFileManager;
 
 /**
  * @author Joel Uckelman

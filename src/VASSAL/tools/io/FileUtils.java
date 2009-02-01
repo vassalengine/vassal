@@ -16,7 +16,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.tools;
+package VASSAL.tools.io;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Some general purpose file manipulation utilities.

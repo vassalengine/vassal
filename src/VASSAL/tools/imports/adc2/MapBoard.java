@@ -79,11 +79,11 @@ import VASSAL.counters.Immobilized;
 import VASSAL.counters.Marker;
 import VASSAL.counters.UsePrototype;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.TempFileManager;
 import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.io.TempFileManager;
 
 /**
  * The map board itself.

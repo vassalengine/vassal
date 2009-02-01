@@ -26,7 +26,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import VASSAL.tools.TempFileManager;
+import VASSAL.tools.io.TempFileManager;
 
 /**
  * A {@link DataBuffer} which stores data internally as integers in
