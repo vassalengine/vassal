@@ -111,9 +111,11 @@ public interface PieceFinder {
       for (Iterator<GamePiece> i = s.getPiecesInVisibleOrderIterator();
            i.hasNext();) {
         GamePiece child = i.next();
-        
+       
         // Pieces can be moved by background threads causing the size of
         // the Stack to change after the Iterator is generated. 
+        // FIXME: This is a workaround. We should fix the threading bug
+        // which causes.
         final int index = s.indexOf(child);
         if (index >= 0 && index < shapes.length) {
           if (shapes[index].contains(pt)) {
