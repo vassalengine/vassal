@@ -24,7 +24,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 
 import VASSAL.Info;
-import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.logging.Logger;
 
@@ -138,7 +137,7 @@ public class TempFileManager {
             FileUtils.recursiveDelete(f);
           }
           catch (IOException e) {
-            WriteErrorDialog.error(e, f);
+            Logger.log(e);
           }
         }
       }
