@@ -181,7 +181,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       }
       else {
         Point p = getSendLocation();
-        c.setEnabled(getMap() != null &&
+        c.setEnabled(getMap() != null && p != null &&
             (map != getMap() || !p.equals(getPosition())) );
       }
     }
