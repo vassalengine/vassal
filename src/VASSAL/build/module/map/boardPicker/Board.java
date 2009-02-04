@@ -291,7 +291,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
       ErrorDialog.bug(e);
     }
     catch (InterruptedException e) {
-      ErrorDialog.bug(e);
+      // This happens if taking a snapshot of the map is cancelled. 
+
+      // FIXME: Can we handle this in ImageSaver instead?
     }
     catch (ExecutionException e) {
       if (!Op.handleException(e)) ErrorDialog.bug(e);
