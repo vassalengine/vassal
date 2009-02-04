@@ -98,7 +98,6 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.configure.StringArrayConfigurer;
-import VASSAL.configure.TranslateVassalAction;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
@@ -216,7 +215,7 @@ public class ModuleManagerWindow extends JFrame {
     fileMenu.add(mm.addKey("Main.play_module"));
     fileMenu.add(mm.addKey("Main.edit_module"));
     fileMenu.add(mm.addKey("Main.new_module"));
-    fileMenu.add(mm.addKey("Editor.import_module"));
+    fileMenu.add(mm.addKey("Main.import_module"));
     fileMenu.addSeparator();
 
     if (!Info.isMacOSX()) {
@@ -254,8 +253,6 @@ public class ModuleManagerWindow extends JFrame {
       }
     }, serverStatusConfig.booleanValue()));
  
-    toolsMenu.add(mm.addKey("Editor.ModuleEditor.translate_vassal"));
-
     // help menu
     final MenuProxy helpMenu =
       new MenuProxy(Resources.getString("General.help"));
@@ -280,14 +277,11 @@ public class ModuleManagerWindow extends JFrame {
     mm.addAction("Main.play_module", new Player.PromptLaunchAction(this));
     mm.addAction("Main.edit_module", new Editor.PromptLaunchAction(this));
     mm.addAction("Main.new_module", new Editor.NewModuleLaunchAction(this));
-    mm.addAction("Editor.import_module",
+    mm.addAction("Main.import_module",
       new Editor.PromptImportLaunchAction(this));
     mm.addAction("Prefs.edit_preferences",
       Prefs.getGlobalPrefs().getEditor().getEditAction());
     mm.addAction("General.quit", shutDownAction);
-
-    mm.addAction("Editor.ModuleEditor.translate_vassal",
-                 new TranslateVassalAction(this));
 
     URL url = null; 
     try {

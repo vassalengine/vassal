@@ -155,7 +155,7 @@ public class Editor extends Launcher {
     private static final long serialVersionUID = 1L;
 
     public ImportLaunchAction(ModuleManagerWindow mm, File module) {
-      super(Resources.getString("Editor.import_module"), mm,
+      super(Resources.getString("Main.import_module"), mm,
         Editor.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.IMPORT, module)
       );

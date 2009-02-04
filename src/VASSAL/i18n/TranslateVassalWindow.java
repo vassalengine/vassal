@@ -37,6 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
 import VASSAL.build.module.documentation.HelpFile;
@@ -256,5 +257,14 @@ public class TranslateVassalWindow extends TranslateWindow {
     }
 
     return true;
+  }
+
+  public static void main(String args[]) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        final TranslateVassalWindow w = new TranslateVassalWindow(null);
+        w.setVisible(true);
+      }
+    });
   }
 }
