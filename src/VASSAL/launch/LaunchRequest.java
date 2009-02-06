@@ -48,13 +48,14 @@ public class LaunchRequest implements Serializable {
   private static final long serialVersionUID = 1L;
 
   enum Mode {
-    MANAGE   { public String toString() { return "manage"; } },
-    LOAD     { public String toString() { return "load";   } },
-    EDIT     { public String toString() { return "edit";   } },
-    IMPORT   { public String toString() { return "import"; } },
-    NEW      { public String toString() { return "new";    } },
-    EDIT_EXT { public String toString() { return "edit-extension"; } },
-    NEW_EXT  { public String toString() { return "new-extension";  } }
+    MANAGE    { public String toString() { return "manage"; } },
+    LOAD      { public String toString() { return "load";   } },
+    EDIT      { public String toString() { return "edit";   } },
+    IMPORT    { public String toString() { return "import"; } },
+    NEW       { public String toString() { return "new";    } },
+    EDIT_EXT  { public String toString() { return "edit-extension"; } },
+    NEW_EXT   { public String toString() { return "new-extension";  } },
+    TRANSLATE { public String toString() { return "translate"; } }
   }
 
   public Mode mode;
@@ -193,6 +194,7 @@ public class LaunchRequest implements Serializable {
     final int NEW_EXT = 4;
     final int PORT = 5;
     final int VERSION = 6;
+    final int TRANSLATE = 7;
 
     final LongOpt[] longOpts = new LongOpt[]{
       new LongOpt("auto",    LongOpt.NO_ARGUMENT,       null, 'a'),
@@ -206,7 +208,8 @@ public class LaunchRequest implements Serializable {
       new LongOpt("edit-extension", LongOpt.NO_ARGUMENT, null, EDIT_EXT),
       new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, NEW_EXT),
       new LongOpt("port", LongOpt.REQUIRED_ARGUMENT, null, PORT),
-      new LongOpt("version", LongOpt.NO_ARGUMENT, null, VERSION)
+      new LongOpt("version", LongOpt.NO_ARGUMENT, null, VERSION),
+      new LongOpt("translate", LongOpt.NO_ARGUMENT, null, TRANSLATE)
     };
 
     final Getopt g = new Getopt("VASSAL", args, ":aehilmn", longOpts);
@@ -243,6 +246,9 @@ public class LaunchRequest implements Serializable {
         System.err.println("VASSAL " + Info.getVersion());
         System.exit(0);
         break;
+      case TRANSLATE:
+        setMode(lr, Mode.TRANSLATE);
+        break;
       case 'a':
         lr.builtInModule = true;
         break;
@@ -269,7 +275,14 @@ public class LaunchRequest implements Serializable {
         die("LaunchRequest.missing_argument", args[g.getOptind()-1]); 
         break;
       case '?':
-        die("LaunchRequest.unrecognized_option", args[g.getOptind()-1]);
+        // NB: getOptind() is not advanced if the unrecognized option
+        // is short and bundled, so we must handle unrecognized long
+        // options separately from unrecognized short options. 
+        die(
+          "LaunchRequest.unrecognized_option", 
+          g.getOptopt() == 0 ?
+            args[g.getOptind()-1] : '-' + String.valueOf((char) g.getOptopt())
+        );
         break;
       default:
         // should never happen
@@ -372,6 +385,7 @@ public class LaunchRequest implements Serializable {
       }
       break;
     case NEW:
+    case TRANSLATE:
       break;
     }
 

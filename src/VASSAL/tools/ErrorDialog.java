@@ -261,7 +261,8 @@ public class ErrorDialog {
   }
 
 ////////////////
-
+// FIXME: this does not belong here
+// FIXME: BadDataReport produces rubbish messages
 
   private static final Set<String> reportedDataErrors =
     Collections.synchronizedSet(new HashSet<String>());

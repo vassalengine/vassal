@@ -43,6 +43,7 @@ import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.LongConfigurer;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
@@ -89,6 +90,17 @@ public class ModuleManager {
 
     // do this before the graphics subsystem fires up or it won't stick
     System.setProperty("swing.boldMetal", "false");
+
+    if (lr.mode == LaunchRequest.Mode.TRANSLATE) {
+      // show the translation window in translation mode
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          // FIXME: does this window exit on close?
+          new TranslateVassalWindow(null).setVisible(true);
+        }
+      });
+      return;
+    }
 
     // set up security key so other users can't talk with our socket
     final LongConfigurer keyConfig =
@@ -383,6 +395,8 @@ public class ModuleManager {
 // FIXME: translate
         return "incorrect key";
       }
+
+// FIXME: is this being run on the EDT?
 
       final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
 
