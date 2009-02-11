@@ -228,7 +228,7 @@ public abstract class Decorator implements GamePiece, StateMergeable {
 
     if (c == null) return myC;
     else if (myC == null)  return c;
-    else return ArrayUtils.append(myC, c);
+    else return ArrayUtils.append(KeyCommand[].class, myC, c);
   }
 
   /**

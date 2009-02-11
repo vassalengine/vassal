@@ -406,7 +406,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
         Decorator.getInnermost(this).getProperty(Properties.KEY_COMMANDS);
 
       if (c == null) return myC;
-      else return ArrayUtils.append(myC, c); 
+      else return ArrayUtils.append(KeyCommand[].class, myC, c); 
     }
     else {
       return super.getKeyCommands();
