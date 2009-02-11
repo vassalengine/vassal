@@ -78,7 +78,7 @@ public class ActionButton extends Decorator implements EditablePiece {
   }
 
   protected KeyCommand[] myGetKeyCommands() {
-    return null;
+    return new KeyCommand[0];
   }
 
   public Command myKeyEvent(KeyStroke stroke) {
