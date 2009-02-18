@@ -60,6 +60,7 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 
@@ -246,6 +247,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
         return Integer.parseInt(r);
       }
       catch (NumberFormatException e) {
+        reportDataError(this, Resources.getString("Error.non_number_error"), "radius["+radiusMarker+"]="+r, e);           
         return 0;
       }
     }

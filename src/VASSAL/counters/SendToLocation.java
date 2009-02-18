@@ -347,9 +347,21 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
    * Offset the destination by the Advanced Options offset 
    */
   protected Point offsetDestination(int x, int y, GamePiece outer) {
-    int xPos = x + Integer.parseInt(xIndex.getText(outer, _0)) * Integer.parseInt(xOffset.getText(outer, _0));
-    int yPos = y + Integer.parseInt(yIndex.getText(outer, _0)) * Integer.parseInt(yOffset.getText(outer, _0));
+    int xPos = x + parse("xIndex", xIndex, outer) * parse("xOffset", xOffset, outer);
+    int yPos = y + parse("yIndex", yIndex, outer) * parse("yOffset", yOffset, outer);
     return new Point(xPos, yPos);
+  }
+  
+  private int parse (String desc, FormattedString s, GamePiece outer) {
+    int i = 0;
+    String val = s.getText(outer, _0);
+    try {
+      i = Integer.parseInt(val);
+    }
+    catch (NumberFormatException e) {
+      reportDataError(this, Resources.getString("Error.non_number_error"), s.debugInfo(val, desc), e);
+    }
+    return i;
   }
   
   public void mySetState(String newState) {
@@ -365,7 +377,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         setProperty(BACK_POINT, new Point(Integer.parseInt(x), Integer.parseInt(y)));
       }
       catch (NumberFormatException e) {
-        // Ignore
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Back Point=("+x+","+y+")", e);        
       }
     }
   }

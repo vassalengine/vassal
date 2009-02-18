@@ -57,6 +57,7 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;
@@ -366,10 +367,20 @@ public class FreeRotator extends Decorator
 
   public void mySetState(String state) {
     if (validAngles.length == 1) {
-      validAngles[0] = Double.valueOf(state).doubleValue();
+      try {
+        validAngles[0] = Double.valueOf(state).doubleValue();
+      }
+      catch (NumberFormatException e) {
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Angle="+state, e);        
+      }
     }
     else {
-      angleIndex = Integer.parseInt(state);
+      try {
+        angleIndex = Integer.parseInt(state);
+      }
+      catch (NumberFormatException e) {
+        reportDataError(this, Resources.getString("Error.non_number_error"), "Fixed Angle Index="+state, e);        
+      }
     }
   }
 
