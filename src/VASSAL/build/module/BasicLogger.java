@@ -72,6 +72,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public static final String PROMPT_NEW_LOG = "PromptNewLog";  //$NON-NLS-1$
   public static final String PROMPT_NEW_LOG_START = "PromptNewLogStart";  //$NON-NLS-1$
   public static final String PROMPT_NEW_LOG_END = "PromptNewLogEnd";  //$NON-NLS-1$
+  public static final String PROMPT_LOG_COMMENT = "promptLogComment";  //$NON-NLS-1$
   protected static final String STEP_ICON = "/images/StepForward16.gif";  //$NON-NLS-1$
   protected static final String UNDO_ICON = "/images/Undo16.gif";  //$NON-NLS-1$
   protected List<Command> logInput;
@@ -169,6 +170,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
 
     BooleanConfigurer logOptionEnd = new BooleanConfigurer(PROMPT_NEW_LOG_END, Resources.getString("BasicLogger.prompt_new_log_after"), Boolean.TRUE);  //$NON-NLS-1$
     mod.getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionEnd); //$NON-NLS-1$
+
+    BooleanConfigurer logOptionComment = new BooleanConfigurer(PROMPT_LOG_COMMENT, Resources.getString("BasicLogger.disable_comments"), Boolean.TRUE);  //$NON-NLS-1$
+    mod.getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionComment); //$NON-NLS-1$
   }
 
   public Element getBuildElement(Document doc) {

@@ -54,6 +54,10 @@ public interface ServerStatus {
       return moduleName;
     }
 
+    public void setModuleName( String moduleName ) {
+      this.moduleName = moduleName;
+    }
+    
     public void addRoom(Room r) {
       rooms.put(r.getName(), r);
     }
@@ -64,6 +68,15 @@ public interface ServerStatus {
 
     public Room[] getRooms() {
       return rooms.values().toArray(new Room[rooms.size()]);
+    }
+
+    public int numPlayers(){
+  	  Room[] roomsArray = getRooms();
+	  int n=0;
+      for (int i = 0; i < roomsArray.length; ++i) {
+    	  n += ((SimpleRoom)roomsArray[i]).numPlayers();
+      }
+      return n;
     }
 
     public String toString() {

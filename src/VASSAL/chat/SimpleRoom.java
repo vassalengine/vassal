@@ -84,6 +84,10 @@ public class SimpleRoom implements Room {
     return name;
   }
 
+  public int numPlayers() {
+    return players.size();
+  }
+
   public int hashCode() {
     return name.hashCode();
   }

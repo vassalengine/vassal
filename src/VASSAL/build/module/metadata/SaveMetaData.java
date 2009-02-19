@@ -32,6 +32,7 @@ import org.xml.sax.SAXException;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
+import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
@@ -48,23 +49,27 @@ public class SaveMetaData extends AbstractMetaData {
 
   public static final String ZIP_ENTRY_NAME = "savedata";
   public static final String DATA_VERSION = "1";
-
+  public static final String PROMPT_LOG_COMMENT = "promptLogComment";
+  
   protected ModuleMetaData moduleData;
 
   public SaveMetaData() {
     super();
 
-    final String comments = (String) JOptionPane.showInputDialog(
-      GameModule.getGameModule().getFrame(),
-      Resources.getString("BasicLogger.enter_comments"),
-      Resources.getString("BasicLogger.log_file_comments"),
-      JOptionPane.PLAIN_MESSAGE,
-      null,
-      null,
-      ""
-    );
+    String comments = "";
+    if ( (Boolean)GameModule.getGameModule().getPrefs().getValue( PROMPT_LOG_COMMENT )){ 		
+	    comments = (String) JOptionPane.showInputDialog(
+	      GameModule.getGameModule().getFrame(),
+	      Resources.getString("BasicLogger.enter_comments"),
+	      Resources.getString("BasicLogger.log_file_comments"),
+	      JOptionPane.PLAIN_MESSAGE,
+	      null,
+	      null,
+	      ""
+	    );
 
-    setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
+	    setDescription(new Attribute(DESCRIPTION_ELEMENT, comments));
+    }
   }
   
   public SaveMetaData(ZipFile zip) {
