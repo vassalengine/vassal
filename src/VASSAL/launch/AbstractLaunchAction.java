@@ -456,7 +456,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       children.add(cmdC);
 
       if (maxHeapWarning) {
-        WarningDialog.show("Error.set_lower_maximum_heap");
+        WarningDialog.show("Warning.set_lower_maximum_heap");
       }
 
       // block until the process ends
