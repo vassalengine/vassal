@@ -49,7 +49,7 @@ DISTDIR:=dist
 VNUM:=3.2.0
 SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
 VERSION:=$(VNUM)-svn$(SVNVERSION)
-#VERSION:=$(VNUM)-beta5
+#VERSION:=$(VNUM)-beta8
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
@@ -63,7 +63,7 @@ JCFLAGS:=-d $(CLASSDIR) -source 5 -target 5 -Xlint -classpath $(CLASSPATH) \
 JAR:=$(JAVAPATH)/jar
 JDOC:=$(JAVAPATH)/javadoc
 
-NSIS:=PATH=$$PATH:~/java/nsis/bin makensis
+NSIS:=PATH=$$PATH:~/java/nsis makensis
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
