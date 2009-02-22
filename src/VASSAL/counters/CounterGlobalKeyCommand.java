@@ -47,18 +47,21 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 
 /**
  * Adds a menu item that applies a {@link GlobalCommand} to other pieces
  */
-public class CounterGlobalKeyCommand extends Decorator implements TranslatablePiece {
+public class CounterGlobalKeyCommand extends Decorator
+                                     implements TranslatablePiece,
+                                                RecursionLimiter.Loopable {
   public static final String ID = "globalkey;";
   protected KeyCommand[] command;
   protected String commandName;
   protected KeyStroke key;
   protected KeyStroke globalKey;
-  protected GlobalCommand globalCommand = new GlobalCommand();
+  protected GlobalCommand globalCommand = new GlobalCommand(this);
   protected PropertyExpression propertiesFilter = new PropertyExpression();
   protected boolean restrictRange;
   protected boolean fixedRange = true;
@@ -300,6 +303,15 @@ public class CounterGlobalKeyCommand extends Decorator implements TranslatablePi
     public String getState() {
       return "";
     }
+  }
+
+  // Implement Loopable
+  public String getComponentName() {
+    return Decorator.getOutermost(this).getLocalizedName();
+  }
+
+  public String getComponentTypeName() {
+    return getDescription();
   }
 
 }

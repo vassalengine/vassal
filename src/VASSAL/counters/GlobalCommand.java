@@ -19,13 +19,19 @@
 package VASSAL.counters;
 
 import java.util.Iterator;
+
 import javax.swing.KeyStroke;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.RecursionLimiter.Loopable;
+import VASSAL.tools.RecursionLimitException;
 
 /**
  * Applies a given keyboard command to all counters on a map
@@ -35,6 +41,11 @@ public class GlobalCommand {
   protected boolean reportSingle;
   protected int selectFromDeck = -1;
   protected FormattedString reportFormat = new FormattedString();
+  protected Loopable owner;
+  
+  public GlobalCommand(Loopable l) {
+    owner = l;
+  }
 
   public void setKeyStroke(KeyStroke keyStroke) {
     this.keyStroke = keyStroke;
@@ -71,32 +82,40 @@ public class GlobalCommand {
    * @return a the corresponding {@link Command}
    */
   public Command apply(Map[] m, PieceFilter filter) {
-    String reportText = reportFormat.getLocalizedText();
-    Command c;
-    if (reportText.length() > 0) {
-      c = new Chatter.DisplayText(GameModule.getGameModule().getChatter(), "*" + reportText);
-      c.execute();
-    }
-    else {
-      c = new NullCommand();
-    }
-    for (int mapI = 0; mapI < m.length; ++mapI) {
-      String mapFormat = m[mapI].getChangeFormat();
-      if (reportSingle) {
-        m[mapI].setAttribute(Map.CHANGE_FORMAT, "");
+    Command c = new NullCommand();
+    try {
+      RecursionLimiter.startExecution(owner);
+      String reportText = reportFormat.getLocalizedText();
+      if (reportText.length() > 0) {
+        c = new Chatter.DisplayText(
+          GameModule.getGameModule().getChatter(), "*" + reportText);
+        c.execute();
       }
-      Visitor visitor = new Visitor(c, filter, keyStroke);
-      DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
-      GamePiece[] p = m[mapI].getPieces();
-      for (int i = 0; i < p.length; ++i) {
-        dispatcher.accept(p[i]);
+      for (int mapI = 0; mapI < m.length; ++mapI) {
+        String mapFormat = m[mapI].getChangeFormat();
+        if (reportSingle) {
+          m[mapI].setAttribute(Map.CHANGE_FORMAT, "");
+        }
+        Visitor visitor = new Visitor(c, filter, keyStroke);
+        DeckVisitorDispatcher dispatcher = new DeckVisitorDispatcher(visitor);
+        GamePiece[] p = m[mapI].getPieces();
+        for (int i = 0; i < p.length; ++i) {
+          dispatcher.accept(p[i]);
+        }
+        visitor.getTracker().repaint();
+        if (reportSingle) {
+          m[mapI].setAttribute(Map.CHANGE_FORMAT, mapFormat);
+        }
+        c = visitor.getCommand();
       }
-      visitor.getTracker().repaint();
-      if (reportSingle) {
-        m[mapI].setAttribute(Map.CHANGE_FORMAT, mapFormat);
-      }
-      c = visitor.getCommand();
     }
+    catch (RecursionLimitException e) {
+      ErrorDialog.infiniteLoop(e);
+    }
+    finally {
+      RecursionLimiter.endExecution();
+    }
+    
     return c;
   }
 

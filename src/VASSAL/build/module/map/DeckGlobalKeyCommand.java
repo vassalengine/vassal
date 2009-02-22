@@ -35,6 +35,7 @@ import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GlobalCommand;
 import VASSAL.counters.KeyCommand;
 import VASSAL.counters.PieceFilter;
+import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -44,7 +45,7 @@ import VASSAL.tools.SequenceEncoder;
 public class DeckGlobalKeyCommand extends MassKeyCommand {
 
   public DeckGlobalKeyCommand() {
-    globalCommand = new DeckGlobalCommand();
+    globalCommand = new DeckGlobalCommand(this);
     setConfigureName("");
   }
   
@@ -161,6 +162,11 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   }
   
   public static class DeckGlobalCommand extends GlobalCommand {
+    
+    public DeckGlobalCommand(Loopable l) {
+      super(l);
+    }
+
     public Command apply(Deck d, PieceFilter filter) {
       String reportText = reportFormat.getText();
       Command c;

@@ -264,6 +264,16 @@ public class ErrorDialog {
 // FIXME: this does not belong here
 // FIXME: BadDataReport produces rubbish messages
 
+  public static void infiniteLoop(RecursionLimitException e) {
+    showDetails(
+      e,
+      ThrowableUtils.getStackTrace(e),
+      "Error.infinite_loop",
+      e.getComponentTypeName(),
+      e.getComponentName()
+    );  
+  }
+
   private static final Set<String> reportedDataErrors =
     Collections.synchronizedSet(new HashSet<String>());
 

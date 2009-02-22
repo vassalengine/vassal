@@ -32,10 +32,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -62,13 +64,15 @@ import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.ToolBarComponent;
 
 /**
  * Adds a button to a map window toolbar. Hitting the button applies a particular key command to all pieces on that map
  * with a given name.
  */
-public class MassKeyCommand extends AbstractConfigurable {
+public class MassKeyCommand extends AbstractConfigurable
+                            implements RecursionLimiter.Loopable {
   public static final String DEPRECATED_NAME = "text";
   public static final String NAME = "name";
   public static final String ICON = "icon";
@@ -97,7 +101,7 @@ public class MassKeyCommand extends AbstractConfigurable {
   protected PropertySource propertySource;
   protected PieceFilter filter;
   protected Map map;
-  protected GlobalCommand globalCommand = new GlobalCommand();
+  protected GlobalCommand globalCommand = new GlobalCommand(this);
   protected FormattedString reportFormat = new FormattedString();
 
   public MassKeyCommand() {
@@ -500,6 +504,15 @@ public class MassKeyCommand extends AbstractConfigurable {
     else {
       launch.setAttribute(key, value);
     }
+  }
+
+  // Implement Loopable
+  public String getComponentName() {
+    return getConfigureName();
+  }
+
+  public String getComponentTypeName() {
+    return getConfigureTypeName();
   }
 
 }
