@@ -452,7 +452,7 @@ public class MapBoard extends Importer {
    * Redundant information about each hex. So far only used for determining
    * the default order of line definitions for hex sides and hex lines.
    */
-  private class Hex {
+  private static class Hex {
     ArrayList<Line> hexLines = new ArrayList<Line>();
 
     ArrayList<Line> hexSides = new ArrayList<Line>();
@@ -840,7 +840,7 @@ public class MapBoard extends Importer {
     void initGridNumbering(RegularGridNumbering numbering, MapSheet sheet) {
       super.initGridNumbering(numbering, sheet);
       boolean stagger = false;
-      if (sheet.firstHexRight() && sheet.getField().y%2 == 1)
+      if (sheet.firstHexRight() && (sheet.getField().y&1) == 1)
         stagger = true;
       else if (sheet.firstHexLeft() && sheet.getField().y%2 == 0)
         stagger = true;
@@ -901,7 +901,7 @@ public class MapBoard extends Importer {
         // check to see if lower right-hand corner is on the wrong
         // square
       } 
-      else if (r.y % 2 == 1) { 
+      else if ( (r.y&1) == 1 ) { 
         // top is odd and bottom is even
         if (map.firstHexLeft())
           lowerRight.x += getHexSize() / 2;
@@ -1004,8 +1004,8 @@ public class MapBoard extends Importer {
     }
     
     void drawLines(Graphics2D g, int cap) {
-      ArrayList<LineDefinition> lds = new ArrayList<LineDefinition>(lineDefinitions.length);
-      lds.addAll(Arrays.asList(lineDefinitions));
+      final ArrayList<LineDefinition> lds =
+        new ArrayList<LineDefinition>(Arrays.asList(lineDefinitions));
       
       // find the next line in priority
       while (lds.size() > 0) {
@@ -1030,7 +1030,7 @@ public class MapBoard extends Importer {
   /**
    * Line styles for hex sides and hex lines.
    */
-  protected class LineDefinition {
+  protected static class LineDefinition {
 
     private final Color color;
 
@@ -1783,7 +1783,7 @@ public class MapBoard extends Importer {
     @Override
     void initGridNumbering(RegularGridNumbering numbering, MapSheet sheet) {
       boolean stagger = false;
-      if (sheet.firstHexDown() && sheet.getField().x%2 == 1)
+      if (sheet.firstHexDown() && (sheet.getField().x&1) == 1)
         stagger = true;
       else if (sheet.firstHexUp() && sheet.getField().x%2 == 0)
         stagger = true;
@@ -1836,7 +1836,7 @@ public class MapBoard extends Importer {
           lowerRight.y += getHexSize() / 2;
         // check to see if lower right-hand corner is on the wrong
         // square
-      } else if (r.x % 2 == 1) { 
+      } else if ( (r.x&1) == 1) { 
         // left is odd and right is even
         if (map.firstHexDown())
           lowerRight.y += getHexSize();
@@ -2233,6 +2233,8 @@ public class MapBoard extends Importer {
   // The VASSAL BoardPicker object which is the tree parent of Board.
   private BoardPicker boardPicker;
 
+  private byte[] drawingPriorities = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
   // initialize the drawing elements which must all be ArrayList<>'s.
   public MapBoard() {
     mapElements.add(new MapLayer(primaryMapBoardSymbols, "Primary MapBoard Symbols", false));
@@ -2302,22 +2304,24 @@ public class MapBoard extends Importer {
   protected void readMapItemDrawFlagBlock(DataInputStream in) throws IOException {
     ADC2Utils.readBlockHeader(in, "Map Item Draw Flag");
 
-    // TODO: these aren't being removed any more because the type of mapElements has changed.
     // obviously, element types can't be sorted before we do this.
+    // TODO: check this! If they're turned off in the map, can they be turned on
+    // again in the player?
+    final ArrayList<MapLayer> elements = new ArrayList<MapLayer>(mapElements);
     if (in.readByte() == 0)
-      mapElements.remove(primaryMapBoardSymbols);
+      mapElements.remove(elements.get(drawingPriorities[0]));
     if (in.readByte() == 0)
-      mapElements.remove(secondaryMapBoardSymbols);
+      mapElements.remove(elements.get(drawingPriorities[1]));
     if (in.readByte() == 0)
-      mapElements.remove(hexSides);
+      mapElements.remove(elements.get(drawingPriorities[2]));
     if (in.readByte() == 0)
-      mapElements.remove(hexLines);
+      mapElements.remove(elements.get(drawingPriorities[3]));
     if (in.readByte() == 0)
-      mapElements.remove(placeSymbols);
+      mapElements.remove(elements.get(drawingPriorities[4]));
     if (in.readByte() == 0)
-      mapElements.remove(placeNames);
+      mapElements.remove(elements.get(drawingPriorities[7]));
     if (in.readByte() == 0)
-      mapElements.remove(attributes);
+      mapElements.remove(elements.get(drawingPriorities[5]));
   }
 
   /**
@@ -2484,9 +2488,9 @@ public class MapBoard extends Importer {
       // must be exactly 9 bytes or 10 if there's a terminating null at the end
       String name = readNullTerminatedString(in, 10);
       if (name.length() < 9)
-        in.read(new byte[9 - name.length()]);
+        in.readFully(new byte[9 - name.length()]);
       int style = in.readUnsignedByte();
-      in.read(new byte[2]);
+      in.readFully(new byte[2]);
       int nColChars = in.readUnsignedByte();
       int nRowChars = in.readUnsignedByte();
       if (i < nMapSheets-1) // the last one is always ignored.
@@ -2530,7 +2534,7 @@ public class MapBoard extends Importer {
     ADC2Utils.readBlockHeader(in, "Map Item Drawing Order");
     
     byte[] priority = new byte[10];
-    in.read(priority);
+    in.readFully(priority);
     ArrayList<MapLayer> items = new ArrayList<MapLayer>(mapElements.size());
     for (int i = 0; i < mapElements.size(); ++i) {
 
@@ -2549,6 +2553,10 @@ public class MapBoard extends Importer {
       items.add(mapElements.get(priority[i]));
     }
     
+    // find out where it moved
+    for (int i = 0; i < mapElements.size(); ++i) {
+    	drawingPriorities[priority[i]] = (byte) i;
+    }
     // swap default order with specified order
     mapElements = items;
   }
@@ -2713,7 +2721,7 @@ public class MapBoard extends Importer {
         throw new FileFormatException("Invalid Mapboard File Header");
 
       // don't know what these do.
-      in.read(new byte[2]);
+      in.readFully(new byte[2]);
 
       // get the symbol set
       String s = readWindowsFileName(in);
