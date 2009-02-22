@@ -58,6 +58,7 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.imageop.GamePieceOp;
 import VASSAL.tools.imageop.Op;
@@ -70,7 +71,8 @@ public class FreeRotator extends Decorator
                          implements EditablePiece,
                                     MouseListener,
                                     MouseMotionListener,
-                                    Drawable {
+                                    Drawable,
+                                    TranslatablePiece {
   public static final String ID = "rotate;";
   
   public static final String FACING = "_Facing";
@@ -388,12 +390,12 @@ public class FreeRotator extends Decorator
     if (commands == null) {
       final ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
       final GamePiece outer = Decorator.getOutermost(this);
-      setAngleCommand = new KeyCommand(setAngleText, setAngleKey, outer);
-      rotateCWCommand = new KeyCommand(rotateCWText, rotateCWKey, outer);
-      rotateCCWCommand = new KeyCommand(rotateCCWText, rotateCCWKey, outer);
+      setAngleCommand = new KeyCommand(setAngleText, setAngleKey, outer, this);
+      rotateCWCommand = new KeyCommand(rotateCWText, rotateCWKey, outer, this);
+      rotateCCWCommand = new KeyCommand(rotateCCWText, rotateCCWKey, outer, this);
 
       // for random rotation
-      rotateRNDCommand = new KeyCommand(rotateRNDText, rotateRNDKey, outer);
+      rotateRNDCommand = new KeyCommand(rotateRNDText, rotateRNDKey, outer, this);
       // end random rotation
 
       if (validAngles.length == 1) {

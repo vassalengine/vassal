@@ -429,14 +429,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       if (activateCommand.length() > 0 && activateKey.length() > 0) {
         l.add(new KeyCommand(activateCommand,
           KeyStroke.getKeyStroke(activateKey.charAt(0), activateModifiers),
-          outer));
+          outer, this));
       }
       if (upCommand.length() > 0 &&
           upKey.length() > 0 &&
           nValues > 1 &&
           !followProperty) {
         up = new KeyCommand(upCommand,
-          KeyStroke.getKeyStroke(upKey.charAt(0), upModifiers), outer);
+          KeyStroke.getKeyStroke(upKey.charAt(0), upModifiers), outer, this);
         l.add(up);
       }
       if (downCommand.length() > 0 &&
@@ -444,7 +444,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
           nValues > 1 &&
           !followProperty) {
         down = new KeyCommand(downCommand,
-          KeyStroke.getKeyStroke(downKey.charAt(0), downModifiers), outer);
+          KeyStroke.getKeyStroke(downKey.charAt(0), downModifiers), outer, this);
         l.add(down);
       }
       if (resetKey != null && resetCommand.length() > 0 && !followProperty) {

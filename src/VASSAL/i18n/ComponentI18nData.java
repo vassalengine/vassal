@@ -68,6 +68,9 @@ public class ComponentI18nData {
     init(c, prefix, c.getAttributeNames(), c.getAttributeTypes(), c.getAttributeDescriptions());
   }
 
+  public ComponentI18nData(AbstractConfigurable c, String prefix, ArrayList<String> names, ArrayList<Class<?>> types, ArrayList<String> descriptions) {
+    init(c, prefix, names.toArray(new String[0]), types.toArray(new Class<?>[0]), descriptions.toArray(new String[0]));
+  }
   /**
    * Build from an AutoConfigurable
    * 
@@ -89,7 +92,7 @@ public class ComponentI18nData {
     for (int i = 0; i < types.length; i++) {
       translatable[i] = types[i] != null &&
         (types[i].equals(String.class) ||
-         types[i].isAssignableFrom(TranslatableConfigurerFactory.class));
+         TranslatableConfigurerFactory.class.isAssignableFrom(types[i]));
     }
     init(c, pfx, names, descriptions, translatable);
   }
