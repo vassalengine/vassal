@@ -73,7 +73,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   }
   
   public KeyCommand getKeyCommand(Deck deck) {
-    return new DeckKeyCommand(getConfigureName(), null, deck);
+    return new DeckKeyCommand(getLocalizedConfigureName(), null, deck);
   }
   
   class DeckKeyCommand extends KeyCommand {
@@ -109,7 +109,8 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
       .append(getAttributeValueString(KEY_COMMAND))
       .append(getAttributeValueString(PROPERTIES_FILTER))
       .append(getAttributeValueString(DECK_COUNT))
-      .append(getAttributeValueString(REPORT_FORMAT));
+      .append(getAttributeValueString(REPORT_FORMAT))
+      .append(getLocalizedConfigureName());
     return se.getValue();
   }
   
@@ -120,6 +121,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     setAttribute(PROPERTIES_FILTER, sd.nextToken(null));
     setAttribute(DECK_COUNT, sd.nextInt(0));
     setAttribute(REPORT_FORMAT, sd.nextToken(""));
+    localizedName = sd.nextToken(getConfigureName());
   }
   
   public String[] getAttributeDescriptions() {
