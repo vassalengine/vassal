@@ -39,6 +39,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.FormattedString;
@@ -443,4 +444,11 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
       pack();
     }
   }
+  
+  public ComponentI18nData getI18nData() {
+    ComponentI18nData myI18nData = super.getI18nData();
+    myI18nData.setAttributeTranslatable(LIST, true);
+    return myI18nData;
+  }
+  
 }

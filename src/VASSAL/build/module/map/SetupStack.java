@@ -96,6 +96,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ErrorDialog;
@@ -848,6 +849,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
     }
 
+  }
+  
+  public ComponentI18nData getI18nData() {
+    ComponentI18nData myI18nData = super.getI18nData();
+    myI18nData.setAttributeTranslatable(LOCATION, false);
+    return myI18nData;
   }
    
 // FIXME: check for duplication with PieceMover

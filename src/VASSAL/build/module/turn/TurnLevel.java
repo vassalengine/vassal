@@ -39,9 +39,10 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.properties.MutableProperty;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 
 public abstract class TurnLevel extends TurnComponent {
@@ -355,15 +356,19 @@ public abstract class TurnLevel extends TurnComponent {
     myValue.removeFromContainer();
   }
 
-  @SuppressWarnings("unchecked")
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[] { CounterTurnLevel.class, ListTurnLevel.class };
   }
 
-  public static class TurnFormatConfig implements ConfigurerFactory {
+  public static class TurnFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new FormattedStringConfigurer(key, name, new String[] { LEVEL_VALUE });
     }
   }
 
+  public ComponentI18nData getI18nData() {
+    ComponentI18nData myI18nData = super.getI18nData();
+    myI18nData.setAttributeTranslatable(PROP, false);
+    return myI18nData;
+  }
 }

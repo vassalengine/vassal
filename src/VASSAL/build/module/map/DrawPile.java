@@ -49,6 +49,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.UniqueIdManager;
 
@@ -666,4 +667,12 @@ public class DrawPile extends SetupStack {
   public static String getConfigureTypeName() {
     return "Deck";
   }
+  
+  public ComponentI18nData getI18nData() {
+    ComponentI18nData myI18nData = super.getI18nData();
+    myI18nData.setAttributeTranslatable(SELECT_DISPLAY_PROPERTY, false);
+    myI18nData.setAttributeTranslatable(SELECT_SORT_PROPERTY, false);
+    return myI18nData;
+  }
 }
+

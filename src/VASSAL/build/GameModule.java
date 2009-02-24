@@ -79,6 +79,7 @@ import VASSAL.command.Logger;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.counters.GamePiece;
+import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
@@ -991,5 +992,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       VASSAL.tools.logging.Logger.log(e, "Error generating CRC");
       return 0L;
     }
+  }
+  
+  public ComponentI18nData getI18nData() {
+    ComponentI18nData myI18nData = super.getI18nData();
+    myI18nData.setAttributeTranslatable(MODULE_VERSION, false);
+    return myI18nData;
   }
 }

@@ -73,6 +73,7 @@ import VASSAL.configure.StringEnum;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
+import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.IconButton;
 import VASSAL.tools.KeyStrokeListener;
@@ -447,7 +448,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
   }
 
-  public static class TurnFormatConfig implements ConfigurerFactory {
+  public static class TurnFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       TurnTracker t = (TurnTracker) c;
       String s[] = new String[t.getLevelCount()];
@@ -458,7 +459,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
   }
   
-  public static class ReportFormatConfig implements ConfigurerFactory {
+  public static class ReportFormatConfig implements TranslatableConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       return new PlayerIdFormattedStringConfigurer(key, name, new String[] {OLD_TURN, NEW_TURN } );
     }
