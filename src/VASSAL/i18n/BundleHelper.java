@@ -16,7 +16,7 @@
  */
 package VASSAL.i18n;
 
-import java.text.MessageFormat;
+import java.util.IllegalFormatException;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -51,9 +51,9 @@ public class BundleHelper {
 
   public String getString(String id, Object... args) {
     try {
-      return new MessageFormat(getString(id)).format(args);
+      return String.format(getString(id), args);
     }
-    catch (IllegalArgumentException e) {
+    catch (IllegalFormatException e) {
       Logger.log("Illegal Message Format: " + id);
     }
     
