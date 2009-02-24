@@ -75,9 +75,7 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
     }
     else if (value instanceof SimpleRoom) {
       List<Player> players = ((Room) value).getPlayerList();
-      if (!expanded || players.size() == 0) {
-        setText(getText() + " [" + players.size() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
-      }
+      setText(getText() + " (" + players.size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     return this;
   }
