@@ -32,7 +32,6 @@ import org.xml.sax.SAXException;
 
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.preferences.Prefs;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;

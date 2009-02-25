@@ -26,6 +26,7 @@ import java.util.MissingResourceException;
 import java.util.Set;
 import VASSAL.build.GameModule;
 import VASSAL.configure.SingleChildInstance;
+import VASSAL.tools.logging.Logger;
 
 /**
  * Singleton class for managing the translation of a module into other languages
@@ -159,8 +160,10 @@ public class Localization extends Language {
         }
         translationInProgress = false;
         translationComplete = true;
+        Logger.log("-- Translated");
       }
       translatableItems.clear();
+      GameModule.getGameModule().initFrameTitle();      
     }
   }
 

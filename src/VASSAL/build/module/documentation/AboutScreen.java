@@ -84,7 +84,7 @@ public class AboutScreen extends AbstractConfigurable {
 
     sb.append(
       Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
-        g.getGameName(), g.getGameVersion()));
+        g.getLocalizedGameName(), g.getGameVersion()));
 
     for (ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
       sb.append("<br/>").append(

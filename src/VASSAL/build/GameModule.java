@@ -80,6 +80,7 @@ import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.Prefs;
@@ -123,6 +124,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected String moduleVersion = "0.0";  //$NON-NLS-1$
   protected String vassalVersionCreated = "0.0";  //$NON-NLS-1$
   protected String gameName = DEFAULT_NAME;
+  protected String localizedGameName = null;
   protected String description = "";
   protected String lastSavedConfiguration;
   protected FileChooser fileChooser;
@@ -174,6 +176,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     return frame;
   }
   
+  public void initFrameTitle() {
+    frame.setTitle(getLocalizedGameName());
+  }
+  
   public WizardSupport getWizardSupport() {
     if (wizardSupport == null) {
       wizardSupport = new WizardSupport();
@@ -210,8 +216,13 @@ public abstract class GameModule extends AbstractConfigurable implements Command
 
   public void setAttribute(String name, Object value) {
     if (MODULE_NAME.equals(name)) {
-      gameName = (String) value;
-      setConfigureName(gameName);
+      if (Localization.getInstance().isTranslationInProgress()) {
+        localizedGameName = (String) value;
+      }
+      else {
+        gameName = (String) value;
+      }
+      setConfigureName((String) value);
     }
     else if (MODULE_VERSION.equals(name)) {
       moduleVersion = (String) value;
@@ -379,6 +390,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public String getGameName() {
     return gameName;
+  }
+  
+  public String getLocalizedGameName() {
+    return localizedGameName == null ? gameName : localizedGameName;
   }
 
   public String getGameVersion() {
@@ -614,7 +629,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public void appendToTitle(String s) {
     if (s == null) {
-      frame.setTitle(Resources.getString("GameModule.frame_title", gameName));  //$NON-NLS-1$
+      frame.setTitle(Resources.getString("GameModule.frame_title", getLocalizedGameName()));  //$NON-NLS-1$
     }
     else {
       frame.setTitle(frame.getTitle() + s);

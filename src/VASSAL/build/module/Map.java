@@ -1898,7 +1898,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   protected String getDefaultWindowTitle() {
-    return getLocalizedMapName().length() > 0 ? getLocalizedMapName() : Resources.getString("Map.window_title", GameModule.getGameModule().getGameName()); //$NON-NLS-1$
+    return getLocalizedMapName().length() > 0 ? getLocalizedMapName() : Resources.getString("Map.window_title", GameModule.getGameModule().getLocalizedGameName()); //$NON-NLS-1$
   }
 
   /**

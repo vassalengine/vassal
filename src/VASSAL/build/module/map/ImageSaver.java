@@ -166,7 +166,7 @@ public class ImageSaver extends AbstractConfigurable {
     // prompt user for image filename
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.setSelectedFile(new File(fc.getCurrentDirectory(),
-      GameModule.getGameModule().getGameName() + "Map.png"));
+      GameModule.getGameModule().getLocalizedGameName() + "Map.png"));
 
     final Frame frame =
       (Frame) SwingUtilities.getAncestorOfClass(Frame.class, map.getView());

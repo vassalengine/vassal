@@ -122,7 +122,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     new ArrayList<MutableProperty.Impl>();
 
   protected String deckName;
-  protected String untranslatedDeckName;
+  protected String localizedDeckName;
 
   protected boolean faceDown;
   protected int dragCount = 0;
@@ -515,9 +515,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
 
   public void setDeckName(String n) {
     if (Localization.getInstance().isTranslationInProgress()) {
-      untranslatedDeckName = deckName;
+      localizedDeckName = n;
     }
-    deckName = n;
+    else {
+      deckName = n;
+    }
     countProperty.setPropertyName(deckName+"_numPieces");
     for (int i=0;i<countExpressions.length;++i) {
       expressionProperties.get(i).setPropertyName(
@@ -526,11 +528,11 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public String getDeckName() {
-    return untranslatedDeckName == null ? deckName : untranslatedDeckName;
+    return deckName;
   }
 
   public String getLocalizedDeckName() {
-    return deckName;
+    return localizedDeckName == null ? deckName : localizedDeckName;
   }
   
   /**

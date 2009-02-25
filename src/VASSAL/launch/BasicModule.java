@@ -301,10 +301,10 @@ public class BasicModule extends GameModule {
     }
 
     final String mess = Resources.getString(
-      "BasicModule.version_message", gameName, moduleVersion); //$NON-NLS-1$
+      "BasicModule.version_message", getLocalizedGameName(), moduleVersion); //$NON-NLS-1$
     warn(mess);
     System.err.println("-- " + mess); //$NON-NLS-1$
-    frame.setTitle(gameName);
+    initFrameTitle();
   }
 
   protected void ensureComponent(Class<? extends Buildable> componentClass) {
