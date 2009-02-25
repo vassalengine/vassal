@@ -70,7 +70,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   protected FormattedString format = new FormattedString();
 
   protected DynamicKeyCommand[] keyCommands;
-  protected DynamicKeyCommand[] menuCommands;
+  protected KeyCommand[] menuCommands;
 
   protected ListConfigurer keyCommandListConfig;
 
@@ -89,20 +89,22 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   public void mySetType(String s) {
-    SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ';');
     sd.nextToken(); // Skip over command prefix
     key = sd.nextToken("name");
     decodeConstraints(sd.nextToken(""));
     keyCommandListConfig.setValue(sd.nextToken(""));
     keyCommands = keyCommandListConfig.getListValue().toArray(
         new DynamicKeyCommand[keyCommandListConfig.getListValue().size()]);
-    ArrayList<DynamicKeyCommand> l = new ArrayList<DynamicKeyCommand>();
+
+    final ArrayList<DynamicKeyCommand> l = new ArrayList<DynamicKeyCommand>();
     for (DynamicKeyCommand dkc : keyCommands) {
       if (dkc.getName() != null && dkc.getName().length() > 0) {
         l.add(dkc);
       }
     }
-    menuCommands = l.toArray(new DynamicKeyCommand[l.size()]);
+
+    menuCommands = l.toArray(new KeyCommand[l.size()]);
   }
 
   protected void decodeConstraints(String s) {
@@ -218,7 +220,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(key);
     se.append(encodeConstraints());
     se.append(keyCommandListConfig.getValueString());
@@ -230,17 +232,17 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
 
   public Command myKeyEvent(KeyStroke stroke) {
-    ChangeTracker tracker = new ChangeTracker(this);
-    for (int i = 0; i < keyCommands.length; i++) {
-      if (keyCommands[i].matches(stroke)) {
-        String newValue = keyCommands[i].propChanger.getNewValue(value);
+    final ChangeTracker tracker = new ChangeTracker(this);
+    for (DynamicKeyCommand dkc : keyCommands) {
+      if (dkc.matches(stroke)) {
+        String newValue = dkc.propChanger.getNewValue(value);
         format.setFormat(newValue);
         newValue = format.getText(Decorator.getOutermost(this));
         setValue(newValue);
       }
     }
-    Command comm = tracker.getChangeCommand();
-    return comm;
+
+    return tracker.getChangeCommand();
   }
 
   public String getDescription() {
@@ -276,12 +278,14 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   }
   
   public PieceI18nData getI18nData() {
-    String[] commandNames = new String[menuCommands.length];
-    String[] commandDescs = new String[menuCommands.length];
-    for (int i=0; i < menuCommands.length; i++) {
+    final String[] commandNames = new String[menuCommands.length];
+    final String[] commandDescs = new String[menuCommands.length];
+
+    for (int i = 0; i < menuCommands.length; i++) {
       commandNames[i] = menuCommands[i].getName();
       commandDescs[i] = "Property " + key + ": Menu Command " + i;
     }
+
     return getI18nData(commandNames, commandDescs);
   }
 
@@ -339,12 +343,15 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     }
 
     protected String encodeConstraints() {
-      return new SequenceEncoder(',').append(numericConfig.getValueString()).append(minConfig.getValueString()).append(maxConfig.getValueString()).append(
-          wrapConfig.getValueString()).getValue();
+      return new SequenceEncoder(',')
+        .append(numericConfig.getValueString())
+        .append(minConfig.getValueString())
+        .append(maxConfig.getValueString())
+        .append(wrapConfig.getValueString()).getValue();
     }
 
     public String getType() {
-      SequenceEncoder se = new SequenceEncoder(';');
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameConfig.getValueString());
       se.append(encodeConstraints());
       se.append(keyCommandListConfig.getValueString());
@@ -354,7 +361,6 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     public String getState() {
       return initialValueConfig.getValueString();
     }
-
   }
 
   /**
@@ -370,7 +376,6 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       super(name, key, target, i18nPiece);
       this.propChanger = propChanger;
     }
-
   }
 
   /**
@@ -451,7 +456,5 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       controls.add(keyConfig.getControls());
       controls.add(propChangeConfig.getControls());
     }
-
   }
-
 }
