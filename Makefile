@@ -48,8 +48,8 @@ DISTDIR:=dist
 
 VNUM:=3.2.0
 SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
-VERSION:=$(VNUM)-svn$(SVNVERSION)
-#VERSION:=$(VNUM)-beta8
+#VERSION:=$(VNUM)-svn$(SVNVERSION)
+VERSION:=$(VNUM)
 
 #CLASSPATH:=$(CLASSDIR):$(LIBDIR)/*
 
@@ -159,7 +159,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	genisoimage -V VASSAL-$(VERSION) -r -apple -root VASSAL-$(VERSION).app -o $@ $<
 
-$(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS)
+$(TMPDIR)/VASSAL-$(VERSION)-other.zip: version all $(JARS)
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
 	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
@@ -168,7 +168,10 @@ $(TMPDIR)/VASSAL-$(VERSION)-generic.zip: version all $(JARS)
 	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: version release-generic $(TMPDIR)/VASSAL.exe
+$(TMPDIR)/VASSAL-$(VERSION)-linux.zip: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
+	cp $< $@
+
+$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: version release-other $(TMPDIR)/VASSAL.exe
 	rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.sh
 	cp $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
@@ -186,15 +189,17 @@ $(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
 	svn export . $(TMPDIR)/VASSAL-$(VERSION)-src
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION)-src ; cd ..
 
+release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.zip
+
 release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
 
 release-windows: $(TMPDIR)/VASSAL-$(VERSION)-windows.exe
 
-release-generic: $(TMPDIR)/VASSAL-$(VERSION)-generic.zip
+release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
 release-src: $(TMPDIR)/VASSAL-$(VERSION)-src.zip
 
-release: clean release-generic release-windows release-macosx
+release: clean release-other release-linux release-windows release-macosx
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar
@@ -211,4 +216,4 @@ clean-javadoc:
 clean: clean-release
 	$(RM) -r $(CLASSDIR)/*
 
-.PHONY: all fast-compile clean release release-macosx release-windows release-generic clean-release i18n icons images help javadoc clean-javadoc version
+.PHONY: all fast-compile clean release release-linux release-macosx release-windows release-other clean-release i18n icons images help javadoc clean-javadoc version
