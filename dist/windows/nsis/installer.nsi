@@ -738,7 +738,7 @@ Section "-Application" Application
   ; create the shortcuts
   ; don't use version number in shortcut names for Standard install
   ${If} $CustomSetup == 1
-    StrCpy $0 "VASSAL-${VERSION}"
+    StrCpy $0 "VASSAL ${VERSION}"
   ${Else}
     StrCpy $0 "VASSAL"
   ${EndIf}
