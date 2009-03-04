@@ -427,9 +427,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       final ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
       final GamePiece outer = Decorator.getOutermost(this);
       if (activateCommand.length() > 0 && activateKey.length() > 0) {
-        l.add(new KeyCommand(activateCommand,
-          KeyStroke.getKeyStroke(activateKey.charAt(0), activateModifiers),
-          outer, this));
+        final KeyCommand k = new KeyCommand(activateCommand,
+            KeyStroke.getKeyStroke(activateKey.charAt(0), activateModifiers),
+            outer, this);
+        k.setEnabled(nValues > 0);
+        l.add(k);
       }
       if (upCommand.length() > 0 &&
           upKey.length() > 0 &&
@@ -469,7 +471,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   public Command myKeyEvent(KeyStroke stroke) {
     char strokeChar = getMatchingActivationChar(stroke);
     ChangeTracker tracker = null;
-    if (strokeChar != 0) {
+    if (strokeChar != 0 && nValues > 0) {  // Do not Activate if no levels defined
       tracker = new ChangeTracker(this);
       int index = activationStatus.indexOf(strokeChar);
       if (index < 0) {
