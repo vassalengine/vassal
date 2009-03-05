@@ -4,6 +4,7 @@ import java.awt.Component;
 import javax.swing.JMenuItem;
 
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.i18n.Resources;
 
 /**
  * Combines multiple buttons from the toolbar into a single button. Pushing the single button is equivalent to pushing
@@ -16,13 +17,19 @@ public class MultiActionButton extends ToolbarMenu {
 
   public MultiActionButton() {
     super();
-    setAttribute(BUTTON_TEXT, "Multi-Action");
-    setAttribute(TOOLTIP, ""); //$NON-NLS-1$
+    setAttribute(BUTTON_TEXT, Resources.getString("Editor.MultiActionButton.component_type")); //$NON-NLS-1$
+    setAttribute(TOOLTIP, Resources.getString("Editor.MultiActionButton.component_type")); //$NON-NLS-1$
     launch.putClientProperty(MENU_PROPERTY, null);
   }
   
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button text:  ", "Tooltip text:  ", "Button Icon:  ", "Hotkey:  ", "Buttons"};
+    return new String[] {
+    		Resources.getString(Resources.BUTTON_TEXT),
+        	Resources.getString(Resources.TOOLTIP_TEXT),
+            Resources.getString(Resources.BUTTON_ICON),
+            Resources.getString(Resources.HOTKEY_LABEL),
+            Resources.getString("Editor.MultiActionButton.buttons") //$NON-NLS-1$
+    };
   }
 
   public void launch() {
@@ -35,7 +42,7 @@ public class MultiActionButton extends ToolbarMenu {
   }
   
   public static String getConfigureTypeName() {
-    return "Multi-Action Button";
+    return Resources.getString("Editor.MultiActionButton.component_type"); //$NON-NLS-1$
   }
   
   public HelpFile getHelpFile() {

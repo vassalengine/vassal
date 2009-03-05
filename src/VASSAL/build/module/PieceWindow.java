@@ -43,6 +43,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.VisibilityOption;
 import VASSAL.tools.ComponentSplitter;
@@ -78,8 +79,8 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
         launchButtonPressed();
       }
     };
-    launch = new LaunchButton("Pieces", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
-    launch.setToolTipText("Show/Hide the Pieces window");
+    launch = new LaunchButton(Resources.getString("Editor.PieceWindow.pieces"), TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
+    launch.setToolTipText(Resources.getString("Editor.PieceWindow.show_hide_pieces_window", Resources.getString("Editor.PieceWindow.pieces")));
   }
 
   private Window initFrame() {
@@ -145,7 +146,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Palette";
+    return Resources.getString("Editor.PieceWindow.component_type"); //$NON-NLS-1$
   }
 
   /**
@@ -223,12 +224,12 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Hidden? (requires restart)",
-      "Button text:  ",
-      "Tooltip text:  ",
-      "Button icon:  ",
-      "Hotkey to show/hide:  "
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString("Editor.PieceWindow.hidden"), //$NON-NLS-1$
+      Resources.getString(Resources.BUTTON_TEXT),
+  	  Resources.getString(Resources.TOOLTIP_TEXT),
+      Resources.getString(Resources.BUTTON_ICON),
+      Resources.getString("Editor.PieceWindow.show_hide") //$NON-NLS-1$
     };
   }
 
@@ -262,7 +263,7 @@ public class PieceWindow extends Widget implements UniqueIdManager.Identifyable 
       String s = (String) value;
       setConfigureName(s);
       if (tooltip.length() == 0) {
-        launch.setToolTipText("Show/Hide the " + s + " window");
+        launch.setToolTipText(Resources.getString("Editor.PieceWindow.show_hide_pieces_window", s));
       }
     }
     else if (HIDDEN.equals(name)) {

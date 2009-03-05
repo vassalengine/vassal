@@ -51,6 +51,7 @@ import VASSAL.configure.ConfigureTree;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.menu.MenuManager;
@@ -258,7 +259,7 @@ public class PrivateMap extends Map {
   }
 
   public static String getConfigureTypeName() {
-    return "Private Window";
+    return Resources.getString("Editor.PrivateMap.component_type"); //$NON-NLS-1$
   }
 
   public HelpFile getHelpFile() {
@@ -269,8 +270,9 @@ public class PrivateMap extends Map {
     validator = new ValidityChecker() {
       public void validate(Buildable target, ValidationReport report) {
         if (!PlayerRoster.isActive()) {
-          report.addWarning("Must add "+ConfigureTree.getConfigureName(PlayerRoster.class)
-                            +" in order to use "+ConfigureTree.getConfigureName(getClass()));
+          report.addWarning(Resources.getString("Editor.PrivateMap.warning", 
+          								  ConfigureTree.getConfigureName(PlayerRoster.class),
+                            ConfigureTree.getConfigureName(getClass())));
         }
       }
     };

@@ -240,10 +240,10 @@ public class NotesWindow extends AbstractConfigurable
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Button text:  ",
-      "Tooltip text:  ",
-      "Button Icon:  ", 
-      "Hotkey:  "
+    		Resources.getString(Resources.BUTTON_TEXT),
+        	Resources.getString(Resources.TOOLTIP_TEXT),
+            Resources.getString(Resources.BUTTON_ICON),
+            Resources.getString(Resources.HOTKEY_LABEL)
     };
   }
 
@@ -271,7 +271,7 @@ public class NotesWindow extends AbstractConfigurable
   }
 
   public static String getConfigureTypeName() {
-    return "Notes Window";
+    return Resources.getString("Editor.NotesWindow.component_type"); //$NON-NLS-1$
   }
 
   /**

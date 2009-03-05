@@ -36,6 +36,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.FormattedString;
 
@@ -324,10 +325,10 @@ public class DieManager extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Description",
-      "Multi-roll Default Ndice",
-      "Multi-roll Default Nsides"
-    };
+    		Resources.getString("Editor.DieManager.description"), //$NON-NLS-1$
+    		Resources.getString("Editor.DieManager.ndice"), //$NON-NLS-1$
+    		Resources.getString("Editor.DieManager.nsides") //$NON-NLS-1$
+     };
   }
 
   public Class<?>[] getAttributeTypes() {
@@ -393,7 +394,7 @@ public class DieManager extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Die Manager";
+    return Resources.getString("Editor.DieManager.component_type"); //$NON-NLS-1$
   }
 
   public void setSecondaryEmail(String email) {

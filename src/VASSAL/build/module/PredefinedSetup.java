@@ -89,10 +89,10 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Parent menu?",
-      "Use pre-defined file?",
-      "Saved Game:  "
+    		Resources.getString(Resources.NAME_LABEL),
+    		Resources.getString("Editor.PredefinedSetup.parent_menu"), //$NON-NLS-1$
+    		Resources.getString("Editor.PredefinedSetup.predefined_file"), //$NON-NLS-1$
+    		Resources.getString("Editor.PredefinedSetup.saved_game") //$NON-NLS-1$
     };
   }
 
@@ -178,7 +178,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
                   .loadGameInBackground(fileName, getSavedGameContents());
       }
       catch (IOException e) {
-        ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Setup"),fileName,e));
+        ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Setup"),fileName,e)); //$NON-NLS-1$ //$NON-NLS-2$
       }
     }
     else {
@@ -214,13 +214,13 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
   public void addTo(Buildable parent) {
     if (parent instanceof GameModule) {
-      MenuManager.getInstance().addToSection("PredefinedSetup", getMenuInUse());
+      MenuManager.getInstance().addToSection("PredefinedSetup", getMenuInUse()); //$NON-NLS-1$
     }
     else if (parent instanceof PredefinedSetup) {
       final PredefinedSetup setup = (PredefinedSetup) parent;
       setup.menu.add(getMenuInUse());
     }
-    MenuManager.getInstance().removeAction("GameState.new_game");
+    MenuManager.getInstance().removeAction("GameState.new_game"); //$NON-NLS-1$
     GameModule.getGameModule().getGameState().addGameComponent(this);
     GameModule.getGameModule().getWizardSupport().addPredefinedSetup(this);
   }
@@ -228,7 +228,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   public void removeFrom(Buildable parent) {
     if (parent instanceof GameModule) {
       MenuManager.getInstance()
-                 .removeFromSection("PredefinedSetup", getMenuInUse());
+                 .removeFromSection("PredefinedSetup", getMenuInUse()); //$NON-NLS-1$
     }
     else if (parent instanceof PredefinedSetup) {
       final PredefinedSetup setup = (PredefinedSetup) parent;
@@ -243,7 +243,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   }
 
   public static String getConfigureTypeName() {
-    return "Pre-defined setup";
+    return Resources.getString("Editor.PredefinedSetup.component_type"); //$NON-NLS-1$
   }
 
   public HelpFile getHelpFile() {

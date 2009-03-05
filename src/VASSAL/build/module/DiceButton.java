@@ -135,7 +135,7 @@ public class DiceButton extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Dice Button";
+    return Resources.getString("Editor.DiceButton.component_type"); //$NON-NLS-1$
   }
 
   /**
@@ -191,7 +191,7 @@ public class DiceButton extends AbstractConfigurable {
       for (int i = 0; i < nDice; ++i) {
         val.append(dice[i]);
         if (i < nDice - 1) {
-          val.append(",");
+          val.append(","); //$NON-NLS-1$
         }
       }
     }
@@ -243,19 +243,19 @@ public class DiceButton extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Button text:  ",
-      "Tooltip text:  ",
-      "Button icon:  ",
-      Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
-      Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
-      Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
-      Resources.getString("Dice.add_to_total"), //$NON-NLS-1$
-      "Report Total?",
-      "Hotkey:  ",
-      "Prompt for values when button pushed?",
-      "Report Format:  ",
-      "Sort dice results:  ",
+    	Resources.getString(Resources.NAME_LABEL),
+    	Resources.getString(Resources.BUTTON_TEXT),
+    	Resources.getString(Resources.TOOLTIP_TEXT),
+        Resources.getString(Resources.BUTTON_ICON),
+        Resources.getString("Dice.number_of_dice"), //$NON-NLS-1$
+        Resources.getString("Dice.number_of_sides"), //$NON-NLS-1$
+        Resources.getString("Dice.add_to_each_side"), //$NON-NLS-1$
+        Resources.getString("Dice.add_to_total"), //$NON-NLS-1$
+        Resources.getString("Editor.DiceButton.report_total"), //$NON-NLS-1$
+      	Resources.getString(Resources.HOTKEY_LABEL),
+      	Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
+      	Resources.getString("Editor.DiceButton.report_format"), //$NON-NLS-1$
+      	Resources.getString("Editor.DiceButton.sort_results") //$NON-NLS-1$
     };
   }
 
@@ -323,7 +323,7 @@ public class DiceButton extends AbstractConfigurable {
   public void addTo(Buildable parent) {
     ran = GameModule.getGameModule().getRNG();
     GameModule.getGameModule().getToolBar().add(getComponent());
-    property.setPropertyValue("1"); // Initialize with a numeric value
+    property.setPropertyValue("1"); // Initialize with a numeric value //$NON-NLS-1$
     property.addTo((MutablePropertiesContainer)parent);
   }
 
@@ -341,7 +341,7 @@ public class DiceButton extends AbstractConfigurable {
     }
     else if (NAME.equals(key)) {
       setConfigureName((String) o);
-      property.setPropertyName(getConfigureName()+"_result");
+      property.setPropertyName(getConfigureName()+"_result"); //$NON-NLS-1$
       launch.setToolTipText((String) o);
     }
     else if (N_DICE.equals(key)) {
@@ -404,7 +404,7 @@ public class DiceButton extends AbstractConfigurable {
         sortDice = ((Boolean) o).booleanValue();
       }
       else if (o instanceof String) {
-        sortDice = "true".equals(o);
+        sortDice = "true".equals(o); //$NON-NLS-1$
       }
     }
     else {
@@ -417,22 +417,22 @@ public class DiceButton extends AbstractConfigurable {
       return getConfigureName();
     }
     else if (N_DICE.equals(key)) {
-      return String.valueOf(nDice); //$NON-NLS-1$
+      return String.valueOf(nDice); 
     }
     else if (N_SIDES.equals(key)) {
-      return String.valueOf(nSides); //$NON-NLS-1$
+      return String.valueOf(nSides);
     }
     else if (PLUS.equals(key)) {
-      return String.valueOf(plus); //$NON-NLS-1$
+      return String.valueOf(plus); 
     }
     else if (ADD_TO_TOTAL.equals(key)) {
-      return String.valueOf(addToTotal); //$NON-NLS-1$
+      return String.valueOf(addToTotal); 
     }
     else if (REPORT_TOTAL.equals(key)) {
-      return String.valueOf(reportTotal); //$NON-NLS-1$
+      return String.valueOf(reportTotal);
     }
     else if (PROMPT_ALWAYS.equals(key)) {
-      return String.valueOf(promptAlways); //$NON-NLS-1$
+      return String.valueOf(promptAlways); 
     }
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
@@ -448,8 +448,7 @@ public class DiceButton extends AbstractConfigurable {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[0];
   }
 

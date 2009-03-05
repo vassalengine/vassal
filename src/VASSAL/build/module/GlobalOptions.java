@@ -62,9 +62,9 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String CENTER_ON_MOVE = "centerOnMove"; //$NON-NLS-1$
   public static final String MARK_MOVED = "markMoved"; //$NON-NLS-1$
   public static final String AUTO_REPORT = "autoReport"; //$NON-NLS-1$
-  public static final String ALWAYS = "Always";
-  public static final String NEVER = "Never";
-  public static final String PROMPT = "Use Preferences Setting";
+  public static final String ALWAYS = "Always"; //$NON-NLS-1$
+  public static final String NEVER = "Never"; //$NON-NLS-1$
+  public static final String PROMPT = "Use Preferences Setting"; //$NON-NLS-1$
   public static final String SINGLE_WINDOW = "singleWindow"; //$NON-NLS-1$
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
@@ -74,7 +74,7 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String PLAYER_ID = "playerId"; //$NON-NLS-1$
   public static final String PLAYER_ID_FORMAT = "playerIdFormat"; //$NON-NLS-1$
 
-  private String promptString = "Opponents can unmask my pieces";
+  private String promptString = "Opponents can unmask my pieces"; //$NON-NLS-1$
   private String nonOwnerUnmaskable = NEVER;
   private String centerOnMoves = ALWAYS;
   private String autoReport = ALWAYS;
@@ -132,7 +132,7 @@ public class GlobalOptions extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Global Options"; //$NON-NLS-1$
+    return Resources.getString("Editor.GlobalOption.component_type"); //$NON-NLS-1$ 
   }
 
   public static class Prompt extends StringEnum {
@@ -160,14 +160,14 @@ public class GlobalOptions extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Allow non-owners to unmask pieces:  ",
-      null,
-      "Center on opponent's moves:  ",
-      "Auto-report moves:  ",
-      "Player Id format:  "
-    };
+    	Resources.getString("Editor.GlobalOption.nonowner_unmask"), //$NON-NLS-1$
+    	null,
+    	Resources.getString("Editor.GlobalOption.center_moves"), //$NON-NLS-1$
+    	Resources.getString("Editor.GlobalOption.autoreport_moves"), //$NON-NLS-1$
+    	Resources.getString("Editor.GlobalOption.playerid_format") //$NON-NLS-1$
+   };
   }
-
+  
   public String[] getAttributeNames() {
     final ArrayList<String> attributes = new ArrayList<String>(
       Arrays.asList(

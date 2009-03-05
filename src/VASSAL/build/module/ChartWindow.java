@@ -40,6 +40,7 @@ import VASSAL.build.widget.TabWidget;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
@@ -75,9 +76,9 @@ public class ChartWindow extends Widget {
       }
     };
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
-    setAttribute(NAME, "Charts");
-    setAttribute(BUTTON_TEXT, "Charts");
-    launch.setAttribute(TOOLTIP, "Charts");
+    setAttribute(NAME, Resources.getString("Editor.ChartWindow.component_type"));
+    setAttribute(BUTTON_TEXT, Resources.getString("Editor.ChartWindow.component_type"));
+    launch.setAttribute(TOOLTIP, Resources.getString("Editor.ChartWindow.component_type"));
   }
 
   /**
@@ -147,8 +148,7 @@ public class ChartWindow extends Widget {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public Class[] getAllowableConfigureComponents() {
+  public Class<?>[] getAllowableConfigureComponents() {
     return new Class[]{
       Chart.class,
       HtmlChart.class,
@@ -179,17 +179,17 @@ public class ChartWindow extends Widget {
   }
 
   public static String getConfigureTypeName() {
-    return "Charts";
+    return Resources.getString("Editor.ChartWindow.component_type"); //$NON-NLS-1$
   }
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Button text:  ",
-      "Tooltip text:  ",
-      "Button icon:  ",
-      "Hotkey:  "
-    };
+    		Resources.getString(Resources.NAME_LABEL),
+    	    Resources.getString(Resources.BUTTON_TEXT),
+    	    Resources.getString(Resources.TOOLTIP_TEXT),
+    	    Resources.getString(Resources.BUTTON_ICON),
+    	    Resources.getString(Resources.HOTKEY_LABEL)
+    	    };
   }
 
   public Class<?>[] getAttributeTypes() {

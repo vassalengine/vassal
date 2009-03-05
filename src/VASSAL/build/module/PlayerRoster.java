@@ -101,8 +101,8 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         // errors due to nonexistent "Retire" images, by ignoring
         // the buttonIcon attribute when the value is "Retire" but
         // no such image can be found in the archive.
-        if ("buttonIcon".equals(att.getName()) &&
-            "Retire".equals(att.getValue())) {
+        if ("buttonIcon".equals(att.getName()) && //$NON-NLS-1$
+            "Retire".equals(att.getValue())) { //$NON-NLS-1$
           try {
             GameModule.getGameModule()
                       .getDataArchive()
@@ -354,14 +354,14 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, OBSERVER);
     sideConfig = new StringEnumConfigurer(null,
-      Resources.getString("PlayerRoster.join_game_as"),
+      Resources.getString("PlayerRoster.join_game_as"), //$NON-NLS-1$
       availableSides.toArray(new String[availableSides.size()]));
     sideConfig.setValue(OBSERVER);
     return sideConfig.getControls();
   }
 
   public String getStepTitle() {
-    return Resources.getString("PlayerRoster.choose_side");
+    return Resources.getString("PlayerRoster.choose_side"); //$NON-NLS-1$
   }
 
   public boolean isFinished() {
@@ -413,7 +413,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
     public PlayerInfo(String id, String name, String side) {
       if (id == null) {
-        throw new NullPointerException("Player id cannot be null");
+        throw new NullPointerException("Player id cannot be null"); //$NON-NLS-1$
       }
       playerId = id;
       playerName = name;
@@ -470,7 +470,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       super(null, null);
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
-      sidesConfig = new StringArrayConfigurer(null, "Sides available to players", sides.toArray(new String[sides.size()]));
+      sidesConfig = new StringArrayConfigurer(null, Resources.getString("Editor.PlayerRoster.sides_available"), sides.toArray(new String[sides.size()])); //$NON-NLS-1$
       sidesConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           sides.clear();
@@ -478,21 +478,21 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
         }
       });
       controls.add(sidesConfig.getControls());
-      textConfig = new StringConfigurer(BUTTON_TEXT, "'Retire' button text:  ", retireButton.getAttributeValueString(BUTTON_TEXT));
+      textConfig = new StringConfigurer(BUTTON_TEXT, Resources.getString("Editor.PlayerRoster.retire_button_text"), retireButton.getAttributeValueString(BUTTON_TEXT)); //$NON-NLS-1$
       textConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           retireButton.setAttribute(BUTTON_TEXT, textConfig.getValueString());
         }
       });
       controls.add(textConfig.getControls());
-      tooltipConfig = new StringConfigurer(TOOL_TIP, "'Retire' button tooltip:  ", retireButton.getAttributeValueString(TOOL_TIP));
+      tooltipConfig = new StringConfigurer(TOOL_TIP, Resources.getString("Editor.PlayerRoster.retire_button_tooltip"), retireButton.getAttributeValueString(TOOL_TIP)); //$NON-NLS-1$
       tooltipConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
           retireButton.setAttribute(TOOL_TIP, tooltipConfig.getValueString());
         }
       });
       controls.add(tooltipConfig.getControls());
-      iconConfig = new IconConfigurer(BUTTON_ICON, "'Retire' button icon:  ", null);
+      iconConfig = new IconConfigurer(BUTTON_ICON, Resources.getString("Editor.PlayerRoster.retire_button_icon"), null); //$NON-NLS-1$
       iconConfig.setValue(retireButton.getIcon());
       iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -595,6 +595,6 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   }
   
   public String[] getAttributeDescriptions() {
-    return new String[] {"Button Text:  ", "Tool Tip:  ", "Sides:  "};
+    return new String[] {Resources.getString("Editor.button_text_label"), Resources.getString("Editor.tooltip_text_label"), Resources.getString("Editor.PlayerRoster.sides_label")}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 }

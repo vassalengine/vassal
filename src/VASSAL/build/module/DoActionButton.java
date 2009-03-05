@@ -43,6 +43,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
@@ -74,7 +75,7 @@ public class DoActionButton extends AbstractConfigurable
   protected FormattedString reportFormat =
     new FormattedString(GameModule.getGameModule());
   protected boolean doSound = false;
-  protected String soundClip = "";
+  protected String soundClip = ""; //$NON-NLS-1$
   protected boolean doHotkey = false;
   protected List<KeyStroke> hotkeys = new ArrayList<KeyStroke>();
   
@@ -90,15 +91,16 @@ public class DoActionButton extends AbstractConfigurable
       }
     };
 
+	  final String description = Resources.getString("Editor.DoAction.component_type"); //$NON-NLS-1$ 
     launch = new LaunchButton(
-      "Do Action", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
-    setAttribute(NAME, "Do Action");
-    setAttribute(TOOLTIP, "Do Action");
-    launch.setAttribute(BUTTON_TEXT, "Do Action");
+      description, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
+    setAttribute(NAME, description);
+    setAttribute(TOOLTIP, description);
+    launch.setAttribute(BUTTON_TEXT, description);
   }
 
   public static String getConfigureTypeName() {
-    return "Action Button";
+    return Resources.getString("Editor.DoAction.component_type"); //$NON-NLS-1$
   }
 
   public String[] getAttributeNames() {
@@ -119,23 +121,23 @@ public class DoActionButton extends AbstractConfigurable
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Description:  ",
-      "Button text:  ",
-      "Button Tooltip text:  ",
-      "Button icon:  ",
-      "Hot key:  ",
-      "Display Message?",
-      "Report Format:  ",
-      "Play a sound?",
-      "Sound Clip:  ",
-      "Send Hotkeys?",
-      "Hot Keys:  ",
+    	Resources.getString(Resources.DESCRIPTION),
+    	Resources.getString(Resources.BUTTON_TEXT),
+    	Resources.getString(Resources.TOOLTIP_TEXT),
+    	Resources.getString(Resources.BUTTON_ICON),
+    	Resources.getString(Resources.HOTKEY_LABEL),
+    	Resources.getString("Editor.DoAction.display_message"), //$NON-NLS-1$
+    	Resources.getString("Editor.DoAction.report_format"), //$NON-NLS-1$
+    	Resources.getString("Editor.DoAction.play_sound"), //$NON-NLS-1$
+    	Resources.getString("Editor.DoAction.sound_clip"), //$NON-NLS-1$
+    	Resources.getString("Editor.DoAction.send_hotkeys"), //$NON-NLS-1$
+    	Resources.getString("Editor.DoAction.hotkeys") //$NON-NLS-1$
     };
   }
 
   public static class IconConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new IconConfigurer(key, name, null); //$NON-NLS-1$
+      return new IconConfigurer(key, name, null); 
     }
   }
   
@@ -164,7 +166,7 @@ public class DoActionButton extends AbstractConfigurable
     }
 
     protected Configurer buildChildConfigurer() {
-      return new HotKeyConfigurer(null, "  HotKey:  ");
+      return new HotKeyConfigurer(null, Resources.getString(Resources.HOTKEY_LABEL));
     }
     
   }
@@ -297,7 +299,7 @@ public class DoActionButton extends AbstractConfigurable
     }
 
     final String val = se.getValue();
-    return val == null ? "" : val;
+    return val == null ? "" : val; //$NON-NLS-1$
   }
 
   protected List<KeyStroke> decodeHotkeys(String s) {
@@ -329,7 +331,7 @@ public class DoActionButton extends AbstractConfigurable
 
       final Command c = new NullCommand();
       if (doReport) {
-        final String report = "* " + reportFormat.getLocalizedText();
+        final String report = "* " + reportFormat.getLocalizedText(); //$NON-NLS-1$
 
         c.append(new Chatter.DisplayText(
           GameModule.getGameModule().getChatter(), report)); 

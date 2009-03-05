@@ -468,7 +468,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
         }
       }
     };
-    launchButton = new LaunchButton("Map", TOOLTIP, BUTTON_NAME, HOTKEY, ICON, al);
+    launchButton = new LaunchButton(Resources.getString("Editor.Map.map"), TOOLTIP, BUTTON_NAME, HOTKEY, ICON, al);
     launchButton.setEnabled(false);
     launchButton.setVisible(false);
     if (e != null) {
@@ -2081,7 +2081,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   public static String getConfigureTypeName() {
-    return "Map Window";
+    return Resources.getString("Editor.Map.component_type"); //$NON-NLS-1$
   }
 
   public String getMapName() {
@@ -2096,7 +2096,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     mapName = s;
     setConfigureName(mapName);
     if (tooltip == null || tooltip.length() == 0) {
-      launchButton.setToolTipText(s != null ? Resources.getString("Map.show_hide", s) : Resources.getString("Map.show_hide", Resources.getString("Map.map"))); //$NON-NLS-1$ //$NON-NLS-2$
+      launchButton.setToolTipText(s != null ? Resources.getString("Map.show_hide", s) : Resources.getString("Map.show_hide", Resources.getString("Map.map"))); //$NON-NLS-1$ //$NON-NLS-2$  //$NON-NLS-3$
     }
   }
 
@@ -2106,27 +2106,27 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Map Name:  ",
-      "Mark pieces that move (if they possess the proper trait):  ",
-      "\"Mark unmoved\" button text:  ",
-      "\"Mark unmoved\" tooltip text:  ",
-      "\"Mark unmoved\" button icon:  ",
-      "Horizontal Padding:  ",
-      "Vertical Padding:  ",
-      "Background color:  ",
-      "Can contain multiple boards?",
-      "Border color for selected counters:  ",
-      "Border thickness for selected counters:  ",
-      "Include toolbar button to show/hide?",
-      "Toolbar button text:  ",
-      "Toolbar tooltip text:  ",
-      "Toolbar button icon:  ",
-      "Hotkey:  ",
-      "Auto-report format for movement within this map:  ",
-      "Auto-report format for movement to this map:  ",
-      "Auto-report format for units created in this map:  ",
-      "Auto-report format for units modified on this map:  ",
-      "Key Command to apply to all units ending movement on this map:  "
+      Resources.getString("Editor.Map.map_name"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.mark_pieces_moved"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.mark_unmoved_button_text"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.mark_unmoved_tooltip_text"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.mark_unmoved_button_icon"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.horizontal"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.vertical"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.bkgdcolor"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.multiboard"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.bc_selected_counter"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.bt_selected_counter"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.show_hide"), //$NON-NLS-1$
+      Resources.getString(Resources.BUTTON_TEXT),
+      Resources.getString(Resources.TOOLTIP_TEXT),
+      Resources.getString(Resources.BUTTON_ICON),
+      Resources.getString(Resources.HOTKEY_LABEL),
+      Resources.getString("Editor.Map.report_move_within"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.report_move_to"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.report_created"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.report_modified"), //$NON-NLS-1$
+      Resources.getString("Editor.Map.key_applied_all") //$NON-NLS-1$
     };
   }
 

@@ -33,6 +33,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.FormattedStringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ArrayUtils;
 
 /**
@@ -50,7 +51,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   }
 
   public static String getConfigureTypeName() {
-    return "Internet Dice Button";
+    return Resources.getString("Editor.InternetDiceButton.component_type"); //$NON-NLS-1$
   }
 
   public Class<?>[] getAttributeTypes() {

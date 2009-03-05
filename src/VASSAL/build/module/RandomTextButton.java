@@ -30,6 +30,7 @@ import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.ConfigurerWindow;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 
 /**
@@ -93,7 +94,7 @@ public class RandomTextButton extends DiceButton {
   }
   
   public static String getConfigureTypeName() {
-    return "Random Text Button";
+    return Resources.getString("Editor.RandomTextButton.component_type"); //$NON-NLS-1$
   }
 
   /**
@@ -177,8 +178,8 @@ public class RandomTextButton extends DiceButton {
     ArrayList<String> names =
       new ArrayList<String>(Arrays.asList(super.getAttributeNames()));
     l.remove(names.indexOf(N_SIDES));
-    l.add("Faces");
-    l.add("Faces have numeric values?");
+    l.add(Resources.getString("Editor.RandomTextButton.faces")); //$NON-NLS-1$
+    l.add(Resources.getString("Editor.RandomTextButton.faces_numeric")); //$NON-NLS-1$
     return l.toArray(new String[l.size()]);
   }
 

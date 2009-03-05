@@ -202,7 +202,7 @@ public class Resources {
   public static final String HOTKEY_LABEL = "Editor.hotkey_label"; //$NON-NLS-1$
   public static final String COLOR_LABEL = "Editor.color_label"; //$NON-NLS-1$
   public static final String NAME_LABEL = "Editor.name_label"; //$NON-NLS-1$
-
+  public static final String DESCRIPTION = "Editor.description_label"; //$NON-NLS-1$
   /**
    * Localize a user interface String.
    * 
