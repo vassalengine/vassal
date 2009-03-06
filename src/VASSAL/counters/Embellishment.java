@@ -53,6 +53,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.KeyModifiersConfigurer;
@@ -798,7 +799,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private JRadioButton suffix = new JRadioButton("is suffix");
     private JCheckBox alwaysActive = new JCheckBox("Always active?");
     private JCheckBox drawUnderneath = new JCheckBox("Underneath when highlighted?");
-    private JTextField resetLevel = new JTextField(2);
+    private FormattedExpressionConfigurer resetLevel = new FormattedExpressionConfigurer(null, "Reset to level:  ");
     private JTextField resetCommand = new JTextField(8);
     private JCheckBox loop = new JCheckBox("Loop through levels?");
     private HotKeyConfigurer resetKey = new HotKeyConfigurer(null, "  Keyboard:  ");
@@ -848,8 +849,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       p.add(downKeyInput);
 
       reset1Controls = Box.createHorizontalBox();
-      reset1Controls.add(new JLabel("Reset to level:  "));
-      reset1Controls.add(resetLevel);
+      reset1Controls.add(resetLevel.getControls());
       p.add(reset1Controls);
       reset2Controls = Box.createHorizontalBox();
       reset2Controls.add(new JLabel("  Command:  "));
@@ -1108,7 +1108,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         .append(downKeyInput.getText())
         .append(resetCommand.getText())
         .append((KeyStroke) resetKey.getValue())
-        .append(resetLevel.getText())
+        .append(resetLevel.getValueString())
         .append(drawUnderneath.isSelected())
         .append(xOffInput.getText())
         .append(yOffInput.getText())
@@ -1174,7 +1174,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         new SequenceEncoder(activateKeyInput.getText(), ';');
       se2.append(resetCommand.getText())
          .append((KeyStroke) resetKey.getValue())
-         .append(resetLevel.getText());
+         .append(resetLevel.getValueString());
 
       final SequenceEncoder se = new SequenceEncoder(null, ';');
       se.append(se2.getValue())
@@ -1241,7 +1241,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       downModifiers.setValue(e.downModifiers);
       resetKey.setValue(e.resetKey);
       resetCommand.setText(e.resetCommand);
-      resetLevel.setText(e.resetLevel.getFormat());
+      resetLevel.setValue(e.resetLevel.getFormat());
       xOffInput.setText(String.valueOf(e.xOff));
       yOffInput.setText(String.valueOf(e.yOff));
       images.setImageList(e.imageName);

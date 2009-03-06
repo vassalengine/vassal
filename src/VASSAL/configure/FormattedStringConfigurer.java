@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney & Brent Easton
+ * Copyright (c) 2000-2009 by Rodney Kinney & Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -56,6 +56,7 @@ public class FormattedStringConfigurer
     for (int i = 0; i < options.length; i++) {
       optionsModel.addElement(options[i]);
     }
+    setListVisibility();
   }
 
   public String[] getOptions() {
@@ -76,11 +77,17 @@ public class FormattedStringConfigurer
       dropList.setEnabled(false);
       dropList.addActionListener(this);
 
+      setListVisibility();
       p.add(dropList);
     }
     return p;
   }
 
+  private void setListVisibility() {
+    if (dropList != null) {
+      dropList.setVisible(optionsModel.getSize() > 1);
+    }
+  }
   /*
    * Drop-down list has been clicked, insert selected option onto string
    */

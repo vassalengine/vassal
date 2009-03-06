@@ -48,6 +48,7 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
@@ -288,17 +289,17 @@ public class Translate extends Decorator implements TranslatablePiece {
   
 
   public static class Editor implements PieceEditor {
-    private StringConfigurer xDist;
-    private StringConfigurer yDist;
+    private FormattedExpressionConfigurer xDist;
+    private FormattedExpressionConfigurer yDist;
     private StringConfigurer name;
     private HotKeyConfigurer key;
     private JPanel controls;
     private BooleanConfigurer moveStack;
     protected BooleanConfigurer advancedInput;
-    protected StringConfigurer xIndexInput;
-    protected StringConfigurer xOffsetInput;
-    protected StringConfigurer yIndexInput;
-    protected StringConfigurer yOffsetInput;
+    protected FormattedExpressionConfigurer xIndexInput;
+    protected FormattedExpressionConfigurer xOffsetInput;
+    protected FormattedExpressionConfigurer yIndexInput;
+    protected FormattedExpressionConfigurer yOffsetInput;
     protected StringConfigurer descInput;
 
     public Editor(Translate t) {
@@ -310,9 +311,9 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add(name.getControls());
       key = new HotKeyConfigurer(null, "Keyboard shortcut:  ", t.keyCommand);
       controls.add(key.getControls());
-      xDist = new StringConfigurer(null, "Distance to the right:  ", t.xDist.getFormat());
+      xDist = new FormattedExpressionConfigurer(null, "Distance to the right:  ", t.xDist.getFormat());
       controls.add(xDist.getControls());
-      yDist = new StringConfigurer(null, "Distance upwards:  ", t.yDist.getFormat());
+      yDist = new FormattedExpressionConfigurer(null, "Distance upwards:  ", t.yDist.getFormat());
       controls.add(yDist.getControls());
       moveStack = new BooleanConfigurer(null, "Move entire stack?",
                                         Boolean.valueOf(t.moveStack));
@@ -326,16 +327,16 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add(advancedInput.getControls());
       
       Box b = Box.createHorizontalBox();
-      xIndexInput = new StringConfigurer(null, "Additional offset to the right:  ", t.xIndex.getFormat());
+      xIndexInput = new FormattedExpressionConfigurer(null, "Additional offset to the right:  ", t.xIndex.getFormat());
       b.add(xIndexInput.getControls());
-      xOffsetInput = new StringConfigurer(null, " times ", t.xOffset.getFormat());
+      xOffsetInput = new FormattedExpressionConfigurer(null, " times ", t.xOffset.getFormat());
       b.add(xOffsetInput.getControls());
       controls.add(b);
       
       b = Box.createHorizontalBox();
-      yIndexInput = new StringConfigurer(null, "Additional offset upwards:  ", t.yIndex.getFormat());
+      yIndexInput = new FormattedExpressionConfigurer(null, "Additional offset upwards:  ", t.yIndex.getFormat());
       b.add(yIndexInput.getControls());
-      yOffsetInput = new StringConfigurer(null, " times ", t.yOffset.getFormat());
+      yOffsetInput = new FormattedExpressionConfigurer(null, " times ", t.yOffset.getFormat());
       b.add(yOffsetInput.getControls());
       controls.add(b);
       

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2006 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,6 +18,10 @@
  */
 package VASSAL.configure;
 
+import java.awt.Component;
+
+import javax.swing.JPanel;
+
 import VASSAL.build.GameModule;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.filechooser.AudioFileFilter;
@@ -32,6 +36,7 @@ import VASSAL.tools.filechooser.FileChooser;
  */
 public class AudioClipConfigurer extends FileConfigurer {
   protected static DirectoryConfigurer resourceDirPref;
+  protected FormattedExpressionConfigurer.ExpressionButton button;
 
   public AudioClipConfigurer(String key, String name, ArchiveWriter archive) {
     super(key, name);
@@ -50,5 +55,14 @@ public class AudioClipConfigurer extends FileConfigurer {
 
   protected void addToArchive(java.io.File f) {
     archive.addSound(f.getPath(), f.getName());
+  }
+  
+  public Component getControls() {
+    final Component c = super.getControls();
+    if (button == null) {
+      button = new FormattedExpressionConfigurer.ExpressionButton(this, tf.getPreferredSize().height);
+      ((JPanel) c).add(button);
+    }
+    return c;
   }
 }

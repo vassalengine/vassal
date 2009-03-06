@@ -23,10 +23,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+
 import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.SequenceEncoder;
@@ -73,9 +76,9 @@ public class PropertyChangerConfigurer extends Configurer {
   protected Constraints constraints;
   protected JPanel controls;
   protected StringEnumConfigurer typeConfig;
-  protected StringConfigurer valueConfig;
+  protected FormattedExpressionConfigurer valueConfig;
   protected StringConfigurer promptConfig;
-  protected StringConfigurer incrConfig;
+  protected FormattedExpressionConfigurer incrConfig;
   protected StringArrayConfigurer validValuesConfig;
 
   public PropertyChangerConfigurer(String key, String name, Constraints constraints) {
@@ -96,11 +99,11 @@ public class PropertyChangerConfigurer extends Configurer {
       controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
       typeConfig = new StringEnumConfigurer(null, "Type:  ", new String[]{PLAIN_TYPE, INCREMENT_TYPE, PROMPT_TYPE, SELECT_TYPE});
       typeConfig.addPropertyChangeListener(l);
-      valueConfig = new StringConfigurer(null, "New Value:  ");
+      valueConfig = new FormattedExpressionConfigurer(null, "New Value:  ");
       valueConfig.addPropertyChangeListener(l);
       promptConfig = new StringConfigurer(null, "Prompt:  ");
       promptConfig.addPropertyChangeListener(l);
-      incrConfig = new StringConfigurer(null, "Increment by:  ");
+      incrConfig = new FormattedExpressionConfigurer(null, "Increment by:  ");
       incrConfig.addPropertyChangeListener(l);
       validValuesConfig = new StringArrayConfigurer(null, "Valid Values");
       validValuesConfig.addPropertyChangeListener(l);

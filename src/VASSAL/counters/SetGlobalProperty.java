@@ -25,10 +25,12 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
@@ -39,6 +41,7 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
+import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -238,14 +241,14 @@ public class SetGlobalProperty extends DynamicProperty {
   }
   protected static class Ed implements PieceEditor {
     protected StringConfigurer descConfig;
-    protected StringConfigurer nameConfig;
+    protected FormattedExpressionConfigurer nameConfig;
     protected BooleanConfigurer numericConfig;
     protected IntConfigurer minConfig;
     protected IntConfigurer maxConfig;
     protected BooleanConfigurer wrapConfig;
     protected ListConfigurer keyCommandListConfig;
     protected StringEnumConfigurer levelConfig;
-    protected StringConfigurer searchNameConfig;
+    protected FormattedExpressionConfigurer searchNameConfig;
     protected JLabel mapLabel = new JLabel("map");
     protected JLabel zoneLabel = new JLabel("zone");
     protected Box controls;
@@ -271,7 +274,7 @@ public class SetGlobalProperty extends DynamicProperty {
       controls = Box.createVerticalBox();
       descConfig = new StringConfigurer(null, "Description:  ", m.description);
       controls.add(descConfig.getControls());
-      nameConfig = new StringConfigurer(null, "Global Property Name:  ", m.getKey());
+      nameConfig = new FormattedExpressionConfigurer(null, "Global Property Name:  ", m.getKey());
       controls.add(nameConfig.getControls());
       levelConfig = new StringEnumConfigurer(null, "", new String[]{CURRENT_ZONE, NAMED_ZONE, NAMED_MAP});
       levelConfig.setValue(m.propertyLevel);
@@ -289,7 +292,7 @@ public class SetGlobalProperty extends DynamicProperty {
       nameBox.add(mapLabel);
       nameBox.add(zoneLabel);
       nameBox.add(new JLabel(" containing property:  "));
-      searchNameConfig = new StringConfigurer(null, "", m.searchName);
+      searchNameConfig = new FormattedExpressionConfigurer(null, "", m.searchName);
       nameBox.add(searchNameConfig.getControls());
       controls.add(nameBox);
       numericConfig = new BooleanConfigurer(null, "Is numeric?", m.isNumeric());
