@@ -18,6 +18,8 @@
  */
 package VASSAL.tools.filechooser;
 
+import VASSAL.tools.image.ImageUtils;
+
 /**
  * A FileFilter for GIF, JPEG, PNG, and SVG images. Used by file choosers
  * to filter out files which aren't images.
@@ -25,11 +27,8 @@ package VASSAL.tools.filechooser;
  * @author Joel Uckelman
  */
 public class ImageFileFilter extends ExtensionFileFilter {
-  public static final String[] types = {
-    ".gif", ".jpg", ".jpeg", ".png", ".svg"
-  };
 
   public ImageFileFilter() {
-    super("Image files", types);
+    super("Image files", ImageUtils.IMAGE_SUFFIXES);
   }
 }

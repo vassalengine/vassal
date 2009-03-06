@@ -38,6 +38,7 @@ import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.logging.Logger;
 import VASSAL.tools.menu.MacOSXMenuManager;
@@ -95,6 +96,7 @@ public class Editor extends Launcher {
 
   protected void launch() throws IOException {
     Object req = null;
+    new IconFactory();  // Initialise the Icon Factory
 
     switch (lr.mode) {
     case EDIT:

@@ -31,8 +31,6 @@ import javax.swing.ImageIcon;
 import VASSAL.tools.imageop.Op;
 ////////////////////////////////////////////////////////
 
-import static VASSAL.tools.IterableEnumeration.iterate;
-
 import java.applet.AudioClip;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -64,7 +62,6 @@ import VASSAL.tools.image.svg.SVGRenderer;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ZipArchive;
-import VASSAL.tools.logging.Logger;
 
 /**
  * Wrapper around a Zip archive with methods to cache images
@@ -87,6 +84,8 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   public static final String SOUND_DIR = "sounds/";
   protected String soundDir = SOUND_DIR;
 
+  public static final String ICON_DIR = "icons/";
+  
   protected DataArchive() {
     super(DataArchive.class.getClassLoader());
   }
