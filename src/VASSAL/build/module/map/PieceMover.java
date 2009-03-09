@@ -41,7 +41,6 @@ import java.awt.dnd.DropTargetListener;
 import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -67,7 +66,6 @@ import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
-import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
@@ -90,11 +88,9 @@ import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.logging.Logger;
 
 /**
  * This is a MouseListener that moves pieces onto a Map window
@@ -526,6 +522,7 @@ public class PieceMover extends AbstractBuildable
    *          Point mouse released
    */
   public Command movePieces(Map map, Point p) {
+    final List<GamePiece> allDraggedPieces = new ArrayList<GamePiece>();
     final PieceIterator it = DragBuffer.getBuffer().getIterator();
     if (!it.hasMoreElements()) return null;
 
@@ -614,8 +611,9 @@ public class PieceMover extends AbstractBuildable
         KeyBuffer.getBuffer().add(draggedPieces[i]);
       }
 
-      if (map.getMoveKey() != null) {
-        applyKeyAfterMove(draggedPieces, comm, map.getMoveKey());
+      // Record each individual piece moved
+      for (GamePiece piece : draggedPieces) {
+        allDraggedPieces.add(piece);
       }
 
       tracker.addPiece(dragging);
@@ -627,14 +625,18 @@ public class PieceMover extends AbstractBuildable
       comm = comm.append(report);
     }
 
+    // Apply key after move to each moved piece
+    if (map.getMoveKey() != null) {
+      applyKeyAfterMove(allDraggedPieces, comm, map.getMoveKey());
+    }
+    
     tracker.repaint();
     return comm;
   }
 
-  protected void applyKeyAfterMove(GamePiece[] pieces,
+  protected void applyKeyAfterMove(List<GamePiece> pieces,
                                    Command comm, KeyStroke key) {
-    for (int i = 0; i < pieces.length; i++) {
-      final GamePiece piece = pieces[i];
+    for (GamePiece piece : pieces) {
       if (piece.getProperty(Properties.SNAPSHOT) == null) {
         piece.setProperty(Properties.SNAPSHOT,
                           PieceCloner.getInstance().clonePiece(piece));
