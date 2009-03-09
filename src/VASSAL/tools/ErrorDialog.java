@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,11 +20,13 @@
 package VASSAL.tools;
 
 import java.awt.Component;
+import java.awt.Frame;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
@@ -40,7 +42,7 @@ public class ErrorDialog {
 
 // FIXME: make method which takes Throwable but doesn't use it for details
 
-  public static void bug(Throwable thrown) {
+  public static void bug(final Throwable thrown) {
     // determine whether an OutOfMemoryError is in our causal chain
     final OutOfMemoryError oom =
       ThrowableUtils.getRecent(OutOfMemoryError.class, thrown);
@@ -50,8 +52,18 @@ public class ErrorDialog {
     }
     // show a bug report dialog if one has not been shown before
     else if (!DialogUtils.setDisabled(BugDialog.class, true)) {
+// FIXME: logAndWait() probably doesn't work and creates a race condition.
+// The logging system needs to be rethought...
       Logger.logAndWait(thrown, Logger.BUG);
-      BugDialog.reportABug(thrown);
+
+      final Frame frame = GameModule.getGameModule() == null
+        ? null : GameModule.getGameModule().getFrame();
+
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          new BugDialog(frame, thrown).setVisible(true);
+        }
+      }); 
     }
   }
 

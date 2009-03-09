@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -57,8 +57,8 @@ import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXHeader;
 
 import VASSAL.Info;
-import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.logging.Logger;
 import VASSAL.tools.swing.DetailsButton;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.version.VassalVersion;
@@ -70,14 +70,7 @@ import VASSAL.tools.version.VersionUtils;
  */ 
 public class BugDialog extends JDialog {
   private static final long serialVersionUID = 1L;
-
-  public static void reportABug(Throwable thrown) {
-    final Frame frame = GameModule.getGameModule() == null
-      ? null : GameModule.getGameModule().getFrame();
-
-    new BugDialog(frame, thrown).setVisible(true);
-  }
-
+ 
   private Throwable thrown;
   private String errorLog;
 
