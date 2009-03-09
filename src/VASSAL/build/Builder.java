@@ -105,7 +105,7 @@ public abstract class Builder {
     }
     catch (Throwable t) {
       // find and rethrow causes which are not bugs
-      ThrowableUtils.throwAncestorOfClass(OutOfMemoryError.class, t);
+      ThrowableUtils.throwRecent(OutOfMemoryError.class, t);
 
       if (t instanceof ClassCastException ||
           t instanceof ClassNotFoundException ||

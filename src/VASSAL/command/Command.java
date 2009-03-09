@@ -73,7 +73,7 @@ public abstract class Command {
 
   private void handleFailure(Throwable t) {
     // find and rethrow causes which are not bugs
-    ThrowableUtils.throwAncestorOfClass(OutOfMemoryError.class, t);
+    ThrowableUtils.throwRecent(OutOfMemoryError.class, t);
 
     if (t instanceof Error) {
       // some unusual problem occurred    

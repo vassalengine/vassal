@@ -70,7 +70,7 @@ public class ReflectionUtils {
 
   private static void handle(Throwable t, String className, Class<?>... args) {
     // find and rethrow causes which are not bugs
-    ThrowableUtils.throwAncestorOfClass(OutOfMemoryError.class, t);
+    ThrowableUtils.throwRecent(OutOfMemoryError.class, t);
 
     // always a bug if the class was from the VASSAL.* hiearchy
     if (className.startsWith("VASSAL.")) {

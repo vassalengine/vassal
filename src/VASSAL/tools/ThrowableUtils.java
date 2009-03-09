@@ -30,17 +30,17 @@ import VASSAL.tools.logging.Logger;
 public class ThrowableUtils {
   private ThrowableUtils() {}
 
-    /**
-   * Finds a {@link Throwable} of class <code>T</code> in the causal
-   * history of the given <code>Throwable</code>, if one exists.
+  /**
+   * Returns the most recent {@link Throwable} of class <code>T</code> in
+   * the proper causal history of the given <code>Throwable</code>, if one
+   * exists.
    *
    * @param cl the {@link Class} to search for
    * @param t  the <code>Throwable</code> to check
-   * @return the ancestor of class <code>T</code>, or <code>null</code>
+   * @return the proper ancestor of class <code>T</code>, or <code>null</code>
    * if none exists
    */
-  public static <T extends Throwable> T getAncestorOfClass(Class<T> cl,
-                                                           Throwable t) {
+  public static <T extends Throwable> T getAncestor(Class<T> cl, Throwable t) {
     // traverse the causal history of t until a cause of type cl is found
     for (Throwable c = t.getCause(); c != null; c = c.getCause()) {
       if (cl.isInstance(c)) return cl.cast(c);
@@ -48,32 +48,66 @@ public class ThrowableUtils {
 
     return null;
   }
+
+  /**
+   * Returns the most recent {@link Throwable} of class <code>T</code> in
+   * the (not necessarily proper) causal history of the given
+   * <code>Throwable</code>, if one exists. If the given
+   * <code>Throwable</code> is of class <code>T</code>, it will be returned.
+   *
+   * @param cl the {@link Class} to search for
+   * @param t  the <code>Throwable</code> to check
+   * @return the ancestor of class <code>T</code>, or <code>null</code>
+   * if none exists
+   */
+  public static <T extends Throwable> T getRecent(Class<T> cl, Throwable t) {
+    if (cl.isInstance(t)) return cl.cast(t);
+    return getAncestor(cl, t);
+  }
  
   /**
-   * Throws a {@link Throwable} of class <code>T</code> if the
-   * given <code>Throwable</code> has an ancestor of class <code>T</code>.
+   * Throws the most recent {@link Throwable} of class <code>T</code> in
+   * the proper causal history of the given <code>Throwable</code>, if one
+   * exists.
    *
    * @param cl the <code>Class</code> to search for
    * @param t the <code>Throwable</code> to check
    * @throws T if an ancestor of that class is found
    */
-  public static <T extends Throwable> void throwAncestorOfClass(
+  public static <T extends Throwable> void throwAncestor(
       Class<T> cl, Throwable t) throws T {
-    final T ancestor = getAncestorOfClass(cl, t);
-    if (ancestor != null) {
-      T toThrow = null;
-      try {
-        toThrow = cl.cast(cl.getConstructor().newInstance().initCause(t));
-      }
-      catch (Throwable ignore) {
-        // If anything happens here, we're screwed anyway, since we're
-        // already calling this during error handling. Just log it and
-        // fight on.
-        Logger.log(ignore);
-      }
+    final T ancestor = getAncestor(cl, t);
+    if (ancestor != null) throwMe(cl, t);
+  }
 
-      if (toThrow != null) throw toThrow;
+  /**
+   * Throws the most recent {@link Throwable} of class <code>T</code> in
+   * the (not necessarily proper) causal history of the given
+   * <code>Throwable</code>, if one exists.
+   *
+   * @param cl the <code>Class</code> to search for
+   * @param t the <code>Throwable</code> to check
+   * @throws T if an ancestor of that class is found
+   */
+  public static <T extends Throwable> void throwRecent(Class<T> cl,
+                                                       Throwable t) throws T {
+    if (cl.isInstance(t)) throwMe(cl, t);
+    else throwAncestor(cl, t);
+  }
+
+  private static <T extends Throwable> void throwMe(Class<T> cl, Throwable t)
+                                                                     throws T {
+    T toThrow = null;
+    try {
+      toThrow = cl.cast(cl.getConstructor().newInstance().initCause(t));
     }
+    catch (Throwable ignore) {
+      // If anything happens here, we're screwed anyway, as we're already
+      // calling this during error handling. Just log it and soldier on.
+      Logger.log(ignore);
+    }
+
+    if (toThrow != null) throw toThrow;
   }
 
   /**

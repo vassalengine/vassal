@@ -641,7 +641,7 @@ public class GameState implements CommandEncoder {
 // be a better, more uniform and more permanent way of handling these, since
 // an OOME is neither a VASSAL bug, a module bug, nor due to bad data.
             final OutOfMemoryError oom =
-              ThrowableUtils.getAncestorOfClass(OutOfMemoryError.class, e);
+              ThrowableUtils.getAncestor(OutOfMemoryError.class, e);
             if (oom != null) {
               ErrorDialog.bug(e);
             }
