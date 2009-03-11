@@ -32,7 +32,7 @@
 !define VNAME "VASSAL (${VERSION})"
 !define IROOT "${VROOT}\${VNAME}"
 !define AROOT "Software\Classes"
-!define JRE_MINIMUM "1.5.0"
+!define JAVA_MINIMUM "1.5.0_08"
 !define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=26223"
 
 Name "VASSAL"
@@ -46,20 +46,20 @@ SetCompress auto
 SetCompressor /SOLID lzma
 SetDatablockOptimize on
 
+# includes for various functions
 !include "FileFunc.nsh"
-!include "MUI2.nsh"
 !include "nsDialogs.nsh"
 !include "WinMessages.nsh"
+!include "WinVer.nsh"
 !include "WordFunc.nsh"
 
-!insertmacro GetFileName
-!insertmacro VersionConvert
-!insertmacro VersionCompare
-!insertmacro WordFind
+!addincludedir "dist/windows/nsis"
+!include "GetJavaVersion.nsh"
 
 #
 # Modern UI 2 setup
 #
+!include "MUI2.nsh"
 !define MUI_ABORTWARNING
 
 !define MUI_HEADERIMAGE
@@ -157,23 +157,6 @@ Page custom preConfirm leaveConfirm
 
 !define SkipIfNotCustom "!insertmacro SkipIfNotCustom"
 
-; finds the version of the JRE, if any
-!macro GetJREVersion _RESULT
-  ReadRegStr ${_RESULT} HKLM "Software\JavaSoft\Java Runtime Environment" "CurrentVersion"
-  ${If} ${_RESULT} != ""
-    Push "$0"
-  ${Else}
-    ReadRegStr ${_RESULT} HKLM "Software\JavaSoft\Java Development Kit" "CurrentVersion"
-    ${If} ${_RESULT} != ""
-      Push "$0"
-    ${Else}
-      Push 0
-    ${EndIf}
-  ${EndIf}
-!macroend
-
-!define GetJREVersion "!insertmacro GetJREVersion"
-
 
 !macro ForceSingleton _MUTEX
   #
@@ -216,14 +199,11 @@ loop:
 !macro WaitForVASSALToClose
   #
   # Detect running instances of VASSAL.
-  # Based on http://nsis.sourceforge.net/Get_Windows_version
-  # and http://nsis.sourceforge.net/Get_a_list_of_running_processes.
+  # Based on http://nsis.sourceforge.net/Get_a_list_of_running_processes.
   #
 
   ; no PSAPI on Windows 9x and ME, so don't try there
-  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion" "VersionNumber"
-  StrCpy $0 $0 1
-  ${If} $0 == "4"
+  ${IfNot} ${IsNT}
     Goto cannot_check 
   ${EndIf}
 
@@ -332,6 +312,9 @@ FunctionEnd
 
 
 Function preSetupType
+  ; save registers
+  Push $0
+
   !insertmacro MUI_HEADER_TEXT "Setup Type" "Choose setup options"
 
   nsDialogs::Create /NOUNLOAD 1018
@@ -350,6 +333,9 @@ Function preSetupType
 	Pop $0
 
   nsDialogs::Show
+
+  ; restore registers
+  Pop $0
 FunctionEnd
 
 
@@ -519,15 +505,21 @@ FunctionEnd
 
 
 Function preJavaCheck
+  ; save registers
+  Push $0
+  Push $1
+  Push $R1
+  Push $R2
+
   StrCpy $InstallJRE 0  ; set default 
 
-  ${GetJREVersion} $1
-  ${VersionConvert} "$1" "" $R1
-  ${VersionConvert} "${JRE_MINIMUM}" "" $R2
+  ${GetJavaVersion} $1
+  ${VersionConvert} "$1" "_" $R1
+  ${VersionConvert} "${JAVA_MINIMUM}" "_" $R2
   ${VersionCompare} "$R1" "$R2" $2
 
-  ${If} $2 < 2   ; JRE_VERSION >= JRE_MINIMUM
-    Abort        ; then skip this page, installed JRE is ok
+  ${If} $2 < 2   ; JAVA_VERSION >= JAVA_MINIMUM
+    Abort        ; then skip this page, installed Java is ok
   ${Endif}
 
   !insertmacro MUI_HEADER_TEXT "Installing Java" "Download and install a JRE for VASSAL"
@@ -541,7 +533,7 @@ Function preJavaCheck
     StrCpy $0 "The installer has found version $1 of the Java Runtime Environment (JRE) installed on your computer."
   ${EndIf}
  
-  StrCpy $1 "VASSAL requires a JRE no older than version ${JRE_MINIMUM} in order to run.$\n$\n$\n"
+  StrCpy $1 "VASSAL requires a JRE no older than version ${JAVA_MINIMUM} in order to run.$\n$\n$\n"
 
   ${If} $CustomSetup == 1
     ${NSD_CreateLabel} 0 0 100% 24u "$0 $1If you have a JRE which the installer has not detected, or if you wish to install a JRE yourself, unselect this option."
@@ -558,6 +550,12 @@ Function preJavaCheck
   ${EndIf}
 
   nsDialogs::Show
+
+  ; restore registers
+  Pop $R2
+  Pop $R1
+  Pop $1
+  Pop $0
 FunctionEnd
 
 
@@ -579,6 +577,9 @@ FunctionEnd
 
 
 Function preShortcuts
+  ; save registers
+  Push $0
+
   ; set shortcuts defaults
   StrCpy $AddDesktopSC 1
   StrCpy $AddStartMenuSC 1 
@@ -604,6 +605,9 @@ Function preShortcuts
   SendMessage $AddQuickLaunchSC ${BM_SETCHECK} ${BST_CHECKED} 1
 
   nsDialogs::Show
+
+  ; restore registers
+  Pop $0
 FunctionEnd
 
 
@@ -629,6 +633,9 @@ FunctionEnd
 
 
 Function preConfirm
+  ; save registers
+  Push $0
+
   !insertmacro MUI_HEADER_TEXT "Ready to Install" "Please confirm that you are ready to install"
 
   nsDialogs::Create /NOUNLOAD 1018
@@ -638,6 +645,9 @@ Function preConfirm
   Pop $0
 
   nsDialogs::Show
+
+  ; restore registers
+  Pop $0
 FunctionEnd
 
 
@@ -707,8 +717,6 @@ Section "-Application" Application
       ; provide a JRE installer requiring no user interaction
       ; options reference: http://java.sun.com/javase/6/docs/technotes/guides/deployment/deployment-guide/silent.html
       ExecWait "$0 /qr ADDLOCAL=ALL"
-      ; silently uninstall the OpenOffice installer which 6u10 installs, grrr!
-      ExecWait "MsiExec.exe /qn /X{0D499481-22C6-4B25-8AC2-6D3F6C885FB9}"
     ${EndIf}
 
     Delete $0
@@ -788,7 +796,7 @@ Section "-Application" Application
   WriteRegStr HKLM "${AROOT}\VASSALSavedGame\shell\open\command" "" '$INSTDIR\VASSAL.exe --load "%1"'
 
   ; notify Windows that file associations have changed
-  System::Call 'Shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'
+  ${RefreshShellIcons}
 SectionEnd
 
 #
@@ -835,7 +843,7 @@ Section Uninstall
   DeleteRegKey HKLM "${AROOT}\VASSALSavedGame"
 
   ; notify Windows that file associations have changed
-  System::Call 'Shell32::SHChangeNotify(i 0x08000000, i 0, i 0, i 0)'
+  ${RefreshShellIcons}
   
   ; delete the installed files and directories
   !include "${TMPDIR}/uninstall_files.inc"
