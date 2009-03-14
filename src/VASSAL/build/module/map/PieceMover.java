@@ -357,9 +357,6 @@ public class PieceMover extends AbstractBuildable
         
         if (img == null) {          
           img = loadIcon(markUnmovedIcon);
-          if (img == null) {
-            img = loadIcon("/images/unmoved.gif");
-          }
         }
 
         if (img != null) markUnmovedButton.setIcon(new ImageIcon(img));

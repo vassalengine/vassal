@@ -80,6 +80,7 @@ public class LaunchButton extends JButton {
       addActionListener(al);
     }
     setFocusable(false);
+    checkVisibility();
   }
 
   public String getNameAttribute() {
