@@ -576,40 +576,24 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
 
   public Rectangle getCurrentImageBounds() {
-    try {
-      if (value > 0) {
-        final int i = value - 1;
+    if (value > 0) {
+      final int i = value - 1;
 
-        if (size[i] == null) {
-          if (imagePainter[i] != null) {
-            size[i] = ImageUtils.getBounds(imagePainter[i].getImageSize());
-            size[i].translate(xOff, yOff);
-          }
-          else {
-            size[i] = new Rectangle();
-          }
+      if (size[i] == null) {
+        if (imagePainter[i] != null) {
+          size[i] = ImageUtils.getBounds(imagePainter[i].getImageSize());
+          size[i].translate(xOff, yOff);
         }
+        else {
+          size[i] = new Rectangle();
+        }
+      }
  
-        return size[i];
-      }
-      else {
-        return new Rectangle();
-      }
+      return size[i];
     }
-    catch (ArrayIndexOutOfBoundsException e) {
-      // FIXME: Bug [2432256] diagnostics
-      Logger.log("Bug [2432256] Seen");      
-      Logger.log("Piece Name = "+getProperty(BasicPiece.BASIC_NAME));
-      Logger.log("Embellishment name = "+name);
-      Logger.log("nValues = "+nValues);
-      Logger.log("value = "+value);
-      Logger.log("size of size = "+(size == null ? "null" : size.length));
-      Logger.log("size of imagePainter = "+(imagePainter == null ? "null" : imagePainter.length));
-      Logger.log("size of imageName = "+(imageName == null ? "null" : imageName.length));
-      Logger.log("size of commonName = "+(commonName == null ? "null" : commonName.length));
-      ErrorDialog.bug(e); 
+    else {
+      return new Rectangle();
     }
-    return new Rectangle();
   }
   
   /**
