@@ -548,7 +548,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
   private char getMatchingActivationChar(KeyStroke stroke) {
     for (int i = 0; i < activateKey.length(); ++i) {
-      if (stroke.equals(KeyStroke.getKeyStroke(activateKey.charAt(i), activateModifiers))) {
+      if (stroke != null && stroke.equals(KeyStroke.getKeyStroke(activateKey.charAt(i), activateModifiers))) {
         return activateKey.charAt(i);
       }
     }
