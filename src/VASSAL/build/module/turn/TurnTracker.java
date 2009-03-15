@@ -163,6 +163,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         if (!isDocked()) {
           turnWindow.setControls();
           turnWindow.setVisible(!turnWindow.isShowing());
+          turnWindow.setFocusable(true);
         }
       }
     };
@@ -291,12 +292,14 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         value = HotKeyConfigurer.decode((String) value);
       }
       nextListener.setKeyStroke((KeyStroke) value);
+      turnWidget.setNextStroke((KeyStroke) value);
     }
     else if (PREV_HOT_KEY.equals(key)) {
       if (value instanceof String) {
         value = HotKeyConfigurer.decode((String) value);
       }
       prevListener.setKeyStroke((KeyStroke) value);
+      turnWidget.setPrevStroke((KeyStroke) value);
     }
     else {
       launch.setAttribute(key, value);
@@ -375,6 +378,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       launchWidget.remove(turnWidget);
       turnWindow.setWidget(turnWidget);
       turnWindow.setVisible(GameModule.getGameModule().getGameState().isGameStarted());
+      turnWindow.setFocusable(true);
     }
   }
   
@@ -695,6 +699,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     turnWidget.setControls();
     turnWidget.repaint();
     turnWindow.pack();
+    turnWindow.setFocusable(true);
+    turnWindow.requestFocus();
   }
 
   protected void clearGlobalProperties() {
@@ -789,6 +795,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       setTitle(getConfigureName()); 
       pack();
       setLocation(100, 100);
+      setFocusable(true);
     }
 
     protected void setWidget(TurnWidget t) {
@@ -800,7 +807,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       else {
         add(t);
       }
-      widget = t;
       pack();
     }
     
@@ -809,7 +815,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         widget.setControls();
       }
       pack();
-    }
+    } 
+    
   }
   
   protected class TurnWidget extends JPanel implements MouseListener {
@@ -875,10 +882,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       setLayout(new BorderLayout(5, 5)); 
   
       nextButton = new IconButton(IconButton.PLUS_ICON, BUTTON_SIZE);
-      KeyStroke key = nextListener.getKeyStroke();
-      String tooltip = Resources.getString("TurnTracker.next_turn") + 
-        (key == null ? "" : " [" + HotKeyConfigurer.getString(key) + "]");
-      nextButton.setToolTipText(tooltip);
+      setNextStroke(nextListener.getKeyStroke());
       nextButton.setAlignmentY(Component.TOP_ALIGNMENT);
       nextButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -886,10 +890,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         }});
 
       prevButton = new IconButton(IconButton.MINUS_ICON, BUTTON_SIZE);
-      key = prevListener.getKeyStroke();
-      tooltip = Resources.getString("TurnTracker.prev_turn") +  //$NON-NLS-1$
-        (key == null ? "" : " [" + HotKeyConfigurer.getString(key) + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-      prevButton.setToolTipText(tooltip);
+      setPrevStroke(prevListener.getKeyStroke());
       prevButton.setAlignmentY(Component.TOP_ALIGNMENT);
       prevButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -913,6 +914,18 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       addMouseListener(this);
     }
 
+    public void setNextStroke(KeyStroke key) {
+      final String tooltip = Resources.getString("TurnTracker.next_turn") + 
+        (key == null ? "" : " [" + HotKeyConfigurer.getString(key) + "]");
+      nextButton.setToolTipText(tooltip);
+    }
+
+    public void setPrevStroke(KeyStroke key) {
+      final String tooltip = Resources.getString("TurnTracker.prev_turn") +  //$NON-NLS-1$
+      (key == null ? "" : " [" + HotKeyConfigurer.getString(key) + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      prevButton.setToolTipText(tooltip);
+    }
+    
     public void setControls() {
       String s = updateString(getTurnString(), new String[] { "\\n", "\\t" }, new String[] { "\n", "    " }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$   
       turnLabel.setText(s);
@@ -1122,6 +1135,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected void cancelSet() {
     setState(savedSetState);
     turnWindow.setVisible(true);
+    turnWindow.setFocusable(true);
   }
   
   protected void saveSet() {
