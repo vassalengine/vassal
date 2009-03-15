@@ -34,6 +34,7 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.logging.Logger;
 
 public class ExtensionsLoader implements CommandEncoder {
   public static final String COMMAND_PREFIX = "EXT\t"; //$NON-NLS-1$
@@ -84,6 +85,7 @@ public class ExtensionsLoader implements CommandEncoder {
   }
 
   protected boolean addExtension(File extension) {
+    Logger.log("-- Loading extension "+extension);
     String extname = extension.getPath();
     boolean success = loadedExtensions.contains(extname);
     if (!success) {
@@ -105,7 +107,7 @@ public class ExtensionsLoader implements CommandEncoder {
         final String msg = getLoadedMessage(ext.getName(), ext.getVersion());        
         loadedExtensions.add(extname);        
         GameModule.getGameModule().warn(msg);
-        System.err.println(msg);
+        System.err.println("-- "+msg);
         
         if (idMsg.length() > 0) {
           GameModule.getGameModule().warn(idMsg);
