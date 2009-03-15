@@ -118,6 +118,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
   public Zone() {
     myPolygon = new Polygon();
+    setConfigureName("");
   }
 
   public String getName() {
