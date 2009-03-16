@@ -1,0 +1,134 @@
+/*
+ * $Id: NamedKeyStroke.java 2893 2008-01-27 20:15:23Z uckelman $
+ *
+ * Copyright (c) 2008-2009 by Brent Easton
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
+
+package VASSAL.tools;
+
+import java.awt.event.KeyEvent;
+
+import javax.swing.KeyStroke;
+
+/**
+ * A NamedKeyStroke is a KeyStroke with a name given by the module developer.
+ * An actual KeyStroke is allocated from a pool of KeyStrokes at run-time and
+ * associated with the name.
+ * 
+ * KeyStrokes have been replaced by NamedKeyStrokes within Vassal wherever
+ * the Stroke is saved. A standard KeyStroke is represented as a NamedKeyStroke
+ * with a null or zero-length name. 
+ *
+ * NamedKeyStroke variables should never be null, use NULL_KEYSTROKE to
+ * represent a NamedKeyStroke with no value.
+ */
+public class NamedKeyStroke {
+  public static final NamedKeyStroke NULL_KEYSTROKE = new NamedKeyStroke();
+  
+  protected KeyStroke stroke;
+  protected String name;
+  
+  public NamedKeyStroke(int code, int modifiers, String s) {
+    this(KeyStroke.getKeyStroke(code, modifiers), s);
+  }
+  
+  public NamedKeyStroke(KeyStroke k, String s) {
+    stroke = k;
+    name = s;
+  }
+  
+  public NamedKeyStroke(KeyStroke k) {
+    this(k, null);
+  }
+  
+  public NamedKeyStroke(String s) {
+    this(NamedKeyManager.getMarkerKeyStroke(), s);
+  }
+  
+  public NamedKeyStroke() {
+    this(null, null);
+  }
+  
+  /**
+   * Is there a name associated with this KeyStroke? No name means
+   * it is a standard KeyStroke.
+   * @return
+   */
+  public boolean isNamed() {
+    return ! (name == null || name.length() == 0);
+  }
+  
+  public String getName() {
+    return name;
+  }
+
+  public boolean isNull() {
+    return stroke == null && name == null;
+  }
+  
+  /**
+   * Return the raw KeyStroke stored in this NamedKeyStroke
+   * @return KeyStroke
+   */
+  public KeyStroke getStroke() {
+    return stroke;
+  }
+
+  /**
+   * Compare this Named KeyStroke with a standard KeyStroke. They are
+   * equals if the then allocated KeyStroke for the NamedKeyStroke
+   * equals the supplied KeyStroke.
+   * 
+   * @param stroke
+   * @return
+   */
+  public boolean equals(KeyStroke stroke) {
+    final KeyStroke a = getKeyStroke();
+    if (a == null) {
+      return stroke == null;
+    }
+    return a.equals(stroke);
+  }
+  
+  /**
+   * Return the allocated KeyStroke associated with this KeyStroke
+   */
+  public KeyStroke getKeyStroke() {
+    if (isNamed()) {
+      return NamedKeyManager.getInstance().getKeyStroke(this);
+    }
+    else {
+      return getStroke();
+    }
+  }
+
+  public static NamedKeyStroke getNamedKeyStroke(char c) {
+    return getNamedKeyStroke(c, 0);
+  }
+  
+  public static NamedKeyStroke getNamedKeyStroke(char c, int mod) {
+    return new NamedKeyStroke(KeyStroke.getKeyStroke(c, mod));
+  }
+  
+  public static NamedKeyStroke getNamedKeyStroke(int c, int mod) {
+    return new NamedKeyStroke(KeyStroke.getKeyStroke(c, mod));
+  }
+  
+  public static NamedKeyStroke getKeyStrokeForEvent(KeyEvent e) {
+    return new NamedKeyStroke(KeyStroke.getKeyStrokeForEvent(e));
+  }
+  
+}

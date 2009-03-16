@@ -91,6 +91,7 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.WarningDialog;
@@ -376,7 +377,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       l.addKeyStrokeSource(s);
     }
   }
-  
+   
   public void fireKeyStroke(KeyStroke stroke) {
     if (stroke != null) {
       for (KeyStrokeListener l : keyStrokeListeners) {
@@ -385,6 +386,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  public void fireKeyStroke(NamedKeyStroke stroke) {
+    fireKeyStroke(stroke.getKeyStroke());
+  }
+  
   /**
    * @return the name of the game for this module
    */

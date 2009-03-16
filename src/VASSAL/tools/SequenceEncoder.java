@@ -26,6 +26,7 @@ import javax.swing.KeyStroke;
 
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 
 /**
@@ -101,10 +102,13 @@ public class SequenceEncoder {
   }
 
   public SequenceEncoder append(KeyStroke stroke) {
-    String s = HotKeyConfigurer.encode(stroke);
-    return append(s != null ? s : "");
+    return append(HotKeyConfigurer.encode(stroke));
   }
 
+  public SequenceEncoder append(NamedKeyStroke stroke) {
+    return append(NamedHotKeyConfigurer.encode(stroke));
+  }
+  
   public SequenceEncoder append(Color color) {
     String s = ColorConfigurer.colorToString(color);
     return append(s != null ? s : "");
@@ -296,6 +300,26 @@ public class SequenceEncoder {
         }
       }
       return defaultValue;
+    }
+    
+    public NamedKeyStroke nextNamedKeyStroke(char defaultValue) {
+      return nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(defaultValue, InputEvent.CTRL_MASK));
+    }
+    
+    public NamedKeyStroke nextNamedKeyStroke(NamedKeyStroke defaultValue) {
+      if (val != null) {
+        String s = nextToken();
+        if (s.length() == 0) {
+          defaultValue = null;
+        }
+        else if (s.indexOf(',') < 0) {
+          defaultValue = NamedKeyStroke.getNamedKeyStroke(s.charAt(0), InputEvent.CTRL_MASK);
+        }
+        else {
+          defaultValue = NamedHotKeyConfigurer.decode(s);
+        }
+      }
+      return defaultValue == null ? NamedKeyStroke.NULL_KEYSTROKE : defaultValue;
     }
 
     /**
