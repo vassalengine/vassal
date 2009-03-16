@@ -82,11 +82,13 @@ public class TranslateVassalWindow extends TranslateWindow {
     return fileChooser;
   }
 
+  @Override
   protected Component buildMainPanel() {
     JSplitPane pane = (JSplitPane) super.buildMainPanel();
     return pane.getBottomComponent();
   }
 
+  @Override
   protected Component getHeaderPanel() {
     final JPanel headPanel = new JPanel();
     localeConfig =
@@ -130,6 +132,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     return headPanel;
   }
 
+  @Override
   protected Component getButtonPanel() {
     final JPanel buttonBox = new JPanel();
     final JButton helpButton = new JButton(Resources.getString(Resources.HELP));
@@ -234,6 +237,7 @@ public class TranslateVassalWindow extends TranslateWindow {
     return;
   }
 
+  @Override
   protected boolean saveTranslation() {
     final FileChooser fc = getFileChooser();
     final Locale l = localeConfig.getValueLocale();
