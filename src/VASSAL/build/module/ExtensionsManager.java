@@ -20,11 +20,13 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.ExtensionMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
 
@@ -154,17 +156,23 @@ public class ExtensionsManager {
   }
 
   private List<File> getExtensions(File dir) {
+    final List<File> extensions = new ArrayList<File>(0);
     if ( dir != null && dir.exists() ) {
       File[] files = dir.listFiles(filter);
       if (files == null) {
         ReadErrorDialog.error(new IOException(), dir);
       }
       else {
-        return Arrays.asList(files);
+        for (File file : files) {
+          final AbstractMetaData metadata = MetaDataFactory.buildMetaData(file);
+          if (metadata != null && metadata instanceof ExtensionMetaData) {
+            extensions.add(file);
+          }
+        }
+        
       }
-    }
-    
-    return new ArrayList<File>();
+    }    
+    return extensions;
   }
   
   public List<File> getActiveExtensions() {
