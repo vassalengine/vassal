@@ -129,7 +129,7 @@ public abstract class BasicPreference extends AbstractConfigurable {
   
   public void addTo(Buildable b) {
     property.addTo(GameModule.getGameModule());
-    if (tabName.length() > 0) {
+    if (tabName != null && tabName.length() > 0) {
       GameModule.getGameModule().getPrefs().addOption(tabName, getPreferenceConfigurer());
     }
     if (getVariableName().length() > 0) {
