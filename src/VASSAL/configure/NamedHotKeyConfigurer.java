@@ -32,7 +32,6 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.tools.NamedKeyManager;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.SequenceEncoder;
 
 /**
  * A Configurer for {@link NamedKeyStroke} values
@@ -40,6 +39,7 @@ import VASSAL.tools.SequenceEncoder;
 public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   private JTextField tf;
   private JPanel p;
+  private boolean named;
   private JTextField keyName;
   private char lastChar;
 
@@ -49,11 +49,13 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
 
   public NamedHotKeyConfigurer(String key, String name, NamedKeyStroke val) {
     super(key, name, val);
+    named = val != null && val.isNamed();
   }
-  
+
   public void setValue(Object o) {
     super.setValue(o);
-    if (! isNamed()) {
+    named = value != null && ((NamedKeyStroke) value).isNamed();
+    if (! named) {
       if (tf != null
           && !tf.getText().equals(keyToString())) {
         tf.setText(keyToString());
@@ -62,7 +64,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   }
 
   public String keyToString() {
-    return getString(getValueNamedKeyStroke());
+    return getString((NamedKeyStroke) getValue());
   }
 
   public Object getValue() {
@@ -101,6 +103,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
             case KeyEvent.VK_DELETE:
             case KeyEvent.VK_BACK_SPACE:
               if (keyName.getText().length() == 0) {
+                named = false;
                 setValue(null);
                 updateVisibility();
               }
@@ -115,6 +118,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
                 setValue(new NamedKeyStroke(NamedKeyManager.getMarkerKeyStroke(), keyName.getText()));
               }
               else {
+                named = false;
                 setValue(NamedKeyStroke.getKeyStrokeForEvent(e));
                 updateVisibility();
               }
@@ -141,8 +145,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   }
   
   public boolean isNamed() {
-    final NamedKeyStroke k = getValueNamedKeyStroke();
-    return k != null & k.isNamed();
+    return named;
   }
 
   public void keyTyped(KeyEvent e) {
@@ -166,6 +169,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
           final int thisChar = e.getKeyChar();
           if (isPrintableAscii(lastChar) && isPrintableAscii(thisChar)) {
             final String name = "" + lastChar + e.getKeyChar();
+            named = true;
             keyName.setText(name);
             setValue(new NamedKeyStroke(name));
             updateVisibility();
@@ -178,7 +182,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   }
 
   public void keyReleased(KeyEvent e) {
-    if (!isNamed()) {
+    if (!named) {
       tf.setText(getString((NamedKeyStroke) getValue()));
     }
   }
@@ -193,14 +197,13 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   
   /**
    * A plain text representation of a KeyStroke.  Doesn't differ much
-   * from {@link KeyEvent#getKeyText}. The String representation of a
-   * NamedKeyStroke with a name is always the blank String.
+   * from {@link KeyEvent#getKeyText}
    */
   public static String getString(NamedKeyStroke k) {
-    return k == null ? null : getString(k.getStroke());
+    return (k == null || k.isNull()) ? "" : getString(k.getStroke());
   }
   
-  public static String getString(KeyStroke k) {    
+  public static String getString(KeyStroke k) {  
     String s = NamedKeyManager.isNamed(k) ? "" : HotKeyConfigurer.getString(k);
     return s;
   }
@@ -212,37 +215,42 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     if (s == null) {
       return NamedKeyStroke.NULL_KEYSTROKE;
     }
+    String[] parts = s.split(",");
+    if (parts.length < 2) {
+      return NamedKeyStroke.NULL_KEYSTROKE;
+    }
     
-    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
-    return new NamedKeyStroke(sd.nextInt(0), sd.nextInt(0), sd.nextToken(""));
-    
+    try {
+      KeyStroke stroke = KeyStroke.getKeyStroke
+          (Integer.parseInt(parts[0]),
+           Integer.parseInt(parts[1]));
+      String name = null;
+      if (parts.length > 2) {
+        name = parts[2];
+      }
+      return new NamedKeyStroke(stroke, name);
+    }
+    catch (Exception e) {
+      return NamedKeyStroke.NULL_KEYSTROKE;
+    }
+
   }
 
   /**
    * Encode a NamedKeyStroke into a String
    */
   public static String encode(NamedKeyStroke stroke) {
-    String s = "";
-    
     if (stroke == null) {
-      return s;
+      return "";
     }
-    
     KeyStroke key = stroke.getStroke();
     if (key == null) {
-      return s;
+      return "";
     }
-    
+    String s = key.getKeyCode() + "," + key.getModifiers();
     if (stroke.isNamed()) {
-      final SequenceEncoder se = new SequenceEncoder(',');
-      se.append(key.getKeyCode());
-      se.append(key.getModifiers());
-      se.append(stroke.getName());
+      s += "," + stroke.getName();
     }
-    else {
-      s = HotKeyConfigurer.encode(key);
-    }
-    
     return s;
   }
 

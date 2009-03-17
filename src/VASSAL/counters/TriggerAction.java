@@ -26,21 +26,25 @@ import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.KeyStrokeArrayConfigurer;
+import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -58,7 +62,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
   protected KeyStroke key = null;
   protected PropertyExpression propertyMatch = new PropertyExpression();
   protected KeyStroke[] watchKeys = new KeyStroke[0];
-  protected KeyStroke[] actionKeys = new KeyStroke[0];
+  protected NamedKeyStroke[] actionKeys = new NamedKeyStroke[0];
   protected Set<KeyStroke> triggeredKeys; // Safeguard against infinite loops
 
   public TriggerAction() {
@@ -102,7 +106,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
       .append(key)
       .append(propertyMatch.getExpression())
       .append(KeyStrokeArrayConfigurer.encode(watchKeys))
-      .append(KeyStrokeArrayConfigurer.encode(actionKeys));
+      .append(NamedKeyStrokeArrayConfigurer.encode(actionKeys));
 
     return ID + se.getValue();
   }
@@ -164,7 +168,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
     GamePiece outer = Decorator.getOutermost(this);
     Command c = new NullCommand();
     for (int i = 0; i < actionKeys.length; i++) {
-      c.append(outer.keyEvent(actionKeys[i]));
+      c.append(outer.keyEvent(actionKeys[i].getKeyStroke()));
     }
     return c;
   }
@@ -219,12 +223,12 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
 
     keys = st.nextToken("");
     if (keys.indexOf(',') > 0) {
-      actionKeys = KeyStrokeArrayConfigurer.decode(keys);
+      actionKeys = NamedKeyStrokeArrayConfigurer.decode(keys);
     }
     else {
-      actionKeys = new KeyStroke[keys.length()];
+      actionKeys = new NamedKeyStroke[keys.length()];
       for (int i = 0; i < actionKeys.length; i++) {
-        actionKeys[i] = KeyStroke.getKeyStroke(keys.charAt(i),InputEvent.CTRL_MASK);
+        actionKeys[i] = NamedKeyStroke.getNamedKeyStroke(keys.charAt(i),InputEvent.CTRL_MASK);
       }
     }
   }
@@ -244,7 +248,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
     private HotKeyConfigurer key;
     private StringConfigurer propertyMatch;
     private KeyStrokeArrayConfigurer watchKeys;
-    private KeyStrokeArrayConfigurer actionKeys;
+    private NamedKeyStrokeArrayConfigurer actionKeys;
     private JPanel box;
 
     public Ed(TriggerAction piece) {
@@ -268,7 +272,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
       watchKeys = new KeyStrokeArrayConfigurer(null, "Watch for these Keystrokes:  ", piece.watchKeys);
       box.add(watchKeys.getControls());
 
-      actionKeys = new KeyStrokeArrayConfigurer(null, "Perform these Keystrokes:  ", piece.actionKeys);
+      actionKeys = new NamedKeyStrokeArrayConfigurer(null, "Perform these Keystrokes:  ", piece.actionKeys);
       box.add(actionKeys.getControls());
 
     }

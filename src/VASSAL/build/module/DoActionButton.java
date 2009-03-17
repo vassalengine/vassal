@@ -41,6 +41,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.ListConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
@@ -48,8 +49,9 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
-import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -77,7 +79,7 @@ public class DoActionButton extends AbstractConfigurable
   protected boolean doSound = false;
   protected String soundClip = ""; //$NON-NLS-1$
   protected boolean doHotkey = false;
-  protected List<KeyStroke> hotkeys = new ArrayList<KeyStroke>();
+  protected List<NamedKeyStroke> hotkeys = new ArrayList<NamedKeyStroke>();
   
   public DoActionButton() {
     ActionListener rollAction = new ActionListener() {
@@ -155,13 +157,13 @@ public class DoActionButton extends AbstractConfigurable
   
   public static class HotkeyConfig implements ConfigurerFactory {
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
-      return new HotkeyListConfigurer(key, name, ((DoActionButton) c).hotkeys);
+      return new NamedHotkeyListConfigurer(key, name, ((DoActionButton) c).hotkeys);
     }
   }
   
-  public static class HotkeyListConfigurer extends ListConfigurer {
+  public static class NamedHotkeyListConfigurer extends ListConfigurer {
 
-    public HotkeyListConfigurer(String key, String name, List<KeyStroke> list) {
+    public NamedHotkeyListConfigurer(String key, String name, List<NamedKeyStroke> list) {
       super(key, name, list);
     }
 
@@ -234,7 +236,7 @@ public class DoActionButton extends AbstractConfigurable
       if (o instanceof String) {
         o = decodeHotkeys((String) o);
       }
-      hotkeys = (List<KeyStroke>) o;
+      hotkeys = (List<NamedKeyStroke>) o;
     }
     else {
       launch.setAttribute(key, o);
@@ -294,19 +296,19 @@ public class DoActionButton extends AbstractConfigurable
   
   protected String encodeHotkeys() {
     final SequenceEncoder se = new SequenceEncoder(',');
-    for (KeyStroke key : hotkeys) {
-      se.append(HotKeyConfigurer.encode(key));
+    for (NamedKeyStroke key : hotkeys) {
+      se.append(NamedHotKeyConfigurer.encode(key));
     }
 
     final String val = se.getValue();
     return val == null ? "" : val; //$NON-NLS-1$
   }
 
-  protected List<KeyStroke> decodeHotkeys(String s) {
-    List<KeyStroke> list = new ArrayList<KeyStroke>();
+  protected List<NamedKeyStroke> decodeHotkeys(String s) {
+    List<NamedKeyStroke> list = new ArrayList<NamedKeyStroke>();
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     while (sd.hasMoreTokens()) {
-      KeyStroke key = HotKeyConfigurer.decode(sd.nextToken());
+      NamedKeyStroke key = NamedHotKeyConfigurer.decode(sd.nextToken());
       list.add(key);
     }
     return list;    
@@ -345,7 +347,7 @@ public class DoActionButton extends AbstractConfigurable
       }
 
       if (doHotkey) {
-        for (KeyStroke key : hotkeys) {
+        for (NamedKeyStroke key : hotkeys) {
           GameModule.getGameModule().fireKeyStroke(key);
         }
       }

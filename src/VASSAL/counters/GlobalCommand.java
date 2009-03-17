@@ -29,6 +29,7 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
 import VASSAL.tools.RecursionLimitException;
@@ -51,6 +52,10 @@ public class GlobalCommand {
     this.keyStroke = keyStroke;
   }
 
+  public void setKeyStroke(NamedKeyStroke keyStroke) {
+    this.keyStroke = keyStroke.getKeyStroke();
+  }
+  
   public void setReportFormat(String format) {
     this.reportFormat.setFormat(format);
   }

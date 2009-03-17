@@ -76,7 +76,7 @@ public class NamedKeyStroke {
   }
 
   public boolean isNull() {
-    return stroke == null && name == null;
+    return (stroke == null && name == null) || (stroke != null & stroke.getKeyCode() == 0 && stroke.getModifiers() == 0);
   }
   
   /**

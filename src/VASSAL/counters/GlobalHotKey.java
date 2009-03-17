@@ -4,15 +4,19 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+
 import javax.swing.Box;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -25,7 +29,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   public static final String ID="globalhotkey;";
   
   protected KeyStroke commandKey;
-  protected KeyStroke globalHotKey;
+  protected NamedKeyStroke globalHotKey;
   protected String commandName="Hotkey";
   protected KeyCommand[] commands;
   protected KeyCommand command;
@@ -102,7 +106,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(type.substring(ID.length()),';');
     commandName = sd.nextToken();
     commandKey = sd.nextKeyStroke('H');
-    globalHotKey = sd.nextKeyStroke(null);
+    globalHotKey = sd.nextNamedKeyStroke(null);
     description = sd.nextToken("");
     commands = null;
   }
@@ -119,7 +123,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
     
     private StringConfigurer commandConfig;
     private HotKeyConfigurer commandKeyConfig;
-    private HotKeyConfigurer hotKeyConfig;
+    private NamedHotKeyConfigurer hotKeyConfig;
     protected StringConfigurer descConfig;
     
     private Box controls;
@@ -136,7 +140,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
       commandKeyConfig = new HotKeyConfigurer(null,"Keyboard Command:  ",k.commandKey);
       controls.add(commandKeyConfig.getControls());
 
-      hotKeyConfig = new HotKeyConfigurer(null,"Global Hotkey:  ",k.globalHotKey);
+      hotKeyConfig = new NamedHotKeyConfigurer(null,"Global Hotkey:  ",k.globalHotKey);
       controls.add(hotKeyConfig.getControls());
     }
 

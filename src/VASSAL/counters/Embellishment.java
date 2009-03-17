@@ -61,13 +61,12 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
-import VASSAL.tools.logging.Logger;
 
 /**
  * The "Layer" trait. Contains a list of images that the user may cycle through.
@@ -762,6 +761,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return null;
   }
 
+  public static Embellishment getLayerWithMatchingActivateCommand(GamePiece piece, NamedKeyStroke stroke, boolean active) {
+    return getLayerWithMatchingActivateCommand(piece, stroke.getKeyStroke(), active);
+  }
+  
   private static class Ed implements PieceEditor {
     private MultiImagePicker images;
     private JTextField activateKeyInput = new JTextField("A");

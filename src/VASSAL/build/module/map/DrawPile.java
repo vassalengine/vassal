@@ -42,6 +42,7 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
@@ -51,6 +52,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 
 public class DrawPile extends SetupStack {
@@ -300,7 +302,7 @@ public class DrawPile extends SetupStack {
       Boolean.class,
       Color.class,
       Boolean.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       Boolean.class,
       String.class,
       FormattedStringConfig.class,
@@ -405,7 +407,7 @@ public class DrawPile extends SetupStack {
       return String.valueOf(dummy.isHotkeyOnEmpty());
     }
     else if (EMPTY_HOTKEY.equals(key)) {
-      return HotKeyConfigurer.encode(dummy.getEmptyKey());
+      return NamedHotKeyConfigurer.encode(dummy.getNamedEmptyKey());
     }
     else {
       return super.getAttributeValueString(key);
@@ -565,9 +567,9 @@ public class DrawPile extends SetupStack {
     }
     else if (EMPTY_HOTKEY.equals(key)) {
       if (value instanceof String) {
-        value = HotKeyConfigurer.decode((String) value);
+        value = NamedHotKeyConfigurer.decode((String) value);
       }
-      dummy.setEmptyKey((KeyStroke) value);
+      dummy.setEmptyKey((NamedKeyStroke) value);
     }
     else {
       super.setAttribute(key, value);

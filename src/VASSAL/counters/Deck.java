@@ -73,6 +73,7 @@ import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
@@ -134,7 +135,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected List<DeckGlobalKeyCommand> globalCommands =
     new ArrayList<DeckGlobalKeyCommand>();
   protected boolean hotkeyOnEmpty;
-  protected KeyStroke emptyKey;
+  protected NamedKeyStroke emptyKey;
 
   protected CommandEncoder commandEncoder = new CommandEncoder() {
     public Command decode(String command) {
@@ -337,7 +338,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     expressionCounting = st.nextBoolean(false);
     setGlobalCommands(st.nextStringArray(0));
     hotkeyOnEmpty = st.nextBoolean(false);
-    emptyKey = st.nextKeyStroke(null);
+    emptyKey = st.nextNamedKeyStroke(null);
     selectDisplayProperty.setFormat(st.nextToken("$"+BasicPiece.BASIC_NAME+"$"));
     selectSortProperty = st.nextToken("");
     
@@ -591,14 +592,22 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     hotkeyOnEmpty = b;
   }
   
-  public KeyStroke getEmptyKey() {
+  @Deprecated public KeyStroke getEmptyKey() {
+    return emptyKey.getKeyStroke();
+  }
+
+  public NamedKeyStroke getNamedEmptyKey() {
     return emptyKey;
   }
   
-  public void setEmptyKey(KeyStroke k) {
-    emptyKey = k;
+  @Deprecated public void setEmptyKey(KeyStroke k) {
+    emptyKey = new NamedKeyStroke(k);
   }
 
+  public void setEmptyKey(NamedKeyStroke k) {
+    emptyKey = k;
+  }
+  
   public String getType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(drawOutline)

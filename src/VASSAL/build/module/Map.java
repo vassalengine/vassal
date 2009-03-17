@@ -129,10 +129,10 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.MandatoryComponent;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.ColoredBorder;
@@ -156,6 +156,7 @@ import VASSAL.tools.AdjustableSpeedScrollPane;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.WrapLayout;
@@ -218,7 +219,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected String moveToFormat;
   protected String createFormat;
   protected String changeFormat = "$" + MESSAGE + "$"; //$NON-NLS-1$ //$NON-NLS-2$
-  protected KeyStroke moveKey;
+  protected NamedKeyStroke moveKey;
   protected PropertyChangeListener globalPropertyListener;
   protected String tooltip = ""; //$NON-NLS-1$
   protected MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
@@ -374,9 +375,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     else if (MOVE_KEY.equals(key)) {
       if (value instanceof String) {
-        value = HotKeyConfigurer.decode((String) value);
+        value = NamedHotKeyConfigurer.decode((String) value);
       }
-      moveKey = (KeyStroke) value;
+      moveKey = (NamedKeyStroke) value;
     }
     else if (TOOLTIP.equals(key)) {
       tooltip = (String) value;
@@ -449,7 +450,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       return getChangeFormat();
     }
     else if (MOVE_KEY.equals(key)) {
-      return HotKeyConfigurer.encode(moveKey);
+      return NamedHotKeyConfigurer.encode(moveKey);
     }
     else if (TOOLTIP.equals(key)) {
       return (tooltip == null || tooltip.length() == 0)
@@ -1769,8 +1770,13 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
   
 
+  /**
+   * Return the auto-move key. It may be named, so just return
+   * the allocated KeyStroke.
+   * @return auto move keystroke
+   */
   public KeyStroke getMoveKey() {
-    return moveKey;
+    return moveKey.getKeyStroke();
   }
 
   /**
@@ -2178,7 +2184,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       MoveToFormatConfig.class,
       CreateFormatConfig.class,
       ChangeFormatConfig.class,
-      KeyStroke.class
+      NamedKeyStroke.class
     };
   }
 

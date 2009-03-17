@@ -48,9 +48,9 @@ import VASSAL.build.module.gamepieceimage.StringEnumConfigurer;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
@@ -64,6 +64,7 @@ import VASSAL.counters.PieceFilter;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.ToolBarComponent;
 
@@ -92,7 +93,7 @@ public class MassKeyCommand extends AbstractConfigurable
   public static final String CHECK_PROPERTY = "property";
   public static final String CHECK_VALUE = "propValue";
   protected LaunchButton launch;
-  protected KeyStroke stroke = KeyStroke.getKeyStroke(0, 0);
+  protected NamedKeyStroke stroke = new NamedKeyStroke();
   protected String[] names = new String[0];
   protected String condition;
   protected String checkProperty;
@@ -200,7 +201,7 @@ public class MassKeyCommand extends AbstractConfigurable
     if (condition == null) {
       return new Class<?>[]{
         String.class,
-        KeyStroke.class,
+        NamedKeyStroke.class,
         PropertyExpression.class,
         DeckPolicyConfig.class,
         String.class,
@@ -215,7 +216,7 @@ public class MassKeyCommand extends AbstractConfigurable
       // Backward compatibility
       return new Class<?>[]{
         String.class,
-        KeyStroke.class,
+        NamedKeyStroke.class,
         String.class,
         DeckPolicyConfig.class,
         String.class,
@@ -344,7 +345,7 @@ public class MassKeyCommand extends AbstractConfigurable
       return getConfigureName();
     }
     else if (KEY_COMMAND.equals(key)) {
-      return HotKeyConfigurer.encode(stroke);
+      return NamedHotKeyConfigurer.encode(stroke);
     }
     else if (AFFECTED_PIECE_NAMES.equals(key)) {
       return names == null || names.length == 0 ? null : StringArrayConfigurer.arrayToString(names);
@@ -443,9 +444,9 @@ public class MassKeyCommand extends AbstractConfigurable
     }
     else if (KEY_COMMAND.equals(key)) {
       if (value instanceof String) {
-        value = HotKeyConfigurer.decode((String) value);
+        value = NamedHotKeyConfigurer.decode((String) value);
       }
-      stroke = (KeyStroke) value;
+      stroke = (NamedKeyStroke) value;
       globalCommand.setKeyStroke(stroke);
     }
     else if (AFFECTED_PIECE_NAMES.equals(key)) {

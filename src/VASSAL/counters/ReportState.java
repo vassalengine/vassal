@@ -34,11 +34,13 @@ import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
@@ -46,7 +48,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
-import VASSAL.configure.KeyStrokeArrayConfigurer;
+import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -55,6 +57,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -63,11 +66,11 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class ReportState extends Decorator implements TranslatablePiece {
   public static final String ID = "report;";
-  protected KeyStroke[] keys;
+  protected NamedKeyStroke[] keys;
   protected FormattedString format = new FormattedString();
   protected String reportFormat;
   protected String[] cycleReportFormat;
-  protected KeyStroke[] cycleDownKeys;
+  protected NamedKeyStroke[] cycleDownKeys;
   protected int cycleIndex = -1;
   protected Map oldMap;
   protected String description;
@@ -103,7 +106,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   public String myGetType() {
     SequenceEncoder se = new SequenceEncoder(';');
-    se.append(KeyStrokeArrayConfigurer.encode(keys)).append(reportFormat).append(KeyStrokeArrayConfigurer.encode(cycleDownKeys)).append(StringArrayConfigurer.arrayToString(cycleReportFormat))
+    se.append(NamedKeyStrokeArrayConfigurer.encode(keys)).append(reportFormat).append(NamedKeyStrokeArrayConfigurer.encode(cycleDownKeys)).append(StringArrayConfigurer.arrayToString(cycleReportFormat))
     .append(description);
     return ID + se.getValue();
   }
@@ -148,10 +151,10 @@ public class ReportState extends Decorator implements TranslatablePiece {
     //     command was executed.
 
     if (isVisible || wasVisible) {
-      final KeyStroke[] allKeys = ArrayUtils.append(keys, cycleDownKeys);
+      final NamedKeyStroke[] allKeys = ArrayUtils.append(keys, cycleDownKeys);
 
       for (int i = 0; i < allKeys.length; ++i) {
-        if (stroke.equals(allKeys[i])) {
+        if (stroke != null && stroke.equals(allKeys[i].getKeyStroke())) {
 
           //
           // Find the Command Name
@@ -261,23 +264,23 @@ public class ReportState extends Decorator implements TranslatablePiece {
     st.nextToken();
     String encodedKeys = st.nextToken("");
     if (encodedKeys.indexOf(',') > 0) {
-      keys = KeyStrokeArrayConfigurer.decode(encodedKeys);
+      keys = NamedKeyStrokeArrayConfigurer.decode(encodedKeys);
     }
     else {
-      keys = new KeyStroke[encodedKeys.length()];
+      keys = new NamedKeyStroke[encodedKeys.length()];
       for (int i = 0; i < keys.length; i++) {
-        keys[i] = KeyStroke.getKeyStroke(encodedKeys.charAt(i),InputEvent.CTRL_MASK);
+        keys[i] = NamedKeyStroke.getNamedKeyStroke(encodedKeys.charAt(i),InputEvent.CTRL_MASK);
       }
     }
     reportFormat = st.nextToken("$" + LOCATION_NAME + "$: $" + NEW_UNIT_NAME + "$ *");
     String encodedCycleDownKeys = st.nextToken("");
     if (encodedCycleDownKeys.indexOf(',') > 0) {
-      cycleDownKeys = KeyStrokeArrayConfigurer.decode(encodedCycleDownKeys);
+      cycleDownKeys = NamedKeyStrokeArrayConfigurer.decode(encodedCycleDownKeys);
     }
     else {
-      cycleDownKeys = new KeyStroke[encodedCycleDownKeys.length()];
+      cycleDownKeys = new NamedKeyStroke[encodedCycleDownKeys.length()];
       for (int i = 0; i < cycleDownKeys.length; i++) {
-        cycleDownKeys[i] = KeyStroke.getKeyStroke(encodedCycleDownKeys.charAt(i),InputEvent.CTRL_MASK);
+        cycleDownKeys[i] = NamedKeyStroke.getNamedKeyStroke(encodedCycleDownKeys.charAt(i),InputEvent.CTRL_MASK);
       }
     }
     cycleReportFormat = StringArrayConfigurer.stringToArray(st.nextToken(""));
@@ -313,11 +316,11 @@ public class ReportState extends Decorator implements TranslatablePiece {
 
   public static class Ed implements PieceEditor {
 
-    private KeyStrokeArrayConfigurer keys;
+    private NamedKeyStrokeArrayConfigurer keys;
     private StringConfigurer format;
     private JCheckBox cycle;
     private StringArrayConfigurer cycleFormat;
-    private KeyStrokeArrayConfigurer cycleDownKeys;
+    private NamedKeyStrokeArrayConfigurer cycleDownKeys;
     protected StringConfigurer descInput;
     private JPanel box;
 
@@ -327,7 +330,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
       descInput = new StringConfigurer(null, "Description:  ", piece.description);
       box.add(descInput.getControls());
-      keys = new KeyStrokeArrayConfigurer(null, "Report on these keystrokes:  ", piece.keys);
+      keys = new NamedKeyStrokeArrayConfigurer(null, "Report on these keystrokes:  ", piece.keys);
       box.add(keys.getControls());
       cycle = new JCheckBox("Cycle through different messages?");
       box.add(cycle);
@@ -342,7 +345,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       box.add(format.getControls());
       cycleFormat = new StringArrayConfigurer(null, "Message formats", piece.cycleReportFormat);
       box.add(cycleFormat.getControls());
-      cycleDownKeys = new KeyStrokeArrayConfigurer(null, "Report previous message on these keystrokes:  ", piece.cycleDownKeys);
+      cycleDownKeys = new NamedKeyStrokeArrayConfigurer(null, "Report previous message on these keystrokes:  ", piece.cycleDownKeys);
       box.add(cycleDownKeys.getControls());
       ItemListener l = new ItemListener() {
         public void itemStateChanged(ItemEvent e) {

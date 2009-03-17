@@ -28,15 +28,18 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.swing.Box;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -48,7 +51,7 @@ import VASSAL.tools.SequenceEncoder;
  */
 public class ActionButton extends Decorator implements EditablePiece {
   public static final String ID = "button;";
-  protected KeyStroke stroke;
+  protected NamedKeyStroke stroke;
   protected Rectangle bounds = new Rectangle();
   protected ButtonPusher pusher;
   protected String description = "";
@@ -114,7 +117,7 @@ public class ActionButton extends Decorator implements EditablePiece {
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
-    stroke = st.nextKeyStroke('A');
+    stroke = st.nextNamedKeyStroke('A');
     bounds.x = st.nextInt(-20);
     bounds.y = st.nextInt(-20);
     bounds.width = st.nextInt(40);
@@ -136,14 +139,14 @@ public class ActionButton extends Decorator implements EditablePiece {
     private IntConfigurer yConfig;
     private IntConfigurer widthConfig;
     private IntConfigurer heightConfig;
-    private HotKeyConfigurer strokeConfig;
+    private NamedHotKeyConfigurer strokeConfig;
     protected StringConfigurer descConfig;
 
     public Ed(ActionButton p) {
       box = Box.createVerticalBox();
       descConfig = new StringConfigurer(null, "Description:  ", p.description);
       box.add(descConfig.getControls());
-      strokeConfig = new HotKeyConfigurer(null, "Invoke Key Command:  ", p.stroke);
+      strokeConfig = new NamedHotKeyConfigurer(null, "Invoke Key Command:  ", p.stroke);
       box.add(strokeConfig.getControls());
       xConfig = new IntConfigurer(null, "Button X-offset:  ", p.bounds.x);
       box.add(xConfig.getControls());
@@ -240,7 +243,7 @@ public class ActionButton extends Decorator implements EditablePiece {
             // Save state prior to command
             p.setProperty(Properties.SNAPSHOT,
               PieceCloner.getInstance().clonePiece(p));
-            Command command = p.keyEvent(action.stroke);
+            Command command = p.keyEvent(action.stroke.getKeyStroke());
             GameModule.getGameModule().sendAndLog(command);
           }
         }
