@@ -54,8 +54,10 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
    */
   public CropOpBitmapImpl(ImageOp sop, int x0, int y0, int x1, int y1) {
     if (sop == null) throw new IllegalArgumentException();
-    if (x1 <= x0) throw new IllegalArgumentException();
-    if (y1 <= y0) throw new IllegalArgumentException();
+    if (x1 <= x0)
+      throw new IllegalArgumentException("left = "+ x0 + ", right = " + x1);
+    if (y1 <= y0)
+      throw new IllegalArgumentException("top = " + y0 + ", bottom = " + y1);
 
     this.sop = sop;
     this.x0 = x0;

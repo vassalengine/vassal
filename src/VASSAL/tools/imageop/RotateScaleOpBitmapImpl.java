@@ -72,7 +72,7 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
   public RotateScaleOpBitmapImpl(ImageOp sop, double angle, double scale,
                                  RenderingHints hints) {
     if (sop == null) throw new IllegalArgumentException();
-    if (scale <= 0) throw new IllegalArgumentException();
+    if (scale <= 0) throw new IllegalArgumentException("scale = " + scale);
 
     this.sop = sop;
     this.angle = angle;
