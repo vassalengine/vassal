@@ -123,7 +123,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     frame.add(b);
     ActionListener al = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        PeerInfo info = PeerInfo.deFormat(tf.getText());
+        PeerInfo info = PeerInfo.deFormat(tf.getText().replaceAll("\\s", "")); //$NON-NLS-1$ //$NON-NLS-2$
         if (info != null) {
           ppm.addNewPeer(info);
           tf.setText(""); //$NON-NLS-1$
