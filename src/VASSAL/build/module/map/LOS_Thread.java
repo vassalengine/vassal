@@ -33,7 +33,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.KeyStroke;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -60,6 +62,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.StringUtils;
 import VASSAL.tools.UniqueIdManager;
@@ -770,7 +773,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       ReportFormatConfig.class,
       PersistenceOptions.class,
       IconConfig.class,

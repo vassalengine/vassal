@@ -25,8 +25,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -39,6 +39,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.io.IOUtils;
@@ -89,7 +90,7 @@ public class TextSaver extends AbstractConfigurable {
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class
+      NamedKeyStroke.class
     };
   }
 

@@ -24,8 +24,6 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.KeyStroke;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -48,6 +46,7 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 
 /**
  * This component places a button into the controls window toolbar.
@@ -282,7 +281,7 @@ public class DiceButton extends AbstractConfigurable {
       Integer.class,
       Integer.class,
       Boolean.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       Boolean.class,
       ReportFormatConfig.class,
       Boolean.class,

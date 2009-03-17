@@ -47,7 +47,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
 import VASSAL.build.AutoConfigurable;
@@ -65,9 +64,9 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.StringEnumConfigurer;
@@ -76,8 +75,9 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.IconButton;
-import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 
@@ -140,8 +140,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   protected JPanel launchWidget;
   protected SetDialog setDialog;
   protected LaunchButton launch;
-  protected KeyStrokeListener nextListener;
-  protected KeyStrokeListener prevListener;
+  protected NamedKeyStrokeListener nextListener;
+  protected NamedKeyStrokeListener prevListener;
   
   protected String savedState = ""; //$NON-NLS-1$
   protected String savedSetState = ""; //$NON-NLS-1$
@@ -201,14 +201,14 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       }}); 
     
     // Set up listeners for prev/next hotkeys
-    nextListener = new KeyStrokeListener(new ActionListener() {
+    nextListener = new NamedKeyStrokeListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         turnWidget.doNext();
       }
     });
     GameModule.getGameModule().addKeyStrokeListener(nextListener);
 
-    prevListener = new KeyStrokeListener(new ActionListener() {
+    prevListener = new NamedKeyStrokeListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         turnWidget.doPrev();
       }
@@ -289,17 +289,17 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     }
     else if (NEXT_HOT_KEY.equals(key)) {
       if (value instanceof String) {
-        value = HotKeyConfigurer.decode((String) value);
+        value = NamedHotKeyConfigurer.decode((String) value);
       }
-      nextListener.setKeyStroke((KeyStroke) value);
-      turnWidget.setNextStroke((KeyStroke) value);
+      nextListener.setKeyStroke((NamedKeyStroke) value);
+      turnWidget.setNextStroke((NamedKeyStroke) value);
     }
     else if (PREV_HOT_KEY.equals(key)) {
       if (value instanceof String) {
-        value = HotKeyConfigurer.decode((String) value);
+        value = NamedHotKeyConfigurer.decode((String) value);
       }
-      prevListener.setKeyStroke((KeyStroke) value);
-      turnWidget.setPrevStroke((KeyStroke) value);
+      prevListener.setKeyStroke((NamedKeyStroke) value);
+      turnWidget.setPrevStroke((NamedKeyStroke) value);
     }
     else {
       launch.setAttribute(key, value);
@@ -402,10 +402,10 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       return lengthStyle;
     }
     else if (NEXT_HOT_KEY.equals(key)) {
-      return HotKeyConfigurer.encode(nextListener.getKeyStroke());
+      return NamedHotKeyConfigurer.encode(nextListener.getNamedKeyStroke());
     }
     else if (PREV_HOT_KEY.equals(key)) {
-      return HotKeyConfigurer.encode(prevListener.getKeyStroke());
+      return NamedHotKeyConfigurer.encode(prevListener.getNamedKeyStroke());
     }
     else {
       return launch.getAttributeValueString(key);
@@ -435,9 +435,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       String.class,
       IconConfig.class,
       String.class,
-      KeyStroke.class,
-      KeyStroke.class,
-      KeyStroke.class, 
+      NamedKeyStroke.class,
+      NamedKeyStroke.class,
+      NamedKeyStroke.class, 
       TurnFormatConfig.class,
       ReportFormatConfig.class,
       String.class,
@@ -882,7 +882,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       setLayout(new BorderLayout(5, 5)); 
   
       nextButton = new IconButton(IconButton.PLUS_ICON, BUTTON_SIZE);
-      setNextStroke(nextListener.getKeyStroke());
+      setNextStroke(nextListener.getNamedKeyStroke());
       nextButton.setAlignmentY(Component.TOP_ALIGNMENT);
       nextButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -890,7 +890,7 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         }});
 
       prevButton = new IconButton(IconButton.MINUS_ICON, BUTTON_SIZE);
-      setPrevStroke(prevListener.getKeyStroke());
+      setPrevStroke(prevListener.getNamedKeyStroke());
       prevButton.setAlignmentY(Component.TOP_ALIGNMENT);
       prevButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -914,17 +914,19 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       addMouseListener(this);
     }
 
-    public void setNextStroke(KeyStroke key) {
+    public void setNextStroke(NamedKeyStroke key) {
       final String tooltip = Resources.getString("TurnTracker.next_turn") + 
-        (key == null ? "" : " [" + HotKeyConfigurer.getString(key) + "]");
+        (key == null ? "" : " " + NamedHotKeyConfigurer.getFancyString(key));
       nextButton.setToolTipText(tooltip);
     }
 
-    public void setPrevStroke(KeyStroke key) {
+    public void setPrevStroke(NamedKeyStroke key) {
       final String tooltip = Resources.getString("TurnTracker.prev_turn") +  //$NON-NLS-1$
-      (key == null ? "" : " [" + HotKeyConfigurer.getString(key) + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      (key == null ? "" : " " + NamedHotKeyConfigurer.getFancyString(key)); //$NON-NLS-1$ //$NON-NLS-2$
       prevButton.setToolTipText(tooltip);
     }
+    
+    
     
     public void setControls() {
       String s = updateString(getTurnString(), new String[] { "\\n", "\\t" }, new String[] { "\n", "    " }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$   

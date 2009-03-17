@@ -37,7 +37,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.border.EtchedBorder;
 
 import org.w3c.dom.Element;
@@ -61,6 +60,7 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Translatable;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 
 /**
@@ -103,7 +103,7 @@ public class GlobalMap implements AutoConfigurable,
                               HOTKEY, ICON_NAME, al);
     launch.setAttribute(TOOLTIP, "Show/Hide overview window");
     launch.setAttribute(HOTKEY,
-      KeyStroke.getKeyStroke(KeyEvent.VK_O,
+      NamedKeyStroke.getNamedKeyStroke(KeyEvent.VK_O,
                              KeyEvent.CTRL_MASK + KeyEvent.SHIFT_MASK));
   }
 
@@ -219,7 +219,7 @@ public class GlobalMap implements AutoConfigurable,
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       Double.class,
       Color.class
     };

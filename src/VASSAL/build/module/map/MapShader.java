@@ -40,8 +40,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.KeyStroke;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -63,6 +61,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
@@ -440,7 +439,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       BoardPrompt.class,
       String[].class,
       TypePrompt.class,

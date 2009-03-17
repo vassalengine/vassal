@@ -2,8 +2,9 @@ package VASSAL.build.module.map;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.Icon;
-import javax.swing.KeyStroke;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -13,6 +14,7 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 
 /**
  * Adds a button to the toolbar to manipulate Game Piece Layers
@@ -127,7 +129,7 @@ public class LayerControl extends AbstractConfigurable {
       String.class,
       String.class,
       Icon.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       CommandConfig.class,
       Boolean.class,
       String[].class

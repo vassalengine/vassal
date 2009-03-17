@@ -2179,7 +2179,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       String.class,
       String.class, 
       IconConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       MoveWithinFormatConfig.class,
       MoveToFormatConfig.class,
       CreateFormatConfig.class,

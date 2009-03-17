@@ -22,7 +22,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.KeyStroke;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -41,6 +41,7 @@ import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 
 /** Adds a button to a Maps toolbar that adjusts the positions of all pieces
  * so that their centroid is at the center of the map
@@ -151,7 +152,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class
+      NamedKeyStroke.class
     };
   }
 

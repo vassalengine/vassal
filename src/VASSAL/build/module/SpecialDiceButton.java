@@ -33,7 +33,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.KeyStroke;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -58,6 +57,7 @@ import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.Op;
@@ -267,7 +267,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       Boolean.class,
       ReportFormatConfig.class,
       Boolean.class,

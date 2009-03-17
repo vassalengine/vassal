@@ -46,7 +46,7 @@ public class NamedKeyStrokeListener extends KeyStrokeListener {
   }
   
   public void setKeyStroke(NamedKeyStroke newKey) {
-    super.setKeyStroke(newKey.getKeyStroke());
+    super.setKeyStroke(newKey == null ? null : newKey.getKeyStroke());
     namedKeyStroke = newKey;
   }
   

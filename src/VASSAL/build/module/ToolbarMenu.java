@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -37,8 +38,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -47,6 +48,7 @@ import VASSAL.command.Command;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ToolBarComponent;
 
 /**
@@ -101,7 +103,7 @@ public class ToolbarMenu extends AbstractConfigurable
       String.class,
       String.class,
       Icon.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       String[].class
     };
   }

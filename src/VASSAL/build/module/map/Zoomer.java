@@ -53,7 +53,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
@@ -83,6 +82,7 @@ import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 
 /**
  * Controls the zooming in/out of a {@link Map} window.
@@ -333,15 +333,15 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       String.class,
       String.class,
       InIconConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       String.class,
       String.class,
       PickIconConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       String.class,
       String.class,
       OutIconConfig.class,
-      KeyStroke.class
+      NamedKeyStroke.class
     };
   }
 

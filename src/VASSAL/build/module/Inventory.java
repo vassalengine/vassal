@@ -97,6 +97,7 @@ import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
@@ -516,7 +517,7 @@ public class Inventory extends AbstractConfigurable
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       // DestConfig.class, 
       PropertyExpression.class,
       String[].class,

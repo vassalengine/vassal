@@ -239,10 +239,11 @@ public class ActionButton extends Decorator implements EditablePiece {
         }
         if (piece instanceof ActionButton) {
           ActionButton action = (ActionButton) piece;
-          if (action.stroke != null && action.bounds.contains(point)) {
+          if (action.stroke != null && action.stroke.getKeyStroke() != null && action.bounds.contains(point)) {
             // Save state prior to command
             p.setProperty(Properties.SNAPSHOT,
               PieceCloner.getInstance().clonePiece(p));
+            
             Command command = p.keyEvent(action.stroke.getKeyStroke());
             GameModule.getGameModule().sendAndLog(command);
           }

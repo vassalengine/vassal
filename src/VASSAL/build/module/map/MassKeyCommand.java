@@ -35,7 +35,6 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import VASSAL.build.AbstractConfigurable;
@@ -207,7 +206,7 @@ public class MassKeyCommand extends AbstractConfigurable
         String.class,
         String.class,
         IconConfig.class,
-        KeyStroke.class,
+        NamedKeyStroke.class,
         Boolean.class,
         ReportFormatConfig.class
       };
@@ -222,7 +221,7 @@ public class MassKeyCommand extends AbstractConfigurable
         String.class,
         String.class,
         IconConfig.class,
-        KeyStroke.class,
+        NamedKeyStroke.class,
         Boolean.class,
         ReportFormatConfig.class,
         Prompt.class

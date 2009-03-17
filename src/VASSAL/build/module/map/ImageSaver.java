@@ -42,7 +42,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.event.IIOWriteProgressListener;
 import javax.imageio.stream.ImageOutputStream;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
@@ -58,6 +57,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ProgressDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
@@ -141,7 +141,7 @@ public class ImageSaver extends AbstractConfigurable {
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class
+      NamedKeyStroke.class
     };
   }
 

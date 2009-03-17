@@ -25,8 +25,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.KeyStroke;
-
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -179,7 +177,7 @@ public class DoActionButton extends AbstractConfigurable
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       Boolean.class,
       ReportFormatConfig.class,
       Boolean.class,

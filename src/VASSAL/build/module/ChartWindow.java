@@ -21,10 +21,11 @@ package VASSAL.build.module;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -44,6 +45,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 
 /**
  * A top-level Widget for displaying Charts
@@ -198,7 +200,7 @@ public class ChartWindow extends Widget {
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class
+      NamedKeyStroke.class
     };
   }
 

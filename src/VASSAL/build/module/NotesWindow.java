@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -29,7 +30,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -48,6 +48,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.TextConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 
 /**
  * This is a {@link GameComponent} that allows players to type and
@@ -252,7 +253,7 @@ public class NotesWindow extends AbstractConfigurable
       String.class,
       String.class,
       IconConfig.class,
-      KeyStroke.class
+      NamedKeyStroke.class
     };
   }
 

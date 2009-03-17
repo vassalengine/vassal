@@ -21,8 +21,9 @@ package VASSAL.build.module.properties;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.Icon;
-import javax.swing.KeyStroke;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -36,6 +37,7 @@ import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 
 /**
  * Adds a toolbar button that changes the value of a global property
@@ -110,7 +112,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
     return new Class<?>[] {
       String.class,
       Icon.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       ReportFormatConfig.class,
       PropChangerOptions.class
     };

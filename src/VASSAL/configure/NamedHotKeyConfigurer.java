@@ -104,7 +104,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
             case KeyEvent.VK_BACK_SPACE:
               if (keyName.getText().length() == 0) {
                 named = false;
-                setValue(null);
+                setValue(NamedKeyStroke.NULL_KEYSTROKE);
                 updateVisibility();
               }
               break;
@@ -156,7 +156,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     switch (e.getKeyCode()) {
       case KeyEvent.VK_DELETE:
       case KeyEvent.VK_BACK_SPACE:
-        setValue(null);
+        setValue(NamedKeyStroke.NULL_KEYSTROKE);
         break;
       case KeyEvent.VK_SHIFT:
       case KeyEvent.VK_CONTROL:
@@ -201,6 +201,14 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
    */
   public static String getString(NamedKeyStroke k) {
     return (k == null || k.isNull()) ? "" : getString(k.getStroke());
+  }
+
+  public static String getFancyString(NamedKeyStroke k) {
+    String s = getString(k);
+    if (s.length() > 0) {
+      s = "[" + s + "]";
+    }
+    return s;
   }
   
   public static String getString(KeyStroke k) {  

@@ -23,9 +23,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
+
 import org.w3c.dom.Element;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.Configurable;
@@ -42,6 +44,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Translatable;
 import VASSAL.tools.LaunchButton;
+import VASSAL.tools.NamedKeyStroke;
 
 /**
  * This removes all game pieces from the (@link Map)
@@ -168,7 +171,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
     return new Class<?>[]{
       String.class,
       String.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       ShowingIconConfig.class,
       HiddenIconConfig.class
     };
