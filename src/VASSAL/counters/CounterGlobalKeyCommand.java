@@ -39,7 +39,6 @@ import VASSAL.build.module.map.MassKeyCommand;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
@@ -61,7 +60,7 @@ public class CounterGlobalKeyCommand extends Decorator
   public static final String ID = "globalkey;";
   protected KeyCommand[] command;
   protected String commandName;
-  protected KeyStroke key;
+  protected NamedKeyStroke key;
   protected NamedKeyStroke globalKey;
   protected GlobalCommand globalCommand = new GlobalCommand(this);
   protected PropertyExpression propertiesFilter = new PropertyExpression();
@@ -85,7 +84,7 @@ public class CounterGlobalKeyCommand extends Decorator
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken("Global Command");
-    key = st.nextKeyStroke('G');
+    key = st.nextNamedKeyStroke('G');
     globalKey = st.nextNamedKeyStroke('K');
     propertiesFilter.setExpression(st.nextToken(""));
     restrictRange = st.nextBoolean(false);
@@ -209,7 +208,7 @@ public class CounterGlobalKeyCommand extends Decorator
 
   public static class Ed implements PieceEditor {
     protected StringConfigurer nameInput;
-    protected HotKeyConfigurer keyInput;
+    protected NamedHotKeyConfigurer keyInput;
     protected NamedHotKeyConfigurer globalKey;
     protected StringConfigurer propertyMatch;
     protected MassKeyCommand.DeckPolicyConfig deckPolicy;
@@ -249,7 +248,7 @@ public class CounterGlobalKeyCommand extends Decorator
       nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
       controls.add(nameInput.getControls());
 
-      keyInput = new HotKeyConfigurer(null, "Keyboard Command:  ", p.key);
+      keyInput = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.key);
       controls.add(keyInput.getControls());
 
       globalKey = new NamedHotKeyConfigurer(null, "Global Key Command:  ", p.globalKey);
@@ -289,7 +288,7 @@ public class CounterGlobalKeyCommand extends Decorator
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
-          .append((KeyStroke) keyInput.getValue())
+          .append(keyInput.getValueString())
           .append(globalKey.getValueString())
           .append(propertyMatch.getValueString())
           .append(restrictRange.getValueString())

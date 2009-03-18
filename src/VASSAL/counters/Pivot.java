@@ -27,10 +27,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.MovementReporter;
 import VASSAL.command.ChangeTracker;
@@ -38,11 +40,12 @@ import VASSAL.command.Command;
 import VASSAL.command.MoveTracker;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.DoubleConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -55,7 +58,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
   protected int pivotY;
   protected double angle;
   protected String command;
-  protected KeyStroke key;
+  protected NamedKeyStroke key;
   protected boolean fixedAngle;
   protected KeyCommand[] commands;
   protected KeyCommand pivotCommand;
@@ -82,7 +85,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     command = st.nextToken("Pivot");
-    key = st.nextKeyStroke(null);
+    key = st.nextNamedKeyStroke(null);
     pivotX = st.nextInt(0);
     pivotY = st.nextInt(0);
     fixedAngle = st.nextBoolean(true);
@@ -217,7 +220,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
   
   public static class Ed implements PieceEditor {
     private StringConfigurer command;
-    private HotKeyConfigurer key;
+    private NamedHotKeyConfigurer key;
     private IntConfigurer xOff, yOff;
     private DoubleConfigurer angle;
     private BooleanConfigurer fixedAngle;
@@ -229,7 +232,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
       command = new StringConfigurer(null, "Command:  ", p.command);
       controls.add(command.getControls());
 
-      key = new HotKeyConfigurer(null, "Keyboard command:  ", p.key);
+      key = new NamedHotKeyConfigurer(null, "Keyboard command:  ", p.key);
       controls.add(key.getControls());
 
       Box b = Box.createHorizontalBox();
@@ -265,7 +268,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(command.getValueString())
-          .append((KeyStroke) key.getValue())
+          .append(key.getValueString())
           .append(xOff.getValueString())
           .append(yOff.getValueString())
           .append(Boolean.TRUE.equals(fixedAngle.getValue()))

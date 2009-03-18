@@ -49,11 +49,12 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -65,7 +66,7 @@ public class Translate extends Decorator implements TranslatablePiece {
   public static final String ID = "translate;";
   protected KeyCommand[] commands;
   protected String commandName;
-  protected KeyStroke keyCommand;
+  protected NamedKeyStroke keyCommand;
   protected FormattedString xDist = new FormattedString("");
   protected FormattedString xIndex = new FormattedString("");
   protected FormattedString xOffset = new FormattedString("");
@@ -98,7 +99,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken("Move Forward");
-    keyCommand = st.nextKeyStroke('M');
+    keyCommand = st.nextNamedKeyStroke('M');
     xDist.setFormat(st.nextToken(_0));
     yDist.setFormat(st.nextToken("60"));
     moveStack = st.nextBoolean(true);
@@ -292,7 +293,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     private FormattedExpressionConfigurer xDist;
     private FormattedExpressionConfigurer yDist;
     private StringConfigurer name;
-    private HotKeyConfigurer key;
+    private NamedHotKeyConfigurer key;
     private JPanel controls;
     private BooleanConfigurer moveStack;
     protected BooleanConfigurer advancedInput;
@@ -309,7 +310,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add(descInput.getControls());
       name = new StringConfigurer(null, "Command Name:  ", t.commandName);
       controls.add(name.getControls());
-      key = new HotKeyConfigurer(null, "Keyboard shortcut:  ", t.keyCommand);
+      key = new NamedHotKeyConfigurer(null, "Keyboard shortcut:  ", t.keyCommand);
       controls.add(key.getControls());
       xDist = new FormattedExpressionConfigurer(null, "Distance to the right:  ", t.xDist.getFormat());
       controls.add(xDist.getControls());
@@ -366,7 +367,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
-        .append((KeyStroke) key.getValue())
+        .append(key.getValueString())
         .append(xDist.getValueString())
         .append(yDist.getValueString())
         .append(moveStack.getValueString())

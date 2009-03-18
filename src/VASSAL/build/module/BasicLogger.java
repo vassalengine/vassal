@@ -50,11 +50,13 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
 import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
 import VASSAL.tools.KeyStrokeListener;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogFileFilter;
@@ -126,7 +128,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     button.setToolTipText(Resources.getString("BasicLogger.step_forward_tooltip"));  //$NON-NLS-1$
     button.setAlignmentY((float) 0.0);
 
-    final KeyStrokeListener stepKeyListener = new KeyStrokeListener(stepAction, KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
+    final NamedKeyStrokeListener stepKeyListener = new NamedKeyStrokeListener(stepAction, NamedKeyStroke.getNamedKeyStroke(KeyEvent.VK_PAGE_DOWN, 0));
     mod.addKeyStrokeListener(stepKeyListener);
 
     final KeyStrokeListener newLogKeyListener = new KeyStrokeListener(newLogAction, KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.ALT_MASK));
@@ -153,12 +155,12 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
           }
         });
         undoIconConfig.fireUpdate();
-        final HotKeyConfigurer stepKeyConfig = new HotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
+        final NamedHotKeyConfigurer stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
         GlobalOptions.getInstance().addOption(stepKeyConfig);
         stepKeyConfig.addPropertyChangeListener(new PropertyChangeListener() {
           public void propertyChange(PropertyChangeEvent evt) {
-            stepKeyListener.setKeyStroke((KeyStroke) stepKeyConfig.getValue());
-            stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", HotKeyConfigurer.getString(stepKeyListener.getKeyStroke())));  //$NON-NLS-1$
+            stepKeyListener.setKeyStroke((NamedKeyStroke) stepKeyConfig.getValue());
+            stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", NamedHotKeyConfigurer.getString(stepKeyListener.getNamedKeyStroke())));  //$NON-NLS-1$
           }
         });
         stepKeyConfig.fireUpdate();

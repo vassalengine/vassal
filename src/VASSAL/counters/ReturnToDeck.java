@@ -45,11 +45,12 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.DrawPile;
 import VASSAL.command.Command;
-import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
@@ -62,7 +63,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   protected String deckId;
   protected String returnCommand;
   protected String selectDeckPrompt="Select destination";
-  protected KeyStroke returnKey;
+  protected NamedKeyStroke returnKey;
   protected DrawPile deck;
 
   protected KeyCommand[] commands;
@@ -99,7 +100,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     s = s.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     returnCommand = st.nextToken();
-    returnKey = st.nextKeyStroke(null);
+    returnKey = st.nextNamedKeyStroke(null);
     deckId = st.nextToken("");
     selectDeckPrompt = st.nextToken(selectDeckPrompt);
   }
@@ -248,7 +249,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
   
   private static class Ed implements PieceEditor {
     private StringConfigurer menuName;
-    private HotKeyConfigurer menuKey;
+    private NamedHotKeyConfigurer menuKey;
     private JPanel controls;
     private String deckId;
     private final JTextField tf = new JTextField(12);
@@ -260,7 +261,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
       menuName = new StringConfigurer(null, "Menu Text:  ", p.returnCommand);
       controls.add(menuName.getControls());
-      menuKey = new HotKeyConfigurer(null,"Keyboard Command:  ",p.returnKey);
+      menuKey = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",p.returnKey);
       deckId = p.deckId;
       controls.add(menuKey.getControls());
       JButton select = new JButton("Select Deck");
@@ -311,7 +312,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
 
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
-      return ID + se.append(menuName.getValueString()).append((KeyStroke)menuKey.getValue()).append(prompt.isSelected() ? "" : deckId).append(promptText.getValueString()).getValue();
+      return ID + se.append(menuName.getValueString()).append(menuKey.getValueString()).append(prompt.isSelected() ? "" : deckId).append(promptText.getValueString()).getValue();
     }
   }
 }

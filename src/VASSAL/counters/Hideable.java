@@ -27,20 +27,23 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.ColorConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PieceAccessConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 public class Hideable extends Decorator implements TranslatablePiece {
@@ -49,7 +52,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   public static final String HIDDEN_BY = "hiddenBy";
 
   protected String hiddenBy;
-  protected KeyStroke hideKey;
+  protected NamedKeyStroke hideKey;
   protected String command = "Invisible";
   protected PieceAccess access = PlayerAccess.getInstance();
 
@@ -121,7 +124,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   public void mySetType(String type) {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
-    hideKey = st.nextKeyStroke('I');
+    hideKey = st.nextNamedKeyStroke('I');
     command = st.nextToken("Invisible");
     bgColor = st.nextColor(null);
     access = PieceAccessConfigurer.decode(st.nextToken(null));
@@ -266,7 +269,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   }
 
   protected static class Ed implements PieceEditor {
-    protected HotKeyConfigurer hideKeyInput;
+    protected NamedHotKeyConfigurer hideKeyInput;
     protected JTextField hideCommandInput;
     protected ColorConfigurer colorConfig;
     protected PieceAccessConfigurer accessConfig;
@@ -276,7 +279,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
-      hideKeyInput = new HotKeyConfigurer(null, "Keyboard command:  ", p.hideKey);
+      hideKeyInput = new NamedHotKeyConfigurer(null, "Keyboard command:  ", p.hideKey);
       controls.add(hideKeyInput.getControls());
 
       Box b = Box.createHorizontalBox();
@@ -300,7 +303,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
 
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
-      se.append((KeyStroke) hideKeyInput.getValue()).append(hideCommandInput.getText()).append(
+      se.append(hideKeyInput.getValueString()).append(hideCommandInput.getText()).append(
           colorConfig.getValue() == null ? "" : colorConfig.getValueString()).append(accessConfig.getValueString());
       return ID + se.getValue();
     }

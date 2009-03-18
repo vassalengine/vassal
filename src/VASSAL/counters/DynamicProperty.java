@@ -40,13 +40,14 @@ import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.ListConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -372,7 +373,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
     protected PropertyChanger propChanger = null;
 
-    public DynamicKeyCommand(String name, KeyStroke key, GamePiece target, TranslatablePiece i18nPiece, PropertyChanger propChanger) {
+    public DynamicKeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece, PropertyChanger propChanger) {
       super(name, key, target, i18nPiece);
       this.propChanger = propChanger;
     }
@@ -383,7 +384,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
    * Configure a single Dynamic Key Command line
    */
   protected static class DynamicKeyCommandConfigurer extends Configurer {
-    protected HotKeyConfigurer keyConfig;
+    protected NamedHotKeyConfigurer keyConfig;
     protected PropertyChangerConfigurer propChangeConfig;
     protected StringConfigurer commandConfig;
 
@@ -391,10 +392,10 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     protected DynamicProperty target;
 
     public DynamicKeyCommandConfigurer(DynamicProperty target) {
-      super(target.getKey(), target.getKey(), new DynamicKeyCommand("Change value", KeyStroke.getKeyStroke('V', InputEvent.CTRL_MASK), target, target, 
+      super(target.getKey(), target.getKey(), new DynamicKeyCommand("Change value", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_MASK), target, target, 
           new PropertyPrompt(target, "Change value of " + target.getKey())));
       commandConfig = new StringConfigurer(null, " Menu Command:  ", "Change value");
-      keyConfig = new HotKeyConfigurer(null, " Key Command:  ", KeyStroke.getKeyStroke('V', InputEvent.CTRL_MASK));
+      keyConfig = new NamedHotKeyConfigurer(null, " Key Command:  ", NamedKeyStroke.getNamedKeyStroke('V', InputEvent.CTRL_MASK));
       propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
       propChangeConfig.setValue(new PropertyPrompt(target, " Change value of " + target.getKey()));
 
@@ -419,7 +420,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       if (!noUpdate && value instanceof DynamicKeyCommand && commandConfig != null) {
         DynamicKeyCommand dkc = (DynamicKeyCommand) value;
         commandConfig.setValue(dkc.getName());
-        keyConfig.setValue(dkc.getKeyStroke());
+        keyConfig.setValue(dkc.getNamedKeyStroke());
         propChangeConfig.setValue(dkc.propChanger);
       }
       super.setValue(value);
@@ -432,7 +433,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     public void setValue(String s) {
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s == null ? "" : s, ':');
       commandConfig.setValue(sd.nextToken(""));
-      keyConfig.setValue(sd.nextToken(""));
+      keyConfig.setValue(sd.nextNamedKeyStroke(null));
       propChangeConfig.setValue(sd.nextToken(""));
       updateValue();
     }
@@ -446,7 +447,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
     protected void updateValue() {
       noUpdate = true;
-      setValue(new DynamicKeyCommand(commandConfig.getValueString(), (KeyStroke) keyConfig.getValue(), target, target, propChangeConfig.getPropertyChanger()));
+      setValue(new DynamicKeyCommand(commandConfig.getValueString(), keyConfig.getValueNamedKeyStroke(), target, target, propChangeConfig.getPropertyChanger()));
       noUpdate = false;
     }
 

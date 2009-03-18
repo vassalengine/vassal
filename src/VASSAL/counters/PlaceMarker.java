@@ -54,7 +54,6 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ChooseComponentPathDialog;
 import VASSAL.configure.ConfigurerWindow;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -71,7 +70,7 @@ import VASSAL.tools.SequenceEncoder;
 public class PlaceMarker extends Decorator implements TranslatablePiece {
   public static final String ID = "placemark;";
   protected KeyCommand command;
-  protected KeyStroke key;
+  protected NamedKeyStroke key;
   protected String markerSpec;
   protected String markerText = "";
   protected int xOffset = 0;
@@ -209,7 +208,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       c = m.placeAt(marker, p);
     }
 
-    if (afterBurnerKey != null) {
+    if (afterBurnerKey != null && !afterBurnerKey.isNull()) {
       marker.setProperty(Properties.SNAPSHOT,
                          PieceCloner.getInstance().clonePiece(marker));
       c.append(marker.keyEvent(afterBurnerKey.getKeyStroke()));
@@ -330,7 +329,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
     String name = st.nextToken();
-    key = st.nextKeyStroke(null);
+    key = st.nextNamedKeyStroke(null);
     command = new KeyCommand(name, key, this, this);
     if (name.length() > 0 && key != null) {
       commands = new KeyCommand[]{command};
@@ -383,7 +382,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
   }
   
   protected static class Ed implements PieceEditor {
-    private HotKeyConfigurer keyInput;
+    private NamedHotKeyConfigurer keyInput;
     private StringConfigurer commandInput;
     private PieceSlot pieceInput;
     private JPanel p = new JPanel();
@@ -403,7 +402,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       matchRotationConfig = createMatchRotationConfig();
       aboveConfig = createAboveConfig();
       descConfig = new StringConfigurer(null, "Description:  ", piece.description);
-      keyInput = new HotKeyConfigurer(null, "Keyboard Command:  ", piece.key);
+      keyInput = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", piece.key);
       afterBurner = new NamedHotKeyConfigurer(null, "Keystroke to apply after placement:  ", piece.afterBurnerKey);
       commandInput = new StringConfigurer(null, "Command:  ", piece.command.getName());
       GamePiece marker = piece.createBaseMarker();
@@ -488,7 +487,7 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(commandInput.getValueString());
-      se.append((KeyStroke) keyInput.getValue());
+      se.append(keyInput.getValueString());
       if (pieceInput.getPiece() == null) {
         se.append("null");
       }

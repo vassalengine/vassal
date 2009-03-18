@@ -19,12 +19,13 @@
 package VASSAL.counters;
 
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
-import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
@@ -53,7 +54,7 @@ public class KeyCommand extends AbstractAction {
   }
   
   public KeyCommand(String name, KeyStroke key, GamePiece target, TranslatablePiece i18nPiece) {
-    super(key == null ? name : name + "  " + HotKeyConfigurer.getString(key));
+    super(key == null ? name : name + "  " + NamedHotKeyConfigurer.getString(key));
     this.target = target;
     this.name = name;
     this.stroke = key;
@@ -61,14 +62,15 @@ public class KeyCommand extends AbstractAction {
   }
 
   public KeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece) {
-    this(name, key.getKeyStroke(), target, i18nPiece);
+    this(name, key == null ? null : key.getKeyStroke(), target, i18nPiece);
     namedKeyStroke = key == null ? NamedKeyStroke.NULL_KEYSTROKE : key;
   }
   
   public KeyCommand(String name, NamedKeyStroke key, GamePiece target, boolean enabled) {
-    this(name, key.getKeyStroke(), target, enabled);
+    this(name, key == null ? null : key.getKeyStroke(), target, enabled);
     namedKeyStroke = key == null ? NamedKeyStroke.NULL_KEYSTROKE : key;
   }
+  
   public KeyCommand(String name, KeyStroke key, GamePiece target, boolean enabled) {
     this(name, key, target, null);
     setEnabled(enabled);
@@ -161,7 +163,7 @@ public class KeyCommand extends AbstractAction {
           localizedName = Localization.getInstance().translate(key, name); 
         }
       }
-      localizedMenuText = stroke == null ? localizedName : localizedName + "  " + HotKeyConfigurer.getString(stroke);
+      localizedMenuText = stroke == null ? localizedName : localizedName + "  " + NamedHotKeyConfigurer.getString(stroke);
     }
     return localizedMenuText;
   }

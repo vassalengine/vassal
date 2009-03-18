@@ -36,8 +36,7 @@ import javax.swing.SwingUtilities;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
-import VASSAL.configure.HotKeyConfigurer;
-import VASSAL.configure.KeyStrokeArrayConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.NamedKeyStrokeArrayConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
@@ -59,11 +58,11 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
 
   protected String name = "";
   protected String command = "";
-  protected KeyStroke key = null;
+  protected NamedKeyStroke key = NamedKeyStroke.NULL_KEYSTROKE;
   protected PropertyExpression propertyMatch = new PropertyExpression();
-  protected KeyStroke[] watchKeys = new KeyStroke[0];
+  protected NamedKeyStroke[] watchKeys = new NamedKeyStroke[0];
   protected NamedKeyStroke[] actionKeys = new NamedKeyStroke[0];
-  protected Set<KeyStroke> triggeredKeys; // Safeguard against infinite loops
+  protected Set<NamedKeyStroke> triggeredKeys; // Safeguard against infinite loops
 
   public TriggerAction() {
     this(ID, null);
@@ -105,7 +104,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
       .append(command)
       .append(key)
       .append(propertyMatch.getExpression())
-      .append(KeyStrokeArrayConfigurer.encode(watchKeys))
+      .append(NamedKeyStrokeArrayConfigurer.encode(watchKeys))
       .append(NamedKeyStrokeArrayConfigurer.encode(actionKeys));
 
     return ID + se.getValue();
@@ -126,7 +125,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
     if (triggeredKeys == null) {
       // Keep track of the keystrokes that we've already responded to
       // within this event loop
-      triggeredKeys = new HashSet<KeyStroke>();
+      triggeredKeys = new HashSet<NamedKeyStroke>();
       Runnable runnable = new Runnable() {
         public void run() {
           triggeredKeys = null;
@@ -141,7 +140,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
      *     Does it match one of our watching keystrokes?
      */
     boolean seen = false;
-    if (stroke.equals(key) && !triggeredKeys.contains(key)) {
+    if (key.equals(stroke) && !triggeredKeys.contains(key)) {
       seen = true;
       triggeredKeys.add(key);
     }
@@ -207,17 +206,17 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
     st.nextToken();
     name = st.nextToken("");
     command = st.nextToken("Trigger");
-    key = st.nextKeyStroke('T');
+    key = st.nextNamedKeyStroke('T');
     propertyMatch.setExpression(st.nextToken(""));
 
     String keys = st.nextToken("");
     if (keys.indexOf(',') > 0) {
-      watchKeys = KeyStrokeArrayConfigurer.decode(keys);
+      watchKeys = NamedKeyStrokeArrayConfigurer.decode(keys);
     }
     else {
-      watchKeys = new KeyStroke[keys.length()];
+      watchKeys = new NamedKeyStroke[keys.length()];
       for (int i = 0; i < watchKeys.length; i++) {
-        watchKeys[i] = KeyStroke.getKeyStroke(keys.charAt(i),InputEvent.CTRL_MASK);
+        watchKeys[i] = NamedKeyStroke.getNamedKeyStroke(keys.charAt(i),InputEvent.CTRL_MASK);
       }
     }
 
@@ -245,9 +244,9 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
 
     private StringConfigurer name;
     private StringConfigurer command;
-    private HotKeyConfigurer key;
+    private NamedHotKeyConfigurer key;
     private StringConfigurer propertyMatch;
-    private KeyStrokeArrayConfigurer watchKeys;
+    private NamedKeyStrokeArrayConfigurer watchKeys;
     private NamedKeyStrokeArrayConfigurer actionKeys;
     private JPanel box;
 
@@ -265,11 +264,11 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
       Box commandBox = Box.createHorizontalBox();
       command = new StringConfigurer(null, "Menu Command:  ", piece.command);
       commandBox.add(command.getControls());
-      key = new HotKeyConfigurer(null, "  KeyStroke:  ", piece.key);
+      key = new NamedHotKeyConfigurer(null, "  KeyStroke:  ", piece.key);
       commandBox.add(key.getControls());
       box.add(commandBox);
 
-      watchKeys = new KeyStrokeArrayConfigurer(null, "Watch for these Keystrokes:  ", piece.watchKeys);
+      watchKeys = new NamedKeyStrokeArrayConfigurer(null, "Watch for these Keystrokes:  ", piece.watchKeys);
       box.add(watchKeys.getControls());
 
       actionKeys = new NamedKeyStrokeArrayConfigurer(null, "Perform these Keystrokes:  ", piece.actionKeys);
@@ -290,7 +289,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(name.getValueString())
       .append(command.getValueString())
-      .append((KeyStroke) key.getValue())
+      .append(key.getValueString())
       .append(propertyMatch.getValueString())
       .append(watchKeys.getValueString())
       .append(actionKeys.getValueString());

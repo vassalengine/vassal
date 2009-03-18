@@ -54,9 +54,9 @@ import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.FormattedExpressionConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.KeyModifiersConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
@@ -89,7 +89,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected String resetCommand;
   protected FormattedString resetLevel = new FormattedString("1");
   protected boolean loopLevels;
-  protected KeyStroke resetKey;
+  protected NamedKeyStroke resetKey;
   
   protected boolean followProperty;
   protected String propertyName = "";
@@ -97,7 +97,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   
   // random layers
   // protected KeyCommand rndCommand;
-  protected KeyStroke rndKey;
+  protected NamedKeyStroke rndKey;
   private String rndText = "";
   // end random layers
 
@@ -171,7 +171,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       downModifiers = st.nextInt(InputEvent.CTRL_MASK);
       downKey = st.nextToken("[");
       resetCommand = st.nextToken("Reset");
-      resetKey = st.nextKeyStroke('R');
+      resetKey = st.nextNamedKeyStroke('R');
       resetLevel = new FormattedString(st.nextToken("1"));
       drawUnderneathWhenSelected = st.nextBoolean(false);
       xOff = st.nextInt(0);
@@ -182,7 +182,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       name = st.nextToken("");
 
       // random layers
-      rndKey = st.nextKeyStroke(null);
+      rndKey = st.nextNamedKeyStroke(null);
       rndText = st.nextToken("");
       // end random layers
 
@@ -221,7 +221,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     activateModifiers = InputEvent.CTRL_MASK;
     if (st2.hasMoreTokens()) {
       resetCommand = st2.nextToken();
-      resetKey = st2.nextKeyStroke(null);
+      resetKey = st2.nextNamedKeyStroke(null);
       resetLevel.setFormat(st2.nextToken("0"));
     }
     else {
@@ -789,7 +789,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private FormattedExpressionConfigurer resetLevel = new FormattedExpressionConfigurer(null, "Reset to level:  ");
     private JTextField resetCommand = new JTextField(8);
     private JCheckBox loop = new JCheckBox("Loop through levels?");
-    private HotKeyConfigurer resetKey = new HotKeyConfigurer(null, "  Keyboard:  ");
+    private NamedHotKeyConfigurer resetKey = new NamedHotKeyConfigurer(null, "  Keyboard:  ");
     private JTextField name = new JTextField(8);
 
     private JPanel controls;
@@ -799,7 +799,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private static final Integer PREFIX = 1;
     private static final Integer SUFFIX = 2;
     // random layers
-    private HotKeyConfigurer rndKeyConfig;
+    private NamedHotKeyConfigurer rndKeyConfig;
 
     private BooleanConfigurer followConfig;
     private StringConfigurer propertyConfig;
@@ -855,7 +855,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       rndCommand.setText(e.rndText);
       rnd2Controls.add(rndCommand);
       p.add(rnd2Controls);
-      rndKeyConfig = new HotKeyConfigurer(null, "  Keyboard:  ", e.rndKey);
+      rndKeyConfig = new NamedHotKeyConfigurer(null, "  Keyboard:  ", e.rndKey);
       p.add(rndKeyConfig.getControls());
       // end random layer
 
@@ -1094,7 +1094,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         .append(downModifiers.getValueString())
         .append(downKeyInput.getText())
         .append(resetCommand.getText())
-        .append((KeyStroke) resetKey.getValue())
+        .append(resetKey.getValueString())
         .append(resetLevel.getValueString())
         .append(drawUnderneath.isSelected())
         .append(xOffInput.getText())
@@ -1103,7 +1103,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         .append(commonNames.toArray(new String[commonNames.size()]))
         .append(loop.isSelected())
         .append(name.getText())
-        .append((KeyStroke) rndKeyConfig.getValue())
+        .append(rndKeyConfig.getValueString())
         .append(rndCommand.getText() == null ? "" :
                 rndCommand.getText().trim())
         .append(followConfig.getValueString())

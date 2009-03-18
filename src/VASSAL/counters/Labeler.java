@@ -53,13 +53,14 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.HashCode;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.AbstractTileOpImpl;
@@ -84,7 +85,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
   private String label = "";
   private String lastCachedLabel;
-  private KeyStroke labelKey;
+  private NamedKeyStroke labelKey;
   private String menuCommand = "Change Label";
   private Font font = new Font("Dialog", 0, 10);
   private KeyCommand[] commands;
@@ -120,7 +121,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
     commands = null;
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
-    labelKey = st.nextKeyStroke(null);
+    labelKey = st.nextNamedKeyStroke(null);
     menuCommand = st.nextToken("Change Label");
     final int fontSize = st.nextInt(10);
     textBg = st.nextColor(null);
@@ -614,7 +615,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
   }
 
   private static class Ed implements PieceEditor {
-    private HotKeyConfigurer labelKeyInput;
+    private NamedHotKeyConfigurer labelKeyInput;
     private JPanel controls = new JPanel();
     private StringConfigurer command;
     private StringConfigurer initialValue;
@@ -641,7 +642,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
       command = new StringConfigurer(null, "Menu Command:  ", l.menuCommand);
       controls.add(command.getControls());
 
-      labelKeyInput = new HotKeyConfigurer(null, "Keyboard Command:  ", l.labelKey);
+      labelKeyInput = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", l.labelKey);
       controls.add(labelKeyInput.getControls());
 
       Box b = Box.createHorizontalBox();
@@ -733,7 +734,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
 
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
-      se.append((KeyStroke) labelKeyInput.getValue())
+      se.append(labelKeyInput.getValueString())
         .append(command.getValueString());
 
       Integer i = (Integer) fontSize.getValue();

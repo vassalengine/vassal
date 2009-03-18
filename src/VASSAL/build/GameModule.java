@@ -378,7 +378,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
    
-  public void fireKeyStroke(KeyStroke stroke) {
+  @Deprecated public void fireKeyStroke(KeyStroke stroke) {
     if (stroke != null) {
       for (KeyStrokeListener l : keyStrokeListeners) {
         l.keyPressed(stroke);
@@ -387,7 +387,9 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   public void fireKeyStroke(NamedKeyStroke stroke) {
-    fireKeyStroke(stroke.getKeyStroke());
+    if (stroke != null && !stroke.isNull()) {
+      fireKeyStroke(stroke.getKeyStroke());
+    }
   }
   
   /**

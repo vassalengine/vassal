@@ -35,12 +35,13 @@ import VASSAL.command.Command;
 import VASSAL.command.PlayAudioClipCommand;
 import VASSAL.configure.AudioClipConfigurer;
 import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -52,7 +53,7 @@ import VASSAL.tools.SequenceEncoder;
 public class PlaySound extends Decorator implements TranslatablePiece {
   public static final String ID = "playSound;";
   protected String menuText;
-  protected KeyStroke stroke;
+  protected NamedKeyStroke stroke;
   protected boolean sendToOthers;
   protected KeyCommand command;
   protected KeyCommand[] commands;
@@ -142,7 +143,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
     st.nextToken();
     format = new FormattedString(st.nextToken(""));
     menuText = st.nextToken("Play Sound");
-    stroke = st.nextKeyStroke('P');
+    stroke = st.nextNamedKeyStroke('P');
     sendToOthers = st.nextBoolean(false);
     commands = null;
   }
@@ -161,14 +162,14 @@ public class PlaySound extends Decorator implements TranslatablePiece {
 
   public static class Ed implements PieceEditor {
     private StringConfigurer menuConfig;
-    private HotKeyConfigurer keyConfig;
+    private NamedHotKeyConfigurer keyConfig;
     private AudioClipConfigurer soundConfig;
     private BooleanConfigurer sendConfig;
     private JPanel panel;
 
     public Ed(PlaySound p) {
       menuConfig = new StringConfigurer(null, "Menu Text:  ", p.menuText);
-      keyConfig = new HotKeyConfigurer(null, "Keyboard Command:  ", p.stroke);
+      keyConfig = new NamedHotKeyConfigurer(null, "Keyboard Command:  ", p.stroke);
       soundConfig = new AudioClipConfigurer(null, "Sound Clip:  ", GameModule.getGameModule().getArchiveWriter());
       soundConfig.setValue(p.format.getFormat());
       soundConfig.setEditable(true);

@@ -49,7 +49,7 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ChooseComponentDialog;
 import VASSAL.configure.FormattedExpressionConfigurer;
 import VASSAL.configure.FormattedStringConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.PropertyExpressionConfigurer;
 import VASSAL.configure.StringConfigurer;
@@ -58,6 +58,7 @@ import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 /**
  * This trait adds a command that sends a piece to another location. Options for the
@@ -83,8 +84,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   protected KeyCommand[] command;
   protected String commandName;
   protected String backCommandName;
-  protected KeyStroke key;
-  protected KeyStroke backKey;
+  protected NamedKeyStroke key;
+  protected NamedKeyStroke backKey;
   protected FormattedString mapId = new FormattedString("");
   protected FormattedString boardName = new FormattedString("");
   protected FormattedString x = new FormattedString("");
@@ -116,13 +117,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     type = type.substring(ID.length());
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     commandName = st.nextToken("");
-    key = st.nextKeyStroke(null);
+    key = st.nextNamedKeyStroke(null);
     mapId.setFormat(st.nextToken(""));
     boardName.setFormat(st.nextToken(""));
     x.setFormat(st.nextToken("0"));
     y.setFormat(st.nextToken("0"));
     backCommandName = st.nextToken("");
-    backKey = st.nextKeyStroke(null);
+    backKey = st.nextNamedKeyStroke(null);
     xIndex.setFormat(st.nextToken("0"));
     yIndex.setFormat(st.nextToken("0"));
     xOffset.setFormat(st.nextToken("0"));
@@ -422,8 +423,8 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
   public static class Ed implements PieceEditor {
     protected StringConfigurer nameInput;
     protected StringConfigurer backNameInput;
-    protected HotKeyConfigurer keyInput;
-    protected HotKeyConfigurer backKeyInput;
+    protected NamedHotKeyConfigurer keyInput;
+    protected NamedHotKeyConfigurer backKeyInput;
     protected FormattedStringConfigurer mapIdInput;
     protected FormattedStringConfigurer boardNameInput;
     protected FormattedStringConfigurer xInput;
@@ -454,13 +455,13 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       nameInput = new StringConfigurer(null, "Command name:  ", p.commandName);
       controls.add(nameInput.getControls());
 
-      keyInput = new HotKeyConfigurer(null,"Keyboard Command:  ",p.key);
+      keyInput = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",p.key);
       controls.add(keyInput.getControls());
 
       backNameInput = new StringConfigurer(null, "Send Back Command name:  ", p.backCommandName);
       controls.add(backNameInput.getControls());
 
-      backKeyInput = new HotKeyConfigurer(null,"Send Back Keyboard Command:  ",p.backKey);
+      backKeyInput = new NamedHotKeyConfigurer(null,"Send Back Keyboard Command:  ",p.backKey);
       controls.add(backKeyInput.getControls());
       
       destInput = new StringEnumConfigurer(null, "Destination:  ", DEST_OPTIONS);
@@ -610,14 +611,14 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     public String getType() {
       SequenceEncoder se = new SequenceEncoder(';');
       se.append(nameInput.getValueString())
-          .append((KeyStroke)keyInput.getValue())
+          .append(keyInput.getValueString())
           //.append(map == null ? "" : map.getIdentifier())
           .append(mapIdInput.getValueString())
           .append(boardNameInput.getValueString())
           .append(xInput.getValueString())
           .append(yInput.getValueString())
           .append(backNameInput.getValueString())
-          .append((KeyStroke)backKeyInput.getValue())
+          .append(backKeyInput.getValueString())
           .append(xIndexInput.getValueString())
           .append(yIndexInput.getValueString())
           .append(xOffsetInput.getValueString())

@@ -51,10 +51,11 @@ import VASSAL.command.Command;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.DoubleConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
 
@@ -73,7 +74,7 @@ public class Footprint extends MovementMarkable {
   protected List<Point> pointList = new ArrayList<Point>();
 
   // Type Variables (Configured in Ed)
-  protected KeyStroke trailKey;                // Control Key to invoke
+  protected NamedKeyStroke trailKey;                // Control Key to invoke
   protected String menuCommand;                // Menu Command
   protected boolean initiallyVisible = false;  // Are Trails initially visible?
   protected boolean globallyVisible = false;   // Are Trails shared between players?
@@ -164,7 +165,7 @@ public class Footprint extends MovementMarkable {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();
 
-    trailKey = st.nextKeyStroke(DEFAULT_TRAIL_KEY);
+    trailKey = st.nextNamedKeyStroke(DEFAULT_TRAIL_KEY);
     menuCommand = st.nextToken(DEFAULT_MENU_COMMAND);
     initiallyVisible = st.nextBoolean(DEFAULT_INITIALLY_VISIBLE.booleanValue());
     globallyVisible = st.nextBoolean(DEFAULT_GLOBALLY_VISIBLE.booleanValue());
@@ -627,7 +628,7 @@ public class Footprint extends MovementMarkable {
    * Point Limit
    */
   protected static class Ed implements PieceEditor {
-    private HotKeyConfigurer trailKeyInput;
+    private NamedHotKeyConfigurer trailKeyInput;
     private JPanel controls;
     private StringConfigurer mc;
     private BooleanConfigurer iv;
@@ -646,7 +647,7 @@ public class Footprint extends MovementMarkable {
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
       Box b;
-      trailKeyInput = new HotKeyConfigurer(null, "Key Command:  ", p.trailKey);
+      trailKeyInput = new NamedHotKeyConfigurer(null, "Key Command:  ", p.trailKey);
       controls.add(trailKeyInput.getControls());
 
       mc = new StringConfigurer(null, "Menu Command:  ", p.menuCommand);
@@ -698,7 +699,7 @@ public class Footprint extends MovementMarkable {
     public String getType() {
       final SequenceEncoder se = new SequenceEncoder(';');
       se.append(ID)
-        .append((KeyStroke) trailKeyInput.getValue())
+        .append(trailKeyInput.getValueString())
         .append(mc.getValueString())
         .append(iv.getValueString())
         .append(gv.getValueString())

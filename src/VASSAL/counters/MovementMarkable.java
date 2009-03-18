@@ -33,22 +33,24 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -61,7 +63,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
   private int xOffset = 0;
   private int yOffset = 0;
   private String command;
-  private KeyStroke key;
+  private NamedKeyStroke key;
   private IconConfigurer movedIcon = new IconConfigurer(null, "Marker Image:  ", "/images/moved.gif");
   private boolean hasMoved = false;
 
@@ -89,7 +91,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     xOffset = st.nextInt(0);
     yOffset = st.nextInt(0);
     command = st.nextToken("Mark Moved");
-    key = st.nextKeyStroke('M');
+    key = st.nextNamedKeyStroke('M');
   }
 
   public void mySetState(String newState) {
@@ -209,7 +211,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     private IntConfigurer xOff;
     private IntConfigurer yOff;
     private StringConfigurer command;
-    private HotKeyConfigurer key;
+    private NamedHotKeyConfigurer key;
     private Box box;
 
     private Ed(MovementMarkable p) {
@@ -217,7 +219,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
       box = Box.createVerticalBox();
       command = new StringConfigurer(null,"Command:  ",p.command);
       box.add(command.getControls());
-      key = new HotKeyConfigurer(null,"Keyboard command:  ",p.key);
+      key = new NamedHotKeyConfigurer(null,"Keyboard command:  ",p.key);
       box.add(key.getControls());
       box.add(iconConfig.getControls());
       xOff = new IntConfigurer(null, "Horizontal Offset:  ", p.xOffset);
@@ -251,7 +253,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
           .append(xOff.getValueString())
           .append(yOff.getValueString())
           .append(command.getValueString())
-          .append((KeyStroke)key.getValue());
+          .append(key.getValueString());
       return ID + se.getValue();
     }
 

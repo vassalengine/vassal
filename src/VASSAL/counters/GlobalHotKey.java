@@ -11,7 +11,6 @@ import javax.swing.KeyStroke;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
@@ -28,7 +27,7 @@ import VASSAL.tools.SequenceEncoder;
 public class GlobalHotKey extends Decorator implements TranslatablePiece {
   public static final String ID="globalhotkey;";
   
-  protected KeyStroke commandKey;
+  protected NamedKeyStroke commandKey;
   protected NamedKeyStroke globalHotKey;
   protected String commandName="Hotkey";
   protected KeyCommand[] commands;
@@ -105,7 +104,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   public void mySetType(String type) {
     SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(type.substring(ID.length()),';');
     commandName = sd.nextToken();
-    commandKey = sd.nextKeyStroke('H');
+    commandKey = sd.nextNamedKeyStroke('H');
     globalHotKey = sd.nextNamedKeyStroke(null);
     description = sd.nextToken("");
     commands = null;
@@ -122,7 +121,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   public static class Ed implements PieceEditor {
     
     private StringConfigurer commandConfig;
-    private HotKeyConfigurer commandKeyConfig;
+    private NamedHotKeyConfigurer commandKeyConfig;
     private NamedHotKeyConfigurer hotKeyConfig;
     protected StringConfigurer descConfig;
     
@@ -137,7 +136,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
       commandConfig = new StringConfigurer(null,"Menu text:  ",k.commandName);
       controls.add(commandConfig.getControls());
 
-      commandKeyConfig = new HotKeyConfigurer(null,"Keyboard Command:  ",k.commandKey);
+      commandKeyConfig = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",k.commandKey);
       controls.add(commandKeyConfig.getControls());
 
       hotKeyConfig = new NamedHotKeyConfigurer(null,"Global Hotkey:  ",k.globalHotKey);

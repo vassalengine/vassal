@@ -22,21 +22,24 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IntConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
@@ -50,7 +53,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
   protected String oldState;
   protected int nRows, nCols;
   protected String command;
-  protected KeyStroke launchKey;
+  protected NamedKeyStroke launchKey;
   protected KeyCommand launch;
   protected JTable table;
   protected JDialog frame;
@@ -78,7 +81,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     nRows = st.nextInt(2);
     nCols = st.nextInt(2);
     command = st.nextToken();
-    launchKey = st.nextKeyStroke(null);
+    launchKey = st.nextNamedKeyStroke(null);
     frame = null;
     table = null;
   }
@@ -209,14 +212,14 @@ public class TableInfo extends Decorator implements TranslatablePiece {
     private IntConfigurer rowConfig = new IntConfigurer(null, "Number of rows:  ");
     private IntConfigurer colConfig = new IntConfigurer(null, "Number of columns:  ");
     private StringConfigurer commandConfig = new StringConfigurer(null, "Menu Command:  ");
-    private HotKeyConfigurer keyConfig;
+    private NamedHotKeyConfigurer keyConfig;
     private JPanel panel;
 
     public Ed(TableInfo p) {
       rowConfig.setValue(p.nRows);
       colConfig.setValue(p.nCols);
       commandConfig.setValue(p.command);
-      keyConfig = new HotKeyConfigurer(null,"Keyboard Command:  ",p.launchKey);
+      keyConfig = new NamedHotKeyConfigurer(null,"Keyboard Command:  ",p.launchKey);
 
       panel = new JPanel();
       panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -235,7 +238,7 @@ public class TableInfo extends Decorator implements TranslatablePiece {
       se.append(rowConfig.getValueString())
         .append(colConfig.getValueString())
         .append(commandConfig.getValueString())
-        .append((KeyStroke)keyConfig.getValue());
+        .append(keyConfig.getValueString());
       return ID + se.getValue();
     }
 
