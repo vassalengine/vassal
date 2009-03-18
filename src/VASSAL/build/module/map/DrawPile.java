@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
 
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -41,7 +40,6 @@ import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
@@ -296,7 +294,7 @@ public class DrawPile extends SetupStack {
       FormattedStringConfig.class,
       Prompt.class,
       FormattedStringConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       Boolean.class,
       FormattedStringConfig.class,
       Boolean.class,
@@ -306,7 +304,7 @@ public class DrawPile extends SetupStack {
       Boolean.class,
       String.class,
       FormattedStringConfig.class,
-      KeyStroke.class,
+      NamedKeyStroke.class,
       AssignedDeckPrompt.class,
       Boolean.class,
       Integer.class,
@@ -386,13 +384,13 @@ public class DrawPile extends SetupStack {
       return dummy.getReshuffleMsgFormat();
     }
     else if (RESHUFFLE_HOTKEY.equals(key)) {
-      return HotKeyConfigurer.encode(dummy.getReshuffleKey());
+      return NamedHotKeyConfigurer.encode(dummy.getReshuffleKey());
     }
     else if (SHUFFLE_REPORT_FORMAT.equals(key)) {
       return dummy.getShuffleMsgFormat();
     }
     else if (SHUFFLE_HOTKEY.equals(key)) {
-      return HotKeyConfigurer.encode(dummy.getShuffleKey());
+      return NamedHotKeyConfigurer.encode(dummy.getShuffleKey());
     }
     else if (REVERSE_REPORT_FORMAT.equals(key)) {
       return dummy.getReverseMsgFormat();
@@ -528,9 +526,9 @@ public class DrawPile extends SetupStack {
     }
     else if (RESHUFFLE_HOTKEY.equals(key)) {
       if (value instanceof String) {
-        value = HotKeyConfigurer.decode((String) value);
+        value = NamedHotKeyConfigurer.decode((String) value);
       }
-      dummy.setReshuffleKey((KeyStroke) value);
+      dummy.setReshuffleKey((NamedKeyStroke) value);
     }
     else if (RESHUFFLE_TARGET.equals(key)) {
       dummy.setReshuffleTarget((String) value);
@@ -546,9 +544,9 @@ public class DrawPile extends SetupStack {
     }
     else if (SHUFFLE_HOTKEY.equals(key)) {
       if (value instanceof String) {
-        value = HotKeyConfigurer.decode((String) value);
+        value = NamedHotKeyConfigurer.decode((String) value);
       }
-      dummy.setShuffleKey((KeyStroke) value);
+      dummy.setShuffleKey((NamedKeyStroke) value);
     }
     else if (FACE_DOWN_REPORT_FORMAT.equals(key)) {
       dummy.setFaceDownMsgFormat((String) value);

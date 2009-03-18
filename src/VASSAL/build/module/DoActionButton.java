@@ -36,7 +36,6 @@ import VASSAL.command.PlayAudioClipCommand;
 import VASSAL.configure.AudioClipConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.ListConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
@@ -166,7 +165,7 @@ public class DoActionButton extends AbstractConfigurable
     }
 
     protected Configurer buildChildConfigurer() {
-      return new HotKeyConfigurer(null, Resources.getString(Resources.HOTKEY_LABEL));
+      return new NamedHotKeyConfigurer(null, Resources.getString(Resources.HOTKEY_LABEL));
     }
     
   }

@@ -27,6 +27,7 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -39,22 +40,23 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.tree.TreePath;
+
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.chat.ChatServerConnection;
-import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.VisibilityOption;
 import VASSAL.tools.ComponentSplitter;
-import VASSAL.tools.KeyStrokeListener;
+import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.menu.MenuManager;
 
 public class ChatServerControls extends AbstractBuildable {
@@ -119,8 +121,8 @@ public class ChatServerControls extends AbstractBuildable {
       }
     };
     launch.addActionListener(al);
-    final KeyStrokeListener l = new KeyStrokeListener(al);
-    l.setKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
+    final NamedKeyStrokeListener l = new NamedKeyStrokeListener(al);
+    l.setKeyStroke(NamedKeyStroke.getNamedKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
     URL iconURL = getClass().getResource("/images/connect.gif");  //$NON-NLS-1$
     if (iconURL != null) {
       launch.setIcon(new ImageIcon(iconURL));
@@ -138,12 +140,12 @@ public class ChatServerControls extends AbstractBuildable {
           }
         });
         iconConfig.fireUpdate();
-        final HotKeyConfigurer keyConfig = new HotKeyConfigurer("serverControlsHotKey", Resources.getString("Chat.server_controls_hotkey"), l.getKeyStroke());   //$NON-NLS-1$ //$NON-NLS-2$
+        final NamedHotKeyConfigurer keyConfig = new NamedHotKeyConfigurer("serverControlsHotKey", Resources.getString("Chat.server_controls_hotkey"), l.getNamedKeyStroke());   //$NON-NLS-1$ //$NON-NLS-2$
         GlobalOptions.getInstance().addOption(keyConfig);
         keyConfig.addPropertyChangeListener(new PropertyChangeListener() {
           public void propertyChange(PropertyChangeEvent evt) {
-            l.setKeyStroke((KeyStroke) keyConfig.getValue());
-            launch.setToolTipText(Resources.getString("Chat.server_controls_tooltip", HotKeyConfigurer.getString(l.getKeyStroke())));  //$NON-NLS-1$
+            l.setKeyStroke(keyConfig.getValueNamedKeyStroke());
+            launch.setToolTipText(Resources.getString("Chat.server_controls_tooltip", NamedHotKeyConfigurer.getString(l.getKeyStroke())));  //$NON-NLS-1$
           }
         });
         keyConfig.fireUpdate();

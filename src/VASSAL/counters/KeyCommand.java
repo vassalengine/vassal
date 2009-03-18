@@ -28,6 +28,7 @@ import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 
 public class KeyCommand extends AbstractAction {
   private static final long serialVersionUID = 1L;
@@ -41,9 +42,13 @@ public class KeyCommand extends AbstractAction {
   private boolean enabled = true;
 
   protected TranslatablePiece i18nPiece;
-
+  protected NamedKeyStroke namedKeyStroke;
 
   public KeyCommand(String name, KeyStroke key, GamePiece target) {
+    this(name, key, target, null); 
+  }
+  
+  public KeyCommand(String name, NamedKeyStroke key, GamePiece target) {
     this(name, key, target, null); 
   }
   
@@ -55,6 +60,15 @@ public class KeyCommand extends AbstractAction {
     this.i18nPiece = i18nPiece;
   }
 
+  public KeyCommand(String name, NamedKeyStroke key, GamePiece target, TranslatablePiece i18nPiece) {
+    this(name, key.getKeyStroke(), target, i18nPiece);
+    namedKeyStroke = key == null ? NamedKeyStroke.NULL_KEYSTROKE : key;
+  }
+  
+  public KeyCommand(String name, NamedKeyStroke key, GamePiece target, boolean enabled) {
+    this(name, key.getKeyStroke(), target, enabled);
+    namedKeyStroke = key == null ? NamedKeyStroke.NULL_KEYSTROKE : key;
+  }
   public KeyCommand(String name, KeyStroke key, GamePiece target, boolean enabled) {
     this(name, key, target, null);
     setEnabled(enabled);
@@ -77,6 +91,10 @@ public class KeyCommand extends AbstractAction {
     return stroke;
   }
 
+  public NamedKeyStroke getNamedKeyStroke() {
+    return namedKeyStroke;
+  }
+  
   public GamePiece getTarget() {
     return target;
   }

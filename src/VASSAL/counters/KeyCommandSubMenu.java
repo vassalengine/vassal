@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 
 /** Represents a sub-menu in a GamePiece's right-click drop-down menu */
 public class KeyCommandSubMenu extends KeyCommand {
@@ -33,7 +34,7 @@ public class KeyCommandSubMenu extends KeyCommand {
 
   public KeyCommandSubMenu(String name, GamePiece target,
                            TranslatablePiece i18nPiece) {
-    super(name, null, target, i18nPiece);
+    super(name, NamedKeyStroke.NULL_KEYSTROKE, target, i18nPiece);
   }
 
   public void actionPerformed(ActionEvent evt) {
