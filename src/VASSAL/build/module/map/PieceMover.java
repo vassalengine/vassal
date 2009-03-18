@@ -87,7 +87,6 @@ import VASSAL.counters.PieceSorter;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
-import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.Op;
@@ -353,15 +352,17 @@ public class PieceMover extends AbstractBuildable
         Image img = null;
         if (iconName != null && iconName.length() > 0) {
           img = loadIcon(iconName);
+          if (img != null) {
+            markUnmovedButton.setAttribute(Map.MARK_UNMOVED_ICON, iconName);
+          }
         }
         
         if (img == null) {          
           img = loadIcon(markUnmovedIcon);
+          if (img != null) {
+            markUnmovedButton.setAttribute(Map.MARK_UNMOVED_ICON, markUnmovedIcon);
+          }
         }
-
-        if (img != null) markUnmovedButton.setIcon(new ImageIcon(img));
-        else markUnmovedButton.setText(
-          Resources.getString("Map.mark_unmoved_text")); //$NON-NLS-1$
 
         markUnmovedButton.setAlignmentY(0.0F);
         markUnmovedButton.setText(markUnmovedText);
