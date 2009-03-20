@@ -99,10 +99,12 @@ public class IconFamily extends AbstractConfigurable {
   static final int[] SIZES = new int[] { 16, 22, 32, 48 };
 
   // Directories within the icons directory to locate each Tango Size
-  static final String[] SIZE_DIRS = new String[] { "16X16", //$NON-NLS-1$ 
-      "22X22",  //$NON-NLS-1$
-      "32X32", //$NON-NLS-1$
-      "48X48" }; //$NON-NLS-1$
+  static final String[] SIZE_DIRS = new String[] {
+    "16x16", //$NON-NLS-1$ 
+    "22x22", //$NON-NLS-1$
+    "32x32", //$NON-NLS-1$
+    "48x48"  //$NON-NLS-1$
+  };
 
   // Names of sizes in local language
   static final String[] SIZE_NAMES = new String[SIZE_COUNT];;
