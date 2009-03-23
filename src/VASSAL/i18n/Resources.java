@@ -285,6 +285,9 @@ public class Resources {
     return getBundleForKey(id).getString(id, params);
   }
 
+  protected static final String BASE_BUNDLE = "VASSAL.properties";
+  protected static final String EN_BUNDLE = "VASSAL_en.properties";
+  
   /**
    * Custom Class Loader for loading VASSAL property files.
    * Check first for files in the VASSAL home directory.
@@ -293,6 +296,18 @@ public class Resources {
    */
   public static class VassalPropertyClassLoader extends ClassLoader {
     public URL getResource(String name) {
+      URL url = getAResource(name);
+      
+      // If no English translation of Vassal is available (as will usually be the case),
+      // drop back to the Base bundle.
+      if (url == null && name.endsWith(EN_BUNDLE)) {
+        url = getAResource(name.substring(0, name.lastIndexOf('/')+1)+BASE_BUNDLE);
+      }
+      
+      return url;
+    }
+    
+    public URL getAResource(String name) {
       URL url = null;
       final String propFileName = name.substring(name.lastIndexOf('/') + 1);
       final File propFile = new File(Info.getHomeDir(), propFileName);
