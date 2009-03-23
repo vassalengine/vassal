@@ -45,6 +45,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -67,7 +68,9 @@ import VASSAL.build.IllegalBuildException;
 import VASSAL.build.module.Plugin;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.documentation.HelpWindow;
+import VASSAL.build.widget.CardSlot;
 import VASSAL.build.widget.PieceSlot;
+import VASSAL.counters.MassPieceLoader;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateAction;
 import VASSAL.launch.EditorWindow;
@@ -176,6 +179,10 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     this.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
   }
 
+  public JFrame getFrame() {
+    return editorWindow;
+  }
+  
   class KeyAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
     protected String actionName;
@@ -267,6 +274,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     addActionGroup(popup, l);
     for (Action a : buildAddActionsFor(target)) {
       addAction(popup, a);
+    }
+    if (hasChild(target, PieceSlot.class) || hasChild(target, CardSlot.class)) {
+      addAction(popup, buildMassPieceLoaderAction(target));
     }
     addAction(popup, buildImportAction(target));
     return popup;
@@ -401,7 +411,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
    * 
    * @param c Configurable to update
    */
-  protected void updateGpIds(Configurable c) {
+  public void updateGpIds(Configurable c) {
     if (c instanceof PieceSlot) {
       ((PieceSlot) c).updateGpId(GameModule.getGameModule());
     }
@@ -450,6 +460,32 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return a;
   }
 
+
+  protected Action buildMassPieceLoaderAction(final Configurable target) {
+    Action a = null;
+    final ConfigureTree tree = this;
+    if (getTreeNode(target).getParent() != null) {
+      String desc = "Add Multiple " + (hasChild(target, CardSlot.class) ? "Cards" : "Pieces");
+      a = new AbstractAction(desc) {
+        private static final long serialVersionUID = 1L;
+
+        public void actionPerformed(ActionEvent e) {
+          new MassPieceLoader(tree, target).load();
+        }
+      };
+    }
+    return a;
+  }
+
+  protected boolean hasChild(Configurable parent, Class<?> childClass) {
+    for (Class<?> c : parent.getAllowableConfigureComponents()) {
+      if (c.equals(childClass)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   protected List<Action> buildAddActionsFor(final Configurable target) {
     final ArrayList<Action> l = new ArrayList<Action>();
     for (Class<? extends Buildable> newConfig :

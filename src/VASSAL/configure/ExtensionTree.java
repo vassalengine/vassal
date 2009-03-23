@@ -265,7 +265,7 @@ public class ExtensionTree extends ConfigureTree {
    * 
    * @param c Configurable to update
    */
-  protected void updateGpIds(Configurable c) {
+  public void updateGpIds(Configurable c) {
     if (c instanceof PieceSlot) {
       ((PieceSlot) c).updateGpId(extension);
     }

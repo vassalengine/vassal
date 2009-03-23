@@ -273,7 +273,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     }
     loopLevels = true;
   }
-
+  
   public String getLocalizedName() {
     return getName(true);
   }
@@ -308,6 +308,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return name;
   }
  
+  /**
+   * Return raw Embellishment name
+   * @return Embellishment name
+   */
+  public String getLayerName() {
+    return name == null ? "" : name;
+  }
+  
   public void mySetState(String s) {
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ';');
     value = st.nextInt(1);
@@ -765,7 +773,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return getLayerWithMatchingActivateCommand(piece, stroke.getKeyStroke(), active);
   }
   
-  private static class Ed implements PieceEditor {
+  protected static class Ed implements PieceEditor {
     private MultiImagePicker images;
     private JTextField activateKeyInput = new JTextField("A");
     private JTextField upKeyInput = new JTextField("]");
@@ -913,7 +921,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       controls.add(box);
 
-      images = new MultiImagePicker();
+      images = getImagePicker();
       controls.add(images);
 
       final JPanel p2 = new JPanel();
@@ -1039,6 +1047,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       }
     }
 
+    protected MultiImagePicker getImagePicker() {
+      return new MultiImagePicker();
+    }
+    
     public String getState() {
       return alwaysActive.isSelected() ? "1" : "-1";
     }

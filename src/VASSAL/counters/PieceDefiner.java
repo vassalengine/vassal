@@ -539,7 +539,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       BrowserSupport.openURL(h.getContents().toString());
     }
   }
-
+  
   protected boolean edit(int index) {
     Object o = inUseModel.elementAt(index);
     if (!(o instanceof EditablePiece)) {
@@ -659,7 +659,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   private JPanel availablePanel;
   private JScrollPane availableScroll;
-  private JList availableList;
+  protected JList availableList;
   private JButton helpButton;
   private JButton importButton;
   private JPanel addRemovePanel;

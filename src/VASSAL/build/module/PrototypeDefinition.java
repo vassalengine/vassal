@@ -176,6 +176,7 @@ public class PrototypeDefinition extends AbstractConfigurable
   public static String getConfigureTypeName() {
     return Resources.getString("Editor.Prototype.component_type"); //$NON-NLS-1$
   }
+  
   public static class Config extends Configurer {
     private Box box;
     private PieceDefiner pieceDefiner;
@@ -241,6 +242,7 @@ public class PrototypeDefinition extends AbstractConfigurable
           super.removeTrait(index);
         }
       }
+
       private static class Plain extends BasicPiece {
         public Plain() {
           super(ID + ";;;;"); //$NON-NLS-1$

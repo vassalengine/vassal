@@ -36,10 +36,10 @@ import VASSAL.tools.ScrollPane;
 public class MultiImagePicker extends JPanel {
   private static final long serialVersionUID = 1L;
 
-  private JList imageList;
-  private DefaultListModel imageListElements = new DefaultListModel();
-  private CardLayout cl = new CardLayout();
-  private JPanel multiPanel = new JPanel();
+  protected JList imageList;
+  protected DefaultListModel imageListElements = new DefaultListModel();
+  protected CardLayout cl = new CardLayout();
+  protected JPanel multiPanel = new JPanel();
 
   public MultiImagePicker() {
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
