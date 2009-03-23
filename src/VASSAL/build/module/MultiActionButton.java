@@ -24,11 +24,12 @@ public class MultiActionButton extends ToolbarMenu {
   
   public String[] getAttributeDescriptions() {
     return new String[] {
+        Resources.getString(Resources.DESCRIPTION),
     		Resources.getString(Resources.BUTTON_TEXT),
-        	Resources.getString(Resources.TOOLTIP_TEXT),
-            Resources.getString(Resources.BUTTON_ICON),
-            Resources.getString(Resources.HOTKEY_LABEL),
-            Resources.getString("Editor.MultiActionButton.buttons") //$NON-NLS-1$
+        Resources.getString(Resources.TOOLTIP_TEXT),
+        Resources.getString(Resources.BUTTON_ICON),
+        Resources.getString(Resources.HOTKEY_LABEL),
+        Resources.getString("Editor.MultiActionButton.buttons") //$NON-NLS-1$
     };
   }
 
