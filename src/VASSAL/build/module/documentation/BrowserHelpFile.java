@@ -138,7 +138,6 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
           try {
             fos = new FileOutputStream(new File(output, entry.getName()));
             IOUtils.copy(in, fos);
-            in.close();
             fos.close();
           }
           finally {
@@ -147,6 +146,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         }
       }
   
+      in.close();
       url = new File(output, startingPage).toURI().toURL();
     }
     // FIXME: review error message
