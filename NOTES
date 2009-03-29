@@ -1,4 +1,4 @@
-The VASSAL Team is happy to announce the release of VASSAL 3.1.0-beta8.
+The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta1.
 
 *********************
 Download
@@ -22,40 +22,8 @@ http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta8-src.zip
 
 
 *********************
-Changes since beta6:
+Changes since beta0:
 *********************
-
-A number of problems present in 3.1.0-beta7 are fixed in 3.1.0-beta8:
-
-* Bug 2503662: NPE on connection with a newly created module
-* Bug 2502717: NPE in PrefsEditor.save()
-* Bug 2501338: IllegalStateException if cannot create extensions directory 
-* Bug 2499980: User Profile display reverting to pre 3.1 version
-* Bug 2499446: NPE when extension directory does not exist
-* Bug 2499238: Return to Deck stacking issue
-* Bug 2498607: Edit extension from another module generates bug report
-* Bug 2497564: No GamePieceImage items when piece first created
-* Bug 2495248: NPE in Replace.replacePiece()
-* Bug 2489325: SocketException in ModuleManager$SocketListener.run()
-* Bug 2446130: Better handling for ModuleManager socket errors
-* Bug 2431468: NumberFormatException in StackMetrics.setAttribute()
-* Bug 2373491: StackOverflowError due to infinite Send-to-location loop
-* Bug 2300943: Module names with apostrophes don't appear in Server Status
-* Bug 2286774: Problems playing modules from folders with '!' in pathname
-* Bug 2265820: Prevent StackOverflowErrors due to LaunchButton loops
-* Bug: Main Room must not be lockable
-* Bug: Tooltip for dice button was completely broken.
-
-New features:
-
-* New VASSAL application icon.
-* Less ugly Windows installer theme.
-* Die-roll sorting.
-
-
-Other changes:
-
-
 
 Please report all bugs in beta8, even if they are bugs which you've
 already reported against other betas. We take your bug reports very
@@ -63,32 +31,26 @@ seriously---they're the reason we've been able to fix so many bugs.
 
 
 *********************
-New Features in 3.1.0
+New Features in 3.2
 *********************
 
-* Improved room management: Invite and kick players from locked rooms.
+ * Levels within a Layer can be moved up or down the level list using buttons. 
+   [RFE 1604275]
+ 
+ * Mass Piece Loader activated by 'Add Multiple Pieces' and 'Add Multiple Cards'
+   options in right-click menu in Editor. Specify a folder of images, specify a
+   counter template and Vassal will automatically load the images and generate 
+   units. [RFE 132985]
+   
+ * Description field added to Toolbar Menu and Mult-Action button components.
+   [RFE 2005463]
+   
+ * Specify Keystrokes by name - Key Commands can be entered as single Key Strokes as in
+   earlier versions of Vassal, or can be given a 2 or more character name. Named
+   Key Strokes are essentially 'invisible' to users. Vassal guarantees that a
+   unique real keyStroke will be allocated to each uniquely named Keystroke.
+   [RFE 1604269]
 
-* Improved installation: For Windows, a real Windows installer/uninstaller.
-For Macs, a single-file disk image. Download, click, and install.
-
-* File associations: Files with .vmod, .vsav, and .vlog extensions are
-now associated with VASSAL (on Windows and Macs). Double-click a module
-to load it in VASSAL!
-
-* New Module Manager frontend: The Module Manager displays all of your
-modules and save/log files, giving you a convenient way to organize
-them all.
-
-* Improved memory management: VASSAL now uses significantly less memory
-for various graphics-related tasks. Heap sizes may be set from within
-VASSAL via the Preferences.
-
-* Improved zooming: Zoom your maps to whatever size you want.
-
-* Aide de Camp 2 module importer: Convert any ADC2 module to a VASSAL
-module with one click.
-
-* Many, many other minor improvements, and scores of bug fixes.
 
 
 *********************
@@ -97,9 +59,9 @@ Help us test
 
 This is a beta release, and may still contain some rough edges. Should
 you find any problems/oddities/bugs, please tell us so that we can fix
-them before VASSAL 3.1.0 is released. Also, if you've had problems with
-3.0.x or a previous 3.1.0 beta, please check and let us know if those
-problems are resolved in 3.1.0-beta8.
+them before VASSAL 3.2.0 is released. Also, if you've had problems with
+3.1.x or a previous 3.2.0 beta, please check and let us know if those
+problems are resolved in 3.2.0-beta1.
 
 Report bugs here in the Technical Support & Bugs category at the VASSAL
 forums:
