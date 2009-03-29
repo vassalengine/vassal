@@ -18,6 +18,7 @@
  */
 package VASSAL.counters;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -46,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import VASSAL.build.GameModule;
@@ -64,6 +66,8 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.icon.IconFactory;
+import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.ScaledImagePainter;
@@ -816,6 +820,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     private Box reset1Controls, reset2Controls;
     private Box rnd1Controls, rnd2Controls;
 
+    private JButton up, down;
+    
     public Ed(Embellishment e) {
       Box box;
 
@@ -921,9 +927,36 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       controls.add(box);
 
+      final JPanel pickerPanel = new JPanel();
+      pickerPanel.setLayout(new BorderLayout());
       images = getImagePicker();
-      controls.add(images);
-
+      images.addListSelectionListener(new ListSelectionListener() {
+        public void valueChanged(ListSelectionEvent e) {
+          setUpDownEnabled();          
+        }});
+      pickerPanel.add(images, BorderLayout.CENTER);
+         
+      up = new JButton(IconFactory.getIcon("go-up", IconFamily.XSMALL));
+      up.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          moveSelectedUp();        
+        }});
+      
+      down = new JButton(IconFactory.getIcon("go-down", IconFamily.XSMALL));
+      down.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          moveSelectedDown();        
+        }});
+      
+      final Box upDownPanel = Box.createVerticalBox();
+      upDownPanel.add(Box.createVerticalGlue());
+      upDownPanel.add(up);
+      upDownPanel.add(down);
+      upDownPanel.add(Box.createVerticalGlue());
+      pickerPanel.add(upDownPanel, BorderLayout.EAST);
+        
+      controls.add(pickerPanel);
+      
       final JPanel p2 = new JPanel();
       p2.setLayout(new GridLayout(2, 2));
 
@@ -992,6 +1025,42 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       reset(e);
     }
 
+    protected void moveSelectedUp() {
+      final int selected = images.getList().getSelectedIndex();
+      final int count = images.getList().getModel().getSize();
+      if (count > 1 && selected > 0) {
+        swap(selected, selected-1);
+      }
+    }
+    
+    protected void moveSelectedDown() {
+      final int selected = images.getList().getSelectedIndex();
+      final int count = images.getList().getModel().getSize();
+      if (count > 1 && selected < (count-1)) {
+        swap(selected, selected+1);
+      }
+    }
+    
+    protected void swap(int index1, int index2) {
+      
+      final String name = names.get(index1);
+      names.set(index1, names.get(index2));
+      names.set(index2, name);
+      
+      final Integer prefix = isPrefix.get(index1);
+      isPrefix.set(index1, isPrefix.get(index2));
+      isPrefix.set(index2, prefix);
+      
+      images.swap (index1, index2);
+    }
+    
+    protected void  setUpDownEnabled() {
+      final int selected = images.getList().getSelectedIndex();
+      final int count = images.getList().getModel().getSize();
+      up.setEnabled(count > 1 && selected > 0);
+      down.setEnabled(count > 1 && selected < (count-1));
+    }
+    
     /*
      * Change visibility of fields depending on the Follow Property setting
      */
