@@ -150,8 +150,9 @@ public class ModuleManager {
       new ModuleManager();
     }
     catch (BindException e) {
-      // if this fails, a ModuleManager is already listening
-e.printStackTrace();      
+      // if this fails, a ModuleManager is (probably) already listening
+// FIXME: we should set a flag noting that this failed, so we can throw
+// up a warning later if we can't connect to the socket
     }
     catch (IOException e) {
       // should not happen
