@@ -471,7 +471,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         oout = new ObjectOutputStream(p.getOutputStream());
         oout.writeInt(serverSocket.getLocalPort());
         oout.writeObject(lr);
-        oout.close();
+        // Note: We don't try to close() the socket here because the
+        // pipe might already have been closed from the other end,
+        // and that would cause close() to throw spuriously.
       }
       finally {
         IOUtils.closeQuietly(oout);
