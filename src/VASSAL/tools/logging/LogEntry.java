@@ -20,6 +20,10 @@
 package VASSAL.tools.logging;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import VASSAL.tools.ThrowableUtils;
 
@@ -40,8 +44,8 @@ public class LogEntry implements Serializable {
   public final long timestamp;
   public final long pid;
   public final int type;
-  public final Throwable thrown;
   public final String message;
+  public final String trace;
 
   public LogEntry(long pid, int type, Throwable thrown, String message) {
     this(System.currentTimeMillis(), pid, type, thrown, message);
@@ -56,20 +60,33 @@ public class LogEntry implements Serializable {
     this.timestamp = timestamp;
     this.pid = pid;
     this.type = type;
-    this.thrown = thrown;
     this.message = message;
+    this.trace = thrown != null ? ThrowableUtils.getStackTrace(thrown) : null;
   }
 
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append(timestamp).append(' ').append(pid);
 
-    if (message != null)
+    final DateFormat dateFormat =
+      new SimpleDateFormat("dd MMM yyyy HH:mm:ss.SSS", Locale.ENGLISH);
+    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    
+    sb.append(dateFormat.format(timestamp))
+      .append(' ')
+      .append(pid);
+
+    if (message != null) {
       sb.append(' ').append(message);
-
-    if (thrown  != null)
-      sb.append(' ').append(ThrowableUtils.getStackTrace(thrown));
+      if (trace != null) {
+        sb.append("\n").append(trace);
+      }
+    }
+    else {
+      if (trace != null) {
+        sb.append(' ').append(trace);
+      }
+    }
 
     return sb.toString();
   }
