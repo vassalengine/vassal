@@ -39,4 +39,13 @@ public class LogOutputStreamAdapter implements LogListener {
       // FIXME: What to do here????
     }
   }
+
+  public void flush() {
+    try {
+      out.flush();
+    }
+    catch (IOException e) {
+      // FIXME: What to do here????
+    }
+  }
 }

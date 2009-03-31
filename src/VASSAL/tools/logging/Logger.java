@@ -63,31 +63,28 @@ public class Logger {
     LogManager.enqueue(new LogEntry(pid, type, thrown, message));
   }
 
+ public static void logAndWait(String message) {
+    logAndWait(null, message, MESSAGE);
+  }
+
+  public static void logAndWait(Throwable thrown) {
+    logAndWait(thrown, null, ERROR);
+  }
+
+  public static void logAndWait(Throwable thrown, String message) {
+    logAndWait(thrown, message, ERROR);
+  }
+
+  public static void logAndWait(String message, int type) {
+    logAndWait(null, message, type);
+  }
+
   public static void logAndWait(Throwable thrown, int type) {
     logAndWait(thrown, null, type);
   }
 
   public static void logAndWait(Throwable thrown, String message, int type) {
-    // We create a latch which a special listener will release when
-    // this log entry reaches it; then the listener uninstalls itself.
-    final CountDownLatch latch = new CountDownLatch(1);
-    final LogEntry waiting = new LogEntry(pid, type, thrown, message);
-
-    LogManager.addLogListener(new LogListener() {
-      public void handle(LogEntry entry) {
-        if (entry == waiting) {
-          LogManager.removeLogListener(this);
-          latch.countDown();
-        }
-      }
-    });
-    
-    try {
-      LogManager.enqueue(waiting);
-      latch.await();
-    }
-    catch (InterruptedException e) {
-      log(e);
-    }
+    log(thrown, message, type);
+    LogManager.flush();
   }
 }

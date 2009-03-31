@@ -111,6 +111,7 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.logging.Logger;
 import VASSAL.tools.logging.LogManager;
 import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
@@ -191,6 +192,7 @@ public class ModuleManagerWindow extends JFrame {
           IOUtils.closeQuietly(gl);
         }
 
+        Logger.logAndWait("-- Exiting");
         System.exit(0);
       }
     };

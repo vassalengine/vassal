@@ -20,6 +20,7 @@
 package VASSAL.tools.logging;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -44,6 +45,28 @@ public class LogManager {
     }
   }
 
+  private static class Flusher extends LogEntry {
+    private static final long serialVersionUID = 1L;
+
+    public final CountDownLatch latch = new CountDownLatch(1);
+
+    public Flusher() {
+      super(0L, 0, null, "");
+    }
+  }
+ 
+  public static void flush() {
+    final Flusher f = new Flusher();
+    queue.add(f);
+
+    try {
+      f.latch.await();
+    }
+    catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+
   // This thread dispatches log entries to the listeners,
   // so as not to block the generating threads.
   private static Thread thread = null;
@@ -53,7 +76,13 @@ public class LogManager {
       while (true) {
         try {
           final LogEntry entry = queue.take();
-          for (LogListener l : listeners) l.handle(entry);
+          if (entry instanceof Flusher) {
+            for (LogListener l : listeners) l.flush();
+            ((Flusher) entry).latch.countDown();
+          }
+          else {
+            for (LogListener l : listeners) l.handle(entry);
+          }
         }
         catch (InterruptedException e) {
           // FIXME: What do to here????

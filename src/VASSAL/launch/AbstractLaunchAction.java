@@ -512,6 +512,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         LogManager.enqueue((LogEntry) cmd);
         return "OK";
       }
+      else if ("LOG_FLUSH".equals(cmd)) {
+        LogManager.flush();
+        return "OK";
+      }
       else if (cmd instanceof Launcher.SaveFileCmd) {
         return ModuleManagerWindow.getInstance().update(
           ((Launcher.SaveFileCmd) cmd).getFile());

@@ -718,6 +718,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       catch (IOException e) {
         ReadErrorDialog.error(e, archive.getName());
       }
+
+      VASSAL.tools.logging.Logger.logAndWait("-- Exiting");
     }
 
     return !cancelled;

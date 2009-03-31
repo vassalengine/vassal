@@ -38,4 +38,13 @@ public class CommandClientAdapter implements LogListener{
       // FIXME: What to do here????
     }
   }
+
+  public void flush() {
+    try {
+      cmdC.request("LOG_FLUSH");
+    }
+    catch (IOException e) {
+      // FIXME: What to do here????
+    }
+  }
 }

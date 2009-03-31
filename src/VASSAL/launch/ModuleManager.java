@@ -115,6 +115,7 @@ public class ModuleManager {
         Prefs.getGlobalPrefs().write();
       }
       catch (IOException e) {
+// FIXME: this could clobber the errorLog of an existing MM
         WriteErrorDialog.error(e, Prefs.getGlobalPrefs().getFile().getPath());
       }
     }
@@ -136,6 +137,7 @@ public class ModuleManager {
         Prefs.getGlobalPrefs().write();
       }
       catch (IOException e) {
+// FIXME: this could clobber the errorLog of an existing MM
         WriteErrorDialog.error(e, Prefs.getGlobalPrefs().getFile().getPath());
       }
     }
@@ -149,9 +151,11 @@ public class ModuleManager {
     }
     catch (BindException e) {
       // if this fails, a ModuleManager is already listening
+e.printStackTrace();      
     }
     catch (IOException e) {
       // should not happen
+// FIXME: this could clobber the errorLog of an existing MM
       ErrorDialog.bug(e);
       System.exit(1);
     }  
@@ -166,7 +170,7 @@ public class ModuleManager {
         clientSocket = new Socket((String) null, port);
       }
       catch (IOException e) {
-        System.err.println("VASSAL: Couldn't open socket.");
+        System.err.println("VASSAL: Couldn't open socket on port " + port);
         e.printStackTrace();
         System.exit(1);
       }
@@ -178,7 +182,7 @@ public class ModuleManager {
         out.flush();
       }
       catch (IOException e) {
-        System.err.println("VASSAL: Couldn't write to socket.");
+        System.err.println("VASSAL: Couldn't write to socket on port " + port);
         e.printStackTrace();
         System.exit(1);
       }
@@ -188,7 +192,7 @@ public class ModuleManager {
         IOUtils.copy(in, System.err);
       }
       catch (IOException e) {
-        System.err.println("VASSAL: Couldn't read from socket.");
+        System.err.println("VASSAL: Couldn't read from socket on port " + port);
         e.printStackTrace();
         System.exit(1);
       }
