@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2008 by Brent Easton, Rodney Kinney, Joel Uckelman 
+ * Copyright (c) 2000-2009 by Brent Easton, Rodney Kinney, Joel Uckelman 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -58,6 +58,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -325,14 +326,24 @@ public class ModuleManagerWindow extends JFrame {
       Resources.getString("ModuleManager.quickstart"));
     l.setEditable(false);
 
-    // pick up background color and font from JLabel
-    l.setBackground(UIManager.getColor("control"));
-    final Font font = UIManager.getFont("Label.font");
+    // Try to get background color and font from LookAndFeel;
+    // otherwise, use dummy JLabel to get color and font.
+    Color bg = UIManager.getColor("control");
+    Font font = UIManager.getFont("Label.font");
+
+    if (bg == null || font == null) {
+      final JLabel dummy = new JLabel();
+      if (bg == null) bg = dummy.getBackground();
+      if (font == null) font = dummy.getFont();
+    }
+    
+    l.setBackground(bg);
     ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule(
       "body { font: " + font.getFamily() + " " + font.getSize() + "pt }");
 
     l.addHyperlinkListener(BrowserSupport.getListener());
 
+// FIXME: use MigLayout for this!
     // this is necessary to get proper vertical alignment
     final JPanel p = new JPanel(new GridBagLayout());
     final GridBagConstraints c = new GridBagConstraints();
