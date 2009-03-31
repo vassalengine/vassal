@@ -168,10 +168,13 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: version all $(JARS)
 	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
-$(TMPDIR)/VASSAL-$(VERSION)-linux.zip: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
-	cp $< $@
+$(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: version release-other
+	cp dist/VASSAL.sh $(TMPDIR)/VASSAL-$(VERSION)
+	rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.bat
+	tar cjvf $@ -C $(TMPDIR) VASSAL-$(VERSION)
 
 $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: version release-other $(TMPDIR)/VASSAL.exe
+	cp dist/windows/VASSAL.bat $(TMPDIR)/VASSAL-$(VERSION)
 	rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.sh
 	cp $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
@@ -189,7 +192,7 @@ $(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
 	svn export . $(TMPDIR)/VASSAL-$(VERSION)-src
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION)-src ; cd ..
 
-release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.zip
+release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
 
 release-macosx: $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg
 
