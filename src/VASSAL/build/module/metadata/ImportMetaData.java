@@ -1,5 +1,5 @@
 /*
- * $Id: ImportMetaData.java 4344 2008-10-26 21:54:16Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Brent Easton and Joel Uckelman
  *

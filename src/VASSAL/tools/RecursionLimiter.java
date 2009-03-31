@@ -1,5 +1,5 @@
 /*
- * $Id: InfiniteLoopDetection.java 3907 2008-07-28 15:08:04Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2009 by Brent Easton
  *

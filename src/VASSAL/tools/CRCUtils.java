@@ -1,5 +1,5 @@
 /*
- * $Id: CRCUtils.java 3937 2008-07-30 18:04:00Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2009 by Brent Easton
  *

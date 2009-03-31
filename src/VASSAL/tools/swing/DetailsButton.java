@@ -1,5 +1,5 @@
 /*
- * $Id: DetailsDialog.java 4560 2008-11-28 15:40:49Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Joel Uckelman
  *
