@@ -57,6 +57,7 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.FutureUtils;
 import VASSAL.tools.MemoryUtils;
 import VASSAL.tools.StringUtils;
 import VASSAL.tools.ThrowableUtils;
@@ -305,40 +306,40 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         initialHeap = FAILSAFE_INITIAL_HEAP;
         maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
-        WarningDialog.show(
+        FutureUtils.wait(WarningDialog.show(
           "Warning.maximum_heap_too_large",
           FAILSAFE_MAXIMUM_HEAP
-        );
+        ));
       }
       // maximum heap must be at least the failsafe size
       else if (maximumHeap < FAILSAFE_MAXIMUM_HEAP) {
         initialHeap = FAILSAFE_INITIAL_HEAP;
         maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
-        WarningDialog.show(
+        FutureUtils.wait(WarningDialog.show(
           "Warning.maximum_heap_too_small",
           FAILSAFE_MAXIMUM_HEAP
-        );
+        ));
       }
       // initial heap must be at least the failsafe size
       else if (initialHeap < FAILSAFE_INITIAL_HEAP) {
         initialHeap = FAILSAFE_INITIAL_HEAP;
         maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
-        WarningDialog.show(
+        FutureUtils.wait(WarningDialog.show(
           "Warning.initial_heap_too_small",
           FAILSAFE_INITIAL_HEAP
-        );
+        ));
       }
       // initial heap must be less than or equal to maximum heap
       else if (initialHeap > maximumHeap) {
         initialHeap = FAILSAFE_INITIAL_HEAP;
         maximumHeap = FAILSAFE_MAXIMUM_HEAP;
 
-        WarningDialog.show(
+        FutureUtils.wait(WarningDialog.show(
           "Warning.initial_heap_too_large",
           FAILSAFE_INITIAL_HEAP
-        );
+        ));
       }
 
       // create a socket for communicating which the child process
@@ -397,10 +398,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           throw new IOException("failed to start child process");
         }
         else {
-          WarningDialog.show(
+          FutureUtils.wait(WarningDialog.show(
             "Warning.maximum_heap_too_large",
             FAILSAFE_MAXIMUM_HEAP
-          );
+          ));
         }
       }
 

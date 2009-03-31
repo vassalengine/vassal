@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import javax.swing.SwingUtilities;
 
@@ -61,8 +62,8 @@ public class DialogUtils {
 
   private static final ExecutorService ex = Executors.newSingleThreadExecutor();
 
-  public static void enqueue(final Runnable runnable) {
-    ex.submit(new Runnable() {
+  public static Future<?> enqueue(final Runnable runnable) {
+    return ex.submit(new Runnable() {
       public void run() {
         try {
           SwingUtilities.invokeAndWait(runnable);
