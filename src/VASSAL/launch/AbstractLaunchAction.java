@@ -53,10 +53,11 @@ import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.configure.DirectoryConfigurer;
+import VASSAL.configure.IntConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.HeapFinder;
+import VASSAL.tools.MemoryUtils;
 import VASSAL.tools.StringUtils;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
@@ -77,9 +78,21 @@ import VASSAL.tools.logging.LogManager;
  */
 public abstract class AbstractLaunchAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
-  
-  public static final int DEFAULT_INITIAL_HEAP = 256;
-  public static final int DEFAULT_MAXIMUM_HEAP = 512;
+ 
+  //
+  // memory-related constants
+  //
+  protected static final int PHYS_MEMORY;
+  protected static final int DEFAULT_INITIAL_HEAP = 256;
+  protected static final int DEFAULT_MAXIMUM_HEAP = 512;
+  protected static final int FAILSAFE_INITIAL_HEAP = 64;
+  protected static final int FAILSAFE_MAXIMUM_HEAP = 128;
+
+  static {
+    // determine how much physical RAM this machine has
+    final long physMemoryBytes = MemoryUtils.getPhysicalMemory();
+    PHYS_MEMORY = physMemoryBytes < 0 ? -1 : (int)(physMemoryBytes >> 20);
+  }
 
   protected final Window window; 
   protected final String entryPoint;
@@ -232,14 +245,14 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
 // end FIXME
 
-
-      // set default heap setttings
+      // set default heap sizes
       int initialHeap = DEFAULT_INITIAL_HEAP;
       int maximumHeap = DEFAULT_MAXIMUM_HEAP;
 
       String moduleName = null;
 
-// FIXME: this should be in an abstract method and farmed out to subclasses
+// FIXME: this should be in an abstract method and farmed out to subclasses,
+// rather than a case structure for each kind of thing which may be loaded.
       // find module-specific heap settings, if any
       if (lr.module != null) {
         final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
@@ -260,79 +273,72 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
 
-          // read initial heap size, if it exists
-          final String iheap = p.getStoredValue(GlobalOptions.INITIAL_HEAP);
-          if (iheap != null) {
-            try {
-              initialHeap = Integer.parseInt(iheap.toString());
-              if (initialHeap <= 0) throw new NumberFormatException();
-            }
-            catch (NumberFormatException ex) {
-              WarningDialog.show(
-                "Warning.bad_initial_heap", DEFAULT_INITIAL_HEAP);
- 
-              initialHeap = DEFAULT_INITIAL_HEAP;
-            }
-          }
+          // read initial heap size
+          initialHeap = getHeapSize(
+            p, GlobalOptions.INITIAL_HEAP, DEFAULT_INITIAL_HEAP);
 
-          // read maximum heap size, if it exists
-          final String mheap = p.getStoredValue(GlobalOptions.MAXIMUM_HEAP);
-          if (mheap != null) {
-            try {
-              maximumHeap = Integer.parseInt(mheap.toString());
-              if (maximumHeap <= 0) throw new NumberFormatException();
-            }
-            catch (NumberFormatException ex) {
-              WarningDialog.show(
-                "Warning.bad_maximum_heap", DEFAULT_MAXIMUM_HEAP);
-
-              maximumHeap = DEFAULT_MAXIMUM_HEAP;
-            }
-          }
+          // read maximum heap size
+          maximumHeap = getHeapSize(
+            p, GlobalOptions.MAXIMUM_HEAP, DEFAULT_MAXIMUM_HEAP);
         }
       }
       else if (lr.importFile != null) {
         final Prefs p = Prefs.getGlobalPrefs();
 
-        // read initial heap size, if it exists
-        final Object iheap = p.getValue(GlobalOptions.INITIAL_HEAP);
-        if (iheap != null) {
-          try {
-            initialHeap = Integer.parseInt(iheap.toString());
-            if (initialHeap <= 0) throw new NumberFormatException();
-          }
-          catch (NumberFormatException ex) {
-            WarningDialog.show(
-              "Warning.bad_initial_heap", DEFAULT_INITIAL_HEAP);
- 
-            initialHeap = DEFAULT_INITIAL_HEAP;
-          }
-        }
+        // read initial heap size
+        initialHeap = getHeapSize(
+          p, GlobalOptions.INITIAL_HEAP, DEFAULT_INITIAL_HEAP);
 
-        // read maximum heap size, if it exists
-        final Object mheap = p.getStoredValue(GlobalOptions.MAXIMUM_HEAP);
-        if (mheap != null) {
-          try {
-            maximumHeap = Integer.parseInt(mheap.toString());
-            if (maximumHeap <= 0) throw new NumberFormatException();
-          }
-          catch (NumberFormatException ex) {
-            WarningDialog.show(
-              "Warning.bad_maximum_heap", DEFAULT_MAXIMUM_HEAP);
-
-            maximumHeap = DEFAULT_MAXIMUM_HEAP;
-          }
-        }
+        // read maximum heap size
+        maximumHeap = getHeapSize(
+          p, GlobalOptions.MAXIMUM_HEAP, DEFAULT_MAXIMUM_HEAP);
       }
 // end FIXME
 
-      // make sure that the initial heap is sane
-      if (initialHeap > maximumHeap) {
-        WarningDialog.show("Warning.initial_gt_maximum_heap",
-           DEFAULT_INITIAL_HEAP, DEFAULT_MAXIMUM_HEAP
-        );
+      //
+      // Heap size sanity checks: fall back to failsafe heap sizes in
+      // case the given initial or maximum heap is not usable.
+      //
 
-        initialHeap = maximumHeap / 2;
+      // maximum heap must fit in physical RAM
+      if (maximumHeap > PHYS_MEMORY && PHYS_MEMORY > 0) {
+        initialHeap = FAILSAFE_INITIAL_HEAP;
+        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
+
+        WarningDialog.show(
+          "Warning.maximum_heap_too_large",
+          FAILSAFE_MAXIMUM_HEAP
+        );
+      }
+      // maximum heap must be at least the failsafe size
+      else if (maximumHeap < FAILSAFE_MAXIMUM_HEAP) {
+        initialHeap = FAILSAFE_INITIAL_HEAP;
+        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
+
+        WarningDialog.show(
+          "Warning.maximum_heap_too_small",
+          FAILSAFE_MAXIMUM_HEAP
+        );
+      }
+      // initial heap must be at least the failsafe size
+      else if (initialHeap < FAILSAFE_INITIAL_HEAP) {
+        initialHeap = FAILSAFE_INITIAL_HEAP;
+        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
+
+        WarningDialog.show(
+          "Warning.initial_heap_too_small",
+          FAILSAFE_INITIAL_HEAP
+        );
+      }
+      // initial heap must be less than or equal to maximum heap
+      else if (initialHeap > maximumHeap) {
+        initialHeap = FAILSAFE_INITIAL_HEAP;
+        maximumHeap = FAILSAFE_MAXIMUM_HEAP;
+
+        WarningDialog.show(
+          "Warning.initial_heap_too_large",
+          FAILSAFE_INITIAL_HEAP
+        );
       }
 
       // create a socket for communicating which the child process
@@ -375,65 +381,26 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       al.add(entryPoint);
 
       final String[] args = al.toArray(new String[al.size()]);
-     
-      Process p = null;
-      boolean maxHeapWarning = false;
-      while (true) {
-        args[1] = "-Xms" + initialHeap + "M";
-        args[2] = "-Xmx" + maximumHeap + "M";
+   
+      // try to start a child process with the given heap sizes
+      args[1] = "-Xms" + initialHeap + "M";
+      args[2] = "-Xmx" + maximumHeap + "M";
+      Process p = launch(args);
 
-        Logger.log(StringUtils.join(" ", args));
+      // launch failed, use conservative heap sizes
+      if (p == null) {
+        args[1] = "-Xms" + FAILSAFE_INITIAL_HEAP + "M";
+        args[2] = "-Xmx" + FAILSAFE_MAXIMUM_HEAP + "M";
+        p = launch(args);
 
-        // set up and start the child process
-        final ProcessBuilder pb = new ProcessBuilder(args);
-        pb.directory(Info.getBinDir());
-        p = pb.start();
-
-        // write the port for this socket to child's stdin and close
-        ObjectOutputStream oout = null;
-        try {
-          oout = new ObjectOutputStream(p.getOutputStream());
-          oout.writeInt(serverSocket.getLocalPort());
-          oout.writeObject(lr);
-          oout.close();
+        if (p == null) {
+          throw new IOException("failed to start child process");
         }
-        finally {
-          IOUtils.closeQuietly(oout);
-        }
-
-// FIXME: this is probably too long
-        try {
-          Thread.sleep(1000);
-        }
-        catch (InterruptedException e) {
-        }
-
-        // check whether the child is still alive
-        try {
-          // If this doesn't throw, our baby is dead.
-          p.exitValue();
-          Logger.log(IOUtils.toString(p.getErrorStream()));
-
-          // Try to determine heuristically what the max max heap is.
-          final int maxMaximumHeap = HeapFinder.getMaxMaxHeap();
-          if (maximumHeap < maxMaximumHeap) {
-            // Either we're on a 64-bit machine, so we can't have
-            // an overlarge maximum heap size problem, or something
-            // else weird happened. We give up.
-            throw new IllegalStateException();
-          }
-          else {
-            // We had an infeasibly large maximum heap setting, try again
-            // with something smaller and warn the user to lower it.
-            maximumHeap = (int) (0.75 * maxMaximumHeap);
-            initialHeap = Math.min(DEFAULT_INITIAL_HEAP, maximumHeap);
-            maxHeapWarning = true;
-            continue;
-          }
-        }
-        catch (IllegalThreadStateException e) {
-          // It's alive! It's ALIIIIIIVE!!!
-          break;
+        else {
+          WarningDialog.show(
+            "Warning.maximum_heap_too_large",
+            FAILSAFE_MAXIMUM_HEAP
+          );
         }
       }
 
@@ -458,13 +425,75 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       cmdC = new CommandClient(clientSocket);
       children.add(cmdC);
 
-      if (maxHeapWarning) {
-        WarningDialog.show("Warning.set_lower_maximum_heap");
-      }
-
       // block until the process ends
       p.waitFor();
       return null;
+    }
+
+    protected int getHeapSize(ReadOnlyPrefs p, String key, int defaultHeap) {
+      // read heap size, if it exists
+      final String val = p.getStoredValue(key);
+      if (val == null) return defaultHeap;
+
+      try {
+        return Integer.parseInt(val);
+      }
+      catch (NumberFormatException ex) {
+        return -1;  
+      }
+    }
+
+    protected int getHeapSize(Prefs p, String key, int defaultHeap) {
+      // read heap size, if it exists
+      final Object val = p.getValue(key);
+      if (val == null) return defaultHeap;
+
+      try {
+        return Integer.parseInt(val.toString());
+      }
+      catch (NumberFormatException ex) {
+        return -1;  
+      }
+    }
+
+    protected Process launch(String[] args) throws IOException {
+      Logger.log(StringUtils.join(args, " "));
+
+      // set up and start the child process
+      final ProcessBuilder pb = new ProcessBuilder(args);
+      pb.directory(Info.getBinDir());
+      final Process p = pb.start();
+
+      // write the port for this socket to child's stdin and close
+      ObjectOutputStream oout = null;
+      try {
+        oout = new ObjectOutputStream(p.getOutputStream());
+        oout.writeInt(serverSocket.getLocalPort());
+        oout.writeObject(lr);
+        oout.close();
+      }
+      finally {
+        IOUtils.closeQuietly(oout);
+      }
+
+      // FIXME: this is probably too long
+      try {
+        Thread.sleep(1000);
+      }
+      catch (InterruptedException e) {
+      }
+
+      // check whether the child is still alive
+      try {
+        // If this doesn't throw, our baby is dead.
+        p.exitValue();
+        Logger.log(IOUtils.toString(p.getErrorStream()));
+        return null;
+      }
+      catch (IllegalThreadStateException e) {
+        // It's alive! It's ALIIIIIIVE!!!
+        return p;
+      }
     }
 
     @Override
