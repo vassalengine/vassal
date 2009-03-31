@@ -441,8 +441,12 @@ public class ImageUtils {
       if (useToolkit) {
         rin.mark(4096);
 
-        final Image i =
-          Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(rin));
+        // Load the Image; note that we forceLoad() to ensure that the
+        // subsequent calls to getWidth() and getHeight() return the
+        // actual width and height of the Image.
+        final Image i = forceLoad(
+          Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(rin))
+        );
 
         // check that we received a valid Image from the Toolkit 
         if (i.getWidth(null) > 0 && i.getHeight(null) > 0) {
