@@ -34,9 +34,9 @@ import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.ImportMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.imports.ImportAction;
@@ -132,7 +132,11 @@ public class Editor extends Launcher {
       catch (IOException e) {
         // This is not fatal, since we've successfully opened the module,
         // but possibly this means that the Module Manager has died.
-        CommunicationErrorDialog.error(e);
+        ErrorDialog.showDetails(
+          e,
+          ThrowableUtils.getStackTrace(e),
+          "Error.socket_error"
+        );
       }
     }
   }

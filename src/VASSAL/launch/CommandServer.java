@@ -30,8 +30,8 @@ import java.net.SocketException;
 
 import javax.swing.SwingUtilities;
 
-import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.io.IOUtils;
 
 /**
@@ -112,7 +112,11 @@ public abstract class CommandServer implements Runnable {
       ErrorDialog.bug(e);
     }
     catch (IOException e) {
-      CommunicationErrorDialog.error(e);
+      ErrorDialog.showDetails(
+        e,
+        ThrowableUtils.getStackTrace(e),
+        "Error.socket_error"
+      );
     }
     finally {
       IOUtils.closeQuietly(clientSocket);

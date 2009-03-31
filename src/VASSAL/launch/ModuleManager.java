@@ -45,8 +45,8 @@ import VASSAL.configure.LongConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.preferences.Prefs;
-import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.LogManager;
@@ -358,7 +358,11 @@ public class ModuleManager {
             out.close();
           }
           catch (IOException e) {
-            CommunicationErrorDialog.error(e); 
+            ErrorDialog.showDetails(
+              e,
+              ThrowableUtils.getStackTrace(e),
+              "Error.socket_error"
+            );
           }
           catch (ClassNotFoundException e) {
             ErrorDialog.bug(e);

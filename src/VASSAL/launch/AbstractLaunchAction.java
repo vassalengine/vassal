@@ -55,7 +55,6 @@ import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
-import VASSAL.tools.CommunicationErrorDialog;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.HeapFinder;
 import VASSAL.tools.StringUtils;
@@ -140,7 +139,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           // Normal. Child closed.
         }
         catch (IOException e) {
-          CommunicationErrorDialog.error(e);
+          ErrorDialog.showDetails(
+            e,
+            ThrowableUtils.getStackTrace(e),
+            "Error.socket_error"
+          );
         }
       }
     }
@@ -480,7 +483,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         // determine what kind of exception occurred
         final Throwable c = e.getCause();
         if (c instanceof IOException) {
-          CommunicationErrorDialog.error(e, (IOException) c);
+          ErrorDialog.showDetails(
+            e, 
+            ThrowableUtils.getStackTrace(e),
+            "Error.socket_error"
+          );
         }
         else {
           ErrorDialog.bug(e);
@@ -556,7 +563,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         IOUtils.copy(in, out);
       }
       catch (IOException e) {
-        CommunicationErrorDialog.error(e);
+        ErrorDialog.showDetails(
+          e, 
+          ThrowableUtils.getStackTrace(e),
+          "Error.socket_error"
+        );
       }
     }
   }
