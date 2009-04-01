@@ -1,3 +1,17 @@
+3.1.3 - 1 April 2009
+
+* Bug 2721276: Illegal Heap sizes crashing startup
+* Bug 2706019: Too few parameters for socket failure dialog
+* Bug 2703991. Mask dimensions in ADC2 symset files are stupid
+* Bug 2698781: Cannot switch to English if PC Locale is non-English
+* Bug 2680395: Error in Maximum Heap calculation and check
+* Bug 2665174: NPE due to no default UI font
+* Bug 2580669: Module-specific exception classes cannot be logged
+* Bug 2372121: Race condition causes truncated errorLogs in bug reports
+* Bug: 8-bit PNGs with 1-bit alpha have bad transparency 
+* Bug: HTML help folders with more than one file cannot be opened
+* Bug: close() on a pipe closed from the other end will throw IOException
+
 3.1.2 - 18 March 2009
 
 * Bug 2690874: No Moved button if no text specified
