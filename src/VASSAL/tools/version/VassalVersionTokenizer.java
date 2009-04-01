@@ -65,11 +65,11 @@ public class VassalVersionTokenizer implements VersionTokenizer {
 
   // This is the mapping for tags to svn versions. Only tags which cannot
   // be distinguished from the current version from the numeric portion
-  // alone need to be maintined here. (E.g., the 3.1.0 tags may be removed
-  // as soon as 3.1.1 is released.)
+  // alone need to be maintined here. (E.g., the 3.1.0 tags should be
+  // removed as soon as 3.1.1 is released.)
   static {
-    // 3.1.0
 /*
+    // 3.1.0
     tags.put("beta1", 3606);
     tags.put("beta2", 3664);
     tags.put("beta3", 4023);

@@ -1272,7 +1272,9 @@ public class ModuleManagerWindow extends JFrame {
     public JPopupMenu buildPopup(int row) {
       final JPopupMenu m = new JPopupMenu();
       m.add(new Player.LaunchAction(ModuleManagerWindow.this, file));
-      m.add(new Editor.ListLaunchAction(ModuleManagerWindow.this, file));
+      final Action editAction = new Editor.ListLaunchAction(ModuleManagerWindow.this, file);
+      editAction.setEnabled(!Info.isTooNewToEdit(metadata.getVassalVersion()));
+      m.add(editAction);
       m.add(new AbstractAction(Resources.getString("General.remove")) {
         private static final long serialVersionUID = 1L;
 
@@ -1407,8 +1409,10 @@ public class ModuleManagerWindow extends JFrame {
       m.add(new ActivateExtensionAction(Resources.getString(isActive() ?
             "ModuleManager.deactivate" : "ModuleManager.activate")));
 
-      m.add(new EditExtensionLaunchAction(
-        ModuleManagerWindow.this, getFile(), getSelectedModule()));
+      final Action editAction = new EditExtensionLaunchAction(
+          ModuleManagerWindow.this, getFile(), getSelectedModule());
+      editAction.setEnabled(!Info.isTooNewToEdit(metadata.getVassalVersion()));
+      m.add(editAction);
       return m;
     }
    

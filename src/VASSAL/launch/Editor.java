@@ -280,6 +280,16 @@ public class Editor extends Launcher {
       // prompt the user to pick a module
       if (promptForFile() == null) return;
 
+      final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
+      if (Info.isTooNewToEdit(data.getVassalVersion())) {
+        ErrorDialog.show(
+          "Error.module_too_new",
+          lr.module.getPath(),
+          data.getVassalVersion(),
+          Info.getVersion()
+        );
+        return;
+      }
       super.actionPerformed(e);
     }
   }

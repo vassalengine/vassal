@@ -1,4 +1,29 @@
-3.1.0 - ??
+3.1.2 - 18 March 2009
+
+* Bug 2690874: No Moved button if no text specified
+
+3.1.1 - 17 March 2009
+
+* Bug 2689040: StringIndexOutOfBoundsException inviting peer2peer players
+* Bug 2688226: NPE Adding Preference
+* Bug 2687265: NPE in SendToLocation
+* Bug 2687178: Mark unmoved button appears even if icon set to null
+* Bug 2686890: Turn Counter does not respond to Hotkeys when undocked
+* Bug 2686888: Turn Counter always increments/decrements by 1
+* Bug 2685559: NPE in Embellishment.getMatchingActivationChar()
+* Bug 2684931: ClassCastException when loading module
+* Bug 2672959: Old Java fails to read PNGs with small palettes
+* Bug 2676355: Bug Dialog sometimes hangs over other modal dialogs
+* Bug 2673589: ImageIO throws IllegalArgumentException reading bad mages
+* Bug 2665747: NPE in MovementReporter reporting Drag & Drop move
+* Bug 2658210: OutOfMemoryError in Importer should not generate Bug Dialog
+* Bug 2653477: ArrayIndexOutOfBoundsException in Embellishment.getLocalized
+* Bug 2630529: NPE in ModuleManager displaying newly added module info
+* Bug 2432256: ArrayIndexOutOfBoundsException in Embellishment
+
+* The recommended minimum Java version for VASSAL is now 1.5.0_08.
+
+3.1.0 - 28 February 2009
 
 * Launch from VASSAL.exe on Windows
 * Native Windows installer
