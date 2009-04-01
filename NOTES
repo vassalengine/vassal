@@ -4,25 +4,29 @@ The VASSAL Team is happy to announce the release of VASSAL 3.2.0-beta1.
 Download
 *********************
 
-For Windows:
+For Linux:
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta8-windows.exe
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-linux.tar.bz2
 
 For Mac OS X:
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta8-macosx.dmg
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-macosx.dmg
 
-For Linux (and other platforms):
+For Windows:
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta8-generic.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-windows.exe
+
+For other operating systems:
+
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-other.zip
 
 Source code:
 
-http://downloads.sourceforge.net/vassalengine/VASSAL-3.1.0-beta8-src.zip
+  http://downloads.sourceforge.net/vassalengine/VASSAL-3.2.0-beta1-src.zip
 
 
 *********************
-Changes since beta0:
+Changes since 3.1:
 *********************
 
 Please report all bugs in beta8, even if they are bugs which you've
@@ -34,24 +38,22 @@ seriously---they're the reason we've been able to fix so many bugs.
 New Features in 3.2
 *********************
 
- * Levels within a Layer can be moved up or down the level list using buttons. 
-   [RFE 1604275]
+* Levels within a Layer can be moved up or down the level list using buttons. 
+  [RFE 1604275]
  
- * Mass Piece Loader activated by 'Add Multiple Pieces' and 'Add Multiple Cards'
-   options in right-click menu in Editor. Specify a folder of images, specify a
-   counter template and Vassal will automatically load the images and generate 
-   units. [RFE 132985]
+* Mass Piece Loader activated by 'Add Multiple Pieces' and 'Add Multiple Cards'
+  options in right-click menu in Editor. Specify a folder of images, specify a
+  counter template and Vassal will automatically load the images and generate 
+  units. [RFE 132985]
    
- * Description field added to Toolbar Menu and Mult-Action button components.
-   [RFE 2005463]
+* Description field added to Toolbar Menu and Mult-Action button components.
+  [RFE 2005463]
    
- * Specify Keystrokes by name - Key Commands can be entered as single Key Strokes as in
-   earlier versions of Vassal, or can be given a 2 or more character name. Named
-   Key Strokes are essentially 'invisible' to users. Vassal guarantees that a
-   unique real keyStroke will be allocated to each uniquely named Keystroke.
-   [RFE 1604269]
-
-
+* Specify Keystrokes by name - Key Commands can be entered as single Key
+  Strokes as in earlier versions of Vassal, or can be given a 2 or more
+  character names. Named Key Strokes are essentially 'invisible' to users.
+  Vassal guarantees that a unique real keyStroke will be allocated to each
+  uniquely named Keystroke. [RFE 1604269]
 
 *********************
 Help us test
