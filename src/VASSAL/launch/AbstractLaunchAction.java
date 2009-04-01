@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -343,7 +344,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
 
       // create a socket for communicating which the child process
-      serverSocket = new ServerSocket(0);
+      serverSocket =
+        new ServerSocket(0, 50, InetAddress.getByName("localhost"));
       cmdS = new LaunchCommandServer(serverSocket);
       new Thread(cmdS).start();
 

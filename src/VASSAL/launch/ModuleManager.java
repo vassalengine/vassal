@@ -29,6 +29,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.net.BindException;
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -225,7 +226,8 @@ public class ModuleManager {
         // check a random port in the range [49152,65535]
         port = (int)(Math.random() * 16384) + 49152;
         try {
-          socket = new ServerSocket(port);
+          socket =
+            new ServerSocket(port, 50, InetAddress.getByName("localhost"));
 
           // we have a port, write it to the prefs
           final IntConfigurer portConfig = (IntConfigurer)
@@ -248,7 +250,8 @@ public class ModuleManager {
       serverSocket = socket;
     }
     else {
-      serverSocket = new ServerSocket(port);
+      serverSocket =
+        new ServerSocket(port, 50, InetAddress.getByName("localhost"));
     }
 
     final StartUp start = Info.isMacOSX() ?

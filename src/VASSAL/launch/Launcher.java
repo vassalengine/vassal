@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -115,7 +116,8 @@ public abstract class Launcher {
     if (!standalone) {
       try {
         // set up our command listener
-        final ServerSocket serverSocket = new ServerSocket(0);
+        final ServerSocket serverSocket =
+          new ServerSocket(0, 50, InetAddress.getByName("localhost"));
         cmdS = createCommandServer(serverSocket);
         new Thread(cmdS).start();
 
