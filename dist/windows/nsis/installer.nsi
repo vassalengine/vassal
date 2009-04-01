@@ -33,7 +33,7 @@
 !define IROOT "${VROOT}\${VNAME}"
 !define AROOT "Software\Classes"
 !define JAVA_MINIMUM "1.5.0_08"
-!define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=26223"
+!define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=29226"
 
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
