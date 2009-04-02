@@ -37,10 +37,10 @@ import VASSAL.tools.NamedKeyStroke;
  * A Configurer for {@link NamedKeyStroke} values
  */
 public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
-  private JTextField tf;
+  private JTextField tf = new JTextField(16);
   private JPanel p;
   private boolean named;
-  private JTextField keyName;
+  private JTextField keyName = new JTextField(16);
   private char lastChar;
 
   public NamedHotKeyConfigurer(String key, String name) {
@@ -83,18 +83,21 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
     setValue(s == null ? null : decode(s));
   }
 
+  public void setEnabled(boolean b) {
+    tf.setEnabled(b);
+    keyName.setEnabled(b);
+  }
+  
   public java.awt.Component getControls() {
     if (p == null) {
       p = new JPanel();
       p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-      tf = new JTextField(16);
       tf.setMaximumSize(new Dimension(tf.getMaximumSize().width,tf.getPreferredSize().height));
       tf.setText(keyToString());
       tf.addKeyListener(this);
       p.add(new JLabel(getName()));
       p.add(tf);
       
-      keyName = new JTextField(16);
       keyName.setText(getValueNamedKeyStroke() == null ? null : getValueNamedKeyStroke().getName());
       keyName.setMaximumSize(new Dimension(keyName.getMaximumSize().width,keyName.getPreferredSize().height));
       keyName.addKeyListener(new KeyListener() {

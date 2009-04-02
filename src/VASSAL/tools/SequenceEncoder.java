@@ -306,6 +306,10 @@ public class SequenceEncoder {
       return nextNamedKeyStroke(NamedKeyStroke.getNamedKeyStroke(defaultValue, InputEvent.CTRL_MASK));
     }
     
+    public NamedKeyStroke nextNamedKeyStroke() {
+      return nextNamedKeyStroke(NamedKeyStroke.NULL_KEYSTROKE);
+    }
+    
     public NamedKeyStroke nextNamedKeyStroke(NamedKeyStroke defaultValue) {
       if (val != null) {
         String s = nextToken();

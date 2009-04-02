@@ -40,6 +40,10 @@ public class BooleanConfigurer extends Configurer {
     return booleanValue().toString();
   }
 
+  public boolean getValueBoolean() {
+    return booleanValue().booleanValue();
+  }
+  
   public void setValue(Object o) {
     super.setValue(o);
     if (box != null

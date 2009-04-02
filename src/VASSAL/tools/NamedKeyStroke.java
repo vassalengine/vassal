@@ -41,10 +41,14 @@ public class NamedKeyStroke {
   protected KeyStroke stroke;
   protected String name;
   
+  public NamedKeyStroke(int code, int modifiers) {
+    this(code, modifiers, null);
+  }
+  
   public NamedKeyStroke(int code, int modifiers, String s) {
     this(KeyStroke.getKeyStroke(code, modifiers), s);
   }
-  
+   
   public NamedKeyStroke(KeyStroke k, String s) {
     stroke = k;
     name = s;
