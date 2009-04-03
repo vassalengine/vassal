@@ -32,11 +32,20 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
 import VASSAL.tools.SequenceEncoder;
 
+/**
+ * Decorator that filters events to prevent a GamePiece from
+ * being selected and/or moved.
+ * 
+ * Note: The Alt selection filter was originally implemented
+ * as a ctl-shift filter, but this conflicts with the standard counter
+ * selection interface and has not worked since v3.0. 
+ *
+ */
 public class Immobilized extends Decorator implements EditablePiece {
 
   public static final String ID = "immob;";
   protected boolean shiftToSelect = false;
-  protected boolean ctlShiftToSelect = false;
+  protected boolean altToSelect = false;
   protected boolean ignoreGrid = false;
   protected boolean neverSelect = false;
   protected boolean neverMove = false;
@@ -48,19 +57,19 @@ public class Immobilized extends Decorator implements EditablePiece {
   protected static final char MOVE_NORMAL = 'N';
   protected static final char NEVER_MOVE = 'V';
   protected static final char IGNORE_GRID = 'g';
-  protected static final char SHIFT_SELECT = 'i';
-  protected static final char CTL_SHIFT_SELECT = 'c';
+  protected static final char SHIFT_SELECT = 'i'; 
+  protected static final char ALT_SELECT = 'c'; //NB. Using 'c' to maintain compatibility with old ctl-shift version
   protected static final char NEVER_SELECT = 'n';
 
-  protected class UseShift implements EventFilter {
+  public class UseShift implements EventFilter {
     public boolean rejectEvent(InputEvent evt) {
       return !evt.isShiftDown() && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     }
   };
 
-  protected class UseCtlShift implements EventFilter {
+  public class UseAlt implements EventFilter {
     public boolean rejectEvent(InputEvent evt) {
-      return !(evt.isShiftDown() && evt.isControlDown()) &&!Boolean.TRUE.equals(getProperty(Properties.SELECTED));
+      return !evt.isAltDown() && !Boolean.TRUE.equals(getProperty(Properties.SELECTED));
     }
   };
   
@@ -88,7 +97,7 @@ public class Immobilized extends Decorator implements EditablePiece {
 
   public void mySetType(String type) {
     shiftToSelect = false;
-    ctlShiftToSelect = false;
+    altToSelect = false;
     neverSelect = false;
     ignoreGrid = false;
     neverMove = false;
@@ -101,8 +110,8 @@ public class Immobilized extends Decorator implements EditablePiece {
       shiftToSelect = true;
       moveIfSelected = true;
     }
-    if (selectionOptions.indexOf(CTL_SHIFT_SELECT) >= 0) {
-      ctlShiftToSelect = true;
+    if (selectionOptions.indexOf(ALT_SELECT) >= 0) {
+      altToSelect = true;
       moveIfSelected = true;
     }
     if (selectionOptions.indexOf(NEVER_SELECT) >= 0) {
@@ -133,8 +142,8 @@ public class Immobilized extends Decorator implements EditablePiece {
     else if (shiftToSelect) {
       selectFilter = new UseShift();
     }
-    else if (ctlShiftToSelect) {
-      selectFilter = new UseCtlShift();
+    else if (altToSelect) {
+      selectFilter = new UseAlt();
     }
     else {
       selectFilter = null;
@@ -231,8 +240,8 @@ public class Immobilized extends Decorator implements EditablePiece {
     else if (shiftToSelect) {
       buffer.append(SHIFT_SELECT);
     }
-    else if (ctlShiftToSelect) {
-      buffer.append(CTL_SHIFT_SELECT);
+    else if (altToSelect) {
+      buffer.append(ALT_SELECT);
     }
     if (ignoreGrid) {
       buffer.append(IGNORE_GRID);
@@ -279,12 +288,12 @@ public class Immobilized extends Decorator implements EditablePiece {
       selectionOption = new JComboBox();
       selectionOption.addItem("normally");
       selectionOption.addItem("when shift-key down");
-      selectionOption.addItem("when ctl-shift-key down");
+      selectionOption.addItem("when alt-key down");
       selectionOption.addItem("never");
       if (p.neverSelect) {
         selectionOption.setSelectedIndex(3);
       }
-      else if (p.ctlShiftToSelect) {
+      else if (p.altToSelect) {
         selectionOption.setSelectedIndex(2);
       }
       else if (p.shiftToSelect) {
@@ -332,7 +341,7 @@ public class Immobilized extends Decorator implements EditablePiece {
           s += SHIFT_SELECT;
           break;
         case 2:
-          s += CTL_SHIFT_SELECT;
+          s += ALT_SELECT;
           break;
         case 3:
           s += NEVER_SELECT;

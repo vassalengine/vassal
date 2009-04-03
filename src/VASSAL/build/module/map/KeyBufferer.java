@@ -40,6 +40,7 @@ import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
 import VASSAL.counters.EventFilter;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.Immobilized;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.PieceVisitorDispatcher;
@@ -158,7 +159,7 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       selection.setLocation(map.mapCoordinates(selection.getLocation()));
       selection.width /= map.getZoom();
       selection.height /= map.getZoom();
-      PieceVisitorDispatcher d = createDragSelector(!evt.isControlDown());
+      PieceVisitorDispatcher d = createDragSelector(!evt.isControlDown(), evt.isAltDown());
       // RFE 1659481 Don't clear the entire selection buffer if either shift
       // or control is down - we select/deselect lassoed counters instead
       if (!evt.isShiftDown() && !evt.isControlDown()) {
@@ -176,15 +177,17 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
    * 
    * @return
    */
-  protected PieceVisitorDispatcher createDragSelector(boolean selecting) {
-    return new PieceVisitorDispatcher(new KBDeckVisitor(selecting));
+  protected PieceVisitorDispatcher createDragSelector(boolean selecting, boolean altDown) {
+    return new PieceVisitorDispatcher(new KBDeckVisitor(selecting, altDown));
   }
 
   public class KBDeckVisitor implements DeckVisitor {
     boolean selecting = false;
+    boolean altDown = false;
 
-    public KBDeckVisitor(boolean b) {
+    public KBDeckVisitor(boolean b, boolean c) {
       selecting = b;
+      altDown = c;
     }
 
     public Object visitDeck(Deck d) {
@@ -221,11 +224,16 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
       return null;
     }
 
+    // Handle non-stacked units, including Does Not Stack units
+    // Does Not Stack units deselect normally once selected
     public Object visitDefault(GamePiece p) {
-      if (p.getProperty(Properties.SELECT_EVENT_FILTER) == null && selection.contains(p.getPosition())
-          && !Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))) {
+      if (selection.contains(p.getPosition()) && !Boolean.TRUE.equals(p.getProperty(Properties.INVISIBLE_TO_ME))) {
         if (selecting) {
-          KeyBuffer.getBuffer().add(p);
+          final EventFilter filter = (EventFilter) p.getProperty(Properties.SELECT_EVENT_FILTER);
+          final boolean altSelect = (altDown && filter instanceof Immobilized.UseAlt);
+          if (filter == null || altSelect) {
+            KeyBuffer.getBuffer().add(p);
+          }
         }
         else {
           KeyBuffer.getBuffer().remove(p);

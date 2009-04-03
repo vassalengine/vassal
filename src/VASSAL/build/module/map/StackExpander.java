@@ -20,8 +20,10 @@ package VASSAL.build.module.map;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.module.Map;
 import VASSAL.counters.GamePiece;
@@ -51,8 +53,8 @@ public class StackExpander extends MouseAdapter implements Buildable {
     if (!e.isConsumed()) {
       if (e.getClickCount() == 2) {
         GamePiece p = map.findPiece(e.getPoint(), PieceFinder.STACK_ONLY);
-        KeyBuffer.getBuffer().clear();
         if (p != null) {
+          KeyBuffer.getBuffer().clear();
           ((Stack) p).setExpanded(!((Stack) p).isExpanded());
           KeyBuffer.getBuffer().add(((Stack) p).topPiece());
         }
