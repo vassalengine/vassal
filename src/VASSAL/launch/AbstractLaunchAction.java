@@ -344,8 +344,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
 
       // create a socket for communicating which the child process
-      serverSocket =
-        new ServerSocket(0, 50, InetAddress.getByName("localhost"));
+      serverSocket = new ServerSocket(0, 0, InetAddress.getByName(null));
       cmdS = new LaunchCommandServer(serverSocket);
       new Thread(cmdS).start();
 

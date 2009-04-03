@@ -27,11 +27,14 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
+import java.io.RandomAccessFile;
 import java.net.BindException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -67,16 +70,10 @@ import VASSAL.tools.menu.MenuManager;
  */
 public class ModuleManager {
 
-  private static final String MODULE_MANAGER_PORT = "moduleManagerPort";
-  private static final String MODULE_MANAGER_KEY = "moduleManagerKey";
-
   private static final String NEXT_VERSION_CHECK = "nextVersionCheck";
 
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
-
-  private static int port;
-  private static long key;
 
   public static void main(String[] args) {
     // parse command-line arguments
@@ -85,6 +82,7 @@ public class ModuleManager {
       lr = LaunchRequest.parseArgs(args);
     }
     catch (LaunchRequestException e) {
+// FIXME: should be a dialog...
       System.err.println("VASSAL: " + e.getMessage());
       System.exit(1);
     }
@@ -103,101 +101,121 @@ public class ModuleManager {
       return;
     }
 
-    // set up security key so other users can't talk with our socket
-    final LongConfigurer keyConfig =
-      new LongConfigurer(MODULE_MANAGER_KEY, null, -1L);
-    Prefs.getGlobalPrefs().addOption(null, keyConfig);
- 
-    key = keyConfig.getLongValue(-1L);
-    if (key == -1) {
-      key = (long) (Math.random() * Long.MAX_VALUE);
-      keyConfig.setValue(key);
+    //
+    // How we start exactly one request server:
+    //
+    // To ensure that exactly one process acts as the request server, we
+    // acquire a lock on the ~/VASSAL/key file, and then attempt to acquire
+    // a lock on the ~/VASSAL/lock file. If we cannot lock ~/VASSAL/lock,
+    // then there is already a server running; in that case, we read the
+    // port number and security key from ~/VASSAL/key. If we can lock
+    // ~/VASSAL/lock, then we start the server, write the port number and
+    // key to ~/VASSAL/key, and continue to hold the lock on ~/VASSAL/lock.
+    // Finally, we unlock ~/VASSAL/key and proceed to act as a client,
+    // sending requests over localhost:port using the security key.
+    //
+    // The advantages of this method are: 
+    //
+    // (1) No race conditions between processes started at the same time.
+    // (2) No port collisions, because we don't use a predetermined port.
+    //
+
+    final File keyfile = new File(Info.getConfDir(), "key");
+    final File lockfile = new File(Info.getConfDir(), "lock");
+
+    int port = 0;
+    long key = 0;
+
+    RandomAccessFile kraf = null;
+    FileLock klock = null;
+    try {
+      // acquire an exclusive lock on the key file
+      kraf = new RandomAccessFile(keyfile, "rw");
+      
       try {
-        Prefs.getGlobalPrefs().write();
+        klock = kraf.getChannel().lock();
       }
-      catch (IOException e) {
-// FIXME: this could clobber the errorLog of an existing MM
-        WriteErrorDialog.error(e, Prefs.getGlobalPrefs().getFile().getPath());
+      catch (OverlappingFileLockException e) {
+        throw (IOException) new IOException().initCause(e);
       }
+      
+      // determine whether we are the server or a client
+
+      // Note: We purposely keep lout open in the case where we are the
+      // server, because closing lout will release the lock.
+      FileLock lock = null;
+      final FileOutputStream lout = new FileOutputStream(lockfile);
+      try {
+        lock = lout.getChannel().tryLock();
+      }
+      catch (OverlappingFileLockException e) {
+        throw (IOException) new IOException().initCause(e);
+      }
+
+      if (lock != null) {
+        // we have the lock, so we will be the request server
+
+        // bind to an available port on the loopback device
+        final ServerSocket serverSocket =
+          new ServerSocket(0, 0, InetAddress.getByName(null));
+    
+        // write the port number where we listen to the key file
+        port = serverSocket.getLocalPort(); 
+        kraf.writeInt(port);
+
+        // create new security key and write it to the key file
+        key = (long) (Math.random() * Long.MAX_VALUE);
+        kraf.writeLong(key);
+
+        // create a new Module Manager
+        new ModuleManager(serverSocket, key, lout, lock);
+      }
+      else {
+        // we do not have the lock, so we will be a request client
+        lout.close();
+
+        // read the port number we will connect to from the key file
+        port = kraf.readInt();
+
+        // read the security key from the key file
+        key = kraf.readLong();
+      }
+
+      kraf.close();
+    }
+    catch (IOException e) {
+// FIXME: should be a dialog...
+      System.err.println("VASSAL: IO error");
+      e.printStackTrace();
+      System.exit(1);
+    }
+    finally {
+      // this will also release the lock on the key file
+      IOUtils.closeQuietly(kraf);
     }
 
     lr.key = key;
-
-    // set up prefs for port to listen on
-    final IntConfigurer portConfig =
-      new IntConfigurer(MODULE_MANAGER_PORT, null, -1); 
-    Prefs.getGlobalPrefs().addOption(null, portConfig);
- 
-    // set port from command-line if specified; else try the prefs 
-    if (lr.port >= 0) {
-      port = lr.port;
-
-      // we have a port, write it to the prefs
-      portConfig.setValue(port);
-      try {
-        Prefs.getGlobalPrefs().write();
-      }
-      catch (IOException e) {
-// FIXME: this could clobber the errorLog of an existing MM
-        WriteErrorDialog.error(e, Prefs.getGlobalPrefs().getFile().getPath());
-      }
-    }
-    else {
-      port = portConfig.getIntValue(-1);
-    }
-
-    // try to create ModuleManager
-    try {
-      new ModuleManager();
-    }
-    catch (BindException e) {
-      // if this fails, a ModuleManager is (probably) already listening
-// FIXME: we should set a flag noting that this failed, so we can throw
-// up a warning later if we can't connect to the socket
-    }
-    catch (IOException e) {
-      // should not happen
-// FIXME: this could clobber the errorLog of an existing MM
-      ErrorDialog.bug(e);
-      System.exit(1);
-    }  
     
     // pass launch parameters on to the ModuleManager via the socket
     Socket clientSocket = null;
     ObjectOutputStream out = null;
     InputStream in = null;
-
     try {
-      try {
-        clientSocket = new Socket((String) null, port);
-      }
-      catch (IOException e) {
-        System.err.println("VASSAL: Couldn't open socket on port " + port);
-        e.printStackTrace();
-        System.exit(1);
-      }
+      clientSocket = new Socket((String) null, port);
 
-      try {
-        out = new ObjectOutputStream(
-                new BufferedOutputStream(clientSocket.getOutputStream()));
-        out.writeObject(lr);
-        out.flush();
-      }
-      catch (IOException e) {
-        System.err.println("VASSAL: Couldn't write to socket on port " + port);
-        e.printStackTrace();
-        System.exit(1);
-      }
+      out = new ObjectOutputStream(
+              new BufferedOutputStream(clientSocket.getOutputStream()));
+      out.writeObject(lr);
+      out.flush();
 
-      try {
-        in = clientSocket.getInputStream();
-        IOUtils.copy(in, System.err);
-      }
-      catch (IOException e) {
-        System.err.println("VASSAL: Couldn't read from socket on port " + port);
-        e.printStackTrace();
-        System.exit(1);
-      }
+      in = clientSocket.getInputStream();
+      IOUtils.copy(in, System.err);
+    }
+    catch (IOException e) {
+// FIXME: should be a dialog...
+      System.err.println("VASSAL: Problem with socket on port " + port);
+      e.printStackTrace();
+      System.exit(1);
     }
     finally {
       IOUtils.closeQuietly(in);
@@ -206,53 +224,32 @@ public class ModuleManager {
     }
   }
 
-  private final ServerSocket serverSocket;
-
   private static ModuleManager instance = null;
 
   public static ModuleManager getInstance() {
     return instance;
   }
 
-  public ModuleManager() throws IOException {
+  private final long key;
+
+  private FileOutputStream lout;
+  private FileLock lock;
+
+  private final ServerSocket serverSocket;
+
+  public ModuleManager(ServerSocket serverSocket, long key,
+                       FileOutputStream lout, FileLock lock)
+                                                           throws IOException {
+
     if (instance != null) throw new IllegalStateException();
     instance = this;
 
-    // if the port is bad, try a random port
-    if (port < 0 || port > 65535) {
-      ServerSocket socket = null;
+    this.serverSocket = serverSocket;
+    this.key = key;
 
-      while (socket == null) {
-        // check a random port in the range [49152,65535]
-        port = (int)(Math.random() * 16384) + 49152;
-        try {
-          socket =
-            new ServerSocket(port, 50, InetAddress.getByName("localhost"));
-
-          // we have a port, write it to the prefs
-          final IntConfigurer portConfig = (IntConfigurer)
-            Prefs.getGlobalPrefs().getOption(MODULE_MANAGER_PORT);
-          portConfig.setValue(port);
-          try {
-            Prefs.getGlobalPrefs().write();
-          }
-          catch (IOException e) {
-            WriteErrorDialog.error(e,
-              Prefs.getGlobalPrefs().getFile().getPath());
-          }
-        }
-        catch (ConnectException e) {
-          // we can't connect, try another port
-          IOUtils.closeQuietly(socket);
-        }
-      }
-
-      serverSocket = socket;
-    }
-    else {
-      serverSocket =
-        new ServerSocket(port, 50, InetAddress.getByName("localhost"));
-    }
+    // we hang on to these to prevent the lock from being lost
+    this.lout = lout;
+    this.lock = lock;
 
     final StartUp start = Info.isMacOSX() ?
       new ModuleManagerMacOSXStartUp() : new StartUp();
@@ -408,7 +405,8 @@ public class ModuleManager {
         return "incorrect key";
       }
 
-// FIXME: is this being run on the EDT?
+// FIXME: This is not being run on the EDT. execute() needs to be refactored
+// so that the Swing parts are run on the EDT.
 
       final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
 

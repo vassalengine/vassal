@@ -117,7 +117,7 @@ public abstract class Launcher {
       try {
         // set up our command listener
         final ServerSocket serverSocket =
-          new ServerSocket(0, 50, InetAddress.getByName("localhost"));
+          new ServerSocket(0, 0, InetAddress.getByName(null));
         cmdS = createCommandServer(serverSocket);
         new Thread(cmdS).start();
 
