@@ -28,6 +28,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.io.RandomAccessFile;
+import java.lang.reflect.InvocationTargetException;
 import java.net.BindException;
 import java.net.ConnectException;
 import java.net.InetAddress;
@@ -405,9 +406,42 @@ public class ModuleManager {
         return "incorrect key";
       }
 
-// FIXME: This is not being run on the EDT. execute() needs to be refactored
-// so that the Swing parts are run on the EDT.
+      final LaunchRequestHandler handler = new LaunchRequestHandler(lr);
+      try {
+        SwingUtilities.invokeAndWait(handler);
+      }
+      catch (InterruptedException e) {
+        return "interrupted";   // FIXME 
+      }
+      catch (InvocationTargetException e) {
+        ErrorDialog.bug(e);
+        return null;
+      }
+  
+      return handler.getResult();
+    }
+    else {
+      return "unrecognized command";  // FIXME
+    }
+  }
 
+  private static class LaunchRequestHandler implements Runnable {
+    private final LaunchRequest lr;
+    private String result;
+
+    public LaunchRequestHandler(LaunchRequest lr) {
+      this.lr = lr;
+    }   
+  
+    public void run() {
+      result = handle();
+    } 
+
+    public String getResult() {
+      return result;
+    }
+
+    private String handle() {
       final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
 
       switch (lr.mode) {
@@ -457,7 +491,8 @@ public class ModuleManager {
         new Editor.LaunchAction(window, lr.module).actionPerformed(null);
         break;
       case IMPORT:
-        new Editor.ImportLaunchAction(window, lr.importFile).actionPerformed(null);
+        new Editor.ImportLaunchAction(
+          window, lr.importFile).actionPerformed(null);
         break;
       case NEW:
         new Editor.NewModuleLaunchAction(window).actionPerformed(null);
@@ -466,13 +501,12 @@ public class ModuleManager {
         return "not yet implemented";   // FIXME
       case NEW_EXT:
         return "not yet implemented";   // FIXME
+      default:
+        return "unrecognized mode";     // FIXME
       }
+
+      return null;
     }
-    else {
-      return "unrecognized command";  // FIXME
-    }
-  
-    return null;
   }
 
   private static class ModuleManagerMenuManager extends MenuManager {
