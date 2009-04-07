@@ -18,16 +18,24 @@
  */
 package VASSAL.tools;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
+import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.StdCallLibrary;
+import com.sun.jna.win32.W32APIFunctionMapper;
+import com.sun.jna.win32.W32APITypeMapper;
 
+/**
+ * A utility class for getting information about system memory.
+ */
 public class MemoryUtils {
   private MemoryUtils() {}
 
@@ -56,7 +64,14 @@ public class MemoryUtils {
       IMPL = new MacOSXMemoryUtilsImpl();
     }
     else if (os.startsWith("windows")) {
-      IMPL = new WindowsMemoryUtilsImpl();
+      // kernel32 didn't exist until Windows 2000, so use the dummy
+      // implementation for Windows 98 and Windows ME.
+      if (os.equals("windows 98") || os.equals("windows me")) {
+        IMPL = new DummyMemoryUtilsImpl();
+      }
+      else {
+        IMPL = new WindowsMemoryUtilsImpl();
+      }
     }
     else {
       IMPL = new DummyMemoryUtilsImpl();
@@ -68,10 +83,60 @@ public class MemoryUtils {
   }
 
   private static class LinuxMemoryUtilsImpl implements MemoryUtilsImpl{
+    public static interface Libc extends Library {
+
+      /**
+       * The Java peer of the sysinfo struct.
+       *
+       * See the man page for <code>sysinfo(2)</code> for details.
+       */
+      public static final class sysinfo extends Structure {
+        public NativeLong uptime;
+        public NativeLong[] loads = new NativeLong[3];
+        public NativeLong totalram;
+        public NativeLong freeram;
+        public NativeLong sharedram;
+        public NativeLong bufferram;
+        public NativeLong totalswap;
+        public NativeLong freeswap;
+        public short procs;
+        public NativeLong totalhigh;
+        public NativeLong freehigh;
+        public int mem_unit;
+
+        // Note: On 64-bit systems, _f would point to the end of the struct.
+        // JNA complains if we have a zero-length byte array, so we make
+        // sure that the padding is always at least one byte long.
+        public byte[] _f = new byte[
+          Math.max(20-2*NativeLong.SIZE-Native.getNativeSize(int.class), 1)];
+      }
+
+      /**
+       * Wrapper for sysinfo(2).
+       */
+      int sysinfo(sysinfo info);
+
+      /**
+       * Wrapper for strerror(3).
+       */
+      String strerror(int errno);
+
+      public static final Libc INSTANCE =
+        (Libc) Native.loadLibrary("c", Libc.class);
+    }
+
     public long getPhysicalMemory() {
-      // The file /proc/kcore corresponds to the physical RAM on Linux.
-      // We use File.length() to stat it, giving us the RAM in bytes.
-      return new File("/proc/kcore").length();
+      final Libc.sysinfo info = new Libc.sysinfo();
+      if (Libc.INSTANCE.sysinfo(info) == 0) {
+        return info.totalram.longValue() * info.mem_unit;
+      }
+      else {
+        final int errno = Native.getLastError();
+        System.err.println(
+          "Error " + errno + ": " + Libc.INSTANCE.strerror(errno));
+
+        return -1L;
+      }
     }
   }
 
@@ -124,6 +189,26 @@ public class MemoryUtils {
      * The wrapper for Kernel32.dll.
      */
     public static interface Kernel32 extends StdCallLibrary {
+     /**
+       * A structure for holding information about physical and virtual memory.
+       *
+       * See {@link
+       * http://msdn.microsoft.com/en-us/library/aa366770(VS.85).aspx} for
+       * further details about this structure.
+       */
+      public static final class MEMORYSTATUSEX extends Structure {
+        // Note: A Windows DWORDLONG is 64 bits, so we use a Java long here
+        public int dwLength = size();
+        public int dwMemoryLoad;
+        public long ullTotalPhys;
+        public long ullAvailPhys;
+        public long ullTotalPageFile;
+        public long ullAvailPageFile;
+        public long ullTotalVirtual;
+        public long ullAvailVirtual;
+        public long ullAvailExtendedVirtual;
+      }
+
       /**
        * Gets information about physical and virtual memory.
        *
@@ -145,45 +230,35 @@ public class MemoryUtils {
        */
       int FormatMessage(
         int dwFlags, Pointer lpSource, int dwMessageId, int dwLanguageId,
-        String[] lpBuffer, int nSize, Pointer va_list);
+        PointerByReference lpBuffer, int nSize, Pointer va_list);
 
       public static final int FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x00000100;
       public static final int FORMAT_MESSAGE_FROM_SYSTEM     = 0x00001000;
 
-      final Kernel32 INSTANCE =
-        (Kernel32) Native.loadLibrary("kernel32", Kernel32.class);
-    }
+      static final Map<Object,Object> OPTIONS = new HashMap<Object,Object>() {
+        private static final long serialVersionUID = 1L;
+  
+        {
+          // tell Kernel32 to use Unicode
+          put(OPTION_TYPE_MAPPER,     W32APITypeMapper.UNICODE);
+          put(OPTION_FUNCTION_MAPPER, W32APIFunctionMapper.UNICODE);
+        }
+      };
 
-    /**
-     * A structure for holding information about physical and virtual memory.
-     *
-     * See {@link
-     * http://msdn.microsoft.com/en-us/library/aa366770(VS.85).aspx} for
-     * further details about this structure.
-     */
-    public static final class MEMORYSTATUSEX extends Structure {
-      public int dwLength = size();
-      public int dwMemoryLoad;
-      public long ullTotalPhys;
-      public long ullAvailPhys;
-      public long ullTotalPageFile;
-      public long ullAvailPageFile;
-      public long ullTotalVirtual;
-      public long ullAvailVirtual;
-      public long ullAvailExtendedVirtual;
+      public static final Kernel32 INSTANCE =
+        (Kernel32) Native.loadLibrary("kernel32", Kernel32.class, OPTIONS);
     }
 
     public long getPhysicalMemory() {
       // The Windows Kernel32 call GlobalMemoryStatusEx() fills a
       // MEMORYSTATUSEX structure with various facts about memory usage.
-      final MEMORYSTATUSEX mstat = new MEMORYSTATUSEX();
+      final Kernel32.MEMORYSTATUSEX mstat = new Kernel32.MEMORYSTATUSEX();
       if (Kernel32.INSTANCE.GlobalMemoryStatusEx(mstat)) {
-        mstat.read();
         return mstat.ullTotalPhys;
       }
       else {
         // GlobalMemoryStatusEx failed
-        final String[] lpBuffer = new String[1];
+        final PointerByReference lpBuffer = new PointerByReference();
         final int errno = Native.getLastError();
         final int msglen = Kernel32.INSTANCE.FormatMessage(
           Kernel32.FORMAT_MESSAGE_ALLOCATE_BUFFER |
@@ -196,8 +271,10 @@ public class MemoryUtils {
           Pointer.NULL
         ); 
 
-        System.err.print(
-          "Error " + errno + ": " + (msglen > 0 ? lpBuffer[0] : "no message"));
+        final String message =
+          msglen > 0 ? lpBuffer.getValue().getStringArray(0)[0] : "no message";
+
+        System.err.print("Error " + errno + ": " + message);
 
         return -1L;
       } 
