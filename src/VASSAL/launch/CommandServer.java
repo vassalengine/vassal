@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008-2009 by Joel Uckelman 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,12 +23,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-
-import javax.swing.SwingUtilities;
 
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -37,14 +34,14 @@ import VASSAL.tools.io.IOUtils;
 /**
  * The base class for socket servers for communication between the
  * {@link ModuleManager} and its children {@link Player} and {@link Editor}
- * processes. Concrete extensions will implement {@link #reply(Object)} to
+ * processes. Concrete extensions will implement {@link #execute(Object)} to
  * process incoming requests. 
  *
  * @see CommandClient
  * @author Joel Uckelman
  * @since 3.1.0
  */
-public abstract class CommandServer implements Runnable {
+public class CommandServer implements Runnable {
   private final ServerSocket serverSocket;
 
   public CommandServer(ServerSocket serverSocket) {
@@ -52,24 +49,10 @@ public abstract class CommandServer implements Runnable {
   }
 
   /**
-   * Executes a command and returns a reply.
-   *
-   * Unlike the rest of <code>CommandServer</code>, this method will be run
-   * on the EDT, so it is safe to call Swing methods from here.
-   *
-   * @param cmd a command object
-   * @return the reply
+   * Initialize the {@link Command}. Subclasses handling commands
+   * which need access to some local state will override this method.
    */
-  protected abstract Object reply(Object cmd);
-
-  private class Query implements Runnable {
-    public Object cmd;
-    public Object result;
-
-    public void run() {
-      result = reply(cmd);
-    }
-  }
+  public void init(Command command) {}
 
   public void run() {
     Socket clientSocket = null;
@@ -80,22 +63,22 @@ public abstract class CommandServer implements Runnable {
 
       out = new ObjectOutputStream(clientSocket.getOutputStream());
       in = new ObjectInputStream(clientSocket.getInputStream());
-     
-      final Query q = new Query();
+    
+      Object obj;
+      Object result;
       try {
-        while ((q.cmd = in.readObject()) != null) {
-          // Execute commands on the EDT
-          try {
-            SwingUtilities.invokeAndWait(q);
+        while ((obj = in.readObject()) != null) {
+          // Execute commands as they come and send back the reply
+          if (obj instanceof Command) {
+            final Command command = (Command) obj;
+            init(command);
+            result = command.execute();
           }
-          catch (InterruptedException e) {
-            ErrorDialog.bug(e);
-          }
-          catch (InvocationTargetException e) {
-            ErrorDialog.bug(e);
+          else {
+            result = "UNRECOGNIZED_COMMAND";
           }
 
-          out.writeObject(q.result);
+          out.writeObject(result);
         }
       }
       catch (EOFException e) {

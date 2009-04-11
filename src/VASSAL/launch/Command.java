@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2009 by Joel Uckelman
+ * Copyright (c) 2009 by Joel Uckelman 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -9,7 +9,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
@@ -17,8 +17,19 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools.logging;
+package VASSAL.launch;
 
-public interface LogListener {
-  void handle(LogEntry e);
+import java.io.Serializable;
+
+/**
+ * The interface for objects passed by {@link CommandClient} to
+ * {@link CommandServer}.
+ */
+public interface Command extends Serializable {
+  /**
+   * Execute the command.
+   *
+   * @return the result
+   */
+  Object execute();
 }

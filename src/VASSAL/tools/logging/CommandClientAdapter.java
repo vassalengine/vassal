@@ -21,6 +21,7 @@ package VASSAL.tools.logging;
 
 import java.io.IOException;
 
+import VASSAL.launch.AbstractLaunchAction.EnqueueLogEntry;
 import VASSAL.launch.CommandClient;
 
 public class CommandClientAdapter implements LogListener{
@@ -32,16 +33,7 @@ public class CommandClientAdapter implements LogListener{
 
   public void handle(LogEntry entry) {
     try {
-      cmdC.request(entry);
-    }
-    catch (IOException e) {
-      // FIXME: What to do here????
-    }
-  }
-
-  public void flush() {
-    try {
-      cmdC.request("LOG_FLUSH");
+      cmdC.request(new EnqueueLogEntry(entry));
     }
     catch (IOException e) {
       // FIXME: What to do here????

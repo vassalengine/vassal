@@ -31,21 +31,29 @@ public class LoggedOutputStream extends OutputStream {
     this.pid = pid;
   }
 
+  @Override
   public synchronized void write(int b) {
     buf.write(b);
     if (b == '\n') flush(); 
   }
 
+  @Override
   public synchronized void write(byte b[], int off, int len) {
     flush();
-    LogManager.enqueue(
-      new LogEntry(pid, LogEntry.SYSTEM, null, new String(b, off, len)));
+    Logger.enqueue(
+      new LogEntry(pid, LogEntry.SYSTEM, null, new String(b, off, len), false)
+    );
   }
 
+  @Override
   public synchronized void flush() {
     if (buf.size() > 0) {
-      LogManager.enqueue(new LogEntry(pid, LogEntry.SYSTEM,
-                                      null, new String(buf.toByteArray())));
+      Logger.enqueue(
+        new LogEntry(
+          pid, LogEntry.SYSTEM, null,
+          new String(buf.toByteArray()), false
+        )
+      );
       buf.reset();
     }
   } 

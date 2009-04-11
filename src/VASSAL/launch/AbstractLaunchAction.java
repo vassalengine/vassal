@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008-2009 by Joel Uckelman 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -42,7 +42,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import javax.swing.AbstractAction;
+import javax.swing.SwingUtilities;
 
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;
@@ -68,7 +71,6 @@ import VASSAL.tools.filechooser.ModuleFileFilter;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 import VASSAL.tools.logging.LogEntry;
-import VASSAL.tools.logging.LogManager;
 
 /**
  * 
@@ -145,7 +147,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     synchronized (children) {
       for (CommandClient child : children) {
         try {
-          if ("NOK".equals(child.request("REQUEST_CLOSE"))) return false;
+          if ("NOK".equals(child.request(new Launcher.CloseRequest()))) {
+            return false;
+          }
         }
         catch (EOFException ignore) {
           // Normal. Child closed.
@@ -346,7 +350,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       // create a socket for communicating which the child process
       serverSocket = new ServerSocket(0, 0, InetAddress.getByName(null));
       cmdS = new LaunchCommandServer(serverSocket);
-      new Thread(cmdS).start();
+      new Thread(cmdS, "command server").start();
 
       // build the argument list
       final ArrayList<String> al = new ArrayList<String>();
@@ -411,10 +415,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       final int childPort = din.readInt();
 
       // pump child's stderr to our own stderr
-      new Thread(new StreamPump(p.getErrorStream(), System.err)).start();
+      new Thread(
+        new StreamPump(p.getErrorStream(), System.err), "out pump").start();
 
       // pump child's stdout to our own stdout
-      new Thread(new StreamPump(p.getInputStream(), System.out)).start();
+      new Thread(
+        new StreamPump(p.getInputStream(), System.out), "err pump").start();
 
       // Check that the child's port is sane. Reading stdout from a
       // failed launch tends to give impossible port numbers.
@@ -459,7 +465,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     }
 
     protected Process launch(String[] args) throws IOException {
-      Logger.log(StringUtils.join(args, " "));
+      Logger.log(StringUtils.join(" ", args));
 
       // set up and start the child process
       final ProcessBuilder pb = new ProcessBuilder(args);
@@ -534,54 +540,159 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     }
   }
 
-  protected class LaunchCommandServer extends CommandServer {
+  //
+  // Commands
+  //
+
+  /**
+   * The abstract base class of all commands which require access to
+   * the {@link AbstractLaunchAction} receiving the command.
+   */
+  private static abstract class LaunchCommand implements Command {
+    protected AbstractLaunchAction theLaunchAction;
+   
+    public void init(AbstractLaunchAction la) {
+      theLaunchAction = la;
+    }
+
+    public abstract Object execute();
+
+  };
+ 
+  /**
+   * Notifies the Module Manager that a module has been opened.
+   */
+  public static class NotifyOpenModuleOk extends LaunchCommand {
+    private static final long serialVersionUID = 1L;
+
+    public Object execute() {
+      SwingUtilities.invokeLater(new Runnable() { 
+        public void run() {
+          ModuleManagerWindow.getInstance()
+                             .addModule(theLaunchAction.lr.module);
+          theLaunchAction.setWaitCursor(false);
+        }
+      });
+
+      return "OK";
+    }
+  }
+
+  /**
+   * Notifies the Module Manager that a new module has been created.
+   */
+  public static class NotifyNewModuleOk extends LaunchCommand {
+    private static final long serialVersionUID = 1L;
+
+    public Object execute() {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          theLaunchAction.setWaitCursor(false);
+        }
+      });
+
+      return "OK";
+    }
+  } 
+  
+  /**
+   * Notifies the Module Manager that a new module has been imported.
+   */
+  public static class NotifyImportModuleOk extends LaunchCommand {
+    private static final long serialVersionUID = 1L;
+
+    public Object execute() {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          theLaunchAction.setWaitCursor(false);
+        }
+      });
+
+      return "OK";
+    }
+  } 
+
+  /**
+   * Notifies the Module Manager that a module failed to open.
+   */
+  public static class NotifyOpenModuleFailed extends LaunchCommand {
+    private static final long serialVersionUID = 1L;
+
+    private final Throwable thrown;
+
+    public NotifyOpenModuleFailed(Throwable thrown) {
+      this.thrown = thrown;
+    }
+
+    public Object execute() {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          theLaunchAction.setWaitCursor(false);
+        }
+      });
+
+      ErrorDialog.showDetails(
+        thrown,
+        ThrowableUtils.getStackTrace(thrown),
+        "Error.module_load_failed",
+        thrown.getMessage()
+      );
+
+      return "OK";
+    }
+  } 
+
+  /**
+   * Notifies the Module Manager that a file was saved successfully.
+   */
+  public static class NotifySaveFileOk implements Command {
+    private static final long serialVersionUID = 1L;
+
+    private final File file;
+
+    public NotifySaveFileOk(File file) {
+      this.file = file;
+    }
+
+    public Object execute() {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          ModuleManagerWindow.getInstance().update(file);
+        }
+      });
+
+      return "OK";
+    }
+  }
+
+  /**
+   * Enqueues a {@link LogEntry} from a child process.
+   */ 
+  public static class EnqueueLogEntry implements Command {
+    private static final long serialVersionUID = 1L;
+
+    private final LogEntry entry;
+
+    public EnqueueLogEntry(LogEntry entry) {
+      this.entry = entry;
+    }
+
+    public Object execute() {
+      final Future<?> future = Logger.enqueue(entry);
+      if (entry.wait) FutureUtils.wait(future);
+      return "OK";
+    }
+  }
+
+  private class LaunchCommandServer extends CommandServer {
     public LaunchCommandServer(ServerSocket serverSocket) {
       super(serverSocket);
     }
 
     @Override
-    protected Object reply(Object cmd) {
-      if (cmd instanceof LogEntry) {
-        LogManager.enqueue((LogEntry) cmd);
-        return "OK";
-      }
-      else if ("LOG_FLUSH".equals(cmd)) {
-        LogManager.flush();
-        return "OK";
-      }
-      else if (cmd instanceof Launcher.SaveFileCmd) {
-        return ModuleManagerWindow.getInstance().update(
-          ((Launcher.SaveFileCmd) cmd).getFile());
-      }
-      else if ("NOTIFY_OPEN_OK".equals(cmd)) {
-        ModuleManagerWindow.getInstance().addModule(lr.module);
-        setWaitCursor(false);
-        return "OK";
-      }
-      else if ("NOTIFY_NEW_OK".equals(cmd)) {
-        setWaitCursor(false);
-        return "OK";
-      }
-      else if ("NOTIFY_IMPORT_OK".equals(cmd)) {
-        setWaitCursor(false);
-        return "OK";
-      }
-      else if (cmd instanceof Launcher.LoadFailedCmd) {
-        setWaitCursor(false);
-
-        final Throwable thrown = ((Launcher.LoadFailedCmd) cmd).getThrowable();
-
-        ErrorDialog.showDetails(
-          thrown,
-          ThrowableUtils.getStackTrace(thrown),
-          "Error.module_load_failed",
-          thrown.getMessage()
-        );
-
-        return "OK";
-      }
-      else {
-        return "UNRECOGNIZED_COMMAND";
+    public void init(Command command) {
+      if (command instanceof LaunchCommand) {
+        ((LaunchCommand) command).init(AbstractLaunchAction.this);
       }
     }
   }

@@ -53,9 +53,7 @@ public class ErrorDialog {
     }
     // show a bug report dialog if one has not been shown before
     else if (!DialogUtils.setDisabled(BugDialog.class, true)) {
-// FIXME: logAndWait() probably doesn't work and creates a race condition.
-// The logging system needs to be rethought...
-      Logger.logAndWait(thrown, Logger.BUG);
+      FutureUtils.wait(Logger.logAndWait(thrown, Logger.BUG));
 
       final Frame frame = GameModule.getGameModule() == null
         ? null : GameModule.getGameModule().getFrame();

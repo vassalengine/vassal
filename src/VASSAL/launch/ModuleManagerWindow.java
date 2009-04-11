@@ -106,13 +106,13 @@ import VASSAL.tools.ApplicationIcons;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.FutureUtils;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
-import VASSAL.tools.logging.LogManager;
 import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -192,7 +192,7 @@ public class ModuleManagerWindow extends JFrame {
           IOUtils.closeQuietly(gl);
         }
 
-        Logger.logAndWait("-- Exiting");
+        FutureUtils.wait(Logger.logAndWait("-- Exiting"));
         System.exit(0);
       }
     };
@@ -596,9 +596,8 @@ public class ModuleManagerWindow extends JFrame {
    * A File has been saved or created by the Player or the Editor. Update
    * the display as necessary.
    * @param f The file
-   * @return
    */
-  public String update(File f) {
+  public void update(File f) {
     final AbstractMetaData data = MetaDataFactory.buildMetaData(f);
     
     // Module.
@@ -623,7 +622,7 @@ public class ModuleManagerWindow extends JFrame {
         for (ExtensionInfo ext : moduleInfo.getExtensions()) {
           if (ext.getFile().equals(f)) {
             moduleNode.refresh();
-            return "OK";
+            return;
           }
         }
       }
@@ -636,14 +635,15 @@ public class ModuleManagerWindow extends JFrame {
       for (int i = 0; i < rootNode.getChildCount(); i++) {
         final MyTreeNode moduleNode = rootNode.getChild(i);
         final MyTreeNode folderNode = moduleNode.findNode(f.getParentFile());
-        if (folderNode != null && folderNode.getNodeInfo() instanceof GameFolderInfo) {
-            ((GameFolderInfo) folderNode.getNodeInfo()).update(f);  
-             return "OK";
+        if (folderNode != null &&
+            folderNode.getNodeInfo() instanceof GameFolderInfo) {
+          ((GameFolderInfo) folderNode.getNodeInfo()).update(f);  
+          return;
         }
       }      
     }
+
     tree.repaint();
-    return "OK";
   }
   
   /**
@@ -1775,7 +1775,7 @@ public class ModuleManagerWindow extends JFrame {
         // FIXME: What to do here????
       }
 
-      LogManager.addLogListener(lp);
+      Logger.addLogListener(lp);
 
 // FIXME: this should have its own key. Probably keys should be renamed
 // to reflect what they are labeling, e.g., Help.show_error_log_menu_item,
@@ -1790,7 +1790,7 @@ public class ModuleManagerWindow extends JFrame {
       d.addWindowListener(new WindowAdapter() {
         public void windowClosed(WindowEvent e) {
           // unregister the LogPane when this dialog is closed
-          LogManager.removeLogListener(lp);
+          Logger.removeLogListener(lp);
         }
       });
 

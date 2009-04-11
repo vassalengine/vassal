@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman 
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -33,6 +34,7 @@ import java.net.Socket;
 import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
+import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
@@ -41,7 +43,6 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.logging.CommandClientAdapter;
 import VASSAL.tools.logging.LoggedOutputStream;
 import VASSAL.tools.logging.Logger;
-import VASSAL.tools.logging.LogManager;
 import VASSAL.tools.logging.LogOutputStreamAdapter;
 import VASSAL.tools.menu.MenuManager;
 
@@ -91,15 +92,13 @@ public abstract class Launcher {
       // start logging to the errorLog
       final File errorLog = new File(Info.getHomeDir(), "errorLog");
       try {
-        LogManager.addLogListener(
+        Logger.addLogListener(
           new LogOutputStreamAdapter(
             new FileOutputStream(errorLog)));
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, errorLog);
       }
-
-      LogManager.start();
     }
 
     start.startErrorLog();
@@ -118,8 +117,8 @@ public abstract class Launcher {
         // set up our command listener
         final ServerSocket serverSocket =
           new ServerSocket(0, 0, InetAddress.getByName(null));
-        cmdS = createCommandServer(serverSocket);
-        new Thread(cmdS).start();
+        cmdS = new CommandServer(serverSocket);
+        new Thread(cmdS, "command server").start();
 
         // write our socket port out to the module manager
         final DataOutputStream out = new DataOutputStream(System.out);
@@ -135,8 +134,7 @@ public abstract class Launcher {
         // set up our command client
         cmdC = new CommandClient(new Socket((String) null, port));
 
-        LogManager.addLogListener(new CommandClientAdapter(cmdC));
-        LogManager.start();
+        Logger.addLogListener(new CommandClientAdapter(cmdC));
       }
       catch (ClassNotFoundException e) {
         ErrorDialog.bug(e);
@@ -183,7 +181,7 @@ public abstract class Launcher {
         else {
           // we have a manager, so pass the load failure back to it
           try {
-            cmdC.request(new LoadFailedCmd(e1));
+            cmdC.request(new AbstractLaunchAction.NotifyOpenModuleFailed(e1));
           }
           catch (IOException e2) {
             // warn the user directly as a last resort 
@@ -211,22 +209,44 @@ public abstract class Launcher {
 
   protected abstract MenuManager createMenuManager();
 
-  protected abstract CommandServer createCommandServer(ServerSocket s);
- 
-  public static class LoadFailedCmd implements Serializable {
+  /**
+   * A request from the Module Manager to close.
+   */
+  public static class CloseRequest implements Command {
     private static final long serialVersionUID = 1L;
 
-    protected final Throwable t;
+    private boolean shutdown = true;
 
-    public LoadFailedCmd(Throwable throwable) {
-      t = throwable;
-    }
+    public Object execute() {
+      final GameModule module = GameModule.getGameModule();
+      if (module != null) {
+        try {
+          SwingUtilities.invokeAndWait(new Runnable() {
+            public void run() {
+              module.getFrame().toFront();
+              shutdown = module.shutDown();
+            }
+          });
+        }
+        catch (InterruptedException e) {
+          Logger.log(e);
+          shutdown = false;
+        }
+        catch (InvocationTargetException e) {
+          ErrorDialog.bug(e);
+          shutdown = false;
+        }
+      }
 
-    public Throwable getThrowable() {
-      return t;
+      try {
+        return shutdown ? "OK" : "NOK";
+      }
+      finally {
+        if (shutdown) System.exit(0);
+      }
     }
   }
- 
+
   /**
    * Send a message to the ModuleManager that a file has been saved by the
    * Editor or the Player
@@ -236,25 +256,11 @@ public abstract class Launcher {
   public void sendSaveCmd(File f) {
     if (cmdC != null) {
       try {
-        cmdC.request(new SaveFileCmd(f));
+        cmdC.request(new AbstractLaunchAction.NotifySaveFileOk(f));
       }
       // FIXME: review error message
       catch (IOException e) {
       }
-    }
-  }
-  
-  public static class SaveFileCmd implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    protected final File file;
-    
-    public SaveFileCmd(File f) {
-      file = f;
-    }
-    
-    public File getFile() {
-      return file;
     }
   }
 }

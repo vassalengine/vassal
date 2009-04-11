@@ -23,6 +23,4 @@ public class LogPane extends JTextArea implements LogListener {
       }
     });
   }
-
-  public void flush() {}
 }

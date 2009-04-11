@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -46,13 +46,15 @@ public class LogEntry implements Serializable {
   public final int type;
   public final String message;
   public final String trace;
+  public final boolean wait;
 
-  public LogEntry(long pid, int type, Throwable thrown, String message) {
-    this(System.currentTimeMillis(), pid, type, thrown, message);
+  public LogEntry(long pid, int type, Throwable thrown,
+                  String message, boolean wait) {
+    this(System.currentTimeMillis(), pid, type, thrown, message, wait);
   }
 
   public LogEntry(long timestamp, long pid, int type,
-                  Throwable thrown, String message) {
+                  Throwable thrown, String message, boolean wait) {
 
     if (thrown == null && message == null)
       throw new IllegalArgumentException();
@@ -62,6 +64,7 @@ public class LogEntry implements Serializable {
     this.type = type;
     this.message = message;
     this.trace = thrown != null ? ThrowableUtils.getStackTrace(thrown) : null;
+    this.wait = wait;
   }
 
   @Override

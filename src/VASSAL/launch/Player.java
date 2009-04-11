@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman 
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,6 +27,7 @@ import java.net.ServerSocket;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
@@ -61,41 +62,6 @@ public class Player extends Launcher {
     return Info.isMacOSX() ? new MacOSXMenuManager() : new PlayerMenuManager();
   }
 
-  protected CommandServer createCommandServer(ServerSocket serverSocket) {
-    return new PlayerCommandServer(serverSocket);
-  }
-
-  protected static class PlayerCommandServer extends CommandServer {
-    public PlayerCommandServer(ServerSocket serverSocket) {
-      super(serverSocket);
-    }
-
-    @Override
-    protected Object reply(Object cmd) {
-      if ("REQUEST_CLOSE".equals(cmd)) {
-        final GameModule module = GameModule.getGameModule();
-        final boolean shutDown;
-        if (module != null) {
-          module.getFrame().toFront();
-          shutDown = module.shutDown();
-        }
-        else {
-          shutDown = true;
-        }
-
-        try {
-          return shutDown ? "OK" : "NOK";
-        }
-        finally {
-          if (shutDown) System.exit(0);
-        }
-      }
-      else {
-        return "UNRECOGNIZED_COMMAND";
-      } 
-    }
-  }
-
   protected void launch() throws IOException {
     new IconFactory();  // Initialise the Icon Factory
     if (lr.builtInModule) {
@@ -127,7 +93,7 @@ public class Player extends Launcher {
 
     if (cmdC != null) {
       try {
-        cmdC.request("NOTIFY_OPEN_OK");
+        cmdC.request(new AbstractLaunchAction.NotifyOpenModuleOk());
       }
       catch (IOException e) {
         // This is not fatal, since we've successfully opened the module,

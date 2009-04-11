@@ -88,6 +88,7 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
+import VASSAL.tools.FutureUtils;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
@@ -719,7 +720,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         ReadErrorDialog.error(e, archive.getName());
       }
 
-      VASSAL.tools.logging.Logger.logAndWait("-- Exiting");
+      FutureUtils.wait(VASSAL.tools.logging.Logger.logAndWait("-- Exiting"));
     }
 
     return !cancelled;

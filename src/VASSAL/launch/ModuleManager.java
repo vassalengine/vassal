@@ -54,7 +54,6 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.LogManager;
 import VASSAL.tools.logging.LogOutputStreamAdapter;
 import VASSAL.tools.logging.LoggedOutputStream;
 import VASSAL.tools.logging.Logger;
@@ -258,15 +257,13 @@ public class ModuleManager {
     // start logging to the errorLog
     final File errorLog = new File(Info.getHomeDir(), "errorLog");
     try {
-      LogManager.addLogListener(
+      Logger.addLogListener(
         new LogOutputStreamAdapter(
           new FileOutputStream(errorLog)));
     }
     catch (IOException e) {
       WriteErrorDialog.error(e, errorLog);
     }
-
-    LogManager.start();
 
     start.startErrorLog();
 
@@ -288,7 +285,7 @@ public class ModuleManager {
     });
 
     // ModuleManagerWindow.getInstance() != null now, so listen on the socket
-    new Thread(new SocketListener(serverSocket)).start();
+    new Thread(new SocketListener(serverSocket), "socket listener").start();
 
     final Prefs globalPrefs = Prefs.getGlobalPrefs();
 

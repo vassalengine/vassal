@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman 
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -59,41 +59,6 @@ public class Editor extends Launcher {
     return Info.isMacOSX() ? new MacOSXMenuManager() : new EditorMenuManager();
   }
 
-  protected CommandServer createCommandServer(ServerSocket serverSocket) {
-    return new EditorCommandServer(serverSocket);
-  }
-
-  protected static class EditorCommandServer extends CommandServer {
-    public EditorCommandServer(ServerSocket serverSocket) {
-      super(serverSocket);
-    }
-
-    @Override
-    protected Object reply(Object cmd) {
-      if ("REQUEST_CLOSE".equals(cmd)) {
-        final GameModule module = GameModule.getGameModule();
-        final boolean shutDown;
-        if (module != null) {
-          module.getFrame().toFront();
-          shutDown = module.shutDown();
-        }
-        else {
-          shutDown = true;
-        }
-
-        try {
-          return shutDown ? "OK" : "NOK";
-        }
-        finally {
-          if (shutDown) System.exit(0);
-        }
-      }
-      else {
-        return "UNRECOGNIZED_COMMAND";
-      } 
-    }
-  }
-
   protected void launch() throws IOException {
     Object req = null;
     new IconFactory();  // Initialise the Icon Factory
@@ -101,28 +66,28 @@ public class Editor extends Launcher {
     switch (lr.mode) {
     case EDIT:
       new EditModuleAction(lr.module).loadModule(lr.module);
-      req = "NOTIFY_OPEN_OK";
+      req = new AbstractLaunchAction.NotifyOpenModuleOk();
       break;
     case IMPORT:
       new ImportAction(null).loadModule(lr.importFile);
-      req = "NOTIFY_IMPORT_OK";
+      req = new AbstractLaunchAction.NotifyImportModuleOk();
       break;
     case NEW:
       new CreateModuleAction(null).performAction(null);
-      req = "NOTIFY_NEW_OK";
+      req = new AbstractLaunchAction.NotifyNewModuleOk();
       break;
     case EDIT_EXT:
       GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
       GameModule.getGameModule().getFrame().setVisible(true);
       new EditExtensionAction(lr.extension).performAction(null);
-      req = "NOTIFY_OPEN_OK";
+      req = new AbstractLaunchAction.NotifyOpenModuleOk();
       break;
     case NEW_EXT:
       GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
       final JFrame f = GameModule.getGameModule().getFrame();
       f.setVisible(true);
       new NewExtensionAction(f).performAction(null);
-      req = "NOTIFY_OPEN_OK";
+      req = new AbstractLaunchAction.NotifyOpenModuleOk();
     }
 
     if (cmdC != null) {

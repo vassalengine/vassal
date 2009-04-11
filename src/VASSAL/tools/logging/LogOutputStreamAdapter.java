@@ -34,14 +34,6 @@ public class LogOutputStreamAdapter implements LogListener {
     try {
       out.write(entry.toString().getBytes());
       out.write('\n');
-    }
-    catch (IOException e) {
-      // FIXME: What to do here????
-    }
-  }
-
-  public void flush() {
-    try {
       out.flush();
     }
     catch (IOException e) {
