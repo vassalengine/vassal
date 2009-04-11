@@ -280,4 +280,14 @@ public class MemoryUtils {
       } 
     }
   }
+
+  public static void main(String[] args) {
+    final long ram = getPhysicalMemory();
+    if (ram >= 0) {
+      System.out.println("System reports " + (ram >> 20) + "MB RAM");
+    }
+    else {
+      System.out.println("Could not determine amount of RAM");
+    }
+  }
 }
