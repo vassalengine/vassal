@@ -42,18 +42,18 @@ public class LogEntry implements Serializable {
   public static final int SYSTEM = 5;
 
   public final long timestamp;
-  public final long pid;
+  public final int pid;
   public final int type;
   public final String message;
   public final String trace;
   public final boolean wait;
 
-  public LogEntry(long pid, int type, Throwable thrown,
+  public LogEntry(int pid, int type, Throwable thrown,
                   String message, boolean wait) {
     this(System.currentTimeMillis(), pid, type, thrown, message, wait);
   }
 
-  public LogEntry(long timestamp, long pid, int type,
+  public LogEntry(long timestamp, int pid, int type,
                   Throwable thrown, String message, boolean wait) {
 
     if (thrown == null && message == null)

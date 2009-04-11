@@ -43,6 +43,7 @@ import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
@@ -110,10 +111,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected static final List<CommandClient> children =
     Collections.synchronizedList(new ArrayList<CommandClient>());
 
+  protected static final AtomicInteger nextId = new AtomicInteger(1);
   
   public AbstractLaunchAction(String name, Window window,
                               String entryPoint, LaunchRequest lr) {
     super(name);
+      
     this.window = window;
     this.entryPoint = entryPoint;
     this.lr = lr;
@@ -356,7 +359,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       final ArrayList<String> al = new ArrayList<String>();
       al.add(Info.javaBinPath);
       al.add("");   // reserved for initial heap 
-      al.add("");   // reserved for maximum heap 
+      al.add("");   // reserved for maximum heap
+      al.add("-DVASSAL.id=" + nextId.getAndIncrement());  // instance id
       al.add("-cp");
       al.add(System.getProperty("java.class.path"));
 

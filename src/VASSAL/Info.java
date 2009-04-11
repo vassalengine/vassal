@@ -95,13 +95,31 @@ public final class Info {
     }
   }
 
-  // Strictly speaking, this doesn't guarantee uniqueness, but the
-  // probability that any reasonable number or simultaneously-running
-  // instances of the VASSAL ModuleManager, Player or Editor will get
-  // the same ID is vanishingly small.
-  private static final int instanceID =
-    (int) (Math.random() * Integer.MAX_VALUE);
+  private static final int instanceID;
 
+  // Set the instance id from the system properties.
+  static {
+    final String idstr = System.getProperty("VASSAL.id");
+    if (idstr == null) {
+      instanceID = 0;
+    }
+    else {
+      int id;
+      try {
+        id = Integer.parseInt(idstr);
+      }
+      catch (NumberFormatException e) {
+        id = -1;
+      }
+
+      instanceID = id;
+    }
+  }
+
+  /**
+   * Returns the instance id for this process. The instance id will be
+   * be unique across the Module Manager and its children.
+   */
   public static int getInstanceID() {
     return instanceID;
   }

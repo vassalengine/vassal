@@ -23,11 +23,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 public class LoggedOutputStream extends OutputStream {
-  private final long pid;
+  private final int pid;
 
   private final ByteArrayOutputStream buf = new ByteArrayOutputStream();
 
-  public LoggedOutputStream(long pid) {
+  public LoggedOutputStream(int pid) {
     this.pid = pid;
   }
 
@@ -57,4 +57,4 @@ public class LoggedOutputStream extends OutputStream {
       buf.reset();
     }
   } 
-} 
+}

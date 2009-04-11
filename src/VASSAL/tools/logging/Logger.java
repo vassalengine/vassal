@@ -41,7 +41,7 @@ public class Logger {
   public static final int DEBUG =   LogEntry.DEBUG;
   public static final int SYSTEM =  LogEntry.SYSTEM;
 
-  private static final long pid = Info.getInstanceID();
+  private static final int pid = Info.getInstanceID();
 
   public static void log(String message) {
     log(null, message, MESSAGE);
@@ -102,17 +102,6 @@ public class Logger {
     });
   }
 
-/*
-  public static void shutdown() {
-    ex.shutdown();
-    try {
-      while (!ex.awaitTermination(60, TimeUnit.SECONDS));
-    }
-    catch (InterruptedException e) {
-    }
-  }
-*/
-
   private static CopyOnWriteArrayList<LogListener> listeners =
     new CopyOnWriteArrayList<LogListener>();
 
@@ -127,4 +116,24 @@ public class Logger {
   public static LogListener[] getLogListeners() {
     return listeners.toArray(new LogListener[0]);
   }
+
+/*
+  static {
+    final Runnable hook = new Runnable() {
+      public void run() {
+        log("-- Exiting");
+
+        ex.shutdown();
+        try {
+// FIXME: loop?
+          while (!ex.awaitTermination(1, TimeUnit.SECONDS));
+        }
+        catch (InterruptedException e) {
+        }
+      }
+    };
+
+    Runtime.getRuntime().addShutdownHook(new Thread(hook, "log cleanup"));
+  }
+*/
 }
