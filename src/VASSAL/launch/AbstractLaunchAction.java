@@ -416,11 +416,11 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // pump child's stderr to our own stderr
       new Thread(
-        new StreamPump(p.getErrorStream(), System.err), "out pump").start();
+        new StreamPump(p.getErrorStream(), System.err), "err pump").start();
 
       // pump child's stdout to our own stdout
       new Thread(
-        new StreamPump(p.getInputStream(), System.out), "err pump").start();
+        new StreamPump(p.getInputStream(), System.out), "out pump").start();
 
       // Check that the child's port is sane. Reading stdout from a
       // failed launch tends to give impossible port numbers.
