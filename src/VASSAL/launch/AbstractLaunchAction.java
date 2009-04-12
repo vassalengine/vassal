@@ -226,6 +226,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   }
 
   protected class LaunchTask extends SwingWorker<Void,Void> {
+    protected final int id = nextId.getAndIncrement();
+
     // lr might be modified before the task is over, keep a local copy
     protected final LaunchRequest lr =
       new LaunchRequest(AbstractLaunchAction.this.lr); 
@@ -353,14 +355,14 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       // create a socket for communicating which the child process
       serverSocket = new ServerSocket(0, 0, InetAddress.getByName(null));
       cmdS = new LaunchCommandServer(serverSocket);
-      new Thread(cmdS, "command server").start();
+      new Thread(cmdS, "command server " + id).start();
 
       // build the argument list
       final ArrayList<String> al = new ArrayList<String>();
       al.add(Info.javaBinPath);
       al.add("");   // reserved for initial heap 
       al.add("");   // reserved for maximum heap
-      al.add("-DVASSAL.id=" + nextId.getAndIncrement());  // instance id
+      al.add("-DVASSAL.id=" + id);  // instance id
       al.add("-cp");
       al.add(System.getProperty("java.class.path"));
 
@@ -420,11 +422,15 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       // pump child's stderr to our own stderr
       new Thread(
-        new StreamPump(p.getErrorStream(), System.err), "err pump").start();
+        new StreamPump(p.getErrorStream(), System.err),
+        "err pump " + id
+      ).start();
 
       // pump child's stdout to our own stdout
       new Thread(
-        new StreamPump(p.getInputStream(), System.out), "out pump").start();
+        new StreamPump(p.getInputStream(), System.out),
+        "out pump " + id
+      ).start();
 
       // Check that the child's port is sane. Reading stdout from a
       // failed launch tends to give impossible port numbers.
