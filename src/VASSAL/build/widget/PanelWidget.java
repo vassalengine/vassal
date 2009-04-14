@@ -28,9 +28,11 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.Widget;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * A Widget that corresponds to a JPanel with a
@@ -188,7 +190,16 @@ public class PanelWidget extends Widget {
       if (value instanceof String) {
         value = Integer.valueOf((String) value);
       }
+
       nColumns = ((Integer) value).intValue();
+
+      if (nColumns < 1) {
+        // FIXME: also dialog should not permit values < 1 to be entered
+        ErrorDialog.dataError(
+          new BadDataReport("Panel has < 1 column:", getConfigureName()));
+
+        nColumns = 1;
+      }
     }
     else if (VERTICAL.equals(name)) {
       if (value instanceof String) {
