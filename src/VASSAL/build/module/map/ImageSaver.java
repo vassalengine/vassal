@@ -192,10 +192,28 @@ public class ImageSaver extends AbstractConfigurable {
     dialog.setIndeterminate(true);
     dialog.setLocationRelativeTo(frame);
 
+    // get the dimensions of the image to write 
     final Dimension s = map.mapSize();
-    s.width *= map.getZoom();
-    s.height *= map.getZoom();
-    writeMapRectAsImage(file, 0, 0, s.width, s.height);
+    
+    if (s.width == 0) s.width = 1;
+    if (s.height == 0) s.height = 1;
+
+    int w = (int) Math.round(s.width * map.getZoom());
+    int h = (int) Math.round(s.height * map.getZoom());
+    
+    // ensure that the resulting image is at least 1x1
+    if (w < 1 || h < 1) {
+      if (s.width < s.height) {
+        w = 1;
+        h = s.height/s.width;
+      }
+      else {
+        h = 1;
+        w = s.width/s.height;
+      }
+    }
+
+    writeMapRectAsImage(file, 0, 0, w, h);
 
     dialog.setVisible(true);
   }
