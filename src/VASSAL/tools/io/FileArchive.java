@@ -52,7 +52,7 @@ public interface FileArchive extends Closeable {
    * @return an <code>InputStream</code> containing the requested file
    * @throws IOException
    */
-  public InputStream read(String path) throws IOException;
+  public InputStream getInputStream(String path) throws IOException;
 
   /**
    * Gets an {@link OutputStream} to write to the given file.
@@ -61,7 +61,7 @@ public interface FileArchive extends Closeable {
    * @return an <code>OutputStream</code> for the requested file
    * @throws IOException
    */
-  public OutputStream write(String path) throws IOException;
+  public OutputStream getOutputStream(String path) throws IOException;
 
   /**
    * Adds a file to the archive.

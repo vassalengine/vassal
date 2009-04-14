@@ -127,7 +127,7 @@ public class ArchiveWriter extends DataArchive {
     }
     // otherwise just add what we were given
     else {
-      addFile(imageDir + name, path);
+      addFile(path, imageDir + name);
     }
 
     Op.load(name).update();
@@ -188,7 +188,7 @@ public class ArchiveWriter extends DataArchive {
   public void addFile(String fileName, InputStream in) {
     OutputStream out = null;
     try {
-      out = archive.write(fileName);
+      out = archive.getOutputStream(fileName);
       IOUtils.copy(in, out);
       out.close();
     }

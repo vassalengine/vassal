@@ -232,11 +232,11 @@ public class ZipArchive implements FileArchive {
     for (String name : src.getFiles()) {
       InputStream in = null;
       try {
-        in = src.read(name);
+        in = src.getInputStream(name);
   
         OutputStream out = null;
         try {
-          out = write(name);
+          out = getOutputStream(name);
           IOUtils.copy(in, out, buf);
           out.close();
         }
@@ -279,7 +279,7 @@ public class ZipArchive implements FileArchive {
    * stream is eventually closed, since the returned stream holds a read
    * lock on the archive.
    */ 
-  public InputStream read(String path) throws IOException {
+  public InputStream getInputStream(String path) throws IOException {
     r.lock();
     try {
       openIfClosed();
@@ -313,8 +313,8 @@ public class ZipArchive implements FileArchive {
    * stream is eventually closed, since the returned stream holds a write
    * lock on the archive.
    */ 
-  public OutputStream write(String path) throws IOException {
-    return write(path, true);
+  public OutputStream getOutputStream(String path) throws IOException {
+    return getOutputStream(path, true);
   }
 
   /**
@@ -329,7 +329,8 @@ public class ZipArchive implements FileArchive {
    * @return an <code>OutputStream</code> for the requested file
    * @throws IOException
    */
-  public OutputStream write(String path, boolean compress) throws IOException {
+  public OutputStream getOutputStream(String path, boolean compress)
+                                                           throws IOException {
     w.lock();
     try {
       openIfClosed();
@@ -390,7 +391,7 @@ public class ZipArchive implements FileArchive {
   public void add(String path, InputStream in) throws IOException {
     OutputStream out = null;
     try {
-      out = write(path);
+      out = getOutputStream(path);
       IOUtils.copy(in, out);
       out.close();
     }
@@ -604,8 +605,9 @@ public class ZipArchive implements FileArchive {
     try {
       openIfClosed();
 
-      if (!entries.containsKey(root))
-        throw new FileNotFoundException(root + "not in archive");
+// FIXME: directories need not have entries in the ZipFile!
+//      if (!entries.containsKey(root))
+//        throw new FileNotFoundException(root + " not in archive");
 
       root += File.separator;
       final ArrayList<String> names = new ArrayList<String>();
@@ -630,6 +632,7 @@ public class ZipArchive implements FileArchive {
 
     for (ZipEntry e : iterate(zipFile.entries())) {
       entries.put(e.getName(), new Entry(e, null));
+System.out.println(e.getName());
     }
   }
 
@@ -726,7 +729,7 @@ public class ZipArchive implements FileArchive {
     
     InputStream in = null; 
     try {
-      in = archive.read("NOTES");
+      in = archive.getInputStream("NOTES");
       IOUtils.copy(in, System.out); 
       in.close();
     }

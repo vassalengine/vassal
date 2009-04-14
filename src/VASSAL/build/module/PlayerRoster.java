@@ -51,6 +51,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.SequenceEncoder;
 
@@ -106,7 +107,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
           try {
             GameModule.getGameModule()
                       .getDataArchive()
-                      .getImageInputStream(att.getValue());
+                      .getInputStream(DataArchive.IMAGE_DIR + att.getValue());
           }
           catch (IOException ex) {
             continue;

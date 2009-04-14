@@ -133,7 +133,7 @@ public abstract class AbstractMetaData {
   public void save(FileArchive archive) throws IOException {
     OutputStream out = null;
     try {
-      out = archive.write(getZipEntryName());
+      out = archive.getOutputStream(getZipEntryName());
       save(out);
       out.close();
     }

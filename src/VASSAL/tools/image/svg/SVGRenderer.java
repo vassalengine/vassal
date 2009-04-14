@@ -179,7 +179,7 @@ public class SVGRenderer {
         in = new BufferedInputStream(
           GameModule.getGameModule()
                     .getDataArchive()
-                    .getImageInputStream(file));
+                    .getInputStream(file));
         final Document doc = loadDocument(uri, in);
         in.close();
         return doc;

@@ -83,7 +83,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   public BufferedImage eval() throws ImageIOException {
     InputStream in = null;
     try {
-      in = archive.getImageInputStream(name);
+      in = archive.getInputStream(name);
     }
     catch (FileNotFoundException e) {
       throw new ImageNotFoundException(name, e);
@@ -109,7 +109,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     try {
       InputStream in = null;
       try {
-        in = archive.getImageInputStream(name);
+        in = archive.getInputStream(name);
       }
       catch (FileNotFoundException e) {
         throw new ImageNotFoundException(name, e);

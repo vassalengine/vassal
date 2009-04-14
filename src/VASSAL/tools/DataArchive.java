@@ -129,7 +129,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    * @return an <code>InputStream</code> which contains the image file
    * @throws IOException if there is a problem reading the image file
    * @throws FileNotFoundException if the image file doesn't exist
+   * @deprecated Use {@link #getInputStream(String)} instead.
    */
+  @Deprecated
   public InputStream getImageInputStream(String fileName)
                                     throws IOException, FileNotFoundException {
 // FIXME: We should give notice that we're going to stop searching for
@@ -178,8 +180,16 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    */
   public InputStream getInputStream(String fileName)
                                     throws IOException, FileNotFoundException {
+    // requested file is a resource, try our JARs
+    if (fileName.startsWith("/")) {
+      final InputStream in = getClass().getResourceAsStream(fileName);
+      if (in != null) return in;
+      throw new FileNotFoundException("Resource not found: " + fileName);
+    }
+
+    // requested file is in this archive
     if (archive != null && archive.contains(fileName))
-      return archive.read(fileName);
+      return archive.getInputStream(fileName);
    
     // we don't have it, try our extensions 
     for (DataArchive ext : extensions) {
@@ -297,12 +307,14 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
     if (archive != null) {
       try {
-        for (String filename : archive.getFiles(imageDir)) {
+//        for (String filename : archive.getFiles(imageDir)) {
+        for (String filename : archive.getFiles("images")) {
           s.add(filename.substring(imageDir.length()));
         }
       }
       catch (IOException e) {
 // FIXME: don't swallow this exception!
+        e.printStackTrace();
       }
     }
 

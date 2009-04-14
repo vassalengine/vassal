@@ -109,7 +109,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
     try {
       final SVGRenderer renderer = new SVGRenderer(
         archive.getImageURL(name),
-        new BufferedInputStream(archive.getImageInputStream(name))
+        new BufferedInputStream(archive.getInputStream(name))
       );
 
       if (size == null) fixSize();

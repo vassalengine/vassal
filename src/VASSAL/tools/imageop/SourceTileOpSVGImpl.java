@@ -92,7 +92,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
     try {
       final SVGRenderer renderer = new SVGRenderer(
         archive.getImageURL(name),
-        new BufferedInputStream(archive.getImageInputStream(name))
+        new BufferedInputStream(archive.getInputStream(name))
       );
 
       final Rectangle2D aoi = new Rectangle2D.Float(x0, y0, x1-x0, y1-y0); 

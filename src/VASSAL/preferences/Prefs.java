@@ -171,7 +171,7 @@ public class Prefs implements Closeable {
       if (fa.contains(name)) { 
         BufferedInputStream in = null;
         try {
-          in = new BufferedInputStream(fa.read(name));
+          in = new BufferedInputStream(fa.getInputStream(name));
           storedValues.clear();
           storedValues.load(in);
           in.close();
@@ -206,7 +206,7 @@ public class Prefs implements Closeable {
 
     OutputStream out = null;
     try {
-      out = editor.getFileArchive().write(name);
+      out = editor.getFileArchive().getOutputStream(name);
       storedValues.store(out, null);
       out.close();
     }
