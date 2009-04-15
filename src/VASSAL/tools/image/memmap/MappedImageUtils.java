@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -61,7 +61,7 @@ public class MappedImageUtils {
         rin = new RereadableInputStream(in);
         rin.mark(512);
 
-        final boolean useToolkit = ImageUtils.isMasked8BitRGBPNG(rin);
+        final boolean useToolkit = !ImageUtils.useImageIO(rin);
         rin.reset();
 
         img = useToolkit ? loadWithToolkit(rin) : loadWithImageIO(rin);

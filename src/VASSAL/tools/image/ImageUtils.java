@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007-2008 by Joel Uckelman
+ * Copyright (c) 2007-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -347,20 +347,41 @@ public class ImageUtils {
     return toCompatibleImage(img);
   }
 
-  public static boolean isMasked8BitRGBPNG(InputStream in) throws IOException {
+  private static final boolean iTXtBug;
+
+  static {
+    final String jvmver = System.getProperty("java.version");
+    iTXtBug = jvmver == null || jvmver.startsWith("1.5.0");
+  }
+
+  public static boolean useImageIO(InputStream in) throws IOException {
     final DataInputStream din = new DataInputStream(in);
 
     // Bail immediately if this stream is not a PNG.
-    if (!PNGDecoder.decodeSignature(din)) return false;
+    if (!PNGDecoder.decodeSignature(din)) return true;
+
+    // Numbers in comments after chunk cases here refer to sections in the
+    // PNG standard, found at http://www.w3.org/TR/PNG/
+    PNGDecoder.Chunk ch = PNGDecoder.decodeChunk(din);
+
+    // This is not a PNG if IHDR is not the first chunk.
+    if (ch.type != PNGDecoder.IHDR) return true;
+
+    // Check whether this is an 8-bit-per-channel Truecolor image
+    if (ch.data[8] != 8 || ch.data[9] != 2) {
+      //
+      // ImageIO in Java 1.5 fails to handle iTXt chunks properly, so we
+      // must check whether this is a 1.5 JVM. If so, we cannot use ImageIO
+      // to load this PNG.
+      // 
+      // See Sun Bug 6541476, at
+      // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6541476
+      //
+      return !iTXtBug;
+    }
 
     // IHDR is required to be first, and tRNS is required to appear before
     // the first IDAT chunk; therefore, if we find an IDAT we're done.
-    PNGDecoder.Chunk ch;
-
-    ch = PNGDecoder.decodeChunk(din);
-    if (ch.type != PNGDecoder.IHDR) return false;
-    if (ch.data[8] != 8 || ch.data[9] != 2) return false;
-
     while (true) {
       ch = PNGDecoder.decodeChunk(din);
 
@@ -373,13 +394,11 @@ public class ImageUtils {
       });
 */      
 
-      // Numbers here refer to sections in the PNG standard, found
-      // at http://www.w3.org/TR/PNG/
       switch (ch.type) {
       case PNGDecoder.tRNS:  // 11.3.2
-        return true;      
+        return false;      
       case PNGDecoder.IDAT:  // 12.2.4
-        return false;
+        return true;
       default:
       }
     }
@@ -435,7 +454,7 @@ public class ImageUtils {
       rin = new RereadableInputStream(in);
       rin.mark(512);
 
-      final boolean useToolkit = isMasked8BitRGBPNG(rin);
+      final boolean useToolkit = !useImageIO(rin);
       rin.reset();
 
       if (useToolkit) {
