@@ -605,7 +605,11 @@ public class FreeRotator extends Decorator
   }
 
   public String getDescription() {
-    return "Can Rotate";
+    String d = "Can Rotate";
+    if (name.length() > 0) {
+      d += " - " + name;
+    }
+    return d;
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
