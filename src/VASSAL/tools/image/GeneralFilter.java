@@ -46,7 +46,8 @@ import javax.imageio.ImageIO;
       678   r45   copy scr part from src to Raster (not BufferedImage)
       659   r55   let zoom() create destination BufferedImage
       777   r65   downsampling narrow, short images fixed; upsampling fixed
-  699 619   r2494 with/without alpha channel
+      699   r2494 split cases for with/without alpha channel
+      518   r5516 removed useless checks, removed useless field from CList
 */  
 
 /** 
@@ -81,7 +82,7 @@ public final class GeneralFilter {
 
   private static final class CList {
     public int n;            // number of source pixels
-    public int[] pixel;      // source pixels
+    public int pixel;        // starting source pixel
     public float[] weight;   // source pixel weights
   }
 
@@ -285,111 +286,75 @@ public final class GeneralFilter {
     final int dst_data[] = ((DataBufferInt) dstR.getDataBuffer()).getData();
 
     final CList[] ycontrib =
-      calc_ycontrib(dh, fwidth, yscale, dy0, sy0, sh, filter);
-    final CList xcontrib = new CList();
-    
+      calc_contrib(dh, fwidth, yscale, dy0, sy0, sh, filter);
+    final CList[] xcontrib = 
+      calc_contrib(dw, fwidth, xscale, dx0, sx0, sw, filter);
+
     // apply the filter
     if (srcI.getTransparency() == BufferedImage.OPAQUE) {
-      for (int xx = 0; xx < dw; xx++) {
-        calc_xcontrib(xscale, fwidth, xcontrib, xx, dx0, sx0, sw, filter);
-        apply_horizontal_opaque(sh, xcontrib, src_data, sw, work);
-        apply_vertical_opaque(dh, ycontrib, work, dst_data, xx, dw);
+      for (int dx = 0; dx < dw; ++dx) {
+        apply_horizontal_opaque(sh, xcontrib[dx], src_data, sw, work);
+        apply_vertical_opaque(dh, ycontrib, work, dst_data, dx, dw);
       }
     }
     else {
-      for (int xx = 0; xx < dw; xx++) {
-        calc_xcontrib(xscale, fwidth, xcontrib, xx, dx0, sx0, sw, filter);
-        apply_horizontal(sh, xcontrib, src_data, sw, work);
-        apply_vertical(dh, ycontrib, work, dst_data, xx, dw);
+      for (int dx = 0; dx < dw; ++dx) {
+        apply_horizontal(sh, xcontrib[dx], src_data, sw, work);
+        apply_vertical(dh, ycontrib, work, dst_data, dx, dw);
       }
     }
   }
 
-  private static CList[] calc_ycontrib(final int dh,
-                                       final float fwidth,
-                                       final float yscale,
-                                       final int dy0,
-                                       final int sy0,
-                                       final int sh,
-                                       final Filter filter) {
-    // Calculate filter contributions for each destination column
-    final CList[] ycontrib = new CList[dh];
-    for (int i = 0; i < ycontrib.length; i++) { ycontrib[i] = new CList(); }
+  private static CList[] calc_contrib(
+    final int dl,         // dst length along this axis
+    final float fwidth,   // filter width along this axis
+    final float scale,    // scale factor along this axis
+    final int d0,         // dst initial
+    final int s0,         // src initial
+    final int sl,         // src length along this axis
+    final Filter filter)
+  {
+    // Calculate filter contributions for each destination strip
+    final CList[] contrib = new CList[dl];
+    for (int i = 0; i < contrib.length; i++) contrib[i] = new CList();
 
     final float blur = 1.0f;
-    final float scale = 1.0f/(blur*Math.max(1.0f/yscale, 1.0f));
-    final float width = fwidth / scale;
+    final float kscale = 1.0f/(blur*Math.max(1.0f/scale, 1.0f));
+    final float width = fwidth / kscale;
 
-    for (int i = 0; i < dh; i++) {
-      final float center = (i+dy0+0.5f) / yscale;
-      final int start = (int) Math.max(center-width+0.5f, sy0);
-      final int stop = (int) Math.min(center+width+0.5f, sy0+sh);
+    for (int i = 0; i < dl; i++) {
+      final float center = (i+d0+0.5f) / scale;
+      final int start = (int) Math.max(center-width+0.5f, s0);
+      final int stop = (int) Math.min(center+width+0.5f, s0+sl);
       final int numContrib = stop - start;
      
-      ycontrib[i].n = numContrib;
-      ycontrib[i].pixel = new int[numContrib];
-      ycontrib[i].weight = new float[numContrib];
+      contrib[i].n = numContrib;
+      contrib[i].pixel = start - s0; 
+      contrib[i].weight = new float[numContrib];
 
       float density = 0.0f;
       for (int n = 0; n < numContrib; n++) {
-        ycontrib[i].pixel[n] = start + n - sy0;
-        ycontrib[i].weight[n] = filter.apply(scale*(start+n-center+0.5f));
-        density += ycontrib[i].weight[n];
+        density += contrib[i].weight[n] =
+          filter.apply(kscale*(start+n-center+0.5f));
       } 
- 
+
       if (density != 0.0f && density != 1.0f) {
-        density = 1.0f/density;
         for (int j = 0; j < numContrib; j++) {
-          ycontrib[i].weight[j] *= density;
+          contrib[i].weight[j] /= density;
         }
       } 
     }
 
-    return ycontrib;
+    return contrib;
   }
 
-  private static void calc_xcontrib(final float xscale,
-                                    final float fwidth,
-                                    final CList xcontrib,
-                                    final int xx,
-                                    final int dx0,
-                                    final int sx0,
-                                    final int sw,
-                                    final Filter filter) {
-    // Calculate filter contributions a destination row
-    final float blur = 1.0f;
-    final float scale = 1.0f/(blur*Math.max(1.0f/xscale, 1.0f));
-    final float width = fwidth / scale;
-
-    final float center = (xx+dx0+0.5f) / xscale;
-    final int start = (int) Math.max(center-width+0.5f, sx0);
-    final int stop = (int) Math.min(center+width+0.5f, sx0+sw);
-    final int numContrib = stop - start;
-
-    xcontrib.n = numContrib;
-    xcontrib.pixel = new int[numContrib];
-    xcontrib.weight = new float[numContrib];
-
-    float density = 0.0f;
-    for (int n = 0; n < numContrib; n++) {
-      xcontrib.pixel[n] = start + n - sx0;
-      xcontrib.weight[n] = filter.apply(scale*(start+n-center+0.5f));
-      density += xcontrib.weight[n];
-    } 
-
-    if (density != 0.0f && density != 1.0f) {
-      density = 1.0f/density;
-      for (int i = 0; i < numContrib; i++) {
-        xcontrib.weight[i] *= density;
-      }
-    }
-  }
-
-  private static void apply_horizontal(final int sh,
-                                       final CList xcontrib,
-                                       final int[] src_data,
-                                       final int sw,
-                                       final int[] work) {
+  private static void apply_horizontal(
+    final int sh,
+    final CList xcontrib,
+    final int[] src,
+    final int sw,
+    final int[] work)
+  {
     // Apply pre-computed filter to sample horizontally from src to work
     for (int k = 0; k < sh; k++) {
       float s_a = 0.0f;  // alpha sample
@@ -399,26 +364,21 @@ public final class GeneralFilter {
         
       final CList c = xcontrib;
       final int max = c.n;
-      final int pel = src_data[c.pixel[0] + k*sw];
+      final int pel = src[c.pixel + k*sw];
       boolean bPelDelta = false;
 
       // Check for areas of constant color. It is *much* faster to
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
-        final float w = c.weight[j];
-        if (w == 0.0f) continue;
-
-        final int sd = src_data[c.pixel[j] + k*sw];
-        if (sd != pel) { bPelDelta = true; break; }
+        if (c.weight[j] == 0.0f) continue;
+        if (src[c.pixel + j + k*sw] != pel) { bPelDelta = true; break; }
       }
 
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
         for (int j = 0; j < max; j++) {
           final float w = c.weight[j];
-          if (w == 0.0f) continue;
-
-          final int sd = src_data[c.pixel[j] + k*sw];
+          final int sd = src[c.pixel + j + k*sw];
 
           s_a += ((sd >> 24) & 0xff) * w;
           s_r += ((sd >> 16) & 0xff) * w;
@@ -428,10 +388,10 @@ public final class GeneralFilter {
 
         // Ugly, but fast.        
         work[k] =
-         (s_a < 0 ? 0 : s_a > 255 ? 255 : (int)(s_a+0.5f)) << 24 |
-         (s_r < 0 ? 0 : s_r > 255 ? 255 : (int)(s_r+0.5f)) << 16 |
-         (s_g < 0 ? 0 : s_g > 255 ? 255 : (int)(s_g+0.5f)) <<  8 |
-         (s_b < 0 ? 0 : s_b > 255 ? 255 : (int)(s_b+0.5f));
+         (s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f)) << 24 |
+         (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+         (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+         (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
@@ -440,11 +400,13 @@ public final class GeneralFilter {
     } 
   }
 
-  private static void apply_horizontal_opaque(final int sh,
-                                              final CList xcontrib,
-                                              final int[] src_data,
-                                              final int sw,
-                                              final int[] work) {
+  private static void apply_horizontal_opaque(
+    final int sh,
+    final CList xcontrib,
+    final int[] src,
+    final int sw,
+    final int[] work)
+  {
     // Apply pre-computed filter to sample horizontally from src to work
     for (int k = 0; k < sh; k++) {
       float s_r = 0.0f;  // red sample
@@ -453,26 +415,21 @@ public final class GeneralFilter {
         
       final CList c = xcontrib;
       final int max = c.n;
-      final int pel = src_data[c.pixel[0] + k*sw];
+      final int pel = src[c.pixel + k*sw];
       boolean bPelDelta = false;
 
       // Check for areas of constant color. It is *much* faster to
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
-        final float w = c.weight[j];
-        if (w == 0.0f) continue;
-
-        final int sd = src_data[c.pixel[j] + k*sw];
-        if (sd != pel) { bPelDelta = true; break; }
+        if (c.weight[j] == 0.0f) continue;
+        if (src[c.pixel + j + k*sw] != pel) { bPelDelta = true; break; }
       }
 
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
         for (int j = 0; j < max; j++) {
           final float w = c.weight[j];
-          if (w == 0.0f) continue;
-
-          final int sd = src_data[c.pixel[j] + k*sw];
+          final int sd = src[c.pixel + j + k*sw];
 
           s_r += ((sd >> 16) & 0xff) * w;
           s_g += ((sd >>  8) & 0xff) * w;
@@ -481,23 +438,25 @@ public final class GeneralFilter {
 
         // Ugly, but fast.        
         work[k] =
-         (s_r < 0 ? 0 : s_r > 255 ? 255 : (int)(s_r+0.5f)) << 16 |
-         (s_g < 0 ? 0 : s_g > 255 ? 255 : (int)(s_g+0.5f)) <<  8 |
-         (s_b < 0 ? 0 : s_b > 255 ? 255 : (int)(s_b+0.5f));
+         (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+         (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+         (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
         work[k] = pel;
       }
-    } 
+    }
   }
 
-  private static void apply_vertical(final int dh,
-                                     final CList[] ycontrib,
-                                     final int[] work,
-                                     final int[] dst_data,
-                                     final int xx,
-                                     final int dw) {
+  private static void apply_vertical(
+    final int dh,
+    final CList[] ycontrib,
+    final int[] work,
+    final int[] dst,
+    final int dx,
+    final int dw)
+  {
     // Apply pre-computed filter to sample vertically from work to dst
     for (int i = 0; i < dh; i++) {
       float s_a = 0.0f;  // alpha sample
@@ -507,27 +466,21 @@ public final class GeneralFilter {
 
       final CList c = ycontrib[i];
       final int max = c.n;
-      final int pel = work[c.pixel[0]];
+      final int pel = work[c.pixel];
       boolean bPelDelta = false;
 
       // Check for areas of constant color. It is *much* faster to
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
-        final float w = c.weight[j];
-        if (w == 0.0f) continue;
-
-        final int wd = work[c.pixel[j]];
-        if (wd != pel) { bPelDelta = true; break; }
+        if (c.weight[j] == 0.0f) continue;
+        if (work[c.pixel + j] != pel) { bPelDelta = true; break; }
       }
 
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
         for (int j = 0; j < max; j++) {
           final float w = c.weight[j];
-          if (w == 0.0f) continue;
-
-          final int wd = work[c.pixel[j]];
-          if (wd != pel) bPelDelta = true;
+          final int wd = work[c.pixel + j];
 
           s_a += ((wd >> 24) & 0xff) * w;
           s_r += ((wd >> 16) & 0xff) * w;
@@ -536,25 +489,27 @@ public final class GeneralFilter {
         }
 
         // Ugly, but fast.
-        dst_data[xx + i*dw] = 
-         (s_a < 0 ? 0 : s_a > 255 ? 255 : (int)(s_a+0.5f)) << 24 |
-         (s_r < 0 ? 0 : s_r > 255 ? 255 : (int)(s_r+0.5f)) << 16 |
-         (s_g < 0 ? 0 : s_g > 255 ? 255 : (int)(s_g+0.5f)) <<  8 |
-         (s_b < 0 ? 0 : s_b > 255 ? 255 : (int)(s_b+0.5f));
+        dst[dx + i*dw] = 
+         (s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f)) << 24 |
+         (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+         (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+         (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
-        dst_data[xx + i*dw] = pel; 
+        dst[dx + i*dw] = pel; 
       }
     }
   }
 
-  private static void apply_vertical_opaque(final int dh,
-                                            final CList[] ycontrib,
-                                            final int[] work,
-                                            final int[] dst_data,
-                                            final int xx,
-                                            final int dw) {
+  private static void apply_vertical_opaque(
+    final int dh,
+    final CList[] ycontrib,
+    final int[] work,
+    final int[] dst,
+    final int dx,
+    final int dw)
+  {
     // Apply pre-computed filter to sample vertically from work to dst
     for (int i = 0; i < dh; i++) {
       float s_r = 0.0f;  // red sample
@@ -563,27 +518,21 @@ public final class GeneralFilter {
 
       final CList c = ycontrib[i];
       final int max = c.n;
-      final int pel = work[c.pixel[0]];
+      final int pel = work[c.pixel];
       boolean bPelDelta = false;
 
       // Check for areas of constant color. It is *much* faster to
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
-        final float w = c.weight[j];
-        if (w == 0.0f) continue;
-
-        final int wd = work[c.pixel[j]];
-        if (wd != pel) { bPelDelta = true; break; }
+        if (c.weight[j] == 0.0f) continue;
+        if (work[c.pixel + j] != pel) { bPelDelta = true; break; }
       }
 
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
         for (int j = 0; j < max; j++) {
           final float w = c.weight[j];
-          if (w == 0.0f) continue;
-
-          final int wd = work[c.pixel[j]];
-          if (wd != pel) bPelDelta = true;
+          final int wd = work[c.pixel + j];
 
           s_r += ((wd >> 16) & 0xff) * w;
           s_g += ((wd >>  8) & 0xff) * w;
@@ -591,14 +540,14 @@ public final class GeneralFilter {
         }
 
         // Ugly, but fast.
-        dst_data[xx + i*dw] = 
-         (s_r < 0 ? 0 : s_r > 255 ? 255 : (int)(s_r+0.5f)) << 16 |
-         (s_g < 0 ? 0 : s_g > 255 ? 255 : (int)(s_g+0.5f)) <<  8 |
-         (s_b < 0 ? 0 : s_b > 255 ? 255 : (int)(s_b+0.5f));
+        dst[dx + i*dw] = 
+         (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+         (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+         (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
-        dst_data[xx + i*dw] = pel; 
+        dst[dx + i*dw] = pel; 
       }
     }
   }
@@ -664,6 +613,8 @@ public final class GeneralFilter {
     for (int i = 0; i < 40; ++i) {
       long start = System.currentTimeMillis();
       dst = zoom(new Rectangle(0, 0, dw, dh), src, filter);
+//ImageIO.write(dst, "png", new File("dst-g.png"));
+//System.exit(0);
       System.out.println(System.currentTimeMillis() - start);
     }
 
@@ -682,13 +633,5 @@ public final class GeneralFilter {
 
     System.out.println("Done.");
     System.in.read();
-
-/*
-    try {
-      ImageIO.write(dst, "png", new File("dst.png"));
-    }
-    catch (Exception e) {
-    }
-*/
   }
 }
