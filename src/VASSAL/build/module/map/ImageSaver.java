@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module.map;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -52,6 +53,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
@@ -267,6 +269,9 @@ public class ImageSaver extends AbstractConfigurable {
     private final int w;
     private final int h;
 
+    private final Color bg = ColorConfigurer.stringToColor(
+      map.getAttributeValueString(Map.BACKGROUND_COLOR));
+
     private final List<File> files = new ArrayList<File>();
 
 // FIXME: SnapshotTask ignores x,y!
@@ -292,8 +297,14 @@ public class ImageSaver extends AbstractConfigurable {
 
       // FIXME: do something to estimate how long painting will take
       final Graphics2D g = img.createGraphics();
+
+      final Color oc = g.getColor(); 
+      g.setColor(bg);
+      g.fillRect(0, 0, img.getWidth(), img.getHeight());
+      g.setColor(oc);
+
       g.translate(-r.x, -r.y);
-      map.paintRegion(g, r, null);
+      map.paintRegion(g, r);
       g.dispose();
 
       // update the dialog on the EDT

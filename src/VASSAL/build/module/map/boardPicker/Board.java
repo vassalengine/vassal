@@ -250,7 +250,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return new Class[] {
+    return new Class<?>[] {
       HexGrid.class,
       SquareGrid.class,
       RegionGrid.class,
@@ -431,16 +431,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
         }
 */
       }
-      else {
-        if (color != null) {
-          g.setColor(color);
-          g.fillRect(visibleRect.x, visibleRect.y,
-                     visibleRect.width, visibleRect.height);
-        }
-        else {
-          g.clearRect(visibleRect.x, visibleRect.y,
-                      visibleRect.width, visibleRect.height);
-        }
+      else if (color != null) {
+        g.setColor(color);
+        g.fillRect(visibleRect.x, visibleRect.y,
+                   visibleRect.width, visibleRect.height);
       }
 
       if (grid != null) {
