@@ -116,8 +116,15 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final String path = soundDir + name;
     AudioClip clip = soundCache.get(path);
     if (clip == null) {
-      clip = new AppletAudioClip(IOUtils.toByteArray(getInputStream(path)));
-      soundCache.put(path,clip);
+      InputStream stream = null;
+      try {
+        stream = getInputStream(path);
+        clip = new AppletAudioClip(IOUtils.toByteArray(stream));
+        soundCache.put(path,clip);
+      }
+      finally {
+        IOUtils.closeQuietly(stream);
+      }      
     }
     return clip;
   }
@@ -386,14 +393,18 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {
+    InputStream stream = null;
     try {
       final String slashname = name.replace('.', '/');
-      final byte[] data =
-        IOUtils.toByteArray(getInputStream(slashname + ".class"));
+      stream = getInputStream(slashname + ".class");
+      final byte[] data = IOUtils.toByteArray(stream);
       return defineClass(name, data, 0, data.length, cs);
     }
     catch (IOException e) {
       throw new ClassNotFoundException("Unable to load class " + name, e);
+    }
+    finally {
+      IOUtils.closeQuietly(stream);
     }
   }
 
