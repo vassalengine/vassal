@@ -20,7 +20,6 @@
 package VASSAL.launch;
 
 import VASSAL.Info;
-import VASSAL.tools.logging.LogManager;
 import VASSAL.tools.logging.LogOutputStreamAdapter;
 import VASSAL.tools.logging.Logger;
 
@@ -60,7 +59,7 @@ public class StartUp {
 
   public void startErrorLog() {
     if (System.getProperty("stderr") != null) {
-      LogManager.addLogListener(new LogOutputStreamAdapter(System.err));
+      Logger.addLogListener(new LogOutputStreamAdapter(System.err));
     }
     // begin the error log
     Logger.log("-- Starting"); //$NON-NLS-1$
