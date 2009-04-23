@@ -80,7 +80,7 @@ public abstract class SocketHandler {
         closeSocket();
       }
     };
-    Thread t = new Thread(runnable);
+    Thread t = new Thread(runnable, "read " + sock.getInetAddress());
     t.start();
     return t;
   }
@@ -109,7 +109,7 @@ public abstract class SocketHandler {
         closeSocket();
       }
     };
-    Thread t = new Thread(runnable);
+    Thread t = new Thread(runnable, "write " + sock.getInetAddress());
     t.start();
     return t;
   }

@@ -38,7 +38,7 @@ public class StatusReporter implements Runnable {
   public StatusReporter(HttpRequestWrapper reportStatus, AsynchronousServerNode server) {
     this.reportStatus = reportStatus;
     this.server = server;
-    new Thread(this).start();
+    new Thread(this, "status reporter").start();
   }
 
   public void updateContents(Node[] players) {
