@@ -20,7 +20,8 @@ package VASSAL.chat.node;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Copyright (c) 2003 by Rodney Kinney.  All rights reserved.
@@ -29,7 +30,7 @@ import java.util.LinkedList;
 public abstract class SocketHandler {
   protected Socket sock;
   protected SocketWatcher handler;
-  private LinkedList<String> writeQueue = new LinkedList<String>();
+  private BlockingQueue<String> writeQueue = new LinkedBlockingQueue<String>();
   private boolean isOpen = true;
   private Thread readThread;
   private Thread writeThread;
@@ -91,12 +92,9 @@ public abstract class SocketHandler {
         String line;
         try {
           while (true) {
-            line = getLine();
-            if (line != null) {
+            if ((line = getLine()) != null) {
               writeNext(line);
-            }
-            if (SIGN_OFF.equals(line)) {
-              break;
+              if (SIGN_OFF.equals(line)) break;
             }
           }
         }
@@ -114,16 +112,18 @@ public abstract class SocketHandler {
     return t;
   }
 
-  protected abstract void closeStreams() throws IOException ;
+  protected abstract void closeStreams() throws IOException;
 
   protected abstract String readNext() throws IOException;
 
   protected abstract void writeNext(String line) throws IOException;
 
   public void writeLine(String pMessage) {
-    synchronized (writeQueue) {
-      writeQueue.addLast(pMessage);
-      writeQueue.notifyAll();
+    try {
+      writeQueue.put(pMessage);
+    }
+    catch (InterruptedException e) {
+      e.printStackTrace();
     }
   }
 
@@ -145,25 +145,21 @@ public abstract class SocketHandler {
       // FIXME: review error message
       catch (IOException ignore) {
       }
+      
+      close();
       isOpen = false;
       handler.socketClosed(this);
     }
   }
 
   private String getLine() {
-    synchronized (writeQueue) {
-      if (writeQueue.isEmpty()) {
-        try {
-          writeQueue.wait();
-        }
-        catch (InterruptedException e) {
-        }
-      }
-      String message = ""; //$NON-NLS-1$
-      if (!writeQueue.isEmpty()) {
-        message = writeQueue.removeFirst();
-      }
-      return message;
+    try {
+      return writeQueue.take();
     }
+    catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
+    return null;
   }
 }
