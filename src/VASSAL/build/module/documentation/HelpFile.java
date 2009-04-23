@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module.documentation;
 
+import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -53,6 +54,7 @@ public class HelpFile extends AbstractConfigurable {
   public static final String LOCAL_FILE = "file"; //$NON-NLS-1$
 
   protected HelpWindow frame;
+  protected DialogHelpWindow dialog;
   protected URL contents;
   protected String title;
   protected String fileName;
@@ -108,6 +110,23 @@ public class HelpFile extends AbstractConfigurable {
     return frame;
   }
 
+  /**
+   * Create and display a new HelpWindow as a Dialog
+   * with the contents of this HelpFile
+   */  
+  public void showWindow(Dialog owner) {
+    final DialogHelpWindow w = getDialogHelpWindow(owner);
+    w.setVisible(true);
+    w.toFront();
+  }
+  
+  protected DialogHelpWindow getDialogHelpWindow(Dialog d) {
+    if (dialog == null) {
+      dialog = new DialogHelpWindow(title, getContents(), d);
+    }
+    return dialog;
+  }
+  
   public URL getContents() {
     if (contents != null || fileName == null) return contents;
 

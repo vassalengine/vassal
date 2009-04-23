@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -600,14 +600,17 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       ed = p.getEditor();
       setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       add(ed.getControls());
+      
       JButton b = new JButton("Ok");
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
           dispose();
         }
       });
+      
       JPanel panel = new JPanel();
       panel.add(b);
+      
       b = new JButton("Cancel");
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
@@ -616,6 +619,17 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
         }
       });
       panel.add(b);
+      
+      if (p.getHelpFile() != null) {
+        b = new JButton("Help");
+        b.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent evt) {
+            p.getHelpFile().showWindow(Ed.this);
+          }
+        });
+        panel.add(b);
+      }
+      
       add(panel);
       pack();
       setLocationRelativeTo(getOwner());
