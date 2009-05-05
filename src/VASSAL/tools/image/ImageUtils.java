@@ -320,8 +320,23 @@ public class ImageUtils {
       final ImageReader reader = i.next();
       try {
         reader.setInput(stream);
-        final Dimension size =
-          new Dimension(reader.getWidth(0), reader.getHeight(0));
+
+        Dimension size = null;
+        try {
+          size = new Dimension(reader.getWidth(0), reader.getHeight(0));
+        }
+        catch (IllegalArgumentException e) {
+          // Note: ImageIO can throw IllegalArgumentExceptions for certain
+          // kinds of broken images, e.g., JPEGs which are in the RGB color
+          // space but have non-RGB color profiles (see Bug 2673589 for an
+          // example of this). We catch IllegalArgumentException here in
+          // a last-ditch effort to prevent broken images---which are bad
+          // data, not bugs---from causing an uncaught exception and raising
+          // a Bug Dialog.
+          ErrorDialog.dataError(new BadDataReport("Broken image", name));
+          throw (IOException) new IOException().initCause(e);
+        }
+        
         in.close();
         return size;
       }
@@ -481,17 +496,17 @@ public class ImageUtils {
       }
 
       if (img == null) {
-        // Note: ImageIO can throw IllegalArgumentExceptions for certain
-        // kinds of broken images, e.g., JPEGs which are in the RGB color
-        // space but have non-RGB color profiles (see Bug 2673589 for an
-        // example of this). We catch IllegalArgumentException here in
-        // a last-ditch effort to prevent broken images---which are bad
-        // data, not bugs---from causing an uncaught exception and raising
-        // a Bug Dialog.
         try {
           img = ImageIO.read(new MemoryCacheImageInputStream(rin));
         }
         catch (IllegalArgumentException e) {
+          // Note: ImageIO can throw IllegalArgumentExceptions for certain
+          // kinds of broken images, e.g., JPEGs which are in the RGB color
+          // space but have non-RGB color profiles (see Bug 2673589 for an
+          // example of this). We catch IllegalArgumentException here in
+          // a last-ditch effort to prevent broken images---which are bad
+          // data, not bugs---from causing an uncaught exception and raising
+          // a Bug Dialog.
           ErrorDialog.dataError(new BadDataReport("Broken image", name));
           throw (IOException) new IOException().initCause(e);
         }
