@@ -72,6 +72,9 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
+
 import org.w3c.dom.Element;
 
 import VASSAL.build.AbstractConfigurable;
@@ -176,7 +179,7 @@ import org.jdesktop.swinghelper.layer.demo.DebugPainter;
  * contained in the <code>VASSAL.build.module.map</code> package
  */
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
-    UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener, Runnable {
+    UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
   protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
@@ -1265,11 +1268,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     return dragGestureListener;
   }
 
-  /*
-   * Restart scroll delay timer when re-entering map
-   */
   public void dragEnter(DropTargetDragEvent dtde) {
-    restartDelay();
   }
 
   public void dragOver(DropTargetDragEvent dtde) {
@@ -1283,8 +1282,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * Cancel final scroll and repaint map
    */
   public void dragExit(DropTargetEvent dte) {
-    scroll_dx = 0;
-    scroll_dy = 0;
+    if (scroller.isRunning()) scroller.stop();
     repaint();
   }
 
@@ -1312,87 +1310,92 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   /**
-   * Mouse motion events are not forwarded to LocalMouseListeners or to listeners on the stack
+   * Mouse motion events are not forwarded to LocalMouseListeners or to
+   * listeners on the stack.
    * 
-   * The map scrolls when dragging the mouse near the edge
+   * The map scrolls when dragging the mouse near the edge.
    */
   public void mouseDragged(MouseEvent e) {
     if (!e.isMetaDown()) {
       scrollAtEdge(e.getPoint(), 15);
     }
     else {
-      restartDelay();
+      if (scroller.isRunning()) scroller.stop();
     }
   }
+
   /*
    * Delay before starting scroll at edge
    */
   public static final int PREFERRED_EDGE_SCROLL_DELAY = 200;
   public static final String PREFERRED_EDGE_DELAY = "PreferredEdgeDelay"; //$NON-NLS-1$
-  
-  protected Thread scrollDelayThread;
-  protected long scrollExpirationTime;
-  protected int scroll_dist;
-  protected int scroll_dx;
-  protected int scroll_dy;
+
+  /** The horizontal component of the autoscrolling vector, -1, 0, or 1. */
+  protected int sx;
+  /** The vertical component of the autoscrolling vector, -1, 0, or 1. */
+  protected int sy;
 
   /**
-   * Scoll map so that the argument point is at least a certain distance from the visible edte
+   * Begin autoscrolling the map if the given point is within the given
+   * distance from a viewport edge.
    * 
    * @param evtPt
+   * @param dist
    */
   public void scrollAtEdge(Point evtPt, int dist) {
-    final Point p = new Point(
-      evtPt.x - scroll.getViewport().getViewPosition().x,
-      evtPt.y - scroll.getViewport().getViewPosition().y);
+    final Rectangle vrect = scroll.getViewport().getViewRect();
 
-    int dx = 0, dy = 0;
-    if (p.x < dist && p.x >= 0)
-      dx = -1;
+    final int px = evtPt.x - vrect.x;
+    final int py = evtPt.y - vrect.y;
 
-    if (p.x >= scroll.getViewport().getWidth() - dist &&
-        p.x < scroll.getViewport().getWidth())
-      dx = 1;
+    // determine scroll vector
+    sx = px < dist && px >= 0 ? -1 :
+        (px < vrect.width && px >= vrect.width - dist ? 1 : 0);
 
-    if (p.y < dist && p.y >= 0)
-      dy = -1;
+    sy = py < dist && py >= 0 ? -1 :
+        (py < vrect.height && py >= vrect.height - dist ? 1 : 0);
 
-    if (p.y >= scroll.getViewport().getHeight() - dist &&
-        p.y < scroll.getViewport().getHeight())
-      dy = 1;
-
-    scroll_dx = dx;
-    scroll_dy = dy;
-    scroll_dist = dist;
-
-    if (dx != 0 || dy != 0) {
-      if (scrollDelayThread == null || !scrollDelayThread.isAlive()) {
-        scrollDelayThread = new Thread(this);
-        scrollDelayThread.start();
+    // start autoscrolling if we have a nonzero scroll vector
+    if (sx != 0 || sy != 0) {
+      if (!scroller.isRunning()) {
+        scroller.setStartDelay((Integer)
+          GameModule.getGameModule().getPrefs().getValue(PREFERRED_EDGE_DELAY));
+        scroller.start();
       }
     }
     else {
-      restartDelay();
+      if (scroller.isRunning()) scroller.stop();
     }
   }
 
-  protected void restartDelay() {
-    scrollExpirationTime = System.currentTimeMillis() + 
-      ((Integer) GameModule.getGameModule().getPrefs().getValue(PREFERRED_EDGE_DELAY)).intValue();
-  }
+  /** The animator which controls autoscrolling. */
+  protected Animator scroller = new Animator(Animator.INFINITE,
+    new TimingTargetAdapter() {
+      private int t;
+      
+      @Override
+      public void timingEvent(float fraction) {
+        // Follow the parabola x^2
+        final int delta = 2*(t++);
+        scroll(sx*delta, sy*delta);
 
-  public void run() {
-    while (System.currentTimeMillis() < scrollExpirationTime) {
-      try {
-        Thread.sleep(Math.max(0, scrollExpirationTime - System.currentTimeMillis()));
+        // Check whether we have hit an edge
+        final Rectangle vrect = scroll.getViewport().getViewRect();
+
+        if ((sx == -1 && vrect.x == 0) ||
+            (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
+
+        if ((sy == -1 && vrect.y == 0) ||
+            (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
+
+        // Stop if the scroll vector is zero
+        if (sx == 0 && sy == 0) scroller.stop();
       }
-      catch (InterruptedException e) {
-      }
+
+      @Override
+      public void begin() { t = 1; }
     }
-    if (scroll_dx != 0 || scroll_dy != 0) {
-      scroll(2 * scroll_dist * scroll_dx, 2 * scroll_dist * scroll_dy);
-    }
-  }
+  ); 
 
   public void repaint(boolean cf) {
     clearFirst = cf;
@@ -2072,17 +2075,15 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   /**
-   * Scrolls the map in the containing JScrollPane
+   * Scrolls the map in the containing JScrollPane.
    * 
-   * @param dx
-   *          number of pixels to scroll horizontally
-   * @param dy
-   *          number of pixels to scroll vertically
+   * @param dx number of pixels to scroll horizontally
+   * @param dy number of pixels to scroll vertically
    */
   public void scroll(int dx, int dy) {
-    Rectangle r = new Rectangle(scroll.getViewport().getViewRect());
+    Rectangle r = scroll.getViewport().getViewRect();
     r.translate(dx, dy);
-    r = r.intersection(new Rectangle(new Point(0, 0), getPreferredSize()));
+    r = r.intersection(new Rectangle(getPreferredSize()));
     theMap.scrollRectToVisible(r);
   }
 
