@@ -214,8 +214,8 @@ public class SymbolSet extends Importer{
     private BufferedImage getImage(Rectangle rect2) {
       if (img == null) {
         if ( isMask && (rect.width <= 0 || rect.height <= 0 
-            || rect.width+rect.x >= bitmap.getWidth() 
-            || rect.height+rect.y >= bitmap.getHeight() )) {
+            || rect.width+rect.x > bitmap.getWidth() 
+            || rect.height+rect.y > bitmap.getHeight() )) {
           // Images with invalid masks appear to be completely transparent.
           // This is a hassle generating new ones all the time, but there's nothing
           // to say that the real mask can't be different sizes at every call,
