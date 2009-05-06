@@ -342,6 +342,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   }
   
   public String getName(boolean localized) {
+    checkPropertyLevel(); // Name Change?
     String name = null;
     String commonName = value > 0 ? getCommonName(localized, value - 1) : null;
     if (value > 0 && commonName != null && commonName.length() > 0) {
