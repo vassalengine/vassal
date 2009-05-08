@@ -58,7 +58,15 @@ public class MemoryUtils {
     final String os = System.getProperty("os.name").toLowerCase();
 
     if (os.startsWith("linux")) {
-      IMPL = new LinuxMemoryUtilsImpl();
+      final String arch = System.getProperty("os.arch").toLowerCase();
+      if (arch.equals("i386") || arch.equals("x86") || arch.equals("amd64")) {
+        IMPL = new LinuxMemoryUtilsImpl();
+      }
+      else {
+        // JNA does not support Linux on non-x86 architectures (e.g., PPC,
+        // Sparc, or ARM), so we have to use the dummy implementaion there.
+        IMPL = new DummyMemoryUtilsImpl();
+      }
     }
     else if (os.startsWith("mac os x")) {
       IMPL = new MacOSXMemoryUtilsImpl();
