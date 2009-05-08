@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2003-2007 by David Sullivan, Rodney Kinney,
+ * Copyright (c) 2003-2009 by David Sullivan, Rodney Kinney,
  * Brent Easton, and Joel Uckelman.
  *
  * This library is free software; you can redistribute it and/or
@@ -28,6 +28,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -40,6 +42,7 @@ import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -78,13 +81,13 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.FormattedString;
 
 /**
- * This is a {@link Drawable}class that draws the counters horizontally when
+ * This is a {@link Drawable} class that draws the counters horizontally when
  * the mouse is held over a stack with the control key down.
  * 
  * @author David Sullivan
  * @version 1.0
  */
-public class CounterDetailViewer extends AbstractConfigurable implements Drawable, MouseMotionListener, MouseListener, Runnable, KeyListener {
+public class CounterDetailViewer extends AbstractConfigurable implements Drawable, MouseMotionListener, MouseListener, KeyListener {
 
   public static final String LATEST_VERSION = "2";
   public static final String USE_KEYBOARD = "ShowCounterDetails";
@@ -129,9 +132,9 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected KeyStroke hotkey =
     KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK);
   protected Map map;
-  protected Thread delayThread;
   protected int delay = 700;
-  protected long expirationTime;
+  protected Timer delayTimer;
+
   protected boolean graphicsVisible = false;
   protected boolean textVisible = false;
   protected MouseEvent currentMousePosition;
@@ -169,6 +172,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   protected JComponent view;
 
   public CounterDetailViewer() {
+    // Set up the timer; this isn't the real delay---we always check the
+    // preferences for that.
+    delayTimer = new Timer(delay, new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (mouseInView) showDetails();
+      }
+    });
+
+    delayTimer.setRepeats(false);
   }
 
   public void addTo(Buildable b) {
@@ -370,27 +382,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
       Labeler.drawLabel(g, label, pt.x, pt.y, new Font("Dialog", Font.PLAIN, fontSize), hAlign, vAlign, labelFgColor, bgColor, labelFgColor);
       g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-    }
-  }
-
-  /*
-   * Thread code running in background to show the view after the mouse has been
-   * stationery for the specified time.
-   */
-  public void run() {
-
-    while (System.currentTimeMillis() < expirationTime) {
-      try {
-        Thread.sleep(Math.max(0, expirationTime - System.currentTimeMillis()));
-      }
-      catch (InterruptedException e) {
-      }
-    }
-    /*
-     * Show the viewer only if the mouse is still on the map
-     */
-    if (mouseInView) {
-      showDetails();
     }
   }
 
@@ -623,7 +614,6 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   public void mouseMoved(MouseEvent e) {
-
     // clear details when mouse moved
     if (graphicsVisible || textVisible) {
       hideDetails();
@@ -632,20 +622,15 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       // set the timer
       currentMousePosition = e;
       // quit if not active
-      if (Boolean.FALSE.equals(GameModule.getGameModule().getPrefs().getValue(USE_KEYBOARD))) {
-        restartDelay();
-        // Reset thread
-        // timer
-        if (delayThread == null || !delayThread.isAlive()) {
-          delayThread = new Thread(this);
-          delayThread.start();
-        }
+      if (Boolean.FALSE.equals(
+            GameModule.getGameModule().getPrefs().getValue(USE_KEYBOARD))) {
+
+        // Restart timer
+        if (delayTimer.isRunning()) delayTimer.stop();
+        delayTimer.setInitialDelay(getPreferredDelay());
+        delayTimer.start();
       }
     }
-  }
-
-  protected void restartDelay() {
-    expirationTime = System.currentTimeMillis() + getPreferredDelay();
   }
 
   protected int getPreferredDelay() {
@@ -669,12 +654,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   }
 
   public void mousePressed(MouseEvent e) {
-    restartDelay();
+    if (delayTimer.isRunning()) delayTimer.stop();
   }
 
   public void mouseReleased(MouseEvent e) {
     mouseInView = true;
-    restartDelay();
+    if (delayTimer.isRunning()) delayTimer.stop();
   }
 
   public void keyTyped(KeyEvent e) {
