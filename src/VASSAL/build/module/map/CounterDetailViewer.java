@@ -28,6 +28,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceMotionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -87,7 +90,7 @@ import VASSAL.tools.FormattedString;
  * @author David Sullivan
  * @version 1.0
  */
-public class CounterDetailViewer extends AbstractConfigurable implements Drawable, MouseMotionListener, MouseListener, KeyListener {
+public class CounterDetailViewer extends AbstractConfigurable implements Drawable, DragSourceMotionListener, MouseMotionListener, MouseListener, KeyListener {
 
   public static final String LATEST_VERSION = "2";
   public static final String USE_KEYBOARD = "ShowCounterDetails";
@@ -197,6 +200,7 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
     view.addMouseMotionListener(this);
     view.addMouseListener(this);
     view.addKeyListener(this);
+    DragSource.getDefaultDragSource().addDragSourceMotionListener(this);
 
     setAttributeTranslatable(VERSION, false);
     setAttributeTranslatable(SUMMARY_REPORT_FORMAT, true);
@@ -619,9 +623,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
       hideDetails();
     }
     else {
-      // set the timer
       currentMousePosition = e;
-      // quit if not active
+
       if (Boolean.FALSE.equals(
             GameModule.getGameModule().getPrefs().getValue(USE_KEYBOARD))) {
 
@@ -659,6 +662,11 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
   public void mouseReleased(MouseEvent e) {
     mouseInView = true;
+    if (delayTimer.isRunning()) delayTimer.stop();
+  }
+
+  public void dragMouseMoved(DragSourceDragEvent e) {
+    // This prevents the viewer from popping up during piece drags.
     if (delayTimer.isRunning()) delayTimer.stop();
   }
 
