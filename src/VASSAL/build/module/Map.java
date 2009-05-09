@@ -1301,6 +1301,8 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       theMap.dispatchEvent(evt);
       dtde.dropComplete(true);
     }
+
+    if (scroller.isRunning()) scroller.stop();
   }
 
   /**
