@@ -1272,7 +1272,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   public void dragOver(DropTargetDragEvent dtde) {
-    scrollAtEdge(dtde.getLocation(), 15);
+    scrollAtEdge(dtde.getLocation(), SCROLL_ZONE);
   }
 
   public void dropActionChanged(DropTargetDragEvent dtde) {
@@ -1319,7 +1319,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    */
   public void mouseDragged(MouseEvent e) {
     if (!e.isMetaDown()) {
-      scrollAtEdge(e.getPoint(), 15);
+      scrollAtEdge(e.getPoint(), SCROLL_ZONE);
     }
     else {
       if (scroller.isRunning()) scroller.stop();
@@ -1332,10 +1332,15 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   public static final int PREFERRED_EDGE_SCROLL_DELAY = 200;
   public static final String PREFERRED_EDGE_DELAY = "PreferredEdgeDelay"; //$NON-NLS-1$
 
+  /** The width of the hot zone for triggering autoscrolling. */
+  public static final int SCROLL_ZONE = 30;
+
   /** The horizontal component of the autoscrolling vector, -1, 0, or 1. */
   protected int sx;
   /** The vertical component of the autoscrolling vector, -1, 0, or 1. */
   protected int sy;
+
+  protected int dx, dy;
 
   /**
    * Begin autoscrolling the map if the given point is within the given
@@ -1351,11 +1356,29 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     final int py = evtPt.y - vrect.y;
 
     // determine scroll vector
-    sx = px < dist && px >= 0 ? -1 :
-        (px < vrect.width && px >= vrect.width - dist ? 1 : 0);
+    sx = 0;    
+    if (px < dist && px >= 0) {
+      sx = -1;
+      dx = dist - px;
+    }
+    else if (px < vrect.width && px >= vrect.width - dist) {
+      sx = 1;
+      dx = dist - (vrect.width - px);
+    }
 
-    sy = py < dist && py >= 0 ? -1 :
-        (py < vrect.height && py >= vrect.height - dist ? 1 : 0);
+    sy = 0;    
+    if (py < dist && py >= 0) {
+      sy = -1;
+      dy = dist - py;
+    }
+    else if (py < vrect.height && py >= vrect.height - dist) {
+      sy = 1;
+      dy = dist - (vrect.height - py);
+    }
+
+    dx /= 2;
+    dy /= 2;
+
 
     // start autoscrolling if we have a nonzero scroll vector
     if (sx != 0 || sy != 0) {
@@ -1373,13 +1396,15 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   /** The animator which controls autoscrolling. */
   protected Animator scroller = new Animator(Animator.INFINITE,
     new TimingTargetAdapter() {
-      private int t;
+
+      private long t0;
       
       @Override
       public void timingEvent(float fraction) {
-        // Follow the parabola x^2
-        final int delta = 2*(t++);
-        scroll(sx*delta, sy*delta);
+        // Constant velocity along each axis, 0.5px/ms
+        final long t1 = System.currentTimeMillis();
+        final int dt = (int)((t1 - t0)/2);
+        t0 = t1;
 
         // Check whether we have hit an edge
         final Rectangle vrect = scroll.getViewport().getViewRect();
@@ -1395,7 +1420,9 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       }
 
       @Override
-      public void begin() { t = 1; }
+      public void begin() {
+        t0 = System.currentTimeMillis();
+      }
     }
   ); 
 
