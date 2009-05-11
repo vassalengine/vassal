@@ -538,16 +538,15 @@ public class PieceMover extends AbstractBuildable
        * Take a copy of the pieces in dragging.
        * If it is a stack, it is cleared by the merging process.
        */
-      GamePiece[] draggedPieces;
+      final ArrayList<GamePiece> draggedPieces = new ArrayList<GamePiece>(0);
       if (dragging instanceof Stack) {
         int size = ((Stack) dragging).getPieceCount();
-        draggedPieces = new GamePiece[size];
         for (int i = 0; i < size; i++) {
-          draggedPieces[i] = ((Stack) dragging).getPieceAt(i);
+          draggedPieces.add(((Stack) dragging).getPieceAt(i));
         }
       }
       else {
-        draggedPieces = new GamePiece[]{dragging};
+        draggedPieces.add(dragging);
       }
 
       if (offset != null) {
@@ -588,7 +587,7 @@ public class PieceMover extends AbstractBuildable
           mergeTargets.put(p, mergeCandidates);
         }
       }
-
+    
       if (mergeWith == null) {
         comm = comm.append(movedPiece(dragging, p));
         comm = comm.append(map.placeAt(dragging, p));
@@ -601,12 +600,33 @@ public class PieceMover extends AbstractBuildable
         }
       }
       else {
-        comm = comm.append(movedPiece(dragging, mergeWith.getPosition()));
-        comm = comm.append(map.getStackMetrics().merge(mergeWith, dragging));
+        // Do not add pieces to the Deck that are Obscured to us, or that the Deck
+        // does not want to contain. Removing them from the draggedPieces list will
+        // cause them to be left behind where the drag started.
+        if (mergeWith instanceof Deck) {
+          final ArrayList<GamePiece> newList = new ArrayList<GamePiece>(0);
+          for (GamePiece piece : draggedPieces) {
+            if (!Boolean.TRUE.equals(piece.getProperty(Properties.OBSCURED_TO_ME)) &&
+                ((Deck) mergeWith).mayContain(piece)) {
+              newList.add(piece);
+            }
+          }
+          if (newList.size() != draggedPieces.size()) {
+            draggedPieces.clear();
+            for (GamePiece piece : newList) {
+              draggedPieces.add(piece);
+            }
+          }
+        }
+        
+        for (GamePiece piece : draggedPieces) {
+          comm = comm.append(movedPiece(piece, mergeWith.getPosition()));
+          comm = comm.append(map.getStackMetrics().merge(mergeWith, piece));       
+        }
       }
 
-      for (int i = 0; i < draggedPieces.length; i++) {
-        KeyBuffer.getBuffer().add(draggedPieces[i]);
+      for (GamePiece piece : draggedPieces) {
+        KeyBuffer.getBuffer().add(piece);
       }
 
       // Record each individual piece moved

@@ -22,11 +22,13 @@ import java.awt.Color;
 import java.awt.event.InputEvent;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
 import javax.swing.KeyStroke;
 
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.HotKeyConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
+import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 
 /**
@@ -118,6 +120,10 @@ public class SequenceEncoder {
     return append(StringArrayConfigurer.arrayToString(s));
   }
 
+  public SequenceEncoder append(PropertyExpression p) {
+    return append(p.getExpression());
+  }
+  
   public String getValue() {
     return buffer != null ? buffer.toString() : null;
   }
@@ -326,6 +332,18 @@ public class SequenceEncoder {
       return defaultValue == null ? NamedKeyStroke.NULL_KEYSTROKE : defaultValue;
     }
 
+    public PropertyExpression nextPropertyExpression() {
+      return nextPropertyExpression("");
+    }
+    
+    public PropertyExpression nextPropertyExpression(String defaultValue) {
+      String s = defaultValue == null ? "" : defaultValue;
+      if (val != null) {
+        s = nextToken();
+      }
+      return new PropertyExpression(s); 
+    }
+    
     /**
      * Return the next token, or the default value if there are no more tokens
      * @param defaultValue

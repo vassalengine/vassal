@@ -67,6 +67,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.ColorConfigurer;
+import VASSAL.configure.PropertyExpression;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArrayUtils;
@@ -136,6 +137,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     new ArrayList<DeckGlobalKeyCommand>();
   protected boolean hotkeyOnEmpty;
   protected NamedKeyStroke emptyKey;
+  private boolean restrictOption;
+  private PropertyExpression restrictExpression = new PropertyExpression();
 
   protected CommandEncoder commandEncoder = new CommandEncoder() {
     public Command decode(String command) {
@@ -341,6 +344,8 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     emptyKey = st.nextNamedKeyStroke(null);
     selectDisplayProperty.setFormat(st.nextToken("$"+BasicPiece.BASIC_NAME+"$"));
     selectSortProperty = st.nextToken("");
+    restrictOption = st.nextBoolean(false);
+    restrictExpression.setExpression(st.nextToken(""));
     
     if (shuffleListener == null) {
       shuffleListener = new NamedKeyStrokeListener(new ActionListener() {
@@ -608,6 +613,39 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     emptyKey = k;
   }
   
+  
+  public void setRestrictOption(boolean restrictOption) {
+    this.restrictOption = restrictOption;
+  }
+
+  public boolean isRestrictOption() {
+    return restrictOption;
+  }
+
+  public void setRestrictExpression(PropertyExpression restrictExpression) {
+    this.restrictExpression = restrictExpression;
+  }
+
+  public PropertyExpression getRestrictExpression() {
+    return restrictExpression;
+  }
+
+  /**
+   * Does the specified GamePiece meet the rules to be contained
+   * in this Deck.
+   * 
+   * @param piece
+   * @return
+   */
+  public boolean mayContain(GamePiece piece) {
+    if (! restrictOption || restrictExpression.isNull()) {
+      return true;
+    }
+    else {
+      return restrictExpression.accept(piece);
+    }
+  }
+  
   public String getType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(drawOutline)
@@ -637,7 +675,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(hotkeyOnEmpty)
       .append(emptyKey)
       .append(selectDisplayProperty.getFormat())
-      .append(selectSortProperty);
+      .append(selectSortProperty)
+      .append(restrictOption)
+      .append(restrictExpression);
     return ID + se.getValue();
   }
 

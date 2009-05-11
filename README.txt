@@ -1,5 +1,5 @@
   This is the source code release for the VASSAL Engine.  Usage is
-subject to the terms of the Library Gnu Public Licesne (LGPL),
+subject to the terms of the Library Gnu Public License (LGPL),
 described in the LICENSE.txt file and also available from
 http://www.opensource.org.
 

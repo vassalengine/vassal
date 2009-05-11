@@ -42,6 +42,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.GamePieceFormattedStringConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.PlayerIdFormattedStringConfigurer;
+import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
@@ -95,6 +96,11 @@ public class DrawPile extends SetupStack {
   private VisibilityCondition selectionAllowedVisibleCondition = new VisibilityCondition() {
     public boolean shouldBeVisible() {
       return dummy.isAllowSelectDraw();
+    }
+  };
+  private VisibilityCondition restrictExpressionVisibleCondition = new VisibilityCondition() {
+    public boolean shouldBeVisible() {
+      return dummy.isRestrictOption();
     }
   };
   protected static UniqueIdManager idMgr = new UniqueIdManager("Deck");
@@ -162,7 +168,9 @@ public class DrawPile extends SetupStack {
   public static final String CAN_SAVE = "canSave";
   public static final String HOTKEY_ON_EMPTY = "hotkeyOnEmpty";
   public static final String EMPTY_HOTKEY = "emptyHotkey"; 
-
+  public static final String RESTRICT_OPTION = "restrictOption";
+  public static final String RESTRICT_EXPRESSION = "restrictExpression";
+  
   public static final String ALWAYS = "Always";
   public static final String NEVER = "Never";
   public static final String USE_MENU = "Via right-click Menu";
@@ -237,7 +245,9 @@ public class DrawPile extends SetupStack {
       CAN_SAVE,
       MAXSTACK,
       EXPRESSIONCOUNTING,
-      COUNTEXPRESSIONS
+      COUNTEXPRESSIONS,
+      RESTRICT_OPTION,
+      RESTRICT_EXPRESSION
     };
   }
 
@@ -271,9 +281,11 @@ public class DrawPile extends SetupStack {
       "Send Hot Key:  ",
       "Name of deck to send to:  ",
       "Can be saved-to/loaded-from a file?",
-      "Maximum Cards to display in Stack:",
+      "Maximum Cards to display in Stack:  ",
       "Perform counting of property expressions?",
-      "Expressions to count:"
+      "Expressions to count:  ",
+      "Restrict adding counters by Drag 'n Drop?",
+      "Dropped counters must match expression:  "
     };
   }
 
@@ -309,7 +321,9 @@ public class DrawPile extends SetupStack {
       Boolean.class,
       Integer.class,
       Boolean.class,
-      String[].class
+      String[].class,
+      Boolean.class,
+      PropertyExpression.class
     };
   }
 
@@ -406,6 +420,12 @@ public class DrawPile extends SetupStack {
     }
     else if (EMPTY_HOTKEY.equals(key)) {
       return NamedHotKeyConfigurer.encode(dummy.getNamedEmptyKey());
+    }
+    else if (RESTRICT_OPTION.equals(key)) {
+      return String.valueOf(dummy.isRestrictOption());
+    }
+    else if (RESTRICT_EXPRESSION.equals(key)) {
+      return dummy.getRestrictExpression().getExpression(); 
     }
     else {
       return super.getAttributeValueString(key);
@@ -569,6 +589,20 @@ public class DrawPile extends SetupStack {
       }
       dummy.setEmptyKey((NamedKeyStroke) value);
     }
+    else if (RESTRICT_OPTION.equals(key)) {
+      if (value instanceof Boolean) {
+        dummy.setRestrictOption(Boolean.TRUE.equals(value));
+      }
+      else {
+        dummy.setRestrictOption("true".equals(value));
+      }
+    }
+    else if (RESTRICT_EXPRESSION.equals(key)) {
+      if (value instanceof String) {
+        value = new PropertyExpression((String) value);
+      }
+      dummy.setRestrictExpression((PropertyExpression) value);
+    }
     else {
       super.setAttribute(key, value);
     }
@@ -602,6 +636,9 @@ public class DrawPile extends SetupStack {
     }
     else if (SELECT_DISPLAY_PROPERTY.equals(name) || SELECT_SORT_PROPERTY.equals(name)) {
       return selectionAllowedVisibleCondition;
+    }
+    else if (RESTRICT_EXPRESSION.equals(name)) {
+      return restrictExpressionVisibleCondition;
     }
     else {
       return null;
