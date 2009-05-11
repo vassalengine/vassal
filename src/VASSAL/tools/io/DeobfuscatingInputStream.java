@@ -112,6 +112,7 @@ public class DeobfuscatingInputStream extends FilterInputStream {
 
     private int unhex(int i) throws IOException {
       switch (i) {
+      // digits 0-9
       case 0x30:
       case 0x31:
       case 0x32:
@@ -123,6 +124,15 @@ public class DeobfuscatingInputStream extends FilterInputStream {
       case 0x38:
       case 0x39:
         return i - 0x30;
+      // digits A-F
+      case 0x41:
+      case 0x42:
+      case 0x43:
+      case 0x44:
+      case 0x45:
+      case 0x46:
+        return i - 0x37;
+      // digits a-f
       case 0x61:
       case 0x62:
       case 0x63:
