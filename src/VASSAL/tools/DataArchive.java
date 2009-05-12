@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -116,15 +116,20 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final String path = soundDir + name;
     AudioClip clip = soundCache.get(path);
     if (clip == null) {
-      InputStream stream = null;
-      try {
-        stream = getInputStream(path);
-        clip = new AppletAudioClip(IOUtils.toByteArray(stream));
-        soundCache.put(path,clip);
+      if (name.toLowerCase().endsWith(".mp3")) {
+        clip = new Mp3AudioClip(path); 
       }
-      finally {
-        IOUtils.closeQuietly(stream);
-      }      
+      else {
+        InputStream stream = null;
+        try {
+          stream = getInputStream(path);
+          clip = new AppletAudioClip(IOUtils.toByteArray(stream));
+          soundCache.put(path,clip);
+        }
+        finally {
+          IOUtils.closeQuietly(stream);
+        }
+      }
     }
     return clip;
   }
