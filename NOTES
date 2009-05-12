@@ -58,6 +58,8 @@ New Features in 3.2
 * Decks can specify by Property Expression which pieces are allowed to be
   Drag 'n Dropped onto them. Piece which may not be added are returned to
   where the drag started. [RFE 1406133]
+  
+* Support for mp3 sound files. [RFE 1913850]
 
 *********************
 Help us test
