@@ -31,6 +31,7 @@ import java.awt.geom.Area;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -543,6 +544,15 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
   public PieceI18nData getI18nData() {
     return getI18nData(new String[] {hideCommand, maskName, peekCommand}, new String[] {"Mask command", "Name when masked", "Peek command"});
+  }
+  
+  /**
+   * Return Property names exposed by this trait
+   */
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    l.add(Properties.OBSCURED_TO_OTHERS);
+    return l;
   }
   
   private static class Ed implements PieceEditor {

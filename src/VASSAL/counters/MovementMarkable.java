@@ -33,6 +33,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.Icon;
@@ -260,5 +262,14 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
     public String getState() {
       return "false";
     }
+  }
+  
+  /**
+   * Return Property names exposed by this trait
+   */
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    l.add(Properties.MOVED);
+    return l;
   }
 }

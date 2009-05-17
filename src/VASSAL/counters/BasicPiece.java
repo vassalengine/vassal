@@ -28,6 +28,7 @@ import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -44,6 +45,7 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
+import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.command.AddPiece;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
@@ -59,7 +61,7 @@ import VASSAL.tools.imageop.ScaledImagePainter;
 /**
  * Basic class for representing a physical component of the game Can be a counter, a card, or an overlay
  */
-public class BasicPiece implements TranslatablePiece, StateMergeable {
+public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNameSource {
   public static final String ID = "piece;";
   private static Highlighter highlighter;
   /**
@@ -684,5 +686,28 @@ public class BasicPiece implements TranslatablePiece, StateMergeable {
     final PieceI18nData data = new PieceI18nData(this);
     data.add(commonName, "Basic piece name");
     return data;
+  }
+  
+  /**
+   * Return Property names exposed by this trait
+   */
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    l.add(LOCATION_NAME);
+    l.add(CURRENT_MAP);
+    l.add(CURRENT_BOARD);
+    l.add(CURRENT_ZONE);
+    l.add(CURRENT_X);
+    l.add(CURRENT_Y);
+    l.add(OLD_LOCATION_NAME);
+    l.add(OLD_MAP);
+    l.add(OLD_BOARD);
+    l.add(OLD_ZONE);
+    l.add(OLD_X);
+    l.add(OLD_Y);
+    l.add(BASIC_NAME);
+    l.add(PIECE_NAME);
+    l.add(DECK_NAME);
+    return l;
   }
 }

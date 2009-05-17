@@ -37,6 +37,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.Box;
@@ -625,6 +626,16 @@ public class FreeRotator extends Decorator
                        new String[] {getCommandDescription(name, "Set Angle command"), getCommandDescription(name, "Rotate CW command"), getCommandDescription(name, "Rotate CCW command"), getCommandDescription(name, "Rotate Random command")});
   }
 
+  /**
+   * Return Property names exposed by this trait
+   */
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    l.add(name + FACING);
+    l.add(name + DEGREES);
+    return l;
+  }
+  
   private static class Ed implements PieceEditor, PropertyChangeListener {
     private BooleanConfigurer anyConfig;
     private NamedHotKeyConfigurer anyKeyConfig;

@@ -910,6 +910,18 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     return getLayerWithMatchingActivateCommand(piece, stroke.getKeyStroke(), active);
   }
   
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    l.add(name + IMAGE);
+    l.add(name + LEVEL);
+    l.add(name + ACTIVE);
+    l.add(name + NAME);
+    return l;
+  }
+  
+  /**
+   * Return Property names exposed by this trait
+   */
   protected static class Ed implements PieceEditor {
     private MultiImagePicker images;
     private JTextField activateKeyInput = new JTextField("A");

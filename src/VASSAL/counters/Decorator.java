@@ -19,11 +19,14 @@
 package VASSAL.counters;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.KeyStroke;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.command.Command;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.PieceI18nData;
@@ -36,7 +39,7 @@ import VASSAL.tools.SequenceEncoder;
  * The abstract class describing a generic 'trait' of a GamePiece.  Follows the Decorator design pattern
  * of wrapping around another instance of GamePiece (the 'inner' piece) and delegating some of the GamePiece methods to it
  */
-public abstract class Decorator implements GamePiece, StateMergeable {
+public abstract class Decorator implements GamePiece, StateMergeable, PropertyNameSource {
   protected GamePiece piece;
   private Decorator dec;
 
@@ -365,5 +368,12 @@ public abstract class Decorator implements GamePiece, StateMergeable {
 
   protected static void reportDataError(EditablePiece piece, String message) {
     ErrorDialog.dataError(new BadDataReport(piece, message));  
+  }
+  
+  /**
+   * Default Property Name Source
+   */
+  public List<String> getPropertyNames() {
+    return new ArrayList<String>(0);
   }
 }

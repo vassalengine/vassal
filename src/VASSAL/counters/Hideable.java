@@ -27,6 +27,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -266,6 +268,15 @@ public class Hideable extends Decorator implements TranslatablePiece {
   
   public PieceI18nData getI18nData() {
     return getI18nData(command, "Hide command");
+  }
+  
+  /**
+   * Return Property names exposed by this trait
+   */
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    l.add(Properties.INVISIBLE_TO_OTHERS);
+    return l;
   }
 
   protected static class Ed implements PieceEditor {

@@ -26,6 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.KeyStroke;
@@ -274,6 +275,15 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     return wrap;
   }
 
+  /**
+   * Return Property names exposed by this trait
+   */
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    l.add(key);
+    return l;
+  }
+  
   public PieceEditor getEditor() {
     return new Ed(this);
   }

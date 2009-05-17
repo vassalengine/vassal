@@ -24,6 +24,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -163,6 +165,17 @@ public class Marker extends Decorator implements EditablePiece {
     return new Ed(this);
   }
 
+  /**
+   * Return Property names exposed by this trait
+   */
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    for (int i = 0; i < keys.length; ++i) {
+      l.add(keys[i]);
+    }
+    return l;
+  }
+  
   private static class Ed implements PieceEditor {
     private StringConfigurer propName;
     private StringConfigurer propValue;

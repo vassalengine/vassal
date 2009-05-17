@@ -23,6 +23,9 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -276,6 +279,17 @@ public class Immobilized extends Decorator implements EditablePiece {
 
   public PieceEditor getEditor() {
     return new Ed(this);
+  }
+  
+  /**
+   * Return Property names exposed by this trait
+   */
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    l.add(Properties.TERRAIN);
+    l.add(Properties.IGNORE_GRID);
+    l.add(Properties.NON_MOVABLE);
+    return l;
   }
 
   private static class Ed implements PieceEditor {

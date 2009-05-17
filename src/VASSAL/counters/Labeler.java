@@ -32,6 +32,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -614,6 +615,17 @@ public class Labeler extends Decorator implements TranslatablePiece {
     return new Ed(this);
   }
 
+  /**
+   * Return Property names exposed by this trait
+   */
+  public List<String> getPropertyNames() {
+    ArrayList<String> l = new ArrayList<String>();
+    if (propertyName.length() > 0) {
+      l.add(propertyName);
+    }
+    return l;
+  }
+  
   private static class Ed implements PieceEditor {
     private NamedHotKeyConfigurer labelKeyInput;
     private JPanel controls = new JPanel();
