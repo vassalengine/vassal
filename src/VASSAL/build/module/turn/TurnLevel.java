@@ -310,6 +310,7 @@ public abstract class TurnLevel extends TurnComponent {
   public void setAttribute(String key, Object value) {
     if (NAME.equals(key)) {
       setConfigureName((String) value);
+      myValue.setPropertyName(getConfigureName());
     }
     else if (PROP.equals(key)) {
       propertyName = (String) value;
