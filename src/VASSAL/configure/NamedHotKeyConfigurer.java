@@ -141,6 +141,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   protected void updateVisibility() {
     tf.setVisible(!isNamed());
     keyName.setVisible(isNamed());
+    lastChar = 0;
     Window w = SwingUtilities.getWindowAncestor(p);
     if (w != null) {
       w.pack();
