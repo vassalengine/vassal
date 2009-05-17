@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,6 +21,7 @@ package VASSAL.build.module.properties;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.List;
 
 import VASSAL.command.Command;
@@ -71,6 +72,12 @@ public interface MutableProperty {
     private String propertyName;
     private MutablePropertiesContainer parent;
 
+    // Maintain a static list of all Global Properties known to module
+    private static List<Impl> allProperties = new ArrayList<Impl>();
+    public static List<Impl> getAllProperties() {
+      return allProperties;
+    }
+    
     /**
      * 
      * @param source
@@ -88,6 +95,7 @@ public interface MutableProperty {
     public void addTo(MutablePropertiesContainer c) {
       parent = c;
       parent.addMutableProperty(propertyName, this);
+      allProperties.add(this);
     }
 
     public void setPropertyName(String name) {
@@ -101,11 +109,20 @@ public interface MutableProperty {
     public void removeFromContainer() {
       if (parent != null) {
         parent.removeMutableProperty(propertyName);
+        allProperties.remove(this);
       }
     }
 
     public String getPropertyValue() {
       return value;
+    }
+    
+    public String getName() {
+      return propertyName;
+    }
+    
+    public MutablePropertiesContainer getParent() {
+      return parent;
     }
 
     public void removeMutablePropertyChangeListener(PropertyChangeListener l) {

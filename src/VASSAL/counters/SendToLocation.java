@@ -436,7 +436,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
     protected FormattedStringConfigurer yOffsetInput;
     protected StringConfigurer descInput;
     protected StringEnumConfigurer destInput;
-    protected StringConfigurer propertyInput;
+    protected PropertyExpressionConfigurer propertyInput;
     protected FormattedStringConfigurer zoneInput;
     protected FormattedStringConfigurer regionInput;
     //protected Map map;

@@ -210,7 +210,7 @@ public class CounterGlobalKeyCommand extends Decorator
     protected StringConfigurer nameInput;
     protected NamedHotKeyConfigurer keyInput;
     protected NamedHotKeyConfigurer globalKey;
-    protected StringConfigurer propertyMatch;
+    protected PropertyExpressionConfigurer propertyMatch;
     protected MassKeyCommand.DeckPolicyConfig deckPolicy;
     protected BooleanConfigurer suppress;
     protected BooleanConfigurer restrictRange;

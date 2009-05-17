@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2008 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -138,5 +138,9 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
    */
   public String getI18nPrefix() {
     return "";
+  }
+  
+  public MutablePropertiesContainer getParent() {
+    return parent;
   }
 }

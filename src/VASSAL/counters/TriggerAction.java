@@ -245,7 +245,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
     private StringConfigurer name;
     private StringConfigurer command;
     private NamedHotKeyConfigurer key;
-    private StringConfigurer propertyMatch;
+    private PropertyExpressionConfigurer propertyMatch;
     private NamedKeyStrokeArrayConfigurer watchKeys;
     private NamedKeyStrokeArrayConfigurer actionKeys;
     private JPanel box;
