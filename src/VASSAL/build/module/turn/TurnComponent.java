@@ -85,7 +85,7 @@ public class TurnComponent extends AbstractConfigurable {
   }
 
   public Class<?>[] getAllowableConfigureComponents() {
-    return null;
+    return new Class<?>[0];
   }
 
   public void addTo(Buildable parent) {
