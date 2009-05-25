@@ -234,7 +234,7 @@ public class ImageUtils {
       final BufferedImage trans = createCompatibleImage(
         tbox.width,
         tbox.height,
-        src.getTransparency() == BufferedImage.OPAQUE && angle % 90.0 == 0.0
+        src.getTransparency() != BufferedImage.OPAQUE || angle % 90.0 != 0.0
       );
 
       final AffineTransform t = new AffineTransform();
