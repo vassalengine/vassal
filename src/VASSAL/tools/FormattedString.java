@@ -158,7 +158,7 @@ public class FormattedString {
    */
   public int getTextAsInt(PropertySource ps, String description, EditablePiece source) {
     int result = 0;
-    final String value = getText(source, "0");
+    final String value = getText(ps, "0");
     try {
       result = Integer.parseInt(value);
     }
