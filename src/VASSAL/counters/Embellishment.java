@@ -482,8 +482,11 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   protected void checkPropertyLevel() {
     if (!followProperty || propertyName.length() == 0) return;
 
-    final String val =
+    String val =
       (String) Decorator.getOutermost(this).getProperty(propertyName);
+    if (val == null) {
+      val = String.valueOf(firstLevelValue);
+    }
     try {
       int v = Integer.parseInt(val) - firstLevelValue + 1;
       if (v <= 0) v = 1;
