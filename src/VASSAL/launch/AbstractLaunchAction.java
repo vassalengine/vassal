@@ -311,6 +311,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       // case the given initial or maximum heap is not usable.
       //
 
+// FIXME: The heap size messages are too nonspecific. They should
+// differientiate between loading a module and importing a module,
+// since the heap sizes are set in different places for those two
+// actions.
       // maximum heap must fit in physical RAM
       if (maximumHeap > PHYS_MEMORY && PHYS_MEMORY > 0) {
         initialHeap = FAILSAFE_INITIAL_HEAP;
