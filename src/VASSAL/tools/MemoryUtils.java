@@ -60,7 +60,19 @@ public class MemoryUtils {
     if (os.startsWith("linux")) {
       final String arch = System.getProperty("os.arch").toLowerCase();
       if (arch.equals("i386") || arch.equals("x86") || arch.equals("amd64")) {
-        IMPL = new LinuxMemoryUtilsImpl();
+        // Force libc to load. An exception can occur here if we have an
+        // architecture mismatch (e.g., a 32-bit JVM and no 32-bit libc,
+        // only a 64-bit libc, or vice versa).
+        LinuxMemoryUtilsImpl.Libc libc = null;
+        try {
+          libc = LinuxMemoryUtilsImpl.Libc.INSTANCE;
+        }
+        catch (UnsatisfiedLinkError e) {
+          // libc remains null in this case.
+        }
+
+        IMPL = libc == null ? new DummyMemoryUtilsImpl() :
+                              new LinuxMemoryUtilsImpl();
       }
       else {
         // JNA does not support Linux on non-x86 architectures (e.g., PPC,
