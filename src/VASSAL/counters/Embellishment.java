@@ -483,7 +483,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (!followProperty || propertyName.length() == 0) return;
 
     String val =
-      (String) Decorator.getOutermost(this).getProperty(propertyName);
+      String.valueOf(Decorator.getOutermost(this).getProperty(propertyName));
     if (val == null) {
       val = String.valueOf(firstLevelValue);
     }
