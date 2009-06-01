@@ -87,6 +87,7 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
   public static final String BASIC_NAME = "BasicName";
   public static final String PIECE_NAME = "PieceName";
   public static final String DECK_NAME = "DeckName";
+  public static final String DECK_POSITION = "DeckPosition";
   public static Font POPUP_MENU_FONT = new Font("Dialog", 0, 11);
   protected JPopupMenu popup;
   protected Rectangle imageBounds;
@@ -177,6 +178,17 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     else if (DECK_NAME.equals(key)) {
       return getParent() instanceof Deck ? ((Deck) getParent()).getDeckName() : "";
     }
+    else if (DECK_POSITION.equals(key)) {
+      if (getParent() instanceof Deck) {
+        final Deck deck = (Deck) getParent();
+        final int size = deck.getPieceCount();
+        final int pos = deck.indexOf(Decorator.getOutermost(this));
+        return String.valueOf(size - pos + 1);
+      }
+      else {
+        return "0";
+      }
+     }
     else if (CURRENT_BOARD.equals(key)) {
       if (getMap() != null) {
         final Board b = getMap().findBoard(getPosition());
@@ -250,7 +262,18 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
       return getMap() == null ? "" : getMap().getLocalizedConfigureName();
     }
     else if (DECK_NAME.equals(key)) {
-      return getParent() instanceof Deck ? ((Deck) getParent()).getLocalizedDeckName() : "";
+      return getProperty(key);
+    }
+    else if (DECK_POSITION.equals(key)) {
+      if (getParent() instanceof Deck) {
+        final Deck deck = (Deck) getParent();
+        final int size = deck.getPieceCount();
+        final int pos = deck.indexOf(Decorator.getOutermost(this));
+        return String.valueOf(size - pos);
+      }
+      else {
+        return "0";
+      }
     }
     else if (CURRENT_BOARD.equals(key)) {
       if (getMap() != null) {

@@ -149,11 +149,15 @@ public class DrawPile extends SetupStack {
   public static final String FACE_DOWN = "faceDown";
   public static final String DRAW_FACE_UP = "drawFaceUp";
   public static final String FACE_DOWN_REPORT_FORMAT = "faceDownFormat";
+  public static final String FACE_DOWN_HOTKEY = "faceDownHotkey";
   public static final String SHUFFLE = "shuffle";
   public static final String SHUFFLE_REPORT_FORMAT = "shuffleFormat";
   public static final String SHUFFLE_HOTKEY = "shuffleHotkey";
+  public static final String SHUFFLE_COMMAND = "shuffleCommand";
   public static final String REVERSIBLE = "reversible";
   public static final String REVERSE_REPORT_FORMAT = "reverseFormat";
+  public static final String REVERSE_HOTKEY = "reverseHotkey";
+  public static final String REVERSE_COMMAND = "reverseCommand";
   public static final String DRAW = "draw";
   public static final String COLOR = "color";
   public static final String MAXSTACK = "maxStack";
@@ -229,10 +233,13 @@ public class DrawPile extends SetupStack {
       DRAW_FACE_UP,
       FACE_DOWN_REPORT_FORMAT,
       SHUFFLE,
+      SHUFFLE_COMMAND,
       SHUFFLE_REPORT_FORMAT,
       SHUFFLE_HOTKEY,
       REVERSIBLE,
+      REVERSE_COMMAND,
       REVERSE_REPORT_FORMAT,
+      REVERSE_HOTKEY,
       DRAW,
       COLOR,
       HOTKEY_ON_EMPTY,
@@ -253,8 +260,8 @@ public class DrawPile extends SetupStack {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Belongs to board:  ",
+      "Name:  ",  
+      "Belongs to board:  ", 
       "X position:  ",
       "Y position:  ",
       "Width:  ",
@@ -267,10 +274,13 @@ public class DrawPile extends SetupStack {
       "Draw new cards face up?",
       "Face-down Report Format:  ",
       "Re-shuffle:  ",
+      "Re-shuffle Menu Text:  ",
       "Re-shuffle Report Format:  ",
       "Re-shuffle Hot Key:  ",
       "Reversible?",
+      "Reverse Command Menu Text:  ",
       "Reverse Report Format:  ",
+      "Reverse Hot Key:  ",
       "Draw Outline when empty?",
       "Color:  ",
       "Send Hotkey when empty?",
@@ -291,39 +301,42 @@ public class DrawPile extends SetupStack {
 
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{
-      String.class,
-      OwningBoardPrompt.class,
-      Integer.class,
-      Integer.class,
-      Integer.class,
-      Integer.class,
-      Boolean.class,
-      Boolean.class,
-      PiecePropertyConfig.class,
-      String.class,
-      Prompt.class,
-      Boolean.class,
-      FormattedStringConfig.class,
-      Prompt.class,
-      FormattedStringConfig.class,
-      NamedKeyStroke.class,
-      Boolean.class,
-      FormattedStringConfig.class,
-      Boolean.class,
-      Color.class,
-      Boolean.class,
-      NamedKeyStroke.class,
-      Boolean.class,
-      String.class,
-      FormattedStringConfig.class,
-      NamedKeyStroke.class,
-      AssignedDeckPrompt.class,
-      Boolean.class,
-      Integer.class,
-      Boolean.class,
-      String[].class,
-      Boolean.class,
-      PropertyExpression.class
+      String.class, // NAME
+      OwningBoardPrompt.class, // OWNING_BOARD
+      Integer.class, // X_POSITION
+      Integer.class, // Y_POSITION
+      Integer.class, // WIDTH
+      Integer.class, // HEIGHT
+      Boolean.class, // ALLOW_MULTIPLE
+      Boolean.class, // ALLOW_SELECT
+      PiecePropertyConfig.class, // SELECT_DISPLAY_PROPERTY
+      String.class, // SELECT_SORT_PROPERTY
+      Prompt.class, // FACE_DOWN
+      Boolean.class, // DRAW_FACE_UP
+      FormattedStringConfig.class, // FACE_DOWN_REPORT_FORMAT
+      Prompt.class, // SHUFFLE
+      String.class, // SHUFFLE_COMMAND
+      FormattedStringConfig.class, // SHUFFLE_REPORT_FORMAT
+      NamedKeyStroke.class, // SHUFFLE_HOTKEY
+      Boolean.class, // REVERSIBLE
+      String.class, // REVERSE_COMMAND
+      FormattedStringConfig.class, // REVERSE_REPORT_FORMAT
+      NamedKeyStroke.class, // REVERSE_HOTKEY
+      Boolean.class, // DRAW
+      Color.class, // COLOR
+      Boolean.class, // HOTKEY_ON_EMPTY
+      NamedKeyStroke.class, // EMPTY_HOTKEY
+      Boolean.class, // RESHUFFLABLE
+      String.class, // RESHUFFLE_COMMAND
+      FormattedStringConfig.class, // RESHUFFLE_MESSAGE
+      NamedKeyStroke.class, // RESHUFFLE_HOTKEY
+      AssignedDeckPrompt.class, // RESHUFFLE_TARGET
+      Boolean.class, // CAN_SAVE
+      Integer.class, // MAXSTACK
+      Boolean.class, // EXPRESSIONCOUNTING
+      String[].class, // COUNTEXPRESSIONS
+      Boolean.class, // RESTRICT_OPTION
+      PropertyExpression.class //RESTRICT_EXPRESSION
     };
   }
 
@@ -400,14 +413,23 @@ public class DrawPile extends SetupStack {
     else if (RESHUFFLE_HOTKEY.equals(key)) {
       return NamedHotKeyConfigurer.encode(dummy.getReshuffleKey());
     }
+    else if (SHUFFLE_COMMAND.equals(key)) {
+      return dummy.getShuffleCommand();
+    }
     else if (SHUFFLE_REPORT_FORMAT.equals(key)) {
       return dummy.getShuffleMsgFormat();
     }
     else if (SHUFFLE_HOTKEY.equals(key)) {
       return NamedHotKeyConfigurer.encode(dummy.getShuffleKey());
     }
+    else if (REVERSE_COMMAND.equals(key)) {
+      return dummy.getReverseCommand();
+    }
     else if (REVERSE_REPORT_FORMAT.equals(key)) {
       return dummy.getReverseMsgFormat();
+    }
+    else if (REVERSE_HOTKEY.equals(key)) {
+      return NamedHotKeyConfigurer.encode(dummy.getReverseKey());
     }
     else if (FACE_DOWN_REPORT_FORMAT.equals(key)) {
       return dummy.getFaceDownMsgFormat();
@@ -556,8 +578,20 @@ public class DrawPile extends SetupStack {
     else if (RESHUFFLE_MESSAGE.equals(key)) {
       dummy.setReshuffleMsgFormat((String) value);
     }
+    else if (REVERSE_COMMAND.equals(key)) {
+      dummy.setReverseCommand((String) value);
+    }
     else if (REVERSE_REPORT_FORMAT.equals(key)) {
       dummy.setReverseMsgFormat((String) value);
+    }
+    else if (REVERSE_HOTKEY.equals(key)) {
+      if (value instanceof String) {
+        value = NamedHotKeyConfigurer.decode((String) value);
+      }
+      dummy.setReverseKey((NamedKeyStroke) value);
+    }
+    else if (SHUFFLE_COMMAND.equals(key)) {
+      dummy.setShuffleCommand((String) value);
     }
     else if (SHUFFLE_REPORT_FORMAT.equals(key)) {
       dummy.setShuffleMsgFormat((String) value);
@@ -622,10 +656,14 @@ public class DrawPile extends SetupStack {
     else if (FACE_DOWN_REPORT_FORMAT.equals(name)) {
       return faceDownFormatVisibleCondition;
     }
-    else if (SHUFFLE_REPORT_FORMAT.equals(name) || SHUFFLE_HOTKEY.equals(name)) {
+    else if (SHUFFLE_REPORT_FORMAT.equals(name) 
+        || SHUFFLE_HOTKEY.equals(name)
+        || SHUFFLE_COMMAND.equals(name)) {
       return shuffleFormatVisibleCondition;
     }
-    else if (REVERSE_REPORT_FORMAT.equals(name)) {
+    else if (REVERSE_REPORT_FORMAT.equals(name)
+        || REVERSE_HOTKEY.equals(name)
+        || REVERSE_COMMAND.equals(name)) {
       return reverseFormatVisibleCondition;
     }
     else if (COUNTEXPRESSIONS.equals(name)) {

@@ -101,6 +101,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected boolean shuffle = true;
   protected String faceDownOption = ALWAYS;
   protected String shuffleOption = ALWAYS;
+  protected String shuffleCommand = "";
   protected boolean allowMultipleDraw = false;
   protected boolean allowSelectDraw = false;
   protected boolean reversible = false;
@@ -110,6 +111,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected NamedKeyStrokeListener reshuffleListener;
   protected NamedKeyStroke reshuffleKey;
   protected String reverseMsgFormat;
+  protected String reverseCommand;
+  protected NamedKeyStroke reverseKey;
+  protected NamedKeyStrokeListener reverseListener;
   protected String shuffleMsgFormat;
   protected NamedKeyStrokeListener shuffleListener;
   protected NamedKeyStroke shuffleKey;
@@ -346,6 +350,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     selectSortProperty = st.nextToken("");
     restrictOption = st.nextBoolean(false);
     restrictExpression.setExpression(st.nextToken(""));
+    shuffleCommand = st.nextToken(Resources.getString("Deck.shuffle"));
+    reverseCommand = st.nextToken(Resources.getString("Deck.reverse"));
+    reverseKey = st.nextNamedKeyStroke(null);
     
     if (shuffleListener == null) {
       shuffleListener = new NamedKeyStrokeListener(new ActionListener() {
@@ -368,6 +375,17 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       GameModule.getGameModule().addKeyStrokeListener(reshuffleListener);
     }
     reshuffleListener.setKeyStroke(getReshuffleKey());
+    
+    if (reverseListener == null) {
+      reverseListener = new NamedKeyStrokeListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          GameModule.getGameModule().sendAndLog(reverse());
+          repaintMap();
+        }
+      });
+      GameModule.getGameModule().addKeyStrokeListener(reverseListener);
+    }
+    reverseListener.setKeyStroke(getReverseKey());
   }
 
   public String getFaceDownOption() {
@@ -445,7 +463,23 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public void setReverseMsgFormat(String reverseMsgFormat) {
     this.reverseMsgFormat = reverseMsgFormat;
   }
+  
+  public String getReverseCommand() {
+    return reverseCommand;
+  }
+  
+  public void setReverseCommand(String s) {
+    reverseCommand = s;
+  }
 
+  public NamedKeyStroke getReverseKey() {
+    return reverseKey;
+  }
+  
+  public void setReverseKey(NamedKeyStroke reverseKey) {
+    this.reverseKey = reverseKey;
+  }
+  
   public String getShuffleMsgFormat() {
     return shuffleMsgFormat;
   }
@@ -460,6 +494,14 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   
   public void setShuffleKey(NamedKeyStroke shuffleKey) {
     this.shuffleKey = shuffleKey;
+  }
+
+  public String getShuffleCommand() {
+    return shuffleCommand;
+  }
+  
+  public void setShuffleCommand(String s) {
+    shuffleCommand = s;
   }
   
   public void setShuffle(boolean shuffle) {
@@ -677,7 +719,10 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       .append(selectDisplayProperty.getFormat())
       .append(selectSortProperty)
       .append(restrictOption)
-      .append(restrictExpression);
+      .append(restrictExpression)
+      .append(shuffleCommand)
+      .append(reverseCommand)
+      .append(reverseKey);
     return ID + se.getValue();
   }
 
@@ -972,7 +1017,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       ArrayList<KeyCommand> l = new ArrayList<KeyCommand>();
       KeyCommand c = null;
       if (USE_MENU.equals(shuffleOption)) {
-        c = new KeyCommand(Resources.getString("Deck.shuffle"), getShuffleKey(), this) { //$NON-NLS-1$
+        c = new KeyCommand(shuffleCommand, getShuffleKey(), this) {
           private static final long serialVersionUID = 1L;
 
           public void actionPerformed(ActionEvent e) {
