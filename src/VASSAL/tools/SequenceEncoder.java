@@ -331,19 +331,7 @@ public class SequenceEncoder {
       }
       return defaultValue == null ? NamedKeyStroke.NULL_KEYSTROKE : defaultValue;
     }
-
-    public PropertyExpression nextPropertyExpression() {
-      return nextPropertyExpression("");
-    }
-    
-    public PropertyExpression nextPropertyExpression(String defaultValue) {
-      String s = defaultValue == null ? "" : defaultValue;
-      if (val != null) {
-        s = nextToken();
-      }
-      return new PropertyExpression(s); 
-    }
-    
+   
     /**
      * Return the next token, or the default value if there are no more tokens
      * @param defaultValue

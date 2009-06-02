@@ -23,8 +23,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import VASSAL.counters.Decorator;
+import VASSAL.counters.EditablePiece;
+import VASSAL.counters.GamePiece;
+import VASSAL.script.expression.ExpressionBuilder;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 
@@ -36,7 +41,8 @@ import VASSAL.tools.icon.IconFamily;
  *      in-line Calculated Properties (Not implemented yet)
  */
 public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
-  private ExpressionButton button;
+  protected ExpressionButton button;
+  protected EditablePiece pieceTarget;
   
   public FormattedExpressionConfigurer(String key, String name) {
     super(key, name);
@@ -47,6 +53,20 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     setValue(s);
   }
 
+  public FormattedExpressionConfigurer(String key, String name, String s, EditablePiece p) {
+    this(key, name, s, (GamePiece) p);
+  }
+  
+  public FormattedExpressionConfigurer(String key, String name, String s, GamePiece p) {
+    this(key, name, s);
+    if (p instanceof Decorator) {
+      final GamePiece gp = Decorator.getOutermost(p);
+      if (gp instanceof EditablePiece) {
+        pieceTarget = (EditablePiece) gp;
+      }
+    }
+  }
+  
   public FormattedExpressionConfigurer(String key, String name, String[] options) {
     super(key, name, options);
   }
@@ -54,11 +74,15 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
   public java.awt.Component getControls() {
     final JPanel p = (JPanel) super.getControls();
     if (button == null) {
-      button = new ExpressionButton(this, nameField.getPreferredSize().height);
+      button = buildButton();
       p.add(button);
     }
     button.setSize(nameField.getPreferredSize().height);
     return p;
+  }
+  
+  protected ExpressionButton buildButton() {
+    return new ExpressionButton(this, nameField.getPreferredSize().height, pieceTarget);  
   }
   
   /**
@@ -69,13 +93,19 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
    */
   public static class ExpressionButton extends JButton implements ActionListener {
     private static final long serialVersionUID = 1L;
-    private Configurer config;
+    protected Configurer config;
+    protected EditablePiece piece;
 
     public ExpressionButton(Configurer config, int size) {
+      this(config, size, null);
+    }
+    
+    public ExpressionButton(Configurer config, int size, EditablePiece piece) {
       this.config = config;
+      this.piece = piece;
       setIcon(IconFactory.getIcon("calculator", IconFamily.XSMALL));
       setSize(size);
-      setToolTipText("Expression Builder (not implemented yet)");
+      setToolTipText("Expression Builder");
       addActionListener(this);
     }
 
@@ -85,7 +115,7 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     }
     
     public void actionPerformed(ActionEvent e) {
-      //new ExpressionBuilder(config, (JDialog) getTopLevelAncestor()).setVisible(true);   
+      new ExpressionBuilder(config, (JDialog) getTopLevelAncestor(), piece).setVisible(true);   
     }
   }
 }

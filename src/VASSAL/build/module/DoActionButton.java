@@ -43,7 +43,6 @@ import VASSAL.configure.PlayerIdFormattedStringConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -85,7 +84,7 @@ public class DoActionButton extends AbstractConfigurable
           execute();
         }
         catch (RecursionLimitException ex) {
-          ErrorDialog.infiniteLoop(ex);
+          RecursionLimiter.infiniteLoop(ex);
         }        
       }
     };

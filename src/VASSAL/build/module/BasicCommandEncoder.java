@@ -35,6 +35,7 @@ import VASSAL.command.RemovePiece;
 import VASSAL.counters.ActionButton;
 import VASSAL.counters.AreaOfEffect;
 import VASSAL.counters.BasicPiece;
+import VASSAL.counters.CalculatedProperty;
 import VASSAL.counters.Clone;
 import VASSAL.counters.CounterGlobalKeyCommand;
 import VASSAL.counters.Deck;
@@ -246,6 +247,11 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     decoratorFactories.put(DynamicProperty.ID, new DecoratorFactory() {
       public Decorator createDecorator(String type, GamePiece inner) {
         return new DynamicProperty(type, inner);
+      }
+    });
+    decoratorFactories.put(CalculatedProperty.ID, new DecoratorFactory() {
+      public Decorator createDecorator(String type, GamePiece inner) {
+        return new CalculatedProperty(type, inner);
       }
     });
     decoratorFactories.put(SetGlobalProperty.ID, new DecoratorFactory() {

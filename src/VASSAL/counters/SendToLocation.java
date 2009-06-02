@@ -478,7 +478,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       controls.add(destInput.getControls());
       
       mapControls = Box.createHorizontalBox();
-      mapIdInput = new FormattedExpressionConfigurer(null, "Map:  ", p.mapId.getFormat());
+      mapIdInput = new FormattedExpressionConfigurer(null, "Map:  ", p.mapId.getFormat(), p);
       mapControls.add(mapIdInput.getControls());
       JButton select = new JButton("Select");
       select.addActionListener(new ActionListener() {
@@ -497,7 +497,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       controls.add(mapControls);
 
       boardControls = Box.createHorizontalBox();
-      boardNameInput = new FormattedExpressionConfigurer(null, "Board:  ", p.boardName.getFormat());
+      boardNameInput = new FormattedExpressionConfigurer(null, "Board:  ", p.boardName.getFormat(), p);
       boardControls.add(boardNameInput.getControls());
       select = new JButton("Select");
       select.addActionListener(new ActionListener() {
@@ -516,16 +516,16 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       controls.add(boardControls);
       
       
-      xInput = new FormattedExpressionConfigurer(null, "X Position:  ", p.x.getFormat());
+      xInput = new FormattedExpressionConfigurer(null, "X Position:  ", p.x.getFormat(), p);
       controls.add(xInput.getControls());
 
-      yInput = new FormattedExpressionConfigurer(null, "Y Position:  ", p.y.getFormat());
+      yInput = new FormattedExpressionConfigurer(null, "Y Position:  ", p.y.getFormat(), p);
       controls.add(yInput.getControls());
       
-      zoneInput = new FormattedExpressionConfigurer(null, "Zone Name:  ", p.zone.getFormat());
+      zoneInput = new FormattedExpressionConfigurer(null, "Zone Name:  ", p.zone.getFormat(), p);
       controls.add(zoneInput.getControls());
 
-      regionInput = new FormattedExpressionConfigurer(null, "Region Name:  ", p.region.getFormat());
+      regionInput = new FormattedExpressionConfigurer(null, "Region Name:  ", p.region.getFormat(), p);
       controls.add(regionInput.getControls());
       
       propertyInput = new PropertyExpressionConfigurer(null, "Property Match:  ", p.propertyFilter);
@@ -539,16 +539,16 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       controls.add(advancedInput.getControls());
       
       advancedControls = Box.createHorizontalBox();
-      xIndexInput = new FormattedExpressionConfigurer(null, "Additional X offset:  ", p.xIndex.getFormat());
+      xIndexInput = new FormattedExpressionConfigurer(null, "Additional X offset:  ", p.xIndex.getFormat(), p);
       advancedControls.add(xIndexInput.getControls());
-      xOffsetInput = new FormattedExpressionConfigurer(null, " times ", p.xOffset.getFormat());
+      xOffsetInput = new FormattedExpressionConfigurer(null, " times ", p.xOffset.getFormat(), p);
       advancedControls.add(xOffsetInput.getControls());
       controls.add(advancedControls);
       
       advancedControls = Box.createHorizontalBox();
-      yIndexInput = new FormattedExpressionConfigurer(null, "Additional Y offset:  ", p.yIndex.getFormat());
+      yIndexInput = new FormattedExpressionConfigurer(null, "Additional Y offset:  ", p.yIndex.getFormat(), p);
       advancedControls.add(yIndexInput.getControls());
-      yOffsetInput = new FormattedExpressionConfigurer(null, " times ", p.yOffset.getFormat());
+      yOffsetInput = new FormattedExpressionConfigurer(null, " times ", p.yOffset.getFormat(), p);
       advancedControls.add(yOffsetInput.getControls());
       controls.add(advancedControls);
       

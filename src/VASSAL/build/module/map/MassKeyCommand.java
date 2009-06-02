@@ -398,10 +398,7 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public PieceFilter getFilter() {
-    if (propertiesFilter.isDynamic()) {
-      buildFilter();
-    }
-    return filter;
+    return propertiesFilter.getFilter();
   }
 
   private void buildFilter() {

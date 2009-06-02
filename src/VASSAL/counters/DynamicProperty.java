@@ -277,7 +277,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   /**
    * Return Property names exposed by this trait
-   */
+   */  
   public List<String> getPropertyNames() {
     ArrayList<String> l = new ArrayList<String>();
     l.add(key);

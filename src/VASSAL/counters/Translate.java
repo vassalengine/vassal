@@ -312,9 +312,9 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add(name.getControls());
       key = new NamedHotKeyConfigurer(null, "Keyboard shortcut:  ", t.keyCommand);
       controls.add(key.getControls());
-      xDist = new FormattedExpressionConfigurer(null, "Distance to the right:  ", t.xDist.getFormat());
+      xDist = new FormattedExpressionConfigurer(null, "Distance to the right:  ", t.xDist.getFormat(), t);
       controls.add(xDist.getControls());
-      yDist = new FormattedExpressionConfigurer(null, "Distance upwards:  ", t.yDist.getFormat());
+      yDist = new FormattedExpressionConfigurer(null, "Distance upwards:  ", t.yDist.getFormat(), t);
       controls.add(yDist.getControls());
       moveStack = new BooleanConfigurer(null, "Move entire stack?",
                                         Boolean.valueOf(t.moveStack));
@@ -328,16 +328,16 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add(advancedInput.getControls());
       
       Box b = Box.createHorizontalBox();
-      xIndexInput = new FormattedExpressionConfigurer(null, "Additional offset to the right:  ", t.xIndex.getFormat());
+      xIndexInput = new FormattedExpressionConfigurer(null, "Additional offset to the right:  ", t.xIndex.getFormat(), t);
       b.add(xIndexInput.getControls());
-      xOffsetInput = new FormattedExpressionConfigurer(null, " times ", t.xOffset.getFormat());
+      xOffsetInput = new FormattedExpressionConfigurer(null, " times ", t.xOffset.getFormat(), t);
       b.add(xOffsetInput.getControls());
       controls.add(b);
       
       b = Box.createHorizontalBox();
-      yIndexInput = new FormattedExpressionConfigurer(null, "Additional offset upwards:  ", t.yIndex.getFormat());
+      yIndexInput = new FormattedExpressionConfigurer(null, "Additional offset upwards:  ", t.yIndex.getFormat(), t);
       b.add(yIndexInput.getControls());
-      yOffsetInput = new FormattedExpressionConfigurer(null, " times ", t.yOffset.getFormat());
+      yOffsetInput = new FormattedExpressionConfigurer(null, " times ", t.yOffset.getFormat(), t);
       b.add(yOffsetInput.getControls());
       controls.add(b);
       

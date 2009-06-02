@@ -38,6 +38,20 @@ public class RecursionLimiter {
     --recursionDepth;
   }
   
+  /**
+   * Report an Infinite Loop
+   * @param e
+   */
+  public static void infiniteLoop(RecursionLimitException e) {
+    ErrorDialog.showDetails(
+      e,
+      ThrowableUtils.getStackTrace(e),
+      "Error.infinite_loop",
+      e.getComponentTypeName(),
+      e.getComponentName()
+    );  
+  }
+  
   public static interface Loopable {
     public String getComponentTypeName();
     public String getComponentName();

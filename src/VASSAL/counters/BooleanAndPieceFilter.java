@@ -33,4 +33,12 @@ public class BooleanAndPieceFilter implements PieceFilter {
   public boolean accept(GamePiece piece) {
     return filter1.accept(piece) && filter2.accept(piece);
   }
+  
+  public PieceFilter getFilter1() {
+    return filter1;
+  }
+  
+  public PieceFilter getFilter2() {
+    return filter2;
+  }
 }

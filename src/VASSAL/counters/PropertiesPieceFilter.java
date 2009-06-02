@@ -20,6 +20,8 @@ package VASSAL.counters;
 
 import java.util.regex.Pattern;
 
+import VASSAL.script.expression.FormattedStringExpression;
+
 /**
  * Accepts pieces based on whether the piece has properties that
  * match a given set of conditions
@@ -37,6 +39,7 @@ public class PropertiesPieceFilter {
 
   private static final Pattern AND = Pattern.compile("&&");
   private static final Pattern OR = Pattern.compile("\\|\\|");
+  
   private static PieceFilter ACCEPT_ALL = new PieceFilter() {
     public boolean accept(GamePiece piece) {
       return true;
@@ -118,6 +121,27 @@ public class PropertiesPieceFilter {
     return f;
   }
 
+  public static String toBeanShellString(String s) {
+    return toBeanShellString(parse(s));
+  }
+  
+  public static String toBeanShellString(PieceFilter f) {
+    
+    if (f instanceof BooleanAndPieceFilter) {
+      final BooleanAndPieceFilter and = (BooleanAndPieceFilter) f;
+      return "("+toBeanShellString(and.getFilter1()) + ") && (" + toBeanShellString(and.getFilter2()) + ")";
+    }
+    else if (f instanceof BooleanOrPieceFilter) {
+      final BooleanOrPieceFilter or = (BooleanOrPieceFilter) f;
+      return "("+toBeanShellString(or.getFilter1()) + ") || (" + toBeanShellString(or.getFilter2()) + ")";
+    }
+    else if (f instanceof ComparisonFilter) {
+      return  ((ComparisonFilter) f).toBeanShellString();
+    }
+    return "";
+    
+  }
+  
   private static abstract class ComparisonFilter implements PieceFilter {
     protected String name;
     protected String value;
@@ -133,7 +157,7 @@ public class PropertiesPieceFilter {
         alternate = Boolean.FALSE;
       }
     }
-
+  
     protected int compareTo(GamePiece piece) {
       String property = String.valueOf(piece.getProperty(name));
       try {
@@ -144,6 +168,22 @@ public class PropertiesPieceFilter {
         return property.compareTo(value);
       }
     }
+
+    public abstract String toBeanShellString();
+    
+    protected String toBeanShellName() {
+      if (name.indexOf("$") >= 0) {
+        return "GetProperty("+new FormattedStringExpression(name).toBeanShellString() + ")";
+      }
+      else {
+        return name;
+      }      
+    }
+    
+    protected String toBeanShellValue() {
+      return new FormattedStringExpression(value).toBeanShellString();
+    }
+    
   }
 
   private static class EQ extends ComparisonFilter {
@@ -162,6 +202,10 @@ public class PropertiesPieceFilter {
 
     public String toString() {
       return "PropertiesPieceFilter["+name+"=="+value+"]";
+    }
+
+    public String toBeanShellString() {
+      return toBeanShellName() + "==" + toBeanShellValue();
     }
     
   }
@@ -182,6 +226,10 @@ public class PropertiesPieceFilter {
     public String toString() {
       return "PropertiesPieceFilter["+name+"!="+value+"]";
     }
+    
+    public String toBeanShellString() {
+      return toBeanShellName() + "!=" + toBeanShellValue();
+    }
   }
 
   private static class LT extends ComparisonFilter {
@@ -192,8 +240,13 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return compareTo(piece) < 0;
     }
+    
     public String toString() {
       return "PropertiesPieceFilter["+name+"<"+value+"]";
+    }
+    
+    public String toBeanShellString() {
+      return toBeanShellName() + "<" + toBeanShellValue();
     }
   }
 
@@ -205,8 +258,13 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return compareTo(piece) <= 0;
     }
+    
     public String toString() {
       return "PropertiesPieceFilter["+name+"<="+value+"]";
+    }
+    
+    public String toBeanShellString() {
+      return toBeanShellName() + "<=" + toBeanShellValue();
     }
   }
 
@@ -218,8 +276,13 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return compareTo(piece) > 0;
     }
+    
     public String toString() {
       return "PropertiesPieceFilter["+name+">"+value+"]";
+    }
+    
+    public String toBeanShellString() {
+      return toBeanShellName() + ">" + toBeanShellValue();
     }
   }
 
@@ -231,8 +294,13 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return compareTo(piece) >= 0;
     }
+    
     public String toString() {
       return "PropertiesPieceFilter["+name+">="+value+"]";
+    }
+    
+    public String toBeanShellString() {
+      return toBeanShellName() + ">=" + toBeanShellValue();
     }
   }
 
@@ -245,8 +313,13 @@ public class PropertiesPieceFilter {
       String property = String.valueOf(piece.getProperty(name));
       return Pattern.matches(value, property);
     }
+    
     public String toString() {
       return "PropertiesPieceFilter["+name+"~"+value+"]";
+    }
+    
+    public String toBeanShellString() {
+      return toBeanShellName() + "=~" + toBeanShellValue();
     }
   }
   
@@ -258,8 +331,13 @@ public class PropertiesPieceFilter {
     public boolean accept(GamePiece piece) {
       return !super.accept(piece);
     }
+    
     public String toString() {
       return "PropertiesPieceFilter["+name+"!~"+value+"]";
+    }
+    
+    public String toBeanShellString() {
+      return toBeanShellName() + "!~" + toBeanShellValue();
     }
   }
 }

@@ -274,7 +274,7 @@ public class SetGlobalProperty extends DynamicProperty {
       controls = Box.createVerticalBox();
       descConfig = new StringConfigurer(null, "Description:  ", m.description);
       controls.add(descConfig.getControls());
-      nameConfig = new FormattedExpressionConfigurer(null, "Global Property Name:  ", m.getKey());
+      nameConfig = new FormattedExpressionConfigurer(null, "Global Property Name:  ", m.getKey(), m);
       controls.add(nameConfig.getControls());
       levelConfig = new StringEnumConfigurer(null, "", new String[]{CURRENT_ZONE, NAMED_ZONE, NAMED_MAP});
       levelConfig.setValue(m.propertyLevel);
@@ -292,7 +292,7 @@ public class SetGlobalProperty extends DynamicProperty {
       nameBox.add(mapLabel);
       nameBox.add(zoneLabel);
       nameBox.add(new JLabel(" containing property:  "));
-      searchNameConfig = new FormattedExpressionConfigurer(null, "", m.searchName);
+      searchNameConfig = new FormattedExpressionConfigurer(null, "", m.searchName, m);
       nameBox.add(searchNameConfig.getControls());
       controls.add(nameBox);
       numericConfig = new BooleanConfigurer(null, "Is numeric?", m.isNumeric());

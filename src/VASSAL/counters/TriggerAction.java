@@ -206,7 +206,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
     st.nextToken();
     name = st.nextToken("");
     command = st.nextToken("Trigger");
-    key = st.nextNamedKeyStroke('T');
+    key = st.nextNamedKeyStroke('T');   
     propertyMatch.setExpression(st.nextToken(""));
 
     String keys = st.nextToken("");
@@ -258,7 +258,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
       name = new StringConfigurer(null, "Description:  ", piece.name);
       box.add(name.getControls());
 
-      propertyMatch = new PropertyExpressionConfigurer(null, "Trigger when properties match:  ", piece.propertyMatch);
+      propertyMatch = new PropertyExpressionConfigurer(null, "Trigger when properties match:  ", piece.propertyMatch, Decorator.getOutermost(piece));
       box.add(propertyMatch.getControls());
 
       Box commandBox = Box.createHorizontalBox();

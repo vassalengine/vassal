@@ -3,8 +3,8 @@ package VASSAL.configure;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
-import VASSAL.counters.PropertiesPieceFilter;
-import VASSAL.tools.FormattedString;
+import VASSAL.script.expression.Expression;
+import VASSAL.script.expression.NullExpression;
 
 /*
  * Class encapsulating a Property Match Expression
@@ -12,8 +12,7 @@ import VASSAL.tools.FormattedString;
  */
 public class PropertyExpression implements PieceFilter {
   
-  protected String expression = "";
-  protected PieceFilter filter = null;
+  protected Expression expression = new NullExpression();
   
   public PropertyExpression() {
 
@@ -23,28 +22,24 @@ public class PropertyExpression implements PieceFilter {
     setExpression(s);
   }
 
-  public void setExpression(String expression) {
-    this.expression = expression;
-    filter = null;
+  public void setExpression(String s) {
+    expression = Expression.createPropertyExpression(s);
   }
 
   public String getExpression() {
-    return expression;
+    return expression.getExpression();
   }
 
   public boolean isNull() {
-    return expression == null || expression.length() == 0;
-  }
-  
-  public boolean isDynamic() {
-    return expression != null && expression.indexOf('$') >= 0;
+    return expression == null || expression instanceof NullExpression;
   }
   
   public PieceFilter getFilter(PropertySource source) {
-    if (filter == null || isDynamic()) {
-      filter = PropertiesPieceFilter.parse(new FormattedString(getExpression()).getText(source)); 
-    }
-    return filter;
+    return expression.getFilter(source);
+  }
+  
+  public PieceFilter getFilter() {
+    return expression.getFilter();
   }
 
   public boolean accept(GamePiece piece) {

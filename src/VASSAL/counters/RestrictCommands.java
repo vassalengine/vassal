@@ -223,7 +223,7 @@ public class RestrictCommands extends Decorator implements EditablePiece {
       b.add(actionOption);
       box.add(b);
       
-      propertyMatch = new PropertyExpressionConfigurer(null, "Restrict when properties match:  ", piece.propertyMatch);
+      propertyMatch = new PropertyExpressionConfigurer(null, "Restrict when properties match:  ", piece.propertyMatch, Decorator.getOutermost(piece));
       box.add(propertyMatch.getControls());
 
       watchKeys = new KeyStrokeArrayConfigurer(null, "Restrict these Key Commands  ", piece.watchKeys);

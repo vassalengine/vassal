@@ -27,12 +27,11 @@ import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Map;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
-import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.RecursionLimitException;
 import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.RecursionLimiter.Loopable;
-import VASSAL.tools.RecursionLimitException;
 
 /**
  * Applies a given keyboard command to all counters on a map
@@ -115,7 +114,7 @@ public class GlobalCommand {
       }
     }
     catch (RecursionLimitException e) {
-      ErrorDialog.infiniteLoop(e);
+      RecursionLimiter.infiniteLoop(e);
     }
     finally {
       RecursionLimiter.endExecution();

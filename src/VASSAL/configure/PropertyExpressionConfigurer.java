@@ -1,7 +1,8 @@
 /*
- * $Id: PropertyExpressionConfigurer.java,v 1.2 2006/09/28 04:59:19 swampwallaby Exp $
+ * $Id: PropertyExpressionConfigurer.java,v 1.3 2006/09/29 06:48:21 swampwallaby Exp $
  *
- * Copyright (c) 2008 Brent Easton
+ * Copyright (c) 2007-2009 by Brent Easton
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License (LGPL) as published by the Free Software Foundation.
@@ -17,25 +18,57 @@
  */
 package VASSAL.configure;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.JDialog;
+
+import VASSAL.counters.EditablePiece;
+import VASSAL.counters.GamePiece;
+import VASSAL.script.expression.PropertyExpressionBuilder;
 
 /**
- * A Configurer for Property Expressions
- * This is a utility class to assist with the conversion and upgrade from
- * existing Property Match Expressions to use the new Bsh based expression
- * parser.
+ * A Configurer for Java Expressions
  */
-public class PropertyExpressionConfigurer extends StringConfigurer {
+public class PropertyExpressionConfigurer extends FormattedExpressionConfigurer {
+  
 
   public PropertyExpressionConfigurer(String key, String name) {
-    super(key, name);
+    this(key, name, "");
   }
 
   public PropertyExpressionConfigurer(String key, String name, String val) {
-    super(key, name, val);
-  }
- 
-  public PropertyExpressionConfigurer(String key, String name, PropertyExpression val) {
-    super(key, name, val.getExpression());
+    this(key, name, val, null);
   }
   
+  public PropertyExpressionConfigurer(String key, String name, PropertyExpression val) {
+    this(key, name, val.getExpression());
+  }
+  
+  public PropertyExpressionConfigurer(String key, String name, PropertyExpression val, GamePiece piece) {
+    this(key, name, val.getExpression(), piece);
+  }
+  
+  public PropertyExpressionConfigurer(String key, String name, String val, GamePiece piece) {
+    super(key, name, val, piece);
+  }
+  
+  protected ExpressionButton buildButton() {
+    return new PropertyExpressionButton(this, nameField.getPreferredSize().height, pieceTarget);  
+  }
+  
+  public static class PropertyExpressionButton extends ExpressionButton {
+    private static final long serialVersionUID = 1L;
+    
+    public PropertyExpressionButton(Configurer config, int size,
+        EditablePiece piece) {
+      super(config, size, piece);
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+      new PropertyExpressionBuilder(config, (JDialog) getTopLevelAncestor(), piece).setVisible(true);   
+    }
+
+    
+  }
+ 
 }
