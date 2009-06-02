@@ -2548,7 +2548,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
         hand.setAttribute(PrivateMap.SIDE, pool.getOwner().getName());
       }
       hand.setAttribute(PrivateMap.VISIBLE, Boolean.TRUE);
-      hand.setAttribute(PrivateMap.MAP_NAME, pool.name);
+      hand.setAttribute(PrivateMap.NAME, pool.name);
       hand.setAttribute(PrivateMap.MARK_MOVED, GlobalOptions.NEVER);
       hand.setAttribute(PrivateMap.USE_LAUNCH_BUTTON, Boolean.TRUE);
       hand.setAttribute(PrivateMap.BUTTON_NAME, pool.getButtonName());

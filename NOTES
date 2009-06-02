@@ -72,6 +72,9 @@ New Features in 3.2
 * Fix Display/Color handling for Grids and Numberings. Allow Numbering to
   be visible when grid not visible in Zones. [RFE 1637018]
 
+* Implementation of BeanShell allowing Arbitrarily complex Java Expressions to
+  be used in Property Match Expressions, In-line Java Expressions and new
+  Calculated Property trait . [RFE 1565025] 
 
 *********************
 Help us test

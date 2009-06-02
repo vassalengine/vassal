@@ -950,14 +950,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * Return values of Global properties
    */
   public Object getProperty(Object key) {
-    if (GlobalOptions.PLAYER_SIDE.equals(key)) {
+    if (GlobalOptions.PLAYER_SIDE.equals(key) || GlobalOptions.PLAYER_SIDE_ALT.equals(key)) {
       String mySide = PlayerRoster.getMySide();
       return mySide == null ? "" : mySide;  //$NON-NLS-1$
     }
-    else if (GlobalOptions.PLAYER_NAME.equals(key)) {
+    else if (GlobalOptions.PLAYER_NAME.equals(key) || GlobalOptions.PLAYER_NAME_ALT.equals(key)) {
       return getPrefs().getValue(GameModule.REAL_NAME);
     }
-    else if (GlobalOptions.PLAYER_ID.equals(key)) {
+    else if (GlobalOptions.PLAYER_ID.equals(key) || GlobalOptions.PLAYER_ID_ALT.equals(key)) {
       return GlobalOptions.getInstance().getPlayerId();
     }
     MutableProperty p = propsContainer.getMutableProperty(String.valueOf(key));
@@ -982,7 +982,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
   
   public Object getLocalizedProperty(Object key) {
-    if (GlobalOptions.PLAYER_SIDE.equals(key)) {
+    if (GlobalOptions.PLAYER_SIDE.equals(key) || GlobalOptions.PLAYER_SIDE_ALT.equals(key)) {
       String mySide = PlayerRoster.getMyLocalizedSide();
       return mySide == null ? "" : mySide;  //$NON-NLS-1$
     }

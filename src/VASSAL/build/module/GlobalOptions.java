@@ -69,9 +69,12 @@ public class GlobalOptions extends AbstractConfigurable {
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
 
-  public static final String PLAYER_NAME = "playerName"; //$NON-NLS-1$
-  public static final String PLAYER_SIDE = "playerSide"; //$NON-NLS-1$
-  public static final String PLAYER_ID = "playerId"; //$NON-NLS-1$
+  public static final String PLAYER_NAME = "PlayerName"; //$NON-NLS-1$
+  public static final String PLAYER_NAME_ALT = "playerName"; //$NON-NLS-1$
+  public static final String PLAYER_SIDE = "PlayerSide"; //$NON-NLS-1$
+  public static final String PLAYER_SIDE_ALT = "playerSide"; //$NON-NLS-1$
+  public static final String PLAYER_ID = "PlayerId"; //$NON-NLS-1$
+  public static final String PLAYER_ID_ALT = "playerId"; //$NON-NLS-1$
   public static final String PLAYER_ID_FORMAT = "playerIdFormat"; //$NON-NLS-1$
 
   private String promptString = "Opponents can unmask my pieces"; //$NON-NLS-1$
