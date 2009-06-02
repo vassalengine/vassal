@@ -58,7 +58,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   protected boolean edgesLegal = false;
   protected boolean cornersLegal = false;
   protected boolean dotsVisible = false;
-  protected Color color;
+  protected Color color = Color.black;
   protected GridContainer container;
   protected Map<Integer,Area> shapeCache = new HashMap<Integer,Area>();
   protected SquareGridEditor gridEditor;
@@ -246,14 +246,12 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       return String.valueOf(dotsVisible);
     }
     else if (COLOR.equals(key)) {
-      return visible ? ColorConfigurer.colorToString(color) : null;
+      return ColorConfigurer.colorToString(color);
     }
     return null;
   }
 
   public void setAttribute(String key, Object val) {
-    if (val == null)
-      return;
     if (X0.equals(key)) {
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
@@ -443,7 +441,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
   
   public boolean isVisible() {
-    return visible;
+    return visible == true || (gridNumbering != null && gridNumbering.isVisible());
   }
 
   public void setVisible(boolean b) {
@@ -467,7 +465,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
   /** Draw the grid even if not marked visible */
   public void forceDraw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed) {
-    if (!bounds.intersects(visibleRect)) {
+    if (!bounds.intersects(visibleRect) || color == null) {
       return;
     }
 
@@ -496,7 +494,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
 
     Point p1 = new Point();
     Point p2 = new Point();
-    g2d.setColor(color == null ? Color.black : color);
+    g2d.setColor(color);
     // x is the location of a vertical line
     for (double x = xmin; x < xmax; x += deltaX) {
       p1.move((int) round(x), region.y);

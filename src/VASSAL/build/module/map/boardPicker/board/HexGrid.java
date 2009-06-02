@@ -191,7 +191,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public boolean isVisible() {
-    return visible;
+    return visible == true || (numbering != null && numbering.isVisible());
   }
 
   public boolean isEdgesLegal() {
@@ -314,14 +314,12 @@ public class HexGrid extends AbstractConfigurable
       return String.valueOf(dotsVisible);
     }
     else if (COLOR.equals(key)) {
-      return visible ? ColorConfigurer.colorToString(color) : null;
+      return ColorConfigurer.colorToString(color);
     }
     return null;
   }
 
   public void setAttribute(String key, Object val) {
-    if (val == null)
-      return;
     if (X0.equals(key)) {
       if (val instanceof String) {
         val = Integer.valueOf((String) val);
@@ -726,16 +724,16 @@ public class HexGrid extends AbstractConfigurable
 
   /** Draw the grid even if set to be not visible */
   public void forceDraw(Graphics g, Rectangle bounds, Rectangle visibleRect, double zoom, boolean reversed) {
-    if (!bounds.intersects(visibleRect)) {
+    if (!bounds.intersects(visibleRect) || color == null) {
       return;
     }
-   
+    
     Graphics2D g2d = (Graphics2D) g;
 
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                          RenderingHints.VALUE_ANTIALIAS_ON);
 
-    g2d.setColor(color == null ? Color.black : color);
+    g2d.setColor(color);
 
     float x1,y1, x2,y2, x3,y3, x4, y4;
 
