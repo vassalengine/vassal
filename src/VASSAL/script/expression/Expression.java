@@ -79,7 +79,7 @@ public abstract class Expression {
   public PieceFilter getFilter(PropertySource ps) {
     return new PieceFilter() {
       public boolean accept(GamePiece piece) {
-        return false;
+        return true;
       }};
   }
   

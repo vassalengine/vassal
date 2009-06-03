@@ -21,6 +21,7 @@ package VASSAL.build.module;
 import java.util.ArrayList;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.map.MassKeyCommand;
+import VASSAL.configure.VisibilityCondition;
 
 /**
  * This version of {@link MassKeyCommand} is added directly to a
@@ -35,5 +36,19 @@ public class GlobalKeyCommand extends MassKeyCommand {
     }
     GameModule.getGameModule().sendAndLog(
       globalCommand.apply(l.toArray(new Map[l.size()]), getFilter()));
+  }
+  
+  // Hide 'This Map only' option
+  public VisibilityCondition getAttributeVisibility(String name) {
+    if (SINGLE_MAP.equals(name)) {
+      return  new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return false;
+        }
+      };
+    }
+    else {
+      return super.getAttributeVisibility(name);
+    }
   }
 }

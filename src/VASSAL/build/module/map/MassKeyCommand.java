@@ -91,6 +91,7 @@ public class MassKeyCommand extends AbstractConfigurable
   private static final String ALWAYS = "Always";
   public static final String CHECK_PROPERTY = "property";
   public static final String CHECK_VALUE = "propValue";
+  public static final String SINGLE_MAP = "singleMap";
   protected LaunchButton launch;
   protected NamedKeyStroke stroke = new NamedKeyStroke();
   protected String[] names = new String[0];
@@ -103,6 +104,7 @@ public class MassKeyCommand extends AbstractConfigurable
   protected Map map;
   protected GlobalCommand globalCommand = new GlobalCommand(this);
   protected FormattedString reportFormat = new FormattedString();
+  protected boolean singleMap = true;
 
   public MassKeyCommand() {
     ActionListener al = new ActionListener() {
@@ -127,7 +129,14 @@ public class MassKeyCommand extends AbstractConfigurable
   }
 
   public void apply() {
-    apply(map);
+    if (singleMap) {
+      apply(map);
+    }
+    else {
+      for (Map m : Map.getMapList()) {
+        apply(m);
+      }
+    }
   }
 
   public void apply(Map m) {
@@ -144,6 +153,7 @@ public class MassKeyCommand extends AbstractConfigurable
         "Description:  ",
         "Key Command:  ",
         "Matching properties:  ",
+        "Apply to counters on this map only?",
         "Apply to contents of Decks:  ",
         "Button text:  ",
         "Tooltip text:  ",
@@ -159,6 +169,7 @@ public class MassKeyCommand extends AbstractConfigurable
         "Description:  ",
         "Key Command:  ",
         "Matching properties:  ",
+        "Apply to counters on this map only?",
         "Apply to contents of Decks:  ",
         "Button text:  ",
         "Tooltip text:  ",
@@ -176,6 +187,7 @@ public class MassKeyCommand extends AbstractConfigurable
       NAME,
       KEY_COMMAND,
       PROPERTIES_FILTER,
+      SINGLE_MAP,
       DECK_COUNT,
       BUTTON_TEXT,
       TOOLTIP,
@@ -202,6 +214,7 @@ public class MassKeyCommand extends AbstractConfigurable
         String.class,
         NamedKeyStroke.class,
         PropertyExpression.class,
+        Boolean.class,
         DeckPolicyConfig.class,
         String.class,
         String.class,
@@ -217,6 +230,7 @@ public class MassKeyCommand extends AbstractConfigurable
         String.class,
         NamedKeyStroke.class,
         String.class,
+        Boolean.class,
         DeckPolicyConfig.class,
         String.class,
         String.class,
@@ -370,6 +384,9 @@ public class MassKeyCommand extends AbstractConfigurable
     else if (REPORT_FORMAT.equals(key)) {
       return reportFormat.getFormat();
     }
+    else if (SINGLE_MAP.equals(key)) {
+      return String.valueOf(singleMap);
+    }
     else {
       return launch.getAttributeValueString(key);
     }
@@ -497,6 +514,12 @@ public class MassKeyCommand extends AbstractConfigurable
     else if (REPORT_FORMAT.equals(key)) {
       reportFormat.setFormat((String) value);
       globalCommand.setReportFormat((String) value);
+    }
+    else if (SINGLE_MAP.equals(key)) {
+      if (value instanceof String) {
+        value = Boolean.valueOf((String) value);
+      }
+      singleMap = (((Boolean) value).booleanValue());
     }
     else {
       launch.setAttribute(key, value);
