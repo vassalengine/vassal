@@ -75,6 +75,9 @@ New Features in 3.2
 * Implementation of BeanShell allowing Arbitrarily complex Java Expressions to
   be used in Property Match Expressions, In-line Java Expressions and new
   Calculated Property trait . [RFE 1565025] 
+  
+* Display the Log File Comments in the Chat Window when a log file is opened
+  or continued. [RFE 2717634]
 
 *********************
 Help us test

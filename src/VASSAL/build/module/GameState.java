@@ -89,7 +89,8 @@ public class GameState implements CommandEncoder {
   protected Action loadGame, saveGame, newGame, closeGame;
   protected String lastSave;
   protected DirectoryConfigurer savedGameDirectoryPreference;
-
+  protected String loadComments;
+  
   public GameState() {}
 
   /**
@@ -287,6 +288,7 @@ public class GameState implements CommandEncoder {
    * file should be that returned by {@link #getRestoreCommand}.
    */
   public void loadGame() {
+    loadComments = "";
     final FileChooser fc = GameModule.getGameModule().getFileChooser();
     fc.addChoosableFileFilter(new LogAndSaveFileFilter());
 
@@ -308,6 +310,7 @@ public class GameState implements CommandEncoder {
       // post 3.0 save file
       final SaveMetaData saveData = (SaveMetaData) metaData;
       if (saveData.getModuleData() != null) {
+        loadComments = saveData.getLocalizedDescription();
         final String saveModuleName = saveData.getModuleName();
         final String saveModuleVersion = saveData.getModuleVersion();
         final String moduleName = GameModule.getGameModule().getGameName();
@@ -454,6 +457,8 @@ public class GameState implements CommandEncoder {
   }
 
   public void loadContinuation(File f) throws IOException {
+    GameModule.getGameModule().warn(
+        Resources.getString("GameState.loading", f.getName()));  //$NON-NLS-1$
     Command c = decodeSavedGame(f);
     CommandFilter filter = new CommandFilter() {
       protected boolean accept(Command c) {
@@ -464,6 +469,11 @@ public class GameState implements CommandEncoder {
     if (c != null) {
       c.execute();
     }
+    String msg = Resources.getString("GameState.loaded", f.getName());  //$NON-NLS-1$
+    if (loadComments != null && loadComments.length() > 0) {
+      msg += ": " + loadComments;
+    }
+    GameModule.getGameModule().warn(msg);
   }
 
   /**
@@ -627,6 +637,9 @@ public class GameState implements CommandEncoder {
   
             if (loadCommand != null) {
               msg = Resources.getString("GameState.loaded", shortName);  //$NON-NLS-1$
+              if (loadComments != null && loadComments.length() > 0) {
+                msg += ": " + loadComments;
+              }
             }
             else {
               msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$

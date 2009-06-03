@@ -69,11 +69,11 @@ public class ModuleMetaData extends AbstractMetaData {
   }
 
   public String getName() {
-    return nameAttr.getValue();
+    return  nameAttr == null ? "" : nameAttr.getValue();
   }
   
   public String getLocalizedName() {
-    return nameAttr.getLocalizedValue();
+    return nameAttr == null ? "" : nameAttr.getLocalizedValue();
   }
 
   public String getZipEntryName() {
