@@ -146,7 +146,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
     }
 
     for (int i = 0; i < watchKeys.length && !seen; i++) {
-      if (stroke.equals(watchKeys[i]) &&
+      if (watchKeys[i].equals(stroke) &&
           !triggeredKeys.contains(watchKeys[i])) {
         seen = true;
         triggeredKeys.add(watchKeys[i]);
