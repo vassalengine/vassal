@@ -114,7 +114,7 @@ public class Translate extends Decorator implements TranslatablePiece {
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       moveCommand = new KeyCommand(commandName, keyCommand, Decorator.getOutermost(this), this);
-      if (commandName.length() > 0) {
+      if (commandName.length() > 0 && keyCommand != null && !keyCommand.isNull()) {
         commands = new KeyCommand[]{moveCommand};
       }
       else {

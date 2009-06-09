@@ -117,7 +117,7 @@ public class CounterGlobalKeyCommand extends Decorator
   protected KeyCommand[] myGetKeyCommands() {
     if (command == null) {
       myCommand = new KeyCommand(commandName, key, Decorator.getOutermost(this), this);
-      if (commandName.length() > 0 && key != null) {
+      if (commandName.length() > 0 && key != null && ! key.isNull()) {
         command = new KeyCommand[]{ myCommand };
       }
       else {

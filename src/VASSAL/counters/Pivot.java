@@ -96,7 +96,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       pivotCommand = new KeyCommand(command, key, Decorator.getOutermost(this), this);
-      if (command.length() > 0) {
+      if (command.length() > 0 && key != null && !key.isNull()) {
         commands = new KeyCommand[]{pivotCommand};
       }
       else {

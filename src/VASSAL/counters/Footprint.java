@@ -578,7 +578,7 @@ public class Footprint extends MovementMarkable {
 
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
-      if (trailKey != null) {
+      if (trailKey != null && ! trailKey.isNull()) {
         showTrailCommand = new KeyCommand(menuCommand, trailKey, Decorator.getOutermost(this), this);
       }
       if (showTrailCommand != null

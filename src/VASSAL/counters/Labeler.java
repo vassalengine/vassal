@@ -568,6 +568,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
     if (commands == null) {
       menuKeyCommand = new KeyCommand(menuCommand, labelKey, Decorator.getOutermost(this), this);
       if (labelKey == null
+        || labelKey.isNull()
         || menuCommand == null
         || menuCommand.length() == 0) {
         commands = new KeyCommand[0];

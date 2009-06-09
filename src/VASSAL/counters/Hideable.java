@@ -212,7 +212,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   public KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       hideCommand = new KeyCommand(command, hideKey, Decorator.getOutermost(this), this);
-      if (command.length() > 0 && hideKey != null) {
+      if (command.length() > 0 && hideKey != null && ! hideKey.isNull()) {
         commands = new KeyCommand[] {hideCommand};
       }
       else {

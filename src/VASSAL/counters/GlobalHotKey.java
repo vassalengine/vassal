@@ -46,7 +46,7 @@ public class GlobalHotKey extends Decorator implements TranslatablePiece {
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       command = new KeyCommand(commandName,commandKey,Decorator.getOutermost(this), this);
-      if (commandName != null && commandName.length() > 0) {
+      if (commandName != null && commandName.length() > 0 && commandKey != null && ! commandKey.isNull()) {
         commands = new KeyCommand[]{command};
       }
       else {

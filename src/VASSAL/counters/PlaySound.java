@@ -87,7 +87,7 @@ public class PlaySound extends Decorator implements TranslatablePiece {
   protected KeyCommand[] myGetKeyCommands() {
     if (commands == null) {
       command = new KeyCommand(menuText, stroke, Decorator.getOutermost(this), this);
-      if (menuText.length() > 0) {
+      if (menuText.length() > 0 && stroke != null && !stroke.isNull()) {
         commands = new KeyCommand[] {command};
       }
       else {
