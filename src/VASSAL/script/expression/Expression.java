@@ -141,8 +141,13 @@ public abstract class Expression {
    */
   public static Expression createPropertyExpression(String s) {
 
+    // A null expression?
+    if (s == null || s.trim().length() == 0) {
+      return new NullExpression();
+    }
+    
     final String t = s.trim();
-
+    
     // BeanShell expression?
     if (t.startsWith("{") && t.endsWith("}")) {
       return new BeanShellExpression(t.substring(1, t.length() - 1));

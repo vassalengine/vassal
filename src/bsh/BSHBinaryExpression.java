@@ -182,9 +182,15 @@ class BSHBinaryExpression extends SimpleNode
         switch(kind)
         {
             case EQ:
+                /* VASSAL - Allow typeless equalities
+                 * return new Primitive (lhs == rhs)
+                 */
                 return new Primitive((lhs.toString().equals(rhs.toString())));
 
             case NE:
+                /* VASSAL - Allow typeless inequalities
+                 * return new Primitive (lhs != rhs)
+                 */
                 return new Primitive(!(lhs.toString().equals(rhs.toString())));
 
             case PLUS:
