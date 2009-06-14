@@ -35,6 +35,7 @@ import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.GameState;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.AddPiece;
@@ -639,19 +640,19 @@ public class StackMetrics extends AbstractConfigurable {
    */
   public Command merge(GamePiece fixed, GamePiece moving) {
     Command comm;
-    if (fixed instanceof Stack
-        && ((Stack) fixed).topPiece() != null) {
+    if (fixed instanceof Stack && ((Stack) fixed).topPiece() != null) {
       comm = merge(((Stack) fixed).topPiece(), moving);
     }
     else {
-      MoveTracker tracker = new MoveTracker(moving);
+      final MoveTracker tracker = new MoveTracker(moving);
       comm = new NullCommand();
       Stack fixedParent = fixed.getParent();
       int index = fixedParent == null ? 0 : fixedParent.indexOf(fixed) + 1;
-      if (moving != fixed
-          && moving != fixedParent) {
-        boolean isNewPiece = GameModule.getGameModule().getGameState()
-            .getPieceForId(moving.getId()) == null;
+
+      if (moving != fixed && moving != fixedParent) {
+        final GameState gs = GameModule.getGameModule().getGameState();
+
+        final boolean isNewPiece = gs.getPieceForId(moving.getId()) == null;
         if (fixedParent == null) {
           if (fixed instanceof Stack) {
             fixedParent = (Stack) fixed;
@@ -659,16 +660,19 @@ public class StackMetrics extends AbstractConfigurable {
           }
           else {
             fixedParent = createStack(fixed, true);
-            GameModule.getGameModule().getGameState().addPiece(fixedParent);
+            gs.addPiece(fixedParent);
             fixed.getMap().addPiece(fixedParent);
-            comm = comm.append(new AddPiece(fixedParent));
+            comm = comm.append(fixedParent.getMap().placeAt(
+              fixedParent, fixedParent.getPosition()));
             index = 1;
           }
         }
+
         if (isNewPiece) {
-          GameModule.getGameModule().getGameState().addPiece(moving);
+          gs.addPiece(moving);
           comm = comm.append(new AddPiece(moving));
         }
+
         if (moving instanceof Stack) {
           for (Iterator<GamePiece> i = ((Stack) moving).getPiecesIterator();
                i.hasNext(); ) {
