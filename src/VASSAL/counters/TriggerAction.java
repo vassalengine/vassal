@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2005 by Rodney Kinney, Brent Easton
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,14 +24,13 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
-import java.util.HashSet;
-import java.util.Set;
+
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+
 
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.Command;
@@ -44,7 +43,10 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.RecursionLimiter.Loopable;
 
 /**
  * Macro
@@ -52,7 +54,7 @@ import VASSAL.tools.SequenceEncoder;
  *  - Triggered by own KeyCommand or list of keystrokes
  *  - Match against an optional Property Filter
  * */
-public class TriggerAction extends Decorator implements TranslatablePiece {
+public class TriggerAction extends Decorator implements TranslatablePiece, Loopable{
 
   public static final String ID = "macro;";
 
@@ -62,7 +64,6 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
   protected PropertyExpression propertyMatch = new PropertyExpression();
   protected NamedKeyStroke[] watchKeys = new NamedKeyStroke[0];
   protected NamedKeyStroke[] actionKeys = new NamedKeyStroke[0];
-  protected Set<NamedKeyStroke> triggeredKeys; // Safeguard against infinite loops
 
   public TriggerAction() {
     this(ID, null);
@@ -72,7 +73,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
     mySetType(type);
     setInner(inner);
   }
-
+  
   public Rectangle boundingBox() {
     return piece.boundingBox();
   }
@@ -122,34 +123,19 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
   }
 
   public Command myKeyEvent(KeyStroke stroke) {
-    if (triggeredKeys == null) {
-      // Keep track of the keystrokes that we've already responded to
-      // within this event loop
-      triggeredKeys = new HashSet<NamedKeyStroke>();
-      Runnable runnable = new Runnable() {
-        public void run() {
-          triggeredKeys = null;
-        }
-      };
-      SwingUtilities.invokeLater(runnable);
-    }
-
     /*
      * 1. Are we interested in this key command?
      *     Is it our command key?
      *     Does it match one of our watching keystrokes?
      */
     boolean seen = false;
-    if (key.equals(stroke) && !triggeredKeys.contains(key)) {
+    if (stroke.equals(key)) {
       seen = true;
-      triggeredKeys.add(key);
     }
 
     for (int i = 0; i < watchKeys.length && !seen; i++) {
-      if (watchKeys[i].equals(stroke) &&
-          !triggeredKeys.contains(watchKeys[i])) {
+      if (stroke.equals(watchKeys[i])) {
         seen = true;
-        triggeredKeys.add(watchKeys[i]);
       }
     }
 
@@ -162,18 +148,26 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
       return null;
     }
 
-
     // 3. Issue the outgoing keystrokes
-    GamePiece outer = Decorator.getOutermost(this);
-    Command c = new NullCommand();
-    for (int i = 0; i < actionKeys.length; i++) {
-      c.append(outer.keyEvent(actionKeys[i].getKeyStroke()));
+    final GamePiece outer = Decorator.getOutermost(this);
+    final Command c = new NullCommand();
+    try {
+      RecursionLimiter.startExecution(this);
+      for (int i = 0; i < actionKeys.length; i++) {
+        c.append(outer.keyEvent(actionKeys[i].getKeyStroke()));
+      }
+    }
+    catch (RecursionLimitException e) {
+      RecursionLimiter.infiniteLoop(e);
+    }
+    finally {
+      RecursionLimiter.endExecution();
     }
     return c;
   }
   
   protected boolean matchesFilter() {
-    GamePiece outer = Decorator.getOutermost(this);
+    final GamePiece outer = Decorator.getOutermost(this);
     if (!propertyMatch.isNull()) {
       if (!propertyMatch.accept(outer)) {
         return false;
@@ -295,5 +289,14 @@ public class TriggerAction extends Decorator implements TranslatablePiece {
       .append(actionKeys.getValueString());
       return ID + se.getValue();
     }
+  }
+
+  // Implement Loopable
+  public String getComponentName() {
+    return Decorator.getOutermost(this).getLocalizedName();
+  }
+
+  public String getComponentTypeName() {
+    return getDescription();
   }
 }
