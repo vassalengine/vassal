@@ -129,12 +129,12 @@ public class TriggerAction extends Decorator implements TranslatablePiece, Loopa
      *     Does it match one of our watching keystrokes?
      */
     boolean seen = false;
-    if (stroke.equals(key)) {
+    if (key.equals(stroke)) {
       seen = true;
     }
 
     for (int i = 0; i < watchKeys.length && !seen; i++) {
-      if (stroke.equals(watchKeys[i])) {
+      if (watchKeys[i].equals(stroke)) {
         seen = true;
       }
     }
