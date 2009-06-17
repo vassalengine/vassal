@@ -33,6 +33,7 @@ import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.script.expression.ExpressionException;
 import VASSAL.tools.WarningDialog;
+import VASSAL.tools.io.IOUtils;
 import bsh.BeanShellExpressionValidator;
 import bsh.EvalError;
 import bsh.NameSpace;
@@ -59,6 +60,9 @@ public class ExpressionInterpreter extends AbstractInterpreter {
   protected static final String INIT_SCRIPT = "/VASSAL/script/init_expression.bsh";
   protected static final String THIS = "_interp";
   protected static final String SOURCE = "_source";
+  protected static final String MAGIC1 = "_xyzzy";
+  protected static final String MAGIC2 = "_plugh";
+  protected static final String MAGIC3 = "_plover";
   
    
   // Top-level static NameSpace shared between all ExpressionInterpreters
@@ -131,7 +135,7 @@ public class ExpressionInterpreter extends AbstractInterpreter {
     setNameSpace(expressionNameSpace);
     if (expression.length() > 0) {
       try {
-       eval("String _plugh() { _plover=" + expression + "; return _plover.toString();}");
+       eval("String "+MAGIC2+"() { "+MAGIC3+"=" + expression + "; return "+MAGIC3+".toString();}");
       }
       catch (EvalError e) {
         throw new ExpressionException(getExpression());
@@ -171,22 +175,13 @@ public class ExpressionInterpreter extends AbstractInterpreter {
         //FIXME: Error message
         WarningDialog.show(e, "");
       }
-
-      in.close();
     }
     catch (IOException e) {
       //FIXME: Error message
       WarningDialog.show(e, "");
     }
     finally {
-      if (in != null) {
-        try {
-          in.close();
-        }
-        catch (IOException e) {
-          //
-        }
-      }
+      IOUtils.closeQuietly(in);
     }
   }
   
@@ -257,12 +252,12 @@ public class ExpressionInterpreter extends AbstractInterpreter {
 
     String result = "";
     try {
-      eval("_xyzzy=_plugh()");
-      result = get("_xyzzy").toString();
+      eval(MAGIC1+"="+MAGIC2+"()");
+      result = get(MAGIC1).toString();
     } 
     catch (EvalError e) {
       final String s = e.getRawMessage();
-      final String search = "_plugh();'' : ";
+      final String search = MAGIC2+"();'' : ";
       final int pos = s.indexOf(search);
       throw new ExpressionException(getExpression(), s.substring(pos+search.length()));
     }

@@ -250,6 +250,11 @@ public final class Primitive implements ParserConstants, java.io.Serializable
             return floatBinaryOperation((Float)lhs, (Float)rhs, kind);
         else if(lhs instanceof Double)
             return doubleBinaryOperation( (Double)lhs, (Double)rhs, kind);
+        /*
+         * VASSAL - Allow comparison operators on Strings
+         */
+        else if(lhs instanceof String)
+            return stringBinaryOperation( (String) lhs, (String) rhs, kind);
         else
             throw new UtilEvalError("Invalid types in binary operator" );
 	}
@@ -434,6 +439,43 @@ public final class Primitive implements ParserConstants, java.io.Serializable
         }
     }
 
+    // Apply comparison operators to Strings
+    static Object stringBinaryOperation(String lhs, String rhs, int kind)
+    {
+        switch(kind)
+        {
+            // boolean
+            case LT:
+            case LTX:
+                return new Boolean(lhs.compareTo(rhs) < 0);
+
+            case GT:
+            case GTX:
+                return new Boolean(lhs.compareTo(rhs) > 0);
+
+            case EQ:
+                return new Boolean(lhs.equals(rhs));
+
+            case LE:
+            case LEX:
+                return new Boolean(lhs.compareTo(rhs) <= 0);
+
+            case GE:
+            case GEX:
+                return new Boolean(lhs.compareTo(rhs) >= 0);
+
+            case NE:
+                return new Boolean(!lhs.equals(rhs));
+
+            case PLUS:
+                return lhs + rhs;
+                
+            default:
+                throw new InterpreterError(
+          "Unimplemented binary String operator");
+        }
+    }
+    
     // returns Object covering both Double and Boolean return types
     static Object doubleBinaryOperation(Double D1, Double D2, int kind)
         throws UtilEvalError
