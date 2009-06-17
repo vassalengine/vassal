@@ -50,6 +50,7 @@ import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
@@ -260,42 +261,42 @@ public class DrawPile extends SetupStack {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",  
-      "Belongs to board:  ", 
-      "X position:  ",
-      "Y position:  ",
-      "Width:  ",
-      "Height:  ",
-      "Allow Multiple Cards to be Drawn?",
-      "Allow Specific Cards to be Drawn?",
-      "When selecting, list cards using",
-      "When selecting, sort cards by",
-      "Contents are Face-down:  ",
-      "Draw new cards face up?",
-      "Face-down Report Format:  ",
-      "Re-shuffle:  ",
-      "Re-shuffle Menu Text:  ",
-      "Re-shuffle Report Format:  ",
-      "Re-shuffle Hot Key:  ",
-      "Reversible?",
-      "Reverse Command Menu Text:  ",
-      "Reverse Report Format:  ",
-      "Reverse Hot Key:  ",
-      "Draw Outline when empty?",
-      "Color:  ",
-      "Send Hotkey when empty?",
-      "Hot Key to send when Deck empties:  ",
-      "Include command to send entire deck to another deck?",
-      "Send Menu text:  ",
-      "Send Report Format:  ",
-      "Send Hot Key:  ",
-      "Name of deck to send to:  ",
-      "Can be saved-to/loaded-from a file?",
-      "Maximum Cards to display in Stack:  ",
-      "Perform counting of property expressions?",
-      "Expressions to count:  ",
-      "Restrict adding counters by Drag 'n Drop?",
-      "Dropped counters must match expression:  "
+    		Resources.getString(Resources.NAME_LABEL),  
+    		Resources.getString("Editor.DrawPile.owning_board"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.xposition"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.yposition"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.width"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.height"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.multi_draw"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.specific_draw"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.list_cards"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.sort_cards"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.facedown"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.faceup"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.facedown_report"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.reshuffle"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.reshuffle_text"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.reshuffle_report"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.reshuffle_key"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.reverse"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.reverse_text"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.reverse_report"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.reverse_key"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.outline"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.color"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.empty_key"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.empty_keyfrom"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.send_deck"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.send_text"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.send_report"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.send_key"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.send_deck_name"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.saved"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.maxdisplay"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.perform_express"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.count_express"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.restrict_drag"), //$NON-NLS-1$
+    		Resources.getString("Editor.DrawPile.match_express"), //$NON-NLS-1$
     };
   }
 
@@ -740,7 +741,7 @@ public class DrawPile extends SetupStack {
   }
 
   public static String getConfigureTypeName() {
-    return "Deck";
+    return Resources.getString("Editor.DrawPile.deck"); //$NON-NLS-1$
   }
   
   public ComponentI18nData getI18nData() {

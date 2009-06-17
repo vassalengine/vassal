@@ -35,6 +35,7 @@ import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GlobalCommand;
 import VASSAL.counters.KeyCommand;
 import VASSAL.counters.PieceFilter;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.RecursionLimiter.Loopable;
@@ -56,7 +57,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   }
   
   public static String getConfigureTypeName() {
-    return "Deck Global Key Command";
+    return Resources.getString("Editor.DeckGlobalKeyCommand.component_type"); //$NON-NLS-1$
   }
   
   public void addTo(Buildable parent) {
@@ -127,11 +128,11 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
   
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Menu Command:  ",
-      "Global Command:  ",
-      "Matching properties:  ",
-      "Affects:  ",
-      "Report Format:  "
+    	Resources.getString(Resources.NAME_LABEL),
+    	Resources.getString("Editor.DeckGlobalKeyCommand.command"), //$NON-NLS-1$
+    	Resources.getString("Editor.DeckGlobalKeyCommand.matching_properties"), //$NON-NLS-1$
+    	Resources.getString("Editor.DeckGlobalKeyCommand.affects"), //$NON-NLS-1$
+    	Resources.getString("Editor.DeckGlobalKeyCommand.report_format"), //$NON-NLS-1$
     };
   }
 
