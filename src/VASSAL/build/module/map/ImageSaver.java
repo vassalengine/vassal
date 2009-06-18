@@ -57,6 +57,7 @@ import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -131,10 +132,10 @@ public class ImageSaver extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Button Text:  ",
-      "Tooltip Text:  ",
-      "Button icon:  ",
-      "Hotkey:  "
+    		Resources.getString(Resources.BUTTON_TEXT),
+    		Resources.getString(Resources.TOOLTIP_TEXT),
+    		Resources.getString(Resources.BUTTON_ICON),
+    		Resources.getString(Resources.HOTKEY_LABEL),
     };
   }
 
@@ -491,7 +492,7 @@ public class ImageSaver extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Image Capture Tool";
+    return Resources.getString("Editor.ImageSaver.component_type"); //$NON-NLS-1$
   }
 
   public Class<?>[] getAllowableConfigureComponents() {

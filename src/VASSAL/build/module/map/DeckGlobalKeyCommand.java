@@ -132,7 +132,7 @@ public class DeckGlobalKeyCommand extends MassKeyCommand {
     	Resources.getString("Editor.DeckGlobalKeyCommand.command"), //$NON-NLS-1$
     	Resources.getString("Editor.DeckGlobalKeyCommand.matching_properties"), //$NON-NLS-1$
     	Resources.getString("Editor.DeckGlobalKeyCommand.affects"), //$NON-NLS-1$
-    	Resources.getString("Editor.DeckGlobalKeyCommand.report_format"), //$NON-NLS-1$
+    	Resources.getString("Editor.report_format"), //$NON-NLS-1$
     };
   }
 

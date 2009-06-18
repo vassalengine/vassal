@@ -42,6 +42,7 @@ import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translatable;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -159,11 +160,11 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Button Text:  ", 
-      "Tooltip text:  ",
-      "Hotkey:  ",
-      "Icon when pieces are showing:  ",
-      "Icon when pieces are hidden:  "
+      Resources.getString(Resources.BUTTON_TEXT), 
+      Resources.getString(Resources.TOOLTIP_TEXT),
+      Resources.getString(Resources.HOTKEY_LABEL),
+      Resources.getString("Editor.HidePieceButton.show_icon"), //$NON-NLS-1$
+      Resources.getString("Editor.HidePieceButton.hide_icon"), //$NON-NLS-1$
     };
   }
 
@@ -230,7 +231,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
   }
 
   public static String getConfigureTypeName() {
-    return "Hide Pieces Button";
+    return Resources.getString("Editor.HidePieceButton.component_type"); //$NON-NLS-1$
   }
 
   public String getConfigureName() {

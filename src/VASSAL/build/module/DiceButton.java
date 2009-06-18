@@ -253,7 +253,7 @@ public class DiceButton extends AbstractConfigurable {
         Resources.getString("Editor.DiceButton.report_total"), //$NON-NLS-1$
       	Resources.getString(Resources.HOTKEY_LABEL),
       	Resources.getString("Editor.DiceButton.prompt_value"), //$NON-NLS-1$
-      	Resources.getString("Editor.DiceButton.report_format"), //$NON-NLS-1$
+      	Resources.getString("Editor.report_format"), //$NON-NLS-1$
       	Resources.getString("Editor.DiceButton.sort_results") //$NON-NLS-1$
     };
   }

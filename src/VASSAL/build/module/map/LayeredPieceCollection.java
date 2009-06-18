@@ -30,6 +30,7 @@ import VASSAL.counters.DeckVisitor;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
 
 /**
@@ -49,8 +50,8 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Property name for layer:  ",
-      "Layer Order"
+    		Resources.getString("Editor.GamePieceLayers.property_layer"), //$NON-NLS-1$
+    		Resources.getString("Editor.GamePieceLayers.order_layer"), //$NON-NLS-1$
     };
   }
 
@@ -121,7 +122,7 @@ public class LayeredPieceCollection extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Layers";
+    return Resources.getString("Editor.GamePieceLayers.component_type"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {

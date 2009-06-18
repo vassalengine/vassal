@@ -13,6 +13,7 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnum;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 
@@ -114,13 +115,13 @@ public class LayerControl extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Button text:  ",
-      "Tooltip text:  ",
-      "Button Icon:  ",
-      "Hotkey:  ",
-      "Action:  ",
-      "Skip layers with no counters?",
-      "Affect which layers? (Use layer names or numbers)"
+    		Resources.getString(Resources.BUTTON_TEXT),
+    		Resources.getString(Resources.TOOLTIP_TEXT),
+    		Resources.getString(Resources.BUTTON_ICON),
+    		Resources.getString(Resources.HOTKEY_LABEL),
+    		Resources.getString("Editor.LayerControl.action"), //$NON-NLS-1$
+    		Resources.getString("Editor.LayerControl.skip_layer"), //$NON-NLS-1$
+    		Resources.getString("Editor.LayerControl.affect_layer"), //$NON-NLS-1$
     };
   }
 
@@ -230,7 +231,7 @@ public class LayerControl extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Game Piece Layer Control";
+    return Resources.getString("Editor.LayerControl.component_type"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {

@@ -251,7 +251,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 	    Resources.getString(Resources.BUTTON_ICON),
 	    Resources.getString(Resources.HOTKEY_LABEL),
 	    Resources.getString("Editor.SpecialDiceButton.report_results_text"), //$NON-NLS-1$
-	    Resources.getString("Editor.SpecialDiceButton.report_format"), //$NON-NLS-1$
+	    Resources.getString("Editor.report_format"), //$NON-NLS-1$
 	    Resources.getString("Editor.SpecialDiceButton.result_window"), //$NON-NLS-1$
 	    Resources.getString("Editor.SpecialDiceButton.window_title"), //$NON-NLS-1$
 	    Resources.getString("Editor.SpecialDiceButton.result_button"), //$NON-NLS-1$

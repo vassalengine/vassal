@@ -57,6 +57,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.ComponentI18nData;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translatable;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.LaunchButton;
@@ -205,12 +206,12 @@ public class GlobalMap implements AutoConfigurable,
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Tooltip text",
-      "Button text",
-      "Button icon",
-      "Hotkey to show/hide",
-      "Scale factor",
-      "Visible rectangle highlight color"
+      Resources.getString(Resources.TOOLTIP_TEXT),
+      Resources.getString(Resources.BUTTON_TEXT),
+      Resources.getString(Resources.BUTTON_ICON),
+      Resources.getString("Editor.GlobalMap.show_hide"), //$NON-NLS-1$
+      Resources.getString("Editor.GlobalMap.scale_factor"), //$NON-NLS-1$
+      Resources.getString("Editor.GlobalMap.hilight"), //$NON-NLS-1$
     };
   }
 
@@ -294,7 +295,7 @@ public class GlobalMap implements AutoConfigurable,
   }
 
   public static String getConfigureTypeName() {
-    return "Overview Window";
+    return Resources.getString("Editor.GlobalMap.component_type"); //$NON-NLS-1$
   }
 
   public String getConfigureName() {

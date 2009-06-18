@@ -738,7 +738,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   }
 
   public static String getConfigureTypeName() {
-    return "Line of Sight Thread";
+    return Resources.getString("Editor.LosThread.component_type"); //$NON-NLS-1$
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
@@ -747,23 +747,23 @@ public class LOS_Thread extends AbstractConfigurable implements
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Thread name:  ",
-      "Button text:  ",
-      "Tooltip text:  ",                        
-      "Button Icon:  ",
-      "Hotkey:  ",
-      "Report Format:  ",
-      "Persistence:  ",
-      "Button Icon when LOS persisting:  ",
-      "Visible to Opponent:  ",
-      "Force start of thread to snap to grid?",
-      "Force end of thread to snap to grid?",
-      "Draw Range?",
-      "Pixels per range unit (0 to use Grid calculation):  ",
-      "Round fractions:  ",
-      "Hide Pieces while drawing?",
-      "Opacity of hidden pieces (0-100%):  ",
-      "Thread color:  "
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString(Resources.BUTTON_TEXT),
+      Resources.getString(Resources.TOOLTIP_TEXT),                        
+      Resources.getString(Resources.BUTTON_ICON),
+      Resources.getString(Resources.HOTKEY_LABEL),
+      Resources.getString("Editor.report_format"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.persistence"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.icon_persist"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.visible"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.start_grid"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.end_grid"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.draw_range"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.pixel_range"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.round_fractions"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.hidden"), //$NON-NLS-1$
+      Resources.getString("Editor.LosThread.opacity"), //$NON-NLS-1$
+      Resources.getString(Resources.COLOR_LABEL),
     };
   }
 

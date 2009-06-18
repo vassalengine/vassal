@@ -125,7 +125,7 @@ public class DoActionButton extends AbstractConfigurable
     	Resources.getString(Resources.BUTTON_ICON),
     	Resources.getString(Resources.HOTKEY_LABEL),
     	Resources.getString("Editor.DoAction.display_message"), //$NON-NLS-1$
-    	Resources.getString("Editor.DoAction.report_format"), //$NON-NLS-1$
+    	Resources.getString("Editor.report_format"), //$NON-NLS-1$
     	Resources.getString("Editor.DoAction.play_sound"), //$NON-NLS-1$
     	Resources.getString("Editor.DoAction.sound_clip"), //$NON-NLS-1$
     	Resources.getString("Editor.DoAction.send_hotkeys"), //$NON-NLS-1$
