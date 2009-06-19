@@ -59,6 +59,7 @@ import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.HashCode;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
@@ -460,26 +461,26 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Shading Always On?  ",
-      "Shading Starts turned on?  ",
-      "Button text:  ",
-      "Tooltip Text:  ",
-      "Button Icon:  ",
-      "Hotkey:  ",
-      "All boards in map get Shaded?  ",
-      "Board List:  ",
-      "Type:  ",
-      "Draw Shade on top of Counters?  ",
-      "Shade Pattern:  ",
-      "Color:  ",
-      "Image:  ",
-      "Scale image with map zoom?  ",
-      "Opacity(%)",
-      "Border?  ",
-      "Border Color:  ",
-      "Border Width:  ",
-      "Border opacity(%)"
+      Resources.getString(Resources.NAME_LABEL),
+      Resources.getString("Editor.MapShader.shading_on"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.shading_start"), //$NON-NLS-1$
+      Resources.getString(Resources.BUTTON_TEXT),
+      Resources.getString(Resources.TOOLTIP_TEXT),
+      Resources.getString(Resources.BUTTON_ICON),
+      Resources.getString(Resources.HOTKEY_LABEL),
+      Resources.getString("Editor.MapShader.shade_boards"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.board_list"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.type"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.shade_top"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.pattern"), //$NON-NLS-1$
+      Resources.getString(Resources.COLOR_LABEL),
+      Resources.getString("Editor.MapShader.image"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.scale"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.opacity"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.border"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.border_color"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.border_width"), //$NON-NLS-1$
+      Resources.getString("Editor.MapShader.border_opacity"), //$NON-NLS-1$
     };
   }
 
@@ -825,7 +826,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   }
 
   public static String getConfigureTypeName() {
-    return "Map Shading";
+    return Resources.getString("Editor.MapShader.component_type"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {

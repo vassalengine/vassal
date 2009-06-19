@@ -42,6 +42,7 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Highlighter;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ScaledImagePainter;
 
@@ -109,12 +110,20 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   }
 
   public static String getConfigureTypeName() {
-    return "Highlighter";
+    return Resources.getString("Editor.SelectionHighlight.component_type"); //$NON-NLS-1$
   }
 
   public String[] getAttributeDescriptions() {
-    return new String[]{"Name:  ", "Active if Properties Match:  ", "Use Image", "Border Color:  ", "Border Thickness:  ", "Image:  ", "X Offset:  ",
-                        "Y Offset:  "};
+    return new String[]{
+    		Resources.getString(Resources.NAME_LABEL),
+    		Resources.getString("Editor.SelectionHighlight.active_property"), //$NON-NLS-1$
+    		Resources.getString("Editor.SelectionHighlight.use_image"), //$NON-NLS-1$
+    		Resources.getString("Editor.SelectionHighlight.border_color"), //$NON-NLS-1$
+    		Resources.getString("Editor.SelectionHighlight.border_thickness"), //$NON-NLS-1$
+    		Resources.getString("Editor.SelectionHighlight.image"), //$NON-NLS-1$
+    		Resources.getString("Editor.SelectionHighlight.offset_x"), //$NON-NLS-1$
+    		Resources.getString("Editor.SelectionHighlight.offset_y"),//$NON-NLS-1$
+    };
   }
 
   public Class<?>[] getAttributeTypes() {

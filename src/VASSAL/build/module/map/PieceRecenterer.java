@@ -40,6 +40,7 @@ import VASSAL.counters.DeckVisitor;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 
@@ -118,7 +119,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
   }
 
   public static String getConfigureTypeName() {
-    return "Recenter Pieces Button";
+    return Resources.getString("Editor.PieceRecenter.component_type"); //$NON-NLS-1$
   }
 
   public void addTo(Buildable parent) {
@@ -132,10 +133,10 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Button text:  ",
-      "Tooltip text:  ",
-      "Button icon:  ",
-      "Hotkey:  "
+    	Resources.getString(Resources.BUTTON_TEXT),
+    	Resources.getString(Resources.TOOLTIP_TEXT),
+    	Resources.getString(Resources.BUTTON_ICON),
+    	Resources.getString(Resources.HOTKEY_LABEL),
     };
   }
 

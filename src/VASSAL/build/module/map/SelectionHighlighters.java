@@ -9,6 +9,7 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.configure.Configurer;
 import VASSAL.counters.ColoredBorder;
+import VASSAL.i18n.Resources;
 
 /*
  * A Container for Selection Highlighters
@@ -22,7 +23,7 @@ public class SelectionHighlighters extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Additional Selection Highlighters";
+    return Resources.getString("Editor.AddedSelectionHighlights.component_type"); //$NON-NLS-1$
   }
 
   public String[] getAttributeDescriptions() {
