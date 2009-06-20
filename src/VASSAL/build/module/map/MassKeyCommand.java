@@ -60,6 +60,7 @@ import VASSAL.counters.Embellishment;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.GlobalCommand;
 import VASSAL.counters.PieceFilter;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
@@ -150,34 +151,34 @@ public class MassKeyCommand extends AbstractConfigurable
   public String[] getAttributeDescriptions() {
     if (condition == null) {
       return new String[]{
-        "Description:  ",
-        "Key Command:  ",
-        "Matching properties:  ",
-        "Apply to counters on this map only?",
-        "Apply to contents of Decks:  ",
-        "Button text:  ",
-        "Tooltip text:  ",
-        "Button Icon:  ",
-        "Hotkey:  ",
-        "Suppress individual reports?",
-        "Report Format:  "
+    	Resources.getString(Resources.DESCRIPTION),
+    	Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$
+    	Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$
+    	Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$
+    	Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$
+        Resources.getString(Resources.BUTTON_TEXT),
+        Resources.getString(Resources.TOOLTIP_TEXT),
+        Resources.getString(Resources.BUTTON_ICON),
+        Resources.getString(Resources.HOTKEY_LABEL),
+        Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$
+        Resources.getString("Editor.report_format"), //$NON-NLS-1$
       };
     }
     else {
       // Backward compatibility
       return new String[]{
-        "Description:  ",
-        "Key Command:  ",
-        "Matching properties:  ",
-        "Apply to counters on this map only?",
-        "Apply to contents of Decks:  ",
-        "Button text:  ",
-        "Tooltip text:  ",
-        "Button Icon:  ",
-        "Hotkey:  ",
-        "Suppress individual reports?",
-        "Report Format:  ",
-        "Apply Command:  "
+    	Resources.getString(Resources.DESCRIPTION),
+    	Resources.getString("Editor.MassKey.key"), //$NON-NLS-1$
+    	Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$
+    	Resources.getString("Editor.MassKey.counters"), //$NON-NLS-1$
+    	Resources.getString("Editor.MassKey.deck_content"), //$NON-NLS-1$
+        Resources.getString(Resources.BUTTON_TEXT),
+        Resources.getString(Resources.TOOLTIP_TEXT),
+        Resources.getString(Resources.BUTTON_ICON),
+        Resources.getString(Resources.HOTKEY_LABEL),
+        Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$
+        Resources.getString("Editor.report_format"), //$NON-NLS-1$
+        Resources.getString("Editor.MassKey.apply"), //$NON-NLS-1$
       };
     }
   }

@@ -251,12 +251,12 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Name:  ",
-      "Belongs to Board:  ",
-      "Use Grid Location:  ",
-      "Location:  ",
-      "X position:  ",
-      "Y position:  "
+    	Resources.getString(Resources.NAME_LABEL),
+    	Resources.getString("Editor.StartStack.board"), //$NON-NLS-1$
+    	Resources.getString("Editor.StartStack.grid"), //$NON-NLS-1$
+    	Resources.getString("Editor.StartStack.location"), //$NON-NLS-1$
+    	Resources.getString("Editor.StartStack.position_x"), //$NON-NLS-1$
+    	Resources.getString("Editor.StartStack.position_y"), //$NON-NLS-1$
     };
   }
 
@@ -367,7 +367,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   public static String getConfigureTypeName() {
-    return "At-Start Stack";
+    return Resources.getString("Editor.StartStack.component_type"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {

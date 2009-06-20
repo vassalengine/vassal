@@ -523,7 +523,7 @@ public class StackMetrics extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Stacking options";
+    return Resources.getString("Editor.Stacking.component_type"); //$NON-NLS-1$
   }
 
   public HelpFile getHelpFile() {
@@ -551,12 +551,12 @@ public class StackMetrics extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Disable stacking?",
-      "Horizontal separation when expanded:  ",
-      "Vertical separation when expanded:  ",
-      "Horizontal separation when not expanded:  ",
-      "Vertical separation when not expanded:  ",
-      "Color of pieces when not expanded:  "
+    		Resources.getString("Editor.Stacking.disable"), //$NON-NLS-1$
+    		Resources.getString("Editor.Stacking.h_expand"), //$NON-NLS-1$
+    		Resources.getString("Editor.Stacking.v_expand"), //$NON-NLS-1$
+    		Resources.getString("Editor.Stacking.hnon_expand"), //$NON-NLS-1$
+    		Resources.getString("Editor.Stacking.vnon_expand"), //$NON-NLS-1$
+    		Resources.getString("Editor.Stacking.color_nonexpand"), //$NON-NLS-1$
     };
   }
 

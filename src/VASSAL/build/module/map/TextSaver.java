@@ -38,6 +38,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.counters.GamePiece;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.WriteErrorDialog;
@@ -78,10 +79,10 @@ public class TextSaver extends AbstractConfigurable {
 
   public String[] getAttributeDescriptions() {
     return new String[] {
-      "Button Text:  ", 
-      "Tooltip Text:  ",
-      "Button icon:  ",
-      "Hotkey:  "
+    		Resources.getString(Resources.BUTTON_TEXT),
+    		Resources.getString(Resources.TOOLTIP_TEXT),
+    		Resources.getString(Resources.BUTTON_ICON),
+    		Resources.getString(Resources.HOTKEY_LABEL),
     };
   }
 
@@ -166,7 +167,7 @@ public class TextSaver extends AbstractConfigurable {
   }
 
   public static String getConfigureTypeName() {
-    return "Text Capture Tool";
+    return Resources.getString("Editor.TextCapture.component_type"); //$NON-NLS-1$
   }
 
   /** 
