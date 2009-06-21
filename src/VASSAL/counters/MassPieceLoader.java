@@ -476,23 +476,28 @@ public class MassPieceLoader {
       // have actual images added for references to matching images. If an
       // Embellishment
       // has no matching images at all, do not add it to the new counter.
-      for (Decorator trait : traits) {
-        if (trait instanceof Emb) {
-          Emb newLayer = new Emb(trait.getType(), null);
-          if (newLayer.buildLayers(baseImage, levelImages)) {
-            for (String image : newLayer.getBuiltImageList()) {
-              addImageToModule(image);
+        for (Decorator trait : traits) {
+          if (trait instanceof Emb) {
+            Emb newLayer = new Emb(trait.getType(), null);
+            if (newLayer.buildLayers(baseImage, levelImages)) {
+              for (String image : newLayer.getBuiltImageList()) {
+                addImageToModule(image);
+              }
+              newLayer.setInner(piece);
+              final String saveState = newLayer.getState();
+              piece = GameModule.getGameModule().createPiece(newLayer.getType());
+              piece.setState(saveState);
             }
-            newLayer.setInner(piece);
-            piece = GameModule.getGameModule().createPiece(newLayer.getType());
+          }
+          else {
+            final Decorator newTrait = (Decorator) GameModule.getGameModule().createPiece(trait.getType());
+            newTrait.setState(trait.getState());
+            newTrait.setInner(piece);
+            final String saveState = newTrait.getState();
+            piece = GameModule.getGameModule().createPiece(newTrait.getType());
+            piece.setState(saveState);
           }
         }
-        else {
-          trait = (Decorator) GameModule.getGameModule().createPiece(trait.getType());
-          trait.setInner(piece);
-          piece = GameModule.getGameModule().createPiece(trait.getType());
-        }
-      }
 
       // Create the PieceSlot for the new piece
       PieceSlot slot = null;
