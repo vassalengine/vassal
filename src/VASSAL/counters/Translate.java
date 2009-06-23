@@ -159,6 +159,7 @@ public class Translate extends Decorator implements TranslatablePiece {
     myGetKeyCommands();
     Command c = null;
     if (moveCommand.matches(stroke)) {
+      setOldProperties();
       if (mover == null) {
         mover = new MoveExecuter();
         mover.setKeyEvent(stroke);
@@ -181,7 +182,7 @@ public class Translate extends Decorator implements TranslatablePiece {
 
   protected Command moveTarget(GamePiece target) {
     // Has this piece already got a move scheduled? If so, then we
-    // need to use the endpoint of any exsiting moves as our
+    // need to use the endpoint of any existing moves as our
     // starting point.
     Point p = mover.getUpdatedPosition(target);
     

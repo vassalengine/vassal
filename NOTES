@@ -81,6 +81,10 @@ New Features in 3.2
 
 * Global Key Commands created on a Map now have an option to affect
   counters on all Maps, not just the Map they are created on. [RFE 2456733]
+  
+* Traits that move a counter (Send To Location, Return to Deck, Moved Fixed 
+  Distance, Pivot) now update the same location Oldxxxxxx properties that
+  Drag and Drop movement does. [RFE 2803311]
 *********************
 Help us test
 *********************

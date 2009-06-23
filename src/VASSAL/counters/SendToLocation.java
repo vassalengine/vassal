@@ -314,6 +314,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
         }
         setProperty(BACK_MAP, getMap());
         setProperty(BACK_POINT, getPosition());
+        setOldProperties();
         if (!Boolean.TRUE.equals(outer.getProperty(Properties.IGNORE_GRID))) {
           dest = map.snapTo(dest);
         }
@@ -332,6 +333,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       Map backMap = (Map) getProperty(BACK_MAP);
       Point backPoint = (Point) getProperty(BACK_POINT);
       if (backMap != null && backPoint != null) {
+         setOldProperties();
          c = backMap.placeOrMerge(outer, backPoint);
          // Apply Auto-move key
          if (backMap.getMoveKey() != null) {

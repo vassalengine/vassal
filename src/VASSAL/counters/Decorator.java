@@ -26,6 +26,8 @@ import javax.swing.KeyStroke;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.map.boardPicker.Board;
+import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.command.Command;
 import VASSAL.i18n.Localization;
@@ -375,5 +377,42 @@ public abstract class Decorator implements GamePiece, StateMergeable, PropertyNa
    */
   public List<String> getPropertyNames() {
     return new ArrayList<String>(0);
+  }
+  
+  /**
+   * Set the Oldxxxx properties related to movement
+   * @param p
+   */
+  public static void setOldProperties(GamePiece p) {
+    String mapName = ""; //$NON-NLS-1$
+    String boardName = ""; //$NON-NLS-1$
+    String zoneName = ""; //$NON-NLS-1$
+    String locationName = ""; //$NON-NLS-1$
+    final Map m = p.getMap();
+    final Point pos = p.getPosition();
+    
+    if (m != null) {
+      mapName = m.getConfigureName();
+      final Board b = m.findBoard(pos);
+      if (b != null) {
+        boardName = b.getName();
+      }
+      final Zone z = m.findZone(pos);
+      if (z != null) {
+        zoneName = z.getName();
+      }
+      locationName = m.locationName(pos);
+    }
+    
+    p.setProperty(BasicPiece.OLD_X, String.valueOf(pos.x));
+    p.setProperty(BasicPiece.OLD_Y, String.valueOf(pos.y));
+    p.setProperty(BasicPiece.OLD_MAP, mapName);
+    p.setProperty(BasicPiece.OLD_BOARD, boardName);
+    p.setProperty(BasicPiece.OLD_ZONE, zoneName);
+    p.setProperty(BasicPiece.OLD_LOCATION_NAME, locationName);    
+  }
+  
+  public void setOldProperties() {
+    setOldProperties(this);
   }
 }

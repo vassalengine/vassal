@@ -119,6 +119,7 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         pile = findDeck();
       if (pile == null)
         return null;
+      setOldProperties();
       comm = pile.addToContents(Decorator.getOutermost(this));
       // Apply Auto-move key
       Map m = pile.getMap();

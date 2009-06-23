@@ -133,6 +133,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
         rotator.setAngle(oldAngle - angle);
         double newAngle = rotator.getAngle();
         if (getMap() != null) {
+          setOldProperties();
           Point pos = getPosition();
           pivotPoint(pos, -Math.PI * oldAngle / 180.0, -Math.PI * newAngle / 180.0);
           GamePiece outer = Decorator.getOutermost(this);
@@ -158,6 +159,7 @@ public class Pivot extends Decorator implements TranslatablePiece {
         }
       }
       else if (getMap() != null) {
+        setOldProperties();
         final double oldAngle = rotator.getAngleInRadians();
         Point2D pivot2D = new Point2D.Double(pivotX, pivotY);
         AffineTransform t = AffineTransform.getRotateInstance(oldAngle);
