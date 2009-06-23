@@ -123,6 +123,7 @@ public class MassPieceLoader {
     protected MyTreeTable tree;
     protected MyTreeTableModel model;
     protected BasicNode root;
+    protected File loadDirectory;
 
     public MassLoaderDialog() {
       super(configureTree.getFrame());
@@ -257,6 +258,8 @@ public class MassPieceLoader {
      */
     protected void buildTree(File dir) {
 
+      loadDirectory = dir;
+      
       // Make a list of the Layer traits in the template
       layers.clear();
       GamePiece piece = definer.getPiece();
@@ -366,11 +369,16 @@ public class MassPieceLoader {
 
       public Component getTableCellRendererComponent(JTable table,
           Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-        Component c = super.getTableCellRendererComponent(table, value,
+        final DefaultTableCellRenderer c = (DefaultTableCellRenderer) super.getTableCellRendererComponent(table, value,
             isSelected, hasFocus, row, col);
         final BasicNode node = (BasicNode) tree.getPathForRow(row)
             .getLastPathComponent();
         c.setEnabled(!node.isSkip());
+        if (node instanceof PieceNode) {
+          final String image = ((PieceNode) node).getImageName();
+          final String i = "<html><img src=\"file:/"+loadDirectory.getAbsolutePath()+"/"+image+"\"></html>";
+          c.setToolTipText(i);
+        }
         return c;
       }
     }
