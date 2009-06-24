@@ -111,7 +111,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   }
 
   public String myGetType() {
-    SequenceEncoder se = new SequenceEncoder(';');
+    final SequenceEncoder se = new SequenceEncoder(';');
     se.append(transparencyColor);
     se.append((int) (transparencyLevel * 100));
     se.append(radius);
@@ -127,7 +127,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
   }
 
   public void mySetType(String type) {
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
     st.nextToken();    // Discard ID
     transparencyColor = st.nextColor(defaultTransparencyColor);
     transparencyLevel = st.nextInt((int) (defaultTransparencyLevel * 100)) / 100.0F;
@@ -209,31 +209,33 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   protected Area getArea() {
     Area a;
-    // Determine the type of grid used (Hex or Square)
-    Map map = getMap();
+    final Map map = getMap();
     // Always draw the area centered on the piece's current position
-    // (For instance, don't draw it at an offset if it's in an expected stack)
-    Point position = getPosition();
-    Board board = map.findBoard(position);
-    MapGrid grid = board == null ? null : board.getGrid();
-    int myRadius = getRadius();
+    // (For instance, don't draw it at an offset if it's in an expanded stack)
+    final Point mapPosition = getPosition();
+    final Board board = map.findBoard(mapPosition);
+    final Rectangle boardBounds = board.bounds();
+    final Point boardPosition = new Point(mapPosition.x-boardBounds.x, mapPosition.y-boardBounds.y);
+    final MapGrid grid = board == null ? null : board.getGrid();
+    
+    final int myRadius = getRadius();
 
     if (grid instanceof GeometricGrid) {
-      final GeometricGrid gGrid = (GeometricGrid) grid;
-      a = gGrid.getGridShape(position, myRadius);
+      final GeometricGrid gGrid = (GeometricGrid) grid;      
+      a = gGrid.getGridShape(boardPosition, myRadius); // In board co-ords
+      final AffineTransform t = AffineTransform.getTranslateInstance(boardBounds.x, boardBounds.y); // Translate back to map co-ords
       final double mag = board.getMagnification();
       if (mag != 1.0) {
-        final AffineTransform t =
-          AffineTransform.getTranslateInstance(position.x, position.y);
+        t.translate(mapPosition.x, mapPosition.y);
         t.scale(mag, mag);
-        t.translate(-position.x, -position.y);
-        a = a.createTransformedArea(t);
+        t.translate(-mapPosition.x, -mapPosition.y);        
       }
+      a = a.createTransformedArea(t);
     }
     else {
       a = new Area(
-        new Ellipse2D.Double(position.x - myRadius,
-                             position.y - myRadius,
+        new Ellipse2D.Double(mapPosition.x - myRadius,
+                             mapPosition.y - myRadius,
                              myRadius * 2, myRadius * 2));
     }
     return a;
@@ -275,7 +277,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     myGetKeyCommands();
     if (!alwaysActive
         && keyCommand.matches(stroke)) {
-      ChangeTracker t = new ChangeTracker(this);
+      final ChangeTracker t = new ChangeTracker(this);
       active = !active;
       c = t.getChangeCommand();
     }
@@ -292,7 +294,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
   public Area getArea(MapShader shader) {
     Area a = null;
-    MapShader.ShadedPiece shaded = (MapShader.ShadedPiece) Decorator.getDecorator(piece,MapShader.ShadedPiece.class);
+    final MapShader.ShadedPiece shaded = (MapShader.ShadedPiece) Decorator.getDecorator(piece,MapShader.ShadedPiece.class);
     if (shaded != null) {
       a = shaded.getArea(shader);
     }
@@ -342,13 +344,13 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       selectShader = Box.createHorizontalBox();
 
       panel.add(selectShader);
-      JLabel l = new JLabel("Map Shading:  ");
+      final JLabel l = new JLabel("Map Shading:  ");
       selectShader.add(l);
       final JTextField tf = new JTextField(12);
       tf.setEditable(false);
       selectShader.add(tf);
       tf.setText(trait.mapShaderName);
-      JButton b = new JButton("Select");
+      final JButton b = new JButton("Select");
       selectShader.add(b);
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -411,7 +413,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
 
     protected void updateFillVisibility() {
-      boolean useShader = Boolean.TRUE.equals(useMapShader.getValue());
+      final boolean useShader = Boolean.TRUE.equals(useMapShader.getValue());
       transparencyColorValue.getControls().setVisible(!useShader);
       transparencyValue.getControls().setVisible(!useShader);
       selectShader.setVisible(useShader);
@@ -419,21 +421,21 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
 
     protected void updateRangeVisibility() {
-      boolean fixedRange = fixedRadius.booleanValue().booleanValue();
+      final boolean fixedRange = fixedRadius.booleanValue().booleanValue();
       radiusValue.getControls().setVisible(fixedRange);
       radiusMarker.getControls().setVisible(!fixedRange);
       repack();
     }
     
     protected void updateCommandVisibility() {
-      boolean alwaysActiveSelected = Boolean.TRUE.equals(alwaysActive.getValue());
+      final boolean alwaysActiveSelected = Boolean.TRUE.equals(alwaysActive.getValue());
       activateCommand.getControls().setVisible(!alwaysActiveSelected);
       activateKey.getControls().setVisible(!alwaysActiveSelected);
       repack();
     }
 
     protected void repack() {
-      Window w = SwingUtilities.getWindowAncestor(alwaysActive.getControls());
+      final Window w = SwingUtilities.getWindowAncestor(alwaysActive.getControls());
       if (w != null) {
         w.pack();
       }
@@ -448,8 +450,8 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     }
 
     public String getType() {
-      boolean alwaysActiveSelected = Boolean.TRUE.equals(alwaysActive.getValue());
-      SequenceEncoder se = new SequenceEncoder(';');
+      final boolean alwaysActiveSelected = Boolean.TRUE.equals(alwaysActive.getValue());
+      final SequenceEncoder se = new SequenceEncoder(';');
       se.append(transparencyColorValue.getValueString());
       se.append(transparencyValue.getValueString());
       se.append(radiusValue.getValueString());
