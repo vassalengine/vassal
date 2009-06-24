@@ -321,7 +321,7 @@ public class ModuleManagerWindow extends JFrame {
     modulePanelLayout = new CardLayout();
     moduleView = new JPanel(modulePanelLayout);
     buildTree();
-    JScrollPane scroll = new JScrollPane(tree);
+    final JScrollPane scroll = new JScrollPane(tree);
     moduleView.add(scroll, "modules");
 
     final JEditorPane l = new JEditorPane("text/html",
@@ -397,7 +397,7 @@ public class ModuleManagerWindow extends JFrame {
   
   protected void setDividerLocation(int i) {
     final int loc = i;
-    Runnable r = new Runnable() {
+    final Runnable r = new Runnable() {
       public void run() {
         serverStatusView.setDividerLocation(loc);
       }
@@ -429,6 +429,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     for (String s : missingModules) {
+      Logger.log(Resources.getString("ModuleManager.removing_module", s));
       moduleList.remove(s);
       recentModuleConfig.removeValue(s);
     }
@@ -447,32 +448,49 @@ public class ModuleManagerWindow extends JFrame {
         final MyTreeNode extensionNode = new MyTreeNode(ext);
         moduleNode.add(extensionNode);
       }
+      
+      final ArrayList<File> missingFolders = new ArrayList<File>();
+      
       for (File f : moduleInfo.getFolders()) {
-        final GameFolderInfo folderInfo = new GameFolderInfo(f, moduleInfo);
-        final MyTreeNode folderNode = new MyTreeNode(folderInfo);
-        moduleNode.add(folderNode);
-        final ArrayList<File> l = new ArrayList<File>();
+        if (f.exists() && f.isDirectory()) {
+          final GameFolderInfo folderInfo = new GameFolderInfo(f, moduleInfo);
+          final MyTreeNode folderNode = new MyTreeNode(folderInfo);
+          moduleNode.add(folderNode);
+          final ArrayList<File> l = new ArrayList<File>();
 
-        final File[] files = f.listFiles();
-        if (files == null) continue;
+          final File[] files = f.listFiles();
+          if (files == null) continue;
 
-        for (File f1 : files) {
-          if (f1.isFile()) {
-            l.add(f1);
+          for (File f1 : files) {
+            if (f1.isFile()) {
+              l.add(f1);
+            }
+          }
+          Collections.sort(l);
+        
+          for (File f2 : l) {
+            final SaveFileInfo fileInfo = new SaveFileInfo(f2, folderInfo);
+            if (fileInfo.isValid() && fileInfo.belongsToModule()) {
+              final MyTreeNode fileNode = new MyTreeNode(fileInfo);          
+              folderNode.add(fileNode);
+            }
           }
         }
-        Collections.sort(l);
-        
-        for (File f2 : l) {
-          final SaveFileInfo fileInfo = new SaveFileInfo(f2, folderInfo);
-          if (fileInfo.isValid() && fileInfo.belongsToModule()) {
-            final MyTreeNode fileNode = new MyTreeNode(fileInfo);          
-            folderNode.add(fileNode);
-          }
+        else {
+          missingFolders.add(f);
         }
       }
+      
+      for (File mf : missingFolders) {
+        Logger.log(
+          Resources.getString("ModuleManager.removing_folder", mf.getPath()));
+        moduleInfo.removeFolder(mf);
+      }
+      
       rootNode.add(moduleNode);
     }
+    
+    updateModuleList(); 
     
     treeModel = new MyTreeTableModel(rootNode);
     tree = new MyTree(treeModel);
@@ -590,6 +608,7 @@ public class ModuleManagerWindow extends JFrame {
     
     // FIXME: How to set alignment of individual header components?
     tree.getTableHeader().setAlignmentX(JComponent.CENTER_ALIGNMENT);
+    
   }
 
   /** 
@@ -1523,13 +1542,17 @@ public class ModuleManagerWindow extends JFrame {
       // Refresh any that are. Only include Save files belonging to this
       // module, or that are pre vassal 3.1
       final File[] files = getFile().listFiles();
-      for (int i = 0; i < files.length; i++) {
-        final AbstractMetaData fdata = MetaDataFactory.buildMetaData(files[i]);
+      if (files == null) return;
+
+      for (File f : files) {
+        final AbstractMetaData fdata = MetaDataFactory.buildMetaData(f);
         if (fdata != null) {
           if (fdata instanceof SaveMetaData) {
             final String moduleName = ((SaveMetaData) fdata).getModuleName();
-            if (moduleName == null || moduleName.length() == 0 || moduleName.equals(getModuleInfo().getModuleName())) {
-              update(files[i]);
+            if (moduleName == null ||
+                moduleName.length() == 0 ||
+                moduleName.equals(getModuleInfo().getModuleName())) {
+              update(f);
             }
           }
         }
