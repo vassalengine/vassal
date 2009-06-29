@@ -213,17 +213,22 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
     // Always draw the area centered on the piece's current position
     // (For instance, don't draw it at an offset if it's in an expanded stack)
     final Point mapPosition = getPosition();
-    final Board board = map.findBoard(mapPosition);
-    final Rectangle boardBounds = board.bounds();
-    final Point boardPosition = new Point(mapPosition.x-boardBounds.x, mapPosition.y-boardBounds.y);
-    final MapGrid grid = board == null ? null : board.getGrid();
-    
     final int myRadius = getRadius();
+
+    final Board board = map.findBoard(mapPosition);
+    final MapGrid grid = board == null ? null : board.getGrid();  
 
     if (grid instanceof GeometricGrid) {
       final GeometricGrid gGrid = (GeometricGrid) grid;      
+
+      final Rectangle boardBounds = board.bounds();
+      final Point boardPosition = new Point(
+        mapPosition.x-boardBounds.x, mapPosition.y-boardBounds.y);
+
       a = gGrid.getGridShape(boardPosition, myRadius); // In board co-ords
-      final AffineTransform t = AffineTransform.getTranslateInstance(boardBounds.x, boardBounds.y); // Translate back to map co-ords
+      final AffineTransform t = AffineTransform.getTranslateInstance(
+        boardBounds.x, boardBounds.y); // Translate back to map co-ords
+
       final double mag = board.getMagnification();
       if (mag != 1.0) {
         t.translate(mapPosition.x, mapPosition.y);
