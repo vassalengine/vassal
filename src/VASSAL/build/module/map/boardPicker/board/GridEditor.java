@@ -48,15 +48,17 @@ import VASSAL.build.module.map.boardPicker.Board;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridContainer;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.GridNumbering;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.RegularGridNumbering;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.AdjustableSpeedScrollPane;
 
 public abstract class GridEditor extends JDialog implements MouseListener, KeyListener {
+  private static final long serialVersionUID = 1L;
   
-  protected static final String SET = "Set Grid Shape";
-  protected static final String CANCEL = "Cancel";
-  protected static final String CANCEL_SET = "Cancel Set";
-  protected static final String OK = "Save";
-  protected static final String NUMBERING = "Numbering";
+  protected static final String SET = Resources.getString("Editor.GridEditor.set_grid_shape"); //$NON-NLS-1$
+  protected static final String CANCEL = Resources.getString(Resources.CANCEL);
+  protected static final String CANCEL_SET = Resources.getString("Editor.GridEditor.cancel_set"); //$NON-NLS-1$
+  protected static final String OK = Resources.getString(Resources.SAVE); 
+  protected static final String NUMBERING = Resources.getString("Editor.GridEditor.numbering"); //$NON-NLS-1$
   
   protected EditableGrid grid;
   protected Board board;
@@ -75,7 +77,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   
   public GridEditor(EditableGrid grid) {
     super();
-    setTitle("Edit " + grid.getGridName());
+    setTitle(Resources.getString("Editor.ModuleEditor.edit", grid.getGridName())); //$NON-NLS-1$
     setModal(true);
     this.grid = grid;
     GridContainer container = grid.getContainer();
@@ -120,9 +122,9 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     add(scroll, BorderLayout.CENTER);
 
     Box textPanel = Box.createVerticalBox();
-    textPanel.add(new JLabel("Arrow Keys - Move Grid"));
-    textPanel.add(new JLabel("Control-Arrow Keys - Resize Grid"));
-    textPanel.add(new JLabel("Shift Key - Increase speed of other keys"));
+    textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.arrow_keys"))); //$NON-NLS-1$
+    textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.control_arrow_keys"))); //$NON-NLS-1$
+    textPanel.add(new JLabel(Resources.getString("Editor.GridEditor.shift_key"))); //$NON-NLS-1$
     
     JPanel buttonPanel = new JPanel();
     
@@ -220,7 +222,7 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     view.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
     grid.setVisible(false);
     JOptionPane.showMessageDialog(null,
-        "Click on 3 adjacent points around the edge of any map grid cell");
+        Resources.getString("Editor.GridEditor.click_on_3")); //$NON-NLS-1$
     repaint();
   }
 
@@ -430,8 +432,8 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
   
   protected void reportShapeError() {
     JOptionPane.showMessageDialog(null,
-        "Doesn't look like a " + grid.getGridName() + "!",
-        "Grid Shape Error",
+        Resources.getString("Editor.GridEditor.does_not_look", grid.getGridName()), //$NON-NLS-1$
+        Resources.getString("Editor.GridEditor.grid_shape_error"), //$NON-NLS-1$
         JOptionPane.ERROR_MESSAGE);
 
   }

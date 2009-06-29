@@ -47,6 +47,7 @@ import VASSAL.configure.AutoConfigurer;
 import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.i18n.Resources;
 
 /**
  * A Hexgrid is a map grid composed of hexes.
@@ -73,17 +74,17 @@ public class HexGrid extends AbstractConfigurable
   protected Map<Integer,Area> shapeCache = new HashMap<Integer,Area>();
   protected HexGridEditor gridEditor;
 
-  public static final String X0 = "x0";
-  public static final String Y0 = "y0";
-  public static final String DY = "dy";
-  public static final String DX = "dx";
-  public static final String VISIBLE = "visible";
-  public static final String DOTS_VISIBLE = "dotsVisible";
-  public static final String CORNERS = "cornersLegal";
-  public static final String EDGES = "edgesLegal";
-  public static final String SIDEWAYS = "sideways";
-  public static final String COLOR = "color";
-  public static final String SNAP_SCALE = "snapscale";
+  public static final String X0 = "x0"; //$NON-NLS-1$
+  public static final String Y0 = "y0"; //$NON-NLS-1$
+  public static final String DY = "dy"; //$NON-NLS-1$
+  public static final String DX = "dx"; //$NON-NLS-1$
+  public static final String VISIBLE = "visible"; //$NON-NLS-1$
+  public static final String DOTS_VISIBLE = "dotsVisible"; //$NON-NLS-1$
+  public static final String CORNERS = "cornersLegal"; //$NON-NLS-1$
+  public static final String EDGES = "edgesLegal"; //$NON-NLS-1$
+  public static final String SIDEWAYS = "sideways"; //$NON-NLS-1$
+  public static final String COLOR = "color"; //$NON-NLS-1$
+  public static final String SNAP_SCALE = "snapscale"; //$NON-NLS-1$
 
   protected static final double sqrt3_2 = sqrt(3) / 2.;
 
@@ -104,16 +105,16 @@ public class HexGrid extends AbstractConfigurable
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Sideways (hexrows go horizontal)?",
-      "X offset:  ",
-      "Y offset:  ",
-      "Hex Height:  ",
-      "Hex Width:  ",
-      "Edges are legal locations?",
-      "Vertices are legal locations?",
-      "Show grid?",
-      "Draw center dots?",
-      "Color:  "
+    	Resources.getString("Editor.HexGrid.sideways"), //$NON-NLS-1$
+    	Resources.getString("Editor.Grid.offset_x"), //$NON-NLS-1$
+    	Resources.getString("Editor.Grid.offset_y"), //$NON-NLS-1$
+    	Resources.getString("Editor.HexGrid.hex_height"), //$NON-NLS-1$
+    	Resources.getString("Editor.HexGrid.hex_width"), //$NON-NLS-1$
+    	Resources.getString("Editor.Grid.edges"), //$NON-NLS-1$
+    	Resources.getString("Editor.HexGrid.vertices"), //$NON-NLS-1$
+    	Resources.getString("Editor.Grid.show_grid"), //$NON-NLS-1$
+    	Resources.getString("Editor.Grid.center_dots"), //$NON-NLS-1$
+    	Resources.getString(Resources.COLOR_LABEL),
     };
   }
 
@@ -161,7 +162,7 @@ public class HexGrid extends AbstractConfigurable
     });
 
     if (!buttonExists) {
-      JButton b = new JButton("Edit Grid");
+      JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           editGrid();
@@ -270,7 +271,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public static String getConfigureTypeName() {
-    return "Hex Grid";
+    return Resources.getString("Editor.HexGrid.component_type"); //$NON-NLS-1$
   }
   
   public String getGridName() {
@@ -282,7 +283,7 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("HexGrid.htm");
+    return HelpFile.getReferenceManualPage("HexGrid.htm"); //$NON-NLS-1$
   }
 
   public String getAttributeValueString(String key) {

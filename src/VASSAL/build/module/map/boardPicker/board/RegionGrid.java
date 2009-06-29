@@ -138,9 +138,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     return fontSize;
   }
 
-  public static final String SNAPTO = "snapto";
-  public static final String VISIBLE = "visible";
-  public static final String FONT_SIZE = "fontsize";
+  public static final String SNAPTO = "snapto"; //$NON-NLS-1$
+  public static final String VISIBLE = "visible"; //$NON-NLS-1$
+  public static final String FONT_SIZE = "fontsize"; //$NON-NLS-1$
 
   public String[] getAttributeNames() {
     return new String[]{
@@ -152,9 +152,9 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-      "Snap to defined point?",
-      "Draw region names?",
-      "Font Size:  "
+    	Resources.getString("Editor.IrregularGrid.snap"), //$NON-NLS-1$
+    	Resources.getString("Editor.IrregularGrid.draw"), //$NON-NLS-1$
+    	Resources.getString("Editor.IrregularGrid.fonts"), //$NON-NLS-1$
     };
   }
 
@@ -170,7 +170,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     final boolean buttonExists = config != null;
     final Configurer c = super.getConfigurer();
     if (!buttonExists) {
-      final JButton b = new JButton("Define Regions");
+      final JButton b = new JButton(Resources.getString("Editor.IrregularGrid.define_regions")); //$NON-NLS-1$
       b.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           configureRegions();
@@ -192,7 +192,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   }
 
   public static String getConfigureTypeName() {
-    return "Irregular Grid";
+    return Resources.getString("Editor.IrregularGrid.component_type"); //$NON-NLS-1$
   }
 
   public String getConfigureName() {
@@ -200,7 +200,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
   }
 
   public VASSAL.build.module.documentation.HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("IrregularGrid.htm");
+    return HelpFile.getReferenceManualPage("IrregularGrid.htm"); //$NON-NLS-1$
   }
 
   public String getAttributeValueString(String key) {
@@ -238,7 +238,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         visible = ((Boolean) val).booleanValue();
       }
       else if (val instanceof String) {
-        visible = "true".equals(val);
+        visible = "true".equals(val); //$NON-NLS-1$
       }
     }
     else if (FONT_SIZE.equals(key)) {
@@ -252,7 +252,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         snapTo = ((Boolean) val).booleanValue();
       } 
       else if (val instanceof String) {
-        snapTo = "true".equals(val);
+        snapTo = "true".equals(val); //$NON-NLS-1$
       }
     }
   }
@@ -436,7 +436,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
     protected boolean dirty = false;
 
     public Config(RegionGrid grid) {
-      super("Regions for " + grid.container.getBoard().getName());
+      super(Resources.getString("Editor.IrregularGrid.regions_for", grid.container.getBoard().getName())); //$NON-NLS-1$
       board = grid.container.getBoard();
       this.grid = grid;
       initComponents();
@@ -472,7 +472,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       final JPanel buttonPanel = new JPanel();
       
       final JButton okButton =
-        new JButton(Resources.getString(Resources.OK)); //$NON-NLS-1$
+        new JButton(Resources.getString(Resources.OK)); 
       okButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           close();
@@ -481,7 +481,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       buttonPanel.add(okButton);
       
       final JButton canButton =
-        new JButton(Resources.getString(Resources.CANCEL)); //$NON-NLS-1$
+        new JButton(Resources.getString(Resources.CANCEL)); 
       canButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           doCancel();
@@ -489,7 +489,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       });
       buttonPanel.add(canButton);
       
-      final JLabel mess = new JLabel("Drag and Drop selected regions to move, or use ctrl-arrows/ctrl-shift-arrows for precise movement.");
+      final JLabel mess = new JLabel(Resources.getString("Editor.IrregularGrid.drag_and_drop")); //$NON-NLS-1$
       mess.setAlignmentY(CENTER_ALIGNMENT);
       bottomPanel.add(mess);
       bottomPanel.add(buttonPanel);
@@ -509,8 +509,8 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       if (dirty) {
         if (JOptionPane.YES_OPTION == 
           JOptionPane.showConfirmDialog(this, 
-              "Changes made. Are you sure you want to Cancel those changes?",
-              "", JOptionPane.YES_NO_OPTION)) {
+              Resources.getString("Editor.IrregularGrid.changes_made"), //$NON-NLS-1$
+              "", JOptionPane.YES_NO_OPTION)) { //$NON-NLS-1$
             restore();
             close();
          }
@@ -708,7 +708,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         // begin dragging
         try {
           dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
-                        new StringSelection(""), this); // DEBUG
+                        new StringSelection(""), this); //$NON-NLS-1$
           dge.getDragSource().addDragSourceMotionListener(this);
         }
         catch (InvalidDnDOperationException e) {
@@ -841,7 +841,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
                   new ActionEvent(
                       e.getSource(),
                       ActionEvent.ACTION_PERFORMED,
-                      "Edit"));
+                      "Edit")); //$NON-NLS-1$
             }
           }
         }
@@ -850,16 +850,20 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
       view.repaint(); // Clean up selection
     }
 
+    protected static final String ADD_REGION = Resources.getString("Editor.IrregularGrid.add_region"); //$NON-NLS-1$
+    protected static final String DELETE_REGION = Resources.getString("Editor.IrregularGrid.delete_region"); //$NON-NLS-1$
+    protected static final String PROPERTIES = Resources.getString("Editor.ModuleEditor.properties"); //$NON-NLS-1$
+    
     protected void doPopupMenu(MouseEvent e) {
 
       myPopup = new JPopupMenu();
 
-      JMenuItem menuItem = new JMenuItem("Add Region");
+      JMenuItem menuItem = new JMenuItem(ADD_REGION); 
       menuItem.addActionListener(this);
       menuItem.setEnabled(lastClickedRegion == null);
       myPopup.add(menuItem);
 
-      menuItem = new JMenuItem("Delete Region");
+      menuItem = new JMenuItem(DELETE_REGION);
       menuItem.addActionListener(this);
       menuItem.setEnabled(lastClickedRegion != null);
 
@@ -867,7 +871,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
       myPopup.addSeparator();
 
-      menuItem = new JMenuItem("Properties");
+      menuItem = new JMenuItem(PROPERTIES); 
       menuItem.addActionListener(this);
       menuItem.setEnabled(lastClickedRegion != null);
       myPopup.add(menuItem);
@@ -904,7 +908,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         grid.setVisible(!grid.isVisible());
         view.repaint();
       }
-      else if (command.equals("Add Region")) {
+      else if (command.equals(ADD_REGION)) {
         final Region r = new Region(lastClick);
         r.addTo(grid);
         grid.add(r);
@@ -918,11 +922,11 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
               new ActionEvent(
                   e.getSource(),
                   ActionEvent.ACTION_PERFORMED,
-              "Edit"));
+              "Edit")); //$NON-NLS-1$
         }
         view.repaint();
       }
-      else if (command.equals("Delete Region")) {
+      else if (command.equals(DELETE_REGION)) {
         for (Region r : selectedRegions) {
           r.removeFrom(grid);
           grid.remove(r);
@@ -932,7 +936,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
         selectedRegions.clear();
         view.repaint();
       }
-      else if (command.equals("Properties")) {
+      else if (command.equals(PROPERTIES)) { //$NON-NLS-1$
         if (lastClickedRegion != null) {
           final Action a =
             new EditRegionAction(lastClickedRegion, null, this);
@@ -941,7 +945,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
                 new ActionEvent(
                     e.getSource(),
                     ActionEvent.ACTION_PERFORMED,
-                    "Edit"));
+                    "Edit")); //$NON-NLS-1$
           }
         }
       }

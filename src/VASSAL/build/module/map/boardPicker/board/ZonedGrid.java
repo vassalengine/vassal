@@ -44,6 +44,7 @@ import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.ZoneHighlight;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.ZonedGridHighlighter;
 import VASSAL.configure.Configurer;
+import VASSAL.i18n.Resources;
 
 /**
  * Map Grid that contains any number of {@link VASSAL.build.module.map.boardPicker.board.mapgrid.Zone}s against a background {@link MapGrid}
@@ -114,11 +115,11 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   public static String getConfigureTypeName() {
-    return "Multi-zoned Grid";
+    return Resources.getString("Editor.MultiZoneGrid.component_type"); //$NON-NLS-1$
   }
 
   public HelpFile getHelpFile() {
-    return HelpFile.getReferenceManualPage("ZonedGrid.htm");
+    return HelpFile.getReferenceManualPage("ZonedGrid.htm"); //$NON-NLS-1$
   }
 
   public void removeFrom(Buildable parent) {
