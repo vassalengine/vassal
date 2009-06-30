@@ -18,7 +18,9 @@
  */
 package VASSAL.configure;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,6 +30,8 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import VASSAL.tools.NamedKeyStroke;
@@ -39,6 +43,7 @@ import VASSAL.tools.SequenceEncoder;
 public class NamedKeyStrokeArrayConfigurer extends Configurer {
   private List<NamedHotKeyConfigurer> configs = new ArrayList<NamedHotKeyConfigurer>();
   private Box controls;
+  private JPanel panel;
 
   public NamedKeyStrokeArrayConfigurer(String key, String name) {
     super(key, name);
@@ -49,8 +54,10 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
   }
 
   public Component getControls() {
-    if (controls == null) {
+    if (panel == null) {
+      panel = new JPanel(new BorderLayout());
       controls = Box.createVerticalBox();
+      final JScrollPane scroll = new JScrollPane(controls); 
       Box b = Box.createHorizontalBox();
       controls.add(b);
       JLabel l = new JLabel(getName());
@@ -62,6 +69,9 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
           addKey(null);
         }
       });
+      
+      panel.add(scroll, BorderLayout.CENTER);
+      
       NamedKeyStroke[] keyStrokes = (NamedKeyStroke[]) value;
       if (keyStrokes != null) {
         for (int i = 0; i < keyStrokes.length; i++) {
@@ -70,13 +80,19 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
       }
       addKey(null);
     }
-    return controls;
+    return panel;
   }
 
   private void addKey(NamedKeyStroke keyStroke) {
     NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(null, null, keyStroke);
     configs.add(config);
     controls.add(config.getControls());
+    if (configs.size() > 5) {
+      panel.setPreferredSize(new Dimension(panel.getPreferredSize().width, 150));
+     }
+    else {
+      panel.setPreferredSize(null);
+    }
     Window w = SwingUtilities.getWindowAncestor(controls);
     if (w != null) {
       w.pack();
