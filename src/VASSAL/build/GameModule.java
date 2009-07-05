@@ -76,6 +76,7 @@ import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.Logger;
+import VASSAL.command.NullCommand;
 import VASSAL.configure.CompoundValidityChecker;
 import VASSAL.configure.MandatoryComponent;
 import VASSAL.counters.GamePiece;
@@ -162,6 +163,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected List<String> deferredChat = new ArrayList<String>();
 
   protected int nextGpId = 0;
+  
+  protected boolean loggingPaused = false;  
+  protected Object loggingLock = new Object();
+  protected Command pausedCommands;
   
   /*
    * Store the currently building GpId source. Only meaningful while
@@ -734,10 +739,81 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    */
   public void sendAndLog(Command c) {
     if (c != null && !c.isNull()) {
-      getServer().sendToOthers(c);
-      getLogger().log(c);
+      synchronized(loggingLock) {
+        if (loggingPaused) {
+          if (pausedCommands == null) {
+            pausedCommands = c;
+          }
+          else {
+            pausedCommands.append(c);
+          }
+        }
+        else {
+          getServer().sendToOthers(c);
+          getLogger().log(c);
+        }
+      }
     }
   }
+  
+  /**
+   * Pause logging and return true if successful.
+   * Return false if logging already paused
+   * 
+   * While Paused, commands are accumulated into pausedCommands so that they
+   * can all be logged at the same time, and generate a single UNDO command.
+   * 
+   * @return
+   */
+  public boolean pauseLogging () {
+    synchronized(loggingLock) {
+      if (loggingPaused) {
+        return false;
+      }
+      loggingPaused = true;
+      pausedCommands = null;
+      return true;
+    }
+  }
+
+  /**
+   * Restart logging and send any outstanding commands
+   */
+  public void unPauseLogging() {
+    synchronized(loggingLock) {
+      loggingPaused = false;
+      if (pausedCommands != null) {
+        sendAndLog(pausedCommands);
+      }
+      pausedCommands = null;
+    }
+  }
+  
+  /**
+   * Return any outstanding Commands.
+   * @return
+   */
+  public Command getPausedCommands() {
+    synchronized(loggingLock) {
+      return pausedCommands == null ? new NullCommand() : pausedCommands;
+    }
+  }
+  
+  public Command getAndClearPausedCommands() {
+    final Command c = getPausedCommands();
+    clearPausedCommands();
+    unPauseLogging();
+    return c;
+  }
+  
+  /**
+   * Clear outstanding Commands
+   * Use where the calling level handles the sending of outstanding commands
+   */
+  public void clearPausedCommands() {
+    pausedCommands = null;
+  }
+
 
   private static String userId = null;
 

@@ -150,6 +150,18 @@ public class FormattedString {
     return result;  
   }
   
+  public int getTextAsInt(PropertySource ps, String description, AbstractConfigurable source) {
+    int result = 0;
+    final String value = getText(ps, "0");
+    try {
+      result = Integer.parseInt(value);
+    }
+    catch (NumberFormatException e) {
+      ErrorDialog.dataError(new BadDataReport(source, Resources.getString("Error.non_number_error"), debugInfo(this, value, description), e));  
+    }
+    return result;  
+  }
+  
   /**
    * Format a standard debug message for use in Decorator bad data reports.  
    * 

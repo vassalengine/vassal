@@ -30,6 +30,7 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.script.expression.ExpressionBuilder;
+import VASSAL.tools.FormattedString;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.icon.IconFamily;
 
@@ -53,6 +54,10 @@ public class FormattedExpressionConfigurer extends FormattedStringConfigurer {
     setValue(s);
   }
 
+  public FormattedExpressionConfigurer(String key, String name, FormattedString s) {
+    this(key, name, s.getFormat());
+  }
+  
   public FormattedExpressionConfigurer(String key, String name, String s, EditablePiece p) {
     this(key, name, s, (GamePiece) p);
   }

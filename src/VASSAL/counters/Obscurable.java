@@ -550,8 +550,9 @@ public class Obscurable extends Decorator implements TranslatablePiece {
    * Return Property names exposed by this trait
    */
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<String>();
+    final ArrayList<String> l = new ArrayList<String>();
     l.add(Properties.OBSCURED_TO_OTHERS);
+    l.add(Properties.OBSCURED_TO_ME);    
     return l;
   }
   
