@@ -69,7 +69,7 @@ public class ModuleMetaData extends AbstractMetaData {
   }
 
   public String getName() {
-    return  nameAttr == null ? "" : nameAttr.getValue();
+    return nameAttr == null ? "" : nameAttr.getValue();
   }
   
   public String getLocalizedName() {
