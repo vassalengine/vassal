@@ -310,7 +310,10 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
   
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    if (obscuredToMe()) {
+    if (isMaskable()) {
+      drawObscuredToOthers(g, x, y, obs, zoom);
+    }
+    else if (obscuredToMe()) {
       drawObscuredToMe(g, x, y, obs, zoom);
     }
     else if (obscuredToOthers()) {
@@ -482,29 +485,33 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   public Command myKeyEvent(KeyStroke stroke) {
     Command retVal = null;
     myGetKeyCommands();
+
     if (hide.matches(stroke)) {
-      ChangeTracker c = new ChangeTracker(this);
-      if (obscuredToOthers()
-          || obscuredToMe()) {
+      final ChangeTracker c = new ChangeTracker(this);
+      if (obscuredToOthers() || obscuredToMe()) {
         obscuredBy = null;
       }
       else if (!obscuredToMe()) {
         obscuredBy = access.getCurrentPlayerId();
       }
+
       retVal = c.getChangeCommand();
     }
     else if (peek.matches(stroke)) {
-      if (obscuredToOthers() && Boolean.TRUE.equals(getProperty(Properties.SELECTED))) {
+      if (obscuredToOthers() &&
+          Boolean.TRUE.equals(getProperty(Properties.SELECTED))) {
         peeking = true;
       }
     }
-    // For the "peek" display style with no key command (i.e. appears face-up whenever selected)
+
+    // For the "peek" display style with no key command (i.e. appears
+    // face-up whenever selected).
+    // 
     // It looks funny if we turn something face down but we can still see it.
     // Therefore, un-select the piece if turning it face down
-    if (retVal != null
-      && PEEK == displayStyle
-      && peekKey == null
-      && obscuredToOthers()) {
+    if (retVal != null && PEEK == displayStyle &&
+        peekKey == null && obscuredToOthers()) {
+// FIXME: This probably causes a race condition. Can we do this directly?
       Runnable runnable = new Runnable() {
         public void run() {
           KeyBuffer.getBuffer().remove(Decorator.getOutermost(Obscurable.this));
