@@ -726,6 +726,10 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (value > 0) {
       final int i = value - 1;
 
+      if (i > size.length) {  // Occurs when adding a layer with a name, but no image
+        return new Rectangle();
+      }
+      
       if (size[i] == null) {
         if (imagePainter[i] != null) {
           size[i] = ImageUtils.getBounds(imagePainter[i].getImageSize());
