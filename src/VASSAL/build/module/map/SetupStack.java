@@ -840,7 +840,9 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
           public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
           }
         });
-        popup.show(view, e.getX(), e.getY());
+        if (view.isShowing()) {
+          popup.show(view, e.getX(), e.getY());
+        }
       }
     }
 

@@ -220,8 +220,10 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
                 (javax.swing.event.PopupMenuEvent evt) {
             }
           });
-//          KeyBuffer.getBuffer().clear();
-          popup.show(map.getView(), pt.x, pt.y);
+          // It is possible for the map to close before the menu is displayed
+          if (map.getView().isShowing()) {
+            popup.show(map.getView(), pt.x, pt.y);
+          }
           e.consume();
         }
       }

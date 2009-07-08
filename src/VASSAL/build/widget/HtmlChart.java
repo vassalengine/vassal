@@ -216,7 +216,9 @@ public class HtmlChart extends Widget implements MouseListener {
       });
 
       popup.add(item);
-      popup.show(event.getComponent(), event.getX(), event.getY());
+      if (event.getComponent().isShowing()) {
+        popup.show(event.getComponent(), event.getX(), event.getY());
+      }
     }
   }
 

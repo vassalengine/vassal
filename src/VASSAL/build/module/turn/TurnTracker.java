@@ -955,7 +955,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     
     public void doPopup(Point p) {
       buildPopup();
-      popup.show(this, p.x, p.y);
+      if (isShowing()) {
+        popup.show(this, p.x, p.y);
+      }
     }
     
   }
