@@ -701,17 +701,15 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         // while the levels coming from outside Zoomer run from 
         // zoomed in to zoomed out. Hence we reverse the initial
         // zoom level being set here.
-        //        
+        //
         final List<Double> levels = state.getLevels();
         final int initial =
           Math.max(0, Math.min(levels.size()-1, levels.size()-(Integer) val));
-
+        
         state = new State(levels, initial);
 
         if (deprecatedFactor > 0 && deprecatedMax > 0) {
-          state = new State(levels, initial-1);
-          
-          // zero these so this block is run only once
+          // zero these to prevent further adjustments due to old properties
           deprecatedFactor = 0.0;
           deprecatedMax = 0;  
         }
