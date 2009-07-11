@@ -310,10 +310,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
   }
   
   public void draw(Graphics g, int x, int y, Component obs, double zoom) {
-    if (isMaskable()) {
-      drawObscuredToOthers(g, x, y, obs, zoom);
-    }
-    else if (obscuredToMe()) {
+    if (obscuredToMe()) {
       drawObscuredToMe(g, x, y, obs, zoom);
     }
     else if (obscuredToOthers()) {
