@@ -605,17 +605,16 @@ public class DoActionButton extends AbstractConfigurable
         }
       }
 
-      // Check for infinite looping. Save any 
-      // loop Exception to be thrown after the post-loop code
-      // to ensure post-loop key is executed.
-      if (loopCounter++ >= LoopControl.LOOP_LIMIT) {
-        loopException = new RecursionLimitException(this);
-        break;
-      }
-      
       // Counted loop - Check if looped enough times
       if (LoopControl.LOOP_COUNTED.equals(loopType)) {
-        if (loopCounter >= loopCountLimit) {
+        if (loopCounter++ >= loopCountLimit) {
+          break;
+        }
+      }
+      // Otherwise check for too much looping.
+      else {
+        if (loopCounter++ >= LoopControl.LOOP_LIMIT) {
+          loopException = new RecursionLimitException(this);
           break;
         }
       }

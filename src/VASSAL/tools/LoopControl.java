@@ -27,7 +27,7 @@ import VASSAL.i18n.Resources;
 public class LoopControl {
 
   // Limit number of loops before throwing a RecusionLimitException
-  public static final int LOOP_LIMIT = 200;
+  public static final int LOOP_LIMIT = 500;
 
   // Loop Types - saved in buildfile
   public static final String LOOP_COUNTED = "counted"; //$NON-NLS-1$
