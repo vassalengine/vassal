@@ -71,6 +71,15 @@ public class SimpleRoom implements Room {
       players.set(index, p);
     }
   }
+  
+  public Player getPlayer(String id) {
+    for (Player player : players) {
+      if (player.getId().equals(id)) {
+        return player;
+      }
+    }
+    return null;
+  }
 
   public void removePlayer(Player p) {
     players.remove(p);

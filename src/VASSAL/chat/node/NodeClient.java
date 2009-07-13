@@ -95,6 +95,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
   protected InviteEncoder inviteEncoder;
   protected PropertyChangeListener nameChangeListener;
   protected PropertyChangeListener profileChangeListener;
+  protected NodeRoom pendingSynchToRoom;
 
   public NodeClient(String moduleName, String playerId, CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomer) {
     this.encoder = encoder;
@@ -324,9 +325,26 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
       final String newPath = new SequenceEncoder(moduleName, '/').append(newRoom).getValue();
       String msg = Protocol.encodeJoinCommand(newPath, password);
       send(msg);
+      // Request a synch if we are not the owner
+      if (r instanceof NodeRoom) {
+        final NodeRoom room = (NodeRoom) r;
+        if (newRoom.equals(defaultRoomName)) {
+          GameModule.getGameModule().getGameState().setup(false);
+        }
+        else if (! room.isOwner(me)) {
+          // We are not actually recorded as being in the new room until we get an update back from
+          // the server. Record a Synch required to the new room.
+          pendingSynchToRoom = room;
+          GameModule.getGameModule().warn(Resources.getString("Chat.synchronize_pending"));
+        }
+      }
     }
   }
 
+  /**
+   * Process a message received from the server
+   * @param msg Encoded message
+   */
   public void handleMessageFromServer(String msg) {
     Node n;
     Properties p;
@@ -334,6 +352,13 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
       Node mod = n.getChild(moduleName);
       if (mod != null) {
         updateRooms(mod);
+      }
+      // Rooms have been updated with any new players (including us), so perform a Synchronize
+      // for a move to a new room if needed.
+      if (pendingSynchToRoom != null) {
+        new SynchAction(((NodeRoom) pendingSynchToRoom).getOwningPlayer(), this).actionPerformed(null);
+        pendingSynchToRoom = null;
+        GameModule.getGameModule().warn(Resources.getString("Chat.synchronize_complete"));
       }
     }
     else if ((p = Protocol.decodeRoomsInfo(msg)) != null) {
