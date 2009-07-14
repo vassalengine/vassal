@@ -59,13 +59,12 @@ public class MultiActionButton extends ToolbarMenu implements Loopable {
     }
     finally {
       RecursionLimiter.endExecution();
-    }
-    
-    // If we are in control of logging, retrieve the accumulated Commands,
-    // turn off pause and send the Commands to the log.
-    if (loggingPaused) {
-      mod.sendAndLog(mod.getAndClearPausedCommands());
-    }
+      // If we are in control of logging, retrieve the accumulated Commands,
+      // turn off pause and send the Commands to the log.
+      if (loggingPaused) {
+        mod.sendAndLog(mod.unPauseLogging());
+      }
+    } 
   }
   
   public static String getConfigureTypeName() {

@@ -777,32 +777,15 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   }
 
   /**
-   * Restart logging and send any outstanding commands
+   * Restart logging and return any outstanding commands
    */
-  public void unPauseLogging() {
+  public Command unPauseLogging() {
+    Command c = null;
     synchronized(loggingLock) {
-      loggingPaused = false;
-      if (pausedCommands != null) {
-        sendAndLog(pausedCommands);
-      }
+      c = pausedCommands == null ? new NullCommand() : pausedCommands;
       pausedCommands = null;
+      loggingPaused = false;    
     }
-  }
-  
-  /**
-   * Return any outstanding Commands.
-   * @return
-   */
-  public Command getPausedCommands() {
-    synchronized(loggingLock) {
-      return pausedCommands == null ? new NullCommand() : pausedCommands;
-    }
-  }
-  
-  public Command getAndClearPausedCommands() {
-    final Command c = getPausedCommands();
-    clearPausedCommands();
-    unPauseLogging();
     return c;
   }
   
