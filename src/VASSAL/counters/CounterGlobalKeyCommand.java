@@ -125,7 +125,7 @@ public class CounterGlobalKeyCommand extends Decorator
       }
     }
     if (command.length > 0) {
-      command[0].setEnabled(restrictRange || getMap() != null);
+      command[0].setEnabled(getMap() != null);
     }
     return command;
   }

@@ -40,7 +40,10 @@ import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.RecursionLimiter.Loopable;
 
 /**
  * A trait that acts like a button on a GamePiece, such that clicking on a
@@ -49,7 +52,7 @@ import VASSAL.tools.SequenceEncoder;
  * @author rkinney
  * 
  */
-public class ActionButton extends Decorator implements EditablePiece {
+public class ActionButton extends Decorator implements EditablePiece, Loopable {
   public static final String ID = "button;";
   protected NamedKeyStroke stroke;
   protected Rectangle bounds = new Rectangle();
@@ -94,7 +97,8 @@ public class ActionButton extends Decorator implements EditablePiece {
       pusher.register(getMap());
     }
     else {
-      pusher.register(obs, Decorator.getOutermost(this), x, y);
+      // Do not allow button pushes if piece is not on a map
+      // pusher.register(obs, Decorator.getOutermost(this), x, y);
     }
   }
 
@@ -129,6 +133,15 @@ public class ActionButton extends Decorator implements EditablePiece {
     return HelpFile.getReferenceManualPage("ActionButton.htm");
   }
 
+  // Implement Loopable
+  public String getComponentName() {
+    return Decorator.getOutermost(this).getLocalizedName();
+  }
+
+  public String getComponentTypeName() {
+    return getDescription();
+  }
+  
   public PieceEditor getEditor() {
     return new Ed(this);
   }
@@ -243,9 +256,17 @@ public class ActionButton extends Decorator implements EditablePiece {
             // Save state prior to command
             p.setProperty(Properties.SNAPSHOT,
               PieceCloner.getInstance().clonePiece(p));
-            
-            Command command = p.keyEvent(action.stroke.getKeyStroke());
-            GameModule.getGameModule().sendAndLog(command);
+            try {
+              RecursionLimiter.startExecution(action);
+              Command command = p.keyEvent(action.stroke.getKeyStroke());
+              GameModule.getGameModule().sendAndLog(command);
+            }
+            catch (RecursionLimitException e) {
+              RecursionLimiter.infiniteLoop(e);
+            }
+            finally {
+              RecursionLimiter.endExecution();
+            }
           }
         }
       }

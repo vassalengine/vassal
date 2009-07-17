@@ -112,8 +112,10 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   protected KeyCommand[] myGetKeyCommands() {
     if (command.length() > 0 && key != null) {
-      return new KeyCommand[] { new KeyCommand(command, key, Decorator
-          .getOutermost(this), matchesFilter()) };
+      final KeyCommand c =  new KeyCommand(command, key, Decorator
+          .getOutermost(this), matchesFilter());
+      c.setEnabled(getMap() != null);
+      return new KeyCommand[] { c };
     }
     else {
       return new KeyCommand[0];
@@ -190,7 +192,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     // 4. Handle non-looping case
     if (!loop) {      
       try {
-        doLoop(c);
+        doLoopOnce(c);
       }
       catch (RecursionLimitException e) {
         RecursionLimiter.infiniteLoop(e);
@@ -229,7 +231,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
       // loop Exception to be thrown after the post-loop code
       // to ensure post-loop key is executed.
       try {
-        doLoop(c);
+        doLoopOnce(c);
       }
       catch (RecursionLimitException ex) {
         loopException = ex;
@@ -292,10 +294,10 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     return super.getLocalizedProperty(key);
   }
 
-  protected void doLoop(Command c) throws RecursionLimitException {
+  protected void doLoopOnce(Command c) throws RecursionLimitException {
     try {
       RecursionLimiter.startExecution(this);
-      for (int i = 0; i < actionKeys.length; i++) {
+      for (int i = 0; i < actionKeys.length && getMap() != null; i++) {
         c.append(outer.keyEvent(actionKeys[i].getKeyStroke()));
       }
     }
@@ -305,7 +307,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
   }
 
   protected void executeKey(Command c, NamedKeyStroke key) {
-    if (key.isNull()) {
+    if (key.isNull() || getMap() == null) {
       return;
     }
 
