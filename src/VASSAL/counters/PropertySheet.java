@@ -35,6 +35,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -69,12 +71,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import javax.swing.text.JTextComponent;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
+import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
+import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
 
@@ -88,7 +93,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   // properties
   protected String menuName;
-  protected char launchKey;
+  protected NamedKeyStroke launchKeyStroke;
   protected KeyCommand launch;
   protected Color backgroundColor;
   protected String m_definition;
@@ -167,14 +172,26 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     m_definition = st.nextToken();
     menuName = st.nextToken();
-    launchKey = st.nextChar('\0');
+    final String launchKeyToken = st.nextToken("");
     commitStyle = st.nextInt(COMMIT_DEFAULT);
     String red = st.hasMoreTokens() ? st.nextToken() : "";
     String green = st.hasMoreTokens() ? st.nextToken() : "";
     String blue = st.hasMoreTokens() ? st.nextToken() : "";
-
+    final String launchKeyStrokeToken = st.nextToken("");
+    
     backgroundColor = red.equals("") ? null : new Color(atoi(red), atoi(green), atoi(blue));
     frame = null;
+    
+    // Handle conversion from old character only key
+    if (launchKeyStrokeToken.length() > 0) {
+      launchKeyStroke = NamedHotKeyConfigurer.decode(launchKeyStrokeToken);
+    }
+    else if (launchKeyToken.length() > 0) {
+      launchKeyStroke = new NamedKeyStroke(launchKeyToken.charAt(0), InputEvent.CTRL_MASK);
+    }
+    else {
+      launchKeyStroke = new NamedKeyStroke('P', InputEvent.CTRL_MASK);
+    }
   }
 
   public void draw(java.awt.Graphics g, int x, int y, java.awt.Component obs, double zoom) {
@@ -211,8 +228,8 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     String blue = backgroundColor == null ? "" : Integer.toString(backgroundColor.getBlue());
     String commit = Integer.toString(commitStyle);
 
-    se.append(m_definition).append(menuName).append(launchKey).append(commit).
-        append(red).append(green).append(blue);
+    se.append(m_definition).append(menuName).append("").append(commit).
+        append(red).append(green).append(blue).append(launchKeyStroke);
 
 
     return ID + se.getValue();
@@ -220,7 +237,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
   protected KeyCommand[] myGetKeyCommands() {
     if (launch == null) {
-      launch = new KeyCommand(menuName, KeyStroke.getKeyStroke(launchKey, java.awt.event.InputEvent.CTRL_MASK), Decorator.getOutermost(this), this);
+      launch = new KeyCommand(menuName, launchKeyStroke, Decorator.getOutermost(this), this);
     }
     return new KeyCommand[]{launch};
   }
@@ -599,7 +616,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       c.anchor = GridBagConstraints.WEST;
     }
 
-    public JTextField addKeystrokeCtrl(char value) {
+    public NamedHotKeyConfigurer addKeyStrokeConfig(NamedKeyStroke value) {
       ++c.gridy;
       c.gridx = 0;
       c.weightx = 0.0;
@@ -607,15 +624,11 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       add(new JLabel("Keystroke:"), c);
 
       ++c.gridx;
-      JTextField field = new JTextField(Character.toString(value));
-      Dimension minSize = field.getMinimumSize();
-      minSize.width = 30;
-      field.setMinimumSize(minSize);
-      field.setPreferredSize(minSize);
+      final NamedHotKeyConfigurer config = new NamedHotKeyConfigurer(null, "", value);
+      final Component field = config.getControls();
       add(field, c);
-      field.setSize(minSize);
 
-      return field;
+      return config;
     }
 
     public JTextField addStringCtrl(String name, String value) {
@@ -868,7 +881,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
 
     private PropertyPanel m_panel;
     private JTextField menuNameCtrl;
-    private JTextField keystrokeCtrl;
+    private NamedHotKeyConfigurer keyStrokeConfig;
     private JButton colorCtrl;
     private JTable propertyTable;
     private JComboBox commitCtrl;
@@ -879,7 +892,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     public Ed(PropertySheet propertySheet) {
       m_panel = new PropertyPanel();
       menuNameCtrl = m_panel.addStringCtrl("Menu Text:", propertySheet.menuName);
-      keystrokeCtrl = m_panel.addKeystrokeCtrl(propertySheet.launchKey);
+      keyStrokeConfig = m_panel.addKeyStrokeConfig(propertySheet.launchKeyStroke);
       commitCtrl = m_panel.addComboBox("Commit changes on:", COMMIT_VALUES, propertySheet.commitStyle);
       colorCtrl = m_panel.addColorCtrl("Background Color:", propertySheet.backgroundColor);
       DefaultTableModel dataModel = new DefaultTableModel(getTableData(propertySheet.m_definition), COLUMN_NAMES);
@@ -958,9 +971,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       String definitionString = defEncoder.getValue();
       typeEncoder.append(definitionString == null ? "" : definitionString).
           append(menuNameCtrl.getText()).
-          append(keystrokeCtrl.getText()).
+          append("").
           append(Integer.toString(commitCtrl.getSelectedIndex())).
-          append(red).append(green).append(blue);
+          append(red).append(green).append(blue).append(keyStrokeConfig.getValueString());
 
       return ID + typeEncoder.getValue();
     }
