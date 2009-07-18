@@ -236,9 +236,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
   }
 
   protected KeyCommand[] myGetKeyCommands() {
-    if (launch == null) {
-      launch = new KeyCommand(menuName, launchKeyStroke, Decorator.getOutermost(this), this);
-    }
+    launch = new KeyCommand(menuName, launchKeyStroke, Decorator.getOutermost(this), this);    
     return new KeyCommand[]{launch};
   }
 
