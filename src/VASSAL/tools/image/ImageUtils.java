@@ -223,7 +223,10 @@ public class ImageUtils {
       }
 
       final Rectangle sbox = transform(getBounds(src), scale, 0.0);
-      return GeneralFilter.zoom(sbox, src, scale > 1.0 ? upscale : downscale);
+      final BufferedImage dst =
+        GeneralFilter.zoom(sbox, src, scale > 1.0 ? upscale : downscale);
+
+      return toCompatibleImage(dst); 
     }
     else {
       // do standard scaling
