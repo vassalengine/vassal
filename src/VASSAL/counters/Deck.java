@@ -91,7 +91,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   public static final String ALWAYS = "Always";
   public static final String NEVER = "Never";
   public static final String USE_MENU = "Via right-click Menu";
-  protected static final String NO_USER = "nobody"; // Dummy user ID for turning
+  public static final String NO_USER = "nobody"; // Dummy user ID for turning
   protected static StackMetrics deckStackMetrics = new StackMetrics(false,2,2,2,2);
   // cards face down
 
