@@ -779,7 +779,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /**
    * Restart logging and return any outstanding commands
    */
-  public Command unPauseLogging() {
+  public Command resumeLogging() {
     Command c = null;
     synchronized(loggingLock) {
       c = pausedCommands == null ? new NullCommand() : pausedCommands;
