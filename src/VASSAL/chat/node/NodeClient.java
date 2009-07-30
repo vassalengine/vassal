@@ -260,10 +260,13 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
   public void doInvite(String playerId, String roomName) {
     for (Room room : getAvailableRooms()) {
       if (room.getName().equals(roomName)) {
-        if (room instanceof NodeRoom && ((NodeRoom) room).getOwner().equals(playerId)) {
-          setRoom(room, playerId);
-          return;
-        }      
+        if (room instanceof NodeRoom) {
+          final String owner = ((NodeRoom) room).getOwner();
+          if (owner != null && owner.equals(playerId)) {
+            setRoom(room, playerId);
+            return;
+          }
+        }
       }
     }
   }
