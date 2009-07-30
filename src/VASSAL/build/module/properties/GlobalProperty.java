@@ -256,7 +256,13 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
     }
 
     public String getTargetName() {
-      return target == null ? "" : target.getPropertyId();
+      if (target == null) {
+        return "";
+      }
+      else {
+        final String targetName = target.getPropertyId();
+        return targetName == null ? "" : targetName;
+      }
     }
 
     protected void executeCommand() {
