@@ -52,6 +52,25 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
   private ObscurableOptions() {
   }
 
+  /**
+   * Create a private set of ObscurableOptions. If no setting are passed,
+   * use the current global settings.
+   * @param settings encoded settings
+   */
+  public ObscurableOptions(String settings) {
+    this();
+    if (settings != null && settings.length() > 0) {
+      decodeOptions(settings);
+    }
+    else {
+      decodeOptions(getInstance().encodeOptions());
+    }
+  }
+  
+  /**
+   * Return the current global ObscurableOptions
+   * @return global Options
+   */
   public static ObscurableOptions getInstance() {
     if (instance == null) {
       instance = new ObscurableOptions();
@@ -149,6 +168,49 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
     }
     else {
       return null;
+    }
+  }
+  
+  /**
+   * Encode the current ObscurableOptions as a String
+   * @return encoded options
+   */
+  public String encodeOptions() {
+    final SequenceEncoder se = new SequenceEncoder('|');
+    if (override == null) {
+      se.append("");
+    }
+    else {
+      se.append(override.booleanValue());
+    }
+    se.append(allowed.size());
+    for (String who : allowed) {
+      se.append(who);
+    }
+    
+    return se.getValue();
+  }
+  
+  /**
+   * Set the current options from an encoded string
+   * @param s encoded string
+   */
+  public void decodeOptions(String s) {
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, '|');
+    String setting = sd.nextToken("");
+    if (setting.length()==0) {
+      override = null;
+    }
+    else {
+      override = setting.equals("true");
+    }
+    final int count = sd.nextInt(0);
+    allowed.clear();
+    for (int i = 0; i < count; i++) {
+      setting = sd.nextToken("");
+      if (setting.length() > 0) {
+        allowed.add(setting);
+      }
     }
   }
 
