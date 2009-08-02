@@ -105,6 +105,11 @@ public interface Properties {
    */
   public static final String RESTRICTED = "Restricted";
 
+  /**
+   * Return Boolean.TRUE if this piece has movement restricted by a Restricted Access trait   */
+  public static final String RESTRICTED_MOVEMENT = "RestrictedMovement";
+
+  
   /** Return Boolean.TRUE if this piece has been moved */
   public static final String MOVED = "Moved";
 

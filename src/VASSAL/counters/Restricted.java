@@ -55,6 +55,7 @@ public class Restricted extends Decorator implements EditablePiece {
   private String[] side;
   private boolean restrictByPlayer;
   private String owningPlayer="";
+  private boolean restrictMovement = true;
   private static PlayerRoster.SideChangeListener handleRetirement;
 
   public Restricted() {
@@ -83,6 +84,7 @@ public class Restricted extends Decorator implements EditablePiece {
     SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type,';');
     side = st.nextStringArray(0);
     restrictByPlayer = st.nextBoolean(false);
+    restrictMovement = st.nextBoolean(true);
   }
 
   public Shape getShape() {
@@ -159,6 +161,9 @@ public class Restricted extends Decorator implements EditablePiece {
     if (Properties.RESTRICTED.equals(key)) {
       return Boolean.valueOf(isRestricted());
     }
+    else if (Properties.RESTRICTED_MOVEMENT.equals(key)) {
+      return Boolean.valueOf(isRestricted() && restrictMovement);
+    }
     else {
       return super.getLocalizedProperty(key);
     }    
@@ -167,6 +172,9 @@ public class Restricted extends Decorator implements EditablePiece {
   public Object getProperty(Object key) {
     if (Properties.RESTRICTED.equals(key)) {
       return Boolean.valueOf(isRestricted());
+    }
+    else if (Properties.RESTRICTED_MOVEMENT.equals(key)) {
+      return Boolean.valueOf(isRestricted() && restrictMovement);
     }
     else {
       return super.getProperty(key);
@@ -178,7 +186,7 @@ public class Restricted extends Decorator implements EditablePiece {
   }
 
   public String myGetType() {
-    return ID + new SequenceEncoder(';').append(side).append(restrictByPlayer).getValue();
+    return ID + new SequenceEncoder(';').append(side).append(restrictByPlayer).append(restrictMovement).getValue();
   }
 
   public Command myKeyEvent(KeyStroke stroke) {
@@ -205,15 +213,19 @@ public class Restricted extends Decorator implements EditablePiece {
   public static class Ed implements PieceEditor {
     private BooleanConfigurer byPlayer;
     private StringArrayConfigurer config;
+    private BooleanConfigurer movementConfig;
     private Box box;
 
     public Ed(Restricted r) {
-      byPlayer = new BooleanConfigurer(null,"Also belongs to initially-placing player",r.restrictByPlayer);
+      byPlayer = new BooleanConfigurer(null,"Also belongs to initially-placing player?",r.restrictByPlayer);
       config = new StringArrayConfigurer(null, "Belongs to side", r.side);
+      movementConfig = new BooleanConfigurer(null, "Prevent non-owning players from moving piece?", r.restrictMovement);
       box = Box.createVerticalBox();
-      ((JComponent)byPlayer.getControls()).setAlignmentX(Box.RIGHT_ALIGNMENT);
+      ((JComponent)byPlayer.getControls()).setAlignmentX(Box.LEFT_ALIGNMENT);
+      ((JComponent)movementConfig.getControls()).setAlignmentX(Box.LEFT_ALIGNMENT);
       box.add(config.getControls());
       box.add(byPlayer.getControls());
+      box.add(movementConfig.getControls());
     }
 
     public Component getControls() {
@@ -225,7 +237,7 @@ public class Restricted extends Decorator implements EditablePiece {
     }
 
     public String getType() {
-      return ID + new SequenceEncoder(';').append(config.getValueString()).append(byPlayer.booleanValue()).getValue();
+      return ID + new SequenceEncoder(';').append(config.getValueString()).append(byPlayer.booleanValue()).append(movementConfig.booleanValue()).getValue();
     }
   }
   /**
