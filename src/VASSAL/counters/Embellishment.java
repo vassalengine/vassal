@@ -465,7 +465,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
     final int i = value - 1;
 
-    if (imagePainter[i] != null) {
+    if (i < imagePainter.length && imagePainter[i] != null) {
       final Rectangle r = getCurrentImageBounds();
       imagePainter[i].draw(g, x + (int)(zoom*r.x), y + (int)(zoom*r.y), zoom, obs);
     }
@@ -726,7 +726,8 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     if (value > 0) {
       final int i = value - 1;
 
-      if (i > size.length) {  // Occurs when adding a layer with a name, but no image
+      if (i >= size.length) { 
+        // Occurs when adding a layer with a name, but no image
         return new Rectangle();
       }
       
