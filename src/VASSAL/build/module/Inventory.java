@@ -84,7 +84,9 @@ import VASSAL.configure.PropertyExpression;
 import VASSAL.configure.StringArrayConfigurer;
 import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.configure.VisibilityCondition;
+import VASSAL.counters.BasicPiece;
 import VASSAL.counters.BoundsTracker;
+import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.PieceFilter;
@@ -299,7 +301,7 @@ public class Inventory extends AbstractConfigurable
             r.y = (int) Math.round(r.y * pieceZoom);
             r.width = (int) Math.round(r.width * pieceZoom);
             r.height = (int) Math.round(r.height * pieceZoom);
-            setIcon(new Icon() {
+            setIcon(drawPieces ? new Icon() {
 
               public int getIconHeight() {
                 return r.height;
@@ -313,7 +315,7 @@ public class Inventory extends AbstractConfigurable
                 piece.draw(g, -r.x, -r.y, c, pieceZoom);
               }
 
-            });
+            } : null);
           }
         }
         return this;
@@ -446,21 +448,23 @@ public class Inventory extends AbstractConfigurable
       final ArrayList<String> groups = new ArrayList<String>();
       final GamePiece p = pi.nextPiece();
 
-      for (int i = 0; i < groupBy.length; i++) {
-        if (groupBy[i].length() > 0) {
-          String prop = (String) p.getProperty(groupBy[i]);
-          if (prop != null)
-            groups.add(prop);
+      if (p instanceof Decorator || p instanceof BasicPiece) {
+        for (int i = 0; i < groupBy.length; i++) {
+          if (groupBy[i].length() > 0) {
+            String prop = (String) p.getProperty(groupBy[i]);
+            if (prop != null)
+              groups.add(prop);
+          }
         }
-      }
 
-      int count = 1;
-      if (nonLeafFormat.length() > 0)
+        int count = 1;
+        if (nonLeafFormat.length() > 0)
         count = getTotalValue(p);
 
-      final Counter c = new Counter(p, groups, count, pieceFormat, sortFormat);
-      // Store
-      results.insert(c);
+        final Counter c = new Counter(p, groups, count, pieceFormat, sortFormat);
+        // Store
+        results.insert(c);
+      }
     }
   }
 
@@ -956,6 +960,7 @@ public class Inventory extends AbstractConfigurable
     // The gamepiece is stored here to allow dynamic changes of name, location
     // and so forth
     protected GamePiece piece;
+    protected GamePiece source;
     protected List<String> groups;
     protected int value;
     // Only used when no piece is defined
@@ -965,8 +970,13 @@ public class Inventory extends AbstractConfigurable
     protected CounterNode node;
 
     public Counter(String name) {
+      this(name, null);
+    }
+    
+    public Counter(String name, GamePiece p) {
       this(null, null, 0, nonLeafFormat, sortFormat);
       this.localName = name;
+      this.source = p;
     }
 
     public Counter(GamePiece piece, List<String> groups, int value,
@@ -1051,6 +1061,9 @@ public class Inventory extends AbstractConfigurable
       }
       else if (piece != null) {
         value = piece.getProperty(key);
+      }
+      else if (source != null) {
+        value = source.getProperty(key);
       }
       return value;
     }
@@ -1476,7 +1489,7 @@ public class Inventory extends AbstractConfigurable
         hash.append(path[j]);
         if (inventory.get(hash.toString()) == null) {
           newNode = new CounterNode(
-            path[j], new Counter(path[j]), insertNode.getLevel() + 1);
+            path[j], new Counter(path[j], counter.getPiece()), insertNode.getLevel() + 1);
           inventory.put(hash.toString(), newNode);
           insertNode.addChild(newNode, sort);
         }
