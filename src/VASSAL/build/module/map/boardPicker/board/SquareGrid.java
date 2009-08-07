@@ -158,7 +158,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     	Resources.getString("Editor.RectangleGrid.range_method"), //$NON-NLS-1$
     	Resources.getString("Editor.Grid.edges"), //$NON-NLS-1$
     	Resources.getString("Editor.RectangleGrid.corners"), //$NON-NLS-1$
-    	Resources.getString("Editor.Grid.grid"), //$NON-NLS-1$
+    	Resources.getString("Editor.Grid.show_grid"), //$NON-NLS-1$
     	Resources.getString("Editor.Grid.center_dots"), //$NON-NLS-1$
     	Resources.getString(Resources.COLOR_LABEL),
     };
