@@ -22,14 +22,20 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+
 import javax.swing.KeyStroke;
+
 import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.properties.PropertySource;
 import VASSAL.command.Command;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.RecursionLimiter.Loopable;
 
 /**
  * This trait is a placeholder for a pre-defined series of traits specified in a
@@ -41,7 +47,7 @@ import VASSAL.tools.SequenceEncoder;
  * module.
  * 
  */
-public class UsePrototype extends Decorator implements EditablePiece {
+public class UsePrototype extends Decorator implements EditablePiece, Loopable {
   public static final String ID = "prototype;";
   private String prototypeName;
   private String lastCachedPrototype;
@@ -110,20 +116,35 @@ public class UsePrototype extends Decorator implements EditablePiece {
   }
 
   protected void buildPrototype() {
-    PrototypeDefinition def = PrototypesContainer.getPrototype(prototypeName);
+    final PrototypeDefinition def =
+      PrototypesContainer.getPrototype(prototypeName);
     if (def != null) {
-      GamePiece expandedPrototype = def.getPiece(properties);
-      String type = expandedPrototype.getType(); // Check to see if prototype definition has changed
+      final GamePiece expandedPrototype = def.getPiece(properties);
+
+      // Check to see if prototype definition has changed
+      final String type = expandedPrototype.getType();
       if (!type.equals(lastCachedPrototype)) {
         lastCachedPrototype = type;
-        prototype = PieceCloner.getInstance().clonePiece(expandedPrototype);
-        Decorator outer = (Decorator) Decorator.getInnermost(prototype).getProperty(Properties.OUTER);
-        if (outer != null) { // Will be null for an empty prototype
-          outer.setInner(piece);
-          prototype.setProperty(Properties.OUTER, this);
+        try {
+          RecursionLimiter.startExecution(this);
+
+          prototype = PieceCloner.getInstance().clonePiece(expandedPrototype);
+          final Decorator outer = (Decorator)
+            Decorator.getInnermost(prototype).getProperty(Properties.OUTER);
+          if (outer != null) { // Will be null for an empty prototype
+            outer.setInner(piece);
+            prototype.setProperty(Properties.OUTER, this);
+          }
+          else {
+            prototype = null;
+          }
         }
-        else {
+        catch (RecursionLimitException e) {
+          RecursionLimiter.infiniteLoop(e);
           prototype = null;
+        }
+        finally {
+          RecursionLimiter.endExecution();
         }
       }
     }
@@ -204,5 +225,14 @@ public class UsePrototype extends Decorator implements EditablePiece {
     public String getType() {
       return ID + nameConfig.getValueString();
     }
+  }
+  
+  // Implement Loopable
+  public String getComponentName() {
+    return getDescription();
+  }
+
+  public String getComponentTypeName() {
+    return "Prototype";
   }
 }
