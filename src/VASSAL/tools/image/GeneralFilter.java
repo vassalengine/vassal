@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007 by Joel Uckelman
+ * Copyright (c) 2007-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -34,20 +34,25 @@ import javax.imageio.ImageIO;
    ruin our hard-won performance.
   
    Profiling information:
-     java -Xmx1024M GeneralFilter cc.png 0.406
+     java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilter cc.png 0.406 0
+     java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilter cc.png 0.406 1
+     java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilter cc.png 0.406 2
   
    cc.png is a 3100x2500 32-bit image.
-  
-   ~32000         original version, not comitted
-     1261   r32   precalculate xcontrib, ycontrib; large work[]
-     1171   r33   precalculate ycontrib only, single-column work[]
-      848   r34   check for constant-color areas
-      727   r41   double -> float
-      678   r45   copy scr part from src to Raster (not BufferedImage)
-      659   r55   let zoom() create destination BufferedImage
-      777   r65   downsampling narrow, short images fixed; upsampling fixed
-      699   r2494 split cases for with/without alpha channel
-      518   r5516 removed useless checks, removed useless field from CList
+ 
+   RGBA PRE RGB
+  32000               original version, not comitted
+   1261         r32   precalculate xcontrib, ycontrib; large work[]
+   1171         r33   precalculate ycontrib only, single-column work[]
+    848         r34   check for constant-color areas
+    727         r41   double -> float
+    678         r45   copy scr part from src to Raster (not BufferedImage)
+    659         r55   let zoom() create destination BufferedImage
+    777         r65   downsampling narrow, short images fixed; upsampling fixed
+    699         r2494 split cases for with/without alpha channel
+    518         r5516 removed useless checks, removed useless CList field
+    529 532 466 r5894 added case for premultiplied ARGB
+    525 597 468 r5896 correctly premultiply, scale, unpremultiply for ARGB
 */  
 
 /** 
@@ -209,18 +214,16 @@ public final class GeneralFilter {
   /**
    * Filters the entire source image.
    *
-   * <p>This is a convenience function which calls
+   * This is a convenience function which calls
    * {@link zoom(WritableRaster, Rectangle, BufferedImage, Filter)},
    * setting the destination rectangle as the bounds of the destination
-   * tile.</p>
+   * tile.
    * 
-   * <p>Note that <code>src</code> <em>must</em> be be 
-   * <code>TYPE_INT_ARGB</code> or <code>TYPE_INT_RGB</code>, or it will
-   * fail catastrophically.</p>
-   *
    * @param dst the destination rectangle
    * @param src the soure image
    * @param filter the filter to apply
+   * @throws ClassCastException if <code>src</code> does not store its data
+   * in a {@link DataBufferInt}
    */ 
   public static BufferedImage zoom(
     Rectangle dst, BufferedImage src, final Filter filter) {
@@ -228,22 +231,25 @@ public final class GeneralFilter {
     final WritableRaster dstR =
       src.getColorModel().createCompatibleWritableRaster(dst.width, dst.height);
     zoom(dstR, dstR.getBounds(), src, filter);
+
     // FIXME: check whether this affects hardware acceleration
-    return new BufferedImage(src.getColorModel(), dstR, false, null);
+    return new BufferedImage(
+      src.getColorModel(),
+      dstR,
+      src.isAlphaPremultiplied(),
+      null
+    );
   }
 
   /**
    * Filters a portion of the source image.
    *
-   * Note that <code>dstR</code> <em>must</em> contain a
-   * <code>DataBufferInt</code> and <code>srcI</code> <em>must</em>
-   * be <code>TYPE_INT_ARGB</code> or <code>TYPE_INT_RGB</code>, or it will
-   * fail catastrophically.
-   *
    * @param dstR the destination tile to calculate
    * @param dst the bounds of the whole destination image
    * @param srcI the source image
    * @param filter the filter to apply
+   * @throws ClassCastException if <code>srcI</code> does not store its data
+   * in a {@link DataBufferInt}
    */
   public static void zoom(WritableRaster dstR,
                           Rectangle dst,
@@ -292,15 +298,64 @@ public final class GeneralFilter {
 
     // apply the filter
     if (srcI.getTransparency() == BufferedImage.OPAQUE) {
+      // handle TYPE_INT_RGB, TYPE_INT_BGR
       for (int dx = 0; dx < dw; ++dx) {
         apply_horizontal_opaque(sh, xcontrib[dx], src_data, sw, work);
         apply_vertical_opaque(dh, ycontrib, work, dst_data, dx, dw);
       }
     }
-    else {
+    else if (srcI.isAlphaPremultiplied()) {
+      // handle TYPE_INT_ARGB_PRE 
       for (int dx = 0; dx < dw; ++dx) {
         apply_horizontal(sh, xcontrib[dx], src_data, sw, work);
         apply_vertical(dh, ycontrib, work, dst_data, dx, dw);
+      }
+    }
+    else {
+      // handle TYPE_INT_ARGB
+
+      // premultiply (copy of) source data
+      final int pre_src_data[] = new int[src_data.length];
+      for (int i = 0; i < src_data.length; ++i) {
+        final int unpre = src_data[i];
+        final int a = (unpre >> 24) & 0xff;
+
+        if (a == 255) {
+          pre_src_data[i] = unpre;
+        }
+        else {
+          final float na = a / 255.0f;
+
+          pre_src_data[i] =
+            a << 24 |
+            ((int)(((unpre >> 16) & 0xff) * na + 0.5f)) << 16 |
+            ((int)(((unpre >>  8) & 0xff) * na + 0.5f)) <<  8 |
+            ((int)(((unpre      ) & 0xff) * na + 0.5f));
+        }
+      }
+
+      for (int dx = 0; dx < dw; ++dx) {
+        apply_horizontal(sh, xcontrib[dx], pre_src_data, sw, work);
+        apply_vertical(dh, ycontrib, work, dst_data, dx, dw);
+      }
+
+      // unpremultiply destination data
+      for (int i = 0; i < dst_data.length; ++i) {
+        final int pre = dst_data[i];        
+        final int a = (pre >> 24) & 0xff;
+
+        if (a == 255) {
+          continue;
+        }
+        else {
+          final float inv_na = 255.0f / a;
+
+          dst_data[i] =
+            a << 24 |
+            ((int)(((pre >> 16) & 0xff) * inv_na + 0.5f)) << 16 |
+            ((int)(((pre >>  8) & 0xff) * inv_na + 0.5f)) <<  8 |
+            ((int)(((pre      ) & 0xff) * inv_na + 0.5f));
+        }
       }
     }
   }
@@ -383,7 +438,7 @@ public final class GeneralFilter {
           s_a += ((sd >> 24) & 0xff) * w;
           s_r += ((sd >> 16) & 0xff) * w;
           s_g += ((sd >>  8) & 0xff) * w;
-          s_b += ( sd        & 0xff) * w;
+          s_b += ((sd      ) & 0xff) * w;
         }
 
         // Ugly, but fast.        
@@ -433,7 +488,7 @@ public final class GeneralFilter {
 
           s_r += ((sd >> 16) & 0xff) * w;
           s_g += ((sd >>  8) & 0xff) * w;
-          s_b += ( sd        & 0xff) * w;
+          s_b += ((sd      ) & 0xff) * w;
         }
 
         // Ugly, but fast.        
@@ -485,19 +540,33 @@ public final class GeneralFilter {
           s_a += ((wd >> 24) & 0xff) * w;
           s_r += ((wd >> 16) & 0xff) * w;
           s_g += ((wd >>  8) & 0xff) * w;
-          s_b += ( wd        & 0xff) * w;
+          s_b += ((wd      ) & 0xff) * w;
         }
+
+        // working in premultiplied domain, must clamp R,G,B to A
+        final int a = s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f);
 
         // Ugly, but fast.
         dst[dx + i*dw] = 
-         (s_a > 255 ? 255 : s_a < 0 ? 0 : (int)(s_a+0.5f)) << 24 |
-         (s_r > 255 ? 255 : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
-         (s_g > 255 ? 255 : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
-         (s_b > 255 ? 255 : s_b < 0 ? 0 : (int)(s_b+0.5f));
+         a << 24 |
+         (s_r > a ? a : s_r < 0 ? 0 : (int)(s_r+0.5f)) << 16 |
+         (s_g > a ? a : s_g < 0 ? 0 : (int)(s_g+0.5f)) <<  8 |
+         (s_b > a ? a : s_b < 0 ? 0 : (int)(s_b+0.5f));
       }
       else {
         // If there's no color change from 0 to max, maintain that.
-        dst[dx + i*dw] = pel; 
+
+        // working in premultiplied domain, must clamp R,G,B to A
+        final int a = (pel >> 24) & 0xff;
+        final int r = (pel >> 16) & 0xff;
+        final int g = (pel >>  8) & 0xff;
+        final int b = (pel      ) & 0xff;
+
+        dst[dx + i*dw] = 
+         a << 24 |
+         (r > a ? a : r) << 16 |
+         (g > a ? a : g) <<  8 |
+         (b > a ? a : b);
       }
     }
   }
@@ -536,7 +605,7 @@ public final class GeneralFilter {
 
           s_r += ((wd >> 16) & 0xff) * w;
           s_g += ((wd >>  8) & 0xff) * w;
-          s_b += ( wd        & 0xff) * w;
+          s_b += ((wd      ) & 0xff) * w;
         }
 
         // Ugly, but fast.
@@ -560,50 +629,22 @@ public final class GeneralFilter {
     final int dw = (int) (src.getWidth() * scale);
     final int dh = (int) (src.getHeight() * scale);
 
-    if (src.getType() != BufferedImage.TYPE_INT_ARGB &&
-        src.getType() != BufferedImage.TYPE_INT_RGB) {
-      String type = null;
-      switch (src.getType()) {
-      case BufferedImage.TYPE_3BYTE_BGR:
-        type = "TYPE_3BYTE_BGR"; break;
-      case BufferedImage.TYPE_4BYTE_ABGR:
-        type = "TYPE_4BYTE_ABGR"; break;
-      case BufferedImage.TYPE_4BYTE_ABGR_PRE:
-        type = "TYPE_4BYTE_ABGR_PRE"; break;
-      case BufferedImage.TYPE_BYTE_BINARY:
-        type = "TYPE_BYTE_BINARY"; break;
-      case BufferedImage.TYPE_BYTE_GRAY:
-        type = "TYPE_BYTE_GRAY"; break;
-      case BufferedImage.TYPE_BYTE_INDEXED:
-        type = "TYPE_BYTE_INDEXED"; break;
-      case BufferedImage.TYPE_CUSTOM:
-        type = "TYPE_CUSTOM"; break;
-      case BufferedImage.TYPE_INT_ARGB_PRE:
-        type = "TYPE_INT_ARGB_PRE"; break;
-      case BufferedImage.TYPE_INT_BGR:
-        type = "TYPE_INT_BGR"; break;
-      case BufferedImage.TYPE_INT_RGB:
-        type = "TYPE_INT_RGB"; break;
-      case BufferedImage.TYPE_USHORT_555_RGB:
-        type = "TYPE_USHORT_555_RGB"; break;
-      case BufferedImage.TYPE_USHORT_565_RGB:
-        type = "TYPE_USHORT_565_RGB"; break;
-      case BufferedImage.TYPE_USHORT_GRAY:
-        type = "TYPE_USHORT_GRAY"; break;
-      }
-
-      System.out.println("src is a " + type + ", converting...");
- 
-      // convert to TYPE_INT_ARGB if not already
-      final BufferedImage tmp = new BufferedImage(src.getWidth(),
-                                                  src.getHeight(),
-                                                  BufferedImage.TYPE_INT_ARGB);
-      Graphics2D g = tmp.createGraphics();
-      g.drawImage(src, 0, 0, null);
-      g.dispose();
- 
-      src = tmp;
+    int type;
+    switch (Integer.parseInt(args[2])) {
+    case 0: type = BufferedImage.TYPE_INT_RGB; break;
+    case 1: type = BufferedImage.TYPE_INT_ARGB; break;
+    case 2: type = BufferedImage.TYPE_INT_ARGB_PRE; break;
+    default: throw new IllegalArgumentException();
     }
+
+    final BufferedImage tmp =
+      new BufferedImage(src.getWidth(), src.getHeight(), type);
+
+    final Graphics2D g = tmp.createGraphics();
+    g.drawImage(src, 0, 0, null);
+    g.dispose();
+ 
+    src = tmp;
 
     BufferedImage dst = null;
 

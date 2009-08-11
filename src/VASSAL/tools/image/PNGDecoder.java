@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman
+ * Copyright (c) 2008-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,6 +20,7 @@
 package VASSAL.tools.image;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
@@ -49,9 +50,11 @@ class PNGDecoder {
   static final int tRNS = 0x74524e53;
   static final int zTXt = 0x7a545874;
 
+  static final long sig = 0x89504e470d0a1a0aL;
+
   public static boolean decodeSignature(DataInputStream in) throws IOException {
     // 5.2
-    return in.readLong() == 0x89504e470d0a1a0aL;
+    return in.readLong() == sig;
   }
 
   public static Chunk decodeChunk(DataInputStream in) throws IOException {
@@ -60,8 +63,7 @@ class PNGDecoder {
     if (length < 0)
       throw new IOException("chunk length out of range");
 
-    final byte[] type = new byte[4];
-    in.readFully(type);
+    final int type = in.readInt();
     
     final byte[] data = new byte[length];
     in.readFully(data);
@@ -76,17 +78,18 @@ class PNGDecoder {
       throw new IOException("corrupted " + type + " chunk");
 */
 
-    final int t = (type[0] << 24) | (type[1] << 16) | (type[2] << 8) | type[3];
-    return new Chunk(t, data);
+    return new Chunk(type, data, crc);
   }
 
   public static class Chunk {
     public final int type;
     public final byte[] data;
+    public final long crc;
 
-    private Chunk(int type, byte[] data) {
+    private Chunk(int type, byte[] data, long crc) {
       this.type = type;
       this.data = data;
+      this.crc  = crc;
     }
   }
 }

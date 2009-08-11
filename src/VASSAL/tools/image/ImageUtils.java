@@ -24,27 +24,22 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
+import java.awt.image.DataBuffer;
+import java.awt.image.DirectColorModel;
 import java.awt.image.PixelGrabber;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.swing.ImageIcon;
 
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
-import VASSAL.build.BadDataReport;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.memmap.MappedBufferedImage;
 import VASSAL.tools.imageop.Op;
@@ -173,7 +168,9 @@ public class ImageUtils {
 
       // keep opaque destination for orthogonal rotation of an opaque source
       final BufferedImage trans = createCompatibleImage(
-        tbox.width, tbox.height, src.getTransparency() != BufferedImage.OPAQUE
+        tbox.width,
+        tbox.height,
+        src.getTransparency() != BufferedImage.OPAQUE
       );
 
       final AffineTransform t = new AffineTransform();
@@ -199,11 +196,10 @@ public class ImageUtils {
         final Rectangle rbox = transform(ubox, 1.0, angle);
 
         // keep opaque destination for orthogonal rotation of an opaque source
-        final BufferedImage rot = new BufferedImage(
+        final BufferedImage rot = createCompatibleImage(
           rbox.width,
           rbox.height,
-          src.getTransparency() == BufferedImage.OPAQUE && angle % 90.0 == 0.0 ?
-            BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB
+          src.getTransparency() != BufferedImage.OPAQUE || angle % 90.0 != 0.0
         );
 
 // FIXME: rotation via bilinear interpolation probably decreases quality
@@ -218,15 +214,19 @@ public class ImageUtils {
         g.dispose();
         src = rot;
       }
-      else {
+
+      if (scale != 1.0) {
         src = coerceToIntType(src);
+
+        final Rectangle sbox = transform(getBounds(src), scale, 0.0);
+        final BufferedImage dst =
+          GeneralFilter.zoom(sbox, src, scale > 1.0 ? upscale : downscale);
+
+        return toCompatibleImage(dst);
       }
-
-      final Rectangle sbox = transform(getBounds(src), scale, 0.0);
-      final BufferedImage dst =
-        GeneralFilter.zoom(sbox, src, scale > 1.0 ? upscale : downscale);
-
-      return toCompatibleImage(dst); 
+      else {
+        return src;
+      }
     }
     else {
       // do standard scaling
@@ -260,12 +260,24 @@ public class ImageUtils {
     switch (img.getType()) {
     case BufferedImage.TYPE_INT_RGB:  
     case BufferedImage.TYPE_INT_ARGB:
+    case BufferedImage.TYPE_INT_ARGB_PRE:
+    case BufferedImage.TYPE_INT_BGR:  
       return img;
     case BufferedImage.TYPE_CUSTOM:
-      if (img instanceof MappedBufferedImage) return img;
+      if (img instanceof MappedBufferedImage &&
+          img.getColorModel() instanceof DirectColorModel &&
+          img.getSampleModel().getDataType() == DataBuffer.TYPE_INT) {
+        // This is really an int-type image, but shows up as TYPE_CUSTOM so
+        // that it will work with Java implemenations (e.g., on Mac OS X)
+        // which use many private classes and casting in their graphics
+        // pipelines.
+        return img;
+      }
     default:
       return toType(img, img.getTransparency() == BufferedImage.OPAQUE ?
-        BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
+        BufferedImage.TYPE_INT_RGB : 
+        getCompatibleTranslucentImageType() == BufferedImage.TYPE_INT_ARGB ?
+          BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_ARGB_PRE);
     }
   }
 
@@ -290,75 +302,12 @@ public class ImageUtils {
 
   @Deprecated
   public static Dimension getImageSize(InputStream in) throws IOException {
-    final ImageInputStream stream = new MemoryCacheImageInputStream(in);
-    try {
-      final Iterator<ImageReader> i = ImageIO.getImageReaders(stream);
-      if (!i.hasNext()) throw new UnrecognizedImageTypeException();
-
-      final ImageReader reader = i.next();
-      try {
-        reader.setInput(stream);
-        final Dimension size =
-          new Dimension(reader.getWidth(0), reader.getHeight(0));
-        in.close();
-        return size;
-      }
-      finally {
-        reader.dispose();
-      }
-    }
-    finally {
-      IOUtils.closeQuietly(in);
-    }
+    return getImageSize("", in);
   }
 
   public static Dimension getImageSize(String name, InputStream in)
                                                       throws ImageIOException {
-    try {
-      final ImageInputStream stream = new MemoryCacheImageInputStream(in);
-
-      final Iterator<ImageReader> i = ImageIO.getImageReaders(stream);
-      if (!i.hasNext()) throw new UnrecognizedImageTypeException(name);
-
-      final ImageReader reader = i.next();
-      try {
-        reader.setInput(stream);
-
-        Dimension size = null;
-        try {
-          size = new Dimension(reader.getWidth(0), reader.getHeight(0));
-        }
-        catch (IllegalArgumentException e) {
-          // Note: ImageIO can throw IllegalArgumentExceptions for certain
-          // kinds of broken images, e.g., JPEGs which are in the RGB color
-          // space but have non-RGB color profiles (see Bug 2673589 for an
-          // example of this). This problem is noted in Sun Bug 6404011,
-          //
-          // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6404011
-          //
-          // and supposedly is fixed in 1.6.0 JVMs. Once we move to Java 6,
-          // this will no longer be a problem, and we can remove this catch.
-          //
-          // We catch IllegalArgumentException here in a last-ditch effort
-          // to prevent broken images---which are bad data, not bugs---from
-          // causing an uncaught exception and raising a Bug Dialog.
-          ErrorDialog.dataError(new BadDataReport("Broken image", name));
-          throw (IOException) new IOException().initCause(e);
-        }
-        
-        in.close();
-        return size;
-      }
-      finally {
-        reader.dispose();
-      }
-    }
-    catch (IOException e) {
-      throw new ImageIOException(name, e);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
-    }
+    return ImageLoader.getImageSize(name, in);
   }
 
   /**
@@ -366,66 +315,7 @@ public class ImageUtils {
    */ 
   @Deprecated
   public static BufferedImage getImage(InputStream in) throws IOException {
-    final BufferedImage img = ImageIO.read(new MemoryCacheImageInputStream(in));
-    if (img == null) throw new UnrecognizedImageTypeException();
-    return toCompatibleImage(img);
-  }
-
-  private static final boolean iTXtBug;
-
-  static {
-    final String jvmver = System.getProperty("java.version");
-    iTXtBug = jvmver == null || jvmver.startsWith("1.5.0");
-  }
-
-  public static boolean useImageIO(InputStream in) throws IOException {
-    final DataInputStream din = new DataInputStream(in);
-
-    // Bail immediately if this stream is not a PNG.
-    if (!PNGDecoder.decodeSignature(din)) return true;
-
-    // Numbers in comments after chunk cases here refer to sections in the
-    // PNG standard, found at http://www.w3.org/TR/PNG/
-    PNGDecoder.Chunk ch = PNGDecoder.decodeChunk(din);
-
-    // This is not a PNG if IHDR is not the first chunk.
-    if (ch.type != PNGDecoder.IHDR) return true;
-
-    // Check whether this is an 8-bit-per-channel Truecolor image
-    if (ch.data[8] != 8 || ch.data[9] != 2) {
-      //
-      // ImageIO in Java 1.5 fails to handle iTXt chunks properly, so we
-      // must check whether this is a 1.5 JVM. If so, we cannot use ImageIO
-      // to load this PNG.
-      // 
-      // See Sun Bug 6541476, at
-      // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6541476
-      //
-      return !iTXtBug;
-    }
-
-    // IHDR is required to be first, and tRNS is required to appear before
-    // the first IDAT chunk; therefore, if we find an IDAT we're done.
-    while (true) {
-      ch = PNGDecoder.decodeChunk(din);
-
-/*
-      System.out.println(new char[]{
-        (char)((ch.type >> 24) & 0xff),
-        (char)((ch.type >> 16) & 0xff),
-        (char)((ch.type >> 8) & 0xff),
-        (char)(ch.type & 0xff)
-      });
-*/      
-
-      switch (ch.type) {
-      case PNGDecoder.tRNS:  // 11.3.2
-        return false;      
-      case PNGDecoder.IDAT:  // 12.2.4
-        return true;
-      default:
-      }
-    }
+    return getImage("", in);
   }
 
   public static BufferedImage getImageResource(String name)
@@ -434,115 +324,10 @@ public class ImageUtils {
     if (in == null) throw new ImageNotFoundException(name);
     return getImage(name, in);
   }
-
+ 
   public static BufferedImage getImage(String name, InputStream in)
                                                       throws ImageIOException {
-    // FIXME: At present, ImageIO does not honor the tRNS chunk in 8-bit
-    // color type 2 (RGB) PNGs. This is not a bug per se, as the PNG 
-    // standard the does not require compliant decoders to use ancillary
-    // chunks. However, every other PNG decoder we can find *does* honor
-    // the tRNS chunk for this type of image, and so the appearance for
-    // users is that VASSAL is broken when their 8-bit RGB PNGs don't show
-    // the correct transparency.
-    //
-    // Therefore, we provide a workaround: Check the image metadata to see
-    // whether we have an image which ImageIO will not handle fully, and if
-    // we find one, load it using Toolkit.createImage() instead.
-    // 
-    // Someday, when both ImageIO is fixed and everyone's JRE contains
-    // that fix, we can once again do this the simple way:
-    //
-    // final BufferedImage img =
-    //   ImageIO.read(new MemoryCacheImageInputStream(in));
-    // if (img == null) throw new UnrecognizedImageTypeException();
-    // return toCompatibleImage(img);
-    //
-    // See Sun Bug 6788458, at
-    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6788458
-    //
-    // Additionally, Toolkit.createImage() is unforgiving about malformed
-    // PNGs, but instead of throwing an exception or returning null, it
-    // returns a useless Image with negative width and height. (Though it
-    // might also print a stack trace to the log.) There is at least one
-    // piece of software (SplitImage) which writes tRNS chunks for type 2
-    // images which are only 3 bytes long, and because this kind of thing
-    // is used by module designers for slicing up scans of countersheets,
-    // we can expect to see such crap from time to time. Therefore, if
-    // Toolkit.createImage() fails, we fallback to ImageIO.read() and hope
-    // for the best.
-    //
-
-    BufferedImage img = null;
-    RereadableInputStream rin = null;
-    try {
-      rin = new RereadableInputStream(in);
-      rin.mark(512);
-
-      final boolean useToolkit = !useImageIO(rin);
-      rin.reset();
-
-      if (useToolkit) {
-        rin.mark(4096);
-
-        // Load the Image; note that we forceLoad() to ensure that the
-        // subsequent calls to getWidth() and getHeight() return the
-        // actual width and height of the Image.
-        final Image i = forceLoad(
-          Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(rin))
-        );
-
-        // check that we received a valid Image from the Toolkit 
-        if (i.getWidth(null) > 0 && i.getHeight(null) > 0) {
-          img = toBufferedImage(i);
-        }
-        else {
-          // Toolkit failed for some reason. Probably this means that
-          // we have a broken PNG, so gently notify the user and fallback
-          // to ImageIO.read().
-          ErrorDialog.dataError(new BadDataReport("Broken PNG image", name));
-          rin.reset();
-        } 
-      }
-
-      if (img == null) {
-        try {
-          img = ImageIO.read(new MemoryCacheImageInputStream(rin));
-        }
-        catch (IllegalArgumentException e) {
-          // Note: ImageIO can throw IllegalArgumentExceptions for certain
-          // kinds of broken images, e.g., JPEGs which are in the RGB color
-          // space but have non-RGB color profiles (see Bug 2673589 for an
-          // example of this). This problem is noted in Sun Bug 6404011,
-          //
-          // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6404011
-          //
-          // and supposedly is fixed in 1.6.0 JVMs. Once we move to Java 6,
-          // this will no longer be a problem, and we can remove this catch.
-          //
-          // We catch IllegalArgumentException here in a last-ditch effort
-          // to prevent broken images---which are bad data, not bugs---from
-          // causing an uncaught exception and raising a Bug Dialog.
-          ErrorDialog.dataError(new BadDataReport("Broken image", name));
-          throw (IOException) new IOException().initCause(e);
-        }
-
-        if (img == null) throw new UnrecognizedImageTypeException();
-        img = toCompatibleImage(img);
-      }
-
-      rin.close();
-
-      return img;
-    }
-    catch (UnrecognizedImageTypeException e) {
-      throw new UnrecognizedImageTypeException(name, e);
-    }
-    catch (IOException e) {
-      throw new ImageIOException(name, e);
-    }
-    finally {
-      IOUtils.closeQuietly(rin);
-    }
+    return ImageLoader.getImage(name, in);
   }
 
 // FIXME: check speed
@@ -580,6 +365,10 @@ public class ImageUtils {
     return pg.getColorModel().hasAlpha();
   }
 
+  public static boolean isTransparent(BufferedImage img) {
+    return img.getTransparency() != BufferedImage.OPAQUE;
+  }
+
   /**
    * Transform an <code>Image</code> to a <code>BufferedImage</code>.
    * 
@@ -604,8 +393,28 @@ public class ImageUtils {
     return dst;
   }
 
+  protected static final int compatOpaqueImageType;
+  protected static final int compatTranslImageType;
+
+  static {
+    compatOpaqueImageType = createCompatibleImage(1,1).getType();
+    compatTranslImageType = createCompatibleTranslucentImage(1,1).getType();
+  }
+
+  public static int getCompatibleImageType() {
+    return compatOpaqueImageType;
+  }
+
+  public static int getCompatibleTranslucentImageType() {
+    return compatTranslImageType;
+  }
+
+  public static int getCompatibleImageType(boolean transparent) {
+    return transparent ? compatTranslImageType : compatOpaqueImageType;
+  }
+
   public static BufferedImage createCompatibleImage(int w, int h) {
-    return GraphicsUtilities.createCompatibleImage(w, h);  
+    return GraphicsUtilities.createCompatibleImage(w, h);
   }
 
   public static BufferedImage createCompatibleImage(int w, int h,
@@ -621,6 +430,11 @@ public class ImageUtils {
 
   public static BufferedImage toCompatibleImage(BufferedImage src) {
     return GraphicsUtilities.toCompatibleImage(src);
+  }
+
+  public static boolean isCompatibleImage(BufferedImage img) {
+    return img.getType() ==
+      getCompatibleImageType(img.getTransparency() != BufferedImage.OPAQUE);
   }
 
   /*

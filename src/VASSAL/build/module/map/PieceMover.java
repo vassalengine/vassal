@@ -18,12 +18,15 @@
  */
 package VASSAL.build.module.map;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.datatransfer.StringSelection;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
@@ -934,9 +937,8 @@ public class PieceMover extends AbstractBuildable
       dragImage = ImageUtils.createCompatibleTranslucentImage(w, h);
       
       drawDragImage(dragImage, null, relativePositions, zoom);
-      featherDragImage(dragImage, w, h);
-      
-      // return the image
+      dragImage = featherDragImage(dragImage, w, h, EXTRA_BORDER);
+
       return dragImage;
     }
 
@@ -960,15 +962,14 @@ public class PieceMover extends AbstractBuildable
       
       final int w = boundingBox.width + EXTRA_BORDER * 2;
       final int h = boundingBox.height + EXTRA_BORDER * 2;
-      
-      final BufferedImage cursorImage =
+     
+      BufferedImage cursorImage =
         ImageUtils.createCompatibleTranslucentImage(w, h);
 
       drawDragImage(cursorImage, dragCursor, relativePositions, zoom);
-
       dragCursor.setSize(w, h);
       
-      featherDragImage(cursorImage, w, h);
+      cursorImage = featherDragImage(cursorImage, w, h, EXTRA_BORDER);
       dragCursor.setIcon(new ImageIcon(cursorImage));
     }
     
@@ -1024,18 +1025,22 @@ public class PieceMover extends AbstractBuildable
     private void drawDragImage(BufferedImage image, Component target,
                                List<Point> relativePositions, double zoom) {
       final Graphics2D g = image.createGraphics();
+
       int index = 0;
       Point lastPos = null;
       int stackCount = 0;
       for (PieceIterator dragContents = DragBuffer.getBuffer().getIterator();
-           dragContents.hasMoreElements();) {
+           dragContents.hasMoreElements(); ) {
+
         final GamePiece piece = dragContents.nextPiece();
         final Point pos = relativePositions.get(index++);
+        final Map map = piece.getMap();
+
         if (piece instanceof Stack){
           stackCount = 0;
           piece.draw(g, EXTRA_BORDER - boundingBox.x + pos.x,
                         EXTRA_BORDER - boundingBox.y + pos.y,
-            piece.getMap() == null ? target : piece.getMap().getView(), zoom);
+                        map == null ? target : map.getView(), zoom);
         }
         else {
           final Point offset = new Point(0,0);
@@ -1048,16 +1053,19 @@ public class PieceMover extends AbstractBuildable
           else {
             stackCount = 0;
           }
+
           final int x = EXTRA_BORDER - boundingBox.x + pos.x + offset.x;
           final int y = EXTRA_BORDER - boundingBox.y + pos.y - offset.y;
-          piece.draw(g, x, y,
-            piece.getMap() == null ? target : piece.getMap().getView(), zoom);
-          Highlighter highlighter = piece.getMap() == null ?
-             BasicPiece.getHighlighter() : piece.getMap().getHighlighter();
+          piece.draw(g, x, y, map == null ? target : map.getView(), zoom);
+
+          final Highlighter highlighter = map == null ?
+            BasicPiece.getHighlighter() : map.getHighlighter();
           highlighter.draw(piece, g, x, y, null, zoom);
         }
+
         lastPos = pos;
-      }  
+      }
+
       g.dispose();
     }
     
@@ -1072,41 +1080,40 @@ public class PieceMover extends AbstractBuildable
       }
       return sm;
     }
-    
-    private void featherDragImage(BufferedImage image, int width, int height) {
-// FIXME: this will unmanage the image!!!
-      // Make bitmap 50% transparent
-      final WritableRaster alphaRaster = image.getAlphaRaster();
-      final int size = width * height;
-      int[] alphaArray = new int[size];
-      alphaArray = alphaRaster.getPixels(0, 0, width, height, alphaArray);
-      for (int i = 0; i < size; ++i) {
-        if (alphaArray[i] == 255) alphaArray[i] = CURSOR_ALPHA;
+   
+    private BufferedImage featherDragImage(BufferedImage src,
+                                           int w, int h, int b) {
+// FIXME: This should be redone so that we draw the feathering onto the
+// destination first, and then pass the Graphics2D on to draw the pieces
+// directly over it. Presently this doesn't work because some of the 
+// pieces screw up the Graphics2D when passed it... The advantage to doing
+// it this way is that we create only one BufferedImage instead of two.
+      final BufferedImage dst =
+        ImageUtils.createCompatibleTranslucentImage(w, h);
+
+      final Graphics2D g = dst.createGraphics();
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
+
+      // paint the rectangle occupied by the piece at specified alpha
+      g.setColor(new Color(0xff, 0xff, 0xff, CURSOR_ALPHA));
+      g.fillRect(0, 0, w, h);
+      
+      // feather outwards
+      for (int f = 0; f < b; ++f) {
+        final int alpha = CURSOR_ALPHA * (f + 1) / b;
+        g.setColor(new Color(0xff, 0xff, 0xff, alpha));
+        g.drawRect(f, f, w-2*f, h-2*f);
       }
-      // ... feather the cursor, since traits can extend
-      // arbitrarily far out from bounds
-      final int FEATHER_WIDTH = EXTRA_BORDER;
-      for (int f = 0; f < FEATHER_WIDTH; ++f) {
-        final int alpha = CURSOR_ALPHA * (f + 1) / FEATHER_WIDTH;
-        final int limRow = (f + 1) * width - f; // for horizontal runs
-        for (int i = f * (width + 1); i < limRow; ++i) {
-          if (alphaArray[i] > 0) // North
-            alphaArray[i] = alpha;
-          if (alphaArray[size - i - 1] > 0) // South
-            alphaArray[size - i - 1] = alpha;
-        }
-        final int limVert = size - (f + 1) * width; // for vertical runs
-        for (int i = (f + 1) * width + f; i < limVert; i += width) {
-          if (alphaArray[i] > 0) // West
-            alphaArray[i] = alpha;
-          if (alphaArray[size - i - 1] > 0) // East
-            alphaArray[size - i - 1] = alpha;
-        }
-      }
-      // ... apply the alpha to the image
-      alphaRaster.setPixels(0, 0, width, height, alphaArray); 
+
+      // paint in the source image
+      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN));
+      g.drawImage(src, 0, 0, null);
+      g.dispose();
+
+      return dst;
     }
-    
+
     ///////////////////////////////////////////////////////////////////////////
     // DRAG GESTURE LISTENER INTERFACE
     //

@@ -180,8 +180,10 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
 
       return ImageUtils.toCompatibleImage(new BufferedImage(
         src.getColorModel(),
-        dstR.createWritableTranslatedChild(0,0), false, null)
-      );
+        dstR.createWritableTranslatedChild(0,0),
+        src.isAlphaPremultiplied(),
+        null
+      ));
     }
 
     protected void fixSize() { }

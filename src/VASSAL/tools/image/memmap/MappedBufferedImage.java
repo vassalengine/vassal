@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007 by Joel Uckelman
+ * Copyright (c) 2007-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -39,6 +39,16 @@ import java.io.IOException;
  * on disk which are too large to keep in RAM long-term but for which
  * decoding them at each access would be too slow. The image data
  * is held by a {@link MappedWritableRaster}.
+ *
+ * Note: Some Java implementations (e.g., on Mac OS X) use private
+ * system-specific classes for image rendering, and frequently such code
+ * makes undocumented assumptions about how <code>BufferedImage</code>,
+ * {@link WritableRaster}, and {@link DataBuffer} have been subclassed.
+ * In order to prevent {@link ClassCastException}s, we have no choice but
+ * to permit <code>MappedBufferedImage</code>s to be <code>TYPE_CUSTOM</code>,
+ * even though this makes handling them more complex for us. Note also that
+ * we do not explicitly set the type here; it is set for us by one of the
+ * <code>BufferedImage</code> constructors.
  *
  * @since 3.1.0
  * @author Joel Uckelman
