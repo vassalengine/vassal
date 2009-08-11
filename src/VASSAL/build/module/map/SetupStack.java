@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2004 by Rodney Kinney
+ * Copyright (c) 2004-2009 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,6 +19,7 @@
 
 package VASSAL.build.module.map;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -29,6 +30,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.datatransfer.StringSelection;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
@@ -861,317 +863,314 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
    
 // FIXME: check for duplication with PieceMover
  
-    public static class View extends JPanel implements DropTargetListener, DragGestureListener, DragSourceListener, DragSourceMotionListener {
+  public static class View extends JPanel implements DropTargetListener, DragGestureListener, DragSourceListener, DragSourceMotionListener {
       
-      private static final long serialVersionUID = 1L;
-      protected static final int CURSOR_ALPHA = 127;
-      protected static final int EXTRA_BORDER = 4;
-      protected Board myBoard;
-      protected MapGrid myGrid;
-      protected SetupStack myStack;
-      protected GamePiece myPiece;
-      protected PieceSlot slot;
-      protected DragSource ds = DragSource.getDefaultDragSource();
-      protected boolean isDragging = false;
-      protected JLabel dragCursor; 
-      protected JLayeredPane drawWin;
-      protected Point drawOffset = new Point();
-      protected Rectangle boundingBox;
-      protected int currentPieceOffsetX;
-      protected int currentPieceOffsetY;
-      protected int originalPieceOffsetX;
-      protected int originalPieceOffsetY;
-      protected Point lastDragLocation = new Point();
+    private static final long serialVersionUID = 1L;
+    protected static final int CURSOR_ALPHA = 127;
+    protected static final int EXTRA_BORDER = 4;
+    protected Board myBoard;
+    protected MapGrid myGrid;
+    protected SetupStack myStack;
+    protected GamePiece myPiece;
+    protected PieceSlot slot;
+    protected DragSource ds = DragSource.getDefaultDragSource();
+    protected boolean isDragging = false;
+    protected JLabel dragCursor; 
+    protected JLayeredPane drawWin;
+    protected Point drawOffset = new Point();
+    protected Rectangle boundingBox;
+    protected int currentPieceOffsetX;
+    protected int currentPieceOffsetY;
+    protected int originalPieceOffsetX;
+    protected int originalPieceOffsetY;
+    protected Point lastDragLocation = new Point();
+
+    public View(Board b, SetupStack s) {
+      myBoard = b;
+      myGrid = b.getGrid();
+      myStack = s;
+      slot = myStack.getTopPiece();
+      if (slot != null) {
+        myPiece = slot.getPiece();
+      }
+      new DropTarget(this, DnDConstants.ACTION_MOVE, this);
+      ds.createDefaultDragGestureRecognizer(this,
+        DnDConstants.ACTION_MOVE, this);
+      setFocusTraversalKeysEnabled(false);
+    }
+
+    public void paint(Graphics g) {
+      myBoard.draw(g, 0, 0, 1.0, this);
+      Rectangle bounds = new Rectangle(new Point(),myBoard.bounds().getSize());
+      if (myGrid != null) {
+        myGrid.draw(g,bounds,bounds,1.0,false);
+      }
+      int x = myStack.pos.x;
+      int y = myStack.pos.y;
+      myStack.stackConfigurer.drawImage(g, x, y, this, 1.0);
+    }
+    
+    public void update(Graphics g) {
+      // To avoid flicker, don't clear the display first *
+      paint(g);
+    }
+
+    public Dimension getPreferredSize() {
+      return new Dimension(
+          myBoard.bounds().width,
+          myBoard.bounds().height);
+    }
+    
+    public void center(Point p) {
+      Rectangle r = this.getVisibleRect();
+      if (r.width == 0) {
+        r.width = DEFAULT_SIZE.width;
+        r.height = DEFAULT_SIZE.height;
+      }
+      int x = p.x-r.width/2;
+      int y = p.y-r.height/2;
+      if (x < 0) x = 0;
+      if (y < 0) y = 0;
+      scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
+    }
+
+    public void dragEnter(DropTargetDragEvent arg0) {
+      return;
       
+    }
 
+    public void dragOver(DropTargetDragEvent e) {
+      scrollAtEdge(e.getLocation(), 15);
+    }
 
-      public View(Board b, SetupStack s) {
-        myBoard = b;
-        myGrid = b.getGrid();
-        myStack = s;
-        slot = myStack.getTopPiece();
-        if (slot != null) {
-          myPiece = slot.getPiece();
-        }
-        new DropTarget(this, DnDConstants.ACTION_MOVE, this);
-        ds.createDefaultDragGestureRecognizer(this,
-          DnDConstants.ACTION_MOVE, this);
-        setFocusTraversalKeysEnabled(false);
-      }
-
-      public void paint(Graphics g) {
-        myBoard.draw(g, 0, 0, 1.0, this);
-        Rectangle bounds = new Rectangle(new Point(),myBoard.bounds().getSize());
-        if (myGrid != null) {
-          myGrid.draw(g,bounds,bounds,1.0,false);
-        }
-        int x = myStack.pos.x;
-        int y = myStack.pos.y;
-        myStack.stackConfigurer.drawImage(g, x, y, this, 1.0);
-      }
+    public void scrollAtEdge(Point evtPt, int dist) {
+      JScrollPane scroll = myStack.stackConfigurer.getScroll();
       
-      public void update(Graphics g) {
-        // To avoid flicker, don't clear the display first *
-        paint(g);
-      }
+      Point p = new Point(evtPt.x - scroll.getViewport().getViewPosition().x,
+          evtPt.y - scroll.getViewport().getViewPosition().y);
+      int dx = 0, dy = 0;
+      if (p.x < dist && p.x >= 0)
+        dx = -1;
+      if (p.x >= scroll.getViewport().getSize().width - dist
+          && p.x < scroll.getViewport().getSize().width)
+        dx = 1;
+      if (p.y < dist && p.y >= 0)
+        dy = -1;
+      if (p.y >= scroll.getViewport().getSize().height - dist
+          && p.y < scroll.getViewport().getSize().height)
+        dy = 1;
 
-      public Dimension getPreferredSize() {
-        return new Dimension(
-            myBoard.bounds().width,
-            myBoard.bounds().height);
+      if (dx != 0 || dy != 0) {
+        Rectangle r = new Rectangle(scroll.getViewport().getViewRect());
+        r.translate(2 * dist * dx, 2 * dist * dy);
+        r = r.intersection(new Rectangle(new Point(0, 0), getPreferredSize()));
+        scrollRectToVisible(r);
       }
+    }
+    
+    public void dropActionChanged(DropTargetDragEvent arg0) {
+      return;
       
-      public void center(Point p) {
-        Rectangle r = this.getVisibleRect();
-        if (r.width == 0) {
-          r.width = DEFAULT_SIZE.width;
-          r.height = DEFAULT_SIZE.height;
-        }
-        int x = p.x-r.width/2;
-        int y = p.y-r.height/2;
-        if (x < 0) x = 0;
-        if (y < 0) y = 0;
-        scrollRectToVisible(new Rectangle(x, y, r.width, r.height));
-      }
+    }
 
-      public void dragEnter(DropTargetDragEvent arg0) {
-        return;
-        
-      }
-
-      public void dragOver(DropTargetDragEvent e) {
-        scrollAtEdge(e.getLocation(), 15);
-      }
-
-      public void scrollAtEdge(Point evtPt, int dist) {
-        JScrollPane scroll = myStack.stackConfigurer.getScroll();
-        
-        Point p = new Point(evtPt.x - scroll.getViewport().getViewPosition().x,
-            evtPt.y - scroll.getViewport().getViewPosition().y);
-        int dx = 0, dy = 0;
-        if (p.x < dist && p.x >= 0)
-          dx = -1;
-        if (p.x >= scroll.getViewport().getSize().width - dist
-            && p.x < scroll.getViewport().getSize().width)
-          dx = 1;
-        if (p.y < dist && p.y >= 0)
-          dy = -1;
-        if (p.y >= scroll.getViewport().getSize().height - dist
-            && p.y < scroll.getViewport().getSize().height)
-          dy = 1;
-
-        if (dx != 0 || dy != 0) {
-          Rectangle r = new Rectangle(scroll.getViewport().getViewRect());
-          r.translate(2 * dist * dx, 2 * dist * dy);
-          r = r.intersection(new Rectangle(new Point(0, 0), getPreferredSize()));
-          scrollRectToVisible(r);
-        }
-      }
+    public void drop(DropTargetDropEvent event) {
+      removeDragCursor();
+      Point pos = event.getLocation();
+      pos.translate(currentPieceOffsetX, currentPieceOffsetY);
+      myStack.pos.x = pos.x;
+      myStack.pos.y = pos.y;
+      myStack.stackConfigurer.updateDisplay();
+      repaint();
+      return;
       
-      public void dropActionChanged(DropTargetDragEvent arg0) {
-        return;
-        
-      }
+    }
 
-      public void drop(DropTargetDropEvent event) {
-        removeDragCursor();
-        Point pos = event.getLocation();
-        pos.translate(currentPieceOffsetX, currentPieceOffsetY);
-        myStack.pos.x = pos.x;
-        myStack.pos.y = pos.y;
-        myStack.stackConfigurer.updateDisplay();
-        repaint();
-        return;
-        
-      }
-
-      public void dragExit(DropTargetEvent arg0) {
-        return;
-        
-      }
-
-      public void dragEnter(DragSourceDragEvent arg0) {
-        return;
-        
-      }
-
-      public void dragOver(DragSourceDragEvent arg0) {
-        return;
-        
-      }
-
-      public void dropActionChanged(DragSourceDragEvent arg0) {
-        return;
-        
-      }
-
-      public void dragDropEnd(DragSourceDropEvent arg0) {
-        removeDragCursor();
-        return;
-        
-      }
-
-      public void dragExit(DragSourceEvent arg0) {
-        return;
-        
-      }
-
-      public void dragGestureRecognized(DragGestureEvent dge) {
-        
-        Point mousePosition = dge.getDragOrigin();
-        Point piecePosition = new Point(myStack.pos);
-        
-        // Check drag starts inside piece
-        Rectangle r = myStack.stackConfigurer.getPieceBoundingBox();  
-        r.translate(piecePosition.x, piecePosition.y);
-        if (!r.contains(mousePosition)) {
-          return;
-        }
-
-        originalPieceOffsetX = piecePosition.x - mousePosition.x;
-        originalPieceOffsetY = piecePosition.y - mousePosition.y;
-          
-        drawWin = null;
-        
-        makeDragCursor();
-        setDragCursor();
-        
-        SwingUtilities.convertPointToScreen(mousePosition, drawWin);
-        moveDragCursor(mousePosition.x, mousePosition.y);
-
-        // begin dragging
-        try {
-          dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
-                        new StringSelection(""), this); // DEBUG
-          dge.getDragSource().addDragSourceMotionListener(this);
-        }
-        catch (InvalidDnDOperationException e) {
-          ErrorDialog.bug(e);
-        }
-      }
-
-      protected void setDragCursor() {
-        JRootPane rootWin = SwingUtilities.getRootPane(this);
-        if (rootWin != null) {
-          // remove cursor from old window
-          if (dragCursor.getParent() != null) {
-            dragCursor.getParent().remove(dragCursor);
-          }
-          drawWin = rootWin.getLayeredPane();
-
-          calcDrawOffset();
-          dragCursor.setVisible(true);
-          drawWin.add(dragCursor, JLayeredPane.DRAG_LAYER);
-        }
-      }
+    public void dragExit(DropTargetEvent arg0) {
+      return;
       
-      /** Moves the drag cursor on the current draw window */
-      protected void moveDragCursor(int dragX, int dragY) {
-        if (drawWin != null) {
-          dragCursor.setLocation(dragX - drawOffset.x, dragY - drawOffset.y);
-        }
-      }
-      
-      private void removeDragCursor() {
-        if (drawWin != null) {
-          if (dragCursor != null) {
-            dragCursor.setVisible(false);
-            drawWin.remove(dragCursor);
-          }
-          drawWin = null;
-        }
-      }
-      
-      /** calculates the offset between cursor dragCursor positions */
-      private void calcDrawOffset() {
-        if (drawWin != null) {
-          // drawOffset is the offset between the mouse location during a drag
-          // and the upper-left corner of the cursor
-          // accounts for difference betwen event point (screen coords)
-          // and Layered Pane position, boundingBox and off-center drag
-          drawOffset.x = -boundingBox.x - currentPieceOffsetX + EXTRA_BORDER;
-          drawOffset.y = -boundingBox.y - currentPieceOffsetY + EXTRA_BORDER;
-          SwingUtilities.convertPointToScreen(drawOffset, drawWin);
-        }
-      }
-      
-      private void makeDragCursor() {
-        //double zoom = 1.0;
-        // create the cursor if necessary
-        if (dragCursor == null) {
-          dragCursor = new JLabel();
-          dragCursor.setVisible(false);
-        }
+    }
 
-        //dragCursorZoom = zoom;
-        currentPieceOffsetX = originalPieceOffsetX;
-        currentPieceOffsetY = originalPieceOffsetY;
+    public void dragEnter(DragSourceDragEvent arg0) {
+      return;
+      
+    }
 
+    public void dragOver(DragSourceDragEvent arg0) {
+      return;
+      
+    }
 
-        // Record sizing info and resize our cursor
-        boundingBox =  myStack.stackConfigurer.getPieceBoundingBox();
+    public void dropActionChanged(DragSourceDragEvent arg0) {
+      return;
+      
+    }
+
+    public void dragDropEnd(DragSourceDropEvent arg0) {
+      removeDragCursor();
+      return;
+      
+    }
+
+    public void dragExit(DragSourceEvent arg0) {
+      return;
+      
+    }
+
+    public void dragGestureRecognized(DragGestureEvent dge) {
+      
+      Point mousePosition = dge.getDragOrigin();
+      Point piecePosition = new Point(myStack.pos);
+      
+      // Check drag starts inside piece
+      Rectangle r = myStack.stackConfigurer.getPieceBoundingBox();  
+      r.translate(piecePosition.x, piecePosition.y);
+      if (!r.contains(mousePosition)) {
+        return;
+      }
+
+      originalPieceOffsetX = piecePosition.x - mousePosition.x;
+      originalPieceOffsetY = piecePosition.y - mousePosition.y;
+        
+      drawWin = null;
+      
+      makeDragCursor();
+      setDragCursor();
+      
+      SwingUtilities.convertPointToScreen(mousePosition, drawWin);
+      moveDragCursor(mousePosition.x, mousePosition.y);
+
+      // begin dragging
+      try {
+        dge.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
+                      new StringSelection(""), this); // DEBUG
+        dge.getDragSource().addDragSourceMotionListener(this);
+      }
+      catch (InvalidDnDOperationException e) {
+        ErrorDialog.bug(e);
+      }
+    }
+
+    protected void setDragCursor() {
+      JRootPane rootWin = SwingUtilities.getRootPane(this);
+      if (rootWin != null) {
+        // remove cursor from old window
+        if (dragCursor.getParent() != null) {
+          dragCursor.getParent().remove(dragCursor);
+        }
+        drawWin = rootWin.getLayeredPane();
+
         calcDrawOffset();
-
-        int width = boundingBox.width + EXTRA_BORDER * 2;
-        int height = boundingBox.height + EXTRA_BORDER * 2;
-
-        final BufferedImage cursorImage =
-          ImageUtils.createCompatibleTranslucentImage(width, height);
-        final Graphics2D graphics = cursorImage.createGraphics();
- 
-        myStack.stackConfigurer.drawImage(graphics, EXTRA_BORDER - boundingBox.x, EXTRA_BORDER - boundingBox.y, dragCursor, 1.0);
-        dragCursor.setSize(width, height);
-
-// FIXME: this code is duplicated from PieceMover
-// FIXME: this unmanages the image!
-        // Make bitmap 50% transparent
-        WritableRaster alphaRaster = cursorImage.getAlphaRaster();
-        int size = width * height;
-        int[] alphaArray = new int[size];
-        alphaArray = alphaRaster.getPixels(0, 0, width, height, alphaArray);
-        for (int i = 0; i < size; ++i) {
-          if (alphaArray[i] == 255)
-            alphaArray[i] = CURSOR_ALPHA;
-        }
-
-        // ... feather the cursor, since traits can extend arbitraily far out from
-        // bounds
-        final int FEATHER_WIDTH = EXTRA_BORDER;
-        for (int f = 0; f < FEATHER_WIDTH; ++f) {
-          int alpha = CURSOR_ALPHA * (f + 1) / FEATHER_WIDTH;
-          int limRow = (f + 1) * width - f; // for horizontal runs
-          for (int i = f * (width + 1); i < limRow; ++i) {
-            if (alphaArray[i] > 0) // North
-              alphaArray[i] = alpha;
-            if (alphaArray[size - i - 1] > 0) // South
-              alphaArray[size - i - 1] = alpha;
-          }
-          int limVert = size - (f + 1) * width; // for vertical runs
-          for (int i = (f + 1) * width + f; i < limVert; i += width) {
-            if (alphaArray[i] > 0) // West
-              alphaArray[i] = alpha;
-            if (alphaArray[size - i - 1] > 0) // East
-              alphaArray[size - i - 1] = alpha;
-          }
-        }
-        // ... apply the alpha to the image
-        alphaRaster.setPixels(0, 0, width, height, alphaArray);
-
-        // store the bitmap in the cursor
-        dragCursor.setIcon(new ImageIcon(cursorImage));
+        dragCursor.setVisible(true);
+        drawWin.add(dragCursor, JLayeredPane.DRAG_LAYER);
       }
-      
+    }
+    
+    /** Moves the drag cursor on the current draw window */
+    protected void moveDragCursor(int dragX, int dragY) {
+      if (drawWin != null) {
+        dragCursor.setLocation(dragX - drawOffset.x, dragY - drawOffset.y);
+      }
+    }
+    
+    private void removeDragCursor() {
+      if (drawWin != null) {
+        if (dragCursor != null) {
+          dragCursor.setVisible(false);
+          drawWin.remove(dragCursor);
+        }
+        drawWin = null;
+      }
+    }
+    
+    /** calculates the offset between cursor dragCursor positions */
+    private void calcDrawOffset() {
+      if (drawWin != null) {
+        // drawOffset is the offset between the mouse location during a drag
+        // and the upper-left corner of the cursor
+        // accounts for difference betwen event point (screen coords)
+        // and Layered Pane position, boundingBox and off-center drag
+        drawOffset.x = -boundingBox.x - currentPieceOffsetX + EXTRA_BORDER;
+        drawOffset.y = -boundingBox.y - currentPieceOffsetY + EXTRA_BORDER;
+        SwingUtilities.convertPointToScreen(drawOffset, drawWin);
+      }
+    }
 
-      public void dragMouseMoved(DragSourceDragEvent event) {
-        if (!event.getLocation().equals(lastDragLocation)) {
-          lastDragLocation = event.getLocation();
-          moveDragCursor(event.getX(), event.getY());
-          if (dragCursor != null && !dragCursor.isVisible()) {
-            dragCursor.setVisible(true);
-          }
+    private BufferedImage featherDragImage(BufferedImage src,
+                                         int w, int h, int b) {
+// FIXME: duplicated from PieceMover!
+      final BufferedImage dst =
+        ImageUtils.createCompatibleTranslucentImage(w, h);
+
+      final Graphics2D g = dst.createGraphics();
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                         RenderingHints.VALUE_ANTIALIAS_ON);
+
+      // paint the rectangle occupied by the piece at specified alpha
+      g.setColor(new Color(0xff, 0xff, 0xff, CURSOR_ALPHA));
+      g.fillRect(0, 0, w, h);
+    
+      // feather outwards
+      for (int f = 0; f < b; ++f) {
+        final int alpha = CURSOR_ALPHA * (f + 1) / b;
+        g.setColor(new Color(0xff, 0xff, 0xff, alpha));
+        g.drawRect(f, f, w-2*f, h-2*f);
+      }
+
+      // paint in the source image
+      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN));
+      g.drawImage(src, 0, 0, null);
+      g.dispose();
+
+      return dst;
+    }
+    
+    private void makeDragCursor() {
+      //double zoom = 1.0;
+      // create the cursor if necessary
+      if (dragCursor == null) {
+        dragCursor = new JLabel();
+        dragCursor.setVisible(false);
+      }
+
+      //dragCursorZoom = zoom;
+      currentPieceOffsetX = originalPieceOffsetX;
+      currentPieceOffsetY = originalPieceOffsetY;
+
+      // Record sizing info and resize our cursor
+      boundingBox =  myStack.stackConfigurer.getPieceBoundingBox();
+      calcDrawOffset();
+
+      final int w = boundingBox.width + EXTRA_BORDER * 2;
+      final int h = boundingBox.height + EXTRA_BORDER * 2;
+
+      BufferedImage cursorImage =
+        ImageUtils.createCompatibleTranslucentImage(w, h);
+      final Graphics2D g = cursorImage.createGraphics();
+ 
+      myStack.stackConfigurer.drawImage(
+        g,
+        EXTRA_BORDER - boundingBox.x,
+        EXTRA_BORDER - boundingBox.y, dragCursor, 1.0
+      );
+
+      g.dispose();
+
+      dragCursor.setSize(w, h);
+
+      cursorImage = featherDragImage(cursorImage, w, h, EXTRA_BORDER);
+
+      // store the bitmap in the cursor
+      dragCursor.setIcon(new ImageIcon(cursorImage));
+    }
+
+    public void dragMouseMoved(DragSourceDragEvent event) {
+      if (!event.getLocation().equals(lastDragLocation)) {
+        lastDragLocation = event.getLocation();
+        moveDragCursor(event.getX(), event.getY());
+        if (dragCursor != null && !dragCursor.isVisible()) {
+          dragCursor.setVisible(true);
         }
       }
     }
   }
-
-
+}
