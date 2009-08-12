@@ -292,46 +292,43 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     }
   }
 
-
   private void updateFieldsFromState() {
     isUpdating = true;
     properties.clear();
 
-    SequenceEncoder.Decoder defDecoder =
+    final SequenceEncoder.Decoder defDecoder =
       new SequenceEncoder.Decoder(m_definition, DEF_DELIMITOR);
-    SequenceEncoder.Decoder stateDecoder =
+    final SequenceEncoder.Decoder stateDecoder =
       new SequenceEncoder.Decoder(state, STATE_DELIMITOR);
+
     for (int iField = 0; defDecoder.hasMoreTokens(); ++iField) {
       String name = defDecoder.nextToken();
       if (name.length() == 0) {
         continue;
       }
-      int type = name.charAt(0) - '0';
+
+      final int type = name.charAt(0) - '0';
       name = name.substring(1);
       String value = stateDecoder.nextToken("");
       switch (type) {
-        case TICKS:
-        case TICKS_VAL:
-        case TICKS_MAX:
-        case TICKS_VALMAX:
-          int index = value.indexOf('/');
-          if (index > 0) {
-            properties.put(name, value.substring(0, index));
-          }
-          else {
-            properties.put(name, value);
-          }
-          break;
-        default:
-          properties.put(name, value);
+      case TICKS:
+      case TICKS_VAL:
+      case TICKS_MAX:
+      case TICKS_VALMAX:
+        final int index = value.indexOf('/');
+        properties.put(name, index > 0 ? value.substring(0, index) : value);
+        break;
+      default:
+        properties.put(name, value);
       }
+
       value = value.replace(LINE_DELIMINATOR, '\n');
 
       if (frame != null) {
-        Object field = m_fields.get(iField);
+        final Object field = m_fields.get(iField);
         if (field instanceof JTextComponent) {
-          JTextComponent tf = (JTextComponent) field;
-          int pos = tf.getCaretPosition();
+          final JTextComponent tf = (JTextComponent) field;
+          final int pos = Math.min(tf.getCaretPosition(), value.length());
           tf.setText(value);
           tf.setCaretPosition(pos);
         }
@@ -340,9 +337,11 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         }
       }
     }
+
     if (applyButton != null) {
       applyButton.setEnabled(false);
     }
+
     isUpdating = false;
   }
 
