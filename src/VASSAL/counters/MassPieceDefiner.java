@@ -86,6 +86,7 @@ public class MassPieceDefiner extends PieceDefiner {
     return i.hasNext() ? p.getClass() == i.next() && !i.hasNext() : false;
   }
 
+  @Override
   protected void addTrait(Decorator c) {
     super.addTrait(c);
     for (Entry e : definers) {
@@ -93,6 +94,7 @@ public class MassPieceDefiner extends PieceDefiner {
     }
   }
 
+  @Override
   protected void removeTrait(int index) {
     super.removeTrait(index);
     for (Entry e : definers) {
@@ -100,6 +102,7 @@ public class MassPieceDefiner extends PieceDefiner {
     }
   }
 
+  @Override
   protected void moveDecoratorUp(int index) {
     super.moveDecoratorUp(index);
     for (Entry e : definers) {
@@ -107,13 +110,23 @@ public class MassPieceDefiner extends PieceDefiner {
     }
   }
 
+  @Override
   protected void moveDecoratorDown(int index) {
     super.moveDecoratorDown(index);
     for (Entry e : definers) {
       e.definer.moveDecoratorDown(index);
     }
   }
+ 
+  @Override
+  protected void paste() {
+    super.paste();
+    for (Entry e : definers) {
+      e.definer.paste();
+    }
+  }
 
+  @Override
   protected boolean edit(int index) {
     boolean result = super.edit(index);
     for (Entry e : definers) {

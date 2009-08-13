@@ -455,15 +455,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
     pasteButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         if (clipBoard != null) {
-          final Decorator c = (Decorator)
-            GameModule.getGameModule().createPiece(clipBoard.getType(), null);
-          if (c instanceof PlaceMarker) {
-            ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
-          }
-          c.setInner((GamePiece) inUseModel.lastElement());
-          inUseModel.addElement(c);
-          c.mySetState(clipBoard.getState());
-          refresh();
+          paste();
         }
       }});
     moveUpDownPanel.add(pasteButton);
@@ -474,6 +466,18 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
 
   }
 
+  protected void paste() {
+    final Decorator c = (Decorator)
+    GameModule.getGameModule().createPiece(clipBoard.getType(), null);
+    if (c instanceof PlaceMarker) {
+      ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
+    }
+    c.setInner((GamePiece) inUseModel.lastElement());
+    inUseModel.addElement(c);
+    c.mySetState(clipBoard.getState());
+    refresh();
+  }
+  
   protected void moveDecoratorDown(int index) {
     GamePiece selm1 = (GamePiece) inUseModel.elementAt(index - 1);
     Decorator sel = (Decorator) inUseModel.elementAt(index);
