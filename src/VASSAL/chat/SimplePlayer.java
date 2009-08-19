@@ -45,7 +45,7 @@ public class SimplePlayer implements VASSAL.chat.Player {
   }
 
   public String getName() {
-    return name;
+    return (name != null && name.length() > 0) ? name : "(Anonymous)";
   }
 
   public void setName(String name) {

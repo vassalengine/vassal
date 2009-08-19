@@ -18,7 +18,6 @@
  */
 package VASSAL.chat;
 
-import java.awt.Dimension;
 import java.awt.Frame;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
