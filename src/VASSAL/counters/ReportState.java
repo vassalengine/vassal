@@ -173,7 +173,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
           format.setProperty(COMMAND_NAME, commandName);
 
           String theFormat = reportFormat;
-          if (cycleIndex >= 0) {
+          if (cycleIndex >= 0 && cycleReportFormat.length > 0) {
             if (i < keys.length) {
               theFormat = cycleReportFormat[cycleIndex];
               cycleIndex = (cycleIndex + 1) % cycleReportFormat.length;
