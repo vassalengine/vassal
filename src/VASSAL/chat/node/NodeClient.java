@@ -414,6 +414,9 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
         try {
           Properties p = new PropertiesEncoder(playerNodes[j].getInfo()).getProperties();
           players[j].setInfo(p);
+          if (players[j].equals(me)) {
+            me.setInfo(p);
+          }
         }
         // FIXME: review error message
         catch (IOException e) {
