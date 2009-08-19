@@ -22,9 +22,7 @@
 package VASSAL.chat.node;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -86,11 +84,7 @@ public class PlayerNode extends Node implements SocketWatcher {
     Properties p;
     String cmd;
     if ((info = Protocol.decodeRegisterCommand(line)) != null) {
-      String ip = "";
-      SocketAddress addr = input.sock.getRemoteSocketAddress();
-      if (addr instanceof InetSocketAddress) {
-        ip = ((InetSocketAddress) addr).getAddress().getHostAddress();
-      }
+      String ip = input.sock.getInetAddress().getHostAddress();
       id = info[0];
       this.info = info[2] + (ip.length() > 0 ? "|ip=" + ip : "");
       server.registerNode(info[1],this);
