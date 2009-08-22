@@ -60,8 +60,10 @@ public class PlayerNode extends Node implements SocketWatcher {
     input.writeLine(msg);
   }
 
+  // Always update IP on client info in case client 'forgets' their IP
   public String getInfo() {
-    return info;
+    String ip = input.sock.getInetAddress().getHostAddress();
+    return info + (ip.length() > 0 ? "|ip=" + ip : "");
   }
 
   public boolean equals(Object o) {
@@ -84,9 +86,8 @@ public class PlayerNode extends Node implements SocketWatcher {
     Properties p;
     String cmd;
     if ((info = Protocol.decodeRegisterCommand(line)) != null) {
-      String ip = input.sock.getInetAddress().getHostAddress();
       id = info[0];
-      this.info = info[2] + (ip.length() > 0 ? "|ip=" + ip : "");
+      this.info = info[2];
       server.registerNode(info[1],this);
     }
     else if ((info = Protocol.decodeJoinCommand(line)) != null) {
