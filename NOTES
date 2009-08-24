@@ -92,6 +92,10 @@ New Features in 3.2
   click of the UNDO action. [RFE 2816016]
   
 * Option to allow non-owning players to move Restricted Access pieces. [RFE 2828808]
+
+* Add 'Snap to Grid?' option to HexGrid and SquareGrid, defaulting to Yes. Allows 
+  Grid Snapping to be turned off for the whole grid. [RFE 2842811]
+
 *********************
 Help us test
 *********************

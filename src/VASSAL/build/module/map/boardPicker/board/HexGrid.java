@@ -478,7 +478,7 @@ public class HexGrid extends AbstractConfigurable
 
 
   public boolean isLocationRestricted(Point p) {
-    return true;
+    return snapTo;
   }
 
   /**

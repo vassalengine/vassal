@@ -454,7 +454,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public boolean isLocationRestricted(Point p) {
-    return true;
+    return snapTo;
   }
 
   public String locationName(Point p) {
