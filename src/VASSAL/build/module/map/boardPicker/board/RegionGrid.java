@@ -152,7 +152,7 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   public String[] getAttributeDescriptions() {
     return new String[]{
-    	Resources.getString("Editor.IrregularGrid.snap"), //$NON-NLS-1$
+    	Resources.getString("Editor.Grid.snap"), //$NON-NLS-1$
     	Resources.getString("Editor.IrregularGrid.draw"), //$NON-NLS-1$
     	Resources.getString("Editor.IrregularGrid.fonts"), //$NON-NLS-1$
     };

@@ -35,6 +35,7 @@ import VASSAL.tools.logging.Logger;
  * 
  */
 public abstract class GameModuleAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
   protected Component comp;
   protected boolean actionCancelled;
   protected List<Runnable> actions = new ArrayList<Runnable>();

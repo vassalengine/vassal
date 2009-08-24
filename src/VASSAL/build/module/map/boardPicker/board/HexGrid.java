@@ -71,6 +71,7 @@ public class HexGrid extends AbstractConfigurable
   protected boolean cornersLegal = false;
   protected Color color = Color.black;
   protected boolean sideways = false;
+  protected boolean snapTo = true;
   protected Map<Integer,Area> shapeCache = new HashMap<Integer,Area>();
   protected HexGridEditor gridEditor;
 
@@ -85,6 +86,7 @@ public class HexGrid extends AbstractConfigurable
   public static final String SIDEWAYS = "sideways"; //$NON-NLS-1$
   public static final String COLOR = "color"; //$NON-NLS-1$
   public static final String SNAP_SCALE = "snapscale"; //$NON-NLS-1$
+  public static final String SNAP_TO = "snapTo"; //$NON-NLS-1$
 
   protected static final double sqrt3_2 = sqrt(3) / 2.;
 
@@ -95,6 +97,7 @@ public class HexGrid extends AbstractConfigurable
       Y0,
       DY,
       DX,
+      SNAP_TO,
       EDGES,
       CORNERS,
       VISIBLE,
@@ -110,6 +113,7 @@ public class HexGrid extends AbstractConfigurable
     	Resources.getString("Editor.Grid.y_offset"), //$NON-NLS-1$
     	Resources.getString("Editor.HexGrid.hex_height"), //$NON-NLS-1$
     	Resources.getString("Editor.HexGrid.hex_width"), //$NON-NLS-1$
+    	Resources.getString("Editor.Grid.snap"), //$NON-NLS-1$
     	Resources.getString("Editor.Grid.edges"), //$NON-NLS-1$
     	Resources.getString("Editor.HexGrid.vertices"), //$NON-NLS-1$
     	Resources.getString("Editor.Grid.show_grid"), //$NON-NLS-1$
@@ -129,6 +133,7 @@ public class HexGrid extends AbstractConfigurable
       Boolean.class,
       Boolean.class,
       Boolean.class,
+      Boolean.class,
       Color.class
     };
   }
@@ -138,6 +143,13 @@ public class HexGrid extends AbstractConfigurable
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
           return visible;
+        }
+      };
+    }
+    else if (EDGES.equals(name) || CORNERS.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return snapTo;
         }
       };
     }
@@ -299,6 +311,9 @@ public class HexGrid extends AbstractConfigurable
     else if (DX.equals(key)) {
       return String.valueOf(dx);
     }
+    else if (SNAP_TO.equals(key)) {
+      return String.valueOf(snapTo);
+    }
     else if (CORNERS.equals(key)) {
       return String.valueOf(cornersLegal);
     }
@@ -347,6 +362,12 @@ public class HexGrid extends AbstractConfigurable
         val = Double.valueOf((String) val);
       }
       dx = ((Double) val).doubleValue();
+    }
+    else if (SNAP_TO.equals(key)) {
+      if (val instanceof String) {
+        val = Boolean.valueOf((String) val);
+      }
+      snapTo = ((Boolean) val).booleanValue();
     }
     else if (CORNERS.equals(key)) {
       if (val instanceof String) {
@@ -413,6 +434,9 @@ public class HexGrid extends AbstractConfigurable
   }
 
   public Point snapTo(Point p) {
+    if (! snapTo) {
+      return p;
+    }
     Point center = snapToHex(p);
     
     if (edgesLegal && cornersLegal) {

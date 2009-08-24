@@ -36,7 +36,7 @@ public final class Info {
   private static final String VERSION = "3.2.0-svn4869"; //$NON-NLS-1$
   
   // Do not allow editing of modules with this revision or later
-  private static final String EDITOR_EXPIRY_VERSION = "3.3";  //$NON-NLS-1$
+  private static final String EXPIRY_VERSION = "3.3";  //$NON-NLS-1$
   
   private static File homeDir;
 
@@ -154,8 +154,8 @@ public final class Info {
     return isWindows;
   }
   
-  public static boolean isTooNewToEdit(String version) {
-    return compareVersions(version, EDITOR_EXPIRY_VERSION) >= 0;
+  public static boolean isModuleTooNew(String version) {
+    return compareVersions(version, EXPIRY_VERSION) >= 0;
   }
 
   /**

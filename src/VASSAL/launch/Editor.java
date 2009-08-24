@@ -22,7 +22,6 @@ package VASSAL.launch;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.ServerSocket;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -246,7 +245,7 @@ public class Editor extends Launcher {
       if (promptForFile() == null) return;
 
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
-      if (Info.isTooNewToEdit(data.getVassalVersion())) {
+      if (Info.isModuleTooNew(data.getVassalVersion())) {
         ErrorDialog.show(
           "Error.module_too_new",
           lr.module.getPath(),

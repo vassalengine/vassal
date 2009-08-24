@@ -64,6 +64,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   protected Map<Integer,Area> shapeCache = new HashMap<Integer,Area>();
   protected SquareGridEditor gridEditor;
   protected String rangeOption = RANGE_METRIC;
+  protected boolean snapTo = true;
 
   private GridNumbering gridNumbering;
 
@@ -127,6 +128,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   public static final String RANGE = "range"; //$NON-NLS-1$
   public static final String RANGE_MANHATTAN = "Manhattan"; //$NON-NLS-1$
   public static final String RANGE_METRIC = "Metric"; //$NON-NLS-1$
+  public static final String SNAP_TO = "snapTo"; //$NON-NLS-1$
   
   public static class RangeOptions extends StringEnum {
     public String[] getValidValues(AutoConfigurable target) {
@@ -141,6 +143,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       DX,
       DY, 
       RANGE,
+      SNAP_TO,
       EDGES,
       CORNERS,
       VISIBLE,
@@ -156,6 +159,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     	Resources.getString("Editor.RectangleGrid.width"), //$NON-NLS-1$
     	Resources.getString("Editor.RectangleGrid.height"), //$NON-NLS-1$
     	Resources.getString("Editor.RectangleGrid.range_method"), //$NON-NLS-1$
+    	Resources.getString("Editor.Grid.snap"), //$NON-NLS-1$
     	Resources.getString("Editor.Grid.edges"), //$NON-NLS-1$
     	Resources.getString("Editor.RectangleGrid.corners"), //$NON-NLS-1$
     	Resources.getString("Editor.Grid.show_grid"), //$NON-NLS-1$
@@ -175,6 +179,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       Boolean.class,
       Boolean.class,
       Boolean.class,
+      Boolean.class,
       Color.class
     };
   }
@@ -184,6 +189,13 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
       return new VisibilityCondition() {
         public boolean shouldBeVisible() {
           return visible;
+        }
+      };
+    }
+    else if (EDGES.equals(name) || CORNERS.equals(name)) {
+      return new VisibilityCondition() {
+        public boolean shouldBeVisible() {
+          return snapTo;
         }
       };
     }
@@ -234,6 +246,9 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     else if (RANGE.equals(key)) {
       return rangeOption;
     }
+    else if (SNAP_TO.equals(key)) {
+      return String.valueOf(snapTo);
+    }
     else if (CORNERS.equals(key)) {
       return String.valueOf(cornersLegal);
     }
@@ -279,6 +294,12 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     }
     else if (RANGE.equals(key)) {
       rangeOption = (String) val;
+    }
+    else if (SNAP_TO.equals(key)) {
+      if (val instanceof String) {
+        val = Boolean.valueOf((String) val);
+      }
+      snapTo = ((Boolean) val).booleanValue();
     }
     else if (CORNERS.equals(key)) {
       if (val instanceof String) {
@@ -369,6 +390,9 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   }
 
   public Point snapTo(Point p) {
+    if (! snapTo) {
+      return p;
+    }
 // nx,ny are the closest points to the half-grid
 // (0,0) is the center of the origin cell
 // (1,0) is the east edge of the origin cell

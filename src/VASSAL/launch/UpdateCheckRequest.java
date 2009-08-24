@@ -21,7 +21,6 @@ package VASSAL.launch;
 import java.util.concurrent.ExecutionException;
 import javax.swing.JOptionPane;
 
-import VASSAL.Info;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.logging.Logger;

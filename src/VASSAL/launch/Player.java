@@ -22,17 +22,17 @@ package VASSAL.launch;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.ServerSocket;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
-import javax.swing.SwingUtilities;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.build.module.ModuleExtension;
+import VASSAL.build.module.metadata.AbstractMetaData;
+import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
@@ -185,6 +185,17 @@ public class Player extends Launcher {
       // prompt the user to pick a module
       if (promptForFile() == null) return;
 
+      final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
+      if (Info.isModuleTooNew(data.getVassalVersion())) {
+        ErrorDialog.show(
+          "Error.module_too_new",
+          lr.module.getPath(),
+          data.getVassalVersion(),
+          Info.getVersion()
+        );
+        return;
+      }
+      
       super.actionPerformed(e);
     }
   }

@@ -58,7 +58,6 @@ import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.configure.DirectoryConfigurer;
-import VASSAL.configure.IntConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.ErrorDialog;
@@ -563,6 +562,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
    * the {@link AbstractLaunchAction} receiving the command.
    */
   private static abstract class LaunchCommand implements Command {
+    private static final long serialVersionUID = 1L;
     protected AbstractLaunchAction theLaunchAction;
    
     public void init(AbstractLaunchAction la) {
