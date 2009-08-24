@@ -16,6 +16,8 @@
  */
 package VASSAL.chat;
 
+import VASSAL.build.module.Chatter;
+
 
 /**
  * Simple Player bean
@@ -45,7 +47,7 @@ public class SimplePlayer implements VASSAL.chat.Player {
   }
 
   public String getName() {
-    return (name != null && name.length() > 0) ? name : "(Anonymous)";
+    return (name != null && name.length() > 0) ? name : "("+Chatter.ANONYMOUS_USER+")";
   }
 
   public void setName(String name) {

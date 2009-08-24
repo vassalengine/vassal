@@ -79,6 +79,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected static final String OTHER_CHAT_COLOR = "otherChatColor"; //$NON-NLS-1$
   protected static final String GAME_MSG_COLOR = "gameMessageColor"; //$NON-NLS-1$
   protected static final String SYS_MSG_COLOR = "systemMessageColor"; //$NON-NLS-1$
+  public static final String ANONYMOUS_USER = "Anonymous";
 
   public Chatter() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -112,7 +113,8 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   }
 
   private String formatChat(String text) {
-    return "<" + GlobalOptions.getInstance().getPlayerId() + "> - " + text; //$NON-NLS-1$ //$NON-NLS-2$
+    final String id = GlobalOptions.getInstance().getPlayerId(); 
+    return "<" + (id.length() == 0 ? "("+ANONYMOUS_USER+")" : id) + "> - " + text; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public JTextField getInputField() {

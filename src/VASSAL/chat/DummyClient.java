@@ -19,6 +19,7 @@ package VASSAL.chat;
 
 import java.beans.PropertyChangeListener;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.Chatter;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
@@ -46,7 +47,7 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
       }
 
       public String getUserName() {
-        return GameModule.getGameModule() == null ? "<anonymous>" : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME); //$NON-NLS-1$
+        return GameModule.getGameModule() == null ? "<"+Chatter.ANONYMOUS_USER+">" : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME); //$NON-NLS-1$
       }
     };
     httpMessageServer = new HttpMessageServer(publicInfo);
