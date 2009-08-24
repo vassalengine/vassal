@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2006-2008 by Joel Uckelman
+ * Copyright (c) 2006-2009 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -249,12 +249,16 @@ public abstract class FileChooser {
     private FileFilter filter;
     private int mode = FILES_ONLY;
 
-    public NativeFileChooser(Component parent, DirectoryConfigurer prefs, int mode) {
+    public NativeFileChooser(Component parent,
+                             DirectoryConfigurer prefs, int mode) {
       super(parent, prefs);
+
       if (prefs != null && prefs.getFileValue() != null) {
         setCurrentDirectory(prefs.getFileValue());
       }
+
       this.mode = mode;
+
       if (mode == DIRECTORIES_ONLY) {
         setFileFilter(new DirectoryFileFilter());
       }
@@ -295,13 +299,31 @@ public abstract class FileChooser {
       this.title = title;
     }
 
+    //
+    // On Java 1.5, we cannot create parentless Dialogs. Instead, we make
+    // a single global hidden Frame to be the parent of all such orphans.
+    // This can be removed when we stop supporting Java 1.5.
+    //
+    protected static final boolean isJava15;
+    protected static final Frame dummy;
+
+    static {
+      final String jvmver = System.getProperty("java.version");
+      isJava15 = jvmver == null || jvmver.startsWith("1.5");
+      dummy = isJava15 ? new Frame() : null;
+    }
+
     protected FileDialog awt_file_dialog_init(Component parent) {
       final FileDialog fd;
 
       if (parent == null) {
-        // FIXME: this will throw an IllegalArgumentException with Java 1.5
-        // Probably we should disallow null parents anyway?
-        fd = new FileDialog((Frame) null, title);
+        if (isJava15) {
+          // Parentless Dialogs throw IllegalArgumentException with Java 1.5.
+          fd = new FileDialog(dummy, title);
+        }
+        else {
+          fd = new FileDialog((Frame) null, title);
+        }
       }
       else if (parent instanceof Dialog) {
         fd = new FileDialog((Dialog) parent, title);
