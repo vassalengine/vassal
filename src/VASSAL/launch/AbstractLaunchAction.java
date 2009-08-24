@@ -563,6 +563,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
    */
   private static abstract class LaunchCommand implements Command {
     private static final long serialVersionUID = 1L;
+
     protected AbstractLaunchAction theLaunchAction;
    
     public void init(AbstractLaunchAction la) {
@@ -570,7 +571,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     }
 
     public abstract Object execute();
-
   };
  
   /**
