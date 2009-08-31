@@ -1406,6 +1406,8 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
         final int dt = (int)((t1 - t0)/2);
         t0 = t1;
 
+        scroll(sx*dt, sy*dt);
+        
         // Check whether we have hit an edge
         final Rectangle vrect = scroll.getViewport().getViewRect();
 
@@ -1431,6 +1433,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     theMap.repaint();
   }
 
+  
   /**
    * Painting the map is done in three steps: 1) draw each of the {@link Board}s on the map. 2) draw all of the
    * counters on the map. 3) draw all of the {@link Drawable} components on the map
