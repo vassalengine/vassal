@@ -293,6 +293,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
       if (leaf) {
         setIcon(null);
       }
+      putClientProperty("html.disable", Boolean.TRUE);
       return this;
     }
   }
