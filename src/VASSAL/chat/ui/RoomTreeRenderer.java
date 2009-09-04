@@ -1,4 +1,5 @@
 /*
+ * $Id$
  *
  * Copyright (c) 2000-2007 by Rodney Kinney
  *
@@ -15,14 +16,9 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-/*
- * $Id$
- *
- * Copyright (c) 2004 by Rodney Kinney
- *
- */
 package VASSAL.chat.ui;
 
+import java.awt.Component;
 import java.net.URL;
 import java.util.List;
 import javax.swing.Icon;
@@ -55,14 +51,23 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
     }
   }
 
-  public java.awt.Component getTreeCellRendererComponent(JTree tree, Object value,
-                                                         boolean sel,
-                                                         boolean expanded,
-                                                         boolean leaf, int row,
-                                                         boolean hasFocus) {
-    super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+  public Component getTreeCellRendererComponent(
+    JTree tree,
+    Object value,
+    boolean sel,
+    boolean expanded,
+    boolean leaf,
+    int row,
+    boolean hasFocus)
+  {
+    super.getTreeCellRendererComponent(
+      tree, value, sel, expanded, leaf, row, hasFocus
+    );
+
+    putClientProperty("html.disable", Boolean.TRUE);
+
     value = ((DefaultMutableTreeNode) value).getUserObject();
-    if (value instanceof Player) {
+    if (value instanceof Player) {      
       if (((SimpleStatus)((Player) value).getStatus()).isAway()) {
         setIcon(away);
       }
