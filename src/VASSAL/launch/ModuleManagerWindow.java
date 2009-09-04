@@ -1377,7 +1377,7 @@ public class ModuleManagerWindow extends JFrame {
     }
     
     public Color getTreeCellFgColor() {
-      return Info.isModuleTooNew(getVassalVersion()) ? Color.gray : Color.black;
+      return Info.isModuleTooNew(getVassalVersion()) ? Color.GRAY : Color.BLACK;
     }
   }
   
