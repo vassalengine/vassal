@@ -22,6 +22,8 @@
 package VASSAL.chat.node;
 
 import java.util.Properties;
+
+import VASSAL.build.module.Chatter;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleStatus;
 
@@ -65,6 +67,9 @@ public class NodePlayer extends SimplePlayer {
 
   public void setInfo(Properties p) {
     name = p.getProperty(NAME,"???"); //$NON-NLS-1$
+    if (name == null || name.length() == 0 || name.trim().length() == 0 || name.equals("<nobody>")) {
+      name = "("+Chatter.getAnonymousUserName()+")";
+    }
     id = p.getProperty(ID,id);
     setStatus(new SimpleStatus(
                     "true".equals(p.getProperty(LOOKING)), //$NON-NLS-1$

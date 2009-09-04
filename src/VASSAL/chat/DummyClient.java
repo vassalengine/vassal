@@ -47,7 +47,7 @@ public class DummyClient implements ChatServerConnection, ChatControlsInitialize
       }
 
       public String getUserName() {
-        return GameModule.getGameModule() == null ? "<"+Chatter.ANONYMOUS_USER+">" : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME); //$NON-NLS-1$
+        return GameModule.getGameModule() == null ? "<"+Chatter.getAnonymousUserName()+">" : (String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME); //$NON-NLS-1$
       }
     };
     httpMessageServer = new HttpMessageServer(publicInfo);

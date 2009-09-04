@@ -47,7 +47,10 @@ public class SimplePlayer implements VASSAL.chat.Player {
   }
 
   public String getName() {
-    return (name != null && name.length() > 0) ? name : "("+Chatter.ANONYMOUS_USER+")";
+    if (name == null || name.length() == 0 || name.trim().length() == 0 || name.equals("<nobody>")) {
+      return "("+Chatter.getAnonymousUserName()+")";
+    }
+    return name;
   }
 
   public void setName(String name) {

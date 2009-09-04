@@ -79,8 +79,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected static final String OTHER_CHAT_COLOR = "otherChatColor"; //$NON-NLS-1$
   protected static final String GAME_MSG_COLOR = "gameMessageColor"; //$NON-NLS-1$
   protected static final String SYS_MSG_COLOR = "systemMessageColor"; //$NON-NLS-1$
-  public static final String ANONYMOUS_USER = "Anonymous";
 
+  public static final String getAnonymousUserName() {
+    return Resources.getString("Chat.anonymous"); //$NON-NLS-1$
+  }
+  
   public Chatter() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     conversation = new JTextArea(15, 60);
@@ -114,7 +117,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
 
   private String formatChat(String text) {
     final String id = GlobalOptions.getInstance().getPlayerId(); 
-    return "<" + (id.length() == 0 ? "("+ANONYMOUS_USER+")" : id) + "> - " + text; //$NON-NLS-1$ //$NON-NLS-2$
+    return "<" + (id.length() == 0 ? "("+getAnonymousUserName()+")" : id) + "> - " + text; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public JTextField getInputField() {
@@ -347,6 +350,12 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     public DisplayText(Chatter c, String s) {
       this.c = c;
       msg = s;
+      if (msg.startsWith("<>")) {
+        msg = "<(" + Chatter.getAnonymousUserName() + ")>" + s.substring(2);
+      }
+      else {
+        msg = s;
+      }
     }
 
     public void executeCommand() {
