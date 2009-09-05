@@ -21,6 +21,7 @@ package VASSAL.counters;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -119,11 +120,13 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
         pile = findDeck();
       if (pile == null)
         return null;
+      final Map preMap = getMap();
+      final Point prePos = getPosition();
       setOldProperties();
       comm = pile.addToContents(Decorator.getOutermost(this));
-      // Apply Auto-move key
+      // Apply Auto-move key if the piece has moved
       Map m = pile.getMap();
-      if (m != null && m.getMoveKey() != null) {
+      if (m != null && m.getMoveKey() != null && (m != preMap || !getPosition().equals(prePos))) {
         comm.append(Decorator.getOutermost(this).keyEvent(m.getMoveKey()));
       }
       pile.getMap().repaint();
