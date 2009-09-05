@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -58,7 +58,7 @@ import VASSAL.configure.StringArrayConfigurer;
  */
 public class SequenceEncoder {
   private StringBuilder buffer;
-  private char delimit;
+  private final char delimit;
 
   public SequenceEncoder(char delimiter) {
     this(null, delimiter);
@@ -72,14 +72,25 @@ public class SequenceEncoder {
   }
 
   public SequenceEncoder append(String s) {
+    // start the buffer, or add delimiter after previous token
     if (buffer == null) {
       buffer = new StringBuilder();
-      appendEscapedString(s);
     }
     else {
       buffer.append(delimit);
-      appendEscapedString(s);
     }
+
+    if (s != null) {
+      if (s.endsWith("\\") || (s.startsWith("'") && s.endsWith("'"))) {
+        buffer.append("'");
+        appendEscapedString(s);
+        buffer.append("'");
+      }
+      else {
+        appendEscapedString(s);
+      }
+    }
+
     return this;
   }
 
@@ -112,8 +123,7 @@ public class SequenceEncoder {
   }
   
   public SequenceEncoder append(Color color) {
-    String s = ColorConfigurer.colorToString(color);
-    return append(s != null ? s : "");
+    return append(ColorConfigurer.colorToString(color));
   }
 
   public SequenceEncoder append(String[] s) {
@@ -129,27 +139,21 @@ public class SequenceEncoder {
   }
 
   private void appendEscapedString(String s) {
-    final String ss = (s == null ? "" : s);
     int begin = 0;
-    int end = ss.indexOf(delimit);
-    int length = buffer.length();
+    int end = s.indexOf(delimit);
 
     while (begin <= end) {
-      buffer.append(ss.substring(begin, end)).append('\\');
+      buffer.append(s.substring(begin, end)).append('\\');
       begin = end;
-      end = ss.indexOf(delimit, end + 1);
+      end = s.indexOf(delimit, end + 1);
     }
-    buffer.append(ss.substring(begin));
-    if (ss.endsWith("\\")
-        || (ss.startsWith("\'")
-        && ss.endsWith("\'"))) {
-      buffer.insert(length, "'").append("'");
-    }
+
+    buffer.append(s.substring(begin));
   }
 
   public static class Decoder implements Iterator<String> {
     private String val;
-    private char delimit;
+    private final char delimit;
 
     public Decoder(String value, char delimiter) {
       val = value;
@@ -161,11 +165,11 @@ public class SequenceEncoder {
     }
 
     public String nextToken() {
-      if (!hasMoreTokens()) {
-        throw new NoSuchElementException();
-      }
-      String value = val;
-      int i = val.indexOf(delimit);
+      if (!hasMoreTokens()) throw new NoSuchElementException();
+
+      String value;
+
+      final int i = val.indexOf(delimit);
       if (i < 0) {
         value = val;
         val = null;
@@ -184,6 +188,7 @@ public class SequenceEncoder {
             break;
           }
         }
+
         if (end < 0) {
           buffer.append(val.substring(begin));
           val = null;
@@ -192,12 +197,14 @@ public class SequenceEncoder {
           buffer.append(val.substring(begin, end));
           val = end >= val.length() - 1 ? "" : val.substring(end + 1);
         }
+
         value = buffer.toString();
       }
-      if (value.startsWith("'")
-          && value.endsWith("'")) {
+
+      if (value.startsWith("'") && value.endsWith("'")) {
         value = value.substring(1, value.length() - 1);
       }
+
       return value;
     }
 
@@ -256,10 +263,7 @@ public class SequenceEncoder {
     }
 
     public boolean nextBoolean(boolean defaultValue) {
-      if (val != null) {
-        defaultValue = "true".equals(nextToken());
-      }
-      return defaultValue;
+      return val != null ? "true".equals(nextToken()) : defaultValue;
     }
 
     /**
@@ -269,19 +273,20 @@ public class SequenceEncoder {
      */
     public char nextChar(char defaultValue) {
       if (val != null) {
-        String s = nextToken();
+        final String s = nextToken();
         defaultValue = s.length() > 0 ? s.charAt(0) : defaultValue;
       }
       return defaultValue;
     }
 
     public KeyStroke nextKeyStroke(char defaultValue) {
-      return nextKeyStroke(KeyStroke.getKeyStroke(defaultValue, InputEvent.CTRL_MASK));
+      return nextKeyStroke(
+        KeyStroke.getKeyStroke(defaultValue, InputEvent.CTRL_MASK));
     }
 
     public Color nextColor(Color defaultValue) {
       if (val != null) {
-        String s = nextToken();
+        final String s = nextToken();
         if (s.length() > 0) {
           defaultValue = ColorConfigurer.stringToColor(s);
         }
@@ -294,12 +299,13 @@ public class SequenceEncoder {
 
     public KeyStroke nextKeyStroke(KeyStroke defaultValue) {
       if (val != null) {
-        String s = nextToken();
+        final String s = nextToken();
         if (s.length() == 0) {
           defaultValue = null;
         }
         else if (s.indexOf(',') < 0) {
-          defaultValue = KeyStroke.getKeyStroke(s.charAt(0), InputEvent.CTRL_MASK);
+          defaultValue =
+            KeyStroke.getKeyStroke(s.charAt(0), InputEvent.CTRL_MASK);
         }
         else {
           defaultValue = HotKeyConfigurer.decode(s);
@@ -338,20 +344,22 @@ public class SequenceEncoder {
      * @return
      */
     public String nextToken(String defaultValue) {
-      if (val != null) {
-        defaultValue = nextToken();
-      }
-      return defaultValue;
+      return val != null ? nextToken() : defaultValue;
     }
 
     public String[] nextStringArray(int minLength) {
-      String[] retVal = new String[0];
+      String[] retVal;
       if (val != null) {
         retVal = StringArrayConfigurer.stringToArray(nextToken());
       }
+      else {
+        retVal = new String[0];
+      }
+
       if (retVal.length < minLength) {
         retVal = ArrayUtils.copyOf(retVal, minLength);
       }
+
       return retVal;
     }
   }
