@@ -318,7 +318,7 @@ public final class GeneralFilter {
       final int pre_src_data[] = new int[src_data.length];
       for (int i = 0; i < src_data.length; ++i) {
         final int unpre = src_data[i];
-        final int a = (unpre >> 24) & 0xff;
+        final int a = (unpre >>> 24) & 0xff;
 
         if (a == 255) {
           pre_src_data[i] = unpre;
@@ -328,9 +328,9 @@ public final class GeneralFilter {
 
           pre_src_data[i] =
             a << 24 |
-            ((int)(((unpre >> 16) & 0xff) * na + 0.5f)) << 16 |
-            ((int)(((unpre >>  8) & 0xff) * na + 0.5f)) <<  8 |
-            ((int)(((unpre      ) & 0xff) * na + 0.5f));
+            ((int)(((unpre >>> 16) & 0xff) * na + 0.5f)) << 16 |
+            ((int)(((unpre >>>  8) & 0xff) * na + 0.5f)) <<  8 |
+            ((int)(((unpre       ) & 0xff) * na + 0.5f));
         }
       }
 
@@ -342,7 +342,7 @@ public final class GeneralFilter {
       // unpremultiply destination data
       for (int i = 0; i < dst_data.length; ++i) {
         final int pre = dst_data[i];        
-        final int a = (pre >> 24) & 0xff;
+        final int a = (pre >>> 24) & 0xff;
 
         if (a == 255) {
           continue;
@@ -352,9 +352,9 @@ public final class GeneralFilter {
 
           dst_data[i] =
             a << 24 |
-            ((int)(((pre >> 16) & 0xff) * inv_na + 0.5f)) << 16 |
-            ((int)(((pre >>  8) & 0xff) * inv_na + 0.5f)) <<  8 |
-            ((int)(((pre      ) & 0xff) * inv_na + 0.5f));
+            ((int)(((pre >>> 16) & 0xff) * inv_na + 0.5f)) << 16 |
+            ((int)(((pre >>>  8) & 0xff) * inv_na + 0.5f)) <<  8 |
+            ((int)(((pre       ) & 0xff) * inv_na + 0.5f));
         }
       }
     }
@@ -435,10 +435,10 @@ public final class GeneralFilter {
           final float w = c.weight[j];
           final int sd = src[c.pixel + j + k*sw];
 
-          s_a += ((sd >> 24) & 0xff) * w;
-          s_r += ((sd >> 16) & 0xff) * w;
-          s_g += ((sd >>  8) & 0xff) * w;
-          s_b += ((sd      ) & 0xff) * w;
+          s_a += ((sd >>> 24) & 0xff) * w;
+          s_r += ((sd >>> 16) & 0xff) * w;
+          s_g += ((sd >>>  8) & 0xff) * w;
+          s_b += ((sd       ) & 0xff) * w;
         }
 
         // Ugly, but fast.        
@@ -486,9 +486,9 @@ public final class GeneralFilter {
           final float w = c.weight[j];
           final int sd = src[c.pixel + j + k*sw];
 
-          s_r += ((sd >> 16) & 0xff) * w;
-          s_g += ((sd >>  8) & 0xff) * w;
-          s_b += ((sd      ) & 0xff) * w;
+          s_r += ((sd >>> 16) & 0xff) * w;
+          s_g += ((sd >>>  8) & 0xff) * w;
+          s_b += ((sd       ) & 0xff) * w;
         }
 
         // Ugly, but fast.        
@@ -537,10 +537,10 @@ public final class GeneralFilter {
           final float w = c.weight[j];
           final int wd = work[c.pixel + j];
 
-          s_a += ((wd >> 24) & 0xff) * w;
-          s_r += ((wd >> 16) & 0xff) * w;
-          s_g += ((wd >>  8) & 0xff) * w;
-          s_b += ((wd      ) & 0xff) * w;
+          s_a += ((wd >>> 24) & 0xff) * w;
+          s_r += ((wd >>> 16) & 0xff) * w;
+          s_g += ((wd >>>  8) & 0xff) * w;
+          s_b += ((wd       ) & 0xff) * w;
         }
 
         // working in premultiplied domain, must clamp R,G,B to A
@@ -557,10 +557,10 @@ public final class GeneralFilter {
         // If there's no color change from 0 to max, maintain that.
 
         // working in premultiplied domain, must clamp R,G,B to A
-        final int a = (pel >> 24) & 0xff;
-        final int r = (pel >> 16) & 0xff;
-        final int g = (pel >>  8) & 0xff;
-        final int b = (pel      ) & 0xff;
+        final int a = (pel >>> 24) & 0xff;
+        final int r = (pel >>> 16) & 0xff;
+        final int g = (pel >>>  8) & 0xff;
+        final int b = (pel       ) & 0xff;
 
         dst[dx + i*dw] = 
          a << 24 |
@@ -603,9 +603,9 @@ public final class GeneralFilter {
           final float w = c.weight[j];
           final int wd = work[c.pixel + j];
 
-          s_r += ((wd >> 16) & 0xff) * w;
-          s_g += ((wd >>  8) & 0xff) * w;
-          s_b += ((wd      ) & 0xff) * w;
+          s_r += ((wd >>> 16) & 0xff) * w;
+          s_g += ((wd >>>  8) & 0xff) * w;
+          s_b += ((wd       ) & 0xff) * w;
         }
 
         // Ugly, but fast.

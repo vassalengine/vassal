@@ -210,7 +210,7 @@ public class NonRectangular extends Decorator implements EditablePiece {
       final Area outline = new Area();
       for (int j = 0; j < h; ++j) {
         for (int i = 0; i < w; ++i) {
-          if (((pixels[i + j*w] >> 24) & 0xff) > 0) {
+          if (((pixels[i + j*w] >>> 24) & 0xff) > 0) {
             outline.add(new Area(new Rectangle(i, j, 1, 1)));
           }
         }
