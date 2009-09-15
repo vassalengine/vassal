@@ -193,18 +193,17 @@ public final class GeneralFilter {
     public float apply(float t) {
       // box (*) box (*) box (*) box
 
-      float tt;
-
       if(t < 0.0f) t = -t;
 
       if(t < 1.0f) {
-        tt = t * t;
-        return((0.5f * tt * t) - tt + (2.0f / 3.0f));
+        final float tt = t * t;
+        return (0.5f * tt * t) - tt + (2.0f / 3.0f);
       }
       else if (t < 2.0f) {
         t = 2.0f - t;
-        return((1.0f / 6.0f) * (t * t * t));
+        return (1.0f / 6.0f) * (t * t * t);
       }
+
       return 0.0f;
     }
 
