@@ -180,6 +180,7 @@ import org.jdesktop.swinghelper.layer.demo.DebugPainter;
  */
 public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
     UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
+  protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
   protected String mapName = ""; //$NON-NLS-1$
   protected static final String MAIN_WINDOW_HEIGHT = "mainWindowHeight"; //$NON-NLS-1$
@@ -233,13 +234,22 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   };
   protected PieceMover pieceMover;
   protected KeyListener[] saveKeyListeners = null;
-
+ 
   public Map() {
     getView();
     theMap.addMouseListener(this);
     toolBar.setLayout(new WrapLayout(WrapLayout.LEFT, 0, 0));
     toolBar.setAlignmentX(0.0F);
     toolBar.setFloatable(false);
+  }
+  
+  // Global Change Reporting control
+  public static void setChangeReportingEnabled(boolean b) {
+    changeReportingEnabled = b;
+  }
+  
+  public static boolean isChangeReportingEnabled() {
+    return changeReportingEnabled;
   }
   
   public static final String NAME = "mapName"; //$NON-NLS-1$
@@ -2276,7 +2286,7 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   public String getChangeFormat() {
-    return changeFormat;
+    return isChangeReportingEnabled() ? changeFormat : "";
   }
 
   public String getMoveToFormat() {
