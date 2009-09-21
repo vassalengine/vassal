@@ -155,7 +155,8 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
         try {
           String username = account.getUserName();
           String password = account.getPassword();
-          playerMgr.getPlayerByLogin(this, account.getUserName()).setName(account.getRealName());
+          me = playerMgr.getPlayerByLogin(this, account.getUserName());
+          me.setName(account.getRealName());
           ConnectionConfiguration config = new ConnectionConfiguration(host, port);
           config.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
           config.setCompressionEnabled(true);
