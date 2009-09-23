@@ -81,7 +81,22 @@ public class MemoryUtils {
       }
     }
     else if (os.startsWith("mac os x")) {
-      IMPL = new MacOSXMemoryUtilsImpl();
+      // Force libc to load. An exception can occur here if JNA is unable
+      // to load libjnidispatch.jnilib from the normal library load path
+      // and also fails to load its own copy, which is packed in the JNA
+      // JAR. This happens only with a few Mac OS X systems, presently we
+      // don't know why it happens on the ones it does, so we have to trap
+      // the exception.
+      MacOSXMemoryUtilsImpl.Libc libc = null;
+      try {
+        libc = MacOSXMemoryUtilsImpl.Libc.INSTANCE;
+      }
+      catch (UnsatisfiedLinkError e) {
+        // libc remains null in this case.
+      } 
+
+      IMPL = libc == null ? new DummyMemoryUtilsImpl() :
+                            new MacOSXMemoryUtilsImpl();
     }
     else if (os.startsWith("windows")) {
       // kernel32 didn't exist until Windows 2000, so use the dummy
@@ -182,7 +197,7 @@ public class MemoryUtils {
         (Libc) Native.loadLibrary("c", Libc.class);
     } 
 
-    public long getPhysicalMemory() { 
+    public long getPhysicalMemory() {
       final LongByReference oldp = new LongByReference(0);
       final IntByReference oldlenp =
         new IntByReference(Native.getNativeSize(long.class));
