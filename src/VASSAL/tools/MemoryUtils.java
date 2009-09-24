@@ -84,9 +84,7 @@ public class MemoryUtils {
       // Force libc to load. An exception can occur here if JNA is unable
       // to load libjnidispatch.jnilib from the normal library load path
       // and also fails to load its own copy, which is packed in the JNA
-      // JAR. This happens only with a few Mac OS X systems, presently we
-      // don't know why it happens on the ones it does, so we have to trap
-      // the exception.
+      // JAR. This seems to happen only with Mac OS X 10.4 running on PPC.
       MacOSXMemoryUtilsImpl.Libc libc = null;
       try {
         libc = MacOSXMemoryUtilsImpl.Libc.INSTANCE;
