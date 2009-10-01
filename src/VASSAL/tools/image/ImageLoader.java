@@ -229,8 +229,13 @@ public class ImageLoader {
   }
 
   protected BufferedImage fix_tRNS(BufferedImage img, int tRNS) {
-    // Ensure that we are working with unpremultiplied ARGB data
-    img = ImageUtils.toType(img, BufferedImage.TYPE_INT_ARGB);
+    // Ensure that we are working with ARGB data. Whether it's premultiplied
+    // doesn't matter, since fully transparent and fully opaque pixels are
+    // the same in both.
+    if (img.getType() != BufferedImage.TYPE_INT_ARGB &&
+        img.getType() != BufferedImage.TYPE_INT_ARGB_PRE) {
+      img = ImageUtils.toType(img, BufferedImage.TYPE_INT_ARGB);
+    }
 
     // Set all pixels of the transparent color to have alpha 0.
     final WritableRaster r = img.getRaster();    
@@ -240,11 +245,12 @@ public class ImageLoader {
     final int[] data = (int[]) r.getDataElements(0, 0, w, h, new int[w*h]);
         
     for (int i = 0; i < data.length; ++i) {
-      if (data[i] == tRNS) data[i] &= 0x00ffffff;
+      if (data[i] == tRNS) data[i] = 0x00000000;
     }
 
     r.setDataElements(0, 0, w, h, data); 
-    
+
+    // Make sure we go back to a compatible image.
     return ImageUtils.toCompatibleImage(img);
   }
 
