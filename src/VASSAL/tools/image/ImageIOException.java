@@ -31,6 +31,10 @@ public class ImageIOException extends IOException {
 
   private final File file; 
 
+  protected ImageIOException() {
+    this.file = null;
+  }
+
   public ImageIOException(String filename) {
     this(new File(filename));
   }

@@ -29,7 +29,7 @@ public class UnrecognizedImageTypeException extends ImageIOException {
   private static final long serialVersionUID = 1L;
 
   public UnrecognizedImageTypeException() {
-    super((File) null);
+    super();
   }
 
   public UnrecognizedImageTypeException(String filename) {
