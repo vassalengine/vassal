@@ -21,9 +21,9 @@ package VASSAL.tools.image;
 
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.color.CMMException;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,7 +61,7 @@ public class ImageLoader {
   // Used to indicate whether this version of Java has the PNG iTXt bug.
   // This can be removed once we no longer support Java 1.5.
   protected static final boolean iTXtBug;
-
+  
   static {
     final String jvmver = System.getProperty("java.version");
     iTXtBug = jvmver == null || jvmver.startsWith("1.5");
@@ -101,35 +101,6 @@ public class ImageLoader {
     return ImageUtils.toCompatibleImage(img);
   }
 
-  protected BufferedImage loadToolkit(String name, InputStream in)
-                                                           throws IOException {
-    // Load as an Image; note that we forceLoad() to ensure that the
-    // subsequent calls to getWidth() and getHeight() return the
-    // actual width and height of the Image.
-    final Image i = ImageUtils.forceLoad(
-      Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(in))
-    );
-
-    // Toolkit.createImage() is unforgiving about malformed images but
-    // instead of throwing an exception or returning null, it returns a
-    // useless Image with negative width and height. (It might also
-    // print a stack trace to the log.) There is at least one piece of
-    // software (SplitImage) which writes tRNS chunks for type 2 images
-    // which are only 3 bytes long, and because this kind of thing is
-    // used by module designers for slicing up scans of countersheets,
-    // we can expect to see such crap from time to time.
-    if (i.getWidth(null) > 0 && i.getHeight(null) > 0) {
-      return ImageUtils.toBufferedImage(i);
-    }
-    else {
-      // Toolkit failed for some reason. Probably this means that
-      // we have a broken image, so gently notify the user and
-      // fallback to ImageIO.read().
-      ErrorDialog.dataError(new BadDataReport("Broken image", name));
-      return null;
-    }
-  }
-
   protected BufferedImage load(String name, InputStream in)
                                                       throws ImageIOException {
     //
@@ -161,11 +132,10 @@ public class ImageLoader {
       rin.mark(512);
 
       DataInputStream din = new DataInputStream(rin);
-
-      final boolean useImageIO;
-
-      final boolean isPNG;
       PNGDecoder.Chunk ch; 
+
+      boolean fix_tRNS = false;
+      int tRNS = 0x00000000;
 
       // Is this a PNG?
       if (PNGDecoder.decodeSignature(din)) {        
@@ -175,10 +145,6 @@ public class ImageLoader {
 
         // Sanity check: This is not a PNG if IHDR is not the first chunk.
         if (ch.type == PNGDecoder.IHDR) {
-          //
-          // PNGs
-          //
-
           // At present, ImageIO does not honor the tRNS chunk in 8-bit color
           // type 2 (RGB) PNGs. This is not a bug per se, as the PNG standard
           // the does not require compliant decoders to use ancillary chunks.
@@ -186,38 +152,52 @@ public class ImageLoader {
           // tRNS chunk for this type of image, and so the appearance for
           // users is that VASSAL is broken when their 8-bit RGB PNGs don't
           // show the correct transparency.
-          //
-          // We check for type-2 8-bit PNGs with tRNS chunks and use
-          // Toolkit.createImage() for loading them, instead of ImageIO.
-
-          if (ch.data[8] != 8 || ch.data[9] != 2) {
-            // This is not an 8-bit-per-channel Truecolor image, use ImageIO
-            useImageIO = true;
-          }
-          else {
+          
+          // We check for type-2 8-bit PNGs with tRNS chunks.
+          if (ch.data[8] == 8 && ch.data[9] == 2) {
             // This is an 8-bit-per-channel Truecolor image; we must check
-            // whether there is a tRNS chunk, and use Toolkit if there is.
+            // whether there is a tRNS chunk, and if so, record the color
+            // so that we can manually set transparency later.
             //
             // IHDR is required to be first, and tRNS is required to appear
             // before the first IDAT chunk; therefore, if we find an IDAT
             // we're done.
 
-            boolean iio = false;
-            boolean done = false;
-            do {
+            DONE: for (;;) {
               ch = PNGDecoder.decodeChunk(din);
 
               switch (ch.type) {
-              case PNGDecoder.tRNS: iio = false; done = true; break;
-              case PNGDecoder.IDAT: iio = true;  done = true; break;
+              case PNGDecoder.tRNS: fix_tRNS = true;  break DONE;
+              case PNGDecoder.IDAT: fix_tRNS = false; break DONE;
               default:
               }
-            } while (!done);
+            }
 
-            useImageIO = iio;
+            if (fix_tRNS) {
+              if (ch.data.length != 6) { 
+                // There is at least one piece of software (SplitImage) which
+                // writes tRNS chunks for type 2 images which are only 3 bytes
+                // long, and because this kind of thing is used by module
+                // designers for slicing up scans of countersheets, we can
+                // expect to see such crap from time to time.
+                ErrorDialog.dataError(new BadDataReport("Broken image", name));
+                return null;
+              }
+              
+              //
+              // tRNS chunk: PNG Standard, 11.3.2.1
+              //
+              // tRNS data is stored as three 2-byte samples, but the high
+              // byte of each sample is empty because we are dealing with
+              // 8-bit-per-channel images.
+              tRNS = 0xff000000 |
+                     ((ch.data[1] & 0xff) << 16) |
+                     ((ch.data[3] & 0xff) <<  8) |
+                      (ch.data[5] & 0xff);
+            }
           }
 
-          if (useImageIO && iTXtBug) {
+          if (iTXtBug) {
             // Filter out iTXt chunks on JVMs with the iTXt bug.
             rin.reset();
             rin = new RereadableInputStream(
@@ -225,38 +205,16 @@ public class ImageLoader {
             rin.mark(1);
           }
         }
-        else {
-          //
-          // Non-PNGs
-          //
-          useImageIO = true;
-        }
-      }
-      else {
-        //
-        // Non-PNGs
-        //
-        useImageIO = true;
       }
 
+      // Load the image
       rin.reset();
-
-      if (!useImageIO) {
-        rin.mark(4096);
-
-        img = loadToolkit(name, rin);
-
-        if (img == null) {
-          // Toolkit failed. Reset the stream so ImageIO can have a go.
-          rin.reset();
-        }
-      }
-
-      if (img == null) {
-        img = loadImageIO(name, rin);
-      }
-
+      img = loadImageIO(name, rin);
       rin.close();
+
+      // Fix up transparency in type 2 Truecolor images.
+      if (fix_tRNS) img = fix_tRNS(img, tRNS); 
+
       return img;
     }
     catch (UnrecognizedImageTypeException e) {
@@ -268,6 +226,26 @@ public class ImageLoader {
     finally {
       IOUtils.closeQuietly(rin);
     }
+  }
+
+  protected BufferedImage fix_tRNS(BufferedImage img, int tRNS) {
+    // Ensure that we are working with unpremultiplied ARGB data
+    img = ImageUtils.toType(img, BufferedImage.TYPE_INT_ARGB);
+
+    // Set all pixels of the transparent color to have alpha 0.
+    final WritableRaster r = img.getRaster();    
+    final int w = img.getWidth();
+    final int h = img.getHeight();
+
+    final int[] data = (int[]) r.getDataElements(0, 0, w, h, new int[w*h]);
+        
+    for (int i = 0; i < data.length; ++i) {
+      if (data[i] == tRNS) data[i] &= 0x00ffffff;
+    }
+
+    r.setDataElements(0, 0, w, h, data); 
+    
+    return ImageUtils.toCompatibleImage(img);
   }
 
   protected Dimension size(String name, InputStream in)

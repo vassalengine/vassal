@@ -21,7 +21,6 @@ package VASSAL.tools.image.memmap;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.color.CMMException;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -119,46 +118,6 @@ public class MappedImageLoader extends ImageLoader {
     }
     finally {
       reader.dispose();
-    }
-  }
-
-  @Override
-  protected MappedBufferedImage loadToolkit(String name, InputStream in)
-                                                           throws IOException {
-    // Load as an Image; note that we forceLoad() to ensure that the
-    // subsequent calls to getWidth() and getHeight() return the
-    // actual width and height of the Image.
-    final Image src = ImageUtils.forceLoad(
-      Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(in))
-    );
-
-    // Toolkit.createImage() is unforgiving about malformed images but
-    // instead of throwing an exception or returning null, it returns a
-    // useless Image with negative width and height. (It might also
-    // print a stack trace to the log.) There is at least one piece of
-    // software (SplitImage) which writes tRNS chunks for type 2 images
-    // which are only 3 bytes long, and because this kind of thing is
-    // used by module designers for slicing up scans of countersheets,
-    // we can expect to see such crap from time to time.
-    final int w = src.getWidth(null);
-    final int h = src.getHeight(null);
-    if (w > 0 && h > 0) {
-      final MappedBufferedImage dst = MappedImageUtils.createCompatibleImage(
-        w, h, ImageUtils.isTransparent(src)
-      );
-   
-      final Graphics2D g = dst.createGraphics();
-      g.drawImage(src, 0, 0, null);
-      g.dispose();
-
-      return dst;
-    }
-    else {
-      // Toolkit failed for some reason. Probably this means that
-      // we have a broken image, so gently notify the user and
-      // fallback to ImageIO.read().
-      ErrorDialog.dataError(new BadDataReport("Broken image", name));
-      return null;
     }
   }
 
