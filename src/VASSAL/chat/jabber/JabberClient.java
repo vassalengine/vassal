@@ -57,6 +57,7 @@ import org.jivesoftware.smackx.muc.ParticipantStatusListener;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.jivesoftware.smackx.packet.VCard;
 
+import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
@@ -157,6 +158,19 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
           String username = account.getUserName();
           String password = account.getPassword();
           me = playerMgr.getPlayerByLogin(this, account.getUserName());
+          
+          final GameModule g = GameModule.getGameModule();
+          SimpleStatus s = (SimpleStatus) me.getStatus();
+          s = new SimpleStatus(
+                    s.isLooking(), 
+                    s.isAway(), 
+                    (String) g.getPrefs().getValue(GameModule.PERSONAL_INFO), 
+                    Info.getVersion(), 
+                    s.getIp(), 
+                    g.getGameVersion() + ((g.getArchiveWriter() == null) ? "" : " (Editing)"), 
+                    Long.toHexString(g.getCrc()));
+          me.setStatus(s);        
+          
           me.setName(account.getRealName());
           ConnectionConfiguration config = new ConnectionConfiguration(host, port);
           config.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
@@ -252,7 +266,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     GameModule.getGameModule().addCommandEncoder(synchEncoder);
     // GameModule.getGameModule().addCommandEncoder(privateChatEncoder);
     // GameModule.getGameModule().addCommandEncoder(soundEncoder);
-    controls.getRoomTree().setCellRenderer(new LockableRoomTreeRenderer());
+    controls.getRoomTree().setCellRenderer(new LockableRoomTreeRenderer());  
   }
 
   public void uninitializeControls(ChatServerControls controls) {
