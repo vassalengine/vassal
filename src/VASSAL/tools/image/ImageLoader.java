@@ -98,7 +98,7 @@ public class ImageLoader {
     }
 
     if (img == null) throw new UnrecognizedImageTypeException();
-    return ImageUtils.toCompatibleImage(img);
+    return img;
   }
 
   protected BufferedImage load(String name, InputStream in)
@@ -214,8 +214,8 @@ public class ImageLoader {
 
       // Fix up transparency in type 2 Truecolor images.
       if (fix_tRNS) img = fix_tRNS(img, tRNS); 
-
-      return img;
+    
+      return toCompatibleImage(img);
     }
     catch (UnrecognizedImageTypeException e) {
       throw new UnrecognizedImageTypeException(name, e);
@@ -228,13 +228,25 @@ public class ImageLoader {
     }
   }
 
+  protected BufferedImage toCompatibleImage(BufferedImage img)
+                                                           throws IOException {
+    return ImageUtils.toCompatibleImage(img);
+  }
+
   protected BufferedImage fix_tRNS(BufferedImage img, int tRNS) {
-    // Ensure that we are working with ARGB data. Whether it's premultiplied
-    // doesn't matter, since fully transparent and fully opaque pixels are
-    // the same in both.
+    // Ensure that we are working with integer ARGB data. Whether it's
+    // premultiplied doesn't matter, since fully transparent black pixels
+    // are the same in both.
     if (img.getType() != BufferedImage.TYPE_INT_ARGB &&
         img.getType() != BufferedImage.TYPE_INT_ARGB_PRE) {
-      img = ImageUtils.toType(img, BufferedImage.TYPE_INT_ARGB);
+    
+      // Convert to the compatible type if it's an integer type; otherwise,
+      // convert to unpremultiplied integer.
+      final int compat = ImageUtils.getCompatibleTranslucentImageType();
+      img = ImageUtils.toType(img,
+              compat == BufferedImage.TYPE_INT_ARGB || 
+              compat == BufferedImage.TYPE_INT_ARGB_PRE ? compat :
+              BufferedImage.TYPE_INT_ARGB);
     }
 
     // Set all pixels of the transparent color to have alpha 0.
@@ -242,6 +254,11 @@ public class ImageLoader {
     final int w = img.getWidth();
     final int h = img.getHeight();
 
+    // FIXME: using get/setDataElements() causes us to copy the image data
+    // at most three times (get, set, toCompatibleImage). Working on the
+    // DataBufferInt directly unmanages the image, but will let us do a
+    // single copy. Implementing this is complicated while we still use
+    // memory-mapped images. Change this once memory-mapped images are gone.
     final int[] data = (int[]) r.getDataElements(0, 0, w, h, new int[w*h]);
         
     for (int i = 0; i < data.length; ++i) {
@@ -250,8 +267,7 @@ public class ImageLoader {
 
     r.setDataElements(0, 0, w, h, data); 
 
-    // Make sure we go back to a compatible image.
-    return ImageUtils.toCompatibleImage(img);
+    return img;
   }
 
   protected Dimension size(String name, InputStream in)

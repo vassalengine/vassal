@@ -51,7 +51,7 @@ public class MappedImageLoader extends ImageLoader {
 
   public static MappedBufferedImage getImage(String name, InputStream in)
                                                       throws ImageIOException {
-    return INSTANCE.load(name, in);
+    return (MappedBufferedImage) INSTANCE.load(name, in);
   }
 
   protected static final MappedImageLoader INSTANCE = new MappedImageLoader(); 
@@ -121,16 +121,8 @@ public class MappedImageLoader extends ImageLoader {
     }
   }
 
-  @Override
-  protected MappedBufferedImage load(String name, InputStream in)
-                                                      throws ImageIOException {
-    final MappedBufferedImage img = (MappedBufferedImage) super.load(name, in);
-
-    try {
-      return MappedImageUtils.toCompatibleImage(img);
-    }
-    catch (IOException e) {
-      throw new ImageIOException(name, e);
-    }
+  protected MappedBufferedImage toCompatibleImage(MappedBufferedImage img)
+                                                           throws IOException {
+    return MappedImageUtils.toCompatibleImage(img);
   }
 }
