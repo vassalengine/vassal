@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 import VASSAL.chat.HttpRequestWrapper;
+import VASSAL.chat.SimpleStatus;
 import VASSAL.tools.PropertiesEncoder;
 
 /**
@@ -49,7 +50,7 @@ public class StatusReporter implements Runnable {
     for (Node pl : players) {
       Node mod = server.getModule(pl);
       try {
-        final String name = new PropertiesEncoder(pl.getInfo()).getProperties().getProperty(NodePlayer.NAME);
+        final String name = new PropertiesEncoder(pl.getInfo()).getProperties().getProperty(SimpleStatus.NAME);
         if (name != null) {
           buffer.append(mod.getId())
                 .append('\t')

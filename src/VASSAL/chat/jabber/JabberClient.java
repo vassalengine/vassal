@@ -81,6 +81,7 @@ import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.WarningDialog;
 
 public class JabberClient implements ChatServerConnection, PacketListener, ServerStatus, ChatControlsInitializer, PlayerEncoder {
   private static final String QUERY_ROOMS = "http://jabber.org/protocol/muc#rooms";
@@ -205,9 +206,14 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
         }
         // FIXME: review error message
         catch (XMPPException e) {
-          reportXMPPException(e);
-          if (e.getWrappedThrowable() != null && e.getWrappedThrowable().getLocalizedMessage() != null) {
-            fireStatus(e.getWrappedThrowable().getMessage());
+          if (e.getXMPPError() != null && e.getXMPPError().getCode() == 404) {
+            WarningDialog.show("Server.not_found", host+":"+port);
+          }
+          else {
+            reportXMPPException(e);
+            if (e.getWrappedThrowable() != null && e.getWrappedThrowable().getLocalizedMessage() != null) {
+              fireStatus(e.getWrappedThrowable().getMessage());
+            }
           }
           setConnected(false);
         }
@@ -413,8 +419,12 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       Presence p = new Presence(Presence.Type.available);
       p.setStatus("");
       p.setMode(Presence.Mode.chat);
-      p.setProperty("looking", s.isLooking());
-      p.setProperty("away", s.isAway());
+      p.setProperty(SimpleStatus.LOOKING, s.isLooking());
+      p.setProperty(SimpleStatus.AWAY, s.isAway());
+      p.setProperty(SimpleStatus.IP, s.getIp());
+      p.setProperty(SimpleStatus.CLIENT, s.getClient());
+      p.setProperty(SimpleStatus.MODULE_VERSION, s.getModuleVersion());
+      p.setProperty(SimpleStatus.CRC, s.getCrc());
       p.setProperty("realName",player.getName());
       p.setTo(recipient == null ? monitorRoom.getRoom() : recipient);
       conn.sendPacket(p);
@@ -565,9 +575,13 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
         JabberPlayer player = playerMgr.getPlayer(getAbsolutePlayerJID(p.getFrom()));
         SimpleStatus status = (SimpleStatus) player.getStatus();
         String profile = status == null ? "" : status.getProfile();
-        Object looking = p.getProperty("looking");
-        Object away = p.getProperty("away");
-        status = new SimpleStatus(looking == null ? false : (Boolean) looking, away == null ? false : (Boolean) away, profile);
+        Object looking = p.getProperty(SimpleStatus.LOOKING);
+        Object away = p.getProperty(SimpleStatus.AWAY);
+        String ip = p.getProperty(SimpleStatus.IP).toString();
+        String client = p.getProperty(SimpleStatus.CLIENT).toString();
+        String moduleVersion = p.getProperty(SimpleStatus.MODULE_VERSION).toString();
+        String crc = p.getProperty(SimpleStatus.CRC).toString();
+        status = new SimpleStatus(looking == null ? false : (Boolean) looking, away == null ? false : (Boolean) away, profile, client, ip, moduleVersion, crc);
         player.setStatus(status);
         player.setName(String.valueOf(p.getProperty("realName")));
         fireRoomsUpdated();

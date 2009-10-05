@@ -24,14 +24,23 @@ package VASSAL.chat;
  * 
  */
 public class SimpleStatus implements PlayerStatus {
+  
+  public static final String CRC = "crc"; //$NON-NLS-1$
+  public static final String MODULE_VERSION = "moduleVersion"; //$NON-NLS-1$
+  public static final String IP = "ip"; //$NON-NLS-1$
+  public static final String CLIENT = "client"; //$NON-NLS-1$
+  public static final String PROFILE = "profile"; //$NON-NLS-1$
+  public static final String AWAY = "away"; //$NON-NLS-1$
+  public static final String LOOKING = "looking"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  
   private boolean looking;
   private boolean away;
   private String profile;
   private String client;
   private String ip; 
   private String moduleVersion;
-  private String crc;
- 
+  private String crc; 
 
   public SimpleStatus() {
     this(false, false, ""); //$NON-NLS-1$
