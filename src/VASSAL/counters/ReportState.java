@@ -195,6 +195,9 @@ public class ReportState extends Decorator implements TranslatablePiece {
           else if (oldMap != null) {
             format.setFormat(oldMap.getChangeFormat());
           }
+          else if (!Map.isChangeReportingEnabled()) {
+            format.setFormat("");
+          }
           else {
             format.setFormat("$"+Map.MESSAGE+"$");
           }
