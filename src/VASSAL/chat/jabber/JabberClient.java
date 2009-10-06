@@ -23,6 +23,8 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -82,7 +84,6 @@ import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.WarningDialog;
 
 public class JabberClient implements ChatServerConnection, PacketListener, ServerStatus, ChatControlsInitializer, PlayerEncoder {
   private static final String QUERY_ROOMS = "http://jabber.org/protocol/muc#rooms";
@@ -161,12 +162,18 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
           
           final GameModule g = GameModule.getGameModule();
           SimpleStatus s = (SimpleStatus) me.getStatus();
+          String myIP = "";
+          try {
+            myIP = InetAddress.getLocalHost().getHostAddress();
+          }
+          catch (UnknownHostException e) {
+          }
           s = new SimpleStatus(
                     s.isLooking(), 
                     s.isAway(), 
                     (String) g.getPrefs().getValue(GameModule.PERSONAL_INFO), 
                     Info.getVersion(), 
-                    s.getIp(), 
+                    myIP, 
                     g.getGameVersion() + ((g.getArchiveWriter() == null) ? "" : " (Editing)"), 
                     Long.toHexString(g.getCrc()));
           me.setStatus(s);        
@@ -217,19 +224,14 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
           monitor.init();
           propSupport.firePropertyChange(CONNECTED, null, Boolean.TRUE);
           setRoom(defaultRoom);
+          fireStatus(Resources.getString("Server.connected", host+":"+port));
         }
         // FIXME: review error message
         catch (XMPPException e) {
-          if (e.getXMPPError() != null && e.getXMPPError().getCode() == 404) {
-            WarningDialog.show("Server.not_found", host+":"+port);
-          }
-          else {
-            reportXMPPException(e);
-            if (e.getWrappedThrowable() != null && e.getWrappedThrowable().getLocalizedMessage() != null) {
-              fireStatus(e.getWrappedThrowable().getMessage());
-            }
-          }
+          reportXMPPException(e);
+          fireStatus(Resources.getString("Server.server_error", e.getXMPPError().getMessage(), e.getXMPPError().getCondition(), e.getXMPPError().getCode()));
           setConnected(false);
+          return;
         }
       }
     }
