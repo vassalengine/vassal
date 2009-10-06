@@ -47,7 +47,7 @@ public class JabberPlayer extends SimplePlayer {
   }
 
   public String toString() {
-    return name + " (" + jid + ") "+"["+((SimpleStatus)status).isLooking()+","+((SimpleStatus)status).isAway()+"]";
+    return name + " (" + jid.split("@")[0] + ")"; // "+"["+((SimpleStatus)status).isLooking()+","+((SimpleStatus)status).isAway()+"]";
   }
 
   public void join(JabberRoom room) {

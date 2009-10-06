@@ -29,8 +29,6 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
-import org.jdesktop.swingworker.SwingWorker;
-
 import VASSAL.build.module.ServerConnection;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.i18n.Resources;

@@ -21,6 +21,7 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -73,7 +74,7 @@ public class BasicModule extends GameModule {
   public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
   private static char COMMAND_SEPARATOR = (char) KeyEvent.VK_ESCAPE;
   protected ChatServerControls serverControls;
-
+  
   public BasicModule(DataArchive archive) {
     super(archive);
   }
@@ -151,8 +152,17 @@ public class BasicModule extends GameModule {
   }
 
   protected void initIdentityPreferences() {
+    idChangeSupport = new PropertyChangeSupport(this);
     StringConfigurer fullName = new StringConfigurer(GameModule.REAL_NAME, Resources.getString("Prefs.name_label"), Resources.getString("Prefs.newbie"));   //$NON-NLS-1$ //$NON-NLS-2$
+    fullName.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        idChangeSupport.firePropertyChange(evt);
+      }});
     TextConfigurer profile = new TextConfigurer(GameModule.PERSONAL_INFO, Resources.getString("Prefs.personal_info"), "");   //$NON-NLS-1$ //$NON-NLS-2$
+    profile.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        idChangeSupport.firePropertyChange(evt);
+      }});
     StringConfigurer user = new PasswordConfigurer(GameModule.SECRET_NAME, Resources.getString("Prefs.password_label"), Resources.getString("Prefs.password_prompt", System.getProperty("user.name"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     user.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
@@ -164,7 +174,7 @@ public class BasicModule extends GameModule {
     GameModule.getGameModule().getPrefs().addOption(Resources.getString("Prefs.personal_tab"), profile);  //$NON-NLS-1$
     GameModule.setUserId(user.getValueString());
   }
-  
+   
   protected void initImagePreferences() {
     final BooleanConfigurer mappedPref = new BooleanConfigurer(
         PREFER_MEMORY_MAPPED,

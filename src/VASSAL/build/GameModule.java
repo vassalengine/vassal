@@ -23,6 +23,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -154,7 +155,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected ServerConnection server;
 
   protected WizardSupport wizardSupport;
-
+  protected PropertyChangeSupport idChangeSupport;
+  
   protected List<KeyStrokeSource> keyStrokeSources =
     new ArrayList<KeyStrokeSource>();
   protected List<KeyStrokeListener> keyStrokeListeners =
@@ -420,6 +422,14 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   /** The {@link Prefs} key for the user's personal info */
   public static final String PERSONAL_INFO = "Profile"; //$NON-NLS-1$
 
+  public void addIdChangeListener(PropertyChangeListener l) {
+    idChangeSupport.addPropertyChangeListener(l);
+  }
+
+  public void removeIdChangeListener(PropertyChangeListener l) {
+    idChangeSupport.removePropertyChangeListener(l);
+  }
+  
   /**
    * @return the preferences for this module
    */

@@ -23,8 +23,6 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,7 +57,6 @@ import org.jivesoftware.smackx.muc.ParticipantStatusListener;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.jivesoftware.smackx.packet.VCard;
 
-import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
@@ -106,6 +103,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   protected SimpleStatusControlsInitializer playerStatusControls;
   protected JabberPlayer.Manager playerMgr = new JabberPlayer.Manager();
   protected JabberRoom.Manager roomMgr = new JabberRoom.Manager();
+  protected PropertyChangeListener idChangeListener;
 
   public JabberClient(CommandEncoder encoder, String host, int port, AccountInfo account) {
     XMPPConnection.DEBUG_ENABLED = "true".equals(System.getProperty("enableJabber"));
@@ -123,6 +121,19 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     // serverStatusControls = new ServerStatusControlsInitializer(serverStatus);
     playerStatusControls = new SimpleStatusControlsInitializer(this);
     synchEncoder = new SynchEncoder(this,this);
+    
+    idChangeListener = new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        if (me != null) {
+          SimpleStatus s = (SimpleStatus) me.getStatus();
+          s.updateStatus();
+          me.setStatus(s);  
+          me.setName((String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
+        }
+        if (monitor != null) {
+          monitor.sendStatus(me);
+        }              
+      }};
   }
 
   public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
@@ -162,20 +173,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
           
           final GameModule g = GameModule.getGameModule();
           SimpleStatus s = (SimpleStatus) me.getStatus();
-          String myIP = "";
-          try {
-            myIP = InetAddress.getLocalHost().getHostAddress();
-          }
-          catch (UnknownHostException e) {
-          }
-          s = new SimpleStatus(
-                    s.isLooking(), 
-                    s.isAway(), 
-                    (String) g.getPrefs().getValue(GameModule.PERSONAL_INFO), 
-                    Info.getVersion(), 
-                    myIP, 
-                    g.getGameVersion() + ((g.getArchiveWriter() == null) ? "" : " (Editing)"), 
-                    Long.toHexString(g.getCrc()));
+          s.updateStatus();
           me.setStatus(s);        
           
           //me.setName(account.getRealName());
@@ -226,6 +224,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
           propSupport.firePropertyChange(CONNECTED, null, Boolean.TRUE);
           setRoom(defaultRoom);
           fireStatus(Resources.getString("Server.connected", host+":"+port));
+          GameModule.getGameModule().addIdChangeListener(idChangeListener);
         }
         // FIXME: review error message
         catch (XMPPException e) {
@@ -250,6 +249,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
       playerMgr.clear();
       roomMgr.clear();
+      fireStatus(Resources.getString("Server.disconnected", host+":"+port));
     }
   }
 

@@ -17,6 +17,12 @@
  */
 package VASSAL.chat;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import VASSAL.Info;
+import VASSAL.build.GameModule;
+
 /**
  * Immutable PlayerStatus class with flags indicating "looking for a game" and "away from keyboard" and a String profile
  * 
@@ -46,6 +52,10 @@ public class SimpleStatus implements PlayerStatus {
     this(false, false, ""); //$NON-NLS-1$
   }
 
+  public SimpleStatus(boolean looking, boolean away) {
+    this(looking, away, "");
+  }
+  
   public SimpleStatus(boolean looking, boolean away, String profile) {
     this(looking, away, profile, "", "", "", "");
   }
@@ -86,5 +96,22 @@ public class SimpleStatus implements PlayerStatus {
   
   public String getCrc() {
     return crc;
+  }
+  
+  /**
+   * Update variable parts of status
+   */
+  public void updateStatus() {
+    final GameModule g = GameModule.getGameModule();
+    profile = (String) g.getPrefs().getValue(GameModule.PERSONAL_INFO);
+    client = Info.getVersion(); 
+    ip = "";
+    try {
+      ip = InetAddress.getLocalHost().getHostAddress();
+    }
+    catch (UnknownHostException e) {
+    }
+    moduleVersion = g.getGameVersion() + ((g.getArchiveWriter() == null) ? "" : " (Editing)"); 
+    crc = Long.toHexString(g.getCrc());
   }
 }
