@@ -178,7 +178,8 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
                     Long.toHexString(g.getCrc()));
           me.setStatus(s);        
           
-          me.setName(account.getRealName());
+          //me.setName(account.getRealName());
+          me.setName((String) g.getPrefs().getValue(GameModule.REAL_NAME));
           ConnectionConfiguration config = new ConnectionConfiguration(host, port);
           config.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
           config.setCompressionEnabled(true);
@@ -420,6 +421,7 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
           throw ex;
         }
       }
+      sendStatus(me);
     }
 
     public String getMonitorRoomJID() {
