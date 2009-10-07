@@ -26,7 +26,6 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
 import java.awt.image.DataBuffer;
 import java.awt.image.DirectColorModel;
 import java.awt.image.PixelGrabber;
@@ -49,6 +48,7 @@ import VASSAL.tools.io.RereadableInputStream;
 public class ImageUtils {
   private ImageUtils() {}
 
+  // FIXME: We should fix this, eventually.
   // negative, because historically we've done it this way
   private static final double DEGTORAD = -Math.PI/180.0;
 
@@ -330,21 +330,15 @@ public class ImageUtils {
     return ImageLoader.getImage(name, in);
   }
 
-// FIXME: check speed
-  private static BufferedImage colorConvertCopy(BufferedImage src,
-                                                BufferedImage dst) {
-    final ColorConvertOp op = new ColorConvertOp(
-      src.getColorModel().getColorSpace(),
-      dst.getColorModel().getColorSpace(), null);
-
-    op.filter(src, dst);
-    return dst;
-  }
-
   public static BufferedImage toType(BufferedImage src, int type) {
     final BufferedImage dst =
       new BufferedImage(src.getWidth(), src.getHeight(), type);
-    return colorConvertCopy(src, dst);
+
+    final Graphics2D g = dst.createGraphics();
+    g.drawImage(src, 0, 0, null);
+    g.dispose();
+
+    return dst;
   }
 
   public static Image forceLoad(Image img) {
