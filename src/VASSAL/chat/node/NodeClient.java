@@ -362,7 +362,7 @@ public abstract class NodeClient implements LockableChatServerConnection, Player
       // Rooms have been updated with any new players (including us), so perform a Synchronize
       // for a move to a new room if needed.
       if (pendingSynchToRoom != null) {
-        new SynchAction(((NodeRoom) pendingSynchToRoom).getOwningPlayer(), this).actionPerformed(null);
+        new SynchAction(pendingSynchToRoom.getOwningPlayer(), this).actionPerformed(null);
         pendingSynchToRoom = null;
         GameModule.getGameModule().warn(Resources.getString("Chat.synchronize_complete"));
       }
