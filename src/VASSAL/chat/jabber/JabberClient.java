@@ -58,7 +58,8 @@ import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.jivesoftware.smackx.packet.VCard;
 
 import VASSAL.build.GameModule;
-import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.LockableChatServerConnection;
+import VASSAL.chat.LockableRoom;
 import VASSAL.chat.Player;
 import VASSAL.chat.PlayerEncoder;
 import VASSAL.chat.PrivateChatManager;
@@ -82,7 +83,7 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
 
-public class JabberClient implements ChatServerConnection, PacketListener, ServerStatus, ChatControlsInitializer, PlayerEncoder {
+public class JabberClient implements LockableChatServerConnection, PacketListener, ServerStatus, ChatControlsInitializer, PlayerEncoder {
   private static final String QUERY_ROOMS = "http://jabber.org/protocol/muc#rooms";
   private MessageBoard msgSvr;
   private XMPPConnection conn;
@@ -113,7 +114,8 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     this.account = account;
     defaultRoom = roomMgr.getRoomByName(this, "Main Room");
     messageBoardControls = new MessageBoardControlsInitializer(Resources.getString("Chat.messages"), msgSvr); //$NON-NLS-1$
-    roomControls = new RoomInteractionControlsInitializer(this);
+    //roomControls = new RoomInteractionControlsInitializer(this);
+    roomControls = new LockableJabberRoomControls(this);
     roomControls.addPlayerActionFactory(ShowProfileAction.factory());
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
     roomControls.addPlayerActionFactory(PrivateMessageAction.factory(this, new PrivateChatManager(this)));
@@ -313,6 +315,8 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
       }
     }
     // FIXME: review error message
+    // 401 = Bad Password for room
+    
     catch (XMPPException e) {
       reportXMPPException(e);
       propSupport.firePropertyChange(STATUS, null, "Failed to join room");
@@ -342,6 +346,10 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
     }
   }
 
+  public String getDefaultRoomName() {
+    return defaultRoom.getName();
+  }
+  
   public void sendTo(Player recipient, Command c) {
     Chat chat = conn.getChatManager().createChat(((JabberPlayer) recipient).getJid(), null);
     try {
@@ -379,6 +387,16 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
 
   public static String unescapeNode(String node) {
     return StringUtils.unescapeNode(node);
+  }
+  
+  /** 
+   * Toggle the lock state on the room.
+   */
+  public void lockRoom(LockableRoom r) {
+    if (r instanceof JabberRoom) {
+      final JabberRoom room = (JabberRoom) r;
+      room.toggleLock(currentChat); 
+    }    
   }
   /**
    * VASSAL clients join a common room, named for the module, from which they communicate information about which
@@ -764,4 +782,5 @@ public class JabberClient implements ChatServerConnection, PacketListener, Serve
   public Player stringToPlayer(String s) {
     return playerMgr.getPlayer(s);
   }
+
 }

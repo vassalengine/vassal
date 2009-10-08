@@ -22,6 +22,7 @@ import VASSAL.chat.Room;
 import VASSAL.i18n.Resources;
 
 import javax.swing.*;
+
 import java.awt.event.ActionEvent;
 
 /**
@@ -42,5 +43,13 @@ public class JoinRoomAction extends AbstractAction {
 
   public void actionPerformed(ActionEvent evt) {
     client.setRoom(r);
+  }
+
+  public static RoomActionFactory factory(final ChatServerConnection chatClient) {
+    return new RoomActionFactory() {
+      public Action getAction(Room p, JTree tree) {
+        return new JoinRoomAction(p, chatClient);
+      }
+    };
   }
 }

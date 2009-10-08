@@ -26,10 +26,11 @@ import java.util.Properties;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.chat.CgiServerStatus;
-import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Compressor;
 import VASSAL.chat.InviteCommand;
 import VASSAL.chat.InviteEncoder;
+import VASSAL.chat.LockableChatServerConnection;
+import VASSAL.chat.LockableRoom;
 import VASSAL.chat.MainRoomChecker;
 import VASSAL.chat.Player;
 import VASSAL.chat.PlayerEncoder;
@@ -49,7 +50,6 @@ import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.chat.ui.InviteAction;
 import VASSAL.chat.ui.KickAction;
-import VASSAL.chat.ui.LockableRoomControls;
 import VASSAL.chat.ui.LockableRoomTreeRenderer;
 import VASSAL.chat.ui.MessageBoardControlsInitializer;
 import VASSAL.chat.ui.PrivateMessageAction;
@@ -70,7 +70,7 @@ import VASSAL.tools.SequenceEncoder;
 /**
  * @author rkinney
  */
-public abstract class NodeClient implements ChatServerConnection, PlayerEncoder, ChatControlsInitializer {
+public abstract class NodeClient implements LockableChatServerConnection, PlayerEncoder, ChatControlsInitializer {
   public static final String ZIP_HEADER = "!ZIP!";  //$NON-NLS-1$
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected NodePlayer me;
@@ -106,7 +106,7 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     serverStatus = new CgiServerStatus();
     me = new NodePlayer(playerId);
     messageBoardControls = new MessageBoardControlsInitializer(Resources.getString("Chat.messages"), msgSvr);  //$NON-NLS-1$
-    roomControls = new LockableRoomControls(this);
+    roomControls = new LockableNodeRoomControls(this);
     roomControls.addPlayerActionFactory(ShowProfileAction.factory());
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
     PrivateChatManager privateChatManager = new PrivateChatManager(this);
@@ -302,11 +302,14 @@ public abstract class NodeClient implements ChatServerConnection, PlayerEncoder,
     propSupport.firePropertyChange(PLAYER_INFO, null, me);
   }
 
-  public void lockRoom(NodeRoom r) {
-    if (r.getOwner().equals(me.getId())) {
-      r.toggleLock();
-      sendRoomInfo(r);
-      propSupport.firePropertyChange(AVAILABLE_ROOMS, null, allRooms);
+  public void lockRoom(LockableRoom r) {
+    if (r instanceof NodeRoom) {
+      final NodeRoom n = (NodeRoom) r;    
+      if (n.getOwner().equals(me.getId())) {
+        n.toggleLock();
+        sendRoomInfo(n);
+        propSupport.firePropertyChange(AVAILABLE_ROOMS, null, allRooms);
+      }
     }
   }
 

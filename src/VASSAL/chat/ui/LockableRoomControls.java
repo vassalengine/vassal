@@ -18,27 +18,25 @@
  */
 package VASSAL.chat.ui;
 
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
-import VASSAL.chat.HybridClient;
+
+import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.LockableRoom;
 import VASSAL.chat.Room;
-import VASSAL.chat.node.NodeClient;
-import VASSAL.chat.node.NodeRoom;
-import VASSAL.i18n.Resources;
 
 
 /**
  * @author rkinney
  */
-public class LockableRoomControls extends RoomInteractionControlsInitializer {
+public abstract class LockableRoomControls extends RoomInteractionControlsInitializer {
 
-  public LockableRoomControls(NodeClient client) {
+  protected JoinRoomAction joinAction; 
+  
+  public LockableRoomControls(ChatServerConnection client) {
     super(client);
   }
-
+  
   public void doubleClickRoom(Room room, JTree tree) {
     if (!(room instanceof LockableRoom)
         || !((LockableRoom) room).isLocked()) {
@@ -48,79 +46,22 @@ public class LockableRoomControls extends RoomInteractionControlsInitializer {
 
   public JPopupMenu buildPopupForRoom(Room target, JTree tree) {
     JPopupMenu popup = new JPopupMenu();
-    JoinRoomAction joinAction = new JoinRoomAction(target, client);
-    popup.add(joinAction);
-    NodeClient c = getNodeClient();
-    if (c != null) {
-      if (target instanceof LockableRoom) {
-        LockableRoom nr = (LockableRoom) target;
-        if (nr.isLocked()) {
-          joinAction.setEnabled(false);
-        }
-      }
-      popup.add(new LockRoomAction((NodeRoom) target, c));
-    }
+    addJoinRoomAction(popup, target);
+    addLockRoomAction(popup, target);
     return popup;
   }
   
-  private NodeClient getNodeClient() {
-    NodeClient c = null;
-    if (client instanceof NodeClient) {
-      c = (NodeClient) client;
-    }
-    else if (client instanceof HybridClient
-        && ((HybridClient) client).getDelegate() instanceof NodeClient) {
-      c = (NodeClient) ((HybridClient) client).getDelegate();
-    }
-    return c;
-  }
-
-  protected void createRoom(String name) {
-    Room existing = null;
-    Room[] rooms = client.getAvailableRooms();
-    for (int i = 0; existing == null && i < rooms.length; i++) {
-      if (rooms[i].getName().equals(name)) {
-        existing = rooms[i];
+  protected void addJoinRoomAction(JPopupMenu popup, Room target) {
+    joinAction = new JoinRoomAction(target, client);
+    popup.add(joinAction);
+    if (target instanceof LockableRoom) {
+      LockableRoom nr = (LockableRoom) target;
+      if (nr.isLocked()) {
+        joinAction.setEnabled(false);
       }
     }
-    NodeClient nodeClient = getNodeClient();
-    if (existing instanceof NodeRoom) {
-      // Join existing room if it is not locked
-      if (!((NodeRoom) existing).isLocked()) {
-        client.setRoom(existing);
-      }
-    }
-    else if (existing == null
-        && nodeClient != null) {
-      // If running hierarchical server, create new room and set myself as the owner
-      NodeRoom room = new NodeRoom(name);
-      room.setOwner(nodeClient.getMyInfo().getId());
-      client.setRoom(room);
-      nodeClient.sendRoomInfo(room);
-    }
-    else {
-      // Default behavior
-      super.createRoom(name);
-    }
   }
-
-  public static class LockRoomAction extends AbstractAction {
-    private static final long serialVersionUID = 1L; 
-
-    private NodeClient client;
-    private NodeRoom target;
-
-    public LockRoomAction(NodeRoom target, NodeClient client) {
-      super(target.isLocked() ? Resources.getString("Chat.unlock_room")
-                              : Resources.getString("Chat.lock_room"));
-      setEnabled(client.getMyInfo().getId().equals(target.getOwner()) &&
-                 !target.getName().equals(client.getDefaultRoomName()));
-      this.target = target;
-      this.client = client;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-      client.lockRoom(target);
-    }
-  }  
+    
+  protected abstract void addLockRoomAction(JPopupMenu popup, Room target);
+   
 }

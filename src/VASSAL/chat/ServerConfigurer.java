@@ -80,6 +80,7 @@ public class ServerConfigurer extends Configurer {
   private JCheckBox jabberHostPrompt;
   private JLabel jabberAccountPrompt;
   private JLabel jabberPasswordPrompt;
+  private DocumentListener docListener;
 
   public ServerConfigurer(String key, String name, HybridClient client) {
     super(key, name, new Properties());
@@ -130,10 +131,11 @@ public class ServerConfigurer extends Configurer {
       jabberHostPrompt.addItemListener(new ItemListener() {
         public void itemStateChanged(ItemEvent e) {
           jabberHost.setEnabled(jabberHostPrompt.isSelected() && jabberButton.isSelected());
+          docListener.changedUpdate(null);
         }
       });
       jabberHost.setText(JabberClientFactory.DEFAULT_JABBER_HOST + ":" + JabberClientFactory.DEFAULT_JABBER_PORT); //$NON-NLS-1$
-      DocumentListener docListener = new DocumentListener() {
+      docListener = new DocumentListener() {
         public void changedUpdate(DocumentEvent e) {
           updateValue();
         }

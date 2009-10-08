@@ -30,14 +30,17 @@ import VASSAL.chat.LockableRoom;
 import VASSAL.chat.SimpleRoom;
 
 public class JabberRoom extends SimpleRoom implements LockableRoom {
+  private static final String CONFIG_MEMBERSONLY = "muc#roomconfig_membersonly";
   private String jid;
   private RoomInfo info;
   private boolean ownedByMe;
+  private JabberClient client;
 
-  private JabberRoom(String name, String jid, RoomInfo info) {
+  private JabberRoom(String name, String jid, RoomInfo info, JabberClient client) {
     super(name);
     this.jid = jid;
     this.info = info;
+    this.client = client;
   }
 
   public String getJID() {
@@ -48,9 +51,39 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     return info != null && info.isMembersOnly();
   }
 
-  public MultiUserChat join(JabberClient client, JabberPlayer me) throws XMPPException {
+  public void toggleLock(MultiUserChat muc) {
+    try {
+      if (!isLocked()) {
+        lock(muc);
+      }
+      else {
+        unlock(muc);
+      }
+      info = MultiUserChat.getRoomInfo(client.getConnection(), jid);
+    }
+    catch (XMPPException e) {
+      e.printStackTrace();
+      return;
+    }
+  }
+
+  protected void lock(MultiUserChat muc) throws XMPPException {
+    final Form form = muc.getConfigurationForm().createAnswerForm();
+    form.setAnswer(CONFIG_MEMBERSONLY, true);
+    muc.sendConfigurationForm(form);
+  }
+
+  protected void unlock(MultiUserChat muc) throws XMPPException {
+    final Form form = muc.getConfigurationForm().createAnswerForm();
+    form.setAnswer(CONFIG_MEMBERSONLY, false);
+    muc.sendConfigurationForm(form);
+  }
+
+  public MultiUserChat join(JabberClient client, JabberPlayer me)
+      throws XMPPException {
     MultiUserChat chat = new MultiUserChat(client.getConnection(), getJID());
     chat.join(StringUtils.parseName(me.getJid()));
+
     try {
       // This is necessary to create the room if it doesn't already exist
       chat.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
@@ -58,7 +91,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     }
     catch (XMPPException e) {
       // 403 code means the room already exists and user is not an owner
-      if (e.getXMPPError().getCode() != 403) {
+      if (e.getXMPPError() != null && e.getXMPPError().getCode() != 403) {
         throw e;
       }
     }
@@ -91,6 +124,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   public boolean isOwnedByMe() {
     return ownedByMe;
   }
+
   public static class Manager {
     private Map<String, JabberRoom> jidToRoom = new HashMap<String, JabberRoom>();
 
@@ -110,17 +144,20 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         catch (XMPPException e) {
           e.printStackTrace();
         }
-        newRoom = new JabberRoom(subject, jid, info);
+        newRoom = new JabberRoom(subject, jid, info, client);
         jidToRoom.put(jid, newRoom);
       }
       return newRoom;
     }
 
-    public synchronized JabberRoom getRoomByName(JabberClient client, String name) {
-      String jid = StringUtils.escapeNode(client.getModule() + "/" + name).toLowerCase() + "@" + client.getConferenceService();
+    public synchronized JabberRoom getRoomByName(JabberClient client,
+        String name) {
+      String jid = StringUtils.escapeNode(client.getModule() + "/" + name)
+          .toLowerCase()
+          + "@" + client.getConferenceService();
       JabberRoom room = jidToRoom.get(jid);
       if (room == null) {
-        room = new JabberRoom(name, jid, null);
+        room = new JabberRoom(name, jid, null, client);
         jidToRoom.put(jid, room);
       }
       return room;
@@ -129,7 +166,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     public void deleteRoom(String jid) {
       jidToRoom.remove(jid);
     }
-    
+
     public synchronized void clear() {
       jidToRoom.clear();
     }
