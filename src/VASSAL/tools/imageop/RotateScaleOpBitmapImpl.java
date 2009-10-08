@@ -132,7 +132,7 @@ public class RotateScaleOpBitmapImpl extends AbstractTileOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof RotateScaleOpBitmapImpl)) return false;
+    if (o == null || o.getClass() != this.getClass()) return false;
 
     final RotateScaleOpBitmapImpl op = (RotateScaleOpBitmapImpl) o;
     return scale == op.getScale() && 

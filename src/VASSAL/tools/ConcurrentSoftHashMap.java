@@ -62,7 +62,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (o == null || !(o instanceof SoftValue)) return false;
+      if (o == null || o.getClass() != this.getClass()) return false;
       final SoftValue sv = (SoftValue) o;
       return key.equals(sv.key) &&
              get() == null ? sv.get() == null : get().equals(sv.get());

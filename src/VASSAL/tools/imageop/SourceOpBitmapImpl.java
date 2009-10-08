@@ -144,7 +144,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof SourceOpBitmapImpl)) return false;
+    if (o == null || o.getClass() != this.getClass()) return false;
 
     final SourceOpBitmapImpl s = (SourceOpBitmapImpl) o;
     return archive == s.archive && name.equals(s.name);

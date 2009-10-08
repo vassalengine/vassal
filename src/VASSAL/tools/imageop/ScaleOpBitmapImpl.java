@@ -39,16 +39,16 @@ import VASSAL.tools.image.ImageUtils;
  */
 public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
                                implements ScaleOp {
-  private final ImageOp sop;
-  private final double scale;
-  private final RenderingHints hints;
-  private final int hash;
+  protected final ImageOp sop;
+  protected final double scale;
+  protected final RenderingHints hints;
+  protected final int hash;
 
   // FIXME: We try to always use the same hints object because hints is
   // used in our equals() and RenderingHints.equals() is ridiculously slow
   // if a full comparison is made. This way hints == defaultHints, usually,
   // and so a quick equality comparison succeeds.
-  private static final RenderingHints defaultHints =
+  protected static final RenderingHints defaultHints =
     ImageUtils.getDefaultHints();
 
   /**
@@ -191,7 +191,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (o == null || !(o instanceof TileOp)) return false;
+      if (o == null || o.getClass() != this.getClass()) return false;
 
       final TileOp op = (TileOp) o;
       return dx0 == op.dx0 &&
@@ -225,7 +225,7 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof ScaleOpBitmapImpl)) return false;
+    if (o == null || o.getClass() != this.getClass()) return false;
 
     final ScaleOpBitmapImpl op = (ScaleOpBitmapImpl) o;
     return scale == op.getScale() && 

@@ -148,7 +148,7 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof SourceOpSVGImpl)) return false;
+    if (o == null || o.getClass() != this.getClass()) return false;
 
     final SourceOpSVGImpl s = (SourceOpSVGImpl) o;
     return archive == s.archive && name.equals(s.name);

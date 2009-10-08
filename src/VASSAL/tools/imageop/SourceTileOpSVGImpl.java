@@ -115,7 +115,7 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof SourceTileOpSVGImpl)) return false;
+    if (o == null || o.getClass() != this.getClass()) return false;
 
     final SourceTileOpSVGImpl op = (SourceTileOpSVGImpl) o;
     return x0 == op.x0 &&

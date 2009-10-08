@@ -157,7 +157,7 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof CropOpBitmapImpl)) return false;
+    if (o == null || o.getClass() != this.getClass()) return false;
 
     final CropOpBitmapImpl op = (CropOpBitmapImpl) o;
     return x0 == op.getX0() &&

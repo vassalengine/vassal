@@ -162,7 +162,7 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof RotateScaleOpSVGImpl)) return false;
+    if (o == null || o.getClass() != this.getClass()) return false;
 
     final RotateScaleOpSVGImpl op = (RotateScaleOpSVGImpl) o;
     return scale == op.getScale() && 

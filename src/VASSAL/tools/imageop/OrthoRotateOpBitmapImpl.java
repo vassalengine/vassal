@@ -175,7 +175,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (o == null || !(o instanceof TileOp)) return false;
+      if (o == null || o.getClass() != this.getClass()) return false;
 
       final TileOp op = (TileOp) o;
       return angle == op.angle &&
@@ -191,7 +191,7 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof OrthoRotateOpBitmapImpl)) return false;
+    if (o == null || o.getClass() != this.getClass()) return false;
     
     final OrthoRotateOpBitmapImpl op = (OrthoRotateOpBitmapImpl) o;
     return angle == op.getAngle() && sop.equals(op.sop);

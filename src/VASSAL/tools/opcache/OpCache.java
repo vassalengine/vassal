@@ -77,7 +77,7 @@ public class OpCache {
     @Override
     public boolean equals(Object o) {
       if (o == this) return true;
-      if (!(o instanceof Key)) return false;
+      if (o.getClass() != this.getClass()) return false;
 
       final Key<?> k = (Key<?>) o;
       return version == k.version &&

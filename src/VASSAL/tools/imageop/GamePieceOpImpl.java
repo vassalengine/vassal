@@ -130,7 +130,7 @@ public class GamePieceOpImpl extends AbstractTileOpImpl implements GamePieceOp {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || !(o instanceof GamePieceOp)) return false;
+    if (o == null || o.getClass() != this.getClass()) return false;
 
     GamePieceOp op = (GamePieceOp) o;
     return piece.equals(op.getPiece()) &&
