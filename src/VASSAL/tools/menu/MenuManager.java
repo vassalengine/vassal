@@ -189,5 +189,4 @@ public abstract class MenuManager {
     }
     return false;
   }
-
 }
