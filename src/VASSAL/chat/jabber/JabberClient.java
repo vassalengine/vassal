@@ -378,7 +378,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
   }
 
   public String getModule() {
-    return "JabberTestModule";
+    return "vassal/"+GameModule.getGameModule().getGameName();
   }
 
   public String getConferenceService() {
@@ -396,6 +396,12 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     if (r instanceof JabberRoom) {
       final JabberRoom room = (JabberRoom) r;
       room.toggleLock(currentChat); 
+      try {
+        monitor.sendRoomChanged();
+      }
+      catch (XMPPException e) {
+        // Ignore errors - we don't want to know at this point
+      }
     }    
   }
   /**
@@ -435,7 +441,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       }
       catch (XMPPException ex) {
         // 403 code means the room already exists and user is not an owner
-        if (ex.getXMPPError().getCode() != 403) {
+        if (ex.getXMPPError() != null && ex.getXMPPError().getCode() != 403) {
           throw ex;
         }
       }

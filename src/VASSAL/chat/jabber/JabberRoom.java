@@ -84,6 +84,10 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     MultiUserChat chat = new MultiUserChat(client.getConnection(), getJID());
     chat.join(StringUtils.parseName(me.getJid()));
 
+    if (!chat.isJoined()) {
+      return null;
+    }
+    
     try {
       // This is necessary to create the room if it doesn't already exist
       chat.sendConfigurationForm(new Form(Form.TYPE_SUBMIT));
