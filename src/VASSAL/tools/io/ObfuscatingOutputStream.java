@@ -37,7 +37,7 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
   public static final String HEADER = "!VCSK";
   private static final Random rand = new Random();
 
-  private final byte key = (byte) rand.nextInt(256);
+  private final byte key;
   private final byte[] pair = new byte[2];
 
   /**
@@ -45,7 +45,18 @@ public class ObfuscatingOutputStream extends FilterOutputStream {
    * @throws IOException
    */ 
   public ObfuscatingOutputStream(OutputStream out) throws IOException {
+    this(out, (byte) rand.nextInt(256));
+  }
+
+  /**
+   * @param out the stream to wrap
+   * @param key the byte to use as the key
+   * @throws IOException
+   */ 
+  public ObfuscatingOutputStream(OutputStream out, byte key)
+                                                          throws IOException {
     super(out);
+    this.key = key;
 
     out.write(HEADER.getBytes("UTF-8"));
 
