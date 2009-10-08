@@ -51,6 +51,10 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     return info != null && info.isMembersOnly();
   }
 
+  public void setInfo(RoomInfo info) {
+    this.info = info;
+  }
+  
   public void toggleLock(MultiUserChat muc) {
     try {
       if (!isLocked()) {

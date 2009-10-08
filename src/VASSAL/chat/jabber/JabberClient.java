@@ -643,6 +643,13 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
           // Collect the entityID for each returned item
           for (Iterator<DiscoverItems.Item> items = result.getItems(); items.hasNext();) {
             String roomJID = items.next().getEntityID();
+            JabberRoom room = roomMgr.getRoomByJID(JabberClient.this, roomJID);
+            try {
+              room.setInfo(MultiUserChat.getRoomInfo(JabberClient.this.getConnection(), roomJID));
+            }
+            catch (XMPPException e) {
+              // Ignore Error
+            }
             if (!roomJID.equals(monitorRoom.getRoom())) {
               player.join(roomMgr.getRoomByJID(JabberClient.this, roomJID));
             }
