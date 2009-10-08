@@ -82,8 +82,9 @@ public class MappedImageLoader extends ImageLoader {
       final ColorModel cm = type.getColorModel();
       final SampleModel sm =
         type.getSampleModel().createCompatibleSampleModel(w,h);
+      final int bitype = type.getBufferedImageType();
       
-      MappedBufferedImage img = new MappedBufferedImage(cm, sm);
+      MappedBufferedImage img = new MappedBufferedImage(cm, sm, bitype);
       
       final ImageReadParam param = reader.getDefaultReadParam();
       param.setDestination(img);
@@ -121,8 +122,45 @@ public class MappedImageLoader extends ImageLoader {
     }
   }
 
-  protected MappedBufferedImage toCompatibleImage(MappedBufferedImage img)
+  @Override
+  protected MappedBufferedImage toCompatibleImage(BufferedImage img)
                                                            throws IOException {
-    return MappedImageUtils.toCompatibleImage(img);
+    return MappedImageUtils.toCompatibleImage((MappedBufferedImage) img);
+  }
+
+  @Override
+  protected MappedBufferedImage fix_tRNS(BufferedImage bimg, int tRNS) 
+                                                           throws IOException {
+    MappedBufferedImage img = (MappedBufferedImage) bimg;
+
+    // Ensure that we are working with integer ARGB data. Whether it's
+    // premultiplied doesn't matter, since fully transparent black pixels
+    // are the same in both.
+    if (img.getRealType() != BufferedImage.TYPE_INT_ARGB &&
+        img.getRealType() != BufferedImage.TYPE_INT_ARGB_PRE) {
+    
+      // Convert to the compatible type if it's an integer type; otherwise,
+      // convert to unpremultiplied integer.
+      final int compat = ImageUtils.getCompatibleTranslucentImageType();
+      img = MappedImageUtils.toType(img,
+              compat == BufferedImage.TYPE_INT_ARGB || 
+              compat == BufferedImage.TYPE_INT_ARGB_PRE ? compat :
+              BufferedImage.TYPE_INT_ARGB);
+    }
+
+    // Set all pixels of the transparent color to have alpha 0.
+    final int w = img.getWidth();
+    final int h = img.getHeight();
+
+    final int[] row = new int[w];
+    for (int y = 0; y < h; ++y) {
+      img.getRGB(0, y, row.length, 1, row, 0, row.length);
+      for (int x = 0; x < w; ++x) {
+        if (row[x] == tRNS) row[x] = 0x00000000;
+      }
+      img.setRGB(0, y, row.length, 1, row, 0, row.length);
+    }
+
+    return img;
   }
 }

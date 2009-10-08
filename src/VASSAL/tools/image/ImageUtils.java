@@ -385,8 +385,14 @@ public class ImageUtils {
   }
 
   public static boolean isCompatibleImage(BufferedImage img) {
-    return img.getType() ==
-      getCompatibleImageType(img.getTransparency() != BufferedImage.OPAQUE);
+    if (img instanceof MappedBufferedImage) {
+      return ((MappedBufferedImage) img).getRealType() ==
+        getCompatibleImageType(img.getTransparency() != BufferedImage.OPAQUE);
+    }
+    else {
+      return img.getType() ==
+        getCompatibleImageType(img.getTransparency() != BufferedImage.OPAQUE);
+    }
   }
 
   /*

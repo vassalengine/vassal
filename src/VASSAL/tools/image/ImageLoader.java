@@ -233,7 +233,12 @@ public class ImageLoader {
     return ImageUtils.toCompatibleImage(img);
   }
 
-  protected BufferedImage fix_tRNS(BufferedImage img, int tRNS) {
+  protected BufferedImage fix_tRNS(BufferedImage img, int tRNS)
+                                                           throws IOException {
+    // FIXME: this method throws IOException only because the one for
+    // mapped images which overrides it does. Remove the throws when
+    // mapped images are removed.
+
     // Ensure that we are working with integer ARGB data. Whether it's
     // premultiplied doesn't matter, since fully transparent black pixels
     // are the same in both.
@@ -250,7 +255,7 @@ public class ImageLoader {
     }
 
     // Set all pixels of the transparent color to have alpha 0.
-    final WritableRaster r = img.getRaster();    
+    final WritableRaster r = img.getRaster();
     final int w = img.getWidth();
     final int h = img.getHeight();
 

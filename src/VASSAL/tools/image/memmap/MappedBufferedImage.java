@@ -55,11 +55,13 @@ import java.io.IOException;
  * @see MappedWritableRaster
  */
 public class MappedBufferedImage extends BufferedImage {
+  private final int realType;
+
   public MappedBufferedImage(int w, int h, int type) {
     this(createMappedBufferedImage(w, h, type));
   }
 
-  public MappedBufferedImage(ColorModel cm, SampleModel sm) {
+  public MappedBufferedImage(ColorModel cm, SampleModel sm, int type) {
     super(
       cm,
       MappedWritableRaster.createWritableRaster(
@@ -70,6 +72,8 @@ public class MappedBufferedImage extends BufferedImage {
       cm.isAlphaPremultiplied(),
       null
     );
+
+    realType = type;
   }
 
   private MappedBufferedImage(Object[] a) {
@@ -79,7 +83,13 @@ public class MappedBufferedImage extends BufferedImage {
       ((ColorModel) a[0]).isAlphaPremultiplied(),
       null
     );
+
+    realType = (Integer) a[2];
   } 
+
+  public int getRealType() {
+    return realType;
+  }
 
   private static Object[] createMappedBufferedImage(int w, int h, int type) {
     final ColorModel cm = createColorModel(type);
@@ -88,7 +98,7 @@ public class MappedBufferedImage extends BufferedImage {
     final WritableRaster wr =
       MappedWritableRaster.createWritableRaster(sm, db, new Point(0,0));
 
-    return new Object[] {cm, wr};
+    return new Object[] {cm, wr, type};
   }
 
   private static ColorModel createColorModel(int type) {
