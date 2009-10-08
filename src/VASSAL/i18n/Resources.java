@@ -75,10 +75,15 @@ public class Resources {
   protected static String DATE_FORMAT = "{0,date}";
 
   static {
+    Locale myLocale = Locale.getDefault();
+
+    final ResourceBundle rb =
+      ResourceBundle.getBundle("VASSAL.i18n.VASSAL", myLocale, bundleLoader);
+
     // If the user has a resource bundle for their default language on their
     // local machine, add it to the list of supported locales
-    if (ResourceBundle.getBundle("VASSAL.i18n.VASSAL", Locale.getDefault(), bundleLoader).getLocale().getLanguage().equals(Locale.getDefault().getLanguage())) {
-      addSupportedLocale(Locale.getDefault());
+    if (rb.getLocale().getLanguage().equals(myLocale.getLanguage())) {
+      addSupportedLocale(myLocale);
     }
 
     final ArrayList<String> languages = new ArrayList<String>();
@@ -86,8 +91,9 @@ public class Resources {
       languages.add(l.getLanguage());
     }
 
-    Locale myLocale = Locale.getDefault();
-    String savedLocale = Prefs.getGlobalPrefs().getStoredValue(LOCALE_PREF_KEY);
+    final Prefs p = Prefs.getGlobalPrefs();
+
+    final String savedLocale = p.getStoredValue(LOCALE_PREF_KEY);
 
     if (savedLocale == null) {
       myLocale = supportedLocales.iterator().next();
@@ -97,11 +103,10 @@ public class Resources {
     }
 
     Resources.setLocale(myLocale);
-    StringEnumConfigurer localeConfig = new StringEnumConfigurer(Resources.LOCALE_PREF_KEY, getString("Prefs.language"), languages.toArray(new String[languages
-        .size()])) {
+    final StringEnumConfigurer localeConfig = new StringEnumConfigurer(Resources.LOCALE_PREF_KEY, getString("Prefs.language"), languages.toArray(new String[languages.size()])) {
       public Component getControls() {
         if (box == null) {
-          Component c = super.getControls();
+          final Component c = super.getControls();
           box.setRenderer(new DefaultListCellRenderer() {
             private static final long serialVersionUID = 1L;
 
@@ -118,8 +123,22 @@ public class Resources {
         }
       }
     };
+
     localeConfig.setValue(Resources.getLocale().getLanguage());
-    Prefs.getGlobalPrefs().addOption(getString("Prefs.general_tab"), localeConfig);
+    p.addOption(getString("Prefs.general_tab"), localeConfig);
+
+/*
+    new PreferencesEditor() {
+      public StringEnumEditor getEditor() {
+        return new StringEnumEditor(
+          prefs,
+          LOCALE,
+          getString("Prefs.language"),
+          
+        );
+      }
+    };
+*/
   }
 
   public static Collection<Locale> getSupportedLocales() {

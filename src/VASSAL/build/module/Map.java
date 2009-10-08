@@ -656,6 +656,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       theMap, DnDConstants.ACTION_MOVE, this));
     GameModule.getGameModule().getGameState().addGameComponent(this);
     GameModule.getGameModule().getToolBar().add(launchButton);
+
     if (shouldDockIntoMainWindow()) {
       final IntConfigurer config =
         new IntConfigurer(MAIN_WINDOW_HEIGHT, null, -1);

@@ -317,7 +317,8 @@ public class WizardSupport {
         }
         actionControls = box;
         box.add(Box.createVerticalGlue());
-        final BooleanConfigurer wizardConf = (BooleanConfigurer) Prefs.getGlobalPrefs().getOption("welcomeWizard");
+        final BooleanConfigurer wizardConf = (BooleanConfigurer)
+          Prefs.getGlobalPrefs().getOption(WELCOME_WIZARD_KEY);
         final JCheckBox show = new JCheckBox(wizardConf.getName());
         show.setSelected(wizardConf.booleanValue());
         show.addActionListener(new ActionListener() {
