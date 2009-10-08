@@ -1,5 +1,5 @@
 /*
- * $Id: ScriptContainer.java 2954 2008-02-01 17:09:56Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008-2009 by Brent Easton
  *

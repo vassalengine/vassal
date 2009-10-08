@@ -1,5 +1,5 @@
 /*
- * $Id: Deobfuscator.java 4536 2008-11-25 16:39:05Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2000-2009 by Rodney Kinney, Joel Uckelman
  *

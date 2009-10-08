@@ -1,5 +1,5 @@
 /*
- * $Id: LoopControl.java 5741 2009-06-18 23:31:06Z swampwallaby $
+ * $Id$
  *
  * Copyright (c) 2009 by Brent Easton
  *

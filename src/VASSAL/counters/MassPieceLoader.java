@@ -1,5 +1,5 @@
 /*
- * $Id: MassPieceLoadable.java 4159 2008-09-29 21:35:36Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008 by Brent Easton
  *

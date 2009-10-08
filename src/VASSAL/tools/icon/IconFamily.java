@@ -1,5 +1,5 @@
 /*
- * $Id: IconFamily.java 3766 2008-06-29 08:38:52Z swampwallaby $
+ * $Id$
  *
  * Copyright (c) 2008-2009 Brent Easton
  *

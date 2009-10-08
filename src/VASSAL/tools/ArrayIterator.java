@@ -1,5 +1,5 @@
 /*
- * $Id: TextConfigurer.java 3888 2008-07-27 14:45:45Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2009 by Joel Uckelman 
  *

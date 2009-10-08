@@ -1,5 +1,5 @@
 /*
- * $Id: BeanShell.java,v 1.1 2006/09/28 04:59:19 swampwallaby Exp $
+ * $Id$
  *
  * Copyright (c) 2008-2009 Brent Easton
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: NamedKeyStrokeListener.java 4632 2008-12-05 22:49:22Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2009 by Brent Easton
  *

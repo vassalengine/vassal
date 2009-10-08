@@ -1,5 +1,5 @@
 /*
- * $Id: BshCommandEncoder.java,v 1.1 2006/09/26 04:05:55 swampwallaby Exp $
+ * $Id$
  * 
  * Copyright (c) 2008-2009 Brent Easton
  * 

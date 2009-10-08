@@ -1,5 +1,5 @@
 /*
- * $Id: DialogHelpWindow.java 4912 2009-01-17 12:45:18Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *

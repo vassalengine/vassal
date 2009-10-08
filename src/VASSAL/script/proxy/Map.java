@@ -1,5 +1,5 @@
 /*
- * $Id: Map.java,v 1.3 2006/09/29 06:48:21 swampwallaby Exp $
+ * $Id$
  *
  * Copyright (c) 2008 by Brent Easton
  *
