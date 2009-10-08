@@ -52,7 +52,12 @@ public class Scroller extends AbstractBuildable implements KeyListener {
     map = (Map) parent;
     map.getView().addKeyListener(this);
 
-    BooleanConfigurer c = new BooleanConfigurer(USE_ARROWS, Resources.getString("Scroller.use_arrow_keys_preference"), Boolean.FALSE);
+    final BooleanConfigurer c = new BooleanConfigurer(
+      USE_ARROWS,
+      Resources.getString("Scroller.use_arrow_keys_preference"),
+      Boolean.FALSE
+    );
+
     if (ALWAYS.equals(usingArrows)) {
       GameModule.getGameModule().getPrefs().addOption(null, c);
       c.setValue(Boolean.TRUE);
@@ -64,7 +69,6 @@ public class Scroller extends AbstractBuildable implements KeyListener {
       GameModule.getGameModule().getPrefs().addOption(null, c);
       c.setValue(Boolean.FALSE);
     }
-
   }
 
   public void add(Buildable b) {
@@ -93,73 +97,37 @@ public class Scroller extends AbstractBuildable implements KeyListener {
   protected int yStep = 100;
 
   public void keyPressed(KeyEvent e) {
-    if (e.isConsumed()) {
-      return;
-    }
-    if (Boolean.TRUE.equals(GameModule.getGameModule().getPrefs().getValue(USE_ARROWS))) {
+    if (e.isConsumed()) return;
+
+    int dx;
+    int dy;
+
+    if (Boolean.TRUE.equals(
+          GameModule.getGameModule().getPrefs().getValue(USE_ARROWS))) {
       switch (e.getKeyCode()) {
-        case KeyEvent.VK_UP:
-          map.scroll(0, -yStep);
-          e.consume();
-          break;
-        case KeyEvent.VK_DOWN:
-          map.scroll(0, yStep);
-          e.consume();
-          break;
-        case KeyEvent.VK_RIGHT:
-          map.scroll(xStep, 0);
-          e.consume();
-          break;
-        case KeyEvent.VK_LEFT:
-          map.scroll(-xStep, 0);
-          e.consume();
-          break;
+        case KeyEvent.VK_UP:    dx =  0; dy = -1; break;
+        case KeyEvent.VK_DOWN:  dx =  0; dy =  1; break;
+        case KeyEvent.VK_RIGHT: dx =  1; dy =  0; break;
+        case KeyEvent.VK_LEFT:  dx = -1; dy =  0; break;
+        default: return;
       }
     }
     else {
       switch (e.getKeyCode()) {
-        case KeyEvent.VK_NUMPAD1:
-          noEcho = '1';
-          map.scroll(-xStep, yStep);
-          e.consume();
-          break;
-        case KeyEvent.VK_NUMPAD2:
-          noEcho = '2';
-          map.scroll(0, yStep);
-          e.consume();
-          break;
-        case KeyEvent.VK_NUMPAD3:
-          noEcho = '3';
-          map.scroll(xStep, yStep);
-          e.consume();
-          break;
-        case KeyEvent.VK_NUMPAD4:
-          noEcho = '4';
-          map.scroll(-xStep, 0);
-          e.consume();
-          break;
-        case KeyEvent.VK_NUMPAD6:
-          noEcho = '6';
-          map.scroll(xStep, 0);
-          e.consume();
-          break;
-        case KeyEvent.VK_NUMPAD7:
-          noEcho = '7';
-          map.scroll(-xStep, -yStep);
-          e.consume();
-          break;
-        case KeyEvent.VK_NUMPAD8:
-          noEcho = '8';
-          map.scroll(0, -yStep);
-          e.consume();
-          break;
-        case KeyEvent.VK_NUMPAD9:
-          noEcho = '9';
-          map.scroll(xStep, -yStep);
-          e.consume();
-          break;
+        case KeyEvent.VK_NUMPAD1: dx = -1; dy =  1; noEcho = '1'; break;
+        case KeyEvent.VK_NUMPAD2: dx =  0; dy =  1; noEcho = '2'; break;
+        case KeyEvent.VK_NUMPAD3: dx =  1; dy =  1; noEcho = '3'; break;
+        case KeyEvent.VK_NUMPAD4: dx = -1; dy =  0; noEcho = '4'; break;
+        case KeyEvent.VK_NUMPAD6: dx =  1; dy =  0; noEcho = '6'; break;
+        case KeyEvent.VK_NUMPAD7: dx = -1; dy = -1; noEcho = '7'; break;
+        case KeyEvent.VK_NUMPAD8: dx =  0; dy = -1; noEcho = '8'; break;
+        case KeyEvent.VK_NUMPAD9: dx =  1; dy = -1; noEcho = '9'; break;
+        default: return;
       }
     }
+
+    map.scroll(dx * xStep, dy * yStep);
+    e.consume();
   }
 
   public void keyReleased(KeyEvent e) {

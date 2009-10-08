@@ -31,11 +31,12 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 
 /**
- * Base class for a Module Preference. Module preferences are defined within a module
- * and create additional Preferences. Module Preferences can be place on a new preference
- * tab, or on existing preference tabs (tabName). The value of the preference is exposed
- * to counters and components via a Global Property (variableName). A default value (defaultValue)
- * can be specified for when the preference is first accessed by a user.
+ * Base class for a Module Preference. Module preferences are defined within
+ * a module and create additional Preferences. Module Preferences can be place
+ * on a new preference tab, or on existing preference tabs (tabName). The value
+ * of the preference is exposed to counters and components via a Global
+ * Property (variableName). A default value (defaultValue) can be specified for
+ * when the preference is first accessed by a user.
  */
 public abstract class BasicPreference extends AbstractConfigurable {
 
@@ -128,12 +129,16 @@ public abstract class BasicPreference extends AbstractConfigurable {
   public abstract Configurer getPreferenceConfigurer();
   
   public void addTo(Buildable b) {
-    property.addTo(GameModule.getGameModule());
+    final GameModule g = GameModule.getGameModule();
+
+    property.addTo(g);
+
     if (tabName != null && tabName.length() > 0) {
-      GameModule.getGameModule().getPrefs().addOption(tabName, getPreferenceConfigurer());
+      g.getPrefs().addOption(tabName, getPreferenceConfigurer());
     }
+
     if (getVariableName().length() > 0) {
-      updateGlobalProperty(GameModule.getGameModule().getPrefs().getStoredValue(getVariableName()));
+      updateGlobalProperty(g.getPrefs().getStoredValue(getVariableName()));
     }
   }
 
