@@ -186,18 +186,6 @@ public class BasicModule extends GameModule {
       }
     });
     GameModule.getGameModule().getPrefs().addOption(mappedPref); 
-    
-    
-    final BooleanConfigurer scalingPref = new BooleanConfigurer(
-        SCALER_ALGORITHM,
-        "High-quality scaling?", //$NON-NLS-1$ 
-        Boolean.TRUE);    
-    scalingPref.addPropertyChangeListener(new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        ImageUtils.setHighQualityScaling(Boolean.TRUE.equals(scalingPref.getValue()));
-      }
-    });
-    GameModule.getGameModule().getPrefs().addOption(scalingPref);
   }
 
   protected void initServer() {

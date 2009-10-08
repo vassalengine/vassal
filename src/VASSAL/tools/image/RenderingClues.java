@@ -27,7 +27,9 @@ import java.util.Map;
  *
  * @since 3.1.0
  * @author Joel Uckelman
+ * @deprecated All scaling is now done via the high-quality scaler.
  */
+@Deprecated
 public class RenderingClues extends RenderingHints {
 
   private static final int INTKEY_EXT_INTERPOLATION = 0xDEADBEEF;

@@ -68,24 +68,18 @@ public class ImageUtils {
     return largeImageLoadMethod == MAPPED;
   }
 
+  @Deprecated
   public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
-  private static final int MEDIUM = 1;
-  private static final int GOOD = 2;
-  private static int scalingQuality = GOOD;
-
   private static final Map<RenderingHints.Key,Object> defaultHints =
     new HashMap<RenderingHints.Key,Object>();
 
   static {
     // Initialise Image prefs prior to Preferences being read.
     setPreferMemoryMappedFiles(false);
-    setHighQualityScaling(true);
     
     // set up map for creating default RenderingHints
     defaultHints.put(RenderingHints.KEY_INTERPOLATION,
                      RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-    defaultHints.put(RenderingClues.KEY_EXT_INTERPOLATION,
-                     RenderingClues.VALUE_INTERPOLATION_LANCZOS_MITCHELL);
     defaultHints.put(RenderingHints.KEY_ANTIALIASING,
                      RenderingHints.VALUE_ANTIALIAS_ON);
   } 
@@ -94,21 +88,12 @@ public class ImageUtils {
     largeImageLoadMethod = b ? MAPPED : RAM;
   }
   
-  public static void setHighQualityScaling(boolean b) {
-    final int newQual = b ? GOOD : MEDIUM;
-    if (newQual != scalingQuality) {
-      scalingQuality = newQual;
-      Op.clearCache();
-
-      defaultHints.put(RenderingClues.KEY_EXT_INTERPOLATION,
-        scalingQuality == GOOD ?
-          RenderingClues.VALUE_INTERPOLATION_LANCZOS_MITCHELL :
-          RenderingClues.VALUE_INTERPOLATION_BILINEAR);
-    }
-  }
-  
+  /** @deprecated All scaling is done with the high-quality scaler now. */
+  @Deprecated 
+  public static void setHighQualityScaling(boolean b) {}
+   
   public static RenderingHints getDefaultHints() {
-    return new RenderingClues(defaultHints);
+    return new RenderingHints(defaultHints);
   }
 
   public static Rectangle transform(Rectangle srect,
@@ -123,23 +108,13 @@ public class ImageUtils {
   public static BufferedImage transform(BufferedImage src,
                                         double scale,
                                         double angle) {
-    return transform(src, scale, angle,
-                     getDefaultHints(),
-                     scalingQuality);
+    return transform(src, scale, angle, getDefaultHints());
   }
 
   public static BufferedImage transform(BufferedImage src,
                                         double scale,
                                         double angle,
                                         RenderingHints hints) {
-    return transform(src, scale, angle, hints, scalingQuality);
-  }
-
-  public static BufferedImage transform(BufferedImage src,
-                                        double scale,
-                                        double angle,
-                                        RenderingHints hints,
-                                        int quality) {
     // bail on null source
     if (src == null) return null;
 
@@ -185,9 +160,7 @@ public class ImageUtils {
       g.dispose();
       return trans;
     }
-    else if (hints.get(RenderingClues.KEY_EXT_INTERPOLATION) ==
-                       RenderingClues.VALUE_INTERPOLATION_LANCZOS_MITCHELL) {
-      // do high-quality scaling
+    else {
       if (angle != 0.0) {
         final Rectangle ubox = getBounds(src);
 // FIXME: this duplicates the standard scaling case
@@ -228,30 +201,15 @@ public class ImageUtils {
         return src;
       }
     }
-    else {
-      // do standard scaling
-      final Rectangle ubox = getBounds(src);
-      final Rectangle tbox = transform(ubox, scale, angle);
+  }
 
-      // keep opaque destination for orthogonal rotation of an opaque source
-      final BufferedImage trans = createCompatibleImage(
-        tbox.width,
-        tbox.height,
-        src.getTransparency() != BufferedImage.OPAQUE || angle % 90.0 != 0.0
-      );
-
-      final AffineTransform t = new AffineTransform();
-      t.translate(-tbox.x, -tbox.y);
-      t.rotate(DEGTORAD*angle, ubox.getCenterX(), ubox.getCenterY());
-      t.scale(scale, scale);
-      t.translate(ubox.x, ubox.y);
-
-      final Graphics2D g = trans.createGraphics();
-      g.setRenderingHints(hints);
-      g.drawImage(src, t, null);
-      g.dispose();
-      return trans;
-    }
+  @Deprecated
+  public static BufferedImage transform(BufferedImage src,
+                                        double scale,
+                                        double angle,
+                                        RenderingHints hints,
+                                        int quality) {
+    return transform(src, scale, angle, hints);
   }
 
   @SuppressWarnings("fallthrough")
