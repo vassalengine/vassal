@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,59 +24,37 @@ import javax.swing.Action;
 import javax.swing.JTree;
 
 import VASSAL.build.GameModule;
-import VASSAL.chat.ChatServerConnection;
-import VASSAL.chat.Player;
-import VASSAL.chat.Room;
-import VASSAL.chat.node.NodeClient;
-import VASSAL.chat.node.NodeRoom;
+import VASSAL.chat.LockableChatServerConnection;
+import VASSAL.chat.SimplePlayer;
 import VASSAL.i18n.Resources;
 
 /**
- * When invoked, will Kick another player out of his current room back to the Main Room.
+ * When invoked, will Kick another player out of his current room back to the
+ * Main Room.
  */
 public class InviteAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
 
-  private Player target;
-  private ChatServerConnection client;
+  private SimplePlayer invitee;
+  private LockableChatServerConnection client;
 
-
-  public InviteAction(ChatServerConnection client, Player target) {
+  public InviteAction(LockableChatServerConnection client, SimplePlayer target) {
     super(Resources.getString("Chat.invite")); //$NON-NLS-1$
-    this.target = target;
+    this.invitee = target;
     this.client = client;
-    boolean enabled = false;
- 
-    if (target != null) {
-      if (GameModule.getGameModule() != null) {
-        final Room room = client.getRoom();
-          if (room instanceof NodeRoom) {
-          // Is the target player in a different room?
-          if (!((NodeRoom) room).contains(target)) {
-            final String owner = ((NodeRoom) room).getOwner();
-            // Do I own this room and the target is not me?
-            if (owner != null && owner.equals(client.getUserInfo().getId()) && !owner.equals(target.getId())) {
-              enabled = true;
-            }
-          }
-        }
-      }
-    }
-    setEnabled(enabled);
+    setEnabled(client.isInvitable(target));
   }
 
   public void actionPerformed(ActionEvent evt) {
     if (isEnabled()) {
-      if (client instanceof NodeClient) {        
-        ((NodeClient) client).sendInvite(target);
-        GameModule.getGameModule().warn(Resources.getString("Chat.invite_sent", target.getName()));
-      }
+      client.sendInvite(invitee);
+      GameModule.getGameModule().warn(Resources.getString("Chat.invite_sent", invitee.getName()));
     }
   }
-  
-  public static PlayerActionFactory factory(final ChatServerConnection client) {
+
+  public static PlayerActionFactory factory(final LockableChatServerConnection client) {
     return new PlayerActionFactory() {
-      public Action getAction(Player p, JTree tree) {
+      public Action getAction(SimplePlayer p, JTree tree) {
         return new InviteAction(client, p);
       }
     };

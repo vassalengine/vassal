@@ -19,8 +19,9 @@ package VASSAL.chat.ui;
 
 import javax.swing.Action;
 import javax.swing.JTree;
-import VASSAL.chat.Player;
+
+import VASSAL.chat.SimplePlayer;
 
 public interface PlayerActionFactory {
-  Action getAction(Player p, JTree tree);
+  Action getAction(SimplePlayer p, JTree tree);
 }

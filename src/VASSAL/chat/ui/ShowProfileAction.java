@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,11 +19,12 @@ package VASSAL.chat.ui;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import VASSAL.chat.Player;
+
 import VASSAL.chat.PlayerInfoWindow;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.i18n.Resources;
@@ -49,7 +50,7 @@ public class ShowProfileAction extends AbstractAction {
 
   public static PlayerActionFactory factory() {
     return new PlayerActionFactory() {
-      public Action getAction(Player p, JTree tree) {
+      public Action getAction(SimplePlayer p, JTree tree) {
         return new ShowProfileAction((SimplePlayer) p, (java.awt.Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree));
       }
     };

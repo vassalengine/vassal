@@ -21,5 +21,16 @@ public interface LockableChatServerConnection extends ChatServerConnection {
 
   /** Lock/Unlock the given room */
   void lockRoom(LockableRoom r);
-
+  
+  /** Can a player be invited to this room by me? */
+  boolean isInvitable(Player invitee);
+  
+  /** Invite a player to this room */
+  void sendInvite(Player p);
+  
+  /** Can a player be kicked from this room by me? */
+  boolean isKickable(Player kickee);
+  
+  /** Kick a player from this room */
+  void kick (Player p);
 }

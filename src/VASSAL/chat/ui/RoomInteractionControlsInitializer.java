@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -25,13 +25,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;
+import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleRoom;
 
 /**
@@ -66,7 +69,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
           if (path != null) {
             Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
             if (target instanceof Player) {
-              JPopupMenu popup = buildPopupForPlayer((Player) target, tree);
+              JPopupMenu popup = buildPopupForPlayer((SimplePlayer) target, tree);
               if (popup != null) {
                 for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
                   popup.getComponent(i).setFont(POPUP_MENU_FONT);
@@ -87,7 +90,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
           Object target = ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject();
           if (target instanceof Player) {
             if (evt.isMetaDown()) {
-              JPopupMenu popup = buildPopupForPlayer((Player) target, tree);
+              JPopupMenu popup = buildPopupForPlayer((SimplePlayer) target, tree);
               for (int i = 0, n = popup.getComponentCount(); i < n; ++i) {
                 popup.getComponent(i).setFont(POPUP_MENU_FONT);
               }
@@ -154,7 +157,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
     roomActionFactories.add(f);
   }
 
-  public JPopupMenu buildPopupForPlayer(Player target, JTree tree) {
+  public JPopupMenu buildPopupForPlayer(SimplePlayer target, JTree tree) {
     JPopupMenu popup = new JPopupMenu();
     for (PlayerActionFactory f : playerActionFactories) {
       popup.add(f.getAction(target, tree));

@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,12 +18,15 @@
 package VASSAL.chat.ui;
 
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JTree;
+
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
+import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SoundEncoder;
 import VASSAL.configure.SoundConfigurer;
 import VASSAL.i18n.Resources;
@@ -55,7 +58,7 @@ public class SendSoundAction extends AbstractAction {
       Prefs.getGlobalPrefs().addOption(Resources.getString("Prefs.sounds_tab"), new SoundConfigurer(soundKey, name, defaultSoundFile)); //$NON-NLS-1$
     }
     return new PlayerActionFactory() {
-      public Action getAction(Player p, JTree tree) {
+      public Action getAction(SimplePlayer p, JTree tree) {
         return new SendSoundAction(name, client, soundKey, p);
       }
     };

@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,6 +27,7 @@ import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;
+import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SynchCommand;
 import VASSAL.i18n.Resources;
 
@@ -73,7 +74,7 @@ public class SynchAction extends AbstractAction {
   
   public static PlayerActionFactory factory(final ChatServerConnection client) {
     return new PlayerActionFactory() {
-      public Action getAction(Player p, JTree tree) {
+      public Action getAction(SimplePlayer p, JTree tree) {
         return new SynchAction(p,client);
       }
     };
