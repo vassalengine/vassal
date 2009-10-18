@@ -56,6 +56,7 @@ import org.jivesoftware.smackx.muc.HostedRoom;
 import org.jivesoftware.smackx.muc.InvitationListener;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.ParticipantStatusListener;
+import org.jivesoftware.smackx.muc.UserStatusListener;
 import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.jivesoftware.smackx.packet.VCard;
 
@@ -111,6 +112,8 @@ public class JabberClient implements LockableChatServerConnection,
   protected JabberPlayer.Manager playerMgr = new JabberPlayer.Manager();
   protected JabberRoom.Manager roomMgr = new JabberRoom.Manager();
   protected PropertyChangeListener idChangeListener;
+  protected UserStatusListener kickListener;
+  protected InvitationListener inviteListener;
 
   public JabberClient(CommandEncoder encoder, String host, int port,
       AccountInfo account) {
@@ -151,6 +154,54 @@ public class JabberClient implements LockableChatServerConnection,
         }
       }
     };
+    
+    kickListener = new UserStatusListener() {
+      public void adminGranted() { 
+      }
+      public void adminRevoked() {       
+      }
+      public void banned(String banner, String reason) {
+      }
+      public void kicked(String kicker, String reason) {
+        setRoom(defaultRoom);
+      }
+      public void membershipGranted() {
+      }
+      public void membershipRevoked() {
+      }
+      public void moderatorGranted() {
+      }
+      public void moderatorRevoked() {
+      }
+      public void ownershipGranted() {
+      }
+      public void ownershipRevoked() {
+      }
+      public void voiceGranted() {
+      }
+      public void voiceRevoked() {
+      }
+    };
+    
+    inviteListener = new InvitationListener() {
+      public void invitationReceived(XMPPConnection conn, String room,
+          String inviter, String reason, String password, Message mess) {
+        final String playerName = inviter.split("@")[0];
+        final String roomName = JabberRoom.jidToName(room);
+        final int i = Dialogs.showConfirmDialog(GameModule
+            .getGameModule().getFrame(), "Invitation to join room",
+            "Invitation to join room", Resources.getString(
+                "Chat.invitation", playerName, roomName),
+            JOptionPane.QUESTION_MESSAGE, null,
+            JOptionPane.YES_NO_OPTION, "Invite" + inviter, Resources
+                .getString("Chat.ignore_invitation"));
+        if (i == 0) {
+          doInvite(inviter, roomName);
+        }
+        else {
+          MultiUserChat.decline(conn, room, inviter, "");                
+        }
+      }};
   }
 
   public void addPropertyChangeListener(String propertyName,
@@ -247,27 +298,7 @@ public class JabberClient implements LockableChatServerConnection,
           setRoom(defaultRoom);
           fireStatus(Resources.getString("Server.connected", host + ":" + port));
           GameModule.getGameModule().addIdChangeListener(idChangeListener);
-          MultiUserChat.addInvitationListener(conn, new InvitationListener() {
-            public void invitationReceived(XMPPConnection conn, String room,
-                String inviter, String reason, String password, Message mess) {
-              final String playerName = inviter.split("@")[0];
-              final String roomName = JabberRoom.jidToName(room);
-              final int i = Dialogs.showConfirmDialog(GameModule
-                  .getGameModule().getFrame(), "Invitation to join room",
-                  "Invitation to join room", Resources.getString(
-                      "Chat.invitation", playerName, roomName),
-                  JOptionPane.QUESTION_MESSAGE, null,
-                  JOptionPane.YES_NO_OPTION, "Invite" + inviter, Resources
-                      .getString("Chat.ignore_invitation"));
-              if (i == 0) {
-                doInvite(inviter, roomName);
-              }
-              else {
-                MultiUserChat.decline(conn, room, inviter, "");                
-              }
-            }
-          });
-
+          MultiUserChat.addInvitationListener(conn, inviteListener);
         }
         // FIXME: review error message
         catch (XMPPException e) {
@@ -276,6 +307,7 @@ public class JabberClient implements LockableChatServerConnection,
               .getXMPPError().getMessage(), e.getXMPPError().getCondition(), e
               .getXMPPError().getCode()));
           setConnected(false);
+          MultiUserChat.removeInvitationListener(conn, inviteListener);
           return;
         }
       }
@@ -288,6 +320,7 @@ public class JabberClient implements LockableChatServerConnection,
         }
         conn.disconnect();
       }
+      MultiUserChat.removeInvitationListener(conn, inviteListener);
       conn = null;
       monitor = null;
       currentChat = null;
@@ -302,6 +335,7 @@ public class JabberClient implements LockableChatServerConnection,
     if (currentChat != null) {
       currentChat.leave();
       currentChat.removeMessageListener(this);
+      currentChat.removeUserStatusListener(kickListener);
       currentChat = null;
     }
   }
@@ -359,6 +393,7 @@ public class JabberClient implements LockableChatServerConnection,
       if (!newRoom.equals(getRoom())) {
         leaveCurrentRoom();
         currentChat = newRoom.join(this, (JabberPlayer) getUserInfo());
+        currentChat.addUserStatusListener(kickListener);
         monitor.sendRoomChanged();
       }
     }
@@ -432,8 +467,7 @@ public class JabberClient implements LockableChatServerConnection,
       currentChat.grantMembership(invitee.getId());
     }
     catch (XMPPException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      // TODO Error - unable to grant membership
     }
     currentChat.invite(invitee.getId(), "");
   }
@@ -461,7 +495,13 @@ public class JabberClient implements LockableChatServerConnection,
 
   /** Kick a player from this room */
   public void kick(Player kickee) {
-
+    try {
+      currentChat.kickParticipant(kickee.getName(), "");
+      currentChat.revokeMembership(kickee.getId());
+    }
+    catch (XMPPException e) {
+      // TODO Error - unable to kick, I must not be owner???
+    }
   }
 
   private void reportXMPPException(XMPPException e) {
