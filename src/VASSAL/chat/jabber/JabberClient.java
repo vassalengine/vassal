@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -85,6 +86,7 @@ import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.swing.Dialogs;
 
 public class JabberClient implements LockableChatServerConnection,
     PacketListener, ServerStatus, ChatControlsInitializer, PlayerEncoder {
@@ -246,11 +248,25 @@ public class JabberClient implements LockableChatServerConnection,
           fireStatus(Resources.getString("Server.connected", host + ":" + port));
           GameModule.getGameModule().addIdChangeListener(idChangeListener);
           MultiUserChat.addInvitationListener(conn, new InvitationListener() {
-            public void invitationReceived(XMPPConnection conn, String room, String inviter, String reason, String password, Message mess) {
-                // Reject the invitation
-                MultiUserChat.decline(conn, room, inviter, "I'm busy right now");
+            public void invitationReceived(XMPPConnection conn, String room,
+                String inviter, String reason, String password, Message mess) {
+              final String playerName = inviter.split("@")[0];
+              final String roomName = JabberRoom.jidToName(room);
+              final int i = Dialogs.showConfirmDialog(GameModule
+                  .getGameModule().getFrame(), "Invitation to join room",
+                  "Invitation to join room", Resources.getString(
+                      "Chat.invitation", playerName, roomName),
+                  JOptionPane.QUESTION_MESSAGE, null,
+                  JOptionPane.YES_NO_OPTION, "Invite" + inviter, Resources
+                      .getString("Chat.ignore_invitation"));
+              if (i == 0) {
+                doInvite(inviter, roomName);
+              }
+              else {
+                MultiUserChat.decline(conn, room, inviter, "");                
+              }
             }
-        });
+          });
 
         }
         // FIXME: review error message
@@ -327,6 +343,10 @@ public class JabberClient implements LockableChatServerConnection,
     return currentChat == null ? null : currentChat.getRoom();
   }
 
+  public void setRoom(String roomName) {
+    setRoom(roomMgr.getRoomByName(this, roomName));
+  }
+  
   public void setRoom(Room r) {
     JabberRoom newRoom = null;
     try {
@@ -390,6 +410,7 @@ public class JabberClient implements LockableChatServerConnection,
     }
   }
 
+  /** Can a player be invited to this room? */
   public boolean isInvitable(Player invitee) {
     // invitee is not me
     if (!invitee.equals(me)) {
@@ -405,10 +426,24 @@ public class JabberClient implements LockableChatServerConnection,
     return false;
   }
 
+  /** Send invitation to player */
   public void sendInvite(Player invitee) {
-    currentChat.invite(invitee.getId(), "hi");
+    try {
+      currentChat.grantMembership(invitee.getId());
+    }
+    catch (XMPPException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    currentChat.invite(invitee.getId(), "");
   }
 
+  /** Process an invitation */
+  public void doInvite(String playerId, String roomName) {
+    setRoom(roomName);
+  }
+
+  /** Is a player kickable from this room? */
   public boolean isKickable(Player kickee) {
     // kickee is not me
     if (!kickee.equals(me)) {
@@ -424,6 +459,7 @@ public class JabberClient implements LockableChatServerConnection,
     return false;
   }
 
+  /** Kick a player from this room */
   public void kick(Player kickee) {
 
   }

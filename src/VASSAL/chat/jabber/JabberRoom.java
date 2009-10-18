@@ -43,6 +43,12 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     this.client = client;
   }
 
+  public static String jidToName(String jid) {
+    final String roomRef = jid.split("@")[0];
+    final String[] parts = roomRef.split("2f");
+    return parts[parts.length-1];  
+  }
+  
   public String getJID() {
     return jid;
   }
