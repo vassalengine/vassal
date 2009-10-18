@@ -257,7 +257,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     forward(path, encoder.encode(c));
   }
 
-  public void kick(Player kickee) {
+  public void doKick(Player kickee) {
     send(Protocol.encodeKickCommand(kickee.getId()));
   }
 

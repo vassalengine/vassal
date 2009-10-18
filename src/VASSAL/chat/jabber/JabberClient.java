@@ -140,6 +140,7 @@ public class JabberClient implements LockableChatServerConnection,
     playerStatusControls = new SimpleStatusControlsInitializer(this);
     synchEncoder = new SynchEncoder(this, this);
 
+    // Listen for changes to our name via VASSAL preferences
     idChangeListener = new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         if (me != null) {
@@ -155,6 +156,7 @@ public class JabberClient implements LockableChatServerConnection,
       }
     };
     
+    // Listen for someone kicking us from the current room
     kickListener = new UserStatusListener() {
       public void adminGranted() { 
       }
@@ -183,6 +185,7 @@ public class JabberClient implements LockableChatServerConnection,
       }
     };
     
+    // Listen for someone inviting us to another room
     inviteListener = new InvitationListener() {
       public void invitationReceived(XMPPConnection conn, String room,
           String inviter, String reason, String password, Message mess) {
@@ -494,10 +497,9 @@ public class JabberClient implements LockableChatServerConnection,
   }
 
   /** Kick a player from this room */
-  public void kick(Player kickee) {
+  public void doKick(Player kickee) {
     try {
       currentChat.kickParticipant(kickee.getName(), "");
-      currentChat.revokeMembership(kickee.getId());
     }
     catch (XMPPException e) {
       // TODO Error - unable to kick, I must not be owner???

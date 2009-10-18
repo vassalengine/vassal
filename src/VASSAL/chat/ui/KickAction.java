@@ -47,7 +47,7 @@ public class KickAction extends AbstractAction {
 
   public void actionPerformed(ActionEvent evt) {
     if (isEnabled()) {    
-        client.kick(kickee);
+        client.doKick(kickee);
         GameModule.getGameModule().warn(Resources.getString("Chat.kick_sent", kickee.getName()));
     }
   }

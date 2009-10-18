@@ -35,5 +35,5 @@ public interface LockableChatServerConnection extends ChatServerConnection {
   boolean isKickable(Player kickee);
   
   /** Kick a player from this room */
-  void kick (Player p);
+  void doKick (Player p);
 }
