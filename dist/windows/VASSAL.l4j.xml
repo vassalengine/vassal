@@ -1,7 +1,6 @@
 <launch4jConfig>
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>lib\Vengine.jar</jar>
   <outfile>VASSAL.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
@@ -14,7 +13,7 @@
   <icon>VASSAL.ico</icon>
   <classPath>
     <mainClass>VASSAL.launch.ModuleManager</mainClass>
-    <cp>Vengine.jar</cp>
+    <cp>lib\Vengine.jar</cp>
   </classPath>
   <jre>
     <path></path>
