@@ -116,7 +116,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       }
     }
 
-    //findRoomOwners(chat);
+    findRoomOwners(chat);
     
     try {
       chat.changeSubject(getName());
@@ -171,10 +171,13 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   }
   
   public void setOwner(String ownerList) {
-    
+    decodeOwners(ownerList);
   }
   
   protected String encodeOwners() {
+    if (owners.isEmpty()) {
+      return "";
+    }
     SequenceEncoder se = new SequenceEncoder(',');
     for (String owner : owners) {
       se.append(owner);

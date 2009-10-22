@@ -383,6 +383,10 @@ public class JabberClient implements LockableChatServerConnection,
     return currentChat == null ? null : currentChat.getRoom();
   }
 
+  public LockableRoom getCurrentRoom() {
+    return monitor.getCurrentRoom();
+  }
+  
   public void setRoom(String roomName, String roomOwner) {
     setRoom(roomMgr.getRoomByName(this, roomName), roomOwner);
   }

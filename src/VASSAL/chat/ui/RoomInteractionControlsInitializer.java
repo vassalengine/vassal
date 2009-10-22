@@ -26,6 +26,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Action;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -160,7 +161,10 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
   public JPopupMenu buildPopupForPlayer(SimplePlayer target, JTree tree) {
     JPopupMenu popup = new JPopupMenu();
     for (PlayerActionFactory f : playerActionFactories) {
-      popup.add(f.getAction(target, tree));
+      final Action a = f.getAction(target, tree);
+      if (a != null) {
+        popup.add(a);
+      }
     }
     return popup.getComponentCount() == 0 ? null : popup;
   }
