@@ -92,6 +92,7 @@ import VASSAL.tools.swing.Dialogs;
 public class JabberClient implements LockableChatServerConnection,
     PacketListener, ServerStatus, ChatControlsInitializer, PlayerEncoder {
   private static final String QUERY_ROOMS = "http://jabber.org/protocol/muc#rooms";
+  public static final String OWNER = "owner"; 
   private MessageBoard msgSvr;
   private XMPPConnection conn;
   private String host;
@@ -199,7 +200,7 @@ public class JabberClient implements LockableChatServerConnection,
             JOptionPane.YES_NO_OPTION, "Invite" + inviter, Resources
                 .getString("Chat.ignore_invitation"));
         if (i == 0) {
-          doInvite(inviter, roomName);
+          doInvite(inviter, roomName, (String) mess.getProperty(OWNER));
         }
         else {
           MultiUserChat.decline(conn, room, inviter, "");                
@@ -374,15 +375,23 @@ public class JabberClient implements LockableChatServerConnection,
     return monitor.getCurrentRoom();
   }
 
+  public String getCurrentRoomOwners() {
+    return monitor.getCurrentRoom().getOwners();
+  }
+  
   public String getCurrentRoomJID() {
     return currentChat == null ? null : currentChat.getRoom();
   }
 
-  public void setRoom(String roomName) {
-    setRoom(roomMgr.getRoomByName(this, roomName));
+  public void setRoom(String roomName, String roomOwner) {
+    setRoom(roomMgr.getRoomByName(this, roomName), roomOwner);
   }
   
   public void setRoom(Room r) {
+    setRoom(r, "");
+  }
+  
+  public void setRoom(Room r, String roomOwner) {
     JabberRoom newRoom = null;
     try {
       if (r instanceof JabberRoom) {
@@ -391,11 +400,13 @@ public class JabberClient implements LockableChatServerConnection,
       else {
         newRoom = roomMgr.getRoomByName(this, r.getName());
       }
+      newRoom.setOwner(roomOwner);
       if (!newRoom.equals(getRoom())) {
         leaveCurrentRoom();
         currentChat = newRoom.join(this, (JabberPlayer) getUserInfo());
         currentChat.addUserStatusListener(kickListener);
         monitor.sendRoomChanged();
+ 
       }
     }
     // FIXME: review error message
@@ -470,14 +481,20 @@ public class JabberClient implements LockableChatServerConnection,
     catch (XMPPException e) {
       // TODO Error - unable to grant membership
     }
-    currentChat.invite(invitee.getId(), "");
+    final Message m = new Message();
+    m.setProperty(OWNER, getCurrentRoomOwners());
+    currentChat.invite(m, invitee.getId(), "");
   }
 
   /** Process an invitation */
-  public void doInvite(String playerId, String roomName) {
-    setRoom(roomName);
+  public void doInvite(String playerId, String roomName, String roomOwner) {
+    setRoom(roomName, roomOwner);
   }
 
+  public void doInvite(String playerId, String roomName) {
+    doInvite(playerId, roomName, "");
+  }
+  
   /** Is a player kickable from this room? */
   public boolean isKickable(Player kickee) {
     // kickee is not me

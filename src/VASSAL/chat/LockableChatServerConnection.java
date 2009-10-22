@@ -30,6 +30,7 @@ public interface LockableChatServerConnection extends ChatServerConnection {
   
   /** Process Invitation */
   void doInvite(String playerId, String roomName);
+  void doInvite(String playerId, String roomName, String roomOwner);
   
   /** Can a player be kicked from this room by me? */
   boolean isKickable(Player kickee);

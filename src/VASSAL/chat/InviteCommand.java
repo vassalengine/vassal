@@ -28,6 +28,7 @@ import VASSAL.tools.swing.Dialogs;
 /**
  * A {@link Command} that, when executed, sends game synchronization
  * information to a given {@link VASSAL.chat.SimplePlayer}
+ * NB InviteCommand is not used by the Jabber Server/Client
  *
  */
 public class InviteCommand extends Command {

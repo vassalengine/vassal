@@ -31,6 +31,7 @@ import org.jivesoftware.smackx.muc.RoomInfo;
 
 import VASSAL.chat.LockableRoom;
 import VASSAL.chat.SimpleRoom;
+import VASSAL.tools.SequenceEncoder;
 
 public class JabberRoom extends SimpleRoom implements LockableRoom {
   private static final String CONFIG_MEMBERSONLY = "muc#roomconfig_membersonly";
@@ -38,7 +39,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   private RoomInfo info;
   private boolean ownedByMe;
   private JabberClient client;
-  private ArrayList<String> owners;
+  private ArrayList<String> owners = new ArrayList<String>();
 
   private JabberRoom(String name, String jid, RoomInfo info, JabberClient client) {
     super(name);
@@ -115,14 +116,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       }
     }
 
-    owners = new ArrayList<String>();
-    
-    for (Iterator<String> i = chat.getOccupants(); i.hasNext();) {
-      final Occupant occupant = chat.getOccupant(i.next());
-      if ("owner".equals(occupant.getAffiliation())) {
-        owners.add(occupant.getJid());
-      }
-    }    
+    //findRoomOwners(chat);
     
     try {
       chat.changeSubject(getName());
@@ -135,6 +129,21 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     return chat;
   }
 
+  public void updateRoomOwners() {
+    findRoomOwners(new MultiUserChat(client.getConnection(), getJID()));
+  }
+  
+  protected void findRoomOwners(MultiUserChat chat) {
+    owners = new ArrayList<String>();
+    
+    for (Iterator<String> i = chat.getOccupants(); i.hasNext();) {
+      final Occupant occupant = chat.getOccupant(i.next());
+      if ("owner".equals(occupant.getAffiliation())) {
+        owners.add(occupant.getJid());
+      }
+    }   
+  }
+  
   public boolean equals(Object o) {
     if (o instanceof JabberRoom) {
       JabberRoom r = (JabberRoom) o;
@@ -154,9 +163,32 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   }
   
   public boolean isOwner(String jid) {
-    return owners != null && owners.contains(jid);
+    return owners.contains(jid);
   }
 
+  public String getOwners() {
+    return encodeOwners();
+  }
+  
+  public void setOwner(String ownerList) {
+    
+  }
+  
+  protected String encodeOwners() {
+    SequenceEncoder se = new SequenceEncoder(',');
+    for (String owner : owners) {
+      se.append(owner);
+    }
+    return se.getValue();
+  }
+  
+  protected void decodeOwners(String s) {
+    owners.clear();
+    for (SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ','); sd.hasNext();) {
+      owners.add(sd.nextToken());
+    }
+  }
+  
   public static class Manager {
     private Map<String, JabberRoom> jidToRoom = new HashMap<String, JabberRoom>();
 
