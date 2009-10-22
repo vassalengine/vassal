@@ -76,7 +76,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected NodePlayer me;
   protected SimpleRoom currentRoom;
-  protected String defaultRoomName = "Main Room"; //$NON-NLS-1$
+  protected String defaultRoomName = DEFAULT_ROOM_NAME; //$NON-NLS-1$
   protected NodeRoom[] allRooms = new NodeRoom[0];
   protected MessageBoard msgSvr;
   protected WelcomeMessageServer welcomer;

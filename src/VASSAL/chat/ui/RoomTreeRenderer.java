@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,18 +18,23 @@
  */
 package VASSAL.chat.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.net.URL;
 import java.util.List;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import VASSAL.chat.SimpleRoom;
+
+import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.LockableRoom;
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;
 import VASSAL.chat.SimplePlayer;
+import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.SimpleStatus;
 
 /** Cell render component for {@link RoomTree} */
@@ -66,20 +71,28 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
 
     putClientProperty("html.disable", Boolean.TRUE);
 
-    value = ((DefaultMutableTreeNode) value).getUserObject();
-    if (value instanceof Player) {      
-      if (((SimpleStatus)((Player) value).getStatus()).isAway()) {
+    Object item = ((DefaultMutableTreeNode) value).getUserObject();
+    if (item instanceof Player) {      
+      if (((SimpleStatus)((Player) item).getStatus()).isAway()) {
         setIcon(away);
       }
-      else if (((SimpleStatus)((SimplePlayer) value).getStatus()).isLooking()) {
+      else if (((SimpleStatus)((SimplePlayer) item).getStatus()).isLooking()) {
         setIcon(looking);
       }
       else {
         setIcon(null);
       }
+      
+      DefaultMutableTreeNode roomNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) value).getParent();
+      Object room = roomNode.getUserObject();
+      if (room instanceof LockableRoom) {
+         if (!ChatServerConnection.DEFAULT_ROOM_NAME.equals(((Room) room).getName()) && ((LockableRoom) room).isOwner(((Player) item).getId())) {
+           setForeground(Color.red);
+         }
+      }
     }
-    else if (value instanceof SimpleRoom) {
-      List<Player> players = ((Room) value).getPlayerList();
+    else if (item instanceof SimpleRoom) {
+      List<Player> players = ((Room) item).getPlayerList();
       setText(getText() + " (" + players.size() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     return this;

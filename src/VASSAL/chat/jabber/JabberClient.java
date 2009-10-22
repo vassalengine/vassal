@@ -123,7 +123,7 @@ public class JabberClient implements LockableChatServerConnection,
     this.conferenceService = "conference." + host;
     this.encoder = encoder;
     this.account = account;
-    defaultRoom = roomMgr.getRoomByName(this, "Main Room");
+    defaultRoom = roomMgr.getRoomByName(this, DEFAULT_ROOM_NAME);
     messageBoardControls = new MessageBoardControlsInitializer(Resources
         .getString("Chat.messages"), msgSvr); //$NON-NLS-1$
     // roomControls = new RoomInteractionControlsInitializer(this);
@@ -310,7 +310,6 @@ public class JabberClient implements LockableChatServerConnection,
               .getXMPPError().getMessage(), e.getXMPPError().getCondition(), e
               .getXMPPError().getCode()));
           setConnected(false);
-          MultiUserChat.removeInvitationListener(conn, inviteListener);
           return;
         }
       }
@@ -323,7 +322,6 @@ public class JabberClient implements LockableChatServerConnection,
         }
         conn.disconnect();
       }
-      MultiUserChat.removeInvitationListener(conn, inviteListener);
       conn = null;
       monitor = null;
       currentChat = null;
@@ -876,7 +874,7 @@ public class JabberClient implements LockableChatServerConnection,
         XMPPException xe = (XMPPException) e;
         if (xe.getStreamError() != null
             && "conflict".equals(xe.getStreamError().getCode())) {
-          msg = "Another user has logged in using the same account.  Disconnecting";
+          msg = "Another user is already logged in using the same account.  Disconnecting";
         }
       }
       if (msg != null) {

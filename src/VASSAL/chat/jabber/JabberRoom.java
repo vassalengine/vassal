@@ -17,13 +17,16 @@
  */
 package VASSAL.chat.jabber;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.Form;
 import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.Occupant;
 import org.jivesoftware.smackx.muc.RoomInfo;
 
 import VASSAL.chat.LockableRoom;
@@ -35,6 +38,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   private RoomInfo info;
   private boolean ownedByMe;
   private JabberClient client;
+  private ArrayList<String> owners;
 
   private JabberRoom(String name, String jid, RoomInfo info, JabberClient client) {
     super(name);
@@ -105,16 +109,26 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     }
     catch (XMPPException e) {
       // 403 code means the room already exists and user is not an owner
+      // Anything else is a problem.
       if (e.getXMPPError() != null && e.getXMPPError().getCode() != 403) {
         throw e;
       }
     }
 
+    owners = new ArrayList<String>();
+    
+    for (Iterator<String> i = chat.getOccupants(); i.hasNext();) {
+      final Occupant occupant = chat.getOccupant(i.next());
+      if ("owner".equals(occupant.getAffiliation())) {
+        owners.add(occupant.getJid());
+      }
+    }    
+    
     try {
       chat.changeSubject(getName());
     }
     catch (XMPPException e) {
-      // Room already exists but we're not the owner
+      // No error - Room already exists but we're not the owner
     }
 
     chat.addMessageListener(client);
@@ -138,6 +152,10 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   public boolean isOwnedByMe() {
     return ownedByMe;
   }
+  
+  public boolean isOwner(String jid) {
+    return owners != null && owners.contains(jid);
+  }
 
   public static class Manager {
     private Map<String, JabberRoom> jidToRoom = new HashMap<String, JabberRoom>();
@@ -157,6 +175,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
         // FIXME: review error message
         catch (XMPPException e) {
           e.printStackTrace();
+          return null;
         }
         newRoom = new JabberRoom(subject, jid, info, client);
         jidToRoom.put(jid, newRoom);

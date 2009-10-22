@@ -38,6 +38,8 @@ public interface ChatServerConnection extends ServerConnection {
   public static final String INCOMING_MSG = "Msg"; //$NON-NLS-1$
   /** Property representing the StatusServer implementation */
   public static final String STATUS_SERVER = "StatusServer"; //$NON-NLS-1$
+  
+  public static final String DEFAULT_ROOM_NAME = "Main Room"; //$NON-NLS-1$
 
 
   /** Return the room currently occupied by the player */
