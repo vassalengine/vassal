@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2006 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -47,8 +47,8 @@ public class SimplePlayer implements VASSAL.chat.Player {
   }
 
   public String getName() {
-    if (name == null || name.length() == 0 || name.trim().length() == 0 || name.equals("<nobody>")) {
-      return "("+Chatter.getAnonymousUserName()+")";
+    if (name == null || name.length() == 0 || name.trim().length() == 0 || name.equals("<nobody>")) {  //$NON-NLS-1$
+      return "("+Chatter.getAnonymousUserName()+")";  //$NON-NLS-1$  //$NON-NLS-2$
     }
     return name;
   }

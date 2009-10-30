@@ -129,7 +129,7 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
         controls.getNewRoom().setText(""); //$NON-NLS-1$
       }
     };
-    controls.getNewRoom().addActionListener(roomCreator);
+    controls.getNewRoom().addActionListener(roomCreator);  
   }
 
   protected void createRoom(String name) {

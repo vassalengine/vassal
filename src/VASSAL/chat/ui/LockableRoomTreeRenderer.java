@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2004 by Rodney Kinney
+ * Copyright (c) 2004-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,6 +18,7 @@
  */
 package VASSAL.chat.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.net.URL;
 
@@ -27,10 +28,14 @@ import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.LockableRoom;
+import VASSAL.chat.Player;
+import VASSAL.chat.Room;
 
 /**
  * Renders rooms with a "locked" icon if locked
+ * Change Owners name to display Red
  */
 public class LockableRoomTreeRenderer extends RoomTreeRenderer {
   private static final long serialVersionUID = 1L; 
@@ -49,12 +54,23 @@ public class LockableRoomTreeRenderer extends RoomTreeRenderer {
                                                 boolean leaf, int row,
                                                 boolean hasFocus) {
     JLabel l =  (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-    value = ((DefaultMutableTreeNode) value).getUserObject();
-    if (lockedIcon != null
-      && value instanceof LockableRoom
-      && ((LockableRoom)value).isLocked()) {
-     l.setIcon(lockedIcon);
+    Object item = ((DefaultMutableTreeNode) value).getUserObject();
+    
+    if (item instanceof LockableRoom) {
+      if (lockedIcon != null && ((LockableRoom)item).isLocked()) {
+        l.setIcon(lockedIcon);
+      }   
     }
+    else if (item instanceof Player) {
+      final DefaultMutableTreeNode roomNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) value).getParent();
+      final Object room = roomNode.getUserObject();
+      if (room instanceof LockableRoom) {
+         if (!ChatServerConnection.DEFAULT_ROOM_NAME.equals(((Room) room).getName()) && ((LockableRoom) room).isOwner(((Player) item).getId())) {
+           setForeground(Color.red);
+         }
+      } 
+    }
+    
     return l;
   }
 }

@@ -18,7 +18,6 @@
  */
 package VASSAL.chat.ui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.net.URL;
 import java.util.List;
@@ -29,8 +28,6 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import VASSAL.chat.ChatServerConnection;
-import VASSAL.chat.LockableRoom;
 import VASSAL.chat.Player;
 import VASSAL.chat.Room;
 import VASSAL.chat.SimplePlayer;
@@ -83,13 +80,6 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
         setIcon(null);
       }
       
-      DefaultMutableTreeNode roomNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) value).getParent();
-      Object room = roomNode.getUserObject();
-      if (room instanceof LockableRoom) {
-         if (!ChatServerConnection.DEFAULT_ROOM_NAME.equals(((Room) room).getName()) && ((LockableRoom) room).isOwner(((Player) item).getId())) {
-           setForeground(Color.red);
-         }
-      }
     }
     else if (item instanceof SimpleRoom) {
       List<Player> players = ((Room) item).getPlayerList();

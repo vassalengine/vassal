@@ -333,10 +333,6 @@ public abstract class NodeClient implements LockableChatServerConnection,
     }
   }
   
-  public void doInvite(String playerId, String roomName, String roomOwner) {
-    doInvite(playerId, roomName);
-  }
-  
   public Room getRoom() {
     return currentRoom;
   }

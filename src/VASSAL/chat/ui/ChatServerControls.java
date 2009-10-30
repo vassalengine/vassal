@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,6 +18,9 @@
  */
 package VASSAL.chat.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -29,7 +32,6 @@ import java.beans.PropertyChangeListener;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -65,6 +67,7 @@ public class ChatServerControls extends AbstractBuildable {
   protected JTextField newRoom;
   protected JToolBar toolbar;
   protected RoomTree roomTree;
+  protected JButton newRoomButton;
   
   protected JButton launch;
   protected ChatServerConnection client;
@@ -74,16 +77,18 @@ public class ChatServerControls extends AbstractBuildable {
   protected BasicChatControlsInitializer basicControls;
 
   public ChatServerControls() {
-    JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     roomTree = new RoomTree();
     JScrollPane scroll = new JScrollPane(roomTree);
-    JPanel roomPanel = new JPanel();
+    final JPanel roomPanel = new JPanel();
     roomPanel.setLayout(new BoxLayout(roomPanel, BoxLayout.Y_AXIS));
-    Box b = Box.createHorizontalBox();
-    b.add(new JLabel(Resources.getString("Chat.new_game")));  //$NON-NLS-1$
+    final JPanel b = new JPanel(new BorderLayout());
+    b.add(new JLabel(Resources.getString("Chat.new_game")), BorderLayout.LINE_START);  //$NON-NLS-1$
     newRoom = new JTextField(12);
-    newRoom.setMaximumSize(newRoom.getPreferredSize());
-    b.add(newRoom);
+    b.add(newRoom, BorderLayout.CENTER);
+    newRoomButton = new JButton("...");
+    newRoomButton.setPreferredSize(new Dimension(20, 20));
+    b.add(newRoomButton, BorderLayout.LINE_END);
     roomPanel.add(b);
     roomPanel.add(scroll);
     roomPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), Resources.getString("Chat.active_games")));  //$NON-NLS-1$
@@ -108,6 +113,10 @@ public class ChatServerControls extends AbstractBuildable {
     toolbar = new JToolBar();
     controlPanel.add("North", toolbar);  //$NON-NLS-1$
     toolbar.addSeparator();
+  }
+  
+  public Component getExtendedControls() {
+    return null;
   }
   
   public void addTo(Buildable b) {
@@ -160,7 +169,7 @@ public class ChatServerControls extends AbstractBuildable {
       if (GlobalOptions.getInstance().isUseSingleWindow()) {
         splitter = new ComponentSplitter().splitRight(GameModule.getGameModule().getControlPanel(), controlPanel, false);
         splitter.revalidate();
-        Runnable runnable = new Runnable() {
+        final Runnable runnable = new Runnable() {
           public void run() {
             splitter.showComponent();
           }
@@ -173,8 +182,8 @@ public class ChatServerControls extends AbstractBuildable {
         frame.add(controlPanel);
         frame.setJMenuBar(MenuManager.getInstance().getMenuBarFor(frame));
 
-        String key = "BoundsOfClientWindow";  //$NON-NLS-1$
-        PositionOption pos = new VisibilityOption(key, frame);
+        final String key = "BoundsOfClientWindow";  //$NON-NLS-1$
+        final PositionOption pos = new VisibilityOption(key, frame);
         GameModule.getGameModule().getPrefs().addOption(pos);
         frame.setVisible(true);
       }
@@ -207,7 +216,7 @@ public class ChatServerControls extends AbstractBuildable {
     }
     PropertyChangeListener roomUpdater = new PropertyChangeListener() {
       public void propertyChange(final PropertyChangeEvent evt) {
-        Runnable runnable = new Runnable() {
+        final Runnable runnable = new Runnable() {
           public void run() {
             roomTree.setRooms((VASSAL.chat.Room[]) evt.getNewValue());
           }
@@ -218,15 +227,15 @@ public class ChatServerControls extends AbstractBuildable {
     client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, roomUpdater);
     PropertyChangeListener currentRoomUpdater = new PropertyChangeListener() {
       public void propertyChange(final PropertyChangeEvent evt) {
-        Runnable runnable = new Runnable() {
+        final Runnable runnable = new Runnable() {
           public void run() {
               if (evt.getNewValue() == null) {
                 currentRoom.setRooms(new VASSAL.chat.Room[0]);
               }
               else {
                 currentRoom.setRooms(new VASSAL.chat.Room[]{(VASSAL.chat.Room) evt.getNewValue()});
-                Object root = currentRoom.getModel().getRoot();
-                Object room = currentRoom.getModel().getChild(root, 0);
+                final Object root = currentRoom.getModel().getRoot();
+                final Object room = currentRoom.getModel().getChild(root, 0);
                 currentRoom.expandPath(new TreePath(new Object[]{root, room}));
               }
             }
@@ -262,6 +271,10 @@ public class ChatServerControls extends AbstractBuildable {
 
   public JTextField getNewRoom() {
     return newRoom;
+  }
+  
+  public JButton getNewRoomButton() {
+    return newRoomButton;
   }
 
   public RoomTree getRoomTree() {
