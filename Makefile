@@ -165,22 +165,21 @@ $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	genisoimage -V VASSAL-$(VERSION) -r -apple -root VASSAL-$(VERSION).app -o $@ $<
 
-$(TMPDIR)/VASSAL-$(VERSION)-other.zip: version all $(JARS)
+$(TMPDIR)/VASSAL-$(VERSION)-other.zip: version all $(JARS) $(TMPDIR)/VASSAL.exe
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
 	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL-$(VERSION)/lib
-	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL-$(VERSION)
+	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
 $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: version release-other
 	cp dist/VASSAL.sh $(TMPDIR)/VASSAL-$(VERSION)
-	rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.bat
+	-rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{bat,exe}
 	tar cjvf $@ -C $(TMPDIR) VASSAL-$(VERSION)
 
 $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: version release-other $(TMPDIR)/VASSAL.exe
-	cp dist/windows/VASSAL.bat $(TMPDIR)/VASSAL-$(VERSION)
-	rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.sh
+	-rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{sh,bat}
 	cp $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
 		echo SetOutPath \"\$$INSTDIR\\`echo $$i | \
