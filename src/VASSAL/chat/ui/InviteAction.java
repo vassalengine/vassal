@@ -50,7 +50,7 @@ public class InviteAction extends AbstractAction {
   public void actionPerformed(ActionEvent evt) {
     if (isEnabled()) {
       client.sendInvite(invitee);
-      GameModule.getGameModule().warn(Resources.getString("Chat.invite_sent", invitee.getName()));
+      GameModule.getGameModule().warn(Resources.getString("Chat.invite_sent", invitee.getName())); //$NON-NLS-1$
     }
   }
 

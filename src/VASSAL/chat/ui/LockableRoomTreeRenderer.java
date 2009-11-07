@@ -18,8 +18,8 @@
  */
 package VASSAL.chat.ui;
 
-import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.net.URL;
 
 import javax.swing.Icon;
@@ -39,8 +39,9 @@ import VASSAL.chat.Room;
  */
 public class LockableRoomTreeRenderer extends RoomTreeRenderer {
   private static final long serialVersionUID = 1L; 
-
   private Icon lockedIcon;
+  private Font nonOwnerFont = null;
+  private Font ownerFont = null;
   public LockableRoomTreeRenderer() {
     URL image = getClass().getResource("/images/lockedRoom.gif"); //$NON-NLS-1$
     if (image != null) {
@@ -66,11 +67,16 @@ public class LockableRoomTreeRenderer extends RoomTreeRenderer {
       final Object room = roomNode.getUserObject();
       if (room instanceof LockableRoom) {
          if (!ChatServerConnection.DEFAULT_ROOM_NAME.equals(((Room) room).getName()) && ((LockableRoom) room).isOwner(((Player) item).getId())) {
-           setForeground(Color.red);
+           if (ownerFont == null) {             
+             nonOwnerFont = this.getFont();
+             ownerFont = new Font(nonOwnerFont.getFontName(), nonOwnerFont.getStyle()+Font.BOLD, nonOwnerFont.getSize());
+           }
+           setFont(ownerFont);
+           return l;
          }
       } 
     }
-    
+    setFont(nonOwnerFont);
     return l;
   }
 }

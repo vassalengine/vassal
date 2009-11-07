@@ -25,7 +25,9 @@ import javax.swing.JTree;
 
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.LockableChatServerConnection;
 import VASSAL.chat.Player;
+import VASSAL.chat.Room;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SoundEncoder;
 import VASSAL.configure.SoundConfigurer;
@@ -33,11 +35,19 @@ import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 
 /**
- * Copyright (c) 2003 by Rodney Kinney. All rights reserved. Date: Jul 29, 2003
+ * Send a wake-up sound to another player
+ * - Can't wake-up oneself
+ * - No wake-ups in the default room
+ * - No wake-ups to people in different rooms
+ * - No wake-up to the same person in the same room until at least 5 seconds has passed.
  */
 public class SendSoundAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
-
+  private static final long TOO_SOON = 5 * 1000; // ms
+  private static Room lastRoom;
+  private static Player lastPlayer;
+  private static long lastSound = System.currentTimeMillis();
+  
   private ChatServerConnection client;
   private Player target;
   private String soundKey;
@@ -47,10 +57,34 @@ public class SendSoundAction extends AbstractAction {
     this.client = client;
     this.soundKey = soundKey;
     this.target = target;
+    
+    // Find which room our target player is in
+    Room targetRoom = null;
+    for (Room room : client.getAvailableRooms()) {
+      if (room.getPlayerList().contains(target)) {
+        targetRoom = room;
+      }
+    }
+    
+    if (target != null
+        && GameModule.getGameModule() != null
+        && !target.equals(client.getUserInfo())
+        && client.getRoom() != null
+        && client.getRoom().equals(targetRoom)
+        && (!targetRoom.equals(lastRoom) || !target.equals(lastPlayer) || (System.currentTimeMillis() - lastSound) > TOO_SOON))
+      {
+        setEnabled(true);
+      }
+      else {
+        setEnabled(false);
+      }
   }
 
   public void actionPerformed(ActionEvent e) {
-    client.sendTo(target, new SoundEncoder.Cmd(soundKey));
+    client.sendTo(target, new SoundEncoder.Cmd(soundKey, client.getUserInfo()));
+    lastPlayer = target;
+    lastRoom = client.getRoom();
+    lastSound = System.currentTimeMillis();
   }
 
   public static PlayerActionFactory factory(final ChatServerConnection client, final String name, final String soundKey, final String defaultSoundFile) {
@@ -59,6 +93,10 @@ public class SendSoundAction extends AbstractAction {
     }
     return new PlayerActionFactory() {
       public Action getAction(SimplePlayer p, JTree tree) {
+        final Room r = client.getRoom();
+        if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
+          return null; 
+        }
         return new SendSoundAction(name, client, soundKey, p);
       }
     };

@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -40,7 +40,7 @@ public class SynchCommand extends Command {
   }
 
   protected void executeCommand() {
-    GameModule.getGameModule().warn(Resources.getString("Server.sending_game_info")); //$NON-NLS-1$
+    GameModule.getGameModule().warn(Resources.getString("Server.sending_game_info", recipient.getName())); //$NON-NLS-1$
     Command synch = GameModule.getGameModule().getGameState().getRestoreCommand();
     if (synch != null) {
       client.sendTo(recipient, synch);

@@ -36,4 +36,10 @@ public interface LockableChatServerConnection extends ChatServerConnection {
   
   /** Kick a player from this room */
   void doKick (Player p);
+  
+  /** Return the name of the default room */
+  String getDefaultRoomName();
+  
+  /** Is specified room the default room? */
+  boolean isDefaultRoom(Room r);
 }

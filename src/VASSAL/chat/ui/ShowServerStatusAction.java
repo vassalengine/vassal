@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -48,8 +48,12 @@ public class ShowServerStatusAction extends AbstractAction {
   private static Window frame;
 
   public ShowServerStatusAction(ServerStatus status, URL iconURL) {
+    this(status, iconURL, true);
+  }
+  
+  public ShowServerStatusAction(ServerStatus status, URL iconURL, boolean includeMessageControls) {
     if (frame == null) {
-      frame = new Window(status);
+      frame = new Window(status, includeMessageControls);
     }
     if (iconURL == null) {
       putValue(NAME, Resources.getString("Chat.server_status")); //$NON-NLS-1$
@@ -69,20 +73,22 @@ public class ShowServerStatusAction extends AbstractAction {
 
     private ServerStatusView view;
     private MessageBoardControls messageMgr;
-
-    public Window(ServerStatus status) {
+    
+    public Window(ServerStatus status, boolean includeMessageControls) {
       super(Resources.getString("Chat.server_status")); //$NON-NLS-1$
       setJMenuBar(MenuManager.getInstance().getMenuBarFor(this));
 
       view = new ServerStatusView(status);
       view.addPropertyChangeListener(ServerStatusView.SELECTION_PROPERTY,this);
       add(view);
-      messageMgr = new MessageBoardControls();
-      JToolBar toolbar = new JToolBar();
-      toolbar.setFloatable(false);
-      toolbar.add(messageMgr.getCheckMessagesAction());
-      toolbar.add(messageMgr.getPostMessageAction());
-      add(toolbar, BorderLayout.NORTH);
+      if (includeMessageControls) {
+        messageMgr = new MessageBoardControls();
+        final JToolBar toolbar = new JToolBar();
+        toolbar.setFloatable(false);
+        toolbar.add(messageMgr.getCheckMessagesAction());
+        toolbar.add(messageMgr.getPostMessageAction());
+        add(toolbar, BorderLayout.NORTH);
+      }
       pack();
       setSize(Math.max(getSize().width,400),Math.max(getSize().height,300));
       Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -115,7 +121,9 @@ public class ShowServerStatusAction extends AbstractAction {
           }
         });
       }
-      messageMgr.setServer(server, name);
+      if (messageMgr != null) {
+        messageMgr.setServer(server, name);
+      }
     }
   }
 }

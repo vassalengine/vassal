@@ -17,17 +17,24 @@
  */
 package VASSAL.chat.jabber;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
@@ -41,10 +48,9 @@ import org.jivesoftware.smackx.muc.RoomInfo;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.chat.LockableRoom;
+import VASSAL.chat.Player;
 import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.SimpleStatus;
-import VASSAL.configure.BooleanConfigurer;
-import VASSAL.configure.StringEnumConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.swing.Dialogs;
@@ -65,6 +71,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   public static final String CONFIG_MIN_MODULE_VERSION = "minModVer"; //$NON-NLS-1$
   public static final String CONFIG_CRC_CHECK = "crcCheck"; //$NON-NLS-1$
   public static final String CONFIG_CRC = "crc"; //$NON-NLS-1$
+  public static final String CONFIG_DESCRIPTION = "desc"; //$NON-NLS-1$
   
   private String jid;
   private RoomInfo info;
@@ -199,6 +206,13 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     owners.remove(jid);
   }
   
+  public Player getOwningPlayer() {
+    if (owners.size() == 0) {
+      return null;
+    }
+    return getPlayer(owners.get(0));
+  }
+  
   public void setConfig(Properties props) {
     config = props;
   }
@@ -245,15 +259,19 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     return config.getProperty(CONFIG_MIN_MODULE_VERSION, GameModule.getGameModule().getGameVersion());
   }
   
+  public String getRoomDescription() {
+    return config.getProperty(CONFIG_DESCRIPTION, ""); //$NON-NLS-1$
+  }  
+  
   public void showConfig() {
     final JabberRoomConfig c = new JabberRoomConfig(config, false);    
     Dialogs.showDialog(null, Resources.getString("Chat.room_configuration"), c, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION, null, null, null, null); //$NON-NLS-1$
   }
   
   /**
-   * Is the specified player allowed to joing this room?
+   * Is the specified player allowed to join this room?
    * @param p A JabberPlayer
-   * @return true/false
+   * @return null = false, non-null = error message
    */
   public String canJoin(JabberPlayer p) {
     
@@ -382,15 +400,16 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
   public static class JabberRoomConfig extends JPanel {
     private static final long serialVersionUID = 1L;
     private JTextField roomNameConfig;
-    private BooleanConfigurer startLockedConfig;
-    private BooleanConfigurer matchCrcConfig;
+    private JCheckBox startLockedConfig;
+    private JCheckBox matchCrcConfig;
     private JTextField crcConfig;
-    private StringEnumConfigurer vassalVersionConfig;
+    private JComboBox vassalVersionConfig;
     private JTextField minimumVassalVersionConfig;
-    private StringEnumConfigurer moduleVersionConfig;
+    private JComboBox moduleVersionConfig;
     private JTextField minimumModuleVersionConfig;
     private String vassalVersion;
     private String moduleVersion;
+    private JTextArea roomDescConfig;
     private boolean updateEnabled = true;
     
     static String versionToOption(String version) {
@@ -425,42 +444,49 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       roomNameConfig = new JTextField();
       add(roomNameConfig, "wrap"); //$NON-NLS-1$
       
+      add(new JLabel(Resources.getString("Chat.room_description"))); //$NON-NLS-1$
+      roomDescConfig = new JTextArea(5,20);
+      roomDescConfig.setLineWrap(true);
+      roomDescConfig.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+      add(roomDescConfig, "wrap"); //$NON-NLS-1$
+      
       add(new JLabel(Resources.getString("Chat.start_locked"))); //$NON-NLS-1$
-      startLockedConfig = new BooleanConfigurer(null, ""); //$NON-NLS-1$
-      add(startLockedConfig.getControls(), "wrap"); //$NON-NLS-1$
+      startLockedConfig = new JCheckBox();
+      add(startLockedConfig, "wrap"); //$NON-NLS-1$
       
       add(new JLabel(Resources.getString("Chat.vassal_versions_allowed")));     //$NON-NLS-1$
-      vassalVersionConfig = new StringEnumConfigurer(null, "", new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION}); //$NON-NLS-1$
-      vassalVersionConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent e) {
+      vassalVersionConfig = new JComboBox(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION}); //$NON-NLS-1$
+      vassalVersionConfig.addItemListener(new ItemListener() {
+        public void itemStateChanged(ItemEvent arg0) {
           updateVisibility();          
         }});
-      add(vassalVersionConfig.getControls());
+      add(vassalVersionConfig);
       minimumVassalVersionConfig = new JTextField(12);
       minimumVassalVersionConfig.setText(vassalVersion);
       add(minimumVassalVersionConfig, "wrap"); //$NON-NLS-1$
       
       add(new JLabel(Resources.getString("Chat.module_versions_allowed"))); //$NON-NLS-1$
-      moduleVersionConfig = new StringEnumConfigurer(null, "", new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION}); //$NON-NLS-1$
-      moduleVersionConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent e) {
+      moduleVersionConfig = new JComboBox(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION});
+      moduleVersionConfig.addItemListener(new ItemListener() {
+        public void itemStateChanged(ItemEvent arg0) {
           updateVisibility();          
         }});
-      add(moduleVersionConfig.getControls());
+      
+      add(moduleVersionConfig);
       minimumModuleVersionConfig = new JTextField(12);
       minimumModuleVersionConfig.setText(moduleVersion);
       add(minimumModuleVersionConfig, "wrap"); //$NON-NLS-1$
       
       add(new JLabel(Resources.getString("Chat.crc_match"))); //$NON-NLS-1$
-      matchCrcConfig = new BooleanConfigurer(null, ""); //$NON-NLS-1$
-      matchCrcConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        public void propertyChange(PropertyChangeEvent e) {
+      matchCrcConfig = new JCheckBox();
+      matchCrcConfig.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
           updateVisibility();          
         }});
-      add(matchCrcConfig.getControls()); 
+      add(matchCrcConfig); 
       crcConfig = new JTextField(12);
       crcConfig.setText(Long.toHexString(GameModule.getGameModule().getCrc()));
-      crcConfig.setEnabled(false);
+      crcConfig.setEditable(false);
       add(crcConfig, "wrap"); //$NON-NLS-1$
       
       updateVisibility();
@@ -469,12 +495,13 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
     public JabberRoomConfig(Properties props) {
       this();
       roomNameConfig.setText(props.getProperty(CONFIG_NAME));
-      startLockedConfig.setValue(new Boolean("true".equals(props.getProperty(CONFIG_LOCKED)))); //$NON-NLS-1$
-      vassalVersionConfig.setValue(optionToVersion(props.getProperty(CONFIG_VASSAL_VERSION, ANY_VERSION)));
+      roomDescConfig.setText(props.getProperty(CONFIG_DESCRIPTION));
+      startLockedConfig.setSelected("true".equals(props.getProperty(CONFIG_LOCKED))); //$NON-NLS-1$
+      vassalVersionConfig.setSelectedItem(optionToVersion(props.getProperty(CONFIG_VASSAL_VERSION, ANY_VERSION)));
       minimumVassalVersionConfig.setText(props.getProperty(CONFIG_MIN_VASSAL_VERSION, "")); //$NON-NLS-1$
-      moduleVersionConfig.setValue(optionToVersion(props.getProperty(CONFIG_MODULE_VERSION, ANY_VERSION)));
+      moduleVersionConfig.setSelectedItem(optionToVersion(props.getProperty(CONFIG_MODULE_VERSION, ANY_VERSION)));
       minimumModuleVersionConfig.setText(props.getProperty(CONFIG_MIN_MODULE_VERSION, "")); //$NON-NLS-1$
-      matchCrcConfig.setValue(new Boolean("true".equals(props.getProperty(CONFIG_CRC_CHECK)))); //$NON-NLS-1$
+      matchCrcConfig.setSelected("true".equals(props.getProperty(CONFIG_CRC_CHECK))); //$NON-NLS-1$
       crcConfig.setText(props.getProperty(CONFIG_CRC)); //$NON-NLS-1$
     }
     
@@ -492,31 +519,32 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
       updateEnabled = enabled;
       updateVisibility();
     }
-    
+
     private void updateVisibility() {
-      minimumVassalVersionConfig.setVisible(! ANY_VERSION.equals(vassalVersionConfig.getValueString()));
-      minimumModuleVersionConfig.setVisible(! ANY_VERSION.equals(moduleVersionConfig.getValueString()));
-      crcConfig.setVisible("true".equals(matchCrcConfig.getValueString())); //$NON-NLS-1$
+      minimumVassalVersionConfig.setVisible(! ANY_VERSION.equals(vassalVersionConfig.getSelectedItem()));
+      minimumModuleVersionConfig.setVisible(! ANY_VERSION.equals(moduleVersionConfig.getSelectedItem()));
+      crcConfig.setVisible(matchCrcConfig.isSelected());
       
-      roomNameConfig.setEnabled(isUpdateEnabled());
-      startLockedConfig.getControls().setEnabled(isUpdateEnabled());
+      roomNameConfig.setEditable(isUpdateEnabled());
+      roomDescConfig.setEditable(isUpdateEnabled());
+      startLockedConfig.setEnabled(isUpdateEnabled());
       vassalVersionConfig.setEnabled(isUpdateEnabled());
-      minimumVassalVersionConfig.setEnabled(isUpdateEnabled() && vassalVersionConfig.getValueString().equals(MINIMUM_VERSION));
+      minimumVassalVersionConfig.setEditable(isUpdateEnabled() && vassalVersionConfig.getSelectedItem().equals(MINIMUM_VERSION));
       moduleVersionConfig.setEnabled(isUpdateEnabled());
-      minimumModuleVersionConfig.setEnabled(isUpdateEnabled() && moduleVersionConfig.getValueString().equals(MINIMUM_VERSION));
-      matchCrcConfig.getControls().setEnabled(isUpdateEnabled());
-      crcConfig.setEnabled(false);
+      minimumModuleVersionConfig.setEditable(isUpdateEnabled() && moduleVersionConfig.getSelectedItem().equals(MINIMUM_VERSION));
+      matchCrcConfig.setEnabled(isUpdateEnabled());      
     }
     
     public Properties getProperties() {
       Properties props = new Properties();
       props.put(CONFIG_NAME, roomNameConfig.getText());
-      props.put(CONFIG_LOCKED, startLockedConfig.getValueString());
-      props.put(CONFIG_VASSAL_VERSION, versionToOption(vassalVersionConfig.getValueString()));
+      props.put(CONFIG_DESCRIPTION, roomDescConfig.getText());
+      props.put(CONFIG_LOCKED, Boolean.toString(startLockedConfig.isSelected()));
+      props.put(CONFIG_VASSAL_VERSION, versionToOption((String) vassalVersionConfig.getSelectedItem()));
       props.put(CONFIG_MIN_VASSAL_VERSION, minimumVassalVersionConfig.getText());
-      props.put(CONFIG_MODULE_VERSION, versionToOption(moduleVersionConfig.getValueString()));
+      props.put(CONFIG_MODULE_VERSION, versionToOption((String) moduleVersionConfig.getSelectedItem()));
       props.put(CONFIG_MIN_MODULE_VERSION, minimumModuleVersionConfig.getText());
-      props.put(CONFIG_CRC_CHECK, matchCrcConfig.getValueString());
+      props.put(CONFIG_CRC_CHECK, Boolean.toString(matchCrcConfig.isSelected()));
       props.put(CONFIG_CRC, crcConfig.getText());
       return props;
     }

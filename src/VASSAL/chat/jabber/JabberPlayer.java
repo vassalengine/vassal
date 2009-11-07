@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jivesoftware.smack.util.StringUtils;
 
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleStatus;
@@ -30,7 +31,7 @@ public class JabberPlayer extends SimplePlayer {
   private JabberRoom joinedRoom;
 
   private JabberPlayer(String jid) {
-    super(jid,"???",new SimpleStatus());
+    super(jid,"???",new SimpleStatus()); //$NON-NLS-1$
     this.jid = jid;
   }
 
@@ -47,7 +48,7 @@ public class JabberPlayer extends SimplePlayer {
   }
 
   public String toString() {
-    return name + " (" + jid.split("@")[0] + ")"; // "+"["+((SimpleStatus)status).isLooking()+","+((SimpleStatus)status).isAway()+"]";
+    return name + " (" + jid.split("@")[0] + ")";  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
   public void join(JabberRoom room) {
@@ -60,6 +61,22 @@ public class JabberPlayer extends SimplePlayer {
 
   public JabberRoom getJoinedRoom() {
     return joinedRoom;
+  }
+  
+  public String getRawJid() {
+    if (jid.contains("/")) {
+      return StringUtils.parseName(jid) + "@" + StringUtils.parseServer(jid);
+    }
+    return jid;
+  }
+  public static String xmppAddressToJid(String participant) {
+
+    final String address = StringUtils.parseServer(participant);
+    final String[] parts = address.split("\\.");
+    final String server = parts[parts.length-1];
+    final String nick = StringUtils.parseResource(participant);
+    
+    return nick+"@"+server+JabberClient.JID_RESOURCE;
   }
 
   public static class Manager {
@@ -78,7 +95,7 @@ public class JabberPlayer extends SimplePlayer {
     }
     
     public JabberPlayer getPlayerByLogin(JabberClient client, String login) {
-      return getPlayer(login + "@" + client.getHost() + "/VASSAL");
+      return getPlayer(login + "@" + client.getHost() + "/VASSAL"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public synchronized void deletePlayer(String jid) {

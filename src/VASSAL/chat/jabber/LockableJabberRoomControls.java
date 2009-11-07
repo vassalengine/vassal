@@ -26,6 +26,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
+import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.HybridClient;
 import VASSAL.chat.Room;
@@ -41,13 +42,18 @@ public class LockableJabberRoomControls extends LockableRoomControls {
     super.initializeControls(controls);
     extendedRoomCreator = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        final Properties props = JabberRoom.configureNewRoom();
-        if (props != null) {
-          final String name = props.getProperty(JabberRoom.CONFIG_NAME);
-          if (name.length() > 0) {
-            createRoom(props);
+        if (client.isConnected()) {
+          final Properties props = JabberRoom.configureNewRoom();
+          if (props != null) {
+            final String name = props.getProperty(JabberRoom.CONFIG_NAME);
+            if (name.length() > 0) {
+              createRoom(props);
+            }
           }
-        }        
+        }
+        else {
+          GameModule.getGameModule().warn(Resources.getString("Chat.must_connect")); //$NON-NLS-1$
+        }
       }};
       controls.getNewRoomButton().addActionListener(extendedRoomCreator);
   }
@@ -88,8 +94,15 @@ public class LockableJabberRoomControls extends LockableRoomControls {
   }
   
   protected void createRoom(String name) {
-    final JabberRoom room = ((JabberClient) client).getRoomByName(name);
-    client.setRoom(room);
+    if (client.isConnected()) {
+      if (name != null && name.length() > 0) {
+        final JabberRoom room = ((JabberClient) client).getRoomByName(name);
+        client.setRoom(room);
+      }
+    }
+    else {
+      GameModule.getGameModule().warn(Resources.getString("Chat.must_connect")); //$NON-NLS-1$
+    }
   }
   
   class LockRoomAction extends AbstractAction {
@@ -99,8 +112,8 @@ public class LockableJabberRoomControls extends LockableRoomControls {
     private JabberRoom target;
 
     public LockRoomAction(JabberRoom target, JabberClient client) {
-      super(target.isLocked() ? Resources.getString("Chat.unlock_room")
-                              : Resources.getString("Chat.lock_room"));
+      super(target.isLocked() ? Resources.getString("Chat.unlock_room") //$NON-NLS-1$
+                              : Resources.getString("Chat.lock_room")); //$NON-NLS-1$
 
       setEnabled(target.isOwnedByMe() && !target.getName().equals(client.getDefaultRoomName()));
       this.target = target;
@@ -117,7 +130,7 @@ public class LockableJabberRoomControls extends LockableRoomControls {
     private JabberRoom target;
     
     public RoomPropertiesAction(JabberRoom room) {
-      super(Resources.getString("General.properties"));
+      super(Resources.getString("General.properties")); //$NON-NLS-1$
       target = room;
     }
     

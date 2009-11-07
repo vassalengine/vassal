@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -43,8 +43,12 @@ public interface ServerStatus {
     private String moduleName;
     private Map<String,Room> rooms = new HashMap<String,Room>();
 
-    public ModuleSummary(String moduleName, Room[] rooms) {
+    public ModuleSummary(String moduleName) {
       this.moduleName = moduleName;
+    }
+    
+    public ModuleSummary(String moduleName, Room[] rooms) {
+      this (moduleName);
       for (Room r : rooms) {
         this.rooms.put(r.getName(), r);
       }

@@ -123,7 +123,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
     playerStatusControls = new SimpleStatusControlsInitializer(this);
     synchEncoder = new SynchEncoder(this, this);
     privateChatEncoder = new PrivateChatEncoder(this, privateChatManager);
-    soundEncoder = new SoundEncoder();
+    soundEncoder = new SoundEncoder(this);
     inviteEncoder = new InviteEncoder(this);
     nameChangeListener = new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
@@ -205,6 +205,10 @@ public abstract class NodeClient implements LockableChatServerConnection,
     return defaultRoomName;
   }
 
+  public boolean isDefaultRoom(Room r) {
+    return r == null ? false : r.getName().equals(getDefaultRoomName());
+  }
+  
   protected void sendStats() {
     if (isConnected()) {
       send(Protocol.encodeStatsCommand(new PropertiesEncoder(me.toProperties())

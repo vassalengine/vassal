@@ -21,8 +21,8 @@ import javax.swing.JButton;
 import VASSAL.chat.ServerStatus;
 
 public class ServerStatusControlsInitializer implements ChatControlsInitializer {
-  private JButton showStatusButton;
-  private ServerStatus status;
+  protected JButton showStatusButton;
+  protected ServerStatus status;
 
   public ServerStatusControlsInitializer(ServerStatus status) {
     super();

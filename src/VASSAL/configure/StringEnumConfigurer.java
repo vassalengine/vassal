@@ -78,6 +78,10 @@ public class StringEnumConfigurer extends Configurer {
   public void setEnabled(boolean enabled) {
     box.setEnabled(enabled);
   }
+
+  public void setEditable(boolean enabled) {
+    box.setEditable(enabled);
+  }
   
   public boolean isValidValue(Object o) {
     for (int i = 0; i < validValues.length; ++i) {
