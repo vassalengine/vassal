@@ -45,6 +45,7 @@ import VASSAL.build.module.PluginsLoader;
 import VASSAL.build.module.PrototypesContainer;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
 import VASSAL.build.module.properties.GlobalProperties;
+import VASSAL.chat.AddressBookServerConfigurer;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.DynamicClientFactory;
 import VASSAL.chat.HybridClient;
@@ -194,7 +195,7 @@ public class BasicModule extends GameModule {
     ChatServerFactory.register(P2PClientFactory.P2P_TYPE, new P2PClientFactory());
     ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
     server = new HybridClient();
-    ServerConfigurer config = new ServerConfigurer("ServerImpl", "Server", (HybridClient) server);
+    AddressBookServerConfigurer config = new AddressBookServerConfigurer("ServerImpl", "Server", (HybridClient) server);
     Prefs.getGlobalPrefs().addOption(Resources.getString("Chat.server"), config); //$NON-NLS-1$
     serverControls = new ChatServerControls();
     serverControls.addTo(this);

@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * $Id$
+ *  
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -68,7 +70,7 @@ public class ServerConfigurer extends Configurer {
   private static final String P2P_BUTTON = Resources.getString("Server.direct"); //$NON-NLS-1$
   private static final String LEGACY_BUTTON = Resources.getString("Server.legacy"); //$NON-NLS-1$
   private static final String ENCODING = "UTF-8"; //$NON-NLS-1$
-  private JComponent controls;
+  protected JComponent controls;
   private JTextField jabberHost;
   private HybridClient client;
   private JRadioButton legacyButton;
@@ -222,7 +224,7 @@ public class ServerConfigurer extends Configurer {
     header.setText(connected ? CONNECTED : DISCONNECTED);
   }
 
-  private Properties buildJabberProperties() {
+  protected Properties buildJabberProperties() {
     Properties p = new Properties();
     if (jabberHostPrompt.isSelected()) {
       p.setProperty(ChatServerFactory.TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
@@ -236,7 +238,7 @@ public class ServerConfigurer extends Configurer {
     return p;
   }
 
-  private Properties getJabberConfigProperties() {
+  protected Properties getJabberConfigProperties() {
     Properties p = new Properties();
     p.setProperty(JabberClientFactory.JABBER_LOGIN, jabberAccountName.getText());
     p.setProperty(JabberClientFactory.JABBER_PWD, new String(jabberPassword.getPassword()));
@@ -252,14 +254,14 @@ public class ServerConfigurer extends Configurer {
     return p;
   }
 
-  private Properties buildPeerProperties() {
+  protected Properties buildPeerProperties() {
     Properties p = new Properties();
     p.setProperty(ChatServerFactory.TYPE_KEY, P2PClientFactory.P2P_TYPE);
     p.putAll(getJabberConfigProperties());
     return p;
   }
 
-  private Properties buildLegacyProperties() {
+  protected Properties buildLegacyProperties() {
     Properties p = new Properties();
     // Build a legacy server with dynamically-determined host and server
     p.setProperty(ChatServerFactory.TYPE_KEY, DynamicClientFactory.DYNAMIC_TYPE);

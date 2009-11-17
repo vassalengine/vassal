@@ -58,7 +58,7 @@ public class JabberServerStatus implements ServerStatus {
     Collection<HostedRoom> rooms;
     
     try {
-      rooms = MultiUserChat.getHostedRooms(client.getConnection(), "conference.ziggy");
+      rooms = MultiUserChat.getHostedRooms(client.getConnection(), client.getConferenceService());
     }
     catch (XMPPException e) {
       return new ModuleSummary[0];
@@ -113,6 +113,12 @@ public class JabberServerStatus implements ServerStatus {
         }
         Room r = new SimpleRoom(roomName);
         for (int i = 0; i < occupantCount; i++) {
+          //FIXME: Room member issue
+          // We don't know who these players are without joining the room, which will be
+          // very inefficient to have every player joining every room just to find the
+          // occupants. Also, we can't join Locked rooms to find who is in them.
+          // Perhaps the room owner can set the occupants into the properties in the
+          // room subject? 
           r.addPlayer(new SimplePlayer("?"));
         }
         ms.addRoom(r);   
