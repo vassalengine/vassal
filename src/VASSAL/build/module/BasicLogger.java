@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -317,11 +317,12 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       }      
 
       Launcher.getInstance().sendSaveCmd(outputFile);
-
-      GameModule.getGameModule().getGameState().setModified(false);
+      
+      GameModule.getGameModule().getGameState().setModified(false); 
       undoAction.setEnabled(false);
-      endLogAction.setEnabled(false);
     }
+
+    endLogAction.setEnabled(false);
   }
  
   private File getSaveFile() {
