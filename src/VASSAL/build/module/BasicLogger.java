@@ -156,7 +156,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     GlobalOptions.getInstance().addOption(stepKeyConfig);
     stepKeyConfig.addPropertyChangeListener(new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
-        stepKeyListener.setKeyStroke((NamedKeyStroke) stepKeyConfig.getValue());
+        stepKeyListener.setKeyStroke(stepKeyConfig.getValueNamedKeyStroke());
         stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", NamedHotKeyConfigurer.getString(stepKeyListener.getKeyStroke())));  //$NON-NLS-1$
       }
     });
