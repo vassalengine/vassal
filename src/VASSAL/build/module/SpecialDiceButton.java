@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2004 by Michael Blumohr, Rodney Kinney
+ * Copyright (c) 2004-2009 by Michael Blumohr, Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -111,7 +111,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     dialogLabel = new JLabel();
     dialogLabel.setIcon(resultsIcon);
     dialog.add(dialogLabel);
-    ActionListener rollAction = new ActionListener() {
+    final ActionListener rollAction = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         DR();
       }
@@ -150,10 +150,11 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
    * Format is prefix+[comma-separated roll list]+suffix additionally a command for every die is generated
    */
   protected void DR() {
-    int[] results = new int[dice.size()];
+    final int[] results = new int[dice.size()];
     int i = 0;
     for (SpecialDie sd : dice) {
-      results[i++] = ran.nextInt(sd.getFaceCount());
+      final int faceCount = sd.getFaceCount();
+      results[i++] = faceCount == 0 ? 0 : ran.nextInt(sd.getFaceCount());
     }
     setFormat(results);
     Command c = reportResults(results);
@@ -180,7 +181,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   private Command reportTextResults(int[] results) {
     int total = 0;
     for (int i = 0; i < dice.size(); ++i) {
-      SpecialDie die = dice.get(i);
+      final SpecialDie die = dice.get(i);
       total += die.getIntValue(results[i]);
     }
     format.setFormat(chatResultFormat);
@@ -193,7 +194,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         msg = "* " + msg; //$NON-NLS-1$
       }
     }
-    Command c = msg.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
+    final Command c = msg.length() == 0 ? new NullCommand() : new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
     c.execute();
     c.append(property.setPropertyValue(String.valueOf(total)));
     return c;
@@ -203,7 +204,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     format.setProperty(NAME, getLocalizedConfigureName());
     int total = 0;
     for (int i = 0; i < dice.size(); ++i) {
-      SpecialDie die = dice.get(i);
+      final SpecialDie die = dice.get(i);
       format.setProperty("result" + (i + 1), die.getTextValue(results[i])); //$NON-NLS-1$
       total += die.getIntValue(results[i]);
     }
@@ -340,7 +341,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
         }
       }
     });
-    GameModule mod = GameModule.getGameModule();
+    final GameModule mod = GameModule.getGameModule();
     ran = mod.getRNG();
     mod.getToolBar().add(launch);
     idMgr.add(this);
@@ -349,7 +350,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   }
 
   public void removeFrom(Buildable b) {
-    GameModule mod = GameModule.getGameModule();
+    final GameModule mod = GameModule.getGameModule();
     mod.removeCommandEncoder(this);
     mod.getToolBar().remove(launch);
     mod.getToolBar().revalidate();
@@ -501,7 +502,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     if (ia == null || ia.length == 0) {
       return ""; //$NON-NLS-1$
     }
-    SequenceEncoder se = new SequenceEncoder(',');
+    final SequenceEncoder se = new SequenceEncoder(',');
     for (int i = 0; i < ia.length; ++i) {
       se.append(String.valueOf(ia[i]));
     }
@@ -519,12 +520,12 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     if (s == null || s.length() == 0) {
       return EMPTY;
     }
-    SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    ArrayList<String> l = new ArrayList<String>();
+    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
+    final ArrayList<String> l = new ArrayList<String>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
-    int[] val = new int[l.size()];
+    final int[] val = new int[l.size()];
     for (int i = 0; i < val.length; ++i) {
       val[i] = Integer.parseInt(l.get(i));
     }
@@ -533,8 +534,8 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
   public String encode(Command c) {
     if (c instanceof ShowResults) {
-      ShowResults c2 = (ShowResults) c;
-      SequenceEncoder se = new SequenceEncoder(c2.target.getIdentifier(), '\t');
+      final ShowResults c2 = (ShowResults) c;
+      final SequenceEncoder se = new SequenceEncoder(c2.target.getIdentifier(), '\t');
       for (int i = 0; i < c2.rolls.length; ++i) {
         se.append(c2.rolls[i] + ""); //$NON-NLS-1$
       }
@@ -557,11 +558,11 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       st.nextToken();
     }
     if (st != null) {
-      ArrayList<String> l = new ArrayList<String>();
+      final ArrayList<String> l = new ArrayList<String>();
       while (st.hasMoreTokens()) {
         l.add(st.nextToken());
       }
-      int[] results = new int[l.size()];
+      final int[] results = new int[l.size()];
       int i = 0;
       for (String n : l) {
         results[i++] = Integer.parseInt(n);
@@ -609,7 +610,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     private void setResults(int[] results) {
       icons = new Icon[results.length];
       for (int i = 0; i < results.length; ++i) {
-        String imageName = dice.get(i).getImageName(results[i]);
+        final String imageName = dice.get(i).getImageName(results[i]);
 
         if (imageName.length() > 0) {
           final Image img = Op.load(imageName).getImage();

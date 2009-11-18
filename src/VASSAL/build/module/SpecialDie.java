@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2004 by Michael Blumohr, Rodney Kinney
+ * Copyright (c) 2004-2009 by Michael Blumohr, Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -72,8 +72,7 @@ public class SpecialDie extends AbstractConfigurable {
   }
 
   public String[] getAttributeNames() {
-    String s[] = {NAME, FORMAT};
-    return s;
+    return new String[] {NAME, FORMAT};
   }
 
   public void setAttribute(String key, Object o) {
@@ -119,20 +118,40 @@ public class SpecialDie extends AbstractConfigurable {
   }
 
   public String getTextValue(int face) {
-    SpecialDieFace aFace = dieFaceList.get(face);
     format.setProperty(NAME, getLocalizedConfigureName());
-    format.setProperty(RESULT, aFace.getTextValue());
-    format.setProperty(NUMERICAL_VALUE, aFace.getIntValue() + ""); //$NON-NLS-1$
+    // No Faces may be defined, or opponent may have a version of the module with more faces defined than we have
+    final int faceCount = getFaceCount();
+    if (faceCount == 0 || faceCount < face-1) {
+      format.setProperty(RESULT, "undefined"); //$NON-NLS-1$   
+      format.setProperty(NUMERICAL_VALUE, "0"); //$NON-NLS-1$   
+    }
+    else {
+      final SpecialDieFace aFace = dieFaceList.get(face);      
+      format.setProperty(RESULT, aFace.getTextValue());
+      format.setProperty(NUMERICAL_VALUE, aFace.getIntValue() + ""); //$NON-NLS-1$      
+    }
     return format.getLocalizedText();
   }
 
   public int getIntValue(int face) {
-    SpecialDieFace aFace = dieFaceList.get(face);
-    return aFace.getIntValue();
+    // No Faces may be defined, or opponent may have a version of the module with more faces defined than we have
+    final int faceCount = getFaceCount();
+    if (faceCount == 0 || faceCount < face-1) {
+      return 0;
+    }
+    else {
+      return dieFaceList.get(face).getIntValue();
+    }
   }
 
   public String getImageName(int face) {
-    SpecialDieFace aFace = dieFaceList.get(face);
-    return aFace.getImageName();
+    // No Faces may be defined, or opponent may have a version of the module with more faces defined than we have
+    final int faceCount = getFaceCount();
+    if (faceCount == 0 || faceCount < face-1) {
+      return ""; //$NON-NLS-1$      
+    }
+    else {
+      return dieFaceList.get(face).getImageName();
+    }
   }
 }
