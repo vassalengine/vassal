@@ -21,8 +21,6 @@ package VASSAL.build.module;
 
 import java.awt.Event;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -134,38 +132,35 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final KeyStrokeListener newLogKeyListener = new KeyStrokeListener(newLogAction, KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.ALT_MASK));
     mod.addKeyStrokeListener(newLogKeyListener);
 
-    mod.getFrame().addComponentListener(new ComponentAdapter() {
-      public void componentShown(ComponentEvent e) {
-        GameModule.getGameModule().getFrame().removeComponentListener(this);
-        final IconConfigurer stepIconConfig = new IconConfigurer("stepIcon", Resources.getString("BasicLogger.step_forward_button"), STEP_ICON); //$NON-NLS-1$ //$NON-NLS-2$
-        stepIconConfig.setValue(STEP_ICON);
-        GlobalOptions.getInstance().addOption(stepIconConfig);
-        stepIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
-          public void propertyChange(PropertyChangeEvent evt) {
-            stepAction.putValue(Action.SMALL_ICON, stepIconConfig.getIconValue());
-          }
-        });
-        stepIconConfig.fireUpdate();
-        final IconConfigurer undoIconConfig = new IconConfigurer("undoIcon", Resources.getString("BasicLogger.undo_icon"), UNDO_ICON);  //$NON-NLS-1$ //$NON-NLS-2$
-        undoIconConfig.setValue(UNDO_ICON);
-        GlobalOptions.getInstance().addOption(undoIconConfig);
-        undoIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
-          public void propertyChange(PropertyChangeEvent evt) {
-            undoAction.putValue(Action.SMALL_ICON, undoIconConfig.getIconValue());
-          }
-        });
-        undoIconConfig.fireUpdate();
-        final NamedHotKeyConfigurer stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
-        GlobalOptions.getInstance().addOption(stepKeyConfig);
-        stepKeyConfig.addPropertyChangeListener(new PropertyChangeListener() {
-          public void propertyChange(PropertyChangeEvent evt) {
-            stepKeyListener.setKeyStroke((NamedKeyStroke) stepKeyConfig.getValue());
-            stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", NamedHotKeyConfigurer.getString(stepKeyListener.getNamedKeyStroke())));  //$NON-NLS-1$
-          }
-        });
-        stepKeyConfig.fireUpdate();
+    final IconConfigurer stepIconConfig = new IconConfigurer("stepIcon", Resources.getString("BasicLogger.step_forward_button"), STEP_ICON); //$NON-NLS-1$ //$NON-NLS-2$
+    stepIconConfig.setValue(STEP_ICON);
+    GlobalOptions.getInstance().addOption(stepIconConfig);
+    stepIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        stepAction.putValue(Action.SMALL_ICON, stepIconConfig.getIconValue());
       }
     });
+    stepIconConfig.fireUpdate();
+    
+    final IconConfigurer undoIconConfig = new IconConfigurer("undoIcon", Resources.getString("BasicLogger.undo_icon"), UNDO_ICON);  //$NON-NLS-1$ //$NON-NLS-2$
+    undoIconConfig.setValue(UNDO_ICON);
+    GlobalOptions.getInstance().addOption(undoIconConfig);
+    undoIconConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        undoAction.putValue(Action.SMALL_ICON, undoIconConfig.getIconValue());
+      }
+    });
+    undoIconConfig.fireUpdate();
+    
+    final NamedHotKeyConfigurer stepKeyConfig = new NamedHotKeyConfigurer("stepHotKey", Resources.getString("BasicLogger.step_forward_hotkey"), stepKeyListener.getNamedKeyStroke());  //$NON-NLS-1$ //$NON-NLS-2$
+    GlobalOptions.getInstance().addOption(stepKeyConfig);
+    stepKeyConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        stepKeyListener.setKeyStroke((NamedKeyStroke) stepKeyConfig.getValue());
+        stepAction.putValue(Action.SHORT_DESCRIPTION, Resources.getString("BasicLogger.step_forward_tooltip2", NamedHotKeyConfigurer.getString(stepKeyListener.getKeyStroke())));  //$NON-NLS-1$
+      }
+    });
+    stepKeyConfig.fireUpdate();
 
     BooleanConfigurer logOptionStart = new BooleanConfigurer(PROMPT_NEW_LOG_START, Resources.getString("BasicLogger.prompt_new_log_before"), Boolean.FALSE);  //$NON-NLS-1$
     mod.getPrefs().addOption(Resources.getString("Prefs.general_tab"), logOptionStart); //$NON-NLS-1$

@@ -853,8 +853,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
     
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
-      theModule.lastSavedConfiguration = theModule.buildString();
-      
+            
       // Run through the module and identify all existing gpid's.
       // Determine the maximum. Keep a list of of any PieceSlots that need
       // a new Id generated.
@@ -921,6 +920,11 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     }
   }
 
+  // Saved the current buildString for comparison when we try and quit.
+  public void updateLastSave() {
+    lastSavedConfiguration = buildString();
+  }
+  
   public String generateGpId() {
     return String.valueOf(nextGpId++);
   }

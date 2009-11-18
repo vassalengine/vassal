@@ -84,9 +84,9 @@ public class GlobalOptions extends AbstractConfigurable {
   private String markMoved = NEVER;
 
   private Map<String,Object> properties = new HashMap<String,Object>();
-  private Map<String,Configurer> optionConfigurers =
+  private static Map<String,Configurer> optionConfigurers =
     new LinkedHashMap<String,Configurer>();
-  private Properties optionInitialValues = new Properties();
+  private static Properties optionInitialValues = new Properties();
 
   private FormattedString playerIdFormat = new FormattedString("$" + PLAYER_NAME + "$"); //$NON-NLS-1$ //$NON-NLS-2$
 

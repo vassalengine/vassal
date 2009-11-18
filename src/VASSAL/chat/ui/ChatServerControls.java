@@ -23,8 +23,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
@@ -137,29 +135,27 @@ public class ChatServerControls extends AbstractBuildable {
       launch.setIcon(new ImageIcon(iconURL));
       launch.setText(null);
     }
-    GameModule.getGameModule().getFrame().addComponentListener(new ComponentAdapter() {
-      public void componentShown(ComponentEvent e) {
-        GameModule.getGameModule().getFrame().removeComponentListener(this);
-        final IconConfigurer iconConfig = new IconConfigurer("serverControlsIcon", Resources.getString("Chat.server_controls_button_icon"), "/images/connect.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        iconConfig.setValue("/images/connect.gif");  //$NON-NLS-1$
-        GlobalOptions.getInstance().addOption(iconConfig);
-        iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
-          public void propertyChange(PropertyChangeEvent evt) {
-            launch.setIcon(iconConfig.getIconValue());
-          }
-        });
-        iconConfig.fireUpdate();
-        final NamedHotKeyConfigurer keyConfig = new NamedHotKeyConfigurer("serverControlsHotKey", Resources.getString("Chat.server_controls_hotkey"), l.getNamedKeyStroke());   //$NON-NLS-1$ //$NON-NLS-2$
-        GlobalOptions.getInstance().addOption(keyConfig);
-        keyConfig.addPropertyChangeListener(new PropertyChangeListener() {
-          public void propertyChange(PropertyChangeEvent evt) {
-            l.setKeyStroke(keyConfig.getValueNamedKeyStroke());
-            launch.setToolTipText(Resources.getString("Chat.server_controls_tooltip", NamedHotKeyConfigurer.getString(l.getKeyStroke())));  //$NON-NLS-1$
-          }
-        });
-        keyConfig.fireUpdate();
+
+    final IconConfigurer iconConfig = new IconConfigurer("serverControlsIcon", Resources.getString("Chat.server_controls_button_icon"), "/images/connect.gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    iconConfig.setValue("/images/connect.gif");  //$NON-NLS-1$
+    GlobalOptions.getInstance().addOption(iconConfig);
+    iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        launch.setIcon(iconConfig.getIconValue());
       }
     });
+    iconConfig.fireUpdate();
+    
+    final NamedHotKeyConfigurer keyConfig = new NamedHotKeyConfigurer("serverControlsHotKey", Resources.getString("Chat.server_controls_hotkey"), l.getNamedKeyStroke());   //$NON-NLS-1$ //$NON-NLS-2$
+    GlobalOptions.getInstance().addOption(keyConfig);
+    keyConfig.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        l.setKeyStroke(keyConfig.getValueNamedKeyStroke());
+        launch.setToolTipText(Resources.getString("Chat.server_controls_tooltip", NamedHotKeyConfigurer.getString(l.getKeyStroke())));  //$NON-NLS-1$
+      }
+    });
+    keyConfig.fireUpdate();
+      
     gm.addKeyStrokeListener(l);
     gm.getToolBar().add(launch);
   }
