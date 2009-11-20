@@ -107,6 +107,10 @@ public class NamedKeyStroke {
     return a.equals(stroke);
   }
   
+  public boolean equals(NamedKeyStroke stroke) {
+    return getKeyStroke().equals(stroke.getKeyStroke());
+  }
+  
   /**
    * Return the allocated KeyStroke associated with this KeyStroke
    */

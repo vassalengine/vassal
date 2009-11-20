@@ -50,6 +50,13 @@ public class PropertyExpression implements PieceFilter {
     return getFilter(piece).accept(piece);
   }
   
+  public boolean equals(Object o) {
+    if (o instanceof PropertyExpression) {
+      return getExpression().equals(((PropertyExpression) o).getExpression());
+    }
+    return false;
+  }
+  
   /**
    * Evaluate the Property Expression as true/false using
    * a supplied property source

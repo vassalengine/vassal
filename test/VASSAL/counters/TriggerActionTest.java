@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2009 by Brent Easton
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available 
+ * at http://www.opensource.org.
+ */
 package VASSAL.counters;
 
 import static org.junit.Assert.assertFalse;
@@ -19,7 +37,7 @@ public class TriggerActionTest {
    * Expression is true and the counter is on a map.
    */
   @Test
-  public void regression_Test_Bug_2900930() {
+  public void testBugRegression_2900930() {
     
     final String trueExpression = "xyzzy=a";
     final String falseExpression = "xyzzy=b";
