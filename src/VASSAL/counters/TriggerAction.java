@@ -114,7 +114,9 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     if (command.length() > 0 && key != null) {
       final KeyCommand c =  new KeyCommand(command, key, Decorator
           .getOutermost(this), matchesFilter());
-      c.setEnabled(getMap() != null);
+      if (getMap() == null) {
+        c.setEnabled(false);
+      }
       return new KeyCommand[] { c };
     }
     else {
@@ -408,6 +410,19 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
     else {
       return super.getPropertyNames();
     }
+  }
+  
+  // Setters for JUnit testing
+  public void setPropertyMatch(String s) {
+    propertyMatch.setExpression(s);
+  }
+  
+  public void setCommandName(String s) {
+    command = s;
+  }
+  
+  public void setKey(NamedKeyStroke k) {
+    key = k;
   }
   
   public PieceEditor getEditor() {
