@@ -100,7 +100,7 @@ public class ServerConfigurer extends Configurer {
     if (controls == null) {
       controls = new JPanel(new MigLayout());
       header = new JLabel(DISCONNECTED);
-      controls.add(header, "wrap");
+      controls.add(header, "wrap"); //$NON-NLS-1$
       ButtonGroup group = new ButtonGroup();
       jabberButton = new JRadioButton(JABBER_BUTTON);
       jabberButton.addItemListener(new ItemListener() {
@@ -118,11 +118,11 @@ public class ServerConfigurer extends Configurer {
           jabberPasswordPrompt.setEnabled(jabberButton.isSelected());
         }
       });
-      jabberAccountPrompt = new JLabel(Resources.getString("Server.account_name"));
+      jabberAccountPrompt = new JLabel(Resources.getString("Server.account_name")); //$NON-NLS-1$
       jabberAccountPrompt.setEnabled(false);
       jabberAccountName = new JTextField();
       jabberAccountName.setEnabled(false);
-      jabberPasswordPrompt = new JLabel(Resources.getString("Server.password"));
+      jabberPasswordPrompt = new JLabel(Resources.getString("Server.password")); //$NON-NLS-1$
       jabberPasswordPrompt.setEnabled(false);
       jabberPassword = new JPasswordField();
       jabberPassword.setEnabled(false);
@@ -175,15 +175,15 @@ public class ServerConfigurer extends Configurer {
       jabberAccountName.getDocument().addDocumentListener(docListener);
       jabberPassword.getDocument().addDocumentListener(docListener);
       // Disable Jabber server until next release
-      if ("true".equals(System.getProperty("enableJabber"))) {
+      if ("true".equals(System.getProperty("enableJabber"))) { //$NON-NLS-1$ //$NON-NLS-2$
         group.add(jabberButton);
-        controls.add(jabberButton, "wrap");
-        controls.add(jabberAccountPrompt, "gap 40");
-        controls.add(jabberAccountName, "wrap, growx");
-        controls.add(jabberPasswordPrompt, "gap 40");
-        controls.add(jabberPassword, "wrap, growx");
-        controls.add(jabberHostPrompt, "gap 40");
-        controls.add(jabberHost, "wrap, growx");
+        controls.add(jabberButton, "wrap"); //$NON-NLS-1$
+        controls.add(jabberAccountPrompt, "gap 40"); //$NON-NLS-1$
+        controls.add(jabberAccountName, "wrap, growx"); //$NON-NLS-1$
+        controls.add(jabberPasswordPrompt, "gap 40"); //$NON-NLS-1$
+        controls.add(jabberPassword, "wrap, growx"); //$NON-NLS-1$
+        controls.add(jabberHostPrompt, "gap 40"); //$NON-NLS-1$
+        controls.add(jabberHost, "wrap, growx"); //$NON-NLS-1$
       }
       p2pButton = new JRadioButton(P2P_BUTTON);
       p2pButton.addItemListener(new ItemListener() {
@@ -196,7 +196,7 @@ public class ServerConfigurer extends Configurer {
         }
       });
       group.add(p2pButton);
-      controls.add(p2pButton, "wrap");
+      controls.add(p2pButton, "wrap"); //$NON-NLS-1$
       legacyButton = new JRadioButton(LEGACY_BUTTON);
       legacyButton.addItemListener(new ItemListener() {
         public void itemStateChanged(ItemEvent e) {
@@ -358,7 +358,7 @@ public class ServerConfigurer extends Configurer {
     ChatServerFactory.register(JabberClientFactory.JABBER_SERVER_TYPE, new JabberClientFactory());
     new MacOSXMenuManager();
     HybridClient c = new HybridClient();
-    ServerConfigurer config = new ServerConfigurer("server", "server", c);
+    ServerConfigurer config = new ServerConfigurer("server", "server", c); //$NON-NLS-1$ //$NON-NLS-2$
     JFrame f = new JFrame();
     f.getContentPane().add(config.getControls());
     f.pack();

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2003 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -261,14 +261,14 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
       children = ((ServerStatus.ModuleSummary) o).getRooms();
 
 	  int players = ((ServerStatus.ModuleSummary) o).numPlayers();
-      String moduleName = new String(((ServerStatus.ModuleSummary) o).getModuleName()+ " ("+players+")");
+      String moduleName = new String(((ServerStatus.ModuleSummary) o).getModuleName()+ " ("+players+")"); //$NON-NLS-1$ //$NON-NLS-2$
       ((ServerStatus.ModuleSummary) o).setModuleName( moduleName );
     }
     else if (o instanceof SimpleRoom) {
       List<Player> l = ((Room)o).getPlayerList();
       
       // append the number of players to each room name
-      String roomName = new String(((SimpleRoom) o).getName()+" ("+l.size()+")");
+      String roomName = new String(((SimpleRoom) o).getName()+" ("+l.size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
       ((SimpleRoom) o).setName( roomName );
       
       children = l.toArray(new Player[l.size()]);
@@ -293,7 +293,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
       if (leaf) {
         setIcon(null);
       }
-      putClientProperty("html.disable", Boolean.TRUE);
+      putClientProperty(Resources.getString("ServerStatusView.4"), Boolean.TRUE); //$NON-NLS-1$
       return this;
     }
   }

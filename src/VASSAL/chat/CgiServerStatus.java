@@ -175,7 +175,6 @@ public class CgiServerStatus implements ServerStatus {
       new HashMap<String,ServerStatus.ModuleSummary>();
 
     for (Map.Entry<Long,String[]> e : records.subMap(req.l, req.r).entrySet()) {
-      final Long when = e.getKey();
       final String[] r = e.getValue();
 
       final String moduleName = r[0]; 
@@ -211,11 +210,11 @@ public class CgiServerStatus implements ServerStatus {
 
   private List<String> getInterval(Interval i) {
     final Properties p = new Properties();
-    p.setProperty("start", Long.toString(i.l));
-    p.setProperty("end", Long.toString(i.r));
+    p.setProperty("start", Long.toString(i.l)); //$NON-NLS-1$
+    p.setProperty("end", Long.toString(i.r)); //$NON-NLS-1$
 
     try {
-      return request.doGet("getConnectionHistory", p);
+      return request.doGet("getConnectionHistory", p); //$NON-NLS-1$
     }
     // FIXME: review error message
     catch (IOException e) {
@@ -281,7 +280,7 @@ public class CgiServerStatus implements ServerStatus {
     }
 
     public String toString() {
-      return "[" + l + "," + r + "]";
+      return "[" + l + "," + r + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
   }
 }

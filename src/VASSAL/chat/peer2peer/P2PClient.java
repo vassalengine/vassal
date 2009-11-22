@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -37,6 +37,7 @@ import VASSAL.chat.Room;
 import VASSAL.chat.ServerStatus;
 import VASSAL.chat.SimplePlayer;
 import VASSAL.chat.SimpleRoom;
+import VASSAL.chat.SoundEncoder;
 import VASSAL.chat.SynchEncoder;
 import VASSAL.chat.WelcomeMessageServer;
 import VASSAL.chat.messageboard.Message;
@@ -44,13 +45,15 @@ import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.chat.ui.RoomInteractionControlsInitializer;
+import VASSAL.chat.ui.ShowProfileAction;
+import VASSAL.chat.ui.SimpleStatusControlsInitializer;
 import VASSAL.chat.ui.SynchAction;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
 
 public class P2PClient implements ChatServerConnection, ChatControlsInitializer, UserDialog, PlayerEncoder {
-  private Player me;
+  private SimplePlayer me;
   private PendingPeerManager ppm;
   protected ActivePeerManager peerMgr;
   private PeerPool pool;
@@ -63,6 +66,8 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   private boolean connected = false;
   private ServerStatus svrStatus;
   private RoomInteractionControlsInitializer roomControls;
+  private SimpleStatusControlsInitializer playerStatusControls;
+  private SoundEncoder soundEncoder;
   private SynchEncoder synchEncoder;
   private PropertyChangeListener nameChangeListener;
 
@@ -72,12 +77,17 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     this.welcomeMessageServer = welcomeMessageServer;
     this.pool = pool;
     ppm = new PendingPeerManager(this);
+    ppm.setName("Pending Peer Manager"); //$NON-NLS-1$
     roomMgr = new RoomManager();
     tracker = new RoomTracker();
     me = new SimplePlayer("???"); //$NON-NLS-1$
+    me.updateStatus();  
+    playerStatusControls = new SimpleStatusControlsInitializer(this, false);
     roomControls = new RoomInteractionControlsInitializer(this);
+    roomControls.addPlayerActionFactory(ShowProfileAction.factory());
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
     synchEncoder = new SynchEncoder(this, this);
+    soundEncoder = new SoundEncoder(this);
     nameChangeListener = new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
         SimplePlayer p = (SimplePlayer) getUserInfo();
@@ -159,7 +169,8 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       }
     }
     else {
-      me = p;
+      me = (SimplePlayer) p;
+      me.updateStatus();      
     }
     propSupport.firePropertyChange(PLAYER_INFO, null, me);
   }
@@ -169,6 +180,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       try {
         MyInfo info = new MyInfo(null, 5050);
         P2PPlayer p = new P2PPlayer(info);
+        p.updateStatus();
         p.setName(me.getName());
         p.setRoom(roomMgr.getDefaultRoom().getName());
         p.setId(GameModule.getUserId() + "." + System.currentTimeMillis()); //$NON-NLS-1$
@@ -291,19 +303,25 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   }
 
   public void initializeControls(ChatServerControls controls) {
+    playerStatusControls.initializeControls(controls);
     roomControls.initializeControls(controls);
-    ((SimplePlayer)me).setName((String) GameModule.getGameModule().getPrefs().getValue(GameModule.REAL_NAME));
-    GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).addPropertyChangeListener(nameChangeListener);
-    GameModule.getGameModule().addCommandEncoder(synchEncoder);
+    final GameModule g = GameModule.getGameModule();
+    ((SimplePlayer)me).setName((String) g.getPrefs().getValue(GameModule.REAL_NAME));
+    g.getPrefs().getOption(GameModule.REAL_NAME).addPropertyChangeListener(nameChangeListener);
+    g.addCommandEncoder(synchEncoder);
+    g.addCommandEncoder(soundEncoder);
     if (pool instanceof ChatControlsInitializer) {
       ((ChatControlsInitializer)pool).initializeControls(controls);
     }
   }
 
   public void uninitializeControls(ChatServerControls controls) {
+    playerStatusControls.uninitializeControls(controls);
     roomControls.uninitializeControls(controls);
-    GameModule.getGameModule().getPrefs().getOption(GameModule.REAL_NAME).removePropertyChangeListener(nameChangeListener);
-    GameModule.getGameModule().removeCommandEncoder(synchEncoder);
+    final GameModule g = GameModule.getGameModule();
+    g.getPrefs().getOption(GameModule.REAL_NAME).removePropertyChangeListener(nameChangeListener);
+    g.removeCommandEncoder(synchEncoder);
+    g.removeCommandEncoder(soundEncoder);
     if (pool instanceof ChatControlsInitializer) {
       ((ChatControlsInitializer)pool).uninitializeControls(controls);
     }

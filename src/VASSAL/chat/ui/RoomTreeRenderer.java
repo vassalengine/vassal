@@ -66,7 +66,7 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
       tree, value, sel, expanded, leaf, row, hasFocus
     );
 
-    putClientProperty("html.disable", Boolean.TRUE);
+    putClientProperty("html.disable", Boolean.TRUE); //$NON-NLS-1$
 
     Object item = ((DefaultMutableTreeNode) value).getUserObject();
     if (item instanceof Player) {      

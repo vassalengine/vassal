@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -32,38 +32,52 @@ import VASSAL.i18n.Resources;
 
 public class SimpleStatusControlsInitializer implements ChatControlsInitializer {
   private ChatServerConnection client;
+  private boolean includeLooking;
   private JButton lookingBox;
   private JButton awayButton;
   
-  public SimpleStatusControlsInitializer(ChatServerConnection client) {
+  /**
+   * Entry Point for P2P client - 'Looking for Game' does not make sense.
+   */
+  public SimpleStatusControlsInitializer(ChatServerConnection client, boolean includeLooking) {
     super();
     this.client = client;
+    this.includeLooking = includeLooking;
+  }
+  
+  public SimpleStatusControlsInitializer(ChatServerConnection client) {
+    this(client, true);
   }
 
   public void initializeControls(final ChatServerControls controls) {
-    lookingBox = new JButton(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
-    lookingBox.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        if (client != null) {
-          Player p = client.getUserInfo();
-          SimpleStatus s = (SimpleStatus) p.getStatus();
-          s = new SimpleStatus(!s.isLooking(),s.isAway(),s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc());
-          client.setUserInfo(new SimplePlayer(p.getId(),p.getName(),s));
+    URL imageURL;
+    
+    if (includeLooking) {
+      lookingBox = new JButton(Resources.getString("Chat.looking_for_a_game")); //$NON-NLS-1$
+      lookingBox.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+          if (client != null) {
+            final Player p = client.getUserInfo();
+            SimpleStatus s = (SimpleStatus) p.getStatus();
+            s = new SimpleStatus(!s.isLooking(),s.isAway(),s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc());
+            client.setUserInfo(new SimplePlayer(p.getId(),p.getName(),s));
+          }
         }
+      });
+      lookingBox.setSize(lookingBox.getMinimumSize());
+      imageURL = getClass().getResource("/images/playerLooking.gif"); //$NON-NLS-1$
+      if (imageURL != null) {
+        lookingBox.setToolTipText(lookingBox.getText());
+        lookingBox.setText(""); //$NON-NLS-1$
+        lookingBox.setIcon(new ImageIcon(imageURL));
       }
-    });
-    lookingBox.setSize(lookingBox.getMinimumSize());
-    URL imageURL = getClass().getResource("/images/playerLooking.gif"); //$NON-NLS-1$
-    if (imageURL != null) {
-      lookingBox.setToolTipText(lookingBox.getText());
-      lookingBox.setText(""); //$NON-NLS-1$
-      lookingBox.setIcon(new ImageIcon(imageURL));
     }
+    
     awayButton = new JButton(Resources.getString("Chat.away_from_keyboard")); //$NON-NLS-1$
     awayButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         if (client != null) {
-          Player p = client.getUserInfo();
+          final Player p = client.getUserInfo();
           SimpleStatus s = (SimpleStatus) p.getStatus();
           s = new SimpleStatus(s.isLooking(),true,s.getProfile(), s.getClient(), s.getIp(), s.getModuleVersion(), s.getCrc());
           client.setUserInfo(new SimplePlayer(p.getId(),p.getName(),s));
@@ -80,12 +94,17 @@ public class SimpleStatusControlsInitializer implements ChatControlsInitializer 
       awayButton.setText(""); //$NON-NLS-1$
       awayButton.setIcon(new ImageIcon(imageURL));
     }
-    controls.getToolbar().add(lookingBox);
+    
+    if (includeLooking) {
+      controls.getToolbar().add(lookingBox);
+    }
     controls.getToolbar().add(awayButton);
   }
 
   public void uninitializeControls(ChatServerControls controls) {
-    controls.getToolbar().remove(lookingBox);
+    if (includeLooking) {
+      controls.getToolbar().remove(lookingBox);
+    }
     controls.getToolbar().remove(awayButton);
   }
 }

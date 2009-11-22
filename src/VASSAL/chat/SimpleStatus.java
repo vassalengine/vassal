@@ -22,6 +22,7 @@ import java.net.UnknownHostException;
 
 import VASSAL.Info;
 import VASSAL.build.GameModule;
+import VASSAL.tools.SequenceEncoder;
 
 /**
  * Immutable PlayerStatus class with flags indicating "looking for a game" and "away from keyboard" and a String profile
@@ -53,11 +54,11 @@ public class SimpleStatus implements PlayerStatus {
   }
 
   public SimpleStatus(boolean looking, boolean away) {
-    this(looking, away, "");
+    this(looking, away, ""); //$NON-NLS-1$
   }
   
   public SimpleStatus(boolean looking, boolean away, String profile) {
-    this(looking, away, profile, "", "", "", "");
+    this(looking, away, profile, "", "", "", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
   }
   
   public SimpleStatus(boolean looking, boolean away, String profile, String client, String ip, String module, String crc) {
@@ -98,6 +99,24 @@ public class SimpleStatus implements PlayerStatus {
     return crc;
   }
   
+  public static String encode(SimpleStatus s) {
+    final SequenceEncoder se = new SequenceEncoder(',');
+    se.append(s.looking);
+    se.append(s.away);
+    se.append(s.profile);
+    se.append(s.client);
+    se.append(s.ip);
+    se.append(s.moduleVersion);
+    se.append(s.crc);
+    return se.getValue();
+  }
+  
+  public static SimpleStatus decode(String s) {
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+    return new SimpleStatus(sd.nextBoolean(false), sd.nextBoolean(false),sd.nextToken(""), sd.nextToken(""),  //$NON-NLS-1$ //$NON-NLS-2$
+        sd.nextToken(""), sd.nextToken(""), sd.nextToken(""));         //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+  }
+  
   /**
    * Update variable parts of status
    */
@@ -105,13 +124,13 @@ public class SimpleStatus implements PlayerStatus {
     final GameModule g = GameModule.getGameModule();
     profile = (String) g.getPrefs().getValue(GameModule.PERSONAL_INFO);
     client = Info.getVersion(); 
-    ip = "";
+    ip = ""; //$NON-NLS-1$
     try {
       ip = InetAddress.getLocalHost().getHostAddress();
     }
     catch (UnknownHostException e) {
     }
-    moduleVersion = g.getGameVersion() + ((g.getArchiveWriter() == null) ? "" : " (Editing)"); 
+    moduleVersion = g.getGameVersion() + ((g.getArchiveWriter() == null) ? "" : " (Editing)");  //$NON-NLS-1$ //$NON-NLS-2$
     crc = Long.toHexString(g.getCrc());
   }
 }

@@ -81,4 +81,10 @@ public class SimplePlayer implements VASSAL.chat.Player {
   public void setStatus(PlayerStatus status) {
     this.status = status;
   }
+  
+  public void updateStatus() {
+    if (status instanceof SimpleStatus) {
+      ((SimpleStatus) status).updateStatus();
+    }
+  }
 }

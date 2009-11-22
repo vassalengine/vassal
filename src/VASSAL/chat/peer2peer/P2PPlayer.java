@@ -1,3 +1,21 @@
+/*
+ * $Id$
+ *
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License (LGPL) as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, copies are available
+ * at http://www.opensource.org.
+ */
 package VASSAL.chat.peer2peer;
 
 import VASSAL.chat.Player;
@@ -10,13 +28,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class P2PPlayer extends SimplePlayer {
-  private static final String NAME = "name"; //$NON-NLS-1$
   private static final String ID = "id"; //$NON-NLS-1$
   private static final String ROOM = "room"; //$NON-NLS-1$
-  private static final String LOOKING = "looking"; //$NON-NLS-1$
-  private static final String AWAY = "away"; //$NON-NLS-1$
-  private static final String PROFILE = "profile"; //$NON-NLS-1$
-
 
   private PeerInfo info;
   private Properties props;
@@ -47,16 +60,29 @@ public class P2PPlayer extends SimplePlayer {
   }
 
   private void setProps() {
-    props.put(NAME, getName());
-    props.put(LOOKING, String.valueOf(((SimpleStatus)status).isLooking()));
-    props.put(AWAY, String.valueOf(((SimpleStatus)getStatus()).isAway()));
-    props.put(PROFILE, ((SimpleStatus)status).getProfile());
+    final SimpleStatus s = (SimpleStatus) status;
+    props.put(SimpleStatus.NAME, getName());
+    props.put(SimpleStatus.LOOKING, String.valueOf(s.isLooking()));
+    props.put(SimpleStatus.AWAY, String.valueOf(s.isAway()));
+    props.put(SimpleStatus.PROFILE, s.getProfile());
+    props.put(SimpleStatus.IP, s.getIp());
+    props.put(SimpleStatus.CLIENT, s.getClient());
+    props.put(SimpleStatus.MODULE_VERSION, s.getModuleVersion());
+    props.put(SimpleStatus.CRC, s.getCrc());
     info.setChatName(new PropertiesEncoder(props).getStringValue());
   }
 
   private void setStats() {
-    setName(props.getProperty(NAME, "???")); //$NON-NLS-1$
-    setStatus(new SimpleStatus("true".equals(props.getProperty(LOOKING)),"true".equals(props.getProperty(AWAY)),props.getProperty(PROFILE, ""))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    setName(props.getProperty(SimpleStatus.NAME, "???")); //$NON-NLS-1$
+    setStatus(
+        new SimpleStatus(
+            "true".equals(props.getProperty(SimpleStatus.LOOKING)), //$NON-NLS-1$
+            "true".equals(props.getProperty(SimpleStatus.AWAY)), //$NON-NLS-1$
+            props.getProperty(SimpleStatus.PROFILE, ""), //$NON-NLS-1$
+            props.getProperty(SimpleStatus.CLIENT, ""), //$NON-NLS-1$
+            props.getProperty(SimpleStatus.IP, ""), //$NON-NLS-1$
+            props.getProperty(SimpleStatus.MODULE_VERSION, ""), //$NON-NLS-1$
+            props.getProperty(SimpleStatus.CRC, "")));  //$NON-NLS-1$
   }
 
   public String getRoom() {

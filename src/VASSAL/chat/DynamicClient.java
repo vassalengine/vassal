@@ -99,8 +99,8 @@ public class DynamicClient extends HybridClient {
             }
             catch (ExecutionException ex) {
               Throwable e = ex.getCause();
-              fireStatus(Resources.getString("Server.bad_address3"));
-              ErrorDialog.showDetails(e, ThrowableUtils.getStackTrace(e), "Error.network_communication_error");
+              fireStatus(Resources.getString("Server.bad_address3")); //$NON-NLS-1$
+              ErrorDialog.showDetails(e, ThrowableUtils.getStackTrace(e), "Error.network_communication_error"); //$NON-NLS-1$
               e.printStackTrace();
             }
             connecting = false;

@@ -64,19 +64,19 @@ public class JabberPlayer extends SimplePlayer {
   }
   
   public String getRawJid() {
-    if (jid.contains("/")) {
-      return StringUtils.parseName(jid) + "@" + StringUtils.parseServer(jid);
+    if (jid.contains("/")) { //$NON-NLS-1$
+      return StringUtils.parseName(jid) + "@" + StringUtils.parseServer(jid); //$NON-NLS-1$
     }
     return jid;
   }
   public static String xmppAddressToJid(String participant) {
 
     final String address = StringUtils.parseServer(participant);
-    final String[] parts = address.split("\\.");
+    final String[] parts = address.split("\\."); //$NON-NLS-1$
     final String server = parts[parts.length-1];
     final String nick = StringUtils.parseResource(participant);
     
-    return nick+"@"+server+JabberClient.JID_RESOURCE;
+    return nick+"@"+server+JabberClient.JID_RESOURCE; //$NON-NLS-1$
   }
 
   public static class Manager {

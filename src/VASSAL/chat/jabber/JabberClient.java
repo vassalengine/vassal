@@ -235,12 +235,6 @@ public class JabberClient implements LockableChatServerConnection,
       }
       };  
   }
-
-
-  
-  public void debug(String msg) {
-    System.out.println(msg);
-  }
   
   public void addPropertyChangeListener(String propertyName,
       PropertyChangeListener l) {
@@ -383,6 +377,86 @@ public class JabberClient implements LockableChatServerConnection,
     fireStatus(Resources.getString("Server.disconnected", host + ":" + port)); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
+  public static String testConnection(String host, String port, String login, String passwd) {
+    final StringBuffer text = new StringBuffer(Resources.getString("JabberClient.0")+host+Resources.getString("JabberClient.1")+port+Resources.getString("JabberClient.2")+login+Resources.getString("JabberClient.3")+passwd).append(Resources.getString("JabberClient.4")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    
+    if (host.length() == 0) {
+      return text.append(Resources.getString("JabberClient.error_no_host")).toString(); //$NON-NLS-1$
+    }
+    
+    int portNo = 0;
+    try {
+      portNo = Integer.parseInt(port);
+    }
+    catch (NumberFormatException e) {
+      return text.append(Resources.getString("JabberClient.error_port_number")).toString();       //$NON-NLS-1$
+    }
+    
+    final ConnectionConfiguration config = new ConnectionConfiguration(host, portNo);
+    config.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
+    config.setCompressionEnabled(true);
+    config.setSASLAuthenticationEnabled(false);
+    config.setDebuggerEnabled(XMPPConnection.DEBUG_ENABLED);
+    final XMPPConnection conn = new XMPPConnection(config);
+    
+    try {
+      text.append(Resources.getString("JabberClient.attempting_to_connect")).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+      conn.connect();
+      text.append(Resources.getString("JabberClient.success")).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+      text.append(Resources.getString("JabberClient.attempting_to_login")).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+      try {
+        conn.login(login, passwd, "VASSAL"); //$NON-NLS-1$
+        text.append(Resources.getString("JabberClient.success")); //$NON-NLS-1$
+      }
+      catch (XMPPException e) {
+        text.append(Resources.getString("JabberClient.login_failed")).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (e.getXMPPError() != null && e.getXMPPError().getCode() == 401) {
+          text.append(Resources.getString("JabberClient.16")).append(Resources.getString("JabberClient.17")); //$NON-NLS-1$ //$NON-NLS-2$
+          final Map<String, String> attributes = new HashMap<String, String>();
+          attributes.put("name", GameModule.getUserId()); //$NON-NLS-1$
+          try {
+            conn.getAccountManager().createAccount(login, passwd,
+                attributes);
+            text.append("Success"); //$NON-NLS-1$
+          }
+          catch (XMPPException ex) {
+            text.append("Failed").append("\n");           //$NON-NLS-1$ //$NON-NLS-2$
+            if (ex.getXMPPError() != null && ex.getXMPPError().getCode() == 409) {
+              // Account already exists. Password is incorrect
+              text.append(Resources.getString("Chat.invalid_password")).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            else {
+              text.append(formatXMPPError(ex));
+            }
+          }
+        }
+        else {
+          text.append(formatXMPPError(e));
+        }
+      }      
+    }
+    catch (XMPPException e) {
+      text.append(Resources.getString("JabberClient.failed2")).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+      text.append(formatXMPPError(e));
+    }
+    finally {
+      conn.disconnect();
+    }
+    return text.toString();
+  }
+  
+  private static String formatXMPPError(XMPPException e) {
+    final XMPPError error = e.getXMPPError();
+    if (error == null) {
+      return Resources.getString("Server.server_error", e.getMessage(), "", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+    else {
+      return Resources.getString("Server.server_error", e //$NON-NLS-1$
+          .getXMPPError().getMessage(), e.getXMPPError().getCondition(), e
+          .getXMPPError().getCode());
+    }
+  }
+  
   private void leaveCurrentRoom() {
     if (currentChat != null) {
       currentChat.leave();
@@ -397,7 +471,7 @@ public class JabberClient implements LockableChatServerConnection,
     playerStatusControls.initializeControls(controls);
     // messageBoardControls.initializeControls(controls);
     roomControls.initializeControls(controls);
-    serverStatusControls.initializeControls(controls);
+    serverStatusControls.initializeControls(controls);    
     final GameModule g = GameModule.getGameModule(); 
     g.addCommandEncoder(synchEncoder);
     g.addCommandEncoder(soundEncoder);
@@ -406,10 +480,10 @@ public class JabberClient implements LockableChatServerConnection,
   }
 
   public void uninitializeControls(ChatServerControls controls) {
+    playerStatusControls.uninitializeControls(controls);
     // messageBoardControls.uninitializeControls(controls);
     roomControls.uninitializeControls(controls);
-    playerStatusControls.uninitializeControls(controls);
-    serverStatusControls.uninitializeControls(controls);
+    serverStatusControls.uninitializeControls(controls);    
     final GameModule g = GameModule.getGameModule(); 
     g.removeCommandEncoder(synchEncoder);
     g.removeCommandEncoder(soundEncoder);
@@ -430,12 +504,12 @@ public class JabberClient implements LockableChatServerConnection,
 
   public void processServerMessage(String subject, String message) {
     final GameModule g = GameModule.getGameModule();
-    g.warn("##### Message from Server Administrator");
+    g.warn("#####" + Resources.getString("JabberClient.message_from_admin")); //$NON-NLS-1$ //$NON-NLS-2$
     if (subject != null) {
-      g.warn("Subject: "+subject);
+      g.warn(Resources.getString("JabberClient.subject")+subject); //$NON-NLS-1$
     }
     g.warn(message);
-    g.warn("##### End Message");
+    g.warn("#####" + Resources.getString("JabberClient.end_message")); //$NON-NLS-1$ //$NON-NLS-2$
   }
   
   public Room getRoom() {
@@ -808,7 +882,6 @@ public class JabberClient implements LockableChatServerConnection,
       if (ROOM_CHANGE_ACTION.equals(m.getBody())) {
         final String jid = getAbsolutePlayerJID(packet.getFrom());
         playerMgr.getPlayer(getAbsolutePlayerJID(packet.getFrom()));
-        debug("Room change action seen from "+jid);
         sendRoomQuery(jid);
       }
     }
@@ -901,7 +974,6 @@ public class JabberClient implements LockableChatServerConnection,
           final Presence p = (Presence) packet;
           final JabberPlayer player = playerMgr.getPlayer(getAbsolutePlayerJID(p
               .getFrom()));
-          debug("Change Status packet seen from "+player.getName());
           SimpleStatus status = (SimpleStatus) player.getStatus();
           final String profile = status == null ? "" : status.getProfile(); //$NON-NLS-1$
           final Object looking = p.getProperty(SimpleStatus.LOOKING);
@@ -959,7 +1031,6 @@ public class JabberClient implements LockableChatServerConnection,
 
       public void process(Packet packet) {
         if (roomResponseFilter.accept(packet)) {
-          debug("Room Discovery Packet seen from "+packet.getFrom());
           final DiscoverItems result = (DiscoverItems) packet;
           final JabberPlayer player = playerMgr.getPlayer(packet.getFrom());
           // Collect the entityID for each returned item
@@ -968,7 +1039,6 @@ public class JabberClient implements LockableChatServerConnection,
             final String roomJID = items.next().getEntityID();
             final JabberRoom room = roomMgr.getRoomByJID(JabberClient.this, roomJID);
             try {
-             debug("JabberClient: Get Room Info for "+roomJID+","+room.getName());
              room.setInfo(MultiUserChat.getRoomInfo(JabberClient.this
                   .getConnection(), roomJID));
             }
@@ -982,8 +1052,7 @@ public class JabberClient implements LockableChatServerConnection,
           fireRoomsUpdated();
         }
         else if (newPlayerFilter.accept(packet)) {
-          debug("New Player seen from " + packet.getFrom());
-          sendRoomQuery(getAbsolutePlayerJID(packet.getFrom()));
+           sendRoomQuery(getAbsolutePlayerJID(packet.getFrom()));
         }
       }
 

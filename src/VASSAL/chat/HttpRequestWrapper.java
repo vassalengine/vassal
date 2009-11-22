@@ -50,7 +50,7 @@ public class HttpRequestWrapper {
   private List<String> readLines(InputStream is) throws IOException {
     BufferedReader in = null;
     try {
-      in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+      in = new BufferedReader(new InputStreamReader(is, "UTF-8")); //$NON-NLS-1$
 
       final ArrayList<String> l = new ArrayList<String>();
       String line;

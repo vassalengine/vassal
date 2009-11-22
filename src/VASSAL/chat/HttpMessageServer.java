@@ -58,7 +58,7 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
       }
     }
     catch (IOException e) {
-      System.err.println("IOException retrieving welcome message from "+welcomeURL);
+      System.err.println("IOException retrieving welcome message from "+welcomeURL); //$NON-NLS-1$
     }
     return motd;
   }
@@ -75,8 +75,8 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
           date = date.substring(date.indexOf("=") + 1); //$NON-NLS-1$
           s = st.nextToken(""); //$NON-NLS-1$
 
-          String content = StringUtils.join("\n",
-            new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|'));
+          String content = StringUtils.join("\n", //$NON-NLS-1$
+            new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|')); //$NON-NLS-1$
 
           content = restorePercent(content);
           Date created = null;
@@ -92,12 +92,12 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
           msgList.add(new Message(sender, content, created));
         }
         catch (NoSuchElementException ex) {
-          System.err.println("Badly formatted message in HttpMessageServer:  "+msg);
+          System.err.println("Badly formatted message in HttpMessageServer:  "+msg); //$NON-NLS-1$
         }
       }
     }
     catch (IOException ex) {
-      System.err.println("IOException retrieving messages from "+getMessagesURL);
+      System.err.println("IOException retrieving messages from "+getMessagesURL); //$NON-NLS-1$
     }
     return msgList.toArray(new Message[msgList.size()]);
   }

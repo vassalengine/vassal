@@ -31,6 +31,7 @@ import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -73,6 +74,7 @@ public class ChatServerControls extends AbstractBuildable {
   protected ComponentSplitter.SplitPane splitter;
   protected ChatControlsInitializer oldClient;
   protected BasicChatControlsInitializer basicControls;
+  protected JLabel clientDisplay;
 
   public ChatServerControls() {
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -84,8 +86,9 @@ public class ChatServerControls extends AbstractBuildable {
     b.add(new JLabel(Resources.getString("Chat.new_game")), BorderLayout.LINE_START);  //$NON-NLS-1$
     newRoom = new JTextField(12);
     b.add(newRoom, BorderLayout.CENTER);
-    newRoomButton = new JButton("...");
+    newRoomButton = new JButton("..."); //$NON-NLS-1$
     newRoomButton.setPreferredSize(new Dimension(20, 20));
+    newRoomButton.setVisible(false);
     b.add(newRoomButton, BorderLayout.LINE_END);
     roomPanel.add(b);
     roomPanel.add(scroll);
@@ -104,13 +107,25 @@ public class ChatServerControls extends AbstractBuildable {
     scroll.setBorder(BorderFactory.createTitledBorder(BorderFactory.createRaisedBevelBorder(), Resources.getString("Chat.current_game")));  //$NON-NLS-1$
     split.setRightComponent(scroll);
     split.setDividerLocation(160);
-    split.setPreferredSize(new java.awt.Dimension(320, 120));
+    split.setPreferredSize(new Dimension(320, 120));
     controlPanel = new JPanel();
-    controlPanel.setLayout(new java.awt.BorderLayout());
+    controlPanel.setLayout(new BorderLayout());
     controlPanel.add("Center", split);  //$NON-NLS-1$
     toolbar = new JToolBar();
     controlPanel.add("North", toolbar);  //$NON-NLS-1$
     toolbar.addSeparator();
+    
+    clientDisplay = new JLabel();
+    final Dimension d = new Dimension(27, 27);
+    clientDisplay.setMinimumSize(d);
+    clientDisplay.setMaximumSize(d);
+    clientDisplay.setPreferredSize(d);
+    toolbar.add(clientDisplay);
+  }
+  
+  public void updateClientDisplay(Icon icon, String text) {
+    clientDisplay.setIcon(icon);
+    clientDisplay.setToolTipText(text);
   }
   
   public Component getExtendedControls() {
@@ -269,9 +284,16 @@ public class ChatServerControls extends AbstractBuildable {
     return newRoom;
   }
   
-  public JButton getNewRoomButton() {
-    return newRoomButton;
+  public void addExtendedNewRoomHandler(ActionListener l) {
+    newRoomButton.addActionListener(l);
+    newRoomButton.setVisible(true);
   }
+  
+  public void removeExtendedNewRoomHandler(ActionListener l) {
+    newRoomButton.removeActionListener(l);
+    newRoomButton.setVisible(false);
+  }
+  
 
   public RoomTree getRoomTree() {
     return roomTree;

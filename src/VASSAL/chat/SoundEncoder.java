@@ -48,7 +48,7 @@ public class SoundEncoder implements CommandEncoder {
       SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(command, '\t');
       sd.nextToken();
       final String soundKey = sd.nextToken();
-      final Player sender = playerEncoder.stringToPlayer(sd.nextToken(""));
+      final Player sender = playerEncoder.stringToPlayer(sd.nextToken("")); //$NON-NLS-1$
       return new Cmd(soundKey, sender);
     }
     else {

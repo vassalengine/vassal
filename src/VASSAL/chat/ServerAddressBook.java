@@ -18,8 +18,6 @@
  */
 package VASSAL.chat;
 
-import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -27,10 +25,11 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -40,8 +39,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -49,10 +48,12 @@ import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 import VASSAL.build.GameModule;
+import VASSAL.chat.jabber.JabberClient;
 import VASSAL.chat.jabber.JabberClientFactory;
 import VASSAL.chat.node.NodeClientFactory;
 import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.configure.StringConfigurer;
+import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
@@ -61,24 +62,25 @@ import VASSAL.tools.icon.IconFamily;
 import VASSAL.tools.swing.Dialogs;
 
 public class ServerAddressBook {
-  public static final String CURRENT_SERVER = "currentServer";
-  protected static final String ADDRESS_PREF = "ServerAddressBook";
+  public static final String CURRENT_SERVER = "currentServer"; //$NON-NLS-1$
+  protected static final String ADDRESS_PREF = "ServerAddressBook"; //$NON-NLS-1$
   protected static final String LEGACY_TYPE = NodeClientFactory.NODE_TYPE;
   protected static final String DYNAMIC_TYPE = DynamicClientFactory.DYNAMIC_TYPE;
   protected static final String JABBER_TYPE = JabberClientFactory.JABBER_SERVER_TYPE;
   protected static final String P2P_TYPE = P2PClientFactory.P2P_TYPE;
   protected static final String TYPE_KEY = ChatServerFactory.TYPE_KEY;
-  protected static final String DESCRIPTION_KEY = "description";
+  protected static final String DESCRIPTION_KEY = "description"; //$NON-NLS-1$
   protected final int LEAF_ICON_SIZE = IconFamily.SMALL;
-  protected boolean frozen;
-
-  private JPanel controls;
+  protected final int CONTROLS_ICON_SIZE = IconFamily.XSMALL;
+  
+  private boolean frozen;
+  private JComponent controls;
   private StringConfigurer addressConfig;
   private JList myList;
   private DefaultListModel addressBook;
   private AddressBookEntry currentEntry;
   private boolean enabled = true;
-  protected PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+  private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
   private JButton addButton;
   private JButton removeButton;
@@ -89,7 +91,7 @@ public class ServerAddressBook {
     if (controls == null) {
 
       controls = new JPanel(new MigLayout());
-      addressConfig = new StringConfigurer(ADDRESS_PREF, null, "");
+      addressConfig = new StringConfigurer(ADDRESS_PREF, null, ""); //$NON-NLS-1$
       Prefs.getGlobalPrefs().addOption(null, addressConfig);
       addressBook = new DefaultListModel();
       loadAddressBook();
@@ -102,44 +104,44 @@ public class ServerAddressBook {
         }
       });
       final JScrollPane scroll = new JScrollPane(myList);
-      controls.add(scroll, "grow, push, w 500, h 400, wrap, span 4");
+      controls.add(scroll, "grow, push, w 500, h 400, wrap, span 4"); //$NON-NLS-1$
 
-      addButton = new JButton("Add");
-      addButton.setToolTipText("Add a new Server");
+      addButton = new JButton(Resources.getString(Resources.ADD));
+      addButton.setToolTipText(Resources.getString("ServerAddressBook.add_server")); //$NON-NLS-1$
       addButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           addServer();
         }
       });
 
-      removeButton = new JButton("Remove");
-      removeButton.setToolTipText("Remove selected Server");
+      removeButton = new JButton(Resources.getString(Resources.REMOVE));
+      removeButton.setToolTipText(Resources.getString("ServerAddressBook.remove_server")); //$NON-NLS-1$
       removeButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           removeServer(myList.getSelectedIndex());
         }
       });
 
-      editButton = new JButton("Edit");
-      editButton.setToolTipText("Edit selected Server");
+      editButton = new JButton(Resources.getString(Resources.EDIT));
+      editButton.setToolTipText(Resources.getString("ServerAddressBook.edit_server")); //$NON-NLS-1$
       editButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           editServer(myList.getSelectedIndex());
         }
       });
 
-      setButton = new JButton("Set Current");
-      setButton.setToolTipText("Set selected Server as current Server");
+      setButton = new JButton(Resources.getString("ServerAddressBook.set_current")); //$NON-NLS-1$
+      setButton.setToolTipText(Resources.getString("ServerAddressBook.set_selected_server")); //$NON-NLS-1$
       setButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           setCurrentServer(myList.getSelectedIndex());
         }
       });
 
-      controls.add(addButton, "grow, push");
-      controls.add(editButton, "grow, push");
-      controls.add(removeButton, "grow, push");
-      controls.add(setButton, "grow, push");
+      controls.add(addButton, "grow, push"); //$NON-NLS-1$
+      controls.add(editButton, "grow, push"); //$NON-NLS-1$
+      controls.add(removeButton, "grow, push"); //$NON-NLS-1$
+      controls.add(setButton, "grow, push"); //$NON-NLS-1$
 
       updateButtonVisibility();
     }
@@ -163,7 +165,7 @@ public class ServerAddressBook {
     final int index = myList.getSelectedIndex();
     if (index >= 0) {
       final AddressBookEntry e = (AddressBookEntry) addressBook.get(index);
-      editButton.setEnabled(e.isRemovable() && (isEnabled() || !e.isCurrent()));
+      editButton.setEnabled(e.isEditable() && (isEnabled() || !e.isCurrent()));
       removeButton.setEnabled(e.isRemovable() && !e.isCurrent());
       setButton.setEnabled(isEnabled() && !e.isCurrent());
     }
@@ -230,22 +232,23 @@ public class ServerAddressBook {
     changeSupport.removePropertyChangeListener(l);
   }
   
+  public Icon getCurrentIcon() {
+    return currentEntry.getIcon(CONTROLS_ICON_SIZE);
+  }
+  
+  public String getCurrentDescription() {
+    return currentEntry.toString();
+  }
+  
   private void editServer(int index) {
     final AddressBookEntry e = (AddressBookEntry) addressBook.get(index);
-    final ServerConfig config = new ServerConfig(e.getProperties());
-    if (0 == (Integer) Dialogs.showDialog(null, "Edit Server Configuration",
-        config, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
-        null, null, null, null)) {
-      e.setProperties(config.getProperties());
-      saveAddressBook();
-    }
+    e.edit();
   }
 
   private void removeServer(int index) {
     final AddressBookEntry e = (AddressBookEntry) addressBook.get(index);
     int i = JOptionPane.showConfirmDialog(
-        GameModule.getGameModule().getFrame(), "Remove Server "
-            + e.getDescription() + "?");
+        GameModule.getGameModule().getFrame(), Resources.getString("ServerAddressBook.remove_server", e.getDescription())); //$NON-NLS-1$
     if (i == 0) {
       addressBook.remove(index);
       myList.setSelectedIndex(-1);
@@ -257,11 +260,8 @@ public class ServerAddressBook {
   }
 
   private void addServer() {
-    final ServerConfig config = new ServerConfig();
-    if (0 == (Integer) Dialogs.showDialog(null, "New Server Configuration",
-        config, JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
-        null, null, null, null)) {
-      final AddressBookEntry e = buildEntry(config.getProperties());
+    final  AddressBookEntry e = new JabberEntry();
+    if (e.edit()) {
       addressBook.addElement(e);
       saveAddressBook();
     }
@@ -273,10 +273,13 @@ public class ServerAddressBook {
 
   private void loadAddressBook() {
     decodeAddressBook(addressConfig.getValueString());
-    // Ensure that the Address Book has the VASSAL legacy and VASSAL Jabber
+    // Ensure that the Address Book has the three basic
     // servers in it.
     boolean legacy = false;
     boolean jabber = false;
+    boolean peer = false;
+    boolean updated = false;
+    
     for (Enumeration<?> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = (AddressBookEntry) e.nextElement();
       if (entry instanceof LegacyEntry) {
@@ -285,16 +288,27 @@ public class ServerAddressBook {
       else if (entry instanceof VassalJabberEntry) {
         jabber = true;
       }
+      else if (entry instanceof PeerEntry) {
+        peer = true;
+      }
     }
     if (!legacy) {
       addressBook.addElement(new LegacyEntry());
-      saveAddressBook();
+      updated = true;
     }
     if (!jabber) {
       final AddressBookEntry entry = new VassalJabberEntry();
       entry.setCurrent(true);
       currentEntry = entry;
       addressBook.addElement(entry);
+      updated = true;
+    }
+    if (!peer) {
+      addressBook.addElement(new PeerEntry());
+      updated = true;
+    }
+    
+    if (updated) {
       saveAddressBook();
     }
 
@@ -320,7 +334,7 @@ public class ServerAddressBook {
     addressBook.clear();
     for (SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ','); sd
         .hasMoreTokens();) {
-      final String token = sd.nextToken("");
+      final String token = sd.nextToken(""); //$NON-NLS-1$
       if (token.length() > 0) {
         addressBook.addElement(buildEntry(token));
       }
@@ -402,7 +416,15 @@ public class ServerAddressBook {
       return true;
     }
 
-    protected abstract Icon getIcon();
+    protected boolean isEditable() {
+      return true;
+    }
+    
+    protected abstract String getIconName();
+    
+    protected Icon getIcon(int size) {
+      return IconFactory.getIcon(getIconName(), size);
+    }
 
     public String getType() {
       return properties.getProperty(TYPE_KEY);
@@ -438,6 +460,73 @@ public class ServerAddressBook {
     public void setCurrent(boolean b) {
       current = b;
     }
+    
+    protected boolean isDescriptionEditable() {
+      return true;
+    }
+    
+    public boolean edit() {
+      if (isEditable()) {
+        final ServerConfig config = getEditor(getProperties());
+        if (0 == (Integer) Dialogs.showDialog(null, Resources.getString("ServerAddressBook.edit_server_configuration"), //$NON-NLS-1$
+            config.getControls(), JOptionPane.PLAIN_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
+            null, null, null, null)) {
+          setProperties(config.getProperties());
+          saveAddressBook();
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    protected void setAdditionalProperties(Properties props) {
+      
+    }
+    
+    protected void getAdditionalProperties(Properties props) {
+      
+    }
+    
+    protected void addAdditionalControls(JComponent c) {
+      
+    }
+    
+    public ServerConfig getEditor(Properties p) {
+      return new ServerConfig(p);
+    }
+    
+    class ServerConfig {
+      protected JComponent configControls;
+      protected JTextField description = new JTextField();
+      
+      public ServerConfig () {
+      }
+      
+      public ServerConfig (Properties props) {
+        this();      
+        description.setText(props.getProperty(DESCRIPTION_KEY));
+        setAdditionalProperties(props);
+      }
+      
+      public JComponent getControls() {
+        if (configControls == null) {
+          configControls = new JPanel();
+          configControls.setLayout(new MigLayout("", "[align right]rel[]", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          configControls.add(new JLabel(Resources.getString("Editor.description_label")));  //$NON-NLS-1$
+          configControls.add(description, "wrap, grow, push"); //$NON-NLS-1$
+          addAdditionalControls(configControls);
+          description.setEditable(isDescriptionEditable());
+        }
+        return configControls;
+      }
+      
+      public Properties getProperties() {
+        final Properties props = new Properties();
+        props.setProperty(DESCRIPTION_KEY, description.getText());
+        getAdditionalProperties(props);
+        return props;
+      }
+    }
   }
 
   /**
@@ -445,9 +534,22 @@ public class ServerAddressBook {
    * 
    */
   class JabberEntry extends AddressBookEntry {
-
+   
+    private JTextField jabberHost= new JTextField();
+    private JTextField jabberPort = new JTextField();
+    private JTextField jabberUser = new JTextField();
+    private JTextField jabberPw = new JTextField();
+    private JButton testButton;
+    
+    public JabberEntry() {
+      this(new Properties());
+      setType(JABBER_TYPE);
+      setDescription(""); //$NON-NLS-1$   
+      setProperty(JabberClientFactory.JABBER_PORT, "5050"); //$NON-NLS-1$   
+    }
+    
     public JabberEntry(String description) {
-      super();
+      this();
       setProperty(DESCRIPTION_KEY, description);
     }
 
@@ -456,31 +558,81 @@ public class ServerAddressBook {
     }
 
     public String toString() {
-      return getDescription() + " - "
-          + getProperty(JabberClientFactory.JABBER_HOST) + ":"
-          + getProperty(JabberClientFactory.JABBER_PORT) + " "
-          + getProperty(JabberClientFactory.JABBER_LOGIN) + "/"
-          + getProperty(JabberClientFactory.JABBER_PWD);
+      return Resources.getString("ServerAddressBook.jabber_server") + " " + getDescription() + " [" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          + getProperty(JabberClientFactory.JABBER_HOST) + ":" //$NON-NLS-1$
+          + getProperty(JabberClientFactory.JABBER_PORT) + " " //$NON-NLS-1$
+          + getProperty(JabberClientFactory.JABBER_LOGIN) + "/" //$NON-NLS-1$
+          + getProperty(JabberClientFactory.JABBER_PWD) + "]"; //$NON-NLS-1$
     }
 
-    protected Icon getIcon() {
-      return IconFactory.getIcon("jabber", LEAF_ICON_SIZE);
+    protected String getIconName() {
+      return "jabber"; //$NON-NLS-1$
     }
 
+    protected boolean isDescriptionEditable() {
+      return true;
+    }
+    
+    protected void setAdditionalProperties(Properties props) {
+      super.setAdditionalProperties(props);
+      jabberHost.setText(props.getProperty(JabberClientFactory.JABBER_HOST));
+      jabberPort.setText(props.getProperty(JabberClientFactory.JABBER_PORT));
+      jabberUser.setText(props.getProperty(JabberClientFactory.JABBER_LOGIN));
+      jabberPw.setText(props.getProperty(JabberClientFactory.JABBER_PWD));
+    }
+    
+    protected void getAdditionalProperties(Properties props) {
+      super.getAdditionalProperties(props);
+      props.setProperty(JabberClientFactory.JABBER_HOST, jabberHost.getText());
+      props.setProperty(JabberClientFactory.JABBER_PORT, jabberPort.getText());
+      props.setProperty(JabberClientFactory.JABBER_LOGIN, jabberUser.getText());
+      props.setProperty(JabberClientFactory.JABBER_PWD, jabberPw.getText());
+      props.setProperty(TYPE_KEY, JabberClientFactory.JABBER_SERVER_TYPE);
+    }
+    
+    protected void addAdditionalControls(JComponent c) {
+      c.add(new JLabel(Resources.getString("ServerAddressBook.jabber_host"))); //$NON-NLS-1$
+      c.add(jabberHost, "wrap, grow, push"); //$NON-NLS-1$
+      c.add(new JLabel(Resources.getString("ServerAddressBook.port"))); //$NON-NLS-1$
+      c.add(jabberPort, "wrap, grow, push"); //$NON-NLS-1$
+      c.add(new JLabel(Resources.getString("ServerAddressBook.user_name"))); //$NON-NLS-1$
+      c.add(jabberUser, "wrap, grow, push"); //$NON-NLS-1$
+      c.add(new JLabel(Resources.getString("ServerAddressBook.password"))); //$NON-NLS-1$
+      c.add(jabberPw, "wrap, grow, push"); //$NON-NLS-1$
+      
+      testButton = new JButton(Resources.getString("ServerAddressBook.test_connection")); //$NON-NLS-1$
+      testButton.addActionListener(new ActionListener(){
+        public void actionPerformed(ActionEvent e) {
+          test();          
+        }});
+      c.add(testButton, "span 2, align center, wrap"); //$NON-NLS-1$
+    }
+    
+    protected void test() {
+      final JTextArea result = new JTextArea(10, 30);
+      result.setText(JabberClient.testConnection(jabberHost.getText(), jabberPort.getText(), jabberUser.getText(), jabberPw.getText()));
+      Dialogs.showDialog(null, Resources.getString("ServerAddressBook.connection_test"), //$NON-NLS-1$
+          result, JOptionPane.INFORMATION_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION,
+          null, null, null, null);
+    }
   }
 
   /**
    * Address Book entry for the VASSAL Jabber server
    * 
    */
-  class VassalJabberEntry extends JabberEntry {
+  class VassalJabberEntry extends AddressBookEntry {
 
+    protected JTextField jabberUser = new JTextField();
+    protected JTextField jabberPw = new JTextField();
+    
     public VassalJabberEntry() {
       this(new Properties());
-      setDescription("VASSAL Jabber/XMPP Server");
+      setDescription("VASSAL" + Resources.getString("ServerAddressBook.jabber_server")); //$NON-NLS-1$ //$NON-NLS-2$
       setType(DYNAMIC_TYPE);
-      setProperty(DynamicClientFactory.DYNAMIC_TYPE,
-          JabberClientFactory.JABBER_SERVER_TYPE);
+      setProperty(DynamicClientFactory.DYNAMIC_TYPE, JabberClientFactory.JABBER_SERVER_TYPE);
+      setProperty(JabberClientFactory.JABBER_LOGIN, ""); //$NON-NLS-1$
+      setProperty(JabberClientFactory.JABBER_PWD, ""); //$NON-NLS-1$
     }
 
     public VassalJabberEntry(Properties props) {
@@ -488,11 +640,50 @@ public class ServerAddressBook {
     }
 
     public String toString() {
-      return getDescription();
+      String details;
+      final String login = getProperty(JabberClientFactory.JABBER_LOGIN);
+      final String pw = getProperty(JabberClientFactory.JABBER_PWD);
+      if (login == null || login.length() == 0 || pw == null || pw.length() == 0) {
+        details = Resources.getString("ServerAddressBook.login_details_required");  //$NON-NLS-1$
+      }
+      else {
+        details = getProperty(JabberClientFactory.JABBER_LOGIN) + "/" //$NON-NLS-1$
+          + getProperty(JabberClientFactory.JABBER_PWD);
+      }      
+      return getDescription() + " [" + details + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     protected boolean isRemovable() {
       return false;
+    }
+    
+    protected boolean isDescriptionEditable() {
+      return false;
+    }
+    
+    protected String getIconName() {
+      return "VASSAL-jabber"; //$NON-NLS-1$
+    }
+    
+    protected void setAdditionalProperties(Properties props) {
+      jabberUser.setText(props.getProperty(JabberClientFactory.JABBER_LOGIN));
+      jabberPw.setText(props.getProperty(JabberClientFactory.JABBER_PWD));
+      setType(DYNAMIC_TYPE);
+      setProperty(DYNAMIC_TYPE, JABBER_TYPE);
+    }
+    
+    protected void getAdditionalProperties(Properties props) {
+      props.setProperty(JabberClientFactory.JABBER_LOGIN, jabberUser.getText());
+      props.setProperty(JabberClientFactory.JABBER_PWD, jabberPw.getText());
+      props.setProperty(TYPE_KEY, DYNAMIC_TYPE);
+      props.setProperty(DYNAMIC_TYPE, JABBER_TYPE);
+    }
+    
+    protected void addAdditionalControls(JComponent c) {
+      c.add(new JLabel(Resources.getString("ServerAddressBook.user_name"))); //$NON-NLS-1$
+      c.add(jabberUser, "wrap, grow, push"); //$NON-NLS-1$
+      c.add(new JLabel(Resources.getString("ServerAddressBook.password"))); //$NON-NLS-1$
+      c.add(jabberPw, "wrap, grow, push"); //$NON-NLS-1$
     }
 
   }
@@ -505,7 +696,7 @@ public class ServerAddressBook {
 
     public LegacyEntry() {
       this(new Properties());
-      setDescription("VASSAL Legacy Server");
+      setDescription(Resources.getString("ServerAddressBook.legacy_server")); //$NON-NLS-1$
       setType(DYNAMIC_TYPE);
       setProperty(DynamicClientFactory.DYNAMIC_TYPE,
           NodeClientFactory.NODE_TYPE);
@@ -519,11 +710,19 @@ public class ServerAddressBook {
       return getDescription();
     }
 
-    protected Icon getIcon() {
-      return IconFactory.getIcon("VASSAL", LEAF_ICON_SIZE);
+    protected String getIconName() {
+      return "VASSAL"; //$NON-NLS-1$
     }
 
     protected boolean isRemovable() {
+      return false;
+    }
+    
+    protected boolean isEditable() {
+      return false;
+    }
+    
+    protected boolean isDescriptionEditable() {
       return false;
     }
 
@@ -535,19 +734,69 @@ public class ServerAddressBook {
    */
   class PeerEntry extends AddressBookEntry {
 
+    private JTextField publishedHost = new JTextField();
+    private JTextField publishedPort = new JTextField();
+    private JTextField serverPassword = new JTextField();
+    
+    public PeerEntry() {
+      super();
+      setDescription(Resources.getString("ServerAddressBook.peer_server")); //$NON-NLS-1$
+      setType(P2P_TYPE);
+      String ip = ""; //$NON-NLS-1$
+      try {
+        ip = InetAddress.getLocalHost().getHostAddress();
+      }
+      catch (UnknownHostException e) {
+        // Ignore!
+      }
+      setProperty(JabberClientFactory.JABBER_HOST, ip);
+      setProperty(JabberClientFactory.JABBER_PORT, "5050"); //$NON-NLS-1$
+      setProperty(P2PClientFactory.P2P_SERVER_PASSWD, ""); //$NON-NLS-1$
+    }
+    
     public PeerEntry(Properties props) {
       super(props);
     }
 
     public String toString() {
-      return getDescription() + " - "
-          + getProperty(JabberClientFactory.JABBER_HOST) + ":"
-          + getProperty(JabberClientFactory.JABBER_PORT);
+      return getDescription() + " [" + getProperty(JabberClientFactory.JABBER_HOST) + ":" //$NON-NLS-1$ //$NON-NLS-2$
+      + getProperty(JabberClientFactory.JABBER_PORT) + " " + getProperty(P2PClientFactory.P2P_SERVER_PASSWD) +"]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    protected Icon getIcon() {
-      return IconFactory.getIcon("network-idle", LEAF_ICON_SIZE);
+    public boolean isRemovable() {
+      return false;
     }
+    
+    protected boolean isDescriptionEditable() {
+      return false;
+    }
+    
+    protected String getIconName() {
+      return "network-idle"; //$NON-NLS-1$
+    }
+    
+    protected void setAdditionalProperties(Properties p) {
+      publishedHost.setText(p.getProperty(JabberClientFactory.JABBER_HOST));
+      publishedPort.setText(p.getProperty(JabberClientFactory.JABBER_PORT));
+      serverPassword.setText(p.getProperty(P2PClientFactory.P2P_SERVER_PASSWD));
+    }
+    
+    protected void getAdditionalProperties(Properties props) {
+      props.setProperty(TYPE_KEY, P2P_TYPE);
+      props.setProperty(JabberClientFactory.JABBER_HOST, publishedHost.getText());
+      props.setProperty(JabberClientFactory.JABBER_PORT, publishedPort.getText());
+      props.setProperty(P2PClientFactory.P2P_SERVER_PASSWD, serverPassword.getText());
+    }
+    
+    protected void addAdditionalControls(JComponent c) {
+      c.add(new JLabel(Resources.getString("ServerAddressBook.published_peer_address"))); //$NON-NLS-1$
+      c.add(publishedHost, "wrap, growx, push"); //$NON-NLS-1$
+      c.add(new JLabel(Resources.getString("ServerAddressBook.published_peer_port"))); //$NON-NLS-1$
+      c.add(publishedPort, "wrap, growx, push"); //$NON-NLS-1$
+      c.add(new JLabel(Resources.getString("ServerAddressBook.server_password"))); //$NON-NLS-1$
+      c.add(serverPassword, "wrap, growx, push"); //$NON-NLS-1$
+    }
+    
   }
 
   /**
@@ -574,10 +823,10 @@ public class ServerAddressBook {
 
       if (value instanceof AddressBookEntry) {
         final AddressBookEntry e = (AddressBookEntry) value;
-        setIcon(e.getIcon());
+        setIcon(e.getIcon(LEAF_ICON_SIZE));
         if (e.isCurrent()) {
           setFont(highlightFont);
-          setText(e.toString() + " (Current)");
+          setText(e.toString() + Resources.getString("ServerAddressBook.current")); //$NON-NLS-1$
         }
         else {
           setFont(standardFont);
@@ -586,128 +835,5 @@ public class ServerAddressBook {
       }
       return this;
     }
-  }
-
-  /**
-   * Class to Edit a Server Configuration
-   * 
-   */
-  class ServerConfig extends JPanel {
-    private static final long serialVersionUID = 1L;
-    private JTextField description;
-    private JRadioButton jabberButton;
-    private JRadioButton peerButton;
-    private JTextField jabberHost;
-    private JTextField jabberPort;
-    private JTextField jabberUser;
-    private JTextField jabberPw;
-    private JTextField peerHost;
-    private JTextField peerPort;
-    private JPanel detailPanel;
-    private CardLayout detailLayout;
-    private JPanel jabberPanel;
-    private JPanel peerPanel;
-
-    public ServerConfig() {
-      setLayout(new MigLayout("", "[align right]rel[]", ""));
-      description = new JTextField();
-      add(new JLabel("Description:"));
-      add(description, "wrap, grow, push");
-
-      jabberButton = new JRadioButton();
-      jabberButton.setSelected(true);
-      jabberButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          peerButton.setSelected(!jabberButton.isSelected());
-          detailLayout.show(detailPanel, JABBER_TYPE);
-        }
-      });
-      add(jabberButton);
-      add(new JLabel("New Jabber/XMPP Server"), "wrap, grow, push");
-
-      peerButton = new JRadioButton();
-      peerButton.setSelected(false);
-      peerButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          jabberButton.setSelected(!peerButton.isSelected());
-          detailLayout.show(detailPanel, P2P_TYPE);
-        }
-      });
-      add(peerButton);
-      add(new JLabel("New Peer to Peer Connection"), "wrap, grow, push");
-
-      detailLayout = new CardLayout();
-      detailPanel = new JPanel(detailLayout);
-      detailPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
-
-      jabberHost = new JTextField();
-      jabberPort = new JTextField("5222");
-      jabberUser = new JTextField();
-      jabberPw = new JTextField();
-      jabberPanel = new JPanel(new MigLayout("", "[align right]rel[]", ""));
-      jabberPanel.add(new JLabel("Jabber Host:"));
-      jabberPanel.add(jabberHost, "wrap, grow, push");
-      jabberPanel.add(new JLabel("Port:"));
-      jabberPanel.add(jabberPort, "wrap, grow, push");
-      jabberPanel.add(new JLabel("User Name:"));
-      jabberPanel.add(jabberUser, "wrap, grow, push");
-      jabberPanel.add(new JLabel("Password:"));
-      jabberPanel.add(jabberPw, "wrap, grow, push");
-      detailPanel.add(jabberPanel, JABBER_TYPE);
-
-      peerHost = new JTextField();
-      peerPort = new JTextField("5050");
-      peerPanel = new JPanel(new MigLayout("", "[align right]rel[]", ""));
-      peerPanel.add(new JLabel("Peer Address:"));
-      peerPanel.add(peerHost, "wrap, growx, push");
-      peerPanel.add(new JLabel("Port:"));
-      peerPanel.add(peerPort, "wrap, growx, push");
-      detailPanel.add(peerPanel, P2P_TYPE);
-
-      add(detailPanel, "span 2, grow, push, wrap");
-    }
-
-    public ServerConfig(Properties props) {
-      this();
-      description.setText(props.getProperty(DESCRIPTION_KEY));
-      if (JABBER_TYPE.equals(props.getProperty(TYPE_KEY))) {
-        jabberButton.setSelected(true);
-        jabberHost.setText(props.getProperty(JabberClientFactory.JABBER_HOST));
-        jabberPort.setText(props.getProperty(JabberClientFactory.JABBER_PORT));
-        jabberUser.setText(props.getProperty(JabberClientFactory.JABBER_LOGIN));
-        jabberPw.setText(props.getProperty(JabberClientFactory.JABBER_PWD));
-      }
-      else {
-        jabberButton.setSelected(false);
-        peerHost.setText(props.getProperty(JabberClientFactory.JABBER_HOST));
-        peerPort.setText(props.getProperty(JabberClientFactory.JABBER_PORT));
-      }
-    }
-
-    public Properties getProperties() {
-      if (description.getText().length() == 0) {
-        return null;
-      }
-      final Properties props = new Properties();
-
-      props.setProperty(DESCRIPTION_KEY, description.getText());
-      if (jabberButton.isSelected()) {
-        props.setProperty(TYPE_KEY, JABBER_TYPE);
-        props
-            .setProperty(JabberClientFactory.JABBER_HOST, jabberHost.getText());
-        props
-            .setProperty(JabberClientFactory.JABBER_PORT, jabberPort.getText());
-        props.setProperty(JabberClientFactory.JABBER_LOGIN, jabberUser
-            .getText());
-        props.setProperty(JabberClientFactory.JABBER_PWD, jabberPw.getText());
-      }
-      else {
-        props.setProperty(TYPE_KEY, P2P_TYPE);
-        props.setProperty(JabberClientFactory.JABBER_HOST, peerHost.getText());
-        props.setProperty(JabberClientFactory.JABBER_PORT, peerPort.getText());
-      }
-      return props;
-    }
-
   }
 }

@@ -66,7 +66,7 @@ public class JabberServerStatus implements ServerStatus {
     
     for (HostedRoom room : rooms) {
       final String name = StringUtils.unescapeNode(room.getName());
-      final String[] parts = name.split("/");
+      final String[] parts = name.split("/"); //$NON-NLS-1$
       if (parts.length == 2) {  // Module control room
         final String moduleKey = parts[1];
         ModuleSummary ms = entries.get(moduleKey);
@@ -119,7 +119,7 @@ public class JabberServerStatus implements ServerStatus {
           // occupants. Also, we can't join Locked rooms to find who is in them.
           // Perhaps the room owner can set the occupants into the properties in the
           // room subject? 
-          r.addPlayer(new SimplePlayer("?"));
+          r.addPlayer(new SimplePlayer("?")); //$NON-NLS-1$
         }
         ms.addRoom(r);   
         entries.put(moduleKey, ms);

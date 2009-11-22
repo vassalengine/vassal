@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,6 +21,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeListenerProxy;
 import java.beans.PropertyChangeSupport;
+
+import javax.swing.Icon;
+
 import VASSAL.chat.ui.ChatControlsInitializer;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
@@ -37,6 +40,8 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
   protected String defaultRoom = Resources.getString("Chat.main_room"); //$NON-NLS-1$
   protected PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
   protected ChatServerControls controls;
+  protected Icon currentIcon;
+  protected String currentText;
 
   public HybridClient() {
     setDelegate(new DummyClient());
@@ -128,18 +133,27 @@ public class HybridClient implements ChatServerConnection, PlayerEncoder, ChatCo
       }
     }
     delegate = newDelegate;
-  }
+   }
 
   public void initializeControls(ChatServerControls controls) {
     this.controls = controls;
     if (delegate instanceof ChatControlsInitializer) {
       ((ChatControlsInitializer) delegate).initializeControls(controls);
     }
+    controls.updateClientDisplay(currentIcon, currentText);
   }
 
   public void uninitializeControls(ChatServerControls controls) {
     if (delegate instanceof ChatControlsInitializer) {
       ((ChatControlsInitializer) delegate).uninitializeControls(controls);
     }
+  }
+  
+  public void updateDisplayControls(Icon icon, String text) {
+    if (controls != null) {
+      controls.updateClientDisplay(icon, text);
+    }
+    currentIcon = icon;
+    currentText = text;
   }
 }

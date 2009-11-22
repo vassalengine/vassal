@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2007 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,6 +30,7 @@ import VASSAL.i18n.Resources;
  */
 public class P2PClientFactory extends ChatServerFactory {
   public static final String P2P_TYPE="peer2peer"; //$NON-NLS-1$
+  public static final String P2P_SERVER_PASSWD = "serverPasswd"; //$NON-NLS-1$
 
   public ChatServerConnection buildServer(Properties param) {
     HttpMessageServer httpMessageServer = new HttpMessageServer(new PeerPoolInfo() {

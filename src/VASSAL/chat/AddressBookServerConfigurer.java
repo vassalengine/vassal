@@ -42,7 +42,7 @@ import VASSAL.i18n.Resources;
  */
 public class AddressBookServerConfigurer extends Configurer {
   private static final String CONNECTED = Resources.getString("Server.please_disconnect"); //$NON-NLS-1$
-  private static final String DISCONNECTED = "Select Server";
+  private static final String DISCONNECTED = Resources.getString("ServerAddressBook.select_server"); //$NON-NLS-1$
   private static final String ENCODING = "UTF-8"; //$NON-NLS-1$
   protected JComponent controls;
   protected ServerAddressBook addressBook;
@@ -59,6 +59,7 @@ public class AddressBookServerConfigurer extends Configurer {
     });
     getControls();
     setValue(addressBook.getDefaultServerProperties());
+    client.updateDisplayControls(addressBook.getCurrentIcon(), addressBook.getCurrentDescription());
   }
 
   public Component getControls() {
@@ -66,7 +67,7 @@ public class AddressBookServerConfigurer extends Configurer {
     if (controls == null) {      
       controls = new JPanel(new MigLayout());
       header = new JLabel(DISCONNECTED);
-      controls.add(header, "wrap");
+      controls.add(header, "wrap"); //$NON-NLS-1$
       addressBook = new ServerAddressBook();
       addressBook.addPropertyChangeListener(new PropertyChangeListener(){
         public void propertyChange(PropertyChangeEvent e) {
@@ -94,6 +95,7 @@ public class AddressBookServerConfigurer extends Configurer {
     }
     if (client != null && !CONNECTED.equals(header.getText())) {
       client.setDelegate(ChatServerFactory.build(getServerInfo()));
+      client.updateDisplayControls(addressBook.getCurrentIcon(), addressBook.getCurrentDescription());
     }
   }
   
@@ -101,9 +103,6 @@ public class AddressBookServerConfigurer extends Configurer {
     Properties p = (Properties) getValue();
     if (p == null) {
       p = new Properties();
-    }
-    else {
-      p = new Properties(p);
     }
     return p;
   }
