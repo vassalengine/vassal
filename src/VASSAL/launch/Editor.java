@@ -245,7 +245,7 @@ public class Editor extends Launcher {
       if (promptForFile() == null) return;
 
       final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.module);
-      if (Info.isModuleTooNew(data.getVassalVersion())) {
+      if (data != null && Info.isModuleTooNew(data.getVassalVersion())) {
         ErrorDialog.show(
           "Error.module_too_new",
           lr.module.getPath(),
