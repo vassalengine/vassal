@@ -72,6 +72,10 @@ public class P2PPlayer extends SimplePlayer {
     info.setChatName(new PropertiesEncoder(props).getStringValue());
   }
 
+  public void setProperty(String key, String value) {
+    props.setProperty(key, value);
+  }
+  
   private void setStats() {
     setName(props.getProperty(SimpleStatus.NAME, "???")); //$NON-NLS-1$
     setStatus(

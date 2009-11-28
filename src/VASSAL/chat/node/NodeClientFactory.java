@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2000-2006 by Rodney Kinney
+ * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,6 +28,7 @@ import VASSAL.chat.CommandDecoder;
 import VASSAL.chat.HttpMessageServer;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.logging.Logger;
 
 /**
  * @author rkinney
@@ -69,7 +70,9 @@ public class NodeClientFactory extends ChatServerFactory {
     GameModule.getGameModule().getPrefs().getOption(GameModule.PERSONAL_INFO).fireUpdate();
     server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
-        GameModule.getGameModule().warn((String) evt.getNewValue());
+        final String mess = (String) evt.getNewValue();
+        GameModule.getGameModule().warn(mess);
+        Logger.log(mess);
       }
     });
     server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());

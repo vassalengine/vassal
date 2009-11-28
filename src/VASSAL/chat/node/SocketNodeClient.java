@@ -20,6 +20,8 @@ package VASSAL.chat.node;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Properties;
+
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.WelcomeMessageServer;
 import VASSAL.chat.messageboard.MessageBoard;
@@ -82,5 +84,9 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
 
   public void handleMessage(String msg) {
     handleMessageFromServer(msg);
+  }
+
+  public void updateConfig(Properties params) {
+    // No Configurable parameters    
   }
 }

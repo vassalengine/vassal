@@ -1,4 +1,5 @@
 /*
+ * $Id: 
  *
  * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
@@ -21,6 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.litesoft.p2pchat.ActivePeer;
 import org.litesoft.p2pchat.ActivePeerManager;
@@ -70,12 +72,19 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   private SoundEncoder soundEncoder;
   private SynchEncoder synchEncoder;
   private PropertyChangeListener nameChangeListener;
+  private Properties params;
+  private boolean serverMode;
 
   public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool) {
+    this(encoder, msgSvr, welcomeMessageServer, pool, new Properties());
+  }
+  
+  public P2PClient(CommandEncoder encoder, MessageBoard msgSvr, WelcomeMessageServer welcomeMessageServer, PeerPool pool, Properties param) {
     this.encoder = encoder;
     this.msgSvr = msgSvr;
     this.welcomeMessageServer = welcomeMessageServer;
     this.pool = pool;
+    this.params = param;
     ppm = new PendingPeerManager(this);
     ppm.setName("Pending Peer Manager"); //$NON-NLS-1$
     roomMgr = new RoomManager();
@@ -95,8 +104,13 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
         setUserInfo(p);
       }
     };
+    serverMode = P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY));
   }
 
+  protected boolean isServerMode() {
+    return serverMode;
+  }
+  
   public RoomManager getRoomMgr() {
     return roomMgr;
   }
@@ -190,18 +204,24 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
           peerMgr = new ActivePeerManager(info, this, ppm);
         }
         roomMgr.update(((P2PPlayer) me).getInfo());
-        propSupport.firePropertyChange(STATUS, null, Resources.getString("Peer2Peer.connection_established")); //$NON-NLS-1$
-        propSupport.firePropertyChange(CONNECTED, null, Boolean.TRUE);
+        if (isServerMode()) {
+          fireStatus(Resources.getString("Peer2Peer.server_connection_established")); //$NON-NLS-1$
+        }
+        else {
+          fireStatus(Resources.getString("Peer2Peer.client_connection_established")); //$NON-NLS-1$
+        }
         propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.getRooms());
         propSupport.firePropertyChange(ROOM, null, getRoom());
         welcomeMessageServer.getWelcomeMessage().execute();
         connected = true;
+        propSupport.firePropertyChange(CONNECTED, null, Boolean.TRUE);
       }
       // FIXME: review error message
       catch (IOException e) {
-        propSupport.firePropertyChange(STATUS, null, Resources.getString("Peer2Peer.connection_error", e.getMessage())); //$NON-NLS-1$
-        propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
+        fireStatus(Resources.getString("Peer2Peer.connection_error", e.getMessage())); //$NON-NLS-1$        
+        fireStatus(Resources.getString("Peer2Peer.disconnected")); //$NON-NLS-1$ //$NON-NLS-2$
         connected = false;
+        propSupport.firePropertyChange(CONNECTED, null, Boolean.FALSE);
       }
     }
     else if (isConnected()) {
@@ -209,18 +229,23 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
         peerMgr.clear();
       }
       roomMgr.clear();
-      pool.disconnect();
-      propSupport.firePropertyChange(CONNECTED, Boolean.TRUE, Boolean.FALSE);
+      pool.disconnect();      
       propSupport.firePropertyChange(AVAILABLE_ROOMS, null, new Room[0]);
       propSupport.firePropertyChange(ROOM, new SimpleRoom(), null);
       connected = false;
+      propSupport.firePropertyChange(CONNECTED, Boolean.TRUE, Boolean.FALSE);
+      fireStatus(Resources.getString("Peer2Peer.disconnected")); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 
+  protected void fireStatus(String msg) {
+    propSupport.firePropertyChange(STATUS, null, msg);
+  }
+  
   public boolean isConnected() {
     return connected;
   }
-
+  
   public Message[] getMessages() {
     return msgSvr.getMessages();
   }
@@ -298,6 +323,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
   }
 
   public synchronized void showHELO(PeerInfo pPeerInfo) {
+    // We have received a connection request
     propSupport.firePropertyChange(AVAILABLE_ROOMS, null, roomMgr.update(pPeerInfo));
     propSupport.firePropertyChange(ROOM, null, getRoom());
   }
@@ -326,49 +352,5 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
       ((ChatControlsInitializer)pool).uninitializeControls(controls);
     }
   }
-
-/*    final String moduleName = args.length > 0 ? args[0] : "test";
-    final String myName = args.length > 1 ? args[1] : "rk";
-    final P2PClient client = new P2PClient(new CgiPeerPool(new PeerPoolInfo() {
-      public String getModuleName() {
-        return moduleName;
-      }
-
-      public String getUserName() {
-        return myName;
-      }
-    }, "http://www.vassalengine.org/util/"));
-    client.addPropertyChangeListener(ServerConnection.CONNECTED, new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getNewValue() != null
-          && evt.getNewValue().getClass().isArray()) {
-          Object[] o = (Object[]) evt.getNewValue();
-          System.out.println(evt.getPropertyName() + " = ");
-          for (int i = 0; i < o.length; ++i) {
-            System.out.println("  " + o[i]);
-          }
-        }
-        else {
-          System.out.println(evt.getPropertyName() + " = " + evt.getNewValue());
-        }
-      }
-    });
-    ChatServerControls w = new ChatServerControls();
-    w.setClient(client);
-    final javax.swing.JTextField tf = new javax.swing.JTextField();
-    tf.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        client.sendToOthers(evt.getActionCommand());
-        tf.setText("");
-      }
-    });
-    JFrame f = new JFrame();
-    f.setLayout(new BorderLayout());
-    f.add(w.getControls());
-    f.add(tf,BorderLayout.SOUTH);
-    f.pack();
-    f.setVisible(true);
-  }
-*/
 
 }

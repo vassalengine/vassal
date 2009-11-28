@@ -229,7 +229,6 @@ public class IconFamily extends AbstractConfigurable {
         icons[size] = buildIcon(size);
       }
     }
-
     return icons[size];
   }
 
@@ -276,6 +275,7 @@ public class IconFamily extends AbstractConfigurable {
     // This size exists?
     if (sizePaths[size] != null) {
       icons[size] = new OpIcon(Op.load(sizePaths[size]));
+      icons[size].getImage();
       return icons[size];
     }
 
@@ -283,6 +283,7 @@ public class IconFamily extends AbstractConfigurable {
     buildScalableIcon();
 
     icons[size] = scaleIcon(scalableIcon, SIZES[size]);
+    icons[size].getImage();
     return icons[size];
   }
 

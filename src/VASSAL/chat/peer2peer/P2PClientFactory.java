@@ -1,4 +1,5 @@
 /*
+ * $Id: 
  *
  * Copyright (c) 2000-2009 by Rodney Kinney, Brent Easton
  *
@@ -17,20 +18,27 @@
  */
 package VASSAL.chat.peer2peer;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Properties;
+
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.CommandDecoder;
 import VASSAL.chat.HttpMessageServer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.logging.Logger;
 
 /**
  * @author rkinney
  */
 public class P2PClientFactory extends ChatServerFactory {
   public static final String P2P_TYPE="peer2peer"; //$NON-NLS-1$
-  public static final String P2P_SERVER_PASSWD = "serverPasswd"; //$NON-NLS-1$
+  public static final String P2P_LISTEN_PORT = "listenPort"; //$NON-NLS-1$
+  public static final String P2P_MODE_KEY = "mode"; //$NON-NLS-1$
+  public static final String P2P_SERVER_MODE = "server"; //$NON-NLS-1$
+  public static final String P2P_CLIENT_MODE = "client"; //$NON-NLS-1$
 
   public ChatServerConnection buildServer(Properties param) {
     HttpMessageServer httpMessageServer = new HttpMessageServer(new PeerPoolInfo() {
@@ -43,7 +51,16 @@ public class P2PClientFactory extends ChatServerFactory {
         }
       
     });
-    P2PClient server = new P2PClient(GameModule.getGameModule(),httpMessageServer,httpMessageServer,new DirectPeerPool());
+    
+
+    final P2PClient server = new P2PClient(GameModule.getGameModule(),httpMessageServer,httpMessageServer,new DirectPeerPool(param), param);
+    server.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        final String mess = (String) evt.getNewValue();
+        GameModule.getGameModule().warn(mess);
+        Logger.log(mess);
+      }
+    });
     server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
     return server;
   }

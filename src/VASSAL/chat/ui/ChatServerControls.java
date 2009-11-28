@@ -25,6 +25,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
@@ -50,6 +52,7 @@ import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.chat.ChatServerConnection;
+import VASSAL.chat.ServerAddressBook;
 import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.Resources;
@@ -74,7 +77,8 @@ public class ChatServerControls extends AbstractBuildable {
   protected ComponentSplitter.SplitPane splitter;
   protected ChatControlsInitializer oldClient;
   protected BasicChatControlsInitializer basicControls;
-  protected JLabel clientDisplay;
+  protected JButton configServerButton;
+  protected String configServerText;
 
   public ChatServerControls() {
     final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -115,17 +119,38 @@ public class ChatServerControls extends AbstractBuildable {
     controlPanel.add("North", toolbar);  //$NON-NLS-1$
     toolbar.addSeparator();
     
-    clientDisplay = new JLabel();
-    final Dimension d = new Dimension(27, 27);
-    clientDisplay.setMinimumSize(d);
-    clientDisplay.setMaximumSize(d);
-    clientDisplay.setPreferredSize(d);
-    toolbar.add(clientDisplay);
+    configServerButton = new JButton();
+    configServerButton.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e) {
+        ServerAddressBook.editCurrentServer(!client.isConnected());
+      }});
+    configServerButton.addMouseListener(new MouseAdapter(){
+      public void mouseClicked(MouseEvent e) {
+        if (!client.isConnected() && e.isMetaDown()) {
+          showChangeServerMenu();
+        }        
+      }
+    });
+    toolbar.add(configServerButton);
+  }
+  
+  private void showChangeServerMenu() {
+    ServerAddressBook.changeServerPopup(configServerButton);    
   }
   
   public void updateClientDisplay(Icon icon, String text) {
-    clientDisplay.setIcon(icon);
-    clientDisplay.setToolTipText(text);
+    configServerButton.setIcon(icon);
+    configServerText = text;
+    updateConfigServerToolTipText();
+  }
+  
+  private void updateConfigServerToolTipText() {
+    if (client.isConnected()) {
+      configServerButton.setToolTipText(configServerText);
+    }
+    else {
+      configServerButton.setToolTipText("<html><center>" + configServerText + "<br>" + "Right-click to change server");
+    }
   }
   
   public Component getExtendedControls() {
@@ -255,6 +280,10 @@ public class ChatServerControls extends AbstractBuildable {
       }
     };
     client.addPropertyChangeListener(ChatServerConnection.ROOM, currentRoomUpdater);
+    client.addPropertyChangeListener(ChatServerConnection.CONNECTED, new PropertyChangeListener(){
+      public void propertyChange(PropertyChangeEvent e) {
+        updateConfigServerToolTipText();        
+      }});
   }
 
   public ChatServerConnection getClient() {

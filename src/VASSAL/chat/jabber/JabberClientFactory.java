@@ -25,6 +25,7 @@ import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.CommandDecoder;
+import VASSAL.tools.logging.Logger;
 
 /**
  * @author rkinney
@@ -52,7 +53,9 @@ public class JabberClientFactory extends ChatServerFactory {
     JabberClient client = new JabberClient(GameModule.getGameModule(), host, port, account);
     client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent evt) {
-        GameModule.getGameModule().warn((String) evt.getNewValue());
+        final String mess = (String) evt.getNewValue();
+        GameModule.getGameModule().warn(mess);
+        Logger.log(mess);
       }
     });
     client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());
