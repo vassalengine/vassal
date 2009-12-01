@@ -242,12 +242,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     toolBar.setAlignmentX(0.0F);
     toolBar.setFloatable(false);
   }
-  
-  // Create a dummy Map for use by JUnit tests 
-  public Map(boolean dummy) {
-    
-  }
-  
+   
   // Global Change Reporting control
   public static void setChangeReportingEnabled(boolean b) {
     changeReportingEnabled = b;

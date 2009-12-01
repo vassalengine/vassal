@@ -18,33 +18,70 @@
  */
 package VASSAL.counters;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import VASSAL.build.module.Map;
 import VASSAL.tools.NamedKeyStroke;
 
+@RunWith(value = Parameterized.class)
 public class TriggerActionTest {
 
   /**
    * Regression test for Bug 2900930: Trigger Actions not disabled when Property
-   * Expression fails Test the enabled state of the returned Key Command, under
+   * Expression fails. Test the enabled state of the returned Key Command, under
    * various combinations of true/false match expression and counter on a map or
-   * not. The Key Command should only be enabled if both the Match Expression is
-   * true and the counter is on a map.
+   * not. The KeyCommand should only be enabled if both the Match Expression is
+   * true (or empty) and the counter is on a map.
    */
 
   final static String TRUE_EXPRESSION = "BasicName=";
   final static String FALSE_EXPRESSION = "BasicName=xyzzy";
-  final static Map map = new Map(false);
+  final static Map MAP = mock(Map.class);
   static TriggerAction trigger;
+  
+  String propertyExpression;
+  Map map;
+  boolean result;
+  String message;
 
+  public TriggerActionTest(String propertyExpression, Map map, boolean result, String message) {
+    this.propertyExpression = propertyExpression;
+    this.map = map;
+    this.result = result;
+    this.message = message;
+  }
+  
+  @Parameters
+  // Test Parameters:
+  //  Property - Property Expression, either empty, or a known True or False expression
+  //  Map - Either null, or a mocked Map object.
+  //  Result - Expected Enabled state of the Trigger KeyCommand. 
+  //  Message - Test description/failure message
+  public static Collection<Object[]> data() {
+    return Arrays.asList(new Object[][] {
+        // Property         Map   Result  Message
+        { "",               null, false,  "No Match expression, Unit not on map, KeyCommand should be disabled"     },
+        { "",               MAP,  true,   "No Match expression, Unit on map, KeyCommand should be enabled"  },
+        { FALSE_EXPRESSION, null, false,  "Match expression false, Unit not on map, KeyCommand should be disabled" },
+        { FALSE_EXPRESSION, MAP,  false,  "Match expression false, unit on map, KeyCommand should be disabled" },
+        { TRUE_EXPRESSION,  null, false,  "Match expression true, Unit not on map, KeyCommand should be disabled" },
+        { TRUE_EXPRESSION,  MAP,  true,   "Match expression true, Unit on map, KeyCommand should be enabled" }
+    });  
+  }
+  
   @Before
+  // Create a standard Trigger
   public void setup() {
     trigger = new TriggerAction();
     trigger.setInner(new BasicPiece());
@@ -53,56 +90,12 @@ public class TriggerActionTest {
   }  
   
   @Test
-  public void testBugRegression_2900930_1() {
-
-    trigger.setPropertyMatch("");
-    trigger.setMap(null);
-    KeyCommand[] k = trigger.myGetKeyCommands();
-    assertFalse("No Match expression, Unit not on map, KeyCommand should be disabled", k[0].isEnabled());
-  }
-
-  @Test
-  public void testBugRegression_2900930_2() {
-
-    trigger.setPropertyMatch("");
+  // Set the property expression and map and check the enabled state of the generated KeyCommand.
+  public void testBugRegression_2900930() {
+    trigger.setPropertyMatch(propertyExpression);
     trigger.setMap(map);
-    KeyCommand[] k = trigger.myGetKeyCommands();
-    assertTrue("No Match expression, Unit on map, KeyCommand should be enabled", k[0].isEnabled());
+    final boolean enabled = trigger.myGetKeyCommands()[0].isEnabled();
+    assertEquals(message, result, enabled);
   }
-
-  @Test
-  public void testBugRegression_2900930_3() {
-
-    trigger.setPropertyMatch(FALSE_EXPRESSION);
-    trigger.setMap(null);
-    KeyCommand[] k = trigger.myGetKeyCommands();
-    assertFalse("Match expression false, Unit not on map, KeyCommand should be disabled", k[0].isEnabled());
-  }
-
-  @Test
-  public void testBugRegression_2900930_4() {
-
-    trigger.setPropertyMatch(FALSE_EXPRESSION);
-    trigger.setMap(map);
-    KeyCommand[] k = trigger.myGetKeyCommands();
-    assertFalse("Match expression false, unit on map, KeyCommand should be disabled", k[0].isEnabled());
-  }
-
-  @Test
-  public void testBugRegression_2900930_5() {
-
-    trigger.setPropertyMatch(TRUE_EXPRESSION);
-    trigger.setMap(null);
-    KeyCommand[] k = trigger.myGetKeyCommands();
-    assertFalse("Match expression true, Unit not on map, KeyCommand should be disabled", k[0].isEnabled());
-  }
-
-  @Test
-  public void testBugRegression_2900930_6() {
-
-    trigger.setPropertyMatch(TRUE_EXPRESSION);
-    trigger.setMap(map);
-    KeyCommand[] k = trigger.myGetKeyCommands();
-    assertTrue("Match expression true, Unit on map, KeyCommand should be enabled", k[0].isEnabled());
-  }
+ 
 }
