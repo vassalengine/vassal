@@ -18,14 +18,16 @@
  */
 package VASSAL.tools;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import javax.swing.KeyStroke;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -36,8 +38,97 @@ public class SequenceEncoderTest {
   /**
    * Test basic Sequence Encoder/Decoder functionality
    */
+  
   @Test
-  public void testEncodeDecode() {
+  public void testEncodeDecodeBoolean() {
+    final boolean VALUE = true;
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(sd.nextBoolean(false), VALUE);
+  }
+
+  @Test
+  public void testEncodeDecodeInt() {
+    final int VALUE = 42;
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(sd.nextInt(999), VALUE);
+  }
+  
+  @Test
+  public void testEncodeDecodeDouble() {
+    final double VALUE = 3.1415926535;
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(Double.toString(sd.nextDouble(99.9)), Double.toString(VALUE));
+  }
+  
+  @Test
+  public void testEncodeDecodeLong() {
+    final long VALUE = 167772173;
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(sd.nextLong(999), VALUE);
+  }
+  
+  @Test
+  public void testEncodeDecodeColor() {
+    final Color VALUE = new Color(32, 145, 212);
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(sd.nextColor(Color.red), VALUE);
+  }
+
+  @Test
+  public void testEncodeDecodeKeyStroke() {
+    final KeyStroke VALUE = KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_MASK);
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(sd.nextKeyStroke('X'), VALUE);
+  }
+
+  @Test
+  public void testEncodeDecodeNamedKeyStroke_1() {
+    final NamedKeyStroke VALUE = new NamedKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_F10, KeyEvent.CTRL_MASK));
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(sd.nextNamedKeyStroke(), VALUE);
+  }
+  
+  @Test
+  public void testEncodeDecodeNamedKeyStroke_2() {
+    final NamedKeyStroke VALUE = new NamedKeyStroke("#Control");
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(sd.nextNamedKeyStroke(), VALUE);
+  }
+  
+  @Test
+  public void testEncodeDecodeString() {
+    final String VALUE = "How many ,'s in this sentence?\n";
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(sd.nextToken(), VALUE);
+  }
+  
+  @Test
+  public void testEncodeDecodeStringArray() {
+    final String[] VALUE = new String[] {"line 1", "line 2,", "line 3'", "line 4\n"};
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertArrayEquals(sd.nextStringArray(0), VALUE);
+  }
+  
+  @Test
+  public void testEncodeDecodePropertyExpression() {
+    final PropertyExpression VALUE = new PropertyExpression("PieceName>=2");
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE);
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(new PropertyExpression(sd.nextToken()), VALUE);
+  }
+  
+  @Test(expected=NoSuchElementException.class)
+  public void testEncodeDecodeMulti() {
     
     final boolean booleanIn = true;
     final int intIn = 42;
@@ -66,16 +157,20 @@ public class SequenceEncoderTest {
     
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
     
-    assertEquals(booleanIn, sd.nextBoolean(false));
-    assertEquals(intIn, sd.nextInt(999));
-    assertEquals(Double.toString(doubleIn), Double.toString(sd.nextDouble(99.9)));
-    assertEquals(longIn, sd.nextLong(999));
-    assertEquals(colorIn, sd.nextColor(Color.red));
-    assertEquals(keyStrokeIn, sd.nextKeyStroke('X'));
-    assertTrue(namedKeyStrokein1.equals(sd.nextNamedKeyStroke()));
-    assertTrue(namedKeyStrokein2.equals(sd.nextNamedKeyStroke()));
-    assertEquals(stringIn, sd.nextToken());
-    assertArrayEquals(stringArrayIn, sd.nextStringArray(0));
-    assertEquals(propertyExpressionIn, new PropertyExpression(sd.nextToken()));
+    assertTrue(
+        booleanIn == sd.nextBoolean(false) &&
+        intIn == sd.nextInt(999) &&
+        Double.toString(doubleIn).equals(Double.toString(sd.nextDouble(99.9))) &&
+        longIn == sd.nextLong(999) &&
+        colorIn.equals(sd.nextColor(Color.red)) &&
+        keyStrokeIn.equals(sd.nextKeyStroke('X')) &&
+        namedKeyStrokein1.equals(sd.nextNamedKeyStroke()) &&
+        namedKeyStrokein2.equals(sd.nextNamedKeyStroke()) &&
+        stringIn.equals(sd.nextToken()) &&
+        Arrays.equals(stringArrayIn, sd.nextStringArray(0)) &&
+        propertyExpressionIn.equals(new PropertyExpression(sd.nextToken()))
+     );
+    
+    sd.nextToken(); // Should be nothing left - should throw a NoSuchElementException
   }
 }

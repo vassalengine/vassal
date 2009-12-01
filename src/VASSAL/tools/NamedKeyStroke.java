@@ -90,25 +90,19 @@ public class NamedKeyStroke {
   public KeyStroke getStroke() {
     return stroke;
   }
-
-  /**
-   * Compare this Named KeyStroke with a standard KeyStroke. They are
-   * equals if the then allocated KeyStroke for the NamedKeyStroke
-   * equals the supplied KeyStroke.
-   * 
-   * @param stroke
-   * @return
-   */
-  public boolean equals(KeyStroke stroke) {
-    final KeyStroke a = getKeyStroke();
-    if (a == null) {
-      return stroke == null;
+ 
+  public boolean equals(Object o) {
+    if (o instanceof NamedKeyStroke) {
+      return getKeyStroke().equals(((NamedKeyStroke) o).getKeyStroke());
     }
-    return a.equals(stroke);
-  }
-  
-  public boolean equals(NamedKeyStroke stroke) {
-    return getKeyStroke().equals(stroke.getKeyStroke());
+    else if (o instanceof KeyStroke) {
+      final KeyStroke a = getKeyStroke();
+      if (a == null) {
+        return o == null;
+      }
+      return a.equals(o);
+    }
+    return false;
   }
   
   /**
