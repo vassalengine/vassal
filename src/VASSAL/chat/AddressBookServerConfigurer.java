@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * Improved version of ServerConfigurer that includes an Address Book of
@@ -124,6 +125,9 @@ public class AddressBookServerConfigurer extends Configurer {
     // FIXME: review error message
     catch (IOException e) {
       e.printStackTrace();
+    }
+    finally {
+      IOUtils.closeQuietly(out);
     }
     return s;
   }

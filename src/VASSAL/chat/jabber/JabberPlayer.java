@@ -48,7 +48,7 @@ public class JabberPlayer extends SimplePlayer {
   }
 
   public String toString() {
-    return name + " (" + jid.split("@")[0] + ")";  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    return name + " (" + jid + ")"; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public void join(JabberRoom room) {
@@ -62,13 +62,14 @@ public class JabberPlayer extends SimplePlayer {
   public JabberRoom getJoinedRoom() {
     return joinedRoom;
   }
-  
+
   public String getRawJid() {
     if (jid.contains("/")) { //$NON-NLS-1$
       return StringUtils.parseName(jid) + "@" + StringUtils.parseServer(jid); //$NON-NLS-1$
     }
     return jid;
   }
+  
   public static String xmppAddressToJid(String participant) {
 
     final String address = StringUtils.parseServer(participant);
@@ -78,7 +79,7 @@ public class JabberPlayer extends SimplePlayer {
     
     return nick+"@"+server+JabberClient.JID_RESOURCE; //$NON-NLS-1$
   }
-
+  
   public static class Manager {
     private Map<String, JabberPlayer> jidToPlayer = new HashMap<String, JabberPlayer>();
 
@@ -95,7 +96,7 @@ public class JabberPlayer extends SimplePlayer {
     }
     
     public JabberPlayer getPlayerByLogin(JabberClient client, String login) {
-      return getPlayer(login + "@" + client.getHost() + "/VASSAL"); //$NON-NLS-1$ //$NON-NLS-2$
+      return getPlayer(login + "@" + client.getHost() + JabberClient.JID_RESOURCE); //$NON-NLS-1$
     }
 
     public synchronized void deletePlayer(String jid) {
