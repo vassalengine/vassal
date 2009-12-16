@@ -230,8 +230,14 @@ public class GlobalOptions extends AbstractConfigurable {
       if (n.getNodeType() == Node.ELEMENT_NODE) {
         final Element element = (Element) n;
         if ("option".equals(element.getTagName())) { //$NON-NLS-1$
-          optionInitialValues.put(element.getAttribute("name"), //$NON-NLS-1$
-                                  Builder.getText(element));
+          final String optionName = element.getAttribute("name"); //$NON-NLS-1$
+          final String value = Builder.getText(element);
+          optionInitialValues.put(optionName, value);
+          // Update the Configurer value if it is already registered
+          final Configurer config = optionConfigurers.get(optionName);
+          if (config != null) {
+            config.setValue(value);
+          }
         }
         else {
           try { 
