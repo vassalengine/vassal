@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import org.jdesktop.swingworker.SwingWorker;
 
 import VASSAL.build.GameModule;
+import VASSAL.chat.jabber.JabberClientFactory;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -39,12 +40,14 @@ import VASSAL.tools.ThrowableUtils;
  * 
  */
 public class DynamicClient extends HybridClient {
+  private static final String LEGACY_URL = "http://www.vassalengine.org/util/getServerImpl"; //$NON-NLS-1$
+  private static final String JABBER_URL = "http://www.vassalengine.org/util/getJabberServerImpl"; //$NON-NLS-1$
   private String serverConfigURL;
   private boolean connecting;
   private Properties overrides;
 
   public DynamicClient() {
-    this("http://www.vassalengine.org/util/getServerImpl"); //$NON-NLS-1$
+    this(LEGACY_URL);
   }
 
   public DynamicClient(String serverConfigURL) {
@@ -118,5 +121,8 @@ public class DynamicClient extends HybridClient {
 
   public void setOverrides(Properties override) {
     this.overrides = override;
+    if (JabberClientFactory.JABBER_SERVER_TYPE.equals(overrides.getProperty(JabberClientFactory.TYPE_KEY))) {
+      serverConfigURL = JABBER_URL;
+    }
   }
 }

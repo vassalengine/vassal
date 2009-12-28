@@ -43,7 +43,6 @@ import VASSAL.preferences.Prefs;
  */
 public class SendSoundAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
-  private static final long TOO_SOON = 5 * 1000; // ms
   private static Room lastRoom;
   private static Player lastPlayer;
   private static long lastSound = System.currentTimeMillis();
@@ -71,7 +70,7 @@ public class SendSoundAction extends AbstractAction {
         && !target.equals(client.getUserInfo())
         && client.getRoom() != null
         && client.getRoom().equals(targetRoom)
-        && (!targetRoom.equals(lastRoom) || !target.equals(lastPlayer) || (System.currentTimeMillis() - lastSound) > TOO_SOON))
+        && (!targetRoom.equals(lastRoom) || !target.equals(lastPlayer) || (System.currentTimeMillis() - lastSound) > SoundEncoder.Cmd.TOO_SOON))
       {
         setEnabled(true);
       }

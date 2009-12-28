@@ -398,8 +398,13 @@ public class ServerAddressBook {
     }
   }
 
+  /**
+   * Set up the default server
+   * @return
+   */
   public Properties getDefaultServerProperties() {
-    return (new VassalJabberEntry()).getProperties();
+    // return (new VassalJabberEntry()).getProperties();
+    return (new LegacyEntry()).getProperties();
   }
 
   private void loadAddressBook() {
@@ -765,10 +770,15 @@ public class ServerAddressBook {
       final JTextArea result = new JTextArea(10, 30);
       result.setText(JabberClient.testConnection(jabberHost.getText(), jabberPort.getText(),
           jabberUser.getText(), jabberPw.getText()));
+      try {
       Dialogs.showDialog(null,
           Resources.getString("ServerAddressBook.connection_test"), //$NON-NLS-1$
           result, JOptionPane.INFORMATION_MESSAGE, null, JOptionPane.OK_CANCEL_OPTION, null, null,
           null, null);
+      }
+      catch (IllegalStateException ex) {
+        ex.printStackTrace();
+      }
     }
   }
 
@@ -785,7 +795,7 @@ public class ServerAddressBook {
       this(new Properties());
       setDescription("VASSAL" + Resources.getString("ServerAddressBook.jabber_server")); //$NON-NLS-1$ //$NON-NLS-2$
       setType(DYNAMIC_TYPE);
-      setProperty(DynamicClientFactory.DYNAMIC_TYPE, JabberClientFactory.JABBER_SERVER_TYPE);
+      setProperty(DYNAMIC_TYPE, JabberClientFactory.JABBER_SERVER_TYPE);
       setProperty(JabberClientFactory.JABBER_LOGIN, ""); //$NON-NLS-1$
       setProperty(JabberClientFactory.JABBER_PWD, ""); //$NON-NLS-1$
     }

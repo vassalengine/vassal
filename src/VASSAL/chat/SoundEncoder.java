@@ -70,7 +70,7 @@ public class SoundEncoder implements CommandEncoder {
 
   public static class Cmd extends Command {
     private static final int TOO_MANY = 4;
-    private static final int TOO_SOON = 5 * 1000; // 5s
+    public static final int TOO_SOON = 10 * 1000; // 10s
     private static long lastTime = System.currentTimeMillis();
     private static Player lastSender;
     private static int sendCount;
@@ -87,17 +87,16 @@ public class SoundEncoder implements CommandEncoder {
 
     protected void executeCommand() {
       /**
-       * Ignore if we don't want to hear from this player anymore, or we are
-       * already processing a wake-up.
+       * Ignore if we don't want to hear from this player anymore, we are
+       * already processing a wake-up, or we have already processed a wake-up recently
        */
-      updating = true;
       final long now = System.currentTimeMillis();
-      
-      if (banned.contains(sender) || updating || (now - lastTime) < TOO_SOON) {
+      if (banned.contains(sender) || updating || (now - lastTime) < (TOO_SOON)) {
         updating = false;
         return;
       }
       
+      updating = true;
       lastTime = now;      
       final SoundConfigurer c = (SoundConfigurer) Prefs.getGlobalPrefs().getOption(soundKey);
       if (c != null) {

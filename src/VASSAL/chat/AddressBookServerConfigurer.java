@@ -38,7 +38,7 @@ import VASSAL.tools.io.IOUtils;
 
 /**
  * Improved version of ServerConfigurer that includes an Address Book of
- * commonly visited Jabber and P2P servers.
+ * commonly visited Jabber servers and P2P clients.
  * 
  */
 public class AddressBookServerConfigurer extends Configurer {

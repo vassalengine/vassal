@@ -30,7 +30,7 @@ public class DynamicClientFactory extends ChatServerFactory {
     String url = param.getProperty(URL);
     DynamicClient client = url == null ? new DynamicClient() : new DynamicClient(url);
     if (param.containsKey(DYNAMIC_TYPE)) {
-      param = new Properties(param);
+      //param = new Properties(param);
       // Force the type of the dynamically created server proxy
       param.setProperty(ChatServerFactory.TYPE_KEY, param.getProperty(DYNAMIC_TYPE));
     }

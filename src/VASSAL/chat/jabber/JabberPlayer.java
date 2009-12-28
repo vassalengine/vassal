@@ -48,7 +48,7 @@ public class JabberPlayer extends SimplePlayer {
   }
 
   public String toString() {
-    return name + " (" + jid + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    return name + " (" + StringUtils.parseName(jid) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public void join(JabberRoom room) {
@@ -68,6 +68,10 @@ public class JabberPlayer extends SimplePlayer {
       return StringUtils.parseName(jid) + "@" + StringUtils.parseServer(jid); //$NON-NLS-1$
     }
     return jid;
+  }
+  
+  public String getLoginName() {
+    return StringUtils.parseName(jid);
   }
   
   public static String xmppAddressToJid(String participant) {
