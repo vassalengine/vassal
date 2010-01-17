@@ -366,6 +366,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       al.add("");   // reserved for initial heap 
       al.add("");   // reserved for maximum heap
       al.add("-DVASSAL.id=" + id);  // instance id
+
+      // pass on the user's home, if it's set
+      final String userHome = System.getProperty("user.home");
+      if (userHome != null) al.add("-Duser.home=" + userHome);
+
+      // set the classpath
       al.add("-cp");
       al.add(System.getProperty("java.class.path"));
 
