@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Properties;
 import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
+import VASSAL.build.module.GameState;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
 import VASSAL.counters.GamePiece;
@@ -52,9 +53,13 @@ public class SavedGameUpdater {
    * @throws IOException
    */
   public void updateSavedGame(Properties pieceSlot, File savedGame) throws IOException {
-    GameModule.getGameModule().getGameState().setup(false);
-    GameModule.getGameModule().getGameState().loadGameInBackground(savedGame);
-    while (!GameModule.getGameModule().getGameState().isGameStarted()) {
+    final GameState gs = GameModule.getGameModule().getGameState();
+
+    gs.setup(false, true);
+    gs.loadGameInBackground(savedGame);
+
+    // FIXME: spin locks are bad, wait on a Future instead
+    while (!gs.isGameStarted()) {
       try {
         Thread.sleep(100);
       }
@@ -62,7 +67,7 @@ public class SavedGameUpdater {
       }
     }
     
-    GamePiece[] gp_array = GameModule.getGameModule().getGameState().getAllPieces().toArray(new GamePiece[0]);
+    GamePiece[] gp_array = gs.getAllPieces().toArray(new GamePiece[0]);
     for (GamePiece p : gp_array) {
       if (!(p instanceof Stack)) {
         String slotId = pieceSlot.getProperty(p.getType());
@@ -91,7 +96,9 @@ public class SavedGameUpdater {
         }
       }
     }
-    GameModule.getGameModule().getGameState().saveGame(savedGame);
+
+    gs.saveGame(savedGame);
+    gs.updateDone();
   }
 
   protected void findPieceSlots(List<Configurable> l, Properties p) {

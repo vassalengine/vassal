@@ -2558,6 +2558,10 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
     }
 
     public void paint(Graphics g) {
+      // Don't draw the map until the game is updated.
+      if (GameModule.getGameModule().getGameState().isUpdating()) {
+    	  return;
+      }
       Rectangle r = getVisibleRect();
       g.setColor(map.bgColor);
       g.fillRect(r.x, r.y, r.width, r.height);
