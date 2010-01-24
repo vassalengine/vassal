@@ -93,7 +93,12 @@ public class NamedKeyStroke {
  
   public boolean equals(Object o) {
     if (o instanceof NamedKeyStroke) {
-      return getKeyStroke().equals(((NamedKeyStroke) o).getKeyStroke());
+      if (getKeyStroke() == null) {
+        return ((NamedKeyStroke) o).getKeyStroke() == null;
+      }
+      else {
+        return getKeyStroke().equals(((NamedKeyStroke) o).getKeyStroke());
+      }
     }
     else if (o instanceof KeyStroke) {
       final KeyStroke a = getKeyStroke();
