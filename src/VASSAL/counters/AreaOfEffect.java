@@ -231,9 +231,9 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
       final double mag = board.getMagnification();
       if (mag != 1.0) {
-        t.translate(mapPosition.x, mapPosition.y);
+        t.translate(boardPosition.x, boardPosition.y);
         t.scale(mag, mag);
-        t.translate(-mapPosition.x, -mapPosition.y);        
+        t.translate(-boardPosition.x, -boardPosition.y);        
       }
       a = a.createTransformedArea(t);
     }
