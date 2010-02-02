@@ -332,7 +332,7 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     playerStatusControls.initializeControls(controls);
     roomControls.initializeControls(controls);
     final GameModule g = GameModule.getGameModule();
-    ((SimplePlayer)me).setName((String) g.getPrefs().getValue(GameModule.REAL_NAME));
+    me.setName((String) g.getPrefs().getValue(GameModule.REAL_NAME));
     g.getPrefs().getOption(GameModule.REAL_NAME).addPropertyChangeListener(nameChangeListener);
     g.addCommandEncoder(synchEncoder);
     g.addCommandEncoder(soundEncoder);

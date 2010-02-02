@@ -955,7 +955,7 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
               if (roomJid == null) {
                 roomJid = StringUtils.parseName(p.getFrom()) + "@" + getConferenceService(); //$NON-NLS-1$
               }
-              room = (JabberRoom) roomMgr.getRoomByJID(JabberClient.this, roomJid, roomName);
+              room = roomMgr.getRoomByJID(JabberClient.this, roomJid, roomName);
               
               if (room != null) {
                 if (OWNER.equals(affiliation)) {
