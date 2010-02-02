@@ -359,4 +359,49 @@ public class IOUtils {
       }
     }
   }
+
+  /**
+   * Tests whether the contents of two {@link InputStream}s are the same.
+   *
+   * @param ain one stream
+   * @param bin the other stream
+   * @return <code>true</code> if the contents of the streams are equal
+   * @throws NullPointerException if either input is null
+   * @throws IOException if a stream operation does
+   */ 
+  public static boolean contentEquals(InputStream ain, InputStream bin)
+                                                           throws IOException {
+    if (ain == null) throw new NullPointerException();
+    if (bin == null) throw new NullPointerException();
+
+    if (ain == bin) return true;
+    
+    final byte[] abuf = new byte[BUFFER_SIZE];
+    final byte[] bbuf = new byte[BUFFER_SIZE];
+
+    for (;;) {
+      final int anum = fillBuffer(ain, abuf);
+      final int bnum = fillBuffer(bin, bbuf);
+     
+      if (anum != bnum) return false;
+
+      if (anum == -1) return true;
+
+      for (int i = 0; i < anum; ++i) if (abuf[i] != bbuf[i]) return false;
+    }
+  }
+
+  private static int fillBuffer(InputStream in, byte[] buf)
+                                                           throws IOException {
+    int num;
+    int off = 0;
+    while (off < buf.length &&
+            (num = in.read(buf, off, buf.length-off)) != -1) {
+      off += num;
+    }
+
+    // This will read at least one byte if there are any to be read,
+    // so bytes read cannot be zero.
+    return off == 0 ? -1 : off;
+  } 
 }
