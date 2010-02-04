@@ -288,8 +288,10 @@ public class ServerAddressBook {
 
     // Some Server we don't know about, add a server entry
     final AddressBookEntry newEntry = buildEntry(p);
-    addressBook.addElement(newEntry);
-    setCurrentServer(addressBook.indexOf(newEntry));
+    if (newEntry != null) {
+      addressBook.addElement(newEntry);
+      setCurrentServer(addressBook.indexOf(newEntry));
+    }
     saveAddressBook();
 
   }
