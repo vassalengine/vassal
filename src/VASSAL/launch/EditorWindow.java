@@ -142,6 +142,7 @@ public abstract class EditorWindow extends JFrame {
     // tools menu
     final MenuProxy toolsMenu =
       new MenuProxy(Resources.getString("General.tools"));
+    toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
 
     toolsMenu.add(mm.addKey("create_module_updater"));
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));

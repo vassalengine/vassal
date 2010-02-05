@@ -36,6 +36,7 @@ import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.Chatter;
 import VASSAL.build.module.Documentation;
+import VASSAL.build.module.GameRefresher;
 import VASSAL.build.module.GameState;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
@@ -75,7 +76,8 @@ public class BasicModule extends GameModule {
   public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
   private static char COMMAND_SEPARATOR = (char) KeyEvent.VK_ESCAPE;
   protected ChatServerControls serverControls;
-  
+  protected GameRefresher gameRefresher;
+
   public BasicModule(DataArchive archive) {
     super(archive);
   }
@@ -119,6 +121,11 @@ public class BasicModule extends GameModule {
 
     MenuManager.getInstance().addAction("Prefs.edit_preferences",
       getPrefs().getEditor().getEditAction());
+    
+    gameRefresher = new GameRefresher();
+    gameRefresher.addTo(this);
+    MenuManager.getInstance().addAction("GameRefresher.refresh_counters",
+      gameRefresher.getRefreshAction());
   }
 
   public void build(Element e) {

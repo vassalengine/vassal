@@ -98,7 +98,7 @@ public class PlayerWindow extends JFrame {
     final MenuProxy helpMenu =
       new MenuProxy(Resources.getString("General.help"));
 
-    // FIMXE: setting nmemonic from first letter could cause collisions in
+    // FIMXE: setting mnemonic from first letter could cause collisions in
     // some languages   
     helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
    
@@ -115,6 +115,13 @@ public class PlayerWindow extends JFrame {
     if (!Info.isMacOSX()) {
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
     }
+    
+    // Tools menu
+    final MenuProxy toolsMenu =
+      new MenuProxy(Resources.getString("General.tools"));
+    toolsMenu.setMnemonic(Resources.getString("General.tools.shortcut").charAt(0));
+    
+    toolsMenu.add(mm.addKey("GameRefresher.refresh_counters"));
 
     URL url = null; 
     try {
@@ -127,11 +134,12 @@ public class PlayerWindow extends JFrame {
     mm.addAction("General.help", new ShowHelpAction(url, null));
 
     mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));
-    
+       
     mb.add(fileMenu);
+    mb.add(toolsMenu);
     mb.add(mm.addMarker("Editor.MenuBar.start"));
     mb.add(mm.addMarker("Editor.MenuBar.end"));
-    mb.add(helpMenu);
+    mb.add(helpMenu);    
 
     setJMenuBar(mm.getMenuBarFor(this));
 

@@ -269,4 +269,5 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
   public void setup(boolean gameStarting) {
     launchAction.setEnabled(!gameStarting);
   }
+  
 }

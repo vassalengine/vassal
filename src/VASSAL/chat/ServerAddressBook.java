@@ -470,7 +470,9 @@ public class ServerAddressBook {
     SequenceEncoder se = new SequenceEncoder(',');
     for (Enumeration<?> e = addressBook.elements(); e.hasMoreElements();) {
       final AddressBookEntry entry = (AddressBookEntry) e.nextElement();
-      se.append(entry.encode());
+      if (entry != null) {
+        se.append(entry.encode());
+      }
     }
     return se.getValue();
   }
@@ -480,7 +482,10 @@ public class ServerAddressBook {
     for (SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ','); sd.hasMoreTokens();) {
       final String token = sd.nextToken(""); //$NON-NLS-1$
       if (token.length() > 0) {
-        addressBook.addElement(buildEntry(token));
+        final AddressBookEntry entry = buildEntry(token);
+        if (entry != null) {
+          addressBook.addElement(buildEntry(token));
+        }
       }
     }
   }
