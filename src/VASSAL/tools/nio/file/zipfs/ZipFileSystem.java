@@ -174,6 +174,27 @@ public class ZipFileSystem extends FileSystem {
     return tmp;
   }
 
+  protected void cleanup() throws IOException {
+    info.clear();
+
+    // delete external versions of new files
+    for (Path rpath : real.values()) {
+      if (rpath != DELETED) rpath.delete();
+    }
+
+    real.clear();
+  }
+
+  public void revert() throws IOException {
+    try {
+      closeLock.writeLock().lock();
+      cleanup();  
+    }
+    finally {
+      closeLock.writeLock().unlock();
+    }
+  }
+
   public void flush() throws IOException {
     try {
       closeLock.writeLock().lock();
@@ -273,13 +294,8 @@ public class ZipFileSystem extends FileSystem {
 
       // blow away cached header info
       ZipUtils.remove(getPath("/").toUri());
-      info.clear();
 
-      // delete external versions of new files
-      for (Path rpath : real.values()) {
-        if (rpath != DELETED) rpath.delete();
-      }
-      real.clear();
+      cleanup();
     }
     finally {
       closeLock.writeLock().unlock();
@@ -419,6 +435,10 @@ public class ZipFileSystem extends FileSystem {
 
   String getZipFileSystemFile() {
     return zipFile;
+  }
+
+  public Path getFileSystemPath() {
+    return Paths.get(zipFile);
   }
 
   @Override
