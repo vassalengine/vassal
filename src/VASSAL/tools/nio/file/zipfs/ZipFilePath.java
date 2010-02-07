@@ -137,7 +137,7 @@ public class ZipFilePath extends Path {
   }
 
   public boolean isArchiveFile() {
-    Path name = getName();
+    final Path name = getName();
     if (name == null) {
       return false;
     }
@@ -151,6 +151,7 @@ public class ZipFilePath extends Path {
    */
   public boolean isDirectory() {
     try {
+// FIXME
       fs.begin();
       try {
         ZipFilePath resolved = getResolvedPathForZip();
@@ -166,9 +167,7 @@ public class ZipFilePath extends Path {
   }
 
   static int nextSeparator(byte[] path, int index) {
-
-    int length = path.length;
-
+    final int length = path.length;
     while (index < length && path[index] != '/') {
       index++;
     }
@@ -176,8 +175,7 @@ public class ZipFilePath extends Path {
   }
 
   static int nextNonSeparator(byte[] path, int index) {
-
-    int length = path.length;
+    final int length = path.length;
     while (index < length && path[index] == '/') {
       index++;
     }
@@ -187,8 +185,8 @@ public class ZipFilePath extends Path {
   // create offset list if not already created
   private void initOffsets() {
     if (offsets == null) {
-      ArrayList<Integer> list = new ArrayList<Integer>();
-      int pathLen = path.length;
+      final ArrayList<Integer> list = new ArrayList<Integer>();
+      final int pathLen = path.length;
       int index = nextNonSeparator(path, 0) - 1;
 
       int root = index;
@@ -203,7 +201,6 @@ public class ZipFilePath extends Path {
 
       offsets = list;
     }
-
   }
 
   private void initEntryOffsets() {
@@ -414,7 +411,18 @@ public class ZipFilePath extends Path {
 
   @Override
   public ZipFilePath toRealPath(boolean resolveLinks) throws IOException {
-    ZipFilePath realPath = new ZipFilePath(this.fs, pathForZip);
+    try {
+      fs.readLock(this);
+      return toRealPathImpl(resolveLinks);
+    }
+    finally {
+      fs.readUnlock(this);
+    }
+  }
+
+  protected ZipFilePath toRealPathImpl(boolean resolveLinks)
+                                                           throws IOException {
+    final ZipFilePath realPath = new ZipFilePath(this.fs, pathForZip);
     realPath.checkAccess();
     return realPath;
   }
@@ -563,7 +571,7 @@ public class ZipFilePath extends Path {
     return new ZipFilePath(this.fs, result);
   }
 
-  //@Override
+  @Override
   public ZipFileSystem getFileSystem() {
     return fs;
   }
@@ -673,8 +681,8 @@ public class ZipFilePath extends Path {
     int i = 0;
 
     while (i < path.length) {
-      byte v = path[i];
-      hashCode = hashCode * 31 + (v);
+      final byte v = path[i];
+      hashCode = hashCode * 31 + v;
       i++;
     }
     return hashCode;
@@ -682,7 +690,7 @@ public class ZipFilePath extends Path {
 
   @Override
   public boolean equals(Object ob) {
-    if ((ob != null) && (ob instanceof ZipFilePath)) {
+    if (ob != null && ob instanceof ZipFilePath) {
       return compareTo((Path) ob) == 0;
     }
     return false;
@@ -732,14 +740,18 @@ public class ZipFilePath extends Path {
   public Path createDirectory(FileAttribute<?>... attrs) throws IOException {
     try {
       fs.writeLock(this);
-
-      if (exists()) throw new FileAlreadyExistsException(toString());
-      fs.putReal(this, fs.createTempDirectory(attrs));
-      return this;
+      return createDirectoryImpl(attrs);
     }
     finally {
       fs.writeUnlock(this);
     }
+  }
+
+  protected Path createDirectoryImpl(FileAttribute<?>... attrs)
+                                                           throws IOException {
+    if (existsImpl()) throw new FileAlreadyExistsException(toString());
+    fs.putReal(this, fs.createTempDirectory(attrs));
+    return this;
   }
 
   ZipFilePath getResolvedPathForZip() {
@@ -751,7 +763,17 @@ public class ZipFilePath extends Path {
 
   @Override
   public InputStream newInputStream(OpenOption... options) throws IOException {
+    try {
+      fs.readLock(this);
+      return newInputStreamImpl(options);
+    }
+    finally {
+      fs.readUnlock(this);
+    }
+  }
 
+  protected InputStream newInputStreamImpl(OpenOption... options)
+                                                           throws IOException {
     // validate OpenOptions
     for (OpenOption o : options) {
       if (o != StandardOpenOption.READ) {
@@ -760,26 +782,19 @@ public class ZipFilePath extends Path {
       }
     } 
 
-    try {
-      fs.readLock(this);
-
-      final Path rpath = fs.getReal(this);
-      if (rpath != null) {
-        if (rpath == DELETED) throw new NoSuchFileException(toString());
-        return ZipIO.wrapReadLocked(this, rpath.newInputStream(options));
+    final Path rpath = fs.getReal(this);
+    if (rpath != null) {
+      if (rpath == DELETED) throw new NoSuchFileException(toString());
+      return ZipIO.wrapReadLocked(this, rpath.newInputStream(options));
+    }
+    else {
+      final ZipFilePath realPath = getResolvedPathForZip();
+      if (realPath.getNameCount() == 0) {
+        throw new IOException("entry missing in the path");
       }
-      else {
-        final ZipFilePath realPath = getResolvedPathForZip();
-        if (realPath.getNameCount() == 0) {
-          throw new IOException("entry missing in the path");
-        }
 
-        return ZipIO.wrapReadLocked(this, ZipIO.in(this, options));
-      }      
-    }
-    finally {
-      fs.readUnlock(this);
-    }
+      return ZipIO.wrapReadLocked(this, ZipIO.in(this, options));
+    }      
   }
 
   @Override
@@ -787,11 +802,16 @@ public class ZipFilePath extends Path {
                                                            throws IOException {
     try {
       fs.readLock(this);
-      return new ZipFileStream(getResolvedPathForZip(), filter);
+      return newDirectoryStreamImpl(filter);
     }
     finally {
       fs.readUnlock(this);
     }
+  }
+
+  protected DirectoryStream<Path> newDirectoryStreamImpl(
+                              Filter<? super Path> filter) throws IOException {
+    return new ZipFileStream(getResolvedPathForZip(), filter);
   }
 
   private static final DirectoryStream.Filter<Path> acceptAllFilter =
@@ -804,29 +824,38 @@ public class ZipFilePath extends Path {
 
   @Override
   public DirectoryStream<Path> newDirectoryStream() throws IOException {
-    return newDirectoryStream(acceptAllFilter);
+    return newDirectoryStreamImpl();
+  }
+
+  protected DirectoryStream<Path> newDirectoryStreamImpl() throws IOException {
+    return newDirectoryStreamImpl(acceptAllFilter);
   }
 
   @Override
-  public DirectoryStream<Path> newDirectoryStream(String glob) throws IOException {
+  public DirectoryStream<Path> newDirectoryStream(String glob)
+                                                           throws IOException {
+    return newDirectoryStreamImpl(glob);
+  }
 
-    if (glob.equals("*"))
-      return newDirectoryStream();
+  protected DirectoryStream<Path> newDirectoryStreamImpl(String glob)
+                                                           throws IOException {
+    if (glob.equals("*")) return newDirectoryStreamImpl();
 
     final PathMatcher matcher = getFileSystem().getPathMatcher("glob:" + glob);
-    DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
+    final DirectoryStream.Filter<Path> filter =
+                                           new DirectoryStream.Filter<Path>() {
       public boolean accept(Path entry)  {
         return matcher.matches(entry.getName());
       }
     };
-    return newDirectoryStream(filter);
+    return newDirectoryStreamImpl(filter);
   }
 
   protected void checkEmptyDirectory() throws IOException {
     if (Boolean.TRUE.equals(getAttribute("isDirectory"))) {
       DirectoryStream<Path> ds = null;
       try {
-        ds = newDirectoryStream();
+        ds = newDirectoryStreamImpl();
         if (ds.iterator().hasNext()) {
           throw new DirectoryNotEmptyException(toString());
         }
@@ -842,28 +871,35 @@ public class ZipFilePath extends Path {
   public void delete() throws IOException {
     try {
       fs.writeLock(this);
-
-      if (!exists()) throw new NoSuchFileException(toString());
-
-      // delete only empty directories
-      checkEmptyDirectory();
-
-      fs.putReal(this, DELETED);
+      deleteImpl();
     }
     finally {
       fs.writeUnlock(this);
     }
   }
 
+  protected void deleteImpl() throws IOException {
+    if (!exists()) throw new NoSuchFileException(toString());
+
+    // delete only empty directories
+    checkEmptyDirectory();
+
+    fs.putReal(this, DELETED);
+  }
+
   @Override
   public void deleteIfExists() throws IOException {
     try {
       fs.writeLock(this);
-      if (exists()) delete();
+      deleteIfExistsImpl();
     }
     finally {
       fs.writeUnlock(this);
     }
+  }
+
+  protected void deleteIfExistsImpl() throws IOException {
+    if (exists()) deleteImpl();
   }
 
   @SuppressWarnings("unchecked")
@@ -1086,6 +1122,20 @@ public class ZipFilePath extends Path {
     };
   }
 
+/*
+  @Override
+  public SeekableByteChannel newByteChannel(Set<? extends OpenOption> options,
+                                            FileAttribute<?>... attrs)
+                                                           throws IOException {
+    try {
+      
+    }
+    finally {
+
+    }
+  }
+*/
+
   @Override
   public SeekableByteChannel newByteChannel(Set<? extends OpenOption> options,
                                             FileAttribute<?>... attrs)
@@ -1210,6 +1260,16 @@ public class ZipFilePath extends Path {
 
   @Override
   public void checkAccess(AccessMode... modes) throws IOException {
+    try {
+      fs.readLock(this);
+      checkAccessImpl(modes);
+    }
+    finally {
+      fs.readUnlock(this);
+    }
+  }
+
+  protected void checkAccessImpl(AccessMode... modes) throws IOException {
     boolean w = false;
     boolean x = false;
 
@@ -1234,52 +1294,55 @@ public class ZipFilePath extends Path {
       throw new NoSuchFileException(toString());
     }
 
-    try {
-      fs.readLock(this);
-
-      final Path rpath = fs.getReal(this);
-      if (rpath != null) {
-        // the path has been modified
-        if (rpath == DELETED) throw new NoSuchFileException(toString());
-        rpath.checkAccess(modes);
-      }
-      else {
-        // the path is original to the ZIP archive
-        final ZipEntryInfo ze = ZipUtils.getEntry(resolvedZipPath);
-
-        if (w) {
-          // check write access on archive file
-          try {
-            final Path zpath = Paths.get(fs.getZipFileSystemFile());
-            zpath.checkAccess(AccessMode.WRITE);
-          }
-          catch (AccessDeniedException e) {
-            throw (IOException) new AccessDeniedException(
-              "write access denied for the file: " + toString()).initCause(e);
-          }
-          catch (IOException e) {
-            throw (IOException) new IOException().initCause(e);
-          }
-        }
-
-        if (x) {
-          long attrs = ze.extAttrs;
-          if (!((((attrs << 4) >> 24) & 0x04) == 0x04)) {
-            throw new AccessDeniedException(
-              "execute access denied for the file: " + this.toString());
-          }
-        }
-      }
+    final Path rpath = fs.getReal(this);
+    if (rpath != null) {
+      // the path has been modified
+      if (rpath == DELETED) throw new NoSuchFileException(toString());
+      rpath.checkAccess(modes);
     }
-    finally {
-      fs.readUnlock(this);
+    else {
+      // the path is original to the ZIP archive
+      final ZipEntryInfo ze = ZipUtils.getEntry(resolvedZipPath);
+
+      if (w) {
+        // check write access on archive file
+        try {
+          final Path zpath = Paths.get(fs.getZipFileSystemFile());
+          zpath.checkAccess(AccessMode.WRITE);
+        }
+        catch (AccessDeniedException e) {
+          throw (IOException) new AccessDeniedException(
+            "write access denied for the file: " + toString()).initCause(e);
+        }
+        catch (IOException e) {
+          throw (IOException) new IOException().initCause(e);
+        }
+      }
+
+      if (x) {
+        long attrs = ze.extAttrs;
+        if (!((((attrs << 4) >> 24) & 0x04) == 0x04)) {
+          throw new AccessDeniedException(
+            "execute access denied for the file: " + this.toString());
+        }
+      }
     }
   }
 
   @Override
   public boolean exists() {
     try {
-      checkAccess();
+      fs.readLock(this);
+      return existsImpl(); 
+    }
+    finally {
+      fs.readUnlock(this);
+    }
+  }
+
+  protected boolean existsImpl() {
+    try {
+      checkAccessImpl();
       return true;
     }
     catch (IOException x) {
@@ -1291,7 +1354,17 @@ public class ZipFilePath extends Path {
   @Override
   public boolean notExists() {
     try {
-      checkAccess();
+      fs.readLock(this);
+      return notExistsImpl(); 
+    }
+    finally {
+      fs.readUnlock(this);
+    }
+  }
+
+  protected boolean notExistsImpl() {
+    try {
+      checkAccessImpl();
       return false;
     }
     catch (NoSuchFileException x) {
@@ -1327,14 +1400,17 @@ public class ZipFilePath extends Path {
   public Path createFile(FileAttribute<?>... attrs) throws IOException {
     try {
       fs.writeLock(this);
-
-      if (exists()) throw new FileAlreadyExistsException(toString());
-      fs.putReal(this, fs.createTempFile(attrs));
-      return this;
+      return createFileImpl(attrs);
     }
     finally {
       fs.writeUnlock(this);
     }
+  }
+
+  protected Path createFileImpl(FileAttribute<?>... attrs) throws IOException {
+    if (exists()) throw new FileAlreadyExistsException(toString());
+    fs.putReal(this, fs.createTempFile(attrs));
+    return this;
   }
 
   @Override
@@ -1457,7 +1533,7 @@ public class ZipFilePath extends Path {
         }
       }
       
-      delete();
+      deleteImpl();
       return target;
     }
     finally {
@@ -1572,6 +1648,7 @@ public class ZipFilePath extends Path {
     final BasicFileAttributes attrs = Attributes.readBasicFileAttributes(this);
 
     if (attrs.isDirectory()) {
+// FIXME
       target.deleteIfExists();
       target.createDirectory();
     }
@@ -1614,6 +1691,7 @@ public class ZipFilePath extends Path {
       catch (IOException e) {
         // rollback
         try {
+// FIXME
           target.delete();
         }
         catch (IOException ignore) { }
