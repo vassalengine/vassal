@@ -1,12 +1,13 @@
 package VASSAL.tools.nio.file;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Set;
 
 import VASSAL.tools.nio.file.attribute.UserPrincipalLookupService;
 import VASSAL.tools.nio.file.spi.FileSystemProvider;
 
-public abstract class FileSystem {
+public abstract class FileSystem implements Closeable {
 
   public abstract void close() throws IOException;
 
