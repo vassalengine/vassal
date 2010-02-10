@@ -74,6 +74,12 @@ public class ModuleManager {
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
 
   public static void main(String[] args) {
+// FIXME: We need to catch more exceptions in main() and then exit in
+// order to avoid situations where the main thread ends due to an uncaught
+// exception, but there are other threads still running, and so VASSAL
+// does not quit. For example, this can happen if an IllegalArgumentException
+// is thrown here...
+
     // parse command-line arguments
     LaunchRequest lr = null;
     try {
