@@ -86,9 +86,12 @@ public class ZipFileSystemProvider extends FileSystemProvider {
       throw e;
     }
 
+/*
     if (!checkZipFilePath(nativePath)) {
       throw new InvalidPathException(nativePath.toString(), "file name does not contain zip/jar File");
     }
+*/
+
     nativePath.checkAccess(); // check the existance of the path before proceed
 
     ZipFileSystem fileSystem = null;
@@ -138,9 +141,11 @@ public class ZipFileSystemProvider extends FileSystemProvider {
       throw new UnsupportedOperationException();
     }
 
+/*
     if (!checkZipFilePath(file)) {
       throw new UnsupportedOperationException();
     }
+*/
 
     try {
       ((Path) file).checkAccess();
@@ -176,6 +181,7 @@ public class ZipFileSystemProvider extends FileSystemProvider {
     return fileSystem;
   }
 
+/*
   boolean checkZipFilePath(FileRef file) {
     // check file ends with zip file
     Path path = ((Path) file);
@@ -186,6 +192,7 @@ public class ZipFileSystemProvider extends FileSystemProvider {
     boolean b = (fileName.endsWith(".zip") || fileName.endsWith(".jar"));
     return (b);
   }
+*/
 
   @Override
   public ZipFilePath getPath(URI uri) {

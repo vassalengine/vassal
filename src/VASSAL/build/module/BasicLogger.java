@@ -27,6 +27,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,11 +60,12 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogFileFilter;
 import VASSAL.tools.io.FastByteArrayOutputStream;
-import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ObfuscatingOutputStream;
-import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
+import VASSAL.tools.nio.file.FileSystem;
+import VASSAL.tools.nio.file.FileSystems;
+import VASSAL.tools.nio.file.Path;
 
 public class BasicLogger implements Logger, Buildable, GameComponent, CommandEncoder {
   public static final String BEGIN = "begin_log";  //$NON-NLS-1$
@@ -300,16 +302,41 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         IOUtils.closeQuietly(out);
       }
 
-      FileArchive archive = null;
+      final URI uri = URI.create("zip://" + outputFile.getAbsolutePath());
+      FileSystem zfs = null;
+
       try {
-        archive = new ZipArchive(outputFile);
-        archive.add(GameState.SAVEFILE_ZIP_ENTRY, ba.toInputStream());
-        metadata.save(archive);
-        archive.close();
+        zfs = FileSystems.newFileSystem(uri, null);
+
+        // write the save data
+        final Path spath = zfs.getPath(GameState.SAVEFILE_ZIP_ENTRY);
+        out = null; 
+        try {
+          out = spath.newOutputStream();
+          IOUtils.copy(ba.toInputStream(), out);
+          out.close();
+        }
+        finally {
+          IOUtils.closeQuietly(out);
+        }
+
+        // write the metadata
+        final Path mpath = zfs.getPath(metadata.getZipEntryName());
+        out = null;
+        try {
+          out = mpath.newOutputStream(); 
+          metadata.save(out);
+          out.close();
+        }
+        finally {
+          IOUtils.closeQuietly(out);
+        }
+
+        zfs.close();
       }
       finally {
-        IOUtils.closeQuietly(archive);
-      }      
+        IOUtils.closeQuietly(zfs);
+      }
 
       Launcher.getInstance().sendSaveCmd(outputFile);
       

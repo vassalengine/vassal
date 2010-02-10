@@ -37,10 +37,11 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
-
+import VASSAL.tools.nio.file.Path;
 
 /**
  * Provides tutorial functionality by reading in a logfile
@@ -229,9 +230,24 @@ public class Tutorial extends AbstractConfigurable {
    * @throws IOException
    */
   public Command getTutorialCommand() throws IOException {
-    return GameModule.getGameModule().getGameState().decodeSavedGame(getTutorialContents());
+    InputStream in = null;
+    try {
+      in = getTutorialPath().newInputStream();
+      final Command c =
+        GameModule.getGameModule().getGameState().decodeSavedGame(in);
+      in.close();
+      return c;
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
   }
 
+  public Path getTutorialPath() throws IOException {
+    return GameModule.getGameModule().getDataArchive().getPath(fileName);
+  }
+
+  @Deprecated
   public InputStream getTutorialContents() throws IOException {
     return GameModule.getGameModule().getDataArchive().getInputStream(fileName);
   }

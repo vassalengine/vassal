@@ -1073,14 +1073,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   
   protected Long buildCrc() {
     final List<File> files = new ArrayList<File>();
-    if (getDataArchive().getArchive() != null) {
-      files.add(new File(getDataArchive().getName()));
-    }
+    files.add(new File(getDataArchive().getName()));
 
     for (ModuleExtension ext : getComponentsOf(ModuleExtension.class)) {
-      if (ext.getDataArchive().getArchive() != null) {
-        files.add(new File(ext.getDataArchive().getName()));
-      }
+      files.add(new File(ext.getDataArchive().getName()));
     }
 
     try {

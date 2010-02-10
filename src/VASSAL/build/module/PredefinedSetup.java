@@ -40,6 +40,7 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.menu.MenuProxy;
 import VASSAL.tools.menu.ParentProxy;
+import VASSAL.tools.nio.file.Path;
 
 /**
  * Defines a saved game that is accessible from the File menu.
@@ -175,7 +176,7 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
       try {
         GameModule.getGameModule()
                   .getGameState()
-                  .loadGameInBackground(fileName, getSavedGameContents());
+                  .loadGameInBackground(getSavedGamePath());
       }
       catch (IOException e) {
         ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Setup"),fileName,e)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -187,6 +188,11 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
     }
   }
 
+  public Path getSavedGamePath() throws IOException {
+    return GameModule.getGameModule().getDataArchive().getPath(fileName);
+  }
+
+  @Deprecated
   public InputStream getSavedGameContents() throws IOException {
     return GameModule.getGameModule().getDataArchive().getInputStream(fileName);
   }

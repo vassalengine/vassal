@@ -433,7 +433,7 @@ public class ZipFileSystem extends FileSystem {
     return defaultdir;
   }
 
-  String getZipFileSystemFile() {
+  public String getZipFileSystemFile() {
     return zipFile;
   }
 

@@ -41,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.security.AllPermission;
 import java.security.CodeSource;
@@ -59,16 +60,17 @@ import sun.applet.AppletAudioClip;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.svg.SVGImageUtils;
 import VASSAL.tools.image.svg.SVGRenderer;
-import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.io.ZipArchive;
+import VASSAL.tools.nio.file.FileSystem;
+import VASSAL.tools.nio.file.FileSystems;
+import VASSAL.tools.nio.file.Path;
 
 /**
  * Wrapper around a Zip archive with methods to cache images
  */
 public class DataArchive extends SecureClassLoader implements Closeable {
 
-  protected FileArchive archive;
+  protected FileSystem archive;
 
   protected List<DataArchive> extensions = new ArrayList<DataArchive>();
 
@@ -92,7 +94,10 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   public DataArchive(String zipName, String imageDir) throws IOException {
     this();
-    archive = new ZipArchive(zipName);
+    
+    final URI uri = URI.create("zip://" + zipName);
+    archive = FileSystems.newFileSystem(uri, null);
+
     this.imageDir = imageDir;
   }
 
@@ -101,13 +106,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
   
   public String getName() {
-    return archive == null ? "data archive" : archive.getName();
+    return archive.getPath("/").toUri().getPath();
   }
- 
-  public FileArchive getArchive() {
-    return archive;
-  }
- 
+
   public String getImagePrefix() {
     return imageDir;
   }
@@ -200,13 +201,31 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     }
 
     // requested file is in this archive
-    if (archive != null && archive.contains(fileName))
-      return archive.getInputStream(fileName);
-   
+    final Path file = archive.getPath(fileName);
+    if (file.exists()) return file.newInputStream();  
+ 
     // we don't have it, try our extensions 
     for (DataArchive ext : extensions) {
       try {
         return ext.getInputStream(fileName);
+      }
+      catch (FileNotFoundException e) {
+        // not found in this extension, try the next
+      }
+    }
+
+    throw new FileNotFoundException(
+      "\'" + fileName + "\' not found in " + getName());
+  }
+
+  public Path getPath(String fileName) throws IOException {
+    final Path file = archive.getPath(fileName);
+    if (file.exists()) return file;
+
+    // we don't have it, try our extensions 
+    for (DataArchive ext : extensions) {
+      try {
+        return ext.getPath(fileName);
       }
       catch (FileNotFoundException e) {
         // not found in this extension, try the next
@@ -224,11 +243,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
    * @throws IOException if the archive has not yet been saved
    */
   public URL getURL() throws IOException {
-    if (archive == null) {
-      throw new IOException("Must save before accessing contents");
-    }
-
-    return URLUtils.toJarURL(archive.getName());
+    return archive.getPath("/").toUri().toURL();
   }
 
   /**
@@ -245,14 +260,9 @@ public class DataArchive extends SecureClassLoader implements Closeable {
       return getClass().getResource(fileName); 
     }
 
-    if (archive == null) {
-      throw new IOException("Must save before accessing contents");
-    }
-
-    if (archive.contains(fileName)) {
-      return new URL(getURL(), fileName);
-    }
-    
+    final Path file = archive.getPath(fileName);
+    if (file.exists()) return file.toUri().toURL();  
+  
     for (DataArchive ext : extensions) {
       try {
         return ext.getURL(fileName); 
@@ -281,15 +291,11 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   }
 
   public boolean contains(String fileName) throws IOException {
-    if (archive == null) return false;
-    return archive.contains(fileName);
+    return archive.getPath(fileName).exists();
   }
 
   public void close() throws IOException {
-    if (archive != null) {
-      archive.revert(); // ensure that we don't modify the archive
-      archive.close();
-    }
+    archive.close();
   }
 
   public String[] getImageNames() {
@@ -317,17 +323,15 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     final TreeSet<String> s =
       new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
 
-    if (archive != null) {
-      try {
-//        for (String filename : archive.getFiles(imageDir)) {
-        for (String filename : archive.getFiles("images")) {
-          s.add(filename.substring(imageDir.length()));
-        }
+    try {    
+      final Path imgDir = archive.getPath("/images");
+      for (Path imgFile : imgDir.newDirectoryStream()) {
+        s.add(imgFile.getName().toString());
       }
-      catch (IOException e) {
+    }
+    catch (IOException e) {
 // FIXME: don't swallow this exception!
-        e.printStackTrace();
-      }
+      e.printStackTrace();
     }
 
     return s;
@@ -558,7 +562,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     return getImageNameSet();
   }
 
-// FIXME: hook these up to ImageOp methods
+// FIXME: hook these up to ImageOp methods?
   @Deprecated
   public void unCacheImage(String file) { }
 
@@ -727,7 +731,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   /** @deprecated Use {@link getURL()} instead. */
   @Deprecated
   public String getArchiveURL() {
-    return archive != null ? "jar:file://" + archive.getName() + "!/" : "";
+    try {
+      return getURL().toString();  
+    }
+    catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   /**

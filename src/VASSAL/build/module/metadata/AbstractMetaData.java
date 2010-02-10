@@ -52,7 +52,6 @@ import VASSAL.i18n.Translation;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.FastByteArrayOutputStream;
-import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
 
@@ -129,20 +128,8 @@ public abstract class AbstractMetaData {
   public String getLocalizedDescription() {
     return descriptionAttr == null ? "" : descriptionAttr.getLocalizedValue();
   }
- 
-  public void save(FileArchive archive) throws IOException {
-    OutputStream out = null;
-    try {
-      out = archive.getOutputStream(getZipEntryName());
-      save(out);
-      out.close();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
-    }
-  }
- 
-  protected void save(OutputStream out) throws IOException {
+
+  public void save(OutputStream out) throws IOException {
     Document doc = null;
     Element e = null;
     try {

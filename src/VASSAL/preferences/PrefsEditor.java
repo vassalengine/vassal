@@ -27,6 +27,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URI;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,30 +52,36 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.ZipArchive;
+import VASSAL.tools.nio.file.FileSystem;
+import VASSAL.tools.nio.file.FileSystems;
+import VASSAL.tools.nio.file.zipfs.ZipFileSystem;
 
 public class PrefsEditor {
   private JDialog dialog;
   private List<Configurer> options = new ArrayList<Configurer>();
-  private Map<Configurer, Object> savedValues;
+  private Map<Configurer,Object> savedValues;
   private List<Prefs> prefs;
   private JTabbedPane optionsTab;
   private JDialog setupDialog;
-  private FileArchive archive;
+  private FileSystem fs;
   private Action editAction;
 
-  public PrefsEditor(FileArchive archive) {
-    savedValues = new HashMap<Configurer, Object>();
-    this.archive = archive;
+  public PrefsEditor(FileSystem fs) {
+    savedValues = new HashMap<Configurer,Object>();
+    this.fs = fs;
     prefs = new ArrayList<Prefs>();
     optionsTab = new JTabbedPane();
   }
 
-  /** @deprecated Use {@link PrefsEditor(FileArchive)} instead. */
+  /** @deprecated Use {@link PrefsEditor(FileSystem)} instead. */
   @Deprecated
   public PrefsEditor(ArchiveWriter archive) throws IOException {
-    this(new ZipArchive(archive.getName()));
+    savedValues = new HashMap<Configurer,Object>();
+    prefs = new ArrayList<Prefs>();
+    optionsTab = new JTabbedPane();
+
+    final URI uri = URI.create("zip://" + archive.getName());
+    fs = FileSystems.getFileSystem(uri);
   }
 
   public void initDialog(Frame parent) {
@@ -188,16 +195,17 @@ public class PrefsEditor {
     }
   }
 
-  public FileArchive getFileArchive() {
-    if (archive.isClosed()) {
+  public FileSystem getFileSystem() {
+    if (!fs.isOpen()) {
+      final URI uri = URI.create("zip://" + ((ZipFileSystem) fs).getZipFileSystemFile());
       try {
-        archive = new ZipArchive(archive.getName());
+        fs = FileSystems.newFileSystem(uri, null);
       }
       catch (IOException e) {
-        archive = null;
+        fs = null;
       }
     }
-    return archive;
+    return fs;
   }
 
   protected void cancel() {
@@ -219,7 +227,7 @@ public class PrefsEditor {
       write();
     }
     catch (IOException e) {
-      WriteErrorDialog.error(e, archive.getName());
+      WriteErrorDialog.error(e, ((ZipFileSystem) fs).getZipFileSystemFile());
     }
     dialog.setVisible(false);
   }
@@ -247,10 +255,10 @@ public class PrefsEditor {
 
   public void write() throws IOException {
     for (Prefs p : prefs) p.save();
-    archive.flush();
+    ((ZipFileSystem) fs).flush();
   }
 
   public void close() throws IOException {
-    archive.close();
+    fs.close();
   }
 }

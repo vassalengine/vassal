@@ -52,7 +52,8 @@ public class SavedGameUpdater {
    * @param savedGame the save game to update.  The file gets overwritten.
    * @throws IOException
    */
-  public void updateSavedGame(Properties pieceSlot, File savedGame) throws IOException {
+  public void updateSavedGame(Properties pieceSlot, File savedGame)
+                                                           throws IOException {
     final GameState gs = GameModule.getGameModule().getGameState();
 
     gs.setup(false, true);

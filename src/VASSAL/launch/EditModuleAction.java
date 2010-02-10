@@ -29,7 +29,6 @@ import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
-import VASSAL.tools.io.ZipArchive;
 
 public class EditModuleAction extends LoadModuleAction {
   private static final long serialVersionUID = 1L;
@@ -45,7 +44,7 @@ public class EditModuleAction extends LoadModuleAction {
   }
 
   protected void loadModule(File f) throws IOException {
-    GameModule.init(new BasicModule(new ArchiveWriter(new ZipArchive(f))));
+    GameModule.init(new BasicModule(new ArchiveWriter(f.toString())));
 
 // FIXME: really hide the MM?
 //    ModuleManagerWindow.getInstance().setVisible(false);

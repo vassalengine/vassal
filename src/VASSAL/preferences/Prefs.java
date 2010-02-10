@@ -20,6 +20,7 @@ package VASSAL.preferences;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URI;
 import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -40,9 +41,11 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.io.ZipArchive;
+import VASSAL.tools.nio.file.FileSystem;
+import VASSAL.tools.nio.file.FileSystems;
+import VASSAL.tools.nio.file.Path;
+import VASSAL.tools.nio.file.zipfs.ZipFileSystem;
 
 /**
  * A set of preferences. Each set of preferences is identified by a name, and different sets may share a common editor,
@@ -77,7 +80,7 @@ public class Prefs implements Closeable {
   }
 
   public File getFile() {
-    return new File(editor.getFileArchive().getName());
+    return new File(((ZipFileSystem) editor.getFileSystem()).getZipFileSystemFile());
   }
 
   public void addOption(Configurer o) {
@@ -166,12 +169,13 @@ public class Prefs implements Closeable {
   }
 
   private void read() {
-    final FileArchive fa = editor.getFileArchive();
+    final FileSystem fs = editor.getFileSystem();
     try {
-      if (fa.contains(name)) { 
+      final Path p = fs.getPath(name);
+      if (p.exists()) {
         BufferedInputStream in = null;
         try {
-          in = new BufferedInputStream(fa.getInputStream(name));
+          in = new BufferedInputStream(p.newInputStream());
           storedValues.clear();
           storedValues.load(in);
           in.close();
@@ -182,7 +186,7 @@ public class Prefs implements Closeable {
       }
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, fa.getName());
+      ReadErrorDialog.error(e, ((ZipFileSystem) fs).getZipFileSystemFile());
     }
   }
 
@@ -204,9 +208,12 @@ public class Prefs implements Closeable {
       }
     }
 
+    final FileSystem fs = editor.getFileSystem();
+    final Path p = fs.getPath(name);
+
     OutputStream out = null;
     try {
-      out = editor.getFileArchive().getOutputStream(name);
+      out = p.newOutputStream();
       storedValues.store(out, null);
       out.close();
     }
@@ -238,11 +245,11 @@ public class Prefs implements Closeable {
     if (globalPrefs == null) {
       final File prefsFile = new File(Info.getHomeDir(), "Preferences");
 
+      final URI uri = URI.create("zip://" + prefsFile.getAbsolutePath());
       try {
-        globalPrefs = new Prefs(
-          new PrefsEditor(new ZipArchive(prefsFile)), "VASSAL"
-        );
-        globalPrefs.write();
+        final FileSystem fs = FileSystems.newFileSystem(uri, null);
+        globalPrefs = new Prefs(new PrefsEditor(fs), "VASSAL");
+        globalPrefs.write(); 
       }
       catch (IOException e) {
         WriteErrorDialog.error(e, prefsFile);
