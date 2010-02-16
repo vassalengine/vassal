@@ -104,7 +104,6 @@ public class RealPathReadTest {
         { td + "300",  02,  null                                   },
         { td + "300",  04,  t(AccessDeniedException.class)         },
         { td + "300",  06,  t(AccessDeniedException.class)         },
-*/
         { td + "400",  00,  null                                   },
         { td + "400",  02,  t(AccessDeniedException.class)         },
         { td + "400",  04,  null                                   },
@@ -113,6 +112,7 @@ public class RealPathReadTest {
         { td + "500",  02,  t(AccessDeniedException.class)         },
         { td + "500",  04,  null                                   },
         { td + "500",  06,  t(AccessDeniedException.class)         },
+*/
         { td + "600",  00,  null                                   },
         { td + "600",  02,  null                                   },
         { td + "600",  04,  null                                   },
