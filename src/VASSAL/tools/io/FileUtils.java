@@ -24,9 +24,11 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import VASSAL.tools.nio.file.FileAlreadyExistsException;
 import VASSAL.tools.nio.file.Files;
 import VASSAL.tools.nio.file.FileVisitResult;
 import VASSAL.tools.nio.file.Path;
@@ -85,7 +87,7 @@ public class FileUtils {
         fail = e;
       }
 
-      // Chug on, regardless of failure to delete.
+      // Chug on, regardless of failure.
       return FileVisitResult.CONTINUE;
     }
 
@@ -103,7 +105,203 @@ public class FileUtils {
         fail = e; 
       }
 
-      // Chug on, regardless of failure to delete.
+      // Chug on, regardless of failure.
+      return FileVisitResult.CONTINUE;
+    }
+  }
+
+  /**
+   * Copy the subtree rooted at the first path to the second path.
+   *
+   * @param src the source root
+   * @param dst the destination root
+   *
+   * @throws IOException if one occurs during copying
+   */
+  public static void copy(Path src, Path dst) throws IOException {
+    final RecursiveCopyVisitor visitor = new RecursiveCopyVisitor(src, dst);
+    Files.walkFileTree(src, visitor);
+    final IOException e = visitor.getException();
+    if (e != null) throw (IOException) (new IOException().initCause(e));
+  }
+
+  private static class RecursiveCopyVisitor extends SimpleFileVisitor<Path> {
+    private IOException fail = null;
+    private final Path src;
+    private final Path dst;
+
+    public RecursiveCopyVisitor(Path src, Path dst) {
+      this.src = src;
+      this.dst = dst;
+    }
+
+    public IOException getException() {
+      return fail;
+    }
+
+    @Override
+    public FileVisitResult preVisitDirectory(Path dir) {
+      try {
+        dir.copyTo(dst.resolve(src.relativize(dir)));
+      }
+      catch (FileAlreadyExistsException e) {
+        // ignore
+      }
+      catch (IOException e) {
+        fail = e;
+        return FileVisitResult.SKIP_SUBTREE;
+      }
+
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+      try {
+        file.copyTo(dst.resolve(src.relativize(file)));
+      }
+      catch (IOException e) {
+        fail = e;
+      }
+
+      // Chug on, regardless of failure.
+      return FileVisitResult.CONTINUE;
+    }
+  }
+
+  /**
+   * Move the subtree rooted at the first path to the second path.
+   *
+   * @param src the source root
+   * @param dst the destination root
+   *
+   * @throws IOException if one occurs during copying
+   */
+  public static void move(Path src, Path dst) throws IOException {
+    final RecursiveMoveVisitor visitor = new RecursiveMoveVisitor(src, dst);
+    Files.walkFileTree(src, visitor);
+    final IOException e = visitor.getException();
+    if (e != null) throw (IOException) (new IOException().initCause(e));
+  }
+
+  private static class RecursiveMoveVisitor extends SimpleFileVisitor<Path> {
+    private IOException fail = null;
+    private final Path src;
+    private final Path dst;
+
+    public RecursiveMoveVisitor(Path src, Path dst) {
+      this.src = src;
+      this.dst = dst;
+    }
+
+    public IOException getException() {
+      return fail;
+    }
+
+    @Override
+    public FileVisitResult preVisitDirectory(Path dir) {
+      try {
+        dir.copyTo(dst.resolve(src.relativize(dir)));
+      }
+      catch (FileAlreadyExistsException e) {
+        // ignore
+      }
+      catch (IOException e) {
+        fail = e;
+        return FileVisitResult.SKIP_SUBTREE;
+      }
+
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult visitFile(Path file,  BasicFileAttributes attrs) {
+      try {
+        file.moveTo(dst.resolve(src.relativize(file)));
+      }
+      catch (IOException e) {
+        fail = e;
+      }
+
+      // Chug on, regardless of failure.
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult postVisitDirectory(Path dir, IOException e) {
+      if (e == null) {
+        try {
+          dir.delete();
+        }
+        catch (IOException ex) {
+          fail = ex; 
+        }
+      }
+      else {
+        fail = e; 
+      }
+
+      // Chug on, regardless of failure.
+      return FileVisitResult.CONTINUE;
+    }
+  }
+
+  /**
+   * Print the subtree rooted at the given path.
+   *
+   * @param path the root
+   *
+   * @throws IOException if one occurs during traversal
+   */
+  public static void list(Path path, OutputStream out) throws IOException {
+    final PrintStream pout = out instanceof PrintStream ?
+      (PrintStream) out : new PrintStream(out);
+
+    final RecursiveListVisitor visitor = new RecursiveListVisitor(pout);
+    Files.walkFileTree(path, visitor);
+    final IOException e = visitor.getException();
+    if (e != null) throw (IOException) (new IOException().initCause(e));
+  }
+
+  private static class RecursiveListVisitor extends SimpleFileVisitor<Path> {
+    private final PrintStream out;
+    private IOException fail = null;
+
+    public RecursiveListVisitor(PrintStream out) {
+      this.out = out;
+    }
+
+    public IOException getException() {
+      return fail;
+    }
+
+    @Override
+    public FileVisitResult preVisitDirectory(Path dir) {
+      out.println(dir.toString());
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult preVisitDirectoryFailed(Path dir, IOException e) {
+      if (e != null) fail = e;
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult postVisitDirectory(Path dir, IOException e) {
+      if (e != null) fail = e;
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+      out.println(file.toString());
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult visitFileFailed(Path file, IOException e) {
+      if (e != null) fail = e;
       return FileVisitResult.CONTINUE;
     }
   }

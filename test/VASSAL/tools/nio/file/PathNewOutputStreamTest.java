@@ -10,6 +10,7 @@ import java.util.Set;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.FileUtils;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -31,7 +32,6 @@ public abstract class PathNewOutputStreamTest extends AbstractPathMethodTest {
   protected void doTest() throws IOException {
     final Path src = Paths.get(src_s);
     final Path dst = fs.getPath(dst_s);
-    final Path exp = Paths.get((String) expected);
 
     OutputStream out = null;
     try {
@@ -53,6 +53,8 @@ public abstract class PathNewOutputStreamTest extends AbstractPathMethodTest {
       IOUtils.closeQuietly(out);
     }
 
+    final Path exp = Paths.get((String) expected);
+    assertEquals(exp.getAttribute("size"), dst.getAttribute("size"));
     assertTrue(FileUtils.contentEquals(exp, dst));
   }
 }

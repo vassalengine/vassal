@@ -6,6 +6,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -38,7 +39,7 @@ import VASSAL.tools.nio.file.PathStartsWithTest;
 import VASSAL.tools.nio.file.PathSubpathTest;
 import VASSAL.tools.nio.file.PathToStringTest;
 
-import static VASSAL.tools.nio.file.AbstractPathMethodTest.t;
+import static VASSAL.tools.nio.file.AbstractMethodTest.t;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -82,6 +83,11 @@ public class ZipFilePathOpsTest {
 
     fs = (ZipFileSystem) FileSystems.newFileSystem(
       URI.create("zip://" + zfPath), null);
+  }
+
+  @AfterClass
+  public static void tearDownFS() throws IOException {
+    fs.close();
   }
 
   @RunWith(Parameterized.class)

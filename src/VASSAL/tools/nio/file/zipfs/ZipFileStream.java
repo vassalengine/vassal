@@ -79,7 +79,7 @@ public class ZipFileStream implements DirectoryStream<Path> {
       final Set<Path> s = new HashSet<Path>();
 
       // find all original children of this directory
-      for (ZipFilePath f : ZipUtils.getEntries(dir).keySet()) {
+      for (ZipFilePath f : fs.getAllInfo().keySet()) {
         // skip files which are not in this directory
         if (nameCount + 1 > f.getNameCount() || !f.startsWith(dir)) {
           continue;

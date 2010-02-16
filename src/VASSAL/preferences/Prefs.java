@@ -43,6 +43,8 @@ import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.nio.file.FileSystem;
+import VASSAL.tools.nio.file.FileSystemAlreadyExistsException;
+import VASSAL.tools.nio.file.FileSystemNotFoundException;
 import VASSAL.tools.nio.file.FileSystems;
 import VASSAL.tools.nio.file.Path;
 import VASSAL.tools.nio.file.zipfs.ZipFileSystem;
@@ -246,8 +248,30 @@ public class Prefs implements Closeable {
       final File prefsFile = new File(Info.getHomeDir(), "Preferences");
 
       final URI uri = URI.create("zip://" + prefsFile.getAbsolutePath());
+      FileSystem fs = null;
       try {
-        final FileSystem fs = FileSystems.newFileSystem(uri, null);
+// FIXME:
+//
+// (1) This is a race---what if the FS is closed between the calls
+// to newFileSystem() and getFileSystem()?
+//
+// (2) If the exception is thrown, how do we ensure that the FS doesn't
+// get closed on us from someplace else?!
+//
+        while (fs == null) {
+          try {
+            fs = FileSystems.newFileSystem(uri, null);
+          }
+          catch (FileSystemAlreadyExistsException e) {
+            try {
+              fs = FileSystems.getFileSystem(uri);
+            }
+            catch (FileSystemNotFoundException ignore) {
+              // ignore?
+            }
+          }
+        }
+
         globalPrefs = new Prefs(new PrefsEditor(fs), "VASSAL");
         globalPrefs.write(); 
       }

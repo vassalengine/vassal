@@ -76,6 +76,10 @@ public class ZipFilePathOldTest {
     pathTestFileOther = fs.getPath(testFileOtherName);
   }
 
+  @After
+  public void tearDown() throws IOException {
+    fs.close();
+  }
 /*
   @Test
   public void testGetFileStore() throws IOException {

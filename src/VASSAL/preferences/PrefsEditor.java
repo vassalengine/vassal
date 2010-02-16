@@ -53,6 +53,8 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.nio.file.FileSystem;
+import VASSAL.tools.nio.file.FileSystemAlreadyExistsException;
+import VASSAL.tools.nio.file.FileSystemNotFoundException;
 import VASSAL.tools.nio.file.FileSystems;
 import VASSAL.tools.nio.file.zipfs.ZipFileSystem;
 
@@ -198,13 +200,35 @@ public class PrefsEditor {
   public FileSystem getFileSystem() {
     if (!fs.isOpen()) {
       final URI uri = URI.create("zip://" + ((ZipFileSystem) fs).getZipFileSystemFile());
-      try {
-        fs = FileSystems.newFileSystem(uri, null);
-      }
-      catch (IOException e) {
-        fs = null;
+
+// FIXME:
+//
+// (1) This is a race---what if the FS is closed between the calls
+// to newFileSystem() and getFileSystem()?
+//
+// (2) If the exception is thrown, how do we ensure that the FS doesn't
+// get closed on us from someplace else?!
+//
+      fs = null;
+      while (fs == null) {
+        try {
+          fs = FileSystems.newFileSystem(uri, null);
+        }
+        catch (FileSystemAlreadyExistsException e) {
+          try {
+            fs = FileSystems.getFileSystem(uri);
+          }
+          catch (FileSystemNotFoundException ignore) {
+            // ignore?
+          }
+        }
+        catch (IOException ignore) {
+// FIXME: this should not be ignored!
+          break;
+        }
       }
     }
+
     return fs;
   }
 

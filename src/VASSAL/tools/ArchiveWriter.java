@@ -33,6 +33,7 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.image.svg.SVGImageUtils;
+import VASSAL.tools.io.FileUtils;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.nio.file.FileSystems;
 import VASSAL.tools.nio.file.Path;
@@ -44,7 +45,6 @@ import VASSAL.tools.nio.file.zipfs.ZipFileSystem;
  * with the {@link #addFile} and {@link #addImage} methods.
  */
 public class ArchiveWriter extends DataArchive {
-  private String archiveName;
   private boolean isTempArchive = false;
 
   /**
@@ -56,23 +56,24 @@ public class ArchiveWriter extends DataArchive {
    * archive, it will be overwritten.
    */
   public ArchiveWriter(String zipName) {
-    archiveName = zipName;
+    isTempArchive = zipName == null;
 
-    if (archiveName == null) {
-      isTempArchive = true;
-      try {
-        archiveName = File.createTempFile("tmp", ".zip").getPath();
-      }
-      catch (IOException e) {
-        WriteErrorDialog.error(e, archiveName);
-      }
-    }
-
-    final URI uri = URI.create("zip://" + archiveName);
+    String archiveName = zipName;
     try {
+      if (isTempArchive) {
+// FIXME: This creates an odd situation, in which we need the file not to
+// exist, and to continue not existing, but we have no guarantee that it
+// won't be created in /tmp!
+        final File f = File.createTempFile("tmp", ".zip");
+        f.delete();
+        archiveName = f.getAbsolutePath();
+      }
+
+      final URI uri = URI.create("zip://" + archiveName);
       archive = FileSystems.newFileSystem(uri, null);
     }
     catch (IOException e) {
+// FIXME: Setting archive to null is wrong. This ctor needs to throw instead.
       archive = null;
       WriteErrorDialog.error(e, archiveName);
     }
@@ -207,26 +208,25 @@ public class ArchiveWriter extends DataArchive {
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;
     final String filename = fc.getSelectedFile().getPath();
 
-    final Path zpath = ((ZipFileSystem) archive).getFileSystemPath();
-    final Path tmp = Paths.get(filename);
+    final Path zold = ((ZipFileSystem) archive).getFileSystemPath();
+    final Path znew = Paths.get(filename);
 
-    if (!zpath.isSameFile(tmp)) {
-      zpath.copyTo(tmp);
+    if (!zold.isSameFile(znew)) {
+      final URI uri = URI.create("zip://" + filename); 
+      final ZipFileSystem tmpArchive =
+        (ZipFileSystem) FileSystems.newFileSystem(uri, null);
+
+      FileUtils.copy(archive.getPath("/"), tmpArchive.getPath("/"));
+
       ((ZipFileSystem) archive).revert();
       archive.close();
 
-      write((ZipFileSystem) archive, notifyModuleManager);
+      if (isTempArchive) isTempArchive = false;        
 
-      if (isTempArchive) {
-        zpath.delete();
-        isTempArchive = false;        
-      }
+      archive = tmpArchive;
+    } 
 
-      archive = FileSystems.newFileSystem(tmp, null, null);
-    }
-    else {
-      write((ZipFileSystem) archive, notifyModuleManager);
-    }
+    write((ZipFileSystem) archive, notifyModuleManager);
   }
 
   @Deprecated

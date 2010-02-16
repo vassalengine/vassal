@@ -65,6 +65,7 @@ public class ZipFileBasicAttributeView implements BasicFileAttributeView,
     if (!file.exists()) throw new NoSuchFileException(file.toString());
 
     final ZipFileSystem fs = file.getFileSystem();
+    if (fs.isReadOnly()) throw new ReadOnlyFileSystemException();
 
     try {
       fs.writeLock(file);
@@ -119,6 +120,10 @@ public class ZipFileBasicAttributeView implements BasicFileAttributeView,
   }
 
   public void setAttribute(String attribute, Object value) throws IOException {
+    if (file.getFileSystem().isReadOnly()) {
+      throw new ReadOnlyFileSystemException();
+    }
+
     if (attribute.equals("lastModifiedTime")) { 
       setTimes((FileTime) value, null, null);
     }

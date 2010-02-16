@@ -1,4 +1,4 @@
-package VASSAL.tools.nio.file.zipfs;
+package VASSAL.tools.nio.file.realfs;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,20 +48,20 @@ import static VASSAL.tools.nio.file.AbstractMethodTest.t;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-  ZipFilePathReadTest.CheckAccessTest.class,
-  ZipFilePathReadTest.ExistsTest.class,
-  ZipFilePathReadTest.GetAttributeTest.class,
-  ZipFilePathReadTest.IsSameFileTest.class,
-  ZipFilePathReadTest.NewInputStreamTest.class,
-  ZipFilePathReadTest.NotExistsTest.class,
-  ZipFilePathReadTest.ReadAttributesTest.class,
-  ZipFilePathReadTest.ToAbsolutePathTest.class,
-  ZipFilePathReadTest.ToRealPathTest.class
-//  ZipFilePathReadTest.ToUriTest.class
+  RealPathReadTest.CheckAccessTest.class,
+  RealPathReadTest.ExistsTest.class,
+  RealPathReadTest.GetAttributeTest.class,
+  RealPathReadTest.IsSameFileTest.class,
+  RealPathReadTest.NewInputStreamTest.class,
+  RealPathReadTest.NotExistsTest.class,
+  RealPathReadTest.ReadAttributesTest.class,
+  RealPathReadTest.ToAbsolutePathTest.class,
+  RealPathReadTest.ToRealPathTest.class
+//  RealPathReadTest.ToUriTest.class
 })
-public class ZipFilePathReadTest {
+public class RealPathReadTest {
 
-  protected static ZipFileSystem fs;
+  protected static RealFileSystem fs;
 
   protected static final FSHandler fac = new FSHandler() {
     public FileSystem setup() { return fs; }
@@ -70,65 +69,58 @@ public class ZipFilePathReadTest {
     public void teardown(FileSystem fs) {}
   };
 
-  protected static final String testDir =
-    "test/VASSAL/tools/nio/file/zipfs/readtest/".replace("/", File.separator);
-
-  protected static final String zfName = "test.zip";
-  protected static final String zfPathName = testDir + zfName;
-
-  protected static Path zfPath;
-  protected static URI zfURI;
+  protected static final String td =
+    "test/VASSAL/tools/nio/file/realfs/readtest/".replace("/", File.separator);
 
   @BeforeClass
   public static void setupFS() throws IOException {
-    zfPath = Paths.get(zfPathName).toAbsolutePath();
-    zfURI = URI.create("zip://" + zfPath.toString());
-
-// FIXME: also run these tests in RO mode
-    fs = (ZipFileSystem) FileSystems.newFileSystem(zfURI, null);
-  }
-
-  @AfterClass
-  public static void tearDownFS() throws IOException {
-    fs.close();
+    fs = (RealFileSystem) FileSystems.getDefault();
   }
 
   @RunWith(Parameterized.class)
   public static class CheckAccessTest extends PathCheckAccessTest {
     public CheckAccessTest(String input, int mode, Object expected) {
-      super(ZipFilePathReadTest.fac, input, mode, expected);
+      super(RealPathReadTest.fac, input, mode, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
-        // Input          Mode  Expected
-        { "/",             00,  null                           },
-        { "/",             01,  t(AccessDeniedException.class) },
-        { "/",             02,  null                           }, 
-        { "/",             03,  t(AccessDeniedException.class) },
-        { "/",             04,  null                           },
-        { "/",             05,  t(AccessDeniedException.class) }, 
-        { "/",             06,  null                           }, 
-        { "/",             07,  t(AccessDeniedException.class) },
-        { "/fileInZip",    00,  null                           },
-        { "/fileInZip",    01,  t(AccessDeniedException.class) },
-        { "/fileInZip",    02,  null                           },
-        { "/fileInZip",    03,  t(AccessDeniedException.class) },
-        { "/fileInZip",    04,  null                           },
-        { "/fileInZip",    05,  t(AccessDeniedException.class) },
-        { "/fileInZip",    06,  null                           },
-        { "/fileInZip",    07,  t(AccessDeniedException.class) },
-        { "/fileNotInZip", 00,  t(NoSuchFileException.class)   },
-        { "fileInZip",     00,  null                           },
-        { "fileInZip",     01,  t(AccessDeniedException.class) },
-        { "fileInZip",     02,  null                           },
-        { "fileInZip",     03,  t(AccessDeniedException.class) },
-        { "fileInZip",     04,  null                           },
-        { "fileInZip",     05,  t(AccessDeniedException.class) },
-        { "fileInZip",     06,  null                           }, 
-        { "fileInZip",     07,  t(AccessDeniedException.class) },
-        { "fileNotInZip",  00,  t(NoSuchFileException.class)   }
+        // Input      Mode  Expected
+/*
+        { td + "000",  00,  null                                   },
+        { td + "000",  02,  t(AccessDeniedException.class)         },
+        { td + "000",  04,  t(AccessDeniedException.class)         },
+        { td + "000",  06,  t(AccessDeniedException.class)         },
+        { td + "100",  00,  null                                   },
+        { td + "100",  02,  t(AccessDeniedException.class)         },
+        { td + "100",  04,  t(AccessDeniedException.class)         },
+        { td + "100",  06,  t(AccessDeniedException.class)         },
+        { td + "200",  00,  null                                   },
+        { td + "200",  02,  null                                   },
+        { td + "200",  04,  t(AccessDeniedException.class)         },
+        { td + "200",  06,  t(AccessDeniedException.class)         },
+        { td + "300",  00,  null                                   },
+        { td + "300",  02,  null                                   },
+        { td + "300",  04,  t(AccessDeniedException.class)         },
+        { td + "300",  06,  t(AccessDeniedException.class)         },
+*/
+        { td + "400",  00,  null                                   },
+        { td + "400",  02,  t(AccessDeniedException.class)         },
+        { td + "400",  04,  null                                   },
+        { td + "400",  06,  t(AccessDeniedException.class)         },
+        { td + "500",  00,  null                                   },
+        { td + "500",  02,  t(AccessDeniedException.class)         },
+        { td + "500",  04,  null                                   },
+        { td + "500",  06,  t(AccessDeniedException.class)         },
+        { td + "600",  00,  null                                   },
+        { td + "600",  02,  null                                   },
+        { td + "600",  04,  null                                   },
+        { td + "600",  06,  null                                   },
+        { td + "700",  00,  null                                   },
+        { td + "700",  02,  null                                   },
+        { td + "700",  04,  null                                   },
+        { td + "700",  06,  null                                   }
       });
     }
   }
@@ -136,17 +128,15 @@ public class ZipFilePathReadTest {
   @RunWith(Parameterized.class)
   public static class ExistsTest extends PathExistsTest {
     public ExistsTest(String input, Object expected) {
-      super(ZipFilePathReadTest.fac, input, expected);
+      super(RealPathReadTest.fac, input, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
         // Input           Expected
-        { "/fileInZip",    true  },
-        { "/fileNotInZip", false },
-        { "fileInZip",     true  },
-        { "fileNotInZip",  false }
+        { td + "file",    true  },
+        { td + "notFile", false }
       });
     }
   }
@@ -154,17 +144,15 @@ public class ZipFilePathReadTest {
   @RunWith(Parameterized.class)
   public static class NotExistsTest extends PathNotExistsTest {
     public NotExistsTest(String input, Object expected) {
-      super(ZipFilePathReadTest.fac, input, expected);
+      super(RealPathReadTest.fac, input, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
         // Input           Expected
-        { "/fileInZip",    false },
-        { "/fileNotInZip", true  },
-        { "fileInZip",     false },
-        { "fileNotInZip",  true  }
+        { td + "file",    false },
+        { td + "notFile", true  }
       });
     }
   }
@@ -172,12 +160,13 @@ public class ZipFilePathReadTest {
   @RunWith(Parameterized.class)
   public static class GetAttributeTest extends PathGetAttributeTest {
     public GetAttributeTest(String path, String attr, Object expected) {
-      super(ZipFilePathReadTest.fac, path, attr, expected);
+      super(RealPathReadTest.fac, path, attr, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Path            Attribute     Expected
         { "/fileNotInZip", "basic:size", t(NoSuchFileException.class) },
         { "/fileInZip", null,            t(NullPointerException.class) },
@@ -227,6 +216,7 @@ public class ZipFilePathReadTest {
         { "/dirInZip", "zip:isArchiveFile",    false },
         { "/dirInZip", "zip:versionMadeBy",    "UNIX" },
 //        { "/dirInZip", "zip:extAttrs",         0 }
+*/
       });
     }
   }
@@ -234,13 +224,14 @@ public class ZipFilePathReadTest {
   @RunWith(Parameterized.class)
   public static class IsSameFileTest extends PathIsSameFileTest {
     public IsSameFileTest(String left, String right, Object expected) {
-      super(ZipFilePathReadTest.fac, left, right, expected);
+      super(RealPathReadTest.fac, left, right, expected);
     }
 
 // FIXME: test case where providers differ
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Left            Right            Expected
         { "/fileInZip",    null,            false },
         { "/fileInZip",    "/fileInZip",    true  },
@@ -255,6 +246,7 @@ public class ZipFilePathReadTest {
         { "/fileNotInZip", "fileNotInZip",  true  },
         { "fileNotInZip",  "/fileNotInZip", true  },
         { "fileNotInZip",  "fileNotInZip",  true  }
+*/
       });
     }
   }
@@ -263,18 +255,16 @@ public class ZipFilePathReadTest {
   public static class NewInputStreamTest extends PathNewInputStreamTest {
     public NewInputStreamTest(String input, OpenOption[] opts,
                                                              Object expected) {
-      super(ZipFilePathReadTest.fac, input, opts, expected);
+      super(RealPathReadTest.fac, input, opts, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
-        // Input        Options                     Expected
-        { "/fileInZip", new OpenOption[0],          testDir + "fileInZip" },
-        { "/fileInZip", new OpenOption[]{ READ },   testDir + "fileInZip" },
-        { "/fileInZip", new OpenOption[]{ APPEND }, t(UnsupportedOperationException.class) },
-        { "/foo",       new OpenOption[0],          testDir + "foo"       },
-        { "foo",        new OpenOption[0],          testDir + "foo"       },
+        // Input      Options                     Expected
+        { td + "foo", new OpenOption[0],          td + "foo" },
+        { td + "foo", new OpenOption[]{ READ },   td + "foo" },
+        { td + "foo", new OpenOption[]{ APPEND }, t(UnsupportedOperationException.class) }
       });
     }
   }
@@ -282,12 +272,13 @@ public class ZipFilePathReadTest {
   @RunWith(Parameterized.class)
   public static class ReadAttributesTest extends PathReadAttributesTest {
     public ReadAttributesTest(String path, String attrs, Object expected) {
-      super(ZipFilePathReadTest.fac, path, attrs, expected);
+      super(RealPathReadTest.fac, path, attrs, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Path         Attributes     Expected
         { "/fileInZip", "*", map(
             "lastModifiedTime", FileTime.fromMillis(1259797814000L),
@@ -302,6 +293,7 @@ public class ZipFilePathReadTest {
         },
         { "/fileNotInZip", "*", t(NoSuchFileException.class) },
         { "/fileInZip", "foo:bar", map() }
+*/
       });
     }
 
@@ -319,15 +311,15 @@ public class ZipFilePathReadTest {
   @RunWith(Parameterized.class)
   public static class ToAbsolutePathTest extends PathToAbsolutePathTest {
     public ToAbsolutePathTest(String input, Object expected) {
-      super(ZipFilePathReadTest.fac, input, expected);
+      super(RealPathReadTest.fac, input, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
-        // Input        Expected
-        { "/fileInZip", "/fileInZip" },
-        { "fileInZip",  "/fileInZip" }
+        // Input  Expected
+        { "/foo", "/foo"     },
+//        { "foo",  td + "foo" }
       });
     }
   }
@@ -335,12 +327,13 @@ public class ZipFilePathReadTest {
   @RunWith(Parameterized.class)
   public static class ToRealPathTest extends PathToRealPathTest {
     public ToRealPathTest(String input, boolean resLinks, Object expected) {
-      super(ZipFilePathReadTest.fac, input, resLinks, expected);
+      super(RealPathReadTest.fac, input, resLinks, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Input                    Resolve?  Expected
         { "/dirInZip/../fileInZip", true,     "/fileInZip"         },
         { "/dirInZip/../fileInZip", false,    "/fileInZip"         },
@@ -348,6 +341,7 @@ public class ZipFilePathReadTest {
         { "fileInZip",              false,    "/fileInZip"         },
         { "fileNotInZip",           true,     t(IOException.class) },
         { "fileNotInZip",           false,    t(IOException.class) }
+*/
       });
     }
   }
@@ -369,18 +363,6 @@ public class ZipFilePathReadTest {
 
   @Test
   public void testGetFileSystem() {
-    assertEquals(fs, fs.getPath("/fileInZip").getFileSystem());
-  }
-
-  @Test
-  public void testIsHidden() {
-    assertFalse(fs.getPath("/fileInZip").isHidden());
-  }
-
-// FIXME: use zfURI somehow in parameterized case... need a pointer.
-  @Test
-  public void testToUri() {
-    final URI expected = zfURI.resolve("#/fileInZip");
-    assertEquals(expected, fs.getPath("/fileInZip").toUri());
+    assertEquals(fs, fs.getPath("/").getFileSystem());
   }
 }

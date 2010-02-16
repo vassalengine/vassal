@@ -207,7 +207,7 @@ class ZipIO {
     final ZipEntry entry = zfile.getEntry(entryStr);
     if (entry == null) {
       zfile.close();
-      throw new IOException("entry not found" + entryStr);
+      throw new IOException("entry not found: " + entryStr);
     }
 
     return wrapReadLocked(path, zfile.getInputStream(entry));
@@ -240,7 +240,7 @@ class ZipIO {
 
       final ZipEntry entry = zfile.getEntry(entryStr);
       if (entry == null) {
-        throw new IOException("entry not found" + entryStr);
+        throw new IOException("entry not found: " + entryStr);
       }
 
       final InputStream in = zfile.getInputStream(entry);

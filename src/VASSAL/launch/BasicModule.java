@@ -83,11 +83,12 @@ public class BasicModule extends GameModule {
   }
 
   protected void build() throws IOException {
-    final String fileName = BUILDFILE; 
-
+// FIXME: we need to handle the case where this is a new module differently,
+// since in that case getting the stream will fail due to there being no
+// buildFile yet.
     BufferedInputStream in = null;
     try {
-      in = new BufferedInputStream(getDataArchive().getInputStream(fileName));
+      in = new BufferedInputStream(getDataArchive().getInputStream(BUILDFILE));
     }    
     // FIXME: review error message
     // FIXME: this should be more specific, to separate the case where

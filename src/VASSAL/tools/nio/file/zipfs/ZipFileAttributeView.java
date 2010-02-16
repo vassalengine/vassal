@@ -99,6 +99,9 @@ public class ZipFileAttributeView extends ZipFileBasicAttributeView {
 
   @Override
   public void setAttribute(String attribute, Object value) throws IOException {
+    if (file.getFileSystem().isReadOnly()) {
+      throw new ReadOnlyFileSystemException();
+    }
 
     if (attribute.equals("comment")) {
     }
@@ -108,7 +111,8 @@ public class ZipFileAttributeView extends ZipFileBasicAttributeView {
     }
     else if (attribute.equals("extAttrs")) {
     }
-
-    throw new UnsupportedOperationException();
+    else {
+      throw new UnsupportedOperationException();
+    }
   }
 }

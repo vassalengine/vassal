@@ -1,4 +1,4 @@
-package VASSAL.tools.nio.file.zipfs;
+package VASSAL.tools.nio.file.realfs;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,29 +49,26 @@ import static VASSAL.tools.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-  ZipFilePathWriteTest.CopyToExtIntTest.class,
-  ZipFilePathWriteTest.CopyToIntExtTest.class,
-  ZipFilePathWriteTest.CopyToIntIntTest.class,
-  ZipFilePathWriteTest.CreateDirectoryTest.class,
-  ZipFilePathWriteTest.CreateFileTest.class,
-  ZipFilePathWriteTest.DeleteTest.class,
-  ZipFilePathWriteTest.DeleteIfExistsTest.class,
-  ZipFilePathWriteTest.MoveToExtIntTest.class,
-  ZipFilePathWriteTest.MoveToIntExtTest.class,
-  ZipFilePathWriteTest.MoveToIntIntTest.class,
-  ZipFilePathWriteTest.NewOutputStreamTest.class,
-  ZipFilePathWriteTest.SetAttributeTest.class
+  RealPathWriteTest.CopyToExtIntTest.class,
+  RealPathWriteTest.CopyToIntExtTest.class,
+  RealPathWriteTest.CopyToIntIntTest.class,
+  RealPathWriteTest.CreateDirectoryTest.class,
+  RealPathWriteTest.CreateFileTest.class,
+  RealPathWriteTest.DeleteTest.class,
+  RealPathWriteTest.DeleteIfExistsTest.class,
+  RealPathWriteTest.MoveToExtIntTest.class,
+  RealPathWriteTest.MoveToIntExtTest.class,
+  RealPathWriteTest.MoveToIntIntTest.class,
+  RealPathWriteTest.NewOutputStreamTest.class,
+  RealPathWriteTest.SetAttributeTest.class
 })
-public class ZipFilePathWriteTest {
+public class RealPathWriteTest {
 
   protected static final String thisDir =
-    "test/VASSAL/tools/nio/file/zipfs/writetest/".replace("/", File.separator);
+    "test/VASSAL/tools/nio/file/realfs/writetest/".replace("/", File.separator);
 
   protected static final String td =
-    thisDir + ("../test/".replace("/", File.separator));
-
-  protected static final String zfName = "write.zip";
-  protected static final String zfPathName = td + zfName;
+    thisDir + ("../tmp/".replace("/", File.separator));
 
   protected static final FSHandler fac = new FSHandler() {
     public FileSystem setup() throws IOException {
@@ -79,15 +76,11 @@ public class ZipFilePathWriteTest {
       final Path tdPath = Paths.get(td);
       FileUtils.deleteIfExists(tdPath);
       FileUtils.copy(Paths.get(thisDir), tdPath);
-      
-      final Path zfWrite = Paths.get(zfPathName).toAbsolutePath();
-      final URI zfURI = URI.create("zip://" + zfWrite.toString());
-      return FileSystems.newFileSystem(zfURI, null);
+
+      return FileSystems.getDefault();
     }
       
     public void teardown(FileSystem fs) throws IOException {
-      fs.close();
-
       // tear down our test directory
       final Path tdPath = Paths.get(td);
       FileUtils.deleteIfExists(tdPath);
@@ -98,12 +91,13 @@ public class ZipFilePathWriteTest {
   public static class CopyToIntIntTest extends PathCopyToIntIntTest {
     public CopyToIntIntTest(String src, String dst,
                             CopyOption[] opts, Object expected) {
-      super(ZipFilePathWriteTest.fac, src, dst, opts, expected);
+      super(RealPathWriteTest.fac, src, dst, opts, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Source Destination Opts  Expected
         { "foo",  null,  null, t(NullPointerException.class)             },
         { "bar",  "nay", null, t(NoSuchFileException.class)              },
@@ -118,6 +112,7 @@ public class ZipFilePathWriteTest {
         { "dirInZip", "yea", new CopyOption[]{ REPLACE_EXISTING }, null  },
         { "/dirInZip", "yea", null, t(FileAlreadyExistsException.class)  },
         { "/dirInZip", "yea", new CopyOption[]{ REPLACE_EXISTING }, null }
+*/
       });
     }
   }
@@ -126,12 +121,13 @@ public class ZipFilePathWriteTest {
   public static class CopyToIntExtTest extends PathCopyToIntExtTest {
     public CopyToIntExtTest(String src, String dst,
                             CopyOption[] opts, Object expected) {
-      super(ZipFilePathWriteTest.fac, src, dst, opts, expected);
+      super(RealPathWriteTest.fac, src, dst, opts, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Source Destination Opts  Expected
         { "foo",  null,       null, t(NullPointerException.class)             },
         { "bar",  td + "nay", null, t(NoSuchFileException.class)              },
@@ -146,6 +142,7 @@ public class ZipFilePathWriteTest {
         { "dirInZip", td + "yea", new CopyOption[]{ REPLACE_EXISTING }, null  },
         { "/dirInZip", td + "yea", null, t(FileAlreadyExistsException.class)  },
         { "/dirInZip", td + "yea", new CopyOption[]{ REPLACE_EXISTING }, null }
+*/
       });
     }
   }
@@ -154,12 +151,13 @@ public class ZipFilePathWriteTest {
   public static class CopyToExtIntTest extends PathCopyToExtIntTest {
     public CopyToExtIntTest(String src, String dst,
                             CopyOption[] opts, Object expected) {
-      super(ZipFilePathWriteTest.fac, src, dst, opts, expected);
+      super(RealPathWriteTest.fac, src, dst, opts, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Source Destination Opts  Expected
         { td + "foo", null,   null, t(NullPointerException.class)        },
         { td + "bar", "nay",  null, t(NoSuchFileException.class)         },
@@ -174,6 +172,7 @@ public class ZipFilePathWriteTest {
         { td + "dir", "yea",  new CopyOption[]{ REPLACE_EXISTING }, null },
         { td + "dir", "/yea", null, t(FileAlreadyExistsException.class)  },
         { td + "dir", "/yea", new CopyOption[]{ REPLACE_EXISTING }, null }
+*/
       });
     }
   }
@@ -182,17 +181,19 @@ public class ZipFilePathWriteTest {
   @RunWith(Parameterized.class)
   public static class CreateDirectoryTest extends PathCreateDirectoryTest {
     public CreateDirectoryTest(String input, Object expected) {
-      super(ZipFilePathWriteTest.fac, input, expected);
+      super(RealPathWriteTest.fac, input, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Input           Expected
         { "/dirInZip",     t(FileAlreadyExistsException.class) },
         { "/foodir",       null                                },
         { "dirInZip",      t(FileAlreadyExistsException.class) },
         { "bardir",        null                                }
+*/
       });
     }
   }
@@ -201,17 +202,19 @@ public class ZipFilePathWriteTest {
   @RunWith(Parameterized.class)
   public static class CreateFileTest extends PathCreateFileTest {
     public CreateFileTest(String input, Object expected) {
-      super(ZipFilePathWriteTest.fac, input, expected);
+      super(RealPathWriteTest.fac, input, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Input           Expected
         { "/fileInZip",    t(FileAlreadyExistsException.class) },
         { "/bar",          null                                },
         { "fileInZip",     t(FileAlreadyExistsException.class) },
         { "bar",           null                                }
+*/
       });
     }
   }
@@ -219,17 +222,19 @@ public class ZipFilePathWriteTest {
   @RunWith(Parameterized.class)
   public static class DeleteTest extends PathDeleteTest {
     public DeleteTest(String input, Object expected) {
-      super(ZipFilePathWriteTest.fac, input, expected);
+      super(RealPathWriteTest.fac, input, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Input       Expected
         { "/",         t(IOException.class)                },
         { "/notAFile", t(NoSuchFileException.class)        },
         { "/foo",      null                                },
         { "/dirInZip", t(DirectoryNotEmptyException.class) }
+*/
       });
     }
   }
@@ -237,17 +242,19 @@ public class ZipFilePathWriteTest {
   @RunWith(Parameterized.class)
   public static class DeleteIfExistsTest extends PathDeleteIfExistsTest {
     public DeleteIfExistsTest(String input, Object expected) {
-      super(ZipFilePathWriteTest.fac, input, expected);
+      super(RealPathWriteTest.fac, input, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Input
         { "/",         t(IOException.class)                },
         { "/notAFile", null                                },
         { "/foo",      null                                },
         { "/dirInZip", t(DirectoryNotEmptyException.class) }
+*/
       });
     }
   }
@@ -256,7 +263,7 @@ public class ZipFilePathWriteTest {
   public static class MoveToIntIntTest extends PathMoveToIntIntTest {
     public MoveToIntIntTest(String src, String dst,
                             CopyOption[] opts, Object expected) {
-      super(ZipFilePathWriteTest.fac, src, dst, opts, expected);
+      super(RealPathWriteTest.fac, src, dst, opts, expected);
     }
 
     @Parameters
@@ -286,7 +293,7 @@ public class ZipFilePathWriteTest {
   public static class MoveToIntExtTest extends PathMoveToIntExtTest {
     public MoveToIntExtTest(String src, String dst,
                             CopyOption[] opts, Object expected) {
-      super(ZipFilePathWriteTest.fac, src, dst, opts, expected);
+      super(RealPathWriteTest.fac, src, dst, opts, expected);
     }
 
     @Parameters
@@ -316,7 +323,7 @@ public class ZipFilePathWriteTest {
   public static class MoveToExtIntTest extends PathMoveToExtIntTest {
     public MoveToExtIntTest(String src, String dst,
                             CopyOption[] opts, Object expected) {
-      super(ZipFilePathWriteTest.fac, src, dst, opts, expected);
+      super(RealPathWriteTest.fac, src, dst, opts, expected);
     }
 
     @Parameters
@@ -346,19 +353,19 @@ public class ZipFilePathWriteTest {
   public static class NewOutputStreamTest extends PathNewOutputStreamTest {
     public NewOutputStreamTest(String src, String dst,
                                OpenOption[] opts, Object expected) {
-      super(ZipFilePathWriteTest.fac, src, dst, opts, expected);
+      super(RealPathWriteTest.fac, src, dst, opts, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
         // Source     Destination   Options            Expected
-        { td + "foo", "/fileInZip", new OpenOption[0], td + "foo" },
-        { td + "foo", "/fileInZip", new OpenOption[]{ READ }, t(IllegalArgumentException.class) },
-        { td + "foo", "/fileInZip", new OpenOption[]{ APPEND }, td + "foo" },
-        { td + "foo", "/foo",       new OpenOption[]{ APPEND }, td + "foofoo" },
-        { td + "foo", "/foo",       new OpenOption[]{ CREATE_NEW }, t(FileAlreadyExistsException.class) },
-        { td + "foo", "/bar",       new OpenOption[]{ CREATE_NEW }, td + "foo" }
+        { td + "foo", td + "bar", new OpenOption[0], td + "foo" },
+        { td + "foo", td + "bar", new OpenOption[]{ READ }, t(IllegalArgumentException.class) },
+        { td + "foo", td + "bar", new OpenOption[]{ APPEND }, td + "foo" },
+        { td + "foo", td + "alsofoo", new OpenOption[]{ APPEND }, td + "foofoo" },
+        { td + "foo", td + "dst", new OpenOption[]{ CREATE_NEW }, t(FileAlreadyExistsException.class) },
+        { td + "foo", td + "bar", new OpenOption[]{ CREATE_NEW }, td + "foo" }
       });
     }
   }
@@ -367,18 +374,20 @@ public class ZipFilePathWriteTest {
   public static class SetAttributeTest extends PathSetAttributeTest {
     public SetAttributeTest(String path, String attr,
                             Object value, Object expected) {
-      super(ZipFilePathWriteTest.fac, path, attr, value, expected);
+      super(RealPathWriteTest.fac, path, attr, value, expected);
     }
 
     @Parameters
     public static List<Object[]> cases() {
       return Arrays.asList(new Object[][] {
+/*
         // Path   Attribute   Value   Expected
         { "foo", "bogus",       null, t(UnsupportedOperationException.class) },
         { "foo", "basic:bogus", null, t(UnsupportedOperationException.class) },
         { "foo", "bogus:bogus", null, t(UnsupportedOperationException.class) },
         { "foo", "basic:size",  null, t(UnsupportedOperationException.class) },
         { "foo", "lastModifiedTime", FileTime.fromMillis(315532800000L), null }
+*/
       });
     }
   }
