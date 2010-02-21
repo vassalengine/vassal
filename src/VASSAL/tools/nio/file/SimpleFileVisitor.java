@@ -1,8 +1,8 @@
 package VASSAL.tools.nio.file;
 
-import java.io.IOError;
 import java.io.IOException;
 
+import VASSAL.tools.io.IOError;
 import VASSAL.tools.nio.file.attribute.BasicFileAttributes;
 
 public class SimpleFileVisitor<T> implements FileVisitor<T> {
