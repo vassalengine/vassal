@@ -69,7 +69,7 @@ public class ArchiveWriter extends DataArchive {
         archiveName = f.getAbsolutePath();
       }
 
-      final URI uri = URI.create("zip://" + archiveName);
+      final URI uri = URIUtils.toURI("zip", new File(archiveName));
       archive = FileSystems.newFileSystem(uri, null);
     }
     catch (IOException e) {
@@ -212,7 +212,7 @@ public class ArchiveWriter extends DataArchive {
     final Path znew = Paths.get(filename);
 
     if (!zold.isSameFile(znew)) {
-      final URI uri = URI.create("zip://" + filename); 
+      final URI uri = URIUtils.toURI("zip", new File(filename)); 
       final ZipFileSystem tmpArchive =
         (ZipFileSystem) FileSystems.newFileSystem(uri, null);
 

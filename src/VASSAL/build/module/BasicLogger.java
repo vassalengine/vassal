@@ -56,6 +56,7 @@ import VASSAL.launch.Launcher;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
+import VASSAL.tools.URIUtils;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogFileFilter;
@@ -302,7 +303,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         IOUtils.closeQuietly(out);
       }
 
-      final URI uri = URI.create("zip://" + outputFile.getAbsolutePath());
+      final URI uri = URIUtils.toURI("zip", outputFile);
       FileSystem zfs = null;
 
       try {

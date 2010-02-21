@@ -28,6 +28,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
+import VASSAL.tools.URIUtils;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.nio.file.FileSystem;
 import VASSAL.tools.nio.file.FileSystemAlreadyExistsException;
@@ -82,7 +84,7 @@ public class PrefsEditor {
     prefs = new ArrayList<Prefs>();
     optionsTab = new JTabbedPane();
 
-    final URI uri = URI.create("zip://" + archive.getName());
+    final URI uri = URIUtils.toURI("zip", new File(archive.getName()));
     fs = FileSystems.getFileSystem(uri);
   }
 
@@ -199,7 +201,7 @@ public class PrefsEditor {
 
   public FileSystem getFileSystem() {
     if (!fs.isOpen()) {
-      final URI uri = URI.create("zip://" + ((ZipFileSystem) fs).getZipFileSystemFile());
+      final URI uri = URIUtils.toURI("zip", new File(((ZipFileSystem) fs).getZipFileSystemFile()));
 
 // FIXME:
 //

@@ -67,6 +67,7 @@ import VASSAL.launch.Launcher;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThrowableUtils;
+import VASSAL.tools.URIUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
@@ -616,7 +617,7 @@ public class GameState implements CommandEncoder {
       IOUtils.closeQuietly(out);
     }
 
-    final URI uri = URI.create("zip://" + f.getAbsolutePath());
+    final URI uri = URIUtils.toURI("zip", f);
     FileSystem zfs = null;
 
     try {

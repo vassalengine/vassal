@@ -41,6 +41,7 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.URIUtils;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.nio.file.FileSystem;
 import VASSAL.tools.nio.file.FileSystemAlreadyExistsException;
@@ -246,8 +247,8 @@ public class Prefs implements Closeable {
   public static Prefs getGlobalPrefs() {
     if (globalPrefs == null) {
       final File prefsFile = new File(Info.getHomeDir(), "Preferences");
+      final URI uri = URIUtils.toURI("zip", prefsFile);
 
-      final URI uri = URI.create("zip://" + prefsFile.getAbsolutePath());
       FileSystem fs = null;
       try {
 // FIXME:

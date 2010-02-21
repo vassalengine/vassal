@@ -95,7 +95,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   public DataArchive(String zipName, String imageDir) throws IOException {
     this();
     
-    final URI uri = URI.create("zip://" + zipName);
+    final URI uri = URIUtils.toURI("zip", new File(zipName));
     archive = FileSystems.newFileSystem(uri, null);
 
     this.imageDir = imageDir;
