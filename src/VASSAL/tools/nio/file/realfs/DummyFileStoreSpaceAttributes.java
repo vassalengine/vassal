@@ -2,7 +2,7 @@ package VASSAL.tools.nio.file.realfs;
 
 import VASSAL.tools.nio.file.attribute.FileStoreSpaceAttributes;
 
-class DummyFileStoreAttributes implements FileStoreSpaceAttributes {
+class DummyFileStoreSpaceAttributes implements FileStoreSpaceAttributes {
   public long totalSpace() {
     return 0L;
   }

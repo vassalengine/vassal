@@ -11,6 +11,6 @@ class DummyFileStoreAttributeView implements FileStoreSpaceAttributeView {
   }
 
   public FileStoreSpaceAttributes readAttributes() throws IOException {
-    return new DummyFileStoreAttributes();
+    return new DummyFileStoreSpaceAttributes();
   }
 }
