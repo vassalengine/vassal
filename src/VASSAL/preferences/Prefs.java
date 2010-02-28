@@ -49,6 +49,7 @@ import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.nio.file.FileSystem;
 import VASSAL.tools.nio.file.FileSystems;
 import VASSAL.tools.nio.file.Path;
+import VASSAL.tools.nio.file.Paths;
 import VASSAL.tools.nio.file.zipfs.ZipFileSystem;
 
 /**
@@ -177,6 +178,10 @@ public class Prefs implements Closeable {
   private void read() {
     final URI uri = editor.getURI();
 
+    final Path p = Paths.get(uri.getPath());
+    // nothing to do if the prefs file doesn't exist yet
+    if (!p.exists()) return;
+
     FileSystem fs = null;
     try {
       fs = FileSystems.newFileSystem(uri, DataArchive.zipOpts);
@@ -198,7 +203,7 @@ public class Prefs implements Closeable {
       fs.close();
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, ((ZipFileSystem) fs).getZipFileSystemFile());
+      ReadErrorDialog.error(e, p.toString());
     }
     finally {
       IOUtils.closeQuietly(fs);
