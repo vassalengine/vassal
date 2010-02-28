@@ -100,10 +100,10 @@ public class IconFamily extends AbstractConfigurable {
 
   // Directories within the icons directory to locate each Tango Size
   static final String[] SIZE_DIRS = new String[] {
-    "16x16", //$NON-NLS-1$ 
-    "22x22", //$NON-NLS-1$
-    "32x32", //$NON-NLS-1$
-    "48x48"  //$NON-NLS-1$
+    "16x16/", //$NON-NLS-1$ 
+    "22x22/", //$NON-NLS-1$
+    "32x32/", //$NON-NLS-1$
+    "48x48/"  //$NON-NLS-1$
   };
 
   // Names of sizes in local language
@@ -111,7 +111,7 @@ public class IconFamily extends AbstractConfigurable {
 
   // Directory within the icons directory holding the Scalable versions of the
   // icons
-  static final String SCALABLE_DIR = "scalable"; //$NON-NLS-1$
+  static final String SCALABLE_DIR = "scalable/"; //$NON-NLS-1$
 
   // Cache of the icons in this family
   protected OpIcon[] icons;
@@ -614,10 +614,10 @@ public class IconFamily extends AbstractConfigurable {
       }
 
       if (size < 0) {
-        return ArchiveWriter.ICON_DIR + IconFamily.SCALABLE_DIR + "/" + s; //$NON-NLS-1$
+        return ArchiveWriter.ICON_DIR + IconFamily.SCALABLE_DIR + s; //$NON-NLS-1$
       }
       else {
-        return ArchiveWriter.ICON_DIR + IconFamily.SIZE_DIRS[size] + "/" + s; //$NON-NLS-1$
+        return ArchiveWriter.ICON_DIR + IconFamily.SIZE_DIRS[size] + s; //$NON-NLS-1$
       }
     }
 

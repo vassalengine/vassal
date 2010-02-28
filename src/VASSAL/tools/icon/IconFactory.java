@@ -271,17 +271,16 @@ public final class IconFactory {
       //Build a URL to the Vassal images folder. It is guaranteed to exist
       // in any version of Vassal
       imageUrl = jar.getURL(DataArchive.IMAGE_DIR);
-      
       // Determine if we are running locally under a debugger, or 
       // from an installation package. If running an installed version
       // of Vassal, the images URL will start with "jar:".   
-      if (imageUrl.toString().startsWith(FILE)) {
+      if (imageUrl.toString().startsWith(FILE)) {      
         findLocalScalableIcons();
         for (int size = 0; size < IconFamily.SIZE_DIRS.length; size++) {
           findLocalSizedIcons(size);
         }
       }
-      else if (imageUrl.toString().startsWith(JAR)) {
+      else if (imageUrl.toString().startsWith(JAR)) {     
         findJarIcons();
       }
       else {
@@ -315,7 +314,7 @@ public final class IconFactory {
           if (family == null) {
             family = new IconFamily(familyName);
           }
-          family.setSizeIconPath(size, "/" + path + "/" + imageName); //$NON-NLS-1$ //$NON-NLS-2$
+          family.setSizeIconPath(size, "/" + path + imageName); //$NON-NLS-1$ //$NON-NLS-2$
           iconFamilies.put(familyName, family);
         }
       }
@@ -346,7 +345,7 @@ public final class IconFactory {
           if (family == null) {
             family = new IconFamily(familyName);
           }
-          family.setScalableIconPath("/" + scalablePath + "/" + imageName); //$NON-NLS-1$ //$NON-NLS-2$
+          family.setScalableIconPath("/" + scalablePath + imageName); //$NON-NLS-1$ //$NON-NLS-2$
           iconFamilies.put(familyName, family);
         }
       }
@@ -361,10 +360,9 @@ public final class IconFactory {
    * @throws IOException
    */
   private void findJarIcons() throws IOException {
-    
+     
     // Path to scalable icons
     final String scalablePath = DataArchive.ICON_DIR+IconFamily.SCALABLE_DIR;
-    
     // Path to sized icons
     final String[] sizePaths = new String[IconFamily.SIZE_COUNT];
     for (int size = 0; size < IconFamily.SIZE_COUNT; size++) {
@@ -377,30 +375,32 @@ public final class IconFactory {
     for (Enumeration<JarEntry> e = vengine.entries(); e.hasMoreElements();) {
       final JarEntry entry = e.nextElement();
       final String entryName = entry.getName();
-      
-      if (entryName.startsWith(scalablePath) && ! entryName.equals(scalablePath)) {   
-        final String imageName = entryName.substring(scalablePath.length());
-        final String familyName = imageName.split("\\.")[0]; //$NON-NLS-1$
-        IconFamily family = iconFamilies.get(familyName);
-        if (family == null) {
-          family = new IconFamily(familyName);
-        }
-        family.setScalableIconPath("/" + entryName); //$NON-NLS-1$
-        iconFamilies.put(familyName, family);
-        break;
-      }
-    
-      for (int size = 0; size < IconFamily.SIZE_COUNT; size++) {
-        if (entryName.startsWith(sizePaths[size]) && ! entryName.equals(sizePaths[size])) {
-          final String imageName = entryName.substring(sizePaths[size].length());
+
+      if (entryName.startsWith(DataArchive.ICON_DIR)) {
+        if (entryName.startsWith(scalablePath) && ! entryName.equals(scalablePath)) {
+          final String imageName = entryName.substring(scalablePath.length());
           final String familyName = imageName.split("\\.")[0]; //$NON-NLS-1$
           IconFamily family = iconFamilies.get(familyName);
           if (family == null) {
             family = new IconFamily(familyName);
           }
-          family.setSizeIconPath(size, "/" + entryName); //$NON-NLS-1$
+          family.setScalableIconPath("/" + entryName); //$NON-NLS-1$
           iconFamilies.put(familyName, family);
-          break;
+          continue;
+        }
+    
+        for (int size = 0; size < IconFamily.SIZE_COUNT; size++) {
+          if (entryName.startsWith(sizePaths[size]) && ! entryName.equals(sizePaths[size])) {
+            final String imageName = entryName.substring(sizePaths[size].length());
+            final String familyName = imageName.split("\\.")[0]; //$NON-NLS-1$
+            IconFamily family = iconFamilies.get(familyName);
+            if (family == null) {
+              family = new IconFamily(familyName);
+            }
+            family.setSizeIconPath(size, "/" + entryName); //$NON-NLS-1$
+            iconFamilies.put(familyName, family);
+            break;
+          }
         }
       }
     }
