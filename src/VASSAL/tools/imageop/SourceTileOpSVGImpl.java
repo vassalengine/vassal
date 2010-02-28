@@ -28,9 +28,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.HashCode;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.svg.SVGRenderer;
@@ -70,14 +71,12 @@ public class SourceTileOpSVGImpl extends AbstractTileOpImpl
 
     size = new Dimension(x1-x0, y1-y0);
 
-    final int PRIME = 31;
-    int result = 1;
-    result = PRIME * result + HashCode.hash(sop);
-    result = PRIME * result + HashCode.hash(x0);
-    result = PRIME * result + HashCode.hash(y0);
-    result = PRIME * result + HashCode.hash(x1);
-    result = PRIME * result + HashCode.hash(y1);
-    hash = result;
+    hash = new HashCodeBuilder().append(sop)
+                                .append(x0)
+                                .append(y0)
+                                .append(x1)
+                                .append(y1)
+                                .toHashCode();
   }
  
   public List<Op<?>> getSources() {

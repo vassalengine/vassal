@@ -445,6 +445,7 @@ public class GlobalMap implements AutoConfigurable,
   protected class View extends JPanel implements MouseListener {
     private static final long serialVersionUID = 1L;
 
+    @Override
     protected void paintComponent(Graphics g) {
       map.drawBoards(g,
                      -Math.round((float) scale * map.getEdgeBuffer().width),

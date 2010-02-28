@@ -18,6 +18,8 @@
  */
 package VASSAL.chat;
 
+import org.apache.commons.lang.StringUtils;
+
 import VASSAL.chat.messageboard.Message;
 import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
@@ -25,7 +27,6 @@ import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
 import VASSAL.build.GameModule;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.StringUtils;
 
 import java.util.*;
 import java.io.IOException;
@@ -75,8 +76,10 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
           date = date.substring(date.indexOf("=") + 1); //$NON-NLS-1$
           s = st.nextToken(""); //$NON-NLS-1$
 
-          String content = StringUtils.join("\n", //$NON-NLS-1$
-            new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|')); //$NON-NLS-1$
+          String content = StringUtils.join(
+            new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|'),
+            '\n'
+          );
 
           content = restorePercent(content);
           Date created = null;

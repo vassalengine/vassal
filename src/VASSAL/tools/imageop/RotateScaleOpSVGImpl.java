@@ -28,9 +28,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.HashCode;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageUtils;
@@ -87,10 +88,11 @@ public class RotateScaleOpSVGImpl extends AbstractTileOpImpl
     this.scale = scale;
     this.hints = hints;
 
-    hash = HashCode.hash(scale) ^
-           HashCode.hash(angle) ^
-           HashCode.hash(hints) ^
-           HashCode.hash(sop);
+    hash = new HashCodeBuilder().append(sop)
+                                .append(scale)
+                                .append(angle)
+                                .append(hints)
+                                .toHashCode();
   }
 
   public List<VASSAL.tools.opcache.Op<?>> getSources() {

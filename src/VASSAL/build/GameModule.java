@@ -18,19 +18,32 @@
  */
 package VASSAL.build;
 
+import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -90,17 +103,26 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.FutureUtils;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
 import VASSAL.tools.NamedKeyStroke;
+import VASSAL.tools.ProgressDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.concurrent.EDT;
+import VASSAL.tools.concurrent.Exec;
+import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.image.ImageIOException;
+import VASSAL.tools.image.ImageNotFoundException;
+import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.io.FileUtils;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.image.tilecache.ImageTiler;
 
 /**
  * The GameModule class is the base class for a VASSAL module.  It is
@@ -217,6 +239,76 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     
     addCommandEncoder(new ChangePropertyCommandEncoder(propsContainer));
   }
+
+  protected void sliceLargeImages() throws IOException {
+    // determine whether the tile cache is stale
+    final File tdir =
+      new File(Info.getConfDir(), "tiles/" + gameName + "_" + moduleVersion);
+
+    if (tdir.exists()) {
+      if (new File(archive.getName()).lastModified() <= tdir.lastModified()) {
+        return;
+      }
+      else {
+        FileUtils.recursiveDelete(tdir);
+      }
+    }
+
+    FileUtils.mkdirs(tdir);
+
+    final ProgressDialog pd = new ProgressDialog(
+      null, "Preparing Module", "Preparing this module for its first use...");
+
+    pd.setIndeterminate(true);
+    pd.setModal(true);
+
+    final ImageTiler task = new ImageTiler(archive, tdir);
+
+    task.addPropertyChangeListener(new PropertyChangeListener() {
+      public void propertyChange(final PropertyChangeEvent e) {
+        EDT.execute(new Runnable() {
+          public void run() {
+            if ("progress".equals(e.getPropertyName())) {
+              pd.setProgress((Integer) e.getNewValue());
+            }
+            else if ("image".equals(e.getPropertyName())) {
+              pd.setLabel((String) e.getNewValue());
+            }
+            else if ("step".equals(e.getPropertyName())) {
+              switch ((Integer) e.getNewValue()) {
+              case ImageTiler.FIND_IMAGES:
+                pd.setLabel("Scanning module for images...");
+                break; 
+              case ImageTiler.FIND_LARGE_IMAGES:
+                break;
+              case ImageTiler.WRITE_TILES:
+                pd.setLabel("Tiling large images...");
+                pd.setIndeterminate(false);
+                pd.setProgress(0);
+                break;
+              case ImageTiler.DONE:
+                pd.setVisible(false);
+                pd.dispose();
+                break;
+              }
+            }
+          }
+        });
+      }
+    });
+
+    final Future<Void> f = Exec.ex.submit(task);
+
+    pd.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        f.cancel(true);
+        System.exit(0);
+      } 
+    });
+
+    pd.pack();
+    pd.setVisible(true);
+  }  
 
   /**
    * Initialize the module
@@ -906,6 +998,13 @@ public abstract class GameModule extends AbstractConfigurable implements Command
      */
     for (Plugin plugin : theModule.getComponentsOf(Plugin.class)) {
       plugin.init();
+    }
+
+    try {
+       module.sliceLargeImages();
+    }
+    catch (IOException e) {
+      ErrorDialog.bug(e);
     }
   }
   

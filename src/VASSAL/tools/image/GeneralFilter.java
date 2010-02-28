@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007-2009 by Joel Uckelman
+ * Copyright (c) 2007-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -250,19 +250,34 @@ public final class GeneralFilter {
    * @throws ClassCastException if <code>srcI</code> does not store its data
    * in a {@link DataBufferInt}
    */
-  public static void zoom(WritableRaster dstR,
-                          Rectangle dst,
-                          BufferedImage srcI,
-                          final Filter filter) {
+  public static void zoom(
+    WritableRaster dstR,
+    Rectangle dst_fr,
+    BufferedImage srcI,
+    final Filter filter)
+  {
+    final int dst_data[] = ((DataBufferInt) dstR.getDataBuffer()).getData();
+
+    final int src_type;
+    if (srcI.getTransparency() == BufferedImage.OPAQUE) {
+      src_type = OPAQUE;
+    }
+    else if (srcI.isAlphaPremultiplied()) {
+      src_type = TRANS_PREMULT;
+    }
+    else {
+      src_type = TRANS_UNPREMULT;
+    }
+  
     final int dx0 = dstR.getMinX();
     final int dy0 = dstR.getMinY();
     final int dx1 = dx0 + dstR.getWidth() - 1;
     final int dy1 = dy0 + dstR.getHeight() - 1;
-    final int dw = dx1 - dx0 + 1;
-    final int dh = dy1 - dy0 + 1;
+    final int dw = dstR.getWidth();
+    final int dh = dstR.getHeight();
 
-    final int dstWidth = dst.width;
-    final int dstHeight = dst.height;
+    final int dstWidth = dst_fr.width;
+    final int dstHeight = dst_fr.height;
 
     final int srcWidth = srcI.getWidth();
     final int srcHeight = srcI.getHeight();
@@ -287,8 +302,44 @@ public final class GeneralFilter {
     final Raster srcR = srcI.getData(new Rectangle(sx0, sy0, sw, sh));
     final int src_data[] = ((DataBufferInt) srcR.getDataBuffer()).getData();
 
+    resample(
+      src_data, sx0, sy0, sx1, sy1, sw, sh, src_type, srcWidth, srcHeight,
+      dst_data, dx0, dy0, dx1, dy1, dw, dh, dstWidth, dstHeight,
+      xscale, yscale, filter
+    );
+  }
+
+  public static final int OPAQUE = 0;
+  public static final int TRANS_PREMULT = 1;
+  public static final int TRANS_UNPREMULT = 2;
+
+  public static void resample(
+    int[] src_data,
+    int sx0,
+    int sy0,
+    int sx1,
+    int sy1,
+    int sw,
+    int sh,
+    int src_type,
+    int srcWidth,   // width of full soruce
+    int srcHeight,  // height of full source
+    int[] dst_data,
+    int dx0,
+    int dy0,
+    int dx1,
+    int dy1,
+    int dw,
+    int dh,
+    int dstWidth,   // width of full destination
+    int dstHeight,  // height of full destination
+    float xscale,
+    float yscale,
+    final Filter filter)
+  {
     final int work[] = new int[sh];
-    final int dst_data[] = ((DataBufferInt) dstR.getDataBuffer()).getData();
+
+    final float fwidth = filter.getSamplingRadius();
 
     final CList[] ycontrib =
       calc_contrib(dh, fwidth, yscale, dy0, sy0, sh, filter);
@@ -296,21 +347,22 @@ public final class GeneralFilter {
       calc_contrib(dw, fwidth, xscale, dx0, sx0, sw, filter);
 
     // apply the filter
-    if (srcI.getTransparency() == BufferedImage.OPAQUE) {
+    switch (src_type) {
+    case OPAQUE: 
       // handle TYPE_INT_RGB, TYPE_INT_BGR
       for (int dx = 0; dx < dw; ++dx) {
         apply_horizontal_opaque(sh, xcontrib[dx], src_data, sw, work);
         apply_vertical_opaque(dh, ycontrib, work, dst_data, dx, dw);
       }
-    }
-    else if (srcI.isAlphaPremultiplied()) {
+      break;
+    case TRANS_PREMULT:
       // handle TYPE_INT_ARGB_PRE 
       for (int dx = 0; dx < dw; ++dx) {
         apply_horizontal(sh, xcontrib[dx], src_data, sw, work);
         apply_vertical(dh, ycontrib, work, dst_data, dx, dw);
       }
-    }
-    else {
+      break;
+    case TRANS_UNPREMULT:
       // handle TYPE_INT_ARGB
 
       // premultiply (copy of) source data
@@ -356,6 +408,9 @@ public final class GeneralFilter {
             ((int)(((pre       ) & 0xff) * inv_na + 0.5f));
         }
       }
+      break;
+    default:
+      throw new IllegalArgumentException();
     }
   }
 

@@ -81,8 +81,11 @@ public final class IconFactory {
    * Create a new IconFactory.
    */
   public IconFactory () {
+// FIXME: Why do this? Have a final INSTANCE instead.
     setInstance(this);    
-    
+
+// FIXME: Maybe send this off to an executor?
+// FIXME: preloadThread is never set to null, cannot be gc'd     
     // Find all available Icon Familys within Vassal.
     // May take a little while, so run it on a background thread
     preloadThread = new Thread(new Runnable(){
@@ -110,7 +113,7 @@ public final class IconFactory {
   public static Icon getIcon(String iconFamilyName, int size) {
     IconFamily family = getInstance().getFamily(iconFamilyName);
     if (family == null) {
-      throw new IllegalStateException(Resources.getString("Error.not_found", IconFamily.getConfigureTypeName()+iconFamilyName)); //$NON-NLS-1$
+      throw new IllegalStateException(Resources.getString("Error.not_found", IconFamily.getConfigureTypeName() + " " + iconFamilyName)); //$NON-NLS-1$
     }
     return family.getIcon(size);
   }
@@ -125,7 +128,7 @@ public final class IconFactory {
   public static BufferedImage getImage(String iconFamilyName, int size) {
     final IconFamily family = getInstance().getFamily(iconFamilyName);
     if (family == null) {
-      throw new IllegalStateException(Resources.getString("Error.not_found", IconFamily.getConfigureTypeName()+iconFamilyName)); //$NON-NLS-1$
+      throw new IllegalStateException(Resources.getString("Error.not_found", IconFamily.getConfigureTypeName()+ " " + iconFamilyName)); //$NON-NLS-1$
     }
     return family.getImage(size);
   }
@@ -222,7 +225,8 @@ public final class IconFactory {
    */
   IconFamily getFamily(String iconFamilyName) {
     try {
-      
+
+// FIXME: This is bad---we should wait on a Future instead.      
       // Ensure preload is complete
       if (preloadThread.isAlive()) {
         try {

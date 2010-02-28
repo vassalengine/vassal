@@ -72,8 +72,6 @@ import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.menu.MenuManager;
 
 public class BasicModule extends GameModule {
-  public static final String PREFER_MEMORY_MAPPED = "preferMemoryMapped"; //$NON-NLS-1$
-  public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
   private static char COMMAND_SEPARATOR = (char) KeyEvent.VK_ESCAPE;
   protected ChatServerControls serverControls;
   protected GameRefresher gameRefresher;
@@ -185,16 +183,6 @@ public class BasicModule extends GameModule {
   }
    
   protected void initImagePreferences() {
-    final BooleanConfigurer mappedPref = new BooleanConfigurer(
-        PREFER_MEMORY_MAPPED,
-        "Prefer memory-mapped files for large images?", //$NON-NLS-1$
-        Boolean.FALSE);
-    mappedPref.addPropertyChangeListener(new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        ImageUtils.setPreferMemoryMappedFiles(Boolean.TRUE.equals(mappedPref.getValue()));
-      }
-    });
-    GameModule.getGameModule().getPrefs().addOption(mappedPref); 
   }
 
   protected void initServer() {

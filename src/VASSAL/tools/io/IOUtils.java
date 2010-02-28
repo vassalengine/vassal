@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007-2008 by Joel Uckelman
+ * Copyright (c) 2007-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,6 +21,8 @@ package VASSAL.tools.io;
 import java.io.ByteArrayInputStream;
 import java.io.BufferedInputStream;
 import java.io.Closeable;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -31,6 +33,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.channels.FileChannel;
 import java.util.zip.ZipFile;
 import javax.imageio.stream.ImageInputStream;
 
@@ -61,7 +64,7 @@ public class IOUtils {
    * @throws IOException if one occurs while reading or writing.
    */
   public static void copy(InputStream in, OutputStream out, byte[] buffer)
-      throws IOException {
+                                                           throws IOException {
     int n = 0;
     while ((n = in.read(buffer)) >= 0) out.write(buffer, 0, n);
   }
@@ -77,8 +80,22 @@ public class IOUtils {
    * @throws IOException if one occurs while reading or writing.
    */
   public static void copy(InputStream in, OutputStream out)
-      throws IOException {
+                                                           throws IOException {
     copy(in, out, new byte[BUFFER_SIZE]);
+  }
+
+  /**
+   * Copies bytes from a <code>FileInputStream</code> to a
+   * <code>FileOutputStream</code>. This method uses channels.
+   *
+   * @param in the source
+   * @param out the destination
+   * @throws IOException if one occurs while reading or writing.
+   */
+  public static void copy(FileInputStream in, FileOutputStream out)
+                                                           throws IOException {
+    final FileChannel inc = in.getChannel();
+    inc.transferTo(0L, inc.size(), out.getChannel());
   }
 
   /**
@@ -92,7 +109,7 @@ public class IOUtils {
    * @throws IOException if one occurs while reading or writing.
    */
   public static void copy(Reader in, Writer out, char[] buffer)
-      throws IOException {
+                                                           throws IOException {
     int n = 0;
     while ((n = in.read(buffer)) >= 0) out.write(buffer, 0, n);
   }
@@ -136,7 +153,7 @@ public class IOUtils {
    * @throws IOException if one occurs while reading or writing.
    */
   public static void copy(InputStream in, Writer out, String encoding)
-      throws IOException {
+                                                           throws IOException {
     if (encoding == null) {
       copy(in, out);
     }
@@ -155,8 +172,7 @@ public class IOUtils {
    * @param out the destination
    * @throws IOException if one occurs while reading or writing.
    */
-  public static void copy(Reader in, OutputStream out)
-      throws IOException {
+  public static void copy(Reader in, OutputStream out) throws IOException {
     final OutputStreamWriter osw = new OutputStreamWriter(out);
     copy(in, osw);
     osw.flush();
@@ -174,7 +190,7 @@ public class IOUtils {
    * @throws IOException if one occurs while reading or writing.
    */
   public static void copy(Reader in, OutputStream out, String encoding)
-      throws IOException {
+                                                           throws IOException {
     if (encoding == null) {
       copy(in, out);
     }
@@ -194,7 +210,7 @@ public class IOUtils {
    * @return an input stream
    */
   public static InputStream toInputStream(String input, String encoding)
-      throws IOException {
+                                                           throws IOException {
     return new ByteArrayInputStream(
       encoding != null ? input.getBytes(encoding) : input.getBytes());
   }
@@ -225,7 +241,7 @@ public class IOUtils {
    * @throws IOException if one occurs while reading.
    */
   public static String toString(InputStream in, String encoding)
-      throws IOException {
+                                                           throws IOException {
     final StringWriter out = new StringWriter();
     copy(in, out, encoding);
     return out.toString();

@@ -40,6 +40,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -60,7 +62,6 @@ import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.HashCode;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
@@ -290,7 +291,8 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
         throw new IllegalArgumentException();
       this.color = color;
       this.pattern = pattern;
-      hash = HashCode.hash(color) ^ HashCode.hash(pattern);
+
+      hash = new HashCodeBuilder().append(color).append(pattern).toHashCode();
     }
 
     public BufferedImage eval() throws Exception {

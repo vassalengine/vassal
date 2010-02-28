@@ -105,10 +105,10 @@ $(CLASSDIR)/help: $(CLASSDIR)
 i18n: $(CLASSDIR)
 	for i in `cd $(SRCDIR) && find VASSAL -name '*.properties'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
 
-fast-compile: $(CLASSDIR)
+fast-compile: version $(CLASSDIR)
 	$(JC) $(JCFLAGS) $(shell find $(SRCDIR) -name '*.java')
 
-test: $(CLASSDIR)
+test: $(CLASSDIR) all 
 	$(JC) $(JCFLAGS) $(shell find $(TESTDIR) -name '*.java')
 	$(JAVA) -classpath $(CLASSPATH) org.junit.runner.JUnitCore $(shell grep -L '^public abstract\|public interface' `find $(TESTDIR) -name '*.java'` | sed "s/^$(TESTDIR)\/\(.*\)\.java$$/\1/" | tr '/' '.')
 
@@ -150,7 +150,7 @@ version:
 #	done
 #	png2icns $@ src/icons/16x16/VASSAL.png src/icons/32x32/VASSAL.png $(TMPDIR)/VASSAL-48.png $(TMPDIR)/VASSAL-128.png $(TMPDIR)/VASSAL-256.png $(TMPDIR)/VASSAL-512.png
 
-$(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
+$(TMPDIR)/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 	mkdir -p $@/Contents/{MacOS,Resources}
 	cp dist/macosx/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%SVNVERSION%/$(SVNVERSION)/g' \
@@ -165,7 +165,7 @@ $(TMPDIR)/VASSAL-$(VERSION).app: version all $(JARS) $(TMPDIR)
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	genisoimage -V VASSAL-$(VERSION) -r -apple -root VASSAL-$(VERSION).app -o $@ $<
 
-$(TMPDIR)/VASSAL-$(VERSION)-other.zip: version all $(JARS) $(TMPDIR)/VASSAL.exe
+$(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
 	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
@@ -173,12 +173,12 @@ $(TMPDIR)/VASSAL-$(VERSION)-other.zip: version all $(JARS) $(TMPDIR)/VASSAL.exe
 	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
 
-$(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: version release-other
+$(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2: release-other
 	cp dist/VASSAL.sh $(TMPDIR)/VASSAL-$(VERSION)
 	-rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{bat,exe}
 	tar cjvf $@ -C $(TMPDIR) VASSAL-$(VERSION)
 
-$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: version release-other $(TMPDIR)/VASSAL.exe
+$(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-other $(TMPDIR)/VASSAL.exe
 	-rm $(TMPDIR)/VASSAL-$(VERSION)/VASSAL.{sh,bat}
 	cp $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	for i in `find $(TMPDIR)/VASSAL-$(VERSION) -type d` ; do \
@@ -206,7 +206,7 @@ release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
 release-src: $(TMPDIR)/VASSAL-$(VERSION)-src.zip
 
-release: clean release-other release-linux release-windows release-macosx test
+release: clean test release-other release-linux release-windows release-macosx
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar

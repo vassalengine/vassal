@@ -34,6 +34,7 @@ import VASSAL.tools.nio.file.*;
 import VASSAL.tools.nio.file.attribute.*;
 import VASSAL.tools.nio.file.spi.*;
 
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 //import java.nio.file.*;
@@ -72,6 +73,8 @@ public class ZipFileSystem extends FileSystem {
   private final Path zipFile;
   private final String defaultdir;
 
+  private final Path tmpDir;
+
   private final ReentrantReadWriteLock closeLock = new ReentrantReadWriteLock();
 
   private boolean open = true;
@@ -89,12 +92,15 @@ public class ZipFileSystem extends FileSystem {
   protected final ConcurrentMap<ZipFilePath,ZipEntryInfo> info;
 
   ZipFileSystem(ZipFileSystemProvider provider, Path path,
-                String defaultDir, boolean readonly) throws IOException {
+                String defaultDir, boolean readonly, Path tmpDir)
+                                                           throws IOException {
     this.provider = provider;
     this.zipFile = path.toAbsolutePath();
     this.defaultdir = defaultDir;
     this.readonly = readonly;
+    this.tmpDir = tmpDir;
 
+    // set up zip archive
     if (path.exists()) {
       // Read entries from the zip archive
       info = new ConcurrentHashMap<ZipFilePath,ZipEntryInfo>(
@@ -106,6 +112,16 @@ public class ZipFileSystem extends FileSystem {
 
       // Ensure that the root directory exists
       getPath("/").createDirectory();
+    }
+
+    // set up temp directory
+    if (tmpDir.exists()) {
+      if (!Boolean.TRUE.equals(tmpDir.getAttribute("isDirectory"))) {
+        throw new NotDirectoryException(tmpDir.toString());
+      }
+    }
+    else {
+      tmpDir.createDirectory();
     }
   }
  
@@ -148,14 +164,25 @@ public class ZipFileSystem extends FileSystem {
         throw new AssertionError(e); //never thrown
       }
 
-      implClose(root);
+      // close all streams, etc.
+      final Iterator<Closeable> i = closeables.iterator();
+      while (i.hasNext()) {
+        i.next().close();
+        i.remove();
+      }
+
+// FIXME: make it so that ZipUtils doesn't need to cache anything?
+      // Free all cached Zip/Jar files
+      ZipUtils.remove(root); // remove cached filesystem
+
 
       if (!readonly) flush();
 
-      open = false;
+      provider.removeFileSystem(root);
     }
     finally {
       closeLock.writeLock().unlock();
+      open = false;
     }
   }
 
@@ -179,10 +206,17 @@ public class ZipFileSystem extends FileSystem {
     }
   }
 
-  Path createTempFile(FileAttribute<?>... attrs) throws IOException {
-    final Path tmp =
-      Paths.get(File.createTempFile("zipfs", "tmp").toString());
+  private String newTempFileName(String prefix, String suffix)
+                                                           throws IOException {
+    return File.createTempFile(
+      prefix, suffix, new File(tmpDir.toString())
+    ).toString();
+  }
 
+  Path createTempFile(FileAttribute<?>... attrs) throws IOException {
+    final Path tmp = Paths.get(newTempFileName("zipfs", "tmp"));
+
+    // FIXME: race condition!
     tmp.deleteIfExists();
     tmp.createFile(attrs);
 
@@ -190,9 +224,9 @@ public class ZipFileSystem extends FileSystem {
   }
 
   Path createTempDirectory(FileAttribute<?>... attrs) throws IOException {
-    final Path tmp =
-      Paths.get(File.createTempFile("zipfs", "tmp").toString());
+    final Path tmp = Paths.get(newTempFileName("zipfs", "tmp"));
 
+    // FIXME: race condition!
     tmp.deleteIfExists();
     tmp.createDirectory(attrs);
 
@@ -320,7 +354,7 @@ public class ZipFileSystem extends FileSystem {
       final Path nzip;
       if (exists) {
         // create a temp file into which to write the new ZIP archive
-        nzip = Paths.get(File.createTempFile("rwzipfs", ".zip").toString());
+        nzip = Paths.get(newTempFileName("rwzipfs", ".zip"));
       }
       else {
         if (real.size() == 1 && real.containsKey(getPath("/"))) return;
@@ -329,7 +363,8 @@ public class ZipFileSystem extends FileSystem {
 
       ZipOutputStream out = null;
       try {
-        out = new ZipOutputStream(nzip.newOutputStream());
+        out = new ZipOutputStream(
+                new BufferedOutputStream(nzip.newOutputStream()));
         if (exists) copyOldFiles(out);
         copyNewFiles(out);
         out.close();
@@ -449,19 +484,6 @@ public class ZipFileSystem extends FileSystem {
 
   ZipEntryInfo removeInfo(ZipFilePath zpath) {
     return info.remove(zpath.toAbsolutePath());
-  }
-
-// FIXME
-  // Free all cached Zip/Jar files
-  private void implClose(URI root) throws IOException {
-    ZipUtils.remove(root); // remove cached filesystem
-    provider.removeFileSystem(root);
-
-    final Iterator<Closeable> i = closeables.iterator();
-    while (i.hasNext()) {
-      i.next().close();
-      i.remove();
-    }
   }
 
   boolean registerCloseable(Closeable obj) {

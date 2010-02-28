@@ -64,6 +64,7 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -621,7 +622,8 @@ public class GameState implements CommandEncoder {
     FileSystem zfs = null;
 
     try {
-      zfs = FileSystems.newFileSystem(uri, null);
+// FIXME: this is bad, put the zipOpts someplace else
+      zfs = FileSystems.newFileSystem(uri, DataArchive.zipOpts);
 
       // write the save data
       final Path spath = zfs.getPath(GameState.SAVEFILE_ZIP_ENTRY);

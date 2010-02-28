@@ -26,7 +26,8 @@ import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.List;
 
-import VASSAL.tools.HashCode;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import VASSAL.tools.image.ImageUtils;
 
 public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
@@ -46,7 +47,9 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
     this.sop = sop;
     this.angle = angle / 90;
 
-    hash = HashCode.hash(sop) ^ HashCode.hash(angle);
+    hash = new HashCodeBuilder().append(sop)
+                                .append(angle)
+                                .toHashCode();
   }
 
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
@@ -147,7 +150,9 @@ public class OrthoRotateOpBitmapImpl extends AbstractTiledOpImpl
 
       sop = new CropOpBitmapImpl(rop.sop, sx0, sy0, sx1, sy1);
                             
-      hash = HashCode.hash(sop) ^ HashCode.hash(angle);
+      hash = new HashCodeBuilder().append(sop)
+                                  .append(angle)
+                                  .toHashCode();
     }
 
     public List<VASSAL.tools.opcache.Op<?>> getSources() {

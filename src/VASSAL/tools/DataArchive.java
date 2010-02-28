@@ -49,6 +49,7 @@ import java.security.PermissionCollection;
 import java.security.SecureClassLoader;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ import java.util.TreeSet;
 import java.util.zip.ZipFile;
 import sun.applet.AppletAudioClip;
 
+import VASSAL.Info;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.svg.SVGImageUtils;
 import VASSAL.tools.image.svg.SVGRenderer;
@@ -64,12 +66,17 @@ import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.nio.file.FileSystem;
 import VASSAL.tools.nio.file.FileSystems;
 import VASSAL.tools.nio.file.Path;
+import VASSAL.tools.nio.file.Paths;
 
 /**
  * Wrapper around a Zip archive with methods to cache images
  */
 public class DataArchive extends SecureClassLoader implements Closeable {
 
+  public static final Map<String,?> zipOpts = Collections.singletonMap(
+      "tmp.dir", Paths.get(Info.getTempDir().getAbsolutePath())
+  );
+  
   protected FileSystem archive;
 
   protected List<DataArchive> extensions = new ArrayList<DataArchive>();
@@ -96,7 +103,7 @@ public class DataArchive extends SecureClassLoader implements Closeable {
     this();
     
     final URI uri = URIUtils.toURI("zip", new File(zipName));
-    archive = FileSystems.newFileSystem(uri, null);
+    archive = FileSystems.newFileSystem(uri, zipOpts);
 
     this.imageDir = imageDir;
   }

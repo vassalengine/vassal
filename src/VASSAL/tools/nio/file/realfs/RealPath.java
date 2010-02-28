@@ -258,11 +258,27 @@ public abstract class RealPath extends AbstractPath {
       }
 
       if (fs == target.getFileSystem()) {
-        // we're on this fs, do the easy thing
-        if (!file.renameTo(((RealPath) target).file)) {
-          throw new FileSystemException(
-            file.toString(), target.toString(), ""
-          );
+        // move is within realfs, so try File.renameTo()
+        final RealPath dst = (RealPath) target;
+
+        // maybe File.renameTo() works on the first shot
+        if (!file.renameTo(dst.file)) {
+          // maybe we're on a platform where we must delete dst first
+          try {
+            dst.delete();
+
+            if (!file.renameTo(dst.file)) {
+              // maybe we've hit some other platform-dependent behavior of
+              // renameTo() which the Javadoc hints at but, maddeningly,
+              // does not name
+              copyTo(target, options);
+              delete();
+            }
+          }
+          catch (IOException e) {
+            throw (FileSystemException) new FileSystemException(
+              file.toString(), target.toString(), "").initCause(e);
+          }
         }
       }
       else {

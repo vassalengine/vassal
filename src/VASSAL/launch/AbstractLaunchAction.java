@@ -48,6 +48,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.StringUtils;
+
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;
 import org.jdesktop.swingworker.SwingWorker;
@@ -61,11 +63,10 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.FutureUtils;
 import VASSAL.tools.MemoryUtils;
-import VASSAL.tools.StringUtils;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
+import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
 import VASSAL.tools.io.IOUtils;
@@ -484,7 +485,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     }
 
     protected Process launch(String[] args) throws IOException {
-      Logger.log(StringUtils.join(" ", args));
+      Logger.log(StringUtils.join(args, ' '));
 
       // set up and start the child process
       final ProcessBuilder pb = new ProcessBuilder(args);

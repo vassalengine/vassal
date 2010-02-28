@@ -27,7 +27,9 @@ import java.util.Iterator;
  *
  * @author Joel Uckelman
  * @since 3.1.0
+ * @deprecated Use {@link org.apache.commons.lang.StringUtils} instead.
  */
+@Deprecated
 public class StringUtils {
   private StringUtils() {}
 

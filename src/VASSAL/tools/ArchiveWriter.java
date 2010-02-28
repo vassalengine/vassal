@@ -70,7 +70,7 @@ public class ArchiveWriter extends DataArchive {
       }
 
       final URI uri = URIUtils.toURI("zip", new File(archiveName));
-      archive = FileSystems.newFileSystem(uri, null);
+      archive = FileSystems.newFileSystem(uri, zipOpts);
     }
     catch (IOException e) {
 // FIXME: Setting archive to null is wrong. This ctor needs to throw instead.
@@ -214,7 +214,7 @@ public class ArchiveWriter extends DataArchive {
     if (!zold.isSameFile(znew)) {
       final URI uri = URIUtils.toURI("zip", new File(filename)); 
       final ZipFileSystem tmpArchive =
-        (ZipFileSystem) FileSystems.newFileSystem(uri, null);
+        (ZipFileSystem) FileSystems.newFileSystem(uri, zipOpts);
 
       FileUtils.copy(archive.getPath("/"), tmpArchive.getPath("/"));
 

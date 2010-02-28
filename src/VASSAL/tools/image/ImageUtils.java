@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007-2009 by Joel Uckelman
+ * Copyright (c) 2007-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -40,7 +40,6 @@ import javax.swing.ImageIcon;
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.image.memmap.MappedBufferedImage;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.RereadableInputStream;
@@ -59,15 +58,6 @@ public class ImageUtils {
   private static final GeneralFilter.Filter downscale =
     new GeneralFilter.Lanczos3Filter();
 
-  public static final String PREFER_MEMORY_MAPPED = "preferMemoryMapped"; //$NON-NLS-1$
-  private static final int MAPPED = 0;
-  private static final int RAM = 1;
-  private static int largeImageLoadMethod = RAM;
-
-  public static boolean useMappedImages() {
-    return largeImageLoadMethod == MAPPED;
-  }
-
   @Deprecated
   public static final String SCALER_ALGORITHM = "scalerAlgorithm"; //$NON-NLS-1$ 
   private static final Map<RenderingHints.Key,Object> defaultHints =
@@ -75,7 +65,6 @@ public class ImageUtils {
 
   static {
     // Initialise Image prefs prior to Preferences being read.
-    setPreferMemoryMappedFiles(false);
     
     // set up map for creating default RenderingHints
     defaultHints.put(RenderingHints.KEY_INTERPOLATION,
@@ -84,10 +73,6 @@ public class ImageUtils {
                      RenderingHints.VALUE_ANTIALIAS_ON);
   } 
 
-  public static void setPreferMemoryMappedFiles(boolean b) {
-    largeImageLoadMethod = b ? MAPPED : RAM;
-  }
-  
   /** @deprecated All scaling is done with the high-quality scaler now. */
   @Deprecated 
   public static void setHighQualityScaling(boolean b) {}
@@ -221,16 +206,6 @@ public class ImageUtils {
     case BufferedImage.TYPE_INT_ARGB_PRE:
     case BufferedImage.TYPE_INT_BGR:  
       return img;
-    case BufferedImage.TYPE_CUSTOM:
-      if (img instanceof MappedBufferedImage &&
-          img.getColorModel() instanceof DirectColorModel &&
-          img.getSampleModel().getDataType() == DataBuffer.TYPE_INT) {
-        // This is really an int-type image, but shows up as TYPE_CUSTOM so
-        // that it will work with Java implemenations (e.g., on Mac OS X)
-        // which use many private classes and casting in their graphics
-        // pipelines.
-        return img;
-      }
     default:
       return toType(img, img.getTransparency() == BufferedImage.OPAQUE ?
         BufferedImage.TYPE_INT_RGB : 
@@ -258,6 +233,7 @@ public class ImageUtils {
                           d.height);
   }
 
+  /** @deprecated Use {@link #getImageSize(String,InputStream)} instead. */ 
   @Deprecated
   public static Dimension getImageSize(InputStream in) throws IOException {
     return getImageSize("", in);
@@ -268,9 +244,7 @@ public class ImageUtils {
     return ImageLoader.getImageSize(name, in);
   }
 
-  /**
-   * @deprecated Use {@link #getImage(String,InputStream)} instead.
-   */ 
+  /** @deprecated Use {@link #getImage(String,InputStream)} instead. */ 
   @Deprecated
   public static BufferedImage getImage(InputStream in) throws IOException {
     return getImage("", in);
@@ -385,14 +359,8 @@ public class ImageUtils {
   }
 
   public static boolean isCompatibleImage(BufferedImage img) {
-    if (img instanceof MappedBufferedImage) {
-      return ((MappedBufferedImage) img).getRealType() ==
-        getCompatibleImageType(img.getTransparency() != BufferedImage.OPAQUE);
-    }
-    else {
-      return img.getType() ==
-        getCompatibleImageType(img.getTransparency() != BufferedImage.OPAQUE);
-    }
+    return img.getType() ==
+      getCompatibleImageType(img.getTransparency() != BufferedImage.OPAQUE);
   }
 
   /*

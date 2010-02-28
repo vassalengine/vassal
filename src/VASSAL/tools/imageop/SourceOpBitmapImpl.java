@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007 by Joel Uckelman
+ * Copyright (c) 2007-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -154,5 +154,11 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
   @Override
   public int hashCode() {
     return hash;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    return getClass().getName() + "[name=" + name + "]";
   }
 }

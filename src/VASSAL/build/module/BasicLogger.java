@@ -53,6 +53,7 @@ import VASSAL.configure.IconConfigurer;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
@@ -307,7 +308,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       FileSystem zfs = null;
 
       try {
-        zfs = FileSystems.newFileSystem(uri, null);
+        zfs = FileSystems.newFileSystem(uri, DataArchive.zipOpts);
 
         // write the save data
         final Path spath = zfs.getPath(GameState.SAVEFILE_ZIP_ENTRY);

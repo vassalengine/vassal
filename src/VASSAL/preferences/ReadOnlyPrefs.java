@@ -22,14 +22,20 @@ package VASSAL.preferences;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Properties;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipEntry;
 
 import VASSAL.Info;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.ReadErrorDialog;
+import VASSAL.tools.URIUtils;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.nio.file.FileSystem;
+import VASSAL.tools.nio.file.FileSystems;
+import VASSAL.tools.nio.file.Path;
+import VASSAL.tools.nio.file.zipfs.ZipFileSystem;
 
 /**
  * A simple prefernces class which permits reading stored values.
@@ -47,30 +53,33 @@ public class ReadOnlyPrefs {
   public ReadOnlyPrefs(String name) {
     this.name = name;
 
-    final File zipfile = new File(Info.getHomeDir(), "Preferences");
-
-    ZipFile zip = null;
-    BufferedInputStream in = null;
+    FileSystem fs = null;
     try {
-      zip = new ZipFile(zipfile);
-      final ZipEntry entry = zip.getEntry(name);
-      if (entry == null)
-        throw new FileNotFoundException(name + " does not exist");
+      final File pfile = new File(Info.getHomeDir(), "Preferences");
 
-      in = new BufferedInputStream(zip.getInputStream(entry)); 
-      storedValues.load(in);
-      in.close();
-      zip.close();
+      final URI uri = URIUtils.toURI("zip", pfile);
+      fs = FileSystems.newFileSystem(uri, DataArchive.zipOpts);
+
+      final Path path = fs.getPath(name);
+      if (path.exists()) {
+        InputStream in = null;
+        try {
+          in = new BufferedInputStream(path.newInputStream());
+          storedValues.load(in);
+          in.close();
+        }
+        finally {
+          IOUtils.closeQuietly(in);
+        }
+      }
+
+      fs.close();
     }
-    catch (FileNotFoundException e) {
-      // First time for this module, not an error.
-    }  
     catch (IOException e) {
-      ReadErrorDialog.error(e, zipfile.getPath() + "/!" + name);
+      ReadErrorDialog.error(e, ((ZipFileSystem) fs).getZipFileSystemFile());
     }
     finally {
-      IOUtils.closeQuietly(in);
-      IOUtils.closeQuietly(zip);
+      IOUtils.closeQuietly(fs);
     }
   }
 

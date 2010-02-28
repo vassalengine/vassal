@@ -25,10 +25,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+
+import org.apache.commons.lang.StringUtils;
+
 import VASSAL.build.AutoConfigurable;
 import VASSAL.tools.ScrollPane;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.StringUtils;
 
 /**
  * A Configurer that allows multi-line string input via a JTextArea
@@ -117,7 +119,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
    * @return
    */
   public static String restoreNewlines(String s) {
-    return StringUtils.join("\n", new SequenceEncoder.Decoder(s, '|'));
+    return StringUtils.join(new SequenceEncoder.Decoder(s, '|'), '\n');
   }
 
   public java.awt.Component getControls() {

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2007 by Joel Uckelman
+ * Copyright (c) 2007-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,7 +27,8 @@ import java.awt.image.WritableRaster;
 import java.util.Collections;
 import java.util.List;
 
-import VASSAL.tools.HashCode;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import VASSAL.tools.image.GeneralFilter;
 import VASSAL.tools.image.ImageUtils;
 
@@ -80,9 +81,10 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     this.scale = scale;
     this.hints = hints;
 
-    hash = HashCode.hash(scale) ^
-           HashCode.hash(hints) ^
-           HashCode.hash(sop);
+    hash = new HashCodeBuilder().append(sop)
+                                .append(scale)
+                                .append(hints)
+                                .toHashCode();
   }
 
   public List<VASSAL.tools.opcache.Op<?>> getSources() {
@@ -146,15 +148,13 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
       dh = Math.min(rop.getTileHeight(), sr.height - dy0);
  
       size = new Dimension(dw,dh);
- 
-      final int PRIME = 31;
-      int result = 1;
-      result = PRIME * result + HashCode.hash(sop);
-      result = PRIME * result + HashCode.hash(dx0);
-      result = PRIME * result + HashCode.hash(dy0);
-      result = PRIME * result + HashCode.hash(dw);
-      result = PRIME * result + HashCode.hash(dh);
-      hash = result;
+
+      hash = new HashCodeBuilder().append(sop)
+                                  .append(dx0)  
+                                  .append(dy0)
+                                  .append(dw)
+                                  .append(dh)
+                                  .toHashCode();
     }
 
     public List<VASSAL.tools.opcache.Op<?>> getSources() {
@@ -206,6 +206,14 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     public int hashCode() {
       return hash;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+      return getClass().getName() +
+        "[sop=" + sop + ",scale=" + scale +
+        ",dx0=" + dx0 + ",dy0=" + dy0 + ",dw=" + dw + ",dy=" + dh + "]";
+    }
   }
 
   public RenderingHints getHints() {
@@ -228,14 +236,21 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
     if (o == null || o.getClass() != this.getClass()) return false;
 
     final ScaleOpBitmapImpl op = (ScaleOpBitmapImpl) o;
-    return scale == op.getScale() && 
+    return scale == op.scale && 
            sop.equals(op.sop) && 
-           hints.equals(op.getHints());
+           hints.equals(op.hints);
   }
 
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
     return hash;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    return getClass().getName() +
+      "[sop=" + sop + ",scale=" + scale + ",hints=" + hints + "]";
   }
 }

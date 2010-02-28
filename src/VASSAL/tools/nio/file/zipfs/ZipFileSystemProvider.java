@@ -84,6 +84,7 @@ public class ZipFileSystemProvider extends FileSystemProvider {
     final Path nativePath = Paths.get(toFileURI(uri)).toAbsolutePath();
 
     String defaultdir = null;
+    Path tmpdir = null;
     boolean readonly = false;
 
     // check properties
@@ -109,6 +110,15 @@ public class ZipFileSystemProvider extends FileSystemProvider {
             defaultdir = ZipPathParser.normalize(defaultdir);
           }
         }
+        else if ("tmp.dir".equals(key)) {
+          // determine temp directory
+          final Object val = e.getValue();
+          if (!(val instanceof Path)) {
+            throw new IllegalArgumentException();
+          }
+
+          tmpdir = (Path) val;
+        }
         else if ("readonly".equals(key)) {
           // open archive read-only
           readonly = true;
@@ -121,6 +131,10 @@ public class ZipFileSystemProvider extends FileSystemProvider {
 
     if (defaultdir == null) {
       defaultdir = "/";
+    }
+
+    if (tmpdir == null) {
+      tmpdir = Paths.get(System.getProperty("java.io.tmpdir"));
     }
 
     final boolean exists;
@@ -148,7 +162,7 @@ public class ZipFileSystemProvider extends FileSystemProvider {
 
     // build the new file system
     final ZipFileSystem fs =
-      new ZipFileSystem(this, nativePath, defaultdir, readonly);
+      new ZipFileSystem(this, nativePath, defaultdir, readonly, tmpdir);
 
     final ZipFileSystem old = fileSystems.putIfAbsent(uriPath, fs);
     if (old != null) {

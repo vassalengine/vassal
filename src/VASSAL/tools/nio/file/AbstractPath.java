@@ -3,8 +3,9 @@ package VASSAL.tools.nio.file;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.commons.lang.StringUtils;
+
 import VASSAL.tools.ArrayUtils;
-import VASSAL.tools.StringUtils;
 
 public abstract class AbstractPath extends Path {
 
@@ -146,7 +147,7 @@ public abstract class AbstractPath extends Path {
     if (outputParts.size() > 0) {
       // Rebuild the normalized path.
       norm = (seps[0] == -1 ? "" : new String(path, 0, seps[0]+1)) +
-             StringUtils.join(fs.getSeparator(), outputParts);
+             StringUtils.join(outputParts, fs.getSeparator());
     }
     else {
       // Whole path is just the prefix, if any.

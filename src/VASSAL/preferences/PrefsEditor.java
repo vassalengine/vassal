@@ -54,11 +54,6 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.URIUtils;
 import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.nio.file.FileSystem;
-import VASSAL.tools.nio.file.FileSystemAlreadyExistsException;
-import VASSAL.tools.nio.file.FileSystemNotFoundException;
-import VASSAL.tools.nio.file.FileSystems;
-import VASSAL.tools.nio.file.zipfs.ZipFileSystem;
 
 public class PrefsEditor {
   private JDialog dialog;
@@ -67,25 +62,25 @@ public class PrefsEditor {
   private List<Prefs> prefs;
   private JTabbedPane optionsTab;
   private JDialog setupDialog;
-  private FileSystem fs;
   private Action editAction;
 
-  public PrefsEditor(FileSystem fs) {
+  private final URI uri;
+
+  public PrefsEditor(URI uri) {
     savedValues = new HashMap<Configurer,Object>();
-    this.fs = fs;
     prefs = new ArrayList<Prefs>();
     optionsTab = new JTabbedPane();
+    this.uri = uri;
   }
 
-  /** @deprecated Use {@link PrefsEditor(FileSystem)} instead. */
+  /** @deprecated Use {@link PrefsEditor(URI)} instead. */
   @Deprecated
   public PrefsEditor(ArchiveWriter archive) throws IOException {
     savedValues = new HashMap<Configurer,Object>();
     prefs = new ArrayList<Prefs>();
     optionsTab = new JTabbedPane();
 
-    final URI uri = URIUtils.toURI("zip", new File(archive.getName()));
-    fs = FileSystems.getFileSystem(uri);
+    uri = URIUtils.toURI("zip", new File(archive.getName()));
   }
 
   public void initDialog(Frame parent) {
@@ -199,41 +194,6 @@ public class PrefsEditor {
     }
   }
 
-  public FileSystem getFileSystem() {
-    if (!fs.isOpen()) {
-      final URI uri = URIUtils.toURI("zip", new File(((ZipFileSystem) fs).getZipFileSystemFile()));
-
-// FIXME:
-//
-// (1) This is a race---what if the FS is closed between the calls
-// to newFileSystem() and getFileSystem()?
-//
-// (2) If the exception is thrown, how do we ensure that the FS doesn't
-// get closed on us from someplace else?!
-//
-      fs = null;
-      while (fs == null) {
-        try {
-          fs = FileSystems.newFileSystem(uri, null);
-        }
-        catch (FileSystemAlreadyExistsException e) {
-          try {
-            fs = FileSystems.getFileSystem(uri);
-          }
-          catch (FileSystemNotFoundException ignore) {
-            // ignore?
-          }
-        }
-        catch (IOException ignore) {
-// FIXME: this should not be ignored!
-          break;
-        }
-      }
-    }
-
-    return fs;
-  }
-
   protected void cancel() {
     for (Configurer c : options) {
       c.setValue(savedValues.get(c));
@@ -249,12 +209,14 @@ public class PrefsEditor {
       }
       c.setFrozen(false);
     }
+
     try {
       write();
     }
     catch (IOException e) {
-      WriteErrorDialog.error(e, ((ZipFileSystem) fs).getZipFileSystemFile());
+      WriteErrorDialog.error(e, new File(uri));
     }
+
     dialog.setVisible(false);
   }
 
@@ -279,12 +241,14 @@ public class PrefsEditor {
     return editAction;
   }
 
+  protected URI getURI() {
+    return uri;
+  }
+
   public void write() throws IOException {
     for (Prefs p : prefs) p.save();
-    ((ZipFileSystem) fs).flush();
   }
 
   public void close() throws IOException {
-    fs.close();
   }
 }

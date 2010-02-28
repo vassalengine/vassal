@@ -203,14 +203,33 @@ class ZipIO {
     final String entryStr =
       path.getEntryName(path.getEntryNameCount() - 1).toString();
 
-// FIXME: zfile not closed along some paths!!! 
     final ZipEntry entry = zfile.getEntry(entryStr);
     if (entry == null) {
       zfile.close();
       throw new IOException("entry not found: " + entryStr);
     }
 
-    return wrapReadLocked(path, zfile.getInputStream(entry));
+    return new ZFInputStream(zfile, zfile.getInputStream(entry));
+  }
+
+  private static class ZFInputStream extends FilterInputStream {
+    private boolean closed = false;
+
+    private final ZipFile zf;
+
+    public ZFInputStream(ZipFile zf, InputStream in) {
+      super(in);
+      this.zf = zf;
+    }
+
+    @Override
+    public void close() throws IOException {
+      if (closed) return;
+
+      in.close();
+      zf.close();
+      closed = true;
+    }
   }
 
   static SeekableByteChannel channel(ZipFilePath path,
@@ -219,12 +238,7 @@ class ZipIO {
     final Path pathToZip = extractFile(path);
     final FileSystemProvider prov = pathToZip.getFileSystem().provider();
 
-    final FileChannelAdapter fca =
-      new FileChannelAdapter(prov.newFileChannel(pathToZip, opts));
-
-    return (opts.contains(StandardOpenOption.WRITE) ||
-            opts.contains(StandardOpenOption.APPEND)) ?
-      wrapWriteLocked(path, fca) : wrapReadLocked(path, fca);
+    return new FileChannelAdapter(prov.newFileChannel(pathToZip, opts));
   }
 
   private static Path extractFile(ZipFilePath path) throws IOException {

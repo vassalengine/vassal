@@ -28,11 +28,14 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.math.LongRange;
+
 import VASSAL.i18n.Resources;
-import VASSAL.tools.HashCode;
 import VASSAL.tools.SequenceEncoder;
 
 /**
@@ -106,7 +109,7 @@ public class CgiServerStatus implements ServerStatus {
   }
 
   private SortedMap<Long,String[]> records = new TreeMap<Long,String[]>();
-  private List<Interval> requests = new ArrayList<Interval>();
+  private List<LongRange> requests = new ArrayList<LongRange>();
 
   private ServerStatus.ModuleSummary[] getHistory(long time) {
     if (time <= 0) return getStatus();
@@ -114,26 +117,32 @@ public class CgiServerStatus implements ServerStatus {
     final long now = System.currentTimeMillis();
 
     // start with new interval
-    final Interval req = new Interval(now - time, now);
-    final ArrayList<Interval> toRequest = new ArrayList<Interval>();
+    final LongRange req = new LongRange(now - time, now);
+    final ArrayList<LongRange> toRequest = new ArrayList<LongRange>();
     toRequest.add(req);
 
     // subtract each old interval from new interval
-    for (Interval y : requests) {
-      for (ListIterator<Interval> i = toRequest.listIterator(); i.hasNext();) {
-        final Interval x = i.next();
+    for (LongRange y : requests) {
+      for (ListIterator<LongRange> i = toRequest.listIterator(); i.hasNext();) {
+        final LongRange x = i.next();
         
-        if (!x.intersects(y)) continue;   // no overlap, nothing to subtract
+        if (!x.overlapsRange(y)) continue; // no overlap, nothing to subtract
     
         // otherwise, remove x and add what remains after subtracting y
         i.remove();
-        if (x.l < y.l && y.l <= x.r) i.add(new Interval(x.l, y.l));
-        if (x.l <= y.r && y.r < x.r) i.add(new Interval(y.r, x.r));
+
+        final long xl = x.getMinimumLong();
+        final long xr = x.getMaximumLong();
+        final long yl = y.getMinimumLong();
+        final long yr = y.getMaximumLong();
+
+        if (xl < yl && yl <= xr) i.add(new LongRange(xl, yl));
+        if (xl <= yr && yr < xr) i.add(new LongRange(yr, xr));
       }
     }
        
     // now toRequest contains the intervals we are missing; request those
-    for (Interval i : toRequest) {
+    for (LongRange i : toRequest) {
       for (String s : getInterval(i)) {
         final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, '\t');
         try {
@@ -160,11 +169,17 @@ public class CgiServerStatus implements ServerStatus {
     // Note: This is simple, but quadratic in the number of intervals.
     // For large numbers of intervals, use an interval tree instead.
     for (int i = 0; i < requests.size(); i++) {
-      final Interval a = requests.get(i);
+      final LongRange a = requests.get(i);
       for (int j = i+1; j < requests.size(); j++) {
-        final Interval b = requests.get(j);
-        if (a.intersects(b)) {
-          requests.set(i, new Interval(Math.min(a.l, b.l), Math.max(a.r, b.r)));
+        final LongRange b = requests.get(j);
+        if (a.overlapsRange(b)) {
+          final long al = a.getMinimumLong();
+          final long ar = a.getMaximumLong();
+          final long bl = b.getMinimumLong();
+          final long br = b.getMaximumLong();
+
+          requests.set(i, new LongRange(Math.min(al, bl),
+                                        Math.max(ar, br)));
           requests.remove(j--);
         }
       }
@@ -174,7 +189,10 @@ public class CgiServerStatus implements ServerStatus {
     final HashMap<String,ServerStatus.ModuleSummary> entries =
       new HashMap<String,ServerStatus.ModuleSummary>();
 
-    for (Map.Entry<Long,String[]> e : records.subMap(req.l, req.r).entrySet()) {
+    final Set<Map.Entry<Long,String[]>> eset = 
+      records.subMap(req.getMinimumLong(), req.getMaximumLong()).entrySet();
+
+    for (Map.Entry<Long,String[]> e : eset) {
       final String[] r = e.getValue();
 
       final String moduleName = r[0]; 
@@ -208,10 +226,10 @@ public class CgiServerStatus implements ServerStatus {
     return e;
   }
 
-  private List<String> getInterval(Interval i) {
+  private List<String> getInterval(LongRange i) {
     final Properties p = new Properties();
-    p.setProperty("start", Long.toString(i.l)); //$NON-NLS-1$
-    p.setProperty("end", Long.toString(i.r)); //$NON-NLS-1$
+    p.setProperty("start", Long.toString(i.getMinimumLong())); //$NON-NLS-1$
+    p.setProperty("end", Long.toString(i.getMaximumLong())); //$NON-NLS-1$
 
     try {
       return request.doGet("getConnectionHistory", p); //$NON-NLS-1$
@@ -245,42 +263,5 @@ public class CgiServerStatus implements ServerStatus {
     final SimpleRoom r = new SimpleRoom(roomName);
     r.setPlayers(new Player[]{new SimplePlayer(playerName)});
     return new ServerStatus.ModuleSummary(moduleName, new Room[]{r});
-  }
-
-  /**
-   * A closed interval.
-   *
-   * @author Joel Uckelman
-   * @since 3.1.0
-   */
-  private static class Interval {
-    public final long l;
-    public final long r;
-
-    public Interval(long left, long right) {
-      if (right < left) throw new IllegalArgumentException();
-
-      l = left;
-      r = right;
-    }
-
-    public boolean intersects(Interval i) {
-      return (l <= i.l && i.l <= r) ||
-             (i.l <= l && l <= i.r);
-    }
-
-    public boolean equals(Object o) {
-      if (!(o instanceof Interval)) return false;
-      final Interval i = (Interval) o;
-      return i.l == l && i.r == r;
-    }
-
-    public int hashCode() {
-      return HashCode.hash(l) ^ HashCode.hash(r);
-    }
-
-    public String toString() {
-      return "[" + l + "," + r + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
   }
 }

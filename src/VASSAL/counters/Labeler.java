@@ -48,6 +48,8 @@ import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.plaf.basic.BasicHTML;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
@@ -60,7 +62,6 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.PieceI18nData;
 import VASSAL.i18n.TranslatablePiece;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.HashCode;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.image.ImageUtils;
@@ -406,10 +407,11 @@ public class Labeler extends Decorator implements TranslatablePiece {
       this.font = font;
       this.fg = fg;
       this.bg = bg;
-      hash = HashCode.hash(txt) ^
-             HashCode.hash(font) ^
-             HashCode.hash(fg) ^
-             HashCode.hash(bg);
+      hash = new HashCodeBuilder().append(txt)
+                                  .append(font)
+                                  .append(fg)
+                                  .append(bg)
+                                  .toHashCode();
     }
 
     public List<VASSAL.tools.opcache.Op<?>> getSources() {

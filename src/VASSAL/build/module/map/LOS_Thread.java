@@ -33,8 +33,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.KeyStroke;
+
+import org.apache.commons.lang.StringUtils;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
@@ -64,7 +65,6 @@ import VASSAL.tools.FormattedString;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.StringUtils;
 import VASSAL.tools.UniqueIdManager;
 
 /**
@@ -651,7 +651,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   }
 
   protected String getLosCheckList() {
-    return StringUtils.join(", ", checkList);
+    return StringUtils.join(checkList, ", ");
   }
   
   /** Since we register ourselves as a MouseMotionListener directly,

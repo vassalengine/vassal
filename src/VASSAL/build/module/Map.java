@@ -2370,9 +2370,10 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
    * @return the list of <code>Map</code>s
    */
   public static List<Map> getMapList() {
-    final List<Map> l = GameModule.getGameModule().getComponentsOf(Map.class);
-    for (ChartWindow cw :
-          GameModule.getGameModule().getComponentsOf(ChartWindow.class)) {
+    final GameModule g = GameModule.getGameModule();
+
+    final List<Map> l = g.getComponentsOf(Map.class);
+    for (ChartWindow cw : g.getComponentsOf(ChartWindow.class)) {
       for (MapWidget mw : cw.getAllDescendantComponentsOf(MapWidget.class)) {
         l.add(mw.getMap());
       }

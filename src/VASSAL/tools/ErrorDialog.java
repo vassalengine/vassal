@@ -32,6 +32,7 @@ import javax.swing.SwingUtilities;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.logging.Logger;
 
 /**

@@ -274,6 +274,9 @@ public class Board extends AbstractConfigurable implements GridContainer {
   private java.util.Map<Point,Float> alpha =
     new ConcurrentHashMap<Point,Float>();
 
+  private ConcurrentMap<Point,Future<BufferedImage>> o_requested =
+    new ConcurrentHashMap<Point,Future<BufferedImage>>();
+
   private static Comparator<Point> tileOrdering = new Comparator<Point>() {
     public int compare(Point t1, Point t2) {
       if (t1.y < t2.y) return -1;
@@ -356,41 +359,61 @@ public class Board extends AbstractConfigurable implements GridContainer {
             }
             else {
               if (fim.isDone()) {
-                if (requested.containsKey(tile)) {
-                  requested.remove(tile);
-                  final Point t = tile;
-
-                  final Animator a = new Animator(100,
-                    new TimingTargetAdapter() {
-                      @Override
-                      public void timingEvent(float fraction) {
-                        alpha.put(t, fraction);
-                        obs.repaint(tx, ty, tw, th); 
+// FIXME: We check whether the observer here is a map view in order to
+// avoid mixing requests (and fade-in) between maps and their overview
+// maps. This is a kludge which should be fixed when model-view
+// separation happens.
+                if (obs == map.getView()) {
+                  if (requested.containsKey(tile)) {
+                    requested.remove(tile);
+                    final Point t = tile;
+  
+                    final Animator a = new Animator(100,
+                      new TimingTargetAdapter() {
+                        @Override
+                        public void timingEvent(float fraction) {
+                          alpha.put(t, fraction);
+                          obs.repaint(tx, ty, tw, th); 
+                        }
                       }
-                    }
-                  );
-
-                  a.setResolution(20);
-                  a.start();
-                }
-                else {
-                  Float a = alpha.get(tile);
-                  if (a != null && a < 1.0f) {
-                    final Graphics2D g2d = (Graphics2D) g;
-                    final Composite oldComp = g2d.getComposite();
-                    g2d.setComposite(
-                      AlphaComposite.getInstance(AlphaComposite.SRC_OVER, a));
-                    drawTile(g2d, fim, tx, ty, obs);
-                    g2d.setComposite(oldComp);
+                    );
+  
+                    a.setResolution(20);
+                    a.start();
                   }
                   else {
-                    alpha.remove(tile);                   
+                    Float a = alpha.get(tile);
+                    if (a != null && a < 1.0f) {
+                      final Graphics2D g2d = (Graphics2D) g;
+                      final Composite oldComp = g2d.getComposite();
+                      g2d.setComposite(
+                        AlphaComposite.getInstance(AlphaComposite.SRC_OVER, a));
+                      drawTile(g2d, fim, tx, ty, obs);
+                      g2d.setComposite(oldComp);
+                    }
+                    else {
+                      alpha.remove(tile);                   
+                      drawTile(g, fim, tx, ty, obs);
+                    } 
+                  }
+                }
+                else {
+                  if (o_requested.containsKey(tile)) {
+                    o_requested.remove(tile);
+                    obs.repaint(tx, ty, tw, th);
+                  }
+                  else {
                     drawTile(g, fim, tx, ty, obs);
-                  } 
+                  }
                 }
               }
               else {
-                requested.putIfAbsent(tile, fim);
+                if (obs == map.getView()) {
+                  requested.putIfAbsent(tile, fim);
+                }
+                else {
+                  o_requested.putIfAbsent(tile, fim);
+                }
               }
             }
           }
@@ -406,12 +429,20 @@ public class Board extends AbstractConfigurable implements GridContainer {
           }
         }
 
-        for (Point tile : requested.keySet().toArray(new Point[0])) {
-          if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
-            requested.remove(tile);
+        if (obs == map.getView()) {
+          for (Point tile : requested.keySet().toArray(new Point[0])) {
+            if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
+              requested.remove(tile);
+            }
           }
         }
-
+        else {
+          for (Point tile : o_requested.keySet().toArray(new Point[0])) {
+            if (Arrays.binarySearch(tiles, tile, tileOrdering) < 0) {
+              o_requested.remove(tile);
+            }
+          }
+        }
 /*
         final StringBuilder sb = new StringBuilder();
         for (Point tile : requested.keySet().toArray(new Point[0])) {

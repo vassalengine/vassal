@@ -33,8 +33,8 @@ import java.util.concurrent.TimeoutException;
 //import javax.swing.SwingWorker;
 import org.jdesktop.swingworker.SwingWorker;
 
-import VASSAL.tools.ConcurrentSoftHashMap;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.concurrent.ConcurrentSoftHashMap;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

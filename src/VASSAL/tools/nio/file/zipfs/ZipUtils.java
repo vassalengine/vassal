@@ -467,10 +467,8 @@ public class ZipUtils {
       FileOutputStream tmpOut = new FileOutputStream(tmpFile);
       byte buf[] = new byte[1024];
       int read;
-      int offset = 0;
       while ((read = zipStream.read(buf)) > 0) {
         tmpOut.write(buf, 0, read);
-        offset = offset + read;
       }
       zipStream.close();
       tmpOut.close();
