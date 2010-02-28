@@ -9,7 +9,6 @@ import java.util.Set;
 
 import VASSAL.Info;
 import VASSAL.tools.nio.file.FileStore;
-import VASSAL.tools.nio.file.FileSystem;
 import VASSAL.tools.nio.file.Path;
 import VASSAL.tools.nio.file.spi.FileSystemProvider;
 

@@ -31,7 +31,6 @@
 package VASSAL.tools.nio.file.zipfs;
 
 import VASSAL.tools.nio.channels.SeekableByteChannel;
-import VASSAL.tools.nio.channels.FileChannelAdapter;
 import VASSAL.tools.nio.file.*;
 import VASSAL.tools.nio.file.FileSystem;
 import VASSAL.tools.nio.file.FileSystems;

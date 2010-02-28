@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.zip.ZipFile;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;

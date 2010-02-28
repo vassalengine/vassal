@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.math.LongRange;
 
 import VASSAL.i18n.Resources;

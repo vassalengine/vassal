@@ -31,7 +31,6 @@
 package VASSAL.tools.nio.file.zipfs;
 
 import java.io.File;
-import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,18 +41,14 @@ import java.io.OutputStream;
 import java.util.*;
 //import java.nio.file.attribute.*;
 import java.net.URI;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 //import java.nio.file.attribute.Attributes;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import VASSAL.tools.nio.channels.FileChannelAdapter;
 import VASSAL.tools.nio.channels.SeekableByteChannel;
 import VASSAL.tools.nio.file.*;
 import VASSAL.tools.nio.file.DirectoryStream.Filter;
 import VASSAL.tools.nio.file.attribute.*;
-import VASSAL.tools.nio.file.spi.*;
 
 import static VASSAL.tools.nio.file.zipfs.ZipFileSystem.DELETED;
 

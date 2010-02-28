@@ -36,7 +36,6 @@ import VASSAL.tools.DataArchive;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.imageop.OpIcon;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.AboutWindow;
 

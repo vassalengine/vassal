@@ -159,7 +159,7 @@ public class ZipUpdater implements Runnable {
       try {
 // FIXME: reinstate when we move to 1.6+.
 //        for (String entryName : checkSums.stringPropertyNames()) {
-        for (Enumeration e = checkSums.keys(); e.hasMoreElements();) {
+        for (Enumeration<Object> e = checkSums.keys(); e.hasMoreElements();) {
           final String entryName = (String) e.nextElement();
           long targetSum;
           try {

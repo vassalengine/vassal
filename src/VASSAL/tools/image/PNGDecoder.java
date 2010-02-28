@@ -20,7 +20,6 @@
 package VASSAL.tools.image;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**

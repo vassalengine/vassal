@@ -19,9 +19,6 @@
 
 package VASSAL.tools.imageop;
 
-import java.io.File;
-
-import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.tools.DataArchive;
 

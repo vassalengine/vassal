@@ -27,8 +27,6 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.WritableRaster;
-import java.awt.RenderingHints;
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -122,11 +120,6 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
 
       size = new Dimension(dw, dh);
 
-
-      final double iscale = 1.0/scale;
-      final boolean invPow2 = Math.floor(iscale) == iscale &&
-                              (((int) iscale) & (((int) iscale)-1)) == 0;
-
       if (scale >= 1.0) {
         // we are upscaling
         rsop = rop.sop;
@@ -134,7 +127,7 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       else {
         // cobble this tile from pyramid tiles at the lub size
         final double nscale =
-          1.0/(1 << (int) Math.floor(Math.log(iscale)/Math.log(2)));
+          1.0/(1 << (int) Math.floor(Math.log(1.0/scale)/Math.log(2)));
 
         rsop = new ScaleOpTiledBitmapImpl(rop.sop, nscale);
       }

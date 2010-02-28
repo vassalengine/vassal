@@ -19,7 +19,6 @@
 package VASSAL.tools.io;
 
 import java.io.ByteArrayInputStream;
-import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

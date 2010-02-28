@@ -20,7 +20,6 @@ package VASSAL.chat.ui;
 
 import VASSAL.chat.SimpleRoom;
 import VASSAL.chat.Player;
-import VASSAL.chat.Room;
 import VASSAL.chat.ServerStatus;
 import VASSAL.i18n.Resources;
 

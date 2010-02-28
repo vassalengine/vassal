@@ -26,13 +26,10 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
-import java.awt.image.DirectColorModel;
 import java.awt.image.PixelGrabber;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -40,9 +37,6 @@ import javax.swing.ImageIcon;
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.imageop.Op;
-import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.io.RereadableInputStream;
 
 public class ImageUtils {
   private ImageUtils() {}

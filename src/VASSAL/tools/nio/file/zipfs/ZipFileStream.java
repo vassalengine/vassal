@@ -10,7 +10,6 @@ import java.util.Set;
 
 import VASSAL.tools.nio.file.ClosedDirectoryStreamException;
 import VASSAL.tools.nio.file.DirectoryStream;
-import VASSAL.tools.nio.file.DirectoryStream.Filter;
 import VASSAL.tools.nio.file.NoSuchFileException;
 import VASSAL.tools.nio.file.NotDirectoryException;
 import VASSAL.tools.nio.file.Path;

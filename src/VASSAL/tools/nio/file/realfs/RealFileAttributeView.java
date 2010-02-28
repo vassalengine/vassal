@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import VASSAL.tools.nio.file.FileSystemException;
 import VASSAL.tools.nio.file.attribute.FileTime;
-import VASSAL.tools.nio.file.attribute.BasicFileAttributes;
 import VASSAL.tools.nio.file.attribute.BasicFileAttributeView;
 
 public class RealFileAttributeView implements BasicFileAttributeView {

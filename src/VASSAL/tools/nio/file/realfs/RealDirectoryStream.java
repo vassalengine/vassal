@@ -1,6 +1,5 @@
 package VASSAL.tools.nio.file.realfs;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;

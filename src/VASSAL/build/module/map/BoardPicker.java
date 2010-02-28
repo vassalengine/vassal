@@ -404,7 +404,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
    * @deprecated Use {@link #getSelectedBoards()} instead.
    */
   @Deprecated
-  public Enumeration getCurrentBoards() {
+  public Enumeration<Board> getCurrentBoards() {
     return Collections.enumeration(getSelectedBoards());
   }
 

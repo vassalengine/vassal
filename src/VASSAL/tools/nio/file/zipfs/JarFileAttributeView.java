@@ -30,8 +30,6 @@
  */
 package VASSAL.tools.nio.file.zipfs;
 
-import VASSAL.tools.nio.file.*;
-
 //import java.nio.file.*;
 import java.io.IOException;
 

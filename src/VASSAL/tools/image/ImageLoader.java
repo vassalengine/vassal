@@ -20,7 +20,6 @@
 package VASSAL.tools.image;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.color.CMMException;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;

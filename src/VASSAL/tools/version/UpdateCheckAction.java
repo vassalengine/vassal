@@ -24,7 +24,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import java.util.concurrent.ExecutionException;
 
-import VASSAL.Info;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;

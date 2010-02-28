@@ -20,10 +20,8 @@
 package VASSAL.tools.swing;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;

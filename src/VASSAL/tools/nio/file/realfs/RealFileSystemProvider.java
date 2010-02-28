@@ -1,7 +1,6 @@
 package VASSAL.tools.nio.file.realfs;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -10,7 +9,6 @@ import java.net.URI;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 
 import VASSAL.tools.nio.file.FileAlreadyExistsException;
 import VASSAL.tools.nio.file.FileRef;

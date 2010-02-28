@@ -36,8 +36,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -48,7 +46,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -58,7 +55,6 @@ import org.jdesktop.swingx.JXHeader;
 
 import VASSAL.Info;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.logging.Logger;
 import VASSAL.tools.swing.DetailsButton;
 import VASSAL.tools.swing.FlowLabel;
 import VASSAL.tools.version.VassalVersion;

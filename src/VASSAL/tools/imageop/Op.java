@@ -26,7 +26,6 @@ import VASSAL.counters.GamePiece;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageIOException;
-import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.image.UnrecognizedImageTypeException;
 import VASSAL.tools.opcache.OpFailedException;
 

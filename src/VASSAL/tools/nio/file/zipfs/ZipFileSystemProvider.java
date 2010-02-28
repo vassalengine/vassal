@@ -30,7 +30,6 @@
  */
 package VASSAL.tools.nio.file.zipfs;
 
-import VASSAL.tools.nio.channels.SeekableByteChannel;
 import VASSAL.tools.nio.file.*;
 import VASSAL.tools.nio.file.attribute.*;
 import VASSAL.tools.nio.file.spi.FileSystemProvider;
@@ -47,8 +46,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import VASSAL.tools.io.IOUtils;
 
 public class ZipFileSystemProvider extends FileSystemProvider {
 

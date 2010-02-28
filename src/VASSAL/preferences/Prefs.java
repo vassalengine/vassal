@@ -50,7 +50,6 @@ import VASSAL.tools.nio.file.FileSystem;
 import VASSAL.tools.nio.file.FileSystems;
 import VASSAL.tools.nio.file.Path;
 import VASSAL.tools.nio.file.Paths;
-import VASSAL.tools.nio.file.zipfs.ZipFileSystem;
 
 /**
  * A set of preferences. Each set of preferences is identified by a name,

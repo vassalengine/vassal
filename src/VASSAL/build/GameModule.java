@@ -18,32 +18,22 @@
  */
 package VASSAL.build;
 
-import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -117,9 +107,6 @@ import VASSAL.tools.concurrent.EDT;
 import VASSAL.tools.concurrent.Exec;
 import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.image.ImageIOException;
-import VASSAL.tools.image.ImageNotFoundException;
-import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.io.FileUtils;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.image.tilecache.ImageTiler;
@@ -298,6 +285,17 @@ public abstract class GameModule extends AbstractConfigurable implements Command
     });
 
     final Future<Void> f = Exec.ex.submit(task);
+
+// FIXME: This extra thread is started to make sure that exceptions from
+// the tiler task get reported. This is necessary right now because the
+// code in this method is run from the EDT, as is the progress dialog, so
+// in the event of an exception the progress dialog will wait forever for
+// more progress updates.
+    new Thread(new Runnable() {
+      public void run() {
+        FutureUtils.wait(f);
+      }
+    }).start();
 
     pd.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
