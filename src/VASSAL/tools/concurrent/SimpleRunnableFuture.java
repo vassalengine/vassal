@@ -18,8 +18,6 @@
  */
 package VASSAL.tools.concurrent;
 
-import java.util.concurrent.RunnableFuture;
-
 /**
  * A {@link SimpleFuture} that is a {@link RunnableFuture}.
  */
