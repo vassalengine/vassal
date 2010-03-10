@@ -214,7 +214,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       c.append(marker.keyEvent(afterBurnerKey.getKeyStroke()));
     }
       
-    selectMarker(marker);
+    if (getProperty(Properties.SELECTED) == Boolean.TRUE)
+    	selectMarker(marker);
+    
     if (markerText != null) {
       if (!Boolean.TRUE.equals(
             outer.getProperty(Properties.OBSCURED_TO_OTHERS)) &&
