@@ -32,8 +32,9 @@
 !define VNAME "VASSAL (${VERSION})"
 !define IROOT "${VROOT}\${VNAME}"
 !define AROOT "Software\Classes"
-!define JAVA_MINIMUM "1.5.0_08"
-!define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=29226"
+!define JAVA_MINIMUM "1.6.0_18"
+# FIXME: would be better if we read the download URL from our own site
+!define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=38663"
 
 Name "VASSAL"
 OutFile "${TMPDIR}/VASSAL-${VERSION}-windows.exe"
@@ -533,7 +534,7 @@ Function preJavaCheck
     StrCpy $0 "The installer has found version $1 of the Java Runtime Environment (JRE) installed on your computer."
   ${EndIf}
  
-  StrCpy $1 "VASSAL requires a JRE no older than version ${JAVA_MINIMUM} in order to run.$\n$\n$\n"
+  StrCpy $1 "We recommend running VASSAL with a JRE no older than version ${JAVA_MINIMUM}.$\n$\n$\n"
 
   ${If} $CustomSetup == 1
     ${NSD_CreateLabel} 0 0 100% 24u "$0 $1If you have a JRE which the installer has not detected, or if you wish to install a JRE yourself, unselect this option."
