@@ -2422,7 +2422,7 @@ public class MapBoard extends Importer {
           size = s;
       }
       // only used when editing ADC2 maps within ADC2.
-      /* String name = */ readNullTerminatedString(in);
+      /* String name = */ readNullTerminatedString(in, 25);
       int styleByte = in.readUnsignedByte();
       LineStyle style;
       switch (styleByte) {
