@@ -314,7 +314,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
   protected Color getColor(Element elem) {
     Color col = null;
     try {
-      String s = elem.getDocument().getText(elem.getStartOffset(), elem.getEndOffset() - elem.getStartOffset()).trim();
+      final String s = elem.getDocument().getText(
+        elem.getStartOffset(), elem.getEndOffset() - elem.getStartOffset());
+
       if (s.length() > 0) {
         switch (s.charAt(0)) {
           case '*':
