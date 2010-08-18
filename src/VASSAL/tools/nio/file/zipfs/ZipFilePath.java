@@ -746,7 +746,6 @@ public class ZipFilePath extends Path {
     return pathToZip;
   }
 
-  @Override
   public InputStream newInputStream(OpenOption... options) throws IOException {
     try {
       fs.readLock(this);
@@ -917,7 +916,6 @@ public class ZipFilePath extends Path {
     }
   }
 
-  @Override
   public void setAttribute(String attribute, Object value,
                                              LinkOption... options)
                                                            throws IOException {
@@ -931,7 +929,6 @@ public class ZipFilePath extends Path {
     view.setAttribute(a[1], value);
   }
 
-  @Override
   public Object getAttribute(String attribute, LinkOption... options)
                                                            throws IOException {
     final String[] a = parseAttribute(attribute);
@@ -1360,7 +1357,6 @@ public class ZipFilePath extends Path {
     }
   }
 
-  @Override
   public OutputStream newOutputStream(OpenOption... options)
                                                            throws IOException { 
     if (fs.isReadOnly()) throw new ReadOnlyFileSystemException();
