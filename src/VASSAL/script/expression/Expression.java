@@ -25,11 +25,11 @@ import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceFilter;
 
-/** 
+/**
  * An abstract class representing an expression that can be evaluated.
  * 
- * Subclasses implement specific types of expression and the way they
- * are evaluated.
+ * Subclasses implement specific types of expression and the way they are
+ * evaluated.
  * 
  */
 public abstract class Expression {
@@ -43,17 +43,20 @@ public abstract class Expression {
   public String getExpression() {
     return expression;
   }
-  
+
   /**
    * Each subclass must implement evaluate() to evaluate itself
    * 
-   * @param ps Property Source providing property values
-   * @param properties default property values
-   * @param localized localize property calls?
+   * @param ps
+   *          Property Source providing property values
+   * @param properties
+   *          default property values
+   * @param localized
+   *          localize property calls?
    * @return evaluated String.
    */
-  public abstract String evaluate(PropertySource ps,
-      Map<String, String> properties, boolean localized) throws ExpressionException;
+  public abstract String evaluate(PropertySource ps, Map<String, String> properties,
+      boolean localized) throws ExpressionException;
 
   public String evaluate() throws ExpressionException {
     return evaluate(null, null, false);
@@ -70,9 +73,10 @@ public abstract class Expression {
   public String evaluate(boolean localized) throws ExpressionException {
     return evaluate(null, null, localized);
   }
-  
+
   /**
-   * Return a PieceFilter using the expression.  
+   * Return a PieceFilter using the expression.
+   * 
    * @param ps
    * @return
    */
@@ -80,26 +84,27 @@ public abstract class Expression {
     return new PieceFilter() {
       public boolean accept(GamePiece piece) {
         return true;
-      }};
+      }
+    };
   }
-  
+
   public PieceFilter getFilter() {
     return getFilter(GameModule.getGameModule());
   }
-  
+
   /**
-   * Output a BeanShell equivalent of this expression 
+   * Output a BeanShell equivalent of this expression
    * 
    * @return BeanShell equivalent
    */
   public abstract String toBeanShellString();
-  
+
   /**
-   * Factory method to create an appropriate expression based on the
-   * supplied String. The majority of expressions in a module are going
-   * to be blank, integers or simple strings, so return optimised Expression
-   * subclasses for these types.
-   *   
+   * Factory method to create an appropriate expression based on the supplied
+   * String. The majority of expressions in a module are going to be blank,
+   * integers or simple strings, so return optimised Expression subclasses for
+   * these types.
+   * 
    */
   public static Expression createExpression(String s) {
 
@@ -110,7 +115,7 @@ public abstract class Expression {
 
     final String t = s.trim();
 
-    // BeanShell expression enclosed by braces? 
+    // BeanShell expression enclosed by braces?
     if (t.startsWith("{") && t.endsWith("}")) {
       return BeanShellExpression.createExpression(s);
     }
@@ -132,9 +137,9 @@ public abstract class Expression {
     return new StringExpression(s);
 
   }
-  
+
   /**
-   * Factory method to create a new Property Match Expression. 
+   * Factory method to create a new Property Match Expression.
    * 
    * @param s
    * @return
@@ -145,9 +150,9 @@ public abstract class Expression {
     if (s == null || s.trim().length() == 0) {
       return new NullExpression();
     }
-    
+
     final String t = s.trim();
-    
+
     // BeanShell expression?
     if (t.startsWith("{") && t.endsWith("}")) {
       return new BeanShellExpression(t.substring(1, t.length() - 1));
@@ -156,5 +161,22 @@ public abstract class Expression {
     // An old-style Property Match String
     return new PropertyMatchExpression(t);
 
+  }
+
+  public boolean equals(Object o) {
+    if (o instanceof Expression) {
+      String e = ((Expression) o).getExpression();
+      if (e == null) {
+        return expression == null;
+      }
+      else {
+        return e.equals(expression);
+      }
+    }
+    return false;
+  }
+
+  public int hashCode() {
+    return expression == null ? 0 : expression.hashCode();
   }
 }
