@@ -10,8 +10,7 @@ import VASSAL.tools.io.IOUtils;
 
 public class VersionUtils {
 
-  private static final String baseURL =
-    "http://www.nomic.net/~uckelman/tmp/vassal/";
+  private static final String baseURL = "http://www.vassalengine.org/util/";
 
   private static final String currentRelease = "current-release";
   private static final String currentBeta = "current-beta";

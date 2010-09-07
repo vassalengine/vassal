@@ -31,7 +31,7 @@ public class BugUtils {
       pb.setParameter("file_description", "the errorLog");
       pb.setParameter("submit", "SUBMIT");
 */
-      final String url = "http://www.nomic.net/~uckelman/tmp/vassal/bug.php";
+      final String url = "http://www.vassalengine.org/util/bug.php";
       pb.setParameter("version", Info.getVersion());
       pb.setParameter("email", email);
       pb.setParameter("summary", getSummary(t));
