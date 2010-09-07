@@ -107,7 +107,8 @@ public class CgiServerStatus implements ServerStatus {
     return times;
   }
 
-  private SortedMap<Long,String[]> records = new TreeMap<Long,String[]>();
+  private SortedMap<Long,List<String[]>> records =
+    new TreeMap<Long,List<String[]>>();
   private List<LongRange> requests = new ArrayList<LongRange>();
 
   private ServerStatus.ModuleSummary[] getHistory(long time) {
@@ -149,7 +150,14 @@ public class CgiServerStatus implements ServerStatus {
           final String roomName = st.nextToken();
           final String playerName = st.nextToken();
           final Long when = Long.valueOf(st.nextToken());
-          records.put(when, new String[]{ moduleName, roomName, playerName });
+
+          List<String[]> l = records.get(when);
+          if (l == null) {
+            l = new ArrayList<String[]>();
+            records.put(when, l);
+          }
+
+          l.add(new String[]{ moduleName, roomName, playerName });
         }
         // FIXME: review error message
         catch (NoSuchElementException e) {
@@ -188,24 +196,22 @@ public class CgiServerStatus implements ServerStatus {
     final HashMap<String,ServerStatus.ModuleSummary> entries =
       new HashMap<String,ServerStatus.ModuleSummary>();
 
-    final Set<Map.Entry<Long,String[]>> eset = 
-      records.subMap(req.getMinimumLong(), req.getMaximumLong()).entrySet();
+    for (List<String[]> l : records.subMap(req.getMinimumLong(),
+                                           req.getMaximumLong()).values()) {
+      for (String[] r : l) {
+        final String moduleName = r[0]; 
+        final String roomName = r[1];
+        final String playerName = r[2];
 
-    for (Map.Entry<Long,String[]> e : eset) {
-      final String[] r = e.getValue();
-
-      final String moduleName = r[0]; 
-      final String roomName = r[1];
-      final String playerName = r[2];
-
-      final ServerStatus.ModuleSummary entry = entries.get(moduleName);
-      if (entry == null) {
-        entries.put(moduleName,
-                    createEntry(moduleName, roomName, playerName));
+        final ServerStatus.ModuleSummary entry = entries.get(moduleName);
+        if (entry == null) {
+          entries.put(moduleName,
+                      createEntry(moduleName, roomName, playerName));
+        }
+        else {
+          updateEntry(entry, roomName, playerName);
+        } 
       }
-      else {
-        updateEntry(entry, roomName, playerName);
-      } 
     }
 
     return sortEntriesByModuleName(entries);
