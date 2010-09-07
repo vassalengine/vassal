@@ -38,8 +38,12 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
   private PeerPoolInfo info;
 
   public HttpMessageServer(PeerPoolInfo info) {
-    this("http://www.vassalengine.org/util/getMessages", "http://www.vassalengine.org/util/postMessage", //$NON-NLS-1$ //$NON-NLS-2$
-        "http://www.vassalengine.org/util/motd", info); //$NON-NLS-1$
+    this(
+      "http://www.vassalengine.org/util/getMessages", //$NON-NLS-1$
+      "http://www.vassalengine.org/util/postMessage", //$NON-NLS-1$
+      "http://www.vassalengine.org/util/motd",        //$NON-NLS-1$
+      info
+    );
   }
 
   public HttpMessageServer(String getMessagesURL, String postMessageURL, String welcomeURL, PeerPoolInfo info) {
