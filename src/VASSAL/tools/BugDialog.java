@@ -160,7 +160,7 @@ public class BugDialog extends JDialog {
 
     final JPanel panel = new JPanel(
       new MigLayout("", "", "[]push[]push"));
-    panel.add(label, "cell 0 0");
+    panel.add(label, "cell 0 0, growx, pushx");
     panel.add(spinner, "cell 0 1, align center");
 
     return panel;
@@ -503,7 +503,7 @@ public class BugDialog extends JDialog {
 
     final JPanel panel = new JPanel(
       new MigLayout("", "", "[]push[]push"));
-    panel.add(label, "cell 0 0");
+    panel.add(label, "cell 0 0, growx, pushx");
     panel.add(spinner, "cell 0 1, align center");
 
     return panel;
