@@ -30,6 +30,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
+import VASSAL.tools.io.ZipArchive;
 
 /**
  * Loads an exiting module extension and opens it in an extension edit window
@@ -51,9 +52,8 @@ public class EditExtensionAction extends LoadModuleAction {
   
   protected void loadModule(File f) throws IOException {
     final ModuleExtension ext =
-      new ModuleExtension(new ArchiveWriter(f.toString()));
+      new ModuleExtension(new ArchiveWriter(new ZipArchive(f)));
     ext.build();
-
     final JFrame frame = GameModule.getGameModule().getFrame();
     final ExtensionEditorWindow w =
       new ExtensionEditorWindow(GameModule.getGameModule(), ext);

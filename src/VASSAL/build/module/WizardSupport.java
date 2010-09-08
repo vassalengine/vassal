@@ -33,7 +33,9 @@ import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -89,10 +91,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.UsernameAndPasswordDialog;
 import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.logging.Logger;
-import VASSAL.tools.nio.file.Path;
-import VASSAL.tools.nio.file.Paths;
 
 /**
  * Provides support for two different wizards. The WelcomeWizard is the initial screen shown to the user when loading a
@@ -338,8 +337,7 @@ public class WizardSupport {
         public void actionPerformed(ActionEvent e) {
           controller.setProblem(Resources.getString("WizardSupport.LoadingTutorial")); //$NON-NLS-1$
           try {
-//            new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
-            new TutorialLoader(controller, settings, tutorial.getTutorialPath(), POST_INITIAL_STEPS_WIZARD, tutorial).start();
+            new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
           }
           catch (IOException e1) {
             Logger.log(e1);
@@ -532,7 +530,7 @@ public class WizardSupport {
 
     protected void loadSetup(PredefinedSetup setup, final WizardController controller, final Map settings) {
       try {
-        new SavedGameLoader(controller, settings, setup.getSavedGamePath(), POST_PLAY_OFFLINE_WIZARD).start();
+        new SavedGameLoader(controller, settings, new BufferedInputStream(setup.getSavedGameContents()), POST_PLAY_OFFLINE_WIZARD).start();
       }
       // FIXME: review error message
       catch (IOException e1) {
@@ -578,17 +576,17 @@ public class WizardSupport {
   public static class SavedGameLoader extends Thread {
     private WizardController controller;
     private Map settings;
-    private Path path;
+    // FIXME: this is a bad design---when can we safely close this stream?!
+    private InputStream in;
     private String wizardKey;
 
-    public SavedGameLoader(WizardController controller, Map settings, Path path, String wizardKey) {
+    public SavedGameLoader(WizardController controller, Map settings, InputStream in, String wizardKey) {
       super();
       this.controller = controller;
       this.settings = settings;
-      this.path = path;
+      this.in = in;
       this.wizardKey = wizardKey;
     }
-
 
     @SuppressWarnings("unchecked")
     public void run() {
@@ -608,18 +606,8 @@ public class WizardSupport {
     }
 
     protected Command loadSavedGame() throws IOException {
-      Command setupCommand = null;
-      InputStream in = null;
-      try {
-        in = path.newInputStream();
-        setupCommand =
-          GameModule.getGameModule().getGameState().decodeSavedGame(in);
-        in.close();
-      }
-      finally {
-        IOUtils.closeQuietly(in);
-      }
-
+      Command setupCommand =
+        GameModule.getGameModule().getGameState().decodeSavedGame(in);
       if (setupCommand == null) {
         throw new IOException(Resources.getString("WizardSupport.InvalidSavefile")); //$NON-NLS-1$
       }
@@ -637,8 +625,8 @@ public class WizardSupport {
   public static class TutorialLoader extends SavedGameLoader {
     private Tutorial tutorial;
 
-    public TutorialLoader(WizardController controller, Map settings, Path path, String wizardKey, Tutorial tutorial) {
-      super(controller, settings, path, wizardKey);
+    public TutorialLoader(WizardController controller, Map settings, InputStream in, String wizardKey, Tutorial tutorial) {
+      super(controller, settings, in, wizardKey);
       this.tutorial = tutorial;
     }
 
@@ -649,7 +637,6 @@ public class WizardSupport {
       return c;
     }
   }
-
   /**
    * Wizard pages for loading a saved game
    * 
@@ -681,12 +668,18 @@ public class WizardSupport {
             else if (!processing.contains(f)) { // Sometimes the FileConfigurer fires more than one event for the same
               // file
               processing.add(f);
-              new SavedGameLoader(controller, settings, Paths.get(f.getAbsolutePath()), POST_LOAD_GAME_WIZARD) {
-                public void run() {
-                  super.run();
-                  processing.remove(f);
-                }
-              }.start();
+              try {
+                new SavedGameLoader(controller, settings, new BufferedInputStream(new FileInputStream(f)), POST_LOAD_GAME_WIZARD) {
+                  public void run() {
+                    super.run();
+                    processing.remove(f);
+                  }
+                }.start();
+              }
+              // FIXME: review error message
+              catch (IOException e) {
+                controller.setProblem(Resources.getString("WizardSupport.UnableToLoad")); //$NON-NLS-1$
+              }
             }
           }
         });

@@ -27,7 +27,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,7 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -64,24 +62,20 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.Launcher;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.ThrowableUtils;
-import VASSAL.tools.URIUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogAndSaveFileFilter;
 import VASSAL.tools.io.DeobfuscatingInputStream;
 import VASSAL.tools.io.FastByteArrayOutputStream;
+import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ObfuscatingOutputStream;
+import VASSAL.tools.io.ZipArchive;
 import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.nio.file.FileSystem;
-import VASSAL.tools.nio.file.FileSystems;
-import VASSAL.tools.nio.file.Path;
-import VASSAL.tools.nio.file.Paths;
 
 /**
  * The GameState represents the state of the game currently being played.
@@ -618,135 +612,30 @@ public class GameState implements CommandEncoder {
       IOUtils.closeQuietly(out);
     }
 
-    final URI uri = URIUtils.toURI("zip", f);
-    FileSystem zfs = null;
-
+    FileArchive archive = null;
     try {
-// FIXME: this is bad, put the zipOpts someplace else
-      zfs = FileSystems.newFileSystem(uri, DataArchive.zipOpts);
-
-      // write the save data
-      final Path spath = zfs.getPath(GameState.SAVEFILE_ZIP_ENTRY);
-      out = null; 
-      try {
-        out = spath.newOutputStream();
-        IOUtils.copy(ba.toInputStream(), out);
-        out.close();
-      }
-      finally {
-        IOUtils.closeQuietly(out);
-      }
-
-      // write the metadata
-      final SaveMetaData metadata = new SaveMetaData();
-      final Path mpath = zfs.getPath(metadata.getZipEntryName());
-      out = null;
-      try {
-        out = mpath.newOutputStream(); 
-        metadata.save(out);
-        out.close();
-      }
-      finally {
-        IOUtils.closeQuietly(out);
-      }
-
-      zfs.close();
+      archive = new ZipArchive(f);
+      archive.add(SAVEFILE_ZIP_ENTRY, ba.toInputStream());
+      (new SaveMetaData()).save(archive);
+      archive.close();
     }
     finally {
-      IOUtils.closeQuietly(zfs);
+      IOUtils.closeQuietly(archive);
     }
 
     Launcher.getInstance().sendSaveCmd(f);
   }
- 
-  public Future<Command> loadGameInBackground(final Path path) {
-    final String shortName = path.getName().toString();
-
-    final GameModule g = GameModule.getGameModule();
-    
-    g.warn(Resources.getString("GameState.loading", shortName));  //$NON-NLS-1$
-
-    final JFrame frame = g.getFrame();
-    frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-    final SwingWorker<Command,Void> task = new SwingWorker<Command,Void>() {
-      @Override
-      public Command doInBackground() throws Exception {
-        InputStream in = null;
-        try {
-          in = new BufferedInputStream(path.newInputStream());
-          final Command c = decodeSavedGame(in);
-          in.close();
-          return c;
-        }
-        finally {
-          IOUtils.closeQuietly(in);
-        }
-      }
-
-      @Override
-      protected void done() {
-        try {
-          Command loadCommand = null;
-          String msg = null;
-          try {
-            loadCommand = get();
   
-            if (loadCommand != null) {
-              msg = Resources.getString("GameState.loaded", shortName);  //$NON-NLS-1$
-              if (loadComments != null && loadComments.length() > 0) {
-                msg += ": " + loadComments;
-              }
-            }
-            else {
-              msg = Resources.getString("GameState.invalid_savefile", shortName);  //$NON-NLS-1$
-            } 
-          }
-          catch (InterruptedException e) {
-            ErrorDialog.bug(e);
-          }
-          // FIXME: review error message
-          catch (ExecutionException e) {
-// FIXME: This is a temporary hack to catch OutOfMemoryErrors; there should
-// be a better, more uniform and more permanent way of handling these, since
-// an OOME is neither a VASSAL bug, a module bug, nor due to bad data.
-            final OutOfMemoryError oom =
-              ThrowableUtils.getAncestor(OutOfMemoryError.class, e);
-            if (oom != null) {
-              ErrorDialog.bug(e);
-            }
-            else {
-              VASSAL.tools.logging.Logger.log(e);
-            }
-            msg = Resources.getString("GameState.error_loading", shortName);
-          }
-  
-          if (loadCommand != null) {
-            loadCommand.execute();
-          }
-
-          GameModule.getGameModule().warn(msg);
-          Logger logger = GameModule.getGameModule().getLogger();
-          if (logger instanceof BasicLogger) {
-            ((BasicLogger)logger).queryNewLogFile(true);
-          }
-        }
-        finally {
-          frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
-      }
-    };
-
-    task.execute();
-    return task;
-  }
-
-// FIXME: deprecate this eventually 
   public void loadGameInBackground(final File f) {
-    loadGameInBackground(Paths.get(f.getAbsolutePath()));
+    try {
+      loadGameInBackground(f.getName(),
+                           new BufferedInputStream(new FileInputStream(f)));
+    }
+    catch (IOException e) {
+      ReadErrorDialog.error(e, f);
+    }
   }
 
-  @Deprecated
   public void loadGameInBackground(final String shortName,
                                    final InputStream in)  {
     GameModule.getGameModule().warn(

@@ -20,12 +20,9 @@ package VASSAL.preferences;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.net.URI;
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
@@ -41,27 +38,22 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.URIUtils;
+import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.nio.file.FileSystem;
-import VASSAL.tools.nio.file.FileSystems;
-import VASSAL.tools.nio.file.Path;
-import VASSAL.tools.nio.file.Paths;
+import VASSAL.tools.io.ZipArchive;
 
 /**
- * A set of preferences. Each set of preferences is identified by a name,
- * and different sets may share a common editor, which is responsible for
- * writing the preferences to disk.
+ * A set of preferences. Each set of preferences is identified by a name, and different sets may share a common editor,
+ * which is responsible for writing the preferences to disk
  */
 public class Prefs implements Closeable {
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; // $NON_NLS-1$
   public static final String DISABLE_D3D = "disableD3d";
   private static Prefs globalPrefs;
-  private Map<String,Configurer> options = new HashMap<String,Configurer>();
+  private Map<String, Configurer> options = new HashMap<String, Configurer>();
   private Properties storedValues = new Properties();
   private PrefsEditor editor;
   private String name;
@@ -85,8 +77,7 @@ public class Prefs implements Closeable {
   }
 
   public File getFile() {
-    final String f = editor.getURI().toString().replaceFirst("^zip", "file");
-    return new File(URI.create(f));
+    return new File(editor.getFileArchive().getName());
   }
 
   public void addOption(Configurer o) {
@@ -175,21 +166,12 @@ public class Prefs implements Closeable {
   }
 
   private void read() {
-    final URI uri = editor.getURI();
-
-    final Path p = Paths.get(uri.getPath());
-    // nothing to do if the prefs file doesn't exist yet
-    if (!p.exists()) return;
-
-    FileSystem fs = null;
+    final FileArchive fa = editor.getFileArchive();
     try {
-      fs = FileSystems.newFileSystem(uri, DataArchive.zipOpts);
-
-      final Path path = fs.getPath(name);
-      if (path.exists()) {
-        InputStream in = null;
+      if (fa.contains(name)) { 
+        BufferedInputStream in = null;
         try {
-          in = new BufferedInputStream(path.newInputStream());
+          in = new BufferedInputStream(fa.getInputStream(name));
           storedValues.clear();
           storedValues.load(in);
           in.close();
@@ -198,20 +180,14 @@ public class Prefs implements Closeable {
           IOUtils.closeQuietly(in);
         }
       }
-
-      fs.close();
     }
     catch (IOException e) {
-      ReadErrorDialog.error(e, p.toString());
-    }
-    finally {
-      IOUtils.closeQuietly(fs);
+      ReadErrorDialog.error(e, fa.getName());
     }
   }
 
   /**
    * Store this set of preferences in the editor, but don't yet save to disk
-   * FIXME: this a misleading description
    */
   public void save() throws IOException {
     read();
@@ -228,27 +204,14 @@ public class Prefs implements Closeable {
       }
     }
 
-    final URI uri = editor.getURI();
-
-    FileSystem fs = null;
+    OutputStream out = null;
     try {
-      fs = FileSystems.newFileSystem(uri, DataArchive.zipOpts);
-      final Path path = fs.getPath(name);
-  
-      OutputStream out = null;
-      try {
-        out = new BufferedOutputStream(path.newOutputStream());
-        storedValues.store(out, null);
-        out.close();
-      }
-      finally {
-        IOUtils.closeQuietly(out);
-      }
-
-      fs.close();
+      out = editor.getFileArchive().getOutputStream(name);
+      storedValues.store(out, null);
+      out.close();
     }
     finally {
-      IOUtils.closeQuietly(fs);
+      IOUtils.closeQuietly(out);
     }
 
     changed.clear();
@@ -274,10 +237,11 @@ public class Prefs implements Closeable {
   public static Prefs getGlobalPrefs() {
     if (globalPrefs == null) {
       final File prefsFile = new File(Info.getHomeDir(), "Preferences");
-      final URI uri = URIUtils.toURI("zip", prefsFile);
 
       try {
-        globalPrefs = new Prefs(new PrefsEditor(uri), "VASSAL");
+        globalPrefs = new Prefs(
+          new PrefsEditor(new ZipArchive(prefsFile)), "VASSAL"
+        );
         globalPrefs.write();
       }
       catch (IOException e) {

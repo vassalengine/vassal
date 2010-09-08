@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2010 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,12 +18,11 @@
  */
 package VASSAL.tools;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
+import java.util.zip.ZipFile;
 
 import VASSAL.build.GameModule;
 import VASSAL.configure.DirectoryConfigurer;
@@ -32,18 +31,16 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.image.svg.SVGImageUtils;
-import VASSAL.tools.io.FileUtils;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.nio.file.FileSystems;
-import VASSAL.tools.nio.file.Path;
-import VASSAL.tools.nio.file.Paths;
-import VASSAL.tools.nio.file.zipfs.ZipFileSystem;
+import VASSAL.tools.io.FileArchive;
+import VASSAL.tools.io.ZipArchive;
 
 /**
  * An ArchiveWriter is a writeable DataArchive. New files may be added
  * with the {@link #addFile} and {@link #addImage} methods.
  */
 public class ArchiveWriter extends DataArchive {
+  private String archiveName;
   private boolean isTempArchive = false;
 
   /**
@@ -55,29 +52,56 @@ public class ArchiveWriter extends DataArchive {
    * archive, it will be overwritten.
    */
   public ArchiveWriter(String zipName) {
-    isTempArchive = zipName == null;
+    archiveName = zipName;
 
-    String archiveName = zipName;
-    try {
-      if (isTempArchive) {
-// FIXME: This creates an odd situation, in which we need the file not to
-// exist, and to continue not existing, but we have no guarantee that it
-// won't be created in /tmp!
-        final File f = File.createTempFile("tmp", ".zip");
-        f.delete();
-        archiveName = f.getAbsolutePath();
+    if (archiveName == null) {
+      isTempArchive = true;
+      try {
+        archiveName = File.createTempFile("tmp", ".zip").getPath();
       }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, archiveName);
+      }
+    }
 
-      final URI uri = URIUtils.toURI("zip", new File(archiveName));
-      archive = FileSystems.newFileSystem(uri, zipOpts);
+    final File f = new File(archiveName);
+    try {
+      if (f.exists()) {
+        try {
+          archive = new ZipArchive(archiveName);
+        }
+        catch (IOException e1) {
+          // the file is not a valid ZIP archive, truncate it
+          archive = new ZipArchive(archiveName, true);
+        }
+      }
+      else {
+        archive = new ZipArchive(archiveName);
+      }
     }
     catch (IOException e) {
-// FIXME: Setting archive to null is wrong. This ctor needs to throw instead.
       archive = null;
       WriteErrorDialog.error(e, archiveName);
     }
   }
- 
+  
+  public ArchiveWriter(FileArchive archive) {
+    archiveName = archive.getName();
+    this.archive = archive;
+  }
+
+  @Deprecated  
+  public ArchiveWriter(ZipFile archive) {
+    archiveName = archive.getName();
+    try {
+      this.archive = new ZipArchive(archiveName);
+    }
+    catch (IOException e) {
+      archive = null;
+      WriteErrorDialog.error(e, archiveName);
+    }
+  }
+   
   /**
    * Add an image file to the archive. The file will be copied into an
    * "images" directory in the archive. Storing another image with the
@@ -119,13 +143,22 @@ public class ArchiveWriter extends DataArchive {
     addFile(path, soundDir + fileName);
   }
 
-  public void removeImage(String name) {
-    try {    
-      final Path file = archive.getPath(imageDir + name);
-      file.deleteIfExists();
+  @Deprecated
+  public boolean isImageAdded(String name) {
+    try {
+      return archive.contains(imageDir + name);
     }
     catch (IOException e) {
-      WriteErrorDialog.error(e, ((ZipFileSystem) archive).getFileSystemPath().toString());
+      return false;
+    }
+  }
+
+  public void removeImage(String name) {
+    try {
+      archive.remove(imageDir + name);
+    }
+    catch (IOException e) {
+      WriteErrorDialog.error(e, archive.getName());
     }
 
     localImages = null;
@@ -138,15 +171,11 @@ public class ArchiveWriter extends DataArchive {
    * @param fileName the name under which to store the file in the archive
    */
   public void addFile(String path, String fileName) {
-
     try {
-      final Path src = Paths.get(path);
-      final Path dst = archive.getPath(fileName);
-
-      src.copyTo(dst);
+      archive.add(fileName, path);
     }
     catch (IOException e) {
-      WriteErrorDialog.error(e, ((ZipFileSystem) archive).getFileSystemPath().toString());
+      WriteErrorDialog.error(e, archive.getName());
     }
   }
 
@@ -159,13 +188,12 @@ public class ArchiveWriter extends DataArchive {
   public void addFile(String fileName, InputStream in) {
     OutputStream out = null;
     try {
-      final Path dst = archive.getPath(fileName);
-      out = dst.newOutputStream();
+      out = archive.getOutputStream(fileName);
       IOUtils.copy(in, out);
       out.close();
     }
     catch (IOException e) {
-      WriteErrorDialog.error(e, ((ZipFileSystem) archive).getFileSystemPath().toString());
+      WriteErrorDialog.error(e, archive.getName());
     }
     finally {
       IOUtils.closeQuietly(out);
@@ -173,7 +201,12 @@ public class ArchiveWriter extends DataArchive {
   }
 
   public void addFile(String fileName, byte[] content) {
-    addFile(fileName, new ByteArrayInputStream(content));
+    try {
+      archive.add(fileName, content);
+    }
+    catch (IOException e) {
+      WriteErrorDialog.error(e, archive.getName());
+    }
   }
 
   public void save() throws IOException {
@@ -182,20 +215,20 @@ public class ArchiveWriter extends DataArchive {
 
   public void save(boolean notifyModuleManager) throws IOException {
     if (isTempArchive) saveAs(notifyModuleManager);
-    else write((ZipFileSystem) archive, notifyModuleManager);
+    else write(archive, notifyModuleManager);
   }
 
   public void saveAs() throws IOException {
     saveAs(false);
   }
-
-  protected void write(ZipFileSystem fs, boolean notifyModuleManager)
+  
+  protected void write(FileArchive fa, boolean notifyModuleManager)
                                                            throws IOException {
-    fs.flush();
+    fa.flush();
     
     // FIXME: use a listener here?
     if (notifyModuleManager) {
-      Launcher.getInstance().sendSaveCmd(new File(fs.getFileSystemPath().toString()));
+      Launcher.getInstance().sendSaveCmd(fa.getFile());
     }
   }
 
@@ -207,27 +240,35 @@ public class ArchiveWriter extends DataArchive {
     if (fc.showSaveDialog() != FileChooser.APPROVE_OPTION) return;
     final String filename = fc.getSelectedFile().getPath();
 
-    final Path zold = ((ZipFileSystem) archive).getFileSystemPath();
-    final Path znew = Paths.get(filename);
+    if (filename != archive.getName()) {
+      // Copy the current state to the new archive.
+      final FileArchive tmp = archive;
 
-    if (!zold.isSameFile(znew)) {
-      final URI uri = URIUtils.toURI("zip", new File(filename)); 
-      final ZipFileSystem tmpArchive =
-        (ZipFileSystem) FileSystems.newFileSystem(uri, zipOpts);
+      archive = new ZipArchive(tmp, filename);
+      archiveName = filename;
+      archive.flush();
 
-      FileUtils.copy(archive.getPath("/"), tmpArchive.getPath("/"));
+      tmp.revert();
+      tmp.close();
+    
+      write(archive, notifyModuleManager);
 
-      ((ZipFileSystem) archive).revert();
-      archive.close();
-
-      if (isTempArchive) isTempArchive = false;        
-
-      archive = tmpArchive;
-    } 
-
-    write((ZipFileSystem) archive, notifyModuleManager);
+      if (isTempArchive) {
+        tmp.getFile().delete();
+        isTempArchive = false;
+      } 
+    }
+    else {
+      write(archive, notifyModuleManager);
+    }
   }
 
+  /**
+   * If the ArchiveWriter was initialized with non-null file name, then
+   * write the contents of the archive to the named archive. If it was
+   * initialized with a null name, prompt the user to select a new file
+   * into which to write archive.
+   */
   @Deprecated
   public void write() throws IOException {
     write(false);

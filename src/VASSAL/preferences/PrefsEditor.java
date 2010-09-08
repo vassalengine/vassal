@@ -27,8 +27,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.net.URI;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,35 +50,31 @@ import VASSAL.configure.Configurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.SplashScreen;
-import VASSAL.tools.URIUtils;
 import VASSAL.tools.WriteErrorDialog;
+import VASSAL.tools.io.FileArchive;
+import VASSAL.tools.io.ZipArchive;
 
 public class PrefsEditor {
   private JDialog dialog;
   private List<Configurer> options = new ArrayList<Configurer>();
-  private Map<Configurer,Object> savedValues;
+  private Map<Configurer, Object> savedValues;
   private List<Prefs> prefs;
   private JTabbedPane optionsTab;
   private JDialog setupDialog;
+  private FileArchive archive;
   private Action editAction;
 
-  private final URI uri;
-
-  public PrefsEditor(URI uri) {
-    savedValues = new HashMap<Configurer,Object>();
+  public PrefsEditor(FileArchive archive) {
+    savedValues = new HashMap<Configurer, Object>();
+    this.archive = archive;
     prefs = new ArrayList<Prefs>();
     optionsTab = new JTabbedPane();
-    this.uri = uri;
   }
 
-  /** @deprecated Use {@link PrefsEditor(URI)} instead. */
+  /** @deprecated Use {@link PrefsEditor(FileArchive)} instead. */
   @Deprecated
   public PrefsEditor(ArchiveWriter archive) throws IOException {
-    savedValues = new HashMap<Configurer,Object>();
-    prefs = new ArrayList<Prefs>();
-    optionsTab = new JTabbedPane();
-
-    uri = URIUtils.toURI("zip", new File(archive.getName()));
+    this(new ZipArchive(archive.getName()));
   }
 
   public void initDialog(Frame parent) {
@@ -194,6 +188,18 @@ public class PrefsEditor {
     }
   }
 
+  public FileArchive getFileArchive() {
+    if (archive.isClosed()) {
+      try {
+        archive = new ZipArchive(archive.getName());
+      }
+      catch (IOException e) {
+        archive = null;
+      }
+    }
+    return archive;
+  }
+
   protected void cancel() {
     for (Configurer c : options) {
       c.setValue(savedValues.get(c));
@@ -209,14 +215,12 @@ public class PrefsEditor {
       }
       c.setFrozen(false);
     }
-
     try {
       write();
     }
     catch (IOException e) {
-      WriteErrorDialog.error(e, new File(uri));
+      WriteErrorDialog.error(e, archive.getName());
     }
-
     dialog.setVisible(false);
   }
 
@@ -241,14 +245,12 @@ public class PrefsEditor {
     return editAction;
   }
 
-  protected URI getURI() {
-    return uri;
-  }
-
   public void write() throws IOException {
     for (Prefs p : prefs) p.save();
+    archive.flush();
   }
 
   public void close() throws IOException {
+    archive.close();
   }
 }
