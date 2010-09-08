@@ -28,7 +28,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import VASSAL.Info;
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.configure.DirectoryConfigurer;
 
 /**
@@ -71,11 +72,11 @@ public abstract class FileChooser {
    */
   public static FileChooser createFileChooser(Component parent, DirectoryConfigurer prefs, int mode) {
     FileChooser fc;
-    if (Info.isMacOSX()) {
+    if (SystemUtils.IS_OS_MAC_OSX) {
       // Mac has a good native file dialog
       fc = new NativeFileChooser(parent, prefs, mode);
     }
-    else if (mode == FILES_ONLY && Info.isWindows()) {
+    else if (mode == FILES_ONLY && SystemUtils.IS_OS_WINDOWS) {
       // Window has a good native file dialog, but it doesn't support selecting directories
       fc = new NativeFileChooser(parent, prefs, mode);
     }

@@ -32,6 +32,8 @@ import java.net.Socket;
 
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
@@ -85,7 +87,8 @@ public abstract class Launcher {
     }
 
     // start the error log and setup system properties
-    final StartUp start = Info.isMacOSX() ? new MacOSXStartUp() : new StartUp();
+    final StartUp start = SystemUtils.IS_OS_MAC_OSX ?
+      new MacOSXStartUp() : new StartUp();
 
     if (standalone) {
       // start logging to the errorLog

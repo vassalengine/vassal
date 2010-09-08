@@ -25,6 +25,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.tools.version.VassalVersionTokenizer;
 import VASSAL.tools.version.VersionFormatException;
 import VASSAL.tools.version.VersionTokenizer;
@@ -33,22 +35,12 @@ import VASSAL.tools.version.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.2.0-svn6579"; //$NON-NLS-1$
+  private static final String VERSION = "3.2.0-svn6946"; //$NON-NLS-1$
   
   // Do not allow editing of modules with this revision or later
   private static final String EXPIRY_VERSION = "3.3";  //$NON-NLS-1$
   
   private static File homeDir;
-
-  private static final boolean isWindows;
-  private static final boolean isMacOSX; 
-
-  static {
-    // set the OS flags
-    final String os = System.getProperty("os.name").toLowerCase();
-    isWindows =  os.startsWith("windows");
-    isMacOSX = os.startsWith("mac os x");
-  }
 
   /** The path to the JVM binary. */
   public static final String javaBinPath =
@@ -140,18 +132,22 @@ public final class Info {
     return bounds;
   }
 
+  /** @depricated Use {@link SystemUtils.IS_OS_MAC_OSX} instead */
+  @Deprecated
   public static boolean isMacOSX() {
-    return isMacOSX;
+    return SystemUtils.IS_OS_MAC_OSX;
   }
 
-  /** Use {@link isMacOSX()} instead. */
+  /** @depricated Use {@link SystemUtils.IS_OS_MAC_OSX} instead. */
   @Deprecated
   public static boolean isMacOsX() {
-    return isMacOSX();
+    return SystemUtils.IS_OS_MAC_OSX;
   }
   
+  /** @depricated Use {@link SystemUtils.IS_OS_WINDOWS} instead */
+  @Deprecated
   public static boolean isWindows() {
-    return isWindows;
+    return SystemUtils.IS_OS_WINDOWS;
   }
   
   public static boolean isModuleTooNew(String version) {
@@ -202,10 +198,11 @@ public final class Info {
    * Returns the directory where the VASSAL documentation is installed.
    * 
    * @return a {@link File} representing the directory
+   * @deprecated Use {@link getDocDir()} instead.
    */
+  @Deprecated
   public static File getDocsDir() {
-    final String d = isMacOSX ? "Contents/Resources/doc" : "doc";
-    return new File(getBaseDir(), d);
+    return getDocDir();
   }
 
 // FIXME: we should have something like
@@ -216,7 +213,8 @@ public final class Info {
   }
 
   public static File getDocDir() {
-    final String d = isMacOSX ? "Contents/Resources/doc" : "doc";
+    final String d = SystemUtils.IS_OS_MAC_OSX ?
+      "Contents/Resources/doc" : "doc";
     return new File(getBaseDir(), d);
   }
 

@@ -80,6 +80,8 @@ import javax.swing.tree.TreePath;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.lang.SystemUtils;
+
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
@@ -222,7 +224,7 @@ public class ModuleManagerWindow extends JFrame {
     fileMenu.add(mm.addKey("Main.import_module"));
     fileMenu.addSeparator();
 
-    if (!Info.isMacOSX()) {
+    if (!SystemUtils.IS_OS_MAC_OSX) {
       fileMenu.add(mm.addKey("Prefs.edit_preferences"));
       fileMenu.addSeparator();
       fileMenu.add(mm.addKey("General.quit"));
@@ -268,7 +270,7 @@ public class ModuleManagerWindow extends JFrame {
     helpMenu.add(mm.addKey("UpdateCheckAction.update_check"));
     helpMenu.add(mm.addKey("Help.error_log"));
 
-    if (!Info.isMacOSX()) {
+    if (!SystemUtils.IS_OS_MAC_OSX) {
       helpMenu.addSeparator();
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
     }

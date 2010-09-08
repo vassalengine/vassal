@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.Info;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.configure.BooleanConfigurer;
@@ -266,7 +268,7 @@ public class Prefs implements Closeable {
     getGlobalPrefs();
     
     // Option to disable D3D pipeline
-    if (Info.isWindows()) {
+    if (SystemUtils.IS_OS_WINDOWS) {
       final BooleanConfigurer d3dConf = new BooleanConfigurer(
         DISABLE_D3D,
         Resources.getString("Prefs.disable_d3d"),

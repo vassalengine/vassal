@@ -30,7 +30,8 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import VASSAL.Info;
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.image.ImageIOException;
@@ -62,7 +63,7 @@ public class ApplicationIcons {
   private static final List<BufferedImage> icons;
 
   static {
-    if (Info.isMacOSX()) {
+    if (SystemUtils.IS_OS_MAC_OSX) {
       setIconImages = null;
       icons = null;
     }
@@ -82,7 +83,7 @@ public class ApplicationIcons {
       List<BufferedImage> l = null;
       try {
         if (setIconImages != null) {
-          if (Info.isWindows()) {
+          if (SystemUtils.IS_OS_WINDOWS) {
             // Windows uses 24x24 instead of 22x22
             final BufferedImage src =
               ImageUtils.getImageResource("/icons/22x22/VASSAL.png");

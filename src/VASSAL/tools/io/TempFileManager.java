@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.Info;
 import VASSAL.tools.imageop.Op;
 import VASSAL.tools.logging.Logger;
@@ -65,7 +67,7 @@ public class TempFileManager {
     //
     // set up for cleanup on shutdown
     //
-    if (Info.isWindows()) {
+    if (SystemUtils.IS_OS_WINDOWS) {
       Runtime.getRuntime().addShutdownHook(new Thread() {
         public void run() {
           // Clear the references to MappedBufferedImages so that the

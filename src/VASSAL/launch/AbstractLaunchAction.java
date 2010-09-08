@@ -49,6 +49,7 @@ import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;
@@ -376,7 +377,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       al.add("-cp");
       al.add(System.getProperty("java.class.path"));
 
-      if (Info.isMacOSX()) {
+      if (SystemUtils.IS_OS_MAC_OSX) {
         // set the MacOS X dock parameters
 
         // use the module name for the dock if we found a module name
@@ -391,7 +392,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         al.add("-Xdock:name=" + d_name);
         al.add("-Xdock:icon=" + d_icon);
       }
-      else if (Info.isWindows()) {
+      else if (SystemUtils.IS_OS_WINDOWS) {
         // Disable the 2D to Direct3D pipeline?
         final Boolean disableD3d =
           (Boolean) Prefs.getGlobalPrefs().getValue(Prefs.DISABLE_D3D);

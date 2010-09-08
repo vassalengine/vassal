@@ -39,6 +39,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.Info;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
@@ -255,7 +257,7 @@ public class ModuleManager {
     this.lout = lout;
     this.lock = lock;
 
-    final StartUp start = Info.isMacOSX() ?
+    final StartUp start = SystemUtils.IS_OS_MAC_OSX ?
       new ModuleManagerMacOSXStartUp() : new StartUp();
 
     // start logging to the errorLog
@@ -279,7 +281,7 @@ public class ModuleManager {
 
     start.initSystemProperties();
 
-    if (Info.isMacOSX()) new MacOSXMenuManager();
+    if (SystemUtils.IS_OS_MAC_OSX) new MacOSXMenuManager();
     else new ModuleManagerMenuManager();
 
     SwingUtilities.invokeLater(new Runnable() {

@@ -29,7 +29,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
-import VASSAL.Info;
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.build.module.Documentation;
 import VASSAL.configure.ShowHelpAction;
 import VASSAL.i18n.Resources;
@@ -81,7 +82,7 @@ public class PlayerWindow extends JFrame {
     fileMenu.add(mm.addKey("BasicLogger.begin_logfile"));
     fileMenu.add(mm.addKey("BasicLogger.end_logfile"));
 
-    if (Info.isMacOSX()) {
+    if (SystemUtils.IS_OS_MAC_OSX) {
       fileMenu.add(mm.addMarker("Editor.File.start"));
       fileMenu.add(mm.addMarker("Editor.File.end"));
     }
@@ -112,7 +113,7 @@ public class PlayerWindow extends JFrame {
 
     helpMenu.add(mm.addKey("Documentation.about_module"));
 
-    if (!Info.isMacOSX()) {
+    if (!SystemUtils.IS_OS_MAC_OSX) {
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
     }
     

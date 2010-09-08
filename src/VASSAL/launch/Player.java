@@ -27,6 +27,8 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
@@ -59,7 +61,8 @@ public class Player extends Launcher {
   }
 
   protected MenuManager createMenuManager() {
-    return Info.isMacOSX() ? new MacOSXMenuManager() : new PlayerMenuManager();
+    return SystemUtils.IS_OS_MAC_OSX ?
+      new MacOSXMenuManager() : new PlayerMenuManager();
   }
 
   protected void launch() throws IOException {

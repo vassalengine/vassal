@@ -39,7 +39,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
-import VASSAL.Info;
+import org.apache.commons.lang.SystemUtils;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.documentation.HelpWindow;
@@ -107,7 +108,7 @@ public abstract class EditorWindow extends JFrame {
     final MenuBarProxy mb = mm.getMenuBarProxyFor(this);
 
     // file menu
-    if (Info.isMacOSX()) {
+    if (SystemUtils.IS_OS_MAC_OSX) {
       mm.addToSection("Editor.File", mm.addKey("Editor.save"));
       mm.addToSection("Editor.File", mm.addKey("Editor.save_as"));
     }
@@ -147,7 +148,7 @@ public abstract class EditorWindow extends JFrame {
     toolsMenu.add(mm.addKey("create_module_updater"));
     toolsMenu.add(mm.addKey("Editor.ModuleEditor.update_saved"));
 
-    if (Info.isMacOSX()) {
+    if (SystemUtils.IS_OS_MAC_OSX) {
       mm.addToSection("Editor.MenuBar", editMenu);
       mm.addToSection("Editor.MenuBar", toolsMenu);
     }
@@ -157,7 +158,7 @@ public abstract class EditorWindow extends JFrame {
     }
 
     // help menu
-    if (Info.isMacOSX()) {
+    if (SystemUtils.IS_OS_MAC_OSX) {
       mm.addToSection("Documentation.VASSAL",
                       mm.addKey("Editor.ModuleEditor.reference_manual"));
     }
