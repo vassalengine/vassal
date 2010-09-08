@@ -39,15 +39,16 @@ public class BugUtils {
       pb.setParameter("log", "errorLog", errorLog);
 
       in = pb.post(url);
+      final String result = IOUtils.toString(in);
     
       // script should return zero on success, otherwise it failed
       try {
-        if (Integer.parseInt(IOUtils.toString(in)) != 0) {
-          throw new NumberFormatException();
+        if (Integer.parseInt(result) != 0) {
+          throw new NumberFormatException("Bad result: " + result);
         }
       }
       catch (NumberFormatException e) {
-        throw new IOException();
+        throw (IOException) new IOException().initCause(e);
       }
 
 	    in.close();
