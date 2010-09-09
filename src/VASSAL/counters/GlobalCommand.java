@@ -13,7 +13,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, copies are available 
+ * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
 package VASSAL.counters;
@@ -42,7 +42,7 @@ public class GlobalCommand {
   protected int selectFromDeck = -1;
   protected FormattedString reportFormat = new FormattedString();
   protected Loopable owner;
-  
+
   public GlobalCommand(Loopable l) {
     owner = l;
   }
@@ -54,7 +54,7 @@ public class GlobalCommand {
   public void setKeyStroke(NamedKeyStroke keyStroke) {
     this.keyStroke = keyStroke.getKeyStroke();
   }
-  
+
   public void setReportFormat(String format) {
     this.reportFormat.setFormat(format);
   }
@@ -80,7 +80,7 @@ public class GlobalCommand {
   }
   /**
    * Apply the key command to all pieces that pass the given filter on all the given maps
-   * 
+   *
    * @param m
    * @param filter
    * @return a the corresponding {@link Command}
@@ -118,7 +118,7 @@ public class GlobalCommand {
         Map.setChangeReportingEnabled(true);
       }
     }
-    
+
     return c;
   }
 
@@ -188,4 +188,44 @@ public class GlobalCommand {
   public void setSelectFromDeck(int selectFromDeck) {
     this.selectFromDeck = selectFromDeck;
   }
+
+@Override
+public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((keyStroke == null) ? 0 : keyStroke.hashCode());
+	result = prime * result
+			+ ((reportFormat == null) ? 0 : reportFormat.hashCode());
+	result = prime * result + (reportSingle ? 1231 : 1237);
+	result = prime * result + selectFromDeck;
+	return result;
+}
+
+@Override
+public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (obj == null)
+		return false;
+	if (getClass() != obj.getClass())
+		return false;
+	GlobalCommand other = (GlobalCommand) obj;
+	if (keyStroke == null) {
+		if (other.keyStroke != null)
+			return false;
+	} else if (!keyStroke.equals(other.keyStroke))
+		return false;
+	if (reportFormat == null) {
+		if (other.reportFormat != null)
+			return false;
+	} else if (!reportFormat.equals(other.reportFormat))
+		return false;
+	if (reportSingle != other.reportSingle)
+		return false;
+	if (selectFromDeck != other.selectFromDeck)
+		return false;
+	return true;
+}
+
+
 }

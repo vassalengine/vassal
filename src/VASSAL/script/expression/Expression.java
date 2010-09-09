@@ -27,10 +27,10 @@ import VASSAL.counters.PieceFilter;
 
 /**
  * An abstract class representing an expression that can be evaluated.
- * 
+ *
  * Subclasses implement specific types of expression and the way they are
  * evaluated.
- * 
+ *
  */
 public abstract class Expression {
 
@@ -46,7 +46,7 @@ public abstract class Expression {
 
   /**
    * Each subclass must implement evaluate() to evaluate itself
-   * 
+   *
    * @param ps
    *          Property Source providing property values
    * @param properties
@@ -93,7 +93,7 @@ public abstract class Expression {
   }
 
   /**
-   * Output a BeanShell equivalent of this expression
+   * Output a BeanShell equivalent of this expression.
    * 
    * @return BeanShell equivalent
    */
@@ -104,7 +104,6 @@ public abstract class Expression {
    * String. The majority of expressions in a module are going to be blank,
    * integers or simple strings, so return optimised Expression subclasses for
    * these types.
-   * 
    */
   public static Expression createExpression(String s) {
 
@@ -140,7 +139,7 @@ public abstract class Expression {
 
   /**
    * Factory method to create a new Property Match Expression.
-   * 
+   *
    * @param s
    * @return
    */
@@ -163,20 +162,21 @@ public abstract class Expression {
 
   }
 
-  public boolean equals(Object o) {
-    if (o instanceof Expression) {
-      String e = ((Expression) o).getExpression();
-      if (e == null) {
-        return expression == null;
-      }
-      else {
-        return e.equals(expression);
-      }
-    }
-    return false;
-  }
-
+  @Override
   public int hashCode() {
     return expression == null ? 0 : expression.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+  	if (this == obj) return true;
+
+  	if (obj == null || getClass() != obj.getClass()) return false;
+
+  	final Expression other = (Expression) obj;
+
+  	if (expression == null && other.expression != null) return false;
+    
+    return expression.equals(other.expression);
   }
 }

@@ -34,11 +34,11 @@ import VASSAL.tools.ErrorDialog;
 public class BeanShellExpression extends Expression {
 
   protected ExpressionInterpreter interpreter;
-  
+
   public BeanShellExpression (String s) {
     setExpression("{" + s + "}");
   }
-  
+
   /**
    * Evaluate this expression using a BeanShell Interpreter
    */
@@ -49,12 +49,12 @@ public class BeanShellExpression extends Expression {
     }
     return interpreter.evaluate(ps, localized);
   }
-  
+
 
   public String toBeanShellString() {
     return strip(getExpression());
   }
-  
+
   protected static String strip(String expr) {
     final String s = expr.trim();
     if (s.startsWith("{") && s.endsWith("}")) {
@@ -62,11 +62,11 @@ public class BeanShellExpression extends Expression {
     }
     return expr;
   }
-  
+
   /**
-   * Return a PieceFilter that selects GamePieces that cause 
+   * Return a PieceFilter that selects GamePieces that cause
    * this expression to evaluate to true
-   */  
+   */
   public PieceFilter getFilter(final PropertySource ps) {
     return new PieceFilter() {
       public boolean accept(GamePiece piece) {
@@ -83,16 +83,16 @@ public class BeanShellExpression extends Expression {
   }
   /**
    * Create a BeanShellExpression.
-   * 
+   *
    * The expression may or may not be surrounded by {}.
-   * 
+   *
    * Create null, integer and simple Expressions as their basic type to
    * ensure efficient evaluation.
    */
   public static Expression createExpression(String s) {
     String expr;
     final String t = s.trim();
-    
+
     if (t.startsWith("{") && t.endsWith("}")) {
       expr = t.substring(1, t.length() - 1).trim();
     }
@@ -118,6 +118,11 @@ public class BeanShellExpression extends Expression {
     }
 
     return new BeanShellExpression(expr);
-    
+
+  }
+
+  @Override
+  public boolean equals(Object bse) {
+	  return super.equals(bse);
   }
 }

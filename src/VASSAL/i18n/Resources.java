@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.swing.DefaultListCellRenderer;
@@ -43,23 +44,24 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 
 public class Resources {
-  /*
+  private static Resources instance;
+/*
    * Translation of VASSAL is handled by standard Java I18N tools.
-   * 
+   *
    * vassalBundle - Resource Bundle for the VASSAL player interface editorBundle - Resource Bundle for the Module Editor
-   * 
+   *
    * These are implemented as PropertyResourceBundles, normally to be found in the VASSAL jar file. VASSAL will search
    * first in the VASSAL install directory for bundles, then follow the standard Java Class Path
    */
-  protected static BundleHelper vassalBundle;
-  protected static BundleHelper editorBundle;
-  private static VassalPropertyClassLoader bundleLoader = new VassalPropertyClassLoader();
+  protected BundleHelper vassalBundle;
+  protected BundleHelper editorBundle;
+  private VassalPropertyClassLoader bundleLoader = new VassalPropertyClassLoader();
 
   /** Preferences key for the user's Locale */
   public static final String LOCALE_PREF_KEY = "Locale";
 
-  // Note: The Locale ctor takes the lower-case two-letter ISO language code. 
-  protected static final List<Locale> supportedLocales =
+  // Note: The Locale ctor takes the lower-case two-letter ISO language code.
+  protected final List<Locale> supportedLocales =
     new ArrayList<Locale>(Arrays.asList(
       Locale.ENGLISH,
       Locale.GERMAN,
@@ -71,23 +73,35 @@ public class Resources {
     )
   );
 
-  protected static Locale locale = Locale.getDefault();
+  protected Locale locale = Locale.getDefault();
   protected static String DATE_FORMAT = "{0,date}";
 
-  static {
+  private Resources() {
+	  init();
+  }
+
+  private static Resources getInstance() {
+		synchronized (Resources.class) {
+			if (instance == null) {
+				instance = new Resources();
+			}
+		}
+		return instance;
+	}
+
+  private void init() {
     Locale myLocale = Locale.getDefault();
 
-    final ResourceBundle rb =
-      ResourceBundle.getBundle("VASSAL.i18n.VASSAL", myLocale, bundleLoader);
+    ResourceBundle rb = ResourceBundle.getBundle("VASSAL.i18n.VASSAL", myLocale, bundleLoader);
 
     // If the user has a resource bundle for their default language on their
     // local machine, add it to the list of supported locales
     if (rb.getLocale().getLanguage().equals(myLocale.getLanguage())) {
-      addSupportedLocale(myLocale);
+      addLocale(myLocale);
     }
 
     final ArrayList<String> languages = new ArrayList<String>();
-    for (Locale l : getSupportedLocales()) {
+    for (Locale l : supportedLocales) {
       languages.add(l.getLanguage());
     }
 
@@ -102,8 +116,8 @@ public class Resources {
       myLocale = new Locale(savedLocale);
     }
 
-    Resources.setLocale(myLocale);
-    final StringEnumConfigurer localeConfig = new StringEnumConfigurer(Resources.LOCALE_PREF_KEY, getString("Prefs.language"), languages.toArray(new String[languages.size()])) {
+    setInstanceLocale(myLocale);
+    final StringEnumConfigurer localeConfig = new StringEnumConfigurer(Resources.LOCALE_PREF_KEY, getInstanceString("Prefs.language"), languages.toArray(new String[languages.size()])) {
       public Component getControls() {
         if (box == null) {
           final Component c = super.getControls();
@@ -124,8 +138,8 @@ public class Resources {
       }
     };
 
-    localeConfig.setValue(Resources.getLocale().getLanguage());
-    p.addOption(getString("Prefs.general_tab"), localeConfig);
+    localeConfig.setValue(locale.getLanguage());
+    p.addOption(getInstanceString("Prefs.general_tab"), localeConfig);
 
 /*
     new PreferencesEditor() {
@@ -134,7 +148,7 @@ public class Resources {
           prefs,
           LOCALE,
           getString("Prefs.language"),
-          
+
         );
       }
     };
@@ -142,27 +156,33 @@ public class Resources {
   }
 
   public static Collection<Locale> getSupportedLocales() {
-    return supportedLocales;
+    return getInstance().supportedLocales;
   }
-  
+
   public static void addSupportedLocale(Locale l) {
-    l = new Locale(l.getLanguage());
-    if (!supportedLocales.contains(l)) {
-      supportedLocales.add(0,l);
-      StringEnumConfigurer config = (StringEnumConfigurer) Prefs.getGlobalPrefs().getOption(LOCALE_PREF_KEY);
-      if (config != null) {
-        ArrayList<String> valid = new ArrayList<String>(Arrays.asList(config.getValidValues()));
-        valid.add(0,l.getLanguage());
-        config.setValidValues(valid.toArray(new String[valid.size()]));
-      }
-    }
+	  getInstance().addLocale(l);
+  }
+
+  private void addLocale(Locale l) {
+		l = new Locale(l.getLanguage());
+		if (!supportedLocales.contains(l)) {
+			supportedLocales.add(0, l);
+			StringEnumConfigurer config = (StringEnumConfigurer) Prefs
+					.getGlobalPrefs().getOption(LOCALE_PREF_KEY);
+			if (config != null) {
+				ArrayList<String> valid = new ArrayList<String>(Arrays
+						.asList(config.getValidValues()));
+				valid.add(0, l.getLanguage());
+				config.setValidValues(valid.toArray(new String[valid.size()]));
+			}
+		}
   }
 
   public static Collection<String> getVassalKeys() {
-    return Collections.list(vassalBundle.getResourceBundle().getKeys());
+    return Collections.list(getInstance().vassalBundle.getResourceBundle().getKeys());
   }
 
-  public static Collection<String> getEditorKeys() {
+  public Collection<String> getEditorKeys() {
     return Collections.list(editorBundle.getResourceBundle().getKeys());
   }
 
@@ -173,13 +193,13 @@ public class Resources {
    * These will be read into UberProperties structures
    * with each file loaded supplying defaults for subsequent files.
    */
-  protected static String MODULE_BUNDLE = "Module"; //$NON-NLS-1$
+  protected static final String MODULE_BUNDLE = "Module"; //$NON-NLS-1$
 
   /*
    * Commonly used i18n keys used in multiple components. By defining them
    * centrally, they will only have to be translated once. Reference to these
    * string should be made as follows:
-   * 
+   *
    * Resources.getString(Resources.VASSAL)
    */
   public static final String VASSAL = "General.VASSAL"; //$NON-NLS-1$
@@ -224,27 +244,31 @@ public class Resources {
   public static final String DESCRIPTION = "Editor.description_label"; //$NON-NLS-1$
   /**
    * Localize a user interface String.
-   * 
+   *
    * @param id
    *          String Id
    * @return Localized result
    */
   public static String getString(String id) {
-    return getBundleForKey(id).getString(id);
+    return getInstance().getInstanceString(id);
   }
 
-  protected static BundleHelper getBundleForKey(String id) {
+  private String getInstanceString(String id) {
+	return getBundleForKey(id).getString(id);
+}
+
+protected BundleHelper getBundleForKey(String id) {
     return id.startsWith(EDITOR_PREFIX) ? getEditorBundle() : getVassalBundle();
   }
 
-  protected static BundleHelper getEditorBundle() {
+  protected BundleHelper getEditorBundle() {
     if (editorBundle == null) {
       editorBundle = new BundleHelper(ResourceBundle.getBundle("VASSAL.i18n.Editor", locale, bundleLoader));
     }
     return editorBundle;
   }
 
-  protected static BundleHelper getVassalBundle() {
+  protected BundleHelper getVassalBundle() {
     if (vassalBundle == null) {
       vassalBundle = new BundleHelper(ResourceBundle.getBundle("VASSAL.i18n.VASSAL", locale, bundleLoader));
     }
@@ -253,31 +277,31 @@ public class Resources {
 
   /**
    * Localize a VASSAL user interface string
-   * 
+   *
    * @param id
    *          String id
    * @return Localized result
    */
   @Deprecated
   public static String getVassalString(String id) {
-    return getVassalBundle().getString(id);
+    return getInstance().getVassalBundle().getString(id);
   }
 
   /**
    * Localize a VASSAL Module Editor String
-   * 
+   *
    * @param id
    *          String Id
    * @return Localized Result
    */
   @Deprecated
   public static String getEditorString(String id) {
-    return getEditorBundle().getString(id);
+    return getInstance().getEditorBundle().getString(id);
   }
 
   /**
    * Localize a string using the supplied resource bundle
-   * 
+   *
    * @param bundle
    *          Resource bundle
    * @param id
@@ -301,31 +325,32 @@ public class Resources {
   }
 
   public static String getString(String id, Object... params) {
-    return getBundleForKey(id).getString(id, params);
+    return getInstance().getBundleForKey(id).getString(id, params);
   }
 
-  protected static final String BASE_BUNDLE = "VASSAL.properties";
+
+protected static final String BASE_BUNDLE = "VASSAL.properties";
   protected static final String EN_BUNDLE = "VASSAL_en.properties";
-  
+
   /**
    * Custom Class Loader for loading VASSAL property files.
    * Check first for files in the VASSAL home directory.
-   * 
+   *
    * @author Brent Easton
    */
-  public static class VassalPropertyClassLoader extends ClassLoader {
+  public class VassalPropertyClassLoader extends ClassLoader {
     public URL getResource(String name) {
       URL url = getAResource(name);
-      
+
       // If no English translation of Vassal is available (as will usually be the case),
       // drop back to the Base bundle.
       if (url == null && name.endsWith(EN_BUNDLE)) {
         url = getAResource(name.substring(0, name.lastIndexOf('/')+1)+BASE_BUNDLE);
       }
-      
+
       return url;
     }
-    
+
     public URL getAResource(String name) {
       URL url = null;
       final String propFileName = name.substring(name.lastIndexOf('/') + 1);
@@ -350,19 +375,23 @@ public class Resources {
   }
 
   public static void setLocale(Locale l) {
+	  getInstance().setInstanceLocale(l);
+  }
+
+  private void setInstanceLocale(Locale l) {
     locale = l;
     editorBundle = null;
     vassalBundle = null;
-    UIManager.put("OptionPane.yesButtonText", getString(YES)); //$NON-NLS-1$
-    UIManager.put("OptionPane.cancelButtonText", getString(CANCEL)); //$NON-NLS-1$
-    UIManager.put("OptionPane.noButtonText", getString(NO)); //$NON-NLS-1$
-    UIManager.put("OptionPane.okButtonText", getString(OK)); //$NON-NLS-1$
+    UIManager.put("OptionPane.yesButtonText", getInstanceString(YES)); //$NON-NLS-1$
+    UIManager.put("OptionPane.cancelButtonText", getInstanceString(CANCEL)); //$NON-NLS-1$
+    UIManager.put("OptionPane.noButtonText", getInstanceString(NO)); //$NON-NLS-1$
+    UIManager.put("OptionPane.okButtonText", getInstanceString(OK)); //$NON-NLS-1$
   }
 
   public static Locale getLocale() {
-    return locale;
+    return getInstance().locale;
   }
-  
+
   /**
    * Return a standard formatted localised date
    * @param date date to format
