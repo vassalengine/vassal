@@ -110,7 +110,7 @@ fast-compile: version $(CLASSDIR)
 
 test: $(CLASSDIR) all 
 	$(JC) $(JCFLAGS) $(shell find $(TESTDIR) -name '*.java')
-	$(JAVA) -classpath $(CLASSPATH) org.junit.runner.JUnitCore $(shell grep -L '^public abstract\|public interface' `find $(TESTDIR) -name '*.java'` | sed "s/^$(TESTDIR)\/\(.*\)\.java$$/\1/" | tr '/' '.')
+	$(JAVA) -classpath $(CLASSPATH) org.junit.runner.JUnitCore $(shell grep -l '@Test' `find $(TESTDIR) -name '*.java'` | sed "s/^$(TESTDIR)\/\(.*\)\.java$$/\1/" | tr '/' '.')
 
 #show:
 #	echo $(patsubst %,-C $(TMPDIR)/doc %,$(wildcard $(TMPDIR)/doc/*)) 
