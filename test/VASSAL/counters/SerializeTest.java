@@ -14,7 +14,7 @@ public abstract class SerializeTest<T extends Decorator> extends MockModuleTest 
 		String typeString = trait.myGetType();
 
 		Constructor<T> constructor = clazz.getConstructor(String.class, GamePiece.class);
-		T deserialized = (T)constructor.newInstance(typeString, null);
+		T deserialized = constructor.newInstance(typeString, null);
 		assertSame(trait, deserialized);
 	}
 
