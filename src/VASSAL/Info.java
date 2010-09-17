@@ -35,7 +35,7 @@ import VASSAL.tools.version.VersionTokenizer;
  * Class for storing release-related information
  */
 public final class Info {
-  private static final String VERSION = "3.2.0-svn6946"; //$NON-NLS-1$
+  private static final String VERSION = "3.2.0-svn7218"; //$NON-NLS-1$
   
   // Do not allow editing of modules with this revision or later
   private static final String EXPIRY_VERSION = "3.3";  //$NON-NLS-1$
@@ -229,7 +229,10 @@ public final class Info {
 // FIXME: this is a misleading name for this function
   public static File getHomeDir() {
     if (homeDir == null) {
-      homeDir = new File(System.getProperty("user.home"), "VASSAL"); //$NON-NLS-1$ //$NON-NLS-2$
+      final String vdir = SystemUtils.IS_OS_WINDOWS ? "VASSAL" : ".VASSAL";
+
+      homeDir = new File(System.getProperty("user.home"), vdir); //$NON-NLS-1$
+
       if (!homeDir.exists()) {
         homeDir.mkdir();
       }
