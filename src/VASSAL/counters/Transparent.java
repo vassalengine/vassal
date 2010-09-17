@@ -32,7 +32,6 @@ import VASSAL.build.GameModule;
  * @deprecated No longer used by anything.
  */
 @Deprecated
-@SuppressWarnings("deprecation")
 public class Transparent {
   private double alpha = 0.2;
   private PieceImage opaque;

@@ -197,7 +197,7 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
       if (value instanceof String) {
         value = InstanceConfigurer.StringToProperties((String) value, this);
       }
-      if (instances instanceof List) {
+      if (instances instanceof List<?>) {
         instances = (List<ItemInstance>) value;
       }
       if (defnConfig != null) {

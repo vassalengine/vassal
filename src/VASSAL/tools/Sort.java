@@ -129,7 +129,6 @@ public class Sort {
      * @deprecated Use {@link java.util.Comparator} instead.
      */
     @Deprecated
-    @SuppressWarnings("unchecked")
     public static interface Comparator {
         public int compare(Object o1, Object o2);
     }
@@ -140,7 +139,6 @@ public class Sort {
      * @see java.lang.String.compareTo(String)
      */
     @Deprecated
-    @SuppressWarnings("unchecked")
     public static class Alpha implements Comparator {
         public int compare(Object o1, Object o2) {
             String s1 = (String) o1;

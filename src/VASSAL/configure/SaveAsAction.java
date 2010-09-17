@@ -29,7 +29,10 @@ import VASSAL.i18n.Resources;
  * General-purpose "Save As" action
  */
 public abstract class SaveAsAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+  
   protected String parentType = "";
+  
   public SaveAsAction() {
     final URL iconURL = getClass().getResource("/images/SaveAs16.gif");
     if (iconURL != null) {

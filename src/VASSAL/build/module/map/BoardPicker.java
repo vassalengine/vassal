@@ -327,8 +327,8 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
     return possibleBoards.toArray(new Configurable[possibleBoards.size()]);
   }
 
-  public Class[] getAllowableConfigureComponents() {
-    return new Class[]{Board.class};
+  public Class<?>[] getAllowableConfigureComponents() {
+    return new Class<?>[]{Board.class};
   }
 
   public void addPropertyChangeListener(java.beans.PropertyChangeListener l) {

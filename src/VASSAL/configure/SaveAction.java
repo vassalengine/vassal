@@ -29,6 +29,8 @@ import VASSAL.i18n.Resources;
  * General-purpose "Save" action
  */
 public abstract class SaveAction extends AbstractAction {
+  private static final long serialVersionUID = 1L;
+
   protected String parentType = "";
   
   public SaveAction() {

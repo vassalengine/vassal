@@ -55,7 +55,7 @@ public class Pair<A,B> {
     if (this == o) return true;
     if (o == null || o.getClass() != this.getClass()) return false;
       
-    final Pair p = (Pair) o;
+    final Pair<?,?> p = (Pair<?,?>) o;
     return (first  == p.first  || (first  != null && first.equals(p.first))) &&
            (second == p.second || (second != null && second.equals(p.second)));
   }
