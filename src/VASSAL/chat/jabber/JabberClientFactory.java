@@ -21,16 +21,21 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
 import VASSAL.chat.CommandDecoder;
-import VASSAL.tools.logging.Logger;
 
 /**
  * @author rkinney
  */
 public class JabberClientFactory extends ChatServerFactory {
+  private static final Logger logger =
+    LoggerFactory.getLogger(JabberClientFactory.class);
+
   public static final String JABBER_SERVER_TYPE = "jabber"; //$NON-NLS-1$
   public static final String JABBER_PWD = "jabberPassword"; //$NON-NLS-1$
   public static final String JABBER_LOGIN = "jabberLogin"; //$NON-NLS-1$
@@ -55,7 +60,7 @@ public class JabberClientFactory extends ChatServerFactory {
       public void propertyChange(PropertyChangeEvent evt) {
         final String mess = (String) evt.getNewValue();
         GameModule.getGameModule().warn(mess);
-        Logger.log(mess);
+        logger.error("", mess);
       }
     });
     client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());

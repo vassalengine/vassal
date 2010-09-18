@@ -29,6 +29,9 @@ import javax.swing.JMenuBar;
 
 import org.apache.commons.lang.SystemUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.metadata.AbstractMetaData;
@@ -41,7 +44,6 @@ import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.imports.ImportAction;
-import VASSAL.tools.logging.Logger;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -50,6 +52,8 @@ public class Editor extends Launcher {
   public static void main(String[] args) {
     new Editor(args);
   }
+
+  private static final Logger logger = LoggerFactory.getLogger(Editor.class);
 
   protected Editor(String[] args) {
     // the ctor is protected to enforce that it's called via main()
@@ -170,7 +174,7 @@ public class Editor extends Launcher {
             if (metadata == null || ! (metadata instanceof ImportMetaData)) {
               ErrorDialog.show(
                 "Error.invalid_import_file", lr.importFile.getAbsolutePath());
-              Logger.log("-- Import of " + lr.importFile.getAbsolutePath() +
+              logger.error("Import of " + lr.importFile.getAbsolutePath() +
                 " failed: unrecognized import type");
               lr.importFile = null;
             }

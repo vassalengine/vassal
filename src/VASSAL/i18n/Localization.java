@@ -24,9 +24,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.configure.SingleChildInstance;
-import VASSAL.tools.logging.Logger;
 
 /**
  * Singleton class for managing the translation of a module into other languages
@@ -34,6 +37,9 @@ import VASSAL.tools.logging.Logger;
  *
  */
 public class Localization extends Language {
+  private static final Logger logger =
+    LoggerFactory.getLogger(Localization.class);
+
   private static Localization instance;
   
   private Localization() {
@@ -160,7 +166,7 @@ public class Localization extends Language {
         }
         translationInProgress = false;
         translationComplete = true;
-        Logger.log("-- Translated");
+        logger.info("Translated");
       }
       translatableItems.clear();
       GameModule.getGameModule().initFrameTitle();      

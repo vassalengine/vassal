@@ -20,7 +20,8 @@ import java.util.IllegalFormatException;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import VASSAL.tools.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for extracting strings from a {@link ResourceBundle}.
@@ -28,6 +29,9 @@ import VASSAL.tools.logging.Logger;
  * @author rodneykinney
  */
 public class BundleHelper {
+  private static final Logger logger =
+    LoggerFactory.getLogger(BundleHelper.class);
+
   private ResourceBundle bundle;
 
   public BundleHelper(ResourceBundle bundle) {
@@ -39,10 +43,10 @@ public class BundleHelper {
       return bundle.getString(id);
     }
     catch (ClassCastException e) {
-      Logger.log("No Translation: " + id);
+      logger.error("No Translation: " + id);
     }
     catch (MissingResourceException e) {
-      Logger.log("No Translation: " + id);
+      logger.error("No Translation: " + id);
     }
         
     // fallback: return the key
@@ -54,7 +58,7 @@ public class BundleHelper {
       return String.format(getString(id), args);
     }
     catch (IllegalFormatException e) {
-      Logger.log("Illegal Message Format: " + id);
+      logger.error("Illegal Message Format: " + id);
     }
     
     // fallback: return the key

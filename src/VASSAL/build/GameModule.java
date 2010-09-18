@@ -39,6 +39,9 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+//import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.Info;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.ChartWindow;
@@ -90,7 +93,6 @@ import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.CRCUtils;
 import VASSAL.tools.DataArchive;
-import VASSAL.tools.FutureUtils;
 import VASSAL.tools.KeyStrokeListener;
 import VASSAL.tools.KeyStrokeSource;
 import VASSAL.tools.MTRandom;
@@ -113,6 +115,9 @@ import VASSAL.tools.io.IOUtils;
  * and {@link Prefs}.</p>
  */
 public abstract class GameModule extends AbstractConfigurable implements CommandEncoder, ToolBarComponent, PropertySource, MutablePropertiesContainer, GpIdSupport {
+  private static final org.slf4j.Logger log =
+    LoggerFactory.getLogger(GameModule.class);
+
   protected static final String DEFAULT_NAME = "Unnamed module";  //$NON-NLS-1$
   public static final String MODULE_NAME = "name";  //$NON-NLS-1$
   public static final String MODULE_VERSION = "version";  //$NON-NLS-1$
@@ -735,7 +740,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
         ReadErrorDialog.error(e, archive.getName());
       }
 
-      FutureUtils.wait(VASSAL.tools.logging.Logger.logAndWait("-- Exiting"));
+      log.info("Exiting");
     }
 
     return !cancelled;
@@ -1087,7 +1092,7 @@ public abstract class GameModule extends AbstractConfigurable implements Command
       return CRCUtils.getCRC(files);
     }
     catch (IOException e) {
-      VASSAL.tools.logging.Logger.log(e, "Error generating CRC");
+      log.error("Error generating CRC", e);
       return 0L;
     }
   }

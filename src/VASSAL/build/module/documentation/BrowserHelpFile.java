@@ -35,6 +35,9 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -52,7 +55,6 @@ import VASSAL.i18n.ComponentI18nData;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 
@@ -63,6 +65,9 @@ import VASSAL.tools.menu.MenuManager;
  * @author rkinney
  */
 public class BrowserHelpFile extends AbstractBuildable implements Configurable {
+  private static final Logger logger =
+    LoggerFactory.getLogger(BrowserHelpFile.class);
+
   public static final String TITLE = "title"; //$NON-NLS-1$
   public static final String CONTENTS = "contents"; //$NON-NLS-1$
   public static final String STARTING_PAGE = "startingPage"; //$NON-NLS-1$
@@ -151,7 +156,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
     // FIXME: review error message
     catch (IOException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
     finally {
       IOUtils.closeQuietly(in);

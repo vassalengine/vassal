@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2009 by Joel Uckelman
+ * Copyright (c) 2008-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,41 +19,38 @@
 
 package VASSAL.tools.logging;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
 public class LoggedOutputStream extends OutputStream {
-  private final int pid;
+  private static final Logger logger =
+    LoggerFactory.getLogger(LoggedOutputStream.class);
 
   private final ByteArrayOutputStream buf = new ByteArrayOutputStream();
 
-  public LoggedOutputStream(int pid) {
-    this.pid = pid;
-  }
-
   @Override
   public synchronized void write(int b) {
-    buf.write(b);
-    if (b == '\n') flush(); 
+    // don't write trailing newlines, logger adds those
+    if (b == '\n') flush();
+    else buf.write(b);
   }
 
   @Override
   public synchronized void write(byte b[], int off, int len) {
+    // don't write trailing newlines, logger adds those
+    if (b[off+len-1] == '\n') --len;
+
+    buf.write(b, off, len);
     flush();
-    Logger.enqueue(
-      new LogEntry(pid, LogEntry.SYSTEM, null, new String(b, off, len), false)
-    );
   }
 
   @Override
   public synchronized void flush() {
     if (buf.size() > 0) {
-      Logger.enqueue(
-        new LogEntry(
-          pid, LogEntry.SYSTEM, null,
-          new String(buf.toByteArray()), false
-        )
-      );
+      logger.warn("STDERR: " + new String(buf.toByteArray())); 
       buf.reset();
     }
   } 

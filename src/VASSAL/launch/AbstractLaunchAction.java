@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.AbstractAction;
@@ -54,6 +53,9 @@ import org.apache.commons.lang.SystemUtils;
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;
 import org.jdesktop.swingworker.SwingWorker;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import VASSAL.Info;
 import VASSAL.build.module.GlobalOptions;
@@ -71,8 +73,6 @@ import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
-import VASSAL.tools.logging.LogEntry;
 
 /**
  * 
@@ -84,6 +84,9 @@ import VASSAL.tools.logging.LogEntry;
  */
 public abstract class AbstractLaunchAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
+
+  private static final Logger logger =
+    LoggerFactory.getLogger(AbstractLaunchAction.class);
  
   //
   // memory-related constants
@@ -206,8 +209,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           if (metadata == null || ! (metadata instanceof ModuleMetaData)) {
             ErrorDialog.show(
               "Error.invalid_vassal_module", lr.module.getAbsolutePath());
-            Logger.log("-- Load of " + lr.module.getAbsolutePath() +
-                       " failed: Not a Vassal module");
+            logger.error(
+              "-- Load of {} failed: Not a Vassal module",
+              lr.module.getAbsolutePath()
+            );
             lr.module = null;
           }
         }
@@ -244,16 +249,18 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 // FIXME: this should be in an abstract method and farmed out to subclasses
       // send some basic information to the log
       if (lr.module != null) {
-        Logger.log("-- Loading module file " + lr.module.getAbsolutePath());
+        logger.info("Loading module file {}", lr.module.getAbsolutePath());
       }
 
       if (lr.game != null) {
-        Logger.log("-- Loading game file " + lr.game.getAbsolutePath());
+        logger.info("Loading game file {}", lr.game.getAbsolutePath());
       }
 
       if (lr.importFile != null) {
-        Logger.log("-- Importing module file " +
-          lr.importFile.getAbsolutePath());
+        logger.info(
+          "Importing module file {}",
+          lr.importFile.getAbsolutePath()
+        );
       }
 // end FIXME
 
@@ -280,7 +287,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           moduleName = ((ModuleMetaData) data).getName();
 
           // log the module name
-          Logger.log("-- Loading module " + moduleName);
+          logger.info("Loading module {}", moduleName);
 
           // read module prefs
           final ReadOnlyPrefs p = new ReadOnlyPrefs(moduleName);
@@ -486,7 +493,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     }
 
     protected Process launch(String[] args) throws IOException {
-      Logger.log(StringUtils.join(args, ' '));
+      logger.info(StringUtils.join(args, ' '));
 
       // set up and start the child process
       final ProcessBuilder pb = new ProcessBuilder(args);
@@ -518,7 +525,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       try {
         // If this doesn't throw, our baby is dead.
         p.exitValue();
-        Logger.log(IOUtils.toString(p.getErrorStream()));
+        logger.error(IOUtils.toString(p.getErrorStream()));
         return null;
       }
       catch (IllegalThreadStateException e) {
@@ -683,25 +690,6 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         }
       });
 
-      return "OK";
-    }
-  }
-
-  /**
-   * Enqueues a {@link LogEntry} from a child process.
-   */ 
-  public static class EnqueueLogEntry implements Command {
-    private static final long serialVersionUID = 1L;
-
-    private final LogEntry entry;
-
-    public EnqueueLogEntry(LogEntry entry) {
-      this.entry = entry;
-    }
-
-    public Object execute() {
-      final Future<?> future = Logger.enqueue(entry);
-      if (entry.wait) FutureUtils.wait(future);
       return "OK";
     }
   }

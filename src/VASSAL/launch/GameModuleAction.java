@@ -25,7 +25,8 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import VASSAL.tools.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility base class for {@link GameModule}-related actions, with auxilliary
@@ -36,6 +37,9 @@ import VASSAL.tools.logging.Logger;
  */
 public abstract class GameModuleAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
+
+  private static final Logger logger =
+    LoggerFactory.getLogger(GameModuleAction.class);
 
   protected Component comp;
   protected boolean actionCancelled;
@@ -70,7 +74,7 @@ public abstract class GameModuleAction extends AbstractAction {
   protected abstract void performAction(ActionEvent evt) throws Exception;
 
   protected void reportError(Exception ex) {
-    Logger.log(ex);
+    logger.error("", ex);
     JOptionPane.showMessageDialog(comp, getMessage(ex));
   }
 

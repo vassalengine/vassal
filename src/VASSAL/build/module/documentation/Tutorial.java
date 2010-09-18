@@ -29,6 +29,9 @@ import javax.swing.Action;
 
 import org.jdesktop.swingworker.SwingWorker;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
@@ -37,7 +40,6 @@ import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.logging.Logger;
 import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 
@@ -46,6 +48,8 @@ import VASSAL.tools.menu.MenuManager;
  * Provides tutorial functionality by reading in a logfile
  */
 public class Tutorial extends AbstractConfigurable {
+  private static final Logger logger = LoggerFactory.getLogger(Tutorial.class);
+
   public static final String FILE_NAME = "logfile"; //$NON-NLS-1$
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String LAUNCH_ON_STARTUP = "launchOnStartup"; //$NON-NLS-1$
@@ -90,7 +94,7 @@ public class Tutorial extends AbstractConfigurable {
         }
         // FIXME: review error message
         catch (ExecutionException e) {
-          Logger.log(e);
+          logger.error("", e);
           String msg = Resources.getString("Tutorial.unable_to_launch", name); //$NON-NLS-1$
           if (e.getMessage() != null) {
             msg += ":  " + e.getMessage(); //$NON-NLS-1$

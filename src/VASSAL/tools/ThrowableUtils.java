@@ -21,7 +21,8 @@ package VASSAL.tools;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import VASSAL.tools.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joel Uckelman
@@ -29,6 +30,9 @@ import VASSAL.tools.logging.Logger;
  */
 public class ThrowableUtils {
   private ThrowableUtils() {}
+
+  private static final Logger logger =
+    LoggerFactory.getLogger(ThrowableUtils.class);
 
   /**
    * Returns the most recent {@link Throwable} of class <code>T</code> in
@@ -104,7 +108,7 @@ public class ThrowableUtils {
     catch (Throwable ignore) {
       // If anything happens here, we're screwed anyway, as we're already
       // calling this during error handling. Just log it and soldier on.
-      Logger.log(ignore);
+      logger.warn("ignored", ignore);
     }
 
     if (toThrow != null) throw toThrow;

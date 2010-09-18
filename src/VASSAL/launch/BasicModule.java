@@ -26,6 +26,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -69,6 +72,9 @@ import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.menu.MenuManager;
 
 public class BasicModule extends GameModule {
+  private static final Logger log =
+    LoggerFactory.getLogger(BasicModule.class);
+
   private static char COMMAND_SEPARATOR = (char) KeyEvent.VK_ESCAPE;
   protected ChatServerControls serverControls;
   protected GameRefresher gameRefresher;
@@ -295,7 +301,7 @@ public class BasicModule extends GameModule {
     final String mess = Resources.getString(
       "BasicModule.version_message", getLocalizedGameName(), moduleVersion); //$NON-NLS-1$
     warn(mess);
-    System.err.println("-- " + mess); //$NON-NLS-1$
+    log.warn(mess);
     initFrameTitle();
   }
 

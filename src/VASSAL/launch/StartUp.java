@@ -19,15 +19,18 @@
 
 package VASSAL.launch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.Info;
-import VASSAL.tools.logging.LogOutputStreamAdapter;
-import VASSAL.tools.logging.Logger;
 
 /**
  * @author Joel Uckelman
  * @since 3.1.0
  */
 public class StartUp {
+  private static final Logger logger = LoggerFactory.getLogger(StartUp.class);
+
   public void initSystemProperties() {
     initHTTPProxyProperties();
     initUIProperties();
@@ -58,13 +61,10 @@ public class StartUp {
   }
 
   public void startErrorLog() {
-    if (System.getProperty("stderr") != null) {
-      Logger.addLogListener(new LogOutputStreamAdapter(System.err));
-    }
     // begin the error log
-    Logger.log("-- Starting"); //$NON-NLS-1$
-    Logger.log("-- OS " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
-    Logger.log("-- Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
-    Logger.log("-- VASSAL version " + Info.getVersion()); //$NON-NLS-1$
+    logger.info("Starting"); //$NON-NLS-1$
+    logger.info("OS " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
+    logger.info("Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
+    logger.info("VASSAL version " + Info.getVersion()); //$NON-NLS-1$
   }
 }

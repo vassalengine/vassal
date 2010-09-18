@@ -21,6 +21,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.chat.ChatServerConnection;
 import VASSAL.chat.ChatServerFactory;
@@ -28,12 +31,14 @@ import VASSAL.chat.CommandDecoder;
 import VASSAL.chat.HttpMessageServer;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.logging.Logger;
 
 /**
  * @author rkinney
  */
 public class NodeClientFactory extends ChatServerFactory {
+  private static final Logger logger =
+    LoggerFactory.getLogger(NodeClientFactory.class);
+
   private static final String UNNAMED_MODULE = Resources.getString("Chat.unknown_module");  //$NON-NLS-1$
   private static final String UNKNOWN_USER = Resources.getString("Chat.unknown_user");  //$NON-NLS-1$
   public static final String NODE_TYPE = "node";  //$NON-NLS-1$
@@ -72,7 +77,7 @@ public class NodeClientFactory extends ChatServerFactory {
       public void propertyChange(PropertyChangeEvent evt) {
         final String mess = (String) evt.getNewValue();
         GameModule.getGameModule().warn(mess);
-        Logger.log(mess);
+        logger.error("", mess);
       }
     });
     server.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new CommandDecoder());

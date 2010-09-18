@@ -19,6 +19,7 @@
 
 package VASSAL.tools.logging;
 
+@Deprecated
 public interface LogListener {
   void handle(LogEntry e);
 }

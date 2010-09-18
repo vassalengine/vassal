@@ -47,6 +47,9 @@ import javax.swing.SwingUtilities;
 
 import org.jdesktop.swingworker.SwingWorker;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -65,14 +68,16 @@ import VASSAL.tools.ProgressDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
-
 
 /**
  * This allows the user to capture a snapshot of the entire map into
  * a PNG file.
  */
 public class ImageSaver extends AbstractConfigurable {
+
+  private static final Logger logger =
+    LoggerFactory.getLogger(ImageSaver.class);
+	
   protected LaunchButton launch;
   protected Map map;
   protected boolean promptToSplit = false;
@@ -465,7 +470,7 @@ public class ImageSaver extends AbstractConfigurable {
         t.waitForID(0);
       }
       catch (Exception e) {
-        Logger.log(e);
+        logger.error("", e);
       }
 
       try {
@@ -481,7 +486,7 @@ public class ImageSaver extends AbstractConfigurable {
           out[i].close();
         }
         catch (IOException e) {
-          Logger.log(e);
+          logger.error("", e);
         }
       }
     }

@@ -40,6 +40,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 
 import VASSAL.Info;
@@ -59,7 +62,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 
 /**
  * An optional extension to a GameModule
@@ -67,6 +69,10 @@ import VASSAL.tools.logging.Logger;
  * The components described in the buildFile are appended to components in the base DataArchive
  */
 public class ModuleExtension extends AbstractBuildable implements GameComponent, PluginsLoader.PluginElement, GpIdSupport {
+
+  private static final Logger logger =
+    LoggerFactory.getLogger(ModuleExtension.class);
+
   public static final String BASE_MODULE_NAME = "module"; //$NON-NLS-1$
   public static final String BASE_MODULE_VERSION = "moduleVersion"; //$NON-NLS-1$
   public static final String VERSION = "version"; //$NON-NLS-1$
@@ -431,7 +437,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       }
       // FIXME: review error message
       catch (IOException e) {
-        Logger.log(e);
+        logger.error("", e);
       }
 
       final String save = buildString();

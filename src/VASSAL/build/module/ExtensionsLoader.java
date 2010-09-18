@@ -27,6 +27,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
@@ -34,9 +37,11 @@ import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.logging.Logger;
 
 public class ExtensionsLoader implements CommandEncoder {
+  private static final Logger logger =
+    LoggerFactory.getLogger(ExtensionsLoader.class);
+
   public static final String COMMAND_PREFIX = "EXT\t"; //$NON-NLS-1$
   // Preferences key for the list of extensions to load
   public static final String SPECIFY_DIR_IN_PREFS = "specifyExtensionDirInPrefs"; //$NON-NLS-1$
@@ -85,7 +90,7 @@ public class ExtensionsLoader implements CommandEncoder {
   }
 
   protected boolean addExtension(File extension) {
-    Logger.log("-- Loading extension "+extension);
+    logger.info("Loading extension " + extension);
     String extname = extension.getPath();
     boolean success = loadedExtensions.contains(extname);
     if (!success) {

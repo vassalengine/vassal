@@ -19,11 +19,10 @@
 
 package VASSAL.tools.logging;
 
-import java.io.IOException;
-
-import VASSAL.launch.AbstractLaunchAction.EnqueueLogEntry;
+//import VASSAL.launch.AbstractLaunchAction.EnqueueLogEntry;
 import VASSAL.launch.CommandClient;
 
+@Deprecated
 public class CommandClientAdapter implements LogListener{
   private final CommandClient cmdC;
 
@@ -32,11 +31,13 @@ public class CommandClientAdapter implements LogListener{
   }
 
   public void handle(LogEntry entry) {
+/*
     try {
       cmdC.request(new EnqueueLogEntry(entry));
     }
     catch (IOException e) {
       // FIXME: What to do here????
     }
+*/
   }
 }

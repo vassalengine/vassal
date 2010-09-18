@@ -50,14 +50,20 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.module.map.boardPicker.board.HexGrid;
 import VASSAL.counters.Labeler;
 import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.ScrollPane;
-import VASSAL.tools.logging.Logger;
 
 public class HexGridNumbering extends RegularGridNumbering {
+  private static final Logger logger =
+    LoggerFactory.getLogger(HexGridNumbering.class);
+
   private HexGrid grid;
   private boolean stagger = true;
 
@@ -408,7 +414,7 @@ public class HexGridNumbering extends RegularGridNumbering {
             }
             // FIXME: review error message
             catch (NumberFormatException e1) {
-              Logger.log(e1);
+              logger.error("", e1);
             }
           }
         });

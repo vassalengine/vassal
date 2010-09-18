@@ -38,10 +38,12 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static VASSAL.tools.IterableEnumeration.iterate;
 
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 
 /**
  * Automatically builds a .jar file that will update a Zip archive.
@@ -53,6 +55,9 @@ import VASSAL.tools.logging.Logger;
  * Date: Oct 23, 2003
  */
 public class ZipUpdater implements Runnable {
+  private static final Logger logger =
+    LoggerFactory.getLogger(ZipUpdater.class);
+
   public static final String CHECKSUM_RESOURCE = "checksums";
   public static final String TARGET_ARCHIVE = "target";
   public static final String UPDATED_ARCHIVE_NAME = "finalName";
@@ -191,7 +196,7 @@ public class ZipUpdater implements Runnable {
         }
         // FIXME: review error message
         catch (IOException e) {
-          Logger.log(e);
+          logger.error("", e);
         }
       } 
     }

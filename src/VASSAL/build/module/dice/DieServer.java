@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.DiceButton;
 import VASSAL.build.module.DieRoll;
@@ -17,7 +20,6 @@ import VASSAL.build.module.InternetDiceButton;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.FormattedString;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 
 // FIXME: switch back to javax.swing.SwingWorker on move to Java 1.6
 //import javax.swing.SwingWorker;
@@ -31,6 +33,7 @@ import org.jdesktop.swingworker.SwingWorker;
  * methods.
  */
 public abstract class DieServer {
+  private static final Logger logger = LoggerFactory.getLogger(DieServer.class);
 
   protected java.util.Random ran;
   protected String name;
@@ -206,7 +209,7 @@ public abstract class DieServer {
         }
         // FIXME: review error message
         catch (ExecutionException e) {
-          Logger.log(e);
+          logger.error("", e);
 
           final String s = "- Internet dice roll attempt " +
                            mroll.getDescription() + " failed.";

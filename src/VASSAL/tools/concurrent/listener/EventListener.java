@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2009 by Joel Uckelman
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,28 +17,21 @@
  * at http://www.opensource.org.
  */
 
-package VASSAL.tools.logging;
+package VASSAL.tools.concurrent.listener;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-@Deprecated
-public class LogOutputStreamAdapter implements LogListener {
-  private final OutputStream out;
-
-  public LogOutputStreamAdapter(OutputStream out) {
-    if (out == null) throw new NullPointerException();
-    this.out = out;
-  }
-
-  public void handle(LogEntry entry) {
-    try {
-      out.write(entry.toString().getBytes());
-      out.write('\n');
-      out.flush();
-    }
-    catch (IOException e) {
-      // FIXME: What to do here????
-    }
-  }
+/**
+ * An interface for handling events.
+ *
+ * @author Joel Uckelman
+ * @since 3.2.0
+ * @see EventListenerSupport
+ */
+public interface EventListener<T> {
+  /**
+   * Receive notification of an event.
+   *
+   * @param src the source of the event
+   * @param event the event
+   */
+  public void receive(Object src, T event);
 }

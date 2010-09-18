@@ -41,6 +41,9 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.SystemUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.Info;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
@@ -52,11 +55,8 @@ import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
-import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.LogOutputStreamAdapter;
 import VASSAL.tools.logging.LoggedOutputStream;
-import VASSAL.tools.logging.Logger;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -69,6 +69,8 @@ import VASSAL.tools.menu.MenuManager;
  * @since 3.1.0
  */
 public class ModuleManager {
+   private static final Logger logger =
+    LoggerFactory.getLogger(ModuleManager.class);
 
   private static final String NEXT_VERSION_CHECK = "nextVersionCheck";
 
@@ -257,25 +259,17 @@ public class ModuleManager {
     this.lout = lout;
     this.lock = lock;
 
+    // truncate the errorLog
+    final File errorLog = new File(Info.getHomeDir(), "errorLog");
+    new FileOutputStream(errorLog).close();
+
     final StartUp start = SystemUtils.IS_OS_MAC_OSX ?
       new ModuleManagerMacOSXStartUp() : new StartUp();
-
-    // start logging to the errorLog
-    final File errorLog = new File(Info.getHomeDir(), "errorLog");
-    try {
-      Logger.addLogListener(
-        new LogOutputStreamAdapter(
-          new FileOutputStream(errorLog)));
-    }
-    catch (IOException e) {
-      WriteErrorDialog.error(e, errorLog);
-    }
 
     start.startErrorLog();
 
     // log everything which comes across our stderr
-    System.setErr(
-      new PrintStream(new LoggedOutputStream(Info.getInstanceID()), true));
+    System.setErr(new PrintStream(new LoggedOutputStream(), true));
 
     Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
 
@@ -390,7 +384,7 @@ public class ModuleManager {
   }
 
   protected void launch() {
-    Logger.log("-- Manager");
+    logger.info("Manager");
     final ModuleManagerWindow window = ModuleManagerWindow.getInstance();
     window.setVisible(true);
 

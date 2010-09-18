@@ -30,6 +30,7 @@ import java.util.concurrent.Future;
  * @author Joel Uckelman
  * @since 3.1.0
  */
+@Deprecated
 public class Logger {
   private Logger() {}
 

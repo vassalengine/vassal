@@ -25,13 +25,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameState;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 
 public class MetaDataFactory {
+  private static final Logger logger =
+    LoggerFactory.getLogger(MetaDataFactory.class);
 
   protected static final String BUILDFILE_MODULE_ELEMENT1 = "VASSAL.launch.BasicModule";
   protected static final String BUILDFILE_MODULE_ELEMENT2 = "VASSAL.build.GameModule";
@@ -110,7 +114,7 @@ public class MetaDataFactory {
       return ImportAction.buildMetaData(file);
     }
     catch (IOException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
     finally {
       IOUtils.closeQuietly(zip);

@@ -73,6 +73,9 @@ import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPanelProvider;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.Tutorial;
 import VASSAL.chat.ui.ChatServerControls;
@@ -91,7 +94,6 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.UsernameAndPasswordDialog;
 import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.logging.Logger;
 
 /**
  * Provides support for two different wizards. The WelcomeWizard is the initial screen shown to the user when loading a
@@ -100,6 +102,10 @@ import VASSAL.tools.logging.Logger;
  * @author rkinney
  */
 public class WizardSupport {
+  
+  private static final Logger logger =
+    LoggerFactory.getLogger(WizardSupport.class);
+
   public static final String POST_INITIAL_STEPS_WIZARD = "postInitialStepsWizard"; //$NON-NLS-1$
   public static final String POST_LOAD_GAME_WIZARD = "postLoadGameWizard"; //$NON-NLS-1$
   public static final String POST_PLAY_OFFLINE_WIZARD = "postPlayOfflineWizard"; //$NON-NLS-1$
@@ -340,7 +346,7 @@ public class WizardSupport {
             new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
           }
           catch (IOException e1) {
-            Logger.log(e1);
+            logger.error("", e1);
             controller.setProblem(Resources.getString("WizardSupport.ErrorLoadingTutorial")); //$NON-NLS-1$
           }
         }

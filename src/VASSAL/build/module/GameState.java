@@ -46,6 +46,8 @@ import javax.swing.JOptionPane;
 
 import org.jdesktop.swingworker.SwingWorker;
 
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
@@ -83,6 +85,9 @@ import VASSAL.tools.menu.MenuManager;
  * @see GameModule#getGameState
  */
 public class GameState implements CommandEncoder {
+  private static final org.slf4j.Logger log =
+    LoggerFactory.getLogger(GameState.class);
+
   protected Map<String,GamePiece> pieces = new HashMap<String,GamePiece>();
   protected List<GameComponent> gameComponents = new ArrayList<GameComponent>();
   protected List<GameSetupStep> setupSteps = new ArrayList<GameSetupStep>();
@@ -687,7 +692,7 @@ public class GameState implements CommandEncoder {
               ErrorDialog.bug(e);
             }
             else {
-              VASSAL.tools.logging.Logger.log(e);
+              log.error("", e);
             }
             msg = Resources.getString("GameState.error_loading", shortName);
           }

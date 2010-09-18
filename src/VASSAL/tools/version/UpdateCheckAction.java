@@ -24,11 +24,13 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.WarningDialog;
-import VASSAL.tools.logging.Logger;
 
 /**
  * @since 3.1.0
@@ -36,6 +38,9 @@ import VASSAL.tools.logging.Logger;
  */
 public class UpdateCheckAction extends AbstractAction {
   private static final long serialVersionUID = 1L;
+
+  private static final Logger logger =
+    LoggerFactory.getLogger(UpdateCheckAction.class);
 
   private final Frame frame;
 
@@ -80,7 +85,7 @@ public class UpdateCheckAction extends AbstractAction {
         ErrorDialog.bug(e);
       }
       catch (ExecutionException e) {
-        Logger.log(e);
+        logger.error("", e);
       }
 
       WarningDialog.show(frame, "UpdateCheckAction.check_failed");

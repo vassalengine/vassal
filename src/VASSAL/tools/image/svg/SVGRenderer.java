@@ -53,10 +53,12 @@ import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 
 /**
  * Render an SVG image to a {@link BufferedImage}.
@@ -65,6 +67,9 @@ import VASSAL.tools.logging.Logger;
  * @since 3.1.0
  */ 
 public class SVGRenderer {
+  private static final Logger logger =
+    LoggerFactory.getLogger(SVGRenderer.class);
+
   private static final SAXSVGDocumentFactory docFactory =
     new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
   private static final ImageRendererFactory rendFactory =
@@ -130,7 +135,7 @@ public class SVGRenderer {
     }
     // FIXME: review error message
     catch (TranscoderException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
 
     return null;
@@ -158,7 +163,7 @@ public class SVGRenderer {
     }
     // FIXME: review error message
     catch (TranscoderException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
 
     return null; 

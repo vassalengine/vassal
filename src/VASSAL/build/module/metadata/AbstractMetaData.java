@@ -36,6 +36,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -54,7 +57,6 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.io.FastByteArrayOutputStream;
 import VASSAL.tools.io.FileArchive;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 
 /**
  * 
@@ -64,6 +66,9 @@ import VASSAL.tools.logging.Logger;
  * @since 3.1.0
  */
 public abstract class AbstractMetaData {
+  
+  private static final Logger logger =
+    LoggerFactory.getLogger(AbstractMetaData.class);
 
   protected static final String TRUE = "true";
   protected static final String FALSE = "false";
@@ -441,12 +446,12 @@ public abstract class AbstractMetaData {
 
     @Override
     public void warning(SAXParseException e) throws SAXException {
-      Logger.log(e);
+      logger.warn("", e);
     }
 
     @Override
     public void error(SAXParseException e) throws SAXException {
-      Logger.log(e);
+      logger.error("", e);
     }
 
     @Override
@@ -488,12 +493,12 @@ public abstract class AbstractMetaData {
 
     @Override
     public void warning(SAXParseException e) throws SAXException {
-      Logger.log(e);
+      logger.warn("", e);
     }
 
     @Override
     public void error(SAXParseException e) throws SAXException {
-      Logger.log(e);
+      logger.error("", e);
     }
 
     @Override

@@ -25,6 +25,9 @@ import java.util.zip.ZipFile;
 
 import javax.swing.JOptionPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -34,7 +37,6 @@ import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 
 /**
  * Class representing the metadata for a Save Game/Log File. Details
@@ -45,6 +47,9 @@ import VASSAL.tools.logging.Logger;
  * @since 3.1.0
  */
 public class SaveMetaData extends AbstractMetaData {
+  
+  private static final Logger logger =
+    LoggerFactory.getLogger(SaveMetaData.class);
 
   public static final String ZIP_ENTRY_NAME = "savedata";
   public static final String DATA_VERSION = "1";
@@ -158,10 +163,10 @@ public class SaveMetaData extends AbstractMetaData {
       zip.close();
     }
     catch (IOException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
     catch (SAXException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
     finally {
       IOUtils.closeQuietly(zip);

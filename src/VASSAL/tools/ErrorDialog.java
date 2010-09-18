@@ -29,11 +29,12 @@ import java.util.concurrent.Future;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.concurrent.FutureUtils;
-import VASSAL.tools.logging.Logger;
 
 /**
  * @author Joel Uckelman
@@ -42,6 +43,9 @@ import VASSAL.tools.logging.Logger;
 public class ErrorDialog {
   private ErrorDialog() {}
 
+  private static final Logger logger =
+    LoggerFactory.getLogger(ErrorDialog.class);
+
 // FIXME: make method which takes Throwable but doesn't use it for details
 
   public static void bug(final Throwable thrown) {
@@ -49,12 +53,12 @@ public class ErrorDialog {
     final OutOfMemoryError oom =
       ThrowableUtils.getRecent(OutOfMemoryError.class, thrown);
     if (oom != null) {
-      Logger.log(thrown);
+      logger.error("", thrown);
       show("Error.out_of_memory");
     }
     // show a bug report dialog if one has not been shown before
     else if (!DialogUtils.setDisabled(BugDialog.class, true)) {
-      FutureUtils.wait(Logger.logAndWait(thrown, Logger.BUG));
+      logger.error("", thrown);
 
       final Frame frame = GameModule.getGameModule() == null
         ? null : GameModule.getGameModule().getFrame();
@@ -300,8 +304,8 @@ public class ErrorDialog {
     Collections.synchronizedSet(new HashSet<String>());
 
   public static void dataError(BadDataReport e) {
-    Logger.log(e.getMessage() + ": " + e.getData(), Logger.WARNING);
-    if (e.getCause() != null) Logger.log(e.getCause());
+    logger.warn(e.getMessage() + ": " + e.getData());
+    if (e.getCause() != null) logger.error("", e.getCause());
 
     if (!reportedDataErrors.contains(e.getData())) {
       reportedDataErrors.add(e.getData());

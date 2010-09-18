@@ -21,9 +21,11 @@ package VASSAL.launch;
 import java.util.concurrent.ExecutionException;
 import javax.swing.JOptionPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.i18n.Resources;
 import VASSAL.tools.BrowserSupport;
-import VASSAL.tools.logging.Logger;
 import VASSAL.tools.version.AbstractUpdateCheckRequest;
 import VASSAL.tools.version.VassalVersion;
 
@@ -32,6 +34,10 @@ import VASSAL.tools.version.VassalVersion;
  * @author Joel Uckelman
  */
 public class UpdateCheckRequest extends AbstractUpdateCheckRequest {
+  
+  private static final Logger logger =
+    LoggerFactory.getLogger(UpdateCheckRequest.class);
+
   @Override
   protected void done() {
     try {
@@ -50,10 +56,10 @@ public class UpdateCheckRequest extends AbstractUpdateCheckRequest {
       }
     }
     catch (InterruptedException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
     catch (ExecutionException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
   }
 }

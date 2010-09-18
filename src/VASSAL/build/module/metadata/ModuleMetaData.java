@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -32,7 +35,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import VASSAL.build.GameModule;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 
 /**
  * 
@@ -45,6 +47,9 @@ import VASSAL.tools.logging.Logger;
  *
  */
 public class ModuleMetaData extends AbstractMetaData {
+
+  private static final Logger logger =
+    LoggerFactory.getLogger(ModuleMetaData.class);
 
   public static final String ZIP_ENTRY_NAME = "moduledata";
   public static final String DATA_VERSION = "1";
@@ -142,13 +147,13 @@ public class ModuleMetaData extends AbstractMetaData {
       zip.close();
     }
     catch (IOException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
     catch (SAXEndException e) {
       // Indicates End of module/extension parsing. not an error.
     }
     catch (SAXException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
     finally {
       IOUtils.closeQuietly(zip);

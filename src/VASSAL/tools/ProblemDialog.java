@@ -23,9 +23,11 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.logging.Logger;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.swing.DetailsDialog;
 
@@ -35,6 +37,9 @@ import VASSAL.tools.swing.DetailsDialog;
  */
 public class ProblemDialog {
   private ProblemDialog() {}
+  
+  private static final Logger logger =
+    LoggerFactory.getLogger(ProblemDialog.class);
 
   public static Future<?> show(
     int messageType,
@@ -85,7 +90,7 @@ public class ProblemDialog {
     final String heading,
     final String message)
   {
-    if (thrown != null) Logger.log(thrown);
+    if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
       public void run() {
@@ -158,7 +163,7 @@ public class ProblemDialog {
     final String heading,
     final String message)
   {
-    if (thrown != null) Logger.log(thrown);
+    if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
       public void run() {
@@ -233,7 +238,7 @@ public class ProblemDialog {
     final String heading,
     final String message)
   {
-    if (thrown != null) Logger.log(thrown);
+    if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
       public void run() {
@@ -318,7 +323,7 @@ public class ProblemDialog {
     final String heading,
     final String message)
   {
-    if (thrown != null) Logger.log(thrown);
+    if (thrown != null) logger.error("", thrown);
 
     return DialogUtils.enqueue(new Runnable() {
       public void run() {

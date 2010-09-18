@@ -38,7 +38,6 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -86,6 +85,9 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.Info;
 import VASSAL.build.module.Documentation;
 import VASSAL.build.module.ExtensionsManager;
@@ -110,11 +112,9 @@ import VASSAL.tools.ComponentSplitter;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleExtensionFileFilter;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 import VASSAL.tools.logging.LogPane;
 import VASSAL.tools.menu.CheckBoxMenuItemProxy;
 import VASSAL.tools.menu.MenuBarProxy;
@@ -125,6 +125,9 @@ import VASSAL.tools.version.UpdateCheckAction;
 public class ModuleManagerWindow extends JFrame {
   private static final long serialVersionUID = 1L;
 
+  private static final Logger logger =
+    LoggerFactory.getLogger(ModuleManagerWindow.class);
+  
   private static final String SHOW_STATUS_KEY = "showServerStatus";
   private static final String DIVIDER_LOCATION_KEY = "moduleManagerDividerLocation";
   private static final int COLUMNS = 4;
@@ -195,7 +198,7 @@ public class ModuleManagerWindow extends JFrame {
           IOUtils.closeQuietly(gl);
         }
 
-        FutureUtils.wait(Logger.logAndWait("-- Exiting"));
+        logger.info("Exiting");
         System.exit(0);
       }
     };
@@ -432,7 +435,7 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     for (String s : missingModules) {
-      Logger.log(Resources.getString("ModuleManager.removing_module", s));
+      logger.info(Resources.getString("ModuleManager.removing_module", s));
       moduleList.remove(s);
       recentModuleConfig.removeValue(s);
     }
@@ -485,7 +488,7 @@ public class ModuleManagerWindow extends JFrame {
       }
       
       for (File mf : missingFolders) {
-        Logger.log(
+        logger.info(
           Resources.getString("ModuleManager.removing_folder", mf.getPath()));
         moduleInfo.removeFolder(mf);
       }
@@ -1827,18 +1830,9 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public void actionPerformed(ActionEvent e) {
-      final LogPane lp = new LogPane();
-
-      FileInputStream in = null;
-      try {
-        in = new FileInputStream(new File(Info.getHomeDir(), "errorLog"));
-        lp.setText(IOUtils.toString(in));
-      }
-      catch (IOException ex) {
-        // FIXME: What to do here????
-      }
-
-      Logger.addLogListener(lp);
+// FIXME: don't create a new one each time!
+      final File logfile = new File(Info.getHomeDir(), "errorLog");
+      final LogPane lp = new LogPane(logfile);
 
 // FIXME: this should have its own key. Probably keys should be renamed
 // to reflect what they are labeling, e.g., Help.show_error_log_menu_item,
@@ -1850,12 +1844,6 @@ public class ModuleManagerWindow extends JFrame {
 
       d.setLocationRelativeTo(frame);
       d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      d.addWindowListener(new WindowAdapter() {
-        public void windowClosed(WindowEvent e) {
-          // unregister the LogPane when this dialog is closed
-          Logger.removeLogListener(lp);
-        }
-      });
 
       d.pack();
       d.setVisible(true);

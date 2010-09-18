@@ -36,7 +36,8 @@ import java.nio.channels.FileChannel;
 import java.util.zip.ZipFile;
 import javax.imageio.stream.ImageInputStream;
 
-import VASSAL.tools.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * General I/O stream manipulation utilities. This class provides static
@@ -47,6 +48,9 @@ import VASSAL.tools.logging.Logger;
  */ 
 public class IOUtils {
   // Portions based on org.apache.commons.io.IOUtils.
+
+  private static final Logger logger =
+    LoggerFactory.getLogger(IOUtils.class);
 
   /** The default size for input buffers. */
   public static final int BUFFER_SIZE = 4096;
@@ -298,7 +302,7 @@ public class IOUtils {
       c.close();
     }
     catch (IOException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
   }
 
@@ -310,7 +314,7 @@ public class IOUtils {
       s.close();
     }
     catch (IOException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
   }
 
@@ -322,7 +326,7 @@ public class IOUtils {
       s.close();
     }
     catch (IOException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
   }
 
@@ -342,7 +346,7 @@ public class IOUtils {
       z.close();
     }
     catch (IOException e) {
-      Logger.log(e);
+      logger.error("", e);
     }
   }
 
@@ -370,7 +374,7 @@ public class IOUtils {
       final StackTraceElement stack[] = e.getStackTrace();
       if (stack.length == 0 ||
           !"checkClosed".equals(stack[0].getMethodName())) {
-        Logger.log(e);
+        logger.error("", e);
       }
     }
   }

@@ -1,0 +1,25 @@
+<configuration>
+  <contextName>${VASSAL.id:-0}</contextName>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <if condition='property("os.name").toLowerCase().startsWith("windows")'>
+      <then>
+        <file>${user.home}/VASSAL/errorLog</file>
+      </then>
+      <else>
+        <file>${user.home}/.VASSAL/errorLog</file>
+      </else>
+    </if>
+<!--
+    <file>${user.home}/.VASSAL/errorLog</file>
+-->
+    <encoder>
+      <pattern>%date [%contextName-%thread] %-5level %logger - %msg%n</pattern>
+    </encoder>
+    <prudent>true</prudent>
+  </appender>
+
+  <root level="ALL">
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>

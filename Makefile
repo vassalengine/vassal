@@ -124,7 +124,7 @@ Vengine.jar: all $(TMPDIR)
 		find $(LIBDIR) -name '*.jar' -printf '%f\n  ' | \
 		sed -e '/Vengine.jar/d' -e '/^  $$/d' \
 	) >>$(TMPDIR)/Vengine.mf
-	$(JAR) cvfm $(LIBDIR)/$@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) .
+	$(JAR) cvfm $(LIBDIR)/$@ $(TMPDIR)/Vengine.mf -C $(CLASSDIR) . -C $(SRCDIR) logback.xml
 	cd $(LIBDIR) ; $(JAR) i $@ ; cd ..
 
 $(TMPDIR)/VASSAL.exe: Info.class $(TMPDIR)

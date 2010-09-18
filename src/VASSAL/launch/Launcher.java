@@ -21,7 +21,6 @@ package VASSAL.launch;
 
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
@@ -34,17 +33,15 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.SystemUtils;
 
-import VASSAL.Info;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
-import VASSAL.tools.WriteErrorDialog;
-import VASSAL.tools.logging.CommandClientAdapter;
 import VASSAL.tools.logging.LoggedOutputStream;
-import VASSAL.tools.logging.Logger;
-import VASSAL.tools.logging.LogOutputStreamAdapter;
 import VASSAL.tools.menu.MenuManager;
 
 /**
@@ -52,6 +49,8 @@ import VASSAL.tools.menu.MenuManager;
  * @since 3.1.0
  */
 public abstract class Launcher {
+  private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
+
   protected CommandClient cmdC = null;
   protected CommandServer cmdS = null;
 
@@ -90,11 +89,12 @@ public abstract class Launcher {
     final StartUp start = SystemUtils.IS_OS_MAC_OSX ?
       new MacOSXStartUp() : new StartUp();
 
+/*
     if (standalone) {
       // start logging to the errorLog
       final File errorLog = new File(Info.getHomeDir(), "errorLog");
       try {
-        Logger.addLogListener(
+        VASSAL.tools.logging.Logger.addLogListener(
           new LogOutputStreamAdapter(
             new FileOutputStream(errorLog)));
       }
@@ -102,14 +102,14 @@ public abstract class Launcher {
         WriteErrorDialog.error(e, errorLog);
       }
     }
+*/
 
     start.startErrorLog();
 
     // log everything which comes across our stderr
-    System.setErr(
-      new PrintStream(new LoggedOutputStream(Info.getInstanceID()), true));
+    System.setErr(new PrintStream(new LoggedOutputStream(), true));
 
-    Logger.log("-- " + getClass().getSimpleName());
+    logger.info(getClass().getSimpleName());
     Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
     start.initSystemProperties();
 
@@ -135,8 +135,6 @@ public abstract class Launcher {
 
         // set up our command client
         cmdC = new CommandClient(new Socket((String) null, port));
-
-        Logger.addLogListener(new CommandClientAdapter(cmdC));
       }
       catch (ClassNotFoundException e) {
         ErrorDialog.bug(e);
@@ -231,7 +229,7 @@ public abstract class Launcher {
           });
         }
         catch (InterruptedException e) {
-          Logger.log(e);
+          logger.error("", e);
           shutdown = false;
         }
         catch (InvocationTargetException e) {

@@ -25,9 +25,11 @@ import java.io.IOException;
 
 import org.apache.commons.lang.SystemUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.Info;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.logging.Logger;
 
 /**
  * Handles temporary files. <code>TempFileManager</code> cleans up
@@ -57,6 +59,9 @@ import VASSAL.tools.logging.Logger;
  * @author Joel Uckelman
  */
 public class TempFileManager {
+  private static final Logger logger =
+    LoggerFactory.getLogger(TempFileManager.class);
+
   private final File tmpRoot;
   private File sessionRoot;
   private File lock;
@@ -90,7 +95,7 @@ public class TempFileManager {
             catch (IOException e) {
               if (sleep > maxsleep) {
                 // just log, since shutdown hooks don't have long to run
-                Logger.log(e);
+                logger.error("", e);
                 break;
               }
 
@@ -114,7 +119,7 @@ public class TempFileManager {
           }
           catch (IOException e) {
             // just log, since shutdown hooks don't have long to run
-            Logger.log(e);
+            logger.error("", e);
           }
         }
       });
@@ -139,7 +144,7 @@ public class TempFileManager {
             FileUtils.recursiveDelete(f);
           }
           catch (IOException e) {
-            Logger.log(e);
+            logger.error("", e);
           }
         }
       }

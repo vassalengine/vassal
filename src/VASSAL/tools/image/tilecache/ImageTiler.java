@@ -17,6 +17,9 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.concurrent.Exec;
 import VASSAL.tools.concurrent.Progressor;
@@ -25,10 +28,12 @@ import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.io.IOUtils;
-import VASSAL.tools.logging.Logger;
 
 //public class ImageTiler implements Callable<Void> {
 public class ImageTiler implements Callable<Void> {
+  private static final Logger logger =
+    LoggerFactory.getLogger(ImageTiler.class);
+
   protected final DataArchive archive;
   protected final File tdir;
 
@@ -88,7 +93,7 @@ public class ImageTiler implements Callable<Void> {
       }
       catch (IOException e) {
         // can't read file, skip it
-        Logger.log(e);
+        logger.error("", e);
         continue;
       }
       finally {
