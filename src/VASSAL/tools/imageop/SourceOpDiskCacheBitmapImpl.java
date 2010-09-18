@@ -1,5 +1,5 @@
 /*
- * $Id: SourceOpBitmapImpl.java 6010 2009-09-05 21:16:56Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2009-2010 by Joel Uckelman
  *

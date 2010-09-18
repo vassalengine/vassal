@@ -1,5 +1,5 @@
 /*
- * $Id: GameState.java 6531 2010-02-24 18:31:31Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2010 by Joel Uckelman 
  *

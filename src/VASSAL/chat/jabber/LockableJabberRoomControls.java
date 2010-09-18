@@ -1,5 +1,5 @@
 /*
- * $Id: LockableJabberRoomControls.java 6273 2009-11-19 12:37:20Z swampwallaby $
+ * $Id$
  *
  * Copyright (c) 2009 by Brent Easton
  *

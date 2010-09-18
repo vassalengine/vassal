@@ -1,5 +1,5 @@
 /* 
- * $Id: AddressBookServerConfigurer.java 4997 2009-01-31 05:00:33Z rodneykinney $
+ * $Id$
  *
  * Copyright (c) 2009 by Brent Easton
  *
