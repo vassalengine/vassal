@@ -20,19 +20,23 @@
 package VASSAL.tools.logging;
 
 import VASSAL.Info;
+import VASSAL.tools.concurrent.SimpleFuture;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joel Uckelman
  * @since 3.1.0
+ * @deprecated Use {@link org.slf4j.Logger} instead.
  */
 @Deprecated
 public class Logger {
   private Logger() {}
+
+  private static final org.slf4j.Logger logger =
+    LoggerFactory.getLogger(Logger.class);
 
   public static final int MESSAGE = LogEntry.MESSAGE;
   public static final int WARNING = LogEntry.WARNING;
@@ -92,48 +96,19 @@ public class Logger {
     return enqueue(new LogEntry(pid, type, thrown, message, true));
   }
 
-  private static final ExecutorService ex = Executors.newSingleThreadExecutor();
-
   public static Future<?> enqueue(final LogEntry entry) {
-    return ex.submit(new Runnable() {
-      public void run() {
-        for (LogListener l : listeners) l.handle(entry);
-      }
-    });
+    final SimpleFuture<?> f = new SimpleFuture<Void>();
+    f.set(null);
+    return f;
   }
 
-  private static CopyOnWriteArrayList<LogListener> listeners =
-    new CopyOnWriteArrayList<LogListener>();
-
   public static void addLogListener(LogListener l) {
-    listeners.add(l);
   }
 
   public static void removeLogListener(LogListener l) {
-    listeners.remove(l);
   }
 
   public static LogListener[] getLogListeners() {
-    return listeners.toArray(new LogListener[0]);
+    return new LogListener[0];
   }
-
-/*
-  static {
-    final Runnable hook = new Runnable() {
-      public void run() {
-        log("-- Exiting");
-
-        ex.shutdown();
-        try {
-// FIXME: loop?
-          while (!ex.awaitTermination(1, TimeUnit.SECONDS));
-        }
-        catch (InterruptedException e) {
-        }
-      }
-    };
-
-    Runtime.getRuntime().addShutdownHook(new Thread(hook, "log cleanup"));
-  }
-*/
 }
