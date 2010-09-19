@@ -279,7 +279,7 @@ public class Prefs implements Closeable {
     }
 
     // Option to disable Quartz renderer
-    if (Info.isMacOSX()) {
+    if (SystemUtils.IS_OS_MAC_OSX) {
       final BooleanConfigurer quartzConf = new BooleanConfigurer(
         DISABLE_QUARTZ,
         Resources.getString("Prefs.disable_quartz"),
