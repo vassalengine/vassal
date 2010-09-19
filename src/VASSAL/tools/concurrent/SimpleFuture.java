@@ -61,23 +61,25 @@ public class SimpleFuture<V> implements Future<V> {
 
   /**
    * Sets the exception to be wrapped in an {@link ExecutionException} and
-   * thrown by {@link #get}. May be called only from the thread executing
-   * the computation.
+   * thrown by {@link #get}.
+   *
+   * <b>May be called only from the thread executing the computation.</b>
    *
    * @param t the exception
    */
-  protected void setException(Throwable t) {
+  public void setException(Throwable t) {
     exception = t;
     done.countDown();
   }
 
   /**
-   * Sets the result to be returned by {@link #get}. May be called only from
-   * the thread executing the computation.
+   * Sets the result to be returned by {@link #get}.
+   *
+   * <b>May be called only from the thread executing the computation.</b>
    *
    * @param v the value
    */
-  protected void set(V v) {
+  public void set(V v) {
     value = v;
     done.countDown();
   }
