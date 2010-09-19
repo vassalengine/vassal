@@ -70,8 +70,8 @@ NSIS:=PATH=$$PATH:~/java/nsis makensis
 
 LAUNCH4J:=~/java/launch4j/launch4j
 
-SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
-CLASSES:=$(SOURCES:.java=.class)
+#SOURCES:=$(shell find $(SRCDIR) -name '*.java' | sed "s/^$(SRCDIR)\///")
+#CLASSES:=$(SOURCES:.java=.class)
 JARS:=Vengine.jar
 
 vpath %.class $(shell find $(CLASSDIR) -type d)
@@ -108,7 +108,7 @@ i18n: $(CLASSDIR)
 fast-compile: version $(CLASSDIR)
 	$(JC) $(JCFLAGS) $(shell find $(SRCDIR) -name '*.java')
 
-test: $(CLASSDIR) all 
+test:
 	$(JC) $(JCFLAGS) $(shell find $(TESTDIR) -name '*.java')
 	$(JAVA) -classpath $(CLASSPATH) org.junit.runner.JUnitCore $(shell grep -l '@Test' `find $(TESTDIR) -name '*.java'` | sed "s/^$(TESTDIR)\/\(.*\)\.java$$/\1/" | tr '/' '.')
 
