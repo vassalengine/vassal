@@ -88,6 +88,24 @@
 			<version>1.6-1</version>
 		</dependency>
 
+    <!-- logging -->
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>0.9.24</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>0.9.24</version>
+    </dependency>
+
 		<!-- test -->
 
 		<dependency>
