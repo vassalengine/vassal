@@ -25,7 +25,8 @@ import java.awt.Image;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RGBImageFilter;
 
-import VASSAL.tools.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sets the transparency of colors in an image
@@ -34,6 +35,9 @@ import VASSAL.tools.logging.Logger;
  */
 @Deprecated
 public class TransparentFilter extends RGBImageFilter {
+  private static final Logger logger =
+    LoggerFactory.getLogger(TransparentFilter.class);
+
   private double alpha = 1.0;
   private int[] colors = new int[0];
   private double[] alphas = new double[0];
@@ -85,7 +89,7 @@ public class TransparentFilter extends RGBImageFilter {
       pg.grabPixels();
     }
     catch (InterruptedException ex) {
-      Logger.log(ex);
+      logger.error("", ex);
     }
     return bg[0];
   }
