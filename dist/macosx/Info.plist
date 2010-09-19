@@ -54,6 +54,11 @@ com/DTDs/PropertyList-1.0.dtd">
     <array>
       <string>$JAVAROOT/Vengine.jar</string>
     </array>
+    <key>Properties</key>
+    <dict>
+      <key>apple.awt.graphics.UseQuartz</key>
+      <string>false</string>
+    </dict>
   </dict>
 </dict>
 </plist>
