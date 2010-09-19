@@ -25,12 +25,35 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 
+/**
+ * An {@link OutputStream} which feeds an {@link org.slf4j.Logger}.
+ * All output is logged at the <code>WARN</code> level.
+ *
+ * @author Joel Uckelman
+ * @since 3.1.0
+ */ 
 public class LoggedOutputStream extends OutputStream {
-  private static final Logger logger =
-    LoggerFactory.getLogger(LoggedOutputStream.class);
+  private final Logger logger;
 
   private final ByteArrayOutputStream buf = new ByteArrayOutputStream();
 
+  /**
+   * Creates a <code>LoggedOutputStream</code> with the default logger.
+   */
+  public LoggedOutputStream() {
+    this(LoggerFactory.getLogger(LoggedOutputStream.class));
+  }
+
+  /**
+   * Creates a <code>LoggedOutputStream</code>.
+   *
+   * @param logger the logger which receives the output
+   */
+  public LoggedOutputStream(Logger logger) {
+    this.logger = logger;
+  }
+
+  /** {@inheritDoc} */
   @Override
   public synchronized void write(int b) {
     // don't write trailing newlines, logger adds those
@@ -38,6 +61,7 @@ public class LoggedOutputStream extends OutputStream {
     else buf.write(b);
   }
 
+  /** {@inheritDoc} */
   @Override
   public synchronized void write(byte b[], int off, int len) {
     // don't write trailing newlines, logger adds those
@@ -47,10 +71,11 @@ public class LoggedOutputStream extends OutputStream {
     flush();
   }
 
+  /** {@inheritDoc} */
   @Override
   public synchronized void flush() {
     if (buf.size() > 0) {
-      logger.warn("STDERR: " + new String(buf.toByteArray())); 
+      logger.warn(new String(buf.toByteArray()));
       buf.reset();
     }
   } 
