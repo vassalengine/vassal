@@ -107,7 +107,7 @@ public class EDTExecutorService extends AbstractExecutorService {
   protected <T> RunnableFuture<T> newTask(final Callable<T> cable) {
     return new EDTRunnableFuture<T>() {
       protected void runOnEDT() throws Exception {
-        value = cable.call();
+        result = cable.call();
       }
     };
   }

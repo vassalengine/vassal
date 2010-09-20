@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009 by Joel Uckelman
+ * Copyright (c) 2009-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -16,6 +16,7 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+
 package VASSAL.tools.concurrent;
 
 import java.util.concurrent.CancellationException;
@@ -33,11 +34,11 @@ import java.util.concurrent.TimeUnit;
  * @since 3.1.11
  */
 public class SimpleFuture<V> implements Future<V> {
-  protected V value = null;
-  private Throwable exception = null;
-  private volatile boolean cancelled = false;
+  protected V result = null;
+  protected Throwable exception = null;
+  protected volatile boolean cancelled = false;
 
-  private final CountDownLatch done = new CountDownLatch(1); 
+  protected final CountDownLatch done = new CountDownLatch(1); 
 
   /** 
    * {@inheritDoc}
@@ -45,7 +46,15 @@ public class SimpleFuture<V> implements Future<V> {
    * <p>This implementation is uninteruptable, so ignores the parameter.</p>
    */
   public boolean cancel(boolean mayInterruptIfRunning) {
-    if (!isDone()) cancelled = true; 
+    // fail if already cancelled
+    if (cancelled) return false;
+
+    // cancel if running
+    if (done.getCount() != 0) {
+      cancelled = true;
+      done.countDown();
+    }
+
     return cancelled;
   }
  
@@ -77,10 +86,10 @@ public class SimpleFuture<V> implements Future<V> {
    *
    * <b>May be called only from the thread executing the computation.</b>
    *
-   * @param v the value
+   * @param v the result
    */
-  public void set(V v) {
-    value = v;
+  public void set(V r) {
+    result = r;
     done.countDown();
   }
  
@@ -91,7 +100,7 @@ public class SimpleFuture<V> implements Future<V> {
     done.await();
     if (exception != null) throw new ExecutionException(exception);
     if (cancelled) throw new CancellationException();
-    return value;
+    return result;
   }
 
   /** {@inheritDoc} */
@@ -103,6 +112,6 @@ public class SimpleFuture<V> implements Future<V> {
     if (!done.await(timeout, unit)) throw new TimeoutException();
     if (exception != null) throw new ExecutionException(exception);
     if (cancelled) throw new CancellationException();
-    return value;
+    return result;
   }
 }

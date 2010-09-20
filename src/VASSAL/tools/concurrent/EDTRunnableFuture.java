@@ -35,7 +35,7 @@ public abstract class EDTRunnableFuture<V> extends SimpleRunnableFuture<V> {
    * @param result the result to return
    */ 
   public EDTRunnableFuture(V result) {
-    this.value = result;  
+    this.result = result;  
   }
 
   /**
@@ -49,7 +49,7 @@ public abstract class EDTRunnableFuture<V> extends SimpleRunnableFuture<V> {
   public final void run() {
     try {
       runOnEDT();
-      set(value);
+      set(result);
     }
     catch (Throwable t) {
       setException(t);
