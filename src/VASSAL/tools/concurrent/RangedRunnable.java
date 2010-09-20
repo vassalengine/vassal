@@ -61,7 +61,10 @@ public abstract class RangedRunnable<T> implements Runnable {
    * @param submit whether to also submit the change
    */
   public final synchronized void setLast(T last, boolean submit) {
-    range.second = last;
+    if (last != range.second) {
+      range = new Pair<T,T>(range.first, last);
+    }
+
     if (submit && !submitted) {
       submit();
       submitted = true;
