@@ -19,7 +19,7 @@
 package VASSAL.tools;
 
 /**
- * A class for pairs of objects.
+ * An immutable class for pairs of objects.
  *
  * @param <A> the type of the first object
  * @param <B> the type of the second object
@@ -27,9 +27,9 @@ package VASSAL.tools;
  * @author Joel Uckelman
  * @since 3.1.11
  */
-public class Pair<A,B> {
-  public A first;
-  public B second;
+public final class Pair<A,B> {
+  public final A first;
+  public final B second;
 
   /**
    * Creates a pair with the given values.
@@ -67,7 +67,7 @@ public class Pair<A,B> {
    * @param second the second value
    * @return the pair containing {@code first} and (@code second}
    */
-  public static <A,B> Pair<A,B> make_pair(A first, B second) {
+  public static <A,B> Pair<A,B> of(A first, B second) {
     return new Pair<A,B>(first, second);
   }
 }
