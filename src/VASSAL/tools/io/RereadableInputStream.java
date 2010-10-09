@@ -113,30 +113,4 @@ public class RereadableInputStream extends InputStream {
   public void close() throws IOException {
     src.close();
   }
-
-  public static void main(String[] args) throws Exception {
-    final InputStream input =
-      new ByteArrayInputStream(new byte[]{ 0, 1, 2, 3, 4, 5, 6, 7 });
-    final InputStream resettable = new RereadableInputStream(input);
-
-    assert resettable.markSupported();
-    resettable.mark(4);
-
-    final byte[] peekBuffer = new byte[4];
-    final int peekBytesRead = resettable.read(peekBuffer, 0, 4);
-    assert 4 == peekBytesRead;
-    for (int i = 0; i < 4; i++) assert i == peekBuffer[i];
-
-    resettable.reset();
-
-    final byte[] completeBuffer = new byte[8];
-    int pos = 0;
-    int bytesRead = 0;
-    while (pos < 8 && (bytesRead = resettable.read(completeBuffer, pos, 8-pos)) != -1) {
-      pos += bytesRead;
-    }
-
-    assert 8 == pos : pos;
-    for (int i = 0; i < 8; i++) assert i == completeBuffer[i];
-  }  
 }
