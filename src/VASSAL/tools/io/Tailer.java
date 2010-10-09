@@ -27,6 +27,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import VASSAL.tools.concurrent.listener.DefaultEventListenerSupport;
 import VASSAL.tools.concurrent.listener.EventListener;
 import VASSAL.tools.concurrent.listener.EventListenerSupport;
 
@@ -40,7 +41,7 @@ import VASSAL.tools.concurrent.listener.EventListenerSupport;
  * @author Joel Uckelman
  * @since 3.2.0
  */
-public class Tailer {
+public class Tailer { 
   private static final Logger logger = LoggerFactory.getLogger(Tailer.class);
 
   protected static final long DEFAULT_POLL_INTERVAL = 1000L;  
@@ -51,8 +52,7 @@ public class Tailer {
   protected long position = 0L;
   protected volatile boolean tailing = false;
 
-  protected final EventListenerSupport<String> lsup =
-    new EventListenerSupport<String>(this);
+  protected final EventListenerSupport<String> lsup;
 
   /**
    * Creates a file tailer with the default polling interval.
@@ -70,17 +70,45 @@ public class Tailer {
    * @param poll_interval the polling interval, in milliseconds
    */ 
   public Tailer(File file, long poll_interval) {
+    if (file == null) throw new IllegalArgumentException("file == null");
+
     this.file = file;
     this.poll_interval = poll_interval;
+    this.lsup = new DefaultEventListenerSupport<String>(this);
+  }
+
+  /**
+   * Creates a file tailer.
+   *
+   * @param file the file to tail
+   * @param poll_interval the polling interval, in milliseconds
+   * @param lsup the listener support
+   */
+  public Tailer(File file, long poll_interval,
+                                           EventListenerSupport<String> lsup) {
+    if (file == null) throw new IllegalArgumentException("file == null");
+    if (lsup == null) throw new IllegalArgumentException("lsup == null");
+
+    this.file = file;
+    this.poll_interval = poll_interval;
+    this.lsup = lsup;
   }
 
   /**
    * Starts tailing the file.
    */
-  public synchronized void start() {
+  public synchronized void start() throws IOException {
     // NB: This method is synchronized to ensure that there is never more
     // than one tailer thread at at time.
-    if (!tailing) { 
+    if (!tailing) {
+      if (!file.exists()) {
+        throw new IOException(file.getAbsolutePath() + " does not exist");
+      }
+
+      if (file.isDirectory()) {
+        throw new IOException(file.getAbsolutePath() + " is a directory");
+      }
+
       tailing = true;
       new Thread(new Monitor(), "tailing " + file.getAbsolutePath()).start();
     }
@@ -100,6 +128,15 @@ public class Tailer {
    */ 
   public boolean isTailing() {
     return tailing;
+  }
+
+  /**
+   * Gets the file being tailed.
+   *
+   * @return the file
+   */
+  public File getFile() {
+    return file;
   }
 
   /**
@@ -172,6 +209,7 @@ public class Tailer {
         }
       }
       catch (IOException e) {
+// FIXME: there should be an error listener; we can't handle exceptions here
         logger.error("", e);
       }
       catch (InterruptedException e) {
@@ -183,7 +221,7 @@ public class Tailer {
     }
   }
 
-  public static void main(String args[]) {
+  public static void main(String args[]) throws IOException {
     final Tailer t = new Tailer(new File(args[0]));
 
     t.addEventListener(new EventListener<String>() {
