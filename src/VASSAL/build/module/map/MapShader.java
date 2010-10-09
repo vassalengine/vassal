@@ -652,7 +652,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     }
     else if (PATTERN.equals(key)) {
       pattern = (String) value;
-      buildShadePattern();;
+      buildShadePattern();
       buildTexture();
     }
     else if (COLOR.equals(key)) {

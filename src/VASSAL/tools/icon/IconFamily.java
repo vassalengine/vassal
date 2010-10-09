@@ -391,7 +391,6 @@ public class IconFamily extends AbstractConfigurable {
     }
     else if (ICON3.equals(key)) {
       setSizeIconPath(3, (String) value);
-      ;
     }
   }
 

@@ -1216,7 +1216,7 @@ public class MassPieceLoader {
         typeConfig.setValue(BASE_IMAGE);
         break;
       }
-      ;
+
       nameConfig.setValue(s.substring(1));
     }
   }

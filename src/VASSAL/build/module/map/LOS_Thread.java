@@ -605,7 +605,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected void setPersisting(boolean b) {
     persisting = b;
     visible = b;
-    setMirroring(false);;
+    setMirroring(false);
     if (persisting) {
       launch.setAttribute(ICON_NAME, persistentIconName);
     }
