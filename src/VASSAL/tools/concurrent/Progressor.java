@@ -20,7 +20,7 @@ package VASSAL.tools.concurrent;
 
 import java.beans.PropertyChangeSupport;
 
-import VASSAL.tools.Pair;
+import VASSAL.tools.lang.Pair;
 
 /**
  * A progress handler.

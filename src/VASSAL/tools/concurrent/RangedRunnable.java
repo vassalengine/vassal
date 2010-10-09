@@ -18,7 +18,7 @@
  */
 package VASSAL.tools.concurrent;
 
-import VASSAL.tools.Pair;
+import VASSAL.tools.lang.Pair;
 
 /**
  * A {@link Runnable} which operates on a rolling range.

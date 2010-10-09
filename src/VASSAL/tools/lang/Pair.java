@@ -16,7 +16,8 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
-package VASSAL.tools;
+
+package VASSAL.tools.lang;
 
 /**
  * An immutable class for pairs of objects.
@@ -25,10 +26,8 @@ package VASSAL.tools;
  * @param <B> the type of the second object
  *
  * @author Joel Uckelman
- * @since 3.1.11
- * @deprecated Moved to {@link VASSAL.tools.lang.Pair}.
+ * @since 3.2.0
  */
-@Deprecated
 public final class Pair<A,B> {
   public final A first;
   public final B second;
