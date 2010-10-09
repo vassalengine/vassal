@@ -27,6 +27,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import org.apache.commons.io.input.ClosedInputStream;
+import org.apache.commons.io.output.ClosedOutputStream;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
