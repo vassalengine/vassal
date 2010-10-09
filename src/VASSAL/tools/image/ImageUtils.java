@@ -27,6 +27,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -36,7 +37,9 @@ import javax.swing.ImageIcon;
 
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 
+import VASSAL.Info;
 import VASSAL.tools.ErrorDialog;
+import VASSAL.tools.io.TemporaryFileFactory;
 
 public class ImageUtils {
   private ImageUtils() {}
@@ -233,9 +236,18 @@ public class ImageUtils {
     return getImageSize("", in);
   }
 
+  private static final TemporaryFileFactory tfac = new TemporaryFileFactory() {
+    public File create() throws IOException {
+      return File.createTempFile("img", null, Info.getTempDir());
+    }
+  };
+
+  private static final ImageLoader loader =
+    new ImageIOImageLoader(new FallbackImageTypeConverter(tfac));
+
   public static Dimension getImageSize(String name, InputStream in)
                                                       throws ImageIOException {
-    return ImageLoader.getImageSize(name, in);
+    return loader.size(name, in);
   }
 
   /** @deprecated Use {@link #getImage(String,InputStream)} instead. */ 
@@ -253,7 +265,9 @@ public class ImageUtils {
  
   public static BufferedImage getImage(String name, InputStream in)
                                                       throws ImageIOException {
-    return ImageLoader.getImage(name, in);
+    return loader.load(
+      name, in, compatOpaqueImageType, compatTranslImageType, true
+    );
   }
 
   public static BufferedImage toType(BufferedImage src, int type) {
@@ -331,6 +345,10 @@ public class ImageUtils {
 
   public static int getCompatibleImageType(boolean transparent) {
     return transparent ? compatTranslImageType : compatOpaqueImageType;
+  }
+
+  public static int getCompatibleImageType(BufferedImage img) {
+    return getCompatibleImageType(isTransparent(img));
   }
 
   public static BufferedImage createCompatibleImage(int w, int h) {
