@@ -23,6 +23,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 /**
+ * A (partial) PNG decoder.
+ *
  * @author Joel Uckelman
  * @since 3.1.0
  */
@@ -59,8 +61,12 @@ class PNGDecoder {
   public static Chunk decodeChunk(DataInputStream in) throws IOException {
     // 5.3
     final int length = in.readInt();
-    if (length < 0)
+
+    // Length should not exceed 2^31-1. Since ints are signed, any value
+    // greater than 2^31-1 will look negative to us.
+    if (length < 0) {
       throw new IOException("chunk length out of range");
+    }
 
     final int type = in.readInt();
     
