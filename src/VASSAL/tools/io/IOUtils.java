@@ -40,17 +40,36 @@ import javax.imageio.stream.ImageInputStream;
 public class IOUtils extends org.apache.commons.io.IOUtils {
   /**
    * Copies bytes from a <code>FileInputStream</code> to a
-   * <code>FileOutputStream</code>. This method uses channels.
+   * <code>FileOutputStream</code>.
+   *
+   * This method uses channels. The input file should not be written
+   * to during the copy.
    *
    * @param in the source
    * @param out the destination
-   * @throws IOException if one occurs while reading or writing.
+   * @throws IOException if one occurs while reading or writing
    */
   public static int copy(FileInputStream in, FileOutputStream out)
                                                            throws IOException {
-    final FileChannel inc = in.getChannel();
-    final long count = inc.transferTo(0L, inc.size(), out.getChannel());
+    final long count = copyLarge(in, out);
     return count > Integer.MAX_VALUE ? -1 : (int) count;
+  }
+
+  /**
+   * Copies bytes from a large (over 2GB) <code>FileInputStream</code> to a
+   * <code>FileOutputStream</code>.
+   *
+   * This method uses channels. The input file should not be written
+   * to during the copy.
+   *
+   * @param in the source
+   * @param out the destination
+   * @throws IOException if one occurs while reading or writing
+   */
+  public static long copyLarge(FileInputStream in, FileOutputStream out)
+                                                           throws IOException {
+    final FileChannel inc = in.getChannel();
+    return inc.transferTo(0L, inc.size(), out.getChannel());
   }
 
   /**
@@ -63,7 +82,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    * @param out the destination
    * @param buffer the buffer
    * @return the number of bytes copied
-   * @throws IOException if one occurs while reading or writing.
+   * @throws IOException if one occurs while reading or writing
    */
   public static int copy(InputStream in, OutputStream out, byte[] buffer)
                                                            throws IOException {
@@ -81,7 +100,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    * @param out the destination
    * @param buffer the buffer
    * @return the number of bytes copied
-   * @throws IOException if one occurs while reading or writing.
+   * @throws IOException if one occurs while reading or writing
    */
   public static long copyLarge(InputStream in, OutputStream out, byte[] buffer)
                                                            throws IOException {
@@ -207,7 +226,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    * @return the number of bytes read, of <code>-1</code> if at the end of
    * the stream
    *
-   * @throws IOException if a stream operation does
+   * @throws IOException if one occurs while reading
    */
   public static int read(InputStream in, byte[] buf) throws IOException {
     int num;
