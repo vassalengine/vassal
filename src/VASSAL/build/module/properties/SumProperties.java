@@ -61,7 +61,7 @@ public class SumProperties implements PropertySource {
         value = "?";
       }
       else {
-        value = String.valueOf(sum) + (indeterminate ? "+?" : "");
+        value = sum + (indeterminate ? "+?" : "");
       }
     }
     else if (pieces.size() > 0) {

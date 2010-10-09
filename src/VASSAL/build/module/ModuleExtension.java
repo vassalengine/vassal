@@ -399,7 +399,7 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
    * Generate a new Unique GamePiece Id 
    */
   public String generateGpId() {
-    return extensionId + ":" + String.valueOf(nextGpId++);
+    return extensionId + ":" + nextGpId++;
   }
 
   public void addTo(Buildable parent) {
