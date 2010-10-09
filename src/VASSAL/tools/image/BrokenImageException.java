@@ -22,31 +22,48 @@ package VASSAL.tools.image;
 import java.io.File;
 
 /**
- * An exception indicating that an image file is not a recognized type.
+ * An exception indicating that an image file is broken in some way.
  *
+ * @since 3.2.0
  * @author Joel Uckelman
- * @since 3.1.0
  */
-public class UnrecognizedImageTypeException extends ImageIOException {
+public class BrokenImageException extends ImageIOException {
   private static final long serialVersionUID = 1L;
 
-  public UnrecognizedImageTypeException() {
+  protected BrokenImageException() {
     super();
   }
 
-  public UnrecognizedImageTypeException(String filename) {
+  public BrokenImageException(String filename) {
     super(filename);
   }
 
-  public UnrecognizedImageTypeException(File file) {
+  public BrokenImageException(File file) {
     super(file);
   }
 
-  public UnrecognizedImageTypeException(String filename, Throwable cause) {
+  public BrokenImageException(String filename, String message) {
+    super(filename, message);
+  }
+
+  public BrokenImageException(File file, String message) {
+    super(file, message);
+  }
+
+  public BrokenImageException(String filename, Throwable cause) {
     super(filename, cause);
   }
 
-  public UnrecognizedImageTypeException(File file, Throwable cause) {
+  public BrokenImageException(File file, Throwable cause) {
     super(file, cause);
+  }
+
+  public BrokenImageException(String filename, String message,
+                                               Throwable cause) {
+    super(filename, message, cause);
+  }
+
+  public BrokenImageException(File file, String message, Throwable cause) {
+    super(file, message, cause);
   }
 }
