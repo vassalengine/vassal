@@ -27,13 +27,13 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An uninterruptable {@link Future}.
+ * An uninterruptable {@link SettableFuture}.
  *
  * @param <V> the result type returned by the {@link #get} method
  * @author Joel Uckelman
  * @since 3.1.11
  */
-public class SimpleFuture<V> implements Future<V> {
+public class SimpleFuture<V> implements SettableFuture<V> {
   protected V result = null;
   protected Throwable exception = null;
   protected volatile boolean cancelled = false;
@@ -68,26 +68,13 @@ public class SimpleFuture<V> implements Future<V> {
     return cancelled || done.getCount() == 0;
   }
 
-  /**
-   * Sets the exception to be wrapped in an {@link ExecutionException} and
-   * thrown by {@link #get}.
-   *
-   * <b>May be called only from the thread executing the computation.</b>
-   *
-   * @param t the exception
-   */
+  /** {@inheritDoc} */
   public void setException(Throwable t) {
     exception = t;
     done.countDown();
   }
 
-  /**
-   * Sets the result to be returned by {@link #get}.
-   *
-   * <b>May be called only from the thread executing the computation.</b>
-   *
-   * @param v the result
-   */
+  /** {@inheritDoc} */
   public void set(V r) {
     result = r;
     done.countDown();

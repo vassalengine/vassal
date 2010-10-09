@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2009 by Joel Uckelman
+ * Copyright (c) 2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -16,12 +16,12 @@
  * License along with this library; if not, copies are available
  * at http://www.opensource.org.
  */
+
 package VASSAL.tools.concurrent;
 
 /**
- * A {@link SimpleFuture} that is a {@link SettableRunnableFuture}.
+ * A {@link SettableFuture} that is a {@link RunnableFuture}.
  */
-public abstract class SimpleRunnableFuture<V>
-  extends SimpleFuture<V>
-  implements SettableRunnableFuture<V> {
+public interface SettableRunnableFuture<V> extends SettableFuture<V>,
+                                                   RunnableFuture<V> {
 }
