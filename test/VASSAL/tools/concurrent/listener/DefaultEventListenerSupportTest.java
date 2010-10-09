@@ -72,6 +72,7 @@ public class DefaultEventListenerSupportTest {
   
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testNotify() {
     final EventListenerSupport<Boolean> lsup =
       new DefaultEventListenerSupport<Boolean>(this);
