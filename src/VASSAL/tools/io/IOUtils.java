@@ -38,6 +38,8 @@ import javax.imageio.stream.ImageInputStream;
  * @since 3.1.0
  */ 
 public class IOUtils extends org.apache.commons.io.IOUtils {
+  protected IOUtils() {}
+
   /**
    * Copies bytes from a <code>FileInputStream</code> to a
    * <code>FileOutputStream</code>.
