@@ -841,8 +841,8 @@ public class PieceMover extends AbstractBuildable
         DragHandler.getTheDragHandler()
                    .dropTargetListeners.put(theComponent, dropTargetListener);
       }
-      DropTarget dropTarget = new DropTarget(theComponent, dndContants, DragHandler.getTheDragHandler());
-      return dropTarget;
+      return new DropTarget(theComponent, dndContants,
+                            DragHandler.getTheDragHandler());
     }
 
     static public void removeDropTarget(Component theComponent) {

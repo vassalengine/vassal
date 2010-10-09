@@ -404,8 +404,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   protected Stack createStack() {
-    Stack s = new Stack();
-    return s;
+    return new Stack();
   }
 
   public void setId(String id) {

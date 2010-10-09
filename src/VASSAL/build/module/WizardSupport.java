@@ -556,8 +556,7 @@ public class WizardSupport {
     }
 
     protected WizardPanelProvider getPanelProviderForStep(String step, Map settings) {
-      WizardPanelProvider w = (WizardPanelProvider) settings.get(wizardKey);
-      return w;
+      return (WizardPanelProvider) settings.get(wizardKey);
     }
 
     protected Wizard getWizardForStep(String step, Map settings) {
@@ -785,8 +784,7 @@ public class WizardSupport {
     }
 
     public Wizard newWizard(Dimension logoSize) {
-      Wizard w = createWizard();
-      return w;
+      return createWizard();
     }
   }
 }

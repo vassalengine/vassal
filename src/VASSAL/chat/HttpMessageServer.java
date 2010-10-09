@@ -75,13 +75,13 @@ public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
         try {
           StringTokenizer st = new StringTokenizer(msg, "&"); //$NON-NLS-1$
           String s = st.nextToken();
-          String sender = s.substring(s.indexOf("=") + 1); //$NON-NLS-1$
+          String sender = s.substring(s.indexOf('=') + 1); //$NON-NLS-1$
           String date = st.nextToken();
-          date = date.substring(date.indexOf("=") + 1); //$NON-NLS-1$
+          date = date.substring(date.indexOf('=') + 1); //$NON-NLS-1$
           s = st.nextToken(""); //$NON-NLS-1$
 
           String content = StringUtils.join(
-            new SequenceEncoder.Decoder(s.substring(s.indexOf("=") + 1), '|'),
+            new SequenceEncoder.Decoder(s.substring(s.indexOf('=') + 1), '|'),
             '\n'
           );
 

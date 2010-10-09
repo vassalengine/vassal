@@ -73,19 +73,16 @@ public class GeneralScript extends AbstractScript
   }
   
   protected String buildHeaderLine() {
-    String s = "void " + getConfigureName() + "() {";
-    return s;
+    return "void " + getConfigureName() + "() {";
   }
   
   public String getFullScript() {
-    return buildHeaderLine() + "\n" + 
-      getScript() + "\n}";
+    return buildHeaderLine() + "\n" + getScript() + "\n}";
   }
   
   public CompileResult compile() {
-    String fullScript = getFullScript();
-    CompileResult result = BeanShell.getInstance().compile(new StringReader(fullScript));
-    return result;
+    final String fullScript = getFullScript();
+    return BeanShell.getInstance().compile(new StringReader(fullScript));
   }
   
   public Configurer getConfigurer() {

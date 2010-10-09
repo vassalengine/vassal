@@ -227,9 +227,8 @@ public abstract class DieServer {
   protected String formatResult(String description, String result, FormattedString format) {
     format.setProperty(DiceButton.RESULT, result);
     format.setProperty(InternetDiceButton.DETAILS, description);
-    String text = format.getText();
-    String report = text.startsWith("*") ? "*" + text : "* " + text;
-    return report;
+    final String text = format.getText();
+    return text.startsWith("*") ? "*" + text : "* " + text;
   }
 
 
@@ -308,8 +307,8 @@ public abstract class DieServer {
    * Allows Email addresses like 'Joe Blow <j.blow@somewhere.com>'
    */
   public String extractEmail(String email) {
-    int start = email.indexOf("<");
-    int end = email.indexOf(">");
+    int start = email.indexOf('<');
+    int end = email.indexOf('>');
     if (start >= 0 && end >= 0 && end > start) {
       return email.substring(start + 1, end);
     }

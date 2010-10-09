@@ -128,7 +128,7 @@ public abstract class Expression {
     }
 
     // An old-style Formatted String?
-    if (t.indexOf("$") >= 0) {
+    if (t.indexOf('$') >= 0) {
       return new FormattedStringExpression(t);
     }
 

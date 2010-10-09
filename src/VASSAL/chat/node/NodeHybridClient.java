@@ -70,7 +70,7 @@ public class NodeHybridClient extends DynamicClient {
     ChatServerConnection c = null;
     try {
       String address = getAddressFromURL();
-      int index = address.indexOf(":");  //$NON-NLS-1$
+      int index = address.indexOf(':');  //$NON-NLS-1$
       if (index < 0) {
         fireStatus(Resources.getString("Server.bad_address", address));  //$NON-NLS-1$
       }

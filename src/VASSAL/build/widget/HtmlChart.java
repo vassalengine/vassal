@@ -237,7 +237,7 @@ public class HtmlChart extends Widget implements MouseListener {
   public class HtmlChartHyperlinkListener implements HyperlinkListener {
     public void hyperlinkUpdate(HyperlinkEvent event) {
       if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-        if ((!isURL() && event.getDescription().indexOf("/") < 0) ||
+        if ((!isURL() && event.getDescription().indexOf('/') < 0) ||
             event.getURL() == null) {
           setFile(event.getDescription());
         }

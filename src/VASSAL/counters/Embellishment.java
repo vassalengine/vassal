@@ -1491,7 +1491,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         isPrefix.add(is);
       }
 
-      alwaysActiveConfig.setValue(new Boolean(e.alwaysActive));
+      alwaysActiveConfig.setValue(Boolean.valueOf(e.alwaysActive));
       drawUnderneath.setSelected(e.drawUnderneathWhenSelected);
       loop.setSelected(e.loopLevels);
 

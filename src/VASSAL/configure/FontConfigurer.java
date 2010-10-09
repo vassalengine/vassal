@@ -98,7 +98,7 @@ public class FontConfigurer extends Configurer {
   }
 
   public static Font decode(String s) {
-    int i = s.indexOf(",");
+    int i = s.indexOf(',');
     return new Font(s.substring(0, i), Font.PLAIN, Integer.parseInt(s.substring(i + 1)));
   }
 

@@ -134,8 +134,7 @@ public class ChartWindow extends Widget {
    * window itself <code>HOTKEY</code> for the hotkey equivalent for the button
    */
   public String[] getAttributeNames() {
-    String[] s = {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
-    return s;
+    return new String[] {NAME, BUTTON_TEXT, TOOLTIP, ICON, HOTKEY};
   }
 
   public String getAttributeValueString(String name) {

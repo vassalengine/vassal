@@ -705,7 +705,7 @@ public class PieceDefiner extends JPanel implements HelpWindowExtension {
       }
       else {
         String s = value.getClass().getName();
-        setText(s.substring(s.lastIndexOf(".") + 1));
+        setText(s.substring(s.lastIndexOf('.') + 1));
       }
       return this;
     }

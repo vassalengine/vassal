@@ -117,7 +117,7 @@ public class ShadowDiceDieServer extends DieServer {
 
       line = (String) e.nextElement();
 
-      int firsthash = line.indexOf("#") - 1;
+      int firsthash = line.indexOf('#') - 1;
       StringTokenizer st = new StringTokenizer(line.substring(firsthash), " ");
 
       for (int j = 0; j < rollSet.dieRolls[i].getNumDice(); j++) {

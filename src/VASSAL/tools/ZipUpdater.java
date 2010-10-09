@@ -206,7 +206,7 @@ public class ZipUpdater implements Runnable {
 
     if (destination.getName().equals(oldFile.getName())) {
       String updatedName = destination.getName();
-      int index = updatedName.lastIndexOf(".");
+      int index = updatedName.lastIndexOf('.');
       String backup = index < 0 || index == updatedName.length() - 1
           ? updatedName + "Backup" : updatedName.substring(0, index) + "Backup" + updatedName.substring(index);
       if (!oldFile.renameTo(new File(backup))) {
@@ -220,7 +220,7 @@ public class ZipUpdater implements Runnable {
 
   public void createUpdater(File newFile) throws IOException {
     String inputArchiveName = oldFile.getName();
-    int index = inputArchiveName.indexOf(".");
+    int index = inputArchiveName.indexOf('.');
     String jarName;
     if (index >= 0) {
       jarName = "update" + inputArchiveName.substring(0, index) + ".jar";

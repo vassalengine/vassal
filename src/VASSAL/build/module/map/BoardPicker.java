@@ -390,8 +390,7 @@ public class BoardPicker implements ActionListener, GameComponent, GameSetupStep
    */
   public Collection<Board> getSelectedBoards() {
     if (currentBoards == null) {
-      List<Board> empty = Collections.emptyList();
-      return empty;
+      return Collections.<Board>emptyList();
     }
     else {
       return Collections.unmodifiableCollection(currentBoards);

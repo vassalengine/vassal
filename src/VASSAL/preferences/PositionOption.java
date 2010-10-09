@@ -97,7 +97,7 @@ public class PositionOption extends VASSAL.configure.Configurer
       // This can happen if a VisibilityOption has the same name
       // as a PositionOption, either currently, or due to editing. 
       // Don't throw a bug, just log it.
-      if (in.indexOf("\t") > 0) {
+      if (in.indexOf('\t') > 0) {
         ErrorDialog.dataError(new BadDataReport("Map or Chart window with same name as piece Palette", getKey(), e));
       }
       else {

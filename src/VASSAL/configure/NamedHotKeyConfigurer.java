@@ -216,8 +216,7 @@ public class NamedHotKeyConfigurer extends Configurer implements KeyListener {
   }
   
   public static String getString(KeyStroke k) {  
-    String s = NamedKeyManager.isNamed(k) ? "" : HotKeyConfigurer.getString(k);
-    return s;
+    return NamedKeyManager.isNamed(k) ? "" : HotKeyConfigurer.getString(k);
   }
 
   /**

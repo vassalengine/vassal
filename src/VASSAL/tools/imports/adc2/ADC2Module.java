@@ -1040,8 +1040,7 @@ public class ADC2Module extends Importer {
     se2 = new SequenceEncoder(PieceSlot.class.getName(), ':');
     se2.append(getUniqueName());
     se.append(se2.getValue());
-    final String path = se.getValue();
-    return path;
+    return se.getValue();
   }    
     
     public Decorator getReplaceWithOtherDecorator() throws IOException {

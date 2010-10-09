@@ -244,7 +244,7 @@ public class ServerConfigurer extends Configurer {
     p.setProperty(JabberClientFactory.JABBER_PWD, new String(jabberPassword.getPassword()));
     String host = jabberHost.getText();
     String port = "5222"; //$NON-NLS-1$
-    int idx = host.indexOf(":"); //$NON-NLS-1$
+    int idx = host.indexOf(':'); //$NON-NLS-1$
     if (idx > 0) {
       port = host.substring(idx + 1);
       host = host.substring(0, idx);

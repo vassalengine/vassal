@@ -110,8 +110,7 @@ public class InternetDiceButton extends DiceButton implements GameComponent, Com
   }
 
   public Command getRestoreCommand() {
-    Command c = new SetSecondaryEmail(dieManager.getServer().getSecondaryEmail());
-    return c;
+    return new SetSecondaryEmail(dieManager.getServer().getSecondaryEmail());
   }
 
   public Command decode(String command) {

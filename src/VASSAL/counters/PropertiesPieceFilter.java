@@ -172,7 +172,7 @@ public class PropertiesPieceFilter {
     public abstract String toBeanShellString();
     
     protected String toBeanShellName() {
-      if (name.indexOf("$") >= 0) {
+      if (name.indexOf('$') >= 0) {
         return "GetProperty("+new FormattedStringExpression(name).toBeanShellString() + ")";
       }
       else {

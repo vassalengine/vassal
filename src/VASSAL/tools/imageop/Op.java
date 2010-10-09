@@ -30,6 +30,8 @@ import VASSAL.tools.image.UnrecognizedImageTypeException;
 import VASSAL.tools.opcache.OpFailedException;
 
 public class Op {
+  protected Op() {}
+
   public static SourceOp load(String name) {
     if (!name.startsWith("/"))
       name = "images/" + name;

@@ -29,6 +29,8 @@ import java.io.IOException;
  * @since 3.1.0
  */
 class PNGDecoder {
+  protected PNGDecoder() {}
+
   // critical chunks
   static final int IHDR = 0x49484452;
   static final int PLTE = 0x504c5445;
@@ -53,7 +55,8 @@ class PNGDecoder {
 
   static final long sig = 0x89504e470d0a1a0aL;
 
-  public static boolean decodeSignature(DataInputStream in) throws IOException {
+  public static boolean decodeSignature(DataInputStream in)
+                                                          throws IOException {
     // 5.2
     return in.readLong() == sig;
   }

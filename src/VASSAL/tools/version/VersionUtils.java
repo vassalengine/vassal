@@ -9,6 +9,7 @@ import VASSAL.tools.io.IOUtils;
 
 
 public class VersionUtils {
+  protected VersionUtils() {}
 
   private static final String baseURL = "http://www.vassalengine.org/util/";
 

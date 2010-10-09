@@ -848,7 +848,7 @@ public class MassPieceLoader {
       case IMAGE_COL:
         return getImageName();
       case SKIP_COL:
-        return new Boolean(isSkip());
+        return Boolean.valueOf(isSkip());
       case COPIES_COL:
         return new Integer(getCopies());
       }

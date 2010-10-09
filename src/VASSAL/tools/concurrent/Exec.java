@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class Exec {
+  protected Exec() {}
 
   public static ExecutorService ex = new ThreadPoolExecutor(
     Runtime.getRuntime().availableProcessors(),

@@ -30,6 +30,8 @@ import java.util.concurrent.Future;
  * @since 3.1.11
  */
 public class EDT {
+  protected EDT() {}
+
   private static final EDTExecutorService INSTANCE = new EDTExecutorService();
 
   public static ExecutorService getInstance() {

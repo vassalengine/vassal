@@ -80,7 +80,7 @@ public class HotkeySpecifier extends JTextField implements KeyListener {
   }
 
   public static KeyStroke getStrokeForString(String s) {
-    int index = s.indexOf(",");
+    int index = s.indexOf(',');
     return KeyStroke.getKeyStroke
       (Integer.parseInt(s.substring(0, index)),
        Integer.parseInt(s.substring(index + 1)));

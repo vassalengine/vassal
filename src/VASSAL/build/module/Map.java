@@ -301,7 +301,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     }
     else if ("edge".equals(key)) { // Backward-compatible //$NON-NLS-1$
       String s = (String) value;
-      int i = s.indexOf(","); //$NON-NLS-1$
+      int i = s.indexOf(','); //$NON-NLS-1$
       if (i > 0) {
         edgeBuffer = new Dimension(Integer.parseInt(s.substring(0, i)), Integer.parseInt(s.substring(i + 1)));
       }

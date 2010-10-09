@@ -137,8 +137,7 @@ public class ListWidget extends Widget
   }
 
   public String[] getAttributeNames() {
-    String s[] = {NAME,WIDTH,HEIGHT,DIVIDER};
-    return s;
+    return new String[] {NAME,WIDTH,HEIGHT,DIVIDER};
   }
 
   public String[] getAttributeDescriptions() {

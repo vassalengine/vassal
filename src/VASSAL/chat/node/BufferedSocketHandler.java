@@ -41,8 +41,7 @@ public class BufferedSocketHandler extends SocketHandler {
   }
 
   protected String readNext() throws IOException {
-    String line = reader.readLine();
-    return line;
+    return reader.readLine();
   }
 
   protected void writeNext(String line) throws IOException {

@@ -384,7 +384,7 @@ public class ImageSaver extends AbstractConfigurable {
         final String suffix; 
         final String s = file.getName();
         if (s.endsWith(".png")) {
-          base = s.substring(0, s.lastIndexOf("."));
+          base = s.substring(0, s.lastIndexOf('.'));
           suffix = ".png";
         }
         else {
