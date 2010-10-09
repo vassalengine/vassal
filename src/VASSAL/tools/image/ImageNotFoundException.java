@@ -22,6 +22,8 @@ package VASSAL.tools.image;
 import java.io.File;
 
 /**
+ * An exception indicating that an image file was not found.
+ *
  * @author Joel Uckelman
  * @since 3.1.0
  */
