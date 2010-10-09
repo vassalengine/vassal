@@ -1,5 +1,6 @@
 package VASSAL.tools.logging;
 
+import java.awt.Font;
 import java.io.File;
 import javax.swing.JTextArea;
 import javax.swing.event.AncestorEvent;
@@ -18,6 +19,7 @@ public class LogPane extends JTextArea {
     setLineWrap(true);
     setWrapStyleWord(true);
     setTabSize(2);
+    setFont(new Font(Font.MONOSPACED, Font.PLAIN, getFont().getSize()));
 
     tailer = new Tailer(file);
 
