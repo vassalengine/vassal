@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman
+ * Copyright (c) 2008-2010 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,6 +20,10 @@ package VASSAL.tools.io;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * An {@link InputStream} which concatenates other <code>InputStreams</code>.
@@ -35,10 +39,21 @@ import java.io.IOException;
  * @see SequenceInputStream
  */
 public class CompositeInputStream extends InputStream {
-  private final InputStream[] streams;
-  private int cur = 0;
-   
-  private InputStream in;  
+
+  protected final LinkedList<InputStream> queue;
+
+  protected InputStream in;  
+
+  /**
+   * Creates a <code>CompositeInputStream</code> from the given sequence
+   * of <code>InputStream</code>s.
+   *
+   * @param streams the <code>InputStream</code>s to be concatenated
+   */
+  public CompositeInputStream(List<InputStream> streams) {
+    queue = new LinkedList<InputStream>(streams);
+    in = queue.poll();
+  }
 
   /**
    * Creates a <code>CompositeInputStream</code> from the given sequence
@@ -47,25 +62,22 @@ public class CompositeInputStream extends InputStream {
    * @param streams the <code>InputStream</code>s to be concatenated
    */  
   public CompositeInputStream(InputStream... streams) {
-    if (streams.length == 0) throw new IllegalArgumentException();
-    this.streams = streams;
-
-    in = streams[cur];
+    this(Arrays.asList(streams));
   }
 
-  private void nextStream() throws IOException {
+  protected void nextStream() throws IOException {
     if (in != null) {
       in.close();
-      in = ++cur < streams.length ? streams[cur] : null;
+      in = queue.poll();
     }
   }
 
   /** {@inheritDoc} */
   @Override 
   public int available() throws IOException {
-    int bytes = 0;
-    for (int i = cur; i < streams.length; ++i) {
-      bytes += Math.max(streams[i].available(), 0);
+    int bytes = in != null ? in.available() : 0;
+    for (InputStream ch : queue) {
+      bytes += Math.max(ch.available(), 0);
     }
     return bytes;
   }
