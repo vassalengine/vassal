@@ -60,6 +60,17 @@ public class ProcessLauncher {
   /**
    * Launches a process.
    *
+   * @param args the command-line arguments
+   *
+   * @throws IOException if the process fails to launch
+   */
+  public ProcessWrapper launch(String... args) throws IOException {
+    return launch(null, System.out, System.err, args);
+  }
+
+  /**
+   * Launches a process.
+   *
    * @param workDir the process' working directory
    * @param stdout the stream where the process' STDOUT is redirected
    * @param stderr the stream where the process' STDERR is redirected
@@ -73,6 +84,28 @@ public class ProcessLauncher {
     OutputStream stderr,
     String... args) throws IOException
   {
+    final InputOutputStreamPump outP = new InputOutputStreamPump(null, stdout);
+    final InputOutputStreamPump errP = new InputOutputStreamPump(null, stderr);
+
+    return launch(null, outP, errP, args);
+  }
+
+  /**
+   * Launches a process.
+   *
+   * @param workDir the process' working directory
+   * @param stdout the stream where the process' STDOUT is redirected
+   * @param stderr the stream where the process' STDERR is redirected
+   * @param args the command-line arguments
+   *
+   * @throws IOException if the process fails to launch
+   */
+  public ProcessWrapper launch(
+    File workDir,
+    InputStreamPump stdoutPump,
+    InputStreamPump stderrPump,
+    String... args) throws IOException
+  {
     logger.info("launching " + StringUtils.join(args, ' '));
 
     final ProcessBuilder pb = new ProcessBuilder(args);
@@ -80,7 +113,7 @@ public class ProcessLauncher {
     
     final Process proc = pb.start();
     final ProcessCallable pcall =
-      new ProcessCallable(proc, stdout, stderr, exec);
+      new ProcessCallable(proc, stdoutPump, stderrPump, exec);
     final Future<Integer> future = exec.submit(pcall);
 
     return new ProcessWrapper(
@@ -89,16 +122,5 @@ public class ProcessLauncher {
       proc.getErrorStream(),
       proc.getOutputStream()
     );
-  }
-
-  /**
-   * Launches a process.
-   *
-   * @param args the command-line arguments
-   *
-   * @throws IOException if the process fails to launch
-   */
-  public ProcessWrapper launch(String... args) throws IOException {
-    return launch(null, System.out, System.err, args);
   }
 }

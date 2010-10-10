@@ -32,12 +32,17 @@ import org.slf4j.LoggerFactory;
  * @author Joel Uckelman
  * @since 3.2.0
  */
-public class StreamPump implements Runnable {
+public class InputOutputStreamPump implements InputStreamPump,
+                                              OutputStreamPump {
   private static final Logger logger =
-    LoggerFactory.getLogger(StreamPump.class);
+    LoggerFactory.getLogger(InputOutputStreamPump.class);
 
-  protected final InputStream in;
-  protected final OutputStream out;
+  protected InputStream in;
+  protected OutputStream out;
+
+  protected volatile boolean running = false;
+
+  public InputOutputStreamPump() {}
 
   /**
    * Creates a <code>StreamPump</code>.
@@ -45,16 +50,39 @@ public class StreamPump implements Runnable {
    * @param in the input stream
    * @param out the output stream
    */
-  public StreamPump(InputStream in, OutputStream out) {
-    if (in == null) throw new IllegalArgumentException("in == null");
-    if (out == null) throw new IllegalArgumentException("out == null");
+  public InputOutputStreamPump(InputStream in, OutputStream out) {
+    this.in = in;
+    this.out = out;
+  }
+
+  /**
+   * Sets the input stream.
+   *
+   * @param in the input stream
+   * @throws UnsupportedOperationException if called after the pump is started
+   */
+  public void setInputStream(InputStream in) {
+    if (running) throw new UnsupportedOperationException();
 
     this.in = in;
+  }
+
+  /**
+   * Sets the output stream.
+   *
+   * @param out the output stream
+   * @throws UnsupportedOperationException if called after the pump is started
+   */
+  public void setOutputStream(OutputStream out) {
+    if (running) throw new UnsupportedOperationException();
+
     this.out = out;
   }
 
   /** {@inheritDoc} */
   public void run() {
+    running = true;
+
     try {
       IOUtils.copy(in, out);
     }

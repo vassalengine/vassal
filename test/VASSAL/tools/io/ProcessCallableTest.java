@@ -52,7 +52,10 @@ public class ProcessCallableTest {
   
     final ExecutorService exec = Executors.newCachedThreadPool();
 
-    final ProcessCallable c = new ProcessCallable(proc, out, err, exec);
+    final InputOutputStreamPump outPump = new InputOutputStreamPump(null, out);
+    final InputOutputStreamPump errPump = new InputOutputStreamPump(null, err);
+
+    final ProcessCallable c = new ProcessCallable(proc, outPump, errPump, exec);
     final Future<Integer> f = exec.submit(c);    
 
     final OutputStream pin = proc.getOutputStream();
@@ -83,7 +86,10 @@ public class ProcessCallableTest {
 
     final ExecutorService exec = Executors.newCachedThreadPool();
 
-    final ProcessCallable c = new ProcessCallable(proc, out, err, exec);
+    final InputOutputStreamPump outPump = new InputOutputStreamPump(null, out);
+    final InputOutputStreamPump errPump = new InputOutputStreamPump(null, err);
+
+    final ProcessCallable c = new ProcessCallable(proc, outPump, errPump, exec);
     final Future<Integer> f = exec.submit(c);
 
     f.cancel(true);

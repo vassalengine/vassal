@@ -43,8 +43,8 @@ class ProcessCallable implements Callable<Integer> {
     LoggerFactory.getLogger(ProcessCallable.class);
 
   protected final Process proc;
-  protected final OutputStream stdout;
-  protected final OutputStream stderr;
+  protected final InputStreamPump stdoutPump;
+  protected final InputStreamPump stderrPump;
   protected final ExecutorService exec;
 
   /**
@@ -57,31 +57,40 @@ class ProcessCallable implements Callable<Integer> {
    */ 
   public ProcessCallable(
     Process proc,
-    OutputStream stdout,
-    OutputStream stderr,
+    InputStreamPump stdoutPump,
+    InputStreamPump stderrPump,
     ExecutorService exec)
   {
     if (proc == null) throw new IllegalArgumentException("proc == null");
-    if (stdout == null) throw new IllegalArgumentException("stdout == null");
-    if (stderr == null) throw new IllegalArgumentException("stderr == null");
+
+    if (stdoutPump == null) {
+      throw new IllegalArgumentException("stdoutPump == null");
+    }
+
+    if (stderrPump == null) {
+      throw new IllegalArgumentException("stderrPump == null");
+    }
+
     if (exec == null) throw new IllegalArgumentException("exec == null");
 
     this.proc = proc;
-    this.stdout = stdout;
-    this.stderr = stderr;
+    this.stdoutPump = stdoutPump;
+    this.stderrPump = stderrPump;
     this.exec = exec;
   }
 
   /**
+   * {@inheritDoc}
+   *
    *  @return the return value of the process
    */  
   public Integer call() {
-  
-    final StreamPump out_pump = new StreamPump(proc.getInputStream(), stdout);
-    final StreamPump err_pump = new StreamPump(proc.getErrorStream(), stderr);
+ 
+    stdoutPump.setInputStream(proc.getInputStream());
+    stderrPump.setInputStream(proc.getErrorStream()); 
 
-    final Future<?> out_f = exec.submit(out_pump); 
-    final Future<?> err_f = exec.submit(err_pump);
+    final Future<?> out_f = exec.submit(stdoutPump); 
+    final Future<?> err_f = exec.submit(stderrPump);
 
     try {
       final int result = proc.waitFor();
