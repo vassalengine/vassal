@@ -23,8 +23,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import VASSAL.tools.concurrent.listener.DummyEventListener;
+import VASSAL.tools.concurrent.listener.EventListener;
 
 /**
  * Pumps an {@link InputStream} to an {@link OutputStream}.
@@ -34,25 +34,51 @@ import org.slf4j.LoggerFactory;
  */
 public class InputOutputStreamPump implements InputStreamPump,
                                               OutputStreamPump {
-  private static final Logger logger =
-    LoggerFactory.getLogger(InputOutputStreamPump.class);
-
   protected InputStream in;
   protected OutputStream out;
 
   protected volatile boolean running = false;
 
-  public InputOutputStreamPump() {}
+  protected final EventListener<IOException> ioexListener;
 
   /**
-   * Creates a <code>StreamPump</code>.
+   * Creates an <code>InputOutputStreamPump</code>.
+   */
+  public InputOutputStreamPump() {
+    this(null, null, new DummyEventListener<IOException>());
+  }
+
+  /**
+   * Creates an <code>InputOutputStreamPump</code>.
+   *
+   * @param ioexListener the exception listener
+   */
+  public InputOutputStreamPump(EventListener<IOException> ioexListener) {
+    this(null, null, ioexListener);
+  }
+
+  /**
+   * Creates an <code>InputOutputStreamPump</code>.
    *
    * @param in the input stream
    * @param out the output stream
    */
   public InputOutputStreamPump(InputStream in, OutputStream out) {
+    this(in, out, new DummyEventListener<IOException>());
+  }
+
+  /**
+   * Creates an <code>InputOutputStreamPump</code>.
+   *
+   * @param in the input stream
+   * @param out the output stream
+   * @param ioexListener the exception listener
+   */
+  public InputOutputStreamPump(InputStream in, OutputStream out,
+                               EventListener<IOException> ioexListener) {
     this.in = in;
     this.out = out;
+    this.ioexListener = ioexListener;
   }
 
   /**
@@ -87,8 +113,8 @@ public class InputOutputStreamPump implements InputStreamPump,
       IOUtils.copy(in, out);
     }
     catch (IOException e) {
-// FIXME: there should be an exception listener
-      logger.error("", e);
+      // Tell someone who cares.
+      ioexListener.receive(this, e);
     }
   }
 }
