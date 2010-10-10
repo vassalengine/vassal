@@ -64,10 +64,10 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.LaunchButton;
 import VASSAL.tools.NamedKeyStroke;
-import VASSAL.tools.ProgressDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.swing.ProgressDialog;
 
 /**
  * This allows the user to capture a snapshot of the entire map into
