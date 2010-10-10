@@ -1,5 +1,5 @@
 /*
- * $Id: ObfuscatingOutputStreamTest.java 7241 2010-09-19 19:51:08Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2010 by Joel Uckelman
  *

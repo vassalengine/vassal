@@ -1,5 +1,5 @@
 /*
- * $Id: ImageIOException.java 6060 2009-10-01 18:39:12Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2008-2009 by Joel Uckelman
  *

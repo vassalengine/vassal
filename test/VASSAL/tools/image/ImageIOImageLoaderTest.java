@@ -1,5 +1,5 @@
 /*
- * $Id: FallbackImageTypeConverterTest.java 7310 2010-10-08 21:40:54Z uckelman $
+ * $Id$
  *
  * Copyright (c) 2010 by Joel Uckelman
  *
