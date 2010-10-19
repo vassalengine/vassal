@@ -22,6 +22,9 @@ package VASSAL.tools.io;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import org.junit.Ignore;
+
+@Ignore
 public class ProcessCallableTestEchoer {
   public static void main(String[] args) throws Exception {
     final BufferedReader r =

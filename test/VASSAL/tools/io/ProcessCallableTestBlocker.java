@@ -19,6 +19,9 @@
 
 package VASSAL.tools.io;
 
+import org.junit.Ignore;
+
+@Ignore
 public class ProcessCallableTestBlocker {
   public static void main(String[] args) throws Exception {
     Thread.currentThread().wait();

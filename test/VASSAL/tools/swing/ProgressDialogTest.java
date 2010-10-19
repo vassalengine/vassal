@@ -26,6 +26,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import org.junit.Ignore;
+
+@Ignore
 public class ProgressDialogTest {
   public static void main(String[] args) {
     SwingUtilities.invokeLater(new Runnable() {

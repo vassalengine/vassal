@@ -21,6 +21,8 @@ package VASSAL.tools.image;
 
 import java.awt.image.BufferedImage;
 
+import org.junit.Ignore;
+
 import static org.junit.Assert.*;
 
 /**
@@ -28,7 +30,8 @@ import static org.junit.Assert.*;
  *
  * @since 3.2.0
  * @author Joel Uckelman
- */ 
+ */
+@Ignore
 public class AssertImage {
   public static void assertImageEquals(BufferedImage expected,
                                        BufferedImage actual) {
