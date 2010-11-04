@@ -102,12 +102,12 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <version>0.9.24</version>
+      <version>0.9.26</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>0.9.24</version>
+      <version>0.9.26</version>
     </dependency>
 
 		<!-- test -->
