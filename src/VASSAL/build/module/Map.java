@@ -487,6 +487,8 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
     launchButton.setVisible(false);
     if (e != null) {
       super.build(e);
+      getBoardPicker();
+      getStackMetrics();
     }
     else {
       getBoardPicker();
