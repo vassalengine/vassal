@@ -135,12 +135,8 @@ public class CounterGlobalKeyCommand extends Decorator
   }
 
   public Command myKeyEvent(KeyStroke stroke) {
-    Command c = null;
     myGetKeyCommands();
-    if (myCommand.matches(stroke)) {
-      apply();
-    }
-    return c;
+    return myCommand.matches(stroke) ? apply() : null;
   }
 
   public void mySetState(String newState) {
@@ -178,7 +174,7 @@ public class CounterGlobalKeyCommand extends Decorator
     return HelpFile.getReferenceManualPage("GlobalKeyCommand.htm");
   }
 
-  public void apply() {
+  public Command apply() {
     PieceFilter filter = propertiesFilter.getFilter(Decorator.getOutermost(this));
     Command c = new NullCommand();
     if (restrictRange) {
@@ -199,7 +195,7 @@ public class CounterGlobalKeyCommand extends Decorator
       c = c.append(globalCommand.apply(m, filter));
     }
 
-    GameModule.getGameModule().sendAndLog(c);
+    return c;
   }
   
   public PieceI18nData getI18nData() {
