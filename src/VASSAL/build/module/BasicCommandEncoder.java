@@ -72,6 +72,7 @@ import VASSAL.counters.Translate;
 import VASSAL.counters.TriggerAction;
 import VASSAL.counters.UsePrototype;
 import VASSAL.tools.SequenceEncoder;
+import VASSAL.tools.logging.Logger;
 
 /**
  * A {@link CommandEncoder} that handles the basic commands: {@link AddPiece},
@@ -345,7 +346,9 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
     if (innerType != null) {
       GamePiece inner = createPiece(innerType);
       if (inner == null) {
-        System.err.println("Could not create piece with type "+innerType); //$NON-NLS-1$
+        GameModule.getGameModule().getChatter().send("Invalid piece type - see Error Log for details"); //$NON-NLS-1$
+        Logger.log("Could not create piece with type "+innerType);
+        inner = new BasicPiece();
       }
       Decorator d = createDecorator(type, inner);
       return d != null ? d : inner;
