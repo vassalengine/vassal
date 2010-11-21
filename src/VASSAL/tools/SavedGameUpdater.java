@@ -28,6 +28,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.GameState;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.command.Command;
+import VASSAL.counters.Decorator;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.PieceCloner;
 import VASSAL.counters.Replace;
@@ -81,19 +82,24 @@ public class SavedGameUpdater {
                 path[path.length - 1] instanceof PieceSlot) {
               final PieceSlot slot = (PieceSlot) path[path.length - 1];
               if (!slot.getPiece().getType().equals(p.getType())) {
-                ReplaceTrait r = new ReplaceTrait(p,slot.getPiece());
-                r.replacePiece();
+                if(!(p instanceof Decorator)) {
+                  GameModule.getGameModule().getChatter().show("Unable to replace " + p.getName() + ": Basic piece only");
+                }
+                else {
+                  ReplaceTrait r = new ReplaceTrait(p,slot.getPiece());
+                  r.replacePiece();
+                }
               }
             }
           }
           // FIXME: review error message
           catch (ComponentPathBuilder.PathFormatException ex) {
-            System.err.println("Unable to replace " + p.getName() + ": " + ex.getMessage());
+            GameModule.getGameModule().getChatter().show("Unable to replace " + p.getName() + ": " + ex.getMessage());
           }
         }
         else {
-          System.err.println("Unable to find slot for " + p.getName());
-          System.out.println(p.getType());
+          GameModule.getGameModule().getChatter().show("Unable to find slot for " + p.getName());
+          GameModule.getGameModule().getChatter().show(p.getType());
         }
       }
     }
