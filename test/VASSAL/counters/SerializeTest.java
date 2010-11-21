@@ -18,10 +18,10 @@ public abstract class SerializeTest<T extends Decorator> extends MockModuleTest 
 
 		try {
 			constructor = clazz.getConstructor(String.class, GamePiece.class);
-			deserialized = (T)constructor.newInstance(typeString, null);
+			deserialized = constructor.newInstance(typeString, null);
 		} catch (NoSuchMethodException e) {
 			constructor = clazz.getConstructor(GamePiece.class, String.class);
-			deserialized = (T)constructor.newInstance(null, typeString);
+			deserialized = constructor.newInstance(null, typeString);
 		}
 		assertSame(trait, deserialized);
 	}
