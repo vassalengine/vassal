@@ -61,6 +61,7 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.Op;
+import VASSAL.tools.logging.Logger;
 
 /**
  * ...
@@ -608,7 +609,11 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
 
     private void setResults(int[] results) {
       icons = new Icon[results.length];
+      if (results.length > dice.size()) {
+          Logger.log("Special Die Button (" + getConfigureName() +"): more results (" + results.length +") requested than dice (" + dice.size() +")");
+      }
       for (int i = 0; i < results.length; ++i) {
+        if (i >= dice.size()) break;
         final String imageName = dice.get(i).getImageName(results[i]);
 
         if (imageName.length() > 0) {
