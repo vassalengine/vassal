@@ -170,4 +170,16 @@ public class SequenceEncoderTest {
     // Should be nothing left - should throw a NoSuchElementException
     sd.nextToken();
   }
+  
+  @Test
+  public void testSingleQuoteBug2481() {
+    // NB: This input can only be produced by hand-editing,
+    // not by SequenceEncoder.
+    final String bad = "stuff,'";
+
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(bad, ',');
+
+    assertEquals("stuff", sd.nextToken());
+    assertEquals("'", sd.nextToken());
+  }
 }
