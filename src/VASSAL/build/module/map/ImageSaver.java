@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2000-2008 by Rodney Kinney, Joel Uckelman
+ * Copyright (c) 2000-2010 by Rodney Kinney, Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -68,6 +68,8 @@ import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.swing.ProgressDialog;
+
+// FIXME: Replace this in 3.2 with tiling code.
 
 /**
  * This allows the user to capture a snapshot of the entire map into
@@ -291,7 +293,25 @@ public class ImageSaver extends AbstractConfigurable {
 
     private void writeImage(final File f, BufferedImage img, Rectangle r)
                                                           throws IOException {
+
       files.add(f);
+
+      // make sure that we can write the file before proceeding
+      if (f.exists()) {
+        if (!f.canWrite()) {
+          throw new IOException(
+            "Cannot write to the file \"" + f.getAbsolutePath() + "\""
+          );
+        }
+      }
+      else {
+        final File p = f.getParentFile();
+        if (p.isDirectory() && !p.canWrite()) {
+          throw new IOException(
+            "Cannot write to the directory \"" + p.getAbsolutePath() + "\""
+          );
+        }
+      }
 
       // update the dialog on the EDT
       SwingUtilities.invokeLater(new Runnable() {
@@ -343,7 +363,12 @@ public class ImageSaver extends AbstractConfigurable {
       
       ImageOutputStream os = null;
       try {
-        os = ImageIO.createImageOutputStream(f); 
+        os = ImageIO.createImageOutputStream(f);
+
+        if (os == null) {
+          throw new IOException("Failed to write file " + f.getAbsolutePath());
+        }
+
         iw.setOutput(os);
         iw.write(img);
         os.close();
