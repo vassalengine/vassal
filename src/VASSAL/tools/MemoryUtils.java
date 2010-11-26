@@ -51,8 +51,8 @@ public class MemoryUtils {
     if (!os.startsWith("windows") ||
           os.equals("windows 98") || os.equals("windows me")) {
       // Windows 98, ME support a maximum of 2GB RAM, so are unaffected
-      // by the bug in which causes incorrect reporting over 2GB. Hence,
-      // we can handle them in the normal way.
+      // by the bug which causes incorrect reporting over 2GB. Hence, we
+      // can handle them all the easy way.
 
       final Object o = ManagementFactory.getOperatingSystemMXBean();
 
@@ -75,17 +75,19 @@ public class MemoryUtils {
 
       // The Windows Kernel32 call GlobalMemoryStatusEx() fills a
       // MEMORYSTATUSEX structure with various facts about memory usage.
-      final Kernel32.MEMORYSTATUSEX mstat = new Kernel32.MEMORYSTATUSEX();
-      if (Kernel32.INSTANCE.GlobalMemoryStatusEx(mstat)) {
+      final Windows.Kernel32.MEMORYSTATUSEX mstat =
+        new Windows.Kernel32.MEMORYSTATUSEX();
+
+      if (Windows.Kernel32.INSTANCE.GlobalMemoryStatusEx(mstat)) {
         return mstat.ullTotalPhys;
       }
       else {
         // GlobalMemoryStatusEx failed
         final PointerByReference lpBuffer = new PointerByReference();
         final int errno = Native.getLastError();
-        final int msglen = Kernel32.INSTANCE.FormatMessage(
-          Kernel32.FORMAT_MESSAGE_ALLOCATE_BUFFER |
-            Kernel32.FORMAT_MESSAGE_FROM_SYSTEM,
+        final int msglen = Windows.Kernel32.INSTANCE.FormatMessage(
+          Windows.Kernel32.FORMAT_MESSAGE_ALLOCATE_BUFFER |
+          Windows.Kernel32.FORMAT_MESSAGE_FROM_SYSTEM,
           Pointer.NULL,
           errno,
           0,
@@ -101,67 +103,73 @@ public class MemoryUtils {
       } 
     }
   }
-
+ 
   /**
-   * The wrapper for Kernel32.dll.
+   * The wrapper for Kernel32.dll. This is needed so that
+   * {@link Kernel32Wrapper.Kernel32} can be public without exposing it
+   * outside of {@link MemoryUtils}.
    */
-  private static interface Kernel32 extends StdCallLibrary {
-    /**
-     * A structure for holding information about physical and virtual memory.
-     *
-     * See {@link
-     * http://msdn.microsoft.com/en-us/library/aa366770(VS.85).aspx} for
-     * further details about this structure.
-     */
-    public static final class MEMORYSTATUSEX extends Structure {
-      // Note: A Windows DWORDLONG is 64 bits, so we use a Java long here
-      public int dwLength = size();
-      public int dwMemoryLoad;
-      public long ullTotalPhys;
-      public long ullAvailPhys;
-      public long ullTotalPageFile;
-      public long ullAvailPageFile;
-      public long ullTotalVirtual;
-      public long ullAvailVirtual;
-      public long ullAvailExtendedVirtual;
-    }
-
-    /**
-     * Gets information about physical and virtual memory.
-     *
-     * See {@link http://msdn.microsoft.com/en-us/library/aa366589(VS.85).aspx}
-     * for further details about this function.
-     *
-     * @param p the structure where values are returned
-     * @return <code>true</code> on success
-     */
-    boolean GlobalMemoryStatusEx(MEMORYSTATUSEX p);
-      
-    /**
-     * Translates system error codes to error messages.
-     *
-     * See {@link http://msdn.microsoft.com/en-us/library/ms679351(VS.85).aspx}
-     * for further details about this function.
-     */
-    int FormatMessage(
-      int dwFlags, Pointer lpSource, int dwMessageId, int dwLanguageId,
-      PointerByReference lpBuffer, int nSize, Pointer va_list);
-
-    public static final int FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x00000100;
-    public static final int FORMAT_MESSAGE_FROM_SYSTEM     = 0x00001000;
-
-    static final Map<Object,Object> OPTIONS = new HashMap<Object,Object>() {
-      private static final long serialVersionUID = 1L;
-  
-      {
-        // tell Kernel32 to use Unicode
-        put(OPTION_TYPE_MAPPER,     W32APITypeMapper.UNICODE);
-        put(OPTION_FUNCTION_MAPPER, W32APIFunctionMapper.UNICODE);
+  private static class Windows {
+    public static interface Kernel32 extends StdCallLibrary {
+      /**
+       * A structure for holding information about physical and virtual memory.
+       *
+       * See {@link
+       * http://msdn.microsoft.com/en-us/library/aa366770(VS.85).aspx} for
+       * further details about this structure.
+       */
+      public static final class MEMORYSTATUSEX extends Structure {
+        // Note: A Windows DWORDLONG is 64 bits, so we use a Java long here
+        public int dwLength = size();
+        public int dwMemoryLoad;
+        public long ullTotalPhys;
+        public long ullAvailPhys;
+        public long ullTotalPageFile;
+        public long ullAvailPageFile;
+        public long ullTotalVirtual;
+        public long ullAvailVirtual;
+        public long ullAvailExtendedVirtual;
       }
-    };
 
-    public static final Kernel32 INSTANCE =
-      (Kernel32) Native.loadLibrary("kernel32", Kernel32.class, OPTIONS);
+      /**
+       * Gets information about physical and virtual memory.
+       *
+       * See
+       * {@link http://msdn.microsoft.com/en-us/library/aa366589(VS.85).aspx}
+       * for further details about this function.
+       *
+       * @param p the structure where values are returned
+       * @return <code>true</code> on success
+       */
+      boolean GlobalMemoryStatusEx(MEMORYSTATUSEX p);
+      
+      /**
+       * Translates system error codes to error messages.
+       *
+       * See
+       * {@link http://msdn.microsoft.com/en-us/library/ms679351(VS.85).aspx}
+       * for further details about this function.
+       */
+      int FormatMessage(
+        int dwFlags, Pointer lpSource, int dwMessageId, int dwLanguageId,
+        PointerByReference lpBuffer, int nSize, Pointer va_list);
+
+      public static final int FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x00000100;
+      public static final int FORMAT_MESSAGE_FROM_SYSTEM     = 0x00001000;
+
+      static final Map<Object,Object> OPTIONS = new HashMap<Object,Object>() {
+        private static final long serialVersionUID = 1L;
+    
+        {
+          // tell Kernel32 to use Unicode
+          put(OPTION_TYPE_MAPPER,     W32APITypeMapper.UNICODE);
+          put(OPTION_FUNCTION_MAPPER, W32APIFunctionMapper.UNICODE);
+        }
+      };
+
+      public static final Kernel32 INSTANCE =
+        (Kernel32) Native.loadLibrary("kernel32", Kernel32.class, OPTIONS);
+    }
   }
 
   public static void main(String[] args) {
