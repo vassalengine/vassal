@@ -1,8 +1,10 @@
 # 
 #  $Id$
 # 
-#  Copyright (c) 2009 by Joel Uckelman
-#  Adapted from http://nsis.sourceforge.net/Get_full_Java_version by pyropunk
+#  Copyright (c) 2009-2010 by Joel Uckelman
+#
+#  GetJREPath adapted from
+#  http://nsis.sourceforge.net/Java_Launcher_with_automatic_JRE_installation
 # 
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Library General Public
@@ -18,41 +20,10 @@
 #  at http://www.opensource.org.
 #
 
-# GetJavaVersionParts
-#
-# Find installed Java and return major, minor, micro and build/update version
-#
-# For some reason v1.2.1_004 did not give a build version, but it's the only
-# one of its kind.
-#
-# There are 3 ways to get the build version:
-#   1) from the UpdateVersion key
-#   2) or from the MicroVersion key
-#   3) or from the JavaHome key
-# 
-#
-# Usage example:
-#
-#   ${GetJavaVersionParts} $0 $1 $2 $3
-#   ; $0 major version
-#   ; $1 minor version
-#   ; $2 micro version
-#   ; $3 build/update version
-#   StrCmp $0 "" JavaNotInstalled
-#   StrCmp $3 "" nobuild
-#   DetailPrint "$0.$1.$2_$3"
-#   Goto fin
-# nobuild:
-#   DetailPrint "$0.$1.$2"
-#   Goto fin
-# JavaNotInstalled:
-#   DetailPrint "Java Not Installed"
-# fin:
-#
 #
 # GetJavaVersion
 #
-# Find installed Java and return version as x.y.z_b string.
+# Find installed Java and return version as x.y.z_u string.
 #
 # Usage example:
 #
@@ -70,6 +41,7 @@
 !define GETJAVAVERSION_INCLUDED
 
 !include Util.nsh
+!include WordFunc.nsh
 
 !verbose push
 !verbose 3
@@ -87,135 +59,6 @@
   !define _GETJAVAVERSION_VERBOSE ${_VERBOSE}
   !verbose pop
 !macroend
-
-; the paths of JRE and JDK keys in the registry
-!define JRE_ROOT "SOFTWARE\JavaSoft\Java Runtime Environment"
-!define JDK_ROOT "SOFTWARE\JavaSoft\Java Development Kit"
-
-!macro GetJavaVersionPartsCall _RESULT1 _RESULT2 _RESULT3 _RESULT4
-  !verbose push
-  !verbose ${_GETJAVAVERSION_VERBOSE}
-  ${CallArtificialFunction} GetJavaVersionParts_
-  Pop ${_RESULT1}
-  Pop ${_RESULT2}
-  Pop ${_RESULT3}
-  Pop ${_RESULT4}
-  !verbose pop
-!macroend
-
-!define GetJavaVersionParts "!insertmacro GetJavaVersionPartsCall"
-!define un.GetJavaVersionParts "!insertmacro GetJavaVersionPartsCall"
-
-!macro GetJavaVersionParts
-!macroend
-
-!macro un.GetJavaVersionParts
-!macroend
-
-
-!macro GetJavaVersionParts_
-  push $R0
-  push $R1
-  push $2
-  push $0
-  push $3
-  push $4
- 
-  ReadRegStr $2 HKLM "${JRE_ROOT}" "CurrentVersion"
-  StrCmp $2 "" DetectTry2
-  ReadRegStr $3 HKLM "${JRE_ROOT}\$2" "MicroVersion"
-  StrCmp $3 "" DetectTry2
-  ReadRegStr $4 HKLM "${JRE_ROOT}\$2" "UpdateVersion"
-  StrCmp $4 "" 0 GotFromUpdate
-  ReadRegStr $4 HKLM "${JRE_ROOT}\$2" "JavaHome"
-  Goto GotJRE
-DetectTry2:
-  ReadRegStr $2 HKLM "${JDK_ROOT}" "CurrentVersion"
-  StrCmp $2 "" NoFound
-  ReadRegStr $3 HKLM "${JDK_ROOT}\$2" "MicroVersion"
-  StrCmp $3 "" NoFound
-  ReadRegStr $4 HKLM "${JDK_ROOT}\$2" "UpdateVersion"
-  StrCmp $4 "" 0 GotFromUpdate
-  ReadRegStr $4 HKLM "${JDK_ROOT}\$2" "JavaHome"
-GotJRE:
-  ; calc build version
-  strlen $0 $3
-  intcmp $0 1 0 0 GetFromMicro
-  ; get it from the path
-GetFromPath:
-  strlen $R0 $4
-  intop $R0 $R0 - 1
-  StrCpy $0 ""
-loopP:
-  StrCpy $R1 $4 1 $R0
-  StrCmp $R1 "" DotFoundP
-  StrCmp $R1 "_" UScoreFound
-  StrCmp $R1 "." DotFoundP
-  StrCpy $0 "$R1$0"
-  Goto GoLoopingP
-DotFoundP:
-  push ""
-  Exch 6
-  goto CalcMicro
-UScoreFound:
-  push $0
-  Exch 6
-  goto CalcMicro
-GoLoopingP:
-  intcmp $R0 0 DotFoundP DotFoundP
-  IntOp $R0 $R0 - 1
-  Goto loopP
-GetFromMicro:
-  strcpy $4 $3
-  goto GetFromPath
-GotFromUpdate:
-  push $4
-  Exch 6
- 
-CalcMicro:
-  Push $3 ; micro
-  Exch 6
-  ; break version into major and minor
-  StrCpy $R0 0
-  StrCpy $0 ""
-loop:
-  StrCpy $R1 $2 1 $R0
-  StrCmp $R1 "" done
-  StrCmp $R1 "." DotFound
-  StrCpy $0 "$0$R1"
-  Goto GoLooping
-DotFound:
-  Push $0 ; major
-  Exch 5
-  StrCpy $0 ""
-GoLooping:
-  IntOp $R0 $R0 + 1
-  Goto loop
- 
-done:
-  Push $0 ; minor
-  Exch 7
-  ; restore register values
-  pop $0
-  pop $2
-  pop $R1
-  pop $R0
-  pop $3
-  pop $4
-  return
-NoFound:
-  pop $4
-  pop $3
-  pop $0
-  pop $2
-  pop $R1
-  pop $R0
-  push ""
-  push ""
-  push ""
-  push ""
-!macroend
-
 
 !macro GetJavaVersionCall _RESULT
   !verbose push
@@ -237,34 +80,111 @@ NoFound:
 !macro GetJavaVersion_
   !verbose push
   !verbose ${_GETJAVAVERSION_VERBOSE}
-  
+
   ; save registers
   Push $0
   Push $1
-  Push $2
-  Push $3
   Push $R0
 
-  ${GetJavaVersionParts} $0 $1 $2 $3
-  StrCmp $0 "" notinstalled
-  StrCmp $3 "" nobuild
-  StrCpy $R0 "$0.$1.$2_$3"
-  Goto fin
-nobuild:
-  StrCpy $R0 "$0.$1.$2"
-  Goto fin
-notinstalled:
+  ${GetJREPath} $0
+  IfErrors NotFound 
+
+  ; Ask java what version it is
+  nsExec::ExecToStack '"$0" -fullversion'
+  Pop $0  ; exit code
+  Pop $1  ; output
+ 
+  ; Output from java looks like 'java full version "\d+.\d+.\d+_\d+-b\d+"'
+  ; We want everything up to the build number
+  ${WordFind2X} $1 'java full version "' '-' "E+1" $R0
+  IfErrors NotFound Found
+
+NotFound:
   StrCpy $R0 ""
-fin:
+
+Found:
   Push $R0
-  Exch 5
-  
+  Exch 3
+
   ; restore registers
-  Pop $0
   Pop $R0
-  Pop $3
-  Pop $2
   Pop $1
+  Pop $0
+
+  !verbose pop
+!macroend
+
+#
+# GetJREPath
+#
+# Find the path to java.exe.
+#
+ 
+!macro GetJREPathCall _RESULT
+  !verbose push
+  !verbose ${_GETJAVAVERSION_VERBOSE}
+  ${CallArtificialFunction} GetJREPath_
+  Pop ${_RESULT}
+  !verbose pop
+!macroend
+
+!define GetJREPath "!insertmacro GetJREPathCall"
+!define un.GetJREPath "!insertmacro GetJREPathCall"
+
+!macro GetJREPath
+!macroend
+
+!macro un.GetJREPath
+!macroend
+
+; the paths of JRE and JDK keys in the registry
+!define JRE_ROOT "SOFTWARE\JavaSoft\Java Runtime Environment"
+!define JDK_ROOT "SOFTWARE\JavaSoft\Java Development Kit"
+
+!define JAVA_EXE "java.exe"
+
+!macro GetJREPath_
+  !verbose push
+  !verbose ${_GETJAVAVERSION_VERBOSE}
+
+  ; save registers
+  Push $R0
+  Push $R1 
+
+  ; check JavaHome
+  ClearErrors
+  ReadEnvStr $R0 "JAVA_HOME"
+  IfErrors CheckRegistryJRE
+  StrCpy $R0 "$R0\bin\${JAVA_EXE}"
+  IfFileExists $R0 JREFound CheckRegistryJRE
+
+CheckRegistryJRE:
+  ClearErrors
+  ReadRegStr $R1 HKLM "${JRE_ROOT}" "CurrentVersion"
+  ReadRegStr $R0 HKLM "${JRE_ROOT}\$R1" "JavaHome"
+  IfErrors CheckRegistryJDK
+  StrCpy $R0 "$R0\bin\${JAVA_EXE}"
+  IfFileExists $R0 JREFound CheckRegistryJDK 
+
+CheckRegistryJDK:
+  ClearErrors
+  ReadRegStr $R1 HKLM "${JDK_ROOT}" "CurrentVersion"
+  ReadRegStr $R0 HKLM "${JDK_ROOT}\$R1" "JavaHome"
+  IfErrors JRENotFound
+  StrCpy $R0 "$R0\bin\${JAVA_EXE}"
+  IfFileExists $R0 JREFound JRENotFound
+
+JRENotFound:
+  StrCpy $R0 ""    
+  SetErrors
+
+JREFound:
+  Push $R0
+  Exch 2
+
+  ; restore registers
+  Pop $R1
+  Pop $R0
 
   !verbose pop
 !macroend
