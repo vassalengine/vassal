@@ -110,7 +110,9 @@ public class Embellishment extends Decorator implements TranslatablePiece {
   private String rndText = "";
   // end random layers
 
-  protected int value = -1; // Index of the image to draw. Negative if inactive
+  // Index of the image to draw. Negative if inactive. 0 is not a valid value.
+  protected int value = -1;
+
   protected String activationStatus = "";
   protected int nValues;
   protected int xOff, yOff;
@@ -345,7 +347,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
     checkPropertyLevel(); // Name Change?
     String name = null;
 
-    final String cname = 0 < value && value < commonName.length ?
+    final String cname = 0 < value && value - 1 < commonName.length ?
                          getCommonName(localized, value - 1) : null;
 
     if (cname != null && cname.length() > 0) {
