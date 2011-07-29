@@ -24,7 +24,9 @@ import java.io.Serializable;
 /**
  * The interface for objects passed by {@link CommandClient} to
  * {@link CommandServer}.
+ * @deprecated Use {@link IPCMessage} instead.
  */
+@Deprecated
 public interface Command extends Serializable {
   /**
    * Execute the command.

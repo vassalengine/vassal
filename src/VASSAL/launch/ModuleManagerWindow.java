@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
@@ -400,7 +401,13 @@ public class ModuleManagerWindow extends JFrame {
       new PositionOption(PositionOption.key + "ModuleManager", this);
     Prefs.getGlobalPrefs().addOption(option);
   }
-  
+ 
+  public void setWaitCursor(boolean wait) {
+    setCursor(Cursor.getPredefinedCursor(
+      wait ? Cursor.WAIT_CURSOR : Cursor.DEFAULT_CURSOR
+    ));
+  }
+ 
   protected void setDividerLocation(int i) {
     final int loc = i;
     final Runnable r = new Runnable() {

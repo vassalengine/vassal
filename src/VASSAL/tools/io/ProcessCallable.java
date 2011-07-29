@@ -105,7 +105,8 @@ class ProcessCallable implements Callable<Integer> {
       return result;
     }
     catch (InterruptedException e) {
-      logger.error("", e);
+      // We don't log this because it's not an error, it just
+      // means that the process is being cancelled.
 
       // cancel the futures
       out_f.cancel(true);

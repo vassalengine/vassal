@@ -35,6 +35,7 @@ import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.svg.SVGImageUtils;
 import VASSAL.tools.image.svg.SVGRenderer;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
@@ -114,6 +115,14 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
       InputStream in = null;
       try {
         in = archive.getInputStream(name);
+        
+        final Dimension d = SVGImageUtils.getImageSize(name, in);
+        in.close();
+        return d;
+      }
+      catch (ImageIOException e) {
+        // Don't wrap, just rethrow.
+        throw e;
       }
       catch (FileNotFoundException e) {
         throw new ImageNotFoundException(name, e);
@@ -121,8 +130,9 @@ public class SourceOpSVGImpl extends AbstractTiledOpImpl
       catch (IOException e) {
         throw new ImageIOException(name, e);
       } 
-
-      return SVGImageUtils.getImageSize(name, in);
+      finally {
+        IOUtils.closeQuietly(in);
+      }
     }
     catch (IOException e) {
       if (!Op.handleException(e)) ErrorDialog.bug(e);

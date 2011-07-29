@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008 by Joel Uckelman 
+ * Copyright (c) 2008-2010 by Joel Uckelman 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -64,7 +64,7 @@ public class LaunchRequest implements Serializable {
   public File extension;
   public File importFile;
 
-  public boolean standalone;
+  public boolean standalone = false;
 
   public boolean builtInModule;
   public List<String> autoext;
@@ -168,6 +168,7 @@ public class LaunchRequest implements Serializable {
 "  -l, --load          Load a module and saved game or log\n" +
 "  -m, --manage        Use the module manager\n" +
 "  -n, --new           Create a new module\n" +
+"  -s, --standalone    Run in standalone mode\n" +
 "  --auto-extensions   TODO\n" +
 "  --edit-extension    Edit a module extension\n" +
 "  --new-extension     Create a new module extension\n" +
@@ -197,13 +198,14 @@ public class LaunchRequest implements Serializable {
     final int TRANSLATE = 7;
 
     final LongOpt[] longOpts = new LongOpt[]{
-      new LongOpt("auto",    LongOpt.NO_ARGUMENT,       null, 'a'),
-      new LongOpt("edit",    LongOpt.NO_ARGUMENT,       null, 'e'),
-      new LongOpt("help",    LongOpt.NO_ARGUMENT,       null, 'h'),
-      new LongOpt("import",  LongOpt.NO_ARGUMENT,       null, 'i'),
-      new LongOpt("load",    LongOpt.NO_ARGUMENT,       null, 'l'),
-      new LongOpt("manage",  LongOpt.NO_ARGUMENT,       null, 'm'),
-      new LongOpt("new",     LongOpt.NO_ARGUMENT,       null, 'n'),
+      new LongOpt("auto",       LongOpt.NO_ARGUMENT, null, 'a'),
+      new LongOpt("edit",       LongOpt.NO_ARGUMENT, null, 'e'),
+      new LongOpt("help",       LongOpt.NO_ARGUMENT, null, 'h'),
+      new LongOpt("import",     LongOpt.NO_ARGUMENT, null, 'i'),
+      new LongOpt("load",       LongOpt.NO_ARGUMENT, null, 'l'),
+      new LongOpt("manage",     LongOpt.NO_ARGUMENT, null, 'm'),
+      new LongOpt("new",        LongOpt.NO_ARGUMENT, null, 'n'),
+      new LongOpt("standalone", LongOpt.NO_ARGUMENT, null, 's'),
       new LongOpt("auto-extensions", LongOpt.REQUIRED_ARGUMENT, null, AUTO_EXT),
       new LongOpt("edit-extension", LongOpt.NO_ARGUMENT, null, EDIT_EXT),
       new LongOpt("new-extension", LongOpt.NO_ARGUMENT, null, NEW_EXT),
@@ -270,6 +272,9 @@ public class LaunchRequest implements Serializable {
         break;
       case 'n':
         setMode(lr, Mode.NEW);
+        break;
+      case 's':
+        lr.standalone = true;
         break;
       case ':':
         die("LaunchRequest.missing_argument", args[g.getOptind()-1]); 

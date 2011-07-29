@@ -19,9 +19,10 @@
 
 package VASSAL.launch;
 
-import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Window;
-import java.io.DataInputStream;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.EOFException;
 import java.io.File;
 import java.io.InputStream;
@@ -32,8 +33,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.HashMap;
@@ -42,11 +43,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import java.util.zip.ZipFile;
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 
@@ -65,14 +70,27 @@ import VASSAL.build.module.metadata.ModuleMetaData;
 import VASSAL.configure.DirectoryConfigurer;
 import VASSAL.preferences.Prefs;
 import VASSAL.preferences.ReadOnlyPrefs;
+import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
-import VASSAL.tools.MemoryUtils;
 import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.concurrent.FutureUtils;
+import VASSAL.tools.concurrent.SettableFuture;
+import VASSAL.tools.concurrent.SimpleFuture;
+import VASSAL.tools.concurrent.listener.EventListener;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
+import VASSAL.tools.io.FileArchive;
+import VASSAL.tools.io.FileStore;
+import VASSAL.tools.io.InputOutputStreamPump;
+import VASSAL.tools.io.InputStreamPump;
 import VASSAL.tools.io.IOUtils;
+import VASSAL.tools.io.ProcessLauncher;
+import VASSAL.tools.io.ProcessWrapper;
+import VASSAL.tools.ipc.IPCMessage;
+import VASSAL.tools.ipc.IPCMessenger;
+import VASSAL.tools.ipc.SimpleIPCMessage;
+import VASSAL.tools.lang.MemoryUtils;
 
 /**
  * 
@@ -112,8 +130,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   protected static final Map<File,Integer> using =
     Collections.synchronizedMap(new HashMap<File,Integer>());
 
-  protected static final List<CommandClient> children =
-    Collections.synchronizedList(new ArrayList<CommandClient>());
+/*
+  protected static final List<ObjectOutputStream> children =
+    Collections.synchronizedList(new ArrayList<ObjectOutputStream>());
+*/
+
+  protected static final List<IPCMessenger> children =
+    Collections.synchronizedList(new ArrayList<IPCMessenger>()); 
 
   protected static final AtomicInteger nextId = new AtomicInteger(1);
   
@@ -150,27 +173,35 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   public static boolean shutDown() {
     ModuleManagerWindow.getInstance().toBack();
 
+    final List<Future<IPCMessage>> futures =
+      new ArrayList<Future<IPCMessage>>();
+
     // must synchronize when iterating over a Collections.synchronizedList()
     synchronized (children) {
-      for (CommandClient child : children) {
+      for (IPCMessenger ipc : children) {
         try {
-          if ("NOK".equals(child.request(new Launcher.CloseRequest()))) {
-            return false;
-          }
-        }
-        catch (EOFException ignore) {
-          // Normal. Child closed.
-        }
-        catch (SocketException ignore) {
-          // Normal. Child closed.
+          futures.add(ipc.send(new Launcher.CloseRequest()));
         }
         catch (IOException e) {
-          ErrorDialog.showDetails(
-            e,
-            ThrowableUtils.getStackTrace(e),
-            "Error.socket_error"
-          );
+// FIXME
+e.printStackTrace(); 
         }
+      }
+    }
+
+// FIXME: not working!
+    for (Future<IPCMessage> f : futures) {
+      try {
+        if (f.get() instanceof Launcher.CloseReject) {
+System.out.println("rejected!");
+          return false;
+        }
+      }
+      catch (ExecutionException e) {
+e.printStackTrace(); 
+      }
+      catch (InterruptedException e) {
+e.printStackTrace(); 
       }
     }
 
@@ -179,14 +210,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
   /** {@inheritDoc} */  
   public void actionPerformed(ActionEvent e) {
-    setWaitCursor(true);
+    ModuleManagerWindow.getInstance().setWaitCursor(true);
     getLaunchTask().execute();
-  }
-
-  protected void setWaitCursor(boolean wait) {
-    window.setCursor(Cursor.getPredefinedCursor(
-      wait ? Cursor.WAIT_CURSOR : Cursor.DEFAULT_CURSOR
-    ));
   }
 
   protected abstract LaunchTask getLaunchTask(); 
@@ -240,16 +265,42 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
     protected ServerSocket serverSocket = null;
     protected Socket clientSocket = null;
-  
-    protected CommandClient cmdC = null;
-    protected CommandServer cmdS = null;
+
+    protected IPCMessenger ipc = null; 
 
     @Override
-    public Void doInBackground() throws InterruptedException, IOException {
+    public Void doInBackground() throws InterruptedException,
+                                        IOException {
 // FIXME: this should be in an abstract method and farmed out to subclasses
       // send some basic information to the log
       if (lr.module != null) {
         logger.info("Loading module file {}", lr.module.getAbsolutePath());
+
+        final String aname = lr.module.getAbsolutePath();
+
+        final ModuleMetaData meta = new ModuleMetaData(new ZipFile(aname));
+//        final File cdir = new File(Info.getConfDir(),
+//          "tiles/" + meta.getName() + "_" + meta.getVersion());
+
+        final String hstr =
+          DigestUtils.shaHex(meta.getName() + "_" + meta.getVersion());
+
+        final File cdir = new File(Info.getConfDir(), "tiles/" + hstr);
+
+        final TilingHandler th = new TilingHandler(
+          aname, 
+          cdir, 
+          new Dimension(256, 256),
+          nextId.getAndIncrement()
+        );
+
+        try {
+          th.sliceTiles();
+        }
+        catch (CancellationException e) {
+          cancel(true);
+          return null;
+        }
       }
 
       if (lr.game != null) {
@@ -279,7 +330,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         if (data == null) {
           ErrorDialog.show(
             "Error.invalid_vassal_file", lr.module.getAbsolutePath());
-          setWaitCursor(false);
+          ModuleManagerWindow.getInstance().setWaitCursor(false);
           return null;
         }
         
@@ -364,10 +415,36 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         ));
       }
 
+/*
+      final SignalServer ssrv = ModuleManager.getInstance().getSignalServer();
+      final int port = ssrv.getPort();
+
+      final SettableFuture<ObjectOutputStream> conn =
+        new SimpleFuture<ObjectOutputStream>();
+
+      final EventListener<ConnectionSignal> clistener =
+                                        new EventListener<ConnectionSignal>() {
+        public void receive(Object src, ConnectionSignal sig) {
+          if (sig.pid == id) {
+            ssrv.removeEventListener(ConnectionSignal.class, this);
+            conn.set(sig.out);
+          }
+        }
+      };
+
+      ssrv.addEventListener(ConnectionSignal.class, clistener);
+*/
+
+
       // create a socket for communicating which the child process
-      serverSocket = new ServerSocket(0, 0, InetAddress.getByName(null));
-      cmdS = new LaunchCommandServer(serverSocket);
-      new Thread(cmdS, "command server " + id).start();
+      final InetAddress lo = InetAddress.getByName(null);
+      serverSocket = new ServerSocket(0, 0, lo);
+
+      final int port = serverSocket.getLocalPort();
+
+
+
+
 
       // build the argument list
       final ArrayList<String> al = new ArrayList<String>();
@@ -375,6 +452,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       al.add("");   // reserved for initial heap 
       al.add("");   // reserved for maximum heap
       al.add("-DVASSAL.id=" + id);  // instance id
+      al.add("-DVASSAL.port=" + port); // MM socket port
 
       // pass on the user's home, if it's set
       final String userHome = System.getProperty("user.home");
@@ -418,20 +496,48 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       
       al.add(entryPoint);
 
+      al.addAll(Arrays.asList(lr.toArgs()));
+
       final String[] args = al.toArray(new String[al.size()]);
    
       // try to start a child process with the given heap sizes
       args[1] = "-Xms" + initialHeap + "M";
       args[2] = "-Xmx" + maximumHeap + "M";
-      Process p = launch(args);
 
-      // launch failed, use conservative heap sizes
-      if (p == null) {
+
+      ProcessWrapper proc = new ProcessLauncher().launch(args);
+
+      try {
+        proc.future.get(1000L, TimeUnit.MILLISECONDS);
+      }
+      catch (CancellationException e) {
+        cancel(true);
+        return null;
+      }
+      catch (ExecutionException e) {
+        logger.error("", e);
+      }
+      catch (TimeoutException e) {
+        // this is expected
+      }
+
+      // if launch failed, use conservative heap sizes
+      if (proc.future.isDone()) {
         args[1] = "-Xms" + FAILSAFE_INITIAL_HEAP + "M";
         args[2] = "-Xmx" + FAILSAFE_MAXIMUM_HEAP + "M";
-        p = launch(args);
+        proc = new ProcessLauncher().launch(args);
 
-        if (p == null) {
+        try {
+          proc.future.get(1000L, TimeUnit.MILLISECONDS);
+        }
+        catch (ExecutionException e) {
+          logger.error("", e);
+        }
+        catch (TimeoutException e) {
+          // this is expected
+        }
+
+        if (proc.future.isDone()) {
           throw new IOException("failed to start child process");
         }
         else {
@@ -442,35 +548,46 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         }
       }
 
-      // read the port for the child's socket from its stdout
-      final DataInputStream din = new DataInputStream(p.getInputStream());
-      final int childPort = din.readInt();
+      clientSocket = serverSocket.accept();
+      ipc = new IPCMessenger(clientSocket);
 
-      // pump child's stderr to our own stderr
-      new Thread(
-        new StreamPump(p.getErrorStream(), System.err),
-        "err pump " + id
-      ).start();
+      ipc.addEventListener(
+        NotifyOpenModuleOk.class,
+        new NotifyOpenModuleOkListener()
+      );
 
-      // pump child's stdout to our own stdout
-      new Thread(
-        new StreamPump(p.getInputStream(), System.out),
-        "out pump " + id
-      ).start();
+      ipc.addEventListener(
+        NotifyNewModuleOk.class,
+        new NotifyNewModuleOkListener()
+      );
 
-      // Check that the child's port is sane. Reading stdout from a
-      // failed launch tends to give impossible port numbers.
-      if (childPort < 0 || childPort > 65535) {
-        throw new IOException("port out of range: " + childPort);
-      }
+      ipc.addEventListener(
+        NotifyImportModuleOk.class,
+        new NotifyImportModuleOkListener()
+      );
 
-      // create the client for the child's socket
-      clientSocket = new Socket((String) null, childPort);
-      cmdC = new CommandClient(clientSocket);
-      children.add(cmdC);
+      ipc.addEventListener(
+        NotifyOpenModuleFailed.class,
+        new NotifyOpenModuleFailedListener()
+      );
+
+      ipc.addEventListener(
+        NotifySaveFileOk.class,
+        new NotifySaveFileOkListener()
+      );
+
+      ipc.start(); 
+
+      children.add(ipc); 
 
       // block until the process ends
-      p.waitFor();
+      try {
+        proc.future.get();
+      }
+      catch (ExecutionException e) {
+        logger.error("", e);
+      }
+
       return null;
     }
 
@@ -500,56 +617,13 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
     }
 
-    protected Process launch(String[] args) throws IOException {
-      logger.info(StringUtils.join(args, ' '));
-
-      // set up and start the child process
-      final ProcessBuilder pb = new ProcessBuilder(args);
-      pb.directory(Info.getBinDir());
-      final Process p = pb.start();
-
-      // write the port for this socket to child's stdin and close
-      ObjectOutputStream oout = null;
-      try {
-        oout = new ObjectOutputStream(p.getOutputStream());
-        oout.writeInt(serverSocket.getLocalPort());
-        oout.writeObject(lr);
-        // Note: We don't try to close() the socket here because the
-        // pipe might already have been closed from the other end,
-        // and that would cause close() to throw spuriously.
-      }
-      finally {
-        IOUtils.closeQuietly(oout);
-      }
-
-      // FIXME: this is probably too long
-      try {
-        Thread.sleep(1000);
-      }
-      catch (InterruptedException e) {
-      }
-
-      // check whether the child is still alive
-      try {
-        // If this doesn't throw, our baby is dead.
-        p.exitValue();
-        logger.error(IOUtils.toString(p.getErrorStream()));
-        return null;
-      }
-      catch (IllegalThreadStateException e) {
-        // It's alive! It's ALIIIIIIVE!!!
-        return p;
-      }
-    }
-
     @Override
     protected void done() {
       try {
         get();
       }
       catch (CancellationException e) {
-        // FIXME: bug until we enable cancellation of loading
-        ErrorDialog.bug(e);
+        // this means that loading was cancelled
       }
       catch (InterruptedException e) {
         ErrorDialog.bug(e);
@@ -571,7 +645,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       finally {
         IOUtils.closeQuietly(clientSocket);
         IOUtils.closeQuietly(serverSocket);
-        children.remove(cmdC);
+        children.remove(ipc);
       }    
     }
   }
@@ -580,161 +654,125 @@ public abstract class AbstractLaunchAction extends AbstractAction {
   // Commands
   //
 
-  /**
-   * The abstract base class of all commands which require access to
-   * the {@link AbstractLaunchAction} receiving the command.
-   */
-  private static abstract class LaunchCommand implements Command {
-    private static final long serialVersionUID = 1L;
+  protected abstract static class LaunchRequestMessage
+                                                     extends SimpleIPCMessage {
+    protected final LaunchRequest lr;
 
-    protected AbstractLaunchAction theLaunchAction;
-   
-    public void init(AbstractLaunchAction la) {
-      theLaunchAction = la;
-    }
-
-    public abstract Object execute();
-  };
- 
-  /**
-   * Notifies the Module Manager that a module has been opened.
-   */
-  public static class NotifyOpenModuleOk extends LaunchCommand {
-    private static final long serialVersionUID = 1L;
-
-    public Object execute() {
-      SwingUtilities.invokeLater(new Runnable() { 
-        public void run() {
-          ModuleManagerWindow.getInstance()
-                             .addModule(theLaunchAction.lr.module);
-          theLaunchAction.setWaitCursor(false);
-        }
-      });
-
-      return "OK";
+    public LaunchRequestMessage(LaunchRequest lr) {
+      this.lr = lr;
     }
   }
 
-  /**
-   * Notifies the Module Manager that a new module has been created.
-   */
-  public static class NotifyNewModuleOk extends LaunchCommand {
+  public static class NotifyOpenModuleOk extends LaunchRequestMessage {
     private static final long serialVersionUID = 1L;
 
-    public Object execute() {
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-          theLaunchAction.setWaitCursor(false);
-        }
-      });
-
-      return "OK";
+    public NotifyOpenModuleOk(LaunchRequest lr) {
+      super(lr);
     }
-  } 
-  
-  /**
-   * Notifies the Module Manager that a new module has been imported.
-   */
-  public static class NotifyImportModuleOk extends LaunchCommand {
+  }
+
+  public static class NotifyNewModuleOk extends LaunchRequestMessage {
     private static final long serialVersionUID = 1L;
 
-    public Object execute() {
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-          theLaunchAction.setWaitCursor(false);
-        }
-      });
-
-      return "OK";
+    public NotifyNewModuleOk(LaunchRequest lr) {
+      super(lr);
     }
-  } 
+  }
 
-  /**
-   * Notifies the Module Manager that a module failed to open.
-   */
-  public static class NotifyOpenModuleFailed extends LaunchCommand {
+  public static class NotifyImportModuleOk extends LaunchRequestMessage {
     private static final long serialVersionUID = 1L;
 
-    private final Throwable thrown;
+    public NotifyImportModuleOk(LaunchRequest lr) {
+      super(lr);
+    }
+  }
 
-    public NotifyOpenModuleFailed(Throwable thrown) {
+  public static class NotifyOpenModuleFailed extends LaunchRequestMessage {
+    private static final long serialVersionUID = 1L;
+
+    public final Throwable thrown;
+
+    public NotifyOpenModuleFailed(LaunchRequest lr, Throwable thrown) {
+      super(lr);
       this.thrown = thrown;
     }
+  }
 
-    public Object execute() {
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-          theLaunchAction.setWaitCursor(false);
-        }
-      });
-
-      ErrorDialog.showDetails(
-        thrown,
-        ThrowableUtils.getStackTrace(thrown),
-        "Error.module_load_failed",
-        thrown.getMessage()
-      );
-
-      return "OK";
-    }
-  } 
-
-  /**
-   * Notifies the Module Manager that a file was saved successfully.
-   */
-  public static class NotifySaveFileOk implements Command {
+  public static class NotifySaveFileOk extends SimpleIPCMessage {
     private static final long serialVersionUID = 1L;
 
-    private final File file;
+    public final File file;
 
     public NotifySaveFileOk(File file) {
       this.file = file;
     }
+  }
 
-    public Object execute() {
+  //
+  // Listeners
+  //
+
+  protected static class NotifyOpenModuleOkListener
+                                 implements EventListener<NotifyOpenModuleOk> {
+    public void receive(Object src, final NotifyOpenModuleOk msg) {
+      SwingUtilities.invokeLater(new Runnable() { 
+        public void run() {
+          final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+          mmw.addModule(msg.lr.module);
+          mmw.setWaitCursor(false);
+        }
+      });
+    }
+  }
+
+  protected static class NotifyNewModuleOkListener
+                                 implements EventListener<NotifyNewModuleOk> {
+    public void receive(Object src, NotifyNewModuleOk msg) {
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
-          ModuleManagerWindow.getInstance().update(file);
+          ModuleManagerWindow.getInstance().setWaitCursor(false);
+        }
+      });
+    }
+  }
+
+  protected static class NotifyImportModuleOkListener
+                               implements EventListener<NotifyImportModuleOk> {
+    public void receive(Object src, NotifyImportModuleOk msg) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          ModuleManagerWindow.getInstance().setWaitCursor(false);
+        }
+      });
+    }
+  }
+
+  protected static class NotifyOpenModuleFailedListener
+                             implements EventListener<NotifyOpenModuleFailed> {
+    public void receive(Object src, NotifyOpenModuleFailed msg) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          ModuleManagerWindow.getInstance().setWaitCursor(false);
         }
       });
 
-      return "OK";
+      ErrorDialog.showDetails(
+        msg.thrown,
+        ThrowableUtils.getStackTrace(msg.thrown),
+        "Error.module_load_failed",
+        msg.thrown.getMessage()
+      );
     }
   }
 
-  private class LaunchCommandServer extends CommandServer {
-    public LaunchCommandServer(ServerSocket serverSocket) {
-      super(serverSocket);
-    }
-
-    @Override
-    public void init(Command command) {
-      if (command instanceof LaunchCommand) {
-        ((LaunchCommand) command).init(AbstractLaunchAction.this);
-      }
-    }
-  }
-
-  private static class StreamPump implements Runnable {
-    private final InputStream in;
-    private final OutputStream out;
-
-    public StreamPump(InputStream in, OutputStream out) {
-      this.in = in;
-      this.out = out;
-    }
-
-    public void run() {
-      try {
-        IOUtils.copy(in, out);
-      }
-      catch (IOException e) {
-        ErrorDialog.showDetails(
-          e, 
-          ThrowableUtils.getStackTrace(e),
-          "Error.socket_error"
-        );
-      }
+  protected static class NotifySaveFileOkListener
+                                   implements EventListener<NotifySaveFileOk> {
+    public void receive(Object rc, final NotifySaveFileOk msg) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          ModuleManagerWindow.getInstance().update(msg.file);
+        }
+      });
     }
   }
 }

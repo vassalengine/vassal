@@ -39,6 +39,8 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 //import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,6 +104,8 @@ import VASSAL.tools.ToolBarComponent;
 import VASSAL.tools.WarningDialog;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
+import VASSAL.tools.image.ImageTileSource;
+import VASSAL.tools.image.tilecache.ImageTileDiskCache;
 import VASSAL.tools.io.IOUtils;
 
 /**
@@ -158,6 +162,8 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected Chatter chat;
   protected Random RNG;
   protected ServerConnection server;
+
+  protected ImageTileSource tcache;
 
   protected WizardSupport wizardSupport;
   protected PropertyChangeSupport idChangeSupport;
@@ -955,7 +961,22 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   public ArchiveWriter getArchiveWriter() {
     return archive.getWriter();
   }
-  
+ 
+  public ImageTileSource getImageTileSource() {
+    if (tcache == null) {
+      // FIXME: There's no guarantee that getGameName() and getGameVersion()
+      // are properly set at this point.
+
+      final String hstr =
+        DigestUtils.shaHex(getGameName() + "_" + getGameVersion());
+
+      final File tc = new File(Info.getConfDir(), "tiles/" + hstr);
+      tcache = new ImageTileDiskCache(tc.getAbsolutePath());
+    }
+
+    return tcache;
+  }
+ 
   /**
    * Is the module being translated into the user's Locale?  Localization is disabled when editing a module
    *

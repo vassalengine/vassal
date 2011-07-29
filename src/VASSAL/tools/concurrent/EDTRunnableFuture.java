@@ -24,35 +24,7 @@ package VASSAL.tools.concurrent;
  * @param <V> the result type returned by the {@see #get} method
  * @author Joel Uckelman
  * @since 3.1.11
+ * @deprecated Moved to {@link VASSAL.tools.swing.EDTRunnableFuture}.
  */
-public abstract class EDTRunnableFuture<V> extends SimpleRunnableFuture<V> {
-  public EDTRunnableFuture() { }
-
-  /**
-   * Creates a {@link RunnableFuture} which will be run on the Event Dispatch
-   * Thread.
-   *
-   * @param result the result to return
-   */ 
-  public EDTRunnableFuture(V result) {
-    this.result = result;  
-  }
-
-  /**
-   * This method is run on the EDT.
-   *
-   * @throws Exception any exception
-   */
-  protected abstract void runOnEDT() throws Exception;
-
-  /** {@inheritDoc} */
-  public final void run() {
-    try {
-      runOnEDT();
-      set(result);
-    }
-    catch (Throwable t) {
-      setException(t);
-    }
-  }
-}
+@Deprecated
+public abstract class EDTRunnableFuture<V> extends VASSAL.tools.swing.EDTRunnableFuture<V> {}

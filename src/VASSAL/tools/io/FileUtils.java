@@ -32,7 +32,9 @@ import java.util.List;
  * 
  * @author Joel Uckelman
  * @since 3.1.0
+ * @deprecated Use {@link org.apache.commons.io.FileUtils} instead.
  */ 
+@Deprecated
 public class FileUtils {
   private FileUtils() {}
 

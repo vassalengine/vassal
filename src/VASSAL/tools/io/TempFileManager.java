@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
 
 import org.slf4j.Logger;
@@ -141,7 +142,7 @@ public class TempFileManager {
         final File lock = new File(f.getParent(), f.getName() + ".lck");
         if (!lock.exists()) {
           try {
-            FileUtils.recursiveDelete(f);
+            FileUtils.forceDelete(f);
           }
           catch (IOException e) {
             logger.error("", e);
@@ -152,8 +153,8 @@ public class TempFileManager {
   }
 
   private void cleanupSessionRoot() throws IOException {
-    if (lock.exists()) FileUtils.delete(lock);
-    FileUtils.recursiveDelete(sessionRoot);
+    if (lock.exists()) FileUtils.forceDelete(lock);
+    FileUtils.forceDelete(sessionRoot);
   }
 
   private static final TempFileManager instance = new TempFileManager();
@@ -175,7 +176,7 @@ public class TempFileManager {
   private File createSessionRoot() throws IOException {
     // ensure that we have a good temporary root
     if (!tmpRoot.exists() || (!tmpRoot.isDirectory() && !tmpRoot.delete())) {
-      FileUtils.mkdirs(tmpRoot);
+      FileUtils.forceMkdir(tmpRoot);
     }
 
     // get the name for our session root
@@ -190,7 +191,7 @@ public class TempFileManager {
     lock.deleteOnExit();
 
     // now create our session root directory
-    FileUtils.mkdirs(dir);
+    FileUtils.forceMkdir(dir);
 
     return dir;
   }
@@ -206,7 +207,7 @@ public class TempFileManager {
     if (sessionRoot == null) sessionRoot = createSessionRoot();
 
     final File dir = new File(sessionRoot, dirname);
-    FileUtils.mkdirs(dir);
+    FileUtils.forceMkdir(dir);
     return dir;
   }
 

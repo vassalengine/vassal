@@ -130,6 +130,16 @@ public class ImageIOImageLoaderTest {
     final BufferedImage actual = read(loader, afile);
   }
 
+  @Test(expected=BrokenImageException.class)
+  public void testLoadLCMS_Error() throws IOException {
+    final String afile = "test/VASSAL/tools/image/09.jpg";
+    
+    final ImageTypeConverter mconv = new MemoryImageTypeConverter();
+    final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
+
+    final BufferedImage actual = read(loader, afile);
+  }
+
   protected Dimension size(ImageLoader loader, String file) throws IOException {
     FileInputStream in = null;
     try {
@@ -162,5 +172,15 @@ public class ImageIOImageLoaderTest {
     final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
 
     final Dimension ad = size(loader, junk);
+  }
+
+  @Test(expected=BrokenImageException.class)
+  public void testSizeLCMS_Error() throws IOException {
+    final String afile = "test/VASSAL/tools/image/09.jpg";
+    
+    final ImageTypeConverter mconv = new MemoryImageTypeConverter();
+    final ImageIOImageLoader loader = new ImageIOImageLoader(mconv);
+
+    final Dimension ad = size(loader, afile);
   }
 }

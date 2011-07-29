@@ -20,6 +20,7 @@ package VASSAL.launch;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,6 +61,10 @@ import VASSAL.tools.logging.LoggedOutputStream;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
+//import VASSAL.tools.signal.DefaultMultiplexedSignalSource;
+//import VASSAL.tools.signal.MultiplexedSignalSource;
+//import VASSAL.tools.signal.SignalDispatcher;
+//import VASSAL.tools.signal.SignalSender;
 
 /**
  * Tracks recently-used modules and builds the main GUI window for 
@@ -69,7 +74,7 @@ import VASSAL.tools.menu.MenuManager;
  * @since 3.1.0
  */
 public class ModuleManager {
-   private static final Logger logger =
+  private static final Logger logger =
     LoggerFactory.getLogger(ModuleManager.class);
 
   private static final String NEXT_VERSION_CHECK = "nextVersionCheck";
@@ -227,7 +232,7 @@ public class ModuleManager {
     }
     finally {
       IOUtils.closeQuietly(in);
-      IOUtils.closeQuietly(out);
+      IOUtils.closeQuietly((Closeable) out);
       IOUtils.closeQuietly(clientSocket);
     }
   }
@@ -237,6 +242,11 @@ public class ModuleManager {
   public static ModuleManager getInstance() {
     return instance;
   }
+
+/*
+  private final ServerSocket signalServerSocket;
+  private final SignalServer signalServer;
+*/
 
   private final long key;
 
@@ -329,8 +339,56 @@ public class ModuleManager {
       Integer.valueOf(512)
     );
     globalPrefs.addOption("Importer", maxHeapConf);
-  }
+
+
+
+
+
+/*
+    final InetAddress lo = InetAddress.getByName(null);
+    signalServerSocket = new ServerSocket(0, 0, lo);
+
+    final MultiplexedSignalSource mss = new DefaultMultiplexedSignalSource();
+    final SignalDispatcher sd = new SignalDispatcher(mss);   
+
+    sd.addEventListener(
+      AbstractLaunchAction.NotifyOpenModuleOk.class,
+      new AbstractLaunchAction.NotifyOpenModuleOkListener()
+    );
+
+    sd.addEventListener(
+      AbstractLaunchAction.NotifyNewModuleOk.class,
+      new AbstractLaunchAction.NotifyNewModuleOkListener()
+    );
+
+    sd.addEventListener(
+      AbstractLaunchAction.NotifyImportModuleOk.class,
+      new AbstractLaunchAction.NotifyImportModuleOkListener()
+    );
+
+    sd.addEventListener(
+      AbstractLaunchAction.NotifyOpenModuleFailed.class,
+      new AbstractLaunchAction.NotifyOpenModuleFailedListener()
+    );
+
+    sd.addEventListener(
+      AbstractLaunchAction.NotifySaveFileOk.class,
+      new AbstractLaunchAction.NotifySaveFileOkListener()
+    );
+
+    final SignalSender ss = new SignalSender();
  
+    signalServer = new SignalServer(signalServerSocket, mss, sd, ss);
+    new Thread(signalServer, "comm server").start();
+*/
+  }
+
+/*
+  public SignalServer getSignalServer() {
+    return signalServer;
+  }
+*/ 
+
   private class SocketListener implements Runnable {
     private final ServerSocket serverSocket;
 
@@ -371,7 +429,7 @@ public class ModuleManager {
             ErrorDialog.bug(e);
           }
           finally {
-            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly((Closeable) in);
             IOUtils.closeQuietly(out);
             IOUtils.closeQuietly(clientSocket);
           }

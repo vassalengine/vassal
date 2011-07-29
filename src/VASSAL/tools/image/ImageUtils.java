@@ -384,7 +384,7 @@ public class ImageUtils {
   public static final String SVG_SUFFIX = ".svg";
   public static final String JPG_SUFFIX = ".jpg";
   public static final String JPEG_SUFFIX = ".jpeg";
-  public static final String[] IMAGE_SUFFIXES = new String[] {
+  public static final String[] IMAGE_SUFFIXES = {
     GIF_SUFFIX, PNG_SUFFIX, SVG_SUFFIX, JPG_SUFFIX, JPEG_SUFFIX
   };                                                           
   

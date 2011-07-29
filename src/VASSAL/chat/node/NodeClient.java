@@ -23,6 +23,8 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.util.Properties;
 
+import net.iharder.Base64;
+
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.chat.CgiServerStatus;
@@ -63,7 +65,6 @@ import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ArrayUtils;
-import VASSAL.tools.Base64;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
 
@@ -234,9 +235,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
       if (msg.length() > compressionLimit) {
         try {
           msg = ZIP_HEADER
-              + Base64
-                  .encodeBytes(
-                      Compressor.compress(msg.getBytes("UTF-8")), Base64.DONT_BREAK_LINES); //$NON-NLS-1$
+              + Base64.encodeBytes(Compressor.compress(msg.getBytes("UTF-8"))); //$NON-NLS-1$
         }
         // FIXME: review error message
         catch (IOException e) {

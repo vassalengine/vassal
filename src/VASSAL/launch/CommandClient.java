@@ -34,7 +34,10 @@ import VASSAL.tools.ErrorDialog;
  * @see CommandServer
  * @author Joel Uckelman
  * @since 3.1.0
+ * @deprecated Use {@link ObjectOutputStream} with {@link SerializableSingal}
+ * instead.
  */
+@Deprecated
 public class CommandClient {
   private final ObjectInputStream in;
   private final ObjectOutputStream out;

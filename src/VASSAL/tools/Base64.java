@@ -83,7 +83,10 @@ package VASSAL.tools;
  * @author Robert Harder
  * @author rob@iharder.net
  * @version 2.2.2
+ *
+ * {@deprecated} Use {@link net.iharder.Base64} instead.
  */
+@Deprecated
 public class Base64
 {
     

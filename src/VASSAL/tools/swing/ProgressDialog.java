@@ -20,13 +20,22 @@
 package VASSAL.tools.swing;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.event.EventListenerList;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -45,6 +54,8 @@ public class ProgressDialog extends JDialog {
   protected final JProgressBar progbar;
   protected final JButton cancel;
   
+  protected final EventListenerList listeners = new EventListenerList(); 
+ 
   /**
    * Creates a progress dialog.
    *
@@ -58,25 +69,73 @@ public class ProgressDialog extends JDialog {
     // set up the components
     label = new JLabel(text);
 
+//    Font f = label.getFont();
+//    label.setFont(f.deriveFont(f.getSize2D()*4f/3f));
+//    label.setFont(f.deriveFont(14f));
+
     progbar = new JProgressBar(0, 100);
     progbar.setStringPainted(true);
     progbar.setValue(0);
-  
+
+// AUGH! This is retarded that we can't set a default font size... 
+//    f = progbar.getFont();
+//    progbar.setFont(f.deriveFont(14f));
+ 
     cancel = new JButton(Resources.getString(Resources.CANCEL));
+
+//    f = cancel.getFont();
+//    cancel.setFont(f.deriveFont(14f));
+
+    // forward clicks on the close decoration to cancellation listeners
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        fireCancelledEvent(new ActionEvent(
+          ProgressDialog.this, ActionEvent.ACTION_PERFORMED, "cancel"
+        )); 
+      }
+    });   
+
+    // forward clicks on the close button to the cancellation listeners
+    cancel.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        fireCancelledEvent(e); 
+      }      
+    });
 
     // create the layout
     final JPanel panel = new JPanel(new MigLayout(
-      "insets dialog", "", "unrelated:push[]related[]unrelated:push[]"));
+      "insets dialog, fill", "", "unrelated:push[]related[]unrelated:push[]"));
 
-    panel.add(progbar, "pushx, growx, spanx, wrap");
-    panel.add(label,   "pushx, growx, spanx, wrap unrel:push");
+    // NB: It's necessary to set the minimum width for the label,
+    // otherwise if the label text is set to a string which is too long,
+    // the label will overflow the container instead of showing ellipses.
+    panel.add(progbar, "growx, wrap");
+    panel.add(label,   "wmin 0, pad 0 0 2pt 0, wrap unrel:push");
     panel.add(cancel,  "tag cancel");
 
     add(panel);
+
+    // pack to find the minimum height
     pack();
 
     // set minimum size
     setMinimumSize(new Dimension(300, getHeight()));
+
+    // pack again to ensure that we respect the minimum size
+    pack();
+  }
+
+  protected void fireCancelledEvent(ActionEvent e) {
+    final Object[] larr = listeners.getListenerList();
+
+    // Process the listeners last to first, notifying
+    // those that are interested in this event.
+    for (int i = larr.length-2; i >= 0; i -= 2) {
+      if (larr[i] == ActionListener.class) {
+        ((ActionListener) larr[i+1]).actionPerformed(e);
+      }
+    }
   }
 
   /**
@@ -152,29 +211,64 @@ public class ProgressDialog extends JDialog {
   }
 
   /**
-   * Adds a listener for the cancel button.
+   * Adds a cancellation listener.
    * 
    * @param l the action listener
    */
   public void addActionListener(ActionListener l) {
-    cancel.addActionListener(l);
+    listeners.add(ActionListener.class, l);
   }
 
   /**
-   * Removes a listener from the cancel button.
+   * Removes cancellation listener.
    *
    * @param l the action listener
    */
   public void removeActionListener(ActionListener l) {
-    cancel.removeActionListener(l);
+    listeners.remove(ActionListener.class, l);
   }
   
   /**
-   * Gets the listeners for the cancel button.
+   * Gets the list of cancellation listeners.
    *
    * @return the action listeners
    */
   public ActionListener[] getActionListeners() {
-    return cancel.getActionListeners();
+    return listeners.getListeners(ActionListener.class);
+  }
+
+  /**
+   * Creates a progress dialog on the EDT. 
+   *
+   * This is a convenience method to be used when a non-EDT thread needs to
+   * create a progress dialog in order to attach listeners to it.
+   *
+   * @param parent the parent frame
+   * @param title the dialog title
+   * @param text the text beneath the progress bar
+   */
+  public static ProgressDialog createOnEDT(final Frame parent,
+                                           final String title,
+                                           final String text) {
+    final Future<ProgressDialog> f = EDT.submit(new Callable<ProgressDialog>() {
+      public ProgressDialog call() {
+        return new ProgressDialog(parent, title, text);
+      }
+    });
+
+    try {
+      return f.get();
+    }
+    catch (CancellationException e) {
+      // this should never happen
+      throw new IllegalStateException(e);
+    }
+    catch (InterruptedException e) {
+      // this should never happen
+      throw new IllegalStateException(e);
+    }
+    catch (ExecutionException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

@@ -86,7 +86,7 @@ public class FormattedStringExpression extends Expression {
     final String s = getExpression();
     
     try {
-      new Integer(s);
+      Integer.parseInt(s);
       return s;
     }
     catch (NumberFormatException e) {

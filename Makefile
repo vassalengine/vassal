@@ -206,7 +206,7 @@ release-other: $(TMPDIR)/VASSAL-$(VERSION)-other.zip
 
 release-src: $(TMPDIR)/VASSAL-$(VERSION)-src.zip
 
-release: clean test release-other release-linux release-windows release-macosx
+release: clean Vengine.jar test release-other release-linux release-windows release-macosx
 
 clean-release:
 	$(RM) -r $(TMPDIR)/* $(LIBDIR)/Vengine.jar

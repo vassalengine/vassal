@@ -103,44 +103,4 @@ public class SimpleVersionTokenizer implements VersionTokenizer {
       }
     }
   }
-
-  /**
-   * Tests for <code>VersionTokenizer</code>. A "<code>!</code>" is
-   * printed whenever parsing fails.
-   *
-   * @param args strings to parse
-   */
-  public static void main(String[] args) {
-    String[] ex;
-    if (args.length > 0) {  // tokenize user input
-      ex = args;
-    }
-    else {  // tokenize these examples
-      ex = new String[] {
-        "1.2.3",
-        "1.2.3.4",
-        "1.2.3-svn7890",
-        "1.2.3-beta5",
-        "1.2.3-rc3",
-        "foobarbaz",
-        "1.2.foo",
-        "1.2-foo",
-        "1.2-svn1234.8",
-        "3.0b6"
-      };
-    }
-
-    for (String v : ex) {
-      System.out.print(v + ":");
-      final SimpleVersionTokenizer tok = new SimpleVersionTokenizer(v);
-      try {
-        while (tok.hasNext()) System.out.print(" " + tok.next());
-        System.out.print("\n");
-      }
-      catch (VersionFormatException e) {
-        System.out.print(" !\n");
-      }
-    }
-    System.out.print("\n");
-  } 
 }

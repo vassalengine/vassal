@@ -33,6 +33,7 @@ import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageUtils;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
@@ -84,6 +85,14 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     InputStream in = null;
     try {
       in = archive.getInputStream(name);
+      
+      final BufferedImage img = ImageUtils.getImage(name, in);
+      in.close();
+      return img;
+    }
+    catch (ImageIOException e) {
+      // Don't wrap, just rethrow.
+      throw e;
     }
     catch (FileNotFoundException e) {
       throw new ImageNotFoundException(name, e);
@@ -91,8 +100,9 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     catch (IOException e) {
       throw new ImageIOException(name, e);
     }
-    
-    return ImageUtils.getImage(name, in);
+    finally {
+      IOUtils.closeQuietly(in); 
+    }
   }
 
   /** {@inheritDoc} */
@@ -110,6 +120,14 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       InputStream in = null;
       try {
         in = archive.getInputStream(name);
+        
+        final Dimension d = ImageUtils.getImageSize(name, in);
+        in.close();
+        return d;
+      }
+      catch (ImageIOException e) {
+        // Don't wrap, just rethrow.
+        throw e;
       }
       catch (FileNotFoundException e) {
         throw new ImageNotFoundException(name, e);
@@ -117,8 +135,9 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       catch (IOException e) {
         throw new ImageIOException(name, e);
       } 
-
-      return ImageUtils.getImageSize(name, in);
+      finally {
+        IOUtils.closeQuietly(in);
+      }
     }
     catch (IOException e) {
       if (!Op.handleException(e)) ErrorDialog.bug(e);

@@ -62,8 +62,14 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
                             (((int) iscale) & (((int) iscale)-1)) == 0;
 
     if (invPow2 && sop instanceof SourceOp) {
-      return new SourceOpDiskCacheBitmapImpl(
-        ((SourceOp) sop).getName(), tileX, tileY, scale);
+      String name = ((SourceOp) sop).getName();
+
+      // strip off leading "images/"
+      if (name.startsWith("images/")) {
+        name = name.substring(7);
+      }
+
+      return new SourceOpDiskCacheBitmapImpl(name, tileX, tileY, scale);
     }
     else {
       return new TileOp(this, tileX, tileY);
@@ -215,7 +221,8 @@ public class ScaleOpTiledBitmapImpl extends ScaleOpBitmapImpl {
       } 
   
       GeneralFilter.resample(
-        src_data, sx0, sy0, sx1, sy1, sw, sh, src_type, sd.width, sd.height,
+        src_data, true, sx0, sy0, sx1, sy1, sw, sh, src_type, sd.width, sd.height,
+//        src_data, sx0, sy0, sx1, sy1, sw, sh, src_type, sd.width, sd.height,
         dst_data, dx0, dy0, dx1, dy1, dw, dh, dd.width, dd.height,
         xscale, yscale, scale < 1.0f ? downFilter : upFilter
       );

@@ -34,9 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.zip.CheckedOutputStream;
@@ -46,6 +43,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.io.FileUtils;
+
+import VASSAL.tools.concurrent.CountingReadWriteLock;
 
 import static VASSAL.tools.IterableEnumeration.iterate;
 
@@ -67,89 +68,6 @@ public class ZipArchive implements FileArchive {
     public Entry(ZipEntry ze, File file) {
       this.ze = ze;
       this.file = file;
-    }
-  }
-
-  private static class CountingReadWriteLock implements ReadWriteLock {
-    public Lock readLock()  { return r; }
-    public Lock writeLock() { return w; }
-    
-    private final ReadLock r  = new ReadLock();
-    private final WriteLock w = new WriteLock();
-
-    private final Sync sync = new Sync();
-
-    private class ReadLock implements Lock {
-      public void lock()   { sync.acquireShared(0); }
-      public void unlock() { sync.releaseShared(0); }
-
-      public void lockInterruptibly() {
-        throw new UnsupportedOperationException();
-      }
-
-      public Condition newCondition() {
-        throw new UnsupportedOperationException();
-      }
-  
-      public boolean tryLock() {
-        throw new UnsupportedOperationException();
-      }
-
-      public boolean tryLock(long time, TimeUnit unit) {
-        throw new UnsupportedOperationException();
-      }
-    }
-
-    private class WriteLock implements Lock {
-      public void lock()   { sync.acquire(0); }
-      public void unlock() { sync.release(0); }
-
-      public void lockInterruptibly() {
-        throw new UnsupportedOperationException();
-      }
-
-      public Condition newCondition() {
-        throw new UnsupportedOperationException();
-      }
-  
-      public boolean tryLock() {
-        throw new UnsupportedOperationException();
-      }
-
-      public boolean tryLock(long time, TimeUnit unit) {
-        throw new UnsupportedOperationException();
-      }
-    }
-
-    // Read states are positive, the write state is -1.
-    // State 0 means that no locks are held. 
-
-    private static class Sync extends AbstractQueuedSynchronizer {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected boolean tryAcquire(int dummy) {
-        return compareAndSetState(0, -1);
-      }
-
-      @Override
-      protected boolean tryRelease(int dummy) {
-        if (getState() != -1) throw new IllegalMonitorStateException();
-        return compareAndSetState(-1, 0);
-      }
-
-      @Override
-      protected int tryAcquireShared(int dummy) {
-        final int s = getState();
-        return s >= 0 && compareAndSetState(s, s+1) ? 1 : -1;
-      }
-
-      @Override
-      protected boolean tryReleaseShared(int dummy) {
-        final int s = getState();
-        if (s < 1) throw new IllegalMonitorStateException();
-        return compareAndSetState(s, s-1);
-      }
     }
   }
 
@@ -521,14 +439,17 @@ public class ZipArchive implements FileArchive {
     }
 
     // Replace old archive with temp archive.
-    try {
-      FileUtils.move(tmpFile, archiveFile);
-    }
-    catch (IOException e) {
-      throw (IOException) new IOException(
-        "Unable to overwrite " + archiveFile.getAbsolutePath() +
-        ", data written to " + tmpFile.getAbsolutePath() + " instead."
-      ).initCause(e);
+    if (!tmpFile.renameTo(archiveFile)) {
+      try {
+        FileUtils.forceDelete(archiveFile);
+        FileUtils.moveFile(tmpFile, archiveFile);
+      }
+      catch (IOException e) {
+        throw (IOException) new IOException(
+          "Unable to overwrite " + archiveFile.getAbsolutePath() +
+          ", data written to " + tmpFile.getAbsolutePath() + " instead."
+        ).initCause(e);
+      }
     }
 
     readEntries();

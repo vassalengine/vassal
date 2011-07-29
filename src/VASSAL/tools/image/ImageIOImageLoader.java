@@ -103,10 +103,10 @@ public class ImageIOImageLoader implements ImageLoader {
     // Sun Bug 6444360: JPEGs with corrupt color profiles
     // Sun Bug 6404011: JPEGs with corrupt color profiles on Java 1.5 
     // 
-    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6788458
-    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6541476
-    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6444360
-    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6404011
+    // http://bugs.sun.com/view_bug.do?bug_id=6788458
+    // http://bugs.sun.com/view_bug.do?bug_id=6541476
+    // http://bugs.sun.com/view_bug.do?bug_id=6444360
+    // http://bugs.sun.com/view_bug.do?bug_id=6404011
     //
     // Someday, when both ImageIO is fixed and everyone's JRE contains
     // that fix, we can do this the simple way.
@@ -195,15 +195,11 @@ public class ImageIOImageLoader implements ImageLoader {
 
       // Load the image
       rin.reset();
-      img = loadImageIO(name, rin);
+      img = wrapImageIO(name, rin, readImage);
       rin.close();
     }
-    catch (BrokenImageException e) {
-      // Rethrow. This is already a type of ImageIOException.
-      throw e;
-    }
-    catch (UnrecognizedImageTypeException e) {
-      // Rethrow. This is already a type of ImageIOException.
+    catch (ImageIOException e) {
+      // Don't wrap ImageIOExceptions.
       throw e;
     }
     catch (IOException e) {
@@ -238,17 +234,21 @@ public class ImageIOImageLoader implements ImageLoader {
     return img;
   }
 
-  protected BufferedImage loadImageIO(String name, InputStream in)
-                                                           throws IOException {
-    BufferedImage img = null;
+  protected static interface Wrapper<T> {
+    T run(String name, InputStream in) throws IOException;
+  }
+
+  protected <T> T wrapImageIO(String name, InputStream in, Wrapper<T> w)
+                                                      throws ImageIOException {
     try {
-      img = ImageIO.read(new MemoryCacheImageInputStream(in));
+      return w.run(name, in);
     }
     catch (CMMException e) {
-      // Note: ImageIO can throw a CMMException for JPEGs which have
-      // broken color profiles. This problem is noted in Sun Bug 6444360,
+      // Note: ImageIO can throw a CMMException for JPEGs which have broken
+      // color profiles. This problem is noted in Sun Bugs 6444360 and 6839133.
       //
-      // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6444360
+      // http://bugs.sun.com/view_bug.do?bug_id=6444360
+      // http://bugs.sun.com/view_bug.do?bug_id=6839133
       //
       throw new BrokenImageException(name, e);
     }
@@ -258,14 +258,71 @@ public class ImageIOImageLoader implements ImageLoader {
       // space but have non-RGB color profiles (see Bug 2673589 for an
       // example of this). This problem is noted in Sun Bug 6404011,
       //
-      // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6404011
+      // http://bugs.sun.com/view_bug.do?bug_id=6404011
       //
       throw new BrokenImageException(name, e);
     }
-
-    if (img == null) throw new UnrecognizedImageTypeException();
-    return img;
+    catch (ImageIOException e) {
+      // Don't wrap ImageIOExceptions.
+      throw e;
+    }
+    catch (IOException e) {
+      throw new ImageIOException(name, e);
+    }
   }
+
+  /** A functor for reading images. */
+  protected static Wrapper<BufferedImage> readImage =
+                                                 new Wrapper<BufferedImage>() {
+    /**
+     * Loads an image.
+     *
+     * @param name the image name
+     * @param in the input stream
+     * @return the image
+     *
+     * @throws UnrecognizedImageTypeException if the image type is unknown
+     * @throws IOException if reading the image goes wrong
+     */
+    public BufferedImage run(String name, InputStream in) throws IOException {
+
+      final BufferedImage img =
+        ImageIO.read(new MemoryCacheImageInputStream(in));
+      if (img == null) throw new UnrecognizedImageTypeException(name);
+
+      return img;
+    }
+  };
+
+  /** A functor for reading image dimensions. */
+  protected static Wrapper<Dimension> readSize = new Wrapper<Dimension>() {
+    /**
+     * Gets the size of an image.
+     *
+     * @param name the image name
+     * @param in the input stream
+     * @return the size of the image
+     *
+     * @throws BrokenImageException if the image is faulty
+     * @throws UnrecognizedImageTypeException if the image type is unknown
+     * @throws IOException if reading the image goes wrong
+     */
+    public Dimension run(String name, InputStream in) throws IOException {
+      final ImageInputStream stream = new MemoryCacheImageInputStream(in);
+
+      final Iterator<ImageReader> i = ImageIO.getImageReaders(stream);
+      if (!i.hasNext()) throw new UnrecognizedImageTypeException(name);
+
+      final ImageReader reader = i.next();
+      try {
+        reader.setInput(stream);
+        return new Dimension(reader.getWidth(0), reader.getHeight(0));
+      }
+      finally {
+        reader.dispose();
+      }
+    }
+  };
 
   protected BufferedImage fix_tRNS(Reference<BufferedImage> ref,
                                    int tRNS, int type) throws ImageIOException {
@@ -312,53 +369,6 @@ public class ImageIOImageLoader implements ImageLoader {
    * @throws ImageIOException if reading the image goes wrong
    */
   public Dimension size(String name, InputStream in) throws ImageIOException {
-    try {
-      final ImageInputStream stream = new MemoryCacheImageInputStream(in);
-
-      final Iterator<ImageReader> i = ImageIO.getImageReaders(stream);
-      if (!i.hasNext()) throw new UnrecognizedImageTypeException(name);
-
-      final ImageReader reader = i.next();
-      try {
-        reader.setInput(stream);
-
-        Dimension size = null;
-        try {
-          size = new Dimension(reader.getWidth(0), reader.getHeight(0));
-        }
-        catch (IllegalArgumentException e) {
-          // Note: ImageIO can throw IllegalArgumentExceptions for certain
-          // kinds of broken images, e.g., JPEGs which are in the RGB color
-          // space but have non-RGB color profiles (see Bug 2673589 for an
-          // example of this). This problem is noted in Sun Bug 6404011,
-          //
-          // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6404011
-          //
-          // and supposedly is fixed in 1.6.0 JVMs. Once we move to Java 6,
-          // this will no longer be a problem, and we can remove this catch.
-          throw new BrokenImageException(name, e);
-        }
-        
-        in.close();
-        return size;
-      }
-      finally {
-        reader.dispose();
-      }
-    }
-    catch (BrokenImageException e) {
-      // Rethrow. This is already a type of ImageIOException.
-      throw e;
-    }
-    catch (UnrecognizedImageTypeException e) {
-      // Rethrow. This is already a type of ImageIOException.
-      throw e;
-    }
-    catch (IOException e) {
-      throw new ImageIOException(name, e);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
-    }
+    return wrapImageIO(name, in, readSize);
   }
 }

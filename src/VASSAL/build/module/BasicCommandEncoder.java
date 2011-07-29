@@ -21,6 +21,10 @@ package VASSAL.build.module;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
@@ -72,7 +76,6 @@ import VASSAL.counters.Translate;
 import VASSAL.counters.TriggerAction;
 import VASSAL.counters.UsePrototype;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.logging.Logger;
 
 /**
  * A {@link CommandEncoder} that handles the basic commands: {@link AddPiece},
@@ -84,6 +87,9 @@ import VASSAL.tools.logging.Logger;
  * {@link GamePiece} classes.
  */
 public class BasicCommandEncoder implements CommandEncoder, Buildable {
+  private static final Logger logger =
+    LoggerFactory.getLogger(BasicCommandEncoder.class);
+
   private Map<String,BasicPieceFactory> basicFactories =
     new HashMap<String,BasicPieceFactory>();
   private Map<String,DecoratorFactory> decoratorFactories =
@@ -347,7 +353,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       GamePiece inner = createPiece(innerType);
       if (inner == null) {
         GameModule.getGameModule().getChatter().send("Invalid piece type - see Error Log for details"); //$NON-NLS-1$
-        Logger.log("Could not create piece with type "+innerType);
+        logger.warn("Could not create piece with type " + innerType);
         inner = new BasicPiece();
       }
       Decorator d = createDecorator(type, inner);

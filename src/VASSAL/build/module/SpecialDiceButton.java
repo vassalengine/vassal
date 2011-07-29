@@ -34,6 +34,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -61,13 +64,15 @@ import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.UniqueIdManager;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.logging.Logger;
 
 /**
  * ...
  */
 // TODO Expose result as property
 public class SpecialDiceButton extends AbstractConfigurable implements CommandEncoder, UniqueIdManager.Identifyable {
+  private static final Logger logger =
+    LoggerFactory.getLogger(SpecialDiceButton.class);
+
   protected static UniqueIdManager idMgr = new UniqueIdManager("SpecialDiceButton"); //$NON-NLS-1$
   public static final String SHOW_RESULTS_COMMAND = "SHOW_RESULTS\t"; //$NON-NLS-1$
   protected List<SpecialDie> dice = new ArrayList<SpecialDie>();
@@ -610,7 +615,11 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     private void setResults(int[] results) {
       icons = new Icon[results.length];
       if (results.length > dice.size()) {
-          Logger.log("Special Die Button (" + getConfigureName() +"): more results (" + results.length +") requested than dice (" + dice.size() +")");
+        logger.warn(
+          "Special Die Button (" + getConfigureName() +
+          "): more results (" + results.length + ") requested than dice (" +
+          dice.size() +")"
+        );
       }
       for (int i = 0; i < results.length; ++i) {
         if (i >= dice.size()) break;

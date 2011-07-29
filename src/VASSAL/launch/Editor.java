@@ -44,6 +44,7 @@ import VASSAL.tools.ThrowableUtils;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.icon.IconFactory;
 import VASSAL.tools.imports.ImportAction;
+import VASSAL.tools.ipc.IPCMessage;
 import VASSAL.tools.menu.MacOSXMenuManager;
 import VASSAL.tools.menu.MenuBarProxy;
 import VASSAL.tools.menu.MenuManager;
@@ -66,39 +67,39 @@ public class Editor extends Launcher {
   }
 
   protected void launch() throws IOException {
-    Object req = null;
+    IPCMessage msg = null;
     new IconFactory();  // Initialise the Icon Factory
 
     switch (lr.mode) {
     case EDIT:
       new EditModuleAction(lr.module).loadModule(lr.module);
-      req = new AbstractLaunchAction.NotifyOpenModuleOk();
+      msg = new AbstractLaunchAction.NotifyOpenModuleOk(lr);
       break;
     case IMPORT:
       new ImportAction(null).loadModule(lr.importFile);
-      req = new AbstractLaunchAction.NotifyImportModuleOk();
+      msg = new AbstractLaunchAction.NotifyImportModuleOk(lr);
       break;
     case NEW:
       new CreateModuleAction(null).performAction(null);
-      req = new AbstractLaunchAction.NotifyNewModuleOk();
+      msg = new AbstractLaunchAction.NotifyNewModuleOk(lr);
       break;
     case EDIT_EXT:
       GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
       GameModule.getGameModule().getFrame().setVisible(true);
       new EditExtensionAction(lr.extension).performAction(null);
-      req = new AbstractLaunchAction.NotifyOpenModuleOk();
+      msg = new AbstractLaunchAction.NotifyOpenModuleOk(lr);
       break;
     case NEW_EXT:
       GameModule.init(new BasicModule(new DataArchive(lr.module.getPath())));
       final JFrame f = GameModule.getGameModule().getFrame();
       f.setVisible(true);
       new NewExtensionAction(f).performAction(null);
-      req = new AbstractLaunchAction.NotifyOpenModuleOk();
+      msg = new AbstractLaunchAction.NotifyOpenModuleOk(lr);
     }
 
-    if (cmdC != null) {
+    if (ipc != null) {
       try {
-        cmdC.request(req);
+        ipc.send(msg);
       }
       catch (IOException e) {
         // This is not fatal, since we've successfully opened the module,

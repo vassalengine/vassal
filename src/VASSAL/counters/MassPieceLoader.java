@@ -850,7 +850,7 @@ public class MassPieceLoader {
       case SKIP_COL:
         return Boolean.valueOf(isSkip());
       case COPIES_COL:
-        return new Integer(getCopies());
+        return Integer.valueOf(getCopies());
       }
       return "";
     }

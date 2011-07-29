@@ -48,7 +48,14 @@ public class SourceOpTiledBitmapImpl extends SourceOpBitmapImpl {
 
   @Override
   protected ImageOp createTileOp(int tileX, int tileY) {
-    return new SourceOpDiskCacheBitmapImpl(name, tileX, tileY, 1.0);
+    // strip off leading "images/"
+    String tname = name;
+
+    if (tname.startsWith("images/")) {
+      tname = tname.substring(7);
+    }
+
+    return new SourceOpDiskCacheBitmapImpl(tname, tileX, tileY, 1.0);
   }
 
   /** {@inheritDoc} */

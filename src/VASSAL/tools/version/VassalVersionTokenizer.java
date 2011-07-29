@@ -55,29 +55,20 @@ import java.util.regex.Pattern;
  * @see VersionFormatException
  */
 public class VassalVersionTokenizer implements VersionTokenizer {
-  private String v;
+  protected String v;
 
-  private enum State { NUM, DELIM, TAG, EOS, END };
-  private State state = State.NUM;
+  protected enum State { NUM, DELIM, TAG, EOS, END };
+  protected State state = State.NUM;
 
-// FIXME: should be synchronized?
-  private static Map<String,Integer> tags = new HashMap<String,Integer>();
+  protected static Map<String,Integer> tags = new HashMap<String,Integer>();
 
   // This is the mapping for tags to svn versions. Only tags which cannot
   // be distinguished from the current version from the numeric portion
-  // alone need to be maintined here. (E.g., the 3.1.0 tags should be
-  // removed as soon as 3.1.1 is released.)
+  // alone need to be maintined here. (E.g., the 3.1.0 tags can be removed
+  // as soon as 3.1.1 is released.) We keep one tag for testing purposes.
   static {
-/*
     // 3.1.0
-    tags.put("beta1", 3606);
-    tags.put("beta2", 3664);
-    tags.put("beta3", 4023);
-    tags.put("beta4", 4266);
-    tags.put("beta5", 4409);
-    tags.put("beta6", 4577);
     tags.put("beta6", 4767);
-*/
   }
 
   /**
@@ -161,45 +152,4 @@ public class VassalVersionTokenizer implements VersionTokenizer {
       }
     }
   }
-
-  /**
-   * Tests for <code>VersionTokenizer</code>. A "<code>!</code>" is
-   * printed whenever parsing fails.
-   *
-   * @param args strings to parse
-   */
-  public static void main(String[] args) {
-    String[] ex;
-    if (args.length > 0) {  // tokenize user input
-      ex = args;
-    }
-    else {  // tokenize these examples
-      ex = new String[] {
-        "1.2.3",
-        "1.2.3.4",
-        "1.2.3-svn7890",
-        "1.2.3-beta5",
-        "1.2.3-rc3",
-        "foobarbaz",
-        "1.2.foo",
-        "1.2-foo",
-        "1.2-svn1234.8",
-        "3.1.0-beta2",
-        "3.0b6"
-      };
-    }
-
-    for (String v : ex) {
-      System.out.print(v + ":");
-      final VassalVersionTokenizer tok = new VassalVersionTokenizer(v);
-      try {
-        while (tok.hasNext()) System.out.print(" " + tok.next());
-        System.out.print("\n");
-      }
-      catch (VersionFormatException e) {
-        System.out.print(" !\n");
-      }
-    }
-    System.out.print("\n");
-  } 
 }

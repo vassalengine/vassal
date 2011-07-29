@@ -23,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -140,7 +142,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    * {@link IOException}s are swallowed, as there is generally
    * nothing that can be done about exceptions on closing.
    *
-   * @param c a (possibly <code>null</code>) <code>ServerSocket</code>
+   * @param s a (possibly <code>null</code>) <code>ServerSocket</code>
    */
   // FIXME: Remove in Java 1.6+, when ServerSocket implements Closeable 
   public static void closeQuietly(ServerSocket s) {
@@ -160,7 +162,7 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
    * {@link IOException}s are swallowed, as there is generally
    * nothing that can be done about exceptions on closing.
    *
-   * @param c a (possibly <code>null</code>) <code>Socket</code>
+   * @param s a (possibly <code>null</code>) <code>Socket</code>
    */
   // FIXME: Remove in Java 1.6+, when Socket implements Closeable
   public static void closeQuietly(Socket s) {
@@ -168,6 +170,44 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
 
     try {
       s.close();
+    }
+    catch (IOException e) {
+      // ignore
+    }
+  }
+
+  /**
+   * Close an {@link ObjectInput} unconditionally. Equivalent to
+   * calling <code>o.close()</code> when <code>o</code> is nonnull.
+   * {@link IOException}s are swallowed, as there is generally
+   * nothing that can be done about exceptions on closing.
+   *
+   * @param o a (possibly <code>null</code>) <code>ObjectInput</code>
+   */
+  public static void closeQuietly(ObjectInput o) {
+    if (o == null) return;
+
+    try {
+      o.close();
+    }
+    catch (IOException e) {
+      // ignore
+    }
+  }
+
+  /**
+   * Close an {@link ObjectOutput} unconditionally. Equivalent to
+   * calling <code>o.close()</code> when <code>o</code> is nonnull.
+   * {@link IOException}s are swallowed, as there is generally
+   * nothing that can be done about exceptions on closing.
+   *
+   * @param o a (possibly <code>null</code>) <code>ObjectOutput</code>
+   */
+  public static void closeQuietly(ObjectOutput o) {
+    if (o == null) return;
+
+    try {
+      o.close();
     }
     catch (IOException e) {
       // ignore

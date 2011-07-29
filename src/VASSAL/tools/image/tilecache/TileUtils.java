@@ -39,6 +39,8 @@ import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.io.IOUtils;
@@ -403,5 +405,22 @@ public class TileUtils {
     final int cols = (int) Math.ceil((double) (iw/div) / tw);
     final int rows = (int) Math.ceil((double) (ih/div) / th);    
     return cols*rows;
+  }
+
+  /**
+   * Gets the name of a tile file.
+   *
+   * @param iname the image name
+   * @param tileX the X coordinate of the tile
+   * @param tileY the Y coordinate of the tile
+   * @param div the scale divisor
+   * @return the name of the tile file
+   */
+  public static String tileName(String iname, int tileX, int tileY, int div) {
+    final String sha = DigestUtils.shaHex(
+      iname + "(" + tileX + "," + tileY + "@1:" + div
+    );
+
+    return sha.substring(0, 1) + '/' + sha.substring(0, 2) + '/' + sha;
   }
 }

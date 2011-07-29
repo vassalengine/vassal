@@ -20,6 +20,10 @@ package VASSAL.build.module;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
@@ -29,9 +33,11 @@ import VASSAL.configure.FormattedStringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.logging.Logger;
 
 public class SpecialDie extends AbstractConfigurable {
+
+  private static final Logger logger =
+    LoggerFactory.getLogger(SpecialDie.class);
 
   private List<SpecialDieFace> dieFaceList = new ArrayList<SpecialDieFace>();
   private FormattedString format = new FormattedString("$" + RESULT + "$"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -125,7 +131,7 @@ public class SpecialDie extends AbstractConfigurable {
     if  (face < 0 || face >= faceCount)  {
       format.setProperty(RESULT, "undefined"); //$NON-NLS-1$   
       format.setProperty(NUMERICAL_VALUE, "0"); //$NON-NLS-1$
-      Logger.log("Special Die (" + getConfigureName() +"): no such face " + face);
+      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
     }
     else {
       final SpecialDieFace aFace = dieFaceList.get(face);      
@@ -139,7 +145,7 @@ public class SpecialDie extends AbstractConfigurable {
     // No Faces may be defined, or opponent may have a version of the module with more faces defined than we have
     final int faceCount = getFaceCount();
     if  (face < 0 || face >= faceCount)  {
-      Logger.log("Special Die (" + getConfigureName() +"): no such face " + face);
+      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
       return 0;
     }
     else {
@@ -151,7 +157,7 @@ public class SpecialDie extends AbstractConfigurable {
     // No Faces may be defined, or opponent may have a version of the module with more faces defined than we have
     final int faceCount = getFaceCount();
     if  (face < 0 || face >= faceCount)  {
-      Logger.log("Special Die (" + getConfigureName() +"): no such face " + face);
+      logger.warn("Special Die (" + getConfigureName() + "): no such face " + face);
       return ""; //$NON-NLS-1$      
     }
     else {

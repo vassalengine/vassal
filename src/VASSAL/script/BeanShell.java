@@ -148,7 +148,7 @@ public class BeanShell {
     }
     else {           
       try {
-        return new Integer(value);
+        return Integer.valueOf(value);
       }
       catch (NumberFormatException e) {
         return value;

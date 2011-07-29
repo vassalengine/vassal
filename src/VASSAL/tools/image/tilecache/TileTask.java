@@ -67,7 +67,6 @@ class TileTask implements Callable<Void> {
   public Void call() throws IOException {
     final BufferedImage tile = sliceTile();
     TileUtils.write(tile, dst);
-    System.out.print('.');
     return null;
   }
 

@@ -40,7 +40,9 @@ import VASSAL.tools.io.IOUtils;
  * @see CommandClient
  * @author Joel Uckelman
  * @since 3.1.0
+ * @deprecated Use {@link SignalDispatcher} instead.
  */
+@Deprecated
 public class CommandServer implements Runnable {
   private final ServerSocket serverSocket;
 

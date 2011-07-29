@@ -94,9 +94,9 @@ public class Player extends Launcher {
       }
     }
 
-    if (cmdC != null) {
+    if (ipc != null) {
       try {
-        cmdC.request(new AbstractLaunchAction.NotifyOpenModuleOk());
+        ipc.send(new AbstractLaunchAction.NotifyOpenModuleOk(lr));
       }
       catch (IOException e) {
         // This is not fatal, since we've successfully opened the module,

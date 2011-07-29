@@ -37,6 +37,7 @@ import VASSAL.tools.image.ImageLoader;
 import VASSAL.tools.image.ImageTypeConverter;
 import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.TemporaryFileFactory;
+import VASSAL.tools.lang.Callback;
 
 /**
  * Converts an image file to tile files.
@@ -97,7 +98,16 @@ public class ImageToTiles {
     }
 
     final String iname = new File(ipath).getName();
-    TileSlicer.slice(src, iname, tpath, tw, th, exec);
+    final Callback<Void> dotter = new Callback<Void>() {
+      public void receive(Void obj) {
+        System.out.print('.');
+      }
+    };
+
+    final TileSlicer slicer = new TileSlicerImpl();
+
+    slicer.slice(src, iname, tpath, tw, th, exec, dotter);
     exec.shutdown();
+    System.out.println("");
   }
 } 

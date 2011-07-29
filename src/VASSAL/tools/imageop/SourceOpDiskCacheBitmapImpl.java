@@ -27,9 +27,10 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import VASSAL.build.GameModule;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageIOException;
-import VASSAL.tools.image.tilecache.ImageDiskCache;
+import VASSAL.tools.image.ImageTileSource;
 
 /**
  * An {@link ImageOp} which loads tiles from the tile cache.
@@ -50,6 +51,8 @@ public class SourceOpDiskCacheBitmapImpl extends AbstractTileOpImpl
   protected final int tileY;
   protected double scale;
 
+  protected final ImageTileSource tileSrc;
+
   /**
    * Constructs an <code>ImageOp</code> which will load the given file.
    *
@@ -59,13 +62,29 @@ public class SourceOpDiskCacheBitmapImpl extends AbstractTileOpImpl
    */
   public SourceOpDiskCacheBitmapImpl(String name,
                                      int tileX, int tileY, double scale) {
+    this(name, tileX, tileY, scale,
+         GameModule.getGameModule().getImageTileSource());
+  }
+
+  public SourceOpDiskCacheBitmapImpl(
+    String name,
+    int tileX,
+    int tileY,
+    double scale,
+    ImageTileSource tileSrc)
+  {
     if (name == null) throw new IllegalArgumentException();
     if (name.length() == 0) throw new IllegalArgumentException();
+    if (tileX < 0) throw new IllegalArgumentException();
+    if (tileY < 0) throw new IllegalArgumentException();
+    if (scale <= 0) throw new IllegalArgumentException();
+    if (tileSrc == null) throw new IllegalArgumentException();
 
     this.name = name;
     this.tileX = tileX;
     this.tileY = tileY;
     this.scale = scale;
+    this.tileSrc = tileSrc;
 
     hash = new HashCodeBuilder().append(name)
                                 .append(tileX)
@@ -84,7 +103,7 @@ public class SourceOpDiskCacheBitmapImpl extends AbstractTileOpImpl
    * @throws IOException if the image cannot be loaded from the image file.
    */
   public BufferedImage eval() throws ImageIOException {
-    return ImageDiskCache.getImage(name, tileX, tileY, scale);
+    return tileSrc.getTile(name, tileX, tileY, scale);
   }
 
   /** {@inheritDoc} */
@@ -96,9 +115,9 @@ public class SourceOpDiskCacheBitmapImpl extends AbstractTileOpImpl
 
   protected Dimension getImageSize() {
     try {
-      return ImageDiskCache.getImageSize(name, tileX, tileY, scale);
+      return tileSrc.getTileSize(name, tileX, tileY, scale);
     }
-    catch (IOException e) {
+    catch (ImageIOException e) {
       if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
 

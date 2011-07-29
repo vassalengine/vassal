@@ -18,14 +18,11 @@
  */
 package VASSAL.tools.image;
 
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.io.File;
-import javax.imageio.ImageIO;
 
 /*
    This class is the result of much trial and error with using timings
@@ -34,9 +31,10 @@ import javax.imageio.ImageIO;
    ruin our hard-won performance.
   
    Profiling information:
-     java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilter cc.png 0.406 0
-     java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilter cc.png 0.406 1
-     java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilter cc.png 0.406 2
+
+java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilterTest cc.png 0.406 0
+java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilterTest cc.png 0.406 1
+java -Xmx1024M -cp classes VASSAL.tools.image.GeneralFilterTest cc.png 0.406 2
   
    cc.png is a 3100x2500 32-bit image.
  
@@ -53,6 +51,8 @@ import javax.imageio.ImageIO;
     518         r5516 removed useless checks, removed useless CList field
     529 532 466 r5894 added case for premultiplied ARGB
     525 597 468 r5896 correctly premultiply, scale, unpremultiply for ARGB
+    535 483 408 r7416 don't copy src rectangle, use src data directly
+    531 476 412 r7417 moved common expressions out of loops
 */  
 
 /** 
@@ -244,7 +244,7 @@ public final class GeneralFilter {
    * Filters a portion of the source image.
    *
    * @param dstR the destination tile to calculate
-   * @param dst the bounds of the whole destination image
+   * @param dst_fr the bounds of the whole destination image
    * @param srcI the source image
    * @param filter the filter to apply
    * @throws ClassCastException if <code>srcI</code> does not store its data
@@ -298,12 +298,12 @@ public final class GeneralFilter {
     final int sw = sx1 - sx0 + 1;
     final int sh = sy1 - sy0 + 1;
 
-    // copy (sx0,sy0)-(sx1,sy1) to srcR
-    final Raster srcR = srcI.getData(new Rectangle(sx0, sy0, sw, sh));
-    final int src_data[] = ((DataBufferInt) srcR.getDataBuffer()).getData();
+    final int src_data[] =
+      ((DataBufferInt) srcI.getRaster().getDataBuffer()).getData();
 
     resample(
-      src_data, sx0, sy0, sx1, sy1, sw, sh, src_type, srcWidth, srcHeight,
+      src_data, false, 
+      sx0, sy0, sx1, sy1, sw, sh, src_type, srcWidth, srcHeight,
       dst_data, dx0, dy0, dx1, dy1, dw, dh, dstWidth, dstHeight,
       xscale, yscale, filter
     );
@@ -315,6 +315,7 @@ public final class GeneralFilter {
 
   public static void resample(
     int[] src_data,
+    boolean src_data_consecutive,
     int sx0,
     int sy0,
     int sx1,
@@ -350,16 +351,32 @@ public final class GeneralFilter {
     switch (src_type) {
     case OPAQUE: 
       // handle TYPE_INT_RGB, TYPE_INT_BGR
-      for (int dx = 0; dx < dw; ++dx) {
-        apply_horizontal_opaque(sh, xcontrib[dx], src_data, sw, work);
-        apply_vertical_opaque(dh, ycontrib, work, dst_data, dx, dw);
+      if (src_data_consecutive) {
+        for (int dx = 0; dx < dw; ++dx) {
+          apply_h_opaque(0, 0, sh, sw, xcontrib[dx], src_data, work);
+          apply_v_opaque(dh, ycontrib, work, dst_data, dx, dw);
+        }
+      }
+      else {
+        for (int dx = 0; dx < dw; ++dx) {
+          apply_h_opaque(sx0, sy0, sh, srcWidth, xcontrib[dx], src_data, work);
+          apply_v_opaque(dh, ycontrib, work, dst_data, dx, dw);
+        }
       }
       break;
     case TRANS_PREMULT:
-      // handle TYPE_INT_ARGB_PRE 
-      for (int dx = 0; dx < dw; ++dx) {
-        apply_horizontal(sh, xcontrib[dx], src_data, sw, work);
-        apply_vertical(dh, ycontrib, work, dst_data, dx, dw);
+      // handle TYPE_INT_ARGB_PRE
+      if (src_data_consecutive) {
+        for (int dx = 0; dx < dw; ++dx) {
+          apply_h(0, 0, sh, sw, xcontrib[dx], src_data, work);
+          apply_v(dh, ycontrib, work, dst_data, dx, dw);
+        }
+      }
+      else {
+        for (int dx = 0; dx < dw; ++dx) {
+          apply_h(sx0, sy0, sh, srcWidth, xcontrib[dx], src_data, work);
+          apply_v(dh, ycontrib, work, dst_data, dx, dw);
+        }
       }
       break;
     case TRANS_UNPREMULT:
@@ -385,9 +402,17 @@ public final class GeneralFilter {
         }
       }
 
-      for (int dx = 0; dx < dw; ++dx) {
-        apply_horizontal(sh, xcontrib[dx], pre_src_data, sw, work);
-        apply_vertical(dh, ycontrib, work, dst_data, dx, dw);
+      if (src_data_consecutive) {
+        for (int dx = 0; dx < dw; ++dx) {
+          apply_h(0, 0, sh, sw, xcontrib[dx], pre_src_data, work);
+          apply_v(dh, ycontrib, work, dst_data, dx, dw);
+        }
+      }
+      else {
+        for (int dx = 0; dx < dw; ++dx) {
+          apply_h(sx0, sy0, sh, srcWidth, xcontrib[dx], pre_src_data, work);
+          apply_v(dh, ycontrib, work, dst_data, dx, dw);
+        }
       }
 
       // unpremultiply destination data
@@ -457,37 +482,44 @@ public final class GeneralFilter {
     return contrib;
   }
 
-  private static void apply_horizontal(
+  private static void apply_h(
+    final int sx0,
+    final int sy0,
     final int sh,
+    final int stride,
     final CList xcontrib,
     final int[] src,
-    final int sw,
     final int[] work)
   {
+    final CList c = xcontrib;
+    final int max = c.n;
+
+    final int base = sx0 + c.pixel + sy0*stride;
+
     // Apply pre-computed filter to sample horizontally from src to work
     for (int k = 0; k < sh; k++) {
       float s_a = 0.0f;  // alpha sample
       float s_r = 0.0f;  // red sample
       float s_g = 0.0f;  // green sample
       float s_b = 0.0f;  // blue sample
-        
-      final CList c = xcontrib;
-      final int max = c.n;
-      final int pel = src[c.pixel + k*sw];
+
+      final int pos = base + k*stride;
+
+      final int pel = src[pos];
       boolean bPelDelta = false;
 
       // Check for areas of constant color. It is *much* faster to
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
         if (c.weight[j] == 0.0f) continue;
-        if (src[c.pixel + j + k*sw] != pel) { bPelDelta = true; break; }
+        if (src[pos + j] != pel) { bPelDelta = true; break; }
       }
 
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
         for (int j = 0; j < max; j++) {
           final float w = c.weight[j];
-          final int sd = src[c.pixel + j + k*sw];
+          final int sd = src[pos + j];
 
           s_a += ((sd >>> 24) & 0xff) * w;
           s_r += ((sd >>> 16) & 0xff) * w;
@@ -509,36 +541,43 @@ public final class GeneralFilter {
     } 
   }
 
-  private static void apply_horizontal_opaque(
+  private static void apply_h_opaque(
+    final int sx0,
+    final int sy0,
     final int sh,
+    final int stride,
     final CList xcontrib,
     final int[] src,
-    final int sw,
     final int[] work)
   {
+    final CList c = xcontrib;
+    final int max = c.n;
+
+    final int base = sx0 + c.pixel + sy0*stride;
+
     // Apply pre-computed filter to sample horizontally from src to work
     for (int k = 0; k < sh; k++) {
       float s_r = 0.0f;  // red sample
       float s_g = 0.0f;  // green sample
       float s_b = 0.0f;  // blue sample
-        
-      final CList c = xcontrib;
-      final int max = c.n;
-      final int pel = src[c.pixel + k*sw];
+       
+      final int pos = base + k*stride;
+ 
+      final int pel = src[pos];
       boolean bPelDelta = false;
 
       // Check for areas of constant color. It is *much* faster to
       // to check first and then calculate weights only if needed.
       for (int j = 0; j < max; j++) {
         if (c.weight[j] == 0.0f) continue;
-        if (src[c.pixel + j + k*sw] != pel) { bPelDelta = true; break; }
+        if (src[pos + j] != pel) { bPelDelta = true; break; }
       }
 
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
         for (int j = 0; j < max; j++) {
           final float w = c.weight[j];
-          final int sd = src[c.pixel + j + k*sw];
+          final int sd = src[pos + j];
 
           s_r += ((sd >>> 16) & 0xff) * w;
           s_g += ((sd >>>  8) & 0xff) * w;
@@ -558,7 +597,7 @@ public final class GeneralFilter {
     }
   }
 
-  private static void apply_vertical(
+  private static void apply_v(
     final int dh,
     final CList[] ycontrib,
     final int[] work,
@@ -625,7 +664,7 @@ public final class GeneralFilter {
     }
   }
 
-  private static void apply_vertical_opaque(
+  private static void apply_v_opaque(
     final int dh,
     final CList[] ycontrib,
     final int[] work,
@@ -673,60 +712,5 @@ public final class GeneralFilter {
         dst[dx + i*dw] = pel; 
       }
     }
-  }
-
-  /** A program for running filter benchmarks. */
-  public static void main(String[] args) throws java.io.IOException {
-    BufferedImage src = ImageIO.read(new File(args[0]));
-    final float scale = Float.parseFloat(args[1]);
-
-    final int dw = (int) (src.getWidth() * scale);
-    final int dh = (int) (src.getHeight() * scale);
-
-    int type;
-    switch (Integer.parseInt(args[2])) {
-    case 0: type = BufferedImage.TYPE_INT_RGB; break;
-    case 1: type = BufferedImage.TYPE_INT_ARGB; break;
-    case 2: type = BufferedImage.TYPE_INT_ARGB_PRE; break;
-    default: throw new IllegalArgumentException();
-    }
-
-    final BufferedImage tmp =
-      new BufferedImage(src.getWidth(), src.getHeight(), type);
-
-    final Graphics2D g = tmp.createGraphics();
-    g.drawImage(src, 0, 0, null);
-    g.dispose();
- 
-    src = tmp;
-
-    BufferedImage dst = null;
-
-    final Filter filter = new Lanczos3Filter();
-//    final Filter filter = new MitchellFilter();
-
-    for (int i = 0; i < 40; ++i) {
-      long start = System.currentTimeMillis();
-      dst = zoom(new Rectangle(0, 0, dw, dh), src, filter);
-//ImageIO.write(dst, "png", new File("dst-g.png"));
-//System.exit(0);
-      System.out.println(System.currentTimeMillis() - start);
-    }
-
-    System.out.println("Ready...");
-    System.in.read();
-    System.out.println("Starting...");
-
-    long time = 0;
-    for (int i = 0; i < 10; ++i) {
-      long start = System.currentTimeMillis();
-      dst = zoom(new Rectangle(0, 0, dw, dh), src, filter);
-      time += System.currentTimeMillis() - start;
-    }
-    
-    System.out.println(time/10);
-
-    System.out.println("Done.");
-    System.in.read();
   }
 }
