@@ -49,7 +49,8 @@ DOCDIR:=doc
 DISTDIR:=dist
 
 VNUM:=3.2.0
-SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
+#SVNVERSION:=$(shell svnversion | perl -pe 's/(\d+:)?(\d+[MS]?)/$$2/; s/(\d+)M/$$1+1/e')
+SVNVERSION:=$(shell git svn log -1 --oneline | grep -oP '^r\K\d+')
 VERSION:=$(VNUM)-svn$(SVNVERSION)
 #VERSION:=$(VNUM)
 
@@ -90,17 +91,20 @@ $(CLASSDIR):
 images: $(CLASSDIR)/images
 
 $(CLASSDIR)/images: $(CLASSDIR)
-	svn export --force $(SRCDIR)/images $(CLASSDIR)/images
+#	svn export --force $(SRCDIR)/images $(CLASSDIR)/images
+	cp -a $(SRCDIR)/images $(CLASSDIR)/images
 
 icons: $(CLASSDIR)/icons
 
 $(CLASSDIR)/icons: $(CLASSDIR)
-	svn export --force $(SRCDIR)/icons $(CLASSDIR)/icons
+#	svn export --force $(SRCDIR)/icons $(CLASSDIR)/icons
+	cp -a $(SRCDIR)/icons $(CLASSDIR)/icons
 
 help: $(CLASSDIR)/help
 
 $(CLASSDIR)/help: $(CLASSDIR)
-	svn export --force $(SRCDIR)/help $(CLASSDIR)/help
+#	svn export --force $(SRCDIR)/help $(CLASSDIR)/help
+	cp -a $(SRCDIR)/help $(CLASSDIR)/help
 
 i18n: $(CLASSDIR)
 	for i in `cd $(SRCDIR) && find VASSAL -name '*.properties'`; do cp $(SRCDIR)/$$i $(CLASSDIR)/$$i; done
@@ -158,17 +162,20 @@ $(TMPDIR)/VASSAL-$(VERSION).app: all $(JARS) $(TMPDIR)
 				 -e 's/%FULLVERSION%/$(VERSION)/g' $@/Contents/Info.plist
 	cp dist/macosx/JavaApplicationStub $@/Contents/MacOS
 	cp dist/macosx/VASSAL.icns $@/Contents/Resources
-	svn export $(LIBDIR) $@/Contents/Resources/Java
-	svn export $(DOCDIR) $@/Contents/Resources/doc
-	cp $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
+#	svn export $(LIBDIR) $@/Contents/Resources/Java
+	cp -a $(LIBDIR) $@/Contents/Resources/Java
+#	svn export $(DOCDIR) $@/Contents/Resources/doc
+	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
 $(TMPDIR)/VASSAL-$(VERSION)-macosx.dmg: $(TMPDIR)/VASSAL-$(VERSION).app
 	genisoimage -V VASSAL-$(VERSION) -r -apple -root VASSAL-$(VERSION).app -o $@ $<
 
 $(TMPDIR)/VASSAL-$(VERSION)-other.zip: all $(JARS) $(TMPDIR)/VASSAL.exe
 	mkdir -p $(TMPDIR)/VASSAL-$(VERSION)
-	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
-	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
+#	svn export $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
+	cp -a $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
+#	svn export $(LIBDIR) $(TMPDIR)/VASSAL-$(VERSION)/lib
+	cp -a $(DOCDIR) $(TMPDIR)/VASSAL-$(VERSION)/doc
 	cp $(LIBDIR)/Vengine.jar $(TMPDIR)/VASSAL-$(VERSION)/lib
 	cp dist/VASSAL.sh dist/windows/VASSAL.bat $(TMPDIR)/VASSAL.exe $(TMPDIR)/VASSAL-$(VERSION)
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION) ; cd ..
@@ -193,7 +200,9 @@ $(TMPDIR)/VASSAL-$(VERSION)-windows.exe: release-other $(TMPDIR)/VASSAL.exe
 	$(NSIS) -NOCD -DVERSION=$(VERSION) -DTMPDIR=$(TMPDIR) dist/windows/nsis/installer.nsi
 
 $(TMPDIR)/VASSAL-$(VERSION)-src.zip: version
-	svn export . $(TMPDIR)/VASSAL-$(VERSION)-src
+	cp -a . $(TMPDIR)/VASSAL-$(VERSION)-src
+#	svn export . $(TMPDIR)/VASSAL-$(VERSION)-src
+	git checkout-index -a -f --prefix=$(TMPDIR)/VASSAL-$(VERSION)-src
 	cd $(TMPDIR) ; zip -9rv $(notdir $@) VASSAL-$(VERSION)-src ; cd ..
 
 release-linux: $(TMPDIR)/VASSAL-$(VERSION)-linux.tar.bz2
