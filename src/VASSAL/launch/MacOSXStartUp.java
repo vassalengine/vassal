@@ -18,23 +18,13 @@
  */
 package VASSAL.launch;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import VASSAL.tools.ErrorDialog;
-
 /**
  * @author Joel Uckelman
  * @since 3.1.0
  */
 public class MacOSXStartUp extends StartUp {
   @Override
-  public void initSystemProperties() {
-    super.initSystemProperties();
-    initMacOSXSpecificProperties();
-  }
-
-  protected void initMacOSXSpecificProperties() {
+  protected void initSystemSpecificProperties() {
     // use the system menu bar
     System.setProperty("apple.laf.useScreenMenuBar", "true");
 
@@ -50,22 +40,5 @@ public class MacOSXStartUp extends StartUp {
 
     // live resize of app windows
     System.setProperty("com.apple.mrj.application.live-resize", "true");
-
-    // use native LookAndFeel---must be after other Apple properties
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    }
-    catch (ClassNotFoundException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (IllegalAccessException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (InstantiationException e) {
-      ErrorDialog.bug(e);
-    }
-    catch (UnsupportedLookAndFeelException e) {
-      ErrorDialog.bug(e);
-    }
   }
 }

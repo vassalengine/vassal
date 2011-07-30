@@ -22,7 +22,11 @@ package VASSAL.launch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import VASSAL.Info;
+import VASSAL.tools.ErrorDialog;
 
 /**
  * @author Joel Uckelman
@@ -33,6 +37,7 @@ public class StartUp {
 
   public void initSystemProperties() {
     initHTTPProxyProperties();
+    initSystemSpecificProperties();
     initUIProperties();
   }
 
@@ -58,7 +63,27 @@ public class StartUp {
     System.setProperty("swing.aatext", "true"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("swing.boldMetal", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     System.setProperty("awt.useSystemAAFontSettings", "on"); //$NON-NLS-1$ //$NON-NLS-2$
+
+    // use native LookAndFeel
+    // NB: This must be after Mac-specific properties
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    }
+    catch (ClassNotFoundException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (IllegalAccessException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (InstantiationException e) {
+      ErrorDialog.bug(e);
+    }
+    catch (UnsupportedLookAndFeelException e) {
+      ErrorDialog.bug(e);
+    } 
   }
+
+  protected void initSystemSpecificProperties() {}
 
   public void startErrorLog() {
     // begin the error log
