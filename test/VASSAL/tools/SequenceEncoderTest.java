@@ -182,4 +182,21 @@ public class SequenceEncoderTest {
     assertEquals("stuff", sd.nextToken());
     assertEquals("'", sd.nextToken());
   }
+
+  @Test
+  public void testInitialNullBug3465() {
+    // SequenceEncoder was failing to include initial null in sequence
+    // Nulls are decoded as empty strings
+    final String value2 = "value";
+    final char delim = ';';
+
+    final SequenceEncoder se = new SequenceEncoder(null,delim);
+    se.append(value2);
+
+    final SequenceEncoder.Decoder sd =
+      new SequenceEncoder.Decoder(se.getValue(),delim);
+
+    assertEquals("", sd.nextToken());
+    assertEquals(value2, sd.nextToken());
+  }
 }

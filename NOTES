@@ -32,7 +32,7 @@ Changes since 3.1:
 The following bugs are fixed in 3.2.0-beta1:
 
 * 3486: ConfigureTree.isValidParent() should permit subclasses
-
+* 3465: Empty DynamicProperty causes IllegalStateException on loading
 
 Please report all bugs in beta8, even if they are bugs which you've
 already reported against other betas. We take your bug reports very

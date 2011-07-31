@@ -61,14 +61,12 @@ public class SequenceEncoder {
   private final char delimit;
 
   public SequenceEncoder(char delimiter) {
-    this(null, delimiter);
+    delimit = delimiter;
   }
 
   public SequenceEncoder(String val, char delimiter) {
-    delimit = delimiter;
-    if (val != null) {
-      append(val);
-    }
+    this(delimiter);
+    append(val);
   }
 
   public SequenceEncoder append(String s) {
