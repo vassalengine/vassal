@@ -36,6 +36,7 @@ The following bugs are fixed in 3.2.0-beta1:
 * 3472: Initial value of DynamicProperty is not evaluated
 * 3465: Empty DynamicProperty causes IllegalStateException on loading
 * 3463: Infinite recursion if $PieceName$ specified as Text Label
+* 2694: Warn (Windows) users to reboot after Java upgrade
 
 Please report all bugs in beta8, even if they are bugs which you've
 already reported against other betas. We take your bug reports very

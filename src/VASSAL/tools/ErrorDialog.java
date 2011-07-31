@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright (c) 2008-2009 by Joel Uckelman
+ * Copyright (c) 2008-2011 by Joel Uckelman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -35,6 +35,8 @@ import org.slf4j.LoggerFactory;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.bug.BugHandler;
+import VASSAL.tools.bug.Bug2694Handler;
 
 /**
  * @author Joel Uckelman
@@ -46,6 +48,10 @@ public class ErrorDialog {
   private static final Logger logger =
     LoggerFactory.getLogger(ErrorDialog.class);
 
+  private static final BugHandler[] bughandlers = {
+    new Bug2694Handler()
+  };
+
 // FIXME: make method which takes Throwable but doesn't use it for details
 
   public static void bug(final Throwable thrown) {
@@ -55,9 +61,19 @@ public class ErrorDialog {
     if (oom != null) {
       logger.error("", thrown);
       show("Error.out_of_memory");
+      return;
     }
+
+    // use a bug handler if one matches
+    for (BugHandler bh : bughandlers) {      
+      if (bh.accept(thrown)) {
+        bh.handle(thrown);
+        return;
+      }
+    }
+
     // show a bug report dialog if one has not been shown before
-    else if (!DialogUtils.setDisabled(BugDialog.class, true)) {
+    if (!DialogUtils.setDisabled(BugDialog.class, true)) {
       logger.error("", thrown);
 
       final Frame frame = GameModule.getGameModule() == null
