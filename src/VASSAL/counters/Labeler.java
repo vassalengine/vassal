@@ -379,6 +379,7 @@ public class Labeler extends Decorator implements TranslatablePiece {
     // prevent recursive references from this label
     // to piece name (which may contain this label)
     labelFormat.setProperty(BasicPiece.PIECE_NAME, piece.getName());
+    labelFormat.setFormat(label);
 
     if (getMap() != null && label != null && label.length() > 0) {
       imagePainter.setSource(
