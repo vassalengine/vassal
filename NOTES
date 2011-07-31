@@ -32,6 +32,7 @@ Changes since 3.1:
 The following bugs are fixed in 3.2.0-beta1:
 
 * 3486: ConfigureTree.isValidParent() should permit subclasses
+* 3479: DynamicProperty.setProperty() casts non-Strings to String
 * 3472: Initial value of DynamicProperty is not evaluated
 * 3465: Empty DynamicProperty causes IllegalStateException on loading
 * 3463: Infinite recursion if $PieceName$ specified as Text Label

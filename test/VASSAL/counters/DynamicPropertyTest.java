@@ -45,9 +45,9 @@ public class DynamicPropertyTest {
     final String propName = "Moved";
     final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;");
     final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID + propName, piece);
-    
+
     dp.setProperty(propName, Boolean.TRUE);
-    
+
     assertEquals(Boolean.TRUE.toString(), dp.getProperty(propName));
   }
  
