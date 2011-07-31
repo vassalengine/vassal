@@ -185,6 +185,9 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   public void setValue(String value) {
     Stack parent = getParent();
     Map map = getMap();
+
+    value = formatValue(value);
+
     // If the property has changed the layer to which this piece belongs,
     // re-insert it into the map.
     // No need to re-insert pieces in Decks, it causes problems if they are NO_STACK
@@ -220,7 +223,12 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       this.value = value;
     }
   }
-
+  
+  private String formatValue(String value) {
+    format.setFormat(value);
+    return format.getText(Decorator.getOutermost(this));
+  }
+  
   public String myGetType() {
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(key);
@@ -237,10 +245,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     final ChangeTracker tracker = new ChangeTracker(this);
     for (DynamicKeyCommand dkc : keyCommands) {
       if (dkc.matches(stroke)) {
-        String newValue = dkc.propChanger.getNewValue(value);
-        format.setFormat(newValue);
-        newValue = format.getText(Decorator.getOutermost(this));
-        setValue(newValue);
+        setValue(dkc.propChanger.getNewValue(value));
       }
     }
 
